@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4793275F3C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9994F75F3EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjGXKrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        id S233135AbjGXKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjGXKrF (ORCPT
+        with ESMTP id S232976AbjGXKyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:47:05 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D459C;
-        Mon, 24 Jul 2023 03:47:03 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4R8cKv30xJz9t3y;
-        Mon, 24 Jul 2023 12:46:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1690195619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QRgDsdj4PRaBX4F+5NuwghTRwQQTxR0MoJRVxO8TmDM=;
-        b=hJZVWzSGSd27nZkk+77PknK0vznvbxJ0/csknIDZKtbuqocbGowTgvDTRp5kHwHq8VTNcN
-        sI6IlW31o4Bg7agxOLgIQv1FsKLi00x1uQSyGLFRClbvZZ6TctRU4GzTt+AYihA62RE90E
-        8XoFTkdBXcRTITTVEEo8fa6PVq1Ug8zpqfzpnl4s/ZNyaV3lsfbncy16bsE0CGkN8y/xRp
-        GPdV0do0y4x+rT3b8fXqrISxwuL1j7sA3ewktGWABKEQxBdgD5hkQ/O0FQr2vlP/cI//4b
-        pRZHonfpIKk3994LbXC9WTO5Jtz06jIpRC5JGawPh2npyTY2EwJKBdM6nJ6F4A==
-Message-ID: <a31d3d49-1861-19a2-2bb4-8793c8eabee9@mailbox.org>
-Date:   Mon, 24 Jul 2023 12:46:56 +0200
+        Mon, 24 Jul 2023 06:54:32 -0400
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A430BD
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1690196067;
+        bh=XOX/z39tnUIYC7J6EKUXBGgP9+PWkGgP5iM49YV5zy0=;
+        h=From:To:Cc:Subject:Date;
+        b=h4AlDVM7Levuz6MojVlncNhs4/fIDhCMnPoL+6txypL9iAzJiKhUb0W7lFlSWH/sw
+         kyHf33VIjro2W5Z+NXdNMNE+etn69qAYGkK3gEowPDglL1rX7D1BK5GGsLm6m3Ykvv
+         Q3YPA8qXtfj02zzGUu3XRbq0u5Sg+9LIS30Cbo4E=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+        id BFB29C6C; Mon, 24 Jul 2023 18:47:59 +0800
+X-QQ-mid: xmsmtpt1690195679tbwjgl8u0
+Message-ID: <tencent_E626A858BED28C4E21C219780BC566015D0A@qq.com>
+X-QQ-XMAILINFO: NSObNE1Kae7Zzzod1N7QKTZYwMcKOnxac8L0X2KaWFnpdLxFfM34CvUwbI3wf4
+         YeVKCDYOdfLxmL2WPxG2/8Y9BhkYoB1TcQTDMAryJA8p3sQPFtNlbTICbZvdCPiiO5sBwYR4+qYF
+         kNdl+rGOKd31iPQCxyiNt/56R1hoeZqi0uo6CxE3Xs5KrmaF7YrZ7gKH2bW29ljKX9hC8FnC1xpV
+         pSP3DEWUXOXpFkN/H6bIv1Ci38D1xV/0OW4K/c+G6IlmS1iUZteEJ/IWvlqec4m1SSvFKk4eiBnT
+         NUUBIZIvYvZvBhCCLU1gxKHWDDhABCH64Nl3EWkVi0GdwHHm//aIz39WAFlZ57kL8UveDPtTOpQb
+         ov+eO8mBRIFHgEcNMQaCEh3IvmUvOaegIkTzhV+I5/G65eyeFDJkctZyJY0HwrABtIRe1a5pRT6o
+         00H/9dE6uuOImHCAHJTAKs/Q+s0yIwdsQHF6ze+h4CNHZV6HPceTXhytM5F1ulWBIBJUooXlJY/I
+         WJtOEF3v04AwuXTdCy5hVmwbt9oDWBsoZjaNbhDXuLZ5xsKomKcpk0468tHUsXW98wGhoQ2nJeGm
+         +2ndoqcvim3YdxGuiK1T/ZpQGX24yXFSVulFZ9NVVyvfxBqQNZROkjY40J/WEoQWrF1tsclr7oTj
+         9ufM/dtNPvMbDIJHkFa2SbZxiZM7bXmiaslObZLtkMCJqfJAPMVmh+rwKZHirGuYDrHivzc3bqtt
+         G9J81h3tAaiLrAtsYWgdFXFbEaWgyxLsQXzmRKGoyPW+d758mMkTWIUDLryM5HmMN/58eKY6pMQj
+         kOkJxMy3ViV+H06YxvtuJ6Wp4a+NxNArXu/nFSidnVRjIyjPpi/zjxs6Yhq5n1VRdiVku2V1NHXy
+         Ow9DjaQSCKD9bu94DAzkDAgH2Y1u4uP2emo9EHWcAFecshA8K97MR/U8PJF6wzImlpLa8m4KNyYv
+         bR8i6f6g0EKwwKoXimKWVpwTm66PDdSfIXpNapdFui7C8NLLe409DmwnSEpYuA
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     prasad@linux.vnet.ibm.com
+Cc:     rtoax@foxmail.com, ast@kernel.org, frederic@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, qperret@google.com,
+        rongtao@cestc.cn, tglx@linutronix.de, will@kernel.org,
+        mhiramat@kernel.org
+Subject: [PATCH] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
+Date:   Mon, 24 Jul 2023 18:47:58 +0800
+X-OQ-MSGID: <20230724104758.39645-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Subject: Re: [PATCH AUTOSEL 6.1 28/41] Revert "drm/amd/display: Do not set drr
- on pipe commit"
-Content-Language: en-CA
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Dmytro.Laktyushkin@amd.com, dri-devel@lists.freedesktop.org,
-        Wesley.Chalmers@amd.com, sunpeng.li@amd.com, qingqing.zhuo@amd.com,
-        Rodrigo.Siqueira@amd.com, amd-gfx@lists.freedesktop.org,
-        airlied@linux.ie, Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>, daniel@ffwll.ch,
-        wayne.lin@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        hugo.hu@amd.com, harry.wentland@amd.com, christian.koenig@amd.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230724012118.2316073-1-sashal@kernel.org>
- <20230724012118.2316073-28-sashal@kernel.org>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <20230724012118.2316073-28-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 324e36e7dfef5be2138
-X-MBO-RS-META: ugp96btdxp5iatie16dfbs8fg661iw7g
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/23 03:21, Sasha Levin wrote:
-> From: Michel Dänzer <mdaenzer@redhat.com>
-> 
-> [ Upstream commit 8e1b45c578b799510f9a01a9745a737e74f43cb1 ]
-> 
-> This reverts commit 474f01015ffdb74e01c2eb3584a2822c64e7b2be.
+From: Rong Tao <rongtao@cestc.cn>
 
-The reverted commit is the same as patch 1 in this series...
+Macro symbol_put() is defined as __symbol_put(__stringify(x))
 
-Same issue with the autosel patches for 6.4.
+    ksym_name = "jiffies"
+    symbol_put(ksym_name)
 
+will be resolved as
 
+    __symbol_put("ksym_name")
+
+which is clearly wrong. So symbol_put must be replaced with __symbol_put.
+
+When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
+following error:
+
+[11381.854152] kernel BUG at kernel/module/main.c:779!
+[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
+[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
+[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
+[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
+[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
+[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
+[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
+[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
+[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
+[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
+[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
+[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+[11381.854204] Call Trace:
+[11381.854207]  <TASK>
+[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
+[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
+[11381.854225]  do_syscall_64+0x58/0x80
+[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
+[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854241]  ? do_syscall_64+0x67/0x80
+[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854248]  ? do_syscall_64+0x67/0x80
+[11381.854252]  ? exc_page_fault+0x70/0x170
+[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/hw_breakpoint/data_breakpoint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
+index 418c46fe5ffc..9debd128b2ab 100644
+--- a/samples/hw_breakpoint/data_breakpoint.c
++++ b/samples/hw_breakpoint/data_breakpoint.c
+@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
+ static void __exit hw_break_module_exit(void)
+ {
+ 	unregister_wide_hw_breakpoint(sample_hbp);
+-	symbol_put(ksym_name);
++	__symbol_put(ksym_name);
+ 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
+ }
+ 
 -- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+2.39.3
 
