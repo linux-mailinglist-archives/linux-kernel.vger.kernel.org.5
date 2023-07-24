@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE0C75E7E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319D275E837
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjGXBgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S230268AbjGXBi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbjGXBfv (ORCPT
+        with ESMTP id S231965AbjGXBhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:35:51 -0400
+        Sun, 23 Jul 2023 21:37:36 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7822D49DC;
-        Sun, 23 Jul 2023 18:32:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030862D71;
+        Sun, 23 Jul 2023 18:33:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B2C960FA3;
-        Mon, 24 Jul 2023 01:31:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59EE7C433C9;
-        Mon, 24 Jul 2023 01:31:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A062760F98;
+        Mon, 24 Jul 2023 01:32:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A42C433CC;
+        Mon, 24 Jul 2023 01:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162282;
-        bh=ODNt56JiN6gRK2N6uBDKwB1dCXrkmW14yZe2M7cBT7o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GcnPq9XQAb5KuHmcaec6Dr0DOWueCR5+SePsfrRjnB/LJJ0QhvCoA9V6p6rO3FN1o
-         vfUPX8gKgKQ4ZcvVHtERnngruNCL+YWD8lL0SvA/0pwmflXNw6wpka9l9uoEiIwCFK
-         LQEHkCAuE9r22VhlEBNxOm7uUugqpWpeTA7mtesLSU4ui/0/XExUVRogxDj3H1Nu9d
-         nJJkMcIZDMg5O7+UK7jsycgzwQV5ele3jH6/cCk+iaC4aGJ2VCcjtLUg/FH1MDPEFe
-         YTD4Yi3h2H/gsGSJ6j12nYGhjBYOfSR6CAEhtIOljaL+yfAuxuS2qBDzo4J+2KhRUb
-         mQLmFfTAOIeNQ==
+        s=k20201202; t=1690162325;
+        bh=vir919dEaj0SeW58zFdhXsOgeQRnlmYC35vrck6UcFo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iW8W4k09+ghnyiPfKtEdkWLJSv6s5iOMZuEOjvX32/aCrIVokB+LHe3P8SoykQile
+         62pzg8kCNsTI3f0aYk+KOsAJ9CJJ86b0LO7DkqbKuRzwSEgGmU6NoaMlOrBN7J/sYN
+         61R+txpMZ3nZpwQ7D8PAWzPH6cAGFPkA8DLQFKH5YcSMb2UWB+3mTvhkD6U9588xj7
+         DNLRgXeFphE/yEdSAmmVKkVXdL/KdjrdXMsG1zlB4x9P9iwItfEhF2gggU8mS5aoLf
+         y0yTATU5LRUZXtTlixQcLofgba9uMCoPaAY8HkYWBRsKb4oeDztr1NUTOGrmQh9A9l
+         pfSr5kjnY8EaA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anisse Astier <an.astier@criteo.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, matt@codeblueprint.co.uk,
-        ard.biesheuvel@linaro.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org, matthew.garrett@nebula.com,
-        jk@ozlabs.org, linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 1/3] efivarfs: expose used and total size
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Sasha Levin <sashal@kernel.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com, yehezkel.bernat@intel.com
+Subject: [PATCH AUTOSEL 6.4 17/40] thunderbolt: Add Intel Barlow Ridge PCI ID
 Date:   Sun, 23 Jul 2023 21:31:17 -0400
-Message-Id: <20230724013119.2327427-1-sashal@kernel.org>
+Message-Id: <20230724013140.2327815-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.40
+X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -60,185 +60,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anisse Astier <an.astier@criteo.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit d86ff3333cb1d5f42d8898fb5fdb304e143c0237 ]
+[ Upstream commit 6f14a210661ce03988ef4ed3c8402037c8e06539 ]
 
-When writing EFI variables, one might get errors with no other message
-on why it fails. Being able to see how much is used by EFI variables
-helps analyzing such issues.
+Intel Barlow Ridge is the first USB4 v2 controller from Intel. The
+controller exposes standard USB4 PCI class ID in typical configurations,
+however there is a way to configure it so that it uses a special class
+ID to allow using s different driver than the Windows inbox one. For
+this reason add the Barlow Ridge PCI ID to the Linux driver too so that
+the driver can attach regardless of the class ID.
 
-Since this is not a conventional filesystem, block size is intentionally
-set to 1 instead of PAGE_SIZE.
-
-x86 quirks of reserved size are taken into account; so that available
-and free size can be different, further helping debugging space issues.
-
-With this patch, one can see the remaining space in EFI variable storage
-via efivarfs, like this:
-
-   $ df -h /sys/firmware/efi/efivars/
-   Filesystem      Size  Used Avail Use% Mounted on
-   efivarfs        176K  106K   66K  62% /sys/firmware/efi/efivars
-
-Signed-off-by: Anisse Astier <an.astier@criteo.com>
-[ardb: - rename efi_reserved_space() to efivar_reserved_space()
-       - whitespace/coding style tweaks]
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/platform/efi/quirks.c |  8 +++++++
- drivers/firmware/efi/efi.c     |  1 +
- drivers/firmware/efi/vars.c    | 12 +++++++++++
- fs/efivarfs/super.c            | 39 +++++++++++++++++++++++++++++++++-
- include/linux/efi.h            | 11 ++++++++++
- 5 files changed, 70 insertions(+), 1 deletion(-)
+ drivers/thunderbolt/nhi.c | 2 ++
+ drivers/thunderbolt/nhi.h | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index b0b848d6933af..f0cc00032751d 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -114,6 +114,14 @@ void efi_delete_dummy_variable(void)
- 				     EFI_VARIABLE_RUNTIME_ACCESS, 0, NULL);
- }
+diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+index e58beac442958..1257d1c41f8e5 100644
+--- a/drivers/thunderbolt/nhi.c
++++ b/drivers/thunderbolt/nhi.c
+@@ -1480,6 +1480,8 @@ static struct pci_device_id nhi_ids[] = {
+ 	  .driver_data = (kernel_ulong_t)&icl_nhi_ops },
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_MTL_P_NHI1),
+ 	  .driver_data = (kernel_ulong_t)&icl_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_80G_NHI) },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_40G_NHI) },
  
-+u64 efivar_reserved_space(void)
-+{
-+	if (efi_no_storage_paranoia)
-+		return 0;
-+	return EFI_MIN_RESERVE;
-+}
-+EXPORT_SYMBOL_GPL(efivar_reserved_space);
-+
- /*
-  * In the nonblocking case we do not attempt to perform garbage
-  * collection if we do not have enough free space. Rather, we do the
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index b43e5e6ddaf6e..db3c0ce08e441 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -190,6 +190,7 @@ static int generic_ops_register(void)
- 	generic_ops.get_variable = efi.get_variable;
- 	generic_ops.get_next_variable = efi.get_next_variable;
- 	generic_ops.query_variable_store = efi_query_variable_store;
-+	generic_ops.query_variable_info = efi.query_variable_info;
- 
- 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_SET_VARIABLE)) {
- 		generic_ops.set_variable = efi.set_variable;
-diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-index 0ba9f18312f5b..de36d4e4bd95c 100644
---- a/drivers/firmware/efi/vars.c
-+++ b/drivers/firmware/efi/vars.c
-@@ -241,3 +241,15 @@ efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
- 	return status;
- }
- EXPORT_SYMBOL_NS_GPL(efivar_set_variable, EFIVAR);
-+
-+efi_status_t efivar_query_variable_info(u32 attr,
-+					u64 *storage_space,
-+					u64 *remaining_space,
-+					u64 *max_variable_size)
-+{
-+	if (!__efivars->ops->query_variable_info)
-+		return EFI_UNSUPPORTED;
-+	return __efivars->ops->query_variable_info(attr, storage_space,
-+			remaining_space, max_variable_size);
-+}
-+EXPORT_SYMBOL_NS_GPL(efivar_query_variable_info, EFIVAR);
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 6780fc81cc11f..0994446a35442 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -13,6 +13,7 @@
- #include <linux/ucs2_string.h>
- #include <linux/slab.h>
- #include <linux/magic.h>
-+#include <linux/statfs.h>
- 
- #include "internal.h"
- 
-@@ -23,8 +24,44 @@ static void efivarfs_evict_inode(struct inode *inode)
- 	clear_inode(inode);
- }
- 
-+static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
-+{
-+	const u32 attr = EFI_VARIABLE_NON_VOLATILE |
-+			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
-+			 EFI_VARIABLE_RUNTIME_ACCESS;
-+	u64 storage_space, remaining_space, max_variable_size;
-+	efi_status_t status;
-+
-+	status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
-+					    &max_variable_size);
-+	if (status != EFI_SUCCESS)
-+		return efi_status_to_err(status);
-+
-+	/*
-+	 * This is not a normal filesystem, so no point in pretending it has a block
-+	 * size; we declare f_bsize to 1, so that we can then report the exact value
-+	 * sent by EFI QueryVariableInfo in f_blocks and f_bfree
-+	 */
-+	buf->f_bsize	= 1;
-+	buf->f_namelen	= NAME_MAX;
-+	buf->f_blocks	= storage_space;
-+	buf->f_bfree	= remaining_space;
-+	buf->f_type	= dentry->d_sb->s_magic;
-+
-+	/*
-+	 * In f_bavail we declare the free space that the kernel will allow writing
-+	 * when the storage_paranoia x86 quirk is active. To use more, users
-+	 * should boot the kernel with efi_no_storage_paranoia.
-+	 */
-+	if (remaining_space > efivar_reserved_space())
-+		buf->f_bavail = remaining_space - efivar_reserved_space();
-+	else
-+		buf->f_bavail = 0;
-+
-+	return 0;
-+}
- static const struct super_operations efivarfs_ops = {
--	.statfs = simple_statfs,
-+	.statfs = efivarfs_statfs,
- 	.drop_inode = generic_delete_inode,
- 	.evict_inode = efivarfs_evict_inode,
- };
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 4e1bfee9675d2..b8cd4db7a1bfc 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -1045,6 +1045,7 @@ struct efivar_operations {
- 	efi_set_variable_t *set_variable;
- 	efi_set_variable_t *set_variable_nonblocking;
- 	efi_query_variable_store_t *query_variable_store;
-+	efi_query_variable_info_t *query_variable_info;
- };
- 
- struct efivars {
-@@ -1053,6 +1054,12 @@ struct efivars {
- 	const struct efivar_operations *ops;
- };
- 
-+#ifdef CONFIG_X86
-+u64 __attribute_const__ efivar_reserved_space(void);
-+#else
-+static inline u64 efivar_reserved_space(void) { return 0; }
-+#endif
-+
- /*
-  * The maximum size of VariableName + Data = 1024
-  * Therefore, it's reasonable to save that much
-@@ -1087,6 +1094,10 @@ efi_status_t efivar_set_variable_locked(efi_char16_t *name, efi_guid_t *vendor,
- efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
- 				 u32 attr, unsigned long data_size, void *data);
- 
-+efi_status_t efivar_query_variable_info(u32 attr, u64 *storage_space,
-+					u64 *remaining_space,
-+					u64 *max_variable_size);
-+
- #if IS_ENABLED(CONFIG_EFI_CAPSULE_LOADER)
- extern bool efi_capsule_pending(int *reset_type);
- 
+ 	/* Any USB4 compliant host */
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_SERIAL_USB_USB4, ~0) },
+diff --git a/drivers/thunderbolt/nhi.h b/drivers/thunderbolt/nhi.h
+index b0718020c6f59..c15a0c46c9cff 100644
+--- a/drivers/thunderbolt/nhi.h
++++ b/drivers/thunderbolt/nhi.h
+@@ -75,6 +75,8 @@ extern const struct tb_nhi_ops icl_nhi_ops;
+ #define PCI_DEVICE_ID_INTEL_TITAN_RIDGE_DD_BRIDGE	0x15ef
+ #define PCI_DEVICE_ID_INTEL_ADL_NHI0			0x463e
+ #define PCI_DEVICE_ID_INTEL_ADL_NHI1			0x466d
++#define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_80G_NHI	0x5781
++#define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_40G_NHI	0x5784
+ #define PCI_DEVICE_ID_INTEL_MTL_M_NHI0			0x7eb2
+ #define PCI_DEVICE_ID_INTEL_MTL_P_NHI0			0x7ec2
+ #define PCI_DEVICE_ID_INTEL_MTL_P_NHI1			0x7ec3
 -- 
 2.39.2
 
