@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613C475E75B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEDA75E75F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjGXB1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
+        id S231510AbjGXB1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbjGXB05 (ORCPT
+        with ESMTP id S231168AbjGXB06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:26:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07901422E;
-        Sun, 23 Jul 2023 18:24:27 -0700 (PDT)
+        Sun, 23 Jul 2023 21:26:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B287423A;
+        Sun, 23 Jul 2023 18:24:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 098D460F36;
-        Mon, 24 Jul 2023 01:24:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 679DBC433C8;
-        Mon, 24 Jul 2023 01:23:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E05AF60F16;
+        Mon, 24 Jul 2023 01:24:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD11DC433BB;
+        Mon, 24 Jul 2023 01:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161839;
-        bh=BRcrpuKACwoSLSPjWJNAjkOw7Ruma5i8fAf4A6kxVho=;
+        s=k20201202; t=1690161841;
+        bh=qUp5vqA1iYuMeiYgHI22R7egZ7L63vuv2kVGE69DbDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eMkTPzaTSrTg0MSr64TFEcdzs2rs7hhTWjqJyaKIxpEhIclUHk9/fJ5yd7//oe8dp
-         QuHd8+/NeCzZ9wMj8YGnGYLKUVN3trUCgTKmhj1HYM9jzmEH6Qa+P+UhXB+hlsmSTe
-         tUmkH1lcv1dIWgD2Wv1dggtk2Eh6TvKpdVQvRkkMsJ48x0DqIDwuhPJpYoixfVF9m8
-         wxWPT2bHyDEqtKUY7EaFGk+BHXP/VM6hv/+/r4YPFU8+9dvI7MNJVqmAT1sfmVK63k
-         jkH8Y8sdDDWtu4ShwwM6Z1bX3adbK1AXFXLcbjf9MbFXwKpOhn7FOjq32WZP8li1ZS
-         Py/IDCjVGK/mQ==
+        b=EYCLxxvxl6VIJk+sxsJwkz+OC71f+QGsG9LhDgdPPBhyA9A8kL0OnZ9Absl1kUfBb
+         oWxAUWI//p4rmkTFxaeR8+SMxId/FlYBB7ysBXhe9PYBQWLwbMpqHnqw5tMul7+a7t
+         oM1H7nMghCW19/dfgxzbWRgMik5UiNGnU4KAUnUvjtAPF9G+MKyrp05ApgMWLvEgOd
+         mYjVOU1i+C5jArO8q78OG8ICv7bOdp1QkNI32xgqwX1y7xEMCkP2zWQ9wRrdV/PTkX
+         yDLWepOisTcUbcyDq7tkKS5y7D8BH8GTs1a/AKJcfL8gAJFAwjfVKrrjkL+3cYyRVE
+         swVqXo8WzUZBQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 10/23] ASoC: SOF: Intel: fix SoundWire/HDaudio mutual exclusion
-Date:   Sun, 23 Jul 2023 21:23:21 -0400
-Message-Id: <20230724012334.2317140-10-sashal@kernel.org>
+Cc:     gaoxu <gaoxu2@hihonor.com>, Suren Baghdasaryan <surenb@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>, m.szyprowski@samsung.com,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.15 11/23] dma-remap: use kvmalloc_array/kvfree for larger dma memory remap
+Date:   Sun, 23 Jul 2023 21:23:22 -0400
+Message-Id: <20230724012334.2317140-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
 References: <20230724012334.2317140-1-sashal@kernel.org>
@@ -52,69 +50,71 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.121
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: gaoxu <gaoxu2@hihonor.com>
 
-[ Upstream commit f751b99255cacd9ffe8c4bbf99767ad670cee1f7 ]
+[ Upstream commit 51ff97d54f02b4444dfc42e380ac4c058e12d5dd ]
 
-The functionality described in Commit 61bef9e68dca ("ASoC: SOF: Intel: hda: enforce exclusion between HDaudio and SoundWire")
-does not seem to be properly implemented with two issues that need to
-be corrected.
+If dma_direct_alloc() alloc memory in size of 64MB, the inner function
+dma_common_contiguous_remap() will allocate 128KB memory by invoking
+the function kmalloc_array(). and the kmalloc_array seems to fail to try to
+allocate 128KB mem.
 
-a) The test used is incorrect when DisplayAudio codecs are not supported.
+Call trace:
+[14977.928623] qcrosvm: page allocation failure: order:5, mode:0x40cc0
+[14977.928638] dump_backtrace.cfi_jt+0x0/0x8
+[14977.928647] dump_stack_lvl+0x80/0xb8
+[14977.928652] warn_alloc+0x164/0x200
+[14977.928657] __alloc_pages_slowpath+0x9f0/0xb4c
+[14977.928660] __alloc_pages+0x21c/0x39c
+[14977.928662] kmalloc_order+0x48/0x108
+[14977.928666] kmalloc_order_trace+0x34/0x154
+[14977.928668] __kmalloc+0x548/0x7e4
+[14977.928673] dma_direct_alloc+0x11c/0x4f8
+[14977.928678] dma_alloc_attrs+0xf4/0x138
+[14977.928680] gh_vm_ioctl_set_fw_name+0x3c4/0x610 [gunyah]
+[14977.928698] gh_vm_ioctl+0x90/0x14c [gunyah]
+[14977.928705] __arm64_sys_ioctl+0x184/0x210
 
-b) Conversely when only Display Audio codecs can be found, we do want
-to start the SoundWire links, if any. That will help add the relevant
-topologies and machine descriptors, and identify cases where the
-SoundWire information in ACPI needs to be modified with a quirk.
+work around by doing kvmalloc_array instead.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20230606222529.57156-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Gao Xu <gaoxu2@hihonor.com>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ kernel/dma/remap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 35cbef171f4a3..038d09f6203aa 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1040,12 +1040,22 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 			pdata->machine = hda_mach;
- 			pdata->tplg_filename = tplg_filename;
+diff --git a/kernel/dma/remap.c b/kernel/dma/remap.c
+index b4526668072e7..27596f3b4aef3 100644
+--- a/kernel/dma/remap.c
++++ b/kernel/dma/remap.c
+@@ -43,13 +43,13 @@ void *dma_common_contiguous_remap(struct page *page, size_t size,
+ 	void *vaddr;
+ 	int i;
  
--			if (codec_num == 2) {
-+			if (codec_num == 2 ||
-+			    (codec_num == 1 && !HDA_IDISP_CODEC(bus->codec_mask))) {
- 				/*
- 				 * Prevent SoundWire links from starting when an external
- 				 * HDaudio codec is used
- 				 */
- 				hda_mach->mach_params.link_mask = 0;
-+			} else {
-+				/*
-+				 * Allow SoundWire links to start when no external HDaudio codec
-+				 * was detected. This will not create a SoundWire card but
-+				 * will help detect if any SoundWire codec reports as ATTACHED.
-+				 */
-+				struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+
-+				hda_mach->mach_params.link_mask = hdev->info.link_mask;
- 			}
- 		}
- 	}
+-	pages = kmalloc_array(count, sizeof(struct page *), GFP_KERNEL);
++	pages = kvmalloc_array(count, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages)
+ 		return NULL;
+ 	for (i = 0; i < count; i++)
+ 		pages[i] = nth_page(page, i);
+ 	vaddr = vmap(pages, count, VM_DMA_COHERENT, prot);
+-	kfree(pages);
++	kvfree(pages);
+ 
+ 	return vaddr;
+ }
 -- 
 2.39.2
 
