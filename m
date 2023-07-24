@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE8F75E799
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5648275E67E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbjGXB3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        id S230181AbjGXBUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbjGXB2F (ORCPT
+        with ESMTP id S230071AbjGXBUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:28:05 -0400
+        Sun, 23 Jul 2023 21:20:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A70349C6;
-        Sun, 23 Jul 2023 18:25:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B830BE7E;
+        Sun, 23 Jul 2023 18:20:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FE0760EF2;
-        Mon, 24 Jul 2023 01:19:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 318A1C433C7;
-        Mon, 24 Jul 2023 01:19:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F10A60F19;
+        Mon, 24 Jul 2023 01:19:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB81C433C8;
+        Mon, 24 Jul 2023 01:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161542;
-        bh=HzQ93OKUBs/jnR/apb5NiqK0qUGuKnM2tq70VS0ag3o=;
+        s=k20201202; t=1690161548;
+        bh=EwPnsL9H3UOUjHAhusj49+oIxJOPI5c9d2bVikAY6Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QtbqqpeOeYhzBg0ZYGEwnXYQsCOT6jySND+2LUuWkVV8h9jU5jk2EEmSCMUJesrRU
-         /sfcyGRgpjOR4xPQVqlBu0lcnvOtPy49YOY6pOfl20BR493Mytyt4yakBYRwad54mS
-         C0+XBs81YSCp4HzB891rOIFA/9MTYfvw+XA3puTe15l+uXGVQVmmctAxBHp8FIzshp
-         z81UvpuOX9J8QcxAvB+K6eh5es0Aq5uxbdVC/mBQyDuU+M/vUynB+BM4R09MAb8XCy
-         EYAqoZ8+CzRQwaXC1MwgEtQ3p05SIjChAkP1MPEaLqHyWdhlT7MT0oelW2aPfJSIX0
-         nBcV1rRssLcTw==
+        b=a/iWlopX2Je5E+bDLP8YbNirWYMX+gN4zkPg8xh2cX0RTbUpDCdDgGk0hZevh8mKB
+         blOmv8oGXGJnvWHbqwVktk2jivfXZQCPwKo6BYxvimHv6K1DGhr5imv82UWk8pyYyY
+         LQkDwp+m15+oN7QFiRKjeCpchMYvYyQtIW0cNfBoZ9CFKSwaVvDVxrS2tik0EnCc8N
+         5kkLu1Rdml8S1jYdonIPqU2wRGjC7dQxV1hmGThkfvBEkukkHZuN1DMx7L5LnPDcll
+         mFeS6MmiP2neA9LiTr5tmQGhUBSTaP/FKetfdsHUScRqqDEySRg1GoNQefKhiULjtm
+         tx/tF5bUtLPqg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lang Yu <Lang.Yu@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     Daniel Miess <daniel.miess@amd.com>, Jun Lei <jun.lei@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
-        airlied@gmail.com, daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        Philip.Yang@amd.com, luben.tuikov@amd.com, mukul.joshi@amd.com,
-        danijel.slivka@amd.com, marek.olsak@amd.com,
+        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
+        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, nicholas.kazlauskas@amd.com, Alvin.Lee2@amd.com,
+        wenjing.liu@amd.com, mwen@igalia.com, sungjoon.kim@amd.com,
+        hamza.mahfooz@amd.com, gabe.teeger@amd.com,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 38/58] drm/amdgpu: install stub fence into potential unused fence pointers
-Date:   Sun, 23 Jul 2023 21:13:06 -0400
-Message-Id: <20230724011338.2298062-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 39/58] drm/amd/display: Remove v_startup workaround for dcn3+
+Date:   Sun, 23 Jul 2023 21:13:07 -0400
+Message-Id: <20230724011338.2298062-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
@@ -65,54 +67,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lang Yu <Lang.Yu@amd.com>
+From: Daniel Miess <daniel.miess@amd.com>
 
-[ Upstream commit 187916e6ed9d0c3b3abc27429f7a5f8c936bd1f0 ]
+[ Upstream commit 3a31e8b89b7240d9a17ace8a1ed050bdcb560f9e ]
 
-When using cpu to update page tables, vm update fences are unused.
-Install stub fence into these fence pointers instead of NULL
-to avoid NULL dereference when calling dma_fence_wait() on them.
+[Why]
+Calls to dcn20_adjust_freesync_v_startup are no longer
+needed as of dcn3+ and can cause underflow in some cases
 
-Suggested-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Lang Yu <Lang.Yu@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
+[How]
+Move calls to dcn20_adjust_freesync_v_startup up into
+validate_bandwidth for dcn2.x
+
+Reviewed-by: Jun Lei <jun.lei@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Daniel Miess <daniel.miess@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../drm/amd/display/dc/dml/dcn20/dcn20_fpu.c  | 24 +++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index 3c0310576b3bf..b6bd667df6763 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -1358,6 +1358,7 @@ struct amdgpu_bo_va *amdgpu_vm_bo_add(struct amdgpu_device *adev,
- 	amdgpu_vm_bo_base_init(&bo_va->base, vm, bo);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
+index f1c1a4b5fcac3..2044c8fe35688 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
+@@ -1098,10 +1098,6 @@ void dcn20_calculate_dlg_params(struct dc *dc,
+ 		context->res_ctx.pipe_ctx[i].plane_res.bw.dppclk_khz =
+ 						pipes[pipe_idx].clks_cfg.dppclk_mhz * 1000;
+ 		context->res_ctx.pipe_ctx[i].pipe_dlg_param = pipes[pipe_idx].pipe.dest;
+-		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
+-			dcn20_adjust_freesync_v_startup(
+-				&context->res_ctx.pipe_ctx[i].stream->timing,
+-				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
  
- 	bo_va->ref_count = 1;
-+	bo_va->last_pt_update = dma_fence_get_stub();
- 	INIT_LIST_HEAD(&bo_va->valids);
- 	INIT_LIST_HEAD(&bo_va->invalids);
+ 		pipe_idx++;
+ 	}
+@@ -1915,6 +1911,7 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
++	int i = 0;
+ 	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
  
-@@ -2067,7 +2068,8 @@ int amdgpu_vm_init(struct amdgpu_device *adev, struct amdgpu_vm *vm)
- 		vm->update_funcs = &amdgpu_vm_cpu_funcs;
- 	else
- 		vm->update_funcs = &amdgpu_vm_sdma_funcs;
--	vm->last_update = NULL;
+@@ -1938,6 +1935,15 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
+ 	dcn20_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
+ 	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
+ 
++	for (i = 0; i < dc->res_pool->pipe_count; i++) {
++		if (!context->res_ctx.pipe_ctx[i].stream)
++			continue;
++		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
++			dcn20_adjust_freesync_v_startup(
++				&context->res_ctx.pipe_ctx[i].stream->timing,
++				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
++	}
 +
-+	vm->last_update = dma_fence_get_stub();
- 	vm->last_unlocked = dma_fence_get_stub();
- 	vm->last_tlb_flush = dma_fence_get_stub();
+ 	BW_VAL_TRACE_END_WATERMARKS();
  
-@@ -2192,7 +2194,7 @@ int amdgpu_vm_make_compute(struct amdgpu_device *adev, struct amdgpu_vm *vm)
- 		goto unreserve_bo;
+ 	goto validate_out;
+@@ -2210,6 +2216,7 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
+ 	int vlevel = 0;
+ 	int pipe_split_from[MAX_PIPES];
+ 	int pipe_cnt = 0;
++	int i = 0;
+ 	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
+ 	DC_LOGGER_INIT(dc->ctx->logger);
  
- 	dma_fence_put(vm->last_update);
--	vm->last_update = NULL;
-+	vm->last_update = dma_fence_get_stub();
- 	vm->is_compute_context = true;
+@@ -2238,6 +2245,15 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
+ 	dcn21_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
+ 	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
  
- 	/* Free the shadow bo for compute VM */
++	for (i = 0; i < dc->res_pool->pipe_count; i++) {
++		if (!context->res_ctx.pipe_ctx[i].stream)
++			continue;
++		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
++			dcn20_adjust_freesync_v_startup(
++				&context->res_ctx.pipe_ctx[i].stream->timing,
++				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
++	}
++
+ 	BW_VAL_TRACE_END_WATERMARKS();
+ 
+ 	goto validate_out;
 -- 
 2.39.2
 
