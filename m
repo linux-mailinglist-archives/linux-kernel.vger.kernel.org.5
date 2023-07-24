@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883776019A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6195C760197
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjGXVzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        id S230362AbjGXVza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjGXVzb (ORCPT
+        with ESMTP id S231364AbjGXVz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:55:31 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5E2172D
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:55:30 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-558a79941c6so2787081eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690235729; x=1690840529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8guhtErTn6aNVQ1Iyi8hYudi3GFlQwENuhyidPmzNs=;
-        b=riH8prdIh4N80P2QMC/I8TGBRunp3tp7X2cT4CaOUuIe87vDpBwZFpcd6B75rCzyJ6
-         Y3fmrU0fnf0ovYMpXolI3muN61KF5fA9cunEp+k3uj/QgT9AjNDbstjLR4oxzT0ik5v9
-         b1liVJFoOCGPRwkaxdG1BgyLYyMDlNmIL9v+ThvBOFHFOv2ndNlGc8xTu7wrhqiRI9hu
-         odtRR/UW4YlMw3wW1V/Y4GpEaJFKDk5nPJ+gq4hXqh8qRBqORwHZ/8oPtivM4G4cRFZ3
-         U6vGsM1FjsGQO/lQtxQkL0JesoRy7p3NyQxchL2R7PKAz5wIOgyOjLoLmnn+1dcXImW8
-         ywWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690235729; x=1690840529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8guhtErTn6aNVQ1Iyi8hYudi3GFlQwENuhyidPmzNs=;
-        b=J55Z5TYlNOzayuggyLaGDccw4eyjEm61zj86WSuttY01Jc2fOGfWNigJxCqU0mV55f
-         soY8h7tb+Qz0rOaEqWStsH3mfgwHIXYCGWzpbuJ2ddCrVZCS0ggsrZmeVGYCv71+mov9
-         JXabfAQndmvrTc2+S4OgvdooolEB1e8GHM0r53SMZ4AsejchvQc/xACiX6sCv2kazHbT
-         5OlqgPrnbKtEUC309YON5AL1tEpAhGcVqnlgcGXJDgeiUxbiJUxA+F+qjuDrVbqG8Yry
-         269bWwMOapdi2LEt3VcIMiIGOecJ5MLDkcwOR4RoQTFPxlw4P/3xeiQ0J8r6piYL3QP/
-         7d/Q==
-X-Gm-Message-State: ABy/qLb4hR8bIS5Jj68L2McOYkemhnTwo8W/fF4EpFkY7cmP4QzbpRa9
-        1R8BZ9N7s1CIrH/4enRWmXrZ/be5YQ3M7CC+X9o=
-X-Google-Smtp-Source: APBJJlGpvGvYHofhn296p0VQ4ekG8ECA+40wh6sjcsrKBSQ8a77kj0PDgEyovPB3KuscQIqDW7M85yrHYLg5IbNv+lY=
-X-Received: by 2002:a4a:344a:0:b0:566:efc9:1464 with SMTP id
- n10-20020a4a344a000000b00566efc91464mr9031534oof.0.1690235729572; Mon, 24 Jul
- 2023 14:55:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230724071121.8710-1-xujianghui@cdjrlc.com> <be6d6605aa504964eba3476910f7140a@208suo.com>
- <a026386d6759911afbb1446a9145bdec@208suo.com>
-In-Reply-To: <a026386d6759911afbb1446a9145bdec@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Jul 2023 17:55:18 -0400
-Message-ID: <CADnq5_M0pcefVivAG+sVCfkyu2y2Mjb0bXs2O19KFZtBsB5aGw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: open brace '{' following function definitions
- go on the next line
-To:     sunran001@208suo.com
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 17:55:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6CE1992;
+        Mon, 24 Jul 2023 14:55:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E2F16141D;
+        Mon, 24 Jul 2023 21:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 885B9C433C7;
+        Mon, 24 Jul 2023 21:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690235725;
+        bh=2Wtz/htT5MpLf/NTfCLVY5V/Yr8t4RIdWJm7V5BS6MU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=oDgkcvg8cAcOu9XeylnNbu4B39kB3pp6WIkHaAvrS3gsgQ9H+DpAgJGX33WmoH5SB
+         XCSF+EPT4jan0EFGALPCTESYTvxw9/bT3wpSDOqizhTAbkT+1mTcBL0Y4UpU9afZEn
+         O7+WT4/lLQ1HzEgDsV0BaID4r+gmyYwiy/49DOQUEqtCTk4zKrfSs1VP4mfXFD05WB
+         3SdhJ+YGy2BnyCRE1vkBCzg0JcO7b17o6CpAn4NTKnlhyLYa9dpOehJoknjtd3PGrC
+         8fhBS/eBsoIwetKAiWQGUdw6Uiw/IM217kCGhXCHY5M611G0n5ZfXGBH0w317aF5F8
+         fsHqqdOaCxUWw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 718FDE1F658;
+        Mon, 24 Jul 2023 21:55:25 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 6.5-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <d75dc295e6ddaebc988f5af3ad6d12fa96948f5e.camel@HansenPartnership.com>
+References: <d75dc295e6ddaebc988f5af3ad6d12fa96948f5e.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <d75dc295e6ddaebc988f5af3ad6d12fa96948f5e.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 80b6051085c5fedcb1dfd7b2562a63a83655c4d8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0b5547c51827e053cc754db47d3ec3e6c2c451d2
+Message-Id: <169023572545.10617.11533993855843312589.pr-tracker-bot@kernel.org>
+Date:   Mon, 24 Jul 2023 21:55:25 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+The pull request you sent on Mon, 24 Jul 2023 15:16:47 -0400:
 
-On Mon, Jul 24, 2023 at 4:44=E2=80=AFAM <sunran001@208suo.com> wrote:
->
-> ERROR: open brace '{' following function definitions go on the next line
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->   drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
-> b/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
-> index c788aa7a99a9..5e408a195860 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
-> @@ -205,7 +205,8 @@ int smu_v12_0_set_default_dpm_tables(struct
-> smu_context *smu)
->         return smu_cmn_update_table(smu, SMU_TABLE_DPMCLOCKS, 0,
-> smu_table->clocks_table, false);
->   }
->
-> -int smu_v12_0_mode2_reset(struct smu_context *smu){
-> +int smu_v12_0_mode2_reset(struct smu_context *smu)
-> +{
->         return smu_cmn_send_smc_msg_with_param(smu,
-> SMU_MSG_GfxDeviceDriverReset, SMU_RESET_MODE_2, NULL);
->   }
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0b5547c51827e053cc754db47d3ec3e6c2c451d2
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
