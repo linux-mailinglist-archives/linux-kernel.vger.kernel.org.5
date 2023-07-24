@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9994F75F3EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BCE75F3C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbjGXKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
+        id S232399AbjGXKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbjGXKyc (ORCPT
+        with ESMTP id S232314AbjGXKtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:54:32 -0400
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A430BD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1690196067;
-        bh=XOX/z39tnUIYC7J6EKUXBGgP9+PWkGgP5iM49YV5zy0=;
-        h=From:To:Cc:Subject:Date;
-        b=h4AlDVM7Levuz6MojVlncNhs4/fIDhCMnPoL+6txypL9iAzJiKhUb0W7lFlSWH/sw
-         kyHf33VIjro2W5Z+NXdNMNE+etn69qAYGkK3gEowPDglL1rX7D1BK5GGsLm6m3Ykvv
-         Q3YPA8qXtfj02zzGUu3XRbq0u5Sg+9LIS30Cbo4E=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id BFB29C6C; Mon, 24 Jul 2023 18:47:59 +0800
-X-QQ-mid: xmsmtpt1690195679tbwjgl8u0
-Message-ID: <tencent_E626A858BED28C4E21C219780BC566015D0A@qq.com>
-X-QQ-XMAILINFO: NSObNE1Kae7Zzzod1N7QKTZYwMcKOnxac8L0X2KaWFnpdLxFfM34CvUwbI3wf4
-         YeVKCDYOdfLxmL2WPxG2/8Y9BhkYoB1TcQTDMAryJA8p3sQPFtNlbTICbZvdCPiiO5sBwYR4+qYF
-         kNdl+rGOKd31iPQCxyiNt/56R1hoeZqi0uo6CxE3Xs5KrmaF7YrZ7gKH2bW29ljKX9hC8FnC1xpV
-         pSP3DEWUXOXpFkN/H6bIv1Ci38D1xV/0OW4K/c+G6IlmS1iUZteEJ/IWvlqec4m1SSvFKk4eiBnT
-         NUUBIZIvYvZvBhCCLU1gxKHWDDhABCH64Nl3EWkVi0GdwHHm//aIz39WAFlZ57kL8UveDPtTOpQb
-         ov+eO8mBRIFHgEcNMQaCEh3IvmUvOaegIkTzhV+I5/G65eyeFDJkctZyJY0HwrABtIRe1a5pRT6o
-         00H/9dE6uuOImHCAHJTAKs/Q+s0yIwdsQHF6ze+h4CNHZV6HPceTXhytM5F1ulWBIBJUooXlJY/I
-         WJtOEF3v04AwuXTdCy5hVmwbt9oDWBsoZjaNbhDXuLZ5xsKomKcpk0468tHUsXW98wGhoQ2nJeGm
-         +2ndoqcvim3YdxGuiK1T/ZpQGX24yXFSVulFZ9NVVyvfxBqQNZROkjY40J/WEoQWrF1tsclr7oTj
-         9ufM/dtNPvMbDIJHkFa2SbZxiZM7bXmiaslObZLtkMCJqfJAPMVmh+rwKZHirGuYDrHivzc3bqtt
-         G9J81h3tAaiLrAtsYWgdFXFbEaWgyxLsQXzmRKGoyPW+d758mMkTWIUDLryM5HmMN/58eKY6pMQj
-         kOkJxMy3ViV+H06YxvtuJ6Wp4a+NxNArXu/nFSidnVRjIyjPpi/zjxs6Yhq5n1VRdiVku2V1NHXy
-         Ow9DjaQSCKD9bu94DAzkDAgH2Y1u4uP2emo9EHWcAFecshA8K97MR/U8PJF6wzImlpLa8m4KNyYv
-         bR8i6f6g0EKwwKoXimKWVpwTm66PDdSfIXpNapdFui7C8NLLe409DmwnSEpYuA
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     prasad@linux.vnet.ibm.com
-Cc:     rtoax@foxmail.com, ast@kernel.org, frederic@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, qperret@google.com,
-        rongtao@cestc.cn, tglx@linutronix.de, will@kernel.org,
-        mhiramat@kernel.org
-Subject: [PATCH] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
-Date:   Mon, 24 Jul 2023 18:47:58 +0800
-X-OQ-MSGID: <20230724104758.39645-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
+        Mon, 24 Jul 2023 06:49:00 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D297102;
+        Mon, 24 Jul 2023 03:48:56 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 4D52F7FD6;
+        Mon, 24 Jul 2023 18:48:49 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
+ 2023 18:48:49 +0800
+Received: from [192.168.125.136] (183.27.99.135) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
+ 2023 18:48:48 +0800
+Message-ID: <a687c273-48b1-651e-313f-d8140732c5d8@starfivetech.com>
+Date:   Mon, 24 Jul 2023 18:48:47 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Minda Chen <minda.chen@starfivetech.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+References: <20230720161555.GA526946@bhelgaas>
+From:   Kevin Xie <kevin.xie@starfivetech.com>
+In-Reply-To: <20230720161555.GA526946@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.99.135]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
 
-Macro symbol_put() is defined as __symbol_put(__stringify(x))
 
-    ksym_name = "jiffies"
-    symbol_put(ksym_name)
+On 2023/7/21 0:15, Bjorn Helgaas wrote:
+> On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
+>> On 2023/7/20 0:48, Bjorn Helgaas wrote:
+>> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
+>> >> Add StarFive JH7110 SoC PCIe controller platform
+>> >> driver codes.
+> 
+>> >> + * The BAR0/1 of bridge should be hidden during enumeration to
+>> >> + * avoid the sizing and resource allocation by PCIe core.
+>> >> + */
+>> >> +static bool starfive_pcie_hide_rc_bar(struct pci_bus *bus, unsigned int  devfn,
+>> >> +				      int offset)
+>> >> +{
+>> >> +	if (pci_is_root_bus(bus) && !devfn &&
+>> >> +	    (offset == PCI_BASE_ADDRESS_0 || offset == PCI_BASE_ADDRESS_1))
+>> >> +		return true;
+>> >> +
+>> >> +	return false;
+>> >> +}
+>> >> +
+>> >> +int starfive_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
+>> >> +			       int where, int size, u32 value)
+>> >> +{
+>> >> +	if (starfive_pcie_hide_rc_bar(bus, devfn, where))
+>> >> +		return PCIBIOS_BAD_REGISTER_NUMBER;
+>> > 
+>> > I think you are trying present BARs 0 & 1 as unimplemented.  Such BARs
+>> > are hardwired to zero, so you should make them behave that way (both
+>> > read and write).  Many callers of config accessors don't check the
+>> > return value, so I don't think it's reliable to just return
+>> > PCIBIOS_BAD_REGISTER_NUMBER.
+>> 
+>> This is a hardware defect that we did not hardwired those BARs to
+>> zero, and it is configurable for software now.  We have to add this
+>> filter function for workaround.
+> 
+> Yes.  My point is that this only affects the write path, and the read
+> probably does not read 0 as it should.  This means lspci will show the
+> wrong thing, and the PCI core will try to size the BAR when it doesn't
+> need to.  I haven't looked at the BAR sizing code; it might even come
+> up with a bogus size and address, when it *should* just conclude the
+> BAR doesn't exist at all.
+> 
 
-will be resolved as
+Got it, I will try to hide those BARs both in read and write operations.
 
-    __symbol_put("ksym_name")
+>> >> +	/* Ensure that PERST has been asserted for at least 100 ms */
+>> >> +	msleep(300);
+>> >> +	gpiod_set_value_cansleep(pcie->reset_gpio, 0);
+>> > 
+>> > At least 100 ms, but you sleep *300* ms?  This is probably related to
+>> > https://lore.kernel.org/r/20230718155515.GA483233@bhelgaas
+>> > 
+>> > Please include a comment with the source of the delay value.  I assume
+>> > it's T_PVPERL and T_PERST-CLK from the PCIe CEM spec.  This way we can
+>> > someday share those #defines across drivers.
+>> 
+>> Yes, the delay value here is T_PVPERL from PCIe CEM spec r2.0 (Table
+>> 2-4).  At the first time we set 100ms delay according to sector 2.2
+>> of the spec: "After there has been time (TPVPERL) for the power and
+>> clock to become stable, PERST# is deasserted high and the PCI
+>> Express functions can start up."
+>> 
+>> However, in the compatibility testing with several NVMe SSD, we
+>> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
+>> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
+>> value to 300ms for the better device compatibility.
+>>
+>> We will use a macro to define T_PVPERL, and add comments for the
+>> source of it.  If the compatibility delay of 300ms is not
+>> reasonable, we can revert it to 100ms.
+> 
+> Thanks for this valuable information!  This NVMe issue potentially
+> affects many similar drivers, and we may need a more generic fix so
+> this device works well with all of them.
+> 
+> T_PVPERL is defined to start when power is stable.  Do you have a way
+> to accurately determine that point?  I'm guessing this:
+> 
+>   gpiod_set_value_cansleep(pcie->power_gpio, 1)
+> 
+> turns the power on?  But of course that doesn't mean it is instantly
+> stable.  Maybe your testing is telling you that your driver should
+> have a hardware-specific 200ms delay to wait for power to become
+> stable, followed by the standard 100ms for T_PVPERL?
+> 
 
-which is clearly wrong. So symbol_put must be replaced with __symbol_put.
+You are right, we did not take the power stable cost into account.
+T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
+and the extra cost is from the power circuit of a PCIe to M.2 connector,
+which is used to verify M.2 SSD with our EVB at early stage.
 
-When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
-following error:
+As the Thinklife NVMe SSD may be a halted product,
+and the onboard power circuit of VisionFive V2 is no problem,
+we decided revert the sleep time to be 100ms.
 
-[11381.854152] kernel BUG at kernel/module/main.c:779!
-[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
-[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
-[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
-[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
-[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
-[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
-[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
-[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
-[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
-[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
-[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
-[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
-[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[11381.854204] Call Trace:
-[11381.854207]  <TASK>
-[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
-[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
-[11381.854225]  do_syscall_64+0x58/0x80
-[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
-[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854241]  ? do_syscall_64+0x67/0x80
-[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854248]  ? do_syscall_64+0x67/0x80
-[11381.854252]  ? exc_page_fault+0x70/0x170
-[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+We will add a comment for the source of T_PVPERL until your define in pci.h is accepted.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- samples/hw_breakpoint/data_breakpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
-index 418c46fe5ffc..9debd128b2ab 100644
---- a/samples/hw_breakpoint/data_breakpoint.c
-+++ b/samples/hw_breakpoint/data_breakpoint.c
-@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
- static void __exit hw_break_module_exit(void)
- {
- 	unregister_wide_hw_breakpoint(sample_hbp);
--	symbol_put(ksym_name);
-+	__symbol_put(ksym_name);
- 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
- }
- 
--- 
-2.39.3
-
+> Bjorn
