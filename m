@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAB475F3F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBD675F404
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbjGXKyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S233218AbjGXK7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbjGXKye (ORCPT
+        with ESMTP id S231254AbjGXK7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:54:34 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B06FBD;
-        Mon, 24 Jul 2023 03:54:33 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-307d20548adso2924415f8f.0;
-        Mon, 24 Jul 2023 03:54:33 -0700 (PDT)
+        Mon, 24 Jul 2023 06:59:32 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1C90;
+        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b741cf99f8so58898051fa.0;
+        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690196072; x=1690800872;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rf/Qc5DLJ/sURnSwOUoxd8QFaQVoKAa+14ueKRK2tOA=;
-        b=nleeeYxFcHqL8srl5QGaYkU6wrOH5DoOGmiLLnSsSrXb06qA85CpS0i0B9l7cYujfF
-         +9PbJsVOLM3razuOW/6Lnw8cw1rl7KIh4heSfVFDzWOWuHRkbVyzGKZTK6KgcRty5GYa
-         naM0Hp1s6rBw2atG6o2o2LGaQRtztWrk5dkn0KX9w5spvoja10a5Fq8hTomNPrKdAXgn
-         UtTyIU5QuF7mfenGFuxUTMYGKTb/g9XvQIsB1LwwgNTpB6UG9jnDOrsttczBAj4fRFUa
-         DnBGLnaoYBgdoJw99fK9rBySONYouEMYw8C8kB7EsGS1n/mEugnj2TDHl5f87rSkKOo7
-         UeMA==
+        d=gmail.com; s=20221208; t=1690196370; x=1690801170;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNuEXVvvuCAkiuz8BidvSXWcAbM3rfmu/apd1ht/nuU=;
+        b=fklvpOQFCL3HOgzNrOXZIkBrZQFgAKCKMBY2bbX0mpsbkqXGAVOISGudghz4K8hUey
+         gVm/cb149EszqLSoP0AtoV9TI1ubXO5ZHvCnsQHWj442xcVEyhWJ4KeQdp3nwD7aSuMJ
+         S1PZXsJOINa0G1OxZhZfDwsJqPwpNaQyajKanlpOiuOPHTMi6UVfrDrgR4vPVA0nUXvM
+         2xsmjktq6G/HENAk80/w8BAprtNDVx/ad6mHgU1udKfbFrJk8uVZ5TaoBdbMNzy1vpBZ
+         Rhv1dd2D7SNjMBz8/RHzCZjqJLXTaLc8dGsCD8M4mg9PV8GeJqv6hB6ikpQct3QeFnTj
+         78mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690196072; x=1690800872;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rf/Qc5DLJ/sURnSwOUoxd8QFaQVoKAa+14ueKRK2tOA=;
-        b=L3w+0k7gypZqQsJ3vzYoDqvFUvLs6QQn1Zv1oc5jntRxO4Wn17KY8M08mSOA8b0Jyx
-         A9TgsWDkn0esRE+xphBPjYcalaxZ5UC+dCEPnBd0PUvly07/6eBYzebB5rlCAtIPh0Nf
-         Clb//ReoA6YFw4C7EvHCwaPJbcQ8NKvsL9BVidMRzt/sFDz3ewGPWk6/xEaNlr+1db6x
-         cToEH7sA6MYf6MR0aodc1hi4fFLrgioMPXmxx1gX4Bw8Z0ACa26YYDW6C8+mSRi9kvK6
-         UgP7CagnTyd7EDauVtw1ykKn6ubPTz+8UOzamFweLWOhTCkM3azHCGMWbo5/ZJ+O3s5+
-         G6bw==
-X-Gm-Message-State: ABy/qLZuHBuUmmuy6HQxdcyg/l4EwSok+YTHlcq29iaWTS/ZG3VPt47u
-        heb/9S6Wzac7EBNd/6Lcwks=
-X-Google-Smtp-Source: APBJJlHK3bok5QHzMzxZRNGwjnTbaJJhwuFS/9L0M8X72BtJuel/e6ii84jcbFxbAh7cYysuN/2iSw==
-X-Received: by 2002:a5d:4cc2:0:b0:315:a1bb:4d7b with SMTP id c2-20020a5d4cc2000000b00315a1bb4d7bmr5154424wrt.35.1690196071249;
-        Mon, 24 Jul 2023 03:54:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690196370; x=1690801170;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNuEXVvvuCAkiuz8BidvSXWcAbM3rfmu/apd1ht/nuU=;
+        b=AcVfF42QpHV9YSmS2PHyXx6VkT+IZErqdH/GEOtG5/7Z31AwmtVpG5PwifCqrRqKsE
+         IyfXSKzLw91Gd+J9QABv4bgeBi+W+jWbU202izF/Ly4AcUtEKxcBrZTFWmOjfYW2cWl6
+         Z0lfxsaVXyXrQM7yBXaTRnvZt8UiB3ZoG0eBJ9ylRc7PacorqoV2D9+PkF/SbEvFoCXg
+         uyHDoeDuzgI5vHBTwwJoTNMDjLhvsdGwNVoI0wWTvh15Cns5KGsHcmIIVwVBLe35ysTp
+         JMrDvynOYCAfRyzN88vb/eRUHjcz18C1g3+QNvNQmOymn7H42waDs48BORFrwgo1Ey+t
+         NmLg==
+X-Gm-Message-State: ABy/qLZxyJdiNJi/wNEhEQ5jP4mviDrkNs4Nf2OBNGX4YM8CukmnCWFl
+        dzw+RklhO8aUeEeg3l4EM80=
+X-Google-Smtp-Source: APBJJlG+lgAyR4y1jRq2lOBks2Ab/QDYRzJKDDyvzF1Bnqhzrcd0Q+xTVDlr/H0W86aZRHhFTkMIDA==
+X-Received: by 2002:a2e:7d14:0:b0:2b7:2ea:33c9 with SMTP id y20-20020a2e7d14000000b002b702ea33c9mr6296249ljc.20.1690196369662;
+        Mon, 24 Jul 2023 03:59:29 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id j6-20020adfff86000000b0031274a184d5sm12529631wrr.109.2023.07.24.03.54.30
+        by smtp.googlemail.com with ESMTPSA id m14-20020a7bcb8e000000b003fbc9371193sm10055353wmi.13.2023.07.24.03.59.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 03:54:30 -0700 (PDT)
+        Mon, 24 Jul 2023 03:59:29 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -61,13 +59,10 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Christian Marangi <ansuelsmth@gmail.com>,
         Atin Bainada <hi@atinb.me>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [net PATCH 4/4] net: dsa: qca8k: fix mdb add/del case with 0 VID
-Date:   Mon, 24 Jul 2023 05:25:31 +0200
-Message-Id: <20230724032531.15998-4-ansuelsmth@gmail.com>
+Subject: [net-next PATCH 1/3] net: dsa: tag_qca: return early if dev is not found
+Date:   Mon, 24 Jul 2023 05:30:56 +0200
+Message-Id: <20230724033058.16795-1-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230724032531.15998-1-ansuelsmth@gmail.com>
-References: <20230724032531.15998-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
@@ -80,42 +75,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qca8k switch doesn't support using 0 as VID and require a default
-VID to be always set. MDB add/del function doesn't currently handle
-this and are currently setting the default VID.
+Currently checksum is recalculated and dsa tag stripped even if we later
+don't find the dev.
 
-Fix this by correctly handling this corner case and internally use the
-default VID for VID 0 case.
+To improve code, exit early if we don't find the dev and skip additional
+operation on the skb since it will be freed anyway.
 
-Fixes: ba8f870dfa63 ("net: dsa: qca8k: add support for mdb_add/del")
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Cc: stable@vger.kernel.org
 ---
- drivers/net/dsa/qca/qca8k-common.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/dsa/tag_qca.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/qca/qca8k-common.c b/drivers/net/dsa/qca/qca8k-common.c
-index b644c05337c5..13b8452ce5b2 100644
---- a/drivers/net/dsa/qca/qca8k-common.c
-+++ b/drivers/net/dsa/qca/qca8k-common.c
-@@ -816,6 +816,9 @@ int qca8k_port_mdb_add(struct dsa_switch *ds, int port,
- 	const u8 *addr = mdb->addr;
- 	u16 vid = mdb->vid;
+diff --git a/net/dsa/tag_qca.c b/net/dsa/tag_qca.c
+index e757c8de06f1..e5ff7c34e577 100644
+--- a/net/dsa/tag_qca.c
++++ b/net/dsa/tag_qca.c
+@@ -75,10 +75,6 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
+ 		return NULL;
+ 	}
  
-+	if (!vid)
-+		vid = QCA8K_PORT_VID_DEF;
-+
- 	return qca8k_fdb_search_and_insert(priv, BIT(port), addr, vid,
- 					   QCA8K_ATU_STATUS_STATIC);
- }
-@@ -828,6 +831,9 @@ int qca8k_port_mdb_del(struct dsa_switch *ds, int port,
- 	const u8 *addr = mdb->addr;
- 	u16 vid = mdb->vid;
+-	/* Remove QCA tag and recalculate checksum */
+-	skb_pull_rcsum(skb, QCA_HDR_LEN);
+-	dsa_strip_etype_header(skb, QCA_HDR_LEN);
+-
+ 	/* Get source port information */
+ 	port = FIELD_GET(QCA_HDR_RECV_SOURCE_PORT, hdr);
  
-+	if (!vid)
-+		vid = QCA8K_PORT_VID_DEF;
+@@ -86,6 +82,10 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
+ 	if (!skb->dev)
+ 		return NULL;
+ 
++	/* Remove QCA tag and recalculate checksum */
++	skb_pull_rcsum(skb, QCA_HDR_LEN);
++	dsa_strip_etype_header(skb, QCA_HDR_LEN);
 +
- 	return qca8k_fdb_search_and_del(priv, BIT(port), addr, vid);
+ 	return skb;
  }
  
 -- 
