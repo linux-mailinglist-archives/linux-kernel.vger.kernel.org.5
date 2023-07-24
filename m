@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8911D75F630
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A0D75F616
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjGXMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S230443AbjGXMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjGXMVa (ORCPT
+        with ESMTP id S230429AbjGXMSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:21:30 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 236EAE66;
-        Mon, 24 Jul 2023 05:21:27 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxDOuXa75kMjQJAA--.17725S3;
-        Mon, 24 Jul 2023 20:16:23 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTSOSa75k+yg5AA--.5452S3;
-        Mon, 24 Jul 2023 20:16:19 +0800 (CST)
-Message-ID: <5fbc1ec7-fb61-7e4d-960c-81cc11b706f5@loongson.cn>
-Date:   Mon, 24 Jul 2023 20:16:18 +0800
+        Mon, 24 Jul 2023 08:18:32 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E87F19BF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:17:55 -0700 (PDT)
+X-UUID: 0286bff42a1c11ee9cb5633481061a41-20230724
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=4LFBjeliIMQEMATSDqju1i8NT+khZ1O/cNZSDh0O00U=;
+        b=ls9uPhUUxCBGK10stm1LX/DHzypIzhKOTOAtwjX/hGkEgEQifMDU7H4WZ5//FsprNpODQ0IJ41UJEN/BkLtSnEc72ntJiDy0KowhJWri8mZkhv/D4oRrqvphyMPnQ+0YJuY2+Bi/gAYJfmiorago9VczPRBS94vYQVYXXUJgSdc=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.29,REQID:aaaa10b5-8215-43eb-87df-1980f4f33404,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:e7562a7,CLOUDID:8d51fa87-44fb-401c-8de7-6a5572f1f5d5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 0286bff42a1c11ee9cb5633481061a41-20230724
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 867062005; Mon, 24 Jul 2023 20:17:08 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 24 Jul 2023 20:17:07 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 24 Jul 2023 20:17:07 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux@armlinux.org.uk>, <linus.walleij@linaro.org>,
+        <yj.chiang@mediatek.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Subject: [PATCH] ARM: ptrace: fix scno of -1 cause SIGILL
+Date:   Mon, 24 Jul 2023 20:16:55 +0800
+Message-ID: <20230724121655.7894-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 4/9] PCI/VGA: Improve the default VGA device selection
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian Konig <christian.koenig@amd.com>,
-        Pan Xinhui <Xinhui.Pan@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        YiPeng Chai <YiPeng.Chai@amd.com>,
-        Bokun Zhang <Bokun.Zhang@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        Ville Syrjala <ville.syrjala@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Abhishek Sahu <abhsahu@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-References: <20230719193233.GA511659@bhelgaas>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230719193233.GA511659@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxTSOSa75k+yg5AA--.5452S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7uFWkGrykCF4rXw4rGr1xZwc_yoW8GFyxpa
-        4a9Fy3KFZaqr4UJr9Fk348XF45Wa17Xas5Aw13Gryjkrs8X34qg34xK3yYk34kZFn3Wr1Y
-        vFWaka48ZFWqyacCm3ZEXasCq-sJn29KB7ZKAUJUUUUP529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Wrv_ZF1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wrylx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
-        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5UR67
-        UUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,47 +65,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In commit [1], the -1 scno is used as a special scno when the task's
+syscall is traced.
 
-On 2023/7/20 03:32, Bjorn Helgaas wrote:
->> 2) It does not take the PCI Bar may get relocated into consideration.
->> 3) It is not effective for the PCI device without a dedicated VRAM Bar.
->> 4) It is device-agnostic, thus it has to waste the effort to iterate all
->>     of the PCI Bar to find the VRAM aperture.
->> 5) It has invented lots of methods to determine which one is the default
->>     boot device, but this is still a policy because it doesn't give the
->>     user a choice to override.
-> I don't think we need a list of*potential*  problems.  We need an
-> example of the specific problem this will solve, i.e., what currently
-> does not work?
+After commit [2], PTRACE_SET_SYSCALL will always mask syscall with
+__NR_SYSCALL_MASK, this makes the condition `cmp scno, #-1` broken,
+and some test like Android VTS[3] is also failed because SIGILL
+interrupt the test program.
 
+Let's test with `and` logic with #0x0ff000. Instead of #__NR_SYSCALL_MASK
+because of the constraint of ARM Operand2 rules and avoid conflicting
+with ARM private syscall.
 
-This version do allow the arbitration service works on non-x86 arch,
+[1] commit ad75b51459ae ("ARM: 7579/1: arch/allow a scno of -1 to not cause a SIGILL")
+[2] commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store thread_info->abi_syscall")
+[3] vts_linux_kselftest_arm_32 seccomp_seccomp_bpf_arm_32#seccomp_seccomp_bpf_arm_32
 
-which also allow me remove a arch-specific workaround.
+Fixes: 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store thread_info->abi_syscall")
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+---
+ arch/arm/kernel/entry-common.S | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-I will give more detail at the next version.
-
-
-But I want to provide one more drawback of vgaarb here:
-
-
-(6) It does not works for non VGA-compatible PCI(e) display controllers.
-
-
-Because, currently, vgaarb deal with PCI VGA compatible devices only.
-
-See another my patch set [1] for more elaborate discussion.
-
-It also ignore PCI_CLASS_NOT_DEFINED_VGA as Maciej puts it[2].
-
-While my approach do not required the display controller to be 
-VGA-compatible to enjoy the arbitration service.
-
-What do you think then?
-
-
-[1] https://patchwork.freedesktop.org/patch/546690/?series=120548&rev=1
-
-[2] https://lkml.org/lkml/2023/6/18/315
+diff --git a/arch/arm/kernel/entry-common.S b/arch/arm/kernel/entry-common.S
+index bcc4c9ec3aa4..8ff3ff476266 100644
+--- a/arch/arm/kernel/entry-common.S
++++ b/arch/arm/kernel/entry-common.S
+@@ -298,8 +298,15 @@ __sys_trace:
+ 	bl	syscall_trace_enter
+ 	mov	scno, r0
+ 	invoke_syscall tbl, scno, r10, __sys_trace_return, reload=1
+-	cmp	scno, #-1			@ skip the syscall?
+-	bne	2b
++	/*
++	 * We'd like to skip scno=-1 for avoiding SIGILL for tracer,
++	 * however, tracer or seccomp may have changed syscall and masked
++	 * with __NR_SYSCALL_MASK, make sure -1 is compared with correct
++	 * masked syscall number.
++	 */
++	and r10, scno, #0x0ff000
++	cmp r10, #0x0ff000
++	bne 2b
+ 	add	sp, sp, #S_OFF			@ restore stack
+ 
+ __sys_trace_return_nosave:
+-- 
+2.18.0
 
