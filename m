@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0117875FA77
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AA775FA8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjGXPME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S230385AbjGXPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjGXPMD (ORCPT
+        with ESMTP id S230309AbjGXPSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:12:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB007E7E
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:12:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 504B1611D8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:12:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028D8C433C7;
-        Mon, 24 Jul 2023 15:11:58 +0000 (UTC)
-Date:   Mon, 24 Jul 2023 16:11:56 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Zhang Jianhua <chris.zjh@huawei.com>
-Cc:     will@kernel.org, ryan.roberts@arm.com, joey.gouly@arm.com,
-        anshuman.khandual@arm.com, ardb@kernel.org, mark.rutland@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] arm64: fix build warning for
- ARM64_MEMSTART_SHIFT
-Message-ID: <ZL6UvLlyz3MyVfjr@arm.com>
-References: <20230724172751.3048501-1-chris.zjh@huawei.com>
+        Mon, 24 Jul 2023 11:18:43 -0400
+Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1BD1B3;
+        Mon, 24 Jul 2023 08:18:41 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8k6H75YYz9yGhL;
+        Mon, 24 Jul 2023 23:07:19 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwCHTlU3lr5kJcTzBA--.28220S2;
+        Mon, 24 Jul 2023 16:18:26 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     casey@schaufler-ca.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/5] Smack transmute fixes
+Date:   Mon, 24 Jul 2023 17:13:36 +0200
+Message-Id: <20230724151341.538889-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230724172751.3048501-1-chris.zjh@huawei.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwCHTlU3lr5kJcTzBA--.28220S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1fZw4DZr45KFyxCrWktFb_yoW5WrW7pr
+        saqa43Kwn5tF97Crnagw4UuF4fKayrGrWUJwsxAr1kAF1DZF10qryIva15Ca48JrZxAr9a
+        qa17ZrnxWrs8X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WF
+        yUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
+        CTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj4zfVAADs7
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:27:51PM +0000, Zhang Jianhua wrote:
-> When building with W=1, the following warning occurs.
-> 
-> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
->   129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
->       |                                         ^~~~~~~~~
-> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
->   142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
->       |     ^~~~~~~~~~~~~~~~~~~~
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Another thing that's missing here is that the warning is probably when
-this file is included from asm-offests.h or some .S file.
+The first two patches are obvious fixes, the first restricts setting the
+SMACK64TRANSMUTE xattr only for directories, and the second makes it
+possible to set SMACK64TRANSMUTE if the filesystem does not support xattrs
+(e.g. ramfs).
 
-> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-> index 577773870b66..51bdce66885d 100644
-> --- a/arch/arm64/include/asm/kernel-pgtable.h
-> +++ b/arch/arm64/include/asm/kernel-pgtable.h
-> @@ -125,12 +125,14 @@
->   * (64k granule), or a multiple that can be mapped using contiguous bits
->   * in the page tables: 32 * PMD_SIZE (16k granule)
->   */
-> -#if defined(CONFIG_ARM64_4K_PAGES)
-> +#if defined(CONFIG_ARM64_4K_PAGES) && defined(PUD_SHIFT)
->  #define ARM64_MEMSTART_SHIFT		PUD_SHIFT
+The remaining fixes are optional, and only required if we want filesystems
+without xattr support behave like those with xattr support. Since we have
+the inode_setsecurity and inode_getsecurity hooks to make the first group
+work, it seems useful to fix inode creation too (SELinux should be fine).
 
-That's not the correct fix since PUD_SHIFT should always be defined.
-When CONFIG_PGTABLE_LEVELS == 3, pgtable-types.h includes
-asm-generic/pgtable-nopud.h and this defines PUD_SHIFT. We either got
-ARM64_MEMSTART_SHIFT defined in the wrong file or kernel-pgtable.h does
-not pull the relevant headers (either directly or via an included
-header). Even if kernel-pgtable.h ends up including the nopud/nopmd
-headers, P*D_SHIFT is guarded by an #indef __ASSEMBLY__ in those files.
+The third patch is merely a code move out of the 'if (xattr)' condition.
+The fourth updates the security field of the in-memory inode directly in
+smack_inode_init_security() and marks the inode as instantiated, and the
+fifth adds a security_inode_init_security() call in ramfs to initialize the
+security field of the in-memory inodes (needed to test transmuting
+directories).
 
-Something like below appears to fix this, though I'm not particularly
-fond of guarding the ARM64_MEMSTART_* definitions by #ifndef
-__ASSEMBLY__ for no apparent reason (could add a comment though):
+Both the Smack (on xfs) and IMA test suite succeed with all patches
+applied.
 
------------------------8<---------------------------
-diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-index 577773870b66..fcea7e87a6ca 100644
---- a/arch/arm64/include/asm/kernel-pgtable.h
-+++ b/arch/arm64/include/asm/kernel-pgtable.h
-@@ -118,6 +118,8 @@
- #define SWAPPER_RX_MMUFLAGS	(SWAPPER_RW_MMUFLAGS | PTE_RDONLY)
- #endif
- 
-+#ifndef __ASSEMBLY__
-+
- /*
-  * To make optimal use of block mappings when laying out the linear
-  * mapping, round down the base of physical memory to a size that can
-@@ -145,4 +147,6 @@
- #define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
- #endif
- 
-+#endif /* __ASSEMBLY__ */
-+
- #endif	/* __ASM_KERNEL_PGTABLE_H */
-diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-index e4944d517c99..22b36f2d5d93 100644
---- a/arch/arm64/include/asm/pgtable-hwdef.h
-+++ b/arch/arm64/include/asm/pgtable-hwdef.h
-@@ -6,6 +6,7 @@
- #define __ASM_PGTABLE_HWDEF_H
- 
- #include <asm/memory.h>
-+#include <asm/pgtable-types.h>
- 
- /*
-  * Number of page-table levels required to address 'va_bits' wide
-diff --git a/arch/arm64/include/asm/pgtable-types.h b/arch/arm64/include/asm/pgtable-types.h
-index b8f158ae2527..ae86e66fdb11 100644
---- a/arch/arm64/include/asm/pgtable-types.h
-+++ b/arch/arm64/include/asm/pgtable-types.h
-@@ -11,6 +11,8 @@
- 
- #include <asm/types.h>
- 
-+#ifndef __ASSEMBLY__
-+
- typedef u64 pteval_t;
- typedef u64 pmdval_t;
- typedef u64 pudval_t;
-@@ -44,6 +46,8 @@ typedef struct { pteval_t pgprot; } pgprot_t;
- #define pgprot_val(x)	((x).pgprot)
- #define __pgprot(x)	((pgprot_t) { (x) } )
- 
-+#endif /* __ASSEMBLY__ */
-+
- #if CONFIG_PGTABLE_LEVELS == 2
- #include <asm-generic/pgtable-nopmd.h>
- #elif CONFIG_PGTABLE_LEVELS == 3
------------------------8<---------------------------
+By executing the tests in a ramfs, the results are:
 
-To avoid guarding the ARM64_MEMSTART_* definitions, we could instead
-move the P*D_SHIFT definitions in asm-generic/pgtable-nop*d.h outside
-the #ifndef __ASSEMBLY__ block.
+Without the patches:
+86 Passed, 9 Failed, 90% Success rate
+
+With the patches:
+93 Passed, 2 Failed, 97% Success rate
+
+The remaining two failures are:
+2151  ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EOPNOTSUPP (Operation not supported)
+2152  lsetxattr("./targets/proc-attr-Snap", "security.SMACK64EXEC", "Pop", 3, 0) = -1 EOPNOTSUPP (Operation not supported)
+
+The first one is likely due ramfs lack of support for ioctl() while the
+second could be fixed by handling SMACK64EXEC in smack_inode_setsecurity().
+
+The patch set applies on top of:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git/commit/?h=next&id=ca22eca6e2ad7eaed1c791628ef7cb4c739e3da6
+
+
+The ramfs patch potentially could be useful to correctly initialize the
+label of new inodes in the initramfs, assuming that it will be fully
+labeled with support for xattrs in the cpio image:
+
+https://lore.kernel.org/linux-integrity/20190523121803.21638-1-roberto.sassu@huawei.com/
+
+Ramfs inode labels will be set from xattrs with the inode_setsecurity hook.
+
+Changelog
+
+v1:
+- Rebase on top of latest lsm/next
+- Remove -EOPNOTSUPP check in patch 5 (cannot happen)
+
+Roberto Sassu (5):
+  smack: Set SMACK64TRANSMUTE only for dirs in smack_inode_setxattr()
+  smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()
+  smack: Always determine inode labels in smack_inode_init_security()
+  smack: Initialize the in-memory inode in smack_inode_init_security()
+  ramfs: Initialize security of in-memory inodes
+
+ fs/ramfs/inode.c           | 27 +++++++++++
+ security/smack/smack_lsm.c | 97 ++++++++++++++++++++++----------------
+ 2 files changed, 83 insertions(+), 41 deletions(-)
 
 -- 
-Catalin
+2.34.1
+
