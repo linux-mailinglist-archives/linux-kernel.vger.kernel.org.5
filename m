@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 745DA760202
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EFA760204
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjGXWIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S230314AbjGXWIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGXWIT (ORCPT
+        with ESMTP id S230203AbjGXWIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:08:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A510EC
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A1DE161455
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:08:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70362C433C8;
-        Mon, 24 Jul 2023 22:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690236496;
-        bh=GAjZkvnU69tRmreUB7FnKwG6gWl6gwTbuqowaPIxOP8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LD812y6GhvNf81+vQmORo0Hum550TLstldsLojxu4Rk9ECOhRNKSB/GekT8vL/r1B
-         1yKVo9Z0eHkCG+CD92qbU6b9o5oH6Gaq1hKJY+O1clbsaoaMDPnBD0d+HlE3sqxszB
-         mFPAX/ISexsUuBqWewpgFROAXjewgCWOpj95DfAVtWt9pklw1Sma6ocYZokyB+3RPR
-         7wi9+xl+769ce5QVTYTq0qDN0EJb/XQjRTgIJRlHl8dI/lnBCsf++MIJH2IX2r/Pxf
-         OQCPZ2OOjngjJkvjTWE9njRMWzRRnyaiLjzKcXgGVCNqq0lfuqYbx4mwQgW8yAUc88
-         kloMUGezuMpSg==
-Date:   Mon, 24 Jul 2023 15:08:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
-        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
-        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
-        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net 0/2] rxfh with custom RSS fixes
-Message-ID: <20230724150815.494ae294@kernel.org>
-In-Reply-To: <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
-References: <20230723150658.241597-1-jdamato@fastly.com>
-        <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
+        Mon, 24 Jul 2023 18:08:30 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306819A0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:28 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bb8e45185bso9690345ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690236508; x=1690841308;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YiVLpoqRBSUKN+9FWsFBB1zWbxDt+GF5JFvfD+9xwvQ=;
+        b=IsnQRu4gLa6XZH4i8mAcdMuH1PvZahVQhG7uaMFWzE5NQYY7cYwBovrK2ePjpSBFg6
+         AWEENSUJUVg6nzQug4aLpnOuOkrvfMhLacHxR4qXAHXAxqa5dFINgbN5Ttg/1f82p3H5
+         FyK86rylKoC3btv2Zxs0nyvwCT68Fg3fXrQEFP8z2PY/53JvNhUv5mM7ZSnJDBk9sAXf
+         JwstgMaugLMuQ0LY2yjKwz7l+o4ItdLPddsBJbalVTkkUc4/Z7gWdcd23R1rWeFZBriN
+         jo8AciZUR0I3rqJoXf5UMmfog7GJGSAyy8AIspX4a3ikNsX1aHCrLIPksEpIS7jWG0tK
+         HuNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690236508; x=1690841308;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YiVLpoqRBSUKN+9FWsFBB1zWbxDt+GF5JFvfD+9xwvQ=;
+        b=iSJLTjW9oKT45Q10cIz0QAxgkEmYuqzOhA13AOvHOEtX8QZMrGI9aYXzqdyivyyo84
+         97o3tHAkZcAjML4W4DvsZZLsVjA9wEXRD/v4V/4WkPg0IKiiHL0ZVtRGURNlbcPAvxUd
+         ri1Rx21gziX0dCdMbcwAS1cyPZPYygZEnybh7PK0IDaPeeDkZ3MQ9y3cCSINJZJIb/9l
+         J/ddc/sef1nGN/uWWSecvgrf4dcf/kv+SWJNPscAuiN/nuFuheUJshxOuzg8JmiD0Ru5
+         iCp9IGsWj9cryMw1SEJUpQExf+xzRANRSGOA+GTLuQheYoPAihPl/HrwRjguWeKg9APO
+         SXRw==
+X-Gm-Message-State: ABy/qLZjhgVTjx2nHjIOQRSK+m+IWcutfBgJrKYrdv1TnudU6DEl+5mP
+        Y7Vk1OL0e6UT5X/BX3/wVqDfVw==
+X-Google-Smtp-Source: APBJJlFL7IL5vlAW4dKgeOmKmmNUCeLrE4HqWcCSK+s5M0r3YESnNOQX7pVoll5fhQI/4j0tYoOEGA==
+X-Received: by 2002:a17:902:a58b:b0:1bb:bb70:c23e with SMTP id az11-20020a170902a58b00b001bbbb70c23emr241901plb.18.1690236507746;
+        Mon, 24 Jul 2023 15:08:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id jw22-20020a170903279600b001b9da42cd7dsm9427325plb.279.2023.07.24.15.08.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 15:08:27 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qO3j6-00A72u-2Y;
+        Tue, 25 Jul 2023 08:08:24 +1000
+Date:   Tue, 25 Jul 2023 08:08:24 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, gost.dev@samsung.com,
+        Anuj Gupta <anuj20.g@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/read_write: Enable copy_file_range for block device.
+Message-ID: <ZL72WJ31DtAjgcFd@dread.disaster.area>
+References: <CGME20230724060655epcas5p24f21ce77480885c746b9b86d27585492@epcas5p2.samsung.com>
+ <20230724060336.8939-1-nj.shetty@samsung.com>
+ <ZL4cpDxr450zomJ0@dread.disaster.area>
+ <20230724163838.GB26430@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724163838.GB26430@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 20:27:43 +0100 Edward Cree wrote:
-> On 23/07/2023 16:06, Joe Damato wrote:
-> > Greetings:
+On Mon, Jul 24, 2023 at 06:38:38PM +0200, Christoph Hellwig wrote:
+> > > Change generic_copy_file_checks to use ->f_mapping->host for both inode_in
+> > > and inode_out. Allow block device in generic_file_rw_checks.
 > > 
-> > While attempting to get the RX flow hash key for a custom RSS context on
-> > my mlx5 NIC, I got an error:
-> > 
-> > $ sudo ethtool -u eth1 rx-flow-hash tcp4 context 1
-> > Cannot get RX network flow hashing options: Invalid argument
-> > 
-> > I dug into this a bit and noticed two things:
-> > 
-> > 1. ETHTOOL_GRXFH supports custom RSS contexts, but ETHTOOL_SRXFH does
-> > not. I moved the copy logic out of ETHTOOL_GRXFH and into a helper so
-> > that both ETHTOOL_{G,S}RXFH now call it, which fixes ETHTOOL_SRXFH. This
-> > is patch 1/2.  
+> > Why? copy_file_range() is for copying a range of a regular file to
+> > another regular file - why do we want to support block devices for
+> > somethign that is clearly intended for copying data files?
 > 
-> As I see it, this is a new feature, not a fix, so belongs on net-next.
-> (No existing driver accepts FLOW_RSS in ETHTOOL_SRXFH's cmd->flow_type,
->  which is just as well as if they did this would be a uABI break.)
-> 
-> Going forward, ETHTOOL_SRXFH will hopefully be integrated into the new
->  RSS context kAPI I'm working on[1], so that we can have a new netlink
->  uAPI for RSS configuration that's all in one place instead of the
->  piecemeal-grown ethtool API with its backwards-compatible hacks.
-> But that will take a while, so I think this should go in even though
->  it's technically an extension to legacy ethtool; it was part of the
->  documented uAPI and userland implements it, it just never got
->  implemented on the kernel side (because the initial driver with
->  context support, sfc, didn't support SRXFH).
+> Nitesh has a series to add block layer copy offload,
 
-What's the status on your work? Are you planning to split the RSS
-config from ethtool or am I reading too much into what you said?
+Yes, I know.
 
-It'd be great to push the uAPI extensions back and make them
-netlink-only, but we can't make Joe wait if it takes a long time
-to finish up the basic conversion :(
+> and uses that to
+> implement copy_file_range on block device nodes,
+
+Yes, I know.
+
+> which seems like a
+> sensible use case for copy_file_range on block device nodes,
+
+Except for the fact it's documented and implemented as for copying
+data ranges of *regular files*. Block devices are not regular
+files...
+
+There is nothing in this patchset that explains why this syscall
+feature creep is desired, why it is the best solution, what benefits
+it provides, how this new feature is discoverable, etc. It also does
+not mention that user facing documentation needs to change, etc
+
+> and that
+> series was hiding a change like this deep down in a "block" title
+> patch,
+
+I know.
+
+> so I asked for it to be split out.  It still really should
+> be in that series, as there's very little point in changing this
+> check without an actual implementation making use of it.
+
+And that's because it's the wrong way to be implementing block
+device copy offloads.
+
+That patchset originally added ioctls to issue block copy offloads
+to block devices from userspace - that's the way block device
+specific functionality is generally added and I have no problems
+with that.
+
+However, when I originally suggested that the generic
+copy_file_range() fallback path that filesystems use (i.e.
+generic_copy_file_range()) should try to use the block copy offload
+path before falling back to using splice to copy the data through
+host memory, things went off the rails.
+
+That has turned into "copy_file_range() should support block devices
+directly" and the ioctl interfaces were removed. The block copy
+offload patchset still doesn't have a generic path for filesystems
+to use this block copy offload. This is *not* what I originally
+suggested, and provides none of the benefit to users that would come
+from what I originally suggested.  Block device copy offload is
+largely useless to users if file data copies within a filesystem
+don't make use of it - very few applications ever copy data directly
+to/from block devices directly...
+
+So from a system level point of view, expanding copy_file_range() to
+do direct block device data copies doesn't make any sense. Expanding
+the existing copy_file_range() generic fallback to attempt block
+copy offload (i.e. hardware accel) makes much more sense, and will
+make copy_file_range() much more useful to users on filesystem like
+ext4 that don't have reflink support...
+
+So, yeah, this patch, regardless of how it is presented, needs to a
+whole lot more justification that "we want to do this" in the commit
+message...
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
