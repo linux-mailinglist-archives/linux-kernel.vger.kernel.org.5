@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DF675F9CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA36975F9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbjGXO0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
+        id S230323AbjGXO0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjGXO0U (ORCPT
+        with ESMTP id S230418AbjGXO0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:26:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ADF10D5;
-        Mon, 24 Jul 2023 07:26:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0C90611FC;
-        Mon, 24 Jul 2023 14:26:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A29C433C7;
-        Mon, 24 Jul 2023 14:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690208777;
-        bh=UsuBymQjjwxsRq95yzb1Fek+bWa7LNbYsm7DLSXx8Ic=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=coq+CCeVPiX+ezURnrjukdgJBBwFZ/yeTLi+AAVs5XQdPlztP1yyiT3r64xy3y2oJ
-         BXguLHAqBKNf+C3G6+/0XucU/C67nI8dPMm6wuH0l46M9c71VQ+WgF9wZ2OSQce1N/
-         YZssAtihCnHRuQmPznGTji09eABh6dIjzIGr6n8wMN/2mMTshxAgCOsNTEkHJn4BKH
-         HQoFdZSgdj/HbdW9pwUyAzRxUVxtSZ1nC1d7IQo9C2XFXCmhmPGdtv4bmoY/SKVin4
-         4OpijgGNlNTdx8dCkWWdG9RxLyOHVCoQyuF/z9FJCkp888LID9ampaakJ3ay1b3zpJ
-         umNBDbbfsickA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     hanyu001@208suo.com
-Cc:     libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libertas: debugfs: Added missing spaces
-References: <tencent_0EA6836B1E10A9623158112DD43D48C95605@qq.com>
-        <013fa54eeb505b6a7080c6d4ccc3a445@208suo.com>
-Date:   Mon, 24 Jul 2023 17:26:14 +0300
-In-Reply-To: <013fa54eeb505b6a7080c6d4ccc3a445@208suo.com> (hanyu's message of
-        "Wed, 19 Jul 2023 17:31:51 +0800")
-Message-ID: <874jlt2xo9.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 10:26:31 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D617DE59
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:26:29 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba5563cd6so4247505ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690208789; x=1690813589;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mL4/hlRXZM4j4GENS2ROMNedOywN4Y40WobkLyw1U40=;
+        b=0JZayPTGquYMXgHedz2hVa/hjidK4VJ6suGY6Orxvr2MZMl6Nut3abBRV+HiLbzZRo
+         F+nvPbzsjDa9VR+zsMB4l7U2NAtdY1VdejY5y0bunyXVFRDhZ9M89dR/8Z+j2vg6mMkZ
+         WEU+ig754rCd8A4KzB8m4nWMV6egaYovtCF1oQFqBTrppB0xdGi3xRjdXn2LTT0+mRsw
+         0v04VoXaAVEtAd5Rrj1mACnYuMS3Oy0p0OmUVW5o/GsRV3hqAvICaaTChRYImZ+0jZGW
+         1+FpiAlKB1e2nIgLaNPm55MdM+vwxadyWPX2OqMmSaSvoYNrLfMRPdDDefvL9Y4OFxkw
+         CgZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690208789; x=1690813589;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mL4/hlRXZM4j4GENS2ROMNedOywN4Y40WobkLyw1U40=;
+        b=Q0ze/2Vd842ii4gOjL07cisrefTFHPk4D9pPLWaPPG/2XhYCHNNVVZi0/JbTgABeUo
+         A0w88T/Mq2/IgWp/SzKDzow3gf2e73sWnk2x0NWRWSop3VVRusNgPMQs1nLw6ZbMHBsZ
+         B+1faKNlASRkwVFHo8PyTL3B75yKjpEaEhGWH6R2+Bgz261M66mYMgL+DM5gHBxg3F6O
+         pcSgrAj4/YHMLqNGoAF19sO5fU3Qhp1mKfWhSNjoAP/tg+v5jlsthsIeZeTDFjgFf9Jq
+         Objl3CsQSvNseCSrV+JPbsCyko6s/LGJEEdOHXejbdxAvRCpwbTqAZSEZBeLUzgT/Fk2
+         vdwA==
+X-Gm-Message-State: ABy/qLa38wOYtDGvz4qk7j+oHvogAySwXsFk6JOwN5YUYzI3CVhjHqvN
+        vszEiHPgHZ0pDsoEpArWz0/PrMU4AS0=
+X-Google-Smtp-Source: APBJJlGryf2vqymIr3GilpOteVj9nZVBQ61sKgZ8mitLyBvY9O1huvzRXP3Q3flSBlN7RxvTIfN7YBgCWW8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:2305:b0:1b7:edcd:8dcf with SMTP id
+ d5-20020a170903230500b001b7edcd8dcfmr42791plh.4.1690208789053; Mon, 24 Jul
+ 2023 07:26:29 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 07:26:27 -0700
+In-Reply-To: <296c5c68-d03b-65bd-bfb6-41e6046ed389@intel.com>
+Mime-Version: 1.0
+References: <20230721030352.72414-1-weijiang.yang@intel.com>
+ <20230721030352.72414-12-weijiang.yang@intel.com> <ZL5AwOBYN1JV7I4W@chao-email>
+ <296c5c68-d03b-65bd-bfb6-41e6046ed389@intel.com>
+Message-ID: <ZL6KE5elqCBVIbv7@google.com>
+Subject: Re: [PATCH v4 11/20] KVM:x86: Save and reload GUEST_SSP to/from SMRAM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Weijiang Yang <weijiang.yang@intel.com>
+Cc:     Chao Gao <chao.gao@intel.com>, pbonzini@redhat.com,
+        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
+        binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hanyu001@208suo.com writes:
+On Mon, Jul 24, 2023, Weijiang Yang wrote:
+> 
+> On 7/24/2023 5:13 PM, Chao Gao wrote:
+> > On Thu, Jul 20, 2023 at 11:03:43PM -0400, Yang Weijiang wrote:
+> > > Save GUEST_SSP to SMRAM on SMI and reload it on RSM.
+> > > KVM emulates architectural behavior when guest enters/leaves SMM
+> > > mode, i.e., save registers to SMRAM at the entry of SMM and reload
+> > > them at the exit of SMM. Per SDM, GUEST_SSP is defined as one of
+> > To me, GUEST_SSP is confusing here. From QEMU's perspective, it reads/writes
+> > the SSP register. People may confuse it with the GUEST_SSP in nVMCS field.
+> > I prefer to rename it to MSR_KVM_SSP.
+> 
+> Hmm, looks a bit, I'll change it, thanks!
 
-> Fixes the following checkpatch errors:
->
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:712: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:712: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:723: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:723: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:734: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:734: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: space
-> required before the open parenthesis '('
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: space
-> required before the open parenthesis '('
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: spaces
-> required around that '=' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: spaces
-> required around that '<' (ctx:VxV)
-> ./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: space
-> required before the open parenthesis '('
->
-> Signed-off-by: Yu Han <hanyu001@208suo.com>
-
-Please don't submit checkpatch fixes to linux-wireless, they are too
-much work with very little gain. And libertas is an orphaned driver, we
-want to make the absolute minimal changes to it.
-
-I'm now going to silently reject all checkpatch patches in patchwork.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Please just say "SSP".  The SMRAM field has nothing to do with KVM's synthetic MSR.
