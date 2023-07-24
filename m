@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA89475E7D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FBB75E80C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjGXBf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        id S231922AbjGXBhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjGXBfn (ORCPT
+        with ESMTP id S231890AbjGXBgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:35:43 -0400
+        Sun, 23 Jul 2023 21:36:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8C046A8;
-        Sun, 23 Jul 2023 18:32:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9A11BC0;
+        Sun, 23 Jul 2023 18:33:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E93660F6D;
-        Mon, 24 Jul 2023 01:31:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F91C433C8;
-        Mon, 24 Jul 2023 01:31:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9122360FAB;
+        Mon, 24 Jul 2023 01:31:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52D79C433C8;
+        Mon, 24 Jul 2023 01:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162274;
-        bh=Cwf9nx8+KvKrxKToNudI0zZPDzMtyKP9SFlfTc0URjM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ndnnWGZX80RmOV82w53f21JSPsY22fyWR2xrvq0CJz8Tfg8VoGvAWOxDeqtl+iunB
-         oisrnoSTtEFuOvJY+VndMI53D+QsxVCV1GW0iIv/5IAyzATu4OExG5SALEh20rEMei
-         hCJ9xIo5iOZ5Ol4FDKIV4jPdjxcwbxT4LCwA1+Hy0BTXBd5JrxUvAnGdbvp7+SDGw6
-         gBs07+stilE1LaymfDHyNlgOJDxu25+aZR5LzCjYeGOto18GtdFpQuItZlf9MSl8LM
-         dlVygXuckoRJ+oaSBYxgdS19wi9VxuXUZc0M5B7AroMdX4b2Z+ZQgl1iVc//iF5EsI
-         xYJ/FuGpVKLDA==
+        s=k20201202; t=1690162313;
+        bh=SQAM2L3JQPA6mYdvL8zQwXPMB2kLpBmxl887lyvs2n4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O89wKNr3uYFc7vShM0sd+CTIhBkCncZWDPX8KMi5aqFeX7dvqAIPR3hj+Anr3ncam
+         ZWoYEl/7NN6jGSe3RD2lG+Okkc0mz6ylvJYdxx+rFxIzCGBIDe0OuQrGm5nJLjGWG3
+         TPILEk8vcTYvlhPspjCXktX/w+XJLJ5jocZgL/TSVsMIYoceacDj7BnjhR9cZAin6h
+         VD3jEiits5NzT9mueEp74fMUQviKTNpL1V5Smo5LxISEi8idRH8uV2e19vVSYoFEf0
+         U5q6ot/CHDKRQNh5WInSYnkxTYVqDWjPC+JQPlWSw7aTYDECf6HXIwkce1vQ1r5Bcg
+         qMswGImTl+2TA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anisse Astier <an.astier@criteo.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, matt@codeblueprint.co.uk,
-        ard.biesheuvel@linaro.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org, matthew.garrett@nebula.com,
-        jk@ozlabs.org, linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 1/4] efivarfs: expose used and total size
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com, yehezkel.bernat@intel.com
+Subject: [PATCH AUTOSEL 6.4 08/40] thunderbolt: Read retimer NVM authentication status prior tb_retimer_set_inbound_sbtx()
 Date:   Sun, 23 Jul 2023 21:31:08 -0400
-Message-Id: <20230724013111.2327251-1-sashal@kernel.org>
+Message-Id: <20230724013140.2327815-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,185 +59,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anisse Astier <an.astier@criteo.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit d86ff3333cb1d5f42d8898fb5fdb304e143c0237 ]
+[ Upstream commit 1402ba08abae5cfa583ff1a40b99c098a0532d41 ]
 
-When writing EFI variables, one might get errors with no other message
-on why it fails. Being able to see how much is used by EFI variables
-helps analyzing such issues.
+According to the USB4 retimer guide the correct order is immediately
+after sending ENUMERATE_RETIMERS so update the code to follow this.
 
-Since this is not a conventional filesystem, block size is intentionally
-set to 1 instead of PAGE_SIZE.
-
-x86 quirks of reserved size are taken into account; so that available
-and free size can be different, further helping debugging space issues.
-
-With this patch, one can see the remaining space in EFI variable storage
-via efivarfs, like this:
-
-   $ df -h /sys/firmware/efi/efivars/
-   Filesystem      Size  Used Avail Use% Mounted on
-   efivarfs        176K  106K   66K  62% /sys/firmware/efi/efivars
-
-Signed-off-by: Anisse Astier <an.astier@criteo.com>
-[ardb: - rename efi_reserved_space() to efivar_reserved_space()
-       - whitespace/coding style tweaks]
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/platform/efi/quirks.c |  8 +++++++
- drivers/firmware/efi/efi.c     |  1 +
- drivers/firmware/efi/vars.c    | 12 +++++++++++
- fs/efivarfs/super.c            | 39 +++++++++++++++++++++++++++++++++-
- include/linux/efi.h            | 11 ++++++++++
- 5 files changed, 70 insertions(+), 1 deletion(-)
+ drivers/thunderbolt/retimer.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index b0b848d6933af..f0cc00032751d 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -114,6 +114,14 @@ void efi_delete_dummy_variable(void)
- 				     EFI_VARIABLE_RUNTIME_ACCESS, 0, NULL);
+diff --git a/drivers/thunderbolt/retimer.c b/drivers/thunderbolt/retimer.c
+index 9cc28197dbc45..edbd92435b41a 100644
+--- a/drivers/thunderbolt/retimer.c
++++ b/drivers/thunderbolt/retimer.c
+@@ -187,6 +187,21 @@ static ssize_t nvm_authenticate_show(struct device *dev,
+ 	return ret;
  }
  
-+u64 efivar_reserved_space(void)
++static void tb_retimer_nvm_authenticate_status(struct tb_port *port, u32 *status)
 +{
-+	if (efi_no_storage_paranoia)
-+		return 0;
-+	return EFI_MIN_RESERVE;
-+}
-+EXPORT_SYMBOL_GPL(efivar_reserved_space);
++	int i;
 +
- /*
-  * In the nonblocking case we do not attempt to perform garbage
-  * collection if we do not have enough free space. Rather, we do the
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 34b9e78765386..91d986a741dad 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -211,6 +211,7 @@ static int generic_ops_register(void)
- 	generic_ops.get_variable = efi.get_variable;
- 	generic_ops.get_next_variable = efi.get_next_variable;
- 	generic_ops.query_variable_store = efi_query_variable_store;
-+	generic_ops.query_variable_info = efi.query_variable_info;
- 
- 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_SET_VARIABLE)) {
- 		generic_ops.set_variable = efi.set_variable;
-diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-index bfc5fa6aa47b6..e9dc7116daf13 100644
---- a/drivers/firmware/efi/vars.c
-+++ b/drivers/firmware/efi/vars.c
-@@ -245,3 +245,15 @@ efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
- 	return status;
- }
- EXPORT_SYMBOL_NS_GPL(efivar_set_variable, EFIVAR);
-+
-+efi_status_t efivar_query_variable_info(u32 attr,
-+					u64 *storage_space,
-+					u64 *remaining_space,
-+					u64 *max_variable_size)
-+{
-+	if (!__efivars->ops->query_variable_info)
-+		return EFI_UNSUPPORTED;
-+	return __efivars->ops->query_variable_info(attr, storage_space,
-+			remaining_space, max_variable_size);
-+}
-+EXPORT_SYMBOL_NS_GPL(efivar_query_variable_info, EFIVAR);
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 482d612b716bb..e028fafa04f38 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -13,6 +13,7 @@
- #include <linux/ucs2_string.h>
- #include <linux/slab.h>
- #include <linux/magic.h>
-+#include <linux/statfs.h>
- 
- #include "internal.h"
- 
-@@ -23,8 +24,44 @@ static void efivarfs_evict_inode(struct inode *inode)
- 	clear_inode(inode);
- }
- 
-+static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
-+{
-+	const u32 attr = EFI_VARIABLE_NON_VOLATILE |
-+			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
-+			 EFI_VARIABLE_RUNTIME_ACCESS;
-+	u64 storage_space, remaining_space, max_variable_size;
-+	efi_status_t status;
-+
-+	status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
-+					    &max_variable_size);
-+	if (status != EFI_SUCCESS)
-+		return efi_status_to_err(status);
++	tb_port_dbg(port, "reading NVM authentication status of retimers\n");
 +
 +	/*
-+	 * This is not a normal filesystem, so no point in pretending it has a block
-+	 * size; we declare f_bsize to 1, so that we can then report the exact value
-+	 * sent by EFI QueryVariableInfo in f_blocks and f_bfree
++	 * Before doing anything else, read the authentication status.
++	 * If the retimer has it set, store it for the new retimer
++	 * device instance.
 +	 */
-+	buf->f_bsize	= 1;
-+	buf->f_namelen	= NAME_MAX;
-+	buf->f_blocks	= storage_space;
-+	buf->f_bfree	= remaining_space;
-+	buf->f_type	= dentry->d_sb->s_magic;
-+
-+	/*
-+	 * In f_bavail we declare the free space that the kernel will allow writing
-+	 * when the storage_paranoia x86 quirk is active. To use more, users
-+	 * should boot the kernel with efi_no_storage_paranoia.
-+	 */
-+	if (remaining_space > efivar_reserved_space())
-+		buf->f_bavail = remaining_space - efivar_reserved_space();
-+	else
-+		buf->f_bavail = 0;
-+
-+	return 0;
++	for (i = 1; i <= TB_MAX_RETIMER_INDEX; i++)
++		usb4_port_retimer_nvm_authenticate_status(port, i, &status[i]);
 +}
- static const struct super_operations efivarfs_ops = {
--	.statfs = simple_statfs,
-+	.statfs = efivarfs_statfs,
- 	.drop_inode = generic_delete_inode,
- 	.evict_inode = efivarfs_evict_inode,
- };
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 571d1a6e1b744..120af31a5136f 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -1042,6 +1042,7 @@ struct efivar_operations {
- 	efi_set_variable_t *set_variable;
- 	efi_set_variable_t *set_variable_nonblocking;
- 	efi_query_variable_store_t *query_variable_store;
-+	efi_query_variable_info_t *query_variable_info;
- };
- 
- struct efivars {
-@@ -1049,6 +1050,12 @@ struct efivars {
- 	const struct efivar_operations *ops;
- };
- 
-+#ifdef CONFIG_X86
-+u64 __attribute_const__ efivar_reserved_space(void);
-+#else
-+static inline u64 efivar_reserved_space(void) { return 0; }
-+#endif
 +
- /*
-  * The maximum size of VariableName + Data = 1024
-  * Therefore, it's reasonable to save that much
-@@ -1087,6 +1094,10 @@ efi_status_t efivar_set_variable_locked(efi_char16_t *name, efi_guid_t *vendor,
- efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
- 				 u32 attr, unsigned long data_size, void *data);
+ static void tb_retimer_set_inbound_sbtx(struct tb_port *port)
+ {
+ 	int i;
+@@ -455,18 +470,16 @@ int tb_retimer_scan(struct tb_port *port, bool add)
+ 		return ret;
  
-+efi_status_t efivar_query_variable_info(u32 attr, u64 *storage_space,
-+					u64 *remaining_space,
-+					u64 *max_variable_size);
-+
- #if IS_ENABLED(CONFIG_EFI_CAPSULE_LOADER)
- extern bool efi_capsule_pending(int *reset_type);
+ 	/*
+-	 * Enable sideband channel for each retimer. We can do this
+-	 * regardless whether there is device connected or not.
++	 * Immediately after sending enumerate retimers read the
++	 * authentication status of each retimer.
+ 	 */
+-	tb_retimer_set_inbound_sbtx(port);
++	tb_retimer_nvm_authenticate_status(port, status);
  
+ 	/*
+-	 * Before doing anything else, read the authentication status.
+-	 * If the retimer has it set, store it for the new retimer
+-	 * device instance.
++	 * Enable sideband channel for each retimer. We can do this
++	 * regardless whether there is device connected or not.
+ 	 */
+-	for (i = 1; i <= TB_MAX_RETIMER_INDEX; i++)
+-		usb4_port_retimer_nvm_authenticate_status(port, i, &status[i]);
++	tb_retimer_set_inbound_sbtx(port);
+ 
+ 	for (i = 1; i <= TB_MAX_RETIMER_INDEX; i++) {
+ 		/*
 -- 
 2.39.2
 
