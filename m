@@ -2,220 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A11627602DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343087602E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjGXW6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
+        id S230063AbjGXXAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 19:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjGXW6H (ORCPT
+        with ESMTP id S229596AbjGXXA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:58:07 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0FB115;
-        Mon, 24 Jul 2023 15:58:06 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-7679ea01e16so445362785a.2;
-        Mon, 24 Jul 2023 15:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690239485; x=1690844285;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ECJiZB/WKKYiQG7/FbcoTT/A0gytpZCyT4RLBuHqHxk=;
-        b=HyRd134PbYNKlL3xJYOBD6YW+yP1QTkMntDPjUaulcEN2bsRfmZOUf+ti7TiAH4ibz
-         wv91TAe/bNU9oiWHZOtpW8k/omDikJ+IeIVZa4G7/g5XaqH33YhCvoiCOxx66S/DFCin
-         2v5B82au89VayVLQpRBUh3rJV6qcyIfW/LxeS0B6nKUbEGioGfLFX2mLQM6RhiJ5Y3Q/
-         RCILdvxVcP7eO1qHfxNEWfCebOXi2HT1rvtlKogtAxuUquYcfdqRfmNB1CirRB+/owaV
-         j3kwFNlutl/E4ABpr6PGLCE1D5r05lp69XAl6jrM+F9JhbuBkj0A1/BDUaNy1Y7UUX+K
-         73Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690239485; x=1690844285;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ECJiZB/WKKYiQG7/FbcoTT/A0gytpZCyT4RLBuHqHxk=;
-        b=YpXkhHkzjle3t2NZ7NfxV58yVFBk8yjFOTEd5XvMoSJOxO0A/3GRtH7zQHKehcRew9
-         qBvpU9IPb7OdMgYMai3M2w944dUq8IoSuE59sl44X+xsq7ZzPjEA0HsHM7RCHp3mljEW
-         8Z2D13zGAVTjYyGDhWISJLCoOch8cXD4H6euxb5piz98Iyvyri6n6qZEmTFupyco9aqr
-         jPqJjLRakkXI8z02ZkfXUYLbIfSydGSEK6BP6eiI65Q4gz05i8hFdmvei2zBQSHaTjcj
-         ZmrqDrHGHBzkW5ANNc+89alN2tkakd5XuSUBRX5blbBFLrmXO7gFitC/HpJQZ5/b9VCG
-         Pzzw==
-X-Gm-Message-State: ABy/qLbzF/kdbwGF4/KiQwrGnOuiYHkCtkkTJhOvhkrV5MLrRBOArF06
-        nrjc5TvHOk9z8TCXJcUt0ZM=
-X-Google-Smtp-Source: APBJJlHMH2sxFb+Lk8KbHVDkRZ2DA/adfsYEMk87sKdnT+fcHDNvVmL9VlUs5QmtlpD88AzZZAXETQ==
-X-Received: by 2002:a05:620a:4042:b0:767:ba3e:b3c4 with SMTP id i2-20020a05620a404200b00767ba3eb3c4mr1633617qko.7.1690239485267;
-        Mon, 24 Jul 2023 15:58:05 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id oo22-20020a05620a531600b00762f37b206dsm3297776qkn.81.2023.07.24.15.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 15:58:04 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 18:58:04 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Breno Leitao <leitao@debian.org>, asml.silence@gmail.com,
-        axboe@kernel.dk
-Cc:     io-uring@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-        pabeni@redhat.com, linux-kernel@vger.kernel.org, leit@meta.com
-Message-ID: <64bf01fc80d67_3b637629452@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230724142237.358769-3-leitao@debian.org>
-References: <20230724142237.358769-1-leitao@debian.org>
- <20230724142237.358769-3-leitao@debian.org>
-Subject: RE: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Mon, 24 Jul 2023 19:00:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D6C115;
+        Mon, 24 Jul 2023 16:00:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 319E461465;
+        Mon, 24 Jul 2023 23:00:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68B1C433C7;
+        Mon, 24 Jul 2023 23:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690239626;
+        bh=0gLqL+skDZyctyEo4XytA7Z78FygL1xuVREEMkFKdSI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V9ZMTQWTDr69DqPhmCHg0Q5D5JNpks3fKkPvZjBfR72bXRLolOpcqpds0YGO+c8uC
+         L94c8N1csZFQGlQs06lg18PenCAvfJo794gW/uD4cBTdOGztzI4sKdN3hDFdkKVHhE
+         4M73DHrhwMOQepwfymJNAgO2SwaRy3SzYfnXmpj9MJUcDJ1ojX9pymGwoO7ed3oKN1
+         gSxENlM/QD3BPsHlAdNnv/brc+GyrKiAFcEOC5Ga8ReThNgJ/ZTDo5r7WDT8crlEeO
+         R+Gp9QYD0VlPXaLn6ruSxCe7D/cSGophyzs8wCDKe+0RkGThw4VX74tXurmLJO7Cky
+         cxWe4qzjMlo0Q==
+Date:   Mon, 24 Jul 2023 16:00:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v5 0/9] net: ethernet: mtk_eth_soc: add basic
+ support for MT7988 SoC
+Message-ID: <20230724160024.427b2bef@kernel.org>
+In-Reply-To: <cover.1690148927.git.daniel@makrotopia.org>
+References: <cover.1690148927.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao wrote:
-> Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
-> level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
-> where a sockptr_t is either userspace or kernel space, and handled as
-> such.
-> 
-> Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
-> 
-> Differently from the getsockopt(2), the optlen field is not a userspace
-> pointers. In getsockopt(2), userspace provides optlen pointer, which is
-> overwritten by the kernel.  In this implementation, userspace passes a
-> u32, and the new value is returned in cqe->res. I.e., optlen is not a
-> pointer.
-> 
-> Important to say that userspace needs to keep the pointer alive until
-> the CQE is completed.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  include/uapi/linux/io_uring.h |  7 ++++++
->  io_uring/uring_cmd.c          | 43 +++++++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
-> 
-> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> index 9fc7195f25df..8152151080db 100644
-> --- a/include/uapi/linux/io_uring.h
-> +++ b/include/uapi/linux/io_uring.h
-> @@ -43,6 +43,10 @@ struct io_uring_sqe {
->  	union {
->  		__u64	addr;	/* pointer to buffer or iovecs */
->  		__u64	splice_off_in;
-> +		struct {
-> +			__u32	level;
-> +			__u32	optname;
-> +		};
->  	};
->  	__u32	len;		/* buffer size or number of iovecs */
->  	union {
-> @@ -79,6 +83,7 @@ struct io_uring_sqe {
->  	union {
->  		__s32	splice_fd_in;
->  		__u32	file_index;
-> +		__u32	optlen;
->  		struct {
->  			__u16	addr_len;
->  			__u16	__pad3[1];
-> @@ -89,6 +94,7 @@ struct io_uring_sqe {
->  			__u64	addr3;
->  			__u64	__pad2[1];
->  		};
-> +		__u64	optval;
->  		/*
->  		 * If the ring is initialized with IORING_SETUP_SQE128, then
->  		 * this field is used for 80 bytes of arbitrary command data
-> @@ -729,6 +735,7 @@ struct io_uring_recvmsg_out {
->  enum {
->  	SOCKET_URING_OP_SIOCINQ		= 0,
->  	SOCKET_URING_OP_SIOCOUTQ,
-> +	SOCKET_URING_OP_GETSOCKOPT,
->  };
->  
->  #ifdef __cplusplus
-> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> index 8e7a03c1b20e..16c857cbf3b0 100644
-> --- a/io_uring/uring_cmd.c
-> +++ b/io_uring/uring_cmd.c
-> @@ -166,6 +166,47 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
->  }
->  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
->  
-> +static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> +					  struct io_uring_cmd *cmd)
-> +{
-> +	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-> +	int optname = READ_ONCE(cmd->sqe->optname);
-> +	int optlen = READ_ONCE(cmd->sqe->optlen);
-> +	int level = READ_ONCE(cmd->sqe->level);
-> +	void *koptval;
-> +	int err;
-> +
-> +	err = security_socket_getsockopt(sock, level, optname);
-> +	if (err)
-> +		return err;
-> +
-> +	koptval = kmalloc(optlen, GFP_KERNEL);
-> +	if (!koptval)
-> +		return -ENOMEM;
+On Sun, 23 Jul 2023 22:57:08 +0100 Daniel Golle wrote:
+> The series should not conflict with Russell's recently submitted series
+> "Remove legacy phylink behaviour", hence the order of them being
+> picked into net-next doesn't matter.
 
-This will try to kmalloc any length that userspace passes?
+Not sure what the exact conflict is, but:
 
-That is unnecessary ..
-
-> +
-> +	err = copy_from_user(koptval, optval, optlen);
-> +	if (err)
-> +		goto fail;
-> +
-> +	err = -EOPNOTSUPP;
-> +	if (level == SOL_SOCKET) {
-> +		err = sk_getsockopt(sock->sk, level, optname,
-> +				    KERNEL_SOCKPTR(koptval),
-> +				    KERNEL_SOCKPTR(&optlen));
-
-.. sk_getsockopt defines a union of acceptable fields, which
-are all fairly small.
-
-I notice that BPF added BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN to
-work around the issue of pre-allocating for the worst case.
-
-But that also needs to deal woth other getsockopt levels.
-
-
-> +		if (err)
-> +			goto fail;
-> +	}
-> +
-> +	err = copy_to_user(optval, koptval, optlen);
-> +
-> +fail:
-> +	kfree(koptval);
-> +	if (err)
-> +		return err;
-> +	else
-> +		return optlen;
-> +}
-> +
->  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->  {
->  	struct socket *sock = cmd->file->private_data;
-> @@ -187,6 +228,8 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->  		if (ret)
->  			return ret;
->  		return arg;
-> +	case SOCKET_URING_OP_GETSOCKOPT:
-> +		return io_uring_cmd_getsockopt(sock, cmd);
->  	default:
->  		return -EOPNOTSUPP;
->  	}
-> -- 
-> 2.34.1
-> 
-
-
+Failed to apply patch:
+Applying: dt-bindings: net: mediatek,net: add missing mediatek,mt7621-eth
+Applying: dt-bindings: net: mediatek,net: add mt7988-eth binding
+Applying: net: ethernet: mtk_eth_soc: add version in mtk_soc_data
+Applying: net: ethernet: mtk_eth_soc: increase MAX_DEVS to 3
+Applying: net: ethernet: mtk_eth_soc: rely on MTK_MAX_DEVS and remove MTK_MAC_COUNT
+Applying: net: ethernet: mtk_eth_soc: add NETSYS_V3 version support
+Applying: net: ethernet: mtk_eth_soc: convert caps in mtk_soc_data struct to u64
+Applying: net: ethernet: mtk_eth_soc: convert clock bitmap to u64
+Applying: net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC
+error: sha1 information is lacking or useless (drivers/net/ethernet/mediatek/mtk_eth_soc.c).
+error: could not build fake ancestor
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+Patch failed at 0009 net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+-- 
+pw-bot: cr
