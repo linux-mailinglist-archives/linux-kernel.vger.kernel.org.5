@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8349175E66D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0AA75E671
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjGXBUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
+        id S230052AbjGXBUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjGXBT6 (ORCPT
+        with ESMTP id S229926AbjGXBUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:19:58 -0400
+        Sun, 23 Jul 2023 21:20:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E50E171F;
-        Sun, 23 Jul 2023 18:19:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB7E1BB;
+        Sun, 23 Jul 2023 18:19:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA50E60EF9;
-        Mon, 24 Jul 2023 01:18:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B3ACC433C8;
-        Mon, 24 Jul 2023 01:18:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F61760F05;
+        Mon, 24 Jul 2023 01:18:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E123EC433C7;
+        Mon, 24 Jul 2023 01:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161512;
-        bh=Gx0A6rJXlbwCqQAX4Gy3l3XZri+JPfTyJS42TR/E9NE=;
+        s=k20201202; t=1690161517;
+        bh=Gm7xMPFN6RJVQ+Wp6OwKlm6mqZ19x2ksKi4VSKNYyFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8KB6mboxgRbRqwcGC1i3Czl4GwNFLtMlN5xdovMtQB7IjyoKuD8FBcP6kH7yuHby
-         dFgEvSXo2votroXvzgzDQc8817hAeCJIcyBz330yP6X5tHeEkI13kyMQvZ8z45g8F8
-         h8QUj+Q6r0mNOSJf2ZAzGPm8PP6y7QSwhuql/xhcFuddN7dtl5EUshzqMAgd8gIf95
-         wYVNqvAqOxlsvl6d2mGyUQIUCrafYZycP+2UBz3JRjkMZjfPnCf9WyMVQiNV2+F8MD
-         C4Q4mlauUKRsrT26M6JA70FkzbDRI7gC7LEfz2zM+lC2cWWCB+Pf32N77Zn7O2CAJX
-         l8ONtdzg18s3g==
+        b=m8haTTgwnKbs/GeUkvRYMRYmlPVTzngCPso7ejazfr2JnadFzn0xRFZFv/i1TyAp1
+         en+X50i/+MMCgZyGp1JEnWwyGK5n2Jw5YMyw+7KLCW4nu1RNn0UfLLw31a8IFi+Dm1
+         tvqtiimp1HejkbgabEUvayUA0xHbEFY4QhxjZtpPMm4Os7Cg0TQMZZHpdi5mWNN5Cq
+         NqDKAbHcS790z3MLVkTphlgTwlSxoaYiEsf6OnW0kCBuWUfUtlYvX4DWzsMMsbGeOw
+         KT6EuP2iU/wvYpVXQOmf2KVsmuzRy3Rkq0U9Og3aAtTVhub865ez9UHmiNHsvvakvq
+         Jxt1fnAidxapg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>, Oded Gabbay <ogabbay@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ttayar@habana.ai,
-        stanislaw.gruszka@linux.intel.com, dliberman@habana.ai,
-        osharabi@habana.ai, dhirschfeld@habana.ai, mhaimovski@habana.ai,
-        kelbaz@habana.ai, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 31/58] accel/habanalabs: add pci health check during heartbeat
-Date:   Sun, 23 Jul 2023 21:12:59 -0400
-Message-Id: <20230724011338.2298062-31-sashal@kernel.org>
+Cc:     Moti Haimovski <mhaimovski@habana.ai>,
+        Dani Liberman <dliberman@habana.ai>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, obitton@habana.ai,
+        ttayar@habana.ai, kelbaz@habana.ai, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.4 32/58] accel/habanalabs: fix mem leak in capture user mappings
+Date:   Sun, 23 Jul 2023 21:13:00 -0400
+Message-Id: <20230724011338.2298062-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
@@ -61,85 +61,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Moti Haimovski <mhaimovski@habana.ai>
 
-[ Upstream commit d8b9cea584661b30305cf341bf9f675dc0a25471 ]
+[ Upstream commit 314a7ffd7c196b27eedd50cb7553029e17789b55 ]
 
-Currently upon a heartbeat failure, we don't know if the failure
-is due to firmware hang or due to a bad PCI link. Hence, we
-are reading a PCI config space register with a known value (vendor ID)
-so we will know which of the two possibilities caused the heartbeat
-failure.
+This commit fixes a memory leak caused when clearing the user_mappings
+info when a new context is opened immediately after user_mapping is
+captured and a hard reset is performed.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
+Reviewed-by: Dani Liberman <dliberman@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/accel/habanalabs/common/device.c         | 15 ++++++++++++++-
- drivers/accel/habanalabs/common/habanalabs.h     |  2 ++
- drivers/accel/habanalabs/common/habanalabs_drv.c |  2 --
- 3 files changed, 16 insertions(+), 3 deletions(-)
+ drivers/accel/habanalabs/common/habanalabs_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
-index fabfc501ef543..a39dd346a1678 100644
---- a/drivers/accel/habanalabs/common/device.c
-+++ b/drivers/accel/habanalabs/common/device.c
-@@ -981,6 +981,18 @@ static void device_early_fini(struct hl_device *hdev)
- 		hdev->asic_funcs->early_fini(hdev);
- }
- 
-+static bool is_pci_link_healthy(struct hl_device *hdev)
-+{
-+	u16 vendor_id;
-+
-+	if (!hdev->pdev)
-+		return false;
-+
-+	pci_read_config_word(hdev->pdev, PCI_VENDOR_ID, &vendor_id);
-+
-+	return (vendor_id == PCI_VENDOR_ID_HABANALABS);
-+}
-+
- static void hl_device_heartbeat(struct work_struct *work)
- {
- 	struct hl_device *hdev = container_of(work, struct hl_device,
-@@ -995,7 +1007,8 @@ static void hl_device_heartbeat(struct work_struct *work)
- 		goto reschedule;
- 
- 	if (hl_device_operational(hdev, NULL))
--		dev_err(hdev->dev, "Device heartbeat failed!\n");
-+		dev_err(hdev->dev, "Device heartbeat failed! PCI link is %s\n",
-+			is_pci_link_healthy(hdev) ? "healthy" : "broken");
- 
- 	info.err_type = HL_INFO_FW_HEARTBEAT_ERR;
- 	info.event_mask = &event_mask;
-diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
-index eaae69a9f8178..7f5d1b6e3fb08 100644
---- a/drivers/accel/habanalabs/common/habanalabs.h
-+++ b/drivers/accel/habanalabs/common/habanalabs.h
-@@ -36,6 +36,8 @@
- struct hl_device;
- struct hl_fpriv;
- 
-+#define PCI_VENDOR_ID_HABANALABS	0x1da3
-+
- /* Use upper bits of mmap offset to store habana driver specific information.
-  * bits[63:59] - Encode mmap type
-  * bits[45:0]  - mmap offset value
 diff --git a/drivers/accel/habanalabs/common/habanalabs_drv.c b/drivers/accel/habanalabs/common/habanalabs_drv.c
-index d9df64e75f33a..1ec97da3dddb8 100644
+index 1ec97da3dddb8..70fb2df9a93b8 100644
 --- a/drivers/accel/habanalabs/common/habanalabs_drv.c
 +++ b/drivers/accel/habanalabs/common/habanalabs_drv.c
-@@ -54,8 +54,6 @@ module_param(boot_error_status_mask, ulong, 0444);
- MODULE_PARM_DESC(boot_error_status_mask,
- 	"Mask of the error status during device CPU boot (If bitX is cleared then error X is masked. Default all 1's)");
+@@ -13,6 +13,7 @@
  
--#define PCI_VENDOR_ID_HABANALABS	0x1da3
--
- #define PCI_IDS_GOYA			0x0001
- #define PCI_IDS_GAUDI			0x1000
- #define PCI_IDS_GAUDI_SEC		0x1010
+ #include <linux/pci.h>
+ #include <linux/module.h>
++#include <linux/vmalloc.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/habanalabs.h>
+@@ -218,6 +219,7 @@ int hl_device_open(struct inode *inode, struct file *filp)
+ 
+ 	hl_debugfs_add_file(hpriv);
+ 
++	vfree(hdev->captured_err_info.page_fault_info.user_mappings);
+ 	memset(&hdev->captured_err_info, 0, sizeof(hdev->captured_err_info));
+ 	atomic_set(&hdev->captured_err_info.cs_timeout.write_enable, 1);
+ 	hdev->captured_err_info.undef_opcode.write_enable = true;
 -- 
 2.39.2
 
