@@ -2,210 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1CC75FCDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2522875FCD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbjGXRCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S230508AbjGXRCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjGXRCu (ORCPT
+        with ESMTP id S230000AbjGXRCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:02:50 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA534B0;
-        Mon, 24 Jul 2023 10:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690218166; x=1721754166;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=du8XWjXo076jlZ5ISL0tq5vIDPA+s1Yk9HVrGjxwbhg=;
-  b=mhyNn864K63nAYUxc9gluKHmlT4VW7BDNHfSrAOlMPldETI8J7vc2mwi
-   /Mgaswr97BvWO7jjLxqJIUbI6w8/GLdW0YnQTjMsdftXDUzELSujyv5S6
-   yLuQOtV415tolrPmFPwisewyFZ4J4E7t9TPI6wGD/5MufMiIaMpTOMM77
-   l3f9QJfX5HxSln7R1Fb1XGZqC7INe7X+olNqV9VNZC5QEOzT7l30P9/Zl
-   u8/Gah//c9Ub4bnJizfTeFrcoUXEpD7aEUBPemDYxx2RJ+OjyQMYw1Kzi
-   aIPEmkwb/lS5J/0vETtCooFgkvLPqTtRTc/SnR3umjm+oxqXqIvn7KbhF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398406281"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398406281"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 10:02:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="849706506"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="849706506"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP; 24 Jul 2023 10:02:19 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 10:02:19 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 10:02:18 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 10:02:18 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.49) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 24 Jul 2023 10:02:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahfymnZC8WebKI/tmCYCAm/573YxNMmNQYP+cu4KwRHllxMN2flPkT+uHrQBfIy0RHg4VfLukGS4g4tf3+eXN/g7M7ynLt8RwBFKYkknEHtVwoidkpZ1t+OqioIK7NL3PBBbnJs8cCqGy/Lbi2g6G8no5jOoNljlj1MSGF6DlfFPIMjHdVaGTjRDzwyoLDvCUGEimgVB89fyiBnsQPGSkvogx17f3hv8UInr+p27eTio59Zyw+bHxZh1fAD89D9rnBJumwKBkmy604ageL5VxIYrTjtrqSOeDTwgbzkMNtuAMLrRNikt1tNZ4r8y9pmnnAdcu9ClYTOXpXAmbgHo7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=du8XWjXo076jlZ5ISL0tq5vIDPA+s1Yk9HVrGjxwbhg=;
- b=ZCZ0b/XdhT2uOi0RT97KAugfjzIO18Qsk+m3/Km+QbNqR18iiGVvhsTXg9QmSc6PKsxd8tC+oxvUYR5EcGbWeMu6nz9GMPh8REJb80s5mQ9JXmQhRFH6WITwYQsC6GL/z2na3yHWrkLT9ICppaugEAM0uFenQE/jI6iKlw3e8sCZvT7gAV+Z0Lh3TdGUPiwmp4RQUtVmztGO7J6S8drf+qq8RPqK1wDxPm4EnXDi4AanZE5Jli97lx57GMdd/gWnuLIAIfIY17RCYSHJi2JZ34fd7qqo7F91a+0xbB9+gmIZPjOYBAMIhHTngcFKrlImTwW5IInQISpeVfCmX9eTfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MW4PR11MB5823.namprd11.prod.outlook.com (2603:10b6:303:186::12)
- by IA1PR11MB7246.namprd11.prod.outlook.com (2603:10b6:208:42e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 17:02:15 +0000
-Received: from MW4PR11MB5823.namprd11.prod.outlook.com
- ([fe80::95fe:e2ee:d733:6399]) by MW4PR11MB5823.namprd11.prod.outlook.com
- ([fe80::95fe:e2ee:d733:6399%5]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 17:02:15 +0000
-From:   "Winiarska, Iwona" <iwona.winiarska@intel.com>
-To:     "robh@kernel.org" <robh@kernel.org>
-CC:     "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "yuenn@google.com" <yuenn@google.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venture@google.com" <venture@google.com>,
-        "Fair, Benjamin" <benjaminfair@google.com>,
-        "warp5tw@gmail.com" <warp5tw@gmail.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 1/4] dt-bindings: Add bindings for peci-npcm
-Thread-Topic: [PATCH 1/4] dt-bindings: Add bindings for peci-npcm
-Thread-Index: AQHZuo3AbGEw2WnzRUim2nq9di7rt6/CLwOAgAAdNACABrewAIAAKCsA
-Date:   Mon, 24 Jul 2023 17:02:15 +0000
-Message-ID: <7858c5484547b1915a688ec2faaa57b4ec1c5586.camel@intel.com>
-References: <20230719220853.1029316-1-iwona.winiarska@intel.com>
-         <20230719220853.1029316-2-iwona.winiarska@intel.com>
-         <69fa21b4-3197-d5f1-f300-d070cf5e7fda@linaro.org>
-         <6ce71c01371aefa818375d6e07b3efb8e747c86a.camel@intel.com>
-         <20230724143826.GA3433528-robh@kernel.org>
-In-Reply-To: <20230724143826.GA3433528-robh@kernel.org>
-Accept-Language: en-US, pl-PL
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR11MB5823:EE_|IA1PR11MB7246:EE_
-x-ms-office365-filtering-correlation-id: bda5737b-fb74-4a8f-f69d-08db8c67bb2a
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VfRtF5VuIMO+dTkjDSBemFhSnxU3eMqTpJ8mVw/uPhdHLjtt+BT2aLopZC57da878lc/cs6AXgdeKZXGGTO56UgmuY9MIkbdRDA2zzm2NPRqyXk0Iw13vbHk/MrZYBOq42wjf3WX00Gt5oFJtpbUkyUN/fiJklgNZlphP2L2F2kUZuZFAbcnQ8xFP+BixpNyeNsh3KrNP1DcayJ9br9jOrK2IrQfcW1/3/J9YRBOz02Qo+E64bXh3RFt0YO1dL8jVsJQCM0Tya11aEKFBiIV17SwYg0m73YW4w+kal8Bdu+fIO7M6nbscOYFcXcbD6Hpb5DLuFkkA9nw9BvxgZaDWiiBKeTYiddSFyVSXdNzf95jwaj34dOGLXSyem36GIFJLYD+mWAC94Y1behz29AQFnEGAJGKqduCMVWV8AQnl0dFtVHPKHdnKApPvP6xmyZ93vLxv2HTLXQcxU8ovN1cdxsFmDPtNDPRxAiWiG7ihFOH7VouDTDd5URrNFk9DrTa4M+KCQJNb/S2+EXUctyO6rX9oeZ94iUT3Ho+pHHIN8VHU6GTNM4JWOxXRFF7QozksF4JHnNikMJ1MEpVfycIF2KBq1Prx+60/FNYfs3U4fKX8Ayc3XvAS/Gc+fNDrqOK0wu+uId1SzJkFgAtR+a/YA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5823.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(39860400002)(376002)(136003)(366004)(451199021)(38100700002)(122000001)(4326008)(36756003)(53546011)(2616005)(83380400001)(7416002)(8936002)(8676002)(5660300002)(66556008)(66446008)(478600001)(54906003)(64756008)(6916009)(66476007)(66946007)(91956017)(76116006)(316002)(41300700001)(71200400001)(26005)(186003)(6506007)(966005)(6486002)(6512007)(2906002)(38070700005)(86362001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QzdadzFJYUVWaE1tQWIrNzBvckFvSUNSblNWLzBxYTkrU1ozMXhZV2drZXdV?=
- =?utf-8?B?OHpKd3o4U2ZUQ2grdUJHV2xCdWJ5TTRoemZIcWl6Q25SKy9ON2lEYjFYR0x5?=
- =?utf-8?B?anExMzVnVDlBRnpjZnVBdFZtOFVmTlRKWTlTTkE5Y0g0c2owSnF4TXVIaWxV?=
- =?utf-8?B?Q0QzSjFmcUlyRmZNM0ZDTVJZRU0wY1ltcG94NE1Ha1Ara3UvY2dRTGd3SUZZ?=
- =?utf-8?B?K2hKYU9nVXVsR3BiazV0NFhmcUZRSkhpZ0c2cnFpaWpORmVrbnN6RTlxUjZ2?=
- =?utf-8?B?VEdsRkF4dmd5MGhnVHFwQUF6dW4zenFXclVCQlQ3eGxxeUF5WlYwVEExVC82?=
- =?utf-8?B?TDRJcEJsRlI0YzlHb0R4UStCRkp2TUg5d0toTW56cGdlQWIwWXliZVhkbXdI?=
- =?utf-8?B?MXl4a3JwQzRHSGNaTFJOeGdLMVIrWTNvdnZYZDFoU2dPeGhvVDlDMS9GOEpw?=
- =?utf-8?B?S2RlbGIzaXpIZGZaekhIbUE3NWtZY3Q1LzAzY003U05LVndHUG5wOHVLNUNo?=
- =?utf-8?B?eGxXYk82eDg5eXp3RDFUUkhCRkNLOURMdG1GQmcrblRqUVZOOTRTRGgzdi9q?=
- =?utf-8?B?ODlHbUxjcHdJckpUenBJeTdsMU1nUWpZZWI3aVV3Z001ajV0QUFlZUxYdGRh?=
- =?utf-8?B?ZzhaTE5kMXBwKzFWbStJelFPUUZnekFTV3pUZGgxSGpKZEpJemhneVJ1ZFcy?=
- =?utf-8?B?NHdCd3luYlhuK3k5UG1pVXZEUmNDUnhJZ1JHMUsxSFpNK1YzOW9JNDAzUjJI?=
- =?utf-8?B?eU11VlRWOFRYRUsvdWFES1BYTXRNVUF6d3FuRXVSazNwYS9yZGJMQkdZbndo?=
- =?utf-8?B?UFhXUGNJbElLR3lTVXpvSHc5VDVoMW5LODJ3VzdYOGdzS01GTGxiYzRPK2V3?=
- =?utf-8?B?SFZQU1VneGY2V3JYNGsxZVNpaDhNUGJLV2htVnozY2FsMW96Qys1TmRIdHY5?=
- =?utf-8?B?bjlXeWFlL0ZZOXFPSEQxM2hBVzEwRy90MTZSclBPWlVpb253Nk5YclJVcEJX?=
- =?utf-8?B?clJWQ2Q2NTFsRllCMkFXYlBrU1k4bmx1L1pCSjVyZkNld2JLQ1pWMFlZU21J?=
- =?utf-8?B?cmtWbFhHVnBWejFmZGNkVmFkMFB1QmxqZ2tacmhLZE5xZVBpMWVEUEF5ZDRa?=
- =?utf-8?B?M0FrQ1h1bmtVd0g3WHNXTjd1QXNYZkZ0R0JTZ25mRW16L09DekRLVFVXWmVv?=
- =?utf-8?B?dlg1Q3BadmZOamVvdkI4N293NUtLOVlJVFZRWm9PdGxxUk4yQnlXbmxnbndp?=
- =?utf-8?B?eWlxeU1kVHpCdVM3VitNUGpKaUw1VVBIWnlPV01yY0w3aEJ1ODFINHk3M0Q2?=
- =?utf-8?B?THlXbWlSMEJ5YmFoaDBqVm1VV09kOGFaeTJMLzN3a2RqYmdvL0JpQ3R6OTJh?=
- =?utf-8?B?OHVaU2toeWpsQXlKdi9ZL0tMYThyMS93REJJb05palY2ZjZXeHZIbXFZN2Rn?=
- =?utf-8?B?b1l5eEJSQkNsaG1iQnNrY2Vkbzh6N2pYUWptRWUvSko3Qm5Cb254SDB4OWhy?=
- =?utf-8?B?dyt0SWUyTVdYUnlPdmhKSnp5WVF0aExlVEwxWmJOYWxRSUxaMnIyMlpkSG9H?=
- =?utf-8?B?azg0bnNRaWhJUmM4cnVvUkpWUE5DSEJyY1BsR2V4M25IVFdYcTVVNVhPOUdH?=
- =?utf-8?B?SGlWY3RmR0tpS2pyYjVCai81UnF2cmFLa0Q0MXdhem1uMmNEYkJFa3hqajhM?=
- =?utf-8?B?VEM4OUZDekNSaDFuVmRDUnhBeERhWXhTaWw1WkluNXZOMnB5UmJUcXFxa3Uz?=
- =?utf-8?B?akdNdmk1NElNOERnNlVIOU1UZ0FrS05OQzZxOGYzanhicHQ0TUZWcWsrU0ND?=
- =?utf-8?B?YjRYMDdoVDhUdWpoZlZVT2hnQXAxV0dHTzBmQlFpZEE0WEZUay9LS0NLS1JX?=
- =?utf-8?B?UEVEbzNkNEF6YWsvcnFQa3p2TWJMQUNUd05jbEFLRy9YWlRPcWNwejBMQWJN?=
- =?utf-8?B?T0hVd2N0THE1cXVIQXdYMXhXS1lSQkJDYWRqeUZLN1lLU0pVSEhaWlBWQk1k?=
- =?utf-8?B?MjJSZ0hLcS9UbjNvUE94K09VMWtOZzBTQ21KRGtwL01Zb29Mby9iRXV3Y3RW?=
- =?utf-8?B?L1VFbEdiU1VDSWNLbGtYQndoN1BFbWZpdDdVWU9UdGl3elpXWjFzSXMweXBy?=
- =?utf-8?B?a0VMVHFjbnV0WFRIWHN0dDVKeFhNUTBhUG9HQ1hFS2IzRHE4UUNKMS9wNzFF?=
- =?utf-8?B?Wnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C9AEA2CCA6B5D143875770921E855DDC@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5823.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bda5737b-fb74-4a8f-f69d-08db8c67bb2a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 17:02:15.2650
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vL+aguXyqMFfLlnQO9UIw7MVkzanyAWHRHbGzCPAUIp/h6SwYgxyRZxnVDms9siws5tN3e7wD/BSXDhxcKnonnHmTudLg4PxStBcWcBUlF4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7246
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 13:02:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A30C126
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:02:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 91B32612C3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:02:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9BE6C433C8;
+        Mon, 24 Jul 2023 17:02:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690218152;
+        bh=rLqU/nB+rUejTdVyQxhj4EwtasTp+9R+SPZMl9FIjNg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m7LSK7wQro8BflGIDWOzGEudiMg1YiZFbRMcqPVTow6mPPmKAL5kJH0x4IBJiwzUo
+         CUC4wI7eGx0h0kxAyI0WFApArC+lPQHdJXQRYbtUblHuynjoaZsd3BBCJDM4xWYShy
+         JMxK4nWprLqxEZsHwUNexpPR6rPAc6ZccK28k2s4=
+Date:   Mon, 24 Jul 2023 10:02:31 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] Remove unused parameters in page_table_check
+Message-Id: <20230724100231.94abdfb007bea270d607a760@linux-foundation.org>
+In-Reply-To: <CA+CK2bBb1YPXSU_YswN6hmf5pqDcc0O6KMw7C3nNCM0ztqm76Q@mail.gmail.com>
+References: <20230713172636.1705415-1-shikemeng@huaweicloud.com>
+        <CA+CK2bBb1YPXSU_YswN6hmf5pqDcc0O6KMw7C3nNCM0ztqm76Q@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTA3LTI0IGF0IDA4OjM4IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVGh1LCBKdWwgMjAsIDIwMjMgYXQgMDg6MDM6MjhBTSArMDAwMCwgV2luaWFyc2thLCBJd29u
-YSB3cm90ZToNCj4gPiBPbiBUaHUsIDIwMjMtMDctMjAgYXQgMDg6MTggKzAyMDAsIEtyenlzenRv
-ZiBLb3psb3dza2kgd3JvdGU6DQo+ID4gPiBPbiAyMC8wNy8yMDIzIDAwOjA4LCBJd29uYSBXaW5p
-YXJza2Egd3JvdGU6DQo+ID4gPiA+IEZyb206IFRvbWVyIE1haW1vbiA8dG1haW1vbjc3QGdtYWls
-LmNvbT4NCj4gPiA+ID4gDQo+ID4gPiA+IEFkZCBkZXZpY2UgdHJlZSBiaW5kaW5ncyBmb3IgdGhl
-IHBlY2ktbnBjbSBjb250cm9sbGVyIGRyaXZlci4NCj4gPiA+ID4gDQo+ID4gPiA+IFNpZ25lZC1v
-ZmYtYnk6IFRvbWVyIE1haW1vbiA8dG1haW1vbjc3QGdtYWlsLmNvbT4NCj4gPiA+ID4gU2lnbmVk
-LW9mZi1ieTogVHlyb25lIFRpbmcgPHdhcnA1dHdAZ21haWwuY29tPg0KPiA+ID4gPiBDby1kZXZl
-bG9wZWQtYnk6IEl3b25hIFdpbmlhcnNrYSA8aXdvbmEud2luaWFyc2thQGludGVsLmNvbT4NCj4g
-PiA+ID4gU2lnbmVkLW9mZi1ieTogSXdvbmEgV2luaWFyc2thIDxpd29uYS53aW5pYXJza2FAaW50
-ZWwuY29tPg0KPiA+ID4gPiAtLS0NCj4gPiA+IA0KPiA+ID4gTm8gY2hhbmdlcyBmcm9tIHByZXZp
-b3VzIHZlcnNpb25zPyBOb3RoaW5nIGltcHJvdmVkPw0KPiA+IA0KPiA+IFRoaXMgaXMgdGhlIGZp
-cnN0IHN1Ym1pc3Npb24uDQo+IA0KPiAxM3RoIGJ5IG15IGNvdW50Lg0KPiANCj4gaHR0cHM6Ly9s
-b3JlLmtlcm5lbC5vcmcvYWxsLzIwMjMwNjE2MTkzNDUwLjQxMzM2Ni0yLWl3b25hLndpbmlhcnNr
-YUBpbnRlbC5jb20vDQoNClRoaXMgd2FzIGp1c3QgYSByZXF1ZXN0IGZvciB0ZXN0aW5nIHNlbnQg
-ZXhjbHVzaXZlbHkgdG8gb3BlbmJtYyBtYWlsaW5nbGlzdCAoYW5kDQpidHcgLSB0aGVyZSB3ZXJl
-IG5vIGNoYW5nZXMgaW4gYmV0d2VlbikuDQoNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxs
-LzIwMTkxMjExMTk0NjI0LjI4NzItOC1qYWUuaHl1bi55b29AbGludXguaW50ZWwuY29tLw0KDQpU
-aGlzIGlzIHBhcnQgb2YgYSBzZXJpZXMgdGhhdCBjb250YWlucyB3aG9sZSwgY3VycmVudGx5IG9i
-c29sZXRlZCwgUEVDSQ0Kc3Vic3lzdGVtLCBpbiBhIGZvcm0gdGhhdCBuZXZlciBnb3QgbWVyZ2Vk
-IGludG8gbWFpbmxpbmUgTGludXguDQoNClRoZSBQRUNJIHN1YnN5c3RlbSB0aGF0IGlzIGN1cnJl
-bnRseSBwcmVzZW50IGluIG1haW5saW5lIExpbnV4IGRpZG4ndCBpbmNsdWRlDQpOdXZvdG9uIGRy
-aXZlcjoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIyMDIwODE1MzYzOS4yNTUyNzgt
-MS1pd29uYS53aW5pYXJza2FAaW50ZWwuY29tLw0KDQpUaGVyZSBpcyBhIHN1YnNldCBvZiBwYXRj
-aGVzIHRoYXQgaXMgY29tbW9uIGJldHdlZW4gdGhpcyBzdWJtaXNzaW9uIGFuZCB0aGUNCm9ic29s
-ZXRlZCBQRUNJIHN1YnN5c3RlbSBzZXJpZXMgKHRoZSBsaW5rZWQgdjExKSwgYnV0IEkgZG9uJ3Qg
-c2VlIGhvdyBjb250aW51aW5nDQp0aGF0IG51bWJlcmluZyB3b3VsZCBwcm92aWRlIGFueSB1c2Vm
-dWwgaW5mb3JtYXRpb24gdG8gcmV2aWV3ZXJzLg0KDQpUaGFua3MNCi1Jd29uYQ0K
+On Sat, 22 Jul 2023 17:48:31 -0400 Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
+
+> On Thu, Jul 13, 2023 at 5:25 AM Kemeng Shi <shikemeng@huaweicloud.com> wrote:
+> >
+> > Hi all, this series remove unused parameters in functions from
+> > page_table_check. The first 2 patches remove unused mm and addr
+> > parameters in static common functions page_table_check_clear and
+> > page_table_check_set. The last 6 patches remove unused addr parameter
+> > in some externed functions which only need addr for cleaned
+> > page_table_check_clear or page_table_check_set. There is no intended
+> > functional change. Thanks!
+> 
+> NAK
+> 
+> Both, mm and addr are common arguments that are used for PTE handling
+> in many parts of memory management even when they are not used in
+> every function.
+> 
+> Currently, they are not used in page table check, but it is possible
+> we may need to use them in the future when support for other arches or
+> different types of page tables (i.e. extended page table) is added. It
+> is going to be hard to again modify all arch dependent code to add
+> these arguments back.
+> 
+> Also, internally at Google we are using these arguments, as we have a
+> module that maps user memory in a way that is incompatible with
+> upstream, and these arguments are used to support this module.
+> 
+
+I don't think these are very good arguments for carrying cruft in the
+mainline kernel.
+
+If such an architecture is introduced in the future or if google
+upstreams that module then we can restore one or both of these
+arguments at that time.  This is hardly insurmountable:
+
+ arch/arm64/include/asm/pgtable.h | 12 +++---
+ arch/riscv/include/asm/pgtable.h | 12 +++---
+ arch/x86/include/asm/pgtable.h   | 16 ++++----
+ include/linux/page_table_check.h | 66 ++++++++++++--------------------
+ include/linux/pgtable.h          |  6 +--
+ mm/page_table_check.c            | 50 +++++++++---------------
+ 6 files changed, 65 insertions(+), 97 deletions(-)
+
+
