@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52BF75FDE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBB475FDF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjGXRh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S230253AbjGXRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbjGXRhW (ORCPT
+        with ESMTP id S229461AbjGXRmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:37:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78052D3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:36:32 -0700 (PDT)
+        Mon, 24 Jul 2023 13:42:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BF010D1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690220191;
+        s=mimecast20190719; t=1690220490;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNGMSM8bxe1gWl9DKNB8FIofvuGTxcy8H7Yww9mrYIY=;
-        b=UFA076dOOnxqxplg042wUUbYzcLFn4JPs8YrBvObruixP7F/ko91YCvOCXngi0gAsrq6NE
-        iO0NIPOaQQu5ODl21VJSPMLOaH9+UHkx5uZrsyXqhNzxjUdgs/CYAGIVkS9Lv7Sy+qsunr
-        xFJh6vMjlNXFbfz3Ev3CZ1a6ftIfK3s=
-Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
- [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-P27huBNEP2i6SjlorolHOQ-1; Mon, 24 Jul 2023 13:36:30 -0400
-X-MC-Unique: P27huBNEP2i6SjlorolHOQ-1
-Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-44351c72d62so795344137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:36:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690220189; x=1690824989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kNGMSM8bxe1gWl9DKNB8FIofvuGTxcy8H7Yww9mrYIY=;
-        b=cUikFILpL5K7KWAB8JyujBGkf+A3dpx5WIvv5bH7GnVY3KpFzrkMp31/v6AZqPKSLN
-         w9BXEazMbJdgJ+MyiAx4Fc1yyIFrCOA/9zlyoTQ35wSjpVLgHkWe9ZUzXt3kfp0Kthbo
-         L91KXbq3YmnNBMJlM8vlj48j5F7/iAbqY/SEnTqsikrpLWqrmxq0JanS+3X1YujF+seN
-         eqcmV60VDfg9Q2a76QPdjnpjGlGI9x8ZqnGDtGUmWwPzLfEW36RaC9Ed7ewr6feBLEIG
-         zJOKU7Qg4o+36Jm6N1pvwpChWNPV/riDbpj6MPUMhESU3lfpEdrxrQTMnlSGKaPhOTpt
-         rAzA==
-X-Gm-Message-State: ABy/qLZG/n0dDTJJralrWm1jOwg5SL4cCy3YoOB/nfrMUQC7dzhmC/Jl
-        S+lahUvs9k/U+CKfayQ/Akl54brzcv/MLNnT4po3gEcguQt1LBprupBTtM4dAKqJmeZTRQmmXTC
-        2KhA+MhO4spXlbvjf4e7pbN4FCiQNx850plrTyoMy
-X-Received: by 2002:a67:f8d1:0:b0:443:6052:43ae with SMTP id c17-20020a67f8d1000000b00443605243aemr3299078vsp.24.1690220189676;
-        Mon, 24 Jul 2023 10:36:29 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEPDqGTgQT6TM0EZ/andXcsJaVfqEGx4nspzB3wq5naiCL3fLJVYaemN8sLojXqmdOKsQ5G89TIgjY7tVB3FGk=
-X-Received: by 2002:a67:f8d1:0:b0:443:6052:43ae with SMTP id
- c17-20020a67f8d1000000b00443605243aemr3299068vsp.24.1690220189488; Mon, 24
- Jul 2023 10:36:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAASaF6yKxWaW6me0Y+vSEo0qUm_LTyL5CPVka75EPg_yq4MO9g@mail.gmail.com>
- <7854000d2ce5ac32b75782a7c4574f25a11b573d.1689757133.git.jstancek@redhat.com>
- <64434.1690193532@warthog.procyon.org.uk> <10687.1690213447@warthog.procyon.org.uk>
- <20230724100914.38f286a5@kernel.org>
-In-Reply-To: <20230724100914.38f286a5@kernel.org>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=j48/9P37CpBRGRsqJBOd0KCivq5UbeFFAqfa49yRMBk=;
+        b=BItzssYRKgb2PptzNRUJIehA0S7BaiM0EZvK/QbfaLuvaxV33LQuEGP7UGXBgoFxp2kBQ1
+        iUMCPnoDYcNsC/x3dvvOCFSGe2iUpDvFKh5kudFFhO1CAT7VVCxaH7ziPaAuEF7cWkhiy5
+        Prut5ghbIE3tcCgMEpS21N5grJkFyjs=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-589-4f5zd9PFNOuws8Q3x83PtA-1; Mon, 24 Jul 2023 13:41:25 -0400
+X-MC-Unique: 4f5zd9PFNOuws8Q3x83PtA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C61062A5957E;
+        Mon, 24 Jul 2023 17:41:24 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.224.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B673400F1F;
+        Mon, 24 Jul 2023 17:41:23 +0000 (UTC)
 From:   Jan Stancek <jstancek@redhat.com>
-Date:   Mon, 24 Jul 2023 19:37:08 +0200
-Message-ID: <CAASaF6z27XJGhn_7uX+KXrTFoi6KtK4Oxp1b_OZ7dW8yEH9X5Q@mail.gmail.com>
-Subject: Re: [PATCH] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brauner@kernel.org,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     dhowells@redhat.com, kuba@kernel.org, netdev@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brauner@kernel.org, viro@zeniv.linux.org.uk, jstancek@redhat.com
+Subject: [PATCH v2] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+Date:   Mon, 24 Jul 2023 19:39:04 +0200
+Message-Id: <023c0e21e595e00b93903a813bc0bfb9a5d7e368.1690219914.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 7:09=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Mon, 24 Jul 2023 16:44:07 +0100 David Howells wrote:
-> > Anyway, did you want to post this to netdev too so that the networking =
-tree
-> > picks it up?  Feel free to add:
->
-> +1, no preference which tree this goes thru, but if no one else claims
-> it please repost CCing netdev@vger.kernel.org
+LTP sendfile07 [1], which expects sendfile() to return EAGAIN when
+transferring data from regular file to a "full" O_NONBLOCK socket,
+started failing after commit 2dc334f1a63a ("splice, net: Use
+sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()").
+sendfile() no longer immediately returns, but now blocks.
 
-I'll repost, thanks.
+Removed sock_sendpage() handled this case by setting a MSG_DONTWAIT
+flag, fix new splice_to_socket() to do the same for O_NONBLOCK sockets.
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/sendfile/sendfile07.c
+
+Fixes: 2dc334f1a63a ("splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()")
+Acked-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+Changes in v2:
+- add David's Acked-by
+- add netdev list
+
+ fs/splice.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/splice.c b/fs/splice.c
+index 004eb1c4ce31..3e2a31e1ce6a 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -876,6 +876,8 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe, struct file *out,
+ 			msg.msg_flags |= MSG_MORE;
+ 		if (remain && pipe_occupancy(pipe->head, tail) > 0)
+ 			msg.msg_flags |= MSG_MORE;
++		if (out->f_flags & O_NONBLOCK)
++			msg.msg_flags |= MSG_DONTWAIT;
+ 
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, bc,
+ 			      len - remain);
+-- 
+2.31.1
 
