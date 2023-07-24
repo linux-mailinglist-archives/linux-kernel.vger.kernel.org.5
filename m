@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C3475ED3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D391275ED3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjGXIS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S231223AbjGXITU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGXISz (ORCPT
+        with ESMTP id S229468AbjGXITQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:18:55 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB61D93;
-        Mon, 24 Jul 2023 01:18:53 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9926623e367so723726366b.0;
-        Mon, 24 Jul 2023 01:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690186732; x=1690791532;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7buxcMDQbXYavYttmKzovI7MVKRmkAiMGJ3Ho5r5lNY=;
-        b=K+gsHI9j9r5lM9XR5WMABpbPvZlKmXj9i8awMb9HkIEa50nkUIRf2zcqCu/VonB6pr
-         PsFFF9JmFN6t32dktfPlGOi4b0/k6/hsfQr73Zgn4fW1Dkt5My77WJsXR9Ipc/JeVokw
-         ko5Awlouhbsuwp1TtlL+dGDxGLvZC3M3aN7VKH8K4hHO0QMwYE84iv8mOwJ43pIaHnzE
-         j4z+wYwstI9IMtOWD9M8vuQuEFyhjSLqm8uS6gurwmoxQ1dY6JSi5/bLG6Y4zKFZQwhU
-         24zHhYW3fGOSqIZU4AVeJgPt4gI32ED6/cBUcsMB5rYdLAgJ6EHi22z5tkgwdAW/1rrK
-         zYlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690186732; x=1690791532;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7buxcMDQbXYavYttmKzovI7MVKRmkAiMGJ3Ho5r5lNY=;
-        b=YfJ7zXSvFlMTl2XOpXBO7fHTCzEAQrFbj1lH7TUFuZ+z+gP9Dsl05kwmGANKQoq89d
-         N7vuJWC8nvEw95UKNF98F+2veuMuZiGnIW3V/j+nJiizbU9HfA+9KMPf5/DnkyXgsSLs
-         US+x8QGpWg0n2leBHaqLt7gyDEgoJ+VpD7bbbO//jwC56ru33VEG9gWhzMbj0ADkZu5s
-         BGeFPY+6CnwyYmhhGwrBo2lkIDoVkrousYTeY4RnD0X62i2xej/RwYz/FG1k4hDgrx53
-         MUcsxRrO/5uWvESNDleLxk7Q04YtjBTomEusR2hxEPqLnEIYDLmf1jcvAgI8kyWB6f9L
-         qfKg==
-X-Gm-Message-State: ABy/qLa4sy1qSdhVqrllKeHBe5u2VFA58ZP/AIFI2UURGyLucAZtrCc1
-        ZfSDXOqM1WtlUaImS06S694Hxk6Zyac=
-X-Google-Smtp-Source: APBJJlGho1sN/bOHW+RH6k1NPxhZen/9JhFicpH04PsIewBGNWPrEjS7LDmgv8rz/WQW9yb2ay9KJw==
-X-Received: by 2002:a17:907:7758:b0:988:a578:4d65 with SMTP id kx24-20020a170907775800b00988a5784d65mr9049507ejc.32.1690186732037;
-        Mon, 24 Jul 2023 01:18:52 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id kg8-20020a17090776e800b0099329b3ab67sm6337302ejc.71.2023.07.24.01.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 01:18:51 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 24 Jul 2023 10:18:48 +0200
-To:     Baoquan He <bhe@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
-Message-ID: <ZL4z6LVzrbMvXwyl@krava>
-References: <cover.1679566220.git.lstoakes@gmail.com>
- <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
- <ZHc2fm+9daF6cgCE@krava>
- <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
- <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
- <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
+        Mon, 24 Jul 2023 04:19:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E6198;
+        Mon, 24 Jul 2023 01:19:12 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 497C26607029;
+        Mon, 24 Jul 2023 09:19:10 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690186750;
+        bh=gBQZn3CBVzSSUQuQhiQ/sMga7mNoQxmP14hkArh6+tc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=k4qhWOQ0EpeQPuilqCex3htPrIbtXEuyKzFuqeiDk++TLGT0zZ0A13VZZqzUVJjQ3
+         mAEnwYp2wYosdzNioE2/KOTch9UhkDwZtorSJhIq+Ape1A749CB7liJkvjsjasWwYc
+         SFiFDEPVZ/O1gQu2MXb6oOfIf63k95YWn53UXI9sxVShhclTMZtv276AoryfId+qGW
+         Y7F+IlaB9ubURhixxnVjbq/KcKHrlWZrXCS6uRexGDDqn0/bMqMXhE9Ro3iNm6HezR
+         cCHyMkGQGLs1zZKDI3GatgII4XgwosRBB+muWg6riEUrO64lB+S1cgZF5N565070ew
+         ArrbxpFkgAMHQ==
+Message-ID: <56e5f094-7032-ee0a-6824-3292f4b7c707@collabora.com>
+Date:   Mon, 24 Jul 2023 10:19:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 5/5] arm64: dts: mediatek: Add spherion-rev4
+Content-Language: en-US
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, kernel@collabora.com,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20230721201705.387426-1-nfraprado@collabora.com>
+ <20230721201705.387426-6-nfraprado@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230721201705.387426-6-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,35 +65,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 04:08:41PM +0800, Baoquan He wrote:
-> On 07/24/23 at 08:23am, David Hildenbrand wrote:
-> > Hi,
-> > 
-> > > 
-> > > I met this too when I executed below command to trigger a kcore reading.
-> > > I wanted to do a simple testing during system running and got this.
-> > > 
-> > >    makedumpfile --mem-usage /proc/kcore
-> > > 
-> > > Later I tried your above objdump testing, it corrupted system too.
-> > > 
-> > 
-> > What do you mean with "corrupted system too" --  did it not only fail to
-> > dump the system, but also actually harmed the system?
+Il 21/07/23 22:16, Nícolas F. R. A. Prado ha scritto:
+> Add a devicetree for rev4 of Spherion. It uses the rt5682s audio codec
+> instead of the rt5682 used in the previous revision.
 > 
-> From my testing, reading kcore will cause system panic, then reboot. Not
-> sure if Jiri saw the same phenomenon.
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> 
 
-it did not crash for me, just the read error
-could you get console output from that?
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-jirka
 
-> 
-> > 
-> > @Lorenzo do you plan on reproduce + fix, or should we consider reverting
-> > that change?
-> 
-> When tested on a arm64 system, the reproducution is stable. I will have
-> a look too to see if I have some finding this week.
-> 
