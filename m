@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9823675E8A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3562A75E8AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjGXBm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S232053AbjGXBoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbjGXBmO (ORCPT
+        with ESMTP id S232206AbjGXBm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:42:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4E7525E;
-        Sun, 23 Jul 2023 18:37:10 -0700 (PDT)
+        Sun, 23 Jul 2023 21:42:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03037526D;
+        Sun, 23 Jul 2023 18:37:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FC4C60FF2;
-        Mon, 24 Jul 2023 01:33:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E1DCC433C8;
-        Mon, 24 Jul 2023 01:33:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D696A60FF6;
+        Mon, 24 Jul 2023 01:33:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63FF9C433C7;
+        Mon, 24 Jul 2023 01:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162396;
-        bh=CTqDW0uA7UBYlGoxmnkSJqHR/X1z4qbrHn+SbZOe21U=;
+        s=k20201202; t=1690162399;
+        bh=jq8SHtkpLjhWwKStwEjQuJaMiOn/KEjf21wr7/La3vo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iKIJpHebFFKk+oEI890Krp4RefK+ESPxhmq/QA+S6Hjr6pszUBABR7/XZvX1Qsavx
-         Z4DR7uY6zIj2LJyIZeSZnNNyMuR0qTkjqYxqcYbpNl3s5i3W3a2LZVbetYYRe0LEuX
-         4sVpXJ7TWb3xT2EkkGkdISfX3QdZtxX5PsouNJ/85ojBH5WM70UN0IC3v8b5jWMB8k
-         9IJy3znfD780EV2j4xC2Ws4wcGyEWK4gJDyT4hUErY1PrXP9OnmAG1gwvXaTsxT1pi
-         FNriGokSSmdtERZJs+GxH7FtkybPxwDQhvzCn6eW9ZePs7MfWfCj3y5QH24EsRPeaX
-         frPcTqz94zqlw==
+        b=hYKev9EhxgfE5h7LJSo21/Vvtibqb7koGVUDpGtoHoWbtrn/tiVlSCFkWDYIzj4hG
+         Pr5No6D6GAwhmMKnLBvGoQE+HfggtzKrQQoKK0d61l3P+iY1gNorO0iySFh/gwLLc5
+         i7PuoomWTX9msgEdqq62dPHU1A2+PF0F0y4Fj5waKEN9pPtoHDO29hHt/tvapkNKJQ
+         iBRlNeG24GKLHkPGtKKjfqTblm1ykcSVLXBA6uAEW2qS9AyP8RfGxAduHaIALr23e3
+         kBrQc1KJbEemJdoyeKAodo+vTQpUgcw2QACzQksvXe2GQab+AXHwoWkQ860HCbGWCI
+         wPkv/93zgPFKg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.1 28/34] fs/ntfs3: Mark ntfs dirty when on-disk struct is corrupted
-Date:   Sun, 23 Jul 2023 21:32:31 -0400
-Message-Id: <20230724013238.2329166-28-sashal@kernel.org>
+Cc:     Tuo Li <islituo@gmail.com>, BassCheck <bass@buaa.edu.cn>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.1 30/34] ALSA: hda: fix a possible null-pointer dereference due to data race in snd_hdac_regmap_sync()
+Date:   Sun, 23 Jul 2023 21:32:33 -0400
+Message-Id: <20230724013238.2329166-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -48,8 +49,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,79 +59,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit e0f363a98830e8d7d70fbaf91c07ae0b7c57aafe ]
+[ Upstream commit 1f4a08fed450db87fbb5ff5105354158bdbe1a22 ]
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+The variable codec->regmap is often protected by the lock
+codec->regmap_lock when is accessed. However, it is accessed without
+holding the lock when is accessed in snd_hdac_regmap_sync():
+
+  if (codec->regmap)
+
+In my opinion, this may be a harmful race, because if codec->regmap is
+set to NULL right after the condition is checked, a null-pointer
+dereference can occur in the called function regcache_sync():
+
+  map->lock(map->lock_arg); --> Line 360 in drivers/base/regmap/regcache.c
+
+To fix this possible null-pointer dereference caused by data race, the
+mutex_lock coverage is extended to protect the if statement as well as the
+function call to regcache_sync().
+
+[ Note: the lack of the regmap_lock itself is harmless for the current
+  codec driver implementations, as snd_hdac_regmap_sync() is only for
+  PM runtime resume that is prohibited during the codec probe.
+  But the change makes the whole code more consistent, so it's merged
+  as is -- tiwai ]
+
+Reported-by: BassCheck <bass@buaa.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Link: https://lore.kernel.org/r/20230703031016.1184711-1-islituo@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/fsntfs.c  | 2 +-
- fs/ntfs3/index.c   | 6 ++++++
- fs/ntfs3/ntfs_fs.h | 2 ++
- fs/ntfs3/record.c  | 6 ++++++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+ sound/hda/hdac_regmap.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index b6e22bcb929ba..829b62d3bb889 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -154,7 +154,7 @@ int ntfs_fix_post_read(struct NTFS_RECORD_HEADER *rhdr, size_t bytes,
- 	/* Check errors. */
- 	if ((fo & 1) || fo + fn * sizeof(short) > SECTOR_SIZE || !fn-- ||
- 	    fn * SECTOR_SIZE > bytes) {
--		return -EINVAL; /* Native chkntfs returns ok! */
-+		return -E_NTFS_CORRUPT;
- 	}
- 
- 	/* Get fixup pointer. */
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 98491abf95b9d..019b1f3cd9a44 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -1035,6 +1035,12 @@ int indx_read(struct ntfs_index *indx, struct ntfs_inode *ni, CLST vbn,
- 	*node = in;
- 
- out:
-+	if (err == -E_NTFS_CORRUPT) {
-+		ntfs_inode_err(&ni->vfs_inode, "directory corrupted");
-+		ntfs_set_state(ni->mi.sbi, NTFS_DIRTY_ERROR);
-+		err = -EINVAL;
-+	}
-+
- 	if (ib != in->index)
- 		kfree(ib);
- 
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index c5c022fef4e0b..f15461f79a009 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -53,6 +53,8 @@ enum utf16_endian;
- #define E_NTFS_NONRESIDENT		556
- /* NTFS specific error code about punch hole. */
- #define E_NTFS_NOTALIGNED		557
-+/* NTFS specific error code when on-disk struct is corrupted. */
-+#define E_NTFS_CORRUPT			558
- 
- 
- /* sbi->flags */
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 07037ec773ac8..ba336c7280b85 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -180,6 +180,12 @@ int mi_read(struct mft_inode *mi, bool is_mft)
- 	return 0;
- 
- out:
-+	if (err == -E_NTFS_CORRUPT) {
-+		ntfs_err(sbi->sb, "mft corrupted");
-+		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
-+		err = -EINVAL;
-+	}
-+
- 	return err;
+diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
+index fe3587547cfec..39610a15bcc98 100644
+--- a/sound/hda/hdac_regmap.c
++++ b/sound/hda/hdac_regmap.c
+@@ -597,10 +597,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_regmap_update_raw_once);
+  */
+ void snd_hdac_regmap_sync(struct hdac_device *codec)
+ {
+-	if (codec->regmap) {
+-		mutex_lock(&codec->regmap_lock);
++	mutex_lock(&codec->regmap_lock);
++	if (codec->regmap)
+ 		regcache_sync(codec->regmap);
+-		mutex_unlock(&codec->regmap_lock);
+-	}
++	mutex_unlock(&codec->regmap_lock);
  }
- 
+ EXPORT_SYMBOL_GPL(snd_hdac_regmap_sync);
 -- 
 2.39.2
 
