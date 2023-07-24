@@ -2,308 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85E2760226
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF046760242
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjGXWVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
+        id S230220AbjGXW1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjGXWUq (ORCPT
+        with ESMTP id S229625AbjGXW1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:20:46 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C3B173F
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690237243; x=1721773243;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7MLmRExJFcobMWt5zX19PB4vysGIYVgAT5CfF4fOC5w=;
-  b=jAzgJdTbWD9vFZo3FaR9KuC8VzR5T7fqVficNZXcYjt6RO7GsUhhHw78
-   KsVmssmt5dgJSPQfSVpYlwLMKzSsyY9Wj2I8WPFErT3wRDaGP2gnGAZG3
-   3aYyLB8SiS0o0kSLjB4sg5blYIDiVAlDNFZQ9HGfx7yxLPkCM+R3OGhis
-   fXQWFqguMCs+I2nXefpPeMTuq33dvRNVpS3NNKsUoVNfN2x6UcBptSt+i
-   fJNA2Ovj+tDRp3VoJHw0mFVOACqLc6c4NZUmyz1GEiAzsuuLcrAIaBoiq
-   YqYNgJr5RPgCLVFDDDARMGKFyJ1+t/QRN7Ii3aIEIfH+XfakixDtJp/+Q
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398476744"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="398476744"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 15:20:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="899675518"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="899675518"
-Received: from srinivas-otcpl-7600.jf.intel.com (HELO jacob-builder.jf.intel.com) ([10.54.97.184])
-  by orsmga005.jf.intel.com with ESMTP; 24 Jul 2023 15:20:41 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>, iommu@lists.linux.dev,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Robin Murphy" <robin.murphy@arm.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Will Deacon" <will@kernel.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Tony Zhu <tony.zhu@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v11 8/8] dmaengine/idxd: Re-enable kernel workqueue under DMA API
-Date:   Mon, 24 Jul 2023 15:25:38 -0700
-Message-Id: <20230724222538.3902553-9-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230724222538.3902553-1-jacob.jun.pan@linux.intel.com>
-References: <20230724222538.3902553-1-jacob.jun.pan@linux.intel.com>
+        Mon, 24 Jul 2023 18:27:34 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB47E1BC
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:27:32 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-765942d497fso443295185a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690237652; x=1690842452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dmJ4UktUm3I4b08JNBNEtnNvEux0EbK78Q8s0QO58jU=;
+        b=bAlfJaNfqM49DHJaN+ilEqFTHpxcdiCzxldvdmGyGQ+FFGn/x35Zu1BNa4jmcuLxDT
+         BR70Ybc3Z/fKvEpaE1Ye7VhUHxiKi3dnxOjQwJTQbCaa3kH30o9vdfPAbA+M+9ds2V/G
+         nnsr2d9Ac7WKln1WWgRVY+6XtwRjMsLm/JLGvLhuv8AHcKn09MKt6VTRaXRAk8s/CheO
+         E8HtPR0m/QUmtYfDuqmvA7hlufvZ4UdddVZ+PrFXhBbE6YIOBVdEAM5NtTipCR9zR/3p
+         jXlEzyh2l/nTYnkjmwYKzo6nfpyRts33gJcxIWU9/oHB7FBOEh7Qi+BISa1s35GuwIKe
+         Yi0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690237652; x=1690842452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dmJ4UktUm3I4b08JNBNEtnNvEux0EbK78Q8s0QO58jU=;
+        b=LFwfvRGOd4qI1O84UZvwuXVS5kvOw+x4S+Bo4qrrn4UfgcgNjDoDBO9f0y94K6JQk+
+         jhA8FsCOsHqyCpWKz59WbGPeURHolEiAtdu2bcXwe+vmqbBeCupNSN0GNjwvH44/7B5I
+         /i84f+vQAKS5WfxKerXVnvj78GEljRLgKVYnHxCIv2oYGe8j7Q+lfvX7NuTsQlXTpcUn
+         KWMhLLS+s2uWKxctoq1wZH78S3TUcJCieagwnZQtHwsQuQz7SQtxTevAoaXSQwJBJoiK
+         ojqhQ8xWz+hifHoax2ThNmB/frBg2+54TQ1nPBaKOzUZXO6uTGUGA40SjCsPDWEulMYu
+         zU3g==
+X-Gm-Message-State: ABy/qLZMdtlASRoSXLrgwBMb2MgbWKttBlZAdZA55Ug6LbHMLPasAvz/
+        FZa0lcl4aNDsmxme8odaiJJrcZYHYRPv8+qE1VLuUA==
+X-Google-Smtp-Source: APBJJlECrVm2GuN7mTC2Dq191dLy/wkFF1S9HS78iZkZQBh7hVibPxOOINn7nGfNmqIm7MRcqzKxAsAUVxtL4ns4Ly8=
+X-Received: by 2002:a05:620a:2493:b0:766:27c2:cec8 with SMTP id
+ i19-20020a05620a249300b0076627c2cec8mr1375203qkn.16.1690237651874; Mon, 24
+ Jul 2023 15:27:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230724201247.748146-1-irogers@google.com> <CAKwvOd=12eSPyc5ZRgm8NPMJYjj13QOxcnHtv_Y7Ws-zffyUrA@mail.gmail.com>
+ <CAP-5=fVh5atUjf4sLBYi4CwxYdWJfub_0anXKTdVuJrZkC4-tQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fVh5atUjf4sLBYi4CwxYdWJfub_0anXKTdVuJrZkC4-tQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jul 2023 15:27:20 -0700
+Message-ID: <CAKwvOd=eZ+m4hJ23S=v-BW0BxuWk=YCW=xRLcD00iTKWBiHjVQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] Perf tool LTO support
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev, maskray@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel workqueues were disabled due to flawed use of kernel VA and SVA
-API. Now that we have the support for attaching PASID to the device's
-default domain and the ability to reserve global PASIDs from SVA APIs,
-we can re-enable the kernel work queues and use them under DMA API.
+On Mon, Jul 24, 2023 at 2:48=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Mon, Jul 24, 2023 at 2:15=E2=80=AFPM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Mon, Jul 24, 2023 at 1:12=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > Add a build flag, LTO=3D1, so that perf is built with the -flto
+> > > flag. Address some build errors this configuration throws up.
+> >
+> > Hi Ian,
+> > Thanks for the performance numbers. Any sense of what the build time
+> > numbers might look like for building perf with LTO?
+> >
+> > Does `-flto=3Dthin` in clang's case make a meaningful difference of
+> > `-flto`? I'd recommend that over "full LTO" `-flto` when the
+> > performance difference of the result isn't too meaningful.  ThinLTO
+> > should be faster to build, but I don't know that I've ever built perf,
+> > so IDK what to expect.
+>
+> Hi Nick,
+>
+> I'm not sure how much the perf build will benefit from LTO to say
+> whether thin is good enough or not. Things like "perf record" are
+> designed to spend the majority of their time blocking on a poll system
+> call. We have benchmarks at least :-)
+>
+> I grabbed some clang build times in an unscientific way on my loaded lapt=
+op:
+>
+> no LTO
+> real    0m48.846s
+> user    3m11.452s
+> sys     0m29.598s
+>
+> -flto=3Dthin
+> real    0m55.910s
+> user    4m2.342s
+> sys     0m30.120s
+>
+> real    0m50.330s
+> user    3m36.986s
+> sys     0m28.519s
+>
+> -flto
+> real    1m12.002s
+> user    3m27.676s
+> sys     0m30.305s
+>
+> real    1m5.187s
+> user    3m19.348s
+> sys     0m29.031s
+>
+> So perhaps thin LTO increases total build time by 10%, whilst full LTO
+> increases it by 50%.
+>
+> Gathering some clang performance numbers:
+>
+> no LTO
+> $ perf bench internals synthesize
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 178.694 usec (+- 0.171 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 3.436 usec
+>  Average data synthesis took: 194.545 usec (+- 0.088 usec)
+>  Average num. events: 277.000 (+- 0.000)
+>  Average time per event 0.702 usec
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 175.381 usec (+- 0.105 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 3.373 usec
+>  Average data synthesis took: 188.980 usec (+- 0.071 usec)
+>  Average num. events: 278.000 (+- 0.000)
+>  Average time per event 0.680 usec
+>
+> -flto=3Dthin
+> $ perf bench internals synthesize
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 183.122 usec (+- 0.082 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 3.522 usec
+>  Average data synthesis took: 196.468 usec (+- 0.102 usec)
+>  Average num. events: 277.000 (+- 0.000)
+>  Average time per event 0.709 usec
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 177.684 usec (+- 0.094 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 3.417 usec
+>  Average data synthesis took: 190.079 usec (+- 0.077 usec)
+>  Average num. events: 275.000 (+- 0.000)
+>  Average time per event 0.691 usec
+>
+> -flto
+> $ perf bench internals synthesize
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 112.599 usec (+- 0.040 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 2.165 usec
+>  Average data synthesis took: 119.012 usec (+- 0.070 usec)
+>  Average num. events: 278.000 (+- 0.000)
+>  Average time per event 0.428 usec
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>  Average synthesis took: 107.606 usec (+- 0.147 usec)
+>  Average num. events: 52.000 (+- 0.000)
+>  Average time per event 2.069 usec
+>  Average data synthesis took: 114.633 usec (+- 0.159 usec)
+>  Average num. events: 279.000 (+- 0.000)
+>  Average time per event 0.411 usec
+>
+> The performance win from thin LTO doesn't look to be there. Full LTO
+> appears to be reducing event synthesis time down to 60% of what it
+> was. The clang numbers are looking better than the GCC ones. I think
+> from this it makes sense to use -flto.
 
-We also use non-privileged access for in-kernel DMA to be consistent
-with the IOMMU settings. Consequently, interrupt for user privilege is
-enabled for work completion IRQs.
+Without any context, I'm not really sure what numbers are good vs. bad
+("is larger better?").  More so I was curious if thinLTO perhaps got
+most of the win without significant performance regressions. If not,
+oh well, and if the slower full LTO has numbers that make sense to
+other reviewers, well then *Chuck Norris thumbs up*.  Thanks for the
+stats.
 
-Link:https://lore.kernel.org/linux-iommu/20210511194726.GP1002214@nvidia.com/
-Tested-by: Tony Zhu <tony.zhu@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
-v9: Set user IRQ enable when device is enabled for system PASID
----
- drivers/dma/idxd/device.c | 39 ++++++++++------------------
- drivers/dma/idxd/dma.c    |  5 ++--
- drivers/dma/idxd/idxd.h   |  9 +++++++
- drivers/dma/idxd/init.c   | 54 ++++++++++++++++++++++++++++++++++++---
- drivers/dma/idxd/sysfs.c  |  7 -----
- 5 files changed, 76 insertions(+), 38 deletions(-)
+>
+> Thanks,
+> Ian
+>
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
 
-diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
-index 5abbcc61c528..169b7ade8919 100644
---- a/drivers/dma/idxd/device.c
-+++ b/drivers/dma/idxd/device.c
-@@ -299,21 +299,6 @@ void idxd_wqs_unmap_portal(struct idxd_device *idxd)
- 	}
- }
- 
--static void __idxd_wq_set_priv_locked(struct idxd_wq *wq, int priv)
--{
--	struct idxd_device *idxd = wq->idxd;
--	union wqcfg wqcfg;
--	unsigned int offset;
--
--	offset = WQCFG_OFFSET(idxd, wq->id, WQCFG_PRIVL_IDX);
--	spin_lock(&idxd->dev_lock);
--	wqcfg.bits[WQCFG_PRIVL_IDX] = ioread32(idxd->reg_base + offset);
--	wqcfg.priv = priv;
--	wq->wqcfg->bits[WQCFG_PRIVL_IDX] = wqcfg.bits[WQCFG_PRIVL_IDX];
--	iowrite32(wqcfg.bits[WQCFG_PRIVL_IDX], idxd->reg_base + offset);
--	spin_unlock(&idxd->dev_lock);
--}
--
- static void __idxd_wq_set_pasid_locked(struct idxd_wq *wq, int pasid)
- {
- 	struct idxd_device *idxd = wq->idxd;
-@@ -1423,15 +1408,14 @@ int drv_enable_wq(struct idxd_wq *wq)
- 	}
- 
- 	/*
--	 * In the event that the WQ is configurable for pasid and priv bits.
--	 * For kernel wq, the driver should setup the pasid, pasid_en, and priv bit.
--	 * However, for non-kernel wq, the driver should only set the pasid_en bit for
--	 * shared wq. A dedicated wq that is not 'kernel' type will configure pasid and
-+	 * In the event that the WQ is configurable for pasid, the driver
-+	 * should setup the pasid, pasid_en bit. This is true for both kernel
-+	 * and user shared workqueues. There is no need to setup priv bit in
-+	 * that in-kernel DMA will also do user privileged requests.
-+	 * A dedicated wq that is not 'kernel' type will configure pasid and
- 	 * pasid_en later on so there is no need to setup.
- 	 */
- 	if (test_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags)) {
--		int priv = 0;
--
- 		if (wq_pasid_enabled(wq)) {
- 			if (is_idxd_wq_kernel(wq) || wq_shared(wq)) {
- 				u32 pasid = wq_dedicated(wq) ? idxd->pasid : 0;
-@@ -1439,10 +1423,6 @@ int drv_enable_wq(struct idxd_wq *wq)
- 				__idxd_wq_set_pasid_locked(wq, pasid);
- 			}
- 		}
--
--		if (is_idxd_wq_kernel(wq))
--			priv = 1;
--		__idxd_wq_set_priv_locked(wq, priv);
- 	}
- 
- 	rc = 0;
-@@ -1550,6 +1530,15 @@ int idxd_device_drv_probe(struct idxd_dev *idxd_dev)
- 	if (rc < 0)
- 		return -ENXIO;
- 
-+	/*
-+	 * System PASID is preserved across device disable/enable cycle, but
-+	 * genconfig register content gets cleared during device reset. We
-+	 * need to re-enable user interrupts for kernel work queue completion
-+	 * IRQ to function.
-+	 */
-+	if (idxd->pasid != IOMMU_PASID_INVALID)
-+		idxd_set_user_intr(idxd, 1);
-+
- 	rc = idxd_device_evl_setup(idxd);
- 	if (rc < 0) {
- 		idxd->cmd_status = IDXD_SCMD_DEV_EVL_ERR;
-diff --git a/drivers/dma/idxd/dma.c b/drivers/dma/idxd/dma.c
-index eb35ca313684..07623fb0f52f 100644
---- a/drivers/dma/idxd/dma.c
-+++ b/drivers/dma/idxd/dma.c
-@@ -75,9 +75,10 @@ static inline void idxd_prep_desc_common(struct idxd_wq *wq,
- 	hw->xfer_size = len;
- 	/*
- 	 * For dedicated WQ, this field is ignored and HW will use the WQCFG.priv
--	 * field instead. This field should be set to 1 for kernel descriptors.
-+	 * field instead. This field should be set to 0 for kernel descriptors
-+	 * since kernel DMA on VT-d supports "user" privilege only.
- 	 */
--	hw->priv = 1;
-+	hw->priv = 0;
- 	hw->completion_addr = compl;
- }
- 
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index 5428a2e1b1ec..502be9db63f4 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -473,6 +473,15 @@ static inline struct idxd_device *ie_to_idxd(struct idxd_irq_entry *ie)
- 	return container_of(ie, struct idxd_device, ie);
- }
- 
-+static inline void idxd_set_user_intr(struct idxd_device *idxd, bool enable)
-+{
-+	union gencfg_reg reg;
-+
-+	reg.bits = ioread32(idxd->reg_base + IDXD_GENCFG_OFFSET);
-+	reg.user_int_en = enable;
-+	iowrite32(reg.bits, idxd->reg_base + IDXD_GENCFG_OFFSET);
-+}
-+
- extern struct bus_type dsa_bus_type;
- 
- extern bool support_enqcmd;
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 1aa823974cda..0eb1c827a215 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -550,14 +550,59 @@ static struct idxd_device *idxd_alloc(struct pci_dev *pdev, struct idxd_driver_d
- 
- static int idxd_enable_system_pasid(struct idxd_device *idxd)
- {
--	return -EOPNOTSUPP;
-+	struct pci_dev *pdev = idxd->pdev;
-+	struct device *dev = &pdev->dev;
-+	struct iommu_domain *domain;
-+	ioasid_t pasid;
-+	int ret;
-+
-+	/*
-+	 * Attach a global PASID to the DMA domain so that we can use ENQCMDS
-+	 * to submit work on buffers mapped by DMA API.
-+	 */
-+	domain = iommu_get_domain_for_dev(dev);
-+	if (!domain)
-+		return -EPERM;
-+
-+	pasid = iommu_alloc_global_pasid(dev);
-+	if (pasid == IOMMU_PASID_INVALID)
-+		return -ENOSPC;
-+
-+	/*
-+	 * DMA domain is owned by the driver, it should support all valid
-+	 * types such as DMA-FQ, identity, etc.
-+	 */
-+	ret = iommu_attach_device_pasid(domain, dev, pasid);
-+	if (ret) {
-+		dev_err(dev, "failed to attach device pasid %d, domain type %d",
-+			pasid, domain->type);
-+		iommu_free_global_pasid(pasid);
-+		return ret;
-+	}
-+
-+	/* Since we set user privilege for kernel DMA, enable completion IRQ */
-+	idxd_set_user_intr(idxd, 1);
-+	idxd->pasid = pasid;
-+
-+	return ret;
- }
- 
- static void idxd_disable_system_pasid(struct idxd_device *idxd)
- {
-+	struct pci_dev *pdev = idxd->pdev;
-+	struct device *dev = &pdev->dev;
-+	struct iommu_domain *domain;
-+
-+	domain = iommu_get_domain_for_dev(dev);
-+	if (!domain)
-+		return;
-+
-+	iommu_detach_device_pasid(domain, dev, idxd->pasid);
-+	iommu_free_global_pasid(idxd->pasid);
- 
--	iommu_sva_unbind_device(idxd->sva);
-+	idxd_set_user_intr(idxd, 0);
- 	idxd->sva = NULL;
-+	idxd->pasid = IOMMU_PASID_INVALID;
- }
- 
- static int idxd_enable_sva(struct pci_dev *pdev)
-@@ -600,8 +645,9 @@ static int idxd_probe(struct idxd_device *idxd)
- 		} else {
- 			set_bit(IDXD_FLAG_USER_PASID_ENABLED, &idxd->flags);
- 
--			if (idxd_enable_system_pasid(idxd))
--				dev_warn(dev, "No in-kernel DMA with PASID.\n");
-+			rc = idxd_enable_system_pasid(idxd);
-+			if (rc)
-+				dev_warn(dev, "No in-kernel DMA with PASID. %d\n", rc);
- 			else
- 				set_bit(IDXD_FLAG_PASID_ENABLED, &idxd->flags);
- 		}
-diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
-index 293739ac5596..63f6966c51aa 100644
---- a/drivers/dma/idxd/sysfs.c
-+++ b/drivers/dma/idxd/sysfs.c
-@@ -948,13 +948,6 @@ static ssize_t wq_name_store(struct device *dev,
- 	if (strlen(buf) > WQ_NAME_SIZE || strlen(buf) == 0)
- 		return -EINVAL;
- 
--	/*
--	 * This is temporarily placed here until we have SVM support for
--	 * dmaengine.
--	 */
--	if (wq->type == IDXD_WQT_KERNEL && device_pasid_enabled(wq->idxd))
--		return -EOPNOTSUPP;
--
- 	input = kstrndup(buf, count, GFP_KERNEL);
- 	if (!input)
- 		return -ENOMEM;
--- 
-2.25.1
 
+
+--=20
+Thanks,
+~Nick Desaulniers
