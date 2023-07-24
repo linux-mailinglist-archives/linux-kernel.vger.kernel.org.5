@@ -2,122 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147AD75FCD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3950175FCCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjGXRBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S229659AbjGXRA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbjGXRBD (ORCPT
+        with ESMTP id S231421AbjGXRAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:01:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF5219AB
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690217987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4nkZEjGqKMSg9XiMs6wuEiyuXPT5uFzTR3xSKZPtXrE=;
-        b=fnIBd060+/Griu41sHg37jVodQGCq0zKfoUnkG2DLNWx1UW++BLFcSlGE78Fn+h2nAdEZ7
-        +jk/3VM2gON4t87lHLx2cTIfdcH4R0Vtai1xfw1QKbK9j0lx4c2qSJQYYDmCL5zMUR1fnN
-        Ji/RVmoif6qCCTwJKdBNZqg6Ci0vE8s=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-680-s_nU_LoDOiWwOboMfEiTaQ-1; Mon, 24 Jul 2023 12:59:44 -0400
-X-MC-Unique: s_nU_LoDOiWwOboMfEiTaQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63cd05c0415so61271706d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:59:44 -0700 (PDT)
+        Mon, 24 Jul 2023 13:00:20 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0FE19AD
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:01 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4863752ec88so76158e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690217999; x=1690822799;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GpPVCGUI1b90lVt/J/Pv7H5HNHNL2Yxzz8z+9HV7W0Q=;
+        b=wk5hu72Jiuc9eXzgdq9U9kZjMic0UlwRZmLcw52kAaqHqscqKpv6LmH1Zt0Q9m4qiB
+         ihVmOc1c7GkMAYGEzRTlUAnIWsZG+pW8QSrk1ljcOPcchdMMgJB7aMeaBlUHhqPUBx4+
+         070RUcTe9y/gvICn2a3nUoL07bRnaEy/taGuNLy8OvMPkR2pTy6151pWRVt6azYCC3fM
+         +KvlOnr1OV7pObpEHoIH3gNTW+1AfkXb4WesiBW0lAS6GlvZB7N6pr/5NbHtfZU7lRxs
+         2MkP2WDQj9nIh1sANzx8Evp5H3lgEDggSRB8NHy27/d1bwksh7rXrr74TBsHoYQySQuW
+         PrWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690217984; x=1690822784;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4nkZEjGqKMSg9XiMs6wuEiyuXPT5uFzTR3xSKZPtXrE=;
-        b=AXPCbc0+mro+rqw5fQBb68UngegT2CkQdLOAQUuF7RWCYvJCV5D/IXkc3QJr4zPQBk
-         0YzHWnQ/AGDBH/OlCe+cXyWNQd1HKlP5rBtrekm5UWYSfrnkMdECzVscKQOgPn1wTmox
-         O5WSdR4bQvlUX22K8AM81i4DTB9UwmDOCJhz7OgzUPoY6pGHkmFNZmsPxVtu7X41luZE
-         tM4PD2/y57uYUXHvWrfLDTBmp5l46TwOLxAYeh0rWyJv0yUE9zr7DKmV08bpv0u7fNNL
-         1TqTfoCe0Xu+qaC3Y0uRbl+tnex/sD1vDiJ3QwOrD2dQsfnVNnkgCfLNZSgteYkpWAvH
-         GdmA==
-X-Gm-Message-State: ABy/qLYDoOa/HeH8/f5zLwAlMU9VdjeE9Zqd54MsUKG6YxF3/pCQ4UBS
-        9ieh+7WRDJfRFrfuFxsUYNkJLh1K+QDMljMkMWMeYFiM5INqIIv638pH9Y+nVN7RSgDnoJURTA0
-        h1nioINuosCMG3kguMu2s+JMm
-X-Received: by 2002:a05:6214:4a4d:b0:63c:8afd:7273 with SMTP id ph13-20020a0562144a4d00b0063c8afd7273mr349404qvb.12.1690217984342;
-        Mon, 24 Jul 2023 09:59:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFO7x4sJQe6yNcwbJzHDwKetm24F7RG9qQSBeAxMG+DYnqfAzn8WMDsH6icpFD+s4FFI4gTGA==
-X-Received: by 2002:a05:6214:4a4d:b0:63c:8afd:7273 with SMTP id ph13-20020a0562144a4d00b0063c8afd7273mr349393qvb.12.1690217984140;
-        Mon, 24 Jul 2023 09:59:44 -0700 (PDT)
-Received: from brian-x1 (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
-        by smtp.gmail.com with ESMTPSA id v14-20020a0cdd8e000000b0062ffcda34c6sm3670040qvk.137.2023.07.24.09.59.43
+        d=1e100.net; s=20221208; t=1690217999; x=1690822799;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GpPVCGUI1b90lVt/J/Pv7H5HNHNL2Yxzz8z+9HV7W0Q=;
+        b=LFEFE0J8eZ98pDij7xOFp77gVkH3lFFVl7J7+3YfjH+jxKZI6WgioPEcwW/hFM4Upt
+         Mc14lmdn04RVbOMnXcLlsGpi2cy4HW36ikdLdvg963q/watBtOVgmLHyR5325vtIXshF
+         jui4d3S68fjoX0ile+l5TfgkRBYDoRaL/cz1o5jUz1/hQS0AuLf3Ne/Z3CmBlXGExJCr
+         JbnG2wj0Y3JimS5D6WkxkJbuiTD0IXm5WNd1vtGt7BPGHRkeVv8/zGxgUPzEuTigbBGj
+         CoZyW2eRKJWG+OiNTJNhsPxzivcWDCrwFvUxZx5Wb6tIisJ/ZVMZDD/2os8bllVsFC4h
+         Gg+w==
+X-Gm-Message-State: ABy/qLYwoEzszv+7rsREfMguD345G9W+79UGyo07MUdHbddQ6bEB9hka
+        Nl68q8pyNSraRpLbuKSpoqK6pw==
+X-Google-Smtp-Source: APBJJlGr5YdRbZFwfgpR+uAkVkdDg8Zhuqzwv6fN+rTT3TvIjaBLedt5Ool2PRzhUNzGGti8BXJ9TA==
+X-Received: by 2002:a05:6102:1357:b0:430:e0:ac2e with SMTP id j23-20020a056102135700b0043000e0ac2emr2813621vsl.15.1690217999665;
+        Mon, 24 Jul 2023 09:59:59 -0700 (PDT)
+Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id x24-20020a67c098000000b0044360ff4275sm1364969vsi.28.2023.07.24.09.59.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 09:59:43 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 12:59:42 -0400
-From:   Brian Masney <bmasney@redhat.com>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     linux-samsung-soc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: Feedback on Qualcomm's minidump (debug) solution for end user
- device crash
-Message-ID: <ZL6t/sZTZBfvSYOm@brian-x1>
-References: <0199db00-1b1d-0c63-58ff-03efae02cb21@quicinc.com>
+        Mon, 24 Jul 2023 09:59:58 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 12:59:56 -0400
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
+Message-ID: <ZL6uDN4KmYTk8R1J@fedora>
+References: <20230717223049.327865981@linutronix.de>
+ <CACRpkda2T2gxfjmHYqMNk-De7phRzeMFvenH84XJMK7BXbdv0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xO/vnO/Wn5eDLd10"
 Content-Disposition: inline
-In-Reply-To: <0199db00-1b1d-0c63-58ff-03efae02cb21@quicinc.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CACRpkda2T2gxfjmHYqMNk-De7phRzeMFvenH84XJMK7BXbdv0Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-arm-kernel list
 
-On Thu, Jul 20, 2023 at 08:32:24PM +0530, Mukesh Ojha wrote:
-> Hi Samsung/MTK/Any other SOC vendors,
-> 
-> This is to bring to your notice that, we (Qualcomm) are working on
-> upstreaming our minidump solution which is to address the problem of
-> debugging on field device crashes where collecting entire ddr dump
-> would not be feasible and collecting minimal data from the ddr would
-> help in debug direction or even help in root causing issue.
-> 
-> We have recently posted v4 version here [1]
-> 
-> Based on comments[2], community is more worried about, if each SOC
-> vendor come up with their own dumping method today or in future and
-> whether it can have a common solution to a similar problem faced by
-> other SOC vendor.
-> 
-> We wanted to take your feedback if you also encounter a similar problem
-> or maintain something similar solution in downstream which can be
-> upstreamed. This will help us in a way to have a common solution in
-> upstream.
-> 
-> [1]
-> https://lore.kernel.org/lkml/10dd2ead-758a-89f0-cda4-70ae927269eb@quicinc.com/
-> 
-> [2]
-> https://lore.kernel.org/lkml/CAL_JsqLO9yey2-4FcWsaGxijiS6hGL0SH9VoMuiyei-u9=Cv=w@mail.gmail.com/
+--xO/vnO/Wn5eDLd10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Adding the main ARM list to solicit feedback from other silicon
-manufacturers.
+On Tue, Jul 18, 2023 at 04:29:23PM +0200, Linus Walleij wrote:
+> On Tue, Jul 18, 2023 at 1:14=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>=20
+> > This builds and boots on 32bit and 64bit, but obviously needs a larger =
+test
+> > base especially on those old 32bit systems which are just museum pieces.
+>=20
+> These things are indeed museum pieces if you think servers, desktops
+> and laptops. They will at max be glorified terminals.
+>=20
+> What we noticed on ARM32 is that it used for:
+> 1. Running 32-bit kernels as guests in virtual machines (I don't know if
+>   x86 has this problem, sorry I'm ignorant there)
+> 2. Embedded systems with very long support cycles
+>=20
+> For x86 there is PC104, I think William Breathitt Gray knows more about
+> those, scope and usage etc. The typical usecase is industrial embedded
+> (I've seen quite a few e.g biochemical lab equipment set-ups) which are
+> running on a "it works don't fix it"-basis but they are network connected
+> so they may need new kernels for security reasons, or to fix bugs.
+> https://en.wikipedia.org/wiki/PC/104
+>=20
+> These things have lifecycles that easily outspans any server, desktop or
+> laptop. 30+ years easily. They are just sitting there, making whatever
+> blood cleaning agent or medical.
+>=20
+> I think the automation people have mostly switched over to using
+> ARM things such as RaspberryXYZ for new plants, but there is some
+> poor guy with the job of keeping all the PC104 plants running on recent
+> kernels for the next 20 years or so.
+>=20
+> Yours,
+> Linus Walleij
 
-The cover sheet on the v4 patch set is available at:
-https://lore.kernel.org/lkml/1687955688-20809-1-git-send-email-quic_mojha@quicinc.com/
+It's true that there a still a good number of PC104 setups still running
+out there in the manufacturing sector. However, it should be noted that
+these are typically systems that are configured and set once, left to
+run indefinitely doing their specific manufacturing task until the
+machines invariably break down from wear a decade or so later.
 
-Brian
+It's rare for the software of these systems to be updated; where a
+machine fails, the owner will usually repair or replace the particular
+mechanical component and reload that same ancient software they have
+been using for years. The cases where software is updated may be out of
+necessity to support a replacement device for a component that is no
+longer in production. In these situations, you would find newer PC104
+devices to fill that gap: where compatibility is needed with the ancient
+core machine featuring only an ISA bus, but which the plant owner
+doesn't want to throw away because "it still runs just fine with a
+little spit shining."
 
+Perhaps some years ago I would have said there was still demand for
+PC104 support, but now with the motherboards of these older systems
+finally failing due to age, the owners of these machines are forced to
+upgrade to something newer. As mentioned, I've also seen a general trend
+in this sector to move towards ARM products, perhaps out of a desire for
+lower power consumption or maybe their industrial line of features.
+Overall I don't see much future for PC104 in newer kernels because as
+the systems using it fail, users are switching to platforms without it.
+
+William Breathitt Gray
+
+--xO/vnO/Wn5eDLd10
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZL6uDAAKCRC1SFbKvhIj
+K7GCAQDt3t3mXYN4MsY7+iG1Bi5mLtGZsbJ2KZk8hUR+BOPPQQEA1IanGc9NwAvr
+F9QorNPnTv1vBT1pXnpllbl9GmpXFAA=
+=JlPR
+-----END PGP SIGNATURE-----
+
+--xO/vnO/Wn5eDLd10--
