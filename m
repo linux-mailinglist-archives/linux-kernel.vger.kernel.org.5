@@ -2,410 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8F475FC78
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08A275FC79
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjGXQpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        id S229903AbjGXQpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjGXQpc (ORCPT
+        with ESMTP id S230071AbjGXQpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:45:32 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA94FE53;
-        Mon, 24 Jul 2023 09:45:14 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36OEUF1d027852;
-        Mon, 24 Jul 2023 16:44:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=HUTBFULduXGobXvrRLrNnm1IntsoVLySdzBqvnI9vyY=;
- b=CLB7oVJ49JlTZyjHPSEFe/ipNO1GGx4H9h3sn1xh82jrsThbf2VW9EBiOzF6e/3nI36h
- XUOeIdIt3TSGIba7IdcU/6c5tj8X+N2QU1HQTvvQpQA6BxHQTOT1rjPDRt6yoD3GkpYP
- +IiHlKZyAliT7fZQR2q94M7yVcJ9eiROmlhzGAy0Pw4dQApgJZWmyDsrPJxOFMWArEdG
- 66dK82JDRnveL/2rpCsxbnQyhw7aWTfUK4auWdAqahlqDOV2mIi68C1TgciTK1+fOGyQ
- cng+2bKbMASJ7iX1NGJCDSCivK+fZg7jRNpiAiy78GZApdALe4kWSvRZWYqIT+mrmiiT eQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1u3t8cm3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 16:44:57 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36OGigOC015495
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 16:44:42 GMT
-Received: from car-linux11.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 09:44:41 -0700
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-To:     <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Nikunj Kela <quic_nkela@quicinc.com>
-Subject: [PATCH v2 3/3] firmware: arm_scmi: Add qcom hvc/shmem transport
-Date:   Mon, 24 Jul 2023 09:44:19 -0700
-Message-ID: <20230724164419.16092-4-quic_nkela@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230724164419.16092-1-quic_nkela@quicinc.com>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230724164419.16092-1-quic_nkela@quicinc.com>
+        Mon, 24 Jul 2023 12:45:33 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D0B10D3;
+        Mon, 24 Jul 2023 09:45:18 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36OFO91u011910;
+        Mon, 24 Jul 2023 16:45:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=qTH6r4qN83JctjR0dEmGiRsex9Sdwf/FzEzcZB3NoXM=;
+ b=YeA9ZOtjMv5chsPZ48GqFjv6UJGCVbFpQyJLj1mk/Axwy5ABmb++itZSuO60SsStlP3G
+ 5nfainn8OMX0hZ+MqGrgDP2/cFEgGrqHVinnaUqQasBbFrymbB7Rn5zU3iytYWAzRVaU
+ 9+M2sqYYiy856K6zeCaOZCe5beohmC24DXz6bZsM0PKw1il7gf8ftkBcU+Un5AwM1MuP
+ o+qUFIROnpW43l9C7yYafYGIzgjQcy5h0WY/9QczclAdTnlxAUKqjO3QBzLnzisES0hY
+ PNgTo8MZeERT3hd19+FLnCx4PUvZjMwBD9UoEbrSJd/5JFPMiImFv2FwXeVhpJ7cVy4C 7g== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s07nuk5e9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jul 2023 16:45:08 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36OGWbsa003840;
+        Mon, 24 Jul 2023 16:45:07 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s05j3nv77-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jul 2023 16:45:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FEmmhQaTa2M/wgarYWPiKPtFQaDrreENiWbqhai3IbaGxmr20smxUd3C7rDG8ufutlWI22thGltq22at2tnqrI/3RP3XBKB6Rq8lrFiaeN86pHOVh5RykNfNYnXPmuolv1w+DGrkoaF9dnXS9tMTmlAh2P+50I/aZ44xWBageifupEWzWkYROSDwhctegfhMcmRgi7gxWZWYWzG4kHryWQHN0L6nSkELFjyRbFdq4aT6n8bk8b7gG0WUQw/A/LjM2zcuS7oC60GtCOLg8V6MQ3DgLCgKEiLnjoTCHwqqzBtCvL6/PtR5aL8evj3Ed/5V0xo8a9iCyLWkfPjrc7MEvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qTH6r4qN83JctjR0dEmGiRsex9Sdwf/FzEzcZB3NoXM=;
+ b=SpZeZGo0f6fq1shMtAm6kLWSnwp4mL0H77XLpx98wxY2Qy+lu9NdRBTkCYZDQeZjIygRP/pEZu692XGevVeER9rlSnDFowEsD5GJ5pmh6WhNvLAF7SF47PazQhNiqRplzSGtKW/VIjAvXpovGYw7bLTmFtx3C8s/Xs8gyt5zNNVkNtQ0acDVXXNHx8kx5t/BtaCxHK7Yf5gGx0XdOnLAahDa5lbyMHupvvGFJra2frezg4FNX0CfRkvOsmuuRbwDdnacznCIBo0CepZtsTi5wUC1cys7j7bg6+PCmNXRv923NV/az7zeQ93w80l0dpIMp3OKMoDcLCT+sYsm2E8yUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qTH6r4qN83JctjR0dEmGiRsex9Sdwf/FzEzcZB3NoXM=;
+ b=w0i01/32nBP6Qo5iJm6wdy2f5hyiMLN91JdTtg1AAtfAb5eMLToC1IVqfWN1RakO/Xlxd3TJ+/evmWK7XTSeOkK0v+YPAq9mzr+e00Dz1tQjmTa4cX7SyKcJt/cYO6tH3NtuXWXBUQ0nlR3DZSiMlofLP1S73zMOGp2YgAjck+4=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by CH0PR10MB7410.namprd10.prod.outlook.com (2603:10b6:610:190::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 16:45:00 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e%6]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
+ 16:45:00 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Jeff Layton <jlayton@kernel.org>
+CC:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] nfsd: set missing after_change as before_change + 1
+Thread-Topic: [PATCH RFC] nfsd: set missing after_change as before_change + 1
+Thread-Index: AQHZvj6o6m/jjpOmRUW/EQgAVqDhPK/JCFsAgAARCoCAAAZvgA==
+Date:   Mon, 24 Jul 2023 16:44:59 +0000
+Message-ID: <16201902-595B-47F1-B251-927C24E7A42D@oracle.com>
+References: <20230724-bz2223560-v1-1-b6da868c0fc6@kernel.org>
+ <ZL6W0GqBSdlvVL2Y@tissot.1015granger.net>
+ <969a2ddc66df3ba05952fb14352ccee08bd84149.camel@kernel.org>
+In-Reply-To: <969a2ddc66df3ba05952fb14352ccee08bd84149.camel@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.600.7)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|CH0PR10MB7410:EE_
+x-ms-office365-filtering-correlation-id: 57ca3ad2-a2a4-4e57-a251-08db8c65521b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zZGC/fkSdjMN5K6oKkX8fHoJeqnul3gJkWk3C0Bm5hoaox0Otd6TpQFUh+mfY6/4o/CTtpLhZoq3uRJJoQI2hmLD3JXHVp03MncRI0rUpYXxZRzbfUt3X+xQLLYbLJ99cJCBUM6A8xlOndNI5f1aZ8/BJkS2kI1vAnBMHQXncSDb6PJzMfJpzaaMw/JNYeYAj0ioI8wEOwhlzP9eQwiXZ4aG/dKEoq9tRzwbiQifZoVbVWpClPqxQN4DoiT7KO7EXh6KwTujuOVDwet0wYjhONQkbvCkfV5oSS94PFZGlNpL1XQnJWJCOsoGmy3oqiOViQCdRnUsUKbtvkAp46/VdvC6vyBxPJJxYOs9xs5QN/YRqaaJVYoESagif2P75yhX8j2+kT+3dnejUam/Y+EXuJIIlg9O1QjiFc8Uai0OO+SsWfhBWeoIejGKuhBs8/YMebIct1wcxgAjpTIJ+P+gd59h+DKra6ngBkya6D0QDp2d+Lq1fQBl16Ufyq6Uo7Tbm8hFUSrtxXmTA0WOdQGGCueMviQkdsFgTGbe/MLmwGoKMFSY/moMqQN74oN/oZt5AJZNuVvBrQz/VusG5CA2GmiYpWUnbDJmwknETXP7qaBm5GVlZwErSceafadDxCql0IoKQX1yJnaPzqVec3P3EQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(366004)(396003)(346002)(39860400002)(451199021)(8936002)(8676002)(5660300002)(41300700001)(316002)(2906002)(66556008)(66446008)(66476007)(64756008)(66946007)(76116006)(91956017)(4326008)(38070700005)(53546011)(6506007)(26005)(38100700002)(86362001)(6512007)(54906003)(83380400001)(6486002)(6916009)(478600001)(33656002)(71200400001)(122000001)(2616005)(36756003)(186003)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EO7j8mZb8cg1Rik6quuP2rFHtSYqRZ63r2AafpC7Rs/Kw+yPkZPfCsET2oBt?=
+ =?us-ascii?Q?5bvhwER8LJ+hPJkD/JoTSibhTLnqydBBgwVcWlSynJ0eGOVzkQmzvarLdF6W?=
+ =?us-ascii?Q?BGDwewwI9Fyq6RwgAV4MHo66rbXL1WG6LXcwdlf0PP2S4EmK0yItI5BvXUg6?=
+ =?us-ascii?Q?vy0nfYY+LPvdByTj+65Q+QVUrTmUtGMoROYzplY8qI5krKk5JrB61S4LY1mR?=
+ =?us-ascii?Q?TA5u7opUsmIMza4Th69s2gegDkVetjo54Jbv0RIb9SUpL3Gx5G+IC4jjdQIP?=
+ =?us-ascii?Q?y/8lLDt1Sf/F0E8KB3eFb/sbLmVKn2Nr+eSQbvJSO3D9GEyS4a8+EQ3jEugW?=
+ =?us-ascii?Q?+KRoSswAKFIPJNOTcIFj1h50y2CmdyHEL/fIMjBWrfVvSe7ZfqdPqi59YbZu?=
+ =?us-ascii?Q?pd2JkfY5HaPAy+a60UbPWqCKXsINq6O9kjEHWde6o+nOnyNoPujiwN1Cuep9?=
+ =?us-ascii?Q?2sEL2MeqD/8ykKhW0YBFgk3ticwJWNmmQbUVtKpcrq9pdhsKVJGOaRySx/De?=
+ =?us-ascii?Q?Kar4l8rOeQNjKKNKF6Wr49hSFY/NZGVJSNhf5DooUDN5hS8yz2wcd2tpzQXi?=
+ =?us-ascii?Q?W0WCrHViHcz5DPNHjYETOr4VVOylp4BwRVmx7prdIsYyjDvz33Czl0nJtDuL?=
+ =?us-ascii?Q?HqD6xaYX5ak4FlvyqVHh55lCDvCn1YYOufYMAw7RpPKQBE6b1zofky74A+SB?=
+ =?us-ascii?Q?y/+INrTkVIEi+/AV68w0eApr1It+tLROBnKlTSYlljCaApIsb4fvvQpZDJ0Q?=
+ =?us-ascii?Q?JJQwSDvqrNtFGKpNqHAakk7gaJQ7jbn/oInopO8sJJs606fe27VJT8i2uK1x?=
+ =?us-ascii?Q?nLDiz476R0zPBeA3zalXzm62QJF/o1366qfleTxwoWLYfkIjwfuVF7r1UFj5?=
+ =?us-ascii?Q?RIzt+I4PuK9UCtrymRb32Sb5osslp6y97yjlq9LWcxW9VO5WIopMyVdKy/Bg?=
+ =?us-ascii?Q?8AIJWl0qXXbjsHQSpj674GnWn/4UsF/jMWFAKgfbFrlMaBl/pxQ3VAXoX7sS?=
+ =?us-ascii?Q?x4hEG3MThtuiUIvNN5IXeYq7kkkdleBDmquCd/lorhuUhScfJz2clc2WCUeM?=
+ =?us-ascii?Q?hlh1fpAZQAb4NBarhIgrgCXnje2G4bEOw2FHN1dyC0djJ5Ms9fMjeVud8+Dq?=
+ =?us-ascii?Q?uwOeoWp+9l9WEHwI6oViS2jyHE7jJg1Ntl9majBxtbi2sgD8n17rF1ismAvh?=
+ =?us-ascii?Q?oyH1hORBAfSwEQcDKaPthr0BxsnieHHrxZdbfHQqJAUYHyO96m51zkJ5Mrwf?=
+ =?us-ascii?Q?CNVPrC4Meoc7qgHrgaSD5rzXPmWsgJ2NlNvb1QOPjK1Zk6p8iHrA5/kKLajG?=
+ =?us-ascii?Q?gjmX/ScfzfvysFkCodLhcQsh4SAaYOuT5no03nUnzRyq9cnNKsykoj7ZXtQk?=
+ =?us-ascii?Q?ZaxoiKw3yoroDaUctjyibaU/8guAFa610EPrH6ny7R0kh904YwbtLVHsKLhX?=
+ =?us-ascii?Q?eAWRapRS4/TUAhIc13YAVrU4JPjgAWK4pkMrXbfgnKd9lNOELpSiIc8Nxey3?=
+ =?us-ascii?Q?gxsXMtXk42YjHYhW/1Of7k34DSvN0yrpxKTSdPLHVCKka6+MV2DFnX2uoX5A?=
+ =?us-ascii?Q?Z4zu8ADUCtt9VksKmn0Y8i7EMuRw7YinQBiWawe5rFz5Do0H8A3FVOW4r7Z0?=
+ =?us-ascii?Q?Kw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <69CED5E787C9604A8EE9728B14851164@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sg_0j-odXbe7aGQZyuTc0tOVp8BUZSeE
-X-Proofpoint-ORIG-GUID: sg_0j-odXbe7aGQZyuTc0tOVp8BUZSeE
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: yTl3hgL2taNvzZfHzQoZ+B+f7Kg8wuXvurpGg9I9528+3OpYq0s+sJefZwwTsNj7TQ1aMG8p0Yg1xVUAdrly2PeSK91RE1U9S+rZjdV2Aw/mwg4BeXimroW9UJGnnwbRCWCXsbWCOrdEWmFQO/TF1YithLDMb+lo6tMxY0fbT26OEM8z5osQzsdEEtQ7yphdUpYS0tIVXhvvbFcXx83YD4ez7teleZyWEk1Bh4maJyzDebVNO62OX1Z/WPx1qIGF4dj04IbF0+sEDZOTNna7qRvkzIr/nTfOVtsijPQ5iPp54WAtREM+IWyoTY81SNLAIMi2sFIZyHE9WMqIuK2xHA98bCgyq6ubSFB+xTKkpH+HVSjbscXHpbkFfuvQGrcktmlAlyUTBeT3xPPVSQex4/Jhf1ZvkhzonebDUUajU96eU2t7G9TSQLEv2YxwPBsUI1n9aK2pctkB1egKJKoYGQNTjkwjcC1zol2O+k7eZfJrTJUzp/c4bXBkYqdw112DdByARPkwIUv6rt+kBuGxNnhbxg/mjJskqDxCue4o4bpwbh2qQtUDf/B9YP2TBMv/Aa3TsGMSugNP6L6pgnPBejGxRMzcJzaqDkBeIxX6QCDd+Sc545AeQTcWH3Rv93gvRg2IlhFknHqCPUXV10yMaVSlw8WW3C2c4fa3S05+9vK3E6BYq5u2bfY07hw+Sr2QLcc5ayVSV6ouPyZi5jg3pfJSvh/lxClM8qTky2CWwWQtGmPJpyoGxzTPaNP4L94C77rFC1vupeEBGGTE276q9MVvV3//+IJAJreR4mzZFLHzbvqBkotk1wqf5CgWfzgDdEJv9Wx9lwT2LI/JXIlQobMNmAOlAD/dWef0nWc1rmlWRkpufi99Ju/WTtSH/xYj
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57ca3ad2-a2a4-4e57-a251-08db8c65521b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 16:44:59.9630
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GWI7HmsYsCJvaCnRYQzlk9CVa2c0MxEMLREtbxo+/t/KBAzSYmHb/wDDaAMQasZ+wzvxVwCX/qA07nRaZTgFTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7410
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_13,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 suspectscore=0 spamscore=0
- phishscore=0 adultscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ definitions=2023-07-24_12,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
+ phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
  definitions=main-2307240150
+X-Proofpoint-ORIG-GUID: CS0ZMd2tck1EzjAIr6xg8psdgsL-nFKe
+X-Proofpoint-GUID: CS0ZMd2tck1EzjAIr6xg8psdgsL-nFKe
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new transport channel to the SCMI firmware interface driver for
-SCMI message exchange on Qualcomm virtual platforms.
 
-The hypervisor associates an object-id also known as capability-id
-with each hvc doorbell object. The capability-id is used to identify the
-doorbell from the VM's capability namespace, similar to a file-descriptor.
 
-The hypervisor, in addition to the function-id, expects the capability-id
-to be passed in x1 register when HVC call is invoked.
+> On Jul 24, 2023, at 12:21 PM, Jeff Layton <jlayton@kernel.org> wrote:
+>=20
+> On Mon, 2023-07-24 at 11:20 -0400, Chuck Lever wrote:
+>> On Mon, Jul 24, 2023 at 10:53:39AM -0400, Jeff Layton wrote:
+>>> In the event that we can't fetch post_op_attr attributes, we still need
+>>> to set a value for the after_change. The operation has already happened=
+,
+>>> so we're not able to return an error at that point, but we do want to
+>>> ensure that the client knows that its cache should be invalidated.
+>>>=20
+>>> If we weren't able to fetch post-op attrs, then just set the
+>>> after_change to before_change + 1. The atomic flag should already be
+>>> clear in this case.
+>>>=20
+>>> Suggested-by: Neil Brown <neilb@suse.de>
+>>> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>>> ---
+>>> fs/nfsd/nfs4proc.c | 2 +-
+>>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> I'm not sure this change makes any difference. The client would
+>> possibly see the change value move forward then back. I'd think a
+>> false "atomic" field and using the /same/ pre- and post-change would
+>> be safer...?
+>>=20
+>> But I'm intrigued enough to apply this to nfsd-next provisionally,
+>> at least for testing and further review. It will appear a little
+>> later today.
+>>=20
+>>=20
+>=20
+> Thanks. I think there really are no great choices here.
+>=20
+> This is a rather unlikely error case that should only come into play
+> when there are problems with the underlying filesystem, but only when
+> fetching the post-op attrs.
+>=20
+> We don't have a way to just opt out of providing a post-op attribute and
+> I think this is probably the least bad option of what to put in there.
 
-The qcom hvc doorbell/shared memory transport uses a statically defined
-shared memory region that binds with "arm,scmi-shmem" device tree node.
+No argument, it's a rock-and-hard-place thing.
 
-The function-id & capability-id are allocated by the hypervisor on bootup
-and are stored in the shmem region by the firmware before starting Linux.
+There doesn't seem to be a way of testing this except
+with fault injection.
 
-Currently, there is no usecase for the atomic support therefore this driver
-doesn't include the changes for the same.
+Any client implementer that has an opinion about our
+choice of post-change value (zero versus pre-change
+versus pre-change-plus-one), please chime in.
 
-Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
----
- drivers/firmware/arm_scmi/Kconfig    |  13 ++
- drivers/firmware/arm_scmi/Makefile   |   1 +
- drivers/firmware/arm_scmi/common.h   |   3 +
- drivers/firmware/arm_scmi/driver.c   |   4 +
- drivers/firmware/arm_scmi/qcom_hvc.c | 224 +++++++++++++++++++++++++++
- 5 files changed, 245 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/qcom_hvc.c
 
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index ea0f5083ac47..40d07329ebf7 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -99,6 +99,19 @@ config ARM_SCMI_TRANSPORT_OPTEE
- 	  If you want the ARM SCMI PROTOCOL stack to include support for a
- 	  transport based on OP-TEE SCMI service, answer Y.
- 
-+config ARM_SCMI_TRANSPORT_QCOM_HVC
-+	bool "SCMI transport based on hvc doorbell & shmem for Qualcomm SoCs"
-+	depends on ARCH_QCOM
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	select ARM_SCMI_HAVE_SHMEM
-+	default y
-+	help
-+	  Enable hvc doorbell & shmem based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  hvc doorbell and shmem transport on Qualcomm virtual platforms,
-+	  answer Y.
-+
- config ARM_SCMI_TRANSPORT_SMC
- 	bool "SCMI transport based on SMC"
- 	depends on HAVE_ARM_SMCCC_DISCOVERY
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index b31d78fa66cc..ba1ff5893ec0 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -10,6 +10,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_QCOM_HVC) += qcom_hvc.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o
- scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
- 
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index c46dc5215af7..5c98cbb1278b 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -298,6 +298,9 @@ extern const struct scmi_desc scmi_virtio_desc;
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
- extern const struct scmi_desc scmi_optee_desc;
- #endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_QCOM_HVC
-+extern const struct scmi_desc scmi_qcom_hvc_desc;
-+#endif
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv);
- 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b5957cc12fee..c54519596c29 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -2918,6 +2918,10 @@ static const struct of_device_id scmi_of_match[] = {
- #endif
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
- 	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-+#endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_QCOM_HVC
-+	{ .compatible = "qcom,scmi-hvc-shmem",
-+	  .data = &scmi_qcom_hvc_desc },
- #endif
- 	{ /* Sentinel */ },
- };
-diff --git a/drivers/firmware/arm_scmi/qcom_hvc.c b/drivers/firmware/arm_scmi/qcom_hvc.c
-new file mode 100644
-index 000000000000..9aa60d6bb797
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/qcom_hvc.c
-@@ -0,0 +1,224 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * System Control and Management Interface (SCMI) Message
-+ * Qualcomm HVC/shmem Transport driver
-+ *
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright 2020 NXP
-+ *
-+ * This is based on drivers/firmware/arm_scmi/smc.c
-+ */
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/slab.h>
-+
-+#include "common.h"
-+
-+/**
-+ * struct scmi_qcom_hvc - Structure representing a SCMI qcom hvc transport
-+ *
-+ * @irq: An optional IRQ for completion
-+ * @cinfo: SCMI channel info
-+ * @shmem: Transmit/Receive shared memory area
-+ * @shmem_lock: Lock to protect access to Tx/Rx shared memory area.
-+ * @func_id: hvc call function-id
-+ * @cap_id: hvc doorbell's capability id
-+ */
-+
-+struct scmi_qcom_hvc {
-+	int irq;
-+	struct scmi_chan_info *cinfo;
-+	struct scmi_shared_mem __iomem *shmem;
-+	/* Protect access to shmem area */
-+	struct mutex shmem_lock;
-+	u32 func_id;
-+	u64 cap_id;
-+};
-+
-+static irqreturn_t qcom_hvc_msg_done_isr(int irq, void *data)
-+{
-+	struct scmi_qcom_hvc *scmi_info = data;
-+
-+	scmi_rx_callback(scmi_info->cinfo, shmem_read_header(scmi_info->shmem), NULL);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static bool qcom_hvc_chan_available(struct device_node *of_node, int idx)
-+{
-+	struct device_node *np = of_parse_phandle(of_node, "shmem", 0);
-+
-+	if (!np)
-+		return false;
-+
-+	of_node_put(np);
-+	return true;
-+}
-+
-+static int qcom_hvc_chan_setup(struct scmi_chan_info *cinfo,
-+			       struct device *dev, bool tx)
-+{
-+	struct device *cdev = cinfo->dev;
-+	struct scmi_qcom_hvc *scmi_info;
-+	struct device_node *np;
-+	resource_size_t size;
-+	struct resource res;
-+	u32 func_id;
-+	u64 cap_id;
-+	int ret;
-+
-+	if (!tx)
-+		return -ENODEV;
-+
-+	scmi_info = devm_kzalloc(dev, sizeof(*scmi_info), GFP_KERNEL);
-+	if (!scmi_info)
-+		return -ENOMEM;
-+
-+	np = of_parse_phandle(cdev->of_node, "shmem", 0);
-+	if (!of_device_is_compatible(np, "arm,scmi-shmem")) {
-+		of_node_put(np);
-+		return -ENXIO;
-+	}
-+
-+	ret = of_address_to_resource(np, 0, &res);
-+	of_node_put(np);
-+	if (ret) {
-+		dev_err(cdev, "failed to get SCMI Tx shared memory\n");
-+		return ret;
-+	}
-+
-+	size = resource_size(&res);
-+
-+	/* The func-id & capability-id are kept in last 16 bytes of shmem.
-+	 *     +-------+
-+	 *     |       |
-+	 *     | shmem |
-+	 *     |       |
-+	 *     |       |
-+	 *     +-------+ <-- (size - 16)
-+	 *     | funcId|
-+	 *     +-------+ <-- (size - 8)
-+	 *     | capId |
-+	 *     +-------+ <-- size
-+	 */
-+
-+	scmi_info->shmem = devm_ioremap(dev, res.start, size);
-+	if (!scmi_info->shmem) {
-+		dev_err(dev, "failed to ioremap SCMI Tx shared memory\n");
-+		return -EADDRNOTAVAIL;
-+	}
-+
-+	func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
-+
-+#ifdef CONFIG_ARM64
-+	cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
-+#else
-+	/* capability-id is 32 bit long on 32bit machines */
-+	cap_id = readl((void __iomem *)(scmi_info->shmem) + size - 8);
-+#endif
-+
-+	/*
-+	 * If there is an interrupt named "a2p", then the service and
-+	 * completion of a message is signaled by an interrupt rather than by
-+	 * the return of the hvc call.
-+	 */
-+	scmi_info->irq = of_irq_get_byname(cdev->of_node, "a2p");
-+	if (scmi_info->irq > 0) {
-+		ret = request_irq(scmi_info->irq, qcom_hvc_msg_done_isr,
-+				  IRQF_NO_SUSPEND, dev_name(dev), scmi_info);
-+		if (ret) {
-+			dev_err(dev, "failed to setup SCMI completion irq\n");
-+			return ret;
-+		}
-+	} else {
-+		cinfo->no_completion_irq = true;
-+	}
-+
-+	scmi_info->func_id = func_id;
-+	scmi_info->cap_id = cap_id;
-+	scmi_info->cinfo = cinfo;
-+	mutex_init(&scmi_info->shmem_lock);
-+	cinfo->transport_info = scmi_info;
-+
-+	return 0;
-+}
-+
-+static int qcom_hvc_chan_free(int id, void *p, void *data)
-+{
-+	struct scmi_chan_info *cinfo = p;
-+	struct scmi_qcom_hvc *scmi_info = cinfo->transport_info;
-+
-+	/* Ignore any possible further reception on the IRQ path */
-+	if (scmi_info->irq > 0)
-+		free_irq(scmi_info->irq, scmi_info);
-+
-+	cinfo->transport_info = NULL;
-+	scmi_info->cinfo = NULL;
-+
-+	return 0;
-+}
-+
-+static int qcom_hvc_send_message(struct scmi_chan_info *cinfo,
-+				 struct scmi_xfer *xfer)
-+{
-+	struct scmi_qcom_hvc *scmi_info = cinfo->transport_info;
-+	struct arm_smccc_res res;
-+
-+	/*
-+	 * Channel will be released only once response has been
-+	 * surely fully retrieved, so after .mark_txdone()
-+	 */
-+	mutex_lock(&scmi_info->shmem_lock);
-+
-+	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
-+
-+	arm_smccc_1_1_hvc(scmi_info->func_id, (unsigned long)scmi_info->cap_id,
-+			  0, 0, 0, 0, 0, 0, &res);
-+
-+	if (res.a0) {
-+		mutex_unlock(&scmi_info->shmem_lock);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qcom_hvc_fetch_response(struct scmi_chan_info *cinfo,
-+				    struct scmi_xfer *xfer)
-+{
-+	struct scmi_qcom_hvc *scmi_info = cinfo->transport_info;
-+
-+	shmem_fetch_response(scmi_info->shmem, xfer);
-+}
-+
-+static void qcom_hvc_mark_txdone(struct scmi_chan_info *cinfo, int ret,
-+				 struct scmi_xfer *__unused)
-+{
-+	struct scmi_qcom_hvc *scmi_info = cinfo->transport_info;
-+
-+	mutex_unlock(&scmi_info->shmem_lock);
-+}
-+
-+static const struct scmi_transport_ops scmi_qcom_hvc_ops = {
-+	.chan_available = qcom_hvc_chan_available,
-+	.chan_setup = qcom_hvc_chan_setup,
-+	.chan_free = qcom_hvc_chan_free,
-+	.send_message = qcom_hvc_send_message,
-+	.mark_txdone = qcom_hvc_mark_txdone,
-+	.fetch_response = qcom_hvc_fetch_response,
-+};
-+
-+const struct scmi_desc scmi_qcom_hvc_desc = {
-+	.ops = &scmi_qcom_hvc_ops,
-+	.max_rx_timeout_ms = 30,
-+	.max_msg = 20,
-+	.max_msg_size = 128,
-+	.sync_cmds_completed_on_ret = true,
-+};
--- 
-2.17.1
+>>> diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+>>> index 3f6710c9c5c9..f0f318e78630 100644
+>>> --- a/fs/nfsd/nfs4proc.c
+>>> +++ b/fs/nfsd/nfs4proc.c
+>>> @@ -411,7 +411,7 @@ set_change_info(struct nfsd4_change_info *cinfo, st=
+ruct svc_fh *fhp)
+>>> if (WARN_ON_ONCE(!fhp->fh_pre_saved))
+>>> cinfo->before_change =3D 0;
+>>> if (!fhp->fh_post_saved)
+>>> - cinfo->after_change =3D 0;
+>>> + cinfo->after_change =3D cinfo->before_change + 1;
+>>> }
+>>>=20
+>>> static __be32
+>>>=20
+>>> ---
+>>> base-commit: 97a5d0146ef443df148805a4e9c3c44111f14ab1
+>>> change-id: 20230724-bz2223560-5ed6bc3a5db7
+>>>=20
+>>> Best regards,
+>>> --=20
+>>> Jeff Layton <jlayton@kernel.org>
+>>>=20
+>>=20
+>=20
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+
+
+--
+Chuck Lever
+
 
