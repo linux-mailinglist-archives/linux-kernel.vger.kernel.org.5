@@ -2,200 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBBA75E9CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3522875E9CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjGXCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S230283AbjGXCeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjGXCeT (ORCPT
+        with ESMTP id S229853AbjGXCeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:34:19 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533D9183;
-        Sun, 23 Jul 2023 19:34:15 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vo.u9II_1690166049;
-Received: from 30.240.115.26(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vo.u9II_1690166049)
-          by smtp.aliyun-inc.com;
-          Mon, 24 Jul 2023 10:34:10 +0800
-Message-ID: <5db5aaf0-4fb7-a017-3b6f-017d04a93d33@linux.alibaba.com>
-Date:   Mon, 24 Jul 2023 10:34:08 +0800
+        Sun, 23 Jul 2023 22:34:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ED4180
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=fToTzt+EUMm0xtTs4UdTiNvO0w2wvNkq6fVJpJWCIds=; b=lsS+vkRN6+2q7LGYzWhw6W05aY
+        04Dsl/4gnKtjwQurYx5NQYKajcG54EjjGvmOvFel2N2AppQVS4+3tJi/AwshkhfOJ6gmQwYrgsKOT
+        9Kh/+O32BIjJMsXU85Qw3I7PSesptExA2nfQ/SICiFU8EYR9TtsHxabuBm3lgT+b7uuXInkD+6UWR
+        jbu0nJHWBt9UiaOWvK3dR8ssJBONzYF9EAZT/zcb8WGGJVTa2/maMIcOlDClJ9eVhfYzoz83KghcW
+        dpaS0PEW1UYDqFhj5tflNBK0iQYyCHBJ3RMTyPn+uaomI6UJ8iYx0HmKvez57DhxjCCwjkLaHFTiD
+        OiaAZGDw==;
+Received: from 50-198-160-193-static.hfc.comcastbusiness.net ([50.198.160.193] helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qNlOo-002XtI-2k;
+        Mon, 24 Jul 2023 02:34:14 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] cpumask: kernel-doc additions in cpumask.c
+Date:   Sun, 23 Jul 2023 19:34:14 -0700
+Message-ID: <20230724023414.24882-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
- driver support
-Content-Language: en-US
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
-References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
- <204e3891-c041-53ae-a965-f3abec2cc091@linux.alibaba.com>
- <161dc5b6-7c20-ea8c-2efb-9594e94df2d3@linux.alibaba.com>
-In-Reply-To: <161dc5b6-7c20-ea8c-2efb-9594e94df2d3@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add Return: value for 4 functions.
+Add kernel-doc for cpumask_any_distribute().
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ lib/cpumask.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-On 2023/7/10 20:04, Shuai Xue wrote:
-> 
-> 
-> On 2023/6/16 16:39, Shuai Xue wrote:
->>
->>
->> On 2023/6/6 15:49, Shuai Xue wrote:
->>> changes since v5:
->>> - Rewrite the commit log to follow policy in pci_ids.h (Bjorn Helgaas)
->>> - return error code when __dwc_pcie_pmu_probe failed (Baolin Wang)
->>> - call 'cpuhp_remove_multi_state()' when exiting the driver. (Baolin Wang)
->>> - pick up Review-by tag from Baolin for Patch 1 and 3
->>>
->>> changes since v4:
->>>
->>> 1. addressing commens from Bjorn Helgaas:
->>> - reorder the includes by alpha
->>> - change all macros with upper-case hex
->>> - change ras_des type into u16
->>> - remove unnecessary outer "()"
->>> - minor format changes
->>>
->>> 2. Address commensts from Jonathan Cameron:
->>> - rewrite doc and add a example to show how to use lane event
->>>
->>> 3. fix compile error reported by: kernel test robot
->>> - remove COMPILE_TEST and add depend on PCI in kconfig
->>> - add Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> Changes since v3:
->>>
->>> 1. addressing comments from Robin Murphy:
->>> - add a prepare patch to define pci id in linux/pci_ids.h
->>> - remove unnecessary 64BIT dependency
->>> - fix DWC_PCIE_PER_EVENT_OFF/ON macro
->>> - remove dwc_pcie_pmu struct and move all its fileds into dwc_pcie_rp_info
->>> - remove unnecessary format field show
->>> - use sysfs_emit() instead of all the assorted sprintf() and snprintf() calls.
->>> - remove unnecessary spaces and remove unnecessary cast to follow event show convention
->>> - remove pcie_pmu_event_attr_is_visible
->>> - fix a refcout leak on error branch when walk pci device in for_each_pci_dev
->>> - remove bdf field from dwc_pcie_rp_info and calculate it at runtime
->>> - finish all the checks before allocating rp_info to avoid hanging wasted memory
->>> - remove some unused fields
->>> - warp out control register configuration from sub function to .add()
->>> - make function return type with a proper signature
->>> - fix lane event count enable by clear DWC_PCIE_CNT_ENABLE field first
->>> - pass rp_info directly to the read_*_counter helpers and in start, stop and add callbacks
->>> - move event type validtion into .event_init()
->>> - use is_sampling_event() to be consistent with everything else of pmu drivers
->>> - remove unnecessary dev_err message in .event_init()
->>> - return EINVAL instead EOPNOTSUPP for not a valid event 
->>> - finish all the checks before start modifying the event
->>> - fix sibling event check by comparing event->pmu with sibling->pmu
->>> - probe PMU for each rootport independently
->>> - use .update() as .read() directly
->>> - remove dynamically generating symbolic name of lane event
->>> - redefine static symbolic name of lane event and leave lane filed to user
->>> - add CPU hotplug support
->>>
->>> 2. addressing comments from Baolin:
->>> - add a mask to avoid possible overflow
->>>
->>> Changes since v2 addressing comments from Baolin:
->>> - remove redundant macro definitions
->>> - use dev_err to print error message
->>> - change pmu_is_register to boolean
->>> - use PLATFORM_DEVID_NONE macro
->>> - fix module author format
->>>
->>> Changes since v1:
->>>
->>> 1. address comments from Jonathan:
->>> - drop marco for PMU name and VSEC version
->>> - simplify code with PCI standard marco
->>> - simplify code with FIELD_PREP()/FIELD_GET() to replace shift marco
->>> - name register filed with single _ instead double
->>> - wrap dwc_pcie_pmu_{write}_dword out and drop meaningless snaity check 
->>> - check vendor id while matching vesc with pci_find_vsec_capability()
->>> - remove RP_NUM_MAX and use a list to organize PMU devices for rootports
->>> - replace DWC_PCIE_CREATE_BDF with standard PCI_DEVID
->>> - comments on riping register together
->>>
->>> 2. address comments from Bjorn:
->>> - rename DWC_PCIE_VSEC_ID to DWC_PCIE_VSEC_RAS_DES_ID
->>> - rename cap_pos to ras_des
->>> - simplify declare of device_attribute with DEVICE_ATTR_RO
->>> - simplify code with PCI standard macro and API like pcie_get_width_cap()
->>> - fix some code style problem and typo
->>> - drop meaningless snaity check of container_of
->>>
->>> 3. address comments from Yicong:
->>> - use sysfs_emit() to replace sprintf()
->>> - simplify iteration of pci device with for_each_pci_dev
->>> - pick preferred CPUs on a near die and add comments
->>> - unregister PMU drivers only for failed ones
->>> - log on behalf PMU device and give more hint
->>> - fix some code style problem
->>>
->>> (Thanks for all comments and they are very valuable to me)
->>>
->>> This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
->>> for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
->>> Core controller IP which provides statistics feature.
->>>
->>> Shuai Xue (4):
->>>   docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
->>>   PCI: Add Alibaba Vendor ID to linux/pci_ids.h
->>>   drivers/perf: add DesignWare PCIe PMU driver
->>>   MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
->>>
->>>  .../admin-guide/perf/dwc_pcie_pmu.rst         |  97 +++
->>>  Documentation/admin-guide/perf/index.rst      |   1 +
->>>  MAINTAINERS                                   |   6 +
->>>  drivers/infiniband/hw/erdma/erdma_hw.h        |   2 -
->>>  drivers/perf/Kconfig                          |   7 +
->>>  drivers/perf/Makefile                         |   1 +
->>>  drivers/perf/dwc_pcie_pmu.c                   | 706 ++++++++++++++++++
->>>  include/linux/pci_ids.h                       |   2 +
->>>  8 files changed, 820 insertions(+), 2 deletions(-)
->>>  create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
->>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
->>>
->>
->> Hi, all,
->>
->> Gently ping. Any comments are welcomed.
-> 
-> 
-> Hi, all,
-> 
-> Gentle ping.
-> 
-
-Hi, all
-
-Gentle reminder, thank you.
-
->>
->> Thank you.
->>
->>
->> Best Regards,
->> Shuai
->>
->>
+--- linux-next-20230720.orig/lib/cpumask.c
++++ linux-next-20230720/lib/cpumask.c
+@@ -14,7 +14,7 @@
+  * @start: the start point of the iteration
+  * @wrap: assume @n crossing @start terminates the iteration
+  *
+- * Returns >= nr_cpu_ids on completion
++ * Return: >= nr_cpu_ids on completion
+  *
+  * Note: the @wrap argument is required for the start condition when
+  * we cannot assume @start is set in @mask.
+@@ -48,8 +48,9 @@ EXPORT_SYMBOL(cpumask_next_wrap);
+  * @node: memory node from which to allocate or %NUMA_NO_NODE
+  *
+  * Only defined when CONFIG_CPUMASK_OFFSTACK=y, otherwise is
+- * a nop returning a constant 1 (in <linux/cpumask.h>)
+- * Returns TRUE if memory allocation succeeded, FALSE otherwise.
++ * a nop returning a constant 1 (in <linux/cpumask.h>).
++ *
++ * Return: TRUE if memory allocation succeeded, FALSE otherwise.
+  *
+  * In addition, mask will be NULL if this fails.  Note that gcc is
+  * usually smart enough to know that mask can never be NULL if
+@@ -115,7 +116,7 @@ void __init free_bootmem_cpumask_var(cpu
+  * @i: index number
+  * @node: local numa_node
+  *
+- * Returns online CPU according to a numa aware policy; local cpus are returned
++ * Return: online CPU according to a numa aware policy; local cpus are returned
+  * first, followed by non-local ones, then it wraps around.
+  *
+  * For those who wants to enumerate all CPUs based on their NUMA distances,
+@@ -162,7 +163,7 @@ static DEFINE_PER_CPU(int, distribute_cp
+  * Iterated calls using the same srcp1 and srcp2 will be distributed within
+  * their intersection.
+  *
+- * Returns >= nr_cpu_ids if the intersection is empty.
++ * Return: >= nr_cpu_ids if the intersection is empty.
+  */
+ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 			       const struct cpumask *src2p)
+@@ -181,6 +182,12 @@ unsigned int cpumask_any_and_distribute(
+ }
+ EXPORT_SYMBOL(cpumask_any_and_distribute);
+ 
++/**
++ * cpumask_any_distribute - Return an arbitrary cpu from srcp
++ * @srcp: &cpumask for selection
++ *
++ * Return: >= nr_cpu_ids if the intersection is empty.
++ */
+ unsigned int cpumask_any_distribute(const struct cpumask *srcp)
+ {
+ 	unsigned int next, prev;
