@@ -2,90 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB66F7600CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094E27600D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbjGXU57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
+        id S230049AbjGXVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbjGXU55 (ORCPT
+        with ESMTP id S229485AbjGXVCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:57:57 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D991700
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:57:57 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-116-181.bstnma.fios.verizon.net [173.48.116.181])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36OKvLP7032748
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 16:57:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1690232246; bh=VrnAa/A2r4LI/rEZJ68r1D+a4gLvUPEsrNotF0DM+RU=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Y73krL66ILxjt3i9efbK44U2rllrST4OmMfVPEq6wvleirGWt7mChjG8K0ng8Q4ZY
-         nKghH590EWqcWbLwTN7wvCMuBeK8L2scIZWnCIbEiGdl7UQ87aakpAz5Zpq5UOXL89
-         2SDXcRkyRlZ5wWtb+3deMuDJCsb+qSItrAh4jcNqD94CGu0tbKEkZjsKJukJmixFAj
-         oaJxauz4gh0pvVFm3vgNBUTPibIpXEjBaJakjh0jz+MXI5qMaAc6/gcJa1ljYESi4G
-         xJov1U3PAjbcgTIlMQsxwnyVef2FgWvDk7eoNNR25jiJ62KzyVLEDTk1s0l3pWeP1X
-         ns2FfuMzBNpLQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 43A9815C04D9; Mon, 24 Jul 2023 16:57:21 -0400 (EDT)
-Date:   Mon, 24 Jul 2023 16:57:21 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Su Hui <suhui@nfschina.com>, adilger.kernel@dilger.ca,
-        nathan@kernel.org, trix@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ext4: mballoc: avoid garbage value from err
-Message-ID: <20230724205721.GA2504240@mit.edu>
-References: <20230724054538.163319-1-suhui@nfschina.com>
- <CAKwvOdk-fdJr9TcgUnOhCiU0LvD2Qe_c+6YOe-c1k0Ukm+negA@mail.gmail.com>
+        Mon, 24 Jul 2023 17:02:00 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F911E70
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:01:59 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-440ad406bc8so1225591137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690232518; x=1690837318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DwEv6m7WdEj0WSS/WT/tsZ81hOCgU00T3UAZ9HdZAtM=;
+        b=ZXJZqU++vguNApIwgPzo62X8jAfLDKCBIFCtO0mpcS9spwAkiHrJzjk3NqFkmjzfUJ
+         00W5rK4Im2ZLUNSjWMonuSYFVPgD8zpl6ZQdlEvys7eXO3FIpf57vu1SQFRoHiQ1qC8/
+         PnZlXRVgzntWJdt92inSsTgCxwbzn3SijHCpCqHJHrkAISuXS7tWqmyfiUDdgZ9fH17a
+         Xu+A8LW0LEpsgVEfA3+ZXDrcitcAT9LYOM0ADJfrw4tSxp7RaNbqFUwsfrQ7XFNnnuBs
+         z1dzEXCIAVkaEXj7JfwKwv521RnbBdchV5jPs7lA15JjkKx3v3d5BG0lhYYIhc1GlFAX
+         77JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690232518; x=1690837318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DwEv6m7WdEj0WSS/WT/tsZ81hOCgU00T3UAZ9HdZAtM=;
+        b=TxvOpdxYRl2mx6gDbjCsww9J5cvq4Nair79I+r1tT5DlaEKwEGoD7VHdqoHMGdeHHA
+         4p+KcuaWuqMpNtUGpiM2HhHzs0q8hOtzi52wyhYHFLyRiadZPss3HR9NS5Q8uiMJTPqx
+         Q8OBINexmyee5u96h52KCjMjveE4QSfLnndluYaxpTYgwVgSWPXPJ0LbfTZp7ySmaLm1
+         t6FMt1H72+RBSUKQd+SRJECndRkwXjRumvZidi63oNDYt9xWy6r+sJpv7/Yi9fQRQ9FG
+         RMxhyii8w9plSryXR/G7BqhYSlRUpJXwzTv66AssD7AvitFGwsq8DVbJ/IAik9H0HS0C
+         F/HA==
+X-Gm-Message-State: ABy/qLZ/WKqoToskZd/2HgUHyVQ5KHRrcW9fpqDFnTSODBnCXv91kkEg
+        Rk/0zOYEm/OrG2GJI6hbpacTkaXejylkEWtau2tl9w==
+X-Google-Smtp-Source: APBJJlErB59jzrRIhB+T/J9RpOvQv83sc4JBVzJJ4GXRhV/iU5dwS7hKGJz9QozlSrr9AqlTgzi1XIEgW6D/7n8VTUk=
+X-Received: by 2002:a67:ef84:0:b0:443:6392:71ea with SMTP id
+ r4-20020a67ef84000000b00443639271eamr2866297vsp.34.1690232518329; Mon, 24 Jul
+ 2023 14:01:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdk-fdJr9TcgUnOhCiU0LvD2Qe_c+6YOe-c1k0Ukm+negA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230724201247.748146-1-irogers@google.com> <20230724201247.748146-3-irogers@google.com>
+In-Reply-To: <20230724201247.748146-3-irogers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jul 2023 14:01:46 -0700
+Message-ID: <CAKwvOdkkfkoOE7G__gJ1cQq5i2o4bauk7pqudb3vd2R7sneoYg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] perf parse-events: Avoid use uninitialized warning
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev, maskray@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:19:02AM -0700, Nick Desaulniers wrote:
-> >
-> > err is uninitialized and will be judged when it enters the
-> > loop first time and the condition "!ext4_sb_block_valid()"
-> > is true. Although this can't make problems now, it's better
-> > to correct it.
-> >
-> > Signed-off-by: Su Hui <suhui@nfschina.com>
-> 
-> Hi Su,
-> Thanks for the patch!  I see what the warning is getting at;
-> 
-> If `len <= 0` then `err` is never initialized, then is used at line
-> 4178 (that is UB).
-> 
-> Would you mind sending a v2 with the commit message updated to reflect
-> the above points?  I'd be happy to sign-off on that.
+On Mon, Jul 24, 2023 at 1:13=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> With GCC LTO a potential use uninitialized is spotted:
+> ```
+> In function =E2=80=98parse_events_config_bpf=E2=80=99,
+>     inlined from =E2=80=98parse_events_load_bpf=E2=80=99 at util/parse-ev=
+ents.c:874:8:
+> util/parse-events.c:792:37: error: =E2=80=98error_pos=E2=80=99 may be use=
+d uninitialized [-Werror=3Dmaybe-uninitialized]
+>   792 |                                 idx =3D term->err_term + error_po=
+s;
+>       |                                     ^
+> util/parse-events.c: In function =E2=80=98parse_events_load_bpf=E2=80=99:
+> util/parse-events.c:765:13: note: =E2=80=98error_pos=E2=80=99 was declare=
+d here
+>   765 |         int error_pos;
+>       |             ^
+> ```
+> So initialize at declaration.
 
-Fortunately, as near as I can tell, ext4_mb_mark_bb() should never be
-called with len <= 0.  It might be possible to trick ext4 via a
-corrupted file system --- I'd have to take a closer look at that, but
-fortunately, in the case where len <= 0, bitmap_bh will be NULL, so
-regardless of whether err is 0, or some garbage non-zero value,
-brelse(NULL) is a no-op.
+This common pattern in C is error prone (conditional assignment in the
+callee; callers maybe forget to initialize, then unconditionally use
+the value). Clang's static analyzer can spot these, but isn't run for
+tools/ AFAIK.
 
-So while it's good to avoid the clang warning, but the fact that it
-might be possible for err to be a "garbage value" shouldn't be causing
-any problem.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Cheers,
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/parse-events.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-event=
+s.c
+> index acde097e327c..da29061ecf49 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -762,7 +762,7 @@ parse_events_config_bpf(struct parse_events_state *pa=
+rse_state,
+>                         struct list_head *head_config)
+>  {
+>         struct parse_events_term *term;
+> -       int error_pos;
+> +       int error_pos =3D 0;
+>
+>         if (!head_config || list_empty(head_config))
+>                 return 0;
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
 
-						- Ted
+
+--=20
+Thanks,
+~Nick Desaulniers
