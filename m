@@ -2,57 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B30175E7AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AB375E7F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjGXB3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S231668AbjGXBgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbjGXB22 (ORCPT
+        with ESMTP id S231824AbjGXBgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:28:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A985E212E;
-        Sun, 23 Jul 2023 18:25:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62E9160F7B;
-        Mon, 24 Jul 2023 01:24:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5D3C433C9;
-        Mon, 24 Jul 2023 01:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161892;
-        bh=3ASJJggsxaos/WuiwhkJ0XLXgPLaNAuVAqbfvrCOV8A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GwrV7vYKkI2+HIH58UjSlUNOuvTqKo/0R0UEbuZXIXLHaKbttjV3B4pFPjHIfehW6
-         R/PJn+WzFZt6JGKVoQrP88mzfKtClqNCNYmwLxQ34L79VDzb1agjxKNjqeYg+lyg1j
-         zYftE9hx+kpEASqYSjE3m8DWA/2JLVzWsnGh/NHMH8FGvzddV0ghnund+WcZbYhDOE
-         d0gsCyX/th2bXBZ3IbXfk2qZCJLYuyDBat08NMPA9OtW8l0m0L1b8h0ossAmXiXl7C
-         q9WaMNIKXeZ5pPKhxMGX3mvXX/Ka5gOYo+0EAJT2ug2hOaqxQx2RrYA7WgJ7i3U53D
-         foa6hOBbpoNkQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     hackyzh002 <hackyzh002@gmail.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 1/9] drm/radeon: Fix integer overflow in radeon_cs_parser_init
-Date:   Sun, 23 Jul 2023 21:24:35 -0400
-Message-Id: <20230724012450.2320077-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Sun, 23 Jul 2023 21:36:18 -0400
+Received: from out199-10.us.a.mail.aliyun.com (out199-10.us.a.mail.aliyun.com [47.90.199.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B0059C3;
+        Sun, 23 Jul 2023 18:32:45 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vo.bCsO_1690162261;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vo.bCsO_1690162261)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 09:31:02 +0800
+Date:   Mon, 24 Jul 2023 09:31:01 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jiejian Wu <jiejian@linux.alibaba.com>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCH v2 net-next] ipvs: make ip_vs_svc_table and
+ ip_vs_svc_fwm_table per netns
+Message-ID: <20230724013101.GI6751@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20230723154426.81242-1-dust.li@linux.alibaba.com>
+ <ff4612e3-bb5a-7acc-1607-5761e5d052c4@ssi.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.320
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff4612e3-bb5a-7acc-1607-5761e5d052c4@ssi.bg>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,36 +48,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hackyzh002 <hackyzh002@gmail.com>
+On Sun, Jul 23, 2023 at 08:19:54PM +0300, Julian Anastasov wrote:
+>
+>	Hello,
+>
+>On Sun, 23 Jul 2023, Dust Li wrote:
+>
+>> From: Jiejian Wu <jiejian@linux.alibaba.com>
+>> 
+>> Current ipvs uses one global mutex "__ip_vs_mutex" to keep the global
+>> "ip_vs_svc_table" and "ip_vs_svc_fwm_table" safe. But when there are
+>> tens of thousands of services from different netns in the table, it
+>> takes a long time to look up the table, for example, using "ipvsadm
+>> -ln" from different netns simultaneously.
+>> 
+>> We make "ip_vs_svc_table" and "ip_vs_svc_fwm_table" per netns, and we
+>> add "service_mutex" per netns to keep these two tables safe instead of
+>> the global "__ip_vs_mutex" in current version. To this end, looking up
+>> services from different netns simultaneously will not get stuck,
+>> shortening the time consumption in large-scale deployment. It can be
+>> reproduced using the simple scripts below.
+>> 
+>> init.sh: #!/bin/bash
+>> for((i=1;i<=4;i++));do
+>>         ip netns add ns$i
+>>         ip netns exec ns$i ip link set dev lo up
+>>         ip netns exec ns$i sh add-services.sh
+>> done
+>> 
+>> add-services.sh: #!/bin/bash
+>> for((i=0;i<30000;i++)); do
+>>         ipvsadm -A  -t 10.10.10.10:$((80+$i)) -s rr
+>> done
+>> 
+>> runtest.sh: #!/bin/bash
+>> for((i=1;i<4;i++));do
+>>         ip netns exec ns$i ipvsadm -ln > /dev/null &
+>> done
+>> ip netns exec ns4 ipvsadm -ln > /dev/null
+>> 
+>> Run "sh init.sh" to initiate the network environment. Then run "time
+>> ./runtest.sh" to evaluate the time consumption. Our testbed is a 4-core
+>> Intel Xeon ECS. The result of the original version is around 8 seconds,
+>> while the result of the modified version is only 0.8 seconds.
+>> 
+>> Signed-off-by: Jiejian Wu <jiejian@linux.alibaba.com>
+>> Co-developed-by: Dust Li <dust.li@linux.alibaba.com>
+>> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
+>
+>	Changes look good to me, thanks! But checkpatch is reporting
+>for some cosmetic changes that you have to do in v3:
+>
+>scripts/checkpatch.pl --strict /tmp/file.patch
 
-[ Upstream commit f828b681d0cd566f86351c0b913e6cb6ed8c7b9c ]
+Oh, sorry for that! I ignored the CHECKs checkpatch reported, my checkpatch
+shows:
 
-The type of size is unsigned, if size is 0x40000000, there will be an
-integer overflow, size will be zero after size *= sizeof(uint32_t),
-will cause uninitialized memory to be referenced later
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: hackyzh002 <hackyzh002@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/radeon/radeon_cs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+   $./scripts/checkpatch.pl --strict 0001-ipvs-make-ip_vs_svc_table-and-ip_vs_svc_fwm_table-pe.patch
+   CHECK: Prefer using the BIT macro
+   #69: FILE: include/net/ip_vs.h:40:
+   +#define IP_VS_SVC_TAB_SIZE (1 << IP_VS_SVC_TAB_BITS)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_cs.c b/drivers/gpu/drm/radeon/radeon_cs.c
-index 1ae31dbc61c64..5e61abb3dce5c 100644
---- a/drivers/gpu/drm/radeon/radeon_cs.c
-+++ b/drivers/gpu/drm/radeon/radeon_cs.c
-@@ -265,7 +265,8 @@ int radeon_cs_parser_init(struct radeon_cs_parser *p, void *data)
- {
- 	struct drm_radeon_cs *cs = data;
- 	uint64_t *chunk_array_ptr;
--	unsigned size, i;
-+	u64 size;
-+	unsigned i;
- 	u32 ring = RADEON_CS_RING_GFX;
- 	s32 priority = 0;
- 
--- 
-2.39.2
+We just moved this line from ip_vs_ctl.c to ip_vs.h, so we ignored the
+BIT macro. Do you think we should change it using BIT macro ?
 
+
+   CHECK: struct mutex definition without comment
+   #79: FILE: include/net/ip_vs.h:1051:
+   +       struct mutex service_mutex;
+
+I think we can add comment for it.
+But rethinking a bit on the service_mutex in ip_vs_est.c, I'm a
+wondering why we are using the service_mutex in estimation ? Is est_mutex
+enough for the protecting in ip_vs_est.c ?
+
+
+   CHECK: Logical continuations should be on the previous line
+   #161: FILE: net/netfilter/ipvs/ip_vs_ctl.c:410:
+                       && (svc->port == vport)
+   +                   && (svc->protocol == protocol)) {
+
+This is just the removal of '(svc->ipvs == ipvs)' and kept it as it is.
+So haven't change according to checkpatch. If you prefer, I can modify
+it to make checkpatch happy.
+
+
+   CHECK: Alignment should match open parenthesis
+   #233: FILE: net/netfilter/ipvs/ip_vs_ctl.c:1767:
+   +                       list_for_each_entry(dest, &svc->destinations,
+   +                                               n_list) {
+
+We missed this, will change.
+
+
+   CHECK: Alignment should match open parenthesis
+   #246: FILE: net/netfilter/ipvs/ip_vs_ctl.c:1774:
+   +                       list_for_each_entry(dest, &svc->destinations,
+   +                                               n_list) {
+
+Same above.
+
+   total: 0 errors, 0 warnings, 5 checks, 506 lines checked
+
+
+
+>
+>Regards
+>
+>--
+>Julian Anastasov <ja@ssi.bg>
