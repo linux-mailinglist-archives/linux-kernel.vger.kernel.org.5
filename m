@@ -2,207 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C8675FA46
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6BC75FA48
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjGXO6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S230216AbjGXO6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGXO6P (ORCPT
+        with ESMTP id S230034AbjGXO6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:58:15 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAE910C0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:58:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z673yg4A+6JJWxiJE9/PenW2OHMKNqhQvrawJO2yNign3h53b1WZO6Fo7A/j+Nyy237cqpE59ZpoaxaUx6aNb+S8xjLRpqhAFWUvK11HXpsfPTAa5AV94Y4j0FrhYwsdbQxmWJ+xtdtAfElw79tvjzbO/hJAUMvyTccl9qJti3rtl4xmfDcKtoap9aSHtTzh0WAyKQU38BArNEiRLyG0cebfGZ3zeDZc+LOl+9NHMgER1rXH2YSVx01w1o08Y6PihjZcJfUY1GRxv3zEMp6Or7q+AXTNDvW2AcntcFjIntt5vg4R560aMEWo038Luf092i64kkwBTIK+0Rkl/iwIyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OFBtNClghiH8ebYZvgzi0cmk1iuOkNYCTYiwsb1afxE=;
- b=M0B/G0f1KYkaokTgrWf2S2tBjuOgAvhsjXXLnT2tVQl/ObYpaoZ9WGPuO7TfGhUgfV+l7E3nyYmobfuF8UB7jA+EbErSA1TgMAQ3iQXMSj/XD5qJBa/wOM6GlfMBxO/Y4jEyeOCxxQgaxGcPz6CqkJ8JbIogRBiDgt4DELEfLYbIyN3MSEMmEd3FAP8AENNLTAbm9otfDZu4+O/ot80I19RpPdL0qtBeX4/a2z9sYzZJ1bowzvry0XafLzpH5JV4fqACeN3QMeuw+ASfWTELaCtWfiYgAns8E93K5S2AMWRXaqto3DY4vRaqjX52lczOLuh/vBMqPkgR8eEMcEyaCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OFBtNClghiH8ebYZvgzi0cmk1iuOkNYCTYiwsb1afxE=;
- b=l2O90T50rFdtnYVW7bm8UOitySQX/jNKIe9fNXqmffdskvoa6fTvkNCY6MCISPSP5nGYLxmeMWsc7h+1EYZuv0YhUNZExGYx4PvTWCA+Fi7cffHlQ5bCul2MSoLMJoi5Sz6OBNZ6oKjLjY8Zcet4+bNIn50yd1/9WEJ4HeKE3fjyKWVrpUIsLxL5BKd9+al7ZBlIPTRNbgTSnIwjlEkqVa7mXAZvNcBo5Z/oQkuB9xlQ4Spud8EyIGPMDItbNpRpu36FFAKNDSkTvhH8zBVgugSKI3pDwKGMXWQxX1kYwNG/DyNuml4xuPghnF8quox9z2EIcfoTt6LaP0qIISlodA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.32; Mon, 24 Jul 2023 14:58:12 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::c166:b535:d93:641e]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::c166:b535:d93:641e%4]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 14:58:12 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/4] variable-order, large folios for anonymous memory
-Date:   Mon, 24 Jul 2023 10:58:09 -0400
-X-Mailer: MailMate (1.14r5964)
-Message-ID: <2FCD9E8A-D38A-40C4-9825-AE7ECEEFC715@nvidia.com>
-In-Reply-To: <83bb1b99-81d3-0f32-4bf2-032cb512a1a1@arm.com>
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <83bb1b99-81d3-0f32-4bf2-032cb512a1a1@arm.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_77471788-4D23-455F-B4DA-D236594F4141_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR20CA0018.namprd20.prod.outlook.com
- (2603:10b6:208:e8::31) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+        Mon, 24 Jul 2023 10:58:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2720310EB;
+        Mon, 24 Jul 2023 07:58:33 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:10:580::7a9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2971A66070F7;
+        Mon, 24 Jul 2023 15:58:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690210711;
+        bh=eh2oEF+J5oZffvXBl4TeLOtFgXuWus4Ht+BGvLmKiFs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nmbFmwfFglDldVWaISuEQOc2SM5Qz3Dg5xRAiTAA0X8fXt/RVdXav8RAxMAnZt9xE
+         FNi8aMnb9bBHCpyTIDVanWywJEsa+UNuxbUPoyCpfRnQmNcoIA9ExiSLGzY1zHrDq+
+         4pHLsw19pJQr2NyrFdOAgBhetbctNBA7+Upa5AYPCDcH/txc7KR//loFW8xWaAHse4
+         66zbJPjvnWht1DKqDB+I5SpeUwcvEmY7eYoI3neCmF+MzAYmoNMDTv0v2VLDhXb0YR
+         bHIZjjhV72xXqc6Y1T2dj5d3VjWb958b+TJjLn/s6ch0/0OrtI1FgRDo6EA0r8aetx
+         tJzuKf/KyEQ0w==
+Message-ID: <a01d1f15542917f0dbc8273bc5bcb41652338841.camel@collabora.com>
+Subject: Re: [PATCH v2,1/2] media: mediatek: vcodec: checking decoder ack
+ message parameter
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
+        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Date:   Mon, 24 Jul 2023 10:58:21 -0400
+In-Reply-To: <20230722074608.30766-1-yunfei.dong@mediatek.com>
+References: <20230722074608.30766-1-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|DS0PR12MB7726:EE_
-X-MS-Office365-Filtering-Correlation-Id: 53457cc3-358f-4794-1652-08db8c5666a2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OnxYaTgd/8fx/VctgP8wnr4uLBUdi6iHRm6CT5mGklkocJPwpUhy3r6tUeIPYH7wxxDzqf6T87G3th445xxQ88m5u/F4++x5TWbD5/OsZdjJtiX9jLw1w2HVY22UU3rQnh+tNAtJxr2z9K3eldDarCkqCQSoxkXMhMaG5cIYixgyA+x3uH7UKt8LAWh+bpsS+TgfK+1bw8zRdyk9kQWYbE8miLeKVYgIPeKO4wOXquwLMAjVHiK6tWTkrnJHBMBs01fc4xEhxsyjXBDu8gvqNe/lFXONxVvlguQGBu+vSfAF8bdIKLdVQIstAprwWXF6Kw4CJCd/DY/aiKAzIUh31Ox9yb0OnGvbYDyNn82WaBCRW9Dg6xzyu9etFt0xinxVcCCGqdb8cD6vcOA7uNChvxqKOkSU/Ka++QTTkbM6hF/ExlS11cgO23x9LNSECggue6/w9ns/u30lRkrVh4dNNqLrkGB/mjKpNY6FSRiaCv8OcHWTjYvHP6x8BJ1QuwDD9MfJV5Tevm6IrB2FMNT021HzQOUl5mPSWO1iRYuefnC35toXjKVD5MHmikDb0HTmL3CCrB1aDlPVfU7Ijyy2qEcRQKyks8/VmN72Xt6yH0M7eCdoySP+P98PZo5lbIwzJTyyBjWDegE0d9iI7NQtMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(451199021)(478600001)(6512007)(6486002)(6666004)(54906003)(6506007)(186003)(26005)(53546011)(2906002)(316002)(4326008)(41300700001)(66946007)(66556008)(66476007)(8676002)(7416002)(6916009)(5660300002)(235185007)(8936002)(36756003)(38100700002)(86362001)(33656002)(2616005)(83380400001)(45980500001)(72826004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cxpNfPJtC0uLabzaJ7Eo6rvt+U9P6TzC1s7yAb9fEmho1LoMtx2wpbLHaD8q?=
- =?us-ascii?Q?BMwuXjRhdZAkCgOZM0CZe+o+ChELcp7qfcXe2QJ+SWalWCTHks9KuXkKztHN?=
- =?us-ascii?Q?1+GoPXUX8EZs+Kh9kopwo3ClJGUd9FrBFycoj/lsnV52PanuwgbM3vovarQ5?=
- =?us-ascii?Q?YPxtzccq1Q2bDQMsVVeejsq/A647tzWzWqKnIaBFHc+Fsa5HmbiiWm5zpfEV?=
- =?us-ascii?Q?OV1uHtBOiCkrEMuUW5ojtVfA326aaWbTrq3M1NnJHXBcoAfQ2b4+wCzG5alU?=
- =?us-ascii?Q?cbhDo1M9kU0wnnNnuxQU7FMpVaHlzAvjQEmCfhdv10mYilb4ryqlRUmlvRKT?=
- =?us-ascii?Q?Wr9i5A6mmXEMxMp9u30gGISl4tTNWsJ8aLuwjsWsurHJIsShyYQQe+1dSho3?=
- =?us-ascii?Q?BudW4bp1dG1Bf7CUIh4k7T8dOypR/E/WlHFucHMtGx7J0/bvpOg1bFgX/oTz?=
- =?us-ascii?Q?VlHBgRzfail9FPgiX7CzPCBYyDjtpvXBJstpoLfezqc74fdFFs2O5akW2ogC?=
- =?us-ascii?Q?nhbxGsmiWKulqNhx4LsIUlPLDx6YTTpslDNibX9+QEFT87HIg5LWdTdxU3q0?=
- =?us-ascii?Q?tb05E1MpCQb7qtHwe1zqwHqp9gWhJhuIg+13JMuRKayL6ARjHYBqANbA64vL?=
- =?us-ascii?Q?WuRL5FBkurk+6h5UGvnEHLmbxvxDd4JUN7XvCdHrRpWgAkV7r54HFddFK0OG?=
- =?us-ascii?Q?3GdGQgFQ3+A3VDyF0Xk+4HtjrbX/Xi19dkJEE9dju3L09bUzg3OeznzfKmPI?=
- =?us-ascii?Q?Hq0NNskzJvqpxbb1N7oFprXVMQeMHmQbNdFt1hKofKpM5Kwfhte3Hcl1gpja?=
- =?us-ascii?Q?TSTD87xU6YLBem+eXHoX0Mo+cMKudneMnYOdtMaz3MatCMT9+54XGE72tNcf?=
- =?us-ascii?Q?wMnYwWokJhWwvbftB1xUJ9Dq2QLcaeMNYPWty9yMMM4ocViJ+hck88kWsUzl?=
- =?us-ascii?Q?FxJ0wgo7lCX51dzSpp+pVj0OX01BzYZWfYjkvRoGRKnYtKebvWSxZwHWZgLb?=
- =?us-ascii?Q?KZ7lNaY6zPO8NNT22MEQZdPp/3otx4bWxUx70tAWAQkW5WyMojchUEfRAuXs?=
- =?us-ascii?Q?ZdwzbkXnbl9Q1NViPIhWYLRhcj0ugahQ5BggW6rKgJmVm9e7ZG17UvMsuxGV?=
- =?us-ascii?Q?mSq5jdpobGTNiwPcgewjFEek2O0bgQWjgb0bkXKS6CTkvDsgdzBxIMWMzZGS?=
- =?us-ascii?Q?llG/Z5VL78J8LH7Xay5Uant83pS6QbWcJPkcIMgn2IAA5IJHA+m2ZLlqNOnl?=
- =?us-ascii?Q?+6qV4H53kVYXnaRyghEzYaejd28K4jTxwSZvlRWAdeywZwzLbWRyHFgkRMyq?=
- =?us-ascii?Q?Mexq4ElgPpKBeJ0jhGpJGGfdHNRBs48GoAgZSFDRst5B7jIRbECZWqwRr6Lv?=
- =?us-ascii?Q?FGDpSeineiDEGzJFN2CchEkycr7lN/cm8TZt0TmDcJ+OTUFZEn7jZA57vJbY?=
- =?us-ascii?Q?izwnzxzz74AO+AUJyE5lLY1/BdcgWMalG7+Vrc+g6c1OPA+dg3v1IXjHOY6I?=
- =?us-ascii?Q?fUK3iYU25IbN9tiZa57L/5U88GVGFzKKP1w8U1iyyJhmA1WHd4W9Bo6hAGE/?=
- =?us-ascii?Q?WkakVOS7VjGVA2IfZYQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53457cc3-358f-4794-1652-08db8c5666a2
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 14:58:12.1463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gQquqMYYvTDt22UtsGhEU4Yf6bVE3whW1kWx/fAdbNxh35Rin5iiBPd+yf3B023l
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7726
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_77471788-4D23-455F-B4DA-D236594F4141_=
-Content-Type: text/plain
+Hi Yunfei,
 
-On 24 Jul 2023, at 7:59, Ryan Roberts wrote:
+Le samedi 22 juillet 2023 =C3=A0 15:46 +0800, Yunfei Dong a =C3=A9crit=C2=
+=A0:
+> Need to checking all parameters of msg data are valid or not,
+> in case of access null pointer or unreasonable value leading
+> to kernel reboot.
 
-> On 14/07/2023 17:04, Ryan Roberts wrote:
->> Hi All,
->>
->> This is v3 of a series to implement variable order, large folios for anonymous
->> memory. (currently called "FLEXIBLE_THP") The objective of this is to improve
->> performance by allocating larger chunks of memory during anonymous page faults.
->> See [1] and [2] for background.
->
-> A question for anyone that can help; I'm preparing v4 and as part of that am
-> running the mm selftests, now that I've fixed them  up to run reliably for
-> arm64. This is showing 2 regressions vs the v6.5-rc3 baseline:
->
-> 1) khugepaged test fails here:
-> # Run test: collapse_max_ptes_none (khugepaged:anon)
-> # Maybe collapse with max_ptes_none exceeded.... Fail
-> # Unexpected huge page
->
-> 2) split_huge_page_test fails with:
-> # Still AnonHugePages not split
->
-> I *think* (but haven't yet verified) that (1) is due to khugepaged ignoring
-> non-order-0 folios when looking for candidates to collapse. Now that we have
-> large anon folios, the memory allocated by the test is in large folios and
-> therefore does not get collapsed. We understand this issue, and I believe
-> DavidH's new scheme for determining exclusive vs shared should give us the tools
-> to solve this.
->
-> But (2) is weird. If I run this test on its own immediately after booting, it
-> passes. If I then run the khugepaged test, then re-run this test, it fails.
->
-> The test is allocating 4 hugepages, then requesting they are split using the
-> debugfs interface. Then the test looks at /proc/self/smaps to check that
-> AnonHugePages is back to 0.
->
-> In both the passing and failing cases, the kernel thinks that it has
-> successfully split the pages; the debug logs in split_huge_pages_pid() confirm
-> this. In the failing case, I wonder if somehow khugepaged could be immediately
-> re-collapsing the pages before user sapce can observe the split? Perhaps the
-> failed khugepaged test has left khugepaged in an "awake" state and it
-> immediately pounces?
+May I suggest an alternative commit message ? It would look like:
+  =20
+  =20
+   media: mediatek: vcodec: Fix possible invalid memory access
+  =20
+   Validate that the context pointer and the vpu instance within this
+   context is valid. <please add why it may occur here>
 
-This is more likely to be a stats issue. Have you checked smap to see if
-AnonHugePages is 0 KB by placing a getchar() before the exit(EXIT_FAILURE)?
-Since split_huge_page_test checks that stats to make sure the split indeed
-happened.
 
---
-Best Regards,
-Yan, Zi
+I cannot really provide a full message here, but my understanding is that i=
+t is
+normal behaviour for the IRQ handler to be called after the context or the =
+VPU
+instance has been released ? It is unlikely a great programming pattern tho=
+ugh,
+can't you remove the handler on time instead ?
 
---=_MailMate_77471788-4D23-455F-B4DA-D236594F4141_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+Nicolas
 
------BEGIN PGP SIGNATURE-----
+>=20
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> ---
+>  .../vcodec/decoder/mtk_vcodec_dec_drv.h       |  2 +
+>  .../mediatek/vcodec/decoder/vdec_vpu_if.c     | 77 ++++++++++++-------
+>  2 files changed, 52 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
+c_drv.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv=
+.h
+> index 6c318de25a55..7e36b2c69b7d 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+> @@ -161,6 +161,7 @@ struct mtk_vcodec_dec_pdata {
+>   * @hw_id: hardware index used to identify different hardware.
+>   *
+>   * @msg_queue: msg queue used to store lat buffer information.
+> + * @vpu_inst: vpu instance pointer.
+>   *
+>   * @is_10bit_bitstream: set to true if it's 10bit bitstream
+>   */
+> @@ -205,6 +206,7 @@ struct mtk_vcodec_dec_ctx {
+>  	int hw_id;
+> =20
+>  	struct vdec_msg_queue msg_queue;
+> +	void *vpu_inst;
+> =20
+>  	bool is_10bit_bitstream;
+>  };
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c=
+ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> index 82c3dc8c4127..23cfe5c6c90b 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> @@ -72,6 +72,21 @@ static void handle_get_param_msg_ack(const struct vdec=
+_vpu_ipi_get_param_ack *ms
+>  	}
+>  }
+> =20
+> +static bool vpu_dec_check_ap_inst(struct mtk_vcodec_dec_dev *dec_dev, st=
+ruct vdec_vpu_inst *vpu)
+> +{
+> +	struct mtk_vcodec_dec_ctx *ctx;
+> +	int ret =3D false;
+> +
+> +	list_for_each_entry(ctx, &dec_dev->ctx_list, list) {
+> +		if (!IS_ERR_OR_NULL(ctx) && ctx->vpu_inst =3D=3D vpu) {
+> +			ret =3D true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * vpu_dec_ipi_handler - Handler for VPU ipi message.
+>   *
+> @@ -84,44 +99,51 @@ static void handle_get_param_msg_ack(const struct vde=
+c_vpu_ipi_get_param_ack *ms
+>   */
+>  static void vpu_dec_ipi_handler(void *data, unsigned int len, void *priv=
+)
+>  {
+> +	struct mtk_vcodec_dec_dev *dec_dev;
+>  	const struct vdec_vpu_ipi_ack *msg =3D data;
+> -	struct vdec_vpu_inst *vpu =3D (struct vdec_vpu_inst *)
+> -					(unsigned long)msg->ap_inst_addr;
+> +	struct vdec_vpu_inst *vpu;
+> =20
+> -	if (!vpu) {
+> +	dec_dev =3D (struct mtk_vcodec_dec_dev *)priv;
+> +	vpu =3D (struct vdec_vpu_inst *)(unsigned long)msg->ap_inst_addr;
+> +	if (!priv || !vpu) {
+>  		mtk_v4l2_vdec_err(vpu->ctx, "ap_inst_addr is NULL, did the SCP hang or=
+ crash?");
+>  		return;
+>  	}
+> =20
+> -	mtk_vdec_debug(vpu->ctx, "+ id=3D%X", msg->msg_id);
+> +	if (!vpu_dec_check_ap_inst(dec_dev, vpu) || msg->msg_id < VPU_IPIMSG_DE=
+C_INIT_ACK ||
+> +	    msg->msg_id > VPU_IPIMSG_DEC_GET_PARAM_ACK) {
+> +		mtk_v4l2_vdec_err(vpu->ctx, "vdec msg id not correctly =3D> 0x%x", msg=
+->msg_id);
+> +		vpu->failure =3D -EINVAL;
+> +		goto error;
+> +	}
+> =20
+>  	vpu->failure =3D msg->status;
+> -	vpu->signaled =3D 1;
+> +	if (msg->status !=3D 0)
+> +		goto error;
+> =20
+> -	if (msg->status =3D=3D 0) {
+> -		switch (msg->msg_id) {
+> -		case VPU_IPIMSG_DEC_INIT_ACK:
+> -			handle_init_ack_msg(data);
+> -			break;
+> +	switch (msg->msg_id) {
+> +	case VPU_IPIMSG_DEC_INIT_ACK:
+> +		handle_init_ack_msg(data);
+> +		break;
+> =20
+> -		case VPU_IPIMSG_DEC_START_ACK:
+> -		case VPU_IPIMSG_DEC_END_ACK:
+> -		case VPU_IPIMSG_DEC_DEINIT_ACK:
+> -		case VPU_IPIMSG_DEC_RESET_ACK:
+> -		case VPU_IPIMSG_DEC_CORE_ACK:
+> -		case VPU_IPIMSG_DEC_CORE_END_ACK:
+> -			break;
+> +	case VPU_IPIMSG_DEC_START_ACK:
+> +	case VPU_IPIMSG_DEC_END_ACK:
+> +	case VPU_IPIMSG_DEC_DEINIT_ACK:
+> +	case VPU_IPIMSG_DEC_RESET_ACK:
+> +	case VPU_IPIMSG_DEC_CORE_ACK:
+> +	case VPU_IPIMSG_DEC_CORE_END_ACK:
+> +		break;
+> =20
+> -		case VPU_IPIMSG_DEC_GET_PARAM_ACK:
+> -			handle_get_param_msg_ack(data);
+> -			break;
+> -		default:
+> -			mtk_vdec_err(vpu->ctx, "invalid msg=3D%X", msg->msg_id);
+> -			break;
+> -		}
+> +	case VPU_IPIMSG_DEC_GET_PARAM_ACK:
+> +		handle_get_param_msg_ack(data);
+> +		break;
+> +	default:
+> +		mtk_vdec_err(vpu->ctx, "invalid msg=3D%X", msg->msg_id);
+> +		break;
+>  	}
+> =20
+> -	mtk_vdec_debug(vpu->ctx, "- id=3D%X", msg->msg_id);
+> +error:
+> +	vpu->signaled =3D 1;
+>  }
+> =20
+>  static int vcodec_vpu_send_msg(struct vdec_vpu_inst *vpu, void *msg, int=
+ len)
+> @@ -182,9 +204,10 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+> =20
+>  	init_waitqueue_head(&vpu->wq);
+>  	vpu->handler =3D vpu_dec_ipi_handler;
+> +	vpu->ctx->vpu_inst =3D vpu;
+> =20
+>  	err =3D mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler, vpu->id,
+> -					 vpu->handler, "vdec", NULL);
+> +					 vpu->handler, "vdec", vpu->ctx->dev);
+>  	if (err) {
+>  		mtk_vdec_err(vpu->ctx, "vpu_ipi_register fail status=3D%d", err);
+>  		return err;
+> @@ -193,7 +216,7 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+>  	if (vpu->ctx->dev->vdec_pdata->hw_arch =3D=3D MTK_VDEC_LAT_SINGLE_CORE)=
+ {
+>  		err =3D mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler,
+>  						 vpu->core_id, vpu->handler,
+> -						 "vdec", NULL);
+> +						 "vdec", vpu->ctx->dev);
+>  		if (err) {
+>  			mtk_vdec_err(vpu->ctx, "vpu_ipi_register core fail status=3D%d", err)=
+;
+>  			return err;
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmS+kYEPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUbMYP/jYQCAtM3vXevjCKaPGluNvG0+qGgfksFxwL
-05OaavpK1h3BiXiTgOOz8EF77Xem/Cc/XL8iE+aRyEQ3DlXxbs1ybM3dfeIEBeVU
-DBJajlS12Xn7lsbA8SeaO28Pwr6uusVj/btTlZ1Boq/Y5CafPDvcCdXiFqO9m8H/
-EAi74WTamdUCDimr3/pv6MD+25dVcdBzVZTDwa5HqIUaaxeAU+a/sLMqvxPBLYYN
-WvG4gllTiADKiU2qMNjAfGUfBtM+zNTa1dwxOII23K5pd8R9487FwfKmKONSjgG+
-rRDFPRNgMbCsXck2nWCbDfVvRgh3TP7qvsQnPc63fGwC93lDCyQVDpORndsoatc8
-lu9h/H6QBBs6BpdVpov7JmeLnrnc3EfKwyXpu5X+DkzMZsH3KYSmJw+jFCTTzQ82
-5DgqLsH1uFZPUDxLneQGd7w+AVOLbs4rWaKLPrwzW3eAoXDc8Vt6HPEPiUsJurB+
-DNRQk9Xpa6Rcco50VXzf4V2ztkUZ+CFIEEixEYt/xAIKOIEDJ8h2AjPZHUY3g0Wa
-cLrzdaFcetFIb0KfEZ7FnbDFS1ARkQFjvyB7XUBdPdvbJJ9TsC9jrqD4dXXJggrs
-G7RlVzcU+6byDZgjSd/e3LUTDdVAeqYu5gNd+bquTtpfJe77mt5xGe/WXTNlXSVR
-0l/Kx35G
-=XHzl
------END PGP SIGNATURE-----
-
---=_MailMate_77471788-4D23-455F-B4DA-D236594F4141_=--
