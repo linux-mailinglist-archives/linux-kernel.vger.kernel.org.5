@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C96E775ED87
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F4875ED82
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbjGXI2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S231516AbjGXI1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbjGXI16 (ORCPT
+        with ESMTP id S231488AbjGXI1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:27:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A04119AD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690187183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pqVPx2T65FEY/gXsUV2SoZ8UzlYeQwEk4kcTv3TVfeE=;
-        b=QOemp78YMRLGd7KsT+pV8mh7ilpDH+upNP4jUFo7HbCeJ1Nj2aETs53Q/izEQeLq83ytFH
-        GlBOQMqFzWPORQqX//xne8jsbu/ucIu67DrcXigu6h/4QcLBDqDBmrHibi8gMQmIaKOcS6
-        FlV20kpSOKyKtQwkOsEI7QfX7sLvbBs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-DtSS6FXKMVWkdfl3P0h3hA-1; Mon, 24 Jul 2023 04:26:21 -0400
-X-MC-Unique: DtSS6FXKMVWkdfl3P0h3hA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3faabd8fd33so19623555e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:26:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690187180; x=1690791980;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pqVPx2T65FEY/gXsUV2SoZ8UzlYeQwEk4kcTv3TVfeE=;
-        b=EOhR3qqiIsrlRf3ApSL0UESzhhd+J1dOOE4IQTFuhKfaqKrorNNc/ROEDN4ffwy/ls
-         L8LU2iOtF1/STtmeikW3hgOigaekzoYZ/50O0JCC/tXPnHaYWRRkO8U2KFfjUQQZdpKk
-         D+aF8Frg0tyhTIJG0n4YZk5d12/CRYkeuVlZqdkU/EEO3yM8O2yhBZvdxpmIR6cZGgXs
-         gNFqgG7SwZ9tRJRedQC6CclfqPV7leK2Prs6uzam+OF6lib/OP2ckTQmPtGUro1eCq+Y
-         vHuhFIbguDV6kBXGMKvmbE4MIfdQgSwetmyCTQbugOVvlElQDMKPkCpBZRH5aukcC8JA
-         QyDQ==
-X-Gm-Message-State: ABy/qLZIanbXomP9iKOE3Yx8cNjXxsEvh0NWgRd6biCsKb16lospQunE
-        FY5ccXULjGWle16dX/RIsnpSHJdujtgOzYjFbBpO5/yP8GV2HDnuxQG7C95IbpOluRGC0fpGNe3
-        aaadAARBF80QQV2bueyOP5+s1
-X-Received: by 2002:a7b:cb17:0:b0:3fc:3f31:422f with SMTP id u23-20020a7bcb17000000b003fc3f31422fmr6181988wmj.3.1690187180412;
-        Mon, 24 Jul 2023 01:26:20 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF4C3chb1ZF5Gy7gkNTBsd4XDa1BBS6NdelEQsZRTFBdvkPciuK9ApSjTXleiRojJjbF4lAyw==
-X-Received: by 2002:a7b:cb17:0:b0:3fc:3f31:422f with SMTP id u23-20020a7bcb17000000b003fc3f31422fmr6181967wmj.3.1690187180039;
-        Mon, 24 Jul 2023 01:26:20 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f45:d000:62f2:4df0:704a:e859? (p200300d82f45d00062f24df0704ae859.dip0.t-ipconnect.de. [2003:d8:2f45:d000:62f2:4df0:704a:e859])
-        by smtp.gmail.com with ESMTPSA id j5-20020adff005000000b0031764e85b91sm363145wro.68.2023.07.24.01.26.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 01:26:19 -0700 (PDT)
-Message-ID: <b9ecc108-aa14-d11c-1314-cbf21a2548f1@redhat.com>
-Date:   Mon, 24 Jul 2023 10:26:18 +0200
+        Mon, 24 Jul 2023 04:27:30 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD3BE41;
+        Mon, 24 Jul 2023 01:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690187228; x=1721723228;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XfAnXp06ahd9oqfPq8Rmm1uh1da4hVuJSMjpEUX/V4M=;
+  b=DvDKMedH3oniUgoicHFYhSv7pWDGhKSSaGqWDSozUuw/MR30+TLKwxTF
+   BUksB437C9VJGVz7rehrwWT2W8SvQjTrLtYXQpXET3ULygKce9goi/jLm
+   0FDpqLW4qqkK09bh107N4z+RibaidEWiiYWmfd7EXHmbrbZJIs2h7APdd
+   2CH0TmAB14T5nPh9ccZcMR1ZPO6+/gItiAcrL3YAQi5RuuXZ6De/M8z23
+   Xw1OUGuHK8hmg7JQZgQiVFSuTpOfz0CetnEbhUY3RpOCG+qW1Ef1QAgU8
+   mfo5Qp8X92bQhnD2y2NXfXl2rJ1WCo/Nv/yR3MxsYKEstbWaqy5ivgM3R
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="367406183"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="367406183"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:27:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="728829554"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="728829554"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 24 Jul 2023 01:27:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qNquA-004NHN-2V;
+        Mon, 24 Jul 2023 11:26:58 +0300
+Date:   Mon, 24 Jul 2023 11:26:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: build warning after merge of the sound-asoc tree
+Message-ID: <ZL410jAw2ksuBx56@smile.fi.intel.com>
+References: <20230713121627.17990c86@canb.auug.org.au>
+ <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
+ <ZK/w5LFanElxZazG@smile.fi.intel.com>
+ <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
+ <20230724135858.3c1abb01@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/6] KVM: s390: interrupt: Fix single-stepping into
- program interrupt handlers
-Content-Language: en-US
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-References: <20230721120046.2262291-1-iii@linux.ibm.com>
- <20230721120046.2262291-3-iii@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230721120046.2262291-3-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724135858.3c1abb01@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,67 +73,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.23 13:57, Ilya Leoshkevich wrote:
-> Currently, after single-stepping an instruction that generates a
-> specification exception, GDB ends up on the instruction immediately
-> following it.
+On Mon, Jul 24, 2023 at 01:58:58PM +1000, Stephen Rothwell wrote:
+> On Fri, 14 Jul 2023 12:18:55 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Thu, Jul 13, 2023 at 03:41:09PM +0300, Andy Shevchenko wrote:
+> > > On Thu, Jul 13, 2023 at 03:19:04PM +0300, Andy Shevchenko wrote:  
+> > > > On Thu, Jul 13, 2023 at 12:16:27PM +1000, Stephen Rothwell wrote:  
+> > > > > 
+> > > > > After merging the sound-asoc tree, today's linux-next build (htmldocs)
+> > > > > produced this warning:
+> > > > > 
+> > > > > include/linux/int_log.h:1: warning: no structured comments found
+> > > > > 
+> > > > > Introduced by commit
+> > > > > 
+> > > > >   f97fa3dcb2db ("lib/math: Move dvb_math.c into lib/math/int_log.c")  
+> > > > 
+> > > > Can you elaborate a bit, please?
+> > > > 
+> > > > Seems to me to be a false positive, or unveils a bug somewhere else.  
+> > > 
+> > > Ah, now I understand. There is a header file that has descriptions but
+> > > EXPORT_SYMBOL. We have to drop keyword export from the index.
+> > > 
+> > > Thank you for the report, I'll cook the patch ASAP.  
+> > 
+> > The 20230713165320.14199-1-andriy.shevchenko@linux.intel.com had been sent.
 > 
-> The reason is that vcpu_post_run() injects the interrupt and sets
-> KVM_GUESTDBG_EXIT_PENDING, causing a KVM_SINGLESTEP exit. The
-> interrupt is not delivered, however, therefore userspace sees the
-> address of the next instruction.
-> 
-> Fix by letting the __vcpu_run() loop go into the next iteration,
-> where vcpu_pre_run() delivers the interrupt and sets
-> KVM_GUESTDBG_EXIT_PENDING.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   arch/s390/kvm/intercept.c | 19 +++++++++++++++++--
->   1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
-> index 954d39adf85c..7cdd927541b0 100644
-> --- a/arch/s390/kvm/intercept.c
-> +++ b/arch/s390/kvm/intercept.c
-> @@ -226,7 +226,22 @@ static int handle_itdb(struct kvm_vcpu *vcpu)
->   	return 0;
->   }
->   
-> -#define per_event(vcpu) (vcpu->arch.sie_block->iprcc & PGM_PER)
-> +static bool should_handle_per_event(const struct kvm_vcpu *vcpu)
-> +{
-> +	if (!guestdbg_enabled(vcpu))
-> +		return false;
-> +	if (!(vcpu->arch.sie_block->iprcc & PGM_PER))
-> +		return false;
-> +	if (guestdbg_sstep_enabled(vcpu) &&
-> +	    vcpu->arch.sie_block->iprcc != PGM_PER) {
-> +		/*
-> +		 * __vcpu_run() will exit after delivering the concurrently
-> +		 * indicated condition.
-> +		 */
-> +		return false;
-> +	}
-> +	return true;
-> +}
->   
->   static int handle_prog(struct kvm_vcpu *vcpu)
->   {
-> @@ -242,7 +257,7 @@ static int handle_prog(struct kvm_vcpu *vcpu)
->   	if (kvm_s390_pv_cpu_is_protected(vcpu))
->   		return -EOPNOTSUPP;
->   
-> -	if (guestdbg_enabled(vcpu) && per_event(vcpu)) {
-> +	if (should_handle_per_event(vcpu)) {
->   		rc = kvm_s390_handle_per_event(vcpu);
->   		if (rc)
->   			return rc;
+> But not yet applied by anyone :-(
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Since the culprit went via ASoC tree, I think that tree is the best for the fix.
+Mark, can you apply that, please?
 
 -- 
-Cheers,
+With Best Regards,
+Andy Shevchenko
 
-David / dhildenb
 
