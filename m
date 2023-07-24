@@ -2,131 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C9075FFBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A10375FFC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjGXTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S229870AbjGXTXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGXTW3 (ORCPT
+        with ESMTP id S229470AbjGXTXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:22:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00296122;
-        Mon, 24 Jul 2023 12:22:28 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E03856607036;
-        Mon, 24 Jul 2023 20:22:26 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690226547;
-        bh=aLQXdltzJfxQ4uDLWVoF/awD22D2bQ3Zo59NB+NIdPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MM9tk0RTRZVJxNlAEHgfxstWMNLt++yB3cQGLsxEmKv4CXyO7KkPeu0V8/S36vl3U
-         e+9DH60i7YSH7bPS5mlaqXw/CLr4G/R02YwrRgaoU7FZa5+sqgIB65NnA2ziPlcWeS
-         7XNKXuaHtSHH248rdbZVU7atsRU5bLHx6602hJUeXJS4PPGZJUi7GPb1vWrYHrcNzh
-         QGwfAUgWbmXekx8MAKHctbUyFQEXSF6VYqxaKHrBaIZXeTl3LX7d8XavsmZ9RpzTbp
-         BD+1mphVt47FQMtajBt+/O2SgnBal13fnYCB2/s8o/DQ9Kd/vpRgjMsQFgeDx+wZGY
-         AByGuLJZQBSpg==
-Received: by mercury (Postfix, from userid 1000)
-        id 597F01067453; Mon, 24 Jul 2023 21:22:23 +0200 (CEST)
-Date:   Mon, 24 Jul 2023 21:22:23 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, Qu Wenruo <wqu@suse.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Simon Xue <xxm@rock-chips.com>, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        devicetree@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        linux-pci@vger.kernel.org, John Clark <inindev@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>, kernel@collabora.com,
-        Vinod Koul <vkoul@kernel.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: (subset) [PATCH v2 0/2] RK3588 PCIe3 support
-Message-ID: <20230724192223.5jnu5wgrzmmjz5z5@mercury.elektranox.org>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
- <169022594803.2911118.12432442062352790360.b4-ty@sntech.de>
+        Mon, 24 Jul 2023 15:23:49 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DD610F0;
+        Mon, 24 Jul 2023 12:23:48 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52229f084beso2559371a12.2;
+        Mon, 24 Jul 2023 12:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690226626; x=1690831426;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cWo4sIKyvyIpPAwWLeOJz8L9JuZtA+G/0dxZszCh6vo=;
+        b=latCLXtw9bkLnLi+GLz0mDfQySuJCccWsImdGir5RMfkHE5vZl+IIi4uL+keuRwu9t
+         60BrwZbclALe81Fmmch9iK+eeXTACpiUYg5lqLsAIrkxyJZkCnTIFBjZjqXa6gi2kisY
+         rmVUL8HEqXdXtzqarHvCsirm7SK6hcJulzBHcyeHxt1Qapo1jSQLjNA4MDVedjg2Pvnj
+         xPP28DoqOBqMFzMKbj4qh+BICTLz0fN6wVksJQFAKOdXsqLqmbVosQ6gxFoIKLStt8gR
+         nRDmJ68TT7H4nfQ4/RciVdwnC2kJPLmV0t44hV5vMEGiSARqdDgWmEuEztVMzGfej8Ch
+         uQEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690226626; x=1690831426;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWo4sIKyvyIpPAwWLeOJz8L9JuZtA+G/0dxZszCh6vo=;
+        b=jLmKBi/nYImE3YPjz/1DR5L0KuC49OGrXiRFlup0yLbQZUlknhd11KgPnqolLEQ7GU
+         /Yucm/VksRpY152b5KD2i7Dy0ocDxoZozZk413BcTJ4z+iBxuqIXpNAN1CwIjZOS7ywa
+         xNzYMSHVJrJl7wzqtrzZdIv12I6ydDNtKv8yREsfPHWAi7e9CGrCcRh/fbWy9v0RFTh7
+         bktT3OZXON5zU1rK781SYVxrUGCKIDLLSSpzoUSD2bCAXA1VtXsBRv/1sgJsbDC24Q76
+         HEaQB1E/9xW1zI/2SXoy/4DCDUG4lJJpEa0t8Oj3vzje1Ouo7U4IfxAXp3CNijL2ruwa
+         8weQ==
+X-Gm-Message-State: ABy/qLbKJCvEgUnl2FdVQwVt+k8gPDlNABhpO+qh0TnyR8vQRLBh7fzo
+        8aiTdcw9DzIa+rgK2CoBHHY=
+X-Google-Smtp-Source: APBJJlFLrOqXJwk2/ZogigT9lz5sDvbwFGJVMGIOCEC/jeoYe69weJzVeSfX0lbNF+PHSciKnQdVNw==
+X-Received: by 2002:a17:907:b11:b0:992:7e1f:8419 with SMTP id h17-20020a1709070b1100b009927e1f8419mr10392698ejl.2.1690226626234;
+        Mon, 24 Jul 2023 12:23:46 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:310::2eef? ([2620:10d:c092:600::2:c92])
+        by smtp.gmail.com with ESMTPSA id h23-20020a170906829700b0098d486d2bdfsm7242644ejx.177.2023.07.24.12.23.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 12:23:46 -0700 (PDT)
+Message-ID: <0f63b072-840c-db5d-13cd-7faa554975d3@gmail.com>
+Date:   Mon, 24 Jul 2023 20:22:28 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nexk2ndejsfescch"
-Content-Disposition: inline
-In-Reply-To: <169022594803.2911118.12432442062352790360.b4-ty@sntech.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] io_uring: Use io_schedule* in cqring wait
+To:     Jens Axboe <axboe@kernel.dk>, Greg KH <gregkh@linuxfoundation.org>,
+        Phil Elwell <phil@raspberrypi.com>
+Cc:     andres@anarazel.de, david@fromorbit.com, hch@lst.de,
+        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-xfs@vger.kernel.org, stable <stable@vger.kernel.org>
+References: <CAMEGJJ2RxopfNQ7GNLhr7X9=bHXKo+G5OOe0LUq=+UgLXsv1Xg@mail.gmail.com>
+ <2023072438-aftermath-fracture-3dff@gregkh>
+ <140065e3-0368-0b5d-8a0d-afe49b741ad2@kernel.dk>
+ <ecb821a2-e90a-fec1-d2ca-b355c16b7515@kernel.dk>
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ecb821a2-e90a-fec1-d2ca-b355c16b7515@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/24/23 16:58, Jens Axboe wrote:
+> On 7/24/23 9:50?AM, Jens Axboe wrote:
+>> On 7/24/23 9:48?AM, Greg KH wrote:
+>>> On Mon, Jul 24, 2023 at 04:35:43PM +0100, Phil Elwell wrote:
+>>>> Hi Andres,
+>>>>
+>>>> With this commit applied to the 6.1 and later kernels (others not
+>>>> tested) the iowait time ("wa" field in top) in an ARM64 build running
+>>>> on a 4 core CPU (a Raspberry Pi 4 B) increases to 25%, as if one core
+>>>> is permanently blocked on I/O. The change can be observed after
+>>>> installing mariadb-server (no configuration or use is required). After
+>>>> reverting just this commit, "wa" drops to zero again.
+>>>
+>>> This has been discussed already:
+>>> 	https://lore.kernel.org/r/12251678.O9o76ZdvQC@natalenko.name
+>>>
+>>> It's not a bug, mariadb does have pending I/O, so the report is correct,
+>>> but the CPU isn't blocked at all.
+>>
+>> Indeed - only thing I can think of is perhaps mariadb is having a
+>> separate thread waiting on the ring in perpetuity, regardless of whether
+>> or not it currently has IO.
+>>
+>> But yes, this is very much ado about nothing...
+> 
+> Current -git and having mariadb idle:
+> 
+> Average:     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+> Average:     all    0.00    0.00    0.04   12.47    0.04    0.00    0.00    0.00    0.00   87.44
+> Average:       0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> Average:       1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> Average:       2    0.00    0.00    0.00    0.00    0.33    0.00    0.00    0.00    0.00   99.67
+> Average:       3    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> Average:       4    0.00    0.00    0.33    0.00    0.00    0.00    0.00    0.00    0.00   99.67
+> Average:       5    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> Average:       6    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00    0.00    0.00
+> Average:       7    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> 
+> which is showing 100% iowait on one cpu, as mariadb has a thread waiting
+> on IO. That is obviously a valid use case, if you split submission and
+> completion into separate threads. Then you have the latter just always
+> waiting on something to process.
+> 
+> With the suggested patch, we do eliminate that case and the iowait on
+> that task is gone. Here's current -git with the patch and mariadb also
+> running:
+> 
+> 09:53:49 AM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+> 09:53:50 AM  all    0.00    0.00    0.00    0.00    0.00    0.75    0.00    0.00    0.00   99.25
+> 09:53:50 AM    0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> 09:53:50 AM    1    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
+> 09:53:50 AM    2    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
+> 09:53:50 AM    3    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
+> 09:53:50 AM    4    0.00    0.00    0.00    0.00    0.00    0.99    0.00    0.00    0.00   99.01
+> 09:53:50 AM    5    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
+> 09:53:50 AM    6    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+> 09:53:50 AM    7    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
+> 
+> 
+> Even though I don't think this is an actual problem, it is a bit
+> confusing that you get 100% iowait while waiting without having IO
+> pending. So I do think the suggested patch is probably worthwhile
+> pursuing. I'll post it and hopefully have Andres test it too, if he's
+> available.
 
---nexk2ndejsfescch
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Emmm, what's the definition of the "IO" state? Unless we can say what exactly
+it is there will be no end to adjustments, because I can easily argue that
+CQ waiting by itself is IO.
+Do we consider sleep(N) to be "IO"? I don't think the kernel uses io
+schedule around that, and so it'd be different from io_uring waiting for
+a timeout request. What about epoll waiting, etc.?
 
-Hi Heiko,
-
-On Mon, Jul 24, 2023 at 09:12:35PM +0200, Heiko Stuebner wrote:
-> On Mon, 17 Jul 2023 19:35:10 +0200, Sebastian Reichel wrote:
-> > This adds PCIe v3 support for RK3588. The series depends on the PCIe
-> > v2 series [0], since the the same binding is used. It has been tested
-> > on Rockchip EVB1 and Radxa Rock 5B.
-> >=20
-> > Note, that the PCIe3 PHY driver is currently missing bifurcation
-> > support for RK3588. Thus after this series only PCIe3x4 is usable
-> > (in aggregated x4 mode) without adding support for the PHY's
-> > "rockchip,pcie30-phymode" DT property, which allows configuring
-> > how the lanes are distributed. Aggregated 3x4 mode seems to be the
-> > most common configuration. Both EVB1 and Rock 5B use it, so I
-> > cannot test anything else anyways.
-> >=20
-> > [...]
->=20
-> Applied, thanks!
->=20
-> [2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
->       commit: 0acf4fa7f187cd7e3dad93f1ee14e9509687621e
-
-Applying this without the PCIe 2 series being applied introduces
-warnings for the RK3588 dtbs_check, as mentioned in the second
-setence of the text you quoted :)
-
-(FWIW RK356x already has the same warnings, though)
-
--- Sebastian
-
---nexk2ndejsfescch
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS+z2MACgkQ2O7X88g7
-+pro9g//epEbLx9hS9MzsBCHWVh8CFoCTo1K5A7BQ7xhse1I8Lt5W+CHnuwMPbfK
-VukzVll6W+sDQqmiVvwCGz9tB3cFk+SC8whOSDCdE4RoQ/OYIoVeC4EansyAarKF
-t7m3Ol8N2qgQHhE49T21otdL72TPqP3fQuUuD5hYwGgGQpTgJat0L6+SdLTqSjE7
-StBWwGhsDyS5WhnsVXMTGU+FSHp3gL16+zgeARqMc+6GJFa6Hl7FZEV0AjoFZa2L
-VyRxxg0VIca6gvz8RvJWrGKWGeApFM/M5PWOZYQZ8eCggcSIL4zIpi6t4BVJhfBD
-ERv3l/P5h5/S5Tc1IIw5Y57MqbHtpbQzQBwc6P7DUzjRZE+lsAA4U2QqBBSLw2KY
-Xt3DPS6k134wIDd/e3WPJjh8zT3OU1OsZuaMtL0fQeMPvV1Bc9nuBtHOl84D9fm4
-57FZUGOewRbL9QGTqFPMb6wF/rT3KZmj5sIIAvhtBUoybhzcFDN438ZJ3vPzmE7K
-ocb8RW/2zhX5RgFO8s2sOsJq/D7ZCmLeVRs4CLAWvt05zDsgX2yE3bgZW+74xTWe
-mSzVWncL2+OPmQSy7Aw0nWEyyLlE7lCdCXN+I8dAce23LgbydLvHvhEt7qPDvCP0
-u9sw6VUb8F2tDu4GR9P+OtHG/nzFIUPETHv8sIDHftc4IEJUoLI=
-=47as
------END PGP SIGNATURE-----
-
---nexk2ndejsfescch--
+-- 
+Pavel Begunkov
