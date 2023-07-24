@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCB675FFCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082D075FFCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjGXT1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
+        id S230107AbjGXT17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjGXT1s (ORCPT
+        with ESMTP id S229554AbjGXT1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:27:48 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCAF10E4;
-        Mon, 24 Jul 2023 12:27:47 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b74209fb60so68344551fa.0;
-        Mon, 24 Jul 2023 12:27:47 -0700 (PDT)
+        Mon, 24 Jul 2023 15:27:51 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858B010F4;
+        Mon, 24 Jul 2023 12:27:50 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso46653645e9.1;
+        Mon, 24 Jul 2023 12:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690226865; x=1690831665;
+        d=gmail.com; s=20221208; t=1690226869; x=1690831669;
         h=content-transfer-encoding:content-language:in-reply-to:mime-version
          :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sP6uapY58+owO3zXpIyqoIEA464+0UGYLjjK0+g0hVI=;
-        b=KVoqsNkD9pPtqu0gDsOeYD6u1B6n+mw56rFIS/cTeGCxqQ35TnpKO/6aUbQIhjj460
-         v8+KyM+jZTre4DHvIn0YQbNJS7o3uNSPzpl1SAA27Xnvhx+GiP9gxs4Mt49mreeffIXB
-         NKS6gfCpYYsc47Tdgizooc6/2a0hSCAdapIIg9qdpMT/q1dMr7Mt4mB4e6ZGR/07H1zU
-         DvH9YBX/TJfwbuVGYOPF5b5mItvrBMErGvlAWLHMwJWQSTnvMcGwtwXKZhRNhuaQkt0N
-         Yg1xr+04OsQpRpI8YlmUdd3G2LGAVfJ7+goDJkdRu860dfPUbM4qmvn6auGclEdW6xUu
-         Br2w==
+        bh=VzswZ7cvZqrKthquKsOzOGQ8wcPf/nilKJg12BcexjI=;
+        b=dazVC8afqKs6Rjp40IaV5AyNJvHn4lDBmpb4ioYlS6ttazog3VTVHkc2bHODCQZ0KR
+         Uy4D6OsKn0GIqQJfSUalyR1xg//8aMWnibNV2hV8NDJl/g3DRr83YJMhMlFhaDwfgE0r
+         BYxFxyey2H4liGzaliJ+a/s5PGF32uuedQLz9d81JjvT2h7anCM34GcajTru/5YetLJC
+         vV1Tto9RPBLMbkT5mD6pRNGbfDlLoi+ML3RzK9a+iX5+iXD3VwTPFw4L7iUcE6IP37YG
+         xNkzDFKaricnn2FPZOD1jtz/gR0b7Po7ovbLnApN9lOO1EOMzi/QBtBjtTWbdAeTMsgw
+         UXlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690226865; x=1690831665;
+        d=1e100.net; s=20221208; t=1690226869; x=1690831669;
         h=content-transfer-encoding:content-language:in-reply-to:mime-version
          :user-agent:date:message-id:from:references:cc:to:subject
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sP6uapY58+owO3zXpIyqoIEA464+0UGYLjjK0+g0hVI=;
-        b=PmsBfknILRT5HjaysZw5u9vflbUliPf2uNABJSPX9/LgjBYmDlnh5J3QSwGTWgmvk8
-         S8rBHgkYQUz+7mwJnHDI1pjEd+aArTY7994YxglmUqp3g5TMx/I6HfUQ6eAPpEQvcoa8
-         FpZt0uJ/tOC1J67KCI56q7ygIhrNyPnUVhtljZ7RZOqehUDvmz+X1YCWW/gkzQEuxN+b
-         16k/0xe1ALhKYRO2intXcH7F+H7H3wCTzbBl4Ogt7QK6k1bs1w3dPkqOc1gdGFkY8OwU
-         1B7A5CwSxB6HoCIsK28cYkBiNfIaMYiJNYM1cJLZSxnCtqLfGFMFY3wk13Sq+kMS4k+v
-         7iJw==
-X-Gm-Message-State: ABy/qLaNpzM7VA/GANFSa3kws9ZxjDnkZS35O8wmsXzNzLVM0K46erPO
-        nT9jw0B0+wx4zbUuUQlNzJANotCK5UI=
-X-Google-Smtp-Source: APBJJlGhrCNAMYuFCP0Z65Af/IAlcihiKhv0LS79VPeXYse0mmqg2Ht3M2NE8kIruU8PQNqMhgEWOQ==
-X-Received: by 2002:a05:651c:22d:b0:2b9:4841:9652 with SMTP id z13-20020a05651c022d00b002b948419652mr6367663ljn.25.1690226865198;
-        Mon, 24 Jul 2023 12:27:45 -0700 (PDT)
+        bh=VzswZ7cvZqrKthquKsOzOGQ8wcPf/nilKJg12BcexjI=;
+        b=Y8if0m88H9bFxXElHsZLpdRh1RuP0wT2pegDcHay3n5+kqwtCXWsf6Fbj1ol1bHwiO
+         rFp8yH8WXfPXMLr2UzkOh/H2H608Ka42ETSOXtZ6MRktQlj/nCGoSsLgQjf0his60FAT
+         6MYtuaOBELhWS7/sbJjX20Nu7QvPDsGOfSw/mVnL4MTljrZ8LUPaXCSCAK6mrYd4E1/H
+         nPRN1vXgdussH/1SKLrOwYJ2dCbRQIWGhVDq/vI4UXUOdzlQNIFyMgGzEOfXL3zQSOrD
+         3pKM9yhDXw//ifa17mEh/wUVudL8NV5vBe24hAZVuSY2+vTKXmwAikL0apu/fsVztI4Z
+         XZ0A==
+X-Gm-Message-State: ABy/qLYipx9Q8VPwod+mnHTVxEEg36Nm/PUaQKuZuqXHrDCUrL1B9CXY
+        Lwl6DvQ3YIHmEn8Hz0acY+8fj8e1jR4=
+X-Google-Smtp-Source: APBJJlGlTtrDwM+5RbUqV7cYNdSOCdnc+y/Kw20LGTdn51rVc5lAO2eXQaTvORdG0E22PAHT3KJDlQ==
+X-Received: by 2002:a05:600c:40c:b0:3fb:dd9c:72d2 with SMTP id q12-20020a05600c040c00b003fbdd9c72d2mr8471512wmb.31.1690226868679;
+        Mon, 24 Jul 2023 12:27:48 -0700 (PDT)
 Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id x21-20020a05600c21d500b003fb41491670sm13743216wmj.24.2023.07.24.12.27.44
+        by smtp.gmail.com with ESMTPSA id v22-20020a7bcb56000000b003fbb5506e54sm11047530wmj.29.2023.07.24.12.27.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 12:27:44 -0700 (PDT)
-Subject: Re: [net 0/2] rxfh with custom RSS fixes
+        Mon, 24 Jul 2023 12:27:48 -0700 (PDT)
+Subject: Re: [net 1/2] net: ethtool: Unify ETHTOOL_{G,S}RXFH rxnfc copy
 To:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
         saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
         andrew@lunn.ch, kuba@kernel.org, davem@davemloft.net,
@@ -58,13 +58,14 @@ To:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
         arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org
 References: <20230723150658.241597-1-jdamato@fastly.com>
+ <20230723150658.241597-2-jdamato@fastly.com>
 From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
-Date:   Mon, 24 Jul 2023 20:27:43 +0100
+Message-ID: <6f7e5c45-9961-3ac2-69ae-434191c9e11c@gmail.com>
+Date:   Mon, 24 Jul 2023 20:27:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20230723150658.241597-1-jdamato@fastly.com>
+In-Reply-To: <20230723150658.241597-2-jdamato@fastly.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -79,42 +80,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/07/2023 16:06, Joe Damato wrote:
-> Greetings:
+> ETHTOOL_GRXFH correctly copies in the full struct ethtool_rxnfc when
+> FLOW_RSS is set; ETHTOOL_SRXFH needs a similar code path to handle the
+> FLOW_RSS case so that ethtool can set the flow hash for custom RSS
+> contexts (if supported by the driver).
 > 
-> While attempting to get the RX flow hash key for a custom RSS context on
-> my mlx5 NIC, I got an error:
+> The copy code from ETHTOOL_GRXFH has been pulled out in to a helper so
+> that it can be called in both ETHTOOL_{G,S}RXFH code paths.
 > 
-> $ sudo ethtool -u eth1 rx-flow-hash tcp4 context 1
-> Cannot get RX network flow hashing options: Invalid argument
-> 
-> I dug into this a bit and noticed two things:
-> 
-> 1. ETHTOOL_GRXFH supports custom RSS contexts, but ETHTOOL_SRXFH does
-> not. I moved the copy logic out of ETHTOOL_GRXFH and into a helper so
-> that both ETHTOOL_{G,S}RXFH now call it, which fixes ETHTOOL_SRXFH. This
-> is patch 1/2.
+> Fixes: 84a1d9c48200 ("net: ethtool: extend RXNFC API to support RSS spreading of filter matches")
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
 
-As I see it, this is a new feature, not a fix, so belongs on net-next.
-(No existing driver accepts FLOW_RSS in ETHTOOL_SRXFH's cmd->flow_type,
- which is just as well as if they did this would be a uABI break.)
-
-Going forward, ETHTOOL_SRXFH will hopefully be integrated into the new
- RSS context kAPI I'm working on[1], so that we can have a new netlink
- uAPI for RSS configuration that's all in one place instead of the
- piecemeal-grown ethtool API with its backwards-compatible hacks.
-But that will take a while, so I think this should go in even though
- it's technically an extension to legacy ethtool; it was part of the
- documented uAPI and userland implements it, it just never got
- implemented on the kernel side (because the initial driver with
- context support, sfc, didn't support SRXFH).
-
-> 2. mlx5 defaulted to RSS context 0 for both ETHTOOL_{G,S}RXFH paths. I
-> have modified the driver to support custom contexts for both paths. It
-> is now possible to get and set the flow hash key for custom RSS contexts
-> with mlx5. This is patch 2/2.
-
-My feeling would be that this isn't a Fix either, but not my place to say.
-
--ed
-
-[1]: https://lore.kernel.org/netdev/ecaae93a-d41d-4c3d-8e52-2800baa7080d@lunn.ch/T/
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
