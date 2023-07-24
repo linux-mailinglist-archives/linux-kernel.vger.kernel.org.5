@@ -2,147 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EE075E9E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC4D75E9EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjGXCxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
+        id S229953AbjGXCzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjGXCxJ (ORCPT
+        with ESMTP id S229548AbjGXCzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:53:09 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFC5C4
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:53:08 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6b9c5362a51so3009338a34.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690167187; x=1690771987;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3Ul/yib6AVpUBR82WT2XWQzdvG86SoceqyAVEO8xa4=;
-        b=hobKpHD4tELSbF98E97BcgxRKfDSmmNBdxraOcygmOsuhC6MzBr601WutWaCExDpDK
-         VKqSOIVPehUE39YZ392arCdQdSuyn4imYSFe+OG9rb/qLcsxQMKhoy9aLxzqV/OedpH+
-         IYqKAtR7FBD0NozRn7hDC/sx1NTYA3eZqmPJ/4rBrRR/U8u/K6tQlX+K4SojM4wGX4qf
-         euO9NLQWlADfXWptlmq0E2rCHHvO8Ct8RUKdJAtfE0Xq/oJIGjbIhuhncs2cVUCi+Wf/
-         //argLKKwMOcaTOyFzlBXWgmbHyDMZjitmsKauhKid7YC7nDHUzqvDftyu8DluApK0cR
-         gA/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690167187; x=1690771987;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i3Ul/yib6AVpUBR82WT2XWQzdvG86SoceqyAVEO8xa4=;
-        b=Qaf48UfifCHePDAW2qOBZteWB1b5kxJretF2dF7tGAgf/+LDlnZQbWprtw7F8X8VsT
-         JyVIiRzp7xhQfrss+sKTgK1aE/6cHyGhEhRswljFRwoFOn1gvMfD8uGsnzAJW3OmIqHw
-         fyzDXdhGw2j5JBv6UYCD7Vy7NR5JCX6X0kNptKSEy0WrM0MJuzl01GsIpiZR15bq5ucx
-         5kcCVEVgabKyTWdewUQ2BRzY0DvTWdCU8a0q4tzveWeDjfMTfwU5zX4rlcRwEI138Vop
-         a9qJou+4RgeHg6z7Tk+zHtRE7JgkYI1j3HLoNxMohlHfdF2FLRXwcUjoxUwe1kbguZ5Q
-         4cmQ==
-X-Gm-Message-State: ABy/qLbP2FD4ovaC+EoruNlsPWE4w3w4NbhPYSEKl/iKxO2QHPxXa2+f
-        6k0h0CuzNNZk4V6CxuEtyFCE+z0rUN5ylvHQoxPHug==
-X-Google-Smtp-Source: APBJJlHjEvy+T8pOFNfKrTVuyZ5HTLua+jMjPTZushYXl9MtOL4QdLkQ5rghLIqMY+Gi/ilPvhQ+yEaiITWuAag+lz4=
-X-Received: by 2002:a05:6808:ecc:b0:3a4:3a71:14dc with SMTP id
- q12-20020a0568080ecc00b003a43a7114dcmr10027133oiv.1.1690167187779; Sun, 23
- Jul 2023 19:53:07 -0700 (PDT)
+        Sun, 23 Jul 2023 22:55:50 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECC0107
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:55:47 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8Pt76dQrzBRYmV
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:55:43 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690167343; x=1692759344; bh=vOOqPYdFYmEoI+f2kfyA+320Rn6
+        n4FgX4tjYiSJKcDY=; b=L686CH+nJbFchQu9dOyMSCsv8uwd51KKLIZJjobvVBS
+        1FiRuT1/toyLhpNDG+clh43SZJR+tWRg93wI7UIUkNcH2GMenET0NmH7WleQ52O9
+        1ItMLYKsi7QhJXEyVk6ijE2mrUh5w3erWfKzFy/tP2TR4bl6ne8gk1H29NG1uM4b
+        xgFGUKzsXqE5KvzzxoLx2TfkDLHqZod59iXq3hzXQ9DE+VEEOXlLZGhdzlUE6MFX
+        vGUBQkfmC8AYZev6V9mNPMHSaBI+Sgf6jSmJV5Aq4ShroRjMLGFkCDtfccbJhxcf
+        klBljSnYf7rM3hyPIDeGyJD41i/NdXQVyoSFnRraSSA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NKXT_Wbl8-7a for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 10:55:43 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8Pt73d3nzBHYM0;
+        Mon, 24 Jul 2023 10:55:43 +0800 (CST)
 MIME-Version: 1.0
-References: <20230622085112.1521-1-masahisa.kojima@linaro.org>
- <20230622085112.1521-5-masahisa.kojima@linaro.org> <5fe03be6-8c95-0bfa-687d-68e7ddffd97c@siemens.com>
- <ZJSZbmUz583pszny@hera>
-In-Reply-To: <ZJSZbmUz583pszny@hera>
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-Date:   Mon, 24 Jul 2023 11:52:56 +0900
-Message-ID: <CADQ0-X8TMQoViFW_zFCrOK6yjOqp-X8zQc6c2qsUcWZ5=Suugg@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] efivarfs: automatically update super block flag
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Mon, 24 Jul 2023 10:55:43 +0800
+From:   sunran001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch, alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/radeon/si_dpm: open brace '{' following struct go on the
+ same line
+In-Reply-To: <20230724025235.7416-1-xujianghui@cdjrlc.com>
+References: <20230724025235.7416-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <51039d36001a36bd132397164045d6c6@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilias, Jan,
+ERROR: open brace '{' following struct go on the same line
 
-On Fri, 23 Jun 2023 at 03:56, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> Hi Kojima-san, Jan
->
-> On Thu, Jun 22, 2023 at 04:58:50PM +0200, Jan Kiszka wrote:
-> > On 22.06.23 10:51, Masahisa Kojima wrote:
-> > > efivar operation is updated when the tee_stmm_efi module is probed.
-> > > tee_stmm_efi module supports SetVariable runtime service,
-> > > but user needs to manually remount the efivarfs as RW to enable
-> > > the write access if the previous efivar operation does not support
-> > > SerVariable and efivarfs is mounted as read-only.
-> > >
-> > > This commit notifies the update of efivar operation to
-> > > efivarfs subsystem, then drops SB_RDONLY flag if the efivar
-> > > operation supports SetVariable.
-> >
-> > But it does not re-add it and prevents further requests to the TA (that
-> > will only cause panics there) when the daemon terminates, does it?
->
-> It doesn't, but I think I got a better way out.  Even what you suggest won't
-> solve the problem entirely.  For the sake of context
-> - The kernel decides between the RO/RW depending on the SetVariable ptr
-> - The stmm *module* registers and swaps the RT calls -- and the ptr is now
-> valid.  Note here that the module probe function will run only if the
-> supplicant is running
-> - Once the module is inserted the filesystem will be remounted even without
-> the supplicant running, which would not trigger an oops, but an hard to
-> decipher error message from OP-TEE.
->
-> So even if we switch the permissions back to RO when the supplicant dies,
-> someone can still remount it as RW and trigger the same error.
->
-> Which got me thinking and staring the TEE subsystem a bit more.  The
-> supplicant is backed by a /dev file, which naturally has .open() and
-> .release() callbacks.  Why don't we leave the module perform the initial
-> setup -- e.g talk to StMM and make sure it's there, setup the necessary
-> buffers etc and defer the actual swapping of the efivar ops and the
-> filesystem permissions there?  I might 'feel' a bit weird, but as I
-> mentioned the module probe function only runs if the supplicant is running
-> anyway
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/radeon/sislands_smc.h | 51 +++++++++------------------
+  1 file changed, 17 insertions(+), 34 deletions(-)
 
-I think we are discussing two issues.
+diff --git a/drivers/gpu/drm/radeon/sislands_smc.h 
+b/drivers/gpu/drm/radeon/sislands_smc.h
+index 4ea1cb2e45a3..4b7dee3cf58b 100644
+--- a/drivers/gpu/drm/radeon/sislands_smc.h
++++ b/drivers/gpu/drm/radeon/sislands_smc.h
+@@ -89,8 +89,7 @@ struct PP_SIslands_PAPMStatus
+  };
+  typedef struct PP_SIslands_PAPMStatus PP_SIslands_PAPMStatus;
 
-1) efivar ops is not restored when the tee-supplicant daemon terminates.
+-struct PP_SIslands_PAPMParameters
+-{
++struct PP_SIslands_PAPMParameters {
+      uint32_t    NearTDPLimitTherm;
+      uint32_t    NearTDPLimitPAPM;
+      uint32_t    PlatformPowerLimit;
+@@ -100,8 +99,7 @@ struct PP_SIslands_PAPMParameters
+  };
+  typedef struct PP_SIslands_PAPMParameters PP_SIslands_PAPMParameters;
 
-The patch[1] sent by Sumit addresses this issue.
-Thanks to this patch, 'remove' callback of tee_stmm_efi_driver is called
-when the tee-supplicant daemon terminates, then restore the previous efivar ops
-and SB_RDONLY flag if necessary.
+-struct SISLANDS_SMC_SCLK_VALUE
+-{
++struct SISLANDS_SMC_SCLK_VALUE {
+      uint32_t    vCG_SPLL_FUNC_CNTL;
+      uint32_t    vCG_SPLL_FUNC_CNTL_2;
+      uint32_t    vCG_SPLL_FUNC_CNTL_3;
+@@ -113,8 +111,7 @@ struct SISLANDS_SMC_SCLK_VALUE
 
-2) cause panic when someone remounts the efivarfs as RW even if
-SetVariable is not supported.
+  typedef struct SISLANDS_SMC_SCLK_VALUE SISLANDS_SMC_SCLK_VALUE;
 
-[1] https://lore.kernel.org/all/20230607151435.92654-1-sumit.garg@linaro.org/
+-struct SISLANDS_SMC_MCLK_VALUE
+-{
++struct SISLANDS_SMC_MCLK_VALUE {
+      uint32_t    vMPLL_FUNC_CNTL;
+      uint32_t    vMPLL_FUNC_CNTL_1;
+      uint32_t    vMPLL_FUNC_CNTL_2;
+@@ -129,8 +126,7 @@ struct SISLANDS_SMC_MCLK_VALUE
 
-Thanks,
-Masahisa Kojima
+  typedef struct SISLANDS_SMC_MCLK_VALUE SISLANDS_SMC_MCLK_VALUE;
 
->
-> Cheers
-> /Ilias
->
-> >
-> > Jan
-> >
-> > --
-> > Siemens AG, Technology
-> > Competence Center Embedded Linux
-> >
+-struct SISLANDS_SMC_VOLTAGE_VALUE
+-{
++struct SISLANDS_SMC_VOLTAGE_VALUE {
+      uint16_t    value;
+      uint8_t     index;
+      uint8_t     phase_settings;
+@@ -138,8 +134,7 @@ struct SISLANDS_SMC_VOLTAGE_VALUE
+
+  typedef struct SISLANDS_SMC_VOLTAGE_VALUE SISLANDS_SMC_VOLTAGE_VALUE;
+
+-struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+-{
++struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL {
+      uint8_t                     ACIndex;
+      uint8_t                     displayWatermark;
+      uint8_t                     gen2PCIE;
+@@ -180,8 +175,7 @@ struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+
+  typedef struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL 
+SISLANDS_SMC_HW_PERFORMANCE_LEVEL;
+
+-struct SISLANDS_SMC_SWSTATE
+-{
++struct SISLANDS_SMC_SWSTATE {
+  	uint8_t                             flags;
+  	uint8_t                             levelCount;
+  	uint8_t                             padding2;
+@@ -205,8 +199,7 @@ struct SISLANDS_SMC_SWSTATE_SINGLE {
+  #define SISLANDS_SMC_VOLTAGEMASK_VDDC_PHASE_SHEDDING 3
+  #define SISLANDS_SMC_VOLTAGEMASK_MAX   4
+
+-struct SISLANDS_SMC_VOLTAGEMASKTABLE
+-{
++struct SISLANDS_SMC_VOLTAGEMASKTABLE {
+      uint32_t lowMask[SISLANDS_SMC_VOLTAGEMASK_MAX];
+  };
+
+@@ -214,8 +207,7 @@ typedef struct SISLANDS_SMC_VOLTAGEMASKTABLE 
+SISLANDS_SMC_VOLTAGEMASKTABLE;
+
+  #define SISLANDS_MAX_NO_VREG_STEPS 32
+
+-struct SISLANDS_SMC_STATETABLE
+-{
++struct SISLANDS_SMC_STATETABLE {
+  	uint8_t					thermalProtectType;
+  	uint8_t					systemFlags;
+  	uint8_t					maxVDDCIndexInPPTable;
+@@ -254,8 +246,7 @@ typedef struct SISLANDS_SMC_STATETABLE 
+SISLANDS_SMC_STATETABLE;
+  #define SI_SMC_SOFT_REGISTER_svi_rework_gpio_id_svd   0x11c
+  #define SI_SMC_SOFT_REGISTER_svi_rework_gpio_id_svc   0x120
+
+-struct PP_SIslands_FanTable
+-{
++struct PP_SIslands_FanTable {
+  	uint8_t  fdo_mode;
+  	uint8_t  padding;
+  	int16_t  temp_min;
+@@ -285,8 +276,7 @@ typedef struct PP_SIslands_FanTable 
+PP_SIslands_FanTable;
+  #define SMC_SISLANDS_SCALE_I  7
+  #define SMC_SISLANDS_SCALE_R 12
+
+-struct PP_SIslands_CacConfig
+-{
++struct PP_SIslands_CacConfig {
+      uint16_t   
+cac_lkge_lut[SMC_SISLANDS_LKGE_LUT_NUM_OF_TEMP_ENTRIES][SMC_SISLANDS_LKGE_LUT_NUM_OF_VOLT_ENTRIES];
+      uint32_t   lkge_lut_V0;
+      uint32_t   lkge_lut_Vstep;
+@@ -308,23 +298,20 @@ typedef struct PP_SIslands_CacConfig 
+PP_SIslands_CacConfig;
+  #define SMC_SISLANDS_MC_REGISTER_ARRAY_SIZE 16
+  #define SMC_SISLANDS_MC_REGISTER_ARRAY_SET_COUNT 20
+
+-struct SMC_SIslands_MCRegisterAddress
+-{
++struct SMC_SIslands_MCRegisterAddress {
+      uint16_t s0;
+      uint16_t s1;
+  };
+
+  typedef struct SMC_SIslands_MCRegisterAddress 
+SMC_SIslands_MCRegisterAddress;
+
+-struct SMC_SIslands_MCRegisterSet
+-{
++struct SMC_SIslands_MCRegisterSet {
+      uint32_t value[SMC_SISLANDS_MC_REGISTER_ARRAY_SIZE];
+  };
+
+  typedef struct SMC_SIslands_MCRegisterSet SMC_SIslands_MCRegisterSet;
+
+-struct SMC_SIslands_MCRegisters
+-{
++struct SMC_SIslands_MCRegisters {
+      uint8_t                             last;
+      uint8_t                             reserved[3];
+      SMC_SIslands_MCRegisterAddress      
+address[SMC_SISLANDS_MC_REGISTER_ARRAY_SIZE];
+@@ -333,8 +320,7 @@ struct SMC_SIslands_MCRegisters
+
+  typedef struct SMC_SIslands_MCRegisters SMC_SIslands_MCRegisters;
+
+-struct SMC_SIslands_MCArbDramTimingRegisterSet
+-{
++struct SMC_SIslands_MCArbDramTimingRegisterSet {
+      uint32_t mc_arb_dram_timing;
+      uint32_t mc_arb_dram_timing2;
+      uint8_t  mc_arb_rfsh_rate;
+@@ -344,8 +330,7 @@ struct SMC_SIslands_MCArbDramTimingRegisterSet
+
+  typedef struct SMC_SIslands_MCArbDramTimingRegisterSet 
+SMC_SIslands_MCArbDramTimingRegisterSet;
+
+-struct SMC_SIslands_MCArbDramTimingRegisters
+-{
++struct SMC_SIslands_MCArbDramTimingRegisters {
+      uint8_t                                     arb_current;
+      uint8_t                                     reserved[3];
+      SMC_SIslands_MCArbDramTimingRegisterSet     data[16];
+@@ -353,8 +338,7 @@ struct SMC_SIslands_MCArbDramTimingRegisters
+
+  typedef struct SMC_SIslands_MCArbDramTimingRegisters 
+SMC_SIslands_MCArbDramTimingRegisters;
+
+-struct SMC_SISLANDS_SPLL_DIV_TABLE
+-{
++struct SMC_SISLANDS_SPLL_DIV_TABLE {
+      uint32_t    freq[256];
+      uint32_t    ss[256];
+  };
+@@ -374,8 +358,7 @@ typedef struct SMC_SISLANDS_SPLL_DIV_TABLE 
+SMC_SISLANDS_SPLL_DIV_TABLE;
+
+  #define SMC_SISLANDS_DTE_MAX_TEMPERATURE_DEPENDENT_ARRAY_SIZE 16
+
+-struct Smc_SIslands_DTE_Configuration
+-{
++struct Smc_SIslands_DTE_Configuration {
+      uint32_t tau[SMC_SISLANDS_DTE_MAX_FILTER_STAGES];
+      uint32_t R[SMC_SISLANDS_DTE_MAX_FILTER_STAGES];
+      uint32_t K;
