@@ -2,165 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2108375F5E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8911D75F630
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjGXMQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S230462AbjGXMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbjGXMQD (ORCPT
+        with ESMTP id S230330AbjGXMVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:16:03 -0400
-Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64D4E6D;
-        Mon, 24 Jul 2023 05:15:37 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 12:15:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tmb.nu;
-        s=protonmail; t=1690200927; x=1690460127;
-        bh=xGE6QjHm3ej4AxAX+5EXNKI8Zly3g7JGtmwu3HuYvhg=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=TZIQN1Xh+XdlLYOxt0udbKtWWMD3wL/AZ82adZufAkHSESK0ulr1Ld0VhavgA+fhG
-         fpqAmGis3d8uxiftYfSDBGI4vUr1mPrEHSrzJUIyQwCnZgm0YNy76Tje7fsRqomibM
-         uHnIWGMjv9CmjOouHdW6z0ayVwmaCUXnETfPaZuA=
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-From:   Thomas Backlund <tmb@tmb.nu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH 1/2] Revert "page cache: fix page_cache_next/prev_miss off by one"
-Message-ID: <bf744801-96a1-bdf1-79b5-5e8a21c05be3@tmb.nu>
-Feedback-ID: 19711308:user:proton
+        Mon, 24 Jul 2023 08:21:30 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 236EAE66;
+        Mon, 24 Jul 2023 05:21:27 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxDOuXa75kMjQJAA--.17725S3;
+        Mon, 24 Jul 2023 20:16:23 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTSOSa75k+yg5AA--.5452S3;
+        Mon, 24 Jul 2023 20:16:19 +0800 (CST)
+Message-ID: <5fbc1ec7-fb61-7e4d-960c-81cc11b706f5@loongson.cn>
+Date:   Mon, 24 Jul 2023 20:16:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/9] PCI/VGA: Improve the default VGA device selection
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian Konig <christian.koenig@amd.com>,
+        Pan Xinhui <Xinhui.Pan@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        YiPeng Chai <YiPeng.Chai@amd.com>,
+        Bokun Zhang <Bokun.Zhang@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Abhishek Sahu <abhsahu@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+References: <20230719193233.GA511659@bhelgaas>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230719193233.GA511659@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8AxTSOSa75k+yg5AA--.5452S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7uFWkGrykCF4rXw4rGr1xZwc_yoW8GFyxpa
+        4a9Fy3KFZaqr4UJr9Fk348XF45Wa17Xas5Aw13Gryjkrs8X34qg34xK3yYk34kZFn3Wr1Y
+        vFWaka48ZFWqyacCm3ZEXasCq-sJn29KB7ZKAUJUUUUP529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Wrv_ZF1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wrylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
+        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5UR67
+        UUUUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den 2023-06-22 kl. 00:24, skrev Mike Kravetz:
-> This reverts commit 9425c591e06a9ab27a145ba655fb50532cf0bcc9
->=20
-> The reverted commit fixed up routines primarily used by readahead code
-> such that they could also be used by hugetlb.  Unfortunately, this
-> caused a performance regression as pointed out by the Closes: tag.
->=20
-> The hugetlb code which uses page_cache_next_miss will be addressed in
-> a subsequent patch.
->=20
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202306211346.1e9ff03e-oliver.sang@=
-intel.com
-> Fixes: 9425c591e06a ("page cache: fix page_cache_next/prev_miss off by on=
-e")
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Hi,
+
+On 2023/7/20 03:32, Bjorn Helgaas wrote:
+>> 2) It does not take the PCI Bar may get relocated into consideration.
+>> 3) It is not effective for the PCI device without a dedicated VRAM Bar.
+>> 4) It is device-agnostic, thus it has to waste the effort to iterate all
+>>     of the PCI Bar to find the VRAM aperture.
+>> 5) It has invented lots of methods to determine which one is the default
+>>     boot device, but this is still a policy because it doesn't give the
+>>     user a choice to override.
+> I don't think we need a list of*potential*  problems.  We need an
+> example of the specific problem this will solve, i.e., what currently
+> does not work?
 
 
-Should not this one be submitted to 6.4 stable branch too ?
+This version do allow the arbitration service works on non-x86 arch,
+
+which also allow me remove a arch-specific workaround.
+
+I will give more detail at the next version.
 
 
-git describe --contains 9425c591e06a
-v6.4-rc7~29^2~1
+But I want to provide one more drawback of vgaarb here:
 
-The other one (hugetlb: revert use of page_cache_next_miss()) of this=20
-patch series landed in 6.4.2
 
-Or am I missing something ?
+(6) It does not works for non VGA-compatible PCI(e) display controllers.
 
---
-Thomas
 
-> ---
->   mm/filemap.c | 26 ++++++++++----------------
->   1 file changed, 10 insertions(+), 16 deletions(-)
->=20
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 3b73101f9f86..9e44a49bbd74 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -1728,9 +1728,7 @@ bool __folio_lock_or_retry(struct folio *folio, str=
-uct mm_struct *mm,
->    *
->    * Return: The index of the gap if found, otherwise an index outside th=
-e
->    * range specified (in which case 'return - index >=3D max_scan' will b=
-e true).
-> - * In the rare case of index wrap-around, 0 will be returned.  0 will al=
-so
-> - * be returned if index =3D=3D 0 and there is a gap at the index.  We ca=
-n not
-> - * wrap-around if passed index =3D=3D 0.
-> + * In the rare case of index wrap-around, 0 will be returned.
->    */
->   pgoff_t page_cache_next_miss(struct address_space *mapping,
->   =09=09=09     pgoff_t index, unsigned long max_scan)
-> @@ -1740,13 +1738,12 @@ pgoff_t page_cache_next_miss(struct address_space=
- *mapping,
->   =09while (max_scan--) {
->   =09=09void *entry =3D xas_next(&xas);
->   =09=09if (!entry || xa_is_value(entry))
-> -=09=09=09return xas.xa_index;
-> -=09=09if (xas.xa_index =3D=3D 0 && index !=3D 0)
-> -=09=09=09return xas.xa_index;
-> +=09=09=09break;
-> +=09=09if (xas.xa_index =3D=3D 0)
-> +=09=09=09break;
->   =09}
->  =20
-> -=09/* No gaps in range and no wrap-around, return index beyond range */
-> -=09return xas.xa_index + 1;
-> +=09return xas.xa_index;
->   }
->   EXPORT_SYMBOL(page_cache_next_miss);
->  =20
-> @@ -1767,9 +1764,7 @@ EXPORT_SYMBOL(page_cache_next_miss);
->    *
->    * Return: The index of the gap if found, otherwise an index outside th=
-e
->    * range specified (in which case 'index - return >=3D max_scan' will b=
-e true).
-> - * In the rare case of wrap-around, ULONG_MAX will be returned.  ULONG_M=
-AX
-> - * will also be returned if index =3D=3D ULONG_MAX and there is a gap at=
- the
-> - * index.  We can not wrap-around if passed index =3D=3D ULONG_MAX.
-> + * In the rare case of wrap-around, ULONG_MAX will be returned.
->    */
->   pgoff_t page_cache_prev_miss(struct address_space *mapping,
->   =09=09=09     pgoff_t index, unsigned long max_scan)
-> @@ -1779,13 +1774,12 @@ pgoff_t page_cache_prev_miss(struct address_space=
- *mapping,
->   =09while (max_scan--) {
->   =09=09void *entry =3D xas_prev(&xas);
->   =09=09if (!entry || xa_is_value(entry))
-> -=09=09=09return xas.xa_index;
-> -=09=09if (xas.xa_index =3D=3D ULONG_MAX && index !=3D ULONG_MAX)
-> -=09=09=09return xas.xa_index;
-> +=09=09=09break;
-> +=09=09if (xas.xa_index =3D=3D ULONG_MAX)
-> +=09=09=09break;
->   =09}
->  =20
-> -=09/* No gaps in range and no wrap-around, return index beyond range */
-> -=09return xas.xa_index - 1;
-> +=09return xas.xa_index;
->   }
->   EXPORT_SYMBOL(page_cache_prev_miss);
->  =20
+Because, currently, vgaarb deal with PCI VGA compatible devices only.
 
+See another my patch set [1] for more elaborate discussion.
+
+It also ignore PCI_CLASS_NOT_DEFINED_VGA as Maciej puts it[2].
+
+While my approach do not required the display controller to be 
+VGA-compatible to enjoy the arbitration service.
+
+What do you think then?
+
+
+[1] https://patchwork.freedesktop.org/patch/546690/?series=120548&rev=1
+
+[2] https://lkml.org/lkml/2023/6/18/315
 
