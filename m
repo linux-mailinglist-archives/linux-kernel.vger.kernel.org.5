@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E94E75EDBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A4275EDC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbjGXIfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S231661AbjGXIfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbjGXIfb (ORCPT
+        with ESMTP id S229898AbjGXIfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:35:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486CD10C1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:35:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B545360FCF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:35:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A99BCC433C8;
-        Mon, 24 Jul 2023 08:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690187722;
-        bh=Z5HY1j3XekN0wuWmc3Gm3XQ0wBUul6TgGJXDB+eNZNs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HOuh8YN5DpUam/j60jnSdNhC+63dFxHoHy2Zk5oTqEVE/HlZ/7d3WO/ImXs/tq18K
-         x7yJxNox45X7BJPu90lZdz7U/l/XZewqHKQnZSLZ5wL0B97k4qd5yLgUlaagCo2cG9
-         gp7BRd7Q6IiBu4Yya45YTkG2WrqFiZ4Z9fpy2JeiTKWiOeFvy1etBCKm3GRnTWhLnL
-         z1Bj5HhE5XVthlPbCOINK3Z/A3ms0wCdIGmP/0DPPri5XeZ6nVZx4sJA0mU0+YLWtW
-         hi0CMmSIzw88J01sNzFn2ABTblavtbfhjobzWHwBkofmhcDYCYDQdxgAtULiCY70fH
-         Xg5OXEONsHp/g==
-From:   Robert Foss <rfoss@kernel.org>
-To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>, Xin Ji <xji@analogixsemi.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Robert Foss <rfoss@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Pin-yen Lin <treapking@chromium.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v11] drm/bridge: it6505: Fix Kconfig indentation
-Date:   Mon, 24 Jul 2023 10:35:15 +0200
-Message-ID: <169018770962.615452.8291957504440998877.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230712065054.2377278-1-wenst@chromium.org>
-References: <20230712065054.2377278-1-wenst@chromium.org>
+        Mon, 24 Jul 2023 04:35:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18184E42;
+        Mon, 24 Jul 2023 01:35:35 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 08:35:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690187732;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xZIFjd8b1zmq6CVD9es57l2q/FwdfakaSpxogKN3LCM=;
+        b=Cnqp3Il5EAZzbO5gF5oyvQgm1s9AyD2s8OxRCuE2mNOhsz2ZmK6CN5EXxabiKdVB/xfgGw
+        /krkivpb7YAuEmfMq3BC8CQLsXF4P01e7kDga0l/jTNJ+Zp0SCOigB1KnIqv7KZ1p5kEdt
+        cKq2iCGsYZ6tnvUzOC7lKyQKBR6z1V7tKidA/UC+Z9xhZGWgsbcA0vf+26AMK0J5JjAFN8
+        rLkioU+cXKAJyQKtmJphzUNTy+d5AOn5KX2bCUX04ZiNBqjsJx2IdDdmLCTfBDqYadhA0v
+        ZZcpRWT8BLFNpzv0Oe+feKGXqXAqzFfd4DePYcYoBVzp9cIXAHLlsUMBCLO9PA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690187732;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xZIFjd8b1zmq6CVD9es57l2q/FwdfakaSpxogKN3LCM=;
+        b=qG46IOBV6pcEF/+bslz0Kds2yWit5LG1QtVxBvAJDUTBkLQJorb3R3oKWR5//TzHfJTcz7
+        5VBjloj03mSDMgDA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-6.5-1' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
+ irq/urgent
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20230717113857.304919-1-maz@kernel.org>
+References: <20230717113857.304919-1-maz@kernel.org>
 MIME-Version: 1.0
+Message-ID: <169018773176.28540.6935364489444309798.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 14:50:53 +0800, Chen-Yu Tsai wrote:
-> From: Pin-yen Lin <treapking@chromium.org>
-> 
-> Replace the spaces with tab characters in the Kconfig file.
-> 
-> 
+The following commit has been merged into the irq/urgent branch of tip:
 
-Applied, thanks!
+Commit-ID:     de990908521073d98a46ad0e29885df447e95242
+Gitweb:        https://git.kernel.org/tip/de990908521073d98a46ad0e29885df447e95242
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Mon, 24 Jul 2023 10:27:43 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 24 Jul 2023 10:27:43 +02:00
 
-[1/1] drm/bridge: it6505: Fix Kconfig indentation
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=dd9c1329027d
+Merge tag 'irqchip-fixes-6.5-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
 
+Pull irqchip fixes from Marc Zyngier:
 
+  - Work around an erratum on GIC700, where a race between a CPU
+    handling a wake-up interrupt, a change of affinity, and another
+    CPU going to sleep can result in a lack of wake-up event on the
+    next interrupt.
 
-Rob
+  - Fix the locking required on a VPE for GICv4
 
+  - Enable Rockchip 3588001 erratum workaround for RK3588S
+
+  - Fix the irq-bcm6345-l1 assumtions of the boot CPU always be
+    the first CPU in the system
+
+Link: https://lore.kernel.org/lkml/20230717113857.304919-1-maz@kernel.org
+---
