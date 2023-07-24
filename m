@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CED175F67A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A3875F67C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjGXMiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
+        id S230245AbjGXMkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjGXMiS (ORCPT
+        with ESMTP id S229824AbjGXMkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:38:18 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9052E66;
-        Mon, 24 Jul 2023 05:38:16 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so336028a12.0;
-        Mon, 24 Jul 2023 05:38:16 -0700 (PDT)
+        Mon, 24 Jul 2023 08:40:16 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1863E51
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:40:15 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4470837ff8aso1063224137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:40:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690202296; x=1690807096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HHrTawO6Evdgbzp/9WCQR8KuSPkqz1GJWvZeIl1W1GI=;
-        b=jRy5ndisFvVQsMd6CxFNd+mgACtkNEojqqRazkgOgMlQ3fUroPR9rXdVPQPg/Mgi8/
-         YMFf8SDJfZJZzuMTUu+BtZXunHN7s5Wv9E5UPYfHg74xpxjvUBPvvgJ3BoMkNIn3ET3N
-         KlfJ4ti0GigCkpShGINB+NH71Tq0JxwbU5q4QLGoe1KhoPys73AJMf2xijq7kBHRzMGm
-         jpH+j++twYA5K9UNMhwp633eowwwZHvzSbaqr/8IJdnq2rG4bRuShkeTwT+GaV7IF3J1
-         w/4jo1jUIPKWBgz0J1/L52gJhTk4xLiCfo+/hZ0aqnCPAeTuzsMfh/GPNIdFGrUIT+ea
-         Vwgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690202296; x=1690807096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20221208; t=1690202415; x=1690807215;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HHrTawO6Evdgbzp/9WCQR8KuSPkqz1GJWvZeIl1W1GI=;
-        b=aDa0rmF13cZra5SG6nPaM3QT+3MjzrQTc46CXyQv9kaZfegylWZarQdi/UBu9GIhvg
-         QEqDL4pQFqbz+S39RFpBH3b700HerUplMNsSnc9Q6Kr1gzxmLJDITpLuMqf4FztOqqFa
-         Q9Yv4s+BBhawRIVCEmwSkcUMSMk8L3IUPQQ2J7eCOIM2nfMBl1NaEKF0rPLzR3cDXd4r
-         78YN4Zy1HA7luavR4qglbMV3EjiYvi4fsSUNuQLYnkyO4lTyxgxcf64Ig6peVPvykcTa
-         LEcQS0/aZ1fR2cK+vwEMH9L26foyoSurbaGGjMvJyuBh+46u+RqGPcggUGHjklXuXxEV
-         C1Mw==
-X-Gm-Message-State: ABy/qLYEym3y9ABbcTol/cF8L1c7IVNeOGU/rLkDaAihM4L0+ENdL45p
-        HeuI3dALlQAp1Kdr2zd09CO6qP9dqt0bn08RkPDUDV2H
-X-Google-Smtp-Source: APBJJlFFS2CJPlSkthCHGJB97vwn1hWgIyObWrIYbvKOZHQjLSGvgYHwWH0PF2veE+P46/GknnqPNW1+g6jg1Hy+vMk=
-X-Received: by 2002:a17:90a:4fe1:b0:263:f36e:d610 with SMTP id
- q88-20020a17090a4fe100b00263f36ed610mr9256694pjh.0.1690202296005; Mon, 24 Jul
- 2023 05:38:16 -0700 (PDT)
+        bh=Wnf9hS4rWgJA0Ixb+vooCZbPaPY6ETfoy/05xXuPeDU=;
+        b=guu1euNaBUTcjSH2W7t2CZ1/0GDyCu6U6f+VJV9UqxSITRxfpQrc4/HUcLQFkGSpSe
+         EcCVwdXUJ6x2eynrWmev/Ro7vUQvdG84u8/oc/2VV7jPBCSkgGfYxJwiFpi4MreFrcQa
+         Y8ojqZQqpLEDBaAgz1sbMMvJJlByubJlLpk7WwUMgSCQNGeMCIiG/1iDJm+ZcRi8A9fO
+         c/2ZaT+jE9EQ+Ykk0ftH9m9nMgosqhYNWB0wk7u6vEiZATKzGeTHTIuC+SUPqICRV09I
+         TtdWzpgzdF6N2x1lS6YPdtP/GO7yUKi9wpKuxKhFfJywdFVcg2NfXIyL2POrLev6YEuQ
+         L/tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690202415; x=1690807215;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wnf9hS4rWgJA0Ixb+vooCZbPaPY6ETfoy/05xXuPeDU=;
+        b=lO1n92tjK5re7H2UixNzw/wwjLgklVuxWPEbEv2cbp12mM7DzAes5ytAQh6OrTIi8W
+         ZwkpB0YUl2xZA5/aQA7XUSyPvT4+Q9lE/4ojP1I4BFI2RmUDKrncAesxyVtk8jiyOK2C
+         TvCQt5bb7PsMEEV5H2yu7+NP2Ip9xLkrgSDh434ZG0r9ZaaRtDB4v0VhCSu878buEgzP
+         9vt6j2lqsree9RO97wxFadyRVF3A3Y5vXgrPKjEDX8oLrtG91HcS2+frdPKsWlF/MRE3
+         KZUc3//ada+pILvq2sy3rUgAb/bfXVlBnPHMrAOsK6ftWtDWc7XuyXGCwjEudroDOjFS
+         3VHg==
+X-Gm-Message-State: ABy/qLb23UgZUz+yotIEMDx0sw7HmSpCimQZRdc/yx12tW+frLqWIwXR
+        jxlRrV7Vw1wmNyKrnGZ3pQXEf7TpRsAtXSLKOSk=
+X-Google-Smtp-Source: APBJJlEgb05iqa0uWmatYtPrGpTnNk+qMDu/UIwurUjI8ofdvH8dW4MWv/Qgo2juzlnYXythPVzjMq9lGn/Ik8U+8Rc=
+X-Received: by 2002:a67:bc16:0:b0:43b:3cab:23a8 with SMTP id
+ t22-20020a67bc16000000b0043b3cab23a8mr2597768vsn.20.1690202414659; Mon, 24
+ Jul 2023 05:40:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724105546.1964059-1-carlos.song@nxp.com> <20230724105546.1964059-3-carlos.song@nxp.com>
-In-Reply-To: <20230724105546.1964059-3-carlos.song@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 24 Jul 2023 09:38:04 -0300
-Message-ID: <CAOMZO5A28fNmMRwG6dX8vY2OkgvcmjqAJWQmjTXT9-OkAcYrRw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] i2c: imx-lpi2c: add debug message when i2c
- peripheral clk doesn't work
-To:     carlos.song@nxp.com
-Cc:     andi.shyti@kernel.org, aisheng.dong@nxp.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        xiaoning.wang@nxp.com, haibo.chen@nxp.com, linux-imx@nxp.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+Sender: dinamckennahowley@gmail.com
+Received: by 2002:a0c:f544:0:b0:626:402b:1de1 with HTTP; Mon, 24 Jul 2023
+ 05:40:14 -0700 (PDT)
+From:   Margaret Henry <margarethenry642@gmail.com>
+Date:   Mon, 24 Jul 2023 05:40:14 -0700
+X-Google-Sender-Auth: 8yLihb1m4aRFSPqcY4irUHw9ORs
+Message-ID: <CAHL3TZKTGgCd7oTML7Qv1ZSwrRHUEO0XQKzgeQyVE7MvzZojiQ@mail.gmail.com>
+Subject: Hello.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -73,33 +66,4 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 7:52=E2=80=AFAM <carlos.song@nxp.com> wrote:
->
-> From: Gao Pan <pandy.gao@nxp.com>
->
-> Output error log when i2c peripheral clk rate is 0, then
-> directly return -EINVAL.
->
-> Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
-> Signed-off-by: Gao Pan <pandy.gao@nxp.com>
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> ---
->  drivers/i2c/busses/i2c-imx-lpi2c.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-=
-imx-lpi2c.c
-> index e93ff3b5373c..12b4f2a89343 100644
-> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> @@ -214,6 +214,11 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct =
-*lpi2c_imx)
->         lpi2c_imx_set_mode(lpi2c_imx);
->
->         clk_rate =3D clk_get_rate(lpi2c_imx->clks[0].clk);
-> +       if (!clk_rate) {
-> +               dev_err(&lpi2c_imx->adapter.dev, "clk_per rate is 0\n");
-
-The subject says 'debug message', but this is an error message.
-
-Please adjust the Subject.
+Hello dear did you receive my last massage
