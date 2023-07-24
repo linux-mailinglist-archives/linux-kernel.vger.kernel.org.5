@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35ECB75E979
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C8175E978
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjGXCEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S232947AbjGXCEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjGXCDr (ORCPT
+        with ESMTP id S230040AbjGXCDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 Jul 2023 22:03:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B42C5FCF;
-        Sun, 23 Jul 2023 18:56:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED895FD1;
+        Sun, 23 Jul 2023 18:56:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6905860FFB;
-        Mon, 24 Jul 2023 01:33:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10B91C433CA;
-        Mon, 24 Jul 2023 01:33:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9533261019;
+        Mon, 24 Jul 2023 01:34:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC9EC433CB;
+        Mon, 24 Jul 2023 01:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162397;
-        bh=8hK+dgPatDV1HxA1X+qNNVXvqz6JBIppiONjrSHEvsc=;
+        s=k20201202; t=1690162448;
+        bh=0ixMFmS8xecmkXLwC0SULB3goZzazU5OmPDTHqTNvBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l931QGT4mrpSpmVU8Wt4ZkAwHxAvLVjy8QAS+NXlvckMfD/R5S0VsQy6ylsDxfNSR
-         kdTvsOkxfOumN6VPXng+zVMNtKp8hF1DtGK3wJEwHLkMmn3/yERPdjRRjNH/f0gBP2
-         jiA4FY2wlkvKcdbTowaFHBXMJyxFyqFJqRHNCmtZiCszDsM1NJ7qa8eamLlMv+2ymg
-         FZ7e/xoWhUKRFOqsl3+xzdE1XKMV0TU80oaIzbaLlmAGkjs/cuFPCZBC/PqRcwFBKd
-         7E4pEuHmNE6XypCroYpV0QobYOfxXhbYfqlUY7tp10JGXrr+CpMu1PU1EjLyMFJ7Ge
-         EoiQEvJT2xE2g==
+        b=C4fJjLC8wQfLCHQIsUsDDA/3RZppp4y1NNFLCK+fOfDphq8lXCG497SjnUtriIz+b
+         lp+zCi8N9nr4lrFB5q1cn2/Lda5Z5Glss7794osNORQ8VDVrGFcW+B4RrBFJuzSRaJ
+         TjWGgKisVT0DHzDgy/4lBnKZAog1i+pCrqiv+h2RrvUwwAaZfKiXYUcqBJ9qIVDdQA
+         eyYu7WSfZ5mD+GfM71Hg6siZUHCTqLQ4Vw451jB2CqPQenWMhSQQFX4rGNyflxcacf
+         fZp0ty9cNFY8efwb4UH3wHNcirKb/m5Y1H6/DlmKPGzhJKi6dLWAwoTVg/pxzCTClt
+         i0ELNSF7qWl3A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     dengxiang <dengxiang@nfschina.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 29/34] ALSA: hda/realtek: Add quirks for Unis H3C Desktop B760 & Q760
-Date:   Sun, 23 Jul 2023 21:32:32 -0400
-Message-Id: <20230724013238.2329166-29-sashal@kernel.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 04/16] xhci: Don't require a valid get_quirks() function pointer during xhci setup
+Date:   Sun, 23 Jul 2023 21:33:48 -0400
+Message-Id: <20230724013401.2333159-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
-References: <20230724013238.2329166-1-sashal@kernel.org>
+In-Reply-To: <20230724013401.2333159-1-sashal@kernel.org>
+References: <20230724013401.2333159-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.40
+X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -59,57 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dengxiang <dengxiang@nfschina.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 73f1c75d5e6bd8ce2a887ef493a66ad1b16ed704 ]
+[ Upstream commit 9b907c91aa94522ae14bf155ce7b9ccb10a0903c ]
 
-These models use NSIWAY amplifiers for internal speaker, but cannot put
-sound outside from these amplifiers. So eapd verbs are needed to initialize
-the amplifiers. They can be added during boot to get working sound out
-of internal speaker.
+Not all platforms drivers need to set up custom quirks during the xhci
+generic setup. Allow them to pass NULL as the function pointer when
+calling xhci_gen_setup()
 
-Signed-off-by: dengxiang <dengxiang@nfschina.com>
-Link: https://lore.kernel.org/r/20230703021751.2945750-1-dengxiang@nfschina.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Message-ID: <20230602144009.1225632-4-mathias.nyman@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/usb/host/xhci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index eb049014f87ac..ce560129e2faa 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -11235,6 +11235,7 @@ enum {
- 	ALC897_FIXUP_HP_HSMIC_VERB,
- 	ALC897_FIXUP_LENOVO_HEADSET_MODE,
- 	ALC897_FIXUP_HEADSET_MIC_PIN2,
-+	ALC897_FIXUP_UNIS_H3C_X500S,
- };
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index b069fe3f8ab0b..2231ddedd522f 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -5296,7 +5296,8 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
  
- static const struct hda_fixup alc662_fixups[] = {
-@@ -11674,6 +11675,13 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC897_FIXUP_LENOVO_HEADSET_MODE
- 	},
-+	[ALC897_FIXUP_UNIS_H3C_X500S] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x14, AC_VERB_SET_EAPD_BTLENABLE, 0 },
-+			{}
-+		},
-+	},
- };
+ 	xhci->quirks |= quirks;
  
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -11835,6 +11843,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{.id = ALC662_FIXUP_USI_HEADSET_MODE, .name = "usi-headset"},
- 	{.id = ALC662_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
- 	{.id = ALC669_FIXUP_ACER_ASPIRE_ETHOS, .name = "aspire-ethos"},
-+	{.id = ALC897_FIXUP_UNIS_H3C_X500S, .name = "unis-h3c-x500s"},
- 	{}
- };
+-	get_quirks(dev, xhci);
++	if (get_quirks)
++		get_quirks(dev, xhci);
  
+ 	/* In xhci controllers which follow xhci 1.0 spec gives a spurious
+ 	 * success event after a short transfer. This quirk will ignore such
 -- 
 2.39.2
 
