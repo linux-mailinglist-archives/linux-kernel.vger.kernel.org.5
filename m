@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CECD975F918
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA22B75F92F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbjGXN7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S230224AbjGXOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjGXN7e (ORCPT
+        with ESMTP id S230094AbjGXOBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:59:34 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50676FF;
-        Mon, 24 Jul 2023 06:59:32 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R8hY52FDPzHqc7;
-        Mon, 24 Jul 2023 21:56:57 +0800 (CST)
-Received: from [10.174.179.215] (10.174.179.215) by
- canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 21:59:29 +0800
-Subject: Re: [PATCH -next] sunrpc: Remove unused extern declarations
-To:     Chuck Lever <chuck.lever@oracle.com>
-CC:     NeilBrown <neilb@suse.de>, <jlayton@kernel.org>,
-        <kolga@netapp.com>, <Dai.Ngo@oracle.com>, <tom@talpey.com>,
-        <trond.myklebust@hammerspace.com>, <anna@kernel.org>,
-        <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230722033116.17988-1-yuehaibing@huawei.com>
- <169017533908.11078.1160756498004010060@noble.neil.brown.name>
- <d8178e7c-d0ec-9e5d-9367-53f554e0392e@huawei.com>
- <ZL573hzgHEfp+gbb@tissot.1015granger.net>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <6c56d747-84c4-5f7d-86ba-b3d5ac377c42@huawei.com>
-Date:   Mon, 24 Jul 2023 21:59:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 24 Jul 2023 10:01:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2DAFF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:01:31 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-228-RFpHSq0cPeuQ7jM8jWimbA-1; Mon, 24 Jul 2023 15:01:29 +0100
+X-MC-Unique: RFpHSq0cPeuQ7jM8jWimbA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 24 Jul
+ 2023 15:01:27 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 24 Jul 2023 15:01:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
+        Serge Semin <fancer.lancer@gmail.com>
+CC:     "wuyonggang001@208suo.com" <wuyonggang001@208suo.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] clk: baikal-t1: Using div64_ Ul replaces do_ Div()
+ function
+Thread-Topic: [PATCH] clk: baikal-t1: Using div64_ Ul replaces do_ Div()
+ function
+Thread-Index: AQHZvjSmxeKvFHAks0K1RCRZ2bTXfq/I8SJw
+Date:   Mon, 24 Jul 2023 14:01:27 +0000
+Message-ID: <daccab41116d4c88823ab7fc84846077@AcuMS.aculab.com>
+References: <20230612033904.34921-1-zhanglibing@cdjrlc.com>
+ <0dc9409b662180ed29cbc281f0f076b7@208suo.com>
+ <fcd37e67fba625da304fdaf07e0ab0db@208suo.com>
+ <CAMuHMdX0xP5Gugo7uF5Wqk9_ny6-4fOWYRm41KicOo26kC6m+g@mail.gmail.com>
+ <nt6kbounehvfqo4hpfj3wbr7baukuhr22dafvoykgyehs4imsp@pc6bajyo6ugn>
+ <CAMuHMdUHDK9CCJPoMgLQBrXjk9VWszYF17dUU=9JtQ8XX=QAPA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUHDK9CCJPoMgLQBrXjk9VWszYF17dUU=9JtQ8XX=QAPA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <ZL573hzgHEfp+gbb@tissot.1015granger.net>
-Content-Type: text/plain; charset="utf-8"
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/24 21:25, Chuck Lever wrote:
-> On Mon, Jul 24, 2023 at 02:45:07PM +0800, YueHaibing wrote:
->> On 2023/7/24 13:08, NeilBrown wrote:
->>> On Sat, 22 Jul 2023, YueHaibing wrote:
->>>> Since commit 49b28684fdba ("nfsd: Remove deprecated nfsctl system call and related code.")
->>>> these declarations are unused, so can remove it.
->>>>
->>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->>>
->>> Thanks.
->>> Could you remove the declaration of auth_unix_lookup too?
->>> It was removed in that commit, but the declaration is still with us.
-> 
-> Thanks, Neil. I thought there might be one or two others, but none stood
-> out to me.
-> 
-> 
->> Sure, will do this.
-> 
-> Yue, I can just fold that into the applied patch. No need to send another.
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDI0IEp1bHkgMjAyMyAxNDozOQ0KPiAN
+Cj4gSGkgU2VyZ2UsDQo+IA0KPiBPbiBNb24sIEp1bCAyNCwgMjAyMyBhdCAzOjEz4oCvUE0gU2Vy
+Z2UgU2VtaW4gPGZhbmNlci5sYW5jZXJAZ21haWwuY29tPiB3cm90ZToNCj4gPiBPbiBNb24sIEp1
+bCAyNCwgMjAyMyBhdCAxMjowNDoxOVBNICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6
+DQo+ID4gPiBPbiBXZWQsIEp1biAxNCwgMjAyMyBhdCA4OjA34oCvQU0gPHd1eW9uZ2dhbmcwMDFA
+MjA4c3VvLmNvbT4gd3JvdGU6DQo+ID4gPiA+IEZpeCB0aGUgZm9sbG93aW5nIGNvY2NpY2hlY2sg
+d2FybmluZzoNCj4gPiA+ID4NCj4gPiA+ID4gZHJpdmVycy9jbGsvYmFpa2FsLXQxL2NjdS1wbGwu
+Yzo4MToxLTc6IFdBUk5JTkc6IGRvX2RpdigpIGRvZXMgYQ0KPiA+ID4gPiA2NC1ieS0zMiBkaXZp
+c2lvbiwgcGxlYXNlIGNvbnNpZGVyIHVzaW5nIGRpdjY0X3VsIGluc3RlYWQuDQo+ID4gPiA+DQo+
+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmdnYW5nIFd1IDx3dXlvbmdnYW5nMDAxQDIwOHN1by5j
+b20+DQo+ID4gPg0KPiA+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLCB3aGljaCBpcyBub3cgY29t
+bWl0IGI5M2QxMzMxZWEyNjZkZWENCj4gPiA+ICgiY2xrOiBiYWlrYWwtdDE6IFVzaW5nIGRpdjY0
+XyBVbCByZXBsYWNlcyBkb18gRGl2KCkgZnVuY3Rpb24iKQ0KPiA+ID4gaW4gY2xrL2Nsay1uZXh0
+Lg0KPiA+ID4NCj4gPiA+ID4gYi9kcml2ZXJzL2Nsay9iYWlrYWwtdDEvY2N1LXBsbC5jDQo+ID4g
+PiA+IGluZGV4IDEzZWYyODAwMTQzOS4uZDQxNzM1YzY5NTZhIDEwMDY0NA0KPiA+ID4gPiAtLS0g
+YS9kcml2ZXJzL2Nsay9iYWlrYWwtdDEvY2N1LXBsbC5jDQo+ID4gPiA+ICsrKyBiL2RyaXZlcnMv
+Y2xrL2JhaWthbC10MS9jY3UtcGxsLmMNCj4gDQo+ID4gPiA+IEBAIC03OCw5ICs3OCw5IEBAIHN0
+YXRpYyBpbmxpbmUgdW5zaWduZWQgbG9uZyBjY3VfcGxsX2NhbGNfZnJlcSh1bnNpZ25lZA0KPiA+
+ID4gPiBsb25nIHJlZl9jbGssDQo+ID4gPiA+ICAgew0KPiA+ID4gPiAgICAgICB1NjQgdG1wID0g
+cmVmX2NsazsNCj4gPiA+ID4NCj4gPg0KPiA+ID4gPiAtICAgIGRvX2Rpdih0bXAsIG5yKTsNCj4g
+PiA+ID4gKyAgICBkaXY2NF91bCh0bXAsIG5yKTsNCj4gPiA+ID4gICAgICAgdG1wICo9IG5mOw0K
+PiA+ID4gPiAtICAgIGRvX2Rpdih0bXAsIG9kKTsNCj4gPiA+ID4gKyAgICBkaXY2NF91bCh0bXAs
+IG9kKTsNCj4gPiA+ID4NCj4gPiA+ID4gICAgICAgcmV0dXJuIHRtcDsNCj4gPiA+DQo+ID4gPiBM
+aWtld2lzZS4NCj4gPg0KPiA+IFJpZ2h0LiBUaGlzIHdpbGwgYWxzbyBicmVhayB0aGUgZHJpdmVy
+Lg0KPiA+DQo+ID4gPiBCdXQgYXMgcmVmX2NsayBpcyB1bnNpZ25lZCBsb25nLCB0aGVyZSBpcyBu
+byBuZWVkIHRvIHVzZSBkaXY2NF91bCgpDQo+ID4gPiBmb3IgdGhlIGZpcnN0IGRpdmlzaW9uLCBh
+bmQgdGhpcyBjYW4gYmUgc2ltcGxpZmllZCB0bzoNCj4gPiA+DQo+ID4gPiAgICAgdTY0IHRtcCA9
+ICh1NjQpKHJlZl9jbGsgLyBucikgKiBuZjsNCj4gPiA+ICAgICByZXR1cm4gZGl2NjRfdWwodG1w
+LCBvZCk7DQo+ID4NCj4gPiBBYnNvbHV0ZWx5IHJpZ2h0LiBNeSBpbnRlbnRpb24gb2YgdXNpbmcg
+dGhlIGRvX2RpdigpIGFueXdheSB3YXMgZm9yDQo+ID4gdGhlIHNha2Ugb2YgdGhlIGNvZGUgdW5p
+ZmljYXRpb24uDQo+ID4NCj4gPiA+DQo+ID4gPiBUbyBhdm9pZCBsb3NzIG9mIHByZWNpc2lvbiwg
+aXQgbWlnaHQgYmUgYmV0dGVyIHRvIHJldmVyc2UgdGhlIG9yZGVyDQo+ID4gPiBvZiB0aGUgZGl2
+aXNpb24gYW5kIG11bHRpcGxpY2F0aW9uOg0KPiA+ID4NCj4gPg0KPiA+ID4gICAgIHU2NCB0bXAg
+PSAodTY0KXJlZl9jbGsgKiBuZiAvIG5yOw0KPiA+DQo+ID4gQWxhcyBleGFjdGx5IHRoaXMgY29k
+ZSB3aWxsIGNhdXNlIHRoZSBjb21waWxhdGlvbiBlcnJvciBvbiB0aGUgMzItYml0DQo+ID4gcGxh
+dGZvcm06DQo+ID4gY2N1LXBsbC5jOigudGV4dCsweDQ1OCk6IHVuZGVmaW5lZCByZWZlcmVuY2Ug
+dG8gYF9fdWRpdmRpMycNCj4gPg0KPiA+IFRoYXQncyB3aHkgSSBhbSB1c2luZyB0aGUgZG9fZGl2
+KCkgaGVyZS4gSSB3b3VsZCBoYXZlIHJhdGhlciB1c2VkIHRoZQ0KPiA+IGRpdjY0X3VsKCkgaW5z
+dGVhZCBhcyB0aGlzIHBhdGNoIHN1Z2dlc3RzLCBidXQgSSBoYXZlbid0IGtub3duIGFib3V0IGl0
+cw0KPiA+IGV4aXN0ZW5jZSB1cCB0byB0aGlzIG1vbWVudC4NCj4gDQo+IEJ1bW1lciwgdGhhdCB3
+YXMgYSBzaWxseSBtaXN0YWtlIG9uIG15IHNpZGUuLi4NCj4gKEluaXRpYWxseSwgSSBkaWRuJ3Qg
+d3JpdGUgdGhlIGNhc3QgdG8gdTY0IHRoZXJlLCBhcyBhbGwgb2YgcmVmX2NsaywgbmYsIGFuZCBu
+cg0KPiAgYXJlIHVuc2lnbmVkIGxvbmcuICBUaGVuIEkgcmVhbGl6ZWQgInJlZl9jbGsgKiBuZiIg
+bWlnaHQgb3ZlcmZsb3cgb24NCj4gIDMyLWJpdCwgdGh1cyByZXF1aXJpbmcgYSA2NC1iaXQgcmVz
+dWx0LiBBbmQgSSBhZGRlZCB0aGUgY2FzdC4uLikNCg0KQnV0IG9uIDMyYml0IHRoZSByZXN1bHQg
+aXMgJ2xvbmcnLg0KU28gaXQgd2lsbCBvdmVyZmxvdyB1bmxlc3MgZG9fZGl2KCkgaXMgYWxzbyB2
+YWxpZC4NCg0KVGhlIGFuYWx5c2lzIG5lZWQgdG8gbG9vayBhdCB0aGUgZG9tYWluIG9mIHRoZSB2
+YWx1ZXMuDQpUaGUgd2FybmluZyBhbmQgc3VnZ2VzdGlvbiB0byB1c2UgZGl2NjRfdWwoKSBpcyBw
+cmV0dHkgbXVjaCBhbHdheXMNCndyb25nLg0KDQpkaXY2NF91bCgpIGlzIGdvaW5nIHRvIGJlIGhv
+cnJpYmx5IHNsb3cgb24gMzJiaXQuDQpBbHNvIG9uIDY0Yml0IEludGVsIGNwdSB0aGUgMTI4LzY0
+IGRpdmlkZSB0YWtlcyB0d2ljZSBhcyBsb25nIGFzIDY0LzMyDQpldmVuIHdoZW4gdGhlIHZhbHVl
+cyBhcmUgc21hbGwuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Ok.
-> 
-> 
->>> Thanks!
->>> NeilBrown
->>>
->>>> ---
->>>>  include/linux/sunrpc/svcauth.h | 2 --
->>>>  1 file changed, 2 deletions(-)
->>>>
->>>> diff --git a/include/linux/sunrpc/svcauth.h b/include/linux/sunrpc/svcauth.h
->>>> index 6d9cc9080aca..2402b7ca5d1a 100644
->>>> --- a/include/linux/sunrpc/svcauth.h
->>>> +++ b/include/linux/sunrpc/svcauth.h
->>>> @@ -157,11 +157,9 @@ extern void	svc_auth_unregister(rpc_authflavor_t flavor);
->>>>  
->>>>  extern struct auth_domain *unix_domain_find(char *name);
->>>>  extern void auth_domain_put(struct auth_domain *item);
->>>> -extern int auth_unix_add_addr(struct net *net, struct in6_addr *addr, struct auth_domain *dom);
->>>>  extern struct auth_domain *auth_domain_lookup(char *name, struct auth_domain *new);
->>>>  extern struct auth_domain *auth_domain_find(char *name);
->>>>  extern struct auth_domain *auth_unix_lookup(struct net *net, struct in6_addr *addr);
->>>> -extern int auth_unix_forget_old(struct auth_domain *dom);
->>>>  extern void svcauth_unix_purge(struct net *net);
->>>>  extern void svcauth_unix_info_release(struct svc_xprt *xpt);
->>>>  extern int svcauth_unix_set_client(struct svc_rqst *rqstp);
->>>> -- 
->>>> 2.34.1
->>>>
->>>>
->>>
->>> .
->>>
-> 
