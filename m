@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A3D760352
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5829760357
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjGXXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 19:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        id S229568AbjGXXxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 19:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjGXXwB (ORCPT
+        with ESMTP id S230351AbjGXXxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:52:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B261712
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:52:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D5C2261462
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 23:51:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87873C433C7;
-        Mon, 24 Jul 2023 23:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690242719;
-        bh=OMraFAIU6GX2b7xer6c5z+lNJyNLTIbcVU50mdmeTFc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qhKrfI3Or14X3j2O9LZ7JNuqCMKQX9vzAsQOp6XbX6FSExFA6FBlLzKRqyZcjzeeU
-         ZsY/pFTrPjdBJoMHxWsKwAyhaf9jX49ClhvDOeMJzr6RVcJ4dFQ6oCjA1ipDN1pXrD
-         FxDEeGByaHk45a05vNFCklfBYjFpA+jmiasHrmnkDIZkoORbvYCi6N9pJTZN96Knms
-         AvaverxxPIocxTGCQxsC6sDCdoZTFF3yM2wNqvnWL8mAEubkOeQ3hLH60pex8j2kz/
-         cTKGZY+WY86bpzDjrdgP3Cnx1yH9KxoO1cJU1x7e1mZVsNYJd3/yot3R3frcD8DYyN
-         V61kfRc4FFi2A==
-Date:   Mon, 24 Jul 2023 16:51:57 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Wei Fang <wei.fang@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        shenwei.wang@nxp.com, xiaoning.wang@nxp.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH V2 net-next] net: fec: add XDP_TX feature support
-Message-ID: <20230724165157.7094468a@kernel.org>
-In-Reply-To: <20230721062153.2769871-1-wei.fang@nxp.com>
-References: <20230721062153.2769871-1-wei.fang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Mon, 24 Jul 2023 19:53:12 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A40CE8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:53:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cffb72c1d6dso4019710276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690242790; x=1690847590;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxDEr6TxuqCZG2S3i+GYPr3CIoauu1/JkVLvrcdX1k8=;
+        b=riBFHF5ZqCdqw8sWs7VJGGiZDkSpy5F/57JKkwCoSWSfQiXArbwh0BuEirnWxJHXnT
+         5J0hZOUNmaNu+42JoCoX0ng1d9osiJcNKhDGjqsdutYTtIuNRHM2UUKgwpcuYB9eswGb
+         vkjTunEMnX/1px4cpb3qziXT8k5d67k9mDVuHGGw8B5qU9pZFhHTBooh2JgafB0S8Ad7
+         YGTiWmizeLTkttcKD+t1Ce9T8BetKUZC+gX7CcCVUqr8Ok54EWi+eMBU/i/yA6eTQHaY
+         zlpcbRsJXyrgJrBjrtoIDwmt0yNAgTjdtbdoOxbcg2BPm7/OPSN85BvogATQArLgn9Q4
+         fPIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690242790; x=1690847590;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxDEr6TxuqCZG2S3i+GYPr3CIoauu1/JkVLvrcdX1k8=;
+        b=N8CGYpVsYP/ckGuLbpnvHQN1ZVpLJt1IFhxXse0pcC314QrBTdFYB0Qb8hZBst6SW2
+         lHQ8EvFHvPR7LRuXdPEE2D+NvJQli8vhqkkuUKF/oUNOOQi98m+zZIWV2R0MZW5m2bUH
+         FyHmQ8d6YzMiLpuskBCmxc9GBBFC2XTmmIpau+1vps0vF1Q3csWfOQxsV3wHvb2WYtAr
+         CwyyNsjyDitukvpAlVnfwoqoo4nPb0/4NZmOTBbRdr7y0Dd6c+Uc44haiPJrMP3FDlQH
+         63VL8/8ExSpMRY58ecXzFH6jlTcZzlzqBrmzWYfDW9jMvHOXZAzWIBBkRCIN3n9SaV9p
+         ODQg==
+X-Gm-Message-State: ABy/qLZD2Z6ppKFQy/IUsT064ifgBknP4APSwPeaHFKrJYUJ1w0to94t
+        aBcf668f/ZEmXaZ24ifjMeTxgPdfB8c=
+X-Google-Smtp-Source: APBJJlGEB5CXUmQbk77O7vEDEGm9EzOQ1897eGyKu+HhiqUYzwAgKD2Xlye9SzDfM/1stynw6qj6WXBVssI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:188b:0:b0:cab:e42c:876b with SMTP id
+ 133-20020a25188b000000b00cabe42c876bmr65608yby.3.1690242790428; Mon, 24 Jul
+ 2023 16:53:10 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 16:53:08 -0700
+In-Reply-To: <ZL77Tt42+ZI2BAv5@google.com>
+Mime-Version: 1.0
+References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-15-seanjc@google.com>
+ <ZL77Tt42+ZI2BAv5@google.com>
+Message-ID: <ZL8O5BiKLbbfmYlU@google.com>
+Subject: Re: [PATCH v4 14/19] KVM: SVM: Check that the current CPU supports
+ SVM in kvm_is_svm_supported()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>,
+        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,35 +74,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 14:21:53 +0800 Wei Fang wrote:
-> +			/* Tx processing cannot call any XDP (or page pool) APIs if
-> +			 * the "budget" is 0. Because NAPI is called with budget of
-> +			 * 0 (such as netpoll) indicates we may be in an IRQ context,
-> +			 * however, we can't use the page pool from IRQ context.
-> +			 */
-> +			if (unlikely(!budget))
-> +				break;
-> +
->  			xdpf = txq->tx_buf[index].xdp;
-> -			if (bdp->cbd_bufaddr)
-> +			if (bdp->cbd_bufaddr &&
-> +			    txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
->  				dma_unmap_single(&fep->pdev->dev,
->  						 fec32_to_cpu(bdp->cbd_bufaddr),
->  						 fec16_to_cpu(bdp->cbd_datlen),
-> @@ -1474,7 +1486,10 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
->  			/* Free the sk buffer associated with this last transmit */
->  			dev_kfree_skb_any(skb);
->  		} else {
-> -			xdp_return_frame(xdpf);
-> +			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
-> +				xdp_return_frame(xdpf);
-> +			else
-> +				xdp_return_frame_rx_napi(xdpf);
+On Mon, Jul 24, 2023, Dmitry Torokhov wrote:
+> Hi Sean,
+> 
+> On Fri, Jul 21, 2023 at 01:18:54PM -0700, Sean Christopherson wrote:
+> > +static bool kvm_is_svm_supported(void)
+> > +{
+> > +	bool supported;
+> > +
+> > +	migrate_disable();
+> > +	supported = __kvm_is_svm_supported();
+> > +	migrate_enable();
+> 
+> I am typically very wary of the constructs like this, as the value
+> returned is obsolete the moment migrate_enable() happens.
 
-I think that you need to also break if (!budget) here,
-xdp_return_frame() may call page pool APIs to return the frame 
-to a page pool owned by another driver. And that needs to be fixed
-in net/main already?
--- 
-pw-bot: cr
+Yeah, I don't like this code, but there's no great solution in this case.  Or at
+least, none that I've found.  At some point KVM has to enable migration/preemption
+before "is KVM supported?" is ultimately consumed, as the real consumer is
+userspace.
+
+> Is value of "svm was supported at some time in the past but may or may not be
+> supported right now" useful and if it is then could you add comment why?
+
+No, because barring fatal silicon/ucode/kernel bugs, SVM support isn't expected
+to disappear or (re)appear).
+
+KVM defends against the "disappear" case as much as can be reasonably expected.
+It's ugly, but functionally ok (not perfect, but ok).  KVM doesn't actually care
+which CPU does the initial support check, because KVM will do fully protected support
+checks on all CPUs before actually letting userspace create VMs.  This is why the
+changelog states that ensuring a stable CPU is a non-goal, and also why the inner
+helpers don't use the raw accessors.
+
+The "(re)appear" case doesn't need to be handled, because userspace could simply
+retry if it really wanted to (but that would be quite insane/nonsensical, and
+just asking for problems).
+
+I didn't add a comment because VMX uses the exact same pattern, and I didn't
+want to copy+paste a non-trivial comment.  And this is a single use local helper,
+so I'm not terribly concerned about it being misused.
+
+That said, I'll see if I can find a common, intuitive location to document this.
