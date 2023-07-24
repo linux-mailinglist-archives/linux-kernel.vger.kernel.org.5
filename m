@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7394775F1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A2F75F26B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjGXKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        id S232932AbjGXKNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbjGXKD4 (ORCPT
+        with ESMTP id S233129AbjGXKMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:03:56 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C23B7A8A
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:56:03 -0700 (PDT)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-55acbe0c7e4so378271a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:56:03 -0700 (PDT)
+        Mon, 24 Jul 2023 06:12:44 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F1B7AA0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:05:06 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6b947f8269eso979612a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690192182; x=1690796982;
+        d=bytedance.com; s=google; t=1690193086; x=1690797886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FPgx5tx5pugTz0d6jibfzfGw2xSKE+ix47CgP1Qw/g4=;
-        b=eNFqSXTl7Fs+A61apTH/V806oFNFqUEW9iBW/QGnoaz3m8bxFzAIk52taB3hTPoo0J
-         15Uy/EhxhzzXrAniIeKy95ZVaJB60ETDr5+Beo/2JORQV0eMMIYUvFGSn01JXJQmgfvF
-         wVSzhI8MrjoxVzBXxfbK/bzinkaNiYLaxnx8BzakR2VO4bS5jTMeezTAiUWxMRd9glqy
-         y7ZbeUA/amFMlmdildpnpY/ykDL2iuVB+OIlcnryGkEk6VSFnVV3f/s+KAnTQMPBvZI0
-         bhvIVOkp7ajnZG67FTbNaTw3FFqm546EN6Ypmf7e8IynzALyaOfSF7MjrTN2cH5bObeQ
-         XNsw==
+        bh=qE79rW9nQFdZueatbKkJSwG7PQvomLDBWPiy7CJ1pOw=;
+        b=WfRohMff/qbfzm/k10e4i76J60vWByluEvFxd0BBG8UUPT/gVvUPQY0Bguv0DevtBW
+         mkvYC2bIMQl+JefvTbfDffxbZC0MsreZmaSWOtFNsOJNUh6BI2dUPPIp807ky4Oy9M4y
+         ikEsT7fJiyq+BvFhfC5/E7hjB9U/Urnt9YDhHeh4pBSqS+akYgpg8dU2TrP+C8kqIFgG
+         lmGA3HeD8KQH808zgSG7r7uibObJPzJXU8gXf0ngtkjiz+NY0VYCwhUVb/EvRShmA/GR
+         zhSH0uI4YI7GFAdOcvYRLyCzITMJM5j0JKZBa0Gr2jCff+rgBkb8AK7b83LdEsd53Uox
+         DAnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690192182; x=1690796982;
+        d=1e100.net; s=20221208; t=1690193086; x=1690797886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FPgx5tx5pugTz0d6jibfzfGw2xSKE+ix47CgP1Qw/g4=;
-        b=SkzoymkQwP14yqd+mXCRYcDSZrachlak9yQW7/9kx7woFAvlkRBsh8bKnuzVkuPUXl
-         j+D8KBQK2VlbVsSoFXrHa2S3+iWaGdOyriOCB5/ywLnIcLZscIc2eFI/fffKSyrb5tVa
-         5m8Kb8gB1lZAMHiLdMyTQPhmab+xRrYqm2BRuuICL8+Y+LK3LE6oDPW5tGRG21gnbaNA
-         wfUOLxoSZuIEIX7tOxqVBoFkhv6E7aqemAml0bdMKI7FWd5UCbT7aye/1OEdlPsbeXqo
-         0f6S6lSQK8sPfGdKZHljCfqDaniyoGPMQ7gpVyjMdIH/WGRL3s2tdQGmMk7Z34eFuBuj
-         tmHA==
-X-Gm-Message-State: ABy/qLbR3fjkuwYRvUcx4/4ViXzGHzKTVSxYGTS6amXvT6qb92KiuFsz
-        05xPVwduQrnCIUB5GxMs1QL53A==
-X-Google-Smtp-Source: APBJJlHNherDqZFzA7p7tcMEc26kiZZ4z0G58iklJcv127ghy/RIpJQTR76k3+Vr6OIbO3Et5X/b8Q==
-X-Received: by 2002:a17:903:2305:b0:1b8:b0c4:2e3d with SMTP id d5-20020a170903230500b001b8b0c42e3dmr12244115plh.4.1690192182555;
-        Mon, 24 Jul 2023 02:49:42 -0700 (PDT)
+        bh=qE79rW9nQFdZueatbKkJSwG7PQvomLDBWPiy7CJ1pOw=;
+        b=UWzAp5b8qAm45bAChY1cME3DNL5kMg4RTSyx2iJ4H3SGgCAajtOepXyk3+i6aR+5Rk
+         cb5DcN+u8PiCPPKgr3IPIbLEPkVSvmPPx8Q1qLTuAmSvE8+dFqEjwCoUgroO444rLLYh
+         kN2ErcYhckjqO5Y/XLh1kGXxvmCBrnsgxwBSMcWyV73rGLXjS7RdzHzBwtwQM/QE0jt9
+         TRTNnppO8ksheA8DT6XnrvmYO1cF8Q2WyalqKzRzoL/fG313J9yVmZXsdJAD6Um27oWD
+         uX2ZS/fgTIIsSmmSrjHSLOFF7M6lAaHtbK9vrXBsU37CW9Y+P83aVRbbBRWpewip6mqA
+         Timw==
+X-Gm-Message-State: ABy/qLbC10pPbjQ+5tI6r2WJmy10gYfCzp3wF7KYB0wO353Ahj7811dT
+        ryKaDkuDQr/Phw7Ir1NOfHnWb2SCS647s4gcRnY=
+X-Google-Smtp-Source: APBJJlFDDpJsPsXaM9K0eN3GbgFDnugc0MZ81V5AeEkSNRv9osxW0v212MSH0egY7R7+BB7SiCdLdQ==
+X-Received: by 2002:a17:902:e802:b0:1b3:d4bb:3515 with SMTP id u2-20020a170902e80200b001b3d4bb3515mr12388503plg.0.1690192254453;
+        Mon, 24 Jul 2023 02:50:54 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.49.30
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.50.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:49:42 -0700 (PDT)
+        Mon, 24 Jul 2023 02:50:54 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -70,19 +70,18 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 23/47] drm/msm: dynamically allocate the drm-msm_gem shrinker
-Date:   Mon, 24 Jul 2023 17:43:30 +0800
-Message-Id: <20230724094354.90817-24-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 29/47] vmw_balloon: dynamically allocate the vmw-balloon shrinker
+Date:   Mon, 24 Jul 2023 17:43:36 +0800
+Message-Id: <20230724094354.90817-30-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -90,136 +89,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the drm-msm_gem shrinker, so that it can be freed
+dynamically allocate the vmw-balloon shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct msm_drm_private.
+read-side critical section when releasing the struct vmballoon.
+
+And we can simply exit vmballoon_init() when registering the shrinker
+fails. So the shrinker_registered indication is redundant, just remove it.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- drivers/gpu/drm/msm/msm_drv.c          |  4 ++-
- drivers/gpu/drm/msm/msm_drv.h          |  4 +--
- drivers/gpu/drm/msm/msm_gem_shrinker.c | 36 ++++++++++++++++----------
- 3 files changed, 28 insertions(+), 16 deletions(-)
+ drivers/misc/vmw_balloon.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 891eff8433a9..7f6933be703f 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -461,7 +461,9 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- 	if (ret)
- 		goto err_msm_uninit;
- 
--	msm_gem_shrinker_init(ddev);
-+	ret = msm_gem_shrinker_init(ddev);
-+	if (ret)
-+		goto err_msm_uninit;
- 
- 	if (priv->kms_init) {
- 		ret = priv->kms_init(ddev);
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index e13a8cbd61c9..84523d4a1e58 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -217,7 +217,7 @@ struct msm_drm_private {
- 	} vram;
- 
- 	struct notifier_block vmap_notifier;
+diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
+index 9ce9b9e0e9b6..d216d4dc042e 100644
+--- a/drivers/misc/vmw_balloon.c
++++ b/drivers/misc/vmw_balloon.c
+@@ -380,16 +380,7 @@ struct vmballoon {
+ 	/**
+ 	 * @shrinker: shrinker interface that is used to avoid over-inflation.
+ 	 */
 -	struct shrinker shrinker;
+-
+-	/**
+-	 * @shrinker_registered: whether the shrinker was registered.
+-	 *
+-	 * The shrinker interface does not handle gracefully the removal of
+-	 * shrinker that was not registered before. This indication allows to
+-	 * simplify the unregistration process.
+-	 */
+-	bool shrinker_registered;
 +	struct shrinker *shrinker;
+ };
  
- 	struct drm_atomic_state *pm_state;
+ static struct vmballoon balloon;
+@@ -1568,29 +1559,27 @@ static unsigned long vmballoon_shrinker_count(struct shrinker *shrinker,
  
-@@ -279,7 +279,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
- unsigned long msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan);
- #endif
- 
--void msm_gem_shrinker_init(struct drm_device *dev);
-+int msm_gem_shrinker_init(struct drm_device *dev);
- void msm_gem_shrinker_cleanup(struct drm_device *dev);
- 
- int msm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
-diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-index f38296ad8743..7daab1298c11 100644
---- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
-+++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-@@ -34,8 +34,7 @@ static bool can_block(struct shrink_control *sc)
- static unsigned long
- msm_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
+ static void vmballoon_unregister_shrinker(struct vmballoon *b)
  {
--	struct msm_drm_private *priv =
--		container_of(shrinker, struct msm_drm_private, shrinker);
-+	struct msm_drm_private *priv = shrinker->private_data;
- 	unsigned count = priv->lru.dontneed.count;
+-	if (b->shrinker_registered)
+-		unregister_shrinker(&b->shrinker);
+-	b->shrinker_registered = false;
++	shrinker_unregister(b->shrinker);
+ }
  
- 	if (can_swap())
-@@ -100,8 +99,7 @@ active_evict(struct drm_gem_object *obj)
- static unsigned long
- msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+ static int vmballoon_register_shrinker(struct vmballoon *b)
  {
--	struct msm_drm_private *priv =
--		container_of(shrinker, struct msm_drm_private, shrinker);
-+	struct msm_drm_private *priv = shrinker->private_data;
- 	struct {
- 		struct drm_gem_lru *lru;
- 		bool (*shrink)(struct drm_gem_object *obj);
-@@ -148,10 +146,11 @@ msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan)
- 	struct shrink_control sc = {
- 		.nr_to_scan = nr_to_scan,
- 	};
--	int ret;
-+	unsigned long ret = SHRINK_STOP;
+-	int r;
+-
+ 	/* Do nothing if the shrinker is not enabled */
+ 	if (!vmwballoon_shrinker_enable)
+ 		return 0;
  
- 	fs_reclaim_acquire(GFP_KERNEL);
--	ret = msm_gem_shrinker_scan(&priv->shrinker, &sc);
-+	if (priv->shrinker)
-+		ret = msm_gem_shrinker_scan(priv->shrinker, &sc);
- 	fs_reclaim_release(GFP_KERNEL);
- 
- 	return ret;
-@@ -210,16 +209,27 @@ msm_gem_shrinker_vmap(struct notifier_block *nb, unsigned long event, void *ptr)
-  *
-  * This function registers and sets up the msm shrinker.
-  */
--void msm_gem_shrinker_init(struct drm_device *dev)
-+int msm_gem_shrinker_init(struct drm_device *dev)
- {
- 	struct msm_drm_private *priv = dev->dev_private;
--	priv->shrinker.count_objects = msm_gem_shrinker_count;
--	priv->shrinker.scan_objects = msm_gem_shrinker_scan;
--	priv->shrinker.seeks = DEFAULT_SEEKS;
--	WARN_ON(register_shrinker(&priv->shrinker, "drm-msm_gem"));
-+
-+	priv->shrinker = shrinker_alloc(0, "drm-msm_gem");
-+	if (!priv->shrinker) {
-+		WARN_ON(1);
+-	b->shrinker.scan_objects = vmballoon_shrinker_scan;
+-	b->shrinker.count_objects = vmballoon_shrinker_count;
+-	b->shrinker.seeks = DEFAULT_SEEKS;
++	b->shrinker = shrinker_alloc(0, "vmw-balloon");
++	if (!b->shrinker)
 +		return -ENOMEM;
-+	}
-+
-+	priv->shrinker->count_objects = msm_gem_shrinker_count;
-+	priv->shrinker->scan_objects = msm_gem_shrinker_scan;
-+	priv->shrinker->seeks = DEFAULT_SEEKS;
-+	priv->shrinker->private_data = priv;
-+
-+	shrinker_register(priv->shrinker);
  
- 	priv->vmap_notifier.notifier_call = msm_gem_shrinker_vmap;
- 	WARN_ON(register_vmap_purge_notifier(&priv->vmap_notifier));
-+
+-	r = register_shrinker(&b->shrinker, "vmw-balloon");
++	b->shrinker->scan_objects = vmballoon_shrinker_scan;
++	b->shrinker->count_objects = vmballoon_shrinker_count;
++	b->shrinker->seeks = DEFAULT_SEEKS;
++	b->shrinker->private_data = b;
+ 
+-	if (r == 0)
+-		b->shrinker_registered = true;
++	shrinker_register(b->shrinker);
+ 
+-	return r;
 +	return 0;
  }
  
- /**
-@@ -232,8 +242,8 @@ void msm_gem_shrinker_cleanup(struct drm_device *dev)
- {
- 	struct msm_drm_private *priv = dev->dev_private;
+ /*
+@@ -1883,7 +1872,7 @@ static int __init vmballoon_init(void)
  
--	if (priv->shrinker.nr_deferred) {
-+	if (priv->shrinker) {
- 		WARN_ON(unregister_vmap_purge_notifier(&priv->vmap_notifier));
--		unregister_shrinker(&priv->shrinker);
-+		shrinker_unregister(priv->shrinker);
- 	}
+ 	error = vmballoon_register_shrinker(&balloon);
+ 	if (error)
+-		goto fail;
++		return error;
+ 
+ 	/*
+ 	 * Initialization of compaction must be done after the call to
+@@ -1905,9 +1894,6 @@ static int __init vmballoon_init(void)
+ 	vmballoon_debugfs_init(&balloon);
+ 
+ 	return 0;
+-fail:
+-	vmballoon_unregister_shrinker(&balloon);
+-	return error;
  }
+ 
+ /*
 -- 
 2.30.2
 
