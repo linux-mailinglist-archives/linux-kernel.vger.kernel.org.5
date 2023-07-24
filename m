@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C74275F4E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EE775F4F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbjGXL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
+        id S230201AbjGXLaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjGXL3Y (ORCPT
+        with ESMTP id S229768AbjGXLaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:29:24 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B305CE61
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:29:22 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso6380814e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1690198161; x=1690802961;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kRfo5YiTarf2JRuyrUwS+oTWGNTjD9P2a+wjJdihkXc=;
-        b=HhR/s2eASv5mFUSwnlt8BH7baCjp+WIg/wvsxT3L+mPE7McqmK60FnGCjwEBEo8ACu
-         +g2vps5suXa92g5cA4UxBQBENAjEKTw9zD1cdNXoF5cwDO2BjUyzjNxZ/ezc3iJr29BF
-         pBFaFwCiAg4CH1sJBdXftvRH95kYhImN3EkFsaFKiHMRWtn7vo9AI4JAnjy2zTl0CQkR
-         mFwLAYR9YP5HpHpDMr5+3wKVm24tV4JKzK0yDMyWAIhGFOgNVk97BgZlHm5fu5uadYvm
-         +JMkYoiaUjxN86fzNK9LmlKjpWXUa1Gh4PIeLNi0I54j0GM22BBEOlYRN/sqvSPxdh+D
-         hiSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690198161; x=1690802961;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kRfo5YiTarf2JRuyrUwS+oTWGNTjD9P2a+wjJdihkXc=;
-        b=BR/GA8+4bxKRqmvJ9jxEsBJOAIzY7JOonRdaE8TrPBGwT0dRqe6PeGy9EyKBy1lzqM
-         QJeq/S1DlJsysf/pJ1NRH3KyMNGexvUNiBeTAedW4+Bomn+f0Dv9zHQUMiops+Hh5Q4J
-         yX/7WE5LmWWrytqhbiLMPxPpXMFRQR/mLuWpeEvmsGmuxOVEOzVl+kBuXft+AvnTjdn3
-         lPuGfRja/yqJ7m7efTdNivdyGEu2ldl6XIR6u0mL7i9CUkEHUkUcWjcbE6IGE9/R7HsK
-         1oDQNLvTilPItjOXMWgzbWIJgNVRA1WDA1mWODHDt9BxdSPgF1wOCRc+rB+PW7i/H9BY
-         5dFw==
-X-Gm-Message-State: ABy/qLbvsoWvkaYwlyDF/Q+WTD7GW+dPpZc4TOy9OJqG69gQUa0dYrvp
-        tRUbl6QGTABkecQka8MjnPWf
-X-Google-Smtp-Source: APBJJlGCu20wuxsL/mNm2Y190ohvk9LaLcsTK7Rk+Ga+zBykBJsQCzEk3W3Jjn+sxPtdrW1I4XwM9A==
-X-Received: by 2002:a05:6512:31cf:b0:4fb:93db:fff3 with SMTP id j15-20020a05651231cf00b004fb93dbfff3mr5576926lfe.16.1690198160833;
-        Mon, 24 Jul 2023 04:29:20 -0700 (PDT)
-Received: from ukaszb-l.wifi.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id d22-20020ac25456000000b004f858249932sm2166271lfn.90.2023.07.24.04.29.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 04:29:20 -0700 (PDT)
-From:   =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Subject: [PATCH] USB: quirks: add quirk for Focusrite Scarlett
-Date:   Mon, 24 Jul 2023 13:29:11 +0200
-Message-Id: <20230724112911.1802577-1-lb@semihalf.com>
-X-Mailer: git-send-email 2.38.3
+        Mon, 24 Jul 2023 07:30:14 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6A010C0;
+        Mon, 24 Jul 2023 04:30:12 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OBTgoZ082042;
+        Mon, 24 Jul 2023 06:29:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690198182;
+        bh=FIbuCQmGywo34kh/9gawzarjGz1qCcr4NM1ZHalmclw=;
+        h=From:To:CC:Subject:Date;
+        b=Q4oTs1V/MuiB5FeIL+Q+fe97SWGN/GncTm65CCmZhxxNUb9S/RT2q6EAgMETfmK4v
+         87T/aujBApsKOWJhzxPBQzNpmXdwpdxg7W4yKGgxgnd2TGmUb98V50hN/XRlWyEgK6
+         CuzgMC1mOyQCjP/p18SHnrI21jnVSULsiEVVZSt8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OBTgQp033941
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Jul 2023 06:29:42 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
+ Jul 2023 06:29:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 24 Jul 2023 06:29:41 -0500
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OBTfwc064029;
+        Mon, 24 Jul 2023 06:29:41 -0500
+Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
+        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 36OBTfGJ007447;
+        Mon, 24 Jul 2023 06:29:41 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v11 00/10] Introduce ICSSG based ethernet Driver
+Date:   Mon, 24 Jul 2023 16:59:24 +0530
+Message-ID: <20230724112934.2637802-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,59 +80,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Focusrite Scarlett audio device does not behave correctly during
-resumes. Below is what happens during every resume (captured with
-Beagle 5000):
+The Programmable Real-time Unit and Industrial Communication Subsystem
+Gigabit (PRU_ICSSG) is a low-latency microcontroller subsystem in the TI
+SoCs. This subsystem is provided for the use cases like the implementation
+of custom peripheral interfaces, offloading of tasks from the other
+processor cores of the SoC, etc.
 
-<Suspend>
-<Resume>
-<Reset>/<Chirp J>/<Tiny J>
-<Reset/Target disconnected>
-<High Speed>
+The subsystem includes many accelerators for data processing like
+multiplier and multiplier-accumulator. It also has peripherals like
+UART, MII/RGMII, MDIO, etc. Every ICSSG core includes two 32-bit
+load/store RISC CPU cores called PRUs.
 
-The Scarlett disconnects and is enumerated again.
+The above features allow it to be used for implementing custom firmware
+based peripherals like ethernet.
 
-However from time to time it drops completely off the USB bus during
-resume. Below is captured occurrence of such an event:
+This series adds the YAML documentation and the driver with basic EMAC
+support for TI AM654 Silicon Rev 2 SoC with the PRU_ICSSG Sub-system.
+running dual-EMAC firmware.
+This currently supports basic EMAC with 1Gbps and 100Mbps link. 10M and
+half-duplex modes are not yet supported because they require the support
+of an IEP, which will be added later.
+Advanced features like switch-dev and timestamping will be added later. 
 
-<Suspend>
-<Resume>
-<Reset>/<Chirp J>/<Tiny J>
-<Reset>/<Chirp K>/<Tiny K>
-<High Speed>
-<Corrupted packet>
-<Reset/Target disconnected>
+This is the v11 of the patch series [v1]. This version of the patchset 
+addresses comments made on v10.
 
-To fix the condition a user has to unplug and plug the device again.
+There series doesn't have any dependency.
 
-With USB_QUIRK_RESET_RESUME applied ("usbcore.quirks=1235:8211:b")
-for the Scarlett audio device the issue still reproduces. 
+Changes from v10 to v11 :
+*) Rebased the series on latest net-next.
+*) Split the ICSSG driver introduction patch into 9 different patches as
+   asked by Jakub.
+*) Introduced new patch(patch 8/10) to dump Standard network interface
+   staticstics via ndo_get_stats64. Now certain stats that are reported by
+   ICSSG hardware and are also part of struct rtnl_link_stats64, will be 
+   reported by ndo_get_stats64. While other stats that are not part of the
+   struct rtnl_link_stats64 will be reported by ethtool -S. These stats 
+   are not duplicated.
 
-Applying USB_QUIRK_DISCONNECT_SUSPEND ("usbcore.quirks=1235:8211:m")
-fixed the issue and the Scarlett audio device didn't drop off the USB
-bus for ~5000 suspend/resume cycles where originally issue reproduced in
-~100 or less suspend/resume cycles.
+Changes from v9 to v10 :
+*) Rebased the series on latest net-next.
+*) Moved 'ndev prueth->emac[mac] == emac' assignment to the end of function
+   prueth_netdev_init().
+*) In unsupported phy_mode switch case instead of returning -EINVAL, store
+   the error code in ret and 'goto free'
 
-Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
----
- drivers/usb/core/quirks.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes from v8 to v9 :
+*) Rebased the series on latest net-next.
+*) Fixed smatch and sparse warnings as pointed by Simon.
+*) Fixed leaky ndev in prueth_netdev_init() as asked by Simon.
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 934b3d997..15e9bd180 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -436,6 +436,10 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	/* novation SoundControl XL */
- 	{ USB_DEVICE(0x1235, 0x0061), .driver_info = USB_QUIRK_RESET_RESUME },
- 
-+	/* Focusrite Scarlett Solo USB */
-+	{ USB_DEVICE(0x1235, 0x8211), .driver_info =
-+			USB_QUIRK_DISCONNECT_SUSPEND },
-+
- 	/* Huawei 4G LTE module */
- 	{ USB_DEVICE(0x12d1, 0x15bb), .driver_info =
- 			USB_QUIRK_DISCONNECT_SUSPEND },
+Changes from v7 to v8 :
+*) Rebased the series on 6.5-rc1.
+*) Fixed few formattings. 
+
+Changes from v6 to v7 :
+*) Added RB tag of Rob in patch 1 of this series.
+*) Addressed Simon's comment on patch 2 of the series.
+*) Rebased patchset on next-20230428 linux-next.
+
+Changes from v5 to v6 :
+*) Added RB tag of Andrew Lunn in patch 2 of this series.
+*) Addressed Rob's comment on patch 1 of the series.
+*) Rebased patchset on next-20230421 linux-next.
+
+Changes from v4 to v5 :
+*) Re-arranged properties section in ti,icssg-prueth.yaml file.
+*) Added requirement for minimum one ethernet port.
+*) Fixed some minor formatting errors as asked by Krzysztof.
+*) Dropped SGMII mode from enum mii_mode as SGMII mode is not currently
+   supported by the driver.
+*) Added switch-case block to handle different phy modes by ICSSG driver.
+
+Changes from v3 to v4 :
+*) Addressed Krzysztof's comments and fixed dt_binding_check errors in 
+   patch 1/2.
+*) Added interrupt-extended property in ethernet-ports properties section.
+*) Fixed comments in file icssg_switch_map.h according to the Linux coding
+   style in patch 2/2. Added Documentation of structures in patch 2/2.
+
+Changes from v2 to v3 :
+*) Addressed Rob and Krzysztof's comments on patch 1 of this series.
+   Fixed indentation. Removed description and pinctrl section from 
+   ti,icssg-prueth.yaml file.
+*) Addressed Krzysztof, Paolo, Randy, Andrew and Christophe's comments on 
+   patch 2 of this seires.
+*) Fixed blanklines in Kconfig and Makefile. Changed structures to const 
+   as suggested by Krzysztof.
+*) Fixed while loop logic in emac_tx_complete_packets() API as suggested 
+   by Paolo. Previously in the loop's last iteration 'budget' was 0 and 
+   napi_consume_skb would wrongly assume the caller is not in NAPI context
+   Now, budget won't be zero in last iteration of loop. 
+*) Removed inline functions addr_to_da1() and addr_to_da0() as asked by 
+   Andrew.
+*) Added dev_err_probe() instead of dev_err() as suggested by Christophe.
+*) In ti,icssg-prueth.yaml file, in the patternProperties section of 
+   ethernet-ports, kept the port name as "port" instead of "ethernet-port" 
+   as all other drivers were using "port". Will change it if is compulsory 
+   to use "ethernet-port".
+
+[v1] https://lore.kernel.org/all/20220506052433.28087-1-p-mohan@ti.com/
+[v2] https://lore.kernel.org/all/20220531095108.21757-1-p-mohan@ti.com/
+[v3] https://lore.kernel.org/all/20221223110930.1337536-1-danishanwar@ti.com/
+[v4] https://lore.kernel.org/all/20230206060708.3574472-1-danishanwar@ti.com/
+[v5] https://lore.kernel.org/all/20230210114957.2667963-1-danishanwar@ti.com/
+[v6] https://lore.kernel.org/all/20230424053233.2338782-1-danishanwar@ti.com/
+[v7] https://lore.kernel.org/all/20230502061650.2716736-1-danishanwar@ti.com/
+[v8] https://lore.kernel.org/all/20230710053550.89160-1-danishanwar@ti.com/
+[v9] https://lore.kernel.org/all/20230714094432.1834489-1-danishanwar@ti.com/
+[v10] https://lore.kernel.org/all/20230719082755.3399424-1-danishanwar@ti.com/
+
+Thanks and Regards,
+Md Danish Anwar
+
+MD Danish Anwar (9):
+  net: ti: icssg-prueth: Add Firmware Interface for ICSSG Ethernet
+    driver.
+  net: ti: icssg-prueth: Add mii helper apis and macros
+  net: ti: icssg-prueth: Add Firmware config and classification APIs.
+  net: ti: icssg-prueth: Add icssg queues APIs and macros
+  dt-bindings: net: Add ICSSG Ethernet
+  net: ti: icssg-prueth: Add ICSSG Stats
+  net: ti: icssg-prueth: Add Standard network staticstics
+  net: ti: icssg-prueth: Add ethtool ops for ICSSG Ethernet driver
+  net: ti: icssg-prueth: Add Power management support
+
+Roger Quadros (1):
+  net: ti: icssg-prueth: Add ICSSG ethernet driver
+
+ .../bindings/net/ti,icssg-prueth.yaml         |  184 ++
+ drivers/net/ethernet/ti/Kconfig               |   13 +
+ drivers/net/ethernet/ti/Makefile              |    3 +
+ drivers/net/ethernet/ti/icssg_classifier.c    |  367 ++++
+ drivers/net/ethernet/ti/icssg_config.c        |  450 ++++
+ drivers/net/ethernet/ti/icssg_config.h        |  200 ++
+ drivers/net/ethernet/ti/icssg_ethtool.c       |  154 ++
+ drivers/net/ethernet/ti/icssg_mii_cfg.c       |  120 ++
+ drivers/net/ethernet/ti/icssg_mii_rt.h        |  151 ++
+ drivers/net/ethernet/ti/icssg_prueth.c        | 1919 +++++++++++++++++
+ drivers/net/ethernet/ti/icssg_prueth.h        |  259 +++
+ drivers/net/ethernet/ti/icssg_queues.c        |   38 +
+ drivers/net/ethernet/ti/icssg_stats.c         |   57 +
+ drivers/net/ethernet/ti/icssg_stats.h         |  158 ++
+ drivers/net/ethernet/ti/icssg_switch_map.h    |  234 ++
+ 15 files changed, 4307 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+ create mode 100644 drivers/net/ethernet/ti/icssg_classifier.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_config.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_config.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_ethtool.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_mii_cfg.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_mii_rt.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_prueth.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_prueth.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_queues.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_stats.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_stats.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_switch_map.h
+
 -- 
-2.38.3
+2.34.1
 
