@@ -2,140 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C10075FA07
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA8C75FA05
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjGXOkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S231253AbjGXOjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjGXOkB (ORCPT
+        with ESMTP id S230035AbjGXOjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:40:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B3E191
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690209556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4DnbSlRPxCAiRAkXuGQ4XsCVvGioPwgIXlHHcc4Hw+w=;
-        b=a8Ir3+a2Ovcgku1IJ4baAKkvjHBzoJqZCL0CrFwt1c6jD/qPZeWmdJUrqjRlRJTVVaXL4G
-        UpWbMDxDGC0iXD8ImXDWT2bUg/LMQC8T7pQAjZ/cszEYU8Wl0I3PZInt6GZTKR6cXm6Fuj
-        0pfmGntB3GO3QmeqcxyQU3a+9MzvlOg=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-630-BEAYBtboM3eBxa1fKg_kiw-1; Mon, 24 Jul 2023 10:39:14 -0400
-X-MC-Unique: BEAYBtboM3eBxa1fKg_kiw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 32E16280D21A;
-        Mon, 24 Jul 2023 14:39:14 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD1EE200BA63;
-        Mon, 24 Jul 2023 14:39:13 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Vishal Agrawal <vagrawal@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Waiman Long <longman@redhat.com>
-Subject: [PATCH] driver/base/cpu: Retry online operation if -EBUSY
-Date:   Mon, 24 Jul 2023 10:38:26 -0400
-Message-Id: <20230724143826.3996163-1-longman@redhat.com>
+        Mon, 24 Jul 2023 10:39:45 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA11E19C
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:39:42 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99b9421aaebso155109966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690209580; x=1690814380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FDCS4BThuikrxfZ3pVdXGKzBm4hBT5BkVcG2+9VDxdM=;
+        b=HeqltN6YysoNpPmF8jOq4BMenkVF/UoLLGTs2f73eDVL6RZGg995n4rlajiD4OwBuD
+         x0vh4COeuwAnTWyjIuPulyOqktMXVNRXkQvWwZ2l7X/x2xyzf/5z6rmKcfg7LEQUKape
+         g2rrI9p67ze5EjPEeChlbuzjserRkK4xiP6HA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690209580; x=1690814380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FDCS4BThuikrxfZ3pVdXGKzBm4hBT5BkVcG2+9VDxdM=;
+        b=NRlRTJtP66Kzjt4y2zxQgslx1xFt//MTS/kmJWjoZDB0XOM/058KEmbltaHaxiSyYm
+         CyH9zs84XWrrzQuW+mOA6wxGB97NS+3aYPD7HQuZlep233JnJt1QDEDxJ0r6SSYTrKvh
+         p25/1X53qleIphJlZOgOIhgghkBFRLEAADIcKxcUa49Ib2GFugO8LtQeUs5pdKMemuKO
+         0ZTCgDWBeJJ3uFflL6g8am9jzIA1tS++yLgd0yx0AlaHLuNuINgRfIxIYUiRMG3K/Syd
+         wqb2WgYcF1fLgWDS0W2sPIdtV6jkcU4emOg7GTZcZAyPfa9/X+KDgDoqGj+Difi4IywD
+         3mKQ==
+X-Gm-Message-State: ABy/qLYzwfuXr+qAYyYbi4yg0kdcaFvkGaNYfkFV4kDhcEAqEuiZXyvX
+        o2IWlZ9NW44PtlnZMBaUEmaznMH/zbpoBGuFwMaSBg==
+X-Google-Smtp-Source: APBJJlE0zUZ7/H33uBPyJRFhIz1QyaXjiJwtFyZumY0VqAzl+PAYgjNUtMvdni5ppE3UlH/+Fep0Bw==
+X-Received: by 2002:a17:907:771a:b0:993:d617:bdc5 with SMTP id kw26-20020a170907771a00b00993d617bdc5mr9486318ejc.37.1690209579912;
+        Mon, 24 Jul 2023 07:39:39 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id k17-20020a170906681100b00997d7aa59fasm6911354ejr.14.2023.07.24.07.39.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 07:39:39 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so15318a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:39:39 -0700 (PDT)
+X-Received: by 2002:a50:ab56:0:b0:51e:5773:891d with SMTP id
+ t22-20020a50ab56000000b0051e5773891dmr168221edc.4.1690209578716; Mon, 24 Jul
+ 2023 07:39:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+References: <D98ED975-F617-4885-8D3F-DCFDC524E933@oracle.com>
+In-Reply-To: <D98ED975-F617-4885-8D3F-DCFDC524E933@oracle.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 24 Jul 2023 07:39:26 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VuJZNirf1DtcE_d8-aBRb9O_fYk_r252WCzC-YHwYnbg@mail.gmail.com>
+Message-ID: <CAD=FV=VuJZNirf1DtcE_d8-aBRb9O_fYk_r252WCzC-YHwYnbg@mail.gmail.com>
+Subject: Re: VM Boot Hangs with Commit "Revert "scsi: core: run queue if SCSI
+ device queue isn't ready and queue is idle"" on linux-5.4.y
+To:     Sherry Yang <sherry.yang@oracle.com>
+Cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting the kernel with "maxcpus=1" is a common technique for CPU
-partitioning and isolation. It delays the CPU bringup process until
-when the bootup scripts are ready to bring CPUs online by writing 1 to
-/sys/device/system/cpu/cpu<X>/online. However, it was found that not
-all the CPUs were online after bootup. The collection of offline CPUs
-are different after every reboot.
+Hi,
 
-Further investigation reveals that some "online" write operations
-fail with an -EBUSY error. This error is returned when CPU hotplug is
-temporiarly disabled when cpu_hotplug_disable() is called.
+On Sun, Jul 23, 2023 at 10:28=E2=80=AFPM Sherry Yang <sherry.yang@oracle.co=
+m> wrote:
+>
+> Hi Douglas,
+>
+> We observed linux-stable v5.4 VM boot hangs, but probably only 1 in thous=
+ands of boots (less than 10,000 boots).  We started 16 VMs on a Bare Metal =
+with loop reboots, I chose 10,000 boots as a threshold, and bisected it. Af=
+ter a painful bisection, I found the culprit commit 578c8f09c04b (=E2=80=9C=
+Revert scsi: core: run queue if SCSI device queue isnt ready and queue is i=
+dle=E2=80=9D). This commit actually was merged to v5.8 the 1st time. It's a=
+ series of patch set (https://www.spinics.net/lists/linux-block/msg51866.ht=
+ml). Actually, in the 4-patch series, 2 of them have already been backporte=
+d to linux-stable v5.4, but not at the same time:
+>
+> 1) ab3cee3762e5 (=E2=80=9Cblk-mq: In blk_mq_dispatch_rq_list() no budget =
+is a reason to kick=E2=80=9D) in tag v5.4.86
+> 2) 578c8f09c04b (=E2=80=9CRevert scsi: core: run queue if SCSI device que=
+ue isnt ready and queue is idle=E2=80=9D) in tag v5.4.235, it=E2=80=99s bac=
+kported as stable dependency for another commit
+>
+>         Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>         Reviewed-by: Ming Lei <ming.lei@redhat.com>
+>         Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+>         Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>         Stable-dep-of: c31e76bcc379 ("blk-mq: remove stale comment for bl=
+k_mq_sched_mark_restart_hctx=E2=80=9D)
+>         Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+> And I tried backporting the other 2 patches to v5.4, the issue is still r=
+eproducible.
+>
+> I tested multiple kernels, the issue is not reproducible within 10,000 bo=
+ots in the following kernels:
+> 1) Linux v5.9
+> 2) Linux v5.4.249 + revert of 578c8f09c04b (=E2=80=9CRevert scsi: core: r=
+un queue if SCSI device queue isnt ready and queue is idle=E2=80=9D)
+>
+> Not exactly sure how this commit is affecting linux-stable v5.4, but I su=
+spect some prerequisite commits are missing which lead to boot hangs on lin=
+ux-stable v5.4 but not on higher releases. Could you take a look at this is=
+sue and share your insight?
 
-During bootup, the main caller of cpu_hotplug_disable() is
-pci_call_probe() for PCI device initialization. By measuring the times
-spent with cpu_hotplug_disabled set in a typical 2-socket server, most
-of them last less than 10ms.  However, there are a few that can last
-hundreds of ms. Note that the cpu_hotplug_disabled period of different
-devices can overlap leading to longer cpu_hotplug_disabled hold time.
+Ugh, I spent many days pouring over the code and digging through debug
+traces in order to write those patches. I don't think I'd be able to
+give any concrete advice without spending many days and being able to
+reproduce multiple times with traces since pretty much any knowledge I
+learned during the course of developing those patches has decayed over
+the last several years. :( I don't happen to know any dependencies
+offhand...
 
-Since the CPU hotplug disable condition is transient and it is not
-that easy to modify all the existing bootup scripts to handle this
-condition, the kernel can help by retrying the online operation when
-an -EBUSY error is returned. This patch retries the online operation
-in cpu_subsys_online() when an -EBUSY error is returned for up to 5
-times after an exponentially increasing delay that can last a total of
-at least 620ms of waiting time by calling msleep().
+That being said, it seems like:
 
-With this patch in place, booting up the patched kernel with "maxcpus=1"
-does not leave any CPU in an offline state in 10 reboot attempts.
+1. Backporting the revert (the 4th patch in the series) without all
+the other patches in the series feels wrong. In the text of the revert
+I explicitly refer to the other patches in the series as
+prerequisites. I guess you said you tried backporting the other two
+patches and they didn't help, though? That's no good. :(
 
-Reported-by: Vishal Agrawal <vagrawal@redhat.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- drivers/base/cpu.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+2. I don't think the revert is actually important to backport to
+stable. While the first 3 patches were important to fix the problems I
+was seeing, the revert was just a cleanup. If the revert is causing
+problems in 5.4.x then I'd suggest removing it from 5.4.x
 
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index c1815b9dae68..4b828f54f9f4 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -19,6 +19,7 @@
- #include <linux/cpufeature.h>
- #include <linux/tick.h>
- #include <linux/pm_qos.h>
-+#include <linux/delay.h>
- #include <linux/sched/isolation.h>
- 
- #include "base.h"
-@@ -50,12 +51,30 @@ static int cpu_subsys_online(struct device *dev)
- 	int cpuid = dev->id;
- 	int from_nid, to_nid;
- 	int ret;
-+	int retries = 0;
- 
- 	from_nid = cpu_to_node(cpuid);
- 	if (from_nid == NUMA_NO_NODE)
- 		return -ENODEV;
- 
-+retry:
- 	ret = cpu_device_up(dev);
-+
-+	/*
-+	 * If -EBUSY is returned, it is likely that hotplug is temporarily
-+	 * disabled when cpu_hotplug_disable() was called. This condition is
-+	 * transient. So we retry after waiting for an exponentially
-+	 * increasing delay up to a total of at least 620ms as some PCI
-+	 * device initialization can take quite a while.
-+	 */
-+	if (ret == -EBUSY) {
-+		retries++;
-+		if (retries > 5)
-+			return ret;
-+		msleep(10 * (1 << retries));
-+		goto retry;
-+	}
-+
- 	/*
- 	 * When hot adding memory to memoryless node and enabling a cpu
- 	 * on the node, node number of the cpu may internally change.
--- 
-2.31.1
+Does that make sense? So ideally you'd submit 3 patches to the stable kerne=
+l:
 
+a) Revert the revert
+
+b) Pick ("blk-mq: Add blk_mq_delay_run_hw_queues() API call")
+
+c) Pick ("blk-mq: Rerun dispatching in the case of budget contention")
+
+
+FWIW, we seem to have all 4 patches in the ChromeOS 5.4 kernel tree.
+They all landed together plus 1 prerequisite.
+
+* https://crrev.com/c/2155423 - FROMGIT: Revert "scsi: core: run queue
+if SCSI device queue isn't ready and queue is idle"
+* https://crrev.com/c/2133069 - FROMGIT: blk-mq: Rerun dispatching in
+the case of budget contention
+* https://crrev.com/c/2155422 - FROMGIT: blk-mq: Add
+blk_mq_delay_run_hw_queues() API call
+* https://crrev.com/c/2125232 - FROMGIT: blk-mq: In
+blk_mq_dispatch_rq_list() "no budget" is a reason to kick
+* https://crrev.com/c/2155421 - UPSTREAM: blk-mq: Put driver tag in
+blk_mq_dispatch_rq_list() when no budget
+
+When I saw the prerequisite in there I was hopeful that it was the one
+you needed, but it looks like that's already in 5.4 stable so (I
+presume) you've already been testing with it...
+
+-Doug
