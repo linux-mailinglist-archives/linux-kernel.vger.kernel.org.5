@@ -2,221 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E0975FB84
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F154175FB87
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjGXQKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S230250AbjGXQLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjGXQKn (ORCPT
+        with ESMTP id S229896AbjGXQLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:10:43 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95490FB
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:10:41 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-316feb137a7so4073452f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:10:41 -0700 (PDT)
+        Mon, 24 Jul 2023 12:11:05 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF29D10E5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:11:02 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so8351a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:11:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1690215040; x=1690819840;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Y0ePfpLHsLvA3LfGul9O3USPQ92wmh4hBVoBqYkITbA=;
-        b=baPcpJ+erRuKdzS8TuDymaNBSQviHDjHyttsODiBtxowlIjsFdwQfRyvn/PLBKAz4s
-         YOnTf69aisYobx/r8ylUDbWusu+RU5VvMPrMOwtQMWFXvtpCc5h5ZJMWkoJA1320TV+x
-         UwXQa+Hw57bUPYTFtvul+gr6nzg+40uQI1/SBlEECdO/1cY6Zi4DRWEXaVDFGh9EVYzp
-         5447RaWcJcCfiKj9LbVwpUE6drENT7L7TXCa0d0akiDfVpTnf/2AkPPmL8S1tR10cYLr
-         wJEklr1G01dmQsSkLuv0PZgvK+ZWxUOCs4wZd+IBG7+dL2NK65muL/kjTRtwEubPNMlD
-         jdnQ==
+        d=google.com; s=20221208; t=1690215061; x=1690819861;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u3kbNyGxTzgeac58CFsNMUin81+ND8D8Z3uhWh4woO8=;
+        b=tigo2h0UJbLSdNBggb8+yka3tLWlOxt9O4d6NIR4mh9iEiIf1en0sl8VXgCF7R+a/t
+         tT7LAnPTQCFRJoo0KWqoqyRU9MAHIoPOGygj1DT5qhRnO0ELBnXIh5zBzmwOe5dznmpR
+         oK2ugIQjvmAQRczWo4nzF8BFniwOIxp8Ob3QNgni7FEXBDJPkhRsjBlyvf+2pOpfyScy
+         U2GCJzaS3tue+rOz+Sz9IInuWpFJ7fOOQw2hFvT1311EWcKQhsxRHWi26As9g75IdYr+
+         ayHwpRltXX4GhBn6/blJt9V95VxuAayWW8bx5GgGtHMzMjrA98jhAVUaJyPI8/gpIiuw
+         u1CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690215040; x=1690819840;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0ePfpLHsLvA3LfGul9O3USPQ92wmh4hBVoBqYkITbA=;
-        b=Ax6qhz04vssVks3TLz0mIMpJ7SA+rWFDvne0nIS+/pWSxjmuyU48huxyDCPgUpyQ22
-         jDgRf4b7D6iS/sGneRs4PX5U0nHDJ0onPcFgxQQ66zW46zd+KY6fPOiEw4XqiDPJaoA0
-         D+nn1jAgG8cJHFq4u+Q47u18Ohu51qJyQjCnL1U1VjrMLr31TqJWunTxQiqJjrHUacYg
-         hbjyMiIqPg/EU27Lmki/fBBKfHI3jxPovtTpHJhTvJRTxwVDTfmIawI/ghhIso8o6RWx
-         V1SHYMLgB7h2oilwQOMpc1cf5UkpRfsK55Bv0yf4qkKmGAqyVctNzhKqud7vD3cFUjKB
-         oJCg==
-X-Gm-Message-State: ABy/qLaZPf5/eBJrrmP3sEr6TooeTfTa04EzJyDz8q32YSYWbuH08Cj+
-        M8nPWp8Q2oDMX/7LRAFO5M9noA==
-X-Google-Smtp-Source: APBJJlEfToB3aDAY2GwihmCwh7VhKIztFZHKmksHbQxCDx02HMMgOd5UMZmg2DtfF6KFjHwnrx3p0g==
-X-Received: by 2002:adf:f092:0:b0:317:5ece:e16a with SMTP id n18-20020adff092000000b003175ecee16amr2532746wro.50.1690215040041;
-        Mon, 24 Jul 2023 09:10:40 -0700 (PDT)
-Received: from airbuntu (host86-163-217-97.range86-163.btcentralplus.com. [86.163.217.97])
-        by smtp.gmail.com with ESMTPSA id f3-20020a0560001b0300b0030e52d4c1bcsm13442769wrz.71.2023.07.24.09.10.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 09:10:39 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 17:10:38 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in
- load balance
-Message-ID: <20230724161038.nreywdwayiq2ypty@airbuntu>
-References: <20230716014125.139577-1-qyousef@layalina.io>
- <ZLaKFFjY6NWaJdOq@vingu-book>
- <20230718161829.ws3vn3ufnod6kpxh@airbuntu>
- <CAKfTPtA55NemHq0tZPuiEN=c3DRZWD-7jf7ZrKdHE9y9b_szZg@mail.gmail.com>
- <20230718172522.s4gcfx3ppljwbks7@airbuntu>
- <CAKfTPtA6s82qXWOSdd6eNu__z_HZe9U_F0+RcBJj=PVKT7go7A@mail.gmail.com>
- <20230721105711.nzunqdtdaevmrgyg@airbuntu>
- <ZLqNmpQdiTC2fio5@vingu-book>
- <20230721220430.qv6eqo4dosfrsilo@airbuntu>
- <c31e5667-19b1-33a4-d1f1-a88907e239d3@arm.com>
+        d=1e100.net; s=20221208; t=1690215061; x=1690819861;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u3kbNyGxTzgeac58CFsNMUin81+ND8D8Z3uhWh4woO8=;
+        b=knYkoLN9mUPfjVOIoaiTRKfiCmlsaSgdK5lBgTUZ7PkQJU96sgnvFZ4nGNQT6V3dYC
+         E2TIscb3ay8bIqm+flWYcc8e+Q+Gw/25ED7m4EALLO17P9etFa/ejU45v3eWzilK/W6Y
+         qqMaB4tYdHzgcWkQDRYjv8cjbuC32LU37R32/30tgp2faQy+1MF9oG2JV3/C4E2ARru6
+         hPM5slMC7bNWvr1Lb2Pkim6tLYqxfAc0r3+Xg5T1cutko+vNRBex7mF88rQw1VJGZieE
+         3n/FUNDAV2sVsHOjh1VFiEpsXozmPtD8+xNVkXcQ5pUoLMGIwWqd2NZEY/zymjiKsyFu
+         PN+w==
+X-Gm-Message-State: ABy/qLbbAHR5M6w+DMbhg3JndSgHF/urAiay4VDEdVNzjQxwmkTHIV6X
+        J3NullEUQDue4emFo8MmGTZNosIFnjmGIZPwaYdsVg==
+X-Google-Smtp-Source: APBJJlF8bHvRHeT2oqat2ATehlhxW6USprsvQrLWXhzWPyCpmacj5+zK0woo1RH6qpDsIl+dtTSAFcyumUKkKtf+1lM=
+X-Received: by 2002:a50:d798:0:b0:522:28a1:2095 with SMTP id
+ w24-20020a50d798000000b0052228a12095mr116981edi.3.1690215061016; Mon, 24 Jul
+ 2023 09:11:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c31e5667-19b1-33a4-d1f1-a88907e239d3@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230713101415.108875-6-usama.anjum@collabora.com>
+ <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+ <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com> <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
+ <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com> <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
+ <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com> <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
+ <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
+In-Reply-To: <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
+From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+Date:   Mon, 24 Jul 2023 18:10:49 +0200
+Message-ID: <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
+Subject: Re: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/24/23 14:58, Dietmar Eggemann wrote:
-> On 22/07/2023 00:04, Qais Yousef wrote:
-> > On 07/21/23 15:52, Vincent Guittot wrote:
-> >> Le vendredi 21 juil. 2023 à 11:57:11 (+0100), Qais Yousef a écrit :
-> >>> On 07/20/23 14:31, Vincent Guittot wrote:
-> >>>
-> >>>> I was trying to reproduce the behavior but I was failing until I
-> >>>> realized that this code path is used when the 2 groups are not sharing
-> >>>> their cache. Which topology do you use ? I thought that dynamiQ and
-> >>>> shares cache between all 8 cpus was the norm for arm64 embedded device
-> >>>> now
-> >>>
-> >>> Hmm good question. phantom domains didn't die which I think is what causing
-> >>> this. I can look if this is for a good reason or just historical artifact.
-> >>>
-> >>>>
-> >>>> Also when you say "the little cluster capacity is very small nowadays
-> >>>> (around 200 or less)", it is the capacity of 1 core or the cluster ?
-> >>>
-> >>> I meant one core. So in my case all the littles were busy except for one that
-> >>> was mostly idle and never pulled a task from mid where two tasks were stuck on
-> >>> a CPU there. And the logs I have added were showing me that the env->imbalance
-> >>> was on 150+ range but the task we pull was in the 350+ range.
+On Mon, 24 Jul 2023 at 17:22, Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> On 7/24/23 7:38=E2=80=AFPM, Micha=C5=82 Miros=C5=82aw wrote:
+> > On Mon, 24 Jul 2023 at 16:04, Muhammad Usama Anjum
+> > <usama.anjum@collabora.com> wrote:
 > >>
-> >> I'm not able to reproduce your problem with v6.5-rc2 and without phantom domain,
-> >> which is expected because we share cache and weight is 1 so we use the path
+> >> Fixed found bugs. Testing it further.
 > >>
-> >> 		if (busiest->group_weight == 1 || sds->prefer_sibling) {
-> >> 			/*
-> >> 			 * When prefer sibling, evenly spread running tasks on
-> >> 			 * groups.
-> >> 			 */
-> >> 			env->migration_type = migrate_task;
-> >> 			env->imbalance = sibling_imbalance(env, sds, busiest, local);
-> >> 		} else {
+> >> - Split and backoff in case buffer full case as well
+> >> - Fix the wrong breaking of loop if page isn't interesting, skip intea=
+d
+> >> - Untag the address and save them into struct
+> >> - Round off the end address to next page
 > >>
-> > 
-> > I missed the deps on topology. So yes you're right, this needs to be addressed
-> > first. I seem to remember Sudeep merged some stuff that will flatten these
-> > topologies.
-> > 
-> > Let me chase this topology thing out first.
-> 
-> Sudeeps patches align topology cpumasks with cache cpumasks.
-> 
-> tip/sched/core:
-> 
-> root@juno:~# cat /sys/devices/system/cpu/cpu*/topology/package_cpus
-> 3f
-> 3f
-> 3f
-> 3f
-> 3f
-> 3f
-> 
-> v5.9:
-> 
-> root@juno:~# cat /sys/devices/system/cpu/cpu*/topology/package_cpus
-> 39
-> 06
-> 06
-> 39
-> 39
-> 39
-> 
-> So Android userspace won't be able to detect uArch boundaries via
-> `package_cpus` any longer.
-> 
-> The phantom domain (DIE) in Android is a legacy decision from within
-> Android. Pre-mainline Energy Model was attached to the sched domain
-> topology hierarchy. And then IMHO other Android functionality start to
-> rely on this. It could be removed regardless of Sudeeps patches in case
-> Android would be OK with it.
-> 
-> The phantom domain is probably set up via DT cpu_map entry:
-> 
-> cpu-map {
->   cluster0 { <-- enforce phantom domain
->     core0 {
->       cpu = <&CPU0>;
->     };
-> ...
->     core3 {
->       cpu = <&CPU1>;
->     };
->   cluster1 {
-> ...
-> 
-> Juno (arch/arm64/boot/dts/arm/juno.dts) also uses cpu-map to enforce
-> uarch boundaries on DIE group boundary congruence.
-> 
-> tip/sched/core:
-> 
-> # cat /proc/schedstat | awk '{ print $1 " " $2}' | head -5
-> ...
-> cpu0 0
-> domain0 39
-> domain1 3f
-> 
-> v5.9:
-> 
-> # cat /proc/schedstat | awk '{ print $1 " " $2}' | head -5
-> ...
-> cpu0 0
-> domain0 39
-> domain1 3f
-> 
-> We had a talk at LPC '22 about the influence of the patch-set and the
-> phantom domain legacy issue:
-> 
-> https://lpc.events/event/16/contributions/1342/attachments/962/1883/LPC-2022-Android-MC-Phantom-Domains.pdf
-> 
-> [...]
+> >> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> >> ---
+> >>  fs/proc/task_mmu.c | 54 ++++++++++++++++++++++++++-------------------=
+-
+> >>  1 file changed, 31 insertions(+), 23 deletions(-)
+> >>
+> >> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> >> index add21fdf3c9a..64b326d0ec6d 100644
+> >> --- a/fs/proc/task_mmu.c
+> >> +++ b/fs/proc/task_mmu.c
+> >> @@ -2044,7 +2050,7 @@ static int pagemap_scan_thp_entry(pmd_t *pmd,
+> >> unsigned long start,
+> >>          * Break huge page into small pages if the WP operation
+> >>          * need to be performed is on a portion of the huge page.
+> >>          */
+> >> -       if (end !=3D start + HPAGE_SIZE) {
+> >> +       if (end !=3D start + HPAGE_SIZE || ret =3D=3D -ENOSPC) {
+> >
+> > Why is it needed? If `end =3D=3D start + HPAGE_SIZE` then we're handlin=
+g a
+> > full hugepage anyway.
+> If we weren't able to add the complete thp in the output buffer and we ne=
+ed
+> to perform WP on the entire page, we should split and rollback. Otherwise
+> we'll WP the entire thp and we'll lose the state on the remaining THP whi=
+ch
+> wasn't added to output.
+>
+> Lets say max=3D100
+> only 100 pages would be added to output
+> we need to split and rollback otherwise other 412 pages would get WP
 
-Thanks Dietmar!
+In this case *end will be truncated by output() to match the number of
+pages that fit.
 
-So I actually moved everything to a single cluster and this indeed solves the
-lb() issue. But then when I tried to look at DT mainline I saw that the DTs
-still define separate cluster for each uArch, and this got me confused whether
-I did the right thing or not. And made me wonder whether the fix is to change
-DT or port Sudeep's/Ionela's patch?
+> >> @@ -2066,8 +2072,8 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd,
+> >> unsigned long start,
+> >>  {
+> >>         struct pagemap_scan_private *p =3D walk->private;
+> >>         struct vm_area_struct *vma =3D walk->vma;
+> >> +       unsigned long addr, categories, next;
+> >>         pte_t *pte, *start_pte;
+> >> -       unsigned long addr;
+> >>         bool flush =3D false;
+> >>         spinlock_t *ptl;
+> >>         int ret;
+> >> @@ -2088,12 +2094,14 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd,
+> >> unsigned long start,
+> >>         }
+> >>
+> >>         for (addr =3D start; addr !=3D end; pte++, addr +=3D PAGE_SIZE=
+) {
+> >> -               unsigned long categories =3D p->cur_vma_category |
+> >> -                       pagemap_page_category(vma, addr, ptep_get(pte)=
+);
+> >> -               unsigned long next =3D addr + PAGE_SIZE;
+> >> +               categories =3D p->cur_vma_category |
+> >> +                            pagemap_page_category(vma, addr, ptep_get=
+(pte));
+> >> +               next =3D addr + PAGE_SIZE;
+> >
+> > Why moving the variable declarations out of the loop?
+> Saving spaces inside loop. What are pros of declation of variable in loop=
+?
 
-I did some digging and I think the DT, like the ones in mainline by the look of
-it, stayed the way it was historically defined.
+Informing the reader that the variables have scope limited to the loop body=
+.
 
-So IIUC the impacts are on system pre-simplified EM (should have been phased
-out AFAIK). And on different presentation on sysfs topology which can
-potentially break userspace deps, right? I think this is not a problem too, but
-can be famous last words as usual :-)
+[...]
+> >> @@ -2219,22 +2225,24 @@ static int pagemap_scan_get_args(struct pm_sca=
+n_arg
+> >> *arg,
+> >>              arg->category_anyof_mask | arg->return_mask) & ~PM_SCAN_C=
+ATEGORIES)
+> >>                 return -EINVAL;
+> >>
+> >> -       start =3D untagged_addr((unsigned long)arg->start);
+> >> -       end =3D untagged_addr((unsigned long)arg->end);
+> >> -       vec =3D untagged_addr((unsigned long)arg->vec);
+> >> +       arg->start =3D untagged_addr((unsigned long)arg->start);
+> >> +       arg->end =3D untagged_addr((unsigned long)arg->end);
+> >> +       arg->vec =3D untagged_addr((unsigned long)arg->vec);
+> >
+> > BTW, We should we keep the tag in args writeback().
+> Sorry what?
+> After this function, the start, end and vec would be used. We need to mak=
+e
+> sure that the address are untagged before that.
 
+We do write back the address the walk ended at to arg->start in
+userspace. This pointer I think needs the tag reconstructed so that
+retrying the ioctl() will be possible.
 
-Thanks
-
---
-Qais Yousef
-
+ Best Regards
+Micha=C5=82 Miros=C5=82aw
