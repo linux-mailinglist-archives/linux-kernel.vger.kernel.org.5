@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0A675F3A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BDA75F3BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjGXKlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S232282AbjGXKqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbjGXKlU (ORCPT
+        with ESMTP id S230052AbjGXKqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:41:20 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2989107;
-        Mon, 24 Jul 2023 03:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1690195276; x=1721731276;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OURxuQskE7K3r2Yh/wCDQ09pFOr0qamiXk2zVI9QFoQ=;
-  b=S8do5/17YTjmzMI5OMFw/wYcKh51F5lrBHwRUGDmvSYOI21Qj9sgPVkx
-   a5AyE1mROFG3+HGOelIal5OPG2h6LfNSjdr1Rud1McAhAYJLu58uSzE9y
-   RXh5glyy84SC8VsmTBUdHM0J3iNqg7Ht53JJQ038cui6k4fPdsUwXW2vR
-   7cow2AobvHHTUGq44kQitfIDE8D9IJL2QZFMK5XMMyjlb1+cID9ytR+VP
-   y+EbKZTpLjYq1dkbweN9FH1fXNVMMeb6zn0wdBGxRn3e/7+VZ0vEOqqPR
-   mniWIMLWViExyJnymy+230jUw0mdPJVMzy4K+vMGnAUlwAcrg5yrKzMPc
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,228,1684792800"; 
-   d="scan'208";a="32078528"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Jul 2023 12:41:09 +0200
-Received: from localhost.localdomain (SCHIFFERM-M2.tq-net.de [10.121.49.20])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id E1D1328008A;
-        Mon, 24 Jul 2023 12:41:08 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 3/3] arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add SD-card and WLAN overlays
-Date:   Mon, 24 Jul 2023 12:40:50 +0200
-Message-Id: <adacb622f5cf026775c988cdedb812d23152b3c8.1690195151.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <867f55a4ac865b979fa58a8828e0d0cade619843.1690195151.git.matthias.schiffer@ew.tq-group.com>
-References: <867f55a4ac865b979fa58a8828e0d0cade619843.1690195151.git.matthias.schiffer@ew.tq-group.com>
+        Mon, 24 Jul 2023 06:46:14 -0400
+Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD0E10D;
+        Mon, 24 Jul 2023 03:46:05 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 8EFF720163.A685F
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:143:242:ac11:20])
+        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 8EFF720163;
+        Mon, 24 Jul 2023 12:46:01 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1690195561;
+        bh=bmJX1BVbtQUmyZepRqtuaofYw/TV9rsroQnINR+UbRc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=L+fHFFq+ORFvP3Zp9iCZkP3bVeLslww77mHENtzqBxgpo+JbMk2uajQCQ7dAvt3rP
+         gtAMXlxxcwY1U2NMB+Up6TRVB+Hp47EWP63woL9zrR8lKSDgJ7+NyvN96z/SmQ1V0V
+         NUaAWq4APTvovhsNZ3PNertBolJ/thn/s5nlBrFo=
+Received: from [192.33.197.126] (eduroam-269-1-126.epfl.ch [192.33.197.126])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 54B78D4E67DD5;
+        Mon, 24 Jul 2023 12:46:01 +0200 (CEST)
+Message-ID: <707e662f-5aed-ef86-a2e3-dda3959d6f7d@cs.kuleuven.be>
+Date:   Mon, 24 Jul 2023 12:46:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/4] selftests/sgx: Harden test enclave
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com
+References: <20230719142500.13623-1-jo.vanbulck@cs.kuleuven.be>
+ <CU76BC9V7H3Z.TQ3L8AZY1WD@suppilovahvero>
+ <a6e26927-acb0-c967-10c4-90a41d9a8cad@cs.kuleuven.be>
+ <CU8WIZGB01DT.2YX12UG6QRTA@seitikki>
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <CU8WIZGB01DT.2YX12UG6QRTA@seitikki>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the SD-card and WLAN are connected to the same SDHC interface (with a
-GPIO-controlled mux), they are mutually exclusive. Provide Device Tree
-overlays for both configurations.
+On 22.07.23 20:10, Jarkko Sakkinen wrote:
+> This code is not meant for production. I implemented it specifically for
+> kselftest, and that is exactly its scope.
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+I see, makes sense. As per Dave's suggestion, I'll see if I can submit a 
+proposed minimal patch to remove any existing sanitization code that is 
+not necessary for kselftest (eg register cleansing) and avoid any 
+misguided impressions of the test enclave being representative.
 
-v2: no changes
+> I'm not sure what is "correct" behavior in the context of a kselftest
+> instance.
 
- arch/arm64/boot/dts/ti/Makefile               |  8 +++++++
- .../ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso | 22 +++++++++++++++++++
- .../ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso   | 22 +++++++++++++++++++
- 3 files changed, 52 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
+True. But at least when defining "correct" as passing the selftests, 
+then I think it makes sense to merge the compiler optimization fixes. As 
+the existing code clearly emits wrong assembly that breaks the selftests 
+when switching optimization levels (which may always also be 
+incorporated by default in future gcc versions or other compilers like 
+clang).
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 7dbd8a9c02225..24ea0e78dd3b9 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -29,6 +29,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
- 
-+k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-+k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-+
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
-new file mode 100644
-index 0000000000000..79ed19c6c0e90
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 TQ-Systems GmbH <linux@ew.tq-group.com>, D-82229 Seefeld, Germany.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&sdhci1 {
-+	vmmc-supply = <&reg_sd>;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	line43-hog {
-+		gpio-hog;
-+		gpios = <43 0>;
-+		line-name = "MMC1_CTRL";
-+		output-low;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
-new file mode 100644
-index 0000000000000..32596a84b7ba1
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 TQ-Systems GmbH <linux@ew.tq-group.com>, D-82229 Seefeld, Germany.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&sdhci1 {
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	no-sd;
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	line43-hog {
-+		gpio-hog;
-+		gpios = <43 0>;
-+		line-name = "MMC1_CTRL";
-+		output-high;
-+	};
-+};
--- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
+Thus, I'll separate this out and submit another patch to ensure 
+correctness with compiler optimizations only.
 
+Best,
+Jo
