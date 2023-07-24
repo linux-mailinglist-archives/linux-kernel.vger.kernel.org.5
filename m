@@ -2,176 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D7F75ECB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2466275ECB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbjGXHqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
+        id S231266AbjGXHqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjGXHqc (ORCPT
+        with ESMTP id S231145AbjGXHqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:46:32 -0400
-Received: from codesynthesis.com (codesynthesis.com [188.40.148.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D283B1A1;
-        Mon, 24 Jul 2023 00:46:29 -0700 (PDT)
-Received: from brak.codesynthesis.com (unknown [105.186.254.141])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by codesynthesis.com (Postfix) with ESMTPSA id 53D2F60C42;
-        Mon, 24 Jul 2023 07:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
-        s=mail1; t=1690184788;
-        bh=7CFLrGViKFLB/jakDjumlAZwdK59THEMB4BbQvsu0TU=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:From;
-        b=GMCA4tJ5+604QBJzpk4MgmSeMI4Zb/pgMSZSAu9JEjUArXkHPDU4o/uSdF3NBtZGq
-         O1v4uoyJoZMAXgHmOTdkQdqgB6pHwTLBqZe8mMNv1/yghnXAyfXxX54b6PsvMF4aoV
-         Cq+HAM/eJ+e1nMPwUcNT/HiGkxlKeDF7xPN8LGMfxn/wbZ6lJPWWJd9cNBakT1BdBs
-         HyZqh+zyGyCpb/MuUwnW1A22qgHB/YrOTk3NpjpRkQ+F8uttdZ7RjojHh4aIMg0csT
-         /GZUoePM5in/o1EOyJCGVGq2JGjxsP7NHaQdDxr6BQbnKtgMOZ3Py4bGyxA9li97J4
-         i8pWnykvopoFA==
-Received: by brak.codesynthesis.com (Postfix, from userid 1000)
-        id 575B4142D4E; Mon, 24 Jul 2023 09:46:54 +0200 (SAST)
-From:   Boris Kolpackov <boris@codesynthesis.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Boris Kolpackov <boris@codesynthesis.com>
-Subject: [PATCH 1/1] kconfig: port qconf to work with Qt6 in addition to Qt5
-Date:   Mon, 24 Jul 2023 09:46:25 +0200
-Message-Id: <20230724074625.458456-2-boris@codesynthesis.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230724074625.458456-1-boris@codesynthesis.com>
-References: <20230724074625.458456-1-boris@codesynthesis.com>
+        Mon, 24 Jul 2023 03:46:45 -0400
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C91E43
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:46:39 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-3fa86b08efcso8091935e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:46:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690184797; x=1690789597;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VXQxRuD8J7RHydWYdts0LDcLZy5e3i/QIlpY808Udx4=;
+        b=kkHioyGjCBeWh4sH7+zFgcZVBZ7hOBMU7GLS2qeH55Xcl34+lpdzkJFl5bgJTRfx/K
+         2nEk9wu2pztnjrZ0PUYAKz67FOVcf5nulRZOpRC9ObjikDMkiUn/W3nXU120AKFGx9nx
+         wy2OeXqXN1t7DEXQkTjYzjUi8diKZBWbEzcqiPVdANRzJQ/2WDhUl4b14SWfhb4YyvPn
+         B7MHQhLRd1qJ1OAW883JA9naT0DcDEtgADXWoRvvl0lpV67/WYYn+Ir85oUlHYMrgO2e
+         O8P5OgvAgjuxbkurijaY8kjKdsH+4b1W+OLKEVwLH/cGNmERa+sIUoZYIwvVssZDLdeZ
+         m8fA==
+X-Gm-Message-State: ABy/qLa4u+pvapPCymtkjvcY1t4Fmqs6UVoulYYLolX9hmsLUpRQPIJJ
+        VUmKvtL5UJWPXN22RCVIHUz0I54HOhI=
+X-Google-Smtp-Source: APBJJlHVjb6OjzXn+nznEqYiOlBN2rZAzojWF+Z29xx7p/sURSAURyBJG7EsZwds0jMPqwjYVJQQ1w==
+X-Received: by 2002:a05:600c:3b05:b0:3f9:88d:9518 with SMTP id m5-20020a05600c3b0500b003f9088d9518mr7657174wms.0.1690184797014;
+        Mon, 24 Jul 2023 00:46:37 -0700 (PDT)
+Received: from [192.168.64.192] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id k22-20020a7bc316000000b003fd2d33ea53sm5361223wmj.14.2023.07.24.00.46.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 00:46:36 -0700 (PDT)
+Message-ID: <840cdf34-f38e-ab37-623f-9744c3436350@grimberg.me>
+Date:   Mon, 24 Jul 2023 10:46:34 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256)
+ exceeds limit (2048) in 'nvme_tcp_recv_skb'
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Varun Prakash <varun@chelsio.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+References: <202307201141.PYWS6ird-lkp@intel.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <202307201141.PYWS6ird-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested with Qt5 5.15 and Qt6 6.4. Note that earlier versions of Qt5
-are no longer guaranteed to work.
 
-Signed-off-by: Boris Kolpackov <boris@codesynthesis.com>
----
- scripts/kconfig/qconf.cc | 40 ++++++++++++++++++++++++++--------------
- 1 file changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 78087b2..3a4d7a1 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -5,10 +5,11 @@
-  */
- 
- #include <QAction>
-+#include <QActionGroup>
- #include <QApplication>
- #include <QCloseEvent>
- #include <QDebug>
--#include <QDesktopWidget>
-+#include <QScreen>
- #include <QFileDialog>
- #include <QLabel>
- #include <QLayout>
-@@ -17,6 +18,7 @@
- #include <QMenuBar>
- #include <QMessageBox>
- #include <QToolBar>
-+#include <QRegularExpression>
- 
- #include <stdlib.h>
- 
-@@ -1126,7 +1128,7 @@ QString ConfigInfoView::debug_info(struct symbol *sym)
- 
- QString ConfigInfoView::print_filter(const QString &str)
- {
--	QRegExp re("[<>&\"\\n]");
-+	QRegularExpression re("[<>&\"\\n]");
- 	QString res = str;
- 	for (int i = 0; (i = res.indexOf(re, i)) >= 0;) {
- 		switch (res[i].toLatin1()) {
-@@ -1322,15 +1324,15 @@ ConfigMainWindow::ConfigMainWindow(void)
- 	int width, height;
- 	char title[256];
- 
--	QDesktopWidget *d = configApp->desktop();
- 	snprintf(title, sizeof(title), "%s%s",
- 		rootmenu.prompt->text,
- 		""
- 		);
- 	setWindowTitle(title);
- 
--	width = configSettings->value("/window width", d->width() - 64).toInt();
--	height = configSettings->value("/window height", d->height() - 64).toInt();
-+	QRect g = configApp->primaryScreen()->geometry();
-+	width = configSettings->value("/window width", g.width() - 64).toInt();
-+	height = configSettings->value("/window height", g.height() - 64).toInt();
- 	resize(width, height);
- 	x = configSettings->value("/window x");
- 	y = configSettings->value("/window y");
-@@ -1379,17 +1381,17 @@ ConfigMainWindow::ConfigMainWindow(void)
- 		this, &ConfigMainWindow::goBack);
- 
- 	QAction *quitAction = new QAction("&Quit", this);
--	quitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
-+	quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
- 	connect(quitAction, &QAction::triggered,
- 		this, &ConfigMainWindow::close);
- 
- 	QAction *loadAction = new QAction(QPixmap(xpm_load), "&Load", this);
--	loadAction->setShortcut(Qt::CTRL + Qt::Key_L);
-+	loadAction->setShortcut(Qt::CTRL | Qt::Key_L);
- 	connect(loadAction, &QAction::triggered,
- 		this, &ConfigMainWindow::loadConfig);
- 
- 	saveAction = new QAction(QPixmap(xpm_save), "&Save", this);
--	saveAction->setShortcut(Qt::CTRL + Qt::Key_S);
-+	saveAction->setShortcut(Qt::CTRL | Qt::Key_S);
- 	connect(saveAction, &QAction::triggered,
- 		this, &ConfigMainWindow::saveConfig);
- 
-@@ -1403,7 +1405,7 @@ ConfigMainWindow::ConfigMainWindow(void)
- 	connect(saveAsAction, &QAction::triggered,
- 		this, &ConfigMainWindow::saveConfigAs);
- 	QAction *searchAction = new QAction("&Find", this);
--	searchAction->setShortcut(Qt::CTRL + Qt::Key_F);
-+	searchAction->setShortcut(Qt::CTRL | Qt::Key_F);
- 	connect(searchAction, &QAction::triggered,
- 		this, &ConfigMainWindow::searchConfig);
- 	singleViewAction = new QAction(QPixmap(xpm_single_view), "Single View", this);
-@@ -1750,11 +1752,21 @@ void ConfigMainWindow::closeEvent(QCloseEvent* e)
- 		e->accept();
- 		return;
- 	}
--	QMessageBox mb("qconf", "Save configuration?", QMessageBox::Warning,
--			QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
--	mb.setButtonText(QMessageBox::Yes, "&Save Changes");
--	mb.setButtonText(QMessageBox::No, "&Discard Changes");
--	mb.setButtonText(QMessageBox::Cancel, "Cancel Exit");
-+
-+	QMessageBox mb(QMessageBox::Icon::Warning, "qconf",
-+		       "Save configuration?");
-+
-+	QPushButton *yb = mb.addButton(QMessageBox::Yes);
-+	QPushButton *db = mb.addButton(QMessageBox::No);
-+	QPushButton *cb = mb.addButton(QMessageBox::Cancel);
-+
-+	yb->setText("&Save Changes");
-+	db->setText("&Discard Changes");
-+	cb->setText("Cancel Exit");
-+
-+	mb.setDefaultButton(yb);
-+	mb.setEscapeButton(cb);
-+
- 	switch (mb.exec()) {
- 	case QMessageBox::Yes:
- 		if (saveConfig())
--- 
-2.40.1
+On 7/20/23 06:10, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   bfa3037d828050896ae52f6467b6ca2489ae6fb1
+> commit: c2700d2886a87f83f31e0a301de1d2350b52c79b nvme-tcp: send H2CData PDUs based on MAXH2CDATA
+> date:   1 year, 5 months ago
+> config: riscv-randconfig-r042-20230720 (https://download.01.org/0day-ci/archive/20230720/202307201141.PYWS6ird-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230720/202307201141.PYWS6ird-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307201141.PYWS6ird-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256) exceeds limit (2048) in 'nvme_tcp_recv_skb' [-Wframe-larger-than]
+>       835 | static int nvme_tcp_recv_skb(read_descriptor_t *desc, struct sk_buff *skb,
+>           |            ^
+>     1 warning generated.
+> 
+> 
+> vim +/nvme_tcp_recv_skb +835 drivers/nvme/host/tcp.c
+> 
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  834
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03 @835  static int nvme_tcp_recv_skb(read_descriptor_t *desc, struct sk_buff *skb,
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  836  			     unsigned int offset, size_t len)
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  837  {
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  838  	struct nvme_tcp_queue *queue = desc->arg.data;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  839  	size_t consumed = len;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  840  	int result;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  841
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  842  	while (len) {
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  843  		switch (nvme_tcp_recv_state(queue)) {
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  844  		case NVME_TCP_RECV_PDU:
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  845  			result = nvme_tcp_recv_pdu(queue, skb, &offset, &len);
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  846  			break;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  847  		case NVME_TCP_RECV_DATA:
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  848  			result = nvme_tcp_recv_data(queue, skb, &offset, &len);
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  849  			break;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  850  		case NVME_TCP_RECV_DDGST:
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  851  			result = nvme_tcp_recv_ddgst(queue, skb, &offset, &len);
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  852  			break;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  853  		default:
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  854  			result = -EFAULT;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  855  		}
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  856  		if (result) {
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  857  			dev_err(queue->ctrl->ctrl.device,
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  858  				"receive failed:  %d\n", result);
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  859  			queue->rd_enabled = false;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  860  			nvme_tcp_error_recovery(&queue->ctrl->ctrl);
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  861  			return result;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  862  		}
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  863  	}
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  864
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  865  	return consumed;
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  866  }
+> 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  867
+> 
+> :::::: The code at line 835 was first introduced by commit
+> :::::: 3f2304f8c6d6ed97849057bd16fee99e434ca796 nvme-tcp: add NVMe over TCP host driver
+> 
+> :::::: TO: Sagi Grimberg <sagi@lightbitslabs.com>
+> :::::: CC: Christoph Hellwig <hch@lst.de>
+> 
 
+I don't understand how the stack frame size is that big. Looks like a
+wrong complaint?
