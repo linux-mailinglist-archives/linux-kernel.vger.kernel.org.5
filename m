@@ -2,126 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8676B760102
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EE0760104
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGXVRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S229897AbjGXVS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjGXVRv (ORCPT
+        with ESMTP id S229492AbjGXVSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:17:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350781AA
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:17:48 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <rsc@pengutronix.de>)
-        id 1qO2vw-0007nO-2D; Mon, 24 Jul 2023 23:17:36 +0200
-Received: from rsc by pty.hi.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <rsc@pengutronix.de>)
-        id 1qO2vt-009q1A-8O; Mon, 24 Jul 2023 23:17:33 +0200
-Date:   Mon, 24 Jul 2023 23:17:33 +0200
-From:   Robert Schwebel <r.schwebel@pengutronix.de>
-To:     Eric Van Hensbergen <ericvh@kernel.org>
-Cc:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v3 0/4] fs/9p: fix mmap regression
-Message-ID: <ZL7qbTU7D1mAJePi@pengutronix.de>
-References: <20230716-fixes-overly-restrictive-mmap-v3-0-769791f474fd@kernel.org>
+        Mon, 24 Jul 2023 17:18:25 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAABB171B
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:18:23 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9d8b76be5so9392417a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:18:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690233503; x=1690838303;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fISgzzCd91Gj2U/gkz81qNRRRlc1K+b9y/Uqzybe3fQ=;
+        b=K0h3yS0qMxBorQovCwe5/dgLHSRgD/DpdqH52uVQnQsQCV3Md/hJXTi3ckLug7BsAI
+         YXsO2unh6HsTtRZ7zlr1cUvWxDTuEgtBAU61vQTyu9gzjjk11cZVm7xLmG/ot0WRpBiu
+         i63TxqixGGg9LgDoiYsKdbpPXz5fOfIqe6t+D83Qb/Cqtdh/X7NmqH7wMQW3nW0nP0F4
+         +Tp41NN5nQnJesZkvwEBWYoGS2nDSligP5q6nRBSyFInhBVb1o+8xO8t4tHiTMCTpVDn
+         +MdIWDcXMpruNxV5HAS0Y2GOhpeT5wUdzcQD70UyKOgdubOX0qnACm7rZEIJe6WNqW+k
+         MLSQ==
+X-Gm-Message-State: ABy/qLZimhDQM8+FKyM039xboWHd/ezkuBqQRhSCShz2JxBcousbKE+8
+        2xH1x4fI+zy+jdhAmy+/AymkQmA4N3eMSO0AviD+aW7iZOeD
+X-Google-Smtp-Source: APBJJlHk6oTqxAMI0w9v9Q+HPlsKWKA/HtbUSkECk0SsualRSe5kQSUlByEONDF4yteCaaof/kh7pLqOuhIdzPmNrCyk5HqO1DGU
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v3-0-769791f474fd@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: rsc@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:7488:0:b0:6b9:f343:acfd with SMTP id
+ t8-20020a9d7488000000b006b9f343acfdmr9566732otk.5.1690233503160; Mon, 24 Jul
+ 2023 14:18:23 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 14:18:23 -0700
+In-Reply-To: <ZL7fllo9Td1gJmHo@bombadil.infradead.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008b1f3e06014227e6@google.com>
+Subject: Re: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
+From:   syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+        llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+Hello,
 
-On Wed, Jul 19, 2023 at 03:17:04PM +0000, Eric Van Hensbergen wrote:
-> This series attempts to fix a reported exception with mmap
-> on newer kernels.
->
-> Fixes: 1543b4c5071c ("fs/9p: remove writeback fid and fix per-file modes")
-> Link: https://lore.kernel.org/v9fs/ZK25XZ%2BGpR3KHIB%2F@pengutronix.de/
-> Reported-by: Robert Schwebel <r.schwebel@pengutronix.de>
-> Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
-> ---
-> Changes in v3:
-> - Clarify debug print to read-only mmap mode versus no mmap mode in
->   v9fs_file_mmap
-> - Fix suggested regression tags and propagate across series
-> - Link to v2: https://lore.kernel.org/r/20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org
->
-> Changes in v2:
-> - fix requested changes in commit messages
-> - add patch to remove unnecessary invalidate_inode_pages in mmap readonly path
-> - Link to v1: https://lore.kernel.org/r/20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I've tested this patch series with my qemu setup and it resolves the
-issue. Thanks for taking care!
+Reported-and-tested-by: syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com
 
-Tested-by: Robert Schwebel <r.schwebel@pengutronix.de>
+Tested on:
 
-----------8<----------
+commit:         910e230d samples/hw_breakpoint: Fix kernel BUG 'invali..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11e83081a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=34364e75687fa9c3
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3705186451a87fd93b8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-rsc@dude05:~/work/DistroKit$ configs/platform-v7a/run
-Forwarding SSH port 127.0.0.1:24910 -> qemu:22
-[    0.000000] L2C: platform modifies aux control register: 0x02020000 -> 0x02420000
-[    0.000000] L2C: DT/platform modifies aux control register: 0x02020000 -> 0x02420000
-[    0.004896] smp_twd: clock not found -2
-[    0.726397] simple-pm-bus bus@40000000:motherboard-bus@40000000:iofpga@7,00000000: Failed to create device link (0x180) with dcc:tcrefclk
-[    0.742338] simple-pm-bus bus@40000000:motherboard-bus@40000000:iofpga@7,00000000: Failed to create device link (0x180) with dcc:tcrefclk
-[    0.809910] physmap-flash 48000000.psram: map_probe failed
-[    1.201306] 9pnet_virtio: no channels available for device root
-
- ____                        _                   _
-|  _ \ ___ _ __   __ _ _   _| |_ _ __ ___  _ __ (_)_  __
-| |_) / _ \ '_ \ / _` | | | | __| '__/ _ \| '_ \| \ \/ /
-|  __/  __/ | | | (_| | |_| | |_| | | (_) | | | | |>  <
-|_|   \___|_| |_|\__, |\__,_|\__|_|  \___/|_| |_|_/_/\_\
-                 |___/
-
- ____  _     _             _  ___ _
-|  _ \(_)___| |_ _ __ ___ | |/ (_) |_
-| | | | / __| __| '__/ _ \| ' /| | __|
-| |_| | \__ \ |_| | | (_) | . \| | |_
-|____/|_|___/\__|_|  \___/|_|\_\_|\__|
-
-
-OSELAS(R)-DistroKit-2019.12.0-00429-g57ffae760eb9 / v7a-2019.12.0-00429-g57ffae760eb9
-ptxdist-2023.07.1/2023-07-11T19:56:50+0200
-
-DistroKit login: root
-root@DistroKit:~ mount / -o remount,rw
-root@DistroKit:~ ldconfig
-root@DistroKit:~ uname -a
-Linux DistroKit 6.4.0 #1 SMP PREEMPT 2023-07-01T00:00:00+00:00 armv7l GNU/Linux
-
-----------8<----------
-
-rsc
--- 
-Pengutronix e.K.                           | Dipl.-Ing. Robert Schwebel  |
-Steuerwalder Str. 21                       | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-9    |
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
