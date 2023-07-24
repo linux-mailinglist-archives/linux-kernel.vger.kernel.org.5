@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E146E75FFDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376E775FFDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjGXThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
+        id S230138AbjGXTjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGXThl (ORCPT
+        with ESMTP id S229684AbjGXTjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:37:41 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37B51B3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:37:39 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-573cacf4804so60234257b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690227459; x=1690832259;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O4VWgPiua4ZmSDkThmKhRK2lyYjlOypYwlqtCHhU3qo=;
-        b=F/34vdGPJzVdninBmHaaYps8MkTJYqcn8LiDiws1Gv9uty0wqqclSdi5PAck/jLSQ8
-         EcvJd0MXjWq+ozQp31NWYaFd+VTGDlut71Qqrqv/Qg4H1ujvRnubTaajPpFNnoBweu0M
-         oD4S1+sp8BqCqEuaH6IQAGP81DI3GAPBZhuBKv0CoLbXzC/z+R+Wd2Ag72X9NzgeOl5Q
-         lMXjB8hE6JbU6/PZRlXHvU7xkq9MdpO9Csy+OLjbBwzxy5pLFWwNIK9tfQ46O3+mDDnZ
-         ABbVfHKJBmLVtKzHA1Fe/rCU4NvdrZ6ogNs+M3yzlpLaPX+2qfVUk9U1m5xDOTr3BasY
-         3dsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690227459; x=1690832259;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4VWgPiua4ZmSDkThmKhRK2lyYjlOypYwlqtCHhU3qo=;
-        b=cjounjF9sNbHGoPCyuZxbenjnQXLFCdxdDEiOHhnesbM68cPgT4UoBhLEBAAgDBBxt
-         jEaWPN64p/PWAo6sDhajDJKcQz0DgOpUUVVNJspn1RtdGnqlB1YD0X2DDLqOT81HYq8j
-         emydPu3sfrY2ktxgLSmbg7Jyjkk2JRgJGqPJhAE+9mg9b73dkNVpxFAoKE869JNHLjhH
-         ssY/m6i/Ni9UMGG1G8NV2FsKuZCERt0MMigpZMyefBKg+r2nmm2XjJUEBrgsasLyruDv
-         Wg1+9d3l/a+PVpTu9UqA6eleT5l3ej2OtjjFY5GFARsawN1PuTyBRvk6PxzwUTsXeB6N
-         ROkQ==
-X-Gm-Message-State: ABy/qLasaU8uLShkjStp0aBwGDoUnI2lvhR1ige+sgGi2UnjcpN1ckVk
-        WVMoo1qp5TF8WdEZRVxcZHvNRrdiK4Y=
-X-Google-Smtp-Source: APBJJlG4XX11fRNdTWxSIJ1x78nNmOIsCxonkuectk9GCCLaduDufbvEPsVji3+TYABpm1rQkYjd/u9/tRY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae54:0:b0:576:6e4e:b87f with SMTP id
- g20-20020a81ae54000000b005766e4eb87fmr73392ywk.10.1690227458870; Mon, 24 Jul
- 2023 12:37:38 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 24 Jul 2023 12:37:00 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230724193700.54825-1-seanjc@google.com>
-Subject: [ANNOUNCE / CFP] KVM Microconference at LPC 2023
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 15:39:04 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0956E10F6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:39:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690227544; x=1721763544;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=IkiK+g2frn4d6goYddndvFEYn0eSVIZrNs2SJ87y078=;
+  b=OQB+mxWArS+MLdbYz5QHu148Igr1ogeVPMbAIYV09hxT8yYMxadZ4J5P
+   CY0U9zejRlTaBTdV3mo7H8HRN+hf+O7rHi2jFQIllIybf5Q5XejBECsJF
+   reaVpciO8ZrvxDlHGQw3M/A8HZePsyewUqR3Iyzn+j8DQSONuMqanARRs
+   ufew57DHdbveo55VVTiMKWg4dxB7k/0nvYYVlsFR+pR2tjFalMZWxgLzq
+   XVlW+Akx6IiA5qN1CgMjy54P/6YVf1D1coeMSFJF2mzkJ2tYXbSn38Syx
+   5N9kJvN2a2Pw2wXIKAt4NMB8eKhTfH+i2oNuPawEBsoF9XG/Rls+WM0As
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398445814"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="398445814"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 12:39:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="972389666"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="972389666"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Jul 2023 12:39:01 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qO1OV-0009zS-2V;
+        Mon, 24 Jul 2023 19:39:00 +0000
+Date:   Tue, 25 Jul 2023 03:38:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: debug_vm_pgtable.c:undefined reference to `pmd_set_huge'
+Message-ID: <202307250345.iCCBHW1l-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are excited to announce the first KVM MC at Plumbers 2023!
+Hi Jonathan,
 
-The KVM microconference will focus on KVM itself, as well as KVM's touchpoints
-with other kernel subsystems.  The purpose of the KVM MC is to supplement KVM
-Forum by providing developers with a dedicated vehicle for discussing kernel
-internals.  Topics that are primarily aimed at something other than KVM are
-firmly out of scope and will be rejected.  Please consider the Confidential
-Computing MC, the VFIO/IOMMU/PCI MC, or KVM Forum 2024 for virtualization topics
-that aren't directly related to KVM internals.
+FYI, the error/warning still remains.
 
-The KVM MC will be comprised of ~3 "big" topics, and ~6 (+/-2) "small" topics.
-Big topics will be allotted 30-40 minutes, and small topics 10-20 minutes.
-Please add a note in your submission if you would like your topic to be
-considered for a big slot (consider it a hint to help us rough in the scedule).
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
+commit: d8a719059b9dc963aa190598778ac804ff3e6a87 Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+date:   2 years ago
+config: powerpc-randconfig-r033-20230724 (https://download.01.org/0day-ci/archive/20230725/202307250345.iCCBHW1l-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307250345.iCCBHW1l-lkp@intel.com/reproduce)
 
-Below is a list of *ideas* for topics.  Topics that are not on the list are more
-than welcome!  If we were omniscient, we wouldn't need this CFP!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307250345.iCCBHW1l-lkp@intel.com/
 
-Note, priority will be given to open problems, i.e. things that have already
-been posted/discussed on LKML, but posting before LPC is NOT a hard requirement.
+All errors (new ones prefixed by >>):
 
-Potential Topics:
-  - Serving inaccessible/unmappable memory for KVM guests (a.k.a. guest_memfd)
-  - Optimizing mmu_notifiers, e.g. reducing TLB flushes and spurious zapping
-  - Supporting multiple KVM modules (for non-disruptive upgrades)
-  - Improving and hardening KVM+perf interactions
-  - Implementing arch-agnostic abstractions in KVM (e.g. MMU)
-  - Defining KVM requirements for hardware vendors
-  - Utilizing "fault" injection to increase test coverage of edge cases
-  - KVM vs VFIO (e.g. memory types, a rather hot topic on the ARM side)
+   powerpc-linux-ld: warning: certs/system_certificates.o: missing .note.GNU-stack section implies executable stack
+   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+   powerpc-linux-ld: warning: certs/system_certificates.o: missing .note.GNU-stack section implies executable stack
+   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+   powerpc-linux-ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+   powerpc-linux-ld: mm/debug_vm_pgtable.o: in function `pmd_huge_tests':
+>> debug_vm_pgtable.c:(.init.text+0x194): undefined reference to `pmd_set_huge'
+   powerpc-linux-ld: mm/debug_vm_pgtable.o: in function `pud_huge_tests':
+>> debug_vm_pgtable.c:(.init.text+0x29c): undefined reference to `pud_set_huge'
 
-Abstracts can be submitted via https://lpc.events/event/17/abstracts.  Don't
-forget to select "KVM MC" as the track!
-
-Thanks!
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
