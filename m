@@ -2,151 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AAA75F59F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F66175F5A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjGXMDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S230153AbjGXMFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjGXMDl (ORCPT
+        with ESMTP id S230149AbjGXMEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:03:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF718E61
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690200170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q6dlAfJE+Uq5H6USgolHQ9RHH+YwIscLGk0H+vxgGw8=;
-        b=dVk5cZy6EtlJFnCbNFakAJWeLL0cwI2vMhMK6Ch9IIWwOxLFXZxuzvZJInnms4tL39Ud5f
-        RJxpt+HwxHr3IqybVRAJdfnXvzHTUu5YEFMYPQWGCllo6KvRhR6PaiwYjU9Kk8A6vok6i1
-        lZ5z33SCgEDo9D6oNQcHnNLG6YlRZXA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-679-lPRFhz7cP-iWFybwFKXSEg-1; Mon, 24 Jul 2023 08:02:45 -0400
-X-MC-Unique: lPRFhz7cP-iWFybwFKXSEg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 04DFC810BB2;
-        Mon, 24 Jul 2023 12:02:45 +0000 (UTC)
-Received: from localhost (dhcp-10-40-5-80.brq.redhat.com [10.40.5.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B1507400F1F;
-        Mon, 24 Jul 2023 12:02:44 +0000 (UTC)
-From:   Oleksandr Natalenko <oleksandr@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-scsi@vger.kernel.org, Saurav Kashyap <skashyap@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Rob Evers <revers@redhat.com>
-Subject: [RFC PATCH 3/3] scsi: qedf: do not touch __user pointer in qedf_dbg_fp_int_cmd_read() directly
-Date:   Mon, 24 Jul 2023 14:02:41 +0200
-Message-ID: <20230724120241.40495-4-oleksandr@redhat.com>
-In-Reply-To: <20230724120241.40495-1-oleksandr@redhat.com>
-References: <20230724120241.40495-1-oleksandr@redhat.com>
+        Mon, 24 Jul 2023 08:04:55 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25FD10D1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690200292; x=1721736292;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=58YmAVMNhM+69Uz4TSYJtTClde4BqyBdoWDlbcr2UFA=;
+  b=FO31fJaquioOEDPAq/edPdyfcrXz99Q1zdxjfPiISNhPIson7oGFbwwW
+   lYdj/kLLazbh2IaD97ND2L6otfCbJ527ZGxk19nPT11QE2/iI3rDOGU1q
+   9rP0EVtNRkMlA0UFVjPGB9ILSG9g8IJLJeLYyNJB5acK2f6UI9wEUvaun
+   VpXlpkko5KwTxGhOA9ba16P/Ii+vwmMHKMbnJSJsI9nx95mVdFE7ROjMi
+   sBy8gsT+/T/9ZHwEbJ0MRkJVs6RDZ/Vlrfmhd7fMBvRPbCqeGENPHq3OG
+   eWMkgcJ9C5BtE6WoXxHmeIUYWMvAX/3e+cCd7lAIIDu+qmyM7Rw1hRAnJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="371022843"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="371022843"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 05:04:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="795758415"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="795758415"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2023 05:04:12 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNuI7-0009iG-1a;
+        Mon, 24 Jul 2023 12:04:01 +0000
+Date:   Mon, 24 Jul 2023 20:03:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     sunran001@208suo.com, alexander.deucher@amd.com
+Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in sienna_cichlid_ppt.c
+Message-ID: <202307241921.8W1KDtYK-lkp@intel.com>
+References: <ea1cf43d5545fa917127694a294a57da@208suo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea1cf43d5545fa917127694a294a57da@208suo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qedf_dbg_fp_int_cmd_read() function invokes sprintf()
-directly on a __user pointer, which may crash the kernel.
+Hi,
 
-Avoid doing that by vmalloc()'ating a buffer for scnprintf()
-and then calling simple_read_from_buffer() which does a proper
-copy_to_user() call.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Oleksandr Natalenko <oleksandr@redhat.com>
----
- drivers/scsi/qedf/qedf_dbg.h     |  2 ++
- drivers/scsi/qedf/qedf_debugfs.c | 21 +++++++++++++++------
- 2 files changed, 17 insertions(+), 6 deletions(-)
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.5-rc3 next-20230724]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/scsi/qedf/qedf_dbg.h b/drivers/scsi/qedf/qedf_dbg.h
-index f4d81127239eb..5ec2b817c694a 100644
---- a/drivers/scsi/qedf/qedf_dbg.h
-+++ b/drivers/scsi/qedf/qedf_dbg.h
-@@ -59,6 +59,8 @@ extern uint qedf_debug;
- #define QEDF_LOG_NOTICE	0x40000000	/* Notice logs */
- #define QEDF_LOG_WARN		0x80000000	/* Warning logs */
- 
-+#define QEDF_DEBUGFS_LOG_LEN (2 * PAGE_SIZE)
-+
- /* Debug context structure */
- struct qedf_dbg_ctx {
- 	unsigned int host_no;
-diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
-index f910af0029a2c..6db996b73fe39 100644
---- a/drivers/scsi/qedf/qedf_debugfs.c
-+++ b/drivers/scsi/qedf/qedf_debugfs.c
-@@ -8,6 +8,7 @@
- #include <linux/uaccess.h>
- #include <linux/debugfs.h>
- #include <linux/module.h>
-+#include <linux/vmalloc.h>
- 
- #include "qedf.h"
- #include "qedf_dbg.h"
-@@ -98,7 +99,9 @@ static ssize_t
- qedf_dbg_fp_int_cmd_read(struct file *filp, char __user *buffer, size_t count,
- 			 loff_t *ppos)
- {
-+	ssize_t ret;
- 	size_t cnt = 0;
-+	char *cbuf;
- 	int id;
- 	struct qedf_fastpath *fp = NULL;
- 	struct qedf_dbg_ctx *qedf_dbg =
-@@ -108,19 +111,25 @@ qedf_dbg_fp_int_cmd_read(struct file *filp, char __user *buffer, size_t count,
- 
- 	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
- 
--	cnt = sprintf(buffer, "\nFastpath I/O completions\n\n");
-+	cbuf = vmalloc(QEDF_DEBUGFS_LOG_LEN);
-+	if (!cbuf)
-+		return 0;
-+
-+	cnt += scnprintf(cbuf + cnt, QEDF_DEBUGFS_LOG_LEN - cnt, "\nFastpath I/O completions\n\n");
- 
- 	for (id = 0; id < qedf->num_queues; id++) {
- 		fp = &(qedf->fp_array[id]);
- 		if (fp->sb_id == QEDF_SB_ID_NULL)
- 			continue;
--		cnt += sprintf((buffer + cnt), "#%d: %lu\n", id,
--			       fp->completions);
-+		cnt += scnprintf(cbuf + cnt, QEDF_DEBUGFS_LOG_LEN - cnt,
-+				 "#%d: %lu\n", id, fp->completions);
- 	}
- 
--	cnt = min_t(int, count, cnt - *ppos);
--	*ppos += cnt;
--	return cnt;
-+	ret = simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
-+
-+	vfree(cbuf);
-+
-+	return ret;
- }
- 
- static ssize_t
+url:    https://github.com/intel-lab-lkp/linux/commits/sunran001-208suo-com/drm-amd-pm-Clean-up-errors-in-sienna_cichlid_ppt-c/20230724-153134
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/ea1cf43d5545fa917127694a294a57da%40208suo.com
+patch subject: [PATCH] drm/amd/pm: Clean up errors in sienna_cichlid_ppt.c
+config: i386-buildonly-randconfig-r004-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241921.8W1KDtYK-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241921.8W1KDtYK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307241921.8W1KDtYK-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/sienna_cichlid_ppt.c: In function 'sienna_cichlid_get_throttler_status_locked':
+   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/sienna_cichlid_ppt.c:595:42: error: 'smu_table' undeclared (first use in this function)
+     595 |                 (SmuMetricsExternal_t *)(smu_table->metrics_table);
+         |                                          ^~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/sienna_cichlid_ppt.c:595:42: note: each undeclared identifier is reported only once for each function it appears in
+>> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/sienna_cichlid_ppt.c:593:35: warning: unused variable 'smu_tabl' [-Wunused-variable]
+     593 |         struct smu_table_context *smu_tabl = &smu->smu_table;
+         |                                   ^~~~~~~~
+
+
+vim +/smu_tabl +593 drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/sienna_cichlid_ppt.c
+
+   590	
+   591	static uint32_t sienna_cichlid_get_throttler_status_locked(struct smu_context *smu)
+   592	{
+ > 593		struct smu_table_context *smu_tabl = &smu->smu_table;
+   594		SmuMetricsExternal_t *metrics_ext =
+   595			(SmuMetricsExternal_t *)(smu_table->metrics_table);
+   596		uint32_t throttler_status = 0;
+   597		int i;
+   598	
+   599		if ((smu->adev->ip_versions[MP1_HWIP][0] == IP_VERSION(11, 0, 7)) &&
+   600		     (smu->smc_fw_version >= 0x3A4900)) {
+   601			for (i = 0; i < THROTTLER_COUNT; i++)
+   602				throttler_status |=
+   603					(metrics_ext->SmuMetrics_V3.ThrottlingPercentage[i] ? 1U << i : 0);
+   604		} else if ((smu->adev->ip_versions[MP1_HWIP][0] == IP_VERSION(11, 0, 7)) &&
+   605		     (smu->smc_fw_version >= 0x3A4300)) {
+   606			for (i = 0; i < THROTTLER_COUNT; i++)
+   607				throttler_status |=
+   608					(metrics_ext->SmuMetrics_V2.ThrottlingPercentage[i] ? 1U << i : 0);
+   609		} else {
+   610			throttler_status = metrics_ext->SmuMetrics.ThrottlerStatus;
+   611		}
+   612	
+   613		return throttler_status;
+   614	}
+   615	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
