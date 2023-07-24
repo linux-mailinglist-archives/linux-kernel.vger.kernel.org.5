@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB7175E863
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15D075E864
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbjGXBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
+        id S230377AbjGXBks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjGXBkG (ORCPT
+        with ESMTP id S232058AbjGXBkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:40:06 -0400
+        Sun, 23 Jul 2023 21:40:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28F044BE;
-        Sun, 23 Jul 2023 18:35:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B364682;
+        Sun, 23 Jul 2023 18:35:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A5C760FCE;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F007260FD0;
+        Mon, 24 Jul 2023 01:32:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A77B4C433CA;
         Mon, 24 Jul 2023 01:32:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56583C433C7;
-        Mon, 24 Jul 2023 01:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162365;
-        bh=AbFeG+jIWhUCdVnnm9TchTKYRxC386D0TsnkIcflR+4=;
+        s=k20201202; t=1690162366;
+        bh=GLv9J9Q1GULk2tk6a21BWz9R/YTSf1sjlRUmrDHNGhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JYTu8Jy9L878BPbfpgocX560hy13NCp3nkPYoa9vl/bnxsL6/XbJUN3Ly9r82w0dm
-         OEUN2w4Ir8R9knlMfeTc9qbkBeqrj+ZA+6zagXZphgUKDuwOoLHZLLXoYVKYutje4i
-         vMR5K6fzh+xwEMl7WP5pGU4cQ5oAvNUDDXvLM96Hmuap3wKPAdvDOLqj1ShoY3D0b0
-         tiSeNiZnmcN23TJF1cBVKFW+8jTZzMphxS/T2/AxLkG90oY16o9Lrqnq/85bCMXyFW
-         Mig7EgBOGzGyef1kJw7PY2puUMtOzJZW2bMz2an1Bc1EO48HypJ4qMSr9zYQOF37Y7
-         eIhl2M9JVZS+g==
+        b=rd2TDaFgAUUvQ8vfDcU6n4akQcaBGUt9sTf3qB705qQ7VtUOOheMWcl4xtzoKSWnN
+         jDAa2A6fRCoxSmNPMQdUupmDvMiljCMob0TQimrirDPbUGwB2A5sFmT1Yd9WwXOzG8
+         VqBBQiOYYGtLLdIAvemcaiPzZAsXjpmsGZ6HRTDyIj0LhFrN6eTJ5+66TH41OUtHpS
+         BVBx1cyBT1PXkrCMiJyU0HHQAawl8i3RikQn/bw6LJPb+vfJwSeEVt1CGR1xIDJ1/Q
+         trNCJTmnqDCJ0Xq8LQQZh1zKI+cvt6Hion15bTPwyU21Ha854thGjQAKw26T/hT7nK
+         22icnmRybIAzA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/34] media: camss: set VFE bpl_alignment to 16 for sdm845 and sm8250
-Date:   Sun, 23 Jul 2023 21:32:07 -0400
-Message-Id: <20230724013238.2329166-4-sashal@kernel.org>
+Cc:     Prashanth K <quic_prashk@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, balbi@kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 05/34] usb: gadget: u_serial: Avoid spinlock recursion in __gs_console_push
+Date:   Sun, 23 Jul 2023 21:32:08 -0400
+Message-Id: <20230724013238.2329166-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -60,46 +60,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andrey.konovalov@linaro.org>
+From: Prashanth K <quic_prashk@quicinc.com>
 
-[ Upstream commit d5b7eb477c286f6ceccbb38704136eea0e6b09ca ]
+[ Upstream commit e5990469943c711cb00bfde6338d2add6c6d0bfe ]
 
-From the experiments with camera sensors using SGRBG10_1X10/3280x2464 and
-SRGGB10_1X10/3280x2464 formats, it becomes clear that on sdm845 and sm8250
-VFE outputs the lines padded to a length multiple of 16 bytes. As in the
-current driver the value of the bpl_alignment is set to 8 bytes, the frames
-captured in formats with the bytes-per-line value being not a multiple of
-16 get corrupted.
+When serial console over USB is enabled, gs_console_connect
+queues gs_console_work, where it acquires the spinlock and
+queues the usb request, and this request goes to gadget layer.
+Now consider a situation where gadget layer prints something
+to dmesg, this will eventually call gs_console_write() which
+requires cons->lock. And this causes spinlock recursion. Avoid
+this by excluding usb_ep_queue from the spinlock.
 
-Set the bpl_alignment of the camss video output device to 16 for sdm845 and
-sm8250 to fix that.
+ spin_lock_irqsave //needs cons->lock
+ gs_console_write
+	.
+	.
+ _printk
+ __warn_printk
+ dev_warn/pr_err
+	.
+	.
+ [USB Gadget Layer]
+	.
+	.
+ usb_ep_queue
+ gs_console_work
+ __gs_console_push // acquires cons->lock
+ process_one_work
 
-Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+Link: https://lore.kernel.org/r/1683638872-6885-1-git-send-email-quic_prashk@quicinc.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss-vfe.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/u_serial.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index a26e4a5d87b6b..d8cd9b09c20de 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -1540,7 +1540,11 @@ int msm_vfe_register_entities(struct vfe_device *vfe,
- 		}
+diff --git a/drivers/usb/gadget/function/u_serial.c b/drivers/usb/gadget/function/u_serial.c
+index db6fd0238d4b4..2dcd30c96e20d 100644
+--- a/drivers/usb/gadget/function/u_serial.c
++++ b/drivers/usb/gadget/function/u_serial.c
+@@ -915,8 +915,11 @@ static void __gs_console_push(struct gs_console *cons)
+ 	}
  
- 		video_out->ops = &vfe->video_ops;
--		video_out->bpl_alignment = 8;
-+		if (vfe->camss->version == CAMSS_845 ||
-+		    vfe->camss->version == CAMSS_8250)
-+			video_out->bpl_alignment = 16;
-+		else
-+			video_out->bpl_alignment = 8;
- 		video_out->line_based = 0;
- 		if (i == VFE_LINE_PIX) {
- 			video_out->bpl_alignment = 16;
+ 	req->length = size;
++
++	spin_unlock_irq(&cons->lock);
+ 	if (usb_ep_queue(ep, req, GFP_ATOMIC))
+ 		req->length = 0;
++	spin_lock_irq(&cons->lock);
+ }
+ 
+ static void gs_console_work(struct work_struct *work)
 -- 
 2.39.2
 
