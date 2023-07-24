@@ -2,49 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACADF75E79F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2BA75E7A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjGXB3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        id S231694AbjGXB3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjGXB2S (ORCPT
+        with ESMTP id S231808AbjGXB2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:28:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95181171E;
-        Sun, 23 Jul 2023 18:25:33 -0700 (PDT)
+        Sun, 23 Jul 2023 21:28:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4B1173C;
+        Sun, 23 Jul 2023 18:25:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E26B60F1B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CA4360F56;
+        Mon, 24 Jul 2023 01:24:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC49C433C7;
         Mon, 24 Jul 2023 01:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17788C433C8;
-        Mon, 24 Jul 2023 01:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161877;
-        bh=sBhbt8uzCKA9A2iTjhFHhhqHH3IHMBsBCpiHJkgpwXU=;
+        s=k20201202; t=1690161878;
+        bh=m+ncsUvO7yTWyHWyuGbLyy8EzHW6iarjjrqbOYH4rM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QVVWoUt5TlchygaX136TCg1lOcFet/ZuFPyqTdx/tRCBNiSlbcvpQNsz1DR45lvvr
-         X+tGS/YrKLmSuxzqIh8rO+rFMw/vhLS7GMjsuXs02u4X85mbx5F4OMRLIOZXcZ4GQD
-         FZ02DoxwJozFUwSQnHrnqEOGXBYoWMuxmVMxaIXQ8FM576R9VvDsgLoBzeePPYS5go
-         nwcVfBMJ17zYKg4CE/nS3FgMJtz3KVVPIPFQ+H7eCYuhuwN0eXWmAVEubCKa7T7XpS
-         XLhLheK8twDhw1udSBJzZVtkkERpojCoqm6WQW7ICncNxLPSjJufZYhxpBrLYzKt6I
-         J4ApAsH7Myo/Q==
+        b=NyfZgtINPPhrkZUm1VdP5bTJQXVtjIteWrxr6YANQjU/pSU/K+RcnvrwoCb3NEgB/
+         RkZI4tOg2ErRXOl4kLvd0VEqEdpj9mBWpYAZxsOGw9lQfMkNpksBsgJJ9SLyMlseY8
+         s26B/VoKM0FzqcBwpoNT3zti6NcO0YUAVoQyWuGLBZbzpnkdfcSWPa1TN/BYdP3Xxn
+         YpjYMNOBnNrqdL72HQ/LNU9W4kOP2a70yVaFm6aWYPKRqB3zSiNWcMmCpj2SZP/34g
+         OqDOuifKLLsLqokMvdZNp3kvCZOHFHaSJVB3iOmJcOoO/JgHY3VhSsO0fLVE9mCp8n
+         rCrmexU4F34iQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        bhelgaas@google.com, perex@perex.cz, tiwai@suse.com,
-        gregkh@linuxfoundation.org, kai.vehmanen@linux.intel.com,
-        mkumard@nvidia.com, nmahale@nvidia.com, linux-pci@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 11/22] ALSA: hda: Add Loongson LS7A HD-Audio support
-Date:   Sun, 23 Jul 2023 21:24:08 -0400
-Message-Id: <20230724012419.2317649-11-sashal@kernel.org>
+Cc:     gaoxu <gaoxu2@hihonor.com>, Suren Baghdasaryan <surenb@google.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 12/22] dma-remap: use kvmalloc_array/kvfree for larger dma memory remap
+Date:   Sun, 23 Jul 2023 21:24:09 -0400
+Message-Id: <20230724012419.2317649-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012419.2317649-1-sashal@kernel.org>
 References: <20230724012419.2317649-1-sashal@kernel.org>
@@ -53,105 +48,71 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanteng Si <siyanteng@loongson.cn>
+From: gaoxu <gaoxu2@hihonor.com>
 
-[ Upstream commit 28bd137a3c8e105587ba8c55b68ef43b519b270f ]
+[ Upstream commit 51ff97d54f02b4444dfc42e380ac4c058e12d5dd ]
 
-Add the new PCI ID 0x0014 0x7a07 and the new PCI ID 0x0014 0x7a37
-Loongson HDA controller.
+If dma_direct_alloc() alloc memory in size of 64MB, the inner function
+dma_common_contiguous_remap() will allocate 128KB memory by invoking
+the function kmalloc_array(). and the kmalloc_array seems to fail to try to
+allocate 128KB mem.
 
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
-Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-Link: https://lore.kernel.org/r/993587483b9509796b29a416f257fcfb4b15c6ea.1686128807.git.siyanteng@loongson.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Call trace:
+[14977.928623] qcrosvm: page allocation failure: order:5, mode:0x40cc0
+[14977.928638] dump_backtrace.cfi_jt+0x0/0x8
+[14977.928647] dump_stack_lvl+0x80/0xb8
+[14977.928652] warn_alloc+0x164/0x200
+[14977.928657] __alloc_pages_slowpath+0x9f0/0xb4c
+[14977.928660] __alloc_pages+0x21c/0x39c
+[14977.928662] kmalloc_order+0x48/0x108
+[14977.928666] kmalloc_order_trace+0x34/0x154
+[14977.928668] __kmalloc+0x548/0x7e4
+[14977.928673] dma_direct_alloc+0x11c/0x4f8
+[14977.928678] dma_alloc_attrs+0xf4/0x138
+[14977.928680] gh_vm_ioctl_set_fw_name+0x3c4/0x610 [gunyah]
+[14977.928698] gh_vm_ioctl+0x90/0x14c [gunyah]
+[14977.928705] __arm64_sys_ioctl+0x184/0x210
+
+work around by doing kvmalloc_array instead.
+
+Signed-off-by: Gao Xu <gaoxu2@hihonor.com>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pci_ids.h    | 3 +++
- sound/hda/hdac_device.c    | 1 +
- sound/pci/hda/hda_intel.c  | 7 +++++++
- sound/pci/hda/patch_hdmi.c | 1 +
- 4 files changed, 12 insertions(+)
+ kernel/dma/remap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 4b34a5c125999..84cb7b32aa26f 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -153,6 +153,9 @@
+diff --git a/kernel/dma/remap.c b/kernel/dma/remap.c
+index 905c3fa005f10..5bff061993102 100644
+--- a/kernel/dma/remap.c
++++ b/kernel/dma/remap.c
+@@ -43,13 +43,13 @@ void *dma_common_contiguous_remap(struct page *page, size_t size,
+ 	void *vaddr;
+ 	int i;
  
- #define PCI_VENDOR_ID_LOONGSON		0x0014
+-	pages = kmalloc_array(count, sizeof(struct page *), GFP_KERNEL);
++	pages = kvmalloc_array(count, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages)
+ 		return NULL;
+ 	for (i = 0; i < count; i++)
+ 		pages[i] = nth_page(page, i);
+ 	vaddr = vmap(pages, count, VM_DMA_COHERENT, prot);
+-	kfree(pages);
++	kvfree(pages);
  
-+#define PCI_DEVICE_ID_LOONGSON_HDA      0x7a07
-+#define PCI_DEVICE_ID_LOONGSON_HDMI     0x7a37
-+
- #define PCI_VENDOR_ID_TTTECH		0x0357
- #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
- 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index bfd8585776767..5315a3eb114ee 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -645,6 +645,7 @@ struct hda_vendor_id {
- };
- 
- static const struct hda_vendor_id hda_vendor_ids[] = {
-+	{ 0x0014, "Loongson" },
- 	{ 0x1002, "ATI" },
- 	{ 0x1013, "Cirrus Logic" },
- 	{ 0x1057, "Motorola" },
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 1f641712233ef..13226f4f2d119 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -274,6 +274,7 @@ enum {
- 	AZX_DRIVER_CTHDA,
- 	AZX_DRIVER_CMEDIA,
- 	AZX_DRIVER_ZHAOXIN,
-+	AZX_DRIVER_LOONGSON,
- 	AZX_DRIVER_GENERIC,
- 	AZX_NUM_DRIVERS, /* keep this as last entry */
- };
-@@ -397,6 +398,7 @@ static const char * const driver_short_names[] = {
- 	[AZX_DRIVER_CTHDA] = "HDA Creative",
- 	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
- 	[AZX_DRIVER_ZHAOXIN] = "HDA Zhaoxin",
-+	[AZX_DRIVER_LOONGSON] = "HDA Loongson",
- 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
- };
- 
-@@ -2838,6 +2840,11 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
- 	/* Zhaoxin */
- 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
-+	/* Loongson HDAudio*/
-+	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
-+	  .driver_data = AZX_DRIVER_LOONGSON },
-+	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
-+	  .driver_data = AZX_DRIVER_LOONGSON },
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, azx_ids);
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index c19afe4861949..5ff7e93024154 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4307,6 +4307,7 @@ static int patch_gf_hdmi(struct hda_codec *codec)
-  * patch entries
-  */
- static const struct hda_device_id snd_hda_id_hdmi[] = {
-+HDA_CODEC_ENTRY(0x00147a47, "Loongson HDMI",	patch_generic_hdmi),
- HDA_CODEC_ENTRY(0x1002793c, "RS600 HDMI",	patch_atihdmi),
- HDA_CODEC_ENTRY(0x10027919, "RS600 HDMI",	patch_atihdmi),
- HDA_CODEC_ENTRY(0x1002791a, "RS690/780 HDMI",	patch_atihdmi),
+ 	return vaddr;
+ }
 -- 
 2.39.2
 
