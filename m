@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FD475EE54
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF4975EE56
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjGXIuq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 04:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        id S231901AbjGXIvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbjGXIun (ORCPT
+        with ESMTP id S231881AbjGXIvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:50:43 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6099DAF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-cea0021d1f3so7621316276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690188640; x=1690793440;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eru5igGG5ZNMFyi9+7h599RckQE/U9fJOptjtiH/IWA=;
-        b=EkCXiHqj4/VKRKeeEjEgSdMD7crdlGXhlb/YwHHz3kh3FveUMOPJLtE7ARMKjdfv3O
-         GM7kkQxe+cP8i1jcQc2CB2kWEFM77tJKxFWFC4YJ7AQKywUyAGI+m1ARMYxYnthA1Uku
-         Wm7vWtdcMgUJbURRTCmkQXGP40iHVK13PziRKh25oGpSNY+vzhf1PYh41uJ7WbWXKMRp
-         8Ij3+64D1FbIw9OAmPna/sUU6Hri0QaPMYa72Uz4sWTK357Bsyd9eWyeiy+nyy1q5Z+U
-         rcoSS1oYng7zrar0w5EKnIFuW+WEvlRodSyiatOv2E+1qo/8VM6zkgmINaXsTlIMMtMN
-         2E1A==
-X-Gm-Message-State: ABy/qLZFin7kl0JEw6hcGilHSMznASVZ6Niq3sXCETxN/2Ci/DrrEXrC
-        VikmMaQkviQIAaergmUTPIDy6msL3UgI7Q==
-X-Google-Smtp-Source: APBJJlEREVRu4bG1oZY61fBWxCKpEbkRgO99aB8zn2iuIYvOQCKf4XHqM+w6X+4hBmMGlJwsRd45ZQ==
-X-Received: by 2002:a0d:d6c2:0:b0:577:2aa4:70aa with SMTP id y185-20020a0dd6c2000000b005772aa470aamr4893389ywd.21.1690188640269;
-        Mon, 24 Jul 2023 01:50:40 -0700 (PDT)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id z4-20020a81c204000000b005772fc5912dsm2647506ywc.91.2023.07.24.01.50.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d13e0bfbbcfso330284276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
-X-Received: by 2002:a25:f54:0:b0:cef:9a1b:8380 with SMTP id
- 81-20020a250f54000000b00cef9a1b8380mr6389620ybp.24.1690188639473; Mon, 24 Jul
- 2023 01:50:39 -0700 (PDT)
+        Mon, 24 Jul 2023 04:51:07 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1AE48ED
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:51:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5CC6DE0;
+        Mon, 24 Jul 2023 01:51:48 -0700 (PDT)
+Received: from [10.57.34.62] (unknown [10.57.34.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03B6F3F6C4;
+        Mon, 24 Jul 2023 01:51:01 -0700 (PDT)
+Message-ID: <ecceef7c-8243-5770-c449-6f96636106b4@arm.com>
+Date:   Mon, 24 Jul 2023 09:51:02 +0100
 MIME-Version: 1.0
-References: <20230721075949.5632-1-xujianghui@cdjrlc.com> <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
-In-Reply-To: <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 10:50:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
-Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
-To:     sunran001@208suo.com
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drm/panfrost: Sync IRQ by job's timeout handler
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20230723000142.206908-1-dmitry.osipenko@collabora.com>
+ <20230724085723.5e574bff@collabora.com>
+Content-Language: en-GB
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20230724085723.5e574bff@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ran,
+On 24/07/2023 07:57, Boris Brezillon wrote:
+> On Sun, 23 Jul 2023 03:01:42 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> Panfrost IRQ handler may stuck for a long time, for example this happens
+>> when there is a bad HDMI connection and HDMI handler takes a long time to
+>> finish processing, holding Panfrost. Make Panfrost's job timeout handler
+>> to sync IRQ before checking fence signal status in order to prevent
+>> spurious job timeouts due to a slow IRQ processing.
+>>
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>> ---
+>>
+>> Changelog:
+>>
+>> v2: - Moved synchronize_irq() after first signal-check to avoid unnecessary
+>>       blocking on syncing.
+>>
+>>     - Added warn message about high interrupt latency.
+>>
+>>  drivers/gpu/drm/panfrost/panfrost_job.c | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> index dbc597ab46fb..a7663d7847a2 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> @@ -720,6 +720,13 @@ static enum drm_gpu_sched_stat panfrost_job_timedout(struct drm_sched_job
+>>  	if (dma_fence_is_signaled(job->done_fence))
+>>  		return DRM_GPU_SCHED_STAT_NOMINAL;
+>>  
+>> +	synchronize_irq(pfdev->js->irq);
+> 
+> Can we add a comment here explaining why we're doing that?
 
-On Fri, Jul 21, 2023 at 10:04 AM <sunran001@208suo.com> wrote:
-> ERROR: that open brace { should be on the previous line
-> ERROR: space required after that ',' (ctx:VxV)
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+Agreed, with a comment added:
 
-Thanks for your patch!
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-But obviously you forgot to run scripts/checkpatch.pl on your own patch:
+>> +
+>> +	if (dma_fence_is_signaled(job->done_fence)) {
+>> +		dev_warn(pfdev->dev, "unexpectedly high interrupt latency\n");
+>> +		return DRM_GPU_SCHED_STAT_NOMINAL;
+>> +	}
+>> +
+>>  	dev_err(pfdev->dev, "gpu sched timeout, js=%d, config=0x%x, status=0x%x, head=0x%x, tail=0x%x, sched_job=%p",
+>>  		js,
+>>  		job_read(pfdev, JS_CONFIG(js)),
+> 
 
-    WARNING: A patch subject line should describe the change not the
-tool that found it
-    #2:
-    Subject: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
-
-    WARNING: From:/Signed-off-by: email name mismatch: 'From:
-sunran001@208suo.com' != 'Signed-off-by: Ran Sun
-<sunran001@208suo.com>'
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
