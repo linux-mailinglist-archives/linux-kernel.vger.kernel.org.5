@@ -2,197 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C32975F30C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2573675F315
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjGXKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S230097AbjGXK1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjGXKZH (ORCPT
+        with ESMTP id S231548AbjGXK1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:25:07 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2073.outbound.protection.outlook.com [40.107.13.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631E955A6;
-        Mon, 24 Jul 2023 03:19:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n20Gn97eILoSkcbOWWV9rTzAvvIvUCgOtxIDhWnaSyNLR3r73xHM3X8SJJpjyN0n5mD5nXIOEihhrwHYnKDkGJQvQnGcfP181EeZdvIUb9EIjyeQR1dvrV9SJify1aglVjUNGvmbt2UUHEj2RvpUeS8PrxzXygLA+RkMpNh6qm9QlV5EySQdTqOrZmWtqJJH65Y8S9ZGMMDlSeREpNuO6BUcUHvridjOC0+3vxxGvupv6lT+7bUneDIaueCF2eErRKEwDBMlw7bdmbAosV/6z1Q5gLgZdarBvFCAAE4s5NbWSh3LlVC2OH1cDoc93hDUdz1OqeuphoogWpjIVIHutA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SSEHluESptW40Sh0zq8kibsH8845Eblb2O8n41x5AGk=;
- b=YX25XOJy8mhhgiqQ8t8VhLd3RaaypPVYf0m9r92QCxQO50WKk2HUzeccDxBys3lUGFcVDDvCeaj+DmpJCcJAvan8WdFa1Qxkmre+aqhKe9lbOLI88ne8zopTXy8+0nBm3uAJ4Hwm9me9Qkasz08csClw2MPCfzUOu7bwHgqFL3K0h6tIHcNrjQbFSmITSnU2IctbpVWKm/KI6tpqc2sVZcdVi+M4kB6CEfmjhRqh3oVIsdUw+Txo2+IRnyzZ/U+vOJ5agWMWCEWObIsITaYjdrOBb7+NGNPtrZIGyks7dA30bJPNvbtXD0i6BkKlkulx1KUtA1oDdfTuDwgkkFGV5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SSEHluESptW40Sh0zq8kibsH8845Eblb2O8n41x5AGk=;
- b=PwNbmJKQrsCa8KS2MjIvKVk6IKjlkh9iUFUbz2wE/cLgRW4sBwVT4/SPpZ/RVMxo9fOLvjRkrEM0HfOaEF/9ELd+63dGNRDM1AJmsBW7M5ejfY+naTbvljTWx7/zTkv4aOwOiGGtro0IPgemhaQ5QM3d0/Oaej82G60mHpVAMEo=
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
- by DU2PR04MB8776.eurprd04.prod.outlook.com (2603:10a6:10:2e3::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 10:19:48 +0000
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::7f26:a98a:b8c5:f620]) by VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::7f26:a98a:b8c5:f620%4]) with mapi id 15.20.6609.031; Mon, 24 Jul 2023
- 10:19:48 +0000
-From:   Carlos Song <carlos.song@nxp.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Bough Chen <haibo.chen@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH] i2c: imx-lpi2c: add debug message when i2c
- peripheral clk doesn't work
-Thread-Topic: [EXT] Re: [PATCH] i2c: imx-lpi2c: add debug message when i2c
- peripheral clk doesn't work
-Thread-Index: AQHZkf4EMwNjG9kys0GQYjQZG+GhNq+JfK0AgD+PLXA=
-Date:   Mon, 24 Jul 2023 10:19:48 +0000
-Message-ID: <VI1PR04MB5005DC14A78D364FABEF6E3EE802A@VI1PR04MB5005.eurprd04.prod.outlook.com>
-References: <20230529072316.3605989-1-carlos.song@nxp.com>
- <20230613233944.673syh3cjykvygfl@intel.intel>
-In-Reply-To: <20230613233944.673syh3cjykvygfl@intel.intel>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR04MB5005:EE_|DU2PR04MB8776:EE_
-x-ms-office365-filtering-correlation-id: 9ea14470-f843-4986-0c9a-08db8c2f8292
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fd1jejJFG78QQrKFXlJUFCcWSQG/x8fdeYlPFglWXqzvgBcmd8osIyVVCJFo2pJnNHruEh05AhvGMoT0UvfuE/B3rMSArw7+UbU1sWDEgZFvf0rm5EV6s8vV2JhmAv5rtGXVWka5yusQg33vfTEkRp7dq7HXBp7y1U1mZ3TzepgQy3+WKVpBGQPNSClSR0TOsH9npmdyfs8P/5zKC+gg73/+cLvqfaOZec7LV4zBoNR4WxTchLwxL/ACM132Qv8eOpegyWOlh2lQzw5Vt5kVF8C50kKyfBIknFoHR9H/UmRaQFVR7i2ftwXZyauyiMh1EOUHCTuzTF9Txb39Y4NlxDnKvOKYbWHDaX0EFYIP99pBiI2AMe7ehVRumraVitP/n67qbql5x9HyxxLGkJQpl1XZfVidUMzRcm8rzgBeIPRDcKIFuKMO/fzH7R+sa6SEORR5lmaMFHwZJCPnnJfnWIx0CKVdLgmXAgSDMEdsCAa5uGAHA33Wt8cgNJBk+QcehLJaklS5mjGqSaScmcBhMXDMXHvhH6qy6rg22P4Z/di6XicHO/0CCe3waO5Ca2Fg41YovUC734sXdmCzzpaZDj3sclTfA2Z0kav+gNqO1ZTLJOR4wiUXVOc6fBFQAhsF
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(451199021)(71200400001)(9686003)(7696005)(54906003)(478600001)(53546011)(6506007)(26005)(44832011)(15650500001)(2906002)(41300700001)(316002)(6916009)(66946007)(66476007)(64756008)(76116006)(4326008)(66446008)(8676002)(8936002)(52536014)(5660300002)(66556008)(122000001)(38100700002)(38070700005)(86362001)(83380400001)(33656002)(55016003)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qlNV8dKQj7XcXISKtpC915UERhmvpt9F6VHg0RI2EfnbedPDh2/kt+VviWRz?=
- =?us-ascii?Q?W1F3dSJkMNcWCNN5U67mvn54gBAyVUyIZPiSONqlXglryUp1JYF8sKSWlvmK?=
- =?us-ascii?Q?GN7igZX0qHwmBp0Gqy69nasRAFjjWHo/GBNSdWoTllx85Ez1J3JVJb3fC7L7?=
- =?us-ascii?Q?8JnCah1pvmnunpTfBC51SMC3cLb/KmjT+I4cjRBF4LAGNjAZ+eeJOIRl2Hyf?=
- =?us-ascii?Q?tL+ksYCwx1C3KDAQ2+9LZGTA/qq4PNwkTikBaENihkX61JaSCL9Q/3oU8LWd?=
- =?us-ascii?Q?5lunPOTV0MoG2UTI094s/VoHfW55YHG9lb4ZnkLpScXfE075yTd5YcmVJFXG?=
- =?us-ascii?Q?c2BFPLkt1JPa01kA22MxgxhWMPAkpuNpWQ0I0LYy4WPf0tTopN7foXov/At0?=
- =?us-ascii?Q?SeA9CP2Vv/Ba1NUw0Eb+XF7J/JEPwDTXauUV4lVwCBevCu3FCkjMx8+FWHd3?=
- =?us-ascii?Q?V1kEoHKOPgmguDajitvU4oMrvmjT6K8AgM9gdHT4ZZV9NdJ7eh1tcBxIJ1sf?=
- =?us-ascii?Q?KoaWXd0deeEq2v5Duzyc6CRB5ptQMp8fkFuQfQp9pNIXMukNvTqqeQxNY0qd?=
- =?us-ascii?Q?xb63O4+ZnNBzwYncm46cSnOSfSYToBSc0J38c8SeJDgVHjd7NBVDwlyRyI3k?=
- =?us-ascii?Q?y8tsCZcf2o13MFn8IBLrQpPDRAvhpJw/JIRmctKFGvIi7hTDidcGI6FwQ3K6?=
- =?us-ascii?Q?x+SIHe3PMpnphoFl+J24g77VW6/BLkYqiRedVjhSbp+YmlDm6UMkTZbatB/J?=
- =?us-ascii?Q?2D8cuycb9KXBOel4Gy5f5dVUR/J09qZbHgQVXIMJc56R5YD4WjSu0cJivXHu?=
- =?us-ascii?Q?1yaE8xSQkWMOVszC637Z/Y31fuswQ1yQVABPD3Mt9tziGS1jxKBkpmtJWsaH?=
- =?us-ascii?Q?pPZMVgP2c+pfcIeQI4oaBHjOZ1Hw9i718XxaHeUzirsuubBvRSHGoi7XM8/d?=
- =?us-ascii?Q?bds6TnUBs8BvbzytlgKIsGnRvPPIg50Hrb4nUNUo9mOwUJyEw2//GpsYnFGa?=
- =?us-ascii?Q?yp9p+xpIq73c2dNl82Vds8T9293JTRaP95Z9cwyBZ0y6fCHuRI9dynLGMSx1?=
- =?us-ascii?Q?PGfUc33j/JporQEoQIMn5IDgdjDLR/W+/+732ATRTtVZnuhS4HCnfhZrEsH7?=
- =?us-ascii?Q?97F9w+Vxf5WzXO+8a4bDN/pHhT2id/93UfKqweBqOeKhRVBTK9etTFik3BWL?=
- =?us-ascii?Q?Xx0VLexHPairALMcN6KvQiB/PySlhTfJgUKw09CgUZnGuy/Unb9unglkK0fA?=
- =?us-ascii?Q?QS2/fSfTYDHX+6zpU/S7WbqxugazehFhTTwKQSClEbqzO3Co/sStlD5UZLsr?=
- =?us-ascii?Q?4lb8N4lEVlsNHd+bZJ+vNZ3e6DR9AW54c5qqcGn0WmPgM4jx8//JfT0UEODQ?=
- =?us-ascii?Q?axOVIKkFuE5WLy/eLuHfNGiR3JOOuauFIpzWP/wtwFI37aU4duBcAAN2YtkN?=
- =?us-ascii?Q?D+LVNPk1nVdFKQSDr1vsPbXHMpduxfFqbtpVad0oaDDF5YnygbV9fwjR82ID?=
- =?us-ascii?Q?Vv34fd8Ijg+fbUNedYJastDL6wb7cW0/n//6ihSkQEIG2P11EPiAawzMQcxq?=
- =?us-ascii?Q?rp0Tv7xyxdNPLzGeUNxL6i/RkLtguoD4E5d38x4x?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 24 Jul 2023 06:27:24 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CF94686
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690194172; x=1721730172;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=LcLqaFTdk7qX3bHjYaBWnXOJ5Env65VjbRzmFY3G56Y=;
+  b=gSZL7ssX9qG6Pwmp1nW/I4+IlT/SNTYQsUVNAXpolR4NQdebpVIz0awd
+   VouVGfytef8P8duN2m/Rmop9fkx1AUNXDbskXExGn/DFa6/xvvMRLRoJf
+   qtMOR9e8AjEgB77yPQUB0J26a3ATV7NFgaxucPBdgPhuPAEOTblJOwODi
+   9fIf8KjKrCciixvGSs+jbFNQ5tfQH3RyUXpZtfVvUCRbOz6leai1pIMRt
+   T9pgGNt3FKBO9Db/YChGB3J+5H163/mErx5U5o8oARqoYakniCZpuAOoV
+   mjszwdl/51As8AoKqwa2J/OmJXRKEAj+de0kvEk9++1XL7pO3CQZEsZOt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="347005505"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="347005505"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 03:20:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="790907428"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="790907428"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 03:20:53 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNsgO-0009g8-3A;
+        Mon, 24 Jul 2023 10:20:52 +0000
+Date:   Mon, 24 Jul 2023 18:20:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: fs/buffer.c:2342:1: warning: the frame size of 2080 bytes is larger
+ than 1024 bytes
+Message-ID: <202307241811.WV6uvzLa-lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ea14470-f843-4986-0c9a-08db8c2f8292
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 10:19:48.4703
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aYS0PnycUzrn07FWNFKatpsxR1bGGCdz7Whi8y9HRYvN7yDNiKGCOpb2NYlxN6/bX6xyONNxAPlxUX2JGY724A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8776
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andi
+Hi Christophe,
 
-> -----Original Message-----
-> From: Andi Shyti <andi.shyti@kernel.org>
-> Sent: Wednesday, June 14, 2023 7:40 AM
-> To: Carlos Song <carlos.song@nxp.com>
-> Cc: Aisheng Dong <aisheng.dong@nxp.com>; shawnguo@kernel.org;
-> s.hauer@pengutronix.de; kernel@pengutronix.de; festevam@gmail.com; Clark
-> Wang <xiaoning.wang@nxp.com>; Bough Chen <haibo.chen@nxp.com>;
-> dl-linux-imx <linux-imx@nxp.com>; linux-i2c@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
-> Subject: [EXT] Re: [PATCH] i2c: imx-lpi2c: add debug message when i2c
-> peripheral clk doesn't work
->=20
-> Caution: This is an external email. Please take care when clicking links =
-or
-> opening attachments. When in doubt, report the message using the 'Report =
-this
-> email' button
->=20
->=20
-> Hi,
->=20
-> On Mon, May 29, 2023 at 03:23:16PM +0800, carlos.song@nxp.com wrote:
-> > From: Gao Pan <pandy.gao@nxp.com>
-> >
-> > Add debug message when i2c peripheral clk rate is 0, then directly
-> > return -EINVAL.
-> >
-> > Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
-> > Signed-off-by: Gao Pan <pandy.gao@nxp.com>
-> > Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> > ---
-> >  drivers/i2c/busses/i2c-imx-lpi2c.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > index 11240bf8e8e2..62111fe9f207 100644
-> > --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > @@ -209,6 +209,11 @@ static int lpi2c_imx_config(struct lpi2c_imx_struc=
-t
-> *lpi2c_imx)
-> >       lpi2c_imx_set_mode(lpi2c_imx);
-> >
-> >       clk_rate =3D clk_get_rate(lpi2c_imx->clks[0].clk);
-> > +     if (!clk_rate) {
-> > +             dev_dbg(&lpi2c_imx->adapter.dev, "clk_per rate is 0\n");
-> > +             return -EINVAL;
-> > +     }
->=20
-> should this rather be a dev_err?
->=20
-Carlos: Yes, I will fix it.
-> And, BTW, did you actually hit this?
->=20
-Carlos: No, not frequently. But I think it will be safer maybe.
-> Andi
->=20
-> > +
-> >       if (lpi2c_imx->mode =3D=3D HS || lpi2c_imx->mode =3D=3D ULTRA_FAS=
-T)
-> >               filt =3D 0;
-> >       else
-> > --
-> > 2.34.1
-> >
+First bad commit (maybe != root cause):
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
+commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
+date:   2 years, 6 months ago
+config: powerpc-randconfig-r035-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241811.WV6uvzLa-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241811.WV6uvzLa-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307241811.WV6uvzLa-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   fs/buffer.c: In function 'block_read_full_page':
+>> fs/buffer.c:2342:1: warning: the frame size of 2080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+    2342 | }
+         | ^
+--
+   fs/exfat/fatent.c: In function 'exfat_zeroed_cluster':
+>> fs/exfat/fatent.c:277:1: warning: the frame size of 2064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     277 | }
+         | ^
+--
+   fs/ext4/move_extent.c: In function 'mext_page_mkuptodate':
+>> fs/ext4/move_extent.c:227:1: warning: the frame size of 2064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     227 | }
+         | ^
+--
+   fs/fat/dir.c: In function 'fat_alloc_new_dir':
+>> fs/fat/dir.c:1195:1: warning: the frame size of 2064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+    1195 | }
+         | ^
+   fs/fat/dir.c: In function 'fat_add_new_entries':
+   fs/fat/dir.c:1279:1: warning: the frame size of 2104 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+    1279 | }
+         | ^
+--
+   fs/fat/fatent.c: In function 'fat_free_clusters':
+>> fs/fat/fatent.c:632:1: warning: the frame size of 2112 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     632 | }
+         | ^
+   fs/fat/fatent.c: In function 'fat_alloc_clusters':
+   fs/fat/fatent.c:550:1: warning: the frame size of 2128 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     550 | }
+         | ^
+--
+   fs/ntfs/mft.c: In function 'ntfs_sync_mft_mirror':
+>> fs/ntfs/mft.c:627:1: warning: the frame size of 2120 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     627 | }
+         | ^
+   fs/ntfs/mft.c: In function 'write_mft_record_nolock':
+   fs/ntfs/mft.c:839:1: warning: the frame size of 2128 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     839 | }
+         | ^
+--
+   fs/ntfs/aops.c: In function 'ntfs_read_block':
+>> fs/ntfs/aops.c:358:1: warning: the frame size of 2184 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     358 | }
+         | ^
+   fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+   fs/ntfs/aops.c:1311:1: warning: the frame size of 4224 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+    1311 | }
+         | ^
+
+
+vim +2342 fs/buffer.c
+
+8ab22b9abb5c55 Hisashi Hifumi     2008-07-28  2251  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2252  /*
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2253   * Generic "read page" function for block devices that have the normal
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2254   * get_block functionality. This is most of the block device filesystems.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2255   * Reads the page asynchronously --- the unlock_buffer() and
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2256   * set/clear_buffer_uptodate() functions propagate buffer state into the
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2257   * page struct once IO has completed.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2258   */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2259  int block_read_full_page(struct page *page, get_block_t *get_block)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2260  {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2261  	struct inode *inode = page->mapping->host;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2262  	sector_t iblock, lblock;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2263  	struct buffer_head *bh, *head, *arr[MAX_BUF_PER_PAGE];
+45bce8f3e3436b Linus Torvalds     2012-11-29  2264  	unsigned int blocksize, bbits;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2265  	int nr, i;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2266  	int fully_mapped = 1;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2267  
+45bce8f3e3436b Linus Torvalds     2012-11-29  2268  	head = create_page_buffers(page, inode, 0);
+45bce8f3e3436b Linus Torvalds     2012-11-29  2269  	blocksize = head->b_size;
+45bce8f3e3436b Linus Torvalds     2012-11-29  2270  	bbits = block_size_bits(blocksize);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2271  
+09cbfeaf1a5a67 Kirill A. Shutemov 2016-04-01  2272  	iblock = (sector_t)page->index << (PAGE_SHIFT - bbits);
+45bce8f3e3436b Linus Torvalds     2012-11-29  2273  	lblock = (i_size_read(inode)+blocksize-1) >> bbits;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2274  	bh = head;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2275  	nr = 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2276  	i = 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2277  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2278  	do {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2279  		if (buffer_uptodate(bh))
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2280  			continue;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2281  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2282  		if (!buffer_mapped(bh)) {
+c64610ba585fab Andrew Morton      2005-05-16  2283  			int err = 0;
+c64610ba585fab Andrew Morton      2005-05-16  2284  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2285  			fully_mapped = 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2286  			if (iblock < lblock) {
+b0cf2321c65991 Badari Pulavarty   2006-03-26  2287  				WARN_ON(bh->b_size != blocksize);
+c64610ba585fab Andrew Morton      2005-05-16  2288  				err = get_block(inode, iblock, bh, 0);
+c64610ba585fab Andrew Morton      2005-05-16  2289  				if (err)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2290  					SetPageError(page);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2291  			}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2292  			if (!buffer_mapped(bh)) {
+eebd2aa355692a Christoph Lameter  2008-02-04  2293  				zero_user(page, i * blocksize, blocksize);
+c64610ba585fab Andrew Morton      2005-05-16  2294  				if (!err)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2295  					set_buffer_uptodate(bh);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2296  				continue;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2297  			}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2298  			/*
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2299  			 * get_block() might have updated the buffer
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2300  			 * synchronously
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2301  			 */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2302  			if (buffer_uptodate(bh))
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2303  				continue;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2304  		}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2305  		arr[nr++] = bh;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2306  	} while (i++, iblock++, (bh = bh->b_this_page) != head);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2307  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2308  	if (fully_mapped)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2309  		SetPageMappedToDisk(page);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2310  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2311  	if (!nr) {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2312  		/*
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2313  		 * All buffers are uptodate - we can set the page uptodate
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2314  		 * as well. But not if get_block() returned an error.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2315  		 */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2316  		if (!PageError(page))
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2317  			SetPageUptodate(page);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2318  		unlock_page(page);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2319  		return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2320  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2321  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2322  	/* Stage two: lock the buffers */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2323  	for (i = 0; i < nr; i++) {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2324  		bh = arr[i];
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2325  		lock_buffer(bh);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2326  		mark_buffer_async_read(bh);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2327  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2328  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2329  	/*
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2330  	 * Stage 3: start the IO.  Check for uptodateness
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2331  	 * inside the buffer lock in case another process reading
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2332  	 * the underlying blockdev brought it uptodate (the sct fix).
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2333  	 */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2334  	for (i = 0; i < nr; i++) {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2335  		bh = arr[i];
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2336  		if (buffer_uptodate(bh))
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2337  			end_buffer_async_read(bh, 1);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2338  		else
+2a222ca992c35a Mike Christie      2016-06-05  2339  			submit_bh(REQ_OP_READ, 0, bh);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2340  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2341  	return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16 @2342  }
+1fe72eaa0f46a0 H Hartley Sweeten  2009-09-22  2343  EXPORT_SYMBOL(block_read_full_page);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  2344  
+
+:::::: The code at line 2342 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
