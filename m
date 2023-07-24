@@ -2,67 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221F175E9D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7483075E9DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbjGXCgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        id S230021AbjGXCmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjGXCgA (ORCPT
+        with ESMTP id S229809AbjGXCmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:36:00 -0400
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABD9A8;
-        Sun, 23 Jul 2023 19:35:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690166140; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=ZrfJnBT5PPj8AQcHREThWNPJLe65zplYQtOkkmEtTNffVeDPqW52EA6Sb44jEJpshU+yjIfLsMnR9z/7QlZG3i55dJ3XcEIZRSWLxcvqLTNLG/WeZpTFnGVUjpaG7YBAP03j379c9czDO2knHTYz7dqEeL/InyW1+sQOSmQh/Wk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1690166140; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=fCs+8rOY6OqljSgwbEboZzCQYQ5WTAbKJVJQ1Ycsj3g=; 
-        b=Fc0n3Ol7lSuXWKrTLesgul+1sbSRWV2RYE45B4hOY0RvNPTCzsBqqXEx7+2xRtx43BG0ZQEBL9ihk/H60KYOEnNdch75Fs2VFtzUaDKTPJghps7Qz4zPNt9SiymNXD1oXiIFKWx7q9RFp/DMle9ONj8Numa8+yPgUwAiaVtQoPg=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1690166140;
-        s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-        bh=fCs+8rOY6OqljSgwbEboZzCQYQ5WTAbKJVJQ1Ycsj3g=;
-        b=AGDvFk+s2HWapb+S9c4ETXFzmDEud1aAcG8ABgHS2tBYFOVqKkE94P27azoRUycu
-        CgjiC9IMEl/9dP0SXsSIvN5wlvPP+QfMq5/EvnMVCAWWlSpATElCzSJ6EeNEMuKuVpB
-        VdBgvD0mol9cimeF2rav1nUyOmuIyfXEudsKK7oGCHQYB6up1E1DzNBMskAOE/cw26Y
-        p2IQIeZC3yXsZQO1mZc9F94N41mzgIFpvUy15vZt4EvCKCOp3qZbYg5HUfc/N2fTH+w
-        kHIhS9NseQ7apcbkgCpAu2OHiiZkgnRb0Vfy8+PTgitUgLBYkiSvbktrDfTXPregYMn
-        R8fIiLF/OQ==
-Received: from edelgard.fodlan.icenowy.me (120.85.97.227 [120.85.97.227]) by mx.zohomail.com
-        with SMTPS id 1690166138874966.9395361401032; Sun, 23 Jul 2023 19:35:38 -0700 (PDT)
-Message-ID: <4633cc276c12081ca6059a537f549d4ec0f61d7d.camel@icenowy.me>
-Subject: Re: [PATCH RESEND RESEND] thermal/of: support thermal zones w/o
- trips subnode
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Date:   Mon, 24 Jul 2023 10:35:34 +0800
-In-Reply-To: <ZL1BtOZp/2Sw5sFL@finisterre.sirena.org.uk>
-References: <20230722122534.2279689-1-zhengxingda@iscas.ac.cn>
-         <ZLw4CnzLI/QHPGWx@finisterre.sirena.org.uk>
-         <6d1c0915-1485-d9d6-9fff-0413fb16bd3f@linaro.org>
-         <ZL1BtOZp/2Sw5sFL@finisterre.sirena.org.uk>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
+        Sun, 23 Jul 2023 22:42:13 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44670E6
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:42:08 -0700 (PDT)
+Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R8PVV56rCzNmW4;
+        Mon, 24 Jul 2023 10:38:42 +0800 (CST)
+Received: from [10.67.103.158] (10.67.103.158) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 10:42:04 +0800
+Subject: Re: [PATCH v11 1/4] vfio/migration: Add debugfs to live migration
+ driver
+To:     =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@redhat.com>,
+        <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>
+CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <20230630092457.54902-1-liulongfang@huawei.com>
+ <20230630092457.54902-2-liulongfang@huawei.com>
+ <04b41307-b1a9-62d0-4996-a8c655b46892@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <77467797-f609-6197-c359-d3192832e2e7@huawei.com>
+Date:   Mon, 24 Jul 2023 10:42:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
+In-Reply-To: <04b41307-b1a9-62d0-4996-a8c655b46892@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.103.158]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,84 +56,306 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E5=9C=A8 2023-07-23=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 16:05 +0100=EF=BC=
-=8CMark Brown=E5=86=99=E9=81=93=EF=BC=9A
-> On Sun, Jul 23, 2023 at 12:12:49PM +0200, Daniel Lezcano wrote:
-> > On 22/07/2023 22:11, Mark Brown wrote:
->=20
-> > > This makes sense to me - it allows people to see the reported
-> > > temperature even if there's no trips defined which seems more
-> > > helpful than refusing to register.
->=20
-> ...
->=20
-> > If the goal is to report the temperature only, then hwmon should be
-> > used
-> > instead.
->=20
-> Sure, that doesn't seem to be the case in the impacted systems though
-> -
-> AFAICT the issue with these is that it's a generic SoC DT that's not
-> fully fleshed out, either because more data is needed for the silicon
-> or
-> because the numbers need to be system specific for some reason.
+On 2023/7/19 1:45, Cédric Le Goater Wrote:
+> On 6/30/23 11:24, liulongfang wrote:
+>> From: Longfang Liu <liulongfang@huawei.com>
+>>
+>> There are multiple devices, software and operational steps involved
+>> in the process of live migration. An error occurred on any node may
+>> cause the live migration operation to fail.
+>> This complex process makes it very difficult to locate and analyze
+>> the cause when the function fails.
+>>
+>> In order to quickly locate the cause of the problem when the
+>> live migration fails, I added a set of debugfs to the vfio
+>> live migration driver.
+>>
+>>      +-------------------------------------------+
+>>      |                                           |
+>>      |                                           |
+>>      |                  QEMU                     |
+>>      |                                           |
+>>      |                                           |
+>>      +---+----------------------------+----------+
+>>          |      ^                     |      ^
+>>          |      |                     |      |
+>>          |      |                     |      |
+>>          v      |                     v      |
+>>       +---------+--+               +---------+--+
+>>       |src vfio_dev|               |dst vfio_dev|
+>>       +--+---------+               +--+---------+
+>>          |      ^                     |      ^
+>>          |      |                     |      |
+>>          v      |                     |      |
+>>     +-----------+----+           +-----------+----+
+>>     |src dev debugfs |           |dst dev debugfs |
+>>     +----------------+           +----------------+
+>>
+>> The entire debugfs directory will be based on the definition of
+>> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
+>> interfaces in vfio.h will be empty definitions, and the creation
+>> and initialization of the debugfs directory will not be executed.
+>>
+>>     vfio
+>>      |
+>>      +---<dev_name1>
+>>      |    +---migration
+>>      |        +--state
+>>      |        +--hisi_acc
+>>      |            +--attr
+>>      |            +--data
+>>      |            +--save
+>>      |            +--io_test
+>>      |
+>>      +---<dev_name2>
+>>           +---migration
+>>               +--state
+>>               +--hisi_acc
+>>                   +--attr
+>>                   +--data
+>>                   +--save
+>>                   +--io_test
+>>
+>> debugfs will create a public root directory "vfio" file.
+>> then create a dev_name() file for each live migration device.
+>> First, create a unified state acquisition file of "migration"
+>> in this device directory.
+>> Then, create a public live migration state lookup file "state"
+>> Finally, create a directory file based on the device type,
+>> and then create the device's own debugging files under
+>> this directory file.
+>>
+>> Here, HiSilicon accelerator creates three debug files:
+>> attr: used to export the attribute parameters of the
+>> current live migration device.
+>> data: used to export the live migration data of the current
+>> live migration device.
+>> save: used to read the current live migration device's data
+>> and save it to the driver.
+>> io_test: used to test the IO read and write for the driver.
+>>
+>> The live migration function of the current device can be tested by
+>> operating the debug files, and the functional status of the equipment
+>> and software at each stage can be tested step by step without
+>> performing the complete live migration function. And after the live
+>> migration is performed, the migration device data of the live migration
+>> can be obtained through the debug files.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>   drivers/vfio/Makefile       |  1 +
+>>   drivers/vfio/vfio.h         | 14 +++++++
+>>   drivers/vfio/vfio_debugfs.c | 78 +++++++++++++++++++++++++++++++++++++
+>>   drivers/vfio/vfio_main.c    |  9 ++++-
+>>   include/linux/vfio.h        |  7 ++++
+>>   5 files changed, 108 insertions(+), 1 deletion(-)
+>>   create mode 100644 drivers/vfio/vfio_debugfs.c
+>>
+>> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+>> index 66f418aef5a9..6829c58210dc 100644
+>> --- a/drivers/vfio/Makefile
+>> +++ b/drivers/vfio/Makefile
+>> @@ -7,6 +7,7 @@ vfio-y += vfio_main.o \
+>>   vfio-$(CONFIG_IOMMUFD) += iommufd.o
+>>   vfio-$(CONFIG_VFIO_CONTAINER) += container.o
+>>   vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
+>> +vfio-$(CONFIG_DEBUG_FS) += vfio_debugfs.o
+>>     obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
+>>   obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
+>> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
+>> index 7b19c621e0e6..729c52ef579a 100644
+>> --- a/drivers/vfio/vfio.h
+>> +++ b/drivers/vfio/vfio.h
+>> @@ -264,4 +264,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
+>>   }
+>>   #endif
+>>   +#ifdef CONFIG_DEBUG_FS
+>> +void vfio_debugfs_create_root(void);
+>> +void vfio_debugfs_remove_root(void);
+>> +
+>> +void vfio_device_debugfs_init(struct vfio_device *vdev);
+>> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
+>> +#else
+>> +static inline void vfio_debugfs_create_root(void) { }
+>> +static inline void vfio_debugfs_remove_root(void) { }
+>> +
+>> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
+>> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
+>> +#endif /* CONFIG_DEBUG_FS */
+>> +
+>>   #endif
+>> diff --git a/drivers/vfio/vfio_debugfs.c b/drivers/vfio/vfio_debugfs.c
+>> new file mode 100644
+>> index 000000000000..7bff30f76bd9
+>> --- /dev/null
+>> +++ b/drivers/vfio/vfio_debugfs.c
+>> @@ -0,0 +1,78 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2023, HiSilicon Ltd.
+>> + */
+>> +
+>> +#include <linux/device.h>
+>> +#include <linux/debugfs.h>
+>> +#include <linux/seq_file.h>
+>> +#include <linux/vfio.h>
+>> +#include "vfio.h"
+>> +
+>> +static struct dentry *vfio_debugfs_root;
+> 
+> This could be external to all VFIO. See comment below.
+>  
+>> +
+>> +static int vfio_device_state_read(struct seq_file *seq, void *data)
+>> +{
+>> +    struct device *vf_dev = seq->private;
+>> +    struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
+>> +    enum vfio_device_mig_state state;
+>> +    int ret;
+>> +
+>> +    ret = vdev->mig_ops->migration_get_state(vdev, &state);
+>> +    if (ret)
+>> +        return -EINVAL;
+>> +
+>> +    switch (state) {
+>> +    case VFIO_DEVICE_STATE_RUNNING:
+>> +        seq_printf(seq, "%s\n", "RUNNING");
+>> +        break;
+>> +    case VFIO_DEVICE_STATE_STOP_COPY:
+>> +        seq_printf(seq, "%s\n", "STOP_COPY");
+>> +        break;
+>> +    case VFIO_DEVICE_STATE_STOP:
+>> +        seq_printf(seq, "%s\n", "STOP");
+>> +        break;
+>> +    case VFIO_DEVICE_STATE_RESUMING:
+>> +        seq_printf(seq, "%s\n", "RESUMING");
+>> +        break;
+>> +    case VFIO_DEVICE_STATE_RUNNING_P2P:
+>> +        seq_printf(seq, "%s\n", "RESUMING_P2P");
+>> +        break;
+>> +    case VFIO_DEVICE_STATE_ERROR:
+>> +        seq_printf(seq, "%s\n", "ERROR");
+>> +        break;
+>> +    default:
+>> +        seq_printf(seq, "%s\n", "Invalid");
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +void vfio_device_debugfs_init(struct vfio_device *vdev)
+>> +{
+>> +    struct dentry *vfio_dev_migration = NULL;
+>> +    struct device *dev = &vdev->device;
+>> +
+>> +    vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
+>> +    vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
+>> +
+>> +    debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
+>> +                  vfio_device_state_read);
+>> +}
+>> +
+>> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
+>> +{
+>> +    debugfs_remove_recursive(vdev->debug_root);
+>> +}
+> 
+> I would simply use :
+> 
+>     if (IS_ENABLED(CONFIG_DEBUG_FS))
+>         debugfs_remove_recursive(vdev->debug_root);
+> 
+> where vfio_device_debugfs_exit() is called.
+> 
+These functions have been processed by CONFIG_DEBUG_FS in vfio.h.
+The effect is almost the same.
 
-Well maybe we should move all thermal sensors to hwmon framework, then
-let thermal framework pull the readout from hwmon; but two frameworks
-have the same functionality of reading temperature is the current
-situation, we shouldn't break things.
+>> +
+>> +void vfio_debugfs_create_root(void)
+>> +{
+>> +    vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
+>> +}
+>> +
+>> +void vfio_debugfs_remove_root(void)
+>> +{
+>> +    debugfs_remove_recursive(vfio_debugfs_root);
+>> +    vfio_debugfs_root = NULL;
+> ditto.
+>
+ditto.
 
->=20
-> > If the goal is to mitigate by userspace, then the trip point *must*
-> > be used
-> > to prevent the userspace polling the temperature. With the trip
-> > point the
-> > sensor will be set to fire an interrupt at the given trip
-> > temperature.
->=20
-> I'm not clear a trip point prevent userspace polling if it feels so
-> moved?=C2=A0 Is it just that it makes it more likely that someone will
-> implement something that polls?
->=20
-> > IOW, trip points are not optional
+>> +}
+>> +
+>> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+>> index f0ca33b2e1df..18d050ec9a12 100644
+>> --- a/drivers/vfio/vfio_main.c
+>> +++ b/drivers/vfio/vfio_main.c
+>> @@ -282,7 +282,8 @@ static int __vfio_register_dev(struct vfio_device *device,
+>>         /* Refcounting can't start until the driver calls register */
+>>       refcount_set(&device->refcount, 1);
+>> -
+>> +    if (device->mig_ops)
+>> +        vfio_device_debugfs_init(device);
+> 
+> I think we should prepare ground for more debugfs files than just migration
+> related things. Migration is clearly a very good candidate, but there could
+> be more. I have a couple out of tree patches to collect statistics on VMA
+> usage and resets for instance which could be included.
+> 
+> 
+> Thanks,
+> 
+> C.
 
-If it's declared optional in DT binding in a released kernel version,
-then it's optional, at least it should be optional in practice to
-support this legacy DT binding, and even there are DT files shipped
-with the kernel that utilizes the optionalness. Showing a warning is
-okay, but bailing out is not an option, according to my understand of
-current DT maintaince model.
+OK, this suggestion of yours is very good.
+I can put this judgment processing into vfio_device_debugfs_init().
+If your patch needs to add debugfs, you can add it in vfio_device_debugfs_init().
 
->=20
-> I can see printing a loud warning given that the system is not fully
-> configured (there's a warning already, I did nearly comment on this
-> patch downgrading it all the way to a debug log), perhaps even
-> suppressing the registraton of the userspace interface, but returning
-> a
-> failure to the registering driver feels like it's escalating the
-> problem
-> and complicating the driver code.=C2=A0 Suppressing the registration to
-> userspace seemed like it was adding more complexity in the core but
-> it
-> would avoid any potential confusion for userspace.
->=20
-> For me the main issue is the impact on devices that support multiple
-> thermal zones, in order to avoid having working zones stay registered
-> their drivers will all have to handle the possibility of some of the
-> zones failing to register due to missing configuration which is going
-> to
-
-Well I think in the case of Allwinner SoCs, the thermal sensor is a
-multi-channel one, so it's possible that some channels (e.g. the CPU
-sensor) are used for thermal throttling and other channels (e.g. the
-GPU one, considering Mali-400 is quite weak, and usually no DVFS
-equipped) are only used for monitoring.
-
-We should allow this kind of configuration in kernel. Moving everything
-to hwmon is an option, but it's a too gaint change.
-
-> add complexity both at both registration and runtime and be easy to
-> miss.
-> If the core just accepts the zones then whatever complexity there is
-> gets factored out into the core.
-
+Thanks,
+Longfang.
+> 
+>>       vfio_device_group_register(device);
+>>         return 0;
+>> @@ -339,6 +340,8 @@ void vfio_unregister_group_dev(struct vfio_device *device)
+>>           }
+>>       }
+>>   +    if (device->mig_ops)
+>> +        vfio_device_debugfs_exit(device);
+>>       vfio_device_group_unregister(device);
+>>         /* Balances device_add in register path */
+>> @@ -1415,7 +1418,10 @@ static int __init vfio_init(void)
+>>           goto err_dev_class;
+>>       }
+>>   +
+>> +    vfio_debugfs_create_root();
+>>       pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+>> +
+>>       return 0;
+>>     err_dev_class:
+>> @@ -1433,6 +1439,7 @@ static void __exit vfio_cleanup(void)
+>>       vfio_virqfd_exit();
+>>       vfio_group_cleanup();
+>>       xa_destroy(&vfio_device_set_xa);
+>> +    vfio_debugfs_remove_root();
+>>   }
+>>     module_init(vfio_init);
+>> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+>> index 2c137ea94a3e..a114b430be31 100644
+>> --- a/include/linux/vfio.h
+>> +++ b/include/linux/vfio.h
+>> @@ -62,6 +62,13 @@ struct vfio_device {
+>>       struct iommufd_device *iommufd_device;
+>>       bool iommufd_attached;
+>>   #endif
+>> +#ifdef CONFIG_DEBUG_FS
+>> +    /*
+>> +     * debug_root is a static property of the vfio_device
+>> +     * which must be set prior to registering the vfio_device.
+>> +     */
+>> +    struct dentry *debug_root;
+>> +#endif
+>>   };
+>>     /**
+> 
+> .
+> 
