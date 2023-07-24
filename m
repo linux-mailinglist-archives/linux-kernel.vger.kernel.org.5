@@ -2,195 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B0275F562
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74EA75F40B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjGXLqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
+        id S233296AbjGXK7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjGXLq3 (ORCPT
+        with ESMTP id S233269AbjGXK7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:46:29 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148F710C0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:46:23 -0700 (PDT)
+        Mon, 24 Jul 2023 06:59:43 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0E1120;
+        Mon, 24 Jul 2023 03:59:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690199184; x=1721735184;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VOs3zQoPAAHTESws9SXZpe783/xBPR/wE76kHJu8Rmg=;
-  b=Z3FAKQ70RD3JD1pbVJbrsLZbcJ4d+PfaupLhcBekBxBRCmdufWK0g62B
-   deteocMbTZWTadHHp//44E/91sAweG90eA44qxBUQUJ+9YhSI3Gnmb5yu
-   8HGVLGysgDrmW/lPHf3Wtm5w496HXag3XkquqnvyTBGYxhnF6RkNTTJ0g
-   nzNB9AWa3TiYBr03Zi4GJ2c1ZjZBTvcN8iFivQnpia6L0sAflRp1vzVRz
-   ueYHTorfsbBtNJHHB2tnyUcC6iNvnMT7Hb1kVwP+YjWwh2QzknDs21eO/
-   lsXg6D4/iu3BcU/iSwbSedyrDQwLmd2MeySb7H9e8Z7F5bouWejDT7aLm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398322226"
+  t=1690196379; x=1721732379;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xO88BGppNsOOGrLE9oWJosFPDbrRTt2P1G2mxcE66FY=;
+  b=P7g+vBSv6NRDAnnZFvVcGhAq+sEMmlGxLovTKI1/25BB+dt6pqQt8WK/
+   Lcl7OZzAotvm1Keu9jsLxEQiZGE+smtsQzXx0SSBOzwHthNcD+smOx/4m
+   PdYD66jBxSXzvw/e0GIxUL2gkHtGnjGXlcOeNHkCJcyfT7SyPgTYTsKie
+   FZ9nrellnFngAzQy3l6+kJ4bqmXLIj8AhmlJ9C82VojrzKy2+XGDXtQzr
+   jDTyVXny1F9d8u/6lUCQszdRUZL0IsQPBqP8yJPRcjZRuPDYFeOoqMKCy
+   vI575aYA3TF21iEjc+ZV0FoWMsk8i4omHEIyEZDlJW/vw3ZMj8RroUJJn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="347012203"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398322226"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:23 -0700
+   d="scan'208";a="347012203"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 03:59:38 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="760761962"
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="839409009"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="760761962"
-Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56]) ([10.249.37.56])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:20 -0700
-Message-ID: <a895de13-5320-953b-3d1c-34cee259d1d2@linux.intel.com>
-Date:   Mon, 24 Jul 2023 12:58:14 +0200
+   d="scan'208";a="839409009"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Jul 2023 03:59:37 -0700
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: [PATCH v4 0/4] iommufd: Add iommu hardware info reporting
+Date:   Mon, 24 Jul 2023 03:59:32 -0700
+Message-Id: <20230724105936.107042-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 7/9] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-8-maarten.lankhorst@linux.intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230719164141.228073-8-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+iommufd gives userspace the capability to manipulate iommu subsytem.
+e.g. DMA map/unmap etc. In the near future, it will support iommu nested
+translation. Different platform vendors have different implementation for
+the nested translation. For example, Intel VT-d supports using guest I/O
+page table as the stage-1 translation table. This requires guest I/O page
+table be compatible with hardware IOMMU. So before set up nested translation,
+userspace needs to know the hardware iommu information to understand the
+nested translation requirements.
 
+This series reports the iommu hardware information for a given device
+which has been bound to iommufd. It is preparation work for userspace to
+allocate hwpt for given device. Like the nested translation support[1].
 
-On 7/19/23 18:41, Maarten Lankhorst wrote:
-> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> the snd_hdac_i915_init into a workqueue.
-> 
-> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> probe function.
-> 
-> Changes since v1:
-> - Use dev_err_probe()
-> - Don't move probed_devs bitmap unnecessarily. (tiwai)
-> - Move snd_hdac_i915_init slightly upward, to ensure
->   it's always initialised before vga-switcheroo is called.
-> 
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> ---
->  sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
->  1 file changed, 30 insertions(+), 29 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 11cf9907f039f..e3128d7d742e7 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2147,6 +2147,36 @@ static int azx_probe(struct pci_dev *pci,
->  
->  	pci_set_drvdata(pci, card);
->  
-> +#ifdef CONFIG_SND_HDA_I915
-> +	/* bind with i915 if needed */
-> +	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
-> +		err = snd_hdac_i915_init(azx_bus(chip), false);
-> +		if (err < 0) {
-> +			/* if the controller is bound only with HDMI/DP
-> +			 * (for HSW and BDW), we need to abort the probe;
-> +			 * for other chips, still continue probing as other
-> +			 * codecs can be on the same link.
-> +			 */
-> +			if (CONTROLLER_IN_GPU(pci)) {
-> +				dev_err_probe(card->dev, err,
-> +					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
-> +
-> +				goto out_free;
-> +			} else {
-> +				/* don't bother any longer */
-> +				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
-> +			}
-> +		}
-> +
-> +		/* HSW/BDW controllers need this power */
-> +		if (CONTROLLER_IN_GPU(pci))
-> +			hda->need_i915_power = true;
-> +	}
-> +#else
-> +	if (CONTROLLER_IN_GPU(pci))
-> +		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
-> +#endif
+This series introduces an iommu op to report the iommu hardware info,
+and an ioctl IOMMU_GET_HW_INFO is added to report such hardware info to
+user. enum iommu_hw_info_type is defined to differentiate the iommu hardware
+info reported to user hence user can decode them. This series only adds the
+framework for iommu hw info reporting, the complete reporting path needs vendor
+specific definition and driver support. The full code is available in [1]
+as well.
 
-Is it intentional that the display_power() is left in the probe workqueue?
+[1] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
 
-this piece of code follows the stuff above in the existing code?
+Change log:
 
-/* Request display power well for the HDA controller or codec. For
- * Haswell/Broadwell, both the display HDA controller and codec need
- * this power. For other platforms, like Baytrail/Braswell, only the
- * display codec needs the power and it can be released after probe.
- */
-display_power(chip, true);
+v4:
+ - Rename ioctl to IOMMU_GET_HW_INFO and structure to iommu_hw_info
+ - Move the iommufd_get_hw_info handler to main.c
+ - Place iommu_hw_info prior to iommu_hwpt_alloc
+ - Update the function namings accordingly
+ - Update uapi kdocs
 
+v3: https://lore.kernel.org/linux-iommu/20230511143024.19542-1-yi.l.liu@intel.com/#t
+ - Add r-b from Baolu
+ - Rename IOMMU_HW_INFO_TYPE_DEFAULT to be IOMMU_HW_INFO_TYPE_NONE to
+   better suit what it means
+ - Let IOMMU_DEVICE_GET_HW_INFO succeed even the underlying iommu driver
+   does not have driver-specific data to report per below remark.
+   https://lore.kernel.org/kvm/ZAcwJSK%2F9UVI9LXu@nvidia.com/
 
+v2: https://lore.kernel.org/linux-iommu/20230309075358.571567-1-yi.l.liu@intel.com/
+ - Drop patch 05 of v1 as it is already covered by other series
+ - Rename the capability info to be iommu hardware info
 
-> +
->  	err = register_vga_switcheroo(chip);
->  	if (err < 0) {
->  		dev_err(card->dev, "Error registering vga_switcheroo client\n");
-> @@ -2174,11 +2204,6 @@ static int azx_probe(struct pci_dev *pci,
->  	}
->  #endif /* CONFIG_SND_HDA_PATCH_LOADER */
->  
-> -#ifndef CONFIG_SND_HDA_I915
-> -	if (CONTROLLER_IN_GPU(pci))
-> -		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
-> -#endif
-> -
->  	if (schedule_probe)
->  		schedule_delayed_work(&hda->probe_work, 0);
->  
-> @@ -2275,30 +2300,6 @@ static int azx_probe_continue(struct azx *chip)
->  	to_hda_bus(bus)->bus_probing = 1;
->  	hda->probe_continued = 1;
->  
-> -	/* bind with i915 if needed */
-> -	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
-> -		err = snd_hdac_i915_init(bus, true);
-> -		if (err < 0) {
-> -			/* if the controller is bound only with HDMI/DP
-> -			 * (for HSW and BDW), we need to abort the probe;
-> -			 * for other chips, still continue probing as other
-> -			 * codecs can be on the same link.
-> -			 */
-> -			if (CONTROLLER_IN_GPU(pci)) {
-> -				dev_err(chip->card->dev,
-> -					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
-> -				goto out_free;
-> -			} else {
-> -				/* don't bother any longer */
-> -				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
-> -			}
-> -		}
-> -
-> -		/* HSW/BDW controllers need this power */
-> -		if (CONTROLLER_IN_GPU(pci))
-> -			hda->need_i915_power = true;
-> -	}
-> -
->  	/* Request display power well for the HDA controller or codec. For
->  	 * Haswell/Broadwell, both the display HDA controller and codec need
->  	 * this power. For other platforms, like Baytrail/Braswell, only the
+v1: https://lore.kernel.org/linux-iommu/20230209041642.9346-1-yi.l.liu@intel.com/
+
+Regards,
+	Yi Liu
+
+Lu Baolu (1):
+  iommu: Add new iommu op to get iommu hardware information
+
+Nicolin Chen (1):
+  iommufd/selftest: Add coverage for IOMMU_GET_HW_INFO ioctl
+
+Yi Liu (2):
+  iommu: Move dev_iommu_ops() to private header
+  iommufd: Add IOMMU_GET_HW_INFO
+
+ drivers/iommu/iommu-priv.h                    | 11 +++
+ drivers/iommu/iommufd/device.c                |  1 +
+ drivers/iommu/iommufd/iommufd_test.h          |  9 +++
+ drivers/iommu/iommufd/main.c                  | 76 +++++++++++++++++++
+ drivers/iommu/iommufd/selftest.c              | 16 ++++
+ include/linux/iommu.h                         | 27 ++++---
+ include/uapi/linux/iommufd.h                  | 44 +++++++++++
+ tools/testing/selftests/iommu/iommufd.c       | 17 ++++-
+ tools/testing/selftests/iommu/iommufd_utils.h | 26 +++++++
+ 9 files changed, 215 insertions(+), 12 deletions(-)
+
+-- 
+2.34.1
+
