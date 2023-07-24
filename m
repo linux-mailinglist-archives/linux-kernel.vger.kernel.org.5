@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7184975E83D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B73675E968
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbjGXBjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        id S229676AbjGXB5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjGXBiV (ORCPT
+        with ESMTP id S231538AbjGXB5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:38:21 -0400
+        Sun, 23 Jul 2023 21:57:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A444C15;
-        Sun, 23 Jul 2023 18:34:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E92448B;
+        Sun, 23 Jul 2023 18:48:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CD0E60FBC;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8044A60F87;
+        Mon, 24 Jul 2023 01:32:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565C8C433CA;
         Mon, 24 Jul 2023 01:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A11C433C8;
-        Mon, 24 Jul 2023 01:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162340;
-        bh=eY/O38TIuagmxVVIvA3LPSw0LpehIlJSyyTA6jFqumk=;
+        s=k20201202; t=1690162341;
+        bh=fJ/v6nE3FjuX7BpEnE171zKvWt1oZT2470FJTuWFSzM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hX7lOpS8AocsmWeGwyOtoskE+HyJ5WWD+hNDWlefYFTBELyFry6LOdXcdT19mP9Q9
-         kfPPEbdBpPCT0D2fYL3KOB6N5YKeUf8521fVWot/bqXU5eJfAF2HZRqo95/Gg1TLGB
-         iOqSpJgeTTZQmDxQMa7WNfk/7KOb/cJLK1mdWCj8LzVpvG3emupzDq8ydRKSvF8KrE
-         9gb17vACv813+Gg903QQky1dn2O0boOSPDnbVAD2IEpl7NqpMemYbnnybeZKVDPfKk
-         IMENn7tTjnvsmG8g/G2bcM6Qn3YrsqJWL+hQupTiKPF17bo2MwVd+zi5R+CljyZtlb
-         m4kpKHKAOa1QA==
+        b=aUZ0joS53VZIelbnrpMCBQP6e4A1f5NlcpJqeUpIE3UFYaLRafa8BdUfekN86H8TQ
+         3Zzkinmjqhzj9DQ5RPT74qobR3Utbyt0zbpSkESv0NAMdaaTUfyIKWlOfQbg+yzDX4
+         q+duBapedY1Mbt3MrS59YhE/I6pOwRby5a+wWAa71alsRCpXDsEb2uurhLCAboeT7B
+         5oIvtJqys6wZ/yGjuP0sef5e3qwveYDv3vW7Ur4cLlYWgChIjEM2LjdYtl2YEqMWlZ
+         8vk8fJPc+28XU3urNEvNPgsMDMC+ASl4x7U2yLM5DEaGDp41x0P45yeNR3bPkeP3TW
+         vX08iBK6qmoEw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jia-Ju Bai <baijiaju@buaa.edu.cn>,
+Cc:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        syzbot <syzbot+89dbb3a789a5b9711793@syzkaller.appspotmail.com>,
         Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.4 29/40] fs: ntfs3: Fix possible null-pointer dereferences in mi_read()
-Date:   Sun, 23 Jul 2023 21:31:29 -0400
-Message-Id: <20230724013140.2327815-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 30/40] fs/ntfs3: Use __GFP_NOWARN allocation at ntfs_load_attr_list()
+Date:   Sun, 23 Jul 2023 21:31:30 -0400
+Message-Id: <20230724013140.2327815-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
 References: <20230724013140.2327815-1-sashal@kernel.org>
@@ -59,60 +60,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju@buaa.edu.cn>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit 97498cd610c0d030a7bd49a7efad974790661162 ]
+[ Upstream commit ea303f72d70ce2f0b0aa94ab127085289768c5a6 ]
 
-In a previous commit 2681631c2973 ("fs/ntfs3: Add null pointer check to
-attr_load_runs_vcn"), ni can be NULL in attr_load_runs_vcn(), and thus it
-should be checked before being used.
+syzbot is reporting too large allocation at ntfs_load_attr_list(), for
+a crafted filesystem can have huge data_size.
 
-However, in the call stack of this commit, mft_ni in mi_read() is
-aliased with ni in attr_load_runs_vcn(), and it is also used in
-mi_read() at two places:
-
-mi_read()
-  rw_lock = &mft_ni->file.run_lock -> No check
-  attr_load_runs_vcn(mft_ni, ...)
-    ni (namely mft_ni) is checked in the previous commit
-  attr_load_runs_vcn(..., &mft_ni->file.run) -> No check
-
-Thus, to avoid possible null-pointer dereferences, the related checks
-should be added.
-
-These bugs are reported by a static analysis tool implemented by myself,
-and they are found by extending a known bug fixed in the previous commit.
-Thus, they could be theoretical bugs.
-
-Signed-off-by: Jia-Ju Bai <baijiaju@buaa.edu.cn>
+Reported-by: syzbot <syzbot+89dbb3a789a5b9711793@syzkaller.appspotmail.com>
+Link: https://syzkaller.appspot.com/bug?extid=89dbb3a789a5b9711793
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/record.c | 4 ++--
+ fs/ntfs3/attrlist.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 2a281cead2bcc..7060f784c2d72 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -124,7 +124,7 @@ int mi_read(struct mft_inode *mi, bool is_mft)
- 	struct rw_semaphore *rw_lock = NULL;
+diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+index c0c6bcbc8c05c..81c22df27c725 100644
+--- a/fs/ntfs3/attrlist.c
++++ b/fs/ntfs3/attrlist.c
+@@ -52,7 +52,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
  
- 	if (is_mounted(sbi)) {
--		if (!is_mft) {
-+		if (!is_mft && mft_ni) {
- 			rw_lock = &mft_ni->file.run_lock;
- 			down_read(rw_lock);
- 		}
-@@ -148,7 +148,7 @@ int mi_read(struct mft_inode *mi, bool is_mft)
- 		ni_lock(mft_ni);
- 		down_write(rw_lock);
- 	}
--	err = attr_load_runs_vcn(mft_ni, ATTR_DATA, NULL, 0, &mft_ni->file.run,
-+	err = attr_load_runs_vcn(mft_ni, ATTR_DATA, NULL, 0, run,
- 				 vbo >> sbi->cluster_bits);
- 	if (rw_lock) {
- 		up_write(rw_lock);
+ 	if (!attr->non_res) {
+ 		lsize = le32_to_cpu(attr->res.data_size);
+-		le = kmalloc(al_aligned(lsize), GFP_NOFS);
++		le = kmalloc(al_aligned(lsize), GFP_NOFS | __GFP_NOWARN);
+ 		if (!le) {
+ 			err = -ENOMEM;
+ 			goto out;
+@@ -80,7 +80,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
+ 		if (err < 0)
+ 			goto out;
+ 
+-		le = kmalloc(al_aligned(lsize), GFP_NOFS);
++		le = kmalloc(al_aligned(lsize), GFP_NOFS | __GFP_NOWARN);
+ 		if (!le) {
+ 			err = -ENOMEM;
+ 			goto out;
 -- 
 2.39.2
 
