@@ -2,165 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB2875F357
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F7F75F35F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjGXKbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S230268AbjGXKd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjGXKbQ (ORCPT
+        with ESMTP id S231778AbjGXKdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:31:16 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E6510F
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:31:10 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so58163431fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690194669; x=1690799469;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=RiHIilmtHLP/QavO+OGO0GXl45X3ep1zM9w6gfMfPkI=;
-        b=hb13hJgDOvjkCYKa88uF+9cle2s96UA6EUmELfaeULfNKkImo3jN7y6WVsFAZIhKGS
-         /wn7vUinRseTBqMz6b1uSvW6etMkD+xtfiONU6KDJU8ss7W+r/QNIx4Ga7h1DCbDqlKp
-         7BaJ7GpNlXoHJNNGNAiaqpPvy/TtkVOdgX01W0VNKMMbzIRy1u9toFWkUzY+aArm3egc
-         qNfhJ0Ulj2cBHN/ftuQnjzhFXLHZR5711P7pEzwC4/EmAKsCCM9bofj3s8eiXqUlvuWS
-         Y1zc8El9RX6ikctkQjzI5fkATFaq1lctpvdShJkhWYQOyB31ins7IZ2B8ObXu9wdPsG4
-         p8Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690194669; x=1690799469;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RiHIilmtHLP/QavO+OGO0GXl45X3ep1zM9w6gfMfPkI=;
-        b=ZlvaLHwjj90TgEep076QxUTcf2XgS3GJEUgYqIyXhu6LVvY6/RDBuPCSMe24qphjVK
-         2JAh56XwUGfou+JVd5SM1I4fodK2ZFmHXxgLNB1Zy7n4sLWyyOOjqyp7scNXdsgATYcz
-         9L1NVqDsAktjq/0H8xtk8rQ6CCMmEatMBoO0CHbq5KKyJ5lO2Kz9pOpIibE2442PsiTr
-         DK4NnfbtERaamIQBwAZimmgvqNX9XNlU1UhZxdCjlVAFAl4bLDdqItLrWbcoFs395mBQ
-         teZPbklHdfaB1SCwu4e8vVjG1usH0/OqHp0YKfdIKmpNVY3I5GFzghyeKFdb2bMi/JU/
-         Jc7A==
-X-Gm-Message-State: ABy/qLZqBrJN4BjIVNSjsB1bICXOvCqgyFISxGp0A5KrDXu63HckBxyR
-        XoqpyqsG3VrAt/Sg6eia6AYIpA==
-X-Google-Smtp-Source: APBJJlHKAzgTcZxkzYS3fSGQXQBlZ9mX3fhV1WNe2d3EY3lX3vQxMHj32kTI+ExC1ULbKMplpm78QA==
-X-Received: by 2002:a2e:8097:0:b0:2b7:339c:f791 with SMTP id i23-20020a2e8097000000b002b7339cf791mr5860487ljg.25.1690194669057;
-        Mon, 24 Jul 2023 03:31:09 -0700 (PDT)
-Received: from [192.168.1.101] (abyl203.neoplus.adsl.tpnet.pl. [83.9.31.203])
-        by smtp.gmail.com with ESMTPSA id w12-20020a2e998c000000b002b724063010sm2774991lji.47.2023.07.24.03.31.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 03:31:08 -0700 (PDT)
-Message-ID: <96573f47-d38c-2886-e408-ce463550308e@linaro.org>
-Date:   Mon, 24 Jul 2023 12:31:04 +0200
+        Mon, 24 Jul 2023 06:33:15 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0ECDB
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690194794; x=1721730794;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2A2JU/fzgzYQsCwx+j1j5mbZhV4V8Gf7uWXcztu+eQs=;
+  b=MRAzXxWUeNTpUM1VrFfGVAUoGXb9dL+TwpgARt1+Si8BtfzZTUeD1Dz4
+   rfnA5ddGZr8jtjHi+BBq/90vZVJlYKWT8f1HE1DvwAT7v8LK6twTAB0yC
+   k4iONtNa6PxBAoze04IQFVrXSQozb/cRGG0QlDIwNZZLbkRU3tiUOemoS
+   t2X2vIgjzvbohGYuBT+8GLCZDfTpm3NJ5vDKDuCRxPJxBMuGYPlHFqlr8
+   3XdcJQteO3Z5rnBbm9gUNeaL+0qBq4H+Hrp8JhdQ1RwoP0hGwxG3brbch
+   yZqNpOuNZEwHdUwqCCCkFKWWE4Db0zuB7AbRAypnAN0VKyzlndq30A3fL
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="asc'?scan'208";a="237300210"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 03:33:13 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 24 Jul 2023 03:33:13 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 24 Jul 2023 03:33:11 -0700
+Date:   Mon, 24 Jul 2023 11:32:38 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3 -fixes] RISC-V: ACPI: Fix acpi_os_ioremap to return
+ iomem address
+Message-ID: <20230724-zit-stunning-901bfd989a4a@wendy>
+References: <20230724100346.1302937-1-sunilvl@ventanamicro.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
- <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
- <ZLmQdjDgIbbhyTMJ@gerhold.net>
- <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
- <ZL0InL6slLRNcVkI@gerhold.net>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZL0InL6slLRNcVkI@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zkxf3SyDjVGAdJvc"
+Content-Disposition: inline
+In-Reply-To: <20230724100346.1302937-1-sunilvl@ventanamicro.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.07.2023 13:01, Stephan Gerhold wrote:
-> On Fri, Jul 21, 2023 at 02:03:16PM +0200, Konrad Dybcio wrote:
->> On 20.07.2023 21:52, Stephan Gerhold wrote:
->>> On Thu, Jul 20, 2023 at 08:24:01PM +0200, Konrad Dybcio wrote:
->>>> Very surprisingly, qcm2290 does not seem to require any interface
->>>> clocks.
->>>
->>> What does this mean exactly? The interconnect .sync_state() is
->>> responsible to drop the initial maximum bandwidth votes, with the
->>> assumption that all active devices have voted for the bandwidth they
->>> need. How does this relate to "requiring interface clocks"?
->> If it required such clocks to be present, sync_state could not
->> complete, as trying to access some nodes would crash the platform
->> due to unclocked access.
-> 
-> You mean something like the IPA clock that must be active to do the QoS
-> writes?
-> 
-> Wouldn't it already crash before .sync_state() then, when the initial
-> max bandwidth votes are being made?
-No, the bandwidth votes are fully handled by RPM with no external deps.
+--zkxf3SyDjVGAdJvc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Only accessing the QoS registers from the AP seems to trigger crashes
-on unclocked access. But surprisingly, not on this SoC.
+On Mon, Jul 24, 2023 at 03:33:46PM +0530, Sunil V L wrote:
+> acpi_os_ioremap() currently is a wrapper to memremap() on
+> RISC-V. But the callers of acpi_os_ioremap() expect it to
+> return __iomem address and hence sparse tool reports a new
+> warning. Fix this issue by type casting to  __iomem type.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307230357.egcTAefj-lkp@i=
+ntel.com/
+> Fixes: a91a9ffbd3a5 ("RISC-V: Add support to build the ACPI core")
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
 
->>>> It's therefore safe to enable sync_state to park unused devices.
->>>> Do so.
->>>
->>> Doesn't this make everything painfully slow? There are no interconnect
->>> consumers at all in qcm2290.dtsi. I would expect that all bandwidths
->>> end up at minimum.
->> There are no interconnect providers defined in qcm2290.dtsi.
-> 
-> Ack, so I guess you're going to add them together with the actual
-> consumers?
-Correct.
+Surprisingly, my automation already tested this patch. Usually there's a
+several hour delay between posting & testing.
 
-> 
-> I think the patch itself is fine. Only the commit message is a bit
-> misleading. The actual change that is being done here is enabling the
-> bandwidth scaling (dropping the max bandwidth votes after
-> .sync_state()). Can you try to clarify the commit message a bit?
-Yes, I'll resend.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Konrad
+Thanks,
+Conor.
+
+> Changes since v2:
+> 	1) Removed unnecessary __force.
+> 	2) Removed unnecessary space after cast to fix checkpatch --strict warni=
+ng.
+>=20
+> Changes since v1:
+> 	1) Removed enhancements from the fix patch.
+>=20
+>  arch/riscv/include/asm/acpi.h | 2 +-
+>  arch/riscv/kernel/acpi.c      | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
+> index f71ce21ff684..d5604d2073bc 100644
+> --- a/arch/riscv/include/asm/acpi.h
+> +++ b/arch/riscv/include/asm/acpi.h
+> @@ -19,7 +19,7 @@ typedef u64 phys_cpuid_t;
+>  #define PHYS_CPUID_INVALID INVALID_HARTID
+> =20
+>  /* ACPI table mapping after acpi_permanent_mmap is set */
+> -void *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
+> +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size=
+);
+>  #define acpi_os_ioremap acpi_os_ioremap
+> =20
+>  #define acpi_strict 1	/* No out-of-spec workarounds on RISC-V */
+> diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+> index 5ee03ebab80e..56cb2c986c48 100644
+> --- a/arch/riscv/kernel/acpi.c
+> +++ b/arch/riscv/kernel/acpi.c
+> @@ -215,9 +215,9 @@ void __init __acpi_unmap_table(void __iomem *map, uns=
+igned long size)
+>  	early_iounmap(map, size);
+>  }
+> =20
+> -void *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+>  {
+> -	return memremap(phys, size, MEMREMAP_WB);
+> +	return (void __iomem *)memremap(phys, size, MEMREMAP_WB);
+>  }
+> =20
+>  #ifdef CONFIG_PCI
+> --=20
+> 2.39.2
+>=20
+
+--zkxf3SyDjVGAdJvc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL5TRQAKCRB4tDGHoIJi
+0sSUAQDRKYATqlpRLkFQpUraMl2rdoynN0aAfJOpVdSZbqnsrwEAuylSpN7Gpx3x
+eShz+1UlkmUkL7qLQ4c5WW/ZZyoJQQQ=
+=5gPe
+-----END PGP SIGNATURE-----
+
+--zkxf3SyDjVGAdJvc--
