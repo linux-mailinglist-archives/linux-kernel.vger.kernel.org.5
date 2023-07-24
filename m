@@ -2,123 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A19675FCE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3191575FCE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbjGXRFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
+        id S231321AbjGXRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjGXRFn (ORCPT
+        with ESMTP id S229504AbjGXRHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:05:43 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02153BF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:05:42 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99b9161b94aso221629866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:05:41 -0700 (PDT)
+        Mon, 24 Jul 2023 13:07:51 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C843A9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:07:50 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63d0228d32bso6792376d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690218340; x=1690823140;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r/1LJDLgyxtYwLLVQ7MqhyHlHTh4bPkUiDIcho+GZfM=;
-        b=oqaIWLHBsBokwzA8MU+vTILFZrNZ6gabOBrfMq5TqHeSuEGcOEG8pjJxJhmUcCmP2A
-         RX+9KSZzq0KUfvi1SqYUjU4rqMKnHfAIpv00i5Z4VlDfx8qZJ74b/FVlZDIex9Zy4M7f
-         bt7La3JPALRHslMF4UJNLDeC3p2mmD3XN9+c5l4lvvIG26LdD/pxyKBcxwGbiV7/ltwz
-         VivBiO4h5xsYHke9MNNmaH4cBH+8SAohDxQ3JcBGSiUfKyYY/6E63fxUyrLpnP5gIlqx
-         lS4/RGpo4UCYHxC4Ljczy7g+AI9odUzxdAILOVqY+2Y95pXeaTLBbHIKj6ElsdFoQN3k
-         lZNA==
+        d=google.com; s=20221208; t=1690218469; x=1690823269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uw0GesN0rmWRh+DmayFGFLT8xsf2nFXUBbffJzXUQmc=;
+        b=yQqvvunZWdFiy+w7MNNZ//ZiYJUe/JYwsEPAMOAuzMnVsxc9q25s8iviP7QtPQyBK/
+         CeY75Zkf+57SpSYN5dlJoTkcwinzxriV2eicBdfYG1pBOxEsyZ6+et846Ua9dfCKbgc3
+         MUCAgWoYRdeh6M15XiJgKYwJCa9/aMUoUb4vR2mADsXonxCqoAtveV6kJJMSHUR5W751
+         fWJRf2kJV/KsglYpW34OYBh32tiHrHC7ab6Mk/X8hxqMRMAwNCVCVzim6mQ4dN+kRYq2
+         tRSc6pEdkoS6RJdPkhR2MlRa7EmEb/Jb18zswzvEcCAEEdbN8+8w1toIylcd2h37h1c3
+         fOmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690218340; x=1690823140;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/1LJDLgyxtYwLLVQ7MqhyHlHTh4bPkUiDIcho+GZfM=;
-        b=OGKwKx5woMfQ4TI4mazRBfD5gV6YaVwM4geslAUAcJY7VkjsK8ejF6HUJLZCl8Gbxi
-         nW+Z4AGzVTxZVr+lbwVpZa0h1gsLYrExTCr98/ysrBBpAjN2tg4X1qq/HYlA8HNC6k8a
-         4gEZ5SNKWS0PUuiN6Kxl2SGntCGvJf3dnuRk4f8xfpd/+h3h7i4lc+VR+mS+spNAUeWg
-         HOrnLdSq0NbjgEghwSkgcaipvhY/0OnEuP8Y/giOl7N08CQsAMUr4vPWP0m6ZU4VgR8c
-         dnOYxc8Qzy5YjTsNY+EZeQm1ehDOJ/BRF37jJYiMruHahakJAbZhhJnoFRLH4XJrQaua
-         qtEg==
-X-Gm-Message-State: ABy/qLYdIwMpwmUfKSep2MWZnHgoUgu0DH2ofLNSuMLpYT6OQZMHBBPt
-        uhLMV4dLutdChwtcYJnfySl+MQ==
-X-Google-Smtp-Source: APBJJlHwPcKTKIL8LVd0DfZgwQQ01hah+RbyGAamj9A4ipk0zwj2sUnqzG9iAqwMWQ1mO1hBmRf/Yw==
-X-Received: by 2002:a17:907:2e0b:b0:96b:e93:3aa8 with SMTP id ig11-20020a1709072e0b00b0096b0e933aa8mr9577637ejc.21.1690218340090;
-        Mon, 24 Jul 2023 10:05:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id qc12-20020a170906d8ac00b0098866a94f14sm6974227ejb.125.2023.07.24.10.05.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 10:05:24 -0700 (PDT)
-Message-ID: <60e7e772-bf0a-264d-abac-4ed72766a2d0@linaro.org>
-Date:   Mon, 24 Jul 2023 19:05:03 +0200
+        d=1e100.net; s=20221208; t=1690218469; x=1690823269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uw0GesN0rmWRh+DmayFGFLT8xsf2nFXUBbffJzXUQmc=;
+        b=LdhIfzpKqCk3ZhrQ1mLESDuRmDiah9kQbL+8cDC+dOVTRYuxH/8yBbyUR+jzb5X8fw
+         /syWBh1iYVxSzZ1h0xC/5b9PrvlDT8DVVTU5ojnQmnf8vc4HSLcpihNBttqXjKV1ospt
+         B/QGTIcjGCBtROnrwzo/udX9U1Jfrtjeges6EUHOCw7AiQuWJF0HIdFjvShya51iW4t1
+         QQPMnLnVMoKFTz0FV1G5DT+pmh4bOBMT0tqZkmcmZUbDzLeWu2AGXzeTidfmJLRIKf09
+         vWSVDGrDPHqYkvzYmIAwebB7Bia50ypKVmimO6daMlUy5zjog1a7hHH/RQQQvS3DxoKy
+         yCcw==
+X-Gm-Message-State: ABy/qLaZ5EVbfglcB8PRUn3D+IR8iAdCSmhkSYjHIO1fXArU/MwN97P7
+        0CWBPDtQ779g4OoDPZe0C2g6tRvtvefqWM6MqPcTnjO5x1ucY4cD9I0=
+X-Google-Smtp-Source: APBJJlHzvogcOM4+QS3uHKnCCLcH5s74N9Df9/sVTwJHHZCKxvEdbXGa4EZDOxDcwhZC+MQm3x4ydCXgpVMQTl/RTMM=
+X-Received: by 2002:a05:6214:88d:b0:635:3892:a2b0 with SMTP id
+ cz13-20020a056214088d00b006353892a2b0mr361506qvb.15.1690218469268; Mon, 24
+ Jul 2023 10:07:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: usb: add missing unevaluatedProperties on
- USB connector
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jagan Sridharan <badhri@google.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        Gene Chen <gene_chen@richtek.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230723071105.40157-1-krzysztof.kozlowski@linaro.org>
- <20230724162638.GA3784203-robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230724162638.GA3784203-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <202307201141.PYWS6ird-lkp@intel.com> <840cdf34-f38e-ab37-623f-9744c3436350@grimberg.me>
+In-Reply-To: <840cdf34-f38e-ab37-623f-9744c3436350@grimberg.me>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jul 2023 10:07:38 -0700
+Message-ID: <CAKwvOdnfHeEZcKYJh_VPoMfB5oDa3aAU0CYVt-6TNc3a6Jtc6w@mail.gmail.com>
+Subject: Re: drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256)
+ exceeds limit (2048) in 'nvme_tcp_recv_skb'
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     kernel test robot <lkp@intel.com>,
+        Varun Prakash <varun@chelsio.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 18:26, Rob Herring wrote:
-> On Sun, Jul 23, 2023 at 09:11:05AM +0200, Krzysztof Kozlowski wrote:
->> The usb-connector.yaml schema allows any additional properties, thus its
->> usage should finish with unevaluatedProperties: false.
-> 
-> Is it problematic if usb-connector.yaml is restricted?
+On Mon, Jul 24, 2023 at 12:46=E2=80=AFAM Sagi Grimberg <sagi@grimberg.me> w=
+rote:
+>
+>
+>
+> On 7/20/23 06:10, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
+> > head:   bfa3037d828050896ae52f6467b6ca2489ae6fb1
+> > commit: c2700d2886a87f83f31e0a301de1d2350b52c79b nvme-tcp: send H2CData=
+ PDUs based on MAXH2CDATA
+> > date:   1 year, 5 months ago
+> > config: riscv-randconfig-r042-20230720 (https://download.01.org/0day-ci=
+/archive/20230720/202307201141.PYWS6ird-lkp@intel.com/config)
 
-Yes, a bit.
-1. Missing reg/unit-address:
-Documentation/devicetree/bindings/usb/cypress,cypd4226.yaml
-I guess this could be easily solved.
+^ it's from a randconfig...the sanitizers tend to blow up stack usage.
 
-2. phy-supply:
-arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-(and more of armada)
-This is a bit odd:
+> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.gi=
+t 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > reproduce: (https://download.01.org/0day-ci/archive/20230720/2023072011=
+41.PYWS6ird-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202307201141.PYWS6ird-l=
+kp@intel.com/
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >>> drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256) exce=
+eds limit (2048) in 'nvme_tcp_recv_skb' [-Wframe-larger-than]
+> >       835 | static int nvme_tcp_recv_skb(read_descriptor_t *desc, struc=
+t sk_buff *skb,
+> >           |            ^
+> >     1 warning generated.
+> >
+> >
+> > vim +/nvme_tcp_recv_skb +835 drivers/nvme/host/tcp.c
+> >
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  834
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03 @835  static int nvme_tcp_recv_=
+skb(read_descriptor_t *desc, struct sk_buff *skb,
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  836                           =
+    unsigned int offset, size_t len)
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  837  {
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  838          struct nvme_tcp_q=
+ueue *queue =3D desc->arg.data;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  839          size_t consumed =
+=3D len;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  840          int result;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  841
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  842          while (len) {
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  843                  switch (n=
+vme_tcp_recv_state(queue)) {
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  844                  case NVME=
+_TCP_RECV_PDU:
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  845                          r=
+esult =3D nvme_tcp_recv_pdu(queue, skb, &offset, &len);
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  846                          b=
+reak;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  847                  case NVME=
+_TCP_RECV_DATA:
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  848                          r=
+esult =3D nvme_tcp_recv_data(queue, skb, &offset, &len);
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  849                          b=
+reak;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  850                  case NVME=
+_TCP_RECV_DDGST:
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  851                          r=
+esult =3D nvme_tcp_recv_ddgst(queue, skb, &offset, &len);
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  852                          b=
+reak;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  853                  default:
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  854                          r=
+esult =3D -EFAULT;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  855                  }
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  856                  if (resul=
+t) {
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  857                          d=
+ev_err(queue->ctrl->ctrl.device,
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  858                           =
+       "receive failed:  %d\n", result);
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  859                          q=
+ueue->rd_enabled =3D false;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  860                          n=
+vme_tcp_error_recovery(&queue->ctrl->ctrl);
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  861                          r=
+eturn result;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  862                  }
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  863          }
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  864
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  865          return consumed;
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  866  }
+> > 3f2304f8c6d6ed Sagi Grimberg 2018-12-03  867
+> >
+> > :::::: The code at line 835 was first introduced by commit
+> > :::::: 3f2304f8c6d6ed97849057bd16fee99e434ca796 nvme-tcp: add NVMe over=
+ TCP host driver
+> >
+> > :::::: TO: Sagi Grimberg <sagi@lightbitslabs.com>
+> > :::::: CC: Christoph Hellwig <hch@lst.de>
+> >
+>
+> I don't understand how the stack frame size is that big. Looks like a
+> wrong complaint?
+>
 
-phy@18300 {
-  compatible = "marvell,comphy-a3700";
-  comphy0: phy@0 {}
-  comphy1: phy@1 {}
-  comphy2: phy@2 {
-    connector {
-      compatible = "usb-a-connector";
-      phy-supply = <&exp_usb3_vbus>;
-   };
-};
 
-I would assume that phy-supply should be a property of the phy.
-
-Best regards,
-Krzysztof
-
+--=20
+Thanks,
+~Nick Desaulniers
