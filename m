@@ -2,162 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901F475F89E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3E675F8F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjGXNkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S231203AbjGXNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjGXNkC (ORCPT
+        with ESMTP id S230474AbjGXNyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:40:02 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5E730DD;
-        Mon, 24 Jul 2023 06:37:59 -0700 (PDT)
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 9A82D209B4;
-        Mon, 24 Jul 2023 15:36:36 +0200 (CEST)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
+        Mon, 24 Jul 2023 09:54:01 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18A526AD
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:51:31 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98377c5d53eso710789566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690206681; x=1690811481;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fxYYSDYA0vOcxcUc1Cpos3Fbh+vKP5JOxboFjD2CYgg=;
+        b=U+5grAlrNRzLmXTMqLK58S+q+vBaXcfwn1UohyTGtGsImDgEr8NBdytq6UwtzYFhug
+         l1G6t30Q9kQMQ839v/om1TyYgWH4HYxlzV8DHJqdA/SXzYmZhgwfnKqrFT4tWuloLAi7
+         Bd/VZ/RG9pL6k1JKaeQQSF9tWr3Fvk1cAL+5HQKzmDhuM17DrdCdpASlJP5q//95UgD3
+         OAeg5AFcM0DByEBjIUk0yX3m+QLGDSmuR1tn1bAMHDGD5D3C5+hF1jfeAMuR2skH0XbC
+         T50ihDwcyo9g6Fow1oGwfi+TvUXtKc2PP5lITLdYOPfXMd7dpOXILNrGrd2eSCwS4aEh
+         bihQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690206681; x=1690811481;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fxYYSDYA0vOcxcUc1Cpos3Fbh+vKP5JOxboFjD2CYgg=;
+        b=XNG+V+tTL7SNFcB+DTGYkGkVZsp2mtyVSyoL8Qo2HUDcxFwoiDcN6j/SKXLv7zD2mA
+         iJH5GYpYaOG+MB+hvl6MbzNd1UPbe1c+isWMFv12ZFaOlxlYAeJifu00RwbdqxQ36/8E
+         5mH2e029SQsT0ebzPx4+sRSaA9RAzZzWvc2RwbGXVbl/6uNQTzlFssTsyELgiCvHQdhV
+         yunZe1mzDcVmuR6/d+i3XilrneEQfElsHE25T0gD1Wt99MSNgiyJkZSRZAbKaa5820eC
+         hr/CjKpcVflsO6ztRIZckn2M//M8SwL3rXF501IRuiz3cLnr9u9TAnLRp2ca6+5tw2SR
+         u7wg==
+X-Gm-Message-State: ABy/qLagwBNGTFC4xRZyJE6lehkkt6zo02I5js54Xvc1UVBUhli9TLA3
+        I1c0kqYpng+ufEqIOMcSKDphMYJvT43OFvh3oWKxAA==
+X-Google-Smtp-Source: APBJJlFM/ecxyFQrohbIrR+Dt9S5DHA2ojaLExYPV7SY/3iPoEct/sihiV43gXZNoES9ffmbM2smaA==
+X-Received: by 2002:aa7:d411:0:b0:522:21eb:fee5 with SMTP id z17-20020aa7d411000000b0052221ebfee5mr3789938edq.40.1690205828031;
+        Mon, 24 Jul 2023 06:37:08 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id q2-20020a056402032200b0051d9de03516sm6245505edw.52.2023.07.24.06.37.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 06:37:07 -0700 (PDT)
+Message-ID: <e3771434-7429-7a18-ece7-8fa07fc78aed@linaro.org>
+Date:   Mon, 24 Jul 2023 15:37:05 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: qcom,sm6115-lpass-lpi: add
+ SM6115 LPASS TLMM
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Hiago De Franco <hiago.franco@toradex.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v1 2/2] arm64: dts: ti: k3-am625-verdin: enable CAN_2
-Date:   Mon, 24 Jul 2023 15:36:12 +0200
-Message-Id: <20230724133612.37366-3-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230724133612.37366-1-francesco@dolcini.it>
-References: <20230724133612.37366-1-francesco@dolcini.it>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230722-topic-6115_lpasstlmm-v2-0-d4883831a858@linaro.org>
+ <20230722-topic-6115_lpasstlmm-v2-1-d4883831a858@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230722-topic-6115_lpasstlmm-v2-1-d4883831a858@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hiago De Franco <hiago.franco@toradex.com>
+On 24/07/2023 13:39, Konrad Dybcio wrote:
+> Add bindings for pin controller in SM6115 Low Power Audio SubSystem
+> LPASS).
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  .../pinctrl/qcom,sm6115-lpass-lpi-pinctrl.yaml     | 135 +++++++++++++++++++++
+>  1 file changed, 135 insertions(+)
+> 
 
-Add Verdin CAN_2 (TI AM62 MCU_MCAN0) and enable it on the Yavia,
-Dahlia and Verdin Development board.
 
-Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    |  5 +++++
- .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi |  5 +++++
- .../boot/dts/ti/k3-am62-verdin-yavia.dtsi     |  5 +++++
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi    | 19 +++++++++++++++++--
- 4 files changed, 32 insertions(+), 2 deletions(-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-index 3abd8d1d6761..33c8f6ffaa30 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-@@ -115,6 +115,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-index 846caee7dfa4..8205081fda33 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-@@ -144,6 +144,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-index cb11d6e7f525..c685df7deaee 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-@@ -167,6 +167,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-index 57dd061911ab..12dd1d64eac9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-@@ -19,6 +19,8 @@ chosen {
- 	};
- 
- 	aliases {
-+		can0 = &main_mcan0;
-+		can1 = &mcu_mcan0;
- 		ethernet0 = &cpsw_port1;
- 		ethernet1 = &cpsw_port2;
- 		i2c0 = &main_i2c0;
-@@ -732,6 +734,14 @@ AM62X_MCU_IOPAD(0x0048, PIN_INPUT, 0) /* (D10) MCU_I2C0_SDA */ /* SODIMM 57 */
- 		>;
- 	};
- 
-+	/* Verdin CAN_2 */
-+	pinctrl_mcu_mcan0: mcu-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			AM62X_MCU_IOPAD(0x0038, PIN_INPUT,  0) /* (B3) MCU_MCAN0_RX */ /* SODIMM 26 */
-+			AM62X_MCU_IOPAD(0x0034, PIN_OUTPUT, 0) /* (D6) MCU_MCAN0_TX */ /* SODIMM 24 */
-+		>;
-+	};
-+
- 	/* Verdin UART_4 - Reserved to Cortex-M4 */
- 	pinctrl_mcu_uart0: mcu-uart0-default-pins {
- 		pinctrl-single,pins = <
-@@ -1238,8 +1248,6 @@ &main_mcan0 {
- 	status = "disabled";
- };
- 
--/* Verdin CAN_2 - Reserved to Cortex-M4 */
--
- /* Verdin SPI_1 */
- &main_spi1 {
- 	pinctrl-names = "default";
-@@ -1333,6 +1341,13 @@ &mcu_gpio0 {
- 		"";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_mcu_mcan0>;
-+	status = "disabled";
-+};
-+
- /* Verdin UART_4 - Cortex-M4 UART */
- &mcu_uart0 {
- 	pinctrl-names = "default";
--- 
-2.25.1
+Best regards,
+Krzysztof
 
