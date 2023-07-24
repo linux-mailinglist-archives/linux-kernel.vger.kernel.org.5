@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B031275F964
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F0B75F96A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbjGXOIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
+        id S231881AbjGXOJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbjGXOIr (ORCPT
+        with ESMTP id S231883AbjGXOJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:08:47 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D2510F5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:08:26 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fbf1f6c771so6655590e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:08:26 -0700 (PDT)
+        Mon, 24 Jul 2023 10:09:01 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500DF198E
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:08:42 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4faaaa476a9so6673610e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690207694; x=1690812494;
+        d=linaro.org; s=google; t=1690207719; x=1690812519;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3FNW9VRZHhgIzd5ftbN7Gghi1gRBQjf9A2ZRcYqwmWw=;
-        b=wp7b5MeMVKmKocDMY2GV1UwU06P62+OxtE9rEvdebP3m6olboAaxCFT/VYdUIPnkCA
-         Izwq7+Qc5j1AgH+sMk1JUsdeG0aaxmnHxLwdJbIlitL0lohqsQtkJCHA0+vHKJ331OwA
-         ebBHV29050CjjWD3dDtHncDtpLRjjqx/wu1YemN2MQ68/2KZpunj9WIG1FLaZIEVjaRz
-         ZzlzlgQpP0YbHARuwXjdPl9C3CZLOo7Mt8t1HQ4kN8YMauJSrDbtD5Csqu+lTLpslsGm
-         ueec52gbzxhktik5pE/SOpkUYSTrSHKBNMj+KsqqUxtsuPNGtkRi0Nqd+nGKwljf5usM
-         G5gA==
+        bh=AMtTcK6SL5STaZ4x2Kt7aPRXYCdbiSVUHW37PqgJ32Y=;
+        b=CTbbh3CYU5sqTYSrdcxO+p2zYmbFinei3dACQDx8YIypFR/zmPC+48SIn7i9gLpqsS
+         ganT2dCm/8YsQ5UeaqWzXsyIrzqtGQRXfIuchkiTlb7fIZp4kwrw7ohevU+mD9bw6ESH
+         VA9noAZfMAI3JteFYvcF0eV7zYUBcYCFaWTtwd/Y/e9VyMukjiCJE+Xx1WX7w7BCJ1qx
+         rLvkPwCIqfi7mTlg7NfuodqmfvJriTvLti0LA0poFmYQWOrtlcXUCCWh4GlV29FF81WQ
+         jIRzoPncIqv2xmGUoyM6niPNCb6mObWkM+ifreF937MhOJS9jODqIYLNoyv3+17PW23F
+         DOww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690207694; x=1690812494;
+        d=1e100.net; s=20221208; t=1690207719; x=1690812519;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FNW9VRZHhgIzd5ftbN7Gghi1gRBQjf9A2ZRcYqwmWw=;
-        b=RZhe2aS00HIc4Ys7cWUux6HUxZtoYyRXvhvCqONiP7DwF1VxjttgM/1A1D7Cfr07+W
-         xzuvMAA575OEZ/DbZsLAFcia7g6bURqYJBA1VT9yInFoHGuJiAYqtPRo13CMYdLIPjTT
-         H56+VfP6MfBntKU5EkjexFrsVIKJ2nifg/VtQWvrnu3B/tVsAtbQmclC8BKn/a2bVQHU
-         eo0lEYNBqr3NwOKy9UVSBM+W+J9I9LdKky39Hj41K86UTJ22E8VbyzIpfjJFxfM7C4Qn
-         tM9WbSU2gC9ODBglIyQTv2wDeM8KpHiiz/o6QEvQUVtT/ZeWgqDIzHeG1gK4cbhVlKL6
-         MiNQ==
-X-Gm-Message-State: ABy/qLbTPNrRuruUWeucXaYTDRn2eKS+rRwNZ9+uO/ErXZrcksratoMA
-        Y8eTFgT/orfpF+dEXjhnAWzSTQ==
-X-Google-Smtp-Source: APBJJlE+NyuVm5cmUEeVFaq4u66Cz/M0UhmRgH9clb5xq02ToKHR+gKXadt4v3ozS0wXqYtBWWiH+A==
-X-Received: by 2002:a05:6512:3e0d:b0:4f8:68a3:38e2 with SMTP id i13-20020a0565123e0d00b004f868a338e2mr6927769lfv.0.1690207694600;
-        Mon, 24 Jul 2023 07:08:14 -0700 (PDT)
+        bh=AMtTcK6SL5STaZ4x2Kt7aPRXYCdbiSVUHW37PqgJ32Y=;
+        b=j9czX8aNAvR9IBjtEZaBHIFVNTaoBLCwLo3iMSr8Guv+UBl0ICX8imtsTzlm1+tG89
+         qk3H2khbDLVJWdsDWBbRN3czpiYxa4d5vJUYbrWGJjsSl9dbm62zrU/AsQsjzs0YZdD9
+         lLcEkCfzlD9o3cYNzZKZJ6MYlsie8uiXDAZKE4RzU8M7DwcSXqEF2uWLyEPCTWEJGO+c
+         0pbJIxeno6YfsMdAhDk7BXoYiXcqcbiYCk64JYMrvktIqeZi+GzZ2beyx2aQlB5dUvsl
+         +tmSnvbZCckaNJMUWfkbVH5qs5MluaB2bK14Xb/P5+9+sZfNooySdPM0VaA5JsUi/AUx
+         niwg==
+X-Gm-Message-State: ABy/qLYb9ibzdqriJeoL9cm0MQVGxZcMglrW/Rdw1EFovYtg7E5/RZaE
+        gefMDqErAWpmhrqFViSteOspVA==
+X-Google-Smtp-Source: APBJJlGtQcf3L35pw6CABve2d2qQt80IjkWJu2mmJBnF9cqVi2AY0CuuryO4Nyl9ZYYZ9YMSM6RwTg==
+X-Received: by 2002:ac2:4f14:0:b0:4fd:cbd6:d2ff with SMTP id k20-20020ac24f14000000b004fdcbd6d2ffmr6355353lfr.33.1690207718725;
+        Mon, 24 Jul 2023 07:08:38 -0700 (PDT)
 Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
-        by smtp.gmail.com with ESMTPSA id q11-20020ac25fcb000000b004f85d247069sm2217257lfg.218.2023.07.24.07.08.13
+        by smtp.gmail.com with ESMTPSA id q11-20020ac25fcb000000b004f85d247069sm2217257lfg.218.2023.07.24.07.08.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 07:08:14 -0700 (PDT)
-Message-ID: <72d60064-224e-7d1a-3d8d-3680ce451a8d@linaro.org>
-Date:   Mon, 24 Jul 2023 16:08:12 +0200
+        Mon, 24 Jul 2023 07:08:38 -0700 (PDT)
+Message-ID: <79cea221-f908-e501-eb0c-94f613eb06ee@linaro.org>
+Date:   Mon, 24 Jul 2023 16:08:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/7] clk: qcom: clk-hfpll: Configure l_val in init when
- required
+Subject: Re: [PATCH v2 3/7] clk: qcom: hfpll: Allow matching pdata
 Content-Language: en-US
 To:     Adam Skladowski <a39.skl@gmail.com>
 Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
@@ -71,7 +70,7 @@ Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230723160827.22660-1-a39.skl@gmail.com>
- <20230723160827.22660-3-a39.skl@gmail.com>
+ <20230723160827.22660-4-a39.skl@gmail.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -108,12 +107,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230723160827.22660-3-a39.skl@gmail.com>
+In-Reply-To: <20230723160827.22660-4-a39.skl@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,12 +121,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23.07.2023 18:08, Adam Skladowski wrote:
-> Add support for pre-configuring default frequency multiplier,
-> this appears to be required on some platforms like MSM8976.
-> Without configuring L_VAL device reboots when trying to bring PLL up.
+> HFPLL driver can be used to drive PLLs also on different SoCs like MSM8976
+> On MSM8976 each PLL gets it own different configuration,
+> add matching pdata to driver to support multiple configurations.
 > 
 > Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 > ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  drivers/clk/qcom/hfpll.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/hfpll.c b/drivers/clk/qcom/hfpll.c
+> index f4d78003d189..ec18bc8f0089 100644
+> --- a/drivers/clk/qcom/hfpll.c
+> +++ b/drivers/clk/qcom/hfpll.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/clk.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/regmap.h>
+> @@ -32,7 +33,7 @@ static const struct hfpll_data hdata = {
+>  };
+>  
+>  static const struct of_device_id qcom_hfpll_match_table[] = {
+> -	{ .compatible = "qcom,hfpll" },
+> +	{ .compatible = "qcom,hfpll", &hdata },
+As Angelo pointed out the last time around, ".data = " is missing
 
 Konrad
