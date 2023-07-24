@@ -2,138 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E2075FE02
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B1D75FE06
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjGXRnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
+        id S231635AbjGXRoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjGXRnr (ORCPT
+        with ESMTP id S231157AbjGXRny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:43:47 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2086.outbound.protection.outlook.com [40.107.220.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFC71704;
-        Mon, 24 Jul 2023 10:43:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nIrEag6FoXMW9W+kog3qjs1X8dJ14FU3f4RbGhslSCIXQdgQ7IUmynchtf0e3sgzmFjVzEwBrjLtH6MM09yj+vfARbtWxUQHfWOefrO6zZ1eW+VjXK6sLF9IDpimoGiaqdJYsBKzc0dFekAPXLLZDIJeJoZnK4+KhfUaGKC1Y1JE+Z7h5ZtRyZs+dBzhRx+Frl6sdgvFq2Caq13OnAnXQOnNxUmaJTVlps0aUHAqpQksaabf0LPmqqebH3VKeXR+4fSXdrNSwcIzHHiP/uZ+6yL+E1cfoA46fzaYGr5gLlNL6CKnCwfzBmAtmxB0uxaNBM4SbOcItANHBcBj7/AyOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wDdaIIFAvP3MascKx+afFSNqHvi9913lPjH1KbFWvQk=;
- b=NAN+xs6ofkYP4GTnhGe+rGCcyrH9DE6tBKKPc781rvAAlirJzwSkd3cgGx1X33TP6itovk3AnmwxurtK7qYY9bKwHWfLALdqus8xeuFoFEA+kCxdGepKQqS/g0W226TqwJTcfqzdWacKThbeRMqvl68OJb+gauldj3xz0rf25Z4ST4qeAQoZmzAnAP6dLVCb0PjPhPvsAHno/55SlYklEEclne8qBPqAMo43aHhg8u3S6S1zhyCqORX39EGAp/iSGA9k6t/EkN62Q/xwCSo1cbGTCMC4tZ+ZN3k5y7NOF601pDjBYx+mM+6KdogDFJrIPrr01bx+K/gfsVM0lqtMMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wDdaIIFAvP3MascKx+afFSNqHvi9913lPjH1KbFWvQk=;
- b=hMdmbUcPEwbnjgCSgZWsVFo7N9sDAthd9CDRj6Oo+dxj08cvzJKKOaO9QpnD2As3AagcWVwVMA2OILB2F5N87+Q/VyyBL8zmw6NrNzNyoESoxC5zacwqz4dwKjs5hBH9icoCyoSBeib8a5iHTCjenyrq1fQAOs/W5v7XdSmp7+UfHWJdRXYvUZFaPiSAseraCKnjgxHR3fzSKRM9Nb6dMfFYQbrIagVVpaY4ZuJ2bTNevhfEVpSd5RkUV526K69TKieKWqeOhcRLnEhGydKlUu+HuFHJVmG7bUDEmHMXpbWq5NyI36FaBvsrMz53tQdiDPRvf6A7et5aj7Cbp64PSg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW6PR12MB8733.namprd12.prod.outlook.com (2603:10b6:303:24c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Mon, 24 Jul
- 2023 17:43:38 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 17:43:38 +0000
-Date:   Mon, 24 Jul 2023 14:43:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com
-Subject: Re: [PATCH v4 1/4] iommu: Move dev_iommu_ops() to private header
-Message-ID: <ZL64SWDClG+cqwGA@nvidia.com>
-References: <20230724105936.107042-1-yi.l.liu@intel.com>
- <20230724105936.107042-2-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724105936.107042-2-yi.l.liu@intel.com>
-X-ClientProxiedBy: MN2PR18CA0006.namprd18.prod.outlook.com
- (2603:10b6:208:23c::11) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW6PR12MB8733:EE_
-X-MS-Office365-Filtering-Correlation-Id: 75fd1e46-a759-410c-8d9f-08db8c6d8317
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bEKTh0QQC1Sa6AqdkUrZEKLMWMxftD31T0wVOm4uU96xK1yCViRrUVhGZfHZRCIlgmEB+8XoN5ebgJs76RMSA/NuiRD1znFMYCzh3nA3wiQ1kgixPxJ/msHVPNR0YxEg7A1YZRNhGlrqmDw5+rxEYC/5G2y0aDHEDoDqgX0cHv5y+k4fBn3RMVWFYUGD5P4aEEb8UI8HjfUruciotbX6taKEPzjlA3GgYc/Cg6GZ5tsdoFn4FuhYW5tXXYu0pX5OFnBQJW1U0t7R50Kv9N14DiuP7JQBufI4WDs9bd2p9jCbAFZHWcO6YlpVyRjnclPH+f7TXGYhLeGF2HtVLhN1SQsermFEYfhPs+aaKJcximudFRthLFQFaAk7NpsVv60ICEPYwMrzA7xeJgQBGfSEsA5e5/e3UMz5uKa8iTVafSmcIXMFp5p233dL/GCUOkqLQolNYmx63kunHf/QHCoh3K4KMbC2u0wj+5LFwrPbbKyS/aiIgnLGAlQxLxwvYMoHthDiPX0128/Ln7kcXotit9matzjufkoUeQ1hw+Ns4Fc/O/V12MK4C05QyGpbk3vBKwDc/1mM1TQHzUkvnxz2ENa2YJcRr7o0JZMjjJmUAXY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(451199021)(66476007)(186003)(6512007)(316002)(66946007)(6916009)(4326008)(66556008)(26005)(6486002)(41300700001)(6506007)(5660300002)(7416002)(8676002)(8936002)(478600001)(2616005)(83380400001)(2906002)(4744005)(38100700002)(36756003)(86362001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rd/QgEorYFzcNfVEsgGOix5AXgqB+hpXCC0wUTFqFfHHaSQvtNQ5YRGeTAgD?=
- =?us-ascii?Q?RHRkqDslcmDUwn7P10/hxmf04kGaUIHoJGM+qluuH+Q2obsDeGi2B3ChbKnM?=
- =?us-ascii?Q?WasqJ2TPP3rVNOMPL6UDPIKCJhQRDSL075If1dbxPHbYTnjSJ5LwRfUMB9Hr?=
- =?us-ascii?Q?rJNgJl17I6zd7vNq2kiqaoGjlYSahWdEja5Bw2NWALxZeFTrt4ah8CZ8UhJs?=
- =?us-ascii?Q?qRl20C+UlNNF7WsloQrxmycL5/1jKByCmLZAYKAi9rb7g0aIDEXvisAsQazI?=
- =?us-ascii?Q?U0ZYBjGURBhl4d3taIhyzEOLGd2cNW86sWbnbJpPPvk3+CRQNLW+sYNteZAC?=
- =?us-ascii?Q?TqE5jUad3UvpPLzUuBdOhroPFTWamhKiWGzjKHpNBz9oQVqVe04N9ap1zobp?=
- =?us-ascii?Q?AatUOAnzr2x1Z0NfR3JOwKf8Ck9tmZzVmefdkXqz99+IYalMy5AdYx5FLJ2J?=
- =?us-ascii?Q?OjuFGl8wj5g7Vn3wC6cdZv3UaPXaayfkgq39CvYGhEvZiffuyWx3D+XvbWvk?=
- =?us-ascii?Q?yITR5+5jx5TY6sAcMTZDM3oF/wEjhCAwfEY68HSvgkQr4q60D1AB1vlf6bW7?=
- =?us-ascii?Q?E02v/HDSCscpHvrfSNWCaFJmu447hyFxrrL2L3ieiWx7tFmfHB9eVN6Y9Vuy?=
- =?us-ascii?Q?D2WvmBKQekX9af6VIlj/e6asSPQRJzKyP3pmIMz5Rg50vHmsQQ+JTc2rYS/a?=
- =?us-ascii?Q?OMIYppbbDDRf1uUj8ll3h0pgH0RIzAAYaoVeE8+nM/Ye6RWRR9BVqVJfFvd8?=
- =?us-ascii?Q?TE2LcBgHV4EVcUlBSH7wbLhXT5IGH2JmpVGhyHKq9xksALsXhKtWURdMj1pH?=
- =?us-ascii?Q?eLttZVPGw7jK0XbTAyb7xVfEtlgSFZWXpGjfNVCO1H+GaAPd6tLqm8E0bmaN?=
- =?us-ascii?Q?+obNV+Rzn9w4x4M3JJZ8+Q9U4rasSpmq78X0EoQkOzeoCl3xQSr5rXVpecq6?=
- =?us-ascii?Q?ViH3vlia8r9v37HWvwWclPsIwSoZbe0/UlavqtcSNlTcHEnrCE2atxYawXUn?=
- =?us-ascii?Q?x9GogXE+7Rj1BqeVxTvjlLiMWOogAyr2Sj3/zFuS22GKrHzEDh4IjzFDzgHl?=
- =?us-ascii?Q?UzlNka+9gsyfM1uPJflUBVAOInej+RVsgpj5hj2MPH2+dOAacRAgsC8x1Gyq?=
- =?us-ascii?Q?F8uWG+3lZhvKIRceUPxyezOZ7YzyIRjgcKBJv7vvl5f/Nz4X6R1cVEzFje2g?=
- =?us-ascii?Q?DX0ieCbgRznnveIjNfyXLfQfcgG+cHbaS9A5crVtTXpT5X/e3fY+UDez+nqq?=
- =?us-ascii?Q?c7BALF+FaUL7eyLIOp4VYpkB2Td0gY1Oqgku1jna1znRcg11pFu6C+wO4wAl?=
- =?us-ascii?Q?EZtbFb+GoOUXaWhgZ7aFmnffF/B+fUsG9xiWP0t3JrRSKzugkwj12XVjKK8G?=
- =?us-ascii?Q?XBydfytsbpMnl0m29wI55nSdEp/rCMWDDlLaWGRkxCRkuestVcD8ulbGnUHk?=
- =?us-ascii?Q?D9zAI6rXnr9881G+WLDnEMaZ+z822XTDoOoI8XZyI3nlCjPgnFAE+bF4Wl2V?=
- =?us-ascii?Q?0twz80DoMWJXkLMSNDGLRWnmkfZ9om2NdiIEyVvezG0OxZ9S0fmlqp4Fs4Sv?=
- =?us-ascii?Q?RKK+FjBwu5u1ZQym4AzPKuDdPo1vlsenFeSKOZtd?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75fd1e46-a759-410c-8d9f-08db8c6d8317
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 17:43:38.5931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xlrH8pHbDAVV43lkDlWAW8VnQF5I52iMSo1qOKARpUoG4BpmKem2p/JCn7jOH2rc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8733
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 13:43:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ABC1702;
+        Mon, 24 Jul 2023 10:43:52 -0700 (PDT)
+Message-ID: <20230724155329.474037902@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690220630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=x0/YxfQ7KycD3cE3OrPXPIszM9wkw+ZpilEoSpWAuFg=;
+        b=Jx8F+1qIV/RGTyVkOzfnDcLC62XmPX7bXKtGtISTgk1sG3J2QfAYkjFkCmx3xtdwVQHUM1
+        V4RL1ttMTCHXD1oVAPt1xA7mQbIJIx1EZxvQHkTsqY+Pb4Hlv38vbMfxJhiSHN+sqM2wED
+        VlyS8y2t7xB4rsifZc7d5WBs0kBzzMk/wbYGEbkwISIIRy1b8S/u4TFervAtBds/1VMtxk
+        9N43EGGKJgJP8t2T5entdUybG/5rjk+l2K/uRbm07/vo2paaoFyV2KH2IYJ2i23htM6tN+
+        afTyRHRvTaAEh/dxOCVIDauANzXZ+Q9dJSn8T3Ik2wT8PQov/wDCCjjLEywrcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690220630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=x0/YxfQ7KycD3cE3OrPXPIszM9wkw+ZpilEoSpWAuFg=;
+        b=NY6Sj68bJiuzUoSEOZuvhu53pQhB1UEyUse7mVx0GXYydmSIElcW0UW5H9lGjY3V0jXUCU
+        MZjKNPMnf7+8SUAg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: [patch 00/29] x86/cpu: Rework the topology evaluation
+Date:   Mon, 24 Jul 2023 19:43:50 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 03:59:33AM -0700, Yi Liu wrote:
-> dev_iommu_ops() is essentially only used in iommu subsystem, so
-> move to a private header to avoid being abused by other drivers.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->  drivers/iommu/iommu-priv.h | 11 +++++++++++
->  include/linux/iommu.h      | 11 -----------
->  2 files changed, 11 insertions(+), 11 deletions(-)
+Hi!
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+A recent commit to the CPUID leaf 0xb/0x1f parser made me look deeper at
+the way how topology is evaluated. That "fix" is just yet another cure the
+sypmtom hack which completely ignores the underlying disaster.
 
-Jason
+The way how topology evaluation works is to overwrite the relevant
+variables as often as possible. E.g. smp_num_siblings gets overwritten a
+gazillion times, which is wrong to begin with. The boot CPU writes it 3
+times, each AP two times.
+
+What's worse is that this just works by chance on hybrid systems due to the
+fact that the existing ones all seem to boot on a P-Core which has
+SMT. Would it boot on a E-Core which has no SMT, then parts of the early
+topology evaluation including the primary thread mask which is required for
+parallel CPU bringup would be completely wrong. Overwriting it later on
+with the correct value does not help at all.
+
+What's wrong today with hybrid already is the number of cores per package.
+On an ADL with 8 P-Cores and 8 E-cores the resulting number of cores per
+package is evaluated to be 12. Which is not further surprising because the
+CPUID 0xb/0x1f parser looks at the number of logical processors at core
+level and divides them by the number of SMP siblings.
+
+   24 / 2 = 12
+
+Just that this CPU has obviously 16 cores not 12.
+
+It's is even clearly documented in the SDM that this is wrong.
+
+ "Bits 15-00: The number of logical processors across all instances of this
+  domain within the next higher- scoped domain relative to this current
+  logical processor. (For example, in a processor socket/package comprising
+  "M" dies of "N" cores each, where each core has "L" processors, the
+  "die" domain subleaf value of this field would be M*N*L. In an asymmetric
+  topology this would be the summation of the value across the lower domain
+  level instances to create each upper domain level instance.) This number
+  reflects configuration as shipped by Intel. Note, software must not use
+  this field to enumerate processor topology.
+
+  Software must not use the value of EBX[15:0] to enumerate processor topology
+  of the system. The value is only intended for display and diagnostic purposes.
+  The actual number of logical processors available to BIOS/OS/Applications
+  may be different from the value of EBX[15:0], depending on software and
+  platform hardware configurations."
+
+This "_NOT_ to use for topology evaluation" sentence existed even before
+hybrid came along and got ignored. The code worked by chance, but with
+hybrid all bets are off. The code completely falls apart once CPUID leaf
+0x1f enumerates any topology level between CORE and DIE, but that's not a
+suprise.
+
+The proper thing to do is to actually evaluate the full topology including
+the non-present (hotpluggable) CPUs based on the APICIDs which are provided
+by the firmware and a proper topology domain level parser. This can exactly
+tell the number of physical packages, logical packages etc. _before_ even
+booting a single AP. All of that can be evaluated upfront.
+
+Aside of that there are too many places which do their own topology
+evaluation, but there is absolutely no central point which can actually
+provide all of that information in a consistent way. This needs to change.
+
+This series implements another piece towards this: sane CPUID evaluation,
+which is done at _one_ place in a proper well defined order instead of
+having it sprinkled all over the CPUID evaluation code.
+
+At the end of this series this is pretty much bug compatible with the
+current CPUID evaluation code in respect to the cores per package
+evaluation, but it gets rid of overwriting things like smp_num_siblings,
+which is now written once, but is still not capable to work correctly on a
+hybrid machine which boots from a non SMT core. These things can only be
+fixed up in the next step(s).
+
+When I tried to go further with this I ran into yet another pile of
+historical layers of duct tape and haywire with a gazillion of random
+variables sprinkled all over the place. That's still work in progress.  It
+actually works, but the last step which switches over is not yet in a shape
+that can be easily reviewed. Stay tuned.
+
+The series is based on the APIC cleanup series:
+
+  https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de
+
+and also available on top of that from git:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v1
+
+Thanks,
+
+	tglx
+---
+ arch/x86/kernel/cpu/topology.c              |  168 --------------------
+ b/Documentation/arch/x86/topology.rst       |   12 -
+ b/arch/x86/events/amd/core.c                |    2 
+ b/arch/x86/events/amd/uncore.c              |    2 
+ b/arch/x86/events/intel/uncore.c            |    2 
+ b/arch/x86/include/asm/apic.h               |    1 
+ b/arch/x86/include/asm/cacheinfo.h          |    3 
+ b/arch/x86/include/asm/cpuid.h              |   32 +++
+ b/arch/x86/include/asm/processor.h          |   58 ++++--
+ b/arch/x86/include/asm/smp.h                |    2 
+ b/arch/x86/include/asm/topology.h           |   51 +++++-
+ b/arch/x86/include/asm/x86_init.h           |    2 
+ b/arch/x86/kernel/amd_nb.c                  |    8 
+ b/arch/x86/kernel/apic/apic_flat_64.c       |    7 
+ b/arch/x86/kernel/apic/apic_noop.c          |    3 
+ b/arch/x86/kernel/apic/apic_numachip.c      |   11 -
+ b/arch/x86/kernel/apic/bigsmp_32.c          |    6 
+ b/arch/x86/kernel/apic/local.h              |    1 
+ b/arch/x86/kernel/apic/probe_32.c           |    6 
+ b/arch/x86/kernel/apic/x2apic_cluster.c     |    1 
+ b/arch/x86/kernel/apic/x2apic_phys.c        |    6 
+ b/arch/x86/kernel/apic/x2apic_uv_x.c        |   63 +------
+ b/arch/x86/kernel/cpu/Makefile              |    5 
+ b/arch/x86/kernel/cpu/amd.c                 |  156 ------------------
+ b/arch/x86/kernel/cpu/cacheinfo.c           |   51 ++----
+ b/arch/x86/kernel/cpu/centaur.c             |    4 
+ b/arch/x86/kernel/cpu/common.c              |  108 +-----------
+ b/arch/x86/kernel/cpu/cpu.h                 |   14 +
+ b/arch/x86/kernel/cpu/debugfs.c             |   98 +++++++++++
+ b/arch/x86/kernel/cpu/hygon.c               |  133 ---------------
+ b/arch/x86/kernel/cpu/intel.c               |   38 ----
+ b/arch/x86/kernel/cpu/mce/amd.c             |    4 
+ b/arch/x86/kernel/cpu/mce/apei.c            |    4 
+ b/arch/x86/kernel/cpu/mce/core.c            |    4 
+ b/arch/x86/kernel/cpu/mce/inject.c          |    7 
+ b/arch/x86/kernel/cpu/proc.c                |    8 
+ b/arch/x86/kernel/cpu/topology.h            |   51 ++++++
+ b/arch/x86/kernel/cpu/topology_amd.c        |  179 +++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_common.c     |  233 ++++++++++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_ext.c        |  136 ++++++++++++++++
+ b/arch/x86/kernel/cpu/zhaoxin.c             |   18 --
+ b/arch/x86/kernel/smpboot.c                 |   64 ++++---
+ b/arch/x86/kernel/vsmp_64.c                 |   13 -
+ b/arch/x86/mm/amdtopology.c                 |   35 +---
+ b/arch/x86/xen/apic.c                       |    8 
+ b/drivers/edac/amd64_edac.c                 |    4 
+ b/drivers/edac/mce_amd.c                    |    4 
+ b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 
+ b/drivers/hwmon/fam15h_power.c              |    7 
+ b/drivers/scsi/lpfc/lpfc_init.c             |    8 
+ b/drivers/virt/acrn/hsm.c                   |    2 
+ 51 files changed, 964 insertions(+), 881 deletions(-)
+
+
+
+
