@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E80275E904
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A3975E972
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbjGXBqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        id S231690AbjGXCB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbjGXBoI (ORCPT
+        with ESMTP id S229959AbjGXCBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:44:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB0B5B92;
-        Sun, 23 Jul 2023 18:38:58 -0700 (PDT)
+        Sun, 23 Jul 2023 22:01:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608D51FD2;
+        Sun, 23 Jul 2023 18:52:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EAB4661026;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38ECD60FA4;
+        Mon, 24 Jul 2023 01:34:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDF1CC433C8;
         Mon, 24 Jul 2023 01:34:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C05C433C7;
-        Mon, 24 Jul 2023 01:34:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162452;
-        bh=VG4GXK7k/3woZlrV6546Kdcyx7qVkls4mbquIKWUwus=;
+        s=k20201202; t=1690162453;
+        bh=UWN6naVDhOdiZ/FoCIjJRQB1hSDL4+pelAb3BXysbbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OI7G1pjDqyPK7FTnilPToArAES0k6VOqYL1jnWrg2UgOeSDsR6ed4tsjQFiigUZjZ
-         TQIZV6nD8p45rlsQKzeqkO0wMVKHSBh0MYzr8bthicB0ttLuBGHD2n3rBXpMNUbhGv
-         9yYO8uaQJURyNY24BJIcCQAO3TozLgDc+7KnLNwh+GmyVvq3/vk5BSQ7KwfD93h49+
-         2hYxED77SLW45mKaBpGwSIKBYYVTPNMWaTSzWwmUhTvGvr+HLfol1GeW5M27pTcaVC
-         uHfEu8Fs/2gtB8mRIT/vZlm5o10uo1l6ZrPuNbw8LVcLN90Uu4Qu+hBqWcenM3z0Vv
-         yQ1sOpsjGODuQ==
+        b=NQsNBb+zlgBgWEiQxlclzy5fqoUDEbKydewuGrkJvWxgQ/8nJEFHxgHUFVtvMIUOJ
+         MvCgs/He3XJZZW5I3+N6wQYlQOj/Rji0mAM8PRsXQMmRbczKdfcEUTFlK4Gt0Tu21a
+         qdLUKoUMx4FbKtZ4LUt9ibGlXC6UBj1zV81nwrcEkQl22k9Cjl4MjCPmjhu5TntO29
+         XiRIwxHY6hWzNEoUUpMWgS6hwprn0KBJdXQ25LJriJTXmq/OMO3HBnCfHGQ9Q54kHw
+         A2/LZWvcHYY/ItE5opRcIxpwYaIwtx9xtOnba3Po3ZtqJt+ojjWPVLCe3NVsjr//aB
+         XS9kAS1ZV1dAQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xu Yang <xu.yang_2@nxp.com>, Li Jun <jun.li@nxp.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Peter.Chen@nxp.com,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 07/16] usb: chipidea: imx: add missing USB PHY DPDM wakeup setting
-Date:   Sun, 23 Jul 2023 21:33:51 -0400
-Message-Id: <20230724013401.2333159-7-sashal@kernel.org>
+Cc:     Tuo Li <islituo@gmail.com>, BassCheck <bass@buaa.edu.cn>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, swhiteho@redhat.com,
+        rpeterso@redhat.com, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 5.10 08/16] gfs2: Fix possible data races in gfs2_show_options()
+Date:   Sun, 23 Jul 2023 21:33:52 -0400
+Message-Id: <20230724013401.2333159-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013401.2333159-1-sashal@kernel.org>
 References: <20230724013401.2333159-1-sashal@kernel.org>
@@ -51,8 +50,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,39 +60,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yang <xu.yang_2@nxp.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 53d061c19dc4cb68409df6dc11c40389c8c42a75 ]
+[ Upstream commit 6fa0a72cbbe45db4ed967a51f9e6f4e3afe61d20 ]
 
-USB PHY DPDM wakeup bit is enabled by default, when USB wakeup
-is not required(/sys/.../wakeup is disabled), this bit should be
-disabled, otherwise we will have unexpected wakeup if do USB device
-connect/disconnect while system sleep.
-This bit can be enabled for both host and device mode.
+Some fields such as gt_logd_secs of the struct gfs2_tune are accessed
+without holding the lock gt_spin in gfs2_show_options():
 
-Signed-off-by: Li Jun <jun.li@nxp.com>
-Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-Acked-by: Peter Chen <peter.chen@kernel.org>
-Message-ID: <20230517081907.3410465-3-xu.yang_2@nxp.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  val = sdp->sd_tune.gt_logd_secs;
+  if (val != 30)
+    seq_printf(s, ",commit=%d", val);
+
+And thus can cause data races when gfs2_show_options() and other functions
+such as gfs2_reconfigure() are concurrently executed:
+
+  spin_lock(&gt->gt_spin);
+  gt->gt_logd_secs = newargs->ar_commit;
+
+To fix these possible data races, the lock sdp->sd_tune.gt_spin is
+acquired before accessing the fields of gfs2_tune and released after these
+accesses.
+
+Further changes by Andreas:
+
+- Don't hold the spin lock over the seq_printf operations.
+
+Reported-by: BassCheck <bass@buaa.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/chipidea/usbmisc_imx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/super.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/usb/chipidea/usbmisc_imx.c b/drivers/usb/chipidea/usbmisc_imx.c
-index 425b29168b4d0..9b1d5c11dc340 100644
---- a/drivers/usb/chipidea/usbmisc_imx.c
-+++ b/drivers/usb/chipidea/usbmisc_imx.c
-@@ -135,7 +135,7 @@
- #define TXVREFTUNE0_MASK		(0xf << 20)
+diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
+index e01b6a2d12d30..b61de8dab51a0 100644
+--- a/fs/gfs2/super.c
++++ b/fs/gfs2/super.c
+@@ -1017,7 +1017,14 @@ static int gfs2_show_options(struct seq_file *s, struct dentry *root)
+ {
+ 	struct gfs2_sbd *sdp = root->d_sb->s_fs_info;
+ 	struct gfs2_args *args = &sdp->sd_args;
+-	int val;
++	unsigned int logd_secs, statfs_slow, statfs_quantum, quota_quantum;
++
++	spin_lock(&sdp->sd_tune.gt_spin);
++	logd_secs = sdp->sd_tune.gt_logd_secs;
++	quota_quantum = sdp->sd_tune.gt_quota_quantum;
++	statfs_quantum = sdp->sd_tune.gt_statfs_quantum;
++	statfs_slow = sdp->sd_tune.gt_statfs_slow;
++	spin_unlock(&sdp->sd_tune.gt_spin);
  
- #define MX6_USB_OTG_WAKEUP_BITS (MX6_BM_WAKEUP_ENABLE | MX6_BM_VBUS_WAKEUP | \
--				 MX6_BM_ID_WAKEUP)
-+				 MX6_BM_ID_WAKEUP | MX6SX_BM_DPDM_WAKEUP_EN)
- 
- struct usbmisc_ops {
- 	/* It's called once when probe a usb device */
+ 	if (is_ancestor(root, sdp->sd_master_dir))
+ 		seq_puts(s, ",meta");
+@@ -1072,17 +1079,14 @@ static int gfs2_show_options(struct seq_file *s, struct dentry *root)
+ 	}
+ 	if (args->ar_discard)
+ 		seq_puts(s, ",discard");
+-	val = sdp->sd_tune.gt_logd_secs;
+-	if (val != 30)
+-		seq_printf(s, ",commit=%d", val);
+-	val = sdp->sd_tune.gt_statfs_quantum;
+-	if (val != 30)
+-		seq_printf(s, ",statfs_quantum=%d", val);
+-	else if (sdp->sd_tune.gt_statfs_slow)
++	if (logd_secs != 30)
++		seq_printf(s, ",commit=%d", logd_secs);
++	if (statfs_quantum != 30)
++		seq_printf(s, ",statfs_quantum=%d", statfs_quantum);
++	else if (statfs_slow)
+ 		seq_puts(s, ",statfs_quantum=0");
+-	val = sdp->sd_tune.gt_quota_quantum;
+-	if (val != 60)
+-		seq_printf(s, ",quota_quantum=%d", val);
++	if (quota_quantum != 60)
++		seq_printf(s, ",quota_quantum=%d", quota_quantum);
+ 	if (args->ar_statfs_percent)
+ 		seq_printf(s, ",statfs_percent=%d", args->ar_statfs_percent);
+ 	if (args->ar_errors != GFS2_ERRORS_DEFAULT) {
 -- 
 2.39.2
 
