@@ -2,165 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E9B75EE0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1540675EE1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjGXImy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S231802AbjGXInk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbjGXImo (ORCPT
+        with ESMTP id S231765AbjGXIn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:42:44 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEEA1B0;
-        Mon, 24 Jul 2023 01:42:40 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O8ciXG008251;
-        Mon, 24 Jul 2023 08:42:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Tl3gZDNEYEdaaWPNDlvcc/ynd3f2Kaa18xX8M0dcUCs=;
- b=fWHdsvFvy9bcpo9EMsZBCHLMb8CUxBz/5powdiPN2aMmfFXdHjDfBpxh4japBh2/yAfl
- 05tx9OB5gja1/Fg9SzXVFxow8+K+SffokMGdWm+dnigVt0tSzhSUZ+ZNj+qa2L5gJ08k
- Ez0LOluo2Efc4pX+0Y5rKNpXscuxGps2nLIzNcHoSweqKXaO6aRTNgInbjp3n/e6HMr2
- TWLuu8IGb1MBsSPy5jOE55PfHBI68TMLZWDVxOTNAcK90vWzw9x71R1tvyzQBWHsOz13
- Ufhgk+ZhYtYaj7DUhw5XKuvzjL3b308G1g9PRKPH2Aw/b2V4nrhDcYpdKsA1vvgFfmd0 yA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s1na5sd3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:42:39 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36O8dmQs015789;
-        Mon, 24 Jul 2023 08:42:38 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s1na5sd3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:42:38 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36O8AocI014374;
-        Mon, 24 Jul 2023 08:42:38 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0stxhw8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:42:37 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36O8gUSD41025910
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jul 2023 08:42:30 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 71B872004B;
-        Mon, 24 Jul 2023 08:42:30 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2DD320040;
-        Mon, 24 Jul 2023 08:42:29 +0000 (GMT)
-Received: from [9.171.11.212] (unknown [9.171.11.212])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 24 Jul 2023 08:42:29 +0000 (GMT)
-Message-ID: <5394773f1d872f086625439cc515c50d2374a161.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 1/6] KVM: s390: interrupt: Fix single-stepping into
- interrupt handlers
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-Date:   Mon, 24 Jul 2023 10:42:29 +0200
-In-Reply-To: <af7be3a9-816c-95dc-22a7-cf62fe245e24@redhat.com>
-References: <20230721120046.2262291-1-iii@linux.ibm.com>
-         <20230721120046.2262291-2-iii@linux.ibm.com>
-         <af7be3a9-816c-95dc-22a7-cf62fe245e24@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 24 Jul 2023 04:43:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C3F1B4;
+        Mon, 24 Jul 2023 01:43:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EC4C60FD3;
+        Mon, 24 Jul 2023 08:43:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C9AC433C7;
+        Mon, 24 Jul 2023 08:43:06 +0000 (UTC)
+Date:   Mon, 24 Jul 2023 04:43:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     <mhiramat@kernel.org>, <vnagarnaik@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ring-buffer: Fix wrong stat of cpu_buffer->read
+Message-ID: <20230724044304.5a93a266@rorschach.local.home>
+In-Reply-To: <20230724054040.3489499-1-zhengyejian1@huawei.com>
+References: <20230724054040.3489499-1-zhengyejian1@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lH8mSE8-vi8w9qjBzkIvWsWq2c-CVSe-
-X-Proofpoint-GUID: BR_enPOzDeuT2q3BI4IzaoEzZFpnBdDf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_06,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- mlxlogscore=974 bulkscore=0 malwarescore=0 suspectscore=0 impostorscore=0
- spamscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307240075
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-24 at 10:22 +0200, David Hildenbrand wrote:
-> On 21.07.23 13:57, Ilya Leoshkevich wrote:
-> > After single-stepping an instruction that generates an interrupt,
-> > GDB
-> > ends up on the second instruction of the respective interrupt
-> > handler.
-> >=20
-> > The reason is that vcpu_pre_run() manually delivers the interrupt,
-> > and
-> > then __vcpu_run() runs the first handler instruction using the
-> > CPUSTAT_P flag. This causes a KVM_SINGLESTEP exit on the second
-> > handler
-> > instruction.
-> >=20
-> > Fix by delaying the KVM_SINGLESTEP exit until after the manual
-> > interrupt delivery.
-> >=20
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> > =C2=A0 arch/s390/kvm/interrupt.c | 10 ++++++++++
-> > =C2=A0 arch/s390/kvm/kvm-s390.c=C2=A0 |=C2=A0 4 ++--
-> > =C2=A0 2 files changed, 12 insertions(+), 2 deletions(-)
+Do you folks find it fun to post a fix right after I send Linus a pull request? ;-)
 
-[...]
->=20
+Thanks, I'll queue it up (but I will wait a bit before posting in case
+more fixes trickle in)
 
-> Can we add a comment like
->=20
-> /*
-> =C2=A0 * We delivered at least one interrupt and modified the PC. Force a
-> =C2=A0 * singlestep event now.
-> =C2=A0 */
+-- Steve
 
-Ok, will do.
 
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (delivered && guestdbg_ss=
-tep_enabled(vcpu)) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0struct kvm_debug_exit_arch *debug_exit =3D &vcpu-
-> > >run->debug.arch;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0debug_exit->addr =3D vcpu->arch.sie_block->gpsw.addr;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0debug_exit->type =3D KVM_SINGLESTEP;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0vcpu->guest_debug |=3D KVM_GUESTDBG_EXIT_PENDING;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->=20
-> I do wonder if we, instead, want to do this whenever we modify the
-> PSW.
->=20
-> That way we could catch any PC changes and only have to add checks
-> for=20
-> guestdbg_exit_pending().
+On Mon, 24 Jul 2023 13:40:40 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-Wouldn't this break a corner case where the first instruction of the
-interrupt handler causes the same interrupt?
+> When pages are removed in rb_remove_pages(), 'cpu_buffer->read' is set
+> to 0 in order to make sure any read iterators reset themselves. However,
+> this will mess 'entries' stating, see following steps:
+> 
+>   # cd /sys/kernel/tracing/
+>   # 1. Enlarge ring buffer prepare for later reducing:
+>   # echo 20 > per_cpu/cpu0/buffer_size_kb
+>   # 2. Write a log into ring buffer of cpu0:
+>   # taskset -c 0 echo "hello1" > trace_marker
+>   # 3. Read the log:
+>   # cat per_cpu/cpu0/trace_pipe
+>        <...>-332     [000] .....    62.406844: tracing_mark_write: hello1
+>   # 4. Stop reading and see the stats, now 0 entries, and 1 event readed:
+>   # cat per_cpu/cpu0/stats
+>    entries: 0
+>    [...]
+>    read events: 1
+>   # 5. Reduce the ring buffer
+>   # echo 7 > per_cpu/cpu0/buffer_size_kb
+>   # 6. Now entries became unexpected 1 because actually no entries!!!
+>   # cat per_cpu/cpu0/stats
+>    entries: 1
+>    [...]
+>    read events: 0
+> 
+> To fix it, introduce 'page_removed' field to count total removed pages
+> since last reset, then use it to let read iterators reset themselves
+> instead of changing the 'read' pointer.
+> 
+> Fixes: 83f40318dab0 ("ring-buffer: Make removal of ring buffer pages atomic")
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>  kernel/trace/ring_buffer.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index de061dd47313..46b4a3c7c3bf 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -523,6 +523,8 @@ struct ring_buffer_per_cpu {
+>  	rb_time_t			before_stamp;
+>  	u64				event_stamp[MAX_NEST];
+>  	u64				read_stamp;
+> +	/* pages removed since last reset */
+> +	unsigned long			pages_removed;
+>  	/* ring buffer pages to update, > 0 to add, < 0 to remove */
+>  	long				nr_pages_to_update;
+>  	struct list_head		new_pages; /* new pages to add */
+> @@ -559,6 +561,7 @@ struct ring_buffer_iter {
+>  	struct buffer_page		*head_page;
+>  	struct buffer_page		*cache_reader_page;
+>  	unsigned long			cache_read;
+> +	unsigned long			cache_pages_removed;
+>  	u64				read_stamp;
+>  	u64				page_stamp;
+>  	struct ring_buffer_event	*event;
+> @@ -1957,6 +1960,8 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
+>  		to_remove = rb_list_head(to_remove)->next;
+>  		head_bit |= (unsigned long)to_remove & RB_PAGE_HEAD;
+>  	}
+> +	/* Read iterators need to reset themselves when some pages removed */
+> +	cpu_buffer->pages_removed += nr_removed;
+>  
+>  	next_page = rb_list_head(to_remove)->next;
+>  
+> @@ -1978,12 +1983,6 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
+>  		cpu_buffer->head_page = list_entry(next_page,
+>  						struct buffer_page, list);
+>  
+> -	/*
+> -	 * change read pointer to make sure any read iterators reset
+> -	 * themselves
+> -	 */
+> -	cpu_buffer->read = 0;
+> -
+>  	/* pages are removed, resume tracing and then free the pages */
+>  	atomic_dec(&cpu_buffer->record_disabled);
+>  	raw_spin_unlock_irq(&cpu_buffer->reader_lock);
+> @@ -4395,6 +4394,7 @@ static void rb_iter_reset(struct ring_buffer_iter *iter)
+>  
+>  	iter->cache_reader_page = iter->head_page;
+>  	iter->cache_read = cpu_buffer->read;
+> +	iter->cache_pages_removed = cpu_buffer->pages_removed;
+>  
+>  	if (iter->head) {
+>  		iter->read_stamp = cpu_buffer->read_stamp;
+> @@ -4849,12 +4849,13 @@ rb_iter_peek(struct ring_buffer_iter *iter, u64 *ts)
+>  	buffer = cpu_buffer->buffer;
+>  
+>  	/*
+> -	 * Check if someone performed a consuming read to
+> -	 * the buffer. A consuming read invalidates the iterator
+> -	 * and we need to reset the iterator in this case.
+> +	 * Check if someone performed a consuming read to the buffer
+> +	 * or removed some pages from the buffer. In these cases,
+> +	 * iterator was invalidated and we need to reset it.
+>  	 */
+>  	if (unlikely(iter->cache_read != cpu_buffer->read ||
+> -		     iter->cache_reader_page != cpu_buffer->reader_page))
+> +		     iter->cache_reader_page != cpu_buffer->reader_page ||
+> +		     iter->cache_pages_removed != cpu_buffer->pages_removed))
+>  		rb_iter_reset(iter);
+>  
+>   again:
+> @@ -5298,6 +5299,7 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
+>  	cpu_buffer->last_overrun = 0;
+>  
+>  	rb_head_page_activate(cpu_buffer);
+> +	cpu_buffer->pages_removed = 0;
+>  }
+>  
+>  /* Must have disabled the cpu buffer then done a synchronize_rcu */
 
-> But this is simpler and should work as well.
->=20
-> Acked-by: David Hildenbrand <david@redhat.com>
