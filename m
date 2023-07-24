@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3830575E6EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A40875E6A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjGXBXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
+        id S230289AbjGXBVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjGXBWw (ORCPT
+        with ESMTP id S230245AbjGXBVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:22:52 -0400
+        Sun, 23 Jul 2023 21:21:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DC51737;
-        Sun, 23 Jul 2023 18:22:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D24E10FE;
+        Sun, 23 Jul 2023 18:21:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4431A60F1D;
-        Mon, 24 Jul 2023 01:20:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9B19C433C7;
-        Mon, 24 Jul 2023 01:20:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B6B560EFE;
+        Mon, 24 Jul 2023 01:20:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBEBC433C8;
+        Mon, 24 Jul 2023 01:20:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161648;
-        bh=p62JdF+2MEhQfOERPRBStL6d3PjNgVIJpUiixC9DnRA=;
+        s=k20201202; t=1690161653;
+        bh=nHWZK9OMB4vgpd9celiYc+Idn94CYrqmvfMCY/zp124=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i9YN0AAkY4FUtum8GSwkZeCG9qJsegh/RsU3X5eM3UX1zMpmdEPkEcIiog0Ud43yx
-         TKxzk/bXGEUY3FRU1ifi33Sp9bI8Z67WXhI+UQV1z0TKKUPXQNsmiGC0DRzHKt/fFo
-         1TFQaSand8oSJ87oXNSTJj4UP0HKKryAYn3k7VKEKbsyovDi03gpIJgQ6oO53WEhOd
-         zxLHt8uncOICKbyGjwsbElDYBIWOVTpQbV1X4cbYNCaY+Gm1ecRetgrg1+ZyqDhMgm
-         ZVsFE1Y51F5W55jqBQpyUpxIsl9M503zuoHrLj5s48Ptgs+xHTY28n9iuYAJA31z0/
-         4r5OER2eatnYw==
+        b=OlUG1agqTdCnB6XNk07Ty7ttNzenMg0xm7Otybw4pliLhbVC288lGpinu2r33e4ce
+         pYGpQ5jSf/LiZYG/VI/cO0XvvN4B3abRVlEQcxtFx7Sp+YbiyCqNRaQynbuPOnY0Sx
+         yVNXEELZY2pCkHqApmhTUBIZCQQvZiX8BZEY+L3wbeck+pGG66bYrRdaEMRvK2EB5M
+         X23r9msO3BqA52EKC+FqHQ8YM9EuPtqmQVKk6CWVGQOWgyT5Ga4gRLLnuuGcw+hNuR
+         NDRrSp/JFxwVCUgX6jXnZazxD9p3nRM5WoyI9Oghlpjx3VlgH4/4vLndlS0CbnTU7+
+         Ry4PTyFoWZhSg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 51/58] ovl: check type and offset of struct vfsmount in ovl_entry
-Date:   Sun, 23 Jul 2023 21:13:19 -0400
-Message-Id: <20230724011338.2298062-51-sashal@kernel.org>
+Cc:     Even Xu <even.xu@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 52/58] HID: intel-ish-hid: ipc: Add Arrow Lake PCI device ID
+Date:   Sun, 23 Jul 2023 21:13:20 -0400
+Message-Id: <20230724011338.2298062-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
@@ -60,59 +61,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <brauner@kernel.org>
+From: Even Xu <even.xu@intel.com>
 
-[ Upstream commit f723edb8a532cd26e1ff0a2b271d73762d48f762 ]
+[ Upstream commit 4982126e3029cd59fbd1da0d9cc0365a0585fe64 ]
 
-Porting overlayfs to the new amount api I started experiencing random
-crashes that couldn't be explained easily. So after much debugging and
-reasoning it became clear that struct ovl_entry requires the point to
-struct vfsmount to be the first member and of type struct vfsmount.
+Add device ID of Arrow Lake-H into ishtp support list.
 
-During the port I added a new member at the beginning of struct
-ovl_entry which broke all over the place in the form of random crashes
-and cache corruptions. While there's a comment in ovl_free_fs() to the
-effect of "Hack! Reuse ofs->layers as a vfsmount array before freeing
-it" there's no such comment on struct ovl_entry which makes this easy to
-trip over.
-
-Add a comment and two static asserts for both the offset and the type of
-pointer in struct ovl_entry.
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Even Xu <even.xu@intel.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/overlayfs/ovl_entry.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-index fd11fe6d6d45f..6b9f7917fc1bb 100644
---- a/fs/overlayfs/ovl_entry.h
-+++ b/fs/overlayfs/ovl_entry.h
-@@ -32,6 +32,7 @@ struct ovl_sb {
- };
+diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+index fc108f19a64c3..e99f3a3c65e15 100644
+--- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
++++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+@@ -33,6 +33,7 @@
+ #define ADL_N_DEVICE_ID		0x54FC
+ #define RPL_S_DEVICE_ID		0x7A78
+ #define MTL_P_DEVICE_ID		0x7E45
++#define ARL_H_DEVICE_ID		0x7745
  
- struct ovl_layer {
-+	/* ovl_free_fs() relies on @mnt being the first member! */
- 	struct vfsmount *mnt;
- 	/* Trap in ovl inode cache */
- 	struct inode *trap;
-@@ -42,6 +43,14 @@ struct ovl_layer {
- 	int fsid;
+ #define	REVISION_ID_CHT_A0	0x6
+ #define	REVISION_ID_CHT_Ax_SI	0x0
+diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+index 7120b30ac51d0..55cb25038e632 100644
+--- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
++++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+@@ -44,6 +44,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, ADL_N_DEVICE_ID)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, RPL_S_DEVICE_ID)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, MTL_P_DEVICE_ID)},
++	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, ARL_H_DEVICE_ID)},
+ 	{0, }
  };
- 
-+/*
-+ * ovl_free_fs() relies on @mnt being the first member when unmounting
-+ * the private mounts created for each layer. Let's check both the
-+ * offset and type.
-+ */
-+static_assert(offsetof(struct ovl_layer, mnt) == 0);
-+static_assert(__same_type(typeof_member(struct ovl_layer, mnt), struct vfsmount *));
-+
- struct ovl_path {
- 	const struct ovl_layer *layer;
- 	struct dentry *dentry;
+ MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
 -- 
 2.39.2
 
