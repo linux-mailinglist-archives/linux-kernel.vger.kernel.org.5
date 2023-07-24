@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 893D175FBAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2384D75FBA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjGXQQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        id S229928AbjGXQQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjGXQQx (ORCPT
+        with ESMTP id S229437AbjGXQQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:16:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75FF10C1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690215367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvPju9UecviXiaOzgyy4f97iyrnfpdgE7f1YC76j9q8=;
-        b=JoMqX5D7F6hBss5jeQawz0VxhR++6mCq25rUrYDTtFnrja+mInhZk5v0Da0jpIHfvYsGiI
-        ojXSWtXYTGNQhRR/Qzr/3AKt86pUP8Rk4m/jC1LcGhdChNNZLGdW4yPnncNYbZjbp9a4aL
-        l/gLzJNDIHTh7o31ABVfEIK8sIelf10=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-61-91KBanixNt-l4k_5d6stQg-1; Mon, 24 Jul 2023 12:16:03 -0400
-X-MC-Unique: 91KBanixNt-l4k_5d6stQg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 24 Jul 2023 12:16:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F1610C3;
+        Mon, 24 Jul 2023 09:16:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6084E85A58A;
-        Mon, 24 Jul 2023 16:16:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 766D8492C13;
-        Mon, 24 Jul 2023 16:15:58 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAJfpegstr2CwC2ZL4-y_bAjS3hqF_vta5e4XQneJYmxz9rhVpA@mail.gmail.com>
-References: <CAJfpegstr2CwC2ZL4-y_bAjS3hqF_vta5e4XQneJYmxz9rhVpA@mail.gmail.com> <20230629155433.4170837-1-dhowells@redhat.com> <20230629155433.4170837-2-dhowells@redhat.com> <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com> <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name> <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com> <ZLg9HbhOVnLk1ogA@casper.infradead.org> <CAHk-=wiq95bWiWLyz96ombPfpy=PNrc2KKyzJ2d+WMrxi6=OVA@mail.gmail.com> <63041.1690191864@warthog.procyon.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matt Whitlock <kernel@mattwhitlock.name>,
-        netdev@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after splice() returns
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 08AE361254;
+        Mon, 24 Jul 2023 16:16:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 637C7C433C7;
+        Mon, 24 Jul 2023 16:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690215394;
+        bh=x3A3zOJ4CdXcBTt2FepwCLKHLI0SCa4VSWer2FWHZXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZJkto0NSHXZgkOYlitfIZeqOK/5arLC5ZiHbR6kzCNpCdJ7Tdsk+/TOCSJ3t3gvdD
+         1m5s8zDy2z4mX8FbyiUn6dDmzHZmXvjr6pJgzV9kMcKBdNfkoKJ73jDLMLGULz5sLj
+         RufRJTI4c14pr+SCvtFFictWl1XoyH3VFO5J+XMFVqodgyFbWEgp2E63sNxlAwjqHF
+         2CF7TJSblLV+ecHj9kuJDcncT99rklPpu2JHCp+VUGyW33IrwNLbyH7BHVjHKjPSPy
+         WgMWLMT7XMpx0SiiOCVtYpTXotler6VX14iZ6kenv6k40u8aOePs2wqxlrWEKdxoIF
+         kiz2M9kU1TfdQ==
+Received: (nullmailer pid 3712940 invoked by uid 1000);
+        Mon, 24 Jul 2023 16:16:32 -0000
+Date:   Mon, 24 Jul 2023 10:16:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Cc:     andersson@kernel.org, mathieu.poirier@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        michal.simek@amd.com, ben.levinsky@amd.com, tanmay.shah@amd.com,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+Subject: Re: [PATCH v3] dt-bindings: remoteproc: add Tightly Coupled Memory
+ (TCM) bindings
+Message-ID: <20230724161632.GA3686365-robh@kernel.org>
+References: <1689964908-22371-1-git-send-email-radhey.shyam.pandey@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <12728.1690215357.1@warthog.procyon.org.uk>
-Date:   Mon, 24 Jul 2023 17:15:57 +0100
-Message-ID: <12729.1690215357@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1689964908-22371-1-git-send-email-radhey.shyam.pandey@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+On Sat, Jul 22, 2023 at 12:11:48AM +0530, Radhey Shyam Pandey wrote:
+> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> UltraScale+ platform. It will help in defining TCM in device-tree
+> and make it's access platform agnostic and data-driven.
 
-> Both source and destination of copy_file_range() are regular files and
+From the subject, it sounds like this is a binding for all of remoteproc 
+for TCMs.
 
-Ah - the check is in generic_file_rw_checks().  Okay, nevermind.  (Though it
-looks like it might allow this to be used with procfiles and suchlike, but
-anyone who tries that had probably better know what they're doing).
+Otherwise,
 
-David
-
+Acked-by: Rob Herring <robh@kernel.org>
