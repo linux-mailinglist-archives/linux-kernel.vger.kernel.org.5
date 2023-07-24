@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9806475F7BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A252575F7BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjGXNDe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 09:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
+        id S231144AbjGXNDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbjGXNDL (ORCPT
+        with ESMTP id S231906AbjGXNDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:03:11 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A097E4203;
-        Mon, 24 Jul 2023 06:02:06 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d0b597e7ac1so1932382276.1;
-        Mon, 24 Jul 2023 06:02:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690203725; x=1690808525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c8ZRRgNrzhuaT2MvQ4fQw/uUCe9amj8CicD9xhbrskQ=;
-        b=eCFbcDYGx79ynNxtT0fUBEUh1m/xOfoMeX30iUtha1L5JBjT9dvDs0yt3eQiEPjhrz
-         F2NX6D3fRy5GGB6vVAnThT8LhVFsvJEzEnwZoGnnjKzaVSjbEHwi8ZqNF+q9TY5zscKE
-         4CWpUttL2ltRAkUNzdHU3CFDUDtsdxuIDF7j1llpODaLr6lAxSZLxsUHhh0HFu02ADyI
-         r/7h8SkAfuuk3ptB88VtDF1bPV/B1fnUEkotoBQdqzul5tXoZgtzncKdflqCc7ZX7RnK
-         stKTBkKNJxXDR8my+rqCwv8IOEyNf23KA2wMp9o2/0tU1ZksrMTaVFNi/6eDGErbHXoY
-         Qeiw==
-X-Gm-Message-State: ABy/qLZPBfTn+2IzQ46SE3y9u0WQuzT3iLm1izK7YukqXzSGZakzRzUP
-        vIxo1p+TI4p51n3tEAnhppNjD91kZP1AHQ==
-X-Google-Smtp-Source: APBJJlETwHmbD47elSe2cZ/ZZIZlIQwWXp4dSsn1EQit5qTOzA1n9EKbFp8SHdRS9Z3nwNowbGtFjA==
-X-Received: by 2002:a25:780e:0:b0:cec:e155:2879 with SMTP id t14-20020a25780e000000b00cece1552879mr7186473ybc.59.1690203725535;
-        Mon, 24 Jul 2023 06:02:05 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5b028d000000b00c389676f3a2sm2225412ybl.40.2023.07.24.06.02.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 06:02:02 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-58411e24eefso4363567b3.1;
-        Mon, 24 Jul 2023 06:02:01 -0700 (PDT)
-X-Received: by 2002:a25:15c9:0:b0:c5d:953b:db6 with SMTP id
- 192-20020a2515c9000000b00c5d953b0db6mr6548392ybv.41.1690203721676; Mon, 24
- Jul 2023 06:02:01 -0700 (PDT)
+        Mon, 24 Jul 2023 09:03:12 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CD7F19A5;
+        Mon, 24 Jul 2023 06:02:16 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cxc_BWdr5kKTcJAA--.23093S3;
+        Mon, 24 Jul 2023 21:02:14 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniNWdr5kYjs5AA--.49082S3;
+        Mon, 24 Jul 2023 21:02:14 +0800 (CST)
+Message-ID: <6c8ca3a6-5898-ccba-cd01-9622215ddd10@loongson.cn>
+Date:   Mon, 24 Jul 2023 21:02:14 +0800
 MIME-Version: 1.0
-References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
-In-Reply-To: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 15:01:50 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXwU2gku+fXKnnUaCPZAE4JUaPw5cPaqpQ=+Augynn6ng@mail.gmail.com>
-Message-ID: <CAMuHMdXwU2gku+fXKnnUaCPZAE4JUaPw5cPaqpQ=+Augynn6ng@mail.gmail.com>
-Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to dma_declare_coherent_memory()
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/6] PCI/VGA: Move the new_state assignment out the loop
+Content-Language: en-US
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn
+References: <20230711134354.755966-1-sui.jingfeng@linux.dev>
+ <20230711134354.755966-5-sui.jingfeng@linux.dev>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230711134354.755966-5-sui.jingfeng@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxniNWdr5kYjs5AA--.49082S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxJr43tw13Gw13Zw4xAF1xCrX_yoW8Ww1kpr
+        ZYvFyfCFZ7XF1IkrWaqr1UXrZ5W3s5t3yxAFWj934DWFWDJa4rtryfJrW5KrnrCrZ3uayj
+        yr15GFy7ZayUXFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8
+        Jr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jb_-
+        PUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 2:15 PM Petr Tesarik
-<petrtesarik@huaweicloud.com> wrote:
-> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+PING, please !
+
+
+On 2023/7/11 21:43, Sui Jingfeng wrote:
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
 >
-> In all these cases, the last argument to dma_declare_coherent_memory() is
-> the buffer end address, but the expected value should be the size of the
-> reserved region.
+> In the vga_arbiter_notify_clients() function, the value of the 'new_state'
+> variable will be 'false' on systems that have more than one PCI VGA card.
+> Its value will be 'true' on systems that have one or no PCI VGA compatible
+> card. In other words, its value is not relevant to the iteration, so move
+> the assignment () out of the loop.
 >
-> Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
-> Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
-> Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
-> Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
-> Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")
-> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> For a system with multiple video cards, this patch saves the redundant
+> assignment.
+>
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> ---
+>   drivers/pci/vgaarb.c | 16 +++++++---------
+>   1 file changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+> index 668139f7c247..4c448c758bab 100644
+> --- a/drivers/pci/vgaarb.c
+> +++ b/drivers/pci/vgaarb.c
+> @@ -1468,22 +1468,20 @@ static void vga_arbiter_notify_clients(void)
+>   {
+>   	struct vga_device *vgadev;
+>   	unsigned long flags;
+> -	uint32_t new_decodes;
+> -	bool new_state;
+> +	bool state;
+>   
+>   	if (!vga_arbiter_used)
+>   		return;
+>   
+> +	state = (vga_count > 1) ? false : true;
+> +
+>   	spin_lock_irqsave(&vga_lock, flags);
+>   	list_for_each_entry(vgadev, &vga_list, list) {
+> -		if (vga_count > 1)
+> -			new_state = false;
+> -		else
+> -			new_state = true;
+>   		if (vgadev->set_decode) {
+> -			new_decodes = vgadev->set_decode(vgadev->pdev,
+> -							 new_state);
+> -			vga_update_device_decodes(vgadev, new_decodes);
+> +			unsigned int decodes;
+> +
+> +			decodes = vgadev->set_decode(vgadev->pdev, state);
+> +			vga_update_device_decodes(vgadev, decodes);
+>   		}
+>   	}
+>   	spin_unlock_irqrestore(&vga_lock, flags);
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
