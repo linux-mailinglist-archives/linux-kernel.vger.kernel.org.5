@@ -2,147 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFEF75FAAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D1A75FAA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbjGXPWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S229464AbjGXPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbjGXPWD (ORCPT
+        with ESMTP id S229991AbjGXPV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:22:03 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F2A1B3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690212114; x=1721748114;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HyCcFKDOaGEp+RHeQHDa0hvD6I2xyirhVE8nbOeL3BM=;
-  b=OStsJV9JmFlkyZgglG2ssM5cKhlxfHX92SLHABp/SOV01NWY2aXMKIbh
-   64GrgJ9aoHrAUCt6y3KFUP8OKjKanjCCvgRea1SjPT1QgNZ8E1VDSaL9S
-   Jhd6grSbui/BwWC/to1syWN6q/V8u1hpQapbusExBkBRZ6RVi+1dJ5RiS
-   h4VCJ2fO6uofiYKHa2kxg5nflxOaj/ejhwBkK6825e/V5U7/mvI9fsgtd
-   xhj6fuaeh5R0H/qlfN6GqXZ8++GdqE96ZI06J4+X8+aMBK/gt/JzPnFTg
-   gT6YREdwsnaBV0KIHb+shyoZKCSFWJGaLFRn6N5m8HouunZ+3ITIakZ4L
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="366362200"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="366362200"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 08:21:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="795816473"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="795816473"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2023 08:21:52 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNxNb-0009oG-0L;
-        Mon, 24 Jul 2023 15:21:48 +0000
-Date:   Mon, 24 Jul 2023 23:20:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable
- 'mtmips_of_match'
-Message-ID: <202307242310.CdOnd2py-lkp@intel.com>
+        Mon, 24 Jul 2023 11:21:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8E4A10E5;
+        Mon, 24 Jul 2023 08:21:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 151D9FEC;
+        Mon, 24 Jul 2023 08:22:09 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A3DA3F67D;
+        Mon, 24 Jul 2023 08:21:23 -0700 (PDT)
+Message-ID: <75ddf1ce-64a2-f3a4-8a51-92e7bbb3899d@arm.com>
+Date:   Mon, 24 Jul 2023 16:21:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3] perf/core: Bail out early if the request AUX area is
+ out of bound
+Content-Language: en-US
+To:     Shuai Xue <xueshuai@linux.alibaba.com>,
+        alexander.shishkin@linux.intel.com, peterz@infradead.org,
+        leo.yan@linaro.org
+Cc:     mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
+        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
-commit: 6f3b15586eef736831abe6a14f2a6906bc0dc074 clk: ralink: add clock and reset driver for MTMIPS SoCs
-date:   5 weeks ago
-config: x86_64-buildonly-randconfig-r003-20230723 (https://download.01.org/0day-ci/archive/20230724/202307242310.CdOnd2py-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230724/202307242310.CdOnd2py-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/clk/ralink/clk-mtmips.c:309:9: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-           return ret;
-                  ^~~
-   drivers/clk/ralink/clk-mtmips.c:285:9: note: initialize the variable 'ret' to silence this warning
-           int ret, i;
-                  ^
-                   = 0
-   drivers/clk/ralink/clk-mtmips.c:359:9: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-           return ret;
-                  ^~~
-   drivers/clk/ralink/clk-mtmips.c:335:9: note: initialize the variable 'ret' to silence this warning
-           int ret, i;
-                  ^
-                   = 0
->> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match' [-Wunused-const-variable]
-   static const struct of_device_id mtmips_of_match[] = {
-                                    ^
-   3 warnings generated.
 
 
-vim +/mtmips_of_match +821 drivers/clk/ralink/clk-mtmips.c
+On 11/07/2023 02:41, Shuai Xue wrote:
+> When perf-record with a large AUX area, e.g 4GB, it fails with:
+> 
+>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>     failed to mmap with 12 (Cannot allocate memory)
+> 
+> and it reveals a WARNING with __alloc_pages():
+> 
+> [   66.595604] ------------[ cut here ]------------
+> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
+> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
+> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
+> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
+> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+> [   66.681597] pc : __alloc_pages+0x1ec/0x248
+> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
+> [   66.690285] sp : ffff800020523980
+> [   66.693585] pmr_save: 000000e0
+> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
+> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
+> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
+> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
+> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
+> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
+> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
+> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
+> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
+> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
+> [   66.767834] Call trace:
+> [   66.770267]  __alloc_pages+0x1ec/0x248
+> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
+> [   66.778259]  __kmalloc_node+0x134/0x1e8
+> [   66.782081]  rb_alloc_aux+0xe0/0x298
+> [   66.785643]  perf_mmap+0x440/0x660
+> [   66.789031]  mmap_region+0x308/0x8a8
+> [   66.792593]  do_mmap+0x3c0/0x528
+> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
+> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
+> [   66.803365]  __arm64_sys_mmap+0x38/0x58
+> [   66.807187]  invoke_syscall+0x50/0x128
+> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
+> [   66.815698]  do_el0_svc+0x34/0x50
+> [   66.818999]  el0_svc+0x34/0x108
+> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
+> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
+> [   66.829946] ---[ end trace 0000000000000000 ]---
+> 
+> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
+> maintain AUX trace pages. The allocated page for this array is physically
+> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
+> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
+> WARNING.
+> 
+> So bail out early with -EINVAL if the request AUX area is out of bound,
+> e.g.:
+> 
+>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>     failed to mmap with 22 (Invalid argument)
+> 
 
-   820	
- > 821	static const struct of_device_id mtmips_of_match[] = {
-   822		{
-   823			.compatible = "ralink,rt2880-sysc",
-   824			.data = &rt2880_clk_data,
-   825		},
-   826		{
-   827			.compatible = "ralink,rt3050-sysc",
-   828			.data = &rt305x_clk_data,
-   829		},
-   830		{
-   831			.compatible = "ralink,rt3052-sysc",
-   832			.data = &rt305x_clk_data,
-   833		},
-   834		{
-   835			.compatible = "ralink,rt3352-sysc",
-   836			.data = &rt3352_clk_data,
-   837		},
-   838		{
-   839			.compatible = "ralink,rt3883-sysc",
-   840			.data = &rt3883_clk_data,
-   841		},
-   842		{
-   843			.compatible = "ralink,rt5350-sysc",
-   844			.data = &rt5350_clk_data,
-   845		},
-   846		{
-   847			.compatible = "ralink,mt7620-sysc",
-   848			.data = &mt7620_clk_data,
-   849		},
-   850		{
-   851			.compatible = "ralink,mt7628-sysc",
-   852			.data = &mt76x8_clk_data,
-   853		},
-   854		{
-   855			.compatible = "ralink,mt7688-sysc",
-   856			.data = &mt76x8_clk_data,
-   857		},
-   858		{}
-   859	};
-   860	
+Hi Shuai,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Now that I think about this, isn't the previous error "failed to mmap
+with 12 (Cannot allocate memory)" better than "failed to mmap with 22
+(Invalid argument)"?
+
+And you might want to split the doc change out if they are going to be
+merged through separate trees.
+
+And one comment below:
+
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> ---
+> changes since v2:
+> - remove unnecessary overflow check (per Peter)
+> 
+> changes since v1:
+> - drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
+> - move sanity check into rb_alloc_aux (per Leo)
+> - add overflow check (per James)
+> ---
+>  kernel/events/ring_buffer.c              | 3 +++
+>  tools/perf/Documentation/perf-record.txt | 3 ++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+> index a0433f37b024..5933ce45c68a 100644
+> --- a/kernel/events/ring_buffer.c
+> +++ b/kernel/events/ring_buffer.c
+> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
+>  		watermark = 0;
+>  	}
+>  
+> +	/* Can't allocate more than MAX_ORDER */
+> +	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
+> +		return -EINVAL;
+>  	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
+>  				     node);
+>  	if (!rb->aux_pages)
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index 680396c56bd1..5d8d3ad084ed 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -290,7 +290,8 @@ OPTIONS
+>  	specification with appended unit character - B/K/M/G. The
+>  	size is rounded up to have nearest pages power of two value.
+>  	Also, by adding a comma, the number of mmap pages for AUX
+> -	area tracing can be specified.
+> +	area tracing can be specified. With MAX_ORDER set as 10 on
+> +	arm64 platform , the maximum AUX area is limited to 2GiB.
+
+Minor nit: I wouldn't expect a Perf tool user to know what "MAX_ORDER"
+is, and I don't think the limitation is Arm specific? Maybe something in
+more relevant terms is more useful:
+
+  The maximum AUX area is limited by the page size of the system. For
+  example with 4K pages configured, the maximum is 2GiB.
+
+Thanks
+James
+
+>  
+>  -g::
+>  	Enables call-graph (stack chain/backtrace) recording for both
