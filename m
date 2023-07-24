@@ -2,179 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33ABE75FF40
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A72275FF48
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbjGXSle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 14:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
+        id S229872AbjGXStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGXSlb (ORCPT
+        with ESMTP id S229479AbjGXStT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 14:41:31 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538D4A6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 11:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690224090; x=1721760090;
-  h=date:from:to:cc:subject:message-id;
-  bh=+4SLMGE+n16oTs/861PPzagWKDNmSTQDWsgCgx3yF4s=;
-  b=XDsxyIB75EOaSa7RPVAmj8c4O65CEQUpe/bNMy8rjPj6nxhxE+2IR7UJ
-   lkYB3TGQzUdToXv+/34k85bIFKfR2fdGKaaBCIzjJxKvikLtlJorPC/ff
-   PQ3uUYxLt1zOfi+n/5tJHYjzxhduK61s3oAqWEtQBNExp34kh/Cd/BA3S
-   Em+Kvmn0pIJfhN+7hypK4Fip/x88FdPJUMGGXkbH1MBKjl27Ydx0VUTDV
-   xGcM/8IZIYUWO3ZeFuoXysT8IkfHnivDJpyIKOz21RI5wk5G3myF1+D/s
-   ygomPFfRLomet0m/ZO1ImTJSuAluaKOP48LyFVqUwV+18rpnGz0i088VT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="364983981"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="364983981"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 11:41:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="1056508511"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="1056508511"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Jul 2023 11:41:27 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qO0Uo-0009xI-2G;
-        Mon, 24 Jul 2023 18:41:26 +0000
-Date:   Tue, 25 Jul 2023 02:41:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- ad0dbc1609ab4b01c9c423d3dd6bb6e4f19dee70
-Message-ID: <202307250200.Xe7NAOvt-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 14:49:19 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67BC910D9;
+        Mon, 24 Jul 2023 11:49:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B6DFFEC;
+        Mon, 24 Jul 2023 11:50:00 -0700 (PDT)
+Received: from [10.57.76.172] (unknown [10.57.76.172])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A5273F67D;
+        Mon, 24 Jul 2023 11:49:15 -0700 (PDT)
+Message-ID: <ef907f64-f7aa-3759-1adc-3fb7e3f3487b@arm.com>
+Date:   Mon, 24 Jul 2023 19:49:13 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 0/8] selftests/mm fixes for arm64
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+References: <20230724082522.1202616-1-ryan.roberts@arm.com>
+ <20230724093804.bbe8bc2a83d4575f17778eb0@linux-foundation.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230724093804.bbe8bc2a83d4575f17778eb0@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: ad0dbc1609ab4b01c9c423d3dd6bb6e4f19dee70  Merge branch into tip/master: 'x86/mm'
+On 24/07/2023 17:38, Andrew Morton wrote:
+> On Mon, 24 Jul 2023 09:25:14 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+> 
+>> This is v3 of my series to clean up mm selftests so that they run correctly on
+>> arm64. See [1] for full explanation.
+> 
+> Please don't do that.  Please maintain the [0/n] description alongside the
+> patchset and resend it each time you resend the series.
 
-elapsed time: 727m
+OK understood. Sorry about that. Do you have any docs for the mm submission
+process? If not, please keep pointing issues out and I'll get it right eventually.
 
-configs tested: 102
-configs skipped: 9
+I previously thought that the cover letter was primarily for the email
+recipients and the description on each patch was the part that went into git?
+Clearly I'm wrong, but can't see anything in submitting-patches.rst so guess the
+mm process is a bit different?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> 
+> I could go over and copy-paste [1] into this patchset, but I don't know if it
+> is fully up to date.   I'll leave the patchset intro blank for now - please
+> review/edit [1] and send the result in reply to this email, thanks. 
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r006-20230724   gcc  
-arc                  randconfig-r043-20230724   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r046-20230724   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r013-20230724   clang
-arm64                randconfig-r031-20230724   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r021-20230724   gcc  
-hexagon              randconfig-r041-20230724   clang
-hexagon              randconfig-r045-20230724   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230724   gcc  
-i386         buildonly-randconfig-r005-20230724   gcc  
-i386         buildonly-randconfig-r006-20230724   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230724   gcc  
-i386                 randconfig-i002-20230724   gcc  
-i386                 randconfig-i003-20230724   gcc  
-i386                 randconfig-i004-20230724   gcc  
-i386                 randconfig-i005-20230724   gcc  
-i386                 randconfig-i006-20230724   gcc  
-i386                 randconfig-i011-20230724   clang
-i386                 randconfig-i012-20230724   clang
-i386                 randconfig-i013-20230724   clang
-i386                 randconfig-i014-20230724   clang
-i386                 randconfig-i015-20230724   clang
-i386                 randconfig-i016-20230724   clang
-i386                 randconfig-r025-20230724   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r024-20230724   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r035-20230724   gcc  
-microblaze           randconfig-r015-20230724   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r022-20230724   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r011-20230724   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r004-20230724   gcc  
-powerpc              randconfig-r014-20230724   clang
-powerpc              randconfig-r023-20230724   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230724   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230724   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r001-20230724   gcc  
-sh                   randconfig-r012-20230724   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r005-20230724   gcc  
-sparc64              randconfig-r003-20230724   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230724   gcc  
-x86_64       buildonly-randconfig-r002-20230724   gcc  
-x86_64       buildonly-randconfig-r003-20230724   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230724   clang
-x86_64               randconfig-x002-20230724   clang
-x86_64               randconfig-x003-20230724   clang
-x86_64               randconfig-x004-20230724   clang
-x86_64               randconfig-x005-20230724   clang
-x86_64               randconfig-x006-20230724   clang
-x86_64               randconfig-x011-20230724   gcc  
-x86_64               randconfig-x012-20230724   gcc  
-x86_64               randconfig-x013-20230724   gcc  
-x86_64               randconfig-x014-20230724   gcc  
-x86_64               randconfig-x015-20230724   gcc  
-x86_64               randconfig-x016-20230724   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+I doubt you would want the whole cover letter in git, so here is the relavent intro:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---8<---
+
+Hi All,
+
+Given my on-going work on large anon folios and contpte mappings, I decided it
+would be a good idea to start running mm selftests to help guard against
+regressions. However, it soon became clear that I couldn't get the suite to run
+cleanly on arm64 with a vanilla v6.5-rc1 kernel (perhaps I'm just doing it
+wrong??), so got stuck in a rabbit hole trying to debug and fix all the issues.
+Some were down to misconfigurations, but I also found a number of issues with
+the tests and even a couple of issues with the kernel.
+
+This series aims to fix (most of) the test issues. It applies on top of
+v6.5-rc3.
+
+Changes Since v2 [2]
+--------------------
+
+  - Patch 6: Change approach to cleaning up child processes; Use "parent death
+    signal", as suggested by David.
+  - Added Reviewed-by/Acked-by tags: thanks to David, Mark and Peter!
+
+Changes Since v1 [1]
+--------------------
+
+  - Patch 1: Explicitly set line buffer mode in ksft_print_header()
+  - Dropped v1 patch 2 (set execute permissions): Andrew has taken this into his
+    branch separately.
+  - Patch 2: Don't compile `soft-dirty` suite for arm64 instead of skipping it
+    at runtime.
+  - Patch 2: Declare fewer tests and skip all of test_softdirty() if soft-dirty
+    is not supported, rather than conditionally marking each check as skipped.
+  - Added Reviewed-by tags: thanks DavidH!
+  - Patch 8: Clarified commit message.
+
+---8<---
+
+Thanks,
+Ryan
+
