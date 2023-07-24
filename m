@@ -2,170 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4501475F529
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04FE75F522
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjGXLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        id S229640AbjGXLck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjGXLcx (ORCPT
+        with ESMTP id S230092AbjGXLc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21B910F9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690198278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JfpT+mnZfrCac16v3aInlmHimudhY8zZWOx9+CfU5jI=;
-        b=GQvO7aICKvu/RXr6lTBdWrb/116vxCs6mrf/5bYBz5vwKwvY/AxfKNDthtfRG1zQG0d6DK
-        ni3e86mR04dyfhYH8CsKXIQTO2w/2brQtrvYHuMGhRTf8VWOzRebrWZ8W8EELvaGbShkaK
-        QbcnXJIpuB3MOaCRHoqHytw8mDpjjBE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-550-9sWeOtH2NLSqrxmtq2fyPw-1; Mon, 24 Jul 2023 07:31:17 -0400
-X-MC-Unique: 9sWeOtH2NLSqrxmtq2fyPw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fc00d7d62cso26469445e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:31:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690198276; x=1690803076;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Mon, 24 Jul 2023 07:32:29 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4D61BC0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:32:00 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7836272f36eso156583239f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1690198314; x=1690803114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JfpT+mnZfrCac16v3aInlmHimudhY8zZWOx9+CfU5jI=;
-        b=Nb0dQte11yA/plhOMvIVEa5urU+Pa+lFRXXMq3xRaACD1tbcp52ZUfFF3RZn81S5E6
-         JjmYRKHWtjzbugWFRgwNfE6cjZq32UzcGzoqlON+YWEKW4mtiA+vyFkfDIETlKh9uL8L
-         L9t3KCGmmaQOvimJr050YA9l1mmjDGqkX8l5Pq/Tzm7XBYpn2qorBLOMEOSGukXDWcuz
-         mz0bTTC1GT7RemAIC26lQuJJZD0ii2PxHjC1zSjoSh12kajqJ3LG7fxi11jRa3z9WM22
-         pZlynYSxwOp4IJFNFtJRqKTKjqQo/Rws0n9LO/abgvVAue/yCX+VOVRze5BHSJlOdBwz
-         ZP+Q==
-X-Gm-Message-State: ABy/qLbJt3EqAAoEH8v4mR6Y0VNUqPQ06aI1inIJJe+CpwkVOr0/tgHm
-        vGaTjPcmC3kDIoAC3n+EkE1FNn3Tpks2zysW1R9n0pvxl0m1yOQoT6iWG14y4treupxgqfpIbYW
-        OE2xSwv1nFiT4Y6ZXsue8zu99xgg84vvM
-X-Received: by 2002:a05:600c:2242:b0:3fb:c990:3b2 with SMTP id a2-20020a05600c224200b003fbc99003b2mr7772965wmm.34.1690198276013;
-        Mon, 24 Jul 2023 04:31:16 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGUPL3n/cnC/PIyIMNs1cuvjFmNfmTxRquxzSGXY0jphihcdCijrhdx91U2TwsjxeP5mV4SyQ==
-X-Received: by 2002:a05:600c:2242:b0:3fb:c990:3b2 with SMTP id a2-20020a05600c224200b003fbc99003b2mr7772946wmm.34.1690198275671;
-        Mon, 24 Jul 2023 04:31:15 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c73d:bb00:91a5:d1c:3a7e:4c77? (p200300cbc73dbb0091a50d1c3a7e4c77.dip0.t-ipconnect.de. [2003:cb:c73d:bb00:91a5:d1c:3a7e:4c77])
-        by smtp.gmail.com with ESMTPSA id y19-20020a05600c20d300b003fd2d33f972sm5802964wmm.38.2023.07.24.04.31.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 04:31:15 -0700 (PDT)
-Message-ID: <170e3285-2e01-840e-21bc-39dbad256542@redhat.com>
-Date:   Mon, 24 Jul 2023 13:31:14 +0200
+        bh=MSZt7mHez9tNJy/98/Qfr0OOVK6jV7kKAFtTUhVHj+4=;
+        b=Zu3QSNlWTHcd8OApwq0U+bD1SZkTRkdgFVizZQ0Kx7en8kEJKrVeVocSG+Chv6CbDP
+         8nJtj3qZsoyDChCMF0DmJt+9YtpDu01OVSusMX7q1fmFDHxXKGJHDUXT48KQnY/TCtTY
+         Ca4tZz8IH40wQVfKABxCYjCdDP7vUQYkYJOd7Yf3WR6gZXyp2TUWTTa0LsG27VSBw3R2
+         r7jG9Qg1XyuTpO0sUi1Wh1+fPVhFZ3yF82QJ+Ou5dSdQIMJA1iqQvaZXvmw88x3vkHvl
+         UyLDohMJw2aqsCJU6kE0hyYX+REUCLzbiWUui1gaA2l+B1Cl80IYVjKJFyIGGaPsc+ep
+         oupw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690198314; x=1690803114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MSZt7mHez9tNJy/98/Qfr0OOVK6jV7kKAFtTUhVHj+4=;
+        b=IbfNnqt9Dr/+nYRzgnawnUi8ubiInR7fQ2+2wU2P94402Ohap7npq+77i535q7iNcM
+         2bcwexsuJ2H6uEBQ8BLLQDgLogOhxPczl4J0Qlq4eLJfw8baHEp8XO++KurnbShT26tf
+         h8a8zduaBb4pUehpyYmnKxuU0IcigX51wv7V6h69h0DOm6uE9B+fvD+f0ma6X35T0NLJ
+         JDaCvNokERgzkG5ONlQin7B55O2IpSs56bKXg0GEh/OAM3lItze+SmG60x/Ul813/3O/
+         mfxaikI5/auk3vwaz8IIcMlJ8yjbo4DEb4be7u1I3LoPSYN2nE29IzNhpeCXn7dlYpTn
+         RaRg==
+X-Gm-Message-State: ABy/qLaMqv6qzJkYs9hsu+qPjcmT37FITuM+9cMy6lybcbhRsSvpiOk2
+        URFbD+KM/jITEqcV0FAr9gk0h4FeDmw+1M30fXfL9w==
+X-Google-Smtp-Source: APBJJlGHxOZ/paRjIch74XqvwUxQz0xz3MZH+VtCE2KMsEa3zvL3fC42DqgKEx4uhzMK7nJeCic/WBnYFQ/RxL330dA=
+X-Received: by 2002:a6b:7f0a:0:b0:76c:8877:861d with SMTP id
+ l10-20020a6b7f0a000000b0076c8877861dmr7363380ioq.1.1690198313863; Mon, 24 Jul
+ 2023 04:31:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 4/6] KVM: s390: interrupt: Fix single-stepping
- userspace-emulated instructions
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-References: <20230724094716.91510-1-iii@linux.ibm.com>
- <20230724094716.91510-5-iii@linux.ibm.com>
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230724094716.91510-5-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <cover.1689792825.git.tjeznach@rivosinc.com> <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
+ <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com> <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
+In-Reply-To: <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Mon, 24 Jul 2023 19:31:42 +0800
+Message-ID: <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
+Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Tomasz Jeznach <tjeznach@rivosinc.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.07.23 11:44, Ilya Leoshkevich wrote:
-> Single-stepping a userspace-emulated instruction that generates an
-> interrupt causes GDB to land on the instruction following it instead of
-> the respective interrupt handler.
-> 
-> The reason is that after arranging a KVM_EXIT_S390_SIEIC exit,
-> kvm_handle_sie_intercept() calls kvm_s390_handle_per_ifetch_icpt(),
-> which sets KVM_GUESTDBG_EXIT_PENDING. This bit, however, is not
-> processed immediately, but rather persists until the next ioctl(),
-> causing a spurious single-step exit.
-> 
-> Fix by clearing this bit in ioctl().
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   arch/s390/kvm/kvm-s390.c | 23 ++++++++++++++++++++---
->   1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 0c6333b108ba..e6511608280c 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -5383,6 +5383,7 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->   {
->   	struct kvm_vcpu *vcpu = filp->private_data;
->   	void __user *argp = (void __user *)arg;
-> +	int rc;
->   
->   	switch (ioctl) {
->   	case KVM_S390_IRQ: {
-> @@ -5390,7 +5391,8 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->   
->   		if (copy_from_user(&s390irq, argp, sizeof(s390irq)))
->   			return -EFAULT;
-> -		return kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		rc = kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		break;
->   	}
->   	case KVM_S390_INTERRUPT: {
->   		struct kvm_s390_interrupt s390int;
-> @@ -5400,10 +5402,25 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->   			return -EFAULT;
->   		if (s390int_to_s390irq(&s390int, &s390irq))
->   			return -EINVAL;
-> -		return kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		rc = kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		break;
->   	}
-> +	default:
-> +		rc = -ENOIOCTLCMD;
-> +		break;
->   	}
-> -	return -ENOIOCTLCMD;
-> +
-> +	/*
-> +	 * To simplify single stepping of userspace-emulated instructions,
-> +	 * KVM_EXIT_S390_SIEIC exit sets KVM_GUESTDBG_EXIT_PENDING (see
-> +	 * should_handle_per_ifetch()). However, if userspace emulation injects
-> +	 * an interrupt, it needs to be cleared, so that KVM_EXIT_DEBUG happens
-> +	 * after (and not before) the interrupt delivery.
-> +	 */
-> +	if (!rc)
-> +		vcpu->guest_debug &= ~KVM_GUESTDBG_EXIT_PENDING;
-> +
-> +	return rc;
->   }
->   
->   static int kvm_s390_handle_pv_vcpu_dump(struct kvm_vcpu *vcpu,
+On Mon, Jul 24, 2023 at 6:02=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
+> wrote:
+>
+> On Mon, Jul 24, 2023 at 1:33=E2=80=AFPM Zong Li <zong.li@sifive.com> wrot=
+e:
+> >
+> > On Thu, Jul 20, 2023 at 3:35=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosi=
+nc.com> wrote:
+> > >
+> > > From: Anup Patel <apatel@ventanamicro.com>
+> > >
+> > > We add DT bindings document for RISC-V IOMMU platform and PCI devices
+> > > defined by the RISC-V IOMMU specification.
+> > >
+> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > ---
+> > >  .../bindings/iommu/riscv,iommu.yaml           | 146 ++++++++++++++++=
+++
+> > >  1 file changed, 146 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iom=
+mu.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml=
+ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> > > new file mode 100644
+> > > index 000000000000..8a9aedb61768
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> > > @@ -0,0 +1,146 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: RISC-V IOMMU Implementation
+> > > +
+> > > +maintainers:
+> > > +  - Tomasz Jeznach <tjeznach@rivosinc.com>
+> > > +
+> > > +description:
+> > > +  The RISC-V IOMMU specificaiton defines an IOMMU for RISC-V platfor=
+ms
+> > > +  which can be a regular platform device or a PCI device connected t=
+o
+> > > +  the host root port.
+> > > +
+> > > +  The RISC-V IOMMU provides two stage translation, device directory =
+table,
+> > > +  command queue and fault reporting as wired interrupt or MSIx event=
+ for
+> > > +  both PCI and platform devices.
+> > > +
+> > > +  Visit https://github.com/riscv-non-isa/riscv-iommu for more detail=
+s.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - description: RISC-V IOMMU as a platform device
+> > > +        items:
+> > > +          - enum:
+> > > +              - vendor,chip-iommu
+> > > +          - const: riscv,iommu
+> > > +
+> > > +      - description: RISC-V IOMMU as a PCI device connected to root =
+port
+> > > +        items:
+> > > +          - enum:
+> > > +              - vendor,chip-pci-iommu
+> > > +          - const: riscv,pci-iommu
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +    description:
+> > > +      For RISC-V IOMMU as a platform device, this represents the MMI=
+O base
+> > > +      address of registers.
+> > > +
+> > > +      For RISC-V IOMMU as a PCI device, this represents the PCI-PCI =
+bridge
+> > > +      details as described in Documentation/devicetree/bindings/pci/=
+pci.txt
+> > > +
+> > > +  '#iommu-cells':
+> > > +    const: 2
+> > > +    description: |
+> > > +      Each IOMMU specifier represents the base device ID and number =
+of
+> > > +      device IDs.
+> > > +
+> > > +  interrupts:
+> > > +    minItems: 1
+> > > +    maxItems: 16
+> > > +    description:
+> > > +      The presence of this property implies that given RISC-V IOMMU =
+uses
+> > > +      wired interrupts to notify the RISC-V HARTS (or CPUs).
+> > > +
+> > > +  msi-parent:
+> > > +    description:
+> > > +      The presence of this property implies that given RISC-V IOMMU =
+uses
+> > > +      MSIx to notify the RISC-V HARTs (or CPUs). This property shoul=
+d be
+> > > +      considered only when the interrupts property is absent.
+> > > +
+> > > +  dma-coherent:
+> > > +    description:
+> > > +      Present if page table walks and DMA accessed made by the RISC-=
+V IOMMU
+> > > +      are cache coherent with the CPU.
+> > > +
+> > > +  power-domains:
+> > > +    maxItems: 1
+> > > +
+> >
+> > In RISC-V IOMMU, certain devices can be set to bypass mode when the
+> > IOMMU is in translation mode. To identify the devices that require
+> > bypass mode by default, does it be sensible to add a property to
+> > indicate this behavior?
+>
+> Bypass mode for a device is a property of that device (similar to dma-coh=
+erent)
+> and not of the IOMMU. Other architectures (ARM and x86) never added such
+> a device property for bypass mode so I guess it is NOT ADVISABLE to do it=
+.
+>
+> If this is REALLY required then we can do something similar to the QCOM
+> SMMU driver where they have a whitelist of devices which are allowed to
+> be in bypass mode (i.e. IOMMU_DOMAIN_IDENTITY) based their device
+> compatible string and any device outside this whitelist is blocked by def=
+ault.
+>
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+I have considered that adding the property of bypass mode to that
+device would be more appropriate. However, if we want to define this
+property for the device, it might need to go through the generic IOMMU
+dt-bindings, but I'm not sure if other IOMMU devices need this. I am
+bringing up this topic here because I would like to explore if there
+are any solutions on the IOMMU side, such as a property that indicates
+the phandle of devices wishing to set bypass mode, somewhat similar to
+the whitelist you mentioned earlier. Do you think we should address
+this? After all, this is a case of RISC-V IOMMU supported.
 
--- 
-Cheers,
-
-David / dhildenb
-
+> Regards,
+> Anup
+>
+> >
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - '#iommu-cells'
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    /* Example 1 (IOMMU platform device with wired interrupts) */
+> > > +    immu1: iommu@1bccd000 {
+> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
+> > > +        reg =3D <0x1bccd000 0x1000>;
+> > > +        interrupt-parent =3D <&aplic_smode>;
+> > > +        interrupts =3D <32 4>, <33 4>, <34 4>, <35 4>;
+> > > +        #iommu-cells =3D <2>;
+> > > +    };
+> > > +
+> > > +    /* Device with two IOMMU device IDs, 0 and 7 */
+> > > +    master1 {
+> > > +        iommus =3D <&immu1 0 1>, <&immu1 7 1>;
+> > > +    };
+> > > +
+> > > +  - |
+> > > +    /* Example 2 (IOMMU platform device with MSIs) */
+> > > +    immu2: iommu@1bcdd000 {
+> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
+> > > +        reg =3D <0x1bccd000 0x1000>;
+> > > +        msi-parent =3D <&imsics_smode>;
+> > > +        #iommu-cells =3D <2>;
+> > > +    };
+> > > +
+> > > +    bus {
+> > > +        #address-cells =3D <2>;
+> > > +        #size-cells =3D <2>;
+> > > +
+> > > +        /* Device with IOMMU device IDs ranging from 32 to 64 */
+> > > +        master1 {
+> > > +                iommus =3D <&immu2 32 32>;
+> > > +        };
+> > > +
+> > > +        pcie@40000000 {
+> > > +            compatible =3D "pci-host-cam-generic";
+> > > +            device_type =3D "pci";
+> > > +            #address-cells =3D <3>;
+> > > +            #size-cells =3D <2>;
+> > > +            bus-range =3D <0x0 0x1>;
+> > > +
+> > > +            /* CPU_PHYSICAL(2)  SIZE(2) */
+> > > +            reg =3D <0x0 0x40000000 0x0 0x1000000>;
+> > > +
+> > > +            /* BUS_ADDRESS(3)  CPU_PHYSICAL(2)  SIZE(2) */
+> > > +            ranges =3D <0x01000000 0x0 0x01000000  0x0 0x01000000  0=
+x0 0x00010000>,
+> > > +                     <0x02000000 0x0 0x41000000  0x0 0x41000000  0x0=
+ 0x3f000000>;
+> > > +
+> > > +            #interrupt-cells =3D <0x1>;
+> > > +
+> > > +            /* PCI_DEVICE(3)  INT#(1)  CONTROLLER(PHANDLE)  CONTROLL=
+ER_DATA(2) */
+> > > +            interrupt-map =3D <   0x0 0x0 0x0  0x1  &aplic_smode  0x=
+4 0x1>,
+> > > +                            < 0x800 0x0 0x0  0x1  &aplic_smode  0x5 =
+0x1>,
+> > > +                            <0x1000 0x0 0x0  0x1  &aplic_smode  0x6 =
+0x1>,
+> > > +                            <0x1800 0x0 0x0  0x1  &aplic_smode  0x7 =
+0x1>;
+> > > +
+> > > +            /* PCI_DEVICE(3)  INT#(1) */
+> > > +            interrupt-map-mask =3D <0xf800 0x0 0x0  0x7>;
+> > > +
+> > > +            msi-parent =3D <&imsics_smode>;
+> > > +
+> > > +            /* Devices with bus number 0-127 are mastered via immu2 =
+*/
+> > > +            iommu-map =3D <0x0000 &immu2 0x0000 0x8000>;
+> > > +        };
+> > > +    };
+> > > +...
+> > > --
+> > > 2.34.1
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
