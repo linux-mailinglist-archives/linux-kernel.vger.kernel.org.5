@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BD775E7F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE9575E7F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbjGXBgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        id S231771AbjGXBhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbjGXBgR (ORCPT
+        with ESMTP id S229976AbjGXBgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:36:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E4C1994;
-        Sun, 23 Jul 2023 18:32:45 -0700 (PDT)
+        Sun, 23 Jul 2023 21:36:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB1749DF;
+        Sun, 23 Jul 2023 18:32:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1355060F5A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 981D760F7A;
+        Mon, 24 Jul 2023 01:31:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FC73C433C7;
         Mon, 24 Jul 2023 01:31:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D1DC433C9;
-        Mon, 24 Jul 2023 01:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162303;
-        bh=ajbydh6J7RiNdqCXQT3mKx9KBNV0cMbI9Ija70sq5+g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OLl6ozcZiKMZ8Qn5ZfnINaAd4ktJznJ2LUCTYgb6Z7CHwUZepdlMcQnu1B5N20O+E
-         6pz1ZDCmt5iGzGMZmLO1qL08SX+7HMLgBVH4nSzjrM0XdqlFGfhccz43z3cwVKPzmK
-         o5PiTf4iBxAu01Lbdu/wmztImaYcfCucT4ZiP4WdpV+LVm1qxhNMhZkUvTna9Pmplm
-         c6RxgBbiVttgMQYzRRLXzFQs+DDvNCRzId2QkMU3guRhCgMFZauYFw9HvvYJMU1Zm0
-         /i7g6AXIuAAipOkWDeorRGCCbFQl8UpdtOh+nimgzmqivScQ1V8fXIbRaw1eRPIxnj
-         Es6uqc4/KFl8A==
+        s=k20201202; t=1690162305;
+        bh=49ZYWdB0TYGJyVBafWTGK2cns5HV2jajdznxNr4Zybc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=r32pvdBTX29bPSzltcLOp2syWFSOHfjW6DJrvCAvZ92c7kM454lRCEDQ7mOZW9S1g
+         a6jZHy6ar5mTEgv95ONjj1DLgXmwr1eSPTgJuAzQKb6jpwt+VHKE18srBIP7cAuDjq
+         5YFm7nppCvUM/hBKDbuvPFONS0yuSi+ufP1bZpx1d2K+/7xlGEkHtf+w6IW5YbOfWH
+         oU2rwdRj3VVhkEH3cCp7lGbMzlSKrgQT+DAZ434EsWskL/NlBy7q9eYKeSRkMhj2ok
+         mF7ROqS2WhReUv8kJKs52rLa8vMXB94Txc5IEeMrYhY800IF6BK5kQUDPjbuXn0U19
+         u3j/GLIEOodlw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, jslaby@suse.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 01/40] serial: stm32: Ignore return value of uart_remove_one_port() in .remove()
-Date:   Sun, 23 Jul 2023 21:31:01 -0400
-Message-Id: <20230724013140.2327815-1-sashal@kernel.org>
+Cc:     Lu Hongfei <luhongfei@vivo.com>, Lee Jones <lee@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, rpurdie@rpsys.net,
+        jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        linux-leds@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 02/40] led: qcom-lpg: Fix resource leaks in for_each_available_child_of_node() loops
+Date:   Sun, 23 Jul 2023 21:31:02 -0400
+Message-Id: <20230724013140.2327815-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,50 +60,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Lu Hongfei <luhongfei@vivo.com>
 
-[ Upstream commit 6bd6cd29c92401a101993290051fa55078238a52 ]
+[ Upstream commit 8f38f8fa7261819eb7d4fb369dc3bfab72259033 ]
 
-Returning early from stm32_usart_serial_remove() results in a resource
-leak as several cleanup functions are not called. The driver core ignores
-the return value and there is no possibility to clean up later.
+Ensure child node references are decremented properly in the error path.
 
-uart_remove_one_port() only returns non-zero if there is some
-inconsistency (i.e. stm32_usart_driver.state[port->line].uart_port == NULL).
-This should never happen, and even if it does it's a bad idea to exit
-early in the remove callback without cleaning up.
-
-This prepares changing the prototype of struct platform_driver::remove to
-return void. See commit 5c5a7680e67b ("platform: Provide a remove callback
-that returns no value") for further details about this quest.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20230512173810.131447-2-u.kleine-koenig@pengutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+Link: https://lore.kernel.org/r/20230525111705.3055-1-luhongfei@vivo.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/stm32-usart.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/leds/rgb/leds-qcom-lpg.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 1e38fc9b10c11..e9e11a2596211 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -1755,13 +1755,10 @@ static int stm32_usart_serial_remove(struct platform_device *pdev)
- 	struct uart_port *port = platform_get_drvdata(pdev);
- 	struct stm32_port *stm32_port = to_stm32_port(port);
- 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	int err;
- 	u32 cr3;
+diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
+index 1c849814a4917..212df2e3d3502 100644
+--- a/drivers/leds/rgb/leds-qcom-lpg.c
++++ b/drivers/leds/rgb/leds-qcom-lpg.c
+@@ -1173,8 +1173,10 @@ static int lpg_add_led(struct lpg *lpg, struct device_node *np)
+ 		i = 0;
+ 		for_each_available_child_of_node(np, child) {
+ 			ret = lpg_parse_channel(lpg, child, &led->channels[i]);
+-			if (ret < 0)
++			if (ret < 0) {
++				of_node_put(child);
+ 				return ret;
++			}
  
- 	pm_runtime_get_sync(&pdev->dev);
--	err = uart_remove_one_port(&stm32_usart_driver, port);
--	if (err)
--		return(err);
-+	uart_remove_one_port(&stm32_usart_driver, port);
+ 			info[i].color_index = led->channels[i]->color;
+ 			info[i].intensity = 0;
+@@ -1352,8 +1354,10 @@ static int lpg_probe(struct platform_device *pdev)
  
- 	pm_runtime_disable(&pdev->dev);
- 	pm_runtime_set_suspended(&pdev->dev);
+ 	for_each_available_child_of_node(pdev->dev.of_node, np) {
+ 		ret = lpg_add_led(lpg, np);
+-		if (ret)
++		if (ret) {
++			of_node_put(np);
+ 			return ret;
++		}
+ 	}
+ 
+ 	for (i = 0; i < lpg->num_channels; i++)
 -- 
 2.39.2
 
