@@ -2,193 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B2D75EE6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AC775EE6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbjGXIzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S231956AbjGXIy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjGXIy5 (ORCPT
+        with ESMTP id S231947AbjGXIyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:54:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CDEE3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:54:56 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qNrKw-0002ZA-Jt; Mon, 24 Jul 2023 10:54:38 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D5AC31F83E8;
-        Mon, 24 Jul 2023 08:54:36 +0000 (UTC)
-Date:   Mon, 24 Jul 2023 10:54:36 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     "Goud, Srinivas" <srinivas.goud@amd.com>
-Cc:     "wg@grandegger.com" <wg@grandegger.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "gcnu.goud@gmail.com" <gcnu.goud@gmail.com>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: RE: [PATCH 2/3] can: xilinx_can: Add ECC support
-Message-ID: <20230724-headpiece-switch-1717818d1be1-mkl@pengutronix.de>
-References: <1686570177-2836108-1-git-send-email-srinivas.goud@amd.com>
- <1686570177-2836108-3-git-send-email-srinivas.goud@amd.com>
- <20230613-sprinkler-pasta-08ae2bd72ac8-mkl@pengutronix.de>
- <PH8PR12MB6675A9F83C930189272E784BE13FA@PH8PR12MB6675.namprd12.prod.outlook.com>
+        Mon, 24 Jul 2023 04:54:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C1F131;
+        Mon, 24 Jul 2023 01:54:50 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C575D6607029;
+        Mon, 24 Jul 2023 09:54:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690188889;
+        bh=nPyP49dnhRShPNzgNG3OKPk0ThYGx46zvyJAuyYOCJg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=efCe+vHgRs9HiIsvZK3U+2yvp7/CekPNNT5Z0yfsoMF4ThOqxS2yGm+VDCAUXZjbx
+         uN/hg511Xe6C6LwZVit4l0cuXs3LW1WpL2lyZF3eUZtjmQgzhIKh+gPM6LzPZ5NabR
+         tREqbURs3ybP/kPK+0SlaY0Xdi+/0aI/rTKrM+lRcagqaeRKc/veBKbZeEQc63pHdi
+         V5VRGP6bXxymu3NuC8iLxgqYz0fQYNx+0ri0lRqHHGd5NmkhJu6mj2Zgi9x7Qmouk4
+         y2m0D5Eh/RTr+VIANdaRTLGSN9JfrzgGJzMTCQH99KtX7Zpze+K0qpREAwHiPE15BW
+         XH72P78iecmDQ==
+Message-ID: <056328aa-9856-2361-837b-9d0e69efceb2@collabora.com>
+Date:   Mon, 24 Jul 2023 10:54:46 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s4xj6l7d5v25ys75"
-Content-Disposition: inline
-In-Reply-To: <PH8PR12MB6675A9F83C930189272E784BE13FA@PH8PR12MB6675.namprd12.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6/7] arm64: dts: qcom: msm8976: Split lpass region
+Content-Language: en-US
+To:     Adam Skladowski <a39.skl@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230723140712.9438-1-a39.skl@gmail.com>
+ <20230723140712.9438-7-a39.skl@gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230723140712.9438-7-a39.skl@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 23/07/23 16:06, Adam Skladowski ha scritto:
+> Some devices like Sony Loire uses Broadcom module over sdc3 however others
+> utilize qcom WCNSS, split shared region based on downstream pil-tz loader.
+> 
+> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 
---s4xj6l7d5v25ys75
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That should go in board specific files, not in the SoC dtsi.
 
-On 21.07.2023 05:23:02, Goud, Srinivas wrote:
-> >> +	if (priv->ecc_enable) {
-> >> +		u32 reg_ecc;
-> >> +
-> >> +		reg_ecc =3D priv->read_reg(priv, XCAN_RXFIFO_ECC_OFFSET);
-> >> +		if (isr & XCAN_IXR_E2BERX_MASK) {
-> >> +			priv->ecc_2bit_rxfifo_cnt +=3D
-> >> +				FIELD_GET(XCAN_ECC_2BIT_CNT_MASK,
-> >reg_ecc);
-> >> +			netdev_dbg(ndev, "%s: RX FIFO 2bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_2bit_rxfifo_cnt);
-> >> +		}
-> >> +		if (isr & XCAN_IXR_E1BERX_MASK) {
-> >> +			priv->ecc_1bit_rxfifo_cnt +=3D reg_ecc &
-> >> +				XCAN_ECC_1BIT_CNT_MASK;
-> >
-> >Please use FIELD_GET here, too.
-> >
-> >> +			netdev_dbg(ndev, "%s: RX FIFO 1bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_1bit_rxfifo_cnt);
-> >> +		}
-> >> +
-> >> +		reg_ecc =3D priv->read_reg(priv, XCAN_TXOLFIFO_ECC_OFFSET);
-> >> +		if (isr & XCAN_IXR_E2BETXOL_MASK) {
-> >> +			priv->ecc_2bit_txolfifo_cnt +=3D
-> >> +				FIELD_GET(XCAN_ECC_2BIT_CNT_MASK,
-> >reg_ecc);
-> >> +			netdev_dbg(ndev, "%s: TXOL FIFO 2bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_2bit_txolfifo_cnt);
-> >> +		}
-> >> +		if (isr & XCAN_IXR_E1BETXOL_MASK) {
-> >> +			priv->ecc_1bit_txolfifo_cnt +=3D reg_ecc &
-> >> +				XCAN_ECC_1BIT_CNT_MASK;
-> >
-> >same here
-> >
-> >> +			netdev_dbg(ndev, "%s: TXOL FIFO 1bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_1bit_txolfifo_cnt);
-> >> +		}
-> >> +
-> >> +		reg_ecc =3D priv->read_reg(priv, XCAN_TXTLFIFO_ECC_OFFSET);
-> >> +		if (isr & XCAN_IXR_E2BETXTL_MASK) {
-> >> +			priv->ecc_2bit_txtlfifo_cnt +=3D
-> >> +				FIELD_GET(XCAN_ECC_2BIT_CNT_MASK,
-> >reg_ecc);
-> >> +			netdev_dbg(ndev, "%s: TXTL FIFO 2bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_2bit_txtlfifo_cnt);
-> >> +		}
-> >> +		if (isr & XCAN_IXR_E1BETXTL_MASK) {
-> >> +			priv->ecc_1bit_txtlfifo_cnt +=3D reg_ecc &
-> >> +				XCAN_ECC_1BIT_CNT_MASK;
-> >
-> >same here
-> >
-> >> +			netdev_dbg(ndev, "%s: TXTL FIFO 1bit ECC error count
-> >%d\n",
-> >> +				   __func__, priv->ecc_1bit_txtlfifo_cnt);
-> >> +		}
-> >> +
-> >> +		/* Reset FIFO ECC counters */
-> >> +		priv->write_reg(priv, XCAN_ECC_CFG_OFFSET,
-> >XCAN_ECC_CFG_REECRX_MASK |
-> >> +				XCAN_ECC_CFG_REECTXOL_MASK |
-> >XCAN_ECC_CFG_REECTXTL_MASK);
-> >
-> >This is racy - you will lose events that occur between reading the regis=
-ter value
-> >and clearing the register. You can save the old value and add the differ=
-ence
-> >between the new and the old value to the total counter. What happens when
-> >the counter overflows? The following pseudocode should handle the u16
-> >counter rolling over to 0:
-> As per IP specifications when counter reaching maximum value of 0xFFFF wi=
-ll=20
-> stays there until reset.
->=20
-> Not sure we can avoid this race condition completely, as we need to reset
-> the counters after reaching the 0xFFFF to avoid losing the events.
->=20
-> To minimize the race condition, we can reset the counters after reaching=
-=20
-> the events to 0xFFFF instead of resetting for every interrupt.=20
-> Can you please suggest if we can go this approach.
-
-Ok, the counter doesn't overflow. To keep the logic in the driver
-simple, I think it's best to read the value and reset the counter
-directly in the next line. Please add a comment like: "The counter
-reaches its maximum at 0xffff and does not overflow. Accept the small
-race window between reading and resetting."
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---s4xj6l7d5v25ys75
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS+PEkACgkQvlAcSiqK
-BOhBsAf/Uy9GZxrB5atT0YrG+tWWdXCviS7jrEfFCO/18HVSkDAy1S1rOwzPqMAP
-K905oZNNqdbcbfVA03kGzQe+SiS1AT9KZug+OlHwWxCbnEilYy6QgGGcGQsZnEel
-orari5fW4sTmZYPFpByDVpgoju2NL3rdpaBJ3OZywR3nV6lZK4dk7vieHFmtvUHR
-bfNAWh3LGj+55Zc6OH44lfalZyQXLrB7R1H0GeDP0m358WejiYVyezDl5dk2HC6p
-1ntGQ22ADAPDHiogtiBLTahdl+9W4EXgulhHQ8zrlmtkUd2xIC7Xcg9rgDUiEAY/
-/TxHQf39Jth7nuLgdmrFMMqhAbjhYQ==
-=TgLA
------END PGP SIGNATURE-----
-
---s4xj6l7d5v25ys75--
+Regards,
+Angelo
