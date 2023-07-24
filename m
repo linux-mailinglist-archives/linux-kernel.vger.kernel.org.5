@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FC175E947
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0799575E944
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbjGXBuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S232866AbjGXBtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbjGXBtQ (ORCPT
+        with ESMTP id S232748AbjGXBrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:49:16 -0400
+        Sun, 23 Jul 2023 21:47:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D602B6E9A;
-        Sun, 23 Jul 2023 18:41:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EA7448E;
+        Sun, 23 Jul 2023 18:40:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5701F6104E;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8224060F10;
+        Mon, 24 Jul 2023 01:34:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6E4C433CB;
         Mon, 24 Jul 2023 01:34:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7084FC433CA;
-        Mon, 24 Jul 2023 01:34:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162489;
-        bh=p/kXK0oG2oy8tHU0cEq30EV2AblklY6LbKFSx0eTQfk=;
+        s=k20201202; t=1690162491;
+        bh=tBHGm54ZyIPVZC3VLzrsblhVrWKkia+qMOfmEYKzDlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LP+sr/N1OWQsmxZvffVUJaNo1eSR+9Hh5YFb+hAT8RgaykOiQDneWu1Lxn29LaFHr
-         EPO77QyLToRpFC3y5XHJfcQQR6AkcZVzPjI8s9f9dSImScr2R5SgWArsVOQnA8sG55
-         gpcxs+XgzTEd4V2U4B+btROtpuv+LkwStFBHJ92tCLxtLcQjI9m7zZoHMBf3Nff2yf
-         ItChGW8ZZ8Ss0gyfbZcxNoe1zc0/qkJ/CPUvEB6cdG3ftB1r/WasGgiwvXh0WFBWHx
-         Ao3xa+GL2MSgR6w2/pgb66H55GHCV5p2fPwWCmrDa5XMIDM4WrN1C9We8K+sLDOGNt
-         VzFsrDyxqWcAA==
+        b=K8gCrcALFz9lfbeAsS/fcGvT0cos/QpP1xsvjj1omoo1FsrVBsMgQWQqhftlfa/QD
+         HvYC6GY/AEOWl0beGK6YzrKfzkHq5FByyLDADtkNyCzxUdGYEps2S7c/ZO4z13e2tJ
+         1TZXczzuGNiVwrbmQGmmnFktyNY+/lxhlbKKPr++1fBqIcva1B5g9jTfUs29cD6xuu
+         oh37N94fuqYf75hSczq1XlmmyALtILn5vN0rxQefO/+9hV4sT4cxhHDstuQvriWxPs
+         qbUFKeOYpYPNKj1cgZ+EvPL+kaxgaP47CImIlvnKz5GwCb+DmCnZwsll3CjbK+6y03
+         DJmUjPMDFNZFw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, minghsiu.tsai@mediatek.com,
-        houlong.wei@mediatek.com, andrew-ct.chen@mediatek.com,
-        tiffany.lin@mediatek.com, matthias.bgg@gmail.com,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 2/9] media: platform: mediatek: vpu: fix NULL ptr dereference
-Date:   Sun, 23 Jul 2023 21:34:38 -0400
-Message-Id: <20230724013445.2334326-2-sashal@kernel.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 3/9] xhci: Don't require a valid get_quirks() function pointer during xhci setup
+Date:   Sun, 23 Jul 2023 21:34:39 -0400
+Message-Id: <20230724013445.2334326-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013445.2334326-1-sashal@kernel.org>
 References: <20230724013445.2334326-1-sashal@kernel.org>
@@ -64,49 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 3df55cd773e8603b623425cc97b05e542854ad27 ]
+[ Upstream commit 9b907c91aa94522ae14bf155ce7b9ccb10a0903c ]
 
-If pdev is NULL, then it is still dereferenced.
+Not all platforms drivers need to set up custom quirks during the xhci
+generic setup. Allow them to pass NULL as the function pointer when
+calling xhci_gen_setup()
 
-This fixes this smatch warning:
-
-drivers/media/platform/mediatek/vpu/mtk_vpu.c:570 vpu_load_firmware() warn: address of NULL pointer 'pdev'
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Yunfei Dong <yunfei.dong@mediatek.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Message-ID: <20230602144009.1225632-4-mathias.nyman@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 9b57fb2857285..46ec1f2699aa7 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -537,16 +537,18 @@ static int load_requested_vpu(struct mtk_vpu *vpu,
- int vpu_load_firmware(struct platform_device *pdev)
- {
- 	struct mtk_vpu *vpu;
--	struct device *dev = &pdev->dev;
-+	struct device *dev;
- 	struct vpu_run *run;
- 	const struct firmware *vpu_fw = NULL;
- 	int ret;
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 13c10ebde296e..7d890c8d89a2b 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -5197,7 +5197,8 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
  
- 	if (!pdev) {
--		dev_err(dev, "VPU platform device is invalid\n");
-+		pr_err("VPU platform device is invalid\n");
- 		return -EINVAL;
- 	}
+ 	xhci->quirks |= quirks;
  
-+	dev = &pdev->dev;
-+
- 	vpu = platform_get_drvdata(pdev);
- 	run = &vpu->run;
+-	get_quirks(dev, xhci);
++	if (get_quirks)
++		get_quirks(dev, xhci);
  
+ 	/* In xhci controllers which follow xhci 1.0 spec gives a spurious
+ 	 * success event after a short transfer. This quirk will ignore such
 -- 
 2.39.2
 
