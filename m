@@ -2,161 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6F275FA80
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4E575FA74
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbjGXPOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41096 "EHLO
+        id S230094AbjGXPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjGXPOq (ORCPT
+        with ESMTP id S230384AbjGXPKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:14:46 -0400
-X-Greylist: delayed 350 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 08:14:39 PDT
-Received: from mail.fris.de (mail.fris.de [116.203.77.234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D9133
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:14:39 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7DE21C00F4;
-        Mon, 24 Jul 2023 17:08:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-        t=1690211307; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding; bh=+Oq42VHLt9WI5LMY6xBEFPI3JfgTSegkWwKVtR1Zjh4=;
-        b=tjjWmyPLkeRE7G950imIX1wsfh9Mijw+PuJebrWHS6rh2+VuRM+89tQ39Nucm7QN6njm8v
-        6+GVI7LPNZI5WlevhtLPivM0PpGgJhuK1QfAyV4k/55/SeRgbgaaZCjkV6rLPVmzuOpUgH
-        czr0LcoU5qIQqmg8nvc/pKS/Q7AcFu/oBC0lXonlyP2yCHbE/VOnuNjTVewMWcxTr7lF3/
-        tgy2p6v9WTcc0kvOWgQ/sxo5/NPy0Dq2wVN/tETIcBxQmQ6wtz/gLC7TISIcotq8LnIelb
-        3R/NWaxPvUGaioyt11Ih1Rj88GNgUOYBgegmMv3eoCgW975x6x3hRSHtcq2wrQ==
-From:   Frieder Schrempf <frieder@fris.de>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>
-Cc:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Marek Vasut <marex@denx.de>
-Subject: [PATCH] drm: bridge: samsung-dsim: Fix init during host transfer
-Date:   Mon, 24 Jul 2023 17:08:03 +0200
-Message-ID: <20230724150812.553044-1-frieder@fris.de>
+        Mon, 24 Jul 2023 11:10:55 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C3210C9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:10:53 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-79a0dd101beso399491241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690211453; x=1690816253;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1i/tbBQFEoJKnp1LBuoZpNEITwelzpxl1MwROs1heWM=;
+        b=ysaJQZhrqwf+AJYp/DatIqi9VO/5opPODx9X5x+WP0SF0M75Z7hNj343fILNJGNB9p
+         Kn8QN/zcrqy7tfoXTcSe0QHbQq/F8+rZiY3Uzae/amsJhxH8QTKpx6hkG5RFszYw8Z48
+         dHNh5ujWkoVIL5bLU+Knuu1FSWUbz8LR5bWOhAYLUIDV/0KHUrL7EUsnn8Wkn3q073KB
+         TTpjxl6r8dRY0RprgxRuFHpHsfw4XZoPAgFeblCSsvulIK1qJdInbgnBwmr/bEchC4nZ
+         06YtpkdRDTVq3T4DBjmlDJkAOvQU4aDi1VwMRMx18c/sz/eDuYxunoZe0Piwclvm/Vej
+         rvrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690211453; x=1690816253;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1i/tbBQFEoJKnp1LBuoZpNEITwelzpxl1MwROs1heWM=;
+        b=OE+cTvUp+3MnOq/UZFAAlD4TUJkcVTsx08WdIaF8Xrgr/h6+LSSBeUebU0uR6gSbCg
+         FwIY+JV1E13i5wvzacVBCeYYaawl6jEZUTnoFLSBIIJqk0943Iv64m7kLQbwNz0Eb8Uu
+         +XviO94G1eIjMs9DiS4zqGjDgYx+kVgvl1w6debKQ2XMesV8RREY7nrXUR8L48aS6O4W
+         fq26Zn2eqqtQwx0Oc1r18zLHc16ebU3qFk4fXD2z/+/6ANYXOT0dKLg9nhKDyUp8NcnT
+         WPm6+ZkWpAn4RV6ordIszw27RO/EUOjewvyCHoehIW1U1X4OWouZFS6h0ZRLwvLH7EEN
+         3CXQ==
+X-Gm-Message-State: ABy/qLYEmd6LLg5c+1lzJl392Hoa5hCNhQw3d9WSaDO5zQ2SL1rU+F0z
+        LuuMr3Ig7W4cPuU3oEnZMB7CLg==
+X-Google-Smtp-Source: APBJJlFn5Q73tj7dnOqCXc/DUujEra76hh3ewQoqQ3+ogBbma1D5zKSEp3mh5Wt7Pk94+7AMMJ4UEA==
+X-Received: by 2002:a67:e3cd:0:b0:440:d2f5:e36d with SMTP id k13-20020a67e3cd000000b00440d2f5e36dmr2497092vsm.14.1690211452885;
+        Mon, 24 Jul 2023 08:10:52 -0700 (PDT)
+Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id x24-20020a67c098000000b0044360ff4275sm1330384vsi.28.2023.07.24.08.10.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 08:10:52 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 11:10:49 -0400
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: Explicitly include correct DT includes
+Message-ID: <ZL6UeZGGqL3oAEL0@fedora>
+References: <20230714174357.4053541-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2EoHozUDW1dKat/8"
+Content-Disposition: inline
+In-Reply-To: <20230714174357.4053541-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-In case the downstream bridge or panel uses DSI transfers before the
-DSI host was actually initialized through samsung_dsim_atomic_enable()
-which clears the stop state (LP11) mode, all transfers will fail.
+--2EoHozUDW1dKat/8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This happens with downstream bridges that are controlled by DSI
-commands such as the tc358762.
+On Fri, Jul 14, 2023 at 11:43:57AM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-As documented in [1] DSI hosts are expected to allow transfers
-outside the normal bridge enable/disable flow.
+Queued for counter-next.
 
-To fix this make sure that stop state is cleared in
-samsung_dsim_host_transfer() which restores the previous
-behavior.
+Thanks,
 
-We also factor out the common code to enable/disable stop state
-to samsung_dsim_set_stop_state().
+William Breathitt Gray
 
-[1] https://docs.kernel.org/gpu/drm-kms-helpers.html#mipi-dsi-bridge-operation
+--2EoHozUDW1dKat/8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec")
-Reported-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
-Hi Tim, could you please give this patch a try and report back if
-it fixes your problem? Thanks!
----
- drivers/gpu/drm/bridge/samsung-dsim.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 043b8109e64a..92ea60e0fbf1 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -1386,6 +1386,18 @@ static void samsung_dsim_disable_irq(struct samsung_dsim *dsi)
- 	disable_irq(dsi->irq);
- }
- 
-+static void samsung_dsim_set_stop_state(struct samsung_dsim *dsi, bool enable)
-+{
-+	u32 reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
-+
-+	if (enable)
-+		reg &= ~DSIM_FORCE_STOP_STATE;
-+	else
-+		reg |= DSIM_FORCE_STOP_STATE;
-+
-+	samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-+}
-+
- static int samsung_dsim_init(struct samsung_dsim *dsi)
- {
- 	const struct samsung_dsim_driver_data *driver_data = dsi->driver_data;
-@@ -1445,15 +1457,12 @@ static void samsung_dsim_atomic_enable(struct drm_bridge *bridge,
- 				       struct drm_bridge_state *old_bridge_state)
- {
- 	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
--	u32 reg;
- 
- 	if (samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
- 		samsung_dsim_set_display_mode(dsi);
- 		samsung_dsim_set_display_enable(dsi, true);
- 	} else {
--		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
--		reg &= ~DSIM_FORCE_STOP_STATE;
--		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-+		samsung_dsim_set_stop_state(dsi, false);
- 	}
- 
- 	dsi->state |= DSIM_STATE_VIDOUT_AVAILABLE;
-@@ -1463,16 +1472,12 @@ static void samsung_dsim_atomic_disable(struct drm_bridge *bridge,
- 					struct drm_bridge_state *old_bridge_state)
- {
- 	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
--	u32 reg;
- 
- 	if (!(dsi->state & DSIM_STATE_ENABLED))
- 		return;
- 
--	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
--		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
--		reg |= DSIM_FORCE_STOP_STATE;
--		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
--	}
-+	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-+		samsung_dsim_set_stop_state(dsi, true);
- 
- 	dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
- }
-@@ -1775,6 +1780,8 @@ static ssize_t samsung_dsim_host_transfer(struct mipi_dsi_host *host,
- 	if (ret)
- 		return ret;
- 
-+	samsung_dsim_set_stop_state(dsi, false);
-+
- 	ret = mipi_dsi_create_packet(&xfer.packet, msg);
- 	if (ret < 0)
- 		return ret;
--- 
-2.41.0
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZL6UeQAKCRC1SFbKvhIj
+K8FfAQDJjANsGx0TzqvuImQxzjoUMB+DS/fxIBoJaj05DGsrwwEAvExcZz/qzrmT
+T+WkSHY0orCAEN5P6kDtENAyLU+Rwg0=
+=THNE
+-----END PGP SIGNATURE-----
 
+--2EoHozUDW1dKat/8--
