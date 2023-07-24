@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0C875F9CC
+	by mail.lfdr.de (Postfix) with ESMTP id 99A4275F9CD
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjGXOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
+        id S229721AbjGXO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbjGXOYJ (ORCPT
+        with ESMTP id S229661AbjGXO0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:24:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4B4E70;
-        Mon, 24 Jul 2023 07:24:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 827256122E;
-        Mon, 24 Jul 2023 14:24:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D12D5C433CA;
-        Mon, 24 Jul 2023 14:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690208640;
-        bh=4x/lXBD11qRjeCltOoQZr+xF6TdB6bL9wbxYaXHsFY0=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Lubu4N04Aw8qL5huv3ZWO+MLegdqvUkQ1aXNPEXAlwlJ70wEx/68x06L2YZOvKsvU
-         lk9dNzh1iuEskZReHSLX66G3R96jWypb0wEWEjUJWQaACgUT3o68pIYPVGvNhjSZNi
-         8FWZVUSPc0bSOxb2ghm3ncfX7mxwBP7VM+5LrDR8fCdVIeUUCjfN1bPd++QP303rFD
-         8LbCAfnbSumP3hfvbOZ+31wnTw71qrQvg4j55ZfZAGygOZag2a7pOWVH5bp3ksQS5Q
-         qErcuxyjNA9a3zSqhxw1rOtcp89M3pmTgn0J/iHbrKsODWUuJ7Jv+xSAxCO3I1gWHe
-         AYQ1gG4djCHpQ==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     hanyu001@208suo.com
-Cc:     pkshih@realtek.com, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtlwifi: rtl8192de: phy: "foo * bar" should be "foo *bar"
-References: <tencent_56B12E143DA8D1D6A9C3669E04C963914905@qq.com>
-        <8ef50a4e96014949bbfde956edd07108@208suo.com>
-Date:   Mon, 24 Jul 2023 17:23:57 +0300
-In-Reply-To: <8ef50a4e96014949bbfde956edd07108@208suo.com> (hanyu's message of
-        "Wed, 19 Jul 2023 17:54:33 +0800")
-Message-ID: <878rb52xs2.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 24 Jul 2023 10:26:05 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 8040CE64
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:26:04 -0700 (PDT)
+Received: (qmail 1848894 invoked by uid 1000); 24 Jul 2023 10:26:03 -0400
+Date:   Mon, 24 Jul 2023 10:26:03 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc:     linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] usb: gadget: core: remove unbalanced mutex_unlock in
+ usb_gadget_activate
+Message-ID: <b4ccd0c4-78f7-4f7c-bf6f-cae048c6e841@rowland.harvard.edu>
+References: <20230721222256.1743645-1-m.grzeschik@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721222256.1743645-1-m.grzeschik@pengutronix.de>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hanyu001@208suo.com writes:
+On Sat, Jul 22, 2023 at 12:22:56AM +0200, Michael Grzeschik wrote:
+> Commit 286d9975a838 ("usb: gadget: udc: core: Prevent soft_connect_store() race")
+> introduced one extra mutex_unlock of connect_lock in the usb_gadget_active function.
+> 
+> Fixes: 286d9975a838 ("usb: gadget: udc: core: Prevent soft_connect_store() race")
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> ---
 
-> This patch fixes the checkpatch.pl error:
->
-> ./drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:2434: ERROR:
-> "foo * bar" should be "foo *bar"
->
-> Signed-off-by: Yu Han <hanyu001@208suo.com>
+Hard to see how we missed that...
 
-Please don't submit checkpatch fixes to wireless, they are too much work
-with very little gain.
+Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Thanks!
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>  drivers/usb/gadget/udc/core.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+> index 59188ea065e0c9..cd58f2a4e7f34d 100644
+> --- a/drivers/usb/gadget/udc/core.c
+> +++ b/drivers/usb/gadget/udc/core.c
+> @@ -878,7 +878,6 @@ int usb_gadget_activate(struct usb_gadget *gadget)
+>  	 */
+>  	if (gadget->connected)
+>  		ret = usb_gadget_connect_locked(gadget);
+> -	mutex_unlock(&gadget->udc->connect_lock);
+>  
+>  unlock:
+>  	mutex_unlock(&gadget->udc->connect_lock);
+> -- 
+> 2.39.2
+> 
