@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C38837600A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9147600A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjGXUsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
+        id S229923AbjGXUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 16:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjGXUsX (ORCPT
+        with ESMTP id S229577AbjGXUuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:48:23 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA019E67
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690231702; x=1721767702;
-  h=date:from:to:cc:subject:message-id;
-  bh=wGjgjpzuErhTnrUykkMzfHmTbIMKE1sPp8FNjjaOFEk=;
-  b=NEWOsqPxsKfdziUFQmw6ca2HqH3YRj7t4Ebc9FasyCpK2/sGHfyF4A58
-   e1HpS3lKTcd6BOKpXM9Ey/afd7JdmRwV1jEEI2k/FgAO/Lqmzh+45HP+y
-   csrIAuN5Y2tf1LzG3u112QY48cbwLdAY39Je2SVqbmcA3mToVH6X63q5J
-   7CE1aQ3xRn/Vmra5EYUZXcnIANq2ACZtFV6qg85v/G/HSh8Z82JkxtOdZ
-   b8GeZ8gVReue+DCWEzfguey3HDZspWxGyjxhjvNRt9ZgI8tQPiJy3F58c
-   NT8ZtqP7F4aX5f+f0OiSkw6bf8MpBGLolDqy1SHj8CcrIPm0IEW79IQ+T
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="433790826"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="433790826"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 13:48:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="869202893"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Jul 2023 13:48:21 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qO2TZ-000A1w-0e;
-        Mon, 24 Jul 2023 20:48:17 +0000
-Date:   Tue, 25 Jul 2023 04:48:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/urgent] BUILD SUCCESS
- de990908521073d98a46ad0e29885df447e95242
-Message-ID: <202307250400.NpUJBHMo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Mon, 24 Jul 2023 16:50:39 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45AE10C3;
+        Mon, 24 Jul 2023 13:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OYTJvIAB8armLdjFxMwh4eSieKXJT6xjO05VM/ChcnE=; b=RMBu/I6CBq72t9E1PN6/U2q1BC
+        eEsWz4I0tSZ8p+V45mL1CpupwdqzYM3GAAm8hap3+9Eo+JXttG8Uq6TYvXlk3A2yOq4UvR1IjLbN2
+        szIw/YgCYt+x1bnuKVZveBQ+gtNCoRo/+9ZVHaR1rkQmYcHehjuPhwgc0WHDGjDIPZjPAB3sIm1sB
+        YB492rfmmvzsg3EIUmBo2qWFaS6Qaf5C/0mL/VXiIHCfd9IFEVz+55KgELrmVkaoiYCwS2gCwWmjX
+        XaWMTHOiysJJiMUp0Lc1wAEawuzk/wQ7BTUNB2eYSEf7ndLI13dnzU2thU2gfZNO2L0iXsKwd+dEL
+        +I7jynKw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qO2Uy-002i3Y-1O;
+        Mon, 24 Jul 2023 20:49:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F1030300155;
+        Mon, 24 Jul 2023 22:49:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D1AD32CC644CB; Mon, 24 Jul 2023 22:49:42 +0200 (CEST)
+Date:   Mon, 24 Jul 2023 22:49:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [patch 17/29] x86/cpu: Provide a sane leaf 0xb/0x1f parser
+Message-ID: <20230724204942.GD3745454@hirez.programming.kicks-ass.net>
+References: <20230724155329.474037902@linutronix.de>
+ <20230724172844.690165660@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724172844.690165660@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,131 +74,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
-branch HEAD: de990908521073d98a46ad0e29885df447e95242  Merge tag 'irqchip-fixes-6.5-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+On Mon, Jul 24, 2023 at 07:44:17PM +0200, Thomas Gleixner wrote:
 
-elapsed time: 729m
+> +static inline bool topo_subleaf(struct topo_scan *tscan, u32 leaf, u32 subleaf)
+> +{
+> +	unsigned int dom, maxtype = leaf == 0xb ? CORE_TYPE + 1 : MAX_TYPE;
+> +	struct {
+> +		// eax
+> +		u32	x2apic_shift	:  5, // Number of bits to shift APIC ID right
+> +					      // for the topology ID at the next level
+> +			__rsvd0		: 27; // Reserved
+> +					      // ebx
+> +		u32	num_processors	: 16, // Number of processors at current level
+> +			__rsvd1		: 16; // Reserved
+> +					      // ecx
+> +		u32	level		:  8, // Current topology level. Same as sub leaf number
+> +			type		:  8, // Level type. If 0, invalid
+> +			__rsvd2		: 16; // Reserved
+> +					      // edx
+> +		u32	x2apic_id	: 32; // X2APIC ID of the current logical processor
 
-configs tested: 112
-configs skipped: 7
+That comment seems inconsistent, either have then all aligned or move
+all register names left.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+But yeah, I think this is more or less what we ended up with last time I
+went through this.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230724   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230724   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r011-20230724   gcc  
-arm                  randconfig-r046-20230724   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r001-20230724   gcc  
-arm64                randconfig-r011-20230724   clang
-arm64                randconfig-r026-20230724   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r013-20230724   gcc  
-hexagon              randconfig-r021-20230724   clang
-hexagon              randconfig-r041-20230724   clang
-hexagon              randconfig-r045-20230724   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230724   gcc  
-i386         buildonly-randconfig-r005-20230724   gcc  
-i386         buildonly-randconfig-r006-20230724   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230724   gcc  
-i386                 randconfig-i002-20230724   gcc  
-i386                 randconfig-i003-20230724   gcc  
-i386                 randconfig-i004-20230724   gcc  
-i386                 randconfig-i005-20230724   gcc  
-i386                 randconfig-i006-20230724   gcc  
-i386                 randconfig-i011-20230724   clang
-i386                 randconfig-i012-20230724   clang
-i386                 randconfig-i013-20230724   clang
-i386                 randconfig-i014-20230724   clang
-i386                 randconfig-i015-20230724   clang
-i386                 randconfig-i016-20230724   clang
-i386                 randconfig-r033-20230724   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r014-20230724   gcc  
-m68k                 randconfig-r023-20230724   gcc  
-m68k                 randconfig-r025-20230724   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r005-20230724   clang
-mips                 randconfig-r031-20230724   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r001-20230724   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r032-20230724   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r006-20230724   gcc  
-powerpc              randconfig-r016-20230724   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230724   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r022-20230724   clang
-s390                 randconfig-r044-20230724   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r004-20230724   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r012-20230724   gcc  
-sparc64              randconfig-r003-20230724   gcc  
-sparc64              randconfig-r012-20230724   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r015-20230724   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230724   gcc  
-x86_64       buildonly-randconfig-r002-20230724   gcc  
-x86_64       buildonly-randconfig-r003-20230724   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r035-20230724   gcc  
-x86_64               randconfig-x001-20230724   clang
-x86_64               randconfig-x002-20230724   clang
-x86_64               randconfig-x003-20230724   clang
-x86_64               randconfig-x004-20230724   clang
-x86_64               randconfig-x005-20230724   clang
-x86_64               randconfig-x006-20230724   clang
-x86_64               randconfig-x011-20230724   gcc  
-x86_64               randconfig-x012-20230724   gcc  
-x86_64               randconfig-x013-20230724   gcc  
-x86_64               randconfig-x014-20230724   gcc  
-x86_64               randconfig-x015-20230724   gcc  
-x86_64               randconfig-x016-20230724   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r003-20230724   gcc  
-xtensa               randconfig-r004-20230724   gcc  
-xtensa               randconfig-r036-20230724   gcc  
+> +	} sl;
+> +
+> +	cpuid_subleaf(leaf, subleaf, &sl);
+> +
+> +	if (!sl.num_processors || sl.type == INVALID_TYPE)
+> +		return false;
+> +
+> +	if (sl.type >= maxtype) {
+> +		/*
+> +		 * As the subleafs are ordered in domain level order, this
+> +		 * could be recovered in theory by propagating the
+> +		 * information at the last parsed level.
+> +		 *
+> +		 * But if the infinite wisdom of hardware folks decides to
+> +		 * create a new domain type between CORE and MODULE or DIE
+> +		 * and DIEGRP, then that would overwrite the CORE or DIE
+> +		 * information.
+> +		 *
+> +		 * It really would have been too obvious to make the domain
+> +		 * type space sparse and leave a few reserved types between
+> +		 * the points which might change instead of forcing
+> +		 * software to either create a monstrosity of workarounds
+> +		 * or just being up the creek without a paddle.
+> +		 *
+> +		 * Refuse to implement monstrosity, emit an error and try
+> +		 * to survive.
+> +		 */
+> +		pr_err_once("Topology: leaf 0x%x:%d Unknown domain type %u\n",
+> +			    leaf, subleaf, sl.type);
+> +		return true;
+> +	}
+> +
+> +	dom = topo_domain_map[sl.type];
+> +	if (!dom) {
+> +		tscan->c->topo.initial_apicid = sl.x2apic_id;
+> +	} else if (tscan->c->topo.initial_apicid != sl.x2apic_id) {
+> +		pr_warn_once(FW_BUG "CPUID leaf 0x%x subleaf %d APIC ID mismatch %x != %x\n",
+> +			     leaf, subleaf, tscan->c->topo.initial_apicid, sl.x2apic_id);
+> +	}
+> +
+> +	topology_set_dom(tscan, dom, sl.x2apic_shift, sl.num_processors);
+> +	return true;
+> +}
+> +
+> +static bool parse_topology_leaf(struct topo_scan *tscan, u32 leaf)
+> +{
+> +	u32 subleaf;
+> +
+> +	if (tscan->c->cpuid_level < leaf)
+> +		return false;
+> +
+> +	/* Read all available subleafs and populate the levels */
+> +	for (subleaf = 0; topo_subleaf(tscan, leaf, subleaf); subleaf++);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Personally I prefer:
+
+	for (;;)
+		;
+
+that is, have the semicolon on it's own line, but meh.
+
+> +
+> +	/* If subleaf 0 failed to parse, give up */
+> +	if (!subleaf)
+> +		return false;
+> +
+> +	/*
+> +	 * There are machines in the wild which have shift 0 in the subleaf
+> +	 * 0, but advertise 2 logical processors at that level. They are
+> +	 * truly SMT.
+> +	 */
+> +	if (!tscan->dom_shifts[TOPO_SMT_DOMAIN] && tscan->dom_ncpus[TOPO_SMT_DOMAIN] > 1) {
+> +		u16 sft = get_count_order(tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+> +
+> +		pr_warn_once(FW_BUG "CPUID leaf 0x%x subleaf 0 has shift level 0 but %u CPUs\n",
+> +			     leaf, tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+> +		topology_update_dom(tscan, TOPO_SMT_DOMAIN, sft, tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+> +	}
+> +
+> +	set_cpu_cap(tscan->c, X86_FEATURE_XTOPOLOGY);
+> +	return true;
+> +}
+> +
+> +bool cpu_parse_topology_ext(struct topo_scan *tscan)
+> +{
+> +	/* Try lead 0x1F first. If not available try leaf 0x0b */
+> +	if (parse_topology_leaf(tscan, 0x1f))
+> +		return true;
+> +	return parse_topology_leaf(tscan, 0x0b);
+> +}
+> 
