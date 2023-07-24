@@ -2,99 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100E675FCA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB2B75FCBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbjGXQya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
+        id S231441AbjGXQ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjGXQy2 (ORCPT
+        with ESMTP id S230210AbjGXQ4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:54:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1B883;
-        Mon, 24 Jul 2023 09:54:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59BF56113A;
-        Mon, 24 Jul 2023 16:54:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FDD1C433C7;
-        Mon, 24 Jul 2023 16:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690217666;
-        bh=nZLu6vwqapKhQe/GN3qXvFgQwLGxgBCoWllQtcidduE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0Y90PnWh32L82pwmMy5a8pWNvn+UPE6scfeaeRK/teyxdS+ubENOxD3kJXpzaJDo
-         S1XpRNMZWL3BER8O/TkhAleES1bJwXQIx7c2bgxhI2oBAAfzDAAngj4SHhzvOPSzuu
-         tRq65JDfQEFBz7aF4tfYLyNxaOTA7m3wmHkBCfdEux0lZ3YHNGHFtT8Jp0SRo6sZpz
-         eiy58NIkCZM5NsPpZSznC5gpSxwOKIFRYabQH0kfjNw2fzlhIyxCrk5AWIQL4ZY7bF
-         DrZpV0UpKv1/+fCTbgFRQ8pfwtIISYoOUQimaXIIF6iRmQsWoE5mhV7fS402XeYh6j
-         odpgRpbL8u1ww==
-Date:   Mon, 24 Jul 2023 17:54:22 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
- support
-Message-ID: <20230724-paternity-labrador-e8f4046b3398@spud>
-References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
- <20230724-shabby-schnapps-e7254584400c@spud>
+        Mon, 24 Jul 2023 12:56:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BBBB7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:55:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690217750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+i0Z9WjluIMP5uW/WBHzltLXbYemxnhhH7IUl23Qdow=;
+        b=D0wQW63U2qK/T55eNIS3rgUCCz7UoXnpKOgsuVfluPgomvbEOiTkyJf8PaiR+Kfxoje/5Z
+        sQNbL0xY0jA9ryEJIDyFH95mllk0K2Fllp7AnxdSYTo1AtheFhuTjIDpXw8m4H8G5h16JH
+        Tlx7uRy9Fzx+uNs/CtIa5vSSUqxF6Os=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-623-cQPIiZn7OeKhBmdq55jwGQ-1; Mon, 24 Jul 2023 12:55:49 -0400
+X-MC-Unique: cQPIiZn7OeKhBmdq55jwGQ-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fb76659d37so3914317e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:55:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690217748; x=1690822548;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+i0Z9WjluIMP5uW/WBHzltLXbYemxnhhH7IUl23Qdow=;
+        b=WlOezgR2kxMRXgwOtXq3ltSLmuqRZXWg9J1FsLqKSRj4JwoZU4aB43QEV4BdUJGVmS
+         UtCHtQUIT65DKpvsRh/1mhbWnPNLc4uNMfU9TpEYBz1YYH76KVUQmJlrF2qqtms5rcCt
+         ceC1gz00a1ATkxK6WM8Vr/iSZ82W3y+luBM/mg/he+JVqmBsyNEeI12pBeC8NOccGTMM
+         9tRAsRiuYrjc6x/QNSaqWqfTjGupaNp2x5UcxPybK0ZerZ/uEk69lKPF/Q3xdnY5nGI0
+         NcHCBQX1rtDcCeEoJBj3pnwUZyD6JoXlhJYZfLx14Rput8KiH3A9Lpm2Id1dVe9o0Z8x
+         OMLw==
+X-Gm-Message-State: ABy/qLYfiMtQjiFVoWxEvrqhK+FNbSUU0Y+4pkC9EE+U+dCQMK9jsCBW
+        4aegWFNbY65kC9ClpHTDAEpqwJqOO+EcMNDHNLta0lMhwvUPzVfSIqclyW6Rd156ELgQWyLH4ST
+        ivg+/XITZ9YWg2ZtAtdYk3Swb
+X-Received: by 2002:ac2:5dee:0:b0:4fb:99c6:8533 with SMTP id z14-20020ac25dee000000b004fb99c68533mr5480471lfq.33.1690217747937;
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlESyHT5vseo1Fe9EOmjjndUHiTWba8Rkai6N/Uo2tJlbGYCmmO/8/5WknEFctQ/nYDYCoWt/g==
+X-Received: by 2002:ac2:5dee:0:b0:4fb:99c6:8533 with SMTP id z14-20020ac25dee000000b004fb99c68533mr5480427lfq.33.1690217747520;
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id o25-20020a1c7519000000b003fbaade0735sm13965691wmc.19.2023.07.24.09.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-16-vschneid@redhat.com>
+ <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+Date:   Mon, 24 Jul 2023 17:55:44 +0100
+Message-ID: <xhsmh351dtfjj.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AVdePY38nlqBEkwe"
-Content-Disposition: inline
-In-Reply-To: <20230724-shabby-schnapps-e7254584400c@spud>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/07/23 16:52, Frederic Weisbecker wrote:
+> Le Thu, Jul 20, 2023 at 05:30:51PM +0100, Valentin Schneider a =C3=A9crit=
+ :
+>> +enum ctx_state {
+>> +	/* Following are values */
+>> +	CONTEXT_DISABLED	=3D -1,	/* returned by ct_state() if unknown */
+>> +	CONTEXT_KERNEL		=3D 0,
+>> +	CONTEXT_IDLE		=3D 1,
+>> +	CONTEXT_USER		=3D 2,
+>> +	CONTEXT_GUEST		=3D 3,
+>> +	CONTEXT_MAX             =3D 4,
+>> +};
+>> +
+>> +/*
+>> + * We cram three different things within the same atomic variable:
+>> + *
+>> + *                CONTEXT_STATE_END                        RCU_DYNTICKS=
+_END
+>> + *                         |       CONTEXT_WORK_END                |
+>> + *                         |               |                       |
+>> + *                         v               v                       v
+>> + *         [ context_state ][ context work ][ RCU dynticks counter ]
+>> + *         ^                ^               ^
+>> + *         |                |               |
+>> + *         |        CONTEXT_WORK_START      |
+>> + * CONTEXT_STATE_START              RCU_DYNTICKS_START
+>
+> Should the layout be displayed in reverse? Well at least I always picture
+> bitmaps in reverse, that's probably due to the direction of the shift arr=
+ows.
+> Not sure what is the usual way to picture it though...
+>
 
---AVdePY38nlqBEkwe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Surprisingly, I managed to confuse myself with that comment :-)  I think I
+am subconsciously more used to the reverse as well. I've flipped that and
+put "MSB" / "LSB" at either end.
 
-On Mon, Jul 24, 2023 at 05:53:36PM +0100, Conor Dooley wrote:
-> On Mon, Jul 24, 2023 at 02:08:47PM +0530, Komal Bajaj wrote:
-> > Changes in v5 -
-> >  - Separating this from original series [1].
-> >  - Added description of driver to secure qfprom binding.
-> >  - Replaced pm_runtime_enable() withh devm_pm_runtime_enable().
-> >  - Changed module license to GPL instead of GPL v2.
-> >=20
-> > This series introduces a new driver for reading secure fuse region and =
-adding
-> > dt-bindings for same.
-> >=20
-> > [1] https://lore.kernel.org/linux-arm-msm/20230623141806.13388-1-quic_k=
-bajaj@quicinc.com/
->=20
-> Why does this series have two v5s?
+>> + */
+>> +
+>> +#define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * =
+BITS_PER_BYTE)
+>> +
+>> +#define CONTEXT_STATE_START 0
+>> +#define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
+>
+> Since you have non overlapping *_START symbols, perhaps the *_END
+> are superfluous?
+>
 
-Never mind, I missed the reply Komal. Apologies!
+They're only really there to tidy up the GENMASK() further down - it keeps
+the range and index definitions in one hunk. I tried defining that directly
+within the GENMASK() themselves but it got too ugly IMO.
 
---AVdePY38nlqBEkwe
-Content-Type: application/pgp-signature; name="signature.asc"
+>> +
+>> +#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? =
+16 : 31)
+>> +#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
+>> +#define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
+>> +#define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
+>
+> Might be the right time to standardize and fix our naming:
+>
+> CT_STATE_START,
+> CT_STATE_KERNEL,
+> CT_STATE_USER,
+> ...
+> CT_WORK_START,
+> CT_WORK_*,
+> ...
+> CT_RCU_DYNTICKS_START,
+> CT_RCU_DYNTICKS_IDX
+>
 
------BEGIN PGP SIGNATURE-----
+Heh, I have actually already done this for v3, though I hadn't touched the
+RCU_DYNTICKS* family. I'll fold that in.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL6svgAKCRB4tDGHoIJi
-0iCBAQD2wIUuiq8k4E4sYi53yY2Y99TwRE6p14Z3ZX+cUIyt6gD+OLt9LpGtqgUu
-MduxBhp+p1IdFhQuYAghedlTxRJNEQs=
-=Tw7b
------END PGP SIGNATURE-----
+>> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+>> +{
+>> +	struct context_tracking *ct =3D per_cpu_ptr(&context_tracking, cpu);
+>> +	unsigned int old;
+>> +	bool ret =3D false;
+>> +
+>> +	preempt_disable();
+>> +
+>> +	old =3D atomic_read(&ct->state);
+>> +	/*
+>> +	 * Try setting the work until either
+>> +	 * - the target CPU no longer accepts any more deferred work
+>> +	 * - the work has been set
+>> +	 *
+>> +	 * NOTE: CONTEXT_GUEST intersects with CONTEXT_USER and CONTEXT_IDLE
+>> +	 * as they are regular integers rather than bits, but that doesn't
+>> +	 * matter here: if any of the context state bit is set, the CPU isn't
+>> +	 * in kernel context.
+>> +	 */
+>> +	while ((old & (CONTEXT_GUEST | CONTEXT_USER | CONTEXT_IDLE)) && !ret)
+>
+> That may still miss a recent entry to userspace due to the first plain re=
+ad, ending
+> with an undesired interrupt.
+>
+> You need at least one cmpxchg. Well, of course that stays racy by nature =
+because
+> between the cmpxchg() returning CONTEXT_KERNEL and the actual IPI raised =
+and
+> received, the remote CPU may have gone to userspace already. But still it=
+ limits
+> a little the window.
+>
 
---AVdePY38nlqBEkwe--
+I can make that a 'do {} while ()' instead to force at least one execution
+of the cmpxchg().
+
+This is only about reducing the race window, right? If we're executing this
+just as the target CPU is about to enter userspace, we're going to be in
+racy territory anyway. Regardless, I'm happy to do that change.
+
