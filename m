@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D2A75EA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0831175EA13
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjGXD0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        id S229956AbjGXDa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGXD0K (ORCPT
+        with ESMTP id S229506AbjGXDaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:26:10 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8B3F1B0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:26:08 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 880E8DE0;
-        Sun, 23 Jul 2023 20:26:51 -0700 (PDT)
-Received: from [10.162.41.7] (unknown [10.162.41.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 965193F6C4;
-        Sun, 23 Jul 2023 20:26:05 -0700 (PDT)
-Message-ID: <b31592db-d589-c425-1f5f-1c981ec72a65@arm.com>
-Date:   Mon, 24 Jul 2023 08:56:02 +0530
+        Sun, 23 Jul 2023 23:30:24 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAAC1AA
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:30:22 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8Qf26v7dzBRx4N
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 11:30:18 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690169418; x=1692761419; bh=Aih9b3mm0L/W57ewzfZK0Mk2HMM
+        uvyf31AvjFkXi8+I=; b=l/VAKTIcjlyWOGKtifjZLmhWFCSY+xtgf4nSre0R708
+        Kd/+LemFANnznhlFN8fdLbFXK5NQiSK4+8GTcwULPjHRW8Ew2tPLFZYxQeH1ykNU
+        paqOravr1Sd+9X84AOm1BlwHEQ+jZP7Kh++gvbGmQegIgNNk/eZmczkmQDbAUNsd
+        fgCx/ntDUu6XreMbX+YBrc2nbLMeWUMXd2ssbGuL8jxonzh+uNhb0umnU3ExdHrV
+        JWGOkFehD0U4H604jww6wf8PWWbcUPdVm4AZXQWM//BkkBXQY6AYAM/vtrOGzgEY
+        Y3Ue41AP8vFcm5aBkD3dmc3MuN1Ak96bHpgJi6LlCGw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6ZX9COF4HglX for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 11:30:18 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8Qf24pbszBRDrF;
+        Mon, 24 Jul 2023 11:30:18 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH -next] arm64: fix -Wundef warning for PUD_SHIFT
-Content-Language: en-US
-To:     Zhang Jianhua <chris.zjh@huawei.com>, catalin.marinas@arm.com,
-        will@kernel.org, joey.gouly@arm.com, mark.rutland@arm.com,
-        ardb@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230724103055.2379274-1-chris.zjh@huawei.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230724103055.2379274-1-chris.zjh@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon, 24 Jul 2023 11:30:18 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/radeon: add missing spaces after ',' and else should
+ follow close brace '}'
+In-Reply-To: <20230724032920.7892-1-xujianghui@cdjrlc.com>
+References: <20230724032920.7892-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <d88773902f7a8536a8be83ead18981b3@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ERROR: else should follow close brace '}'
 
+ERROR: space required after that ',' (ctx:VxV)
 
-On 7/24/23 16:00, Zhang Jianhua wrote:
-> When building with W=1, the following warning occurs.
-> 
-> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
->   129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
->       |                                         ^~~~~~~~~
-> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
->   142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
->       |     ^~~~~~~~~~~~~~~~~~~~
-> 
-> The reason is that PUD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS ==
-> 3, and at this time PUD_SHIFT is equal to PGDIR_SHIFT, so define it.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/radeon/radeon_connectors.c | 5 ++---
+  1 file changed, 2 insertions(+), 3 deletions(-)
 
-CONFIG_PGTABLE_LEVELS equals 3 only with CONFIG_VA_BITS = 39.
-
-> 
-> Fixes: 06e9bf2fd9b3 ("arm64: choose memstart_addr based on minimum sparsemem section alignment")
-
-This is not a fix, ARM64_MEMSTART_ALIGN would fallback being (1UL << SECTION_SIZE_BITS)
-when PUD_SHIFT is undefined (aka 0) but agreed that it's not clean.
-
-> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
-> ---
-> v2:
-> 	Define PUD_SHIFT before use it instead of judgement
-> ---
-> ---
->  arch/arm64/include/asm/kernel-pgtable.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-> index 577773870b66..996a144e2929 100644
-> --- a/arch/arm64/include/asm/kernel-pgtable.h
-> +++ b/arch/arm64/include/asm/kernel-pgtable.h
-> @@ -59,6 +59,10 @@
->  #define EARLY_KASLR	(0)
->  #endif
->  
-> +#ifndef PUD_SHIFT
-> +#define PUD_SHIFT PGDIR_SHIFT
-> +#endif
-Rather ARM64_MEMSTART_SHIFT block needs to be re-written in a more pgtable levels agnostic
-manner ? OR maybe something like this.
-
-diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-index 577773870b66..5a83b4b249e8 100644
---- a/arch/arm64/include/asm/kernel-pgtable.h
-+++ b/arch/arm64/include/asm/kernel-pgtable.h
-@@ -125,12 +125,14 @@
-  * (64k granule), or a multiple that can be mapped using contiguous bits
-  * in the page tables: 32 * PMD_SIZE (16k granule)
-  */
--#if defined(CONFIG_ARM64_4K_PAGES)
-+#if defined(CONFIG_ARM64_4K_PAGES) && defined(PUD_SHIFT)
- #define ARM64_MEMSTART_SHIFT           PUD_SHIFT
--#elif defined(CONFIG_ARM64_16K_PAGES)
-+#elif defined(CONFIG_ARM64_16K_PAGES) && defined(CONT_PMD_SHIFT)
- #define ARM64_MEMSTART_SHIFT           CONT_PMD_SHIFT
--#else
-+#elif defined(CONFIG_AR64_64K_PAGES) && defined(PMD_SHIFT)
- #define ARM64_MEMSTART_SHIFT           PMD_SHIFT
-+#else
-+#define ARM64_MEMSTART_SHIFT           PGDIR_SHIFT
- #endif
-
-The only cases where PUD_SHIFT or PMD_SHIFT (along with CONT_PMD_SHIFT) would not be defined is
-when XXX_SHIFT level itself matches PGDIR_SHIFT.
-
-> +
->  #define SPAN_NR_ENTRIES(vstart, vend, shift) \
->  	((((vend) - 1) >> (shift)) - ((vstart) >> (shift)) + 1)
-> 
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c 
+b/drivers/gpu/drm/radeon/radeon_connectors.c
+index 07193cd0c417..4ceceb972e8d 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -198,8 +198,7 @@ int radeon_get_monitor_bpc(struct drm_connector 
+*connector)
+  				DRM_DEBUG("%s: HDMI deep color 10 bpc exceeds max tmds clock. Using 
+%d bpc.\n",
+  						  connector->name, bpc);
+  			}
+-		}
+-		else if (bpc > 8) {
++		} else if (bpc > 8) {
+  			/* max_tmds_clock missing, but hdmi spec mandates it for deep color. 
+*/
+  			DRM_DEBUG("%s: Required max tmds clock for HDMI deep color missing. 
+Using 8 bpc.\n",
+  					  connector->name);
+@@ -1372,7 +1371,7 @@ radeon_dvi_detect(struct drm_connector *connector, 
+bool force)
+  					/* assume digital unless load detected otherwise */
+  					radeon_connector->use_digital = true;
+  					lret = encoder_funcs->detect(encoder, connector);
+-					DRM_DEBUG_KMS("load_detect %x returned: 
+%x\n",encoder->encoder_type,lret);
++					DRM_DEBUG_KMS("load_detect %x returned: %x\n", 
+encoder->encoder_type, lret);
+  					if (lret == connector_status_connected)
+  						radeon_connector->use_digital = false;
+  				}
