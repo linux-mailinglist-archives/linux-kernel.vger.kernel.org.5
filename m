@@ -2,66 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D1475EC2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30D75EC3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjGXHGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S229770AbjGXHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGXHGO (ORCPT
+        with ESMTP id S229468AbjGXHJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:06:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B4C133;
-        Mon, 24 Jul 2023 00:06:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AFC9060F59;
-        Mon, 24 Jul 2023 07:06:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862B9C433C8;
-        Mon, 24 Jul 2023 07:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690182372;
-        bh=bXFbzDGRsLJzol8Y088QZs2hbY4BTS9fB8XOAo5P7pM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x/hXPZkjJNK3wZD1Xpmk/Yxs4AEAdaEAnvsfPYpCwjK9UjONk8HYYE1U1pOE3kPpK
-         /rfjnXJuxxQs2KwyTWJ4FMlsQ566oYZgaJb69pvEMdIcrtA1RzVcmRTBxhtJWyI8oh
-         9i612V0vaCWUKGzs3ifPh6Xt0C5LwexotGtYT1NY=
-Date:   Mon, 24 Jul 2023 09:06:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stanley =?utf-8?B?Q2hhbmdb5piM6IKy5b63XQ==?= 
-        <stanley_chang@realtek.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Mon, 24 Jul 2023 03:09:19 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22C6138;
+        Mon, 24 Jul 2023 00:09:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6C2E524000E;
+        Mon, 24 Jul 2023 07:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690182552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0OTdgWQ6Vo/4tl1ZM7En0YdjITPLKGIP2IIxkkPFJRM=;
+        b=iC5ZIY44VFrCSUNoeMIdYmOyqSrlrW7N4tyY+Hq53oXBVph3jCQ5ij8fsDynsYh6NybKfF
+        47iBUwR964ggu52YB13yaU1E18wok2aDQAXdbpXfZnCVzqeybMcvNBEm04M8MJv49vz912
+        60p20TKBhztddQMV6EZbSo0vTLzFb3Ok+FWErn92iDiDFjDyPmqRh1JKdYw5xT3hwpwVlV
+        u4k2GthKUnBFuRNrRP/XoPSerupU1HIaiVySzO/QpWk35FaiLI3dwdIhQ2brWGTyOPPUCM
+        8E3/Ier83smwYkYCv/LsZ20OWFpB5I2g8A5epoX659Pa/Omr3Rckh60nqnZ+5A==
+Date:   Mon, 24 Jul 2023 09:09:02 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Roy Luo <royluo@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        Ray Chi <raychi@google.com>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
-Message-ID: <2023072454-mosaic-ogle-9a27@gregkh>
-References: <20230707064725.25291-1-stanley_chang@realtek.com>
- <2023072452-jasmine-palm-7b73@gregkh>
- <47131beec8a24572873aa31e87cfaab6@realtek.com>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
+Message-ID: <20230724090902.679ea56d@xps-13>
+In-Reply-To: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+        <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
+        <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47131beec8a24572873aa31e87cfaab6@realtek.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,107 +100,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:49:50AM +0000, Stanley Chang[昌育德] wrote:
-> 
-> > 
-> > On Fri, Jul 07, 2023 at 02:47:00PM +0800, Stanley Chang wrote:
-> > > In Realtek SoC, the parameter of usb phy is designed to can dynamic
-> > > tuning base on port status. Therefore, add a notify callback of phy
-> > > driver when usb port status change.
-> > >
-> > > The Realtek phy driver is designed to dynamically adjust disconnection
-> > > level and calibrate phy parameters. When the device connected bit
-> > > changes and when the disconnected bit changes, do port status change
-> > notification:
-> > >
-> > > Check if portstatus is USB_PORT_STAT_CONNECTION and portchange is
-> > > USB_PORT_STAT_C_CONNECTION.
-> > > 1. The device is connected, the driver lowers the disconnection level and
-> > >    calibrates the phy parameters.
-> > > 2. The device disconnects, the driver increases the disconnect level and
-> > >    calibrates the phy parameters.
-> > >
-> > > When controller to notify connect that device is already ready. If we
-> > > adjust the disconnection level in notify_connect, the disconnect may
-> > > have been triggered at this stage. So we need to change that as early
-> > > as possible. Therefore, we add an api to notify phy the port status changes.
-> > 
-> > How do you know that the disconnect will not have already been triggered at
-> > this point, when the status changes?
-> 
-> The status change of connection is before port reset.
-> In this stage, the device is not port enable, and it will not trigger disconnection.
+Hi Andy,
 
-Ok, then say that here please :)
+> > +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
+> > +{
+> > +	switch (chip->ecc.engine_type) {
+> > +	case NAND_ECC_ENGINE_TYPE_SOFT:
+> > +		if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
+> > +			chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
+> > +		break;
+> > +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+> > +		return -EINVAL;
+> > +	default: =20
+>=20
+> > +		break; =20
+>=20
+> Here it will return 0, is it a problem?
 
-> > >
-> > > Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-> > > ---
-> > > v6 to v7 change:
-> > >     No change
-> > > v5 to v6 change:
-> > >     No change
-> > > v4 to v5 change:
-> > >     No change
-> > > v3 to v4 change:
-> > >     Fix the warning for checkpatch with strict.
-> > > v2 to v3 change:
-> > >     Add more comments about the reason for adding this api
-> > > v1 to v2 change:
-> > >     No change
-> > > ---
-> > >  drivers/usb/core/hub.c  | 13 +++++++++++++  include/linux/usb/phy.h |
-> > > 13 +++++++++++++
-> > >  2 files changed, 26 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c index
-> > > a739403a9e45..8433ff89dea6 100644
-> > > --- a/drivers/usb/core/hub.c
-> > > +++ b/drivers/usb/core/hub.c
-> > > @@ -614,6 +614,19 @@ static int hub_ext_port_status(struct usb_hub *hub,
-> > int port1, int type,
-> > >               ret = 0;
-> > >       }
-> > >       mutex_unlock(&hub->status_mutex);
-> > > +
-> > > +     if (!ret) {
-> > > +             struct usb_device *hdev = hub->hdev;
-> > > +
-> > > +             if (hdev && !hdev->parent) {
-> > 
-> > Why the check for no parent?  Please document that here in a comment.
-> 
-> I will add a comment :
-> /* Only notify roothub. That is, when hdev->parent is empty. */
+Seems ok, there are two other situations: on-die ECC engine and no ECC
+engine, both do not require any specific handling on the controller
+side.
 
-Also document this that this will only happen for root hub status
-changes, that's not obvious in the callback name or documentation or
-anywhere else here.
+>=20
+> > +	}
+> > +
+> > +	return 0;
+> > +} =20
+>=20
+> ...
+>=20
+> > +static void ts72xx_nand_remove(struct platform_device *pdev)
+> > +{
+> > +	struct ts72xx_nand_data *data =3D platform_get_drvdata(pdev);
+> > +	struct nand_chip *chip =3D &data->chip;
+> > +	int ret;
+> > +
+> > +	ret =3D mtd_device_unregister(nand_to_mtd(chip)); =20
+>=20
+> > +	WARN_ON(ret); =20
+>=20
+> Why?!  Is it like this in other MTD drivers?
 
-> > > +                     struct usb_hcd *hcd = bus_to_hcd(hdev->bus);
-> > > +
-> > > +                     if (hcd->usb_phy)
-> > > +
-> > usb_phy_notify_port_status(hcd->usb_phy,
-> > > +                                                        port1 -
-> > 1, *status, *change);
-> > > +             }
-> > > +     }
-> > > +
-> > 
-> > This is safe to notify with the hub mutex unlocked?  Again, a comment would
-> > be helpful to future people explaining why that is so.
-> > 
-> 
-> I will add a comment: 
-> /*                                                                      
->  * There is no need to lock status_mutex here, because status_mutex     
->  * protects hub->status, and the phy driver only checks the port        
->  * status without changing the status.                                  
->  */  
+Yes, we did not yet change the internal machinery to return void, and
+we don't want people to think getting errors there is normal.
 
-Looks good, if you do it without the trailing whitespace :)
+> > +	nand_cleanup(chip);
+> > +} =20
+>=20
 
-thanks,
-
-greg k-h
+Thanks,
+Miqu=C3=A8l
