@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4376375ED5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1141875ED58
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjGXIXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
+        id S230054AbjGXIX1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 04:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjGXIXp (ORCPT
+        with ESMTP id S229775AbjGXIXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:23:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17376133
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690186979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uZSMkLJ8MfGB3NZlVuXc/0ylP0lrumtVWsn82boBlRE=;
-        b=D9oZZWqEyHL3KbQnQ6137IICjENGaCp5YBkDrc7IR+LmujaICzJIb9Ew5jd7IPwLnamqr8
-        skBwOAUyUOt5P/qWiH9rZordKCHHf0DAtjeeaEWHj9tQDTai1yWlsWUzsGU9Po/HLL0Qlp
-        p/uRDEnKafn8EYpexfIhgqCb985S/qM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-67-Xp-IStx_Pia5pKxzKuGvbQ-1; Mon, 24 Jul 2023 04:22:56 -0400
-X-MC-Unique: Xp-IStx_Pia5pKxzKuGvbQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f41a04a297so19398355e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:22:56 -0700 (PDT)
+        Mon, 24 Jul 2023 04:23:25 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B911B0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:23:24 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-98273ae42d0so118894566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:23:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690186975; x=1690791775;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uZSMkLJ8MfGB3NZlVuXc/0ylP0lrumtVWsn82boBlRE=;
-        b=j2RcvHvqcJPPPhjCKXbX5gSJAxQYrEY33YWI1jptzEyx3XukPBTkrS5Uofu4B5NRqv
-         HuK658jhBVQR76ij+GGCbXI4HKltnOj3mjQEotJI8l7MCrd6okqyxGjLSA5XCDicP0YT
-         qlR84ITtzTC096dcaw27dhKqz4uhcw9yePB+ra4LKW39J/JIZMHK5OgIFGNgiD8Pl4Ll
-         4kjRLhihbAwcrnhe7vrzI1f4XFKFofZn+gWSlqIyJZtMwzPAPq+7XxxCwXBYDczGKtjV
-         3yfzIlLN1YeSuUECfkFdtmkxU3e5X010gIv7e0i2jgy0jhrmOFLnKrBNVJMBQwjoAhBE
-         gl5A==
-X-Gm-Message-State: ABy/qLYisJE49n8b5T0mndcFgPIqDKBJhZsY3nN6Jjrq2G9VUA8ceWky
-        1kwiDxQaDnDbHtmzr6rZvqDCDwUKryWhngmmTb8kEuz+6ftrqq5jVhubuvRZCCImOT0nECUA3Tx
-        +N8yRWjvvdrJPrz4Uqwn8cuDh
-X-Received: by 2002:a7b:c7d8:0:b0:3fb:a102:6d7a with SMTP id z24-20020a7bc7d8000000b003fba1026d7amr5294658wmk.28.1690186975110;
-        Mon, 24 Jul 2023 01:22:55 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGZj29rHiyHV23TBcjt4KImow2A6hGZHPtgZhwdsT1l1etBcqDHZaeqr258tj3B2CQsPP72SA==
-X-Received: by 2002:a7b:c7d8:0:b0:3fb:a102:6d7a with SMTP id z24-20020a7bc7d8000000b003fba1026d7amr5294645wmk.28.1690186974735;
-        Mon, 24 Jul 2023 01:22:54 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f45:d000:62f2:4df0:704a:e859? (p200300d82f45d00062f24df0704ae859.dip0.t-ipconnect.de. [2003:d8:2f45:d000:62f2:4df0:704a:e859])
-        by smtp.gmail.com with ESMTPSA id v22-20020a7bcb56000000b003fbb9339b29sm12169484wmj.42.2023.07.24.01.22.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 01:22:54 -0700 (PDT)
-Message-ID: <af7be3a9-816c-95dc-22a7-cf62fe245e24@redhat.com>
-Date:   Mon, 24 Jul 2023 10:22:52 +0200
+        d=1e100.net; s=20221208; t=1690187002; x=1690791802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iupMJVX8oPsfGnFbr5mFTtpNmz/P1KV5rvU9ROhakAk=;
+        b=CMVw3EzpVQrW9s6RKO3gyE1Ivp+XxFNJpKOBXsZ1jWxSNaD/dEIQuQunjVfwdOSUUE
+         e3I+0Q0Z3L2X0wtB5sf9e0j2/c/FnycNp7pFaUTiJ23lEb4RzP4uKF2kcXFTbnryvAhV
+         i4QxGDDHKc/grj6xqSUiJ2D/HG/TIL1feQdmm0e55dghpQ5P239WlK74c9IiKHhWeyyL
+         lLG1OQQpPdR3klWwgAS+lnIIWduN5SlTKKu5zVuXrw+DDqQLmH5oI2Ysls9wLWLnNL+a
+         oJ6iLRXORAefaIwx4AJJY6Flx3QSXKnLDRf50KOP7KCeDiHLxLekbppQ4OhNvRZoO9Jz
+         Wjnw==
+X-Gm-Message-State: ABy/qLYF3AC97smmNyfqXADRm4Mzf9ZBoQzA7r3oU3YiibCtu9C7dkmL
+        s2YMGUPa7V/X+90nuZtSeT4pctB3rpJ/Zt0sGTg=
+X-Google-Smtp-Source: APBJJlHR2yowWPDWqJTjBA4uoOXlEgqmML5r5OGzqAT2UCpkV9AsNlU/cHPLdaplwa5SguMS1boLBd3N5fs3KyE4l0Y=
+X-Received: by 2002:a17:906:518e:b0:993:d54b:3e4b with SMTP id
+ y14-20020a170906518e00b00993d54b3e4bmr8105124ejk.0.1690187002256; Mon, 24 Jul
+ 2023 01:23:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-References: <20230721120046.2262291-1-iii@linux.ibm.com>
- <20230721120046.2262291-2-iii@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 1/6] KVM: s390: interrupt: Fix single-stepping into
- interrupt handlers
-In-Reply-To: <20230721120046.2262291-2-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
+ <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
+ <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de> <ZL2Z8InSLmI5GU9L@localhost.localdomain>
+In-Reply-To: <ZL2Z8InSLmI5GU9L@localhost.localdomain>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 24 Jul 2023 10:23:08 +0200
+Message-ID: <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
+Subject: Re: Stopping the tick on a fully loaded system
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,72 +71,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.23 13:57, Ilya Leoshkevich wrote:
-> After single-stepping an instruction that generates an interrupt, GDB
-> ends up on the second instruction of the respective interrupt handler.
-> 
-> The reason is that vcpu_pre_run() manually delivers the interrupt, and
-> then __vcpu_run() runs the first handler instruction using the
-> CPUSTAT_P flag. This causes a KVM_SINGLESTEP exit on the second handler
-> instruction.
-> 
-> Fix by delaying the KVM_SINGLESTEP exit until after the manual
-> interrupt delivery.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   arch/s390/kvm/interrupt.c | 10 ++++++++++
->   arch/s390/kvm/kvm-s390.c  |  4 ++--
->   2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-> index 9bd0a873f3b1..2cebe4227b8e 100644
-> --- a/arch/s390/kvm/interrupt.c
-> +++ b/arch/s390/kvm/interrupt.c
-> @@ -1392,6 +1392,7 @@ int __must_check kvm_s390_deliver_pending_interrupts(struct kvm_vcpu *vcpu)
->   {
->   	struct kvm_s390_local_interrupt *li = &vcpu->arch.local_int;
->   	int rc = 0;
-> +	bool delivered = false;
->   	unsigned long irq_type;
->   	unsigned long irqs;
->   
-> @@ -1465,6 +1466,15 @@ int __must_check kvm_s390_deliver_pending_interrupts(struct kvm_vcpu *vcpu)
->   			WARN_ONCE(1, "Unknown pending irq type %ld", irq_type);
->   			clear_bit(irq_type, &li->pending_irqs);
->   		}
-> +		delivered |= !rc;
-> +	}
-> +
+On Sun, Jul 23, 2023 at 11:21 PM Frederic Weisbecker
+<frederic@kernel.org> wrote:
+>
+> (Adding Rafael in Cc)
+>
+> Le Thu, Jul 20, 2023 at 03:00:37PM +0200, Anna-Maria Behnsen a écrit :
+> > I had also a look at teo. It makes things better but does not solve the
+> > underlying problem that I see here - please correct me if I missed
+> > something or if I'm simply wrong:
+> >
+> > Yes, the governors have to decide in the end, whether it makes sense to
+> > stop the tick or not. For this decision, the governors require information
+> > about the current state of the core and how long nothing has to be done
+> > propably. At the moment the governors therefore call
+> > tick_nohz_get_sleep_length(). This checks first whether the tick can be
+> > stopped. Then it takes into account whether rcu, irq_work, arch_work needs
+> > the CPU or a timer softirq is pending. If non of this is true, then the
+> > timers are checked. So tick_nohz_get_sleep_length() isn't only based on
+> > timers already.
+>
+> Right but those things (rcu/irq work, etc...) act kind of like timers here
+> and they should be considered as exceptions.
+>
+> The timer infrastructure shouldn't take into account the idle activity,
+> this is really a job for the cpuidle governors.
+>
+> > The information about the sleep length of the scheduler perspective is
+> > completely missing in the current existing check for the probable sleep
+> > length.
 
+Well, not exactly.
 
-Can we add a comment like
+From the governor's perspective, tick_nohz_get_sleep_length() is
+supposed to return a deterministic upper bound on the upcoming idle
+duration (or at least it is used in the governors this way).  IOW, it
+is expected that the CPU will not be idle longer that the
+tick_nohz_get_sleep_length() return value.
 
-/*
-  * We delivered at least one interrupt and modified the PC. Force a
-  * singlestep event now.
-  */
+There are other factors that may cause the governor to predict a
+shorter idle duration and the information coming from the scheduler
+may be regarded as one of them, but they are not deterministic.
 
-> +	if (delivered && guestdbg_sstep_enabled(vcpu)) {
-> +		struct kvm_debug_exit_arch *debug_exit = &vcpu->run->debug.arch;
-> +
-> +		debug_exit->addr = vcpu->arch.sie_block->gpsw.addr;
-> +		debug_exit->type = KVM_SINGLESTEP;
-> +		vcpu->guest_debug |= KVM_GUESTDBG_EXIT_PENDING;
->   	}
+> > Sure, teo takes scheduler utilization into account directly in the
+> > governor. But for me it is not comprehensible, why the CPU utilization
+> > check is done after asking for the possible sleep length where timers are
+> > taken into account. If the CPU is busy anyway, the information generated by
+> > tick_nohz_next_event() is irrelevant.
 
-I do wonder if we, instead, want to do this whenever we modify the PSW.
+Why isn't it?
 
-That way we could catch any PC changes and only have to add checks for 
-guestdbg_exit_pending().
+The CPU is idle at that point and it has gone idle for a reason.
+Surely, there was nothing to run on it at.
 
+The scheduler only knows that the CPU has been busy recently, which
+may not imply anything on whether or not and when it is going to be
+busy again.
 
-But this is simpler and should work as well.
+> > And when the CPU is not busy, then it
+> > makes sense to ask for the sleep length also from a timer perspective.
+> >
+> > When this CPU utilization check is implemented directly inside the
+> > governor, every governor has to implement it on it's own. So wouldn't it
+> > make sense to implement a "how utilized is the CPU out of a scheduler
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Yes, it would make sense to do that, but I thought that PELT was that
+thing.  Wasn't it?
 
--- 
-Cheers,
+> > perspective" in one place and use this as the first check in
+> > tick_nohz_get_sleep_length()/tick_nohz_next_event()?
 
-David / dhildenb
+No, IMO it should be a separate check, because
+tick_nohz_get_sleep_length() is expected to return a deterministic
+upper bound on the idle duration whereas the scheduler information is
+not deterministic.  It is the governor's role to decide how to take it
+into account.
 
+> Well, beyond that, there might be other situations where the governor may
+> decide not to stop the tick even if tick_nohz_next_event() says it's possible
+> to do so. That's the purpose of having that next event as an input among many
+> others for the cpuidle governors.
+
+Exactly.
+
+> As such, calling tmigr_cpu_deactivate() on next tick _evaluation_ time instead of
+> tick _stop_ time is always going to be problematic.
+>
+> Can we fix that and call tmigr_cpu_deactivate() from tick_nohz_stop_tick()
+> instead? This will change a bit the locking scenario because
+> tick_nohz_stop_tick() doesn't hold the base lock. Is it a problem though?
+> In the worst case a remote tick happens and handles the earliest timer
+> for the current CPU while it's between tick_nohz_next_event() and
+> tick_nohz_stop_tick(), but then the current CPU would just propagate
+> an earlier deadline than needed. No big deal.
+
+FWIW, this sounds reasonable to me.
