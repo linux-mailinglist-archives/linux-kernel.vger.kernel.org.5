@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6A875F8CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAC875F8D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjGXNro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S231250AbjGXNsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbjGXNrL (ORCPT
+        with ESMTP id S230060AbjGXNsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:47:11 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EA61FE1;
-        Mon, 24 Jul 2023 06:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690206301; x=1721742301;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rY2/R9GFp/Je8rfy5KAQqpLAzPjjeEx7LgTpj02B9e8=;
-  b=N0P+3d/x2OkZtzms2qiSIdMF3G0Pl4BoCicrc67gIKwltndVQ0tzh3Jc
-   xr9S4QD8cbF5LdWOeF7838D6Cc92OmwTJoPinndY4+EE+ljPxL6d87Yju
-   XGrYWnjoxaFOU2xN/ivz5Q1YUiOZOe9p3GjCoZ8DrJmLh5nMYssrp3QCD
-   ncZARnSDuY9gM4ItoKdq9QZNyPU4YODec44OngaqWPkyEtiKHGsthFdmr
-   Ps3nHDdf3WpojxX/pzHw6/r4B5Zg1PG9nwqzB8LjyEj0DG1pdX4VSOxae
-   ebUHoSwVMC7uNSWj/Y93yzD+K4PRKZ/PbtfK2KFlxn248ClsXjaMoQqo3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367467742"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="367467742"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 06:45:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719682886"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="719682886"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 06:44:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNvrs-00FRjQ-2O;
-        Mon, 24 Jul 2023 16:44:56 +0300
-Date:   Mon, 24 Jul 2023 16:44:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <ZL6AWGiabBGyU3Dq@smile.fi.intel.com>
-References: <20230713121627.17990c86@canb.auug.org.au>
- <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
- <ZK/w5LFanElxZazG@smile.fi.intel.com>
- <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
- <20230724135858.3c1abb01@canb.auug.org.au>
- <ZL410jAw2ksuBx56@smile.fi.intel.com>
- <cbff36d5-cde7-43bd-b0d5-ede8950fd885@sirena.org.uk>
- <ZL53HkIWuE4byo+R@smile.fi.intel.com>
- <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
+        Mon, 24 Jul 2023 09:48:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E7133C14;
+        Mon, 24 Jul 2023 06:45:53 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D12F611FB;
+        Mon, 24 Jul 2023 06:45:58 -0700 (PDT)
+Received: from e127643.broadband (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F102A3F67D;
+        Mon, 24 Jul 2023 06:45:12 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        anshuman.khandual@arm.com, will@kernel.org
+Cc:     James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 1/4] arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
+Date:   Mon, 24 Jul 2023 14:44:56 +0100
+Message-Id: <20230724134500.970496-2-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230724134500.970496-1-james.clark@arm.com>
+References: <20230724134500.970496-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,31 +56,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Jon
+This capability gives us the ability to open PERF_TYPE_HARDWARE and
+PERF_TYPE_HW_CACHE events on a specific PMU for free. All the
+implementation is contained in the Perf core and tool code so no change
+to the Arm PMU driver is needed.
 
-On Mon, Jul 24, 2023 at 02:11:00PM +0100, Mark Brown wrote:
-> On Mon, Jul 24, 2023 at 04:05:34PM +0300, Andy Shevchenko wrote:
-> > On Mon, Jul 24, 2023 at 01:36:53PM +0100, Mark Brown wrote:
-> 
-> > > Jon's usually fairly responsive, perhaps there's something worrying
-> > > there,
-> 
-> > Hmm... maybe my understanding of the :export: is wrong? Or what do you suggest?
-> 
-> I have no idea what any of that is doing.  I'm hoping Jon does.
+The following basic use case now results in Perf opening the event on
+all PMUs rather than picking only one in an unpredictable way:
 
-Okay, so far we are waiting for his reply...
+  $ perf stat -e cycles -- taskset --cpu-list 0,1 stress -c 2
 
-> > > though I do note you only sent it a bit more than a week ago.
-> 
-> > I fully aware of that and you can see that this reply has been induced by
-> > the ping from Stephen.
-> 
-> Sure, but that means that it's possible he's just not got round to it
-> yet rather than that there's a problem.
+   Performance counter stats for 'taskset --cpu-list 0,1 stress -c 2':
 
+         963279620      armv8_cortex_a57/cycles/                (99.19%)
+         752745657      armv8_cortex_a53/cycles/                (94.80%)
+
+Fixes: 55bcf6ef314a ("perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE")
+Suggested-by: Ian Rogers <irogers@google.com>
+Acked-by: Ian Rogers <irogers@google.com>
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ drivers/perf/arm_pmu.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+index f6ccb2cd4dfc..2e79201daa4a 100644
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -880,8 +880,13 @@ struct arm_pmu *armpmu_alloc(void)
+ 		 * configuration (e.g. big.LITTLE). This is not an uncore PMU,
+ 		 * and we have taken ctx sharing into account (e.g. with our
+ 		 * pmu::filter callback and pmu::event_init group validation).
++		 *
++		 * PERF_PMU_CAP_EXTENDED_HW_TYPE is required to open
++		 * PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE events on a
++		 * specific PMU.
+ 		 */
+-		.capabilities	= PERF_PMU_CAP_HETEROGENEOUS_CPUS | PERF_PMU_CAP_EXTENDED_REGS,
++		.capabilities	= PERF_PMU_CAP_HETEROGENEOUS_CPUS | PERF_PMU_CAP_EXTENDED_REGS |
++				  PERF_PMU_CAP_EXTENDED_HW_TYPE,
+ 	};
+ 
+ 	pmu->attr_groups[ARMPMU_ATTR_GROUP_COMMON] =
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
