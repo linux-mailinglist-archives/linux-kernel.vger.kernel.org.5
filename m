@@ -2,119 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5928175EA3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ABF75EA40
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjGXDqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        id S229925AbjGXDrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGXDqe (ORCPT
+        with ESMTP id S229468AbjGXDri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:46:34 -0400
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25965DB;
-        Sun, 23 Jul 2023 20:46:32 -0700 (PDT)
-Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 96B3820A09;
-        Mon, 24 Jul 2023 06:46:29 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id 6F8DF20A08;
-        Mon, 24 Jul 2023 06:46:29 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-        by ink.ssi.bg (Postfix) with ESMTPSA id 0E9533C0439;
-        Mon, 24 Jul 2023 06:46:25 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-        t=1690170387; bh=9wDE65OlhnCUzRgqjw2Uyz//+EJm/dZ/6yNBMKhGs7c=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References;
-        b=jZbF6lDEEGLK8dDaKiIjrEHyeSVKDWp0FjPwuug8PY2u0ahlIGq1qgH3f1FdN83Sg
-         UdClFXYbzxTKTv/HapNN3Wd0XNN5KIv7eHIJgscm/UZa0jazrcujDL3sV3ZwCXECD1
-         EEjtsN/Op9XdAjbz5de2deCqlPg5F47twdiRDJ4Y=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 36O3kMqn006749;
-        Mon, 24 Jul 2023 06:46:24 +0300
-Date:   Mon, 24 Jul 2023 06:46:22 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Dust Li <dust.li@linux.alibaba.com>
-cc:     Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jiejian Wu <jiejian@linux.alibaba.com>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH v2 net-next] ipvs: make ip_vs_svc_table and ip_vs_svc_fwm_table
- per netns
-In-Reply-To: <20230724013101.GI6751@linux.alibaba.com>
-Message-ID: <3decf8be-ee64-b3c3-2e6d-4f3f392f6faf@ssi.bg>
-References: <20230723154426.81242-1-dust.li@linux.alibaba.com> <ff4612e3-bb5a-7acc-1607-5761e5d052c4@ssi.bg> <20230724013101.GI6751@linux.alibaba.com>
+        Sun, 23 Jul 2023 23:47:38 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B21FE1
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:47:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2681223aaacso377080a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690170431; x=1690775231;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1NSxBI+jZ4lM78HRKxD8ibkmyQyG/FtRFP+HyoBnx5I=;
+        b=PgEeS0qOI+pKcrpPsv7cx17Jlt7Uzht14nwBIdBKNMvY9lkPJv+0Kt98k1wsdnIzG9
+         iSOI7qakWbJdPnM6TsHMhEEbpc1/VybplhTM0PsZyroqv8Kmm0p+by7fpC7oedDAGnFJ
+         eCmTNVgTyCAu5MVVme1Ez5G8PIxUSZqLfqn3iEHdI5GWl+HVWWK3XgVHPwP99qeED/Nr
+         54QvjkQaaJj8zr0ff8BGNk0KBQ5UUrnePYxFm4YzSF3r0O2Nq3CP3fITV8nYm1kwMXkc
+         ro+uz9JlKWbIcp26gzgXJ+gw4DKpOys7OSBDl5v5JwqaBhyejNeuuwKnv1Em5AkWiAPb
+         jwRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690170431; x=1690775231;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1NSxBI+jZ4lM78HRKxD8ibkmyQyG/FtRFP+HyoBnx5I=;
+        b=gK2NTo3wFJs7Hb5ZO9koPTphhdFK7QDI073xCDss90woKf+pVjO6IIjSQPE0n47z61
+         +EPVIsAKaGxtgYpRF8NAPVFhcHfXbUNw9KIseqqNxwKEkIkRrL2jCSEwC2wYtdY2fE0l
+         IwZOOx3KDGAs4FH39eA1cae57Bjfj3YV89a6e3qX6SJEGKRgXskZ03G8k2xi4jjDXJUs
+         WX7AkjJ7d/gSYmOuEuA2w62JJeP0OEsbGXwONDFIp1TaVjUjBonUB5yWsiwkQCzAcMwG
+         XuYWD84z+YoWi2BkibYhfJASEUt0+X+5fBmwZg1Fh832lqHOzQAAPk1UlCk6xDezoZB5
+         vMYA==
+X-Gm-Message-State: ABy/qLYcqog0tdtnsFCAefkwGLCEp/yKjSlQS7KBJ4ZObpQS3TNIoeUf
+        Uvw/dicU45rH8VNG6ZkNTfMaeA==
+X-Google-Smtp-Source: APBJJlEyQhIh1pIemHqUgQdKJnZFXDHmNxVzskhvDJZSJRCsJIVIOay9LorLBuwXEjozyQKE9n+Xqg==
+X-Received: by 2002:a17:90b:195:b0:268:f2e:b480 with SMTP id t21-20020a17090b019500b002680f2eb480mr3628698pjs.11.1690170431458;
+        Sun, 23 Jul 2023 20:47:11 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:11bb:1457:9302:1528:c8f4? ([240e:694:e21:b::2])
+        by smtp.gmail.com with ESMTPSA id om5-20020a17090b3a8500b002677739860fsm5583934pjb.34.2023.07.23.20.47.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 20:47:10 -0700 (PDT)
+Message-ID: <58e75f44-16e3-a40a-4c8a-0f61bbf393f9@bytedance.com>
+Date:   Mon, 24 Jul 2023 11:47:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators
+ of sockmem pressure
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Breno Leitao <leitao@debian.org>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
+ <ZLsg1wklldKkVI2Z@P9FQF9L96D.corp.robot.car>
+Content-Language: en-US
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <ZLsg1wklldKkVI2Z@P9FQF9L96D.corp.robot.car>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Roman, thanks for taking time to have a look!
 
-	Hello,
-
-On Mon, 24 Jul 2023, Dust Li wrote:
-
-> On Sun, Jul 23, 2023 at 08:19:54PM +0300, Julian Anastasov wrote:
-> >
-> >	Changes look good to me, thanks! But checkpatch is reporting
-> >for some cosmetic changes that you have to do in v3:
-> >
-> >scripts/checkpatch.pl --strict /tmp/file.patch
+On 7/22/23 8:20 AM, Roman Gushchin wrote:
+> On Tue, Jul 11, 2023 at 08:41:43PM +0800, Abel Wu wrote:
+>> Now there are two indicators of socket memory pressure sit inside
+>> struct mem_cgroup, socket_pressure and tcpmem_pressure.
 > 
-> Oh, sorry for that! I ignored the CHECKs checkpatch reported, my checkpatch
-> shows:
+> Hi Abel!
 > 
+>> When in legacy mode aka. cgroupv1, the socket memory is charged
+>> into a separate counter memcg->tcpmem rather than ->memory, so
+>> the reclaim pressure of the memcg has nothing to do with socket's
+>> pressure at all.
 > 
->    $./scripts/checkpatch.pl --strict 0001-ipvs-make-ip_vs_svc_table-and-ip_vs_svc_fwm_table-pe.patch
->    CHECK: Prefer using the BIT macro
->    #69: FILE: include/net/ip_vs.h:40:
->    +#define IP_VS_SVC_TAB_SIZE (1 << IP_VS_SVC_TAB_BITS)
+> But we still might set memcg->socket_pressure and propagate the pressure,
+> right?
+
+Yes, but the pressure comes from memcg->socket_pressure does not mean
+pressure in socket memory in cgroupv1, which might lead to premature
+reclamation or throttling on socket memory allocation. As the following
+example shows:
+
+			->memory	->tcpmem
+	limit		10G		10G
+	usage		9G		4G
+	pressure	true		false
+
+the memcg's memory limits are both set to 10G, and the ->memory part
+is suffering from reclaim pressure while ->tcpmem still has much room
+for use. I have no idea why should treat the ->tcpmem as under pressure
+in this scenario, am I missed something?
+
+> If you're changing this, you need to provide a bit more data on why it's
+> a good idea. I'm not saying the current status is perfect, but I think we need
+> a bit more justification for this change.
 > 
-> We just moved this line from ip_vs_ctl.c to ip_vs.h, so we ignored the
-> BIT macro. Do you think we should change it using BIT macro ?
-
-	Yes, lets fix all these complains.
-
->    CHECK: struct mutex definition without comment
->    #79: FILE: include/net/ip_vs.h:1051:
->    +       struct mutex service_mutex;
+>> While for default mode, the ->tcpmem is simply
+>> not used.
+>>
+>> So {socket,tcpmem}_pressure are only used in default/legacy mode
+>> respectively. This patch fixes the pieces of code that make mixed
+>> use of both.
+>>
+>> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+>> ---
+>>   include/linux/memcontrol.h | 4 ++--
+>>   mm/vmpressure.c            | 8 ++++++++
+>>   2 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 5818af8eca5a..5860c7f316b9 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -1727,8 +1727,8 @@ void mem_cgroup_sk_alloc(struct sock *sk);
+>>   void mem_cgroup_sk_free(struct sock *sk);
+>>   static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+>>   {
+>> -	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+>> -		return true;
+>> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>> +		return !!memcg->tcpmem_pressure;
 > 
-> I think we can add comment for it.
-> But rethinking a bit on the service_mutex in ip_vs_est.c, I'm a
-> wondering why we are using the service_mutex in estimation ? Is est_mutex
-> enough for the protecting in ip_vs_est.c ?
+> So here you can have something like
+>     if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>          do {
+>              if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
+>                    return true;
+>          } while ((memcg = parent_mem_cgroup(memcg)));
+>     } else {
+> 	return !!READ_ONCE(memcg->socket_pressure);
+>     }
 
-	Yes, the estimation kthreads are synchronized only
-with reconfiguration: ip_vs_start_estimator() and ip_vs_stop_estimator()
-are called under service_mutex. And the estimation data is already 
-per-net, there is no global data.
+Yes, this looks better.
 
->    CHECK: Logical continuations should be on the previous line
->    #161: FILE: net/netfilter/ipvs/ip_vs_ctl.c:410:
->                        && (svc->port == vport)
->    +                   && (svc->protocol == protocol)) {
 > 
-> This is just the removal of '(svc->ipvs == ipvs)' and kept it as it is.
-> So haven't change according to checkpatch. If you prefer, I can modify
-> it to make checkpatch happy.
+> And, please, add a bold comment here or nearby the socket_pressure definition
+> that it has a different semantics in the legacy and default modes.
 
-	Yes, lets move all '&&' in this 'if' block and also remove the 
-parens:
+Agreed.
 
-	if (svc->af == af && ip_vs_addr_equal(af, &svc->addr, vaddr) &&
-	    svc->port == vport && svc->protocol == protocol) {
+> 
+> Overall I think it's a good idea to clean these things up and thank you
+> for working on this. But I wonder if we can make the next step and leave only
+> one mechanism for both cgroup v1 and v2 instead of having this weird setup
+> where memcg->socket_pressure is set differently from different paths on cgroup
+> v1 and v2.
 
-Regards
+There is some difficulty in unifying the mechanism for both cgroup
+designs. Throttling socket memory allocation when memcg is under
+pressure only makes sense when socket memory and other usages are
+sharing the same limit, which is not true for cgroupv1. Thoughts?
 
---
-Julian Anastasov <ja@ssi.bg>
-
+Thanks & Best,
+	Abel
