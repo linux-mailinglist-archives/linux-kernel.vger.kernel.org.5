@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A0F75EC8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7940275EC8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjGXHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+        id S230382AbjGXHb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjGXHaT (ORCPT
+        with ESMTP id S231204AbjGXHb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:30:19 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09643186
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:30:18 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52229d3b8c8so1291656a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:30:17 -0700 (PDT)
+        Mon, 24 Jul 2023 03:31:56 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6362F180
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:31:51 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b9ecf0cb4cso21855815ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:31:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690183816; x=1690788616;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eed6DWLt+PAEv2fzjhFaM4EpHWh4NNsUY/bR4Sum1Qg=;
-        b=EmZgAehGQ97/7mCNx9Vh4rXZQJcq1j3xQYqIFIr5TzLHKf9EoUo2a0OM13XHKRWmoO
-         wNJymeEVAkOy7CkiuWPXHku39fqur6sFta09jHEwYX2ZE1Fz0s0Ljidbj5SNnElE6ijQ
-         y1p74Ik8p3rw3wN/2Ftn04UwSkFSjXiAqjnrkOMgAZzXtooaOoJ7AgnCWrCR2lIxzUg6
-         EvY7azry2ww+y7w6yfjja3fNmWHBIdvxfZ881+z2y2NZn6BmjlnReCEixqnzJ3tNB45d
-         ASFCA63fD7ZsB5r43yBmsXWcTpEhqYk1Xe0QFXWQ2mGEA4V3jk465pEqejM15Y0jQC5m
-         QYlQ==
+        d=linaro.org; s=google; t=1690183911; x=1690788711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hzb9R8lCU0AMrRnJNl8Sap3uv+cEIqbaHFcd9LXeQuY=;
+        b=af8d+656EfuW1izH08jTFZGpa1xT7Acz/ZGK5yvTSZ83ZfvOHOl1rUs/OorIUCcPhn
+         V15EIJHl59wDoHczKz+UOoG1KIN+/nCqC6mE4aDU5r12ms5KJtzqUHX515I1i68DlOGb
+         cB5IAChcfxaz/8Aeakbur/2ejqYO7CCSmZ3IC3qBuwqYFR3Khq3n/cLz9IRXgy5YKdDX
+         TZc5vOKhR/Syj9xkwWO9nmEkwT5gwfzXkvsCoDEHXQVTsm+JLMmlGuui9/Rbryr5WFpQ
+         cEqS67ONoT+0IEQ0T/+iY1PICPDiXKtCifnVFk64y9+2aQhUJdkOF6NxIdMMvOfyrFta
+         Dtow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690183816; x=1690788616;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eed6DWLt+PAEv2fzjhFaM4EpHWh4NNsUY/bR4Sum1Qg=;
-        b=jNC67KzSgvcOEU1+nuApbCDfHGwCGOem2IqoseXR6eWjPfbB5mxxgSGod7uNSyp+8f
-         md6wAJo7XCNUh9IWsmjhF/Jd7oTZxKpvMn7ATfVeX0b15leOYYyQ9HQE+EqTS4zfU6Zm
-         xXZFrkMBCQGZSpQKQVmW5AbVsYvSoJ578yZtrTJ6bAKrtlBsqWY0wJY5ybCchxqzyy+I
-         sguiOkZ54u6P5lxcj10jKY5vP9h8z8mkwaJHRPhErP6LcEMBz1VIOp1OnczuaJZCaFqf
-         RI30VrIbHY/bg5Z+Hp6+XYBVGijndec1cJUShm/OSJ8AozcBfLiOzWzjKBdrQKkrCqcy
-         n3GA==
-X-Gm-Message-State: ABy/qLYikY2fMtMghvrzhBZzTSYHeZEhUUPTgiLfX8zXlYEVUCPJZ+s2
-        dFzQgJadknx954dJhH/wx+tqAQ==
-X-Google-Smtp-Source: APBJJlHN5lEzBHCiCy4veV+lfNob/NcWAOyoO7Ae0VmOjJ2HIf52w8Jy/W8Xuq9xRA3IolmjYuCDkg==
-X-Received: by 2002:aa7:c753:0:b0:51e:1a51:d414 with SMTP id c19-20020aa7c753000000b0051e1a51d414mr7133256eds.32.1690183816446;
-        Mon, 24 Jul 2023 00:30:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id q16-20020aa7cc10000000b0051e0eba608bsm5717511edt.19.2023.07.24.00.30.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 00:30:15 -0700 (PDT)
-Message-ID: <22ebee3c-c11e-ed0b-bade-c9a845f3ca41@linaro.org>
-Date:   Mon, 24 Jul 2023 09:30:13 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 4/7] dt-bindings: clock: qcom,hfpll: Document MSM8976
- compatibles
-Content-Language: en-US
-To:     Adam Skladowski <a39.skl@gmail.com>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
+        d=1e100.net; s=20221208; t=1690183911; x=1690788711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hzb9R8lCU0AMrRnJNl8Sap3uv+cEIqbaHFcd9LXeQuY=;
+        b=HbI2zJvION0HEvRXtwKrrhtNd3zEiNUFeu8fPjgAcnkfKBF1AfYiFQIe0FgXJ97Ljo
+         BDtjtRLDzgiKA5wt65oSeoTvThuSHag8DhlSko+71LJLCd8Y8uUfkdwKlUj0cXxNmL0K
+         wN9stSfnKsqhtwucqqgAjRaCU7zawn6Qm/bXeHoLM8+x7q5rejM7pSiMN81E5DMTNJ2j
+         0jtj+DEjoGIA0pE1jL5oa78Yrh2r1vf77NIUnW4yqp+Q8JTUlDWQH7acpW9FGs8mDHue
+         SN07bEuw4wif/mvtHMttxYtlP4cfDzJJpym/Jm1cpVSDZ5yOsl5DRNxhlggyY/6cs2Ag
+         YIrA==
+X-Gm-Message-State: ABy/qLZnKISCxM21WaX6Lb9HMjvdML7j7/5Sq+kss02b/6MCQ/Qgx/IQ
+        j7so3Ni3oIZOcI2qmbSyCUYvuQ==
+X-Google-Smtp-Source: APBJJlFCRl2GEyTwOCqo1TnJTpEbjheY6LyaUz5t6tx2VEpuopNGwYsI7RzVxeF1LbI06X75CVTGlw==
+X-Received: by 2002:a17:902:e843:b0:1b8:a569:f980 with SMTP id t3-20020a170902e84300b001b8a569f980mr7320059plg.65.1690183910886;
+        Mon, 24 Jul 2023 00:31:50 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001b89466a5f4sm8080711plc.105.2023.07.24.00.31.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 00:31:50 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 13:01:48 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230723160827.22660-1-a39.skl@gmail.com>
- <20230723160827.22660-5-a39.skl@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230723160827.22660-5-a39.skl@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] OPP: Add dev_pm_opp_find_freq_exact_indexed()
+Message-ID: <20230724073148.c4pmnqc5h42wsma6@vireshk-i7>
+References: <cover.1689932341.git.viresh.kumar@linaro.org>
+ <852a47c0e7a795bdf6424519ab7fadfdeb5b4a3c.1689932341.git.viresh.kumar@linaro.org>
+ <20230724062405.GJ2370@thinkpad>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724062405.GJ2370@thinkpad>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,17 +76,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/07/2023 18:08, Adam Skladowski wrote:
-> Document MSM8976 HFPLL compatibles.
+On 24-07-23, 11:54, Manivannan Sadhasivam wrote:
+> On Fri, Jul 21, 2023 at 03:10:57PM +0530, Viresh Kumar wrote:
+> > The indexed version of the API is added for other floor and ceil, add
+> > the same for exact as well for completeness.
+> > 
 > 
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,hfpll.txt | 3 +++
->  1 file changed, 3 insertions(+)
+> Well, "completeness" makes sense to me but I always heard that you should add
+> an API when there is a user. That was the reason I didn't add it in my patch.
 
+Yes that is true for any new API I guess. But since we support multiple clocks,
+it made sense to support all three variants here.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+-- 
+viresh
