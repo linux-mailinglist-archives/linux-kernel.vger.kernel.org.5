@@ -2,145 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 681B675F228
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF7A75F23D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbjGXKIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        id S231154AbjGXKLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233563AbjGXKI1 (ORCPT
+        with ESMTP id S233194AbjGXKK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:08:27 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE579658F;
-        Mon, 24 Jul 2023 03:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690192881; x=1721728881;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7W6ps/8Cg91gSa3DYMMMR8pTKl+/b3TOAhGDrv2gtYk=;
-  b=0XdZJKjqWU64DLW+AfWH9eJ+IWlUHBZjK8rdvLXSXfd8w0GcFzBeRvke
-   vpI4IAFSBKlwJeJCivWdz3uadxNcHCKb5DV7+ujUajvl1LgOvpwAiERua
-   CiEl4TrXFB9FnpA3J3TAc2Eph9RS+hmuWLr5Lth4qXVMfjzXLJ6u57T/7
-   7ga8MOKZvVUokGbcTUBjTY/uyPm3ggqe7tr2HR4DgS3JdUmqIKw/s/Luq
-   t5VKwmUga0xb7asw3GMOBuU9BAN+ADrvBsarkAd3npJ2jf+hYjXFcTEjW
-   J9RHbvtjWXl8J6dvX3/jDZHRRMpdKukewQTEmxu63JU/cy7xgdDL0nOvi
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="asc'?scan'208";a="226147368"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 03:00:18 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 24 Jul 2023 03:00:17 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 24 Jul 2023 03:00:16 -0700
-Date:   Mon, 24 Jul 2023 10:59:42 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2] riscv: support PREEMPT_DYNAMIC with static keys
-Message-ID: <20230724-work-headboard-b1a4f5286ada@wendy>
-References: <20230716164925.1858-1-jszhang@kernel.org>
+        Mon, 24 Jul 2023 06:10:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B088527A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:03:21 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qNsNn-00053J-UK; Mon, 24 Jul 2023 12:01:39 +0200
+Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qNsNk-001j38-Cg; Mon, 24 Jul 2023 12:01:36 +0200
+Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
+        by dude03.red.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qNsNj-008cdz-5s; Mon, 24 Jul 2023 12:01:35 +0200
+From:   Johannes Zink <j.zink@pengutronix.de>
+Date:   Mon, 24 Jul 2023 12:01:31 +0200
+Subject: [PATCH v2] net: stmmac: correct MAC propagation delay
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LITXHKhDZjLv/zTW"
-Content-Disposition: inline
-In-Reply-To: <20230716164925.1858-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAPpLvmQC/42NWwqDMBREtyL5boqJUk2/3EcRyeNWA5rITRRF3
+ HujK+jfnIGZc5AAaCGQd3YQhNUG610C/siIHqTrgVqTmPCcF3nFBA1xmqTutEcEHbsrGxjlTkt
+ e1VoJI5RmJM2VDEAVSqeHdOCWcUzljPC12+37tIkHG6LH/dav7Gr/MK2MMlq9ailLk4uiKJsZX
+ L9E9M5uTwOkPc/zB2bDcCLaAAAA
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Johannes Zink <j.zink@pengutronix.de>,
+        kernel test robot <lkp@intel.com>
+X-Mailer: b4 0.12.2
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---LITXHKhDZjLv/zTW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The IEEE1588 Standard specifies that the timestamps of Packets must be
+captured when the PTP message timestamp point (leading edge of first
+octet after the start of frame delimiter) crosses the boundary between
+the node and the network. As the MAC latches the timestamp at an
+internal point, the captured timestamp must be corrected for the
+additional path latency, as described in the publicly available
+datasheet [1].
 
-On Mon, Jul 17, 2023 at 12:49:25AM +0800, Jisheng Zhang wrote:
-> Currently, each architecture can support PREEMPT_DYNAMIC through
-> either static calls or static keys. To support PREEMPT_DYNAMIC on
-> riscv, we face three choices:
->=20
-> 1. only add static calls support to riscv
-> As Mark pointed out in commit 99cf983cc8bc ("sched/preempt: Add
-> PREEMPT_DYNAMIC using static keys"), static keys "...should have
-> slightly lower overhead than non-inline static calls, as this
-> effectively inlines each trampoline into the start of its callee. This
-> may avoid redundant work, and may integrate better with CFI schemes."
-> So even we add static calls(without inline static calls) to riscv,
-> static keys is still a better choice.
->=20
-> 2. add static calls and inline static calls to riscv
-> Per my understanding, inline static calls requires objtool support
-> which is not easy.
->=20
-> 3. use static keys
->=20
-> While riscv doesn't have static calls support, it supports static keys
-> perfectly. So this patch selects HAVE_PREEMPT_DYNAMIC_KEY to enable
-> support for PREEMPT_DYNAMIC on riscv, so that the preemption model can
-> be chosen at boot time. It also patches asm-generic/preempt.h, mainly
-> to add __preempt_schedule() and __preempt_schedule_notrace() macros
-> for PREEMPT_DYNAMIC case. Other architectures which use generic
-> preempt.h can also benefit from this patch by simply selecting
-> HAVE_PREEMPT_DYNAMIC_KEY to enable PREEMPT_DYNAMIC if they supports
-> static keys.
->=20
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
-> since v1:
->  - keep Kconfig entries sorted
->  - group asm-generic modifications under CONFIG_PREEMPT_DYNAMIC &&
->    CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
->=20
->  arch/riscv/Kconfig            |  1 +
->  include/asm-generic/preempt.h | 14 +++++++++++++-
->  2 files changed, 14 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 4c07b9189c86..686df6902947 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -130,6 +130,7 @@ config RISCV
->  	select HAVE_PERF_REGS
->  	select HAVE_PERF_USER_STACK_DUMP
->  	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
-> +	select HAVE_PREEMPT_DYNAMIC_KEY if !XIP_KERNEL
+This patch only corrects for the MAC-Internal delay, which can be read
+out from the MAC_Ingress_Timestamp_Latency register, since the Phy
+framework currently does not support querying the Phy ingress and egress
+latency. The Closs Domain Crossing Circuits errors as indicated in [1]
+are already being accounted in the stmmac_get_tx_hwtstamp() function and
+are not corrected here.
 
-Had a go of this, and it seems fine to me, as do the asm-generic bits
-seem fine from a single arch perspective.
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+As the Latency varies for different link speeds and MII
+modes of operation, the correction value needs to be updated on each
+link state change.
 
-Thanks,
-Conor.
+As the delay also causes a phase shift in the timestamp counter compared
+to the rest of the network, this correction will also reduce phase error
+when generating PPS outputs from the timestamp counter.
 
---LITXHKhDZjLv/zTW
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] i.MX8MP Reference Manual, rev.1 Section 11.7.2.5.3 "Timestamp
+correction"
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+---
+Changes in v2:
+- fix builds for 32bit, this was found by the kernel build bot
+	Reported-by: kernel test robot <lkp@intel.com>
+	Closes: https://lore.kernel.org/oe-kbuild-all/202307200225.B8rmKQPN-lkp@intel.com/
+- while at it also fix an overflow by shifting a u32 constant from macro by 10bits
+  by casting the constant to u64
+- Link to v1: https://lore.kernel.org/r/20230719-stmmac_correct_mac_delay-v1-1-768aa4d09334@pengutronix.de
+---
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  3 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c  | 43 ++++++++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  4 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h   |  6 +++
+ 4 files changed, 56 insertions(+)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL5LjgAKCRB4tDGHoIJi
-0nJOAQDVwcZ9xhtArPHW8vfa6H/+/R06yt6lycDcQIEurnKR9QEAmupS+LHdvohd
-H0H9yLqR5F78hTmvW/ipHX4SxS+oxQQ=
-=IK0A
------END PGP SIGNATURE-----
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index 6ee7cf07cfd7..95a4d6099577 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -536,6 +536,7 @@ struct stmmac_hwtimestamp {
+ 	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
+ 	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
+ 	void (*timestamp_interrupt)(struct stmmac_priv *priv);
++	void (*correct_latency)(struct stmmac_priv *priv);
+ };
+ 
+ #define stmmac_config_hw_tstamping(__priv, __args...) \
+@@ -554,6 +555,8 @@ struct stmmac_hwtimestamp {
+ 	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
+ #define stmmac_timestamp_interrupt(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
++#define stmmac_correct_latency(__priv, __args...) \
++	stmmac_do_void_callback(__priv, ptp, correct_latency, __args)
+ 
+ struct stmmac_tx_queue;
+ struct stmmac_rx_queue;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+index fa2c3ba7e9fe..7e0fa024e0ad 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+@@ -60,6 +60,48 @@ static void config_sub_second_increment(void __iomem *ioaddr,
+ 		*ssinc = data;
+ }
+ 
++static void correct_latency(struct stmmac_priv *priv)
++{
++	void __iomem *ioaddr = priv->ptpaddr;
++	u32 reg_tsic, reg_tsicsns;
++	u32 reg_tsec, reg_tsecsns;
++	u64 scaled_ns;
++	u32 val;
++
++	/* MAC-internal ingress latency */
++	scaled_ns = readl(ioaddr + PTP_TS_INGR_LAT);
++
++	/* See section 11.7.2.5.3.1 "Ingress Correction" on page 4001 of
++	 * i.MX8MP Applications Processor Reference Manual Rev. 1, 06/2021
++	 */
++	val = readl(ioaddr + PTP_TCR);
++	if (val & PTP_TCR_TSCTRLSSR)
++		/* nanoseconds field is in decimal format with granularity of 1ns/bit */
++		scaled_ns = ((u64)NSEC_PER_SEC << 16) - scaled_ns;
++	else
++		/* nanoseconds field is in binary format with granularity of ~0.466ns/bit */
++		scaled_ns = ((1ULL << 31) << 16) -
++			DIV_U64_ROUND_CLOSEST(scaled_ns * PSEC_PER_NSEC, 466U);
++
++	reg_tsic = scaled_ns >> 16;
++	reg_tsicsns = scaled_ns & 0xff00;
++
++	/* set bit 31 for 2's compliment */
++	reg_tsic |= BIT(31);
++
++	writel(reg_tsic, ioaddr + PTP_TS_INGR_CORR_NS);
++	writel(reg_tsicsns, ioaddr + PTP_TS_INGR_CORR_SNS);
++
++	/* MAC-internal egress latency */
++	scaled_ns = readl(ioaddr + PTP_TS_EGR_LAT);
++
++	reg_tsec = scaled_ns >> 16;
++	reg_tsecsns = scaled_ns & 0xff00;
++
++	writel(reg_tsec, ioaddr + PTP_TS_EGR_CORR_NS);
++	writel(reg_tsecsns, ioaddr + PTP_TS_EGR_CORR_SNS);
++}
++
+ static int init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
+ {
+ 	u32 value;
+@@ -221,4 +263,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
+ 	.get_systime = get_systime,
+ 	.get_ptptime = get_ptptime,
+ 	.timestamp_interrupt = timestamp_interrupt,
++	.correct_latency = correct_latency,
+ };
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index efe85b086abe..ee78e69e9ae3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -909,6 +909,8 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
+ 	priv->hwts_tx_en = 0;
+ 	priv->hwts_rx_en = 0;
+ 
++	stmmac_correct_latency(priv, priv);
++
+ 	return 0;
+ }
+ 
+@@ -1094,6 +1096,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
+ 
+ 	if (priv->dma_cap.fpesel)
+ 		stmmac_fpe_link_state_handle(priv, true);
++
++	stmmac_correct_latency(priv, priv);
+ }
+ 
+ static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+index bf619295d079..d1fe4b46f162 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+@@ -26,6 +26,12 @@
+ #define	PTP_ACR		0x40	/* Auxiliary Control Reg */
+ #define	PTP_ATNR	0x48	/* Auxiliary Timestamp - Nanoseconds Reg */
+ #define	PTP_ATSR	0x4c	/* Auxiliary Timestamp - Seconds Reg */
++#define	PTP_TS_INGR_CORR_NS	0x58	/* Ingress timestamp correction nanoseconds */
++#define	PTP_TS_EGR_CORR_NS	0x5C	/* Egress timestamp correction nanoseconds*/
++#define	PTP_TS_INGR_CORR_SNS	0x60	/* Ingress timestamp correction subnanoseconds */
++#define	PTP_TS_EGR_CORR_SNS	0x64	/* Egress timestamp correction subnanoseconds */
++#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
++#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
+ 
+ #define	PTP_STNSUR_ADDSUB_SHIFT	31
+ #define	PTP_DIGITAL_ROLLOVER_MODE	0x3B9ACA00	/* 10e9-1 ns */
 
---LITXHKhDZjLv/zTW--
+---
+base-commit: ba80e20d7f3f87dab3f9f0c0ca66e4b1fcc7be9f
+change-id: 20230719-stmmac_correct_mac_delay-4278cb9d9bc1
+
+Best regards,
+-- 
+Johannes Zink <j.zink@pengutronix.de>
+
