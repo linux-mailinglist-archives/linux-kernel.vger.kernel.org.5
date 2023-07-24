@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873D475ECA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AEE75ECA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjGXHjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S230178AbjGXHk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjGXHjN (ORCPT
+        with ESMTP id S229499AbjGXHkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:39:13 -0400
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647E9180;
-        Mon, 24 Jul 2023 00:39:10 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3163eb69487so3145192f8f.1;
-        Mon, 24 Jul 2023 00:39:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690184349; x=1690789149;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r3c21fZlC0KRnz3kLqOIBEGeprFwWXQT2AytBpy+S6I=;
-        b=MDiGT45Jia46d6K2KpnrPiUmazseorqGszvr7897suhMdjh717FcYZKoibKuEOwRSU
-         WvECIP+C+ogPc3ygH5VzZcO3LsNsnYWnFOSG3+vFfOtDjxqeFbAE15Bc1iclFK+q1HRf
-         TLquOVunDTav8mz1Rfupc2E0vb2+PzOf2Vp6JtZYLWm0l+Ba6wOCRRHMRc5GIaA4Up5i
-         UVAavWPEAVG1Ot2pXPb6xnkpeiYvlGCpXnXZIPREzqjEKvxZr4a52sLBsgFYYEbhfLSq
-         /NoTtKjoUcZRR9Wc6neK2M5yMhFSGPQt+RKO3Kr4uBXkOSalOi1xb3GK1sSCJJMTivSD
-         qz8g==
-X-Gm-Message-State: ABy/qLar+LZ6/55TWzc67qKdF8Zf2OrMHlEyWZMeb2gFDyx65/4gTql1
-        CvMG6+kabsUwNgZ9XG8BgGLNOv/zkALXpw==
-X-Google-Smtp-Source: APBJJlFc+I0Ove3B+q7CdMlUexJdLMe/NJNkJeHcnmrXtpPsJgnPW2/z3WAEKsY02B7RJKRdXQMhBg==
-X-Received: by 2002:adf:eec2:0:b0:317:417e:a467 with SMTP id a2-20020adfeec2000000b00317417ea467mr5085884wrp.6.1690184348831;
-        Mon, 24 Jul 2023 00:39:08 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id w2-20020a5d4b42000000b0030ae53550f5sm11918440wrs.51.2023.07.24.00.39.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 00:39:08 -0700 (PDT)
-Message-ID: <047346f8-9ac4-4990-2885-8bfac47b83a3@kernel.org>
-Date:   Mon, 24 Jul 2023 09:39:07 +0200
+        Mon, 24 Jul 2023 03:40:23 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778F8195;
+        Mon, 24 Jul 2023 00:40:21 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0Vo3N3oz_1690184414;
+Received: from 30.221.149.214(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vo3N3oz_1690184414)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 15:40:16 +0800
+Message-ID: <2e392aa9-859a-75ef-eb3e-1870b1e78061@linux.alibaba.com>
+Date:   Mon, 24 Jul 2023 15:40:12 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] io_uring: Fix io_uring mmap() by using
- architecture-provided get_unmapped_area()
-Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org
-Cc:     matoro <matoro_mailinglist_kernel@matoro.tk>
-References: <20230721152432.196382-1-deller@gmx.de>
- <20230721152432.196382-2-deller@gmx.de>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230721152432.196382-2-deller@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH] perf arm64: Fix read PMU cpu slots
+To:     Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZL4G7rWXkfv-Ectq@B-Q60VQ05P-2326.local>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <ZL4G7rWXkfv-Ectq@B-Q60VQ05P-2326.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 07. 23, 17:24, Helge Deller wrote:
-> The io_uring testcase is broken on IA-64 since commit d808459b2e31
-> ("io_uring: Adjust mapping wrt architecture aliasing requirements").
-> 
-> The reason is, that this commit introduced an own architecture
-> independend get_unmapped_area() search algorithm which finds on IA-64 a
-> memory region which is outside of the regular memory region used for
-> shared userspace mappings and which can't be used on that platform
-> due to aliasing.
-> 
-> To avoid similar problems on IA-64 and other platforms in the future,
-> it's better to switch back to the architecture-provided
-> get_unmapped_area() function and adjust the needed input parameters
-> before the call. Beside fixing the issue, the function now becomes
-> easier to understand and maintain.
-> 
-> This patch has been successfully tested with the io_uring testcase on
-> physical x86-64, ppc64le, IA-64 and PA-RISC machines. On PA-RISC the LTP
-> mmmap testcases did not report any regressions.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Reported-by: matoro <matoro_mailinglist_kernel@matoro.tk>
-> Fixes: d808459b2e31 ("io_uring: Adjust mapping wrt architecture aliasing requirements")
 
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
 
-thanks,
--- 
-js
-suse labs
+在 2023/7/24 下午1:06, Haixin Yu 写道:
+> Commit f8ad6018ce3c ("perf pmu: Remove duplication around
+>  EVENT_SOURCE_DEVICE_PATH") uses sysfs__read_ull to read a full
+> sysfs path, which will never success. Fix it by read file directly.
+> 
+> Signed-off-by: Haixin Yu <yuhaixin.yhx@linux.alibaba.com>
+> ---
+>  tools/perf/arch/arm64/util/pmu.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+> index 561de0cb6b95..512a8f13c4de 100644
+> --- a/tools/perf/arch/arm64/util/pmu.c
+> +++ b/tools/perf/arch/arm64/util/pmu.c
+> @@ -54,10 +54,11 @@ double perf_pmu__cpu_slots_per_cycle(void)
+>  		perf_pmu__pathname_scnprintf(path, sizeof(path),
+>  					     pmu->name, "caps/slots");
+>  		/*
+> -		 * The value of slots is not greater than 32 bits, but sysfs__read_int
+> -		 * can't read value with 0x prefix, so use sysfs__read_ull instead.
+> +		 * The value of slots is not greater than 32 bits, but
+> +		 * filename__read_int can't read value with 0x prefix,
+> +		 * so use filename__read_ull instead.
+>  		 */
+> -		sysfs__read_ull(path, &slots);
+> +		filename__read_ull(path, &slots);
+>  	}
+>  
+>  	return slots ? (double)slots : NAN;
 
+Yes, the function perf_pmu__pathname_scnprintf returns the complete slots file path "/sys/bus/xxxxx/caps/slots",
+and sysfs__read_ull will add the prefix "/sys" to the path, so the final file path becomes "/sys/sys/bus/xxxx/caps/slots"
+which does not exist, and the slots file cannot be successfully read, so sysfs__read_ull needs to be changed to the
+filename__read_ull.
+
+I tested it and it works well.
+
+Tested-by: Jing Zhang <renyu.zj@linux.alibaba.com>
