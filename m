@@ -2,216 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A695C760304
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E995760309
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjGXXQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 19:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S230257AbjGXXRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 19:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjGXXQS (ORCPT
+        with ESMTP id S229459AbjGXXRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:16:18 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1591700;
-        Mon, 24 Jul 2023 16:16:14 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 46ACC5C007A;
-        Mon, 24 Jul 2023 19:16:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 Jul 2023 19:16:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1690240572; x=1690326972; bh=yQYsb6f3TXQaFHpzPwBQUT2HsaYCaEOi5Gw
-        32hKxJA8=; b=kiw5EYlYEliliVaH2uAd5xQgwfk6a0Azwggd5j3wu0jmCLFBkKk
-        5ySW3u/M7LH9FEYgIL5Dtgy82t6Q/xCGMtcECOcP8W5zgoyuZoqCO77XPYNcyN0V
-        h1GHVhW5zMuprsVdFqQpZeNqUaNU5PwMSFg1w1FV0uxorC5d5y/IKhotD6ZWCkKt
-        Q9kdsz08YZHQlqQWM4i/gBrWURqQyiRCeLp1jzz2F1jTpiv8+omRSxH9FREUDjbi
-        3mnPSszetZqAPSU3mtDWgOIwLmx+pyGCu7+at6YIF713vOeeR1lPUhA7yO5GAixL
-        ITXzLvDISNRT+Puk/rRD1D3jpoiNCg3VDsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690240572; x=1690326972; bh=yQYsb6f3TXQaFHpzPwBQUT2HsaYCaEOi5Gw
-        32hKxJA8=; b=zsPsLpfvAQPST8ChJGPYrq9KXVqhncxmJ24BhlCYdlcn4JHnl53
-        dnzUUp5kB/H2pDaZ3R2P0hi9XfW+16twhn/L78rc0ja9SOjqbahgpMAyURdg2Rdh
-        tZNS86qxqMyAuT+J/WBPrLWwaPuVz/WEAf/PLrVHvBTDx4ejAhL9OZrTimi/1PBA
-        DD+fklgtS060ta6onElWYkxeohZzK9R5ui0RBi5iXsvS+DOs9F+dycD7Uq4ggpXP
-        1lM7QH7W1J2t7HUdfRhn85+Y0ufRShzk0wFOs6ktBuLPnQMl6dZDFIIbQycUIjOI
-        KKaMsh3OI1KG3pe0kGyLjYj6DeIzZQ9ikcw==
-X-ME-Sender: <xms:Owa_ZItPz_RhnDXHN0zRpimrOciL1_B4p1qQ0mt-pzPHe_blSAzK7g>
-    <xme:Owa_ZFfc1aNcwN_wDuvDa3D4l4eXWhRDBKjXYvxS-jlBY5rM_4hRuKzQS4BYCgXUZ
-    nmGCkUjQxhbgMgO>
-X-ME-Received: <xmr:Owa_ZDxTmW96cltfkrIMo8dA6oXm0ioLIQzorlrMJybBfeOCILKMD-Frj7dovLC96AoIT_2SO9vrda0wNbb6uIzB6RsEfWseLDbXsrX1gY25RpgGOv2y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheelgddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
-    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
-    drfhhmqeenucggtffrrghtthgvrhhnpeekheevkeelkeekjefhheegfedtffduudejjeei
-    heehudeuleelgefhueekfeevudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
-    mh
-X-ME-Proxy: <xmx:Owa_ZLPEQ02oXKrOdrF5MCE_VS65kkrNgrih56GKJ0IhM3n0XD8epQ>
-    <xmx:Owa_ZI9W25OJ2ilOuHmm7ZwILkOftO-o3D1ybbYqWwvchN0K5gDFeg>
-    <xmx:Owa_ZDXx4lIzDzZNkqmMSBc5mqjPNz3fPwlRaSZsYR05vXl_J6DZiA>
-    <xmx:PAa_ZHmHiQLegGVzbah0PIilpJ5Fy5opwvUkus15mFuS2q-BT7a9qw>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 24 Jul 2023 19:16:10 -0400 (EDT)
-Message-ID: <6a73a722-6bb5-6462-e7ff-a55866374758@fastmail.fm>
-Date:   Tue, 25 Jul 2023 01:16:08 +0200
+        Mon, 24 Jul 2023 19:17:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED5F10FA;
+        Mon, 24 Jul 2023 16:17:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3031A6140B;
+        Mon, 24 Jul 2023 23:17:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 642A4C433C8;
+        Mon, 24 Jul 2023 23:17:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690240653;
+        bh=AuhJ0meEb0ilI4LS4R/kOuDmIjC7JpqrRYCWmQXklVA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=E2W19COfmxbvxeM3Hp2ckOuFMY2UKGhnudGU94+jagQkXjgW53nEip/GGjdP/lipL
+         0I1u+JIAPeQL+IIND38oGfFPhbyTQhE01m+7NA0i5GWEdV651UsdjQ9lKDY5HOlLdF
+         8ik67UB/v+It5kolPLLrz77WhKM7TjVZn63xzHpxcYrUZWAMQ6BN3McL6GeoMf4ncm
+         /XQHm05OZrMoI3A3A113BuBVNkp2UxI+3lg/2/jFLqlmNjfaNV7Fxru5j4vtSKbHdg
+         7HeEtg9bVZd8SNkSQKuVkdi6jkLlBeoJmcjtgGykSFQTGMGOmZHeEMTOwahSFLN5ig
+         hiRPfcsAFFAbg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id ECCCDCE0908; Mon, 24 Jul 2023 16:17:32 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 16:17:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [BUG] Re: Linux 6.4.4
+Message-ID: <fa417689-cf91-4687-8308-3ffe6759cf1d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
+ <123C6650-490B-4D08-96B4-39B118AD0054@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 2/2] fuse: ensure that submounts lookup their root
-To:     Krister Johansen <kjlx@templeofstupid.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
-References: <cover.1689038902.git.kjlx@templeofstupid.com>
- <69bb95c34deb25f56b3b842528edcb40a098d38d.1689038902.git.kjlx@templeofstupid.com>
-Content-Language: en-US, de-DE
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <69bb95c34deb25f56b3b842528edcb40a098d38d.1689038902.git.kjlx@templeofstupid.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <123C6650-490B-4D08-96B4-39B118AD0054@joelfernandes.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/11/23 03:37, Krister Johansen wrote:
-> Prior to this commit, the submount code assumed that the inode for the
-> root filesystem could not be evicted.  When eviction occurs the server
-> may forget the inode.  This author has observed a submount get an EBADF
-> from a virtiofsd server that resulted from the sole dentry / inode
-> pair getting evicted from a mount namespace and superblock where they
-> were originally referenced.  The dentry shrinker triggered a forget
-> after killing the dentry with the last reference.
+On Mon, Jul 24, 2023 at 07:04:14PM -0400, Joel Fernandes wrote:
 > 
-> As a result, a container that was also using this submount failed to
-> access its filesystem because it had borrowed the reference instead of
-> taking its own when setting up its superblock for the submount.
 > 
-> Fix by ensuring that submount superblock configuration looks up the
-> nodeid for the submount as well.
+> > On Jul 24, 2023, at 12:00 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
+> >>> On Sun, Jul 23, 2023 at 11:35 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>> 
+> >>> On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
+> >>>> On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
+> >>>>> On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
+> >>>>>> 
+> >>>>>> 
+> >>>>>> On 7/22/23 13:27, Paul E. McKenney wrote:
+> >>>>>> [..]
+> >>>>>>> 
+> >>>>>>> OK, if this kernel is non-preemptible, you are not running TREE03,
+> >>>>>>> correct?
+> >>>>>>> 
+> >>>>>>>> Next plan of action is to get sched_waking stack traces since I have a
+> >>>>>>>> very reliable repro of this now.
+> >>>>>>> 
+> >>>>>>> Too much fun!  ;-)
+> >>>>>> 
+> >>>>>> For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
+> >>>>>> in stutter_wait() that is beating up the CPU0 for 4 seconds.
+> >>>>>> 
+> >>>>>> This is very similar to the issue I fixed in New year in d52d3a2bf408
+> >>>>>> ("torture: Fix hang during kthread shutdown phase")
+> >>>>> 
+> >>>>> Agreed, if there are enough kthreads, and all the kthreads are on a
+> >>>>> single CPU, this could consume that CPU.
+> >>>>> 
+> >>>>>> Adding a cond_resched() there also did not help.
+> >>>>>> 
+> >>>>>> I think the issue is the stutter thread fails to move spt forward
+> >>>>>> because it does not get CPU time. But spt == 1 should be very brief
+> >>>>>> AFAIU. I was wondering if we could set that to RT.
+> >>>>> 
+> >>>>> Or just use a single hrtimer-based wait for each kthread?
+> >>>> 
+> >>>> [Joel]
+> >>>> Yes this might be better, but there's still the issue that spt may not be set
+> >>>> back to 0 in some future release where the thread gets starved.
+> >>> 
+> >>> But if each thread knows the absolute time at which the current stutter
+> >>> period is supposed to end, there should not be any need for the spt
+> >>> variable, correct?
+> >> 
+> >> Yes.
+> >> 
+> >>>>>> But also maybe the following will cure it like it did for the shutdown
+> >>>>>> issue, giving the stutter thread just enough CPU time to move spt forward.
+> >>>>>> 
+> >>>>>> Now I am trying the following and will let it run while I go do other
+> >>>>>> family related things. ;)
+> >>>>> 
+> >>>>> Good point, if this avoids the problem, that gives a strong indication
+> >>>>> that your hypothesis on the root cause is correct.
+> >>>> 
+> >>>> [Joel]
+> >>>> And the TREE07 issue is gone with that change!
+> >> [...]
+> >>>> Let me know what you think, thanks!
+> >>> 
+> >>> If we can make the stutter kthread set an absolute time for the current
+> >>> stutter period to end, then we should be able to simplify the code quite
+> >>> a bit and get rid of the CPU consumption entirely.  (Give or take the
+> >>> possible need for a given thread to check whether it was erroneously
+> >>> awakened early.)
+> >>> 
+> >>> But what specifically did you have in mind?
+> >> 
+> >> I was thinking of a 2 counter approach storing the absolute time. Use
+> >> an alternative counter for different stuttering sessions. But yes,
+> >> generally I agree with the absolute time idea. What do you think Paul?
+> >> 
+> >> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep stable
+> >> green, and do the absolute-time approach for mainline? That might be better
+> >> from a process PoV. But I think stable requires patches to be upstream. Greg?
+> >> 
+> >> I will try to send out patches this week to discuss this, thanks,
+> > 
+> > Heh!!!
+> > 
+> > Me, I was just thinking of mainline.  ;-)
 > 
-> Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
-> ---
->   fs/fuse/dir.c    | 10 +++++-----
->   fs/fuse/fuse_i.h |  6 ++++++
->   fs/fuse/inode.c  | 32 ++++++++++++++++++++++++++++----
->   3 files changed, 39 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index bdf5526a0733..fe6b3fd4a49c 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -193,11 +193,11 @@ static void fuse_lookup_init(struct fuse_conn *fc, struct fuse_args *args,
->   	args->out_args[0].value = outarg;
->   }
->   
-> -static int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
-> -					 struct dentry *entry,
-> -					 struct inode *inode,
-> -					 struct fuse_entry_out *outarg,
-> -					 bool *lookedup)
-> +int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
-> +				  struct dentry *entry,
-> +				  struct inode *inode,
-> +				  struct fuse_entry_out *outarg,
-> +				  bool *lookedup)
->   {
->   	struct dentry *parent;
->   	struct fuse_forget_link *forget;
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 9b7fc7d3c7f1..77b123eddb6d 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -1309,6 +1309,12 @@ void fuse_dax_dontcache(struct inode *inode, unsigned int flags);
->   bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
->   void fuse_dax_cancel_work(struct fuse_conn *fc);
->   
-> +/* dir.c */
-> +int fuse_dentry_revalidate_lookup(struct fuse_mount *fm, struct dentry *entry,
-> +				  struct inode *inode,
-> +				  struct fuse_entry_out *outarg,
-> +				  bool *lookedup);
-> +
->   /* ioctl.c */
->   long fuse_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
->   long fuse_file_compat_ioctl(struct file *file, unsigned int cmd,
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index f19d748890f0..1032e4b05d9c 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1441,6 +1441,10 @@ static int fuse_fill_super_submount(struct super_block *sb,
->   	struct super_block *parent_sb = parent_fi->inode.i_sb;
->   	struct fuse_attr root_attr;
->   	struct inode *root;
-> +	struct inode *parent;
-> +	struct dentry *pdent;
-> +	bool lookedup = false;
-> +	int ret;
->   
->   	fuse_sb_defaults(sb);
->   	fm->sb = sb;
-> @@ -1456,14 +1460,34 @@ static int fuse_fill_super_submount(struct super_block *sb,
->   	if (parent_sb->s_subtype && !sb->s_subtype)
->   		return -ENOMEM;
->   
-> +	/*
-> +	 * It is necessary to lookup the parent_if->nodeid in case the dentry
-> +	 * that triggered the automount of the submount is later evicted.
-> +	 * If this dentry is evicted without the lookup count getting increased
-> +	 * on the submount root, then the server can subsequently forget this
-> +	 * nodeid which leads to errors when trying to access the root of the
-> +	 * submount.
-> +	 */
-> +	parent = &parent_fi->inode;
-> +	pdent = d_find_alias(parent);
-> +	if (pdent) {
-> +		struct fuse_entry_out outarg;
-> +
-> +		ret = fuse_dentry_revalidate_lookup(fm, pdent, parent, &outarg,
-> +						    &lookedup);
-> +		dput(pdent);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
->   	fuse_fill_attr_from_inode(&root_attr, parent_fi);
->   	root = fuse_iget(sb, parent_fi->nodeid, 0, &root_attr, 0, 0);
->   	/*
-> -	 * This inode is just a duplicate, so it is not looked up and
-> -	 * its nlookup should not be incremented.  fuse_iget() does
-> -	 * that, though, so undo it here.
-> +	 * fuse_iget() sets nlookup to 1 at creation time.  If this nodeid was
-> +	 * not successfully looked up then decrement the count.
->   	 */
-> -	get_fuse_inode(root)->nlookup--;
-> +	if (!lookedup)
-> +		get_fuse_inode(root)->nlookup--;
+> Turns out it is simple enough for both mainline and stable :-).
+> Will test more and send it out soon.
 
-How does a submount work with a parent mismatch? I wonder if this 
-function should return an error if lookup of the parent failed.
+Woo-hoo!!!  Some times you get lucky!
 
-
-Thanks,
-Bernd
+							Thanx, Paul
