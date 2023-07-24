@@ -2,47 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED2375E776
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C0575E780
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbjGXB22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S231543AbjGXB2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjGXB1S (ORCPT
+        with ESMTP id S231435AbjGXB1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:27:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D1E1FE5;
-        Sun, 23 Jul 2023 18:24:50 -0700 (PDT)
+        Sun, 23 Jul 2023 21:27:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632594681;
+        Sun, 23 Jul 2023 18:24:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3AF660F6D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D182360F1D;
+        Mon, 24 Jul 2023 01:24:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E35C433C8;
         Mon, 24 Jul 2023 01:24:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1600AC433C7;
-        Mon, 24 Jul 2023 01:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161847;
-        bh=4/cShx6t3Zffwv307oGLU/UFEXFHDP2pM+jRdsE6Mz0=;
+        s=k20201202; t=1690161849;
+        bh=iqD2z/IVhDi0WM/KEjgSh/ZYzgqFhIE1K7YNkIMHOS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t22sw4uKmGobuoUXQL+f5h6Kdbhe4vHpWX/4odufKMkTZKFcq6+F118hs2gHB0G7x
-         RFb8c9gfXm2ne+n6quZgx0tetfwCVAPqTJ5u+MbO+iYEm4RaJSuhEuTO7RkAjnxi/D
-         XCOzewQpKox3oEc3brV9cIsLOgnga+gFfFFc6BPH8wVbOxGMyiyJ7KOMV5aOysuX0W
-         EajPikR15PZD759OaLOBUi8zKqnMU9yVUd8Rz50Afb93OrQ8DBL5tibmo3vsE7rSnZ
-         tYtmHnfkTYQujmiAkmqJZXZ7k3/q4vuu7ILwZeVwoQPQ0VG1/8ZgIKTfBa8ut+LBeM
-         UZzITkXkoaEPQ==
+        b=Y1TDVwOJTPOROGaypI7iKNFB/XIFNdRmAVmClEL5U6KEbipbeI27do2rCggdVLmRe
+         NUJUpFWeKxVjiVFlQqUEN9HiPuTNd4ELsWZG0MdBRTPqhVnlN8OcqaKnF8dhN887jC
+         1fPl+sWu3uuv1JEYXMA/10baoq7IfsvhJsf4DiSdUApkeWwjWsBToEkMb73I/Nd0ce
+         ml2yvGi1uFI9xP7exBXffk8tuUFKK9L0Gl8YM9MaaaM/uiPkRZWtZF+VaqTGB5xDqr
+         8NgZMTbC7OnmdeXMs+VTKUvB/y7ypvSvsv5gOMqYOvDspwCE7Y0I01W4Rr80FT6AY/
+         DdcdR1RHi1olA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Patrisious Haddad <phaddad@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, matanb@mellanox.com,
-        leonro@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 15/23] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
-Date:   Sun, 23 Jul 2023 21:23:26 -0400
-Message-Id: <20230724012334.2317140-15-sashal@kernel.org>
+Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.15 16/23] ASoC: SOF: core: Free the firmware trace before calling snd_sof_shutdown()
+Date:   Sun, 23 Jul 2023 21:23:27 -0400
+Message-Id: <20230724012334.2317140-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
 References: <20230724012334.2317140-1-sashal@kernel.org>
@@ -51,120 +56,62 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.121
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-[ Upstream commit 22664c06e997087fe37f9ba208008c948571214a ]
+[ Upstream commit d389dcb3a48cec4f03c16434c0bf98a4c635372a ]
 
-Previously when destroying a QP/RQ, the result of the firmware
-destruction function was ignored and upper layers weren't informed
-about the failure.
-Which in turn could lead to various problems since when upper layer
-isn't aware of the failure it continues its operation thinking that the
-related QP/RQ was successfully destroyed while it actually wasn't,
-which could lead to the below kernel WARN.
+The shutdown is called on reboot/shutdown of the machine.
+At this point the firmware tracing cannot be used anymore but in case of
+IPC3 it is using and keeping a DMA channel active (dtrace).
 
-Currently, we return the correct firmware destruction status to upper
-layers which in case of the RQ would be mlx5_ib_destroy_wq() which
-was already capable of handling RQ destruction failure or in case of
-a QP to destroy_qp_common(), which now would actually warn upon qp
-destruction failure.
+For Tiger Lake platforms we have a quirk in place to fix rare reboot issues
+when a DMA was active before rebooting the system.
+If the tracing is enabled this quirk will be always used and a print
+appears on the kernel log which might be misleading or not even correct.
 
-WARNING: CPU: 3 PID: 995 at drivers/infiniband/core/rdma_core.c:940 uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
-Modules linked in: xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core overlay mlx5_core fuse
-CPU: 3 PID: 995 Comm: python3 Not tainted 5.16.0-rc5+ #1
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
-Code: 41 5c 41 5d 41 5e e9 44 34 f0 e0 48 89 df e8 4c 77 ff ff 49 8b 86 10 01 00 00 48 85 c0 74 a1 4c 89 e7 ff d0 eb 9a 0f 0b eb c1 <0f> 0b be 04 00 00 00 48 89 df e8 b6 f6 ff ff e9 75 ff ff ff 90 0f
-RSP: 0018:ffff8881533e3e78 EFLAGS: 00010287
-RAX: ffff88811b2cf3e0 RBX: ffff888106209700 RCX: 0000000000000000
-RDX: ffff888106209780 RSI: ffff8881533e3d30 RDI: ffff888109b101a0
-RBP: 0000000000000001 R08: ffff888127cb381c R09: 0de9890000000009
-R10: ffff888127cb3800 R11: 0000000000000000 R12: ffff888106209780
-R13: ffff888106209750 R14: ffff888100f20660 R15: 0000000000000000
-FS:  00007f8be353b740(0000) GS:ffff88852c980000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8bd5b117c0 CR3: 000000012cd8a004 CR4: 0000000000370ea0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ib_uverbs_close+0x1a/0x90 [ib_uverbs]
- __fput+0x82/0x230
- task_work_run+0x59/0x90
- exit_to_user_mode_prepare+0x138/0x140
- syscall_exit_to_user_mode+0x1d/0x50
- ? __x64_sys_close+0xe/0x40
- do_syscall_64+0x4a/0x90
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f8be3ae0abb
-Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 83 43 f9 ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 c1 43 f9 ff 8b 44
-RSP: 002b:00007ffdb51909c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000557bb7f7c020 RCX: 00007f8be3ae0abb
-RDX: 0000557bb7c74010 RSI: 0000557bb7f14ca0 RDI: 0000000000000005
-RBP: 0000557bb7fbd598 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000557bb7fbd5b8
-R13: 0000557bb7fbd5a8 R14: 0000000000001000 R15: 0000557bb7f7c020
- </TASK>
+Release the fw tracing before executing the shutdown to make sure that this
+known DMA user is cleared away.
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Link: https://lore.kernel.org/r/c6df677f931d18090bafbe7f7dbb9524047b7d9b.1685953497.git.leon@kernel.org
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20230616100039.378150-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/qpc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/sof/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
-index 8844eacf2380e..e508c0753dd37 100644
---- a/drivers/infiniband/hw/mlx5/qpc.c
-+++ b/drivers/infiniband/hw/mlx5/qpc.c
-@@ -297,8 +297,7 @@ int mlx5_core_destroy_qp(struct mlx5_ib_dev *dev, struct mlx5_core_qp *qp)
- 	MLX5_SET(destroy_qp_in, in, opcode, MLX5_CMD_OP_DESTROY_QP);
- 	MLX5_SET(destroy_qp_in, in, qpn, qp->qpn);
- 	MLX5_SET(destroy_qp_in, in, uid, qp->uid);
--	mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
--	return 0;
-+	return mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 59d0d7b2b55c8..5f8e89da7b578 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -406,8 +406,10 @@ int snd_sof_device_shutdown(struct device *dev)
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+ 		cancel_work_sync(&sdev->probe_work);
+ 
+-	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE)
++	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
++		sof_fw_trace_free(sdev);
+ 		return snd_sof_shutdown(sdev);
++	}
+ 
+ 	return 0;
  }
- 
- int mlx5_core_set_delay_drop(struct mlx5_ib_dev *dev,
-@@ -548,14 +547,14 @@ int mlx5_core_xrcd_dealloc(struct mlx5_ib_dev *dev, u32 xrcdn)
- 	return mlx5_cmd_exec_in(dev->mdev, dealloc_xrcd, in);
- }
- 
--static void destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
-+static int destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
- {
- 	u32 in[MLX5_ST_SZ_DW(destroy_rq_in)] = {};
- 
- 	MLX5_SET(destroy_rq_in, in, opcode, MLX5_CMD_OP_DESTROY_RQ);
- 	MLX5_SET(destroy_rq_in, in, rqn, rqn);
- 	MLX5_SET(destroy_rq_in, in, uid, uid);
--	mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
-+	return mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
- }
- 
- int mlx5_core_create_rq_tracked(struct mlx5_ib_dev *dev, u32 *in, int inlen,
-@@ -586,8 +585,7 @@ int mlx5_core_destroy_rq_tracked(struct mlx5_ib_dev *dev,
- 				 struct mlx5_core_qp *rq)
- {
- 	destroy_resource_common(dev, rq);
--	destroy_rq_tracked(dev, rq->qpn, rq->uid);
--	return 0;
-+	return destroy_rq_tracked(dev, rq->qpn, rq->uid);
- }
- 
- static void destroy_sq_tracked(struct mlx5_ib_dev *dev, u32 sqn, u16 uid)
 -- 
 2.39.2
 
