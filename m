@@ -2,641 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5395F75EEB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C501975EEBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjGXJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59898 "EHLO
+        id S232052AbjGXJLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjGXJHc (ORCPT
+        with ESMTP id S229974AbjGXJLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:07:32 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB28310C7;
-        Mon, 24 Jul 2023 02:07:29 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb41682472so6040599e87.2;
-        Mon, 24 Jul 2023 02:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690189648; x=1690794448;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hHDszbct6YMuknYAF+zLRaudTMlXEh41T777j8SKcMs=;
-        b=L/lJLozfAVSN8DDxypDoFL6yWF5ByGEPgm2YLtYyPp3tXsEEW8qzy4TIGkVDZ49dgj
-         xQcFIt5hCgA9BCYUnZQC7lpNgtlpwgBVK/R6XW2h4iR+2V8RwUyp5+vazcimf5tx3yVc
-         +iA/fmKzM2P0B10jHGiWKskVVddghdbW7zcbzFqjMRbYvdP1Rss0VxPmOAQ4x7Pe8fxb
-         D8DE9mSByaJ++IeSKh1DOeJlsrRfd2SVJPccFxOTXjDTFlo/FPKt7Aj+X4P6uXIjjB15
-         jcbH8LaoHCLfA2z7AUiyS46hsvvNOo3K6RlqkZ3kRDuHiLDiLRWTs7Pj8dI3t1TxwfME
-         X0mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189648; x=1690794448;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hHDszbct6YMuknYAF+zLRaudTMlXEh41T777j8SKcMs=;
-        b=FH6w1AVYQ4fF0huDuEck2Qi9vrJiu0To1o7SXr/Iwc3gtknKNPSP6xRpDvM2EdLPZ+
-         3wgRp+5lKDPUiXF81X3Yy3/tt39jA5RFkg5QiuFpyM079/B0ee/qJziPvosE8KNeUttG
-         bWIpWxh+AHJun9oih4X081rbSt4/pT3xLUALXrixVf3DqQ3i7SSJiz+DvgUtaOfY1xIi
-         4NtAcOVb3tcBpejTrG+cHkD0P+mDsTUzxqE8lgiZiLHGxtTDV7pXkJX2REKHSYSMLa/m
-         rRwCkqueRg4XXg0GykKAi9jJyrPHzfNZQ8LhgwwImuww5gS56eBdhGrr0Tuoo28weOd8
-         QP/w==
-X-Gm-Message-State: ABy/qLb4OtlMMPjrLLQs39GZZzwycnPS2HFEj9+FpCaBKnW8iAj2KCTB
-        l7U662Wr17oHvlycIJbFCkALmN9q510=
-X-Google-Smtp-Source: APBJJlGG12FeVgPTk91kjs85WR+yrWy+WYoN9af2wcyFch1fkR4cFZ40sVpJcbAkuvBBvljXm27TJA==
-X-Received: by 2002:a19:8c05:0:b0:4f9:5196:5ed0 with SMTP id o5-20020a198c05000000b004f951965ed0mr4687931lfd.7.1690189647566;
-        Mon, 24 Jul 2023 02:07:27 -0700 (PDT)
-Received: from localhost.localdomain ([86.57.157.184])
-        by smtp.gmail.com with ESMTPSA id j14-20020ac2550e000000b004fc863a0bf6sm2092473lfk.223.2023.07.24.02.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:07:27 -0700 (PDT)
-From:   Viktar Simanenka <viteosen@gmail.com>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Viktar Simanenka <viteosen@gmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] drm/tiny: add display driver for philips pcd8544 display controller
-Date:   Mon, 24 Jul 2023 12:07:13 +0300
-Message-Id: <20230724090713.1489-2-viteosen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230724090713.1489-1-viteosen@gmail.com>
-References: <20230724090713.1489-1-viteosen@gmail.com>
+        Mon, 24 Jul 2023 05:11:30 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6646F9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690189889; x=1721725889;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IJuS2NPpHW5yxPKPbFGIfcOiW3Jkp5gRaCUPlulOu7Y=;
+  b=Ix2gkj4ATs03SgwGw3ViW9CMfslG5LHjnlJnrNwfcIv+KR39UgND21g0
+   F0+useCF/I9pJO1/2nIgBKuQi6xrjZT8YW8724mxosrewjjuY2hOO20Et
+   d2azxPtjDLICJQLkeR0F3PStNqSvU6u1lJb4Zjy37jHCpQ4IpknAm/SV2
+   5sxFgRF+Yv1a4RC+3mfN+ZUjsy5tD9YOp8f9rDlZzD4x6259UtLIaNqXb
+   n69pJMaok3moA+H+terTyfLnJW9xrFEfQOyZTCTxlwj9OlWBjnEDsHpIS
+   HRDpR+WcWX6AtuYmw2TJI0uW90sbh0Zi/1LI4TXTr2t6Wt75Q3YN3IDKu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="370060617"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="370060617"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 02:11:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="1056353961"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="1056353961"
+Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56]) ([10.249.37.56])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 02:11:24 -0700
+Message-ID: <dc6de509-6984-1434-b53f-9600e8bc7c49@linux.intel.com>
+Date:   Mon, 24 Jul 2023 11:08:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
+Content-Language: en-US
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Yong Zhi <yong.zhi@intel.com>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Uday M Bhat <uday.m.bhat@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        "Dharageswari . R" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230720092628.758834-1-brent.lu@intel.com>
+ <20230720092628.758834-2-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230720092628.758834-2-brent.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for monochrome LCD SPI displays (such as Nokia 5110/3310 LCD)
-based on PCD8544 LCD display controller.
 
-Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
----
-v4: nothing changed from v2 (and v3)
-v2:checked and fixed with sparse and smatch
-   changed param prefixes
-v2 link: https://lore.kernel.org/linux-devicetree/20230719154450.620410-2-viteosen@gmail.com/
- drivers/gpu/drm/tiny/Kconfig   |  11 +
- drivers/gpu/drm/tiny/Makefile  |   1 +
- drivers/gpu/drm/tiny/pcd8544.c | 506 +++++++++++++++++++++++++++++++++
- 3 files changed, 518 insertions(+)
- create mode 100644 drivers/gpu/drm/tiny/pcd8544.c
 
-diff --git a/drivers/gpu/drm/tiny/Kconfig b/drivers/gpu/drm/tiny/Kconfig
-index f6889f649bc1..10caa0818253 100644
---- a/drivers/gpu/drm/tiny/Kconfig
-+++ b/drivers/gpu/drm/tiny/Kconfig
-@@ -172,6 +172,17 @@ config TINYDRM_MI0283QT
- 	  DRM driver for the Multi-Inno MI0283QT display panel
- 	  If M is selected the module will be called mi0283qt.
- 
-+config TINYDRM_PCD8544
-+	tristate "DRM support for PCD8544 displays"
-+	depends on DRM && SPI
-+	select DRM_KMS_HELPER
-+	select DRM_GEM_DMA_HELPER
-+	select BACKLIGHT_CLASS_DEVICE
-+	help
-+	  DRM driver for PCD8544 (Nokia 5110/3310) 84x48 LCD displays.
-+
-+	  If M is selected the module will be called pcd8544.
-+
- config TINYDRM_REPAPER
- 	tristate "DRM support for Pervasive Displays RePaper panels (V231)"
- 	depends on DRM && SPI
-diff --git a/drivers/gpu/drm/tiny/Makefile b/drivers/gpu/drm/tiny/Makefile
-index 76dde89a044b..75bc112a02f9 100644
---- a/drivers/gpu/drm/tiny/Makefile
-+++ b/drivers/gpu/drm/tiny/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_TINYDRM_ILI9225)		+= ili9225.o
- obj-$(CONFIG_TINYDRM_ILI9341)		+= ili9341.o
- obj-$(CONFIG_TINYDRM_ILI9486)		+= ili9486.o
- obj-$(CONFIG_TINYDRM_MI0283QT)		+= mi0283qt.o
-+obj-$(CONFIG_TINYDRM_PCD8544)		+= pcd8544.o
- obj-$(CONFIG_TINYDRM_REPAPER)		+= repaper.o
- obj-$(CONFIG_TINYDRM_ST7586)		+= st7586.o
- obj-$(CONFIG_TINYDRM_ST7735R)		+= st7735r.o
-diff --git a/drivers/gpu/drm/tiny/pcd8544.c b/drivers/gpu/drm/tiny/pcd8544.c
-new file mode 100644
-index 000000000000..73958b302a36
---- /dev/null
-+++ b/drivers/gpu/drm/tiny/pcd8544.c
-@@ -0,0 +1,506 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * DRM driver for Philips PCD8544 LCD controller/driver.
-+ * Compatible with Nokia 5110/3310 84x48 LCD displays.
-+ *
-+ * Copyright 2023 Viktar Simanenka <viteosen@gmail.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/property.h>
-+#include <linux/spi/spi.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_damage_helper.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_fb_dma_helper.h>
-+#include <drm/drm_fb_helper.h>
-+#include <drm/drm_fbdev_generic.h>
-+#include <drm/drm_format_helper.h>
-+#include <drm/drm_framebuffer.h>
-+#include <drm/drm_gem_atomic_helper.h>
-+#include <drm/drm_gem_dma_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
-+#include <drm/drm_managed.h>
-+#include <drm/drm_probe_helper.h>
-+#include <drm/drm_rect.h>
-+#include <drm/drm_simple_kms_helper.h>
-+
-+/*
-+ * The display is monochrome, every bit in buffer is a pixel.
-+ * Display RAM divided into 6 banks along y-axis, each bank 84 bytes along x-axis.
-+ * Driver uses horizontal addressing.
-+ */
-+
-+#define PCD8544_FUNCTIONSET     0x20
-+#define PCD8544_DISPLAYCONTROL  0x08
-+#define PCD8544_SETYADDR        0x40
-+#define PCD8544_SETXADDR        0x80
-+#define PCD8544_SETBIAS         0x10
-+#define PCD8544_SETTEMPCOEF     0x04
-+#define PCD8544_SETVOP          0x80
-+
-+#define PCD8544_EXTENDED_INSTRUCTION    0x01
-+#define PCD8544_VERTICAL_ADDRESSING     0x02
-+#define PCD8544_DISPLAYNORMAL       0x04
-+#define PCD8544_DISPLAYINVERTED     0x05
-+
-+struct pcd8544_device {
-+	struct drm_device drm;
-+	struct drm_simple_display_pipe pipe;
-+	struct drm_connector connector;
-+	struct drm_display_mode mode;
-+	struct spi_device *spi;
-+
-+	u32 width;
-+	u32 height;
-+	u8 *tx_buf; // Buffer used for transfer
-+	size_t tx_buflen;
-+
-+	struct backlight_device *backlight;
-+	struct gpio_desc *reset;
-+	struct gpio_desc *dc;
-+
-+	u32 inverted;
-+	u32 temperature_coeff;
-+	u32 bias;
-+	u32 voltage_op;
-+};
-+
-+MODULE_PARM_DESC(inverted, "Invert display colors: 1 - enable, 0 - disable");
-+MODULE_PARM_DESC(voltage_op, "Vop[6:0] LCD voltage operation coefficient: 0-127 (default: 0)");
-+MODULE_PARM_DESC(temperature_coeff, "TC[1:0] Temperature compensation coefficient: 0-3 (default: 0)");
-+MODULE_PARM_DESC(bias, "BS[2:0] Bias system coefficient: 0-7 (default: 4)");
-+
-+#define drm_to_dev(__dev) container_of(__dev, struct pcd8544_device, drm)
-+
-+static int pcd8544_spi_transfer(struct spi_device *spi, const void *buf, size_t len)
-+{
-+	size_t max_chunk = spi_max_transfer_size(spi);
-+	struct spi_transfer tr = {
-+		.bits_per_word = 8,
-+		.speed_hz = 0,
-+	};
-+	struct spi_message m;
-+	size_t chunk;
-+	int ret;
-+
-+	max_chunk = ALIGN_DOWN(max_chunk, 2);
-+
-+	spi_message_init_with_transfers(&m, &tr, 1);
-+
-+	while (len) {
-+		chunk = min(len, max_chunk);
-+
-+		tr.tx_buf = buf;
-+		tr.len = chunk;
-+		buf += chunk;
-+		len -= chunk;
-+
-+		ret = spi_sync(spi, &m);
-+		if (ret)
-+			return ret;
-+	}
-+	return 0;
-+}
-+
-+static int pcd8544_spi_command(struct pcd8544_device *pcd8544_dev, u8 cmd)
-+{
-+	struct spi_device *spi = pcd8544_dev->spi;
-+
-+	gpiod_set_value_cansleep(pcd8544_dev->dc, 0);
-+
-+	return pcd8544_spi_transfer(spi, &cmd, 1);
-+}
-+
-+static int pcd8544_spi_data(struct pcd8544_device *pcd8544_dev,
-+				const void *tx_buf, size_t len)
-+{
-+	struct spi_device *spi = pcd8544_dev->spi;
-+
-+	gpiod_set_value_cansleep(pcd8544_dev->dc, 1);
-+
-+	return pcd8544_spi_transfer(spi, tx_buf, len);
-+}
-+
-+static void pcd8544_screen_update(struct pcd8544_device *pcd8544_dev,
-+				const u8 *buf, size_t len, u8 addr_x, u8 addr_y)
-+{
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_SETYADDR | addr_y);
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_SETXADDR | addr_x);
-+	pcd8544_spi_data(pcd8544_dev, buf, len);
-+}
-+
-+static int pcd8544_fb_xrgb8888_to_mono(u8 *dst, struct drm_framebuffer *fb,
-+					struct drm_rect *clip)
-+{
-+	struct iosys_map fb_map[DRM_FORMAT_MAX_PLANES];
-+	struct iosys_map fb_data[DRM_FORMAT_MAX_PLANES];
-+	struct iosys_map buf_map;
-+	u8 *buf;
-+	unsigned int width = drm_rect_width(clip);
-+	unsigned int height = drm_rect_height(clip);
-+	unsigned int line_length = DIV_ROUND_UP(width, 8);
-+	unsigned int bank_max = DIV_ROUND_UP(height, 8);
-+	unsigned int x, y, bank;
-+	int ret = 0;
-+
-+	buf = kcalloc(line_length, height, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	buf_map = (struct iosys_map)IOSYS_MAP_INIT_VADDR(buf);
-+
-+	ret = drm_gem_fb_begin_cpu_access(fb, DMA_FROM_DEVICE);
-+	if (ret)
-+		goto out_free;
-+
-+	ret = drm_gem_fb_vmap(fb, fb_map, fb_data);
-+	if (ret)
-+		goto out_end_cpu_access;
-+
-+	drm_fb_xrgb8888_to_mono(&buf_map, &line_length, fb_data, fb, clip);
-+
-+	drm_gem_fb_vunmap(fb, fb_map);
-+
-+	for (bank = 0; bank < bank_max; bank++) {
-+		for (x = 0; x < width; x++) {
-+			u8 data = 0;
-+
-+			for (y = 0; y < 8; y++) {
-+				u8 byte = buf[(8 * bank + y) * line_length + x / 8];
-+				u8 bit = (byte >> (x % 8)) & 1;
-+
-+				data |= bit << y;
-+			}
-+			*dst++ = data;
-+		}
-+	}
-+
-+out_end_cpu_access:
-+	drm_gem_fb_end_cpu_access(fb, DMA_FROM_DEVICE);
-+out_free:
-+	kfree(buf);
-+
-+	return ret;
-+}
-+
-+static void pcd8544_fb_dirty(struct drm_framebuffer *fb, struct drm_rect *rect)
-+{
-+	struct pcd8544_device *pcd8544_dev = drm_to_dev(fb->dev);
-+	int idx, ret = 0;
-+
-+	if (!drm_dev_enter(fb->dev, &idx))
-+		return;
-+
-+	/* Align rect y to display bank boundaries */
-+	rect->y1 = round_down(rect->y1, 8);
-+	rect->y2 = min_t(unsigned int, round_up(rect->y2, 8), pcd8544_dev->width);
-+
-+	ret = pcd8544_fb_xrgb8888_to_mono(pcd8544_dev->tx_buf, fb, rect);
-+	if (ret)
-+		goto err_msg;
-+
-+	/* if full update */
-+	if (rect->x1 == 0 && rect->x2 == pcd8544_dev->width &&
-+		rect->y1 == 0 && rect->y2 == pcd8544_dev->height) {
-+		pcd8544_screen_update(pcd8544_dev, pcd8544_dev->tx_buf, pcd8544_dev->tx_buflen, 0, 0);
-+	} else {
-+		u32 rect_width = drm_rect_width(rect);
-+		u32 bank_min = rect->y1 / 8;
-+		u32 bank_max = rect->y2 / 8;
-+
-+		for (u32 bank = bank_min; bank <= bank_max; bank++)
-+			pcd8544_screen_update(pcd8544_dev, &pcd8544_dev->tx_buf[rect_width * (bank - bank_min)],
-+						rect_width, rect->x1, bank);
-+	}
-+
-+err_msg:
-+	if (ret)
-+		dev_err_once(fb->dev->dev, "Failed to update display %d\n", ret);
-+
-+	drm_dev_exit(idx);
-+}
-+
-+static enum drm_mode_status pcd8544_pipe_mode_valid(struct drm_simple_display_pipe *pipe,
-+							const struct drm_display_mode *mode)
-+{
-+	struct drm_crtc *crtc = &pipe->crtc;
-+	struct pcd8544_device *pcd8544_dev = drm_to_dev(crtc->dev);
-+
-+	return drm_crtc_helper_mode_valid_fixed(crtc, mode, &pcd8544_dev->mode);
-+}
-+
-+static void pcd8544_pipe_enable(struct drm_simple_display_pipe *pipe,
-+				struct drm_crtc_state *crtc_state,
-+				struct drm_plane_state *plane_state)
-+{
-+	struct pcd8544_device *pcd8544_dev = drm_to_dev(pipe->crtc.dev);
-+	struct drm_framebuffer *fb = plane_state->fb;
-+	struct drm_rect rect = {
-+		.x1 = 0,
-+		.x2 = fb->width,
-+		.y1 = 0,
-+		.y2 = fb->height,
-+	};
-+	int idx;
-+
-+	if (!drm_dev_enter(pipe->crtc.dev, &idx))
-+		return;
-+
-+	drm_dbg(pipe->crtc.dev, "\n");
-+
-+	/* Reset display */
-+	gpiod_set_value_cansleep(pcd8544_dev->reset, 0);
-+	usleep_range(20, 1000);
-+	gpiod_set_value_cansleep(pcd8544_dev->reset, 1);
-+	msleep(120);
-+
-+	/* Init */
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_FUNCTIONSET | PCD8544_EXTENDED_INSTRUCTION);
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_SETBIAS | (pcd8544_dev->bias & 0x7));
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_SETTEMPCOEF | (pcd8544_dev->temperature_coeff & 0x3));
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_SETVOP | (pcd8544_dev->voltage_op & 0x7F));
-+	pcd8544_spi_command(pcd8544_dev, PCD8544_FUNCTIONSET);
-+	if (pcd8544_dev->inverted)
-+		pcd8544_spi_command(pcd8544_dev, PCD8544_DISPLAYCONTROL | PCD8544_DISPLAYINVERTED);
-+	else
-+		pcd8544_spi_command(pcd8544_dev, PCD8544_DISPLAYCONTROL | PCD8544_DISPLAYNORMAL);
-+
-+	pcd8544_fb_dirty(fb, &rect);
-+
-+	drm_dev_exit(idx);
-+}
-+
-+static void pcd8544_pipe_disable(struct drm_simple_display_pipe *pipe)
-+{
-+	struct pcd8544_device *pcd8544_dev = drm_to_dev(pipe->crtc.dev);
-+
-+	drm_dbg(pipe->crtc.dev, "\n");
-+
-+	/* Clear screen */
-+	memset(pcd8544_dev->tx_buf, 0, pcd8544_dev->tx_buflen);
-+	pcd8544_screen_update(pcd8544_dev, pcd8544_dev->tx_buf, pcd8544_dev->tx_buflen, 0, 0);
-+
-+	if (pcd8544_dev->backlight)
-+		backlight_disable(pcd8544_dev->backlight);
-+}
-+
-+static void pcd8544_pipe_update(struct drm_simple_display_pipe *pipe,
-+				struct drm_plane_state *old_state)
-+{
-+	struct drm_plane_state *state = pipe->plane.state;
-+	struct drm_rect rect;
-+
-+	if (!pipe->crtc.state->active)
-+		return;
-+
-+	if (drm_atomic_helper_damage_merged(old_state, state, &rect))
-+		pcd8544_fb_dirty(state->fb, &rect);
-+}
-+
-+static const struct drm_simple_display_pipe_funcs pcd8544_pipe_funcs = {
-+	.mode_valid = pcd8544_pipe_mode_valid,
-+	.enable		= pcd8544_pipe_enable,
-+	.disable	= pcd8544_pipe_disable,
-+	.update		= pcd8544_pipe_update,
-+};
-+
-+DEFINE_DRM_GEM_DMA_FOPS(pcd8544_fops);
-+
-+static int pcd8544_connector_get_modes(struct drm_connector *connector)
-+{
-+	struct pcd8544_device *pcd8544_dev = drm_to_dev(connector->dev);
-+
-+	return drm_connector_helper_get_modes_fixed(connector, &pcd8544_dev->mode);
-+}
-+
-+static const struct drm_connector_helper_funcs pcd8544_connector_hfuncs = {
-+	.get_modes = pcd8544_connector_get_modes,
-+};
-+
-+static const struct drm_connector_funcs pcd8544_connector_funcs = {
-+	.reset = drm_atomic_helper_connector_reset,
-+	.fill_modes = drm_helper_probe_single_connector_modes,
-+	.destroy = drm_connector_cleanup,
-+	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-+};
-+
-+static const struct drm_mode_config_funcs pcd8544_mode_config_funcs = {
-+	.fb_create = drm_gem_fb_create_with_dirty,
-+	.atomic_check = drm_atomic_helper_check,
-+	.atomic_commit = drm_atomic_helper_commit,
-+};
-+
-+static int __maybe_unused pcd8544_pm_suspend(struct device *dev)
-+{
-+	return drm_mode_config_helper_suspend(dev_get_drvdata(dev));
-+}
-+
-+static int __maybe_unused pcd8544_pm_resume(struct device *dev)
-+{
-+	drm_mode_config_helper_resume(dev_get_drvdata(dev));
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops pcd8544_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(pcd8544_pm_suspend, pcd8544_pm_resume)
-+};
-+
-+static const struct drm_driver pcd8544_driver = {
-+	.driver_features = DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
-+	.fops			= &pcd8544_fops,
-+	DRM_GEM_DMA_DRIVER_OPS_VMAP,
-+	.name			= "pcd8544",
-+	.desc			= "Philips PCD8544",
-+	.date			= "20230701",
-+	.major			= 1,
-+	.minor			= 0,
-+};
-+
-+static const uint32_t pcd8544_formats[] = {
-+	DRM_FORMAT_XRGB8888,
-+};
-+
-+static struct drm_display_mode pcd8544_mode = {
-+	DRM_SIMPLE_MODE(84, 48, 35, 28),
-+};
-+
-+static const struct of_device_id pcd8544_of_match[] = {
-+	{ .compatible = "nxp,pcd8544" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pcd8544_of_match);
-+
-+static const struct spi_device_id pcd8544_id[] = {
-+	{ "pcd8544", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(spi, pcd8544_id);
-+
-+static int pcd8544_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct pcd8544_device *pcd8544_dev;
-+	struct drm_device *drm;
-+	int ret;
-+	static const uint64_t modifiers[] = {
-+		DRM_FORMAT_MOD_LINEAR,
-+		DRM_FORMAT_MOD_INVALID
-+	};
-+
-+	pcd8544_dev = devm_drm_dev_alloc(dev, &pcd8544_driver, struct pcd8544_device, drm);
-+	if (IS_ERR(pcd8544_dev))
-+		return PTR_ERR(pcd8544_dev);
-+
-+	pcd8544_dev->spi = spi;
-+
-+	pcd8544_dev->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(pcd8544_dev->reset))
-+		return dev_err_probe(dev, PTR_ERR(pcd8544_dev->reset), "Failed to get GPIO 'reset'\n");
-+
-+	pcd8544_dev->dc = devm_gpiod_get(dev, "dc", GPIOD_OUT_LOW);
-+	if (IS_ERR(pcd8544_dev->dc))
-+		return dev_err_probe(dev, PTR_ERR(pcd8544_dev->dc), "Failed to get GPIO 'dc'\n");
-+
-+	pcd8544_dev->backlight = devm_of_find_backlight(dev);
-+	if (IS_ERR(pcd8544_dev->backlight))
-+		return PTR_ERR(pcd8544_dev->backlight);
-+
-+	pcd8544_dev->inverted = device_property_read_bool(dev, "nxp,inverted");
-+	if (device_property_read_u32(dev, "nxp,temperature-coeff", &pcd8544_dev->temperature_coeff))
-+		pcd8544_dev->temperature_coeff = 0;
-+	if (device_property_read_u32(dev, "nxp,bias", &pcd8544_dev->bias))
-+		pcd8544_dev->bias = 4;
-+	if (device_property_read_u32(dev, "nxp,voltage-op", &pcd8544_dev->voltage_op))
-+		pcd8544_dev->voltage_op = 0;
-+
-+	if (!dev->coherent_dma_mask) {
-+		ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+		if (ret) {
-+			dev_warn(dev, "Failed to set dma mask %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	drm_mode_copy(&pcd8544_dev->mode, &pcd8544_mode);
-+	pcd8544_dev->width = pcd8544_mode.hdisplay;
-+	pcd8544_dev->height = pcd8544_mode.vdisplay;
-+	pcd8544_dev->tx_buflen = pcd8544_dev->width * DIV_ROUND_UP(pcd8544_dev->height, 8);
-+	pcd8544_dev->tx_buf = devm_kzalloc(dev, pcd8544_dev->tx_buflen, GFP_KERNEL);
-+	if (!pcd8544_dev->tx_buf)
-+		return -ENOMEM;
-+
-+	drm = &pcd8544_dev->drm;
-+	ret = drmm_mode_config_init(drm);
-+	if (ret)
-+		return ret;
-+
-+	drm_connector_helper_add(&pcd8544_dev->connector, &pcd8544_connector_hfuncs);
-+	ret = drm_connector_init(drm, &pcd8544_dev->connector, &pcd8544_connector_funcs, DRM_MODE_CONNECTOR_SPI);
-+	if (ret)
-+		return ret;
-+
-+	drm->mode_config.funcs = &pcd8544_mode_config_funcs;
-+	drm->mode_config.min_width = pcd8544_dev->mode.hdisplay;
-+	drm->mode_config.max_width = pcd8544_dev->mode.hdisplay;
-+	drm->mode_config.min_height = pcd8544_dev->mode.vdisplay;
-+	drm->mode_config.max_height = pcd8544_dev->mode.vdisplay;
-+
-+	ret = drm_simple_display_pipe_init(drm, &pcd8544_dev->pipe, &pcd8544_pipe_funcs,
-+					pcd8544_formats, ARRAY_SIZE(pcd8544_formats),
-+					modifiers, &pcd8544_dev->connector);
-+	if (ret)
-+		return ret;
-+
-+	drm_plane_enable_fb_damage_clips(&pcd8544_dev->pipe.plane);
-+
-+	spi_set_drvdata(spi, drm);
-+
-+	drm_mode_config_reset(drm);
-+
-+	ret = drm_dev_register(drm, 0);
-+	if (ret)
-+		return ret;
-+
-+	drm_dbg(drm, "SPI speed: %uMHz\n", spi->max_speed_hz / 1000000);
-+
-+	drm_fbdev_generic_setup(drm, 0);
-+
-+	return 0;
-+}
-+
-+static void pcd8544_remove(struct spi_device *spi)
-+{
-+	struct drm_device *drm = spi_get_drvdata(spi);
-+
-+	drm_dev_unplug(drm);
-+	drm_atomic_helper_shutdown(drm);
-+}
-+
-+static void pcd8544_shutdown(struct spi_device *spi)
-+{
-+	drm_atomic_helper_shutdown(spi_get_drvdata(spi));
-+}
-+
-+static struct spi_driver pcd8544_spi_driver = {
-+	.driver = {
-+		.name = "pcd8544",
-+		.owner = THIS_MODULE,
-+		.of_match_table = pcd8544_of_match,
-+		.pm = &pcd8544_pm_ops,
-+	},
-+	.id_table = pcd8544_id,
-+	.probe = pcd8544_probe,
-+	.remove = pcd8544_remove,
-+	.shutdown = pcd8544_shutdown,
-+};
-+module_spi_driver(pcd8544_spi_driver);
-+
-+MODULE_DESCRIPTION("Philips PCD8544 DRM driver");
-+MODULE_AUTHOR("Viktar Simanenka <viteosen@gmail.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
+On 7/20/23 11:26, Brent Lu wrote:
+> Implement a helper function to get number of codecs from ACPI
+> subsystem to remove the need of quirk flag in machine driver.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>  sound/soc/intel/boards/sof_maxim_common.c | 174 +++++++++++++---------
+>  sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+>  2 files changed, 113 insertions(+), 82 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+> index 112e89951da0..f8b44a81fec1 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.c
+> +++ b/sound/soc/intel/boards/sof_maxim_common.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+>  #include <sound/soc-acpi.h>
+>  #include <sound/soc-dai.h>
+> @@ -11,6 +12,21 @@
+>  #include <uapi/sound/asound.h>
+>  #include "sof_maxim_common.h"
+>  
+> +/* helper function to get the number of specific codec */
+> +static int get_num_codecs(const char *hid)
+> +{
+> +	struct acpi_device *adev = NULL;
+> +	int dev_num = 0;
+> +
+> +	do {
+> +		adev = acpi_dev_get_next_match_dev(adev, hid, NULL, -1);
 
+Humm, I am a bit worried about reference counts.
+
+See
+https://elixir.bootlin.com/linux/latest/source/drivers/acpi/utils.c#L916,
+it's not clear to me where the get() is done.
+
+Adding Andy to make sure this is done right.
+
+> +		if (adev)
+> +			dev_num++;
+> +	} while (adev != NULL);
+> +
+> +	return dev_num;
+> +}
