@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F28075EF40
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060F575EF44
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjGXJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        id S230459AbjGXJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGXJiY (ORCPT
+        with ESMTP id S229495AbjGXJkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:38:24 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD7C1A1;
-        Mon, 24 Jul 2023 02:38:23 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qNs1C-0005Vz-5L; Mon, 24 Jul 2023 11:38:18 +0200
-Message-ID: <d452d228-9d62-1511-5d87-dc9bd84d0cda@leemhuis.info>
-Date:   Mon, 24 Jul 2023 11:38:17 +0200
+        Mon, 24 Jul 2023 05:40:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B421A5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:40:18 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qNs2n-0007xi-CP; Mon, 24 Jul 2023 11:39:57 +0200
+Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qNs2j-0000XN-1d; Mon, 24 Jul 2023 11:39:53 +0200
+Date:   Mon, 24 Jul 2023 11:39:53 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v4 1/3] dt-bindings: net: snps,dwmac: add
+ phy-supply support
+Message-ID: <20230724093953.h7vs6gzrpk3ieznv@pengutronix.de>
+References: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+ <20230721142433.GA1012219-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
-Content-Language: en-US, de-DE
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <cover.1679566220.git.lstoakes@gmail.com>
- <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
- <ZHc2fm+9daF6cgCE@krava>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <ZHc2fm+9daF6cgCE@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690191503;cd776fae;
-X-HE-SMSGID: 1qNs1C-0005Vz-5L
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721142433.GA1012219-robh@kernel.org>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CCing the regression list, as it should be in the loop for regressions:
-https://docs.kernel.org/admin-guide/reporting-regressions.html]
+Hi Rob,
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
-
-On 31.05.23 13:58, Jiri Olsa wrote:
-> On Thu, Mar 23, 2023 at 10:15:16AM +0000, Lorenzo Stoakes wrote:
->> Commit df04abfd181a ("fs/proc/kcore.c: Add bounce buffer for ktext data")
->> introduced the use of a bounce buffer to retrieve kernel text data for
->> /proc/kcore in order to avoid failures arising from hardened user copies
->> enabled by CONFIG_HARDENED_USERCOPY in check_kernel_text_object().
->> [...]
->> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
+On 23-07-21, Rob Herring wrote:
+> On Fri, Jul 21, 2023 at 01:03:43PM +0200, Marco Felsch wrote:
+> > Document the common phy-supply property to be able to specify a phy
+> > regulator.
 > 
-> sorry for late feedback, but looks like this one breaks reading
-> /proc/kcore with objdump for me:
+> What common property? I don't see any such property in 
+> ethernet-controller.yaml.
+
+Not in ethernet-controller.yaml but there are at least a few user of
+this binding:
+ - allwinner,sun4i-a10-mdio.yaml
+ - allwinner,sun7i-a20-gmac.yaml
+ - allwinner,sun8i-a83t-emac.yaml
+ - fsl,fec.yaml
+ - rockchip-dwmac.yaml
+ - rockchip,emac.yaml
+
+Also there is no <vendor>,phy-supply nor <ip-vendor>,phy-supply,
+therefore I thought this is common.
+
+> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> > Changelog:
+> > v4:
+> > - no changes
+> > v3:
+> > - no changes
+> > v2
+> > - add ack-by
+> > 
+> >  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > index ddf9522a5dc23..847ecb82b37ee 100644
+> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > @@ -160,6 +160,9 @@ properties:
+> >        can be passive (no SW requirement), and requires that the MAC operate
+> >        in a different mode than the PHY in order to function.
+> >  
+> > +  phy-supply:
+> > +    description: PHY regulator
 > 
->   # cat /proc/kallsyms | grep ksys_read
->   ffffffff8150ebc0 T ksys_read
->   # objdump -d  --start-address=0xffffffff8150ebc0 --stop-address=0xffffffff8150ebd0 /proc/kcore 
-> 
->   /proc/kcore:     file format elf64-x86-64
-> 
->   objdump: Reading section load1 failed because: Bad address
-> 
-> reverting this makes it work again
+> Is this for an serdes, sgmii, etc. type phy or ethernet phy? Either way, 
+> this property belongs in the PHY's node because it is the PHY that has 
+> supply connection. I'm guessing you put this here for the latter case 
+> because ethernet PHYs on MDIO are "discoverable" except for the small 
+> problem that powering them on is not discoverable. 
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+All kind of ethernet phys connected to you etherent MAC which need to be
+power controlled by software. You're right this sould belong to the PHY
+node (as Krzysztof already mentioned) but this isn't the case yet. As
+you can see there are at least 6 user of the exact same binding.
 
-#regzbot ^introduced 2e1c017077
-#regzbot title mm / fs/proc/kcore: reading /proc/kcore with objdump broke
-#regzbot ignore-activity
-
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
-
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Regards,
+  Marco
