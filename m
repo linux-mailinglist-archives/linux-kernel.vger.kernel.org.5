@@ -2,191 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FC175EEA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7354B75EEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbjGXJFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58428 "EHLO
+        id S232084AbjGXJGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjGXJFs (ORCPT
+        with ESMTP id S232063AbjGXJFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:05:48 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BB1187;
-        Mon, 24 Jul 2023 02:05:45 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DA42BC0005;
-        Mon, 24 Jul 2023 09:05:40 +0000 (UTC)
-Message-ID: <292abea1-59b7-13d4-0b27-ac00f7e7f20e@ghiti.fr>
-Date:   Mon, 24 Jul 2023 11:05:40 +0200
+        Mon, 24 Jul 2023 05:05:54 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89331E52
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:05:50 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-991da766865so708503566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690189549; x=1690794349;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0qBTrjnoLMPhI5YTQA6DVRtgSqXnXbNpJNoKVH85RHE=;
+        b=UfKiaBvDzfuRZfFZTzzjwQ3j8D4qXCeEqovTw+BFdwYYQsQ/bSd8SpMCg5KI3NtoHS
+         no3tx7bqUwjQ+k4qHHUw/417iFuUB/B+xWSWNVjmbSf86DtlLGazVtPiJMawJFgcp5jV
+         +C57nto4QTHFYrfpsHWa3EU5oM9qVMJEl887lRC9fHKW810esRi8c2Yq3CLHVR2Qxd+f
+         gScmx6pcJgmHIUw36TFMu3kBRfJ6y6vACqhqeBTi/EHVKce25sACNqBTr7ZEOp/EYn4d
+         Ou1Hh2LAzkpZw/Q3pY//h0NzynXaX6ni7zSeX76J7XlRi/r3aIqucul4f4Wufhp9P01N
+         obwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690189549; x=1690794349;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0qBTrjnoLMPhI5YTQA6DVRtgSqXnXbNpJNoKVH85RHE=;
+        b=jWyoUBkkuR1QN2qJNHwS2EEV21kP0nBJ8wQ5SuRnx8D4QIennHlz2Ih97zN9xuBkRS
+         RPsjLgaPULDgMHDvKlKNBEvHk+9baxR5PabPB3IbkUwNQXKweOQXP6dUe+w7xl5s72N7
+         YjaV2BliQ3Lp84VQoWdBvKXyWM79zvT1jKp6dI53+vQcyElfdqpZ17pPl0CL5r3/kRr7
+         N8xyY1hWO2hrgeV4hj3Hw7iGF37PsydfzebP5DhXBU4nWS8bh75ACFqA9v7PyPrm0mk9
+         rcdSN7bn4lwUcatCwu4rdtOO4qD43kTQCN7gPepauOgw62diddFa4kkiAtBPJUV3/YGP
+         qLig==
+X-Gm-Message-State: ABy/qLYAMc2KBx/GRb0s8xlqrb/nqt33/HJJ83r9KZFuwgO4rG3D7KIG
+        G+8z2JJcBAx1QEMmmo9+3VrPdQ==
+X-Google-Smtp-Source: APBJJlGEaeQNWfy5PFWso8e07aTFyy4J/IEQjoHP1CCmOgc32EJRFyrwx6VuXaTiMbcq/GqEflFuPQ==
+X-Received: by 2002:a17:906:5a4e:b0:99b:4f06:492e with SMTP id my14-20020a1709065a4e00b0099b4f06492emr10205331ejc.64.1690189548870;
+        Mon, 24 Jul 2023 02:05:48 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b009929ab17bdfsm6406085eja.168.2023.07.24.02.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 02:05:48 -0700 (PDT)
+Message-ID: <c52ee94f-f60b-f8f0-f93c-221beec0224a@linaro.org>
+Date:   Mon, 24 Jul 2023 11:05:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] riscv: mm: Fixup spurious fault of kernel vaddr
+Subject: Re: [PATCH 09/11] dt-bindings: arm: msm: kpss-acc: Make the optional
+ reg truly optional
 Content-Language: en-US
-To:     Guo Ren <guoren@kernel.org>
-Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, falcon@tinylab.org,
-        bjorn@kernel.org, conor.dooley@microchip.com,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-References: <20230721145121.1854104-1-guoren@kernel.org>
- <5e5be2d4-c563-6beb-b5f5-df47edeebc83@ghiti.fr>
- <CAJF2gTQMAVUtC6_ftEwp=EeYR_O7yzfGYmxwrqcO6+hn2J32bA@mail.gmail.com>
- <87bfcd33-9741-4d6c-8b7a-1d1ee2dce61b@ghiti.fr>
- <CAJF2gTT8JV5f4Fm1F-XgfAhNWNXJquVW8-uCK-b4Qy0xztrGLA@mail.gmail.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <CAJF2gTT8JV5f4Fm1F-XgfAhNWNXJquVW8-uCK-b4Qy0xztrGLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Benjamin Li <benl@squareup.com>,
+        James Willcox <jwillcox@squareup.com>,
+        Joseph Gates <jgates@squareup.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Zac Crosby <zac@squareup.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Xu Yang <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Jun Nie <jun.nie@linaro.org>, Max Chen <mchen@squareup.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        alsa-devel@alsa-project.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Andy Gross <andy.gross@linaro.org>
+References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+ <20230627-topic-more_bindings-v1-9-6b4b6cd081e5@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230627-topic-more_bindings-v1-9-6b4b6cd081e5@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/06/2023 18:24, Konrad Dybcio wrote:
+> The description of reg[1] says that register is optional. Adjust
+> minItems to make it truly optional.
+> 
+> Fixes: 12f40018b6a9 ("dt-bindings: arm: msm: Convert kpss-acc driver Documentation to yaml")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
 
-On 22/07/2023 01:59, Guo Ren wrote:
-> On Fri, Jul 21, 2023 at 4:01 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>
->> On 21/07/2023 18:08, Guo Ren wrote:
->>> On Fri, Jul 21, 2023 at 11:19 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>> On 21/07/2023 16:51, guoren@kernel.org wrote:
->>>>> From: Guo Ren <guoren@linux.alibaba.com>
->>>>>
->>>>> RISC-V specification permits the caching of PTEs whose V (Valid)
->>>>> bit is clear. Operating systems must be written to cope with this
->>>>> possibility, but implementers are reminded that eagerly caching
->>>>> invalid PTEs will reduce performance by causing additional page
->>>>> faults.
->>>>>
->>>>> So we must keep vmalloc_fault for the spurious page faults of kernel
->>>>> virtual address from an OoO machine.
->>>>>
->>>>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->>>>> Signed-off-by: Guo Ren <guoren@kernel.org>
->>>>> ---
->>>>>     arch/riscv/mm/fault.c | 3 +--
->>>>>     1 file changed, 1 insertion(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
->>>>> index 85165fe438d8..f662c9eae7d4 100644
->>>>> --- a/arch/riscv/mm/fault.c
->>>>> +++ b/arch/riscv/mm/fault.c
->>>>> @@ -258,8 +258,7 @@ void handle_page_fault(struct pt_regs *regs)
->>>>>          * only copy the information from the master page table,
->>>>>          * nothing more.
->>>>>          */
->>>>> -     if ((!IS_ENABLED(CONFIG_MMU) || !IS_ENABLED(CONFIG_64BIT)) &&
->>>>> -         unlikely(addr >= VMALLOC_START && addr < VMALLOC_END)) {
->>>>> +     if (unlikely(addr >= TASK_SIZE)) {
->>>>>                 vmalloc_fault(regs, code, addr);
->>>>>                 return;
->>>>>         }
->>>> Can you share what you are trying to fix here?
->>> We met a spurious page fault panic on an OoO machine.
->>>
->>> 1. The processor speculative execution brings the V=0 entries into the
->>> TLB in the kernel virtual address.
->>> 2. Linux kernel installs the kernel virtual address with the page, and V=1
->>> 3. When kernel code access the kernel virtual address, it would raise
->>> a page fault as the V=0 entry in the tlb.
->>> 4. No vmalloc_fault, then panic.
->>>
->>>> I have a fix (that's currently running our CI) for commit 7d3332be011e
->>>> ("riscv: mm: Pre-allocate PGD entries for vmalloc/modules area") that
->>>> implements flush_cache_vmap() since we lost the vmalloc_fault.
->>> Could you share that patch?
->>
->> Here we go:
->>
->>
->> Author: Alexandre Ghiti <alexghiti@rivosinc.com>
->> Date:   Fri Jul 21 08:43:44 2023 +0000
->>
->>       riscv: Implement flush_cache_vmap()
->>
->>       The RISC-V kernel needs a sfence.vma after a page table
->> modification: we
->>       used to rely on the vmalloc fault handling to emit an sfence.vma, but
->>       commit 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
->>       vmalloc/modules area") got rid of this path for 64-bit kernels, so
->> now we
->>       need to explicitly emit a sfence.vma in flush_cache_vmap().
->>
->>       Note that we don't need to implement flush_cache_vunmap() as the
->> generic
->>       code should emit a flush tlb after unmapping a vmalloc region.
->>
->>       Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
->> vmalloc/modules area")
->>       Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
->>
->> diff --git a/arch/riscv/include/asm/cacheflush.h
->> b/arch/riscv/include/asm/cacheflush.h
->> index 8091b8bf4883..b93ffddf8a61 100644
->> --- a/arch/riscv/include/asm/cacheflush.h
->> +++ b/arch/riscv/include/asm/cacheflush.h
->> @@ -37,6 +37,10 @@ static inline void flush_dcache_page(struct page *page)
->>    #define flush_icache_user_page(vma, pg, addr, len) \
->>           flush_icache_mm(vma->vm_mm, 0)
->>
->> +#ifdef CONFIG_64BIT
->> +#define flush_cache_vmap(start, end) flush_tlb_kernel_range(start, end)
->> +#endif
-> I don't want that, and flush_tlb_kernel_range is flush_tlb_all. In
-> addition, it would call IPI, which is a performance killer.
+This patch does not make sense. It wasn't also tested. The code
+(minItems) is already there.
 
+Best regards,
+Krzysztof
 
-At the moment, flush_tlb_kernel_range() indeed calls flush_tlb_all() but 
-that needs to be fixed, see my last patchset 
-https://lore.kernel.org/linux-riscv/20230711075434.10936-1-alexghiti@rivosinc.com/.
-
-But can you at least check that this fixes your issue? It would be 
-interesting to see if the problem comes from vmalloc or something else.
-
-
-> What's the problem of spurious fault replay? It only costs a
-> local_tlb_flush with vaddr.
-
-
-We had this exact discussion internally this week, and the fault replay 
-seems like a solution. But that needs to be thought carefully: the 
-vmalloc fault was removed for a reason (see Bjorn commit log), tracing 
-functions can use vmalloc() in the path of the vmalloc fault, causing an 
-infinite trap loop. And here you are simply re-enabling this problem. In 
-addition, this patch makes vmalloc_fault() catch *all* kernel faults in 
-the kernel address space, so any genuine kernel fault would loop forever 
-in vmalloc_fault().
-
-
-For now, the simplest solution is to implement flush_cache_vmap() 
-because riscv needs a sfence.vma when adding a new mapping, and if 
-that's a "performance killer", let's measure that and implement 
-something like this patch is trying to do. I may be wrong, but there 
-aren't many new kernel mappings that would require a call to 
-flush_cache_vmap() so I disagree with the performance killer argument, 
-but happy to be proven otherwise!
-
-Thanks,
-
-Alex
-
-
->
->> +
->>    #ifndef CONFIG_SMP
->>
->>    #define flush_icache_all() local_flush_icache_all()
->>
->>
->> Let me know if that works for you!
->>
->>
->>>
-> --
-> Best Regards
->   Guo Ren
