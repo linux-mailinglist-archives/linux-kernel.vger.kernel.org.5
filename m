@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEAD75FCF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F7175FCF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjGXRM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
+        id S230335AbjGXRP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbjGXRMZ (ORCPT
+        with ESMTP id S229591AbjGXRP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:12:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C3EA9;
-        Mon, 24 Jul 2023 10:12:24 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20816975;
-        Mon, 24 Jul 2023 19:11:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690218684;
-        bh=odFvO1+QwEIPjybdR26Ls0DIThfTq1TVDS1TIUkBGjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IxbANhLtfZf0v27oPwIhnKyJQqvWjD8DpMSafcvjTIQv1lGz8KMUDnxvW1zqb56ff
-         /Zqrr5501q27hsHOPD6O4vYWVdgMwrC/kSInGnFZAXBr86poGYMZYlHSJwqw6heI3L
-         LRoXrtsZoovhsW21q9WQjVOzcl3E8yKx4lLUBUGk=
-Date:   Mon, 24 Jul 2023 20:12:29 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        petr@tesarici.cz, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
- dma_declare_coherent_memory()
-Message-ID: <20230724171229.GC11977@pendragon.ideasonboard.com>
-References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
+        Mon, 24 Jul 2023 13:15:26 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410B291
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:15:23 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-63d10da0f26so1353716d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690218922; x=1690823722;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WZbFk+J10UfrSL79sLzSpmwWLT2vd0Fn58aGqpzLT8o=;
+        b=1YX+L3Xe0aw2sI4aL9zKBZpgaUsr2Ctra2kvfpc4vm/95W5cBbAqlRMy/pafQG3Xzl
+         qZ0M46rf5pk8owvuPj2Dw9lavv0H6EUwUEzlaBeHzUSiAalhQ7xHxuBfxhc7Uv3UvSbt
+         lWlCz5UixM8IChuz9leknxceOxLi8L+DYFM3/ev+Myw11xmMaZAi086GwgmHK2qMCn4W
+         +8q6jWsQ+anYbABIjhNkOGC7s/Lm3+ACQKF54VA8b0bprRpUUF9HoLSmy09pucbBLtkZ
+         eU6bIGOfY4C3rzFQOsuNU58ZEFv5NiEXEjP08H+L+QKnYVkmIkxC36hkO8yX6msWa3yV
+         gc8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690218922; x=1690823722;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WZbFk+J10UfrSL79sLzSpmwWLT2vd0Fn58aGqpzLT8o=;
+        b=iRGkIOQ8HyPi7180tVrZM0WH9rqr9MPmhGO26BFbaQhZogGaIF3M5JfSJZHzi9hfQf
+         busIWgz6/ZKBoCL4oWwQ3ue6NAsEnGZbF5ERh3labnbFZ9h/CQNQjCP3XHWxkpWttzfa
+         RAIsVtYESRIYMquocxOoXAxeHEMOfhKX6a79eXXwqS69PCWQcbZFhhpepqUFZM6uOlyz
+         lS2eSEvCbjk9YziQha07VI+CdjH4vvJ/cDizwLXTjp9M5xwlQY5hpsixltsW77DVCO+W
+         vo6kAjwofOfCyhX5bqbcqq0ofr7gMmIw5Ggzz5xzql8WKK/IjM2IyrIEM4InXFJUIc5g
+         6IeQ==
+X-Gm-Message-State: ABy/qLbRmjZnxvROvMXuqA/A+4Qx+0Gm/qaRBOJK6ML/bIeRW4Kl14wz
+        LlK6DMqsCLK1ewhZulbHH58E4cLKnnAzr6Q9D+kxFw==
+X-Google-Smtp-Source: APBJJlGuQHP0+90mVT4qcBd9dPz8oFWvD/tzPplwF+p3o6wvZcQTX7zpY+HRYiSDThs0KxIrd2j2Bgyzc1UAIzMCNek=
+X-Received: by 2002:a0c:8dc9:0:b0:63c:f8af:5aa9 with SMTP id
+ u9-20020a0c8dc9000000b0063cf8af5aa9mr384655qvb.26.1690218922055; Mon, 24 Jul
+ 2023 10:15:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <202307211945.TSPcyOhh-lkp@intel.com> <ZLsXAdjFuKLpd3ig@google.com>
+In-Reply-To: <ZLsXAdjFuKLpd3ig@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jul 2023 10:15:11 -0700
+Message-ID: <CAKwvOdm3mg5kHTNYx6ROaY8G0wf6o_OXiPGwkYs9sU+5qqa=WQ@mail.gmail.com>
+Subject: Re: arch/powerpc/kvm/e500mc.c:95:15: error: invalid instruction
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+On Fri, Jul 21, 2023 at 4:38=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Fri, Jul 21, 2023, kernel test robot wrote:
+> > Hi Sean,
+> >
+> > FYI, the error/warning was bisected to this commit, please ignore it if=
+ it's irrelevant.
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
+> > head:   f7e3a1bafdea735050dfde00523cf505dc7fd309
+> > commit: e83ca8cfa286c9fc78b585b0e66df7f542bcbcf2 KVM: PPC: booke: Mark =
+three local functions "static"
+> > date:   4 months ago
+> > config: powerpc-randconfig-r001-20230721 (https://download.01.org/0day-=
+ci/archive/20230721/202307211945.TSPcyOhh-lkp@intel.com/config)
+> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.gi=
+t 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > reproduce: (https://download.01.org/0day-ci/archive/20230721/2023072119=
+45.TSPcyOhh-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202307211945.TSPcyOhh-l=
+kp@intel.com/
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> > >> arch/powerpc/kvm/e500mc.c:95:15: error: invalid instruction
+> >       95 |         asm volatile("tlbilxlpid");
+>
+> I assume this is a binutils bug?  I ran into a similar problem on PPC a w=
+hile
+> back where I couldn't cross-compile even relatively basic PPC code.
+>
 
-Thank you for the patch.
+No, I think that LLVM is perhaps missing support for this instruction
+Filed https://github.com/ClangBuiltLinux/linux/issues/1891 to track this.
 
-On Mon, Jul 24, 2023 at 02:07:42PM +0200, Petr Tesarik wrote:
-> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> 
-> In all these cases, the last argument to dma_declare_coherent_memory() is
-> the buffer end address, but the expected value should be the size of the
-> reserved region.
-> 
-> Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
-> Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
-> Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
-> Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
-> Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")
-> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-
-But given that nobody noticed for 5 years, maybe we should drop
-renesas-ceu support from those boards ? Or drop the boards completely ?
-
-> ---
->  arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
->  arch/sh/boards/mach-ecovec24/setup.c | 6 ++----
->  arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
->  arch/sh/boards/mach-migor/setup.c    | 2 +-
->  arch/sh/boards/mach-se/7724/setup.c  | 6 ++----
->  5 files changed, 7 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-ap325rxa/setup.c
-> index 151792162152..645cccf3da88 100644
-> --- a/arch/sh/boards/mach-ap325rxa/setup.c
-> +++ b/arch/sh/boards/mach-ap325rxa/setup.c
-> @@ -531,7 +531,7 @@ static int __init ap325rxa_devices_setup(void)
->  	device_initialize(&ap325rxa_ceu_device.dev);
->  	dma_declare_coherent_memory(&ap325rxa_ceu_device.dev,
->  			ceu_dma_membase, ceu_dma_membase,
-> -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
-> +			CEU_BUFFER_MEMORY_SIZE);
->  
->  	platform_device_add(&ap325rxa_ceu_device);
->  
-> diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
-> index 674da7ebd8b7..7ec03d4a4edf 100644
-> --- a/arch/sh/boards/mach-ecovec24/setup.c
-> +++ b/arch/sh/boards/mach-ecovec24/setup.c
-> @@ -1454,15 +1454,13 @@ static int __init arch_setup(void)
->  	device_initialize(&ecovec_ceu_devices[0]->dev);
->  	dma_declare_coherent_memory(&ecovec_ceu_devices[0]->dev,
->  				    ceu0_dma_membase, ceu0_dma_membase,
-> -				    ceu0_dma_membase +
-> -				    CEU_BUFFER_MEMORY_SIZE - 1);
-> +				    CEU_BUFFER_MEMORY_SIZE);
->  	platform_device_add(ecovec_ceu_devices[0]);
->  
->  	device_initialize(&ecovec_ceu_devices[1]->dev);
->  	dma_declare_coherent_memory(&ecovec_ceu_devices[1]->dev,
->  				    ceu1_dma_membase, ceu1_dma_membase,
-> -				    ceu1_dma_membase +
-> -				    CEU_BUFFER_MEMORY_SIZE - 1);
-> +				    CEU_BUFFER_MEMORY_SIZE);
->  	platform_device_add(ecovec_ceu_devices[1]);
->  
->  	gpiod_add_lookup_table(&cn12_power_gpiod_table);
-> diff --git a/arch/sh/boards/mach-kfr2r09/setup.c b/arch/sh/boards/mach-kfr2r09/setup.c
-> index 20f4db778ed6..c6d556dfbbbe 100644
-> --- a/arch/sh/boards/mach-kfr2r09/setup.c
-> +++ b/arch/sh/boards/mach-kfr2r09/setup.c
-> @@ -603,7 +603,7 @@ static int __init kfr2r09_devices_setup(void)
->  	device_initialize(&kfr2r09_ceu_device.dev);
->  	dma_declare_coherent_memory(&kfr2r09_ceu_device.dev,
->  			ceu_dma_membase, ceu_dma_membase,
-> -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
-> +			CEU_BUFFER_MEMORY_SIZE);
->  
->  	platform_device_add(&kfr2r09_ceu_device);
->  
-> diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
-> index f60061283c48..773ee767d0c4 100644
-> --- a/arch/sh/boards/mach-migor/setup.c
-> +++ b/arch/sh/boards/mach-migor/setup.c
-> @@ -604,7 +604,7 @@ static int __init migor_devices_setup(void)
->  	device_initialize(&migor_ceu_device.dev);
->  	dma_declare_coherent_memory(&migor_ceu_device.dev,
->  			ceu_dma_membase, ceu_dma_membase,
-> -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
-> +			CEU_BUFFER_MEMORY_SIZE);
->  
->  	platform_device_add(&migor_ceu_device);
->  
-> diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
-> index b60a2626e18b..6495f9354065 100644
-> --- a/arch/sh/boards/mach-se/7724/setup.c
-> +++ b/arch/sh/boards/mach-se/7724/setup.c
-> @@ -940,15 +940,13 @@ static int __init devices_setup(void)
->  	device_initialize(&ms7724se_ceu_devices[0]->dev);
->  	dma_declare_coherent_memory(&ms7724se_ceu_devices[0]->dev,
->  				    ceu0_dma_membase, ceu0_dma_membase,
-> -				    ceu0_dma_membase +
-> -				    CEU_BUFFER_MEMORY_SIZE - 1);
-> +				    CEU_BUFFER_MEMORY_SIZE);
->  	platform_device_add(ms7724se_ceu_devices[0]);
->  
->  	device_initialize(&ms7724se_ceu_devices[1]->dev);
->  	dma_declare_coherent_memory(&ms7724se_ceu_devices[1]->dev,
->  				    ceu1_dma_membase, ceu1_dma_membase,
-> -				    ceu1_dma_membase +
-> -				    CEU_BUFFER_MEMORY_SIZE - 1);
-> +				    CEU_BUFFER_MEMORY_SIZE);
->  	platform_device_add(ms7724se_ceu_devices[1]);
->  
->  	return platform_add_devices(ms7724se_devices,
-
--- 
-Regards,
-
-Laurent Pinchart
+--=20
+Thanks,
+~Nick Desaulniers
