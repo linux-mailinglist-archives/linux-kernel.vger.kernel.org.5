@@ -2,151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E102475FB7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B06E75FB77
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbjGXQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S229969AbjGXQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbjGXQHV (ORCPT
+        with ESMTP id S230186AbjGXQHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:07:21 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F83410F4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:07:16 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-583f837054eso14656277b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:07:16 -0700 (PDT)
+        Mon, 24 Jul 2023 12:07:11 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73CD10FF;
+        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b9aadde448so4066664a34.0;
+        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1690214835; x=1690819635;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+9hATyxM1wFvDyiZv4CUg26TjbnT4RKHY7Z6xDG7Qc=;
-        b=n4RguLbipIDQE05X2UsocctdpugWflo7O4z8c3gwAfkLynyr8zm5/CVjbVs+tll8O7
-         X0Ku/7bnlehb3Ox7SBdt1JsBF51lWhN9JK4rkJEMe0mtYfMYNmhReGcTwTaGi7XrgH6w
-         AoqM98jUDwcsem/XlkeUawhQ/Quf5wkpYquBpA2iv6vMPHpiz/M0Efuv1r/EidPG0Cga
-         g/AtYUJgSPRocmaMMJ5LbLxrodle3GBgnj/TYbtq4vGuFmT/0T6ZBnSct+p5l8T3d8J5
-         iuyr8NvNhfPPNd6gvWBkWI3g9QTKs7q2xbyLTIMfzVy1BOOaCmxvRzGuXAOkGFLAzt4f
-         aGVA==
+        d=gmail.com; s=20221208; t=1690214829; x=1690819629;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sNi5vVMCJWfHjXXkqvqwnxz9gP61j7y0zdFiLD2AOm4=;
+        b=b1cbmfyKHmtLdjno0V/bvAf32VvNFJpzM2VD9rlw08X9zpd1njJBjfqc/4AQ++uSbl
+         Dm2JllG46Lyxx3hPZ9KJMj6B0UPhnnC9OROEcysatpXE5tJ2x9QTbp+z9nmC7mFdGArS
+         SJoRedyiX6G/HPiW5OJcoE0H0fpz7CIZdKJ08//8arjk2akZHVkrHM+AO9qzmYp5x9bI
+         4/U+gAoQwOoq4u3ki7jpL0BHB6uu69D8nGrch3zYWUQA0eAmx2Ze4G6iydhata5WgXrR
+         wP+jMiuUv9E4Ch6BJVUaYYyvoskSeTxRoSmXPvuRCnLNKCchY2UU+RAiWA8Pkoey9Z8k
+         Z/cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690214835; x=1690819635;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H+9hATyxM1wFvDyiZv4CUg26TjbnT4RKHY7Z6xDG7Qc=;
-        b=Q7UDu6vU92va0vtGi6ghi9d7SQrPS0p6o3k/05xUryMYlHHQ27CjGHV98jUXtcFH7f
-         cPRia5D98Lz3VySlA27NYaMJwEt1X1eHhuOwdSN3HZf4VOGluYR7H4V20IxXF0yNOkRV
-         9LB6VGrBbAAR3XL/t7WJADrxN8aXhLzmeUrDUYXw8daML8gE/OW6DE6/0d5+x46A3HP/
-         mJ8lE5nbXJFfkJL3YOyB75WMa374y1q/u60DQvyp9RyTWD5rJPa1fYTYNzJtdfsqPabk
-         Yh7EtKiLwboefkS1cKHdI47ZRtTI9J0xtl6HvP8wfS+iz8ZaRsn1NtVZ40s0FjgKkO2O
-         NWDQ==
-X-Gm-Message-State: ABy/qLYO/D5euiJzi9BFzTTrQEF4JqonEGZ7500SYiH/0ODwPdaF8yUi
-        x2XspnmRyTHY22mruk7NFpjzuKkiEBsl2xwloKCQLA==
-X-Google-Smtp-Source: APBJJlHCWUTp7P04MApBHJlPyUxUZOvWwilt6qHx3n6q3KAE86ERNTh2oELFuCYqojOuLFYMFtf2PwJIimHh9n9Bbn0=
-X-Received: by 2002:a25:ada1:0:b0:d0f:2038:9ca2 with SMTP id
- z33-20020a25ada1000000b00d0f20389ca2mr3639883ybi.51.1690214835437; Mon, 24
- Jul 2023 09:07:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690214829; x=1690819629;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sNi5vVMCJWfHjXXkqvqwnxz9gP61j7y0zdFiLD2AOm4=;
+        b=fmWoXkQhxKWuWds8plPew+uUHCaTgEzFOojR6ypd9su91NwhToioPhgP2w+kBQvayb
+         ER699vBOorEOxyLxTTzWfE0hkDes7vKKbyeDf1daYKVU8cVqubvtgiU1b6n55HPp7lsg
+         8j/0OJwL6q03BBBBiagoPDx51jIqeK48cMeMXv6XiocqE/Oryy5Jf91CvVFp37lQ95KE
+         J1Sj0NNILoKrQnGDFI1KgMvXQP3rp6XWaY6PT8KDA1MysC/Q+Yo4+3pqvLiMWAZevYwd
+         pn+hvGE6o+XpSX9EpreU9e4S8yttRG3ykxW7XMW4PsAFE/JD7WEiN4lPGHSQcgTDbVMF
+         TAew==
+X-Gm-Message-State: ABy/qLZUGN4qteK9s7FgjeEpGyVWF2D9bT/XQffykXQMvXTpnK1HczfN
+        RoIqCls6ArMvGH1kAPbkyAQ=
+X-Google-Smtp-Source: APBJJlH3usIPW2PVHeDvPhTMcX6b5v/xPdx3CCRtBadftST/7fWKXnmZp3nVJH0zxKDL4ioZx54VIw==
+X-Received: by 2002:a05:6830:11da:b0:6b9:99fe:4747 with SMTP id v26-20020a05683011da00b006b999fe4747mr9267660otq.29.1690214829009;
+        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id p3-20020a9d6943000000b006b9734b9fafsm4024904oto.13.2023.07.24.09.07.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 09:07:08 -0700 (PDT)
+Message-ID: <ebdf2635-6003-fc62-310f-5b9071473415@gmail.com>
+Date:   Mon, 24 Jul 2023 13:07:04 -0300
 MIME-Version: 1.0
-References: <CAMEGJJ2RxopfNQ7GNLhr7X9=bHXKo+G5OOe0LUq=+UgLXsv1Xg@mail.gmail.com>
- <2023072438-aftermath-fracture-3dff@gregkh> <140065e3-0368-0b5d-8a0d-afe49b741ad2@kernel.dk>
- <ecb821a2-e90a-fec1-d2ca-b355c16b7515@kernel.dk>
-In-Reply-To: <ecb821a2-e90a-fec1-d2ca-b355c16b7515@kernel.dk>
-From:   Phil Elwell <phil@raspberrypi.com>
-Date:   Mon, 24 Jul 2023 17:07:04 +0100
-Message-ID: <CAMEGJJ3SjWdJFwzB+sz79ojWqAAMULa2CFAas0tv+JJLJMwoGQ@mail.gmail.com>
-Subject: Re: [PATCH] io_uring: Use io_schedule* in cqring wait
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, andres@anarazel.de,
-        asml.silence@gmail.com, david@fromorbit.com, hch@lst.de,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 11/12] rust: init: add `{pin_}chain` functions to
+ `{Pin}Init<T, E>`
+Content-Language: en-US
+To:     Benno Lossin <benno.lossin@proton.me>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asahi Lina <lina@asahilina.net>
+References: <20230719141918.543938-1-benno.lossin@proton.me>
+ <20230719141918.543938-12-benno.lossin@proton.me>
+ <0b818707-4762-c12d-8624-7d3c4f6841da@gmail.com>
+ <5f22b25d-132d-7cbc-8bca-8333516c1663@proton.me>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <5f22b25d-132d-7cbc-8bca-8333516c1663@proton.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens, Greg,
+On 7/24/23 11:08, Benno Lossin wrote:
+> On 21.07.23 02:23, Martin Rodriguez Reboredo wrote:
+>> On 7/19/23 11:21, Benno Lossin wrote:
+>>> +/// An initializer returned by [`PinInit::pin_chain`].
+>>> +pub struct ChainPinInit<I, F, T: ?Sized, E>(I, F, __internal::Invariant<(E, Box<T>)>);
+>>> +
+>>> +// SAFETY: the `__pinned_init` function is implemented such that it
+>>> +// - returns `Ok(())` on successful initialization,
+>>> +// - returns `Err(err)` on error and in this case `slot` will be dropped.
+>>> +// - considers `slot` pinned.
+>>> +unsafe impl<T: ?Sized, E, I, F> PinInit<T, E> for ChainPinInit<I, F, T, E>
+>>> +where
+>>> +    I: PinInit<T, E>,
+>>> +    F: FnOnce(Pin<&mut T>) -> Result<(), E>,
+>>> +{
+>>> +    unsafe fn __pinned_init(self, slot: *mut T) -> Result<(), E> {
+>>> +        // SAFETY: all requirements fulfilled since this function is `__pinned_init`.
+>>> +        unsafe { self.0.__pinned_init(slot)? };
+>>> +        // SAFETY: The above call initialized `slot` and we still have unique access.
+>>> +        let val = unsafe { &mut *slot };
+>>> +        // SAFETY: `slot` is considered pinned
+>>> +        let val = unsafe { Pin::new_unchecked(val) };
+>>> +        (self.1)(val).map_err(|e| {
+>>> +            // SAFETY: `slot` was initialized above.
+>>> +            unsafe { core::ptr::drop_in_place(slot) };
+>>> +            e
+>>
+>> I might stumble upon an error like EAGAIN if I call `pin_chain` but that
+>> means `slot` will be dropped. So my recommendation is to either not drop
+>> the value or detail in `pin_chain`'s doc comment that the closure will
+>> drop on error.
+> 
+> This is a bit confusing to me, because dropping the value on returning `Err`
+> is a safety requirement of `PinInit`. Could you elaborate why this is
+> surprising? I can of course add it to the documentation, but I do not see
+> how it could be implemented differently. Since if you do not drop the value
+> here, nobody would know that it is still initialized.
 
-On Mon, 24 Jul 2023 at 16:58, Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 7/24/23 9:50?AM, Jens Axboe wrote:
-> > On 7/24/23 9:48?AM, Greg KH wrote:
-> >> On Mon, Jul 24, 2023 at 04:35:43PM +0100, Phil Elwell wrote:
-> >>> Hi Andres,
-> >>>
-> >>> With this commit applied to the 6.1 and later kernels (others not
-> >>> tested) the iowait time ("wa" field in top) in an ARM64 build running
-> >>> on a 4 core CPU (a Raspberry Pi 4 B) increases to 25%, as if one core
-> >>> is permanently blocked on I/O. The change can be observed after
-> >>> installing mariadb-server (no configuration or use is required). After
-> >>> reverting just this commit, "wa" drops to zero again.
-> >>
-> >> This has been discussed already:
-> >>      https://lore.kernel.org/r/12251678.O9o76ZdvQC@natalenko.name
+I knew about the requirement of dropping on `Err`, but what has caught my
+attention is that `{pin_}chain` might not abide with it per the doc
+comment as it says that `self` is initialized before calling `f`...
 
-Sorry - a brief search failed to find that.
+     /// First initializes the value using `self` then calls the function
+     /// `f` with the initialized value.
 
-> >> It's not a bug, mariadb does have pending I/O, so the report is correct,
-> >> but the CPU isn't blocked at all.
-> >
-> > Indeed - only thing I can think of is perhaps mariadb is having a
-> > separate thread waiting on the ring in perpetuity, regardless of whether
-> > or not it currently has IO.
-> >
-> > But yes, this is very much ado about nothing...
->
-> Current -git and having mariadb idle:
->
-> Average:     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-> Average:     all    0.00    0.00    0.04   12.47    0.04    0.00    0.00    0.00    0.00   87.44
-> Average:       0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> Average:       1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> Average:       2    0.00    0.00    0.00    0.00    0.33    0.00    0.00    0.00    0.00   99.67
-> Average:       3    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> Average:       4    0.00    0.00    0.33    0.00    0.00    0.00    0.00    0.00    0.00   99.67
-> Average:       5    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> Average:       6    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00    0.00    0.00
-> Average:       7    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
->
-> which is showing 100% iowait on one cpu, as mariadb has a thread waiting
-> on IO. That is obviously a valid use case, if you split submission and
-> completion into separate threads. Then you have the latter just always
-> waiting on something to process.
->
-> With the suggested patch, we do eliminate that case and the iowait on
-> that task is gone. Here's current -git with the patch and mariadb also
-> running:
->
-> 09:53:49 AM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-> 09:53:50 AM  all    0.00    0.00    0.00    0.00    0.00    0.75    0.00    0.00    0.00   99.25
-> 09:53:50 AM    0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> 09:53:50 AM    1    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
-> 09:53:50 AM    2    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
-> 09:53:50 AM    3    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
-> 09:53:50 AM    4    0.00    0.00    0.00    0.00    0.00    0.99    0.00    0.00    0.00   99.01
-> 09:53:50 AM    5    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
-> 09:53:50 AM    6    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-> 09:53:50 AM    7    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
->
->
-> Even though I don't think this is an actual problem, it is a bit
-> confusing that you get 100% iowait while waiting without having IO
-> pending. So I do think the suggested patch is probably worthwhile
-> pursuing. I'll post it and hopefully have Andres test it too, if he's
-> available.
+But one can not know what would happen when `f` fails, specially if
+such failure can be ignored or it's only temporarily.
 
-If you CC me I'll happily test it for you.
-
-Thanks,
-
-Phil
-
-> --
-> Jens Axboe
->
+So then, the best course IMO is to mention that in some way the value is
+still being initialized, kinda setting it up, and that it will be dropped
+when an error is returned. WDYT?
