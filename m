@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0958A75F362
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9233575F366
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjGXKdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
+        id S230461AbjGXKeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjGXKdl (ORCPT
+        with ESMTP id S231478AbjGXKeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:33:41 -0400
-Received: from icts-p-cavuit-2.kulnet.kuleuven.be (icts-p-cavuit-2.kulnet.kuleuven.be [134.58.240.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4B2119;
-        Mon, 24 Jul 2023 03:33:31 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 54F1320062.A6DE3
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:143:242:ac11:20])
-        by icts-p-cavuit-2.kulnet.kuleuven.be (Postfix) with ESMTP id 54F1320062;
-        Mon, 24 Jul 2023 12:33:28 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1690194808;
-        bh=iEWM/U7XJeC7LTrkw7I5xQFeOhyqNfXeOcVNZvirnxg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=Z1OufVE0PeubQFzjUurD9ZPdK+YNUuZ/7pfs49Zd+64KW+dbXJIaCcMqtwaaO9ezN
-         9w4FffcaKWh006fZtrQWe5UD4HcOeW7Z77gdq2E4Fr1JdwzqcTSZLP4F+q/99Lrj0b
-         CRuJCBacFTYeW28gnDjMaeJrwKeNULH4wYNt2qcY=
-Received: from [192.33.197.126] (eduroam-269-1-126.epfl.ch [192.33.197.126])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 0E40CD4E6AF08;
-        Mon, 24 Jul 2023 12:33:28 +0200 (CEST)
-Message-ID: <1805e583-6986-79ff-36b1-7b71e32e6eb0@cs.kuleuven.be>
-Date:   Mon, 24 Jul 2023 12:33:27 +0200
+        Mon, 24 Jul 2023 06:34:19 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DEC187
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:34:06 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so58370211fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690194844; x=1690799644;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6/4NT80C8o+EyVnLY4XxDVvzkLXvBxsKNvLZXorPucs=;
+        b=QNswk2bs5yFZMtjR1PhS8fBgd6i0txIzfCiASd5Hb8Sl0Fa8GU7GKWMeUI1Ye6/Xn7
+         jX+sJH07wtjbkChiQ+A1mjjgRWJxK5nV3lULpOvfs1Ktpx9TF37QwtFOqvQGK44zGBHH
+         GtaUiEdxqAlzUZY2XSTtEdDggygddLgPAdeofPld0vQ7ECk79zSHx/2edt1c5NJc/27L
+         U/Lo5GUn1atMFepWWKjiTJ+TvuJt6p9qXbDeSO+h+sG55zBcH3UgoH1iJb1UcQ8pjfVL
+         ThdvbRSSXt1G6OsaSU8LETrlfXgamCyMklKG3E920P8YBjB3stLBZdtKGfVfN9KKwqTQ
+         nDDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690194844; x=1690799644;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/4NT80C8o+EyVnLY4XxDVvzkLXvBxsKNvLZXorPucs=;
+        b=j31ekwELMDAzAjKNagLqcysKbbX+h+xGy3AmvfRB8JUP4xcQZ/IGOOJmqA8DUB7DaQ
+         T1Hvibj1Lbu461H+k4ChY6rADaigTCUtvxFNwkuV5TLhRZO1DYlcgaNd8FOrZGDVG3p5
+         G1x8DUzo9jDEJeNhY38wjrB20l7MkuhguGThrOuMZjCOwdN53Df7fzLAX7AttfLtPByE
+         Xs6OyhwCAaPLhM1hDJc4+Sc4koOph+RDqJLbp4Yt4ZXmqEA5xYoyFnyni0+PRvy8+RA4
+         E6f+RHiTz2YTYqxF2MIt9k9qsUpHt7Adz98Dk9UOkYZlAb+6DLwQZJvzywcmPuP43fl7
+         +BeA==
+X-Gm-Message-State: ABy/qLbR7y9y8ObHhtzbbGjHSiMfJBCyAyLJxDH45SY+nAX1AkFfXU6w
+        jHaOmmTBF1naLq5OAD9mM1ucAg==
+X-Google-Smtp-Source: APBJJlGTk6OH0WpLIfXAX9MO2RtuNy1TKjU6ZqzkoCdUxTsyd3vzUYecuZmoAa5s/6f9FMoR4/HupA==
+X-Received: by 2002:a2e:7312:0:b0:2b8:377a:22f1 with SMTP id o18-20020a2e7312000000b002b8377a22f1mr5847682ljc.32.1690194844461;
+        Mon, 24 Jul 2023 03:34:04 -0700 (PDT)
+Received: from [192.168.1.101] (abyl203.neoplus.adsl.tpnet.pl. [83.9.31.203])
+        by smtp.gmail.com with ESMTPSA id 12-20020a05651c00cc00b002b94b355527sm2761607ljr.32.2023.07.24.03.34.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 03:34:04 -0700 (PDT)
+Message-ID: <17443dda-1677-92f8-24de-ff37057f3df4@linaro.org>
+Date:   Mon, 24 Jul 2023 12:34:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/4] selftests/sgx: Harden test enclave
-To:     Dave Hansen <dave.hansen@intel.com>, jarkko@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com
-References: <20230720221623.9530-1-jo.vanbulck@cs.kuleuven.be>
- <da0cfb1e-e347-f7f2-ac72-aec0ee0d867d@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sdm630: align USB DWC3 clocks with
+ bindings
 Content-Language: en-US
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <da0cfb1e-e347-f7f2-ac72-aec0ee0d867d@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230723141849.93078-1-krzysztof.kozlowski@linaro.org>
+ <20230723141849.93078-2-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230723141849.93078-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.23 02:24, Dave Hansen wrote:
-> I wholeheartedly agree with the desire to spin up enclaves without the
-> overhead or complexity of the SDK.  I think I'm the one that asked for
-> this test enclave in the first place.  There *IS* a gap here.  Those who
-> care about SGX would be wise to close this gap in _some_ way.
+On 23.07.2023 16:18, Krzysztof Kozlowski wrote:
+> Bindings require different order of clocks for USB DWC3 nodes (sleep
+> before mock_utmi).
 > 
-> But I don't think the kernel should be the place this is done.  The
-> kernel should not be hosting a real-world (userspace) SGX reference
-> implementation.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Okay, makes sense.
-
-> I'd fully support if you'd like to take the selftest code, fork it, and
-> maintain it.  The SGX ecosystem would be better off if such a project
-> existed.  If I can help here in some way like (trying to) release the
-> SGX selftest under a different license, please let me know.
-
-Thank you! I agree this would benefit the SGX ecosystem and I'll go 
-ahead with further developing such a standalone fork when I find time 
-probably in the next month or so. For future reference, in case people 
-end up reading this discussion thread, I created a placeholder (atm 
-emtpy) repo here:
-
-https://github.com/jovanbulck/bare-sgx
-
-Re licensing: no need to re-license, I think GPL would be the best 
-license for such a project anyway.
-
-> The only patches I want for the kernel are to make the test enclave more
-> *obviously* insecure.
-
-Makes sense. I'll see if I can create a new proposed minimal patch in 
-this spirit (e.g., removing existing register cleansing and adding an 
-explicit comment) to take away any misguided impression that the test 
-enclave would be a representative example of secure code and make its 
-real purpose clearer.
-
-> So, it's a NAK from me for this series.  I won't support merging this
-> into the kernel.  But at the same time, I'm very sympathetic to your
-> cause, and I do appreciate your effort here.
-
-Thank you, appreciated!
+Konrad
