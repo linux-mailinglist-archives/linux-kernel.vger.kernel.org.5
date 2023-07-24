@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F089975E74C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7FB75E750
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjGXB0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        id S231464AbjGXB0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbjGXB0R (ORCPT
+        with ESMTP id S231425AbjGXB0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:26:17 -0400
+        Sun, 23 Jul 2023 21:26:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561AF3C1D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B493C1E;
         Sun, 23 Jul 2023 18:24:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39AA460EF9;
-        Mon, 24 Jul 2023 01:23:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA546C433BB;
-        Mon, 24 Jul 2023 01:23:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36BC960F0C;
+        Mon, 24 Jul 2023 01:23:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06613C433C7;
+        Mon, 24 Jul 2023 01:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161831;
-        bh=PPENnfwyAeazDRdtN66ooDkywVMamO38yXbagVEW5yc=;
+        s=k20201202; t=1690161832;
+        bh=xOVxSVVYVvg/2EcECIn6pyOg81Be/nIiL+36c0qRnFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ME6pWIYt9nfxiLUGR0XiOwCo8nln4LLUaIM28JB1hEVNgYi2fAoRj3OSLt+2cXs5O
-         CK8uizwHdiPytuq/TqMi+BgW8RKIudj+2UIbMw9s/31c0P2aHx2AiA4FupPxuE2ciG
-         g42VT+37y2LcbaGU7iptAqoDlhlDAPdcTsiiH/KzJhOpTb3rAM6jkbXG2f1Tc9Efr2
-         m9Oq4pWz3cOnE6qKi+yNMIig/V1kGIdKq31Esyl+BhgyVvGgsJjKd9G8YwuKBxJrgB
-         ZRpeZnIcx4tGfzobu3oCkohCM+vU4vqF90rGaDGHRjHqFzxH8WRglpaoI09Tsn0Lqd
-         2U3SgejqbWVow==
+        b=gs5VFAKhejr+cZjZC5jEi9j50tND4brbgnqyz/pl2iuYEUT6w/UO7m5H9+3+HojMh
+         JoFpvTtqrAXXb7a4EfIHkIL3Gy4vNLgXlmjMhGPQnnvM7vKP5VZOAuiXKQFC8DY6Yw
+         iF9rS34JmaJPqNMLPJ5vIT5yd4rnjsodYVrsmXlwztHrkLH26GT4rj8x9dcMZHvn1S
+         yjIpX69/95Rk9soC7SPWqsMhklaunhAISOxuHtbMxaTDOBGVs+OPaQzMrmAX1s4iEw
+         x2+TpLQcB4AfvLo88duhZDrPSWYFZqJr/a9BepPjuhTURTWXKonNKQxfE/sNi/CKR9
+         1ETfRdKiHBp6w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-        syzbot+e633c79ceaecbf479854@syzkaller.appspotmail.com,
+Cc:     Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jack@suse.com
-Subject: [PATCH AUTOSEL 5.15 07/23] quota: Properly disable quotas when add_dquot_ref() fails
-Date:   Sun, 23 Jul 2023 21:23:18 -0400
-Message-Id: <20230724012334.2317140-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 08/23] quota: fix warning in dqgrab()
+Date:   Sun, 23 Jul 2023 21:23:19 -0400
+Message-Id: <20230724012334.2317140-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
 References: <20230724012334.2317140-1-sashal@kernel.org>
@@ -59,41 +58,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 6a4e3363792e30177cc3965697e34ddcea8b900b ]
+[ Upstream commit d6a95db3c7ad160bc16b89e36449705309b52bcb ]
 
-When add_dquot_ref() fails (usually due to IO error or ENOMEM), we want
-to disable quotas we are trying to enable. However dquot_disable() call
-was passed just the flags we are enabling so in case flags ==
-DQUOT_USAGE_ENABLED dquot_disable() call will just fail with EINVAL
-instead of properly disabling quotas. Fix the problem by always passing
-DQUOT_LIMITS_ENABLED | DQUOT_USAGE_ENABLED to dquot_disable() in this
-case.
+There's issue as follows when do fault injection:
+WARNING: CPU: 1 PID: 14870 at include/linux/quotaops.h:51 dquot_disable+0x13b7/0x18c0
+Modules linked in:
+CPU: 1 PID: 14870 Comm: fsconfig Not tainted 6.3.0-next-20230505-00006-g5107a9c821af-dirty #541
+RIP: 0010:dquot_disable+0x13b7/0x18c0
+RSP: 0018:ffffc9000acc79e0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88825e41b980
+RDX: 0000000000000000 RSI: ffff88825e41b980 RDI: 0000000000000002
+RBP: ffff888179f68000 R08: ffffffff82087ca7 R09: 0000000000000000
+R10: 0000000000000001 R11: ffffed102f3ed026 R12: ffff888179f68130
+R13: ffff888179f68110 R14: dffffc0000000000 R15: ffff888179f68118
+FS:  00007f450a073740(0000) GS:ffff88882fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe96f2efd8 CR3: 000000025c8ad000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dquot_load_quota_sb+0xd53/0x1060
+ dquot_resume+0x172/0x230
+ ext4_reconfigure+0x1dc6/0x27b0
+ reconfigure_super+0x515/0xa90
+ __x64_sys_fsconfig+0xb19/0xd20
+ do_syscall_64+0x39/0xb0
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Reported-and-tested-by: Ye Bin <yebin10@huawei.com>
-Reported-by: syzbot+e633c79ceaecbf479854@syzkaller.appspotmail.com
+Above issue may happens as follows:
+ProcessA              ProcessB                    ProcessC
+sys_fsconfig
+  vfs_fsconfig_locked
+   reconfigure_super
+     ext4_remount
+      dquot_suspend -> suspend all type quota
+
+                 sys_fsconfig
+                  vfs_fsconfig_locked
+                    reconfigure_super
+                     ext4_remount
+                      dquot_resume
+                       ret = dquot_load_quota_sb
+                        add_dquot_ref
+                                           do_open  -> open file O_RDWR
+                                            vfs_open
+                                             do_dentry_open
+                                              get_write_access
+                                               atomic_inc_unless_negative(&inode->i_writecount)
+                                              ext4_file_open
+                                               dquot_file_open
+                                                dquot_initialize
+                                                  __dquot_initialize
+                                                   dqget
+						    atomic_inc(&dquot->dq_count);
+
+                          __dquot_initialize
+                           __dquot_initialize
+                            dqget
+                             if (!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
+                               ext4_acquire_dquot
+			        -> Return error DQ_ACTIVE_B flag isn't set
+                         dquot_disable
+			  invalidate_dquots
+			   if (atomic_read(&dquot->dq_count))
+	                    dqgrab
+			     WARN_ON_ONCE(!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
+	                      -> Trigger warning
+
+In the above scenario, 'dquot->dq_flags' has no DQ_ACTIVE_B is normal when
+dqgrab().
+To solve above issue just replace the dqgrab() use in invalidate_dquots() with
+atomic_inc(&dquot->dq_count).
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230605140731.2427629-2-yebin10@huawei.com>
+Message-Id: <20230605140731.2427629-3-yebin10@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/quota/dquot.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/quota/dquot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index cddd07b7d1329..da6e53fac0c48 100644
+index da6e53fac0c48..b88f5a2f6032b 100644
 --- a/fs/quota/dquot.c
 +++ b/fs/quota/dquot.c
-@@ -2413,7 +2413,8 @@ int dquot_load_quota_sb(struct super_block *sb, int type, int format_id,
- 
- 	error = add_dquot_ref(sb, type);
- 	if (error)
--		dquot_disable(sb, type, flags);
-+		dquot_disable(sb, type,
-+			      DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
- 
- 	return error;
- out_fmt:
+@@ -555,7 +555,7 @@ static void invalidate_dquots(struct super_block *sb, int type)
+ 			continue;
+ 		/* Wait for dquot users */
+ 		if (atomic_read(&dquot->dq_count)) {
+-			dqgrab(dquot);
++			atomic_inc(&dquot->dq_count);
+ 			spin_unlock(&dq_list_lock);
+ 			/*
+ 			 * Once dqput() wakes us up, we know it's time to free
 -- 
 2.39.2
 
