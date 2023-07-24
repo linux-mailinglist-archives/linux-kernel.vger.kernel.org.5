@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D882F75EC7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B846975EC82
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjGXH1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        id S230481AbjGXH2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjGXH1f (ORCPT
+        with ESMTP id S229640AbjGXH2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:27:35 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30939E1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690183654; x=1721719654;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=x6bKrwl7oUNAcR5lc0YG/43K6nFhpwki+9eqcsHfnxo=;
-  b=SXZK9mUCJSsnPgjed3UcRRsd8HNZoUAVJSSgdiQ27Xu2QSdZqddwrRDo
-   b9opL7suKX56cMWcWX/ABH3OrApAdDUqhNHNJsqRc1BBcjMa9IGrP4SLp
-   S+Sa6rHZyCT9VLtCQD9Gh+FSBuo06DJqwwgjWqY0gmAGr9IR3n+QgxaMl
-   WepjAwIFRp+WowUVZzV6M9UJ/O7wKahrwNoM2zlhq8sz5GVV7MShMfu7W
-   gxuZZn6Dlh8laO+sA5cYjymZAPoGePpYyarkcr7Gg9ZJIJMtkxXY4HawL
-   C2VXO6Mh0OAP0fEptu9I2cSTF33KM/JK/CDes1DLmdk7JqC6tIUcuE8cu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="364832259"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="364832259"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 00:27:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="719564264"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="719564264"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 00:27:31 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNpyd-0009Z2-02;
-        Mon, 24 Jul 2023 07:27:31 +0000
-Date:   Mon, 24 Jul 2023 15:26:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: net/wireless/pmsr.c:186:12: warning: stack frame size (2640) exceeds
- limit (2048) in 'pmsr_parse_peer'
-Message-ID: <202307241512.oEYN9ZOx-lkp@intel.com>
+        Mon, 24 Jul 2023 03:28:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637BD187;
+        Mon, 24 Jul 2023 00:28:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0B2D60F6B;
+        Mon, 24 Jul 2023 07:28:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49180C43397;
+        Mon, 24 Jul 2023 07:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690183695;
+        bh=GLnsrmTJQyipNzjtP9w/tp3G33tGRxpIkFbIQBxhhLM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IEVOH7rrKbxlAafi3pd9P3vo8/q1NGdit3Lna7XuwUK1VR7QNt2JWvuSMBvEgdA8s
+         QaNSmwnSl6WHkFUNA+Aadm+NDb2O/6B3s5Eegy42ubRT5+8tSrhk5VNdu99NWeWbg5
+         77twwwJi4V0vMhqblG6Zf5GniOCfEeV8oKv5w9IHGcEV5lmp094sRu1+E0T5Kr3FTn
+         RgJlWIVKYRd2q34jfAuANnyyij9vY6Xc0IKtGK5QrTcMPiN53nAvZW/aE57c3ysjxC
+         ZJW8uMP9A7UheDcsBTT6ZQFy2iq0q2IJtdkPv96uAGeiaJQOVCpsZtEXKwhkicefVN
+         pP605K9c/OUZQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fa48b5dc2eso5854022e87.1;
+        Mon, 24 Jul 2023 00:28:15 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaUCY3uN94QF1hy95cjQv3Av2we3m8PkymXrHyv+WCF19RLU//e
+        jyKI98dGfi3s03kgewZBBcwFI/mN4tHbHPGfgH8=
+X-Google-Smtp-Source: APBJJlEGz6OG1NKpKFLNSBRyJpiL9bNI8DJD1V12HIzUf22/vJ+2NpSgMhYn9F/mdFWW0vVlEB/ydlNYKQIKPVgn+wk=
+X-Received: by 2002:a19:7508:0:b0:4ed:cc6d:61fe with SMTP id
+ y8-20020a197508000000b004edcc6d61femr4848902lfe.24.1690183693160; Mon, 24 Jul
+ 2023 00:28:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230724013111.2327251-1-sashal@kernel.org>
+In-Reply-To: <20230724013111.2327251-1-sashal@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 24 Jul 2023 09:28:01 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFxPFbihEMN-vPLzw6mDtrO56pTfA48kKwxWmRczxrTXg@mail.gmail.com>
+Message-ID: <CAMj1kXFxPFbihEMN-vPLzw6mDtrO56pTfA48kKwxWmRczxrTXg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.4 1/4] efivarfs: expose used and total size
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anisse Astier <an.astier@criteo.com>, matt@codeblueprint.co.uk,
+        ard.biesheuvel@linaro.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, x86@kernel.org, matthew.garrett@nebula.com,
+        jk@ozlabs.org, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,237 +66,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jisheng,
+On Mon, 24 Jul 2023 at 03:31, Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Anisse Astier <an.astier@criteo.com>
+>
+> [ Upstream commit d86ff3333cb1d5f42d8898fb5fdb304e143c0237 ]
+>
 
-First bad commit (maybe != root cause):
+NAK
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
-commit: 8341dcfbd8dda98a3b2836a421016f7d88e35b1c riscv: Enable Undefined Behavior Sanitizer UBSAN
-date:   1 year, 11 months ago
-config: riscv-randconfig-r042-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241512.oEYN9ZOx-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241512.oEYN9ZOx-lkp@intel.com/reproduce)
+Please don't backport this - this is obviously new functionality.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307241512.oEYN9ZOx-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> net/wireless/pmsr.c:186:12: warning: stack frame size (2640) exceeds limit (2048) in 'pmsr_parse_peer' [-Wframe-larger-than]
-     186 | static int pmsr_parse_peer(struct cfg80211_registered_device *rdev,
-         |            ^
-   1 warning generated.
---
->> net/wireless/reg.c:2437:13: warning: stack frame size (2352) exceeds limit (2048) in 'wiphy_update_regulatory' [-Wframe-larger-than]
-    2437 | static void wiphy_update_regulatory(struct wiphy *wiphy,
-         |             ^
-   1 warning generated.
---
-   kernel/sched/fair.c:5438:6: warning: no previous prototype for function 'init_cfs_bandwidth' [-Wmissing-prototypes]
-    5438 | void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
-         |      ^
-   kernel/sched/fair.c:5438:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    5438 | void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
-         | ^
-         | static 
-   kernel/sched/fair.c:11457:6: warning: no previous prototype for function 'free_fair_sched_group' [-Wmissing-prototypes]
-    11457 | void free_fair_sched_group(struct task_group *tg) { }
-          |      ^
-   kernel/sched/fair.c:11457:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    11457 | void free_fair_sched_group(struct task_group *tg) { }
-          | ^
-          | static 
-   kernel/sched/fair.c:11459:5: warning: no previous prototype for function 'alloc_fair_sched_group' [-Wmissing-prototypes]
-    11459 | int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
-          |     ^
-   kernel/sched/fair.c:11459:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    11459 | int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
-          | ^
-          | static 
-   kernel/sched/fair.c:11464:6: warning: no previous prototype for function 'online_fair_sched_group' [-Wmissing-prototypes]
-    11464 | void online_fair_sched_group(struct task_group *tg) { }
-          |      ^
-   kernel/sched/fair.c:11464:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    11464 | void online_fair_sched_group(struct task_group *tg) { }
-          | ^
-          | static 
-   kernel/sched/fair.c:11466:6: warning: no previous prototype for function 'unregister_fair_sched_group' [-Wmissing-prototypes]
-    11466 | void unregister_fair_sched_group(struct task_group *tg) { }
-          |      ^
-   kernel/sched/fair.c:11466:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    11466 | void unregister_fair_sched_group(struct task_group *tg) { }
-          | ^
-          | static 
-   kernel/sched/fair.c:450:20: warning: unused function 'list_del_leaf_cfs_rq' [-Wunused-function]
-     450 | static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-         |                    ^
-   kernel/sched/fair.c:5419:20: warning: unused function 'sync_throttle' [-Wunused-function]
-    5419 | static inline void sync_throttle(struct task_group *tg, int cpu) {}
-         |                    ^
-   kernel/sched/fair.c:5444:37: warning: unused function 'tg_cfs_bandwidth' [-Wunused-function]
-    5444 | static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-         |                                     ^
-   kernel/sched/fair.c:5448:20: warning: unused function 'destroy_cfs_bandwidth' [-Wunused-function]
-    5448 | static inline void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
-         |                    ^
->> kernel/sched/fair.c:9712:12: warning: stack frame size (2320) exceeds limit (2048) in 'load_balance' [-Wframe-larger-than]
-    9712 | static int load_balance(int this_cpu, struct rq *this_rq,
-         |            ^
-   10 warnings generated.
-   /tmp/fair-295e8c.s: Assembler messages:
-   /tmp/fair-295e8c.s:6618: Error: unrecognized opcode `csrrc s9,0x100,2', extension `zicsr' required
-   /tmp/fair-295e8c.s:6631: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:20948: Error: unrecognized opcode `csrrc s5,0x100,2', extension `zicsr' required
-   /tmp/fair-295e8c.s:21087: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:24185: Error: unrecognized opcode `csrrc s4,0x100,2', extension `zicsr' required
-   /tmp/fair-295e8c.s:24567: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:25097: Error: unrecognized opcode `csrrc s2,0x100,2', extension `zicsr' required
-   /tmp/fair-295e8c.s:25149: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:25164: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:25188: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/fair-295e8c.s:26611: Error: unrecognized opcode `csrc 0x100,2', extension `zicsr' required
-   /tmp/fair-295e8c.s:26711: Error: unrecognized opcode `csrs 0x100,2', extension `zicsr' required
-   clang: error: assembler command failed with exit code 1 (use -v to see invocation)
---
->> drivers/mmc/host/sdhci.c:3411:20: warning: stack frame size (2816) exceeds limit (2048) in 'sdhci_irq' [-Wframe-larger-than]
-    3411 | static irqreturn_t sdhci_irq(int irq, void *dev_id)
-         |                    ^
-   1 warning generated.
-   /tmp/sdhci-da405a.s: Assembler messages:
-   /tmp/sdhci-da405a.s:22550: Error: unrecognized opcode `csrrc a0,0x100,2', extension `zicsr' required
-   /tmp/sdhci-da405a.s:22731: Error: unrecognized opcode `csrrc s2,0x100,2', extension `zicsr' required
-   /tmp/sdhci-da405a.s:22883: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/sdhci-da405a.s:22894: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/sdhci-da405a.s:45515: Error: unrecognized opcode `csrrc s3,0x100,2', extension `zicsr' required
-   /tmp/sdhci-da405a.s:45672: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   clang: error: assembler command failed with exit code 1 (use -v to see invocation)
---
->> net/mac80211/rx.c:3819:13: warning: stack frame size (7392) exceeds limit (2048) in 'ieee80211_rx_handlers' [-Wframe-larger-than]
-    3819 | static void ieee80211_rx_handlers(struct ieee80211_rx_data *rx,
-         |             ^
-   1 warning generated.
---
->> net/mac80211/tx.c:3586:17: warning: stack frame size (2544) exceeds limit (2048) in 'ieee80211_tx_dequeue' [-Wframe-larger-than]
-    3586 | struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
-         |                 ^
-   1 warning generated.
---
->> net/mac80211/util.c:995:1: warning: stack frame size (2256) exceeds limit (2048) in '_ieee802_11_parse_elems_crc' [-Wframe-larger-than]
-     995 | _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
-         | ^
-   1 warning generated.
---
->> fs/f2fs/debug.c:326:12: warning: stack frame size (5328) exceeds limit (2048) in 'stat_show' [-Wframe-larger-than]
-     326 | static int stat_show(struct seq_file *s, void *v)
-         |            ^
-   1 warning generated.
---
->> fs/nilfs2/segment.c:2008:12: warning: stack frame size (4576) exceeds limit (2048) in 'nilfs_segctor_do_construct' [-Wframe-larger-than]
-    2008 | static int nilfs_segctor_do_construct(struct nilfs_sc_info *sci, int mode)
-         |            ^
->> fs/nilfs2/segment.c:1479:12: warning: stack frame size (2192) exceeds limit (2048) in 'nilfs_segctor_collect' [-Wframe-larger-than]
-    1479 | static int nilfs_segctor_collect(struct nilfs_sc_info *sci,
-         |            ^
-   2 warnings generated.
-   /tmp/segment-a6eb20.s: Assembler messages:
-   /tmp/segment-a6eb20.s:3732: Error: unrecognized opcode `csrrc s5,0x100,2', extension `zicsr' required
-   /tmp/segment-a6eb20.s:3766: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/segment-a6eb20.s:4416: Error: unrecognized opcode `csrrc s3,0x100,2', extension `zicsr' required
-   /tmp/segment-a6eb20.s:4450: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   /tmp/segment-a6eb20.s:4476: Error: unrecognized opcode `csrrc s5,0x100,2', extension `zicsr' required
-   /tmp/segment-a6eb20.s:4510: Error: unrecognized opcode `csrs 0x100,a0', extension `zicsr' required
-   clang: error: assembler command failed with exit code 1 (use -v to see invocation)
-
-
-vim +/pmsr_parse_peer +186 net/wireless/pmsr.c
-
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  185  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10 @186  static int pmsr_parse_peer(struct cfg80211_registered_device *rdev,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  187  			   struct nlattr *peer,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  188  			   struct cfg80211_pmsr_request_peer *out,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  189  			   struct genl_info *info)
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  190  {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  191  	struct nlattr *tb[NL80211_PMSR_PEER_ATTR_MAX + 1];
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  192  	struct nlattr *req[NL80211_PMSR_REQ_ATTR_MAX + 1];
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  193  	struct nlattr *treq;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  194  	int err, rem;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  195  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  196  	/* no validation needed - was already done via nested policy */
-8cb081746c031f Johannes Berg 2019-04-26  197  	nla_parse_nested_deprecated(tb, NL80211_PMSR_PEER_ATTR_MAX, peer,
-8cb081746c031f Johannes Berg 2019-04-26  198  				    NULL, NULL);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  199  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  200  	if (!tb[NL80211_PMSR_PEER_ATTR_ADDR] ||
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  201  	    !tb[NL80211_PMSR_PEER_ATTR_CHAN] ||
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  202  	    !tb[NL80211_PMSR_PEER_ATTR_REQ]) {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  203  		NL_SET_ERR_MSG_ATTR(info->extack, peer,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  204  				    "insufficient peer data");
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  205  		return -EINVAL;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  206  	}
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  207  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  208  	memcpy(out->addr, nla_data(tb[NL80211_PMSR_PEER_ATTR_ADDR]), ETH_ALEN);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  209  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  210  	/* reuse info->attrs */
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  211  	memset(info->attrs, 0, sizeof(*info->attrs) * (NL80211_ATTR_MAX + 1));
-8cb081746c031f Johannes Berg 2019-04-26  212  	err = nla_parse_nested_deprecated(info->attrs, NL80211_ATTR_MAX,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  213  					  tb[NL80211_PMSR_PEER_ATTR_CHAN],
-d15da2a2e81367 Johannes Berg 2020-04-30  214  					  NULL, info->extack);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  215  	if (err)
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  216  		return err;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  217  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  218  	err = nl80211_parse_chandef(rdev, info, &out->chandef);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  219  	if (err)
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  220  		return err;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  221  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  222  	/* no validation needed - was already done via nested policy */
-8cb081746c031f Johannes Berg 2019-04-26  223  	nla_parse_nested_deprecated(req, NL80211_PMSR_REQ_ATTR_MAX,
-8cb081746c031f Johannes Berg 2019-04-26  224  				    tb[NL80211_PMSR_PEER_ATTR_REQ], NULL,
-8cb081746c031f Johannes Berg 2019-04-26  225  				    NULL);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  226  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  227  	if (!req[NL80211_PMSR_REQ_ATTR_DATA]) {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  228  		NL_SET_ERR_MSG_ATTR(info->extack,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  229  				    tb[NL80211_PMSR_PEER_ATTR_REQ],
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  230  				    "missing request type/data");
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  231  		return -EINVAL;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  232  	}
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  233  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  234  	if (req[NL80211_PMSR_REQ_ATTR_GET_AP_TSF])
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  235  		out->report_ap_tsf = true;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  236  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  237  	if (out->report_ap_tsf && !rdev->wiphy.pmsr_capa->report_ap_tsf) {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  238  		NL_SET_ERR_MSG_ATTR(info->extack,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  239  				    req[NL80211_PMSR_REQ_ATTR_GET_AP_TSF],
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  240  				    "reporting AP TSF is not supported");
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  241  		return -EINVAL;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  242  	}
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  243  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  244  	nla_for_each_nested(treq, req[NL80211_PMSR_REQ_ATTR_DATA], rem) {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  245  		switch (nla_type(treq)) {
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  246  		case NL80211_PMSR_TYPE_FTM:
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  247  			err = pmsr_parse_ftm(rdev, treq, out, info);
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  248  			break;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  249  		default:
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  250  			NL_SET_ERR_MSG_ATTR(info->extack, treq,
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  251  					    "unsupported measurement type");
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  252  			err = -EINVAL;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  253  		}
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  254  	}
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  255  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  256  	if (err)
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  257  		return err;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  258  
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  259  	return 0;
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  260  }
-9bb7e0f24e7e7d Johannes Berg 2018-09-10  261  
-
-:::::: The code at line 186 was first introduced by commit
-:::::: 9bb7e0f24e7e7d00daa1219b14539e2e602649b2 cfg80211: add peer measurement with FTM initiator API
-
-:::::: TO: Johannes Berg <johannes.berg@intel.com>
-:::::: CC: Johannes Berg <johannes.berg@intel.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> When writing EFI variables, one might get errors with no other message
+> on why it fails. Being able to see how much is used by EFI variables
+> helps analyzing such issues.
+>
+> Since this is not a conventional filesystem, block size is intentionally
+> set to 1 instead of PAGE_SIZE.
+>
+> x86 quirks of reserved size are taken into account; so that available
+> and free size can be different, further helping debugging space issues.
+>
+> With this patch, one can see the remaining space in EFI variable storage
+> via efivarfs, like this:
+>
+>    $ df -h /sys/firmware/efi/efivars/
+>    Filesystem      Size  Used Avail Use% Mounted on
+>    efivarfs        176K  106K   66K  62% /sys/firmware/efi/efivars
+>
+> Signed-off-by: Anisse Astier <an.astier@criteo.com>
+> [ardb: - rename efi_reserved_space() to efivar_reserved_space()
+>        - whitespace/coding style tweaks]
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/x86/platform/efi/quirks.c |  8 +++++++
+>  drivers/firmware/efi/efi.c     |  1 +
+>  drivers/firmware/efi/vars.c    | 12 +++++++++++
+>  fs/efivarfs/super.c            | 39 +++++++++++++++++++++++++++++++++-
+>  include/linux/efi.h            | 11 ++++++++++
+>  5 files changed, 70 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index b0b848d6933af..f0cc00032751d 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -114,6 +114,14 @@ void efi_delete_dummy_variable(void)
+>                                      EFI_VARIABLE_RUNTIME_ACCESS, 0, NULL);
+>  }
+>
+> +u64 efivar_reserved_space(void)
+> +{
+> +       if (efi_no_storage_paranoia)
+> +               return 0;
+> +       return EFI_MIN_RESERVE;
+> +}
+> +EXPORT_SYMBOL_GPL(efivar_reserved_space);
+> +
+>  /*
+>   * In the nonblocking case we do not attempt to perform garbage
+>   * collection if we do not have enough free space. Rather, we do the
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 34b9e78765386..91d986a741dad 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -211,6 +211,7 @@ static int generic_ops_register(void)
+>         generic_ops.get_variable = efi.get_variable;
+>         generic_ops.get_next_variable = efi.get_next_variable;
+>         generic_ops.query_variable_store = efi_query_variable_store;
+> +       generic_ops.query_variable_info = efi.query_variable_info;
+>
+>         if (efi_rt_services_supported(EFI_RT_SUPPORTED_SET_VARIABLE)) {
+>                 generic_ops.set_variable = efi.set_variable;
+> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+> index bfc5fa6aa47b6..e9dc7116daf13 100644
+> --- a/drivers/firmware/efi/vars.c
+> +++ b/drivers/firmware/efi/vars.c
+> @@ -245,3 +245,15 @@ efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
+>         return status;
+>  }
+>  EXPORT_SYMBOL_NS_GPL(efivar_set_variable, EFIVAR);
+> +
+> +efi_status_t efivar_query_variable_info(u32 attr,
+> +                                       u64 *storage_space,
+> +                                       u64 *remaining_space,
+> +                                       u64 *max_variable_size)
+> +{
+> +       if (!__efivars->ops->query_variable_info)
+> +               return EFI_UNSUPPORTED;
+> +       return __efivars->ops->query_variable_info(attr, storage_space,
+> +                       remaining_space, max_variable_size);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(efivar_query_variable_info, EFIVAR);
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index 482d612b716bb..e028fafa04f38 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/ucs2_string.h>
+>  #include <linux/slab.h>
+>  #include <linux/magic.h>
+> +#include <linux/statfs.h>
+>
+>  #include "internal.h"
+>
+> @@ -23,8 +24,44 @@ static void efivarfs_evict_inode(struct inode *inode)
+>         clear_inode(inode);
+>  }
+>
+> +static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+> +{
+> +       const u32 attr = EFI_VARIABLE_NON_VOLATILE |
+> +                        EFI_VARIABLE_BOOTSERVICE_ACCESS |
+> +                        EFI_VARIABLE_RUNTIME_ACCESS;
+> +       u64 storage_space, remaining_space, max_variable_size;
+> +       efi_status_t status;
+> +
+> +       status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
+> +                                           &max_variable_size);
+> +       if (status != EFI_SUCCESS)
+> +               return efi_status_to_err(status);
+> +
+> +       /*
+> +        * This is not a normal filesystem, so no point in pretending it has a block
+> +        * size; we declare f_bsize to 1, so that we can then report the exact value
+> +        * sent by EFI QueryVariableInfo in f_blocks and f_bfree
+> +        */
+> +       buf->f_bsize    = 1;
+> +       buf->f_namelen  = NAME_MAX;
+> +       buf->f_blocks   = storage_space;
+> +       buf->f_bfree    = remaining_space;
+> +       buf->f_type     = dentry->d_sb->s_magic;
+> +
+> +       /*
+> +        * In f_bavail we declare the free space that the kernel will allow writing
+> +        * when the storage_paranoia x86 quirk is active. To use more, users
+> +        * should boot the kernel with efi_no_storage_paranoia.
+> +        */
+> +       if (remaining_space > efivar_reserved_space())
+> +               buf->f_bavail = remaining_space - efivar_reserved_space();
+> +       else
+> +               buf->f_bavail = 0;
+> +
+> +       return 0;
+> +}
+>  static const struct super_operations efivarfs_ops = {
+> -       .statfs = simple_statfs,
+> +       .statfs = efivarfs_statfs,
+>         .drop_inode = generic_delete_inode,
+>         .evict_inode = efivarfs_evict_inode,
+>  };
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index 571d1a6e1b744..120af31a5136f 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -1042,6 +1042,7 @@ struct efivar_operations {
+>         efi_set_variable_t *set_variable;
+>         efi_set_variable_t *set_variable_nonblocking;
+>         efi_query_variable_store_t *query_variable_store;
+> +       efi_query_variable_info_t *query_variable_info;
+>  };
+>
+>  struct efivars {
+> @@ -1049,6 +1050,12 @@ struct efivars {
+>         const struct efivar_operations *ops;
+>  };
+>
+> +#ifdef CONFIG_X86
+> +u64 __attribute_const__ efivar_reserved_space(void);
+> +#else
+> +static inline u64 efivar_reserved_space(void) { return 0; }
+> +#endif
+> +
+>  /*
+>   * The maximum size of VariableName + Data = 1024
+>   * Therefore, it's reasonable to save that much
+> @@ -1087,6 +1094,10 @@ efi_status_t efivar_set_variable_locked(efi_char16_t *name, efi_guid_t *vendor,
+>  efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
+>                                  u32 attr, unsigned long data_size, void *data);
+>
+> +efi_status_t efivar_query_variable_info(u32 attr, u64 *storage_space,
+> +                                       u64 *remaining_space,
+> +                                       u64 *max_variable_size);
+> +
+>  #if IS_ENABLED(CONFIG_EFI_CAPSULE_LOADER)
+>  extern bool efi_capsule_pending(int *reset_type);
+>
+> --
+> 2.39.2
+>
