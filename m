@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885DB75ED16
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF69A75ED1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbjGXIIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        id S231341AbjGXIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjGXIIa (ORCPT
+        with ESMTP id S231335AbjGXIJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:08:30 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BEAFE;
-        Mon, 24 Jul 2023 01:08:29 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb84194bf3so7976365ad.3;
-        Mon, 24 Jul 2023 01:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690186108; x=1690790908;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnjnEM1q4FaIbu0XLbBMFL7FTXZt/Gd9eRGXpPcG/Vw=;
-        b=bZQtBrhMr0cUsQ384TewyyuQjYBuSXTgIm7TDluHBqi9F/9gJu1SyBJBqFgfePUGBY
-         oYups6EcndxOA4vxt11LpADG2+NP81YGpJoRJfqR07iUlcOPJBiOepJAHNnfL4kLIkbv
-         F69gSXIbnBnGWEXwt+o2yFLnKXL/Mdu5/fFetjxGbKhPR4Srfr9LtFpI4zSur3R/f4r5
-         jOil2c8bJG0y4HyY3TFQnS0GAcJu6eXcfSEY8icxdMEEfyuCXbYTt8ux2mZfs6xVkNRY
-         idVmoPyyrOYk1sQ7QeSviuLvQPgVKvC1M/WfBpNtU+srFTHvXfExJ/ZH3BT1kmLwGaD6
-         L9PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690186108; x=1690790908;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mnjnEM1q4FaIbu0XLbBMFL7FTXZt/Gd9eRGXpPcG/Vw=;
-        b=L0KhHoI9uFWA2Pmt7pL4b7VOJHB6P5tfKjpOGrIHM9UE0TZ0kK3r9EPdhKLTB+Cuny
-         oNAEA0pvmC3jbtACZVeLi9QMfC+S1F5B1inELk/p5CE9l5+OpUo87WB4gB9fGHoeD7fT
-         uKCQn8w4Jh8RGvrqGJQFV47emzr3i/K0aY/TXKLm8lh4jDraGKmywnax6DHJYYtS1+c6
-         wWgNZUr9LdETaVLsky9tZCl1npgkl5s0QJ69I6rvEC6p/h16sQTaVKRqcihtdKQQcJNz
-         2y9X3jU5cRgfb2VmYKkz+F7OMkFP5S1ZncAclrVt2zzYjUWA3BWtX8HysvD863zMDfbH
-         ZdHQ==
-X-Gm-Message-State: ABy/qLbNDLQj+RuJSYfrYRvkx1x4Lf0iCAX1Nias/UBwBdsPYv9oHKN/
-        0xg6QfbrgdPIxGIXX3/2yJv1aX2lkwI=
-X-Google-Smtp-Source: APBJJlHMuefu6wZvJjrdOrw4A5U3v2EERq/cIjbO2kLFG0eQp1uULaHgOpVMPQhp0OP0UPWFpewnIA==
-X-Received: by 2002:a17:902:c103:b0:1b5:561a:5ca9 with SMTP id 3-20020a170902c10300b001b5561a5ca9mr7113521pli.50.1690186108617;
-        Mon, 24 Jul 2023 01:08:28 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:9f1d:4d2f:6739:324d])
-        by smtp.gmail.com with ESMTPSA id x14-20020a170902ec8e00b001b8622c1ad2sm8159957plg.130.2023.07.24.01.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 01:08:28 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] xtensa: PMU: fix base address for the newer hardware
-Date:   Mon, 24 Jul 2023 01:08:19 -0700
-Message-Id: <20230724080819.2305666-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 24 Jul 2023 04:09:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E192B1BF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690186134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xhhWjOAo127IlI+J36ZFWJ4YvuZh0i268mYvp7khtFo=;
+        b=WY0/jC75z6eUVcVGd0j8iub9w1ScDFDzqWN+psiHqcUfe8QAGuSPE6hfhVeF8lMgYVMjR1
+        ZAdXwFjbBc5TdV4z7Q289ms6ZfCRsplx9zPDOmfjz1Gz1WxtSXIE3Jl8UWpFiQkccJhRLA
+        N+AQ6BOVq7J3waPJhlgJaJmC7ybcBFE=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-695-QHXgyZ0wOlaG5Vn_ZaG1gg-1; Mon, 24 Jul 2023 04:08:47 -0400
+X-MC-Unique: QHXgyZ0wOlaG5Vn_ZaG1gg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E83429AA3B6;
+        Mon, 24 Jul 2023 08:08:46 +0000 (UTC)
+Received: from localhost (ovpn-12-31.pek2.redhat.com [10.72.12.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 967751401C2E;
+        Mon, 24 Jul 2023 08:08:45 +0000 (UTC)
+Date:   Mon, 24 Jul 2023 16:08:41 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
+Message-ID: <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
+References: <cover.1679566220.git.lstoakes@gmail.com>
+ <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
+ <ZHc2fm+9daF6cgCE@krava>
+ <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+ <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With introduction of ERI access control in RG.0 base address of the PMU
-unit registers has changed. Add support for the new PMU configuration.
+On 07/24/23 at 08:23am, David Hildenbrand wrote:
+> Hi,
+> 
+> > 
+> > I met this too when I executed below command to trigger a kcore reading.
+> > I wanted to do a simple testing during system running and got this.
+> > 
+> >    makedumpfile --mem-usage /proc/kcore
+> > 
+> > Later I tried your above objdump testing, it corrupted system too.
+> > 
+> 
+> What do you mean with "corrupted system too" --  did it not only fail to
+> dump the system, but also actually harmed the system?
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/include/asm/core.h  |  9 +++++++++
- arch/xtensa/kernel/perf_event.c | 17 +++++++++++++----
- 2 files changed, 22 insertions(+), 4 deletions(-)
+From my testing, reading kcore will cause system panic, then reboot. Not
+sure if Jiri saw the same phenomenon.
 
-diff --git a/arch/xtensa/include/asm/core.h b/arch/xtensa/include/asm/core.h
-index 0e1bb6f019d6..3f5ffae89b58 100644
---- a/arch/xtensa/include/asm/core.h
-+++ b/arch/xtensa/include/asm/core.h
-@@ -52,4 +52,13 @@
- #define XTENSA_STACK_ALIGNMENT	16
- #endif
- 
-+#ifndef XCHAL_HW_MIN_VERSION
-+#if defined(XCHAL_HW_MIN_VERSION_MAJOR) && defined(XCHAL_HW_MIN_VERSION_MINOR)
-+#define XCHAL_HW_MIN_VERSION (XCHAL_HW_MIN_VERSION_MAJOR * 100 + \
-+			      XCHAL_HW_MIN_VERSION_MINOR)
-+#else
-+#define XCHAL_HW_MIN_VERSION 0
-+#endif
-+#endif
-+
- #endif
-diff --git a/arch/xtensa/kernel/perf_event.c b/arch/xtensa/kernel/perf_event.c
-index a0d05c8598d0..183618090d05 100644
---- a/arch/xtensa/kernel/perf_event.c
-+++ b/arch/xtensa/kernel/perf_event.c
-@@ -13,17 +13,26 @@
- #include <linux/perf_event.h>
- #include <linux/platform_device.h>
- 
-+#include <asm/core.h>
- #include <asm/processor.h>
- #include <asm/stacktrace.h>
- 
-+#define XTENSA_HWVERSION_RG_2015_0	260000
-+
-+#if XCHAL_HW_MIN_VERSION >= XTENSA_HWVERSION_RG_2015_0
-+#define XTENSA_PMU_ERI_BASE		0x00101000
-+#else
-+#define XTENSA_PMU_ERI_BASE		0x00001000
-+#endif
-+
- /* Global control/status for all perf counters */
--#define XTENSA_PMU_PMG			0x1000
-+#define XTENSA_PMU_PMG			XTENSA_PMU_ERI_BASE
- /* Perf counter values */
--#define XTENSA_PMU_PM(i)		(0x1080 + (i) * 4)
-+#define XTENSA_PMU_PM(i)		(XTENSA_PMU_ERI_BASE + 0x80 + (i) * 4)
- /* Perf counter control registers */
--#define XTENSA_PMU_PMCTRL(i)		(0x1100 + (i) * 4)
-+#define XTENSA_PMU_PMCTRL(i)		(XTENSA_PMU_ERI_BASE + 0x100 + (i) * 4)
- /* Perf counter status registers */
--#define XTENSA_PMU_PMSTAT(i)		(0x1180 + (i) * 4)
-+#define XTENSA_PMU_PMSTAT(i)		(XTENSA_PMU_ERI_BASE + 0x180 + (i) * 4)
- 
- #define XTENSA_PMU_PMG_PMEN		0x1
- 
--- 
-2.30.2
+> 
+> @Lorenzo do you plan on reproduce + fix, or should we consider reverting
+> that change?
+
+When tested on a arm64 system, the reproducution is stable. I will have
+a look too to see if I have some finding this week.
 
