@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AE9760FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C900760FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjGYJ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S232932AbjGYJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbjGYJ50 (ORCPT
+        with ESMTP id S233476AbjGYJ5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:57:26 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EABE19A2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=EQLUig3Re9LcJ5mfyjD3+YbubofBeqbAurKOO5MYjuE=; b=QPzFytEVJ8x0h7xQWIcFUsxBvU
-        9StUmtWVWbcsmM4sHaRHd0NEEATJBxLIflPhnULaBvDZECuETW/ngeTdShu+gCLthe4sN7IFoY8RK
-        dSjRXR9RS0Vkjat/Mbl9jww2Q2uE6O6pq/Bj3Q1s9emy9UKWtznKazBOJUbZLfEWtxu60F5XcTbrU
-        PAyEfzx7muoImrbIFRRJIghqdq7quUdRBwZ+vjbJdTbEP7ELqVAfQV68tTUfQqd/cVI/QhOwAzEef
-        5ql+kJdD2e9JEe3X2N883FawILiYPFLHP+wz1fK8Raxzb5y2tz8kbi6mc2rOY+YXGoRkK/MzxYNeX
-        Q1/IpgcA==;
-Received: from [192.168.1.4] (port=54635 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qOEn5-0007Pg-2Q;
-        Tue, 25 Jul 2023 11:57:15 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Tue, 25 Jul 2023 11:57:14 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <andrew@lunn.ch>
-CC:     <ante.knezic@helmholz.de>, <davem@davemloft.net>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <olteanv@gmail.com>, <pabeni@redhat.com>
-Subject: [PATCH net-next] net: dsa: mv88e6xxx: enable automedia on 6190x and 6390x devices
-Date:   Tue, 25 Jul 2023 11:57:12 +0200
-Message-ID: <20230725095712.24771-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <d3f45312-882d-4667-89da-c562e0828589@lunn.ch>
-References: <d3f45312-882d-4667-89da-c562e0828589@lunn.ch>
+        Tue, 25 Jul 2023 05:57:44 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2575A10C9;
+        Tue, 25 Jul 2023 02:57:43 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P89Glg018558;
+        Tue, 25 Jul 2023 09:57:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=osDTE7UgyNBgqubIqWD5OIaR3gR/6tXXerT27SCD9+c=;
+ b=VuruztrKO0wDW/xOV2+Avsppl4OiyuOqfYpmC0yz9I1sWe4nlamuYjFaASPPPRjXRhvW
+ T8SS5tvXfIG6bsZLT08nZFiwJRhvppftYbb9kPr69GpmrIoG/Gw1psafFerHzMOGT4MQ
+ xdj3hHf5RcCVZ6GlfJOVRRf+gaMoFitZFVdT36kF/buG0AF0uGLT1sVsmNbXE3eGPjAt
+ AVnuInn7UlBnriaFKd86QaL8mfbyQcq+oi82PY2MDmLQ1jbL/JSsZ1iyFPDBVwCovdVf
+ MFc2wXmigan9ljxrXE/OJes+5wXvIVzx8t9vcq332hXWTz0LzpGDOBrBR0SrSEO3+8Ad 0g== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s29j5gbuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 09:57:37 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P9vaVB014370
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 09:57:36 GMT
+Received: from fenglinw2-gv.ap.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 02:57:34 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Subject: [PATCH v2 0/3] leds-qcom-flash: several tiny fixes
+Date:   Tue, 25 Jul 2023 17:57:18 +0800
+Message-ID: <20230725-leds-qcom-flash-driver-tiny-fixes-v2-0-0f5cbce5fed0@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAH6cv2QC/x3M0QqCQBBG4VeRuW5g2bSyV4kuzPk3B2ytmRBDf
+ HeXLj8OnJUcpnC6VisZZnWdckE8VNQPXX6CVYophngM59jwCHH+9NOL09j5wGI6w/ir+cdJFzi
+ nU5KLtAGPtqbyeRv+oWxu923bAZbzke5zAAAA
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690279054; l=1148;
+ i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
+ bh=oDNGAX82BXAAcDfb+T8vTQuRvKb2ev7IHMl1ZRARkF8=;
+ b=GQWyaA+G6J23KdUocoMQnklJpeOvdW4D7sDnvwvfCSpy7uqkUyuQaGTaH+2wuGSWekBIXDg4z
+ +n1fMhaGfbWAVP+0kPIn95K4NJCkzmPx75wJJt9Dtp3HggxzvvMI89b
+X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
+ pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 7kyidJ5uybDT0cKWYvGlA77EYJ_nqbhF
+X-Proofpoint-GUID: 7kyidJ5uybDT0cKWYvGlA77EYJ_nqbhF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_05,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=356 phishscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250086
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 20:34:27 +0200 Anrew Lunn wrote:
->By auto-media, you mean both a copper PHY and an SFP? And whichever
->gets link first wins the MAC?
->
+Add small changes to address the review comments from Paval which were
+posted after the driver was applied:
+  https://lore.kernel.org/linux-arm-msm/20230325170957.GA2904@bug/#t
+  https://lore.kernel.org/linux-arm-msm/ZB8wbv93+Vmx3trt@duo.ucw.cz/
 
-Yes, that is correct.
+1) Add a sentence in Kconfig to explain the driver can be compiled as a
+  module
+2) Strobe off the LED channel before setting flash current
+3) Put the child node while register flash LED device failed.
 
-On Mon, 24 Jul 2023 20:34:27 +0200 Anrew Lunn wrote:
->auto-media has been discussed a few times, and rejected, since Linux
->has no concept of multiple 'phy like devices' connected to one MAC.
->
->How are you representing this in DT? I assume you have both an SFP
->socket, and a phy-handle pointing to a PHY? phylink will not drive
->both at the same time. So you cannot have them admin up at the same
->time? How do you get the SFP out of TX disable, when phylink sees a
->PHY? What does ethtool return? What the PHY is advertising as its link
->modes? Or nothing since an SFP does not advertise speeds?
+Changes in v2:
+  Sperate the fixes into 3 independent changes.
 
-Patch simply covers the automedia aspect of the device while the
-exact mode is specified by the DT. So for example if you would like
-to connect an SFP to port 3 of the device you would create a "regular"
-sfp node just like for ports 9/10 along the lines of:
-                        port@3 {
-                                reg = <3>;
-                                label = "SFP";
-                                phy-mode = "1000base-x";
-                                managed = "in-band-status";
-                                sfp = <&sfp1>;
-                        };
+Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+---
+Fenglin Wu (3):
+      leds: flash: leds-qcom-flash: declare the driver as a module
+      leds: flash: leds-qcom-flash: turn off LED before setting flash current
+      leds: flash: leds-qcom-flash: put child node if registration failed
 
-From then on, phylink will handle the sfp just as if it was connected
-to ports 9/10 - the ethtool reports advertised and supported link mode
-as 1000baseX, "Port" is "FIBRE", etc.
+ drivers/leds/flash/Kconfig           | 2 ++
+ drivers/leds/flash/leds-qcom-flash.c | 5 +++++
+ 2 files changed, 7 insertions(+)
+---
+base-commit: 7a2b85a76b05f16e8e788d035afcacdd4faa1d71
+change-id: 20230725-leds-qcom-flash-driver-tiny-fixes-f6fd8d90eb94
 
-Patch looks for "1000base-x" phy-mode in the dt node so in case it
-is not found the device can be linked only against a copper PHY.
+Best regards,
+-- 
+Fenglin Wu <quic_fenglinw@quicinc.com>
 
-The "real" automedia you are refering to is of course not covered here
-and maybe the commit message is a "bit" misleading.
