@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE34760412
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9245760422
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbjGYAg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S230076AbjGYAkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGYAgZ (ORCPT
+        with ESMTP id S229452AbjGYAkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:36:25 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6F0010EF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:36:23 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8BxHOsGGb9kZnsJAA--.18594S3;
-        Tue, 25 Jul 2023 08:36:22 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c4GGb9k_fE5AA--.25539S3;
-        Tue, 25 Jul 2023 08:36:22 +0800 (CST)
-Message-ID: <8d22477f-d7e4-b151-f72b-cea3f1ef3ef3@loongson.cn>
-Date:   Tue, 25 Jul 2023 08:36:22 +0800
+        Mon, 24 Jul 2023 20:40:47 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5AA10F8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:40:46 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5577004e21bso2018727a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1690245646; x=1690850446;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJKuxFWSCWcxrpIbwE2dsS6yrYr3DSEy+K+qzjCR4Lk=;
+        b=l7xvwTPERLpVvpQQOA4WRpuVk0EuJsgNwRQcR3ONJJsnjusafrjTwvgqUddBw4Wuh3
+         BmRedeIM1hSUMspYRBmjkGxjYLDJEqbay+FwFo1Q9dvcHHfVhl9pehB9LoXpozEKnhRX
+         lQo8f+NtlifbPya6IiRrMFhKKRReXp4TsJ7kYVqpdAH8wCgrV0fmTz90qmfNEd4eibVY
+         5PgnFKtiNUMPPs0s8no4sflNGsXYaEl0X0FahJOt2IAnSPrA5DJLa01vafOTj6HvFOoi
+         FLL7+CGmvCIDcRvhEjSwGlO82XHwYPeKazIdmMz1mT4a/fghYeAJ5+VPdHtr8KA4vzJr
+         n/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690245646; x=1690850446;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SJKuxFWSCWcxrpIbwE2dsS6yrYr3DSEy+K+qzjCR4Lk=;
+        b=iwwI9Niw1j9aze0ggxvzNBBh3CFu5sKYGsACuU6EbNLZVIB2zVscvTHTQMbBsOgtpo
+         z7dJGJZLuDPo57uFtKCJLgeOYkmkdeWeXlAnWn26PzREAcnzrVrLPVDYAIaUktuFmwwD
+         HAOyD4OU+KSj7/t+bmYpRuWuq5Yf7e2+ZB69auSLf5iXXTsRXr4KHFli3Mg6zpCqLBBT
+         7v5RVOkFto1O8oWm59/4TTcu5FhBDRAl94T36gEJaBAc1hDtifyozmFyFbyphU94elh+
+         mHnNyhOg5sYb4eyrXSnSnz9FOuzdh6azKVaBLUzvFGL5yPtvG8TwGfa4qUxU3bMw4MtT
+         YkNw==
+X-Gm-Message-State: ABy/qLaeloegLI5HuAyYgNM06edFsK11ITo9nNEdS2yHO7WGGmeeO7sG
+        Dl5ISR7X9Lw2+zSKNErHpt1PrA==
+X-Google-Smtp-Source: APBJJlFPb8LJJqI+24wS8Kl8vPzsOO78+Laoq3nKP3BBOg08DmgXv0tHgVQiYwYl8RCqUvPRzBE8VQ==
+X-Received: by 2002:a05:6a20:1053:b0:137:23f1:4281 with SMTP id gt19-20020a056a20105300b0013723f14281mr11113757pzc.12.1690245646421;
+        Mon, 24 Jul 2023 17:40:46 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([64.62.193.194])
+        by smtp.gmail.com with ESMTPSA id be11-20020a170902aa0b00b001b8a3e2c241sm9528297plb.14.2023.07.24.17.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 17:40:46 -0700 (PDT)
+From:   Samuel Holland <samuel.holland@sifive.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v3 0/4] gpio: sifive: Module support
+Date:   Mon, 24 Jul 2023 17:40:38 -0700
+Message-Id: <20230725004043.381573-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 0/3] LoongArch: mm: Code cleanup with populate pte
-Content-Language: en-US
-From:   bibo mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, WANG Xuerui <kernel@xen0n.name>
-References: <20230712031622.1888321-1-maobibo@loongson.cn>
-In-Reply-To: <20230712031622.1888321-1-maobibo@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx_c4GGb9k_fE5AA--.25539S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrZFWDGrW5Kw1rXF1kKF18CrX_yoWxKFg_XF
-        yftasYkr4xXayUKFWvgF4rJryUCF4kAF1ktFyDJFW7JasrJr17Jr4UAan8Zas0vFW7trs8
-        Aw45ArnYywnrKosvyTuYvTs0mTUanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
-        JVW8Jr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
-        x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5
-        McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
-        I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
-        x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jz5lbUUUUU=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-slightly ping.
+With the call to of_irq_count() removed, the SiFive GPIO driver can be
+built as a module. This helps to minimize the size of a multiplatform
+kernel, and is required by some downstream distributions (Android GKI).
 
-在 2023/7/12 11:16, Bibo Mao 写道:
-> There are some confusion between pdg and p4d when populate pte for
-> kernel address space. This patch modifies this issue and adds unified
-> function for pcpu and fixmap populate pte.
-> 
-> Bibo Mao (3):
->   mm/percpu: Remove some local variables in pcpu_populate_pte
->   LoongArch: Code cleanup in function pcpu_populate_pte
->   LoongArch: mm: Add unified function populate_kernel_pte
-> 
->  arch/loongarch/include/asm/pgalloc.h |  1 +
->  arch/loongarch/kernel/numa.c         | 35 ++-----------------
->  arch/loongarch/mm/init.c             | 52 ++++++++++++++++------------
->  mm/percpu.c                          | 24 +++++--------
->  4 files changed, 42 insertions(+), 70 deletions(-)
-> 
+This series removes the rest of the of_* API usage in the process.
+
+Changes in v3:
+ - Use dev_fwnode() instead of member access
+ - Mention the SIFIVE_GPIO_MAX check in the commit message
+ - Keep the variable for the parent IRQ domain
+ - Add a comment explaining why the IRQ data lookup will succeed
+
+Changes in v2:
+ - Add 3 new patches removing of_* API usage
+ - Add MODULE_AUTHOR and MODULE_DESCRIPTION
+
+Samuel Holland (4):
+  gpio: sifive: Directly use the device's fwnode
+  gpio: sifive: Look up IRQs only once during probe
+  gpio: sifive: Get the parent IRQ's domain from its irq_data
+  gpio: sifive: Allow building the driver as a module
+
+ drivers/gpio/Kconfig       |  2 +-
+ drivers/gpio/gpio-sifive.c | 47 ++++++++++++++++----------------------
+ 2 files changed, 21 insertions(+), 28 deletions(-)
+
+-- 
+2.40.1
 
