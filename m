@@ -2,175 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D22762002
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F8C762006
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjGYRWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        id S231454AbjGYRXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjGYRWp (ORCPT
+        with ESMTP id S230064AbjGYRXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:22:45 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40720137
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:22:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690305764; x=1721841764;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/rX+vmioYB+wb5NVQah9zVFB+dNFJlgx36fdBqT1BBg=;
-  b=hvdYI8ZiAO0Gmb84RfLDWRem1WthNljKW+nHBPiqwjfvDFOSNAqd8XND
-   aZcd7giPkX78FYa5c5q0VVVnpMiho4AqOpgngWQXh7sNlaLWH+ucSMaFz
-   MFioqdXZ9Jx30zCDRlvCp2NVM+i/mCtr3KeJJEPGbQTVapqhaLGrGlhK0
-   ShfRhVA4xLkLlEjO8Y1bc8YNh1wgk87USRaDQlL0POmClZV7/CxKbWY88
-   Ph6/tFCAP2yyqXXPiF9ovLMFDtpb7AdWqLzHWxm8CBsG/NZRPWmJCOWNd
-   is5oPjg/ThTqfdUst5rqUxG+Nwxa6Q9MT70+7i/kvDv1akRfQCoQX81at
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366677704"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="366677704"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 10:22:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755849068"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="755849068"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 25 Jul 2023 10:22:41 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOLk8-0000B9-1h;
-        Tue, 25 Jul 2023 17:22:40 +0000
-Date:   Wed, 26 Jul 2023 01:21:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Binglei Wang <l3b2w1@gmail.com>, hch@lst.de
-Cc:     oe-kbuild-all@lists.linux.dev, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, l3b2w1@gmail.com
-Subject: Re: [PATCH v2] cma: check for memory region overlapping
-Message-ID: <202307260113.tCZQvjkf-lkp@intel.com>
-References: <20230725141602.7759-1-l3b2w1@gmail.com>
+        Tue, 25 Jul 2023 13:23:45 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468A61BDA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:23:42 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-348c7075afcso5835ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690305821; x=1690910621;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qF3sszjf/FrquSylk/9mRr73+l28Kpb/a/YUFbhXNsk=;
+        b=VmZvA+x2brUzUH+KemvgtyWwYjvTwhjT3qLhjqHCM5bFgErI9zEQJ5eH5IgUVUpAuJ
+         b+y16Wv3NEhx/j+7Unp82pY5Vlw17+m4FTPZTo6mdUi6NypfKOnYIhc8vDN4l44FXi3b
+         MFLRNodUMeYL0Kj9YFOQrc0mCabxXY/OS0kDtSKlGU8lqYa1xYO3SjiXTF4BYODs63pR
+         CXLjuByBS0nPQrgo6HpGRCT+iPfUUHg5qQkLM2C8QX/J73/FSAuXRdruClViIWGwOcQu
+         +MCXVT09fW9Hz1MwOxPP7fQmrftT/DyGhQg/4VS0HI9BnUNvVceAcD94kWujSD3OrOrJ
+         uOrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690305821; x=1690910621;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qF3sszjf/FrquSylk/9mRr73+l28Kpb/a/YUFbhXNsk=;
+        b=OhDlG/gFYWQubpRoBWDxYxBqNmgN1Ecnw+5UQgXEhFxEE0cpPdSD9TJ+5tymlQRGb2
+         Cj/fadf7lz1P3qOz2l0qjMJ/8oS0OIIPN80NQaNV9NTeahITd10uN2uwgPGtR0VkuM5w
+         Btua9GYF3uJ1XQLQm6mAFfipNzhdLryJ89YZl5I0XnWh62BNi7GXX5BK2yRSc/On+sG6
+         zkEiyWdrZTz14we/RKbQUlhNgaFJdW8GoIkqgrzxyJvf1RVGQP0goSTGNkRJTSA+BEYt
+         2rXBprbM1QExRnBEwRzfwuoho/q6rk6dcCcApDBDBCAEOR2r+Djgt+cCiacmgoZCAYOI
+         DKRQ==
+X-Gm-Message-State: ABy/qLaG8gIFOz+XJ4suwjALC1xozZ1c18kh2xXB+BDSrNYAQ8nl7nSF
+        cUvYVHxgUNlsrMIv+0QfaMD62K4A0E93ElR879GbUQ==
+X-Google-Smtp-Source: APBJJlHnKSkz23cMqgDihmAd3S7ocw9dOBIQVbbrr7YrGS16ZbyRrVTTCw1N5MJAqbqik5Kvt4D4vMItqdgr32+IthU=
+X-Received: by 2002:a05:6e02:1c83:b0:346:676f:350d with SMTP id
+ w3-20020a056e021c8300b00346676f350dmr211797ill.11.1690305821406; Tue, 25 Jul
+ 2023 10:23:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725141602.7759-1-l3b2w1@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-13-rananta@google.com>
+ <0841aca6-2824-6a1b-a568-119f8bd220de@redhat.com> <CAJHc60znT5ThqKE3TgTW-0Us3oNv8+KF=81TSK0PbG3tTyJLFQ@mail.gmail.com>
+ <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
+In-Reply-To: <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Tue, 25 Jul 2023 10:23:29 -0700
+Message-ID: <CAJHc60xaygC8tX8yFnoFM9YqWg8iE6r5d+kugGwO5KZxDtG3rQ@mail.gmail.com>
+Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
+To:     Shaoqin Huang <shahuang@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Binglei,
+Hi Shaoqin,
 
-kernel test robot noticed the following build errors:
+On Mon, Jul 24, 2023 at 7:32=E2=80=AFPM Shaoqin Huang <shahuang@redhat.com>=
+ wrote:
+>
+>
+>
+> On 7/25/23 00:47, Raghavendra Rao Ananta wrote:
+> > On Mon, Jul 24, 2023 at 2:35=E2=80=AFAM Shaoqin Huang <shahuang@redhat.=
+com> wrote:
+> >>
+> >> Hi Raghavendra,
+> >>
+> >> On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
+> >>> The current implementation of the stage-2 unmap walker traverses
+> >>> the given range and, as a part of break-before-make, performs
+> >>> TLB invalidations with a DSB for every PTE. A multitude of this
+> >>> combination could cause a performance bottleneck on some systems.
+> >>>
+> >>> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
+> >>> invalidations until the entire walk is finished, and then
+> >>> use range-based instructions to invalidate the TLBs in one go.
+> >>> Condition deferred TLB invalidation on the system supporting FWB,
+> >>> as the optimization is entirely pointless when the unmap walker
+> >>> needs to perform CMOs.
+> >>>
+> >>> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
+> >>> now serves the stage-2 unmap walker specifically, rather than
+> >>> acting generic.
+> >>>
+> >>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> >>> ---
+> >>>    arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-=
+----
+> >>>    1 file changed, 58 insertions(+), 9 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtabl=
+e.c
+> >>> index 5ef098af1736..cf88933a2ea0 100644
+> >>> --- a/arch/arm64/kvm/hyp/pgtable.c
+> >>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> >>> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pg=
+table_visit_ctx *ctx, kvm_pte_t n
+> >>>        smp_store_release(ctx->ptep, new);
+> >>>    }
+> >>>
+> >>> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, =
+struct kvm_s2_mmu *mmu,
+> >>> -                        struct kvm_pgtable_mm_ops *mm_ops)
+> >>> +struct stage2_unmap_data {
+> >>> +     struct kvm_pgtable *pgt;
+> >>> +     bool defer_tlb_flush_init;
+> >>> +};
+> >>> +
+> >>> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
+> >>> +{
+> >>> +     /*
+> >>> +      * If FEAT_TLBIRANGE is implemented, defer the individual
+> >>> +      * TLB invalidations until the entire walk is finished, and
+> >>> +      * then use the range-based TLBI instructions to do the
+> >>> +      * invalidations. Condition deferred TLB invalidation on the
+> >>> +      * system supporting FWB, as the optimization is entirely
+> >>> +      * pointless when the unmap walker needs to perform CMOs.
+> >>> +      */
+> >>> +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
+> >>> +}
+> >>> +
+> >>> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *u=
+nmap_data)
+> >>> +{
+> >>> +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_d=
+ata->pgt);
+> >>> +
+> >>> +     /*
+> >>> +      * Since __stage2_unmap_defer_tlb_flush() is based on alternati=
+ve
+> >>> +      * patching and the TLBIs' operations behavior depend on this,
+> >>> +      * track if there's any change in the state during the unmap se=
+quence.
+> >>> +      */
+> >>> +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
+> >>> +     return defer_tlb_flush;
+> >>> +}
+> >>> +
+> >>> +static void stage2_unmap_put_pte(const struct kvm_pgtable_visit_ctx =
+*ctx,
+> >>> +                             struct kvm_s2_mmu *mmu,
+> >>> +                             struct kvm_pgtable_mm_ops *mm_ops)
+> >>>    {
+> >>> +     struct stage2_unmap_data *unmap_data =3D ctx->arg;
+> >>> +
+> >>>        /*
+> >>> -      * Clear the existing PTE, and perform break-before-make with
+> >>> -      * TLB maintenance if it was valid.
+> >>> +      * Clear the existing PTE, and perform break-before-make if it =
+was
+> >>> +      * valid. Depending on the system support, the TLB maintenance =
+for
+> >>> +      * the same can be deferred until the entire unmap is completed=
+.
+> >>>         */
+> >>>        if (kvm_pte_valid(ctx->old)) {
+> >>>                kvm_clear_pte(ctx->ptep);
+> >>> -             kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, ctx->addr, =
+ctx->level);
+> >>> +
+> >>> +             if (!stage2_unmap_defer_tlb_flush(unmap_data))
+> >> Why not directly check (unmap_data->defer_tlb_flush_init) here?
+> >>
+> > (Re-sending the reply as the previous one was formatted as HTML and
+> > was blocked by many lists)
+> >
+> > No particular reason per say, but I was just going with the logic of
+> > determining if we need to defer the flush and the WARN_ON() parts
+> > separate.
+> > Any advantage if we directly check in stage2_unmap_put_pte() that I
+> > missed or is this purely for readability?
+>
+> Hi Raghavendra,
+>
+> I just wondering if before the stage2 walk, we want to defer the tlb
+> flush, but if when walk the stage2, the stage2_unmap_defer_tlb_flush()
+> trigger the WARN_ON() and return don't defer the tlb flush, it will
+> flush the ctx->addr's tlb. But before the WARN_ON() triggered, these tlb
+> will not be flushed, since when walk stage2 done in the
+> kvm_pgtable_stage2_unmap(), the stage2_unmap_defer_tlb_flush() still
+> trigger the WARN_ON() and don't use the tlb range-based flush. Thus some
+> of the tlb are not flushed.
+>
+Excellent point!
+> If we directly check the (unmap_data->defer_tlb_flush_init), this isn't
+> change during walking the stage2, so the WARN_ON() should only trigger
+> in kvm_pgtable_stage2_unmap()->stage2_unmap_defer_tlb_flush().
+>
+> I'm not sure if it's right since I just think once we set up use the
+> TLBI range-based flush, the result of the
+> __stage2_unmap_defer_tlb_flush() shouldn't change. Otherwise there must
+> have some stale TLB entry.
+>
+One solution that I can think of is, if the code triggers the
+WARN_ON(), we flush the entire VM's TLB using
+kvm_call_hyp(__kvm_tlb_flush_vmid) after the entire walk is finished.
+In this special/rare situation, it'll be a little expensive, but we
+will at least be correct, leaving no stale TLBs behind. WDYT?
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.5-rc3 next-20230725]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Binglei-Wang/cma-check-for-memory-region-overlapping/20230725-222426
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230725141602.7759-1-l3b2w1%40gmail.com
-patch subject: [PATCH v2] cma: check for memory region overlapping
-config: riscv-randconfig-r042-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260113.tCZQvjkf-lkp@intel.com/config)
-compiler: riscv32-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260113.tCZQvjkf-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260113.tCZQvjkf-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/riscv/include/asm/elf.h:12,
-                    from include/linux/elf.h:6,
-                    from include/linux/module.h:19,
-                    from include/linux/device/driver.h:21,
-                    from include/linux/device.h:32,
-                    from include/linux/dma-mapping.h:8,
-                    from include/linux/dma-map-ops.h:9,
-                    from kernel/dma/contiguous.c:51:
-   include/linux/compat.h: In function 'rmem_cma_setup':
->> include/linux/compat.h:510:32: error: unterminated argument list invoking macro "pr_info"
-     510 |                 unsafe_get_user(hi, &__c->sig[2], label);               \
-         |                                ^
-   kernel/dma/contiguous.c:414:17: error: 'pr_info' undeclared (first use in this function); did you mean 'qc_info'?
-     414 |                 pr_info("Reserved memory: overlap with other memblock reserved region\n",
-         |                 ^~~~~~~
-         |                 qc_info
-   kernel/dma/contiguous.c:414:17: note: each undeclared identifier is reported only once for each function it appears in
-   kernel/dma/contiguous.c:414:24: error: expected ';' at end of input
-     414 |                 pr_info("Reserved memory: overlap with other memblock reserved region\n",
-         |                        ^
-         |                        ;
-   ......
-   kernel/dma/contiguous.c:414:17: error: expected declaration or statement at end of input
-     414 |                 pr_info("Reserved memory: overlap with other memblock reserved region\n",
-         |                 ^~~~~~~
-   kernel/dma/contiguous.c:414:17: error: expected declaration or statement at end of input
-   kernel/dma/contiguous.c:405:13: warning: unused variable 'err' [-Wunused-variable]
-     405 |         int err;
-         |             ^~~
-   kernel/dma/contiguous.c:404:21: warning: unused variable 'cma' [-Wunused-variable]
-     404 |         struct cma *cma;
-         |                     ^~~
-   kernel/dma/contiguous.c: At top level:
-   kernel/dma/contiguous.c:400:19: warning: 'rmem_cma_setup' defined but not used [-Wunused-function]
-     400 | static int __init rmem_cma_setup(struct reserved_mem *rmem)
-         |                   ^~~~~~~~~~~~~~
-   kernel/dma/contiguous.c:395:38: warning: 'rmem_cma_ops' defined but not used [-Wunused-const-variable=]
-     395 | static const struct reserved_mem_ops rmem_cma_ops = {
-         |                                      ^~~~~~~~~~~~
-
-
-vim +/pr_info +510 include/linux/compat.h
-
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  491  
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  492  #define unsafe_get_compat_sigset(set, compat, label) do {		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  493  	const compat_sigset_t __user *__c = compat;			\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  494  	compat_sigset_word hi, lo;					\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  495  	sigset_t *__s = set;						\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  496  									\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  497  	switch (_NSIG_WORDS) {						\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  498  	case 4:								\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  499  		unsafe_get_user(lo, &__c->sig[7], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  500  		unsafe_get_user(hi, &__c->sig[6], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  501  		__s->sig[3] = hi | (((long)lo) << 32);			\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  502  		fallthrough;						\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  503  	case 3:								\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  504  		unsafe_get_user(lo, &__c->sig[5], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  505  		unsafe_get_user(hi, &__c->sig[4], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  506  		__s->sig[2] = hi | (((long)lo) << 32);			\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  507  		fallthrough;						\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  508  	case 2:								\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  509  		unsafe_get_user(lo, &__c->sig[3], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19 @510  		unsafe_get_user(hi, &__c->sig[2], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  511  		__s->sig[1] = hi | (((long)lo) << 32);			\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  512  		fallthrough;						\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  513  	case 1:								\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  514  		unsafe_get_user(lo, &__c->sig[1], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  515  		unsafe_get_user(hi, &__c->sig[0], label);		\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  516  		__s->sig[0] = hi | (((long)lo) << 32);			\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  517  	}								\
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  518  } while (0)
-14026b94ccfe626 Christophe Leroy 2020-08-18  519  #else
-14026b94ccfe626 Christophe Leroy 2020-08-18  520  #define unsafe_put_compat_sigset(compat, set, label) do {		\
-14026b94ccfe626 Christophe Leroy 2020-08-18  521  	compat_sigset_t __user *__c = compat;				\
-14026b94ccfe626 Christophe Leroy 2020-08-18  522  	const sigset_t *__s = set;					\
-14026b94ccfe626 Christophe Leroy 2020-08-18  523  									\
-14026b94ccfe626 Christophe Leroy 2020-08-18  524  	unsafe_copy_to_user(__c, __s, sizeof(*__c), label);		\
-14026b94ccfe626 Christophe Leroy 2020-08-18  525  } while (0)
-fb05121fd6a20f0 Christophe Leroy 2021-03-19  526  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thank you.
+Raghavendra
+> Thanks,
+> Shaoqin
+>
+> >
+> >>> +                     kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
+> >>> +                                     ctx->addr, ctx->level);
+> >> Small indent hint. The ctx->addr can align with __kvm_tlb_flush_vmid_i=
+pa.
+> >>
+> > Ah, yes. I'll adjust this if I send out a v8.
+> >
+> > Thank you.
+> > Raghavendra
+> >> Thanks,
+> >> Shaoqin
+> >>>        }
+> >>>
+> >>>        mm_ops->put_page(ctx->ptep);
+> >>> @@ -1070,7 +1108,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgt=
+able *pgt, u64 addr, u64 size,
+> >>>    static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx =
+*ctx,
+> >>>                               enum kvm_pgtable_walk_flags visit)
+> >>>    {
+> >>> -     struct kvm_pgtable *pgt =3D ctx->arg;
+> >>> +     struct stage2_unmap_data *unmap_data =3D ctx->arg;
+> >>> +     struct kvm_pgtable *pgt =3D unmap_data->pgt;
+> >>>        struct kvm_s2_mmu *mmu =3D pgt->mmu;
+> >>>        struct kvm_pgtable_mm_ops *mm_ops =3D ctx->mm_ops;
+> >>>        kvm_pte_t *childp =3D NULL;
+> >>> @@ -1098,7 +1137,7 @@ static int stage2_unmap_walker(const struct kvm=
+_pgtable_visit_ctx *ctx,
+> >>>         * block entry and rely on the remaining portions being faulte=
+d
+> >>>         * back lazily.
+> >>>         */
+> >>> -     stage2_put_pte(ctx, mmu, mm_ops);
+> >>> +     stage2_unmap_put_pte(ctx, mmu, mm_ops);
+> >>>
+> >>>        if (need_flush && mm_ops->dcache_clean_inval_poc)
+> >>>                mm_ops->dcache_clean_inval_poc(kvm_pte_follow(ctx->old=
+, mm_ops),
+> >>> @@ -1112,13 +1151,23 @@ static int stage2_unmap_walker(const struct k=
+vm_pgtable_visit_ctx *ctx,
+> >>>
+> >>>    int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u6=
+4 size)
+> >>>    {
+> >>> +     int ret;
+> >>> +     struct stage2_unmap_data unmap_data =3D {
+> >>> +             .pgt =3D pgt,
+> >>> +             .defer_tlb_flush_init =3D __stage2_unmap_defer_tlb_flus=
+h(pgt),
+> >>> +     };
+> >>>        struct kvm_pgtable_walker walker =3D {
+> >>>                .cb     =3D stage2_unmap_walker,
+> >>> -             .arg    =3D pgt,
+> >>> +             .arg    =3D &unmap_data,
+> >>>                .flags  =3D KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_T=
+ABLE_POST,
+> >>>        };
+> >>>
+> >>> -     return kvm_pgtable_walk(pgt, addr, size, &walker);
+> >>> +     ret =3D kvm_pgtable_walk(pgt, addr, size, &walker);
+> >>> +     if (stage2_unmap_defer_tlb_flush(&unmap_data))
+> >>> +             /* Perform the deferred TLB invalidations */
+> >>> +             kvm_tlb_flush_vmid_range(pgt->mmu, addr, size);
+> >>> +
+> >>> +     return ret;
+> >>>    }
+> >>>
+> >>>    struct stage2_attr_data {
+> >>
+> >> --
+> >> Shaoqin
+> >>
+> >
+>
+> --
+> Shaoqin
+>
