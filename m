@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EEE7623F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ED97623F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjGYUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        id S231201AbjGYUw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbjGYUvl (ORCPT
+        with ESMTP id S230075AbjGYUw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:51:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F04B6;
-        Tue, 25 Jul 2023 13:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=BI6vld8daiZZqGCYXywTiEB06qS0pOcYQzPLq+kIgpA=; b=kBoM0QDDYWvRihqO9OYZiObhMj
-        GlyRzTCZ7/WdvW06YOS6WhtEsgXu4P1dKW10wb/QbeKXBO9YvNSYtgD9VbSTzkwB612KtZK3+NKZL
-        PUCberLDUcsiNFgFwoVPx1l3HnofLB9hYRk0dGE1wJYC/WBqIRrlZGzJxeCWlpE/oM/6a8jfZLd2g
-        A20JUg5vvH4JUfv17i+QZRPSFeyFT74AQc8YT84WpVzZ3L4JbMNVTsJtZRXTSqPKDs3fi93vJfSuq
-        p0PQYB8/Rg0lTnL28cf9yteCsl9N6+X6L1vjKxXoTcp+pM4nbyjbr8AEp1iNmusW8JYUFcNJaqS+G
-        ryDERQsA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOP0M-008Te2-2y;
-        Tue, 25 Jul 2023 20:51:40 +0000
-Message-ID: <10fbf60c-f7fe-d2ca-3d16-488453a88889@infradead.org>
-Date:   Tue, 25 Jul 2023 13:51:37 -0700
+        Tue, 25 Jul 2023 16:52:26 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAB6B6;
+        Tue, 25 Jul 2023 13:52:23 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1690318323thbmfm5x
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 04:52:02 +0800 (CST)
+X-QQ-SSF: 01200000002000D0X000B00A0000000
+X-QQ-FEAT: dKvkn8qoLrEfuiEGb04Gt0hhYl6ZZfsg2nQWwpGYNORZ45+H0KEVkeSopkUAr
+        wFohsahUk0FwqtjhVwPdRLh1GgccUmJE1fNAdswGJruLN9G7y9qPe9JOJXhOcRuACwDEC9X
+        S/3DFqSBWU64voxitA7DMRmEdLJc+UzzPDxECC/RvXFpVa6lAAq0TgetDizqfLtrvjLXckq
+        bMGlw7X/Z2euP09rhfbh3W2WyyekjFJWDjm9hTyXGT7LW/yAioqOivdP9DhL7bpmw5k2uhx
+        sMnz97qf7sIH15yMkMiyI3+bhNYyXEB9Tu8xEesMpPi/Cg2XOkV4EfYGNkzhP1lOF7N0o8x
+        8AOAuQfPOzxLyExmEeSBPoQsbI8oCRx7OqxWrASTQbSNXiQAlZLEUlWv4e8b1bb15VxmHJZ
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11414832214700930819
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     ammarfaizi2@gnuweeb.org, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        svens@linux.ibm.com, thomas@t-8ch.de
+Subject: Re: [PATCH v1 1/8] tools/nolibc: add support for powerpc
+Date:   Wed, 26 Jul 2023 04:52:02 +0800
+Message-Id: <20230725205202.36788-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230725182736.GA24943@1wt.eu>
+References: <20230725182736.GA24943@1wt.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Documentation: devices.txt: reconcile serial/ucc_uart
- minor numers
-Content-Language: en-US
-To:     Timur Tabi <timur@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Kumar Gala <galak@kernel.crashing.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-References: <20230724063341.28198-1-rdunlap@infradead.org>
- <CAOZdJXVuvVNzbyTLSiqRoSNdU0aprHoxozZzBahFUghqLvL2kw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAOZdJXVuvVNzbyTLSiqRoSNdU0aprHoxozZzBahFUghqLvL2kw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Willy,
 
+> On Tue, Jul 25, 2023 at 07:02:55PM +0800, Zhangjin Wu wrote:
+> > > > With this new syscall.h, to support my_syscall<N>, the arch-<ARCH>.h
+> > > > will only require to add ~10 lines to define their own syscall
+> > > > instructions, registers and clobberlist, which looks like this (for
+> > > > powerpc):
+> > > > 
+> > > >     #define _NOLIBC_SYSCALL_CALL "sc; bns+ 1f; neg  %0, %0; 1:"
+> > > > 
+> > > >     /* PowerPC doesn't always restore r3-r12 for us */
+> > > >     #define _NOLIBC_SYSCALL_CLOBBERLIST 
+> > > >     	"memory", "cr0", "r12", "r11", "r10", "r9", "r8", "r7", "r6", "r5", "r4"
+> > > > 
+> > > >     /* PowerPC write GPRS in kernel side but not restore them */
+> > > >     #define _NOLIBC_GPRS_AS_OUTPUT_OPERANDS
+> > > >     
+> > > >     #define _NOLIBC_REG_NUM  "r0"
+> > > >     #define _NOLIBC_REG_RET  "r3"
+> > > >     #define _NOLIBC_REG_arg1 "r3"
+> > > >     #define _NOLIBC_REG_arg2 "r4"
+> > > >     #define _NOLIBC_REG_arg3 "r5"
+> > > >     #define _NOLIBC_REG_arg4 "r6"
+> > > >     #define _NOLIBC_REG_arg5 "r7"
+> > > >     #define _NOLIBC_REG_arg6 "r8"
+> > > > 
+> > > > Before:
+> > > > 
+> > > >     $ ls tools/include/nolibc/arch-*.h | while read f; do git show dfef4fc45d5713eb23d87f0863aff9c33bd4bfaf:$f 2>/dev/null | wc -l | tr -d '\n'; echo " $f"; done
+> > > >     157 tools/include/nolibc/arch-aarch64.h
+> > > >     199 tools/include/nolibc/arch-arm.h
+> > > >     178 tools/include/nolibc/arch-i386.h
+> > > >     164 tools/include/nolibc/arch-loongarch.h
+> > > >     195 tools/include/nolibc/arch-mips.h
+> > > >     0 tools/include/nolibc/arch-powerpc.h
+> > > >     160 tools/include/nolibc/arch-riscv.h
+> > > >     186 tools/include/nolibc/arch-s390.h
+> > > >     176 tools/include/nolibc/arch-x86_64.h
+> > > > 
+> > > > After:
+> > > > 
+> > > >     $ wc -l tools/include/nolibc/arch-*.h
+> > > >        54 tools/include/nolibc/arch-aarch64.h
+> > > >        84 tools/include/nolibc/arch-arm.h
+> > > >        90 tools/include/nolibc/arch-i386.h                        /* the last one use stack to pass arguments, reserve as-is */
+> > > >        59 tools/include/nolibc/arch-loongarch.h
+> > > >       120 tools/include/nolibc/arch-mips.h                        /* the last two use stack to pass arguments, reserve as-is */
+> > > >        73 tools/include/nolibc/arch-powerpc.h
+> > > >        58 tools/include/nolibc/arch-riscv.h
+> > > >        87 tools/include/nolibc/arch-s390.h
+> > > >        67 tools/include/nolibc/arch-x86_64.h
+> > > > 
+> > > > syscall.h itself:
+> > > > 
+> > > >     $ wc -l tools/include/nolibc/syscall.h
+> > > >     112 tools/include/nolibc/syscall.h 
+> > > 
+>
+> [...]
+>
+> Hoping this clarifies my position on this.
+>
 
-On 7/25/23 13:38, Timur Tabi wrote:
-> On Mon, Jul 24, 2023 at 1:33 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Reconcile devices.txt with serial/ucc_uart.c regarding device number
->> assignments. ucc_uart.c supports 4 ports and uses minor devnums
->> 46-49, so update devices.txt with that info.
->> Then update ucc_uart.c's reference to the location of the devices.txt
->> list in the kernel source tree.
->>
->> Fixes: d7584ed2b994 ("[POWERPC] qe-uart: add support for Freescale QUICCEngine UART")
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Timur Tabi <timur@kernel.org>
->> Cc: Kumar Gala <galak@kernel.crashing.org>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Jiri Slaby <jirislaby@kernel.org>
->> Cc: linux-serial@vger.kernel.org
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Cc: linux-doc@vger.kernel.org
-> 
-> Acked-by: Timur Tabi <timur@kernel.org>
-> 
-> One thing does concern me.  The UCC UART driver piggy-backs on the CPM
-> driver's layout (see cpm_uart.h), but apparently CPM UART supports 6
-> devices, not four:
-> 
-> #define UART_NR        fs_uart_nr
-> 
-> where fs_uart_nr is defined in enum fs_uart_id.
-> 
-> Unfortunately, it's been so long since I've touched this code, I'm not
-> sure whether this means anything.
+Willy, Thanks very much for your detailed reply, based on your reply, I
+plan to renew the powerpc patchset itself at first since both you and
+Thomas have already reviewed it carefully.
 
-If CPM UART code ever worked with > 4 ports, it probably just used minor devnums
-that were not allocated to it.
+After that, I will come back to read your reply again and discuss more
+about our new syscall.h, I still think it is something valuable to take
+a look at, although something about it still need more attention,
+perhaps a RFC patchset is better for more discuss, it may show us the
+profile easily.
 
-Also, it looks like the CPU UART part of Documentation/admin-guide/devices.txt
-needs to be updated:
+Best regards,
+Zhangjin
 
-		 46 = /dev/cucpm0		Callout device for ttyCPM0
-		    ...
-		 49 = /dev/cucpm5		Callout device for ttyCPM5
-
-The driver must use some tricks to get 6 ports into 4 devnums. :)
-
-
--- 
-~Randy
+> Thanks,
+> Willy
