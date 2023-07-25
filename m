@@ -2,377 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADB876063F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA93760603
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbjGYDET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        id S229848AbjGYCtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjGYDEL (ORCPT
+        with ESMTP id S231394AbjGYCtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:04:11 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2055.outbound.protection.outlook.com [40.107.101.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E955E69;
-        Mon, 24 Jul 2023 20:04:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EKLXeaOzN5erKof+OaKfFE/e9GrGYc6aqUXMHb4Sdwar9H88PEYFaWOL/pT7DepXficU+KPir2KkU1Wd/WNRdG3LomaEN2iKD/iO4Om06ELi/278mRbEK9mHjLOlRPggwB1mUHQZg/H1tXwNcTYz7l4Z2LVud25SPs0Yip6LZq60VEVcCoA2FY5Kx/polw3F+LlD6RX8IebFJN1VT3cEffF20VW7uAx4xc6Rq7+SZodffAf/tROue4Ns2e4S51J3XiDS8PzpV/ia48Wd/pumSd6H3+qkm5OLTREq0Y0cTCcu9DcVdd377J5PHShdxtQeVv+xGyAFxYyPWidrOKx0hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZrnHwoVVPVOHFa/vG7K74qUD/AjrS9Zw6Wn2DcSs/8o=;
- b=EX/7Oy0vWBEI3lf7YkS22CVH+FwbN01OFQdhdynDsH56b7BqrtPDMuCVRaEz8BnoHOTUbX4mqN2ubn88ptKgSQTDVSyK0qtJLNHqxND4xd2gX40mx1kn+2JxDVvEJeWp2UlDI+YW54PFOt0KuF0mLxXPLN4k19R7DWcPhB8BFUNrgCYRCowRmvAyI2Ydada42XP78BkTC5jwn+C8zCpbyIwBX9f8mTHz+41lm3VN8E+MPz6wel/6yGXLxJd3ziOpM4mux+1l5LmkBu4sRugMMMT4ZS+qMHoPvqFPnpmHLgZ83oRRhdOZH3TotL1gnU/B2eB5vt/uuMOuL1vek176Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZrnHwoVVPVOHFa/vG7K74qUD/AjrS9Zw6Wn2DcSs/8o=;
- b=btnDyBBRu1tpmkusZ5riWiOA16XZZmIDE8C4czOa5VeXwS6tNHNiMzz3W8bAL2H4KEN+rdS/WxzBitcu5oeBHysRmgBxlPGmFy5/zNIGwsggX8UAxXO8J/oQhJNcFutafbgGit346LKfd34M+ISTmmZ50WFg4jIyqGT/NMOPMq11CZGd9v4hpxhjF45tpR0ErEhylcCFKeD2iBLxDNA385DN+GuiS/xrcQIQG7RqYn7DM1MHjxAoazECzc1G3I9kMrf9oCx3caHXYXs5mkPhAd4k1lqF6IhU1Nt+09DRHYK8jxUzx2rtlEc24VIlPZa2rtvvg8G5Op2HIDkzPQSrqA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by SA1PR12MB8917.namprd12.prod.outlook.com (2603:10b6:806:386::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 03:04:05 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::c833:9a5c:258e:3351]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::c833:9a5c:258e:3351%4]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 03:04:05 +0000
-References: <20230721012932.190742-1-ying.huang@intel.com>
- <20230721012932.190742-4-ying.huang@intel.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH RESEND 3/4] acpi, hmat: calculate abstract distance with
- HMAT
-Date:   Tue, 25 Jul 2023 12:45:01 +1000
-In-reply-to: <20230721012932.190742-4-ying.huang@intel.com>
-Message-ID: <87ila8zo80.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY2PR01CA0040.ausprd01.prod.outlook.com
- (2603:10c6:1:15::28) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|SA1PR12MB8917:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e978a9c-c70e-4120-71ca-08db8cbbce47
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UqueYIuHUtG0ipGFjkRHwQd4Bq5SQO/2Q4jWjRvgfCpOatipGTdFyOLjJ8HDyErS3lSp85BcCPllC+8RpLQhFgqyl5rfbJz0ufodoM2AX2B5gurBVPCEBkPBiAoDM8uWjU5OeSoNwKQmSCv1vk9Ree2izsn9ohyBx/KUa8El6EtIKpREg7j9+qtRcBbYkcL/sgou2c2wQoIBL0zpOyWvOR7unO6T8niVphSMzxmd7oPlR2MJYRUEeqsxCR8JNvTN5sGLt4NqSj7Dpu8n7CNKeSC37okZDEmmIAu+4OMnydx9gqo84njzE1fm2JHcsv3P0ZR1qIf6ESG14GRODFaA3GfU31+vcCmAHQuRAACZhDlciTrVRm9dqdzj2IWZFIfuaTfsgVvjRorFXnG+ThAXgliIOQN7un8O2V3Le053NvT13EvvA9/kM6v/VqtenST5VVobFF9Z/1duTeuSkCKS/6mv7lcEs8N/mCAyJDmzW4kAgUCkgFpWE+ogIxU/C1RHr1a7o9Nx14b6HNximqMNexclkwt8mZ5tUR8xTfPYU1tJTDJOctUq7CEucy8Yunh9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(451199021)(2906002)(8676002)(8936002)(7416002)(5660300002)(41300700001)(316002)(4326008)(6916009)(54906003)(66556008)(66476007)(66946007)(6486002)(6512007)(9686003)(186003)(26005)(478600001)(6666004)(6506007)(86362001)(83380400001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kbEYtdWz6SOpcuesybcq8tTBFYeWV8mlmkfa8AJRiEljkTPWo/Tbe1CeMYlj?=
- =?us-ascii?Q?iuds5UTKcDMrU5HZr2bj8JiEKNIYO7kbmtg7DHumz6KXOfoQvvIXlVpBnwGs?=
- =?us-ascii?Q?1BwF0ODZPOE1q8OAasU4TOpFUQpB6vQCovNyEo1St1EfLtCXkesitkjvVX62?=
- =?us-ascii?Q?XLKM3vsYzjUjPXxIcopqlP//10VJ8dDaEz4jm2/hfbwUJBA/v2KX7/svC2U0?=
- =?us-ascii?Q?0dPN0HvcfX4sSZ6BQA8VGqg9M5GFqS6wc/kVRJDMilHZr+1yQsZbgslH2iW0?=
- =?us-ascii?Q?cZzUXkVg9fBZARi4Ut14RAr00DWbfQxfwfocNvzXi/XfvZ/WR+7RGigSiNR/?=
- =?us-ascii?Q?AGNXqOIpZqTWU62g+nlnY/+wKjHJ/2R5bPclxB7WfxD7HcKbz+fTkVEbt/Go?=
- =?us-ascii?Q?8KE4oSUV6RC4JvoRPBsl2WzNvDKk2zQO0kSesoXIFtMFJsahauKZwK68dC/P?=
- =?us-ascii?Q?ilPMjinrEtYcqrr+OFbU6OsTPGbpLna0YZJwuX6GAWHr7/KTMLyquZsahZRG?=
- =?us-ascii?Q?+tot+pBPUfC1ZcVUAwdvESD+4e4IlOdFWQO3w0ZG97Q3BZqk9OjEBWyyHETK?=
- =?us-ascii?Q?6QAvLHh2FrAd/hU/qioXe5lMJnW8VCkO5w4JpiSNhNVa+IZXw4B1Uc2ukbht?=
- =?us-ascii?Q?VF7w6RDNZicBCiEdg6qhWeX8ROsRtZPgzrCQ27mPx0nYHy+/woVC2MqyRY7t?=
- =?us-ascii?Q?rVM6pPh6/pUeVHjwPnuwH3qK6rTK60ucCHSw5WgCIoIVW4BlqIdj+XwjXZ24?=
- =?us-ascii?Q?KploraesQeRqqycHDds46UCUpDshxEcYpTYLwHFzT/d239GAQnELP9Tzf+qZ?=
- =?us-ascii?Q?L4O9orZNI+Q+lvZxTIelv6bOfnUtfUmS1ETEPUVSL0DfyXc0cA2NKQL5qaXV?=
- =?us-ascii?Q?u+sPQzsyw3J2H+3lgGykIah01d76AX/30JxWcvv8piQvFupsbDX/9seTcupK?=
- =?us-ascii?Q?21iVD77DjlSNA+9cINA8J1xAiIAO0F4P6mbz6tuY0Le8O1Ery7YFUphB4GPn?=
- =?us-ascii?Q?Vt010fX20B5SC6DfSDXuEKilWjixoh+diacHS8J+UYC7mv70Ltu/sfs68vD3?=
- =?us-ascii?Q?gmCKauNgd5eKonryOQrxNCbsdDf3wX1ubvO7o0dKOA4mDWKfbKSehFj/m8rq?=
- =?us-ascii?Q?nOpwsy0/8Z+2XLsdPcx67s1oNJT/QHnxgoaC14xo/cF8KEEnWpQOipszwV51?=
- =?us-ascii?Q?BNqVLNyGT1wzm5DB3NjGUMlnyVFXuCEcqm8coYSD5l7kTCIBqA6nf7VowFm+?=
- =?us-ascii?Q?d5o9DvovIR2HaTPgAuMYbYm/cEuNZWWnTjT2VcniaIfByZAfQUGBAbHKOVzb?=
- =?us-ascii?Q?KZ8AvFlPz4fozPcWNEu2W6M7cjW91v678mDjWTi3CPiQV9R89/fmagsuXOBQ?=
- =?us-ascii?Q?f98AqUOPGwbCxw/rchqqNY6UsNxIHrCWlmM4Zjzk7pfGSBHK9oFw5PVxdhcO?=
- =?us-ascii?Q?hR+lXrQddTdQF1wmSgEJFVRXQg59lnuO1UWSLDJT/D1hpQ5KHVMpZkq8yitZ?=
- =?us-ascii?Q?ANa5f/aw0SeqO4/UfT4QfqW1ZoBXXWF8Z3zVDTsptXwPiWDtrjYbGdBimBDb?=
- =?us-ascii?Q?UyaHZk5ajClLqjt+VL7Q03H/EAX8vybYr1loR21u?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e978a9c-c70e-4120-71ca-08db8cbbce47
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 03:04:05.2505
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uJ8nyMocue4MAbe1YOYGwSxS0o72NVvQIXmmQZfu9xMtni4UkpXwQ0x5tRg7UzXhTQ6hPMu3PBgMRrrGs7VkCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8917
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 24 Jul 2023 22:49:01 -0400
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 98C91198E;
+        Mon, 24 Jul 2023 19:48:21 -0700 (PDT)
+Received: from localhost.localdomain (unknown [125.119.240.231])
+        by mail-app2 (Coremail) with SMTP id by_KCgDHHRhMN79knIaCCg--.11044S4;
+        Tue, 25 Jul 2023 10:45:32 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     lduncan@suse.com, cleech@redhat.com, michael.christie@oracle.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        vikas.chaudhary@qlogic.com, JBottomley@Parallels.com,
+        mchan@broadcom.com, benli@broadcom.com, ogerlitz@voltaire.com,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v2 1/2] scsi: iscsi: Add length check for nlattr payload
+Date:   Tue, 25 Jul 2023 10:45:29 +0800
+Message-Id: <20230725024529.428311-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgDHHRhMN79knIaCCg--.11044S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3CFyfXFyxur15WrW7uF1xZrb_yoWDtFW8pF
+        y3Was8JrWUtF4xuF1fXr4avrWavFWrW39rtFy8K3s5Gw4qyry5J3W8KwnY9FW3JrWDZ34r
+        G3yUK3Z5WF1UK37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUCg4hUUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current NETLINK_ISCSI netlink parsing loop checks every nlmsg to
+make sure the length is bigger than the sizeof(struct iscsi_uevent) and
+then calls iscsi_if_recv_msg(...).
 
-Huang Ying <ying.huang@intel.com> writes:
+  nlh = nlmsg_hdr(skb);
+  if (nlh->nlmsg_len < sizeof(*nlh) + sizeof(*ev) ||
+    skb->len < nlh->nlmsg_len) {
+    break;
+  }
+  ...
+  err = iscsi_if_recv_msg(skb, nlh, &group);
 
-> A memory tiering abstract distance calculation algorithm based on ACPI
-> HMAT is implemented.  The basic idea is as follows.
->
-> The performance attributes of system default DRAM nodes are recorded
-> as the base line.  Whose abstract distance is MEMTIER_ADISTANCE_DRAM.
-> Then, the ratio of the abstract distance of a memory node (target) to
-> MEMTIER_ADISTANCE_DRAM is scaled based on the ratio of the performance
-> attributes of the node to that of the default DRAM nodes.
+Hence, in iscsi_if_recv_msg, the nlmsg_data can be safely converted to
+iscsi_uevent as the length is already checked.
 
-The problem I encountered here with the calculations is that HBM memory
-ended up in a lower-tiered node which isn't what I wanted (at least when
-that HBM is attached to a GPU say).
+However, in the following parsing, the length of nlattr payload is never
+checked before the payload is converted to other data structures in some
+consumers. A bad one for example is function iscsi_set_path(...) who
+converts the payload to type iscsi_path without any checks.
 
-I suspect this is because the calculations are based on the CPU
-point-of-view (access1) which still sees lower bandwidth to remote HBM
-than local DRAM, even though the remote GPU has higher bandwidth access
-to that memory. Perhaps we need to be considering access0 as well?
-Ie. HBM directly attached to a generic initiator should be in a higher
-tier regardless of CPU access characteristics?
+  params = (struct iscsi_path *)((char *)ev + sizeof(*ev));
 
-That said I'm not entirely convinced the HMAT tables I'm testing against
-are accurate/complete.
+A good one for example is function iscsi_if_transport_conn(...) who
+checks the pdu_len.
 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Alistair Popple <apopple@nvidia.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Davidlohr Bueso <dave@stgolabs.net>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Rafael J Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/acpi/numa/hmat.c     | 138 ++++++++++++++++++++++++++++++++++-
->  include/linux/memory-tiers.h |   2 +
->  mm/memory-tiers.c            |   2 +-
->  3 files changed, 140 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
-> index 2dee0098f1a9..306a912090f0 100644
-> --- a/drivers/acpi/numa/hmat.c
-> +++ b/drivers/acpi/numa/hmat.c
-> @@ -24,6 +24,7 @@
->  #include <linux/node.h>
->  #include <linux/sysfs.h>
->  #include <linux/dax.h>
-> +#include <linux/memory-tiers.h>
->  
->  static u8 hmat_revision;
->  static int hmat_disable __initdata;
-> @@ -759,6 +760,137 @@ static int hmat_callback(struct notifier_block *self,
->  	return NOTIFY_OK;
->  }
->  
-> +static int hmat_adistance_disabled;
-> +static struct node_hmem_attrs default_dram_attrs;
-> +
-> +static void dump_hmem_attrs(struct node_hmem_attrs *attrs)
-> +{
-> +	pr_cont("read_latency: %u, write_latency: %u, read_bandwidth: %u, write_bandwidth: %u\n",
-> +		attrs->read_latency, attrs->write_latency,
-> +		attrs->read_bandwidth, attrs->write_bandwidth);
-> +}
-> +
-> +static void disable_hmat_adistance_algorithm(void)
-> +{
-> +	hmat_adistance_disabled = true;
-> +}
-> +
-> +static int hmat_init_default_dram_attrs(void)
-> +{
-> +	struct memory_target *target;
-> +	struct node_hmem_attrs *attrs;
-> +	int nid, pxm;
-> +	int nid_dram = NUMA_NO_NODE;
-> +
-> +	if (default_dram_attrs.read_latency +
-> +	    default_dram_attrs.write_latency != 0)
-> +		return 0;
-> +
-> +	if (!default_dram_type)
-> +		return -EIO;
-> +
-> +	for_each_node_mask(nid, default_dram_type->nodes) {
-> +		pxm = node_to_pxm(nid);
-> +		target = find_mem_target(pxm);
-> +		if (!target)
-> +			continue;
-> +		attrs = &target->hmem_attrs[1];
-> +		if (nid_dram == NUMA_NO_NODE) {
-> +			if (attrs->read_latency + attrs->write_latency == 0 ||
-> +			    attrs->read_bandwidth + attrs->write_bandwidth == 0) {
-> +				pr_info("hmat: invalid hmem attrs for default DRAM node: %d,\n",
-> +					nid);
-> +				pr_info("  ");
-> +				dump_hmem_attrs(attrs);
-> +				pr_info("  disable hmat based abstract distance algorithm.\n");
-> +				disable_hmat_adistance_algorithm();
-> +				return -EIO;
-> +			}
-> +			nid_dram = nid;
-> +			default_dram_attrs = *attrs;
-> +			continue;
-> +		}
-> +
-> +		/*
-> +		 * The performance of all default DRAM nodes is expected
-> +		 * to be same (that is, the variation is less than 10%).
-> +		 * And it will be used as base to calculate the abstract
-> +		 * distance of other memory nodes.
-> +		 */
-> +		if (abs(attrs->read_latency - default_dram_attrs.read_latency) * 10 >
-> +		    default_dram_attrs.read_latency ||
-> +		    abs(attrs->write_latency - default_dram_attrs.write_latency) * 10 >
-> +		    default_dram_attrs.write_latency ||
-> +		    abs(attrs->read_bandwidth - default_dram_attrs.read_bandwidth) * 10 >
-> +		    default_dram_attrs.read_bandwidth) {
-> +			pr_info("hmat: hmem attrs for DRAM nodes mismatch.\n");
-> +			pr_info("  node %d:", nid_dram);
-> +			dump_hmem_attrs(&default_dram_attrs);
-> +			pr_info("  node %d:", nid);
-> +			dump_hmem_attrs(attrs);
-> +			pr_info("  disable hmat based abstract distance algorithm.\n");
-> +			disable_hmat_adistance_algorithm();
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int hmat_calculate_adistance(struct notifier_block *self,
-> +				    unsigned long nid, void *data)
-> +{
-> +	static DECLARE_BITMAP(p_nodes, MAX_NUMNODES);
-> +	struct memory_target *target;
-> +	struct node_hmem_attrs *attrs;
-> +	int *adist = data;
-> +	int pxm;
-> +
-> +	if (hmat_adistance_disabled)
-> +		return NOTIFY_OK;
-> +
-> +	pxm = node_to_pxm(nid);
-> +	target = find_mem_target(pxm);
-> +	if (!target)
-> +		return NOTIFY_OK;
-> +
-> +	if (hmat_init_default_dram_attrs())
-> +		return NOTIFY_OK;
-> +
-> +	mutex_lock(&target_lock);
-> +	hmat_update_target_attrs(target, p_nodes, 1);
-> +	mutex_unlock(&target_lock);
-> +
-> +	attrs = &target->hmem_attrs[1];
-> +
-> +	if (attrs->read_latency + attrs->write_latency == 0 ||
-> +	    attrs->read_bandwidth + attrs->write_bandwidth == 0)
-> +		return NOTIFY_OK;
-> +
-> +	/*
-> +	 * The abstract distance of a memory node is in direct
-> +	 * proportion to its memory latency (read + write) and
-> +	 * inversely proportional to its memory bandwidth (read +
-> +	 * write).  The abstract distance, memory latency, and memory
-> +	 * bandwidth of the default DRAM nodes are used as the base.
-> +	 */
-> +	*adist = MEMTIER_ADISTANCE_DRAM *
-> +		(attrs->read_latency + attrs->write_latency) /
-> +		(default_dram_attrs.read_latency +
-> +		 default_dram_attrs.write_latency) *
-> +		(default_dram_attrs.read_bandwidth +
-> +		 default_dram_attrs.write_bandwidth) /
-> +		(attrs->read_bandwidth + attrs->write_bandwidth);
-> +
-> +	return NOTIFY_STOP;
-> +}
-> +
-> +static __meminitdata struct notifier_block hmat_adist_nb =
-> +{
-> +	.notifier_call = hmat_calculate_adistance,
-> +	.priority = 100,
-> +};
-> +
->  static __init void hmat_free_structures(void)
->  {
->  	struct memory_target *target, *tnext;
-> @@ -801,6 +933,7 @@ static __init int hmat_init(void)
->  	struct acpi_table_header *tbl;
->  	enum acpi_hmat_type i;
->  	acpi_status status;
-> +	int usage;
->  
->  	if (srat_disabled() || hmat_disable)
->  		return 0;
-> @@ -841,8 +974,11 @@ static __init int hmat_init(void)
->  	hmat_register_targets();
->  
->  	/* Keep the table and structures if the notifier may use them */
-> -	if (!hotplug_memory_notifier(hmat_callback, HMAT_CALLBACK_PRI))
-> +	usage = !hotplug_memory_notifier(hmat_callback, HMAT_CALLBACK_PRI);
-> +	usage += !register_mt_adistance_algorithm(&hmat_adist_nb);
-> +	if (usage)
->  		return 0;
-> +
->  out_put:
->  	hmat_free_structures();
->  	acpi_put_table(tbl);
-> diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-> index c6429e624244..9377239c8d34 100644
-> --- a/include/linux/memory-tiers.h
-> +++ b/include/linux/memory-tiers.h
-> @@ -33,6 +33,7 @@ struct memory_dev_type {
->  
->  #ifdef CONFIG_NUMA
->  extern bool numa_demotion_enabled;
-> +extern struct memory_dev_type *default_dram_type;
->  struct memory_dev_type *alloc_memory_type(int adistance);
->  void destroy_memory_type(struct memory_dev_type *memtype);
->  void init_node_memory_type(int node, struct memory_dev_type *default_type);
-> @@ -64,6 +65,7 @@ static inline bool node_is_toptier(int node)
->  #else
->  
->  #define numa_demotion_enabled	false
-> +#define default_dram_type	NULL
->  /*
->   * CONFIG_NUMA implementation returns non NULL error.
->   */
-> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> index 1e55fbe2ad51..9a734ef2edfb 100644
-> --- a/mm/memory-tiers.c
-> +++ b/mm/memory-tiers.c
-> @@ -37,7 +37,7 @@ struct node_memory_type_map {
->  static DEFINE_MUTEX(memory_tier_lock);
->  static LIST_HEAD(memory_tiers);
->  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
-> -static struct memory_dev_type *default_dram_type;
-> +struct memory_dev_type *default_dram_type;
->  
->  static struct bus_type memory_tier_subsys = {
->  	.name = "memory_tiering",
+  pdu_len = nlh->nlmsg_len - sizeof(*nlh) - sizeof(*ev);
+  if ((ev->u.send_pdu.hdr_size > pdu_len) ..
+    err = -EINVAL;
+
+To sum up, some consumers code called in iscsi_if_recv_msg do not check
+the length of the data (see below picture)  and directly converts the
+data to other structure. This could result in an out-of-bound read and
+heap dirty data leakage.
+
+             _________  nlmsg_len(nlh) _______________
+            /                                         \
++----------+--------------+---------------------------+
+| nlmsghdr | iscsi_uevent |          data              |
++----------+--------------+---------------------------+
+                          \                          /
+                         iscsi_uevent->u.set_param.len
+
+This commit fixs the disscussed issue by adding the length check before
+accessing it. To cleanup the code, an additional parameter named rlen is
+added into many consumer functions prototype. The rlen is calculated in
+the beginning of the iscsi_if_recv_msg which could also reduces
+unnecessary duplicated calculation.
+
+Fixes: ac20c7bf070d ("[SCSI] iscsi_transport: Added Ping support")
+Fixes: 43514774ff40 ("[SCSI] iscsi class: Add new NETLINK_ISCSI messages for cnic/bnx2i driver.")
+Fixes: 1d9bf13a9cf9 ("[SCSI] iscsi class: add iscsi host set param event")
+Fixes: 01cb225dad8d ("[SCSI] iscsi: add target discvery event to transport class")
+Fixes: 264faaaa1254 ("[SCSI] iscsi: add transport end point callbacks")
+Fixes: fd7255f51a13 ("[SCSI] iscsi: add sysfs attrs for uspace sync up")
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+V1 -> V2: resend with correct CC list
+
+ drivers/scsi/scsi_transport_iscsi.c | 72 +++++++++++++++++------------
+ 1 file changed, 43 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index e527ece12453..62b24f1c0232 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -3014,14 +3014,15 @@ iscsi_if_destroy_conn(struct iscsi_transport *transport, struct iscsi_uevent *ev
+ }
+ 
+ static int
+-iscsi_if_set_param(struct iscsi_transport *transport, struct iscsi_uevent *ev)
++iscsi_if_set_param(struct iscsi_transport *transport, struct iscsi_uevent *ev, u32 rlen)
+ {
+ 	char *data = (char*)ev + sizeof(*ev);
+ 	struct iscsi_cls_conn *conn;
+ 	struct iscsi_cls_session *session;
+ 	int err = 0, value = 0, state;
+ 
+-	if (ev->u.set_param.len > PAGE_SIZE)
++	if (ev->u.set_param.len > rlen ||
++	    ev->u.set_param.len > PAGE_SIZE)
+ 		return -EINVAL;
+ 
+ 	session = iscsi_session_lookup(ev->u.set_param.sid);
+@@ -3118,7 +3119,7 @@ static int iscsi_if_ep_disconnect(struct iscsi_transport *transport,
+ 
+ static int
+ iscsi_if_transport_ep(struct iscsi_transport *transport,
+-		      struct iscsi_uevent *ev, int msg_type)
++		      struct iscsi_uevent *ev, int msg_type, u32 rlen)
+ {
+ 	struct iscsi_endpoint *ep;
+ 	int rc = 0;
+@@ -3126,7 +3127,10 @@ iscsi_if_transport_ep(struct iscsi_transport *transport,
+ 	switch (msg_type) {
+ 	case ISCSI_UEVENT_TRANSPORT_EP_CONNECT_THROUGH_HOST:
+ 	case ISCSI_UEVENT_TRANSPORT_EP_CONNECT:
+-		rc = iscsi_if_ep_connect(transport, ev, msg_type);
++		if (rlen < sizeof(struct sockaddr))
++			rc = -EINVAL;
++		else
++			rc = iscsi_if_ep_connect(transport, ev, msg_type);
+ 		break;
+ 	case ISCSI_UEVENT_TRANSPORT_EP_POLL:
+ 		if (!transport->ep_poll)
+@@ -3150,12 +3154,15 @@ iscsi_if_transport_ep(struct iscsi_transport *transport,
+ 
+ static int
+ iscsi_tgt_dscvr(struct iscsi_transport *transport,
+-		struct iscsi_uevent *ev)
++		struct iscsi_uevent *ev, u32 rlen)
+ {
+ 	struct Scsi_Host *shost;
+ 	struct sockaddr *dst_addr;
+ 	int err;
+ 
++	if (rlen < sizeof(*dst_addr))
++		return -EINVAL;
++
+ 	if (!transport->tgt_dscvr)
+ 		return -EINVAL;
+ 
+@@ -3176,7 +3183,7 @@ iscsi_tgt_dscvr(struct iscsi_transport *transport,
+ 
+ static int
+ iscsi_set_host_param(struct iscsi_transport *transport,
+-		     struct iscsi_uevent *ev)
++		     struct iscsi_uevent *ev, u32 rlen)
+ {
+ 	char *data = (char*)ev + sizeof(*ev);
+ 	struct Scsi_Host *shost;
+@@ -3185,7 +3192,8 @@ iscsi_set_host_param(struct iscsi_transport *transport,
+ 	if (!transport->set_host_param)
+ 		return -ENOSYS;
+ 
+-	if (ev->u.set_host_param.len > PAGE_SIZE)
++	if (ev->u.set_host_param.len > rlen ||
++	    ev->u.set_host_param.len > PAGE_SIZE)
+ 		return -EINVAL;
+ 
+ 	shost = scsi_host_lookup(ev->u.set_host_param.host_no);
+@@ -3202,12 +3210,15 @@ iscsi_set_host_param(struct iscsi_transport *transport,
+ }
+ 
+ static int
+-iscsi_set_path(struct iscsi_transport *transport, struct iscsi_uevent *ev)
++iscsi_set_path(struct iscsi_transport *transport, struct iscsi_uevent *ev, u32 rlen)
+ {
+ 	struct Scsi_Host *shost;
+ 	struct iscsi_path *params;
+ 	int err;
+ 
++	if (rlen < sizeof(*params))
++		return -EINVAL;
++
+ 	if (!transport->set_path)
+ 		return -ENOSYS;
+ 
+@@ -3267,12 +3278,15 @@ iscsi_set_iface_params(struct iscsi_transport *transport,
+ }
+ 
+ static int
+-iscsi_send_ping(struct iscsi_transport *transport, struct iscsi_uevent *ev)
++iscsi_send_ping(struct iscsi_transport *transport, struct iscsi_uevent *ev, u32 rlen)
+ {
+ 	struct Scsi_Host *shost;
+ 	struct sockaddr *dst_addr;
+ 	int err;
+ 
++	if (rlen < sizeof(*dst_addr))
++		return -EINVAL;
++
+ 	if (!transport->send_ping)
+ 		return -ENOSYS;
+ 
+@@ -3770,13 +3784,12 @@ iscsi_get_host_stats(struct iscsi_transport *transport, struct nlmsghdr *nlh)
+ }
+ 
+ static int iscsi_if_transport_conn(struct iscsi_transport *transport,
+-				   struct nlmsghdr *nlh)
++				   struct nlmsghdr *nlh, u32 pdu_len)
+ {
+ 	struct iscsi_uevent *ev = nlmsg_data(nlh);
+ 	struct iscsi_cls_session *session;
+ 	struct iscsi_cls_conn *conn = NULL;
+ 	struct iscsi_endpoint *ep;
+-	uint32_t pdu_len;
+ 	int err = 0;
+ 
+ 	switch (nlh->nlmsg_type) {
+@@ -3861,8 +3874,6 @@ static int iscsi_if_transport_conn(struct iscsi_transport *transport,
+ 
+ 		break;
+ 	case ISCSI_UEVENT_SEND_PDU:
+-		pdu_len = nlh->nlmsg_len - sizeof(*nlh) - sizeof(*ev);
+-
+ 		if ((ev->u.send_pdu.hdr_size > pdu_len) ||
+ 		    (ev->u.send_pdu.data_size > (pdu_len - ev->u.send_pdu.hdr_size))) {
+ 			err = -EINVAL;
+@@ -3892,6 +3903,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 	struct iscsi_internal *priv;
+ 	struct iscsi_cls_session *session;
+ 	struct iscsi_endpoint *ep = NULL;
++	u32 rlen;
+ 
+ 	if (!netlink_capable(skb, CAP_SYS_ADMIN))
+ 		return -EPERM;
+@@ -3911,6 +3923,13 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 
+ 	portid = NETLINK_CB(skb).portid;
+ 
++	/*
++	 * Even though the remaining payload may not be regarded as nlattr,
++	 * (like address or something else), calculate the remaining length
++	 * here to ease following length checks.
++	 */
++	rlen = nlmsg_attrlen(nlh, sizeof(*ev));
++
+ 	switch (nlh->nlmsg_type) {
+ 	case ISCSI_UEVENT_CREATE_SESSION:
+ 		err = iscsi_if_create_session(priv, ep, ev,
+@@ -3967,7 +3986,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 			err = -EINVAL;
+ 		break;
+ 	case ISCSI_UEVENT_SET_PARAM:
+-		err = iscsi_if_set_param(transport, ev);
++		err = iscsi_if_set_param(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_CREATE_CONN:
+ 	case ISCSI_UEVENT_DESTROY_CONN:
+@@ -3975,7 +3994,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 	case ISCSI_UEVENT_START_CONN:
+ 	case ISCSI_UEVENT_BIND_CONN:
+ 	case ISCSI_UEVENT_SEND_PDU:
+-		err = iscsi_if_transport_conn(transport, nlh);
++		err = iscsi_if_transport_conn(transport, nlh, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_GET_STATS:
+ 		err = iscsi_if_get_stats(transport, nlh);
+@@ -3984,23 +4003,22 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 	case ISCSI_UEVENT_TRANSPORT_EP_POLL:
+ 	case ISCSI_UEVENT_TRANSPORT_EP_DISCONNECT:
+ 	case ISCSI_UEVENT_TRANSPORT_EP_CONNECT_THROUGH_HOST:
+-		err = iscsi_if_transport_ep(transport, ev, nlh->nlmsg_type);
++		err = iscsi_if_transport_ep(transport, ev, nlh->nlmsg_type, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_TGT_DSCVR:
+-		err = iscsi_tgt_dscvr(transport, ev);
++		err = iscsi_tgt_dscvr(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_SET_HOST_PARAM:
+-		err = iscsi_set_host_param(transport, ev);
++		err = iscsi_set_host_param(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_PATH_UPDATE:
+-		err = iscsi_set_path(transport, ev);
++		err = iscsi_set_path(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_SET_IFACE_PARAMS:
+-		err = iscsi_set_iface_params(transport, ev,
+-					     nlmsg_attrlen(nlh, sizeof(*ev)));
++		err = iscsi_set_iface_params(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_PING:
+-		err = iscsi_send_ping(transport, ev);
++		err = iscsi_send_ping(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_GET_CHAP:
+ 		err = iscsi_get_chap(transport, nlh);
+@@ -4009,13 +4027,10 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 		err = iscsi_delete_chap(transport, ev);
+ 		break;
+ 	case ISCSI_UEVENT_SET_FLASHNODE_PARAMS:
+-		err = iscsi_set_flashnode_param(transport, ev,
+-						nlmsg_attrlen(nlh,
+-							      sizeof(*ev)));
++		err = iscsi_set_flashnode_param(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_NEW_FLASHNODE:
+-		err = iscsi_new_flashnode(transport, ev,
+-					  nlmsg_attrlen(nlh, sizeof(*ev)));
++		err = iscsi_new_flashnode(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_DEL_FLASHNODE:
+ 		err = iscsi_del_flashnode(transport, ev);
+@@ -4030,8 +4045,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 		err = iscsi_logout_flashnode_sid(transport, ev);
+ 		break;
+ 	case ISCSI_UEVENT_SET_CHAP:
+-		err = iscsi_set_chap(transport, ev,
+-				     nlmsg_attrlen(nlh, sizeof(*ev)));
++		err = iscsi_set_chap(transport, ev, rlen);
+ 		break;
+ 	case ISCSI_UEVENT_GET_HOST_STATS:
+ 		err = iscsi_get_host_stats(transport, nlh);
+-- 
+2.17.1
 
