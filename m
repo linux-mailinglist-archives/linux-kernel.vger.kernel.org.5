@@ -2,127 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D63D57619B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648237619A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjGYNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
+        id S230073AbjGYNTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjGYNU2 (ORCPT
+        with ESMTP id S230060AbjGYNTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:20:28 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B857D1BC5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:20:01 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99364ae9596so944982766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690291200; x=1690896000;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=/AN1YHLUYuWO5atontjFpAIVd9Zt4nVgfXmFEwZMLzU=;
-        b=d00/nGb5if1lMP2Y7kVokEl1WMecpTb066F1Bn0/tUZ6XRXXfatJXIV2ekVmu1BdyI
-         RwTbNk3xgFE+kMdJDUUJIvzRmY8BGR9ujCiLf7X9H6fQvU6G3L0a1sHgdCQzMZmzf3Y0
-         Pk2AgMMB3kLb7+PHb+AH9a9SMpJK/LMcGynzU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690291200; x=1690896000;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/AN1YHLUYuWO5atontjFpAIVd9Zt4nVgfXmFEwZMLzU=;
-        b=bTdWj63Ni6G6qZpxy7/euLSepKXF1PxySYMFyVVarP+XvvoJM+wXHIi6NkNtbHh6Q3
-         3Zcix9fb3F23hXbsS38gMvO00/sOEg+kBI8gLV0kzbdXU5CWacRxyt6TddX1LyVXBG45
-         /qeh+aHVv/S1jCWWZkZdOIG9CicPio0aBv4I0HM4flb8ZJJwvTyDs3iU6wMuKKMEVhh4
-         NgPdbXqrxzDOz/3kS/J1yLjHeLcBanRZk2wyMuuRl/eRttI9fUNqe9qq/swSG7mwH+7w
-         rbbfzqO7Fgmzr2J/fnwlamAu2y6Vnc7zjXtMY2oGpUJSAfmcKBAHDPm6ztLsEAp59oBa
-         E+GA==
-X-Gm-Message-State: ABy/qLZc4wplwjaQoZ0ir/2Ek+rEpBy1YU4bddm57n+N7d6iJtQlDIVH
-        bNizO6W/8BI18ox0dj/H5kIjKQ==
-X-Google-Smtp-Source: APBJJlExKo+MISIorbKqmmXFqOZx+fFkcFbM3faOMvOhcozXsTgxolJpBU64M1xQar434N5lKWU4nw==
-X-Received: by 2002:a17:906:8a67:b0:994:673:8b00 with SMTP id hy7-20020a1709068a6700b0099406738b00mr11175043ejc.12.1690291200175;
-        Tue, 25 Jul 2023 06:20:00 -0700 (PDT)
-Received: from cloudflare.com (79.184.214.102.ipv4.supernova.orange.pl. [79.184.214.102])
-        by smtp.gmail.com with ESMTPSA id b19-20020a170906039300b0099364d9f0e2sm8239882eja.98.2023.07.25.06.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 06:19:59 -0700 (PDT)
-References: <cover.1690255889.git.yan@cloudflare.com>
- <25c13cb89412b120616f4e31a31c3108e45bc6af.1690255889.git.yan@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Jordan Griege <jgriege@cloudflare.com>,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH v3 bpf 2/2] selftests/bpf: test lwt redirect error handling
-Date:   Tue, 25 Jul 2023 15:18:58 +0200
-In-reply-to: <25c13cb89412b120616f4e31a31c3108e45bc6af.1690255889.git.yan@cloudflare.com>
-Message-ID: <87r0owxh4x.fsf@cloudflare.com>
+        Tue, 25 Jul 2023 09:19:35 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0D62132;
+        Tue, 25 Jul 2023 06:19:23 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="431521549"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="431521549"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:19:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="720059951"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="720059951"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 25 Jul 2023 06:19:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qOHwc-00B8Ul-2F;
+        Tue, 25 Jul 2023 16:19:18 +0300
+Date:   Tue, 25 Jul 2023 16:19:18 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, brgl@bgdev.pl,
+        linus.walleij@linaro.org, romain.perier@gmail.com,
+        daniel@thingy.jp, Alexandru Ardelean <alex@shruggie.ro>
+Subject: Re: [PATCH] gpio: msc313: remove unnecessary call to
+ platform_set_drvdata()
+Message-ID: <ZL/L1tiKjLDP5bet@smile.fi.intel.com>
+References: <20230721131157.26640-1-aboutphysycs@gmail.com>
+ <ZLqu56eHfpc0TnMw@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLqu56eHfpc0TnMw@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 09:14 PM -07, Yan Zhai wrote:
-> Tests BPF redirect at the lwt xmit hook to ensure error handling are
-> safe, i.e. won't panic the kernel.
->
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |   1 +
->  .../selftests/bpf/progs/test_lwt_redirect.c   |  67 +++++++
->  .../selftests/bpf/test_lwt_redirect.sh        | 165 ++++++++++++++++++
->  3 files changed, 233 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_redirect.c
->  create mode 100755 tools/testing/selftests/bpf/test_lwt_redirect.sh
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 538df8fb8c42..e3a24d053793 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -66,6 +66,7 @@ TEST_PROGS := test_kmod.sh \
->  	test_xdp_vlan_mode_generic.sh \
->  	test_xdp_vlan_mode_native.sh \
->  	test_lwt_ip_encap.sh \
-> +	test_lwt_redirect.sh \
->  	test_tcp_check_syncookie.sh \
->  	test_tc_tunnel.sh \
->  	test_tc_edt.sh \
-> diff --git a/tools/testing/selftests/bpf/progs/test_lwt_redirect.c b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
-> new file mode 100644
-> index 000000000000..622c6b1e7128
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#define ETH_LEN 14
+On Fri, Jul 21, 2023 at 07:14:31PM +0300, Andy Shevchenko wrote:
+> On Fri, Jul 21, 2023 at 04:11:57PM +0300, Andrei Coardos wrote:
+> > This function call was found to be unnecessary as there is no equivalent
+> > platform_get_drvdata() call to access the private data of the driver.
 
-Nit: We have ETH_HLEN in bpf_tracing_net.h defined.
+Not true.
 
-[...]
+> > Also, the private data is defined in this driver, so there is no risk of
+> > it being accessed outside of this driver file.
+> 
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+
+I have to withdraw this, the patch is wrong.
+NAK.
+
+Sorry for the confusion (I have looked for the wrong pattern).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
