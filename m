@@ -2,147 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E42761015
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79747761018
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbjGYKBp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 06:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S231349AbjGYKCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbjGYKBH (ORCPT
+        with ESMTP id S233564AbjGYKCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:01:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B5510D
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:01:05 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-286-6md2CWEaMZeqnqaiEP_N2g-1; Tue, 25 Jul 2023 11:01:03 +0100
-X-MC-Unique: 6md2CWEaMZeqnqaiEP_N2g-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 11:01:02 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 11:01:02 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH next 5/5] minmax: Relax check to allow comparison between int
- and small unsigned constants.
-Thread-Topic: [PATCH next 5/5] minmax: Relax check to allow comparison between
- int and small unsigned constants.
-Thread-Index: Adm+SABZfUAUlbYSR1mXWegNhEWPKQ==
-Date:   Tue, 25 Jul 2023 10:01:02 +0000
-Message-ID: <423ae55db6964149bbe7a4c720e32d9a@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 25 Jul 2023 06:02:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8565630EB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:01:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1A3D615E0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:01:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14BBC433C8;
+        Tue, 25 Jul 2023 10:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690279294;
+        bh=cNm5KR2clJ9E6gKfFOvr+cYuSl9J8RzUM49N3VLff7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JSX8gh19ZWgcIvuAtsQjGlPPJEpE5mhu/81cBl6XFlmRYk2fawqHt2kRTmVRzofoC
+         q1P8PRwMvZtEMqGwR8vIu6uo5/6NkyLgTOQUpFRA7XPGxRuP6r13m82SBQ92J5czK8
+         zp8F2hxD91cbKcpYWgqgsoca6cZGB3CLj9vTxDbacs8kK0mlxc04PogfACgxOs4E6c
+         4RgKFUYGvEyznwKKTriEE2yAyFFlNXcp90D6KnGIcr4hn9j6asEeDkvCim/m/GCyRy
+         DbNm3wXOJGf1mp/0hHnAY2GjD90g7JpM2LQODjADfwvGOqtZdyG4TwUM45fjEQ26Dj
+         k2dZhN9xrSNqQ==
+Date:   Tue, 25 Jul 2023 12:01:31 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, vineethrp@gmail.com
+Subject: Re: [PATCH 3/3] tick/nohz: Don't shutdown the lowres tick from itself
+Message-ID: <ZL+de6G6VRsoKChy@lothringen>
+References: <20230714120852.23573-1-frederic@kernel.org>
+ <20230714120852.23573-4-frederic@kernel.org>
+ <9347e3d4-e774-f75f-22c4-6c2dba294423@joelfernandes.org>
+ <ZLHh71KIIioR85aa@lothringen>
+ <CAEXW_YRTtvq0_YZiN=V9DZi2QxrC4hQFeUC9=JrgAKkg8KAnmw@mail.gmail.com>
+ <ZLLjEVxM+kf84vgI@lothringen>
+ <20230717173049.GA2760149@google.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717173049.GA2760149@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert constants between 0 and INT_MAX to 'int' prior to comparisons
-so that min(signed_var, 20u) and, more commonly, min(signed_var, sizeof())
-are both valid.
+On Mon, Jul 17, 2023 at 05:30:49PM +0000, Joel Fernandes wrote:
+> I think I see what you mean now. Maybe I wrongly assumed the above 'Skip
+> reprogram of event' code could early return and skip over
+> "tick_program_event(KTIME_MAX, 1);", but I think it cannot because of the
+> "expires != ts->next_tick" check.
+> 
+>  Maybe the "tick_program_event(KTIME_MAX, 1)" bit in tick_nohz_handler() is
+>  supposed to handle buggy hardware where an unexpected timer event came
+>  through? In such a situation, the idle loop will not write
+>  "tick_program_event(KTIME_MAX, 1);" again because it already did so the
+>  previous time, as you pointed.
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
- include/linux/minmax.h | 35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+Well at least if the double write was put there intentionally in order to
+fix buggy hardware, this was neither mentionned nor commented anywhere AFAICT.
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index baffbe5c855d..27ebab9f21e7 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -7,17 +7,28 @@
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-- * - avoid multiple evaluations of the arguments (so side-effects like
-+ * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - perform signed v unsigned type-checking (to generate compile
-+ * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-- * - retain result as a constant expressions when called with only
-+ *   Constants from 0 to INT_MAX are cast to (int) so can be used
-+ *   in comparisons with signed types.
-+ * - Retain result as a constant expressions when called with only
-  *   constant expressions (to avoid tripping VLA warnings in stack
-  *   allocation usage).
-  */
--#define __types_ok(x, y) \
--	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)) ||	\
--		is_signed_type(typeof((x) + 0)) == is_signed_type(typeof((y) + 0)))
-+
-+#define __is_noneg_int(x)					\
-+	__builtin_choose_expr(!__is_constexpr(x), false, 	\
-+		((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
-+
-+#define __int_const(x)	__builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
-+
-+#define __is_signed(x)	is_signed_type(typeof(x))
-+#define __types_ok(x, y) 					\
-+	(__is_signed(x) == __is_signed(y) ||			\
-+		__is_signed((x) + 0) == __is_signed((y) + 0) ||	\
-+		__is_noneg_int(x) || __is_noneg_int(y))
- 
- #define __cmp_op_min <
- #define __cmp_op_max >
-@@ -25,24 +36,24 @@
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
- 
- #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--	typeof(x) unique_x = (x);			\
--	typeof(y) unique_y = (y);			\
-+	typeof(__int_const(x)) unique_x = (x);		\
-+	typeof(__int_const(y)) unique_y = (y);		\
- 	static_assert(__types_ok(x, y),			\
- 		#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
- 	__cmp(op, unique_x, unique_y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
--		__cmp(op, x, y),				\
-+		__cmp(op, __int_const(x), __int_const(y)),	\
- 		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
- 
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
- 
- #define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
--	typeof(val) unique_val = (val);						\
--	typeof(lo) unique_lo = (lo);						\
--	typeof(hi) unique_hi = (hi);						\
-+	typeof(__int_const(val)) unique_val = (val);				\
-+	typeof(__int_const(lo)) unique_lo = (lo);				\
-+	typeof(__int_const(hi)) unique_hi = (hi);				\
- 	static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),		\
- 		"clamp() low limit " #lo " greater than high limit " #hi);	\
- 	static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
--- 
-2.17.1
+Thanks.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> 
+> Adding Vineeth who is also looking into this code.
+> 
+> thanks,
+> 
+>  - Joel
+> 
