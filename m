@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3294760EFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501B7760F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjGYJ1y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 05:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33380 "EHLO
+        id S233401AbjGYJee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbjGYJ1R (ORCPT
+        with ESMTP id S233393AbjGYJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:27:17 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BB33A90;
-        Tue, 25 Jul 2023 02:26:01 -0700 (PDT)
-Received: from dggpeml500018.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R9BSn5RnZz1GDP1;
-        Tue, 25 Jul 2023 17:24:57 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 25 Jul 2023 17:25:49 +0800
-Received: from dggpeml500019.china.huawei.com ([7.185.36.137]) by
- dggpeml500019.china.huawei.com ([7.185.36.137]) with mapi id 15.01.2507.027;
- Tue, 25 Jul 2023 17:25:49 +0800
-From:   michenyuan <michenyuan@huawei.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     "lars@metafoo.de" <lars@metafoo.de>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tools: iio: iio_generic_buffer: Fix some integer type and
- calculation
-Thread-Topic: [PATCH] tools: iio: iio_generic_buffer: Fix some integer type
- and calculation
-Thread-Index: Adm+2ezSCoh0JLHoG0Ga7g1GW4oDiw==
-Date:   Tue, 25 Jul 2023 09:25:48 +0000
-Message-ID: <af6c573f378545a0b4b73260f2dc4331@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.184.199]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 25 Jul 2023 05:34:09 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE08944AE;
+        Tue, 25 Jul 2023 02:32:38 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99342a599e9so917908766b.3;
+        Tue, 25 Jul 2023 02:32:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690277248; x=1690882048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xlOFKCeP+4hVLbD69I004lHDv56Nbmt05BTtQgudZs4=;
+        b=eSLDJIzinf8TLMkeDXBYeOsHYt8l/voNitBMIIYNaSx6NAbQ7JuxkkZq9jCnQLVWcv
+         KOLaNVkKuR3jrNeGCfyUqMYh7vBBbUUUXoktIqOvlbFVguoqJWsVQANMuqi32m+PNBEU
+         ztpJtbF0wBcSTrRvEmbCs7sfMuL9VtgWEpeKSynMg8oMN4ZvZ3cqnUV+izBSZvMjyc8H
+         x5hhUv9C9l5TJqhQny1XPg8VDcrFdFUvspCGH1Jwu4W5tuGm1WCp4kDEST781KpO9N81
+         xwDnBihP1oUp/QLH1oUF3AF6WOqZ1lO6k27t4k3eHLYVo/Z/5Vnf4n9Gyp+TfMmPYvlO
+         mymQ==
+X-Gm-Message-State: ABy/qLb2/zQbqg7wgZzadMo4XXTwDhSTAWGVD4GpSLaweZUHnz2/APBM
+        dtN77Rc/C9hrFwMz2LPPnh/ezMpulHk=
+X-Google-Smtp-Source: APBJJlHT3V/1QY83Hn6Q8+8JyqL3OEJLhTClEq/l18a51Yfc9VPCcKK34BhhyZJYKET9soqC4Ur5yw==
+X-Received: by 2002:a17:906:7a0f:b0:987:4e89:577f with SMTP id d15-20020a1709067a0f00b009874e89577fmr11829450ejo.24.1690277248142;
+        Tue, 25 Jul 2023 02:27:28 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-014.fbsv.net. [2a03:2880:31ff:e::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jx16-20020a170906ca5000b00993664a9987sm7955470ejb.103.2023.07.25.02.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 02:27:27 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 02:27:25 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZL+VfRiJQqrrLe/9@gmail.com>
+References: <20230724142237.358769-1-leitao@debian.org>
+ <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL61cIrQuo92Xzbu@google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chenyuan Mi wrote: 
-> Hi,
-> 
-> In principle I support hardening code, though in this case we are talking about example code only.  We have libiio and similar for anyone who wants to do more than basic tests.
-> 
-> > In function size_from_channelarray(), the return value 'bytes' is 
-> > defined as int type. However, the calcution of 'bytes' in this 
-> > function is designed to use the unsigned int type. So it is necessary 
-> > to change 'bytes' type to unsigned int to avoid integer overflow.
-> 
-> For this one, in practice it's controlled entirely by the kernel drivers and they won't get anywhere near integer overflow.  The change is small however and doesn't hurt readability so I guess no harm applying it.
-> 
+On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> On 07/24, Breno Leitao wrote:
+> > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > where a sockptr_t is either userspace or kernel space, and handled as
+> > such.
 > > 
-> > The size_from_channelarray() is called in main() function, its return 
-> > value is directly multipled by 'buf_len' and then used as the malloc() parameter.
-> > The 'buf_len' is completely controllable by user, thus a 
-> > multiplication overflow may occur here. This could allocate an unexpected small area.
+> > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
 > 
-> That would have to be a very large allocation...  I suppose it is possible someone might try it...
-> 
-> > 
-> > Signed-off-by: Chenyuan Mi <michenyuan@huawei.com>
-> 
-> My first inclination is not to apply this on basis that it adds slight complexity to example code (the aim of which is too illustrate the interface), however on the other side of things the checks don't add significant complexity...
-> 
-> So I tried to apply it, but it doesn't go on cleanly and patch is telling me it's malformed. I'm not quite sure why.
-> 
-> patching file tools/iio/iio_generic_buffer.c
-> patch: **** malformed patch at line 68:                 ret = -ENOMEM;
-> 
-> Jonathan
+> We probably need to also have bpf bits in the new
+> io_uring_cmd_getsockopt?
 
-I re-send a patch v2, and test patch v2 to make sure it can be applied. Thank you!
+It might be interesting to have the BPF hook for this function as
+well, but I would like to do it in a following patch, so, I can
+experiment with it better, if that is OK.
