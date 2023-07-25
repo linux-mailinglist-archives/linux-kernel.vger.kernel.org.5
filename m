@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519887618DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357FB7618E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbjGYMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S233176AbjGYMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjGYMvm (ORCPT
+        with ESMTP id S231936AbjGYMw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:51:42 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC36D199E;
-        Tue, 25 Jul 2023 05:51:33 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 498BB5AA;
-        Tue, 25 Jul 2023 14:50:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690289434;
-        bh=r0N4IALNWIyLeFT+l0HDv1sxuCq1JEIO1fU2R4IY1Hs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j74uKgC9TXvn6YawIorXbfopQMeFcAD3dY+rZXoP0LtfDas7ec2sDScH9NQbay9l/
-         nWz5EChvRrKtfrVzWzNEdiJnwbPZTVzk3e7CxTGBdH8kX27aPMp2T/3lPjQ3mRHAUe
-         rgF/DTXqroJHUQA9dxSzLORtxY2omlKCF6qXKdCQ=
-Date:   Tue, 25 Jul 2023 15:51:40 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, dan.scally@ideasonboard.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] arm64: dts: imx8mp-debix: remove unused fec
- pinctrl node
-Message-ID: <20230725125140.GC21640@pendragon.ideasonboard.com>
-References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
+        Tue, 25 Jul 2023 08:52:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04449DB;
+        Tue, 25 Jul 2023 05:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cip1L4+WNN72lEdlEtgKKz6+Th/GNW6kyU+RnxFbZZ8=; b=UgAJBFRLO20d1Q4UeecSqlBQIs
+        PFHuz0NUmB/1Y+2cEVFvwqnHb1BSxWW4RhQ2P8kvsu3ACbwOqr57viJKTa7uG+qe1fdufl5rqF2qr
+        jHy5L3HlBpbKr1Vl5EefvCAyn8+oe9n/K+eN0UUCvHZ3OgwtPhyspcNh4yAoE49KOIUkQVp2v0HR9
+        +xKnn/gm3dSYH0IDK2KkKvdpo4YPQW6CLliHGifFEImfRxrevzUzbI0xJBT7SCfU6e7LIrXsQ1mlT
+        uc0IdyK39Z/Ut2VF+t8tpW9pm9g50y0Q3SwS/URKZyTPqyVYvUikuYgn7PDUb1oSxM38pOnLhiEyt
+        M5/wJdyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qOHW7-005Tcv-AA; Tue, 25 Jul 2023 12:51:55 +0000
+Date:   Tue, 25 Jul 2023 13:51:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>
+Subject: Re: [RFC PATCH v11 10/29] mm: Add AS_UNMOVABLE to mark mapping as
+ completely unmovable
+Message-ID: <ZL/Fa4W2Ne9EVxoh@casper.infradead.org>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-11-seanjc@google.com>
+ <20230725102403.xywjqlhyqkrzjok6@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717165127.2882535-1-m.felsch@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725102403.xywjqlhyqkrzjok6@box.shutemov.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
-
-Thank you for the patch.
-
-On Mon, Jul 17, 2023 at 06:51:24PM +0200, Marco Felsch wrote:
-> The SoM A make use of the EQOS ethernet interface and not the FEC, so
-> drop the FEC pinctrl node from the devicetree.
+On Tue, Jul 25, 2023 at 01:24:03PM +0300, Kirill A . Shutemov wrote:
+> On Tue, Jul 18, 2023 at 04:44:53PM -0700, Sean Christopherson wrote:
+> > diff --git a/mm/compaction.c b/mm/compaction.c
+> > index dbc9f86b1934..a3d2b132df52 100644
+> > --- a/mm/compaction.c
+> > +++ b/mm/compaction.c
+> > @@ -1047,6 +1047,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+> >  		if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
+> >  			goto isolate_fail_put;
+> >  
+> > +		/* The mapping truly isn't movable. */
+> > +		if (mapping && mapping_unmovable(mapping))
+> > +			goto isolate_fail_put;
+> > +
 > 
-> Fixes: c86d350aae68 ("arm64: dts: Add device tree for the Debix Model A Board")
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-
-I think the I/O board uses the FEC for its ethernet interface. It would
-be nice to eventually move this to an I/O board overlay, but for now,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> Changelog:
+> I doubt that it is safe to dereference mapping here. I believe the folio
+> can be truncated from under us and the mapping freed with the inode.
 > 
-> v2:
-> - new patch
-> 
->  .../dts/freescale/imx8mp-debix-model-a.dts    | 22 -------------------
->  1 file changed, 22 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts b/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
-> index b4409349eb3f6..1004ab0abb131 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
-> @@ -355,28 +355,6 @@ MX8MP_IOMUXC_SAI1_TXD6__GPIO4_IO18				0x19
->  		>;
->  	};
->  
-> -	pinctrl_fec: fecgrp {
-> -		fsl,pins = <
-> -			MX8MP_IOMUXC_SAI1_RXD2__ENET1_MDC				0x3
-> -			MX8MP_IOMUXC_SAI1_RXD3__ENET1_MDIO				0x3
-> -			MX8MP_IOMUXC_SAI1_RXD4__ENET1_RGMII_RD0				0x91
-> -			MX8MP_IOMUXC_SAI1_RXD5__ENET1_RGMII_RD1				0x91
-> -			MX8MP_IOMUXC_SAI1_RXD6__ENET1_RGMII_RD2				0x91
-> -			MX8MP_IOMUXC_SAI1_RXD7__ENET1_RGMII_RD3				0x91
-> -			MX8MP_IOMUXC_SAI1_TXC__ENET1_RGMII_RXC				0x91
-> -			MX8MP_IOMUXC_SAI1_TXFS__ENET1_RGMII_RX_CTL			0x91
-> -			MX8MP_IOMUXC_SAI1_TXD0__ENET1_RGMII_TD0				0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD1__ENET1_RGMII_TD1				0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD2__ENET1_RGMII_TD2				0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD3__ENET1_RGMII_TD3				0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD4__ENET1_RGMII_TX_CTL			0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD5__ENET1_RGMII_TXC				0x1f
-> -			MX8MP_IOMUXC_SAI1_RXD1__ENET1_1588_EVENT1_OUT			0x1f
-> -			MX8MP_IOMUXC_SAI1_RXD0__ENET1_1588_EVENT1_IN			0x1f
-> -			MX8MP_IOMUXC_SAI1_TXD7__GPIO4_IO19				0x19
-> -		>;
-> -	};
-> -
->  	pinctrl_gpio_led: gpioledgrp {
->  		fsl,pins = <
->  			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16				0x19
+> The folio has to be locked to dereference mapping safely (given that the
+> mapping is still tied to the folio).
 
--- 
-Regards,
+There's even a comment to that effect later on in the function:
 
-Laurent Pinchart
+                        /*
+                         * Only pages without mappings or that have a
+                         * ->migrate_folio callback are possible to migrate
+                         * without blocking. However, we can be racing with
+                         * truncation so it's necessary to lock the page
+                         * to stabilise the mapping as truncation holds
+                         * the page lock until after the page is removed
+                         * from the page cache.
+                         */
+
+(that could be reworded to make it clear how dangerous dereferencing
+->mapping is without the lock ... and it does need to be changed to say
+"folio lock" instead of "page lock", so ...)
+
+How does this look?
+
+                        /*
+                         * Only folios without mappings or that have
+                         * a ->migrate_folio callback are possible to
+                         * migrate without blocking. However, we can
+                         * be racing with truncation, which can free
+                         * the mapping.  Truncation holds the folio lock
+                         * until after the folio is removed from the page
+                         * cache so holding it ourselves is sufficient.
+                         */
+
