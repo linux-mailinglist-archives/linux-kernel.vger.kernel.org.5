@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A3A7622C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D797622C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbjGYT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S229810AbjGYT5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbjGYT4c (ORCPT
+        with ESMTP id S230337AbjGYT5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:56:32 -0400
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649EB19A1;
-        Tue, 25 Jul 2023 12:56:31 -0700 (PDT)
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-666ecb21f86so5525406b3a.3;
-        Tue, 25 Jul 2023 12:56:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690314991; x=1690919791;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KbNljxec5F5wit49MbLDhDRO2j7rsVA1tKXeLuxoXXQ=;
-        b=Cq6NHmGrUENssKvjlWXu8ptOpBRX1sn6tVeV/MQGlpoKCxA6J1bWfKvfbzHEg6BQ6w
-         hkbEmC0sWZFDEpQDirsu2Q8rIEY40DWZvhI41FhSr2dRv/9wA512wfwXXaZE/VQxTRoJ
-         ls6hn12rZBGV68Lav3PRSltFFjLyBSC9pf02/Vo06K4Cx1HReR/WDl+L1bv/VR48EZ11
-         aqjVUMSzP2+SuQulgObCDvTImUv5HMuGxrlgv2D+bGuIajE7qIifix0OM6MnpEK9CDON
-         OORnx9uhKRH3JGGQDAxD3WpgwJpA6eHLiWYelzlx/+qXYYeVOJ3EGSsNGfFQ0ZeE8JnR
-         J3WA==
-X-Gm-Message-State: ABy/qLbw+JGfOSsfEHKzXBMBiBWNfwsNMmPpfDk8DDCONpJfX000XsGq
-        ma3hqcxiYJ24Z0dWI1+Vevk=
-X-Google-Smtp-Source: APBJJlHdtLpAwm1PS1imCDJhzvKIuz4NzhOkzB+nWr8orFagSQD7Y+dNBDIluUHoDDDSba4wAb/GBg==
-X-Received: by 2002:a05:6a21:66c9:b0:126:a5e3:3938 with SMTP id ze9-20020a056a2166c900b00126a5e33938mr46079pzb.19.1690314990528;
-        Tue, 25 Jul 2023 12:56:30 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:7ecb:b0e6:dc38:b05f? ([2620:15c:211:201:7ecb:b0e6:dc38:b05f])
-        by smtp.gmail.com with ESMTPSA id bu9-20020a632949000000b004ff6b744248sm10947134pgb.48.2023.07.25.12.56.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 12:56:30 -0700 (PDT)
-Message-ID: <08fcf48b-75bb-f9f3-ca2d-f20d5317a991@acm.org>
-Date:   Tue, 25 Jul 2023 12:56:27 -0700
+        Tue, 25 Jul 2023 15:57:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BA319BF;
+        Tue, 25 Jul 2023 12:57:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F02261151;
+        Tue, 25 Jul 2023 19:57:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4A2C433C8;
+        Tue, 25 Jul 2023 19:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690315057;
+        bh=J6eD1DQsFlp469zAqqrd4H6lmF51FIudZCZ9aP0HQUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NT6AcGEPrY1WDQRNb1h9OKzPAVKq3GMlv8zwefn8NpHt4X6zChjMwL8zYy3gakNgX
+         bpIbVZBG8AaVWR2YcNDdKTwzhmPzCUROigP/iiUIwGBeek2bk9+ILXM2UV94ckLcg9
+         tk4EZV+vPNEWQ/DaRN4M2dCM0saUJlG/rjLFykNKKlJMGuRtYl4d/FfBM2PVvMfzOe
+         uDmcWaxMHPLd2mxS0boTU4RymIubVbVLJWb24APEET1+UC0ok6dvCNqBsryEYlINZ0
+         j6wYvu0Cx3v72h6HKiVdyql99KckqywuSirK2aA82WzhVqHsiLHSBfbTnyBghACUJF
+         vrmYEF59k36yQ==
+Date:   Tue, 25 Jul 2023 20:57:32 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/3] regulator: dt-bindings: active-semi,act8846: correct
+ supplies
+Message-ID: <20230725-handiness-anyone-19af308254f8@spud>
+References: <20230725124629.150113-1-krzysztof.kozlowski@linaro.org>
+ <20230725124629.150113-3-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V1 2/2] scsi: ufs: ufs-qcom: check host controller state
-Content-Language: en-US
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>, powen.kao@mediatek.com,
-        alim.akhtar@samsung.com, adrian.hunter@intel.com,
-        jejb@linux.ibm.com, stanley.chu@mediatek.com,
-        asutoshd@codeaurora.org, quic_cang@quicinc.com, mani@kernel.org,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        ebiggers@google.com, agross@kernel.org, Arthur.Simchaev@wdc.com,
-        konrad.dybcio@linaro.org
-Cc:     quic_ziqichen@quicinc.com, quic_nguyenb@quicinc.com,
-        quic_narepall@quicinc.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manish Pandey <quic_mapa@quicinc.com>
-References: <20230725192710.26698-1-quic_nitirawa@quicinc.com>
- <20230725192710.26698-3-quic_nitirawa@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230725192710.26698-3-quic_nitirawa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iJymcqGfrN7u5Pd8"
+Content-Disposition: inline
+In-Reply-To: <20230725124629.150113-3-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 12:27, Nitin Rawat wrote:
-> Check host controller state before sending hibern8 command.
 
-A patch description should mention what has been changed and also why. 
-The above explains what has been changed but not why. Please explain in 
-the commit message why this change is necessary.
+--iJymcqGfrN7u5Pd8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 25, 2023 at 02:46:29PM +0200, Krzysztof Kozlowski wrote:
+> Regulator supplies are per-device, not per regulator, so they are
+> expected to be present in device node.  Moving them to proper place
+> allows to simplify a lot, because now none of the regulators differ.
+>=20
+> This also fixes dtbs_check warnings like:
+>=20
+>   rk3368-evb-act8846.dtb: act8846@5a: 'inl1-supply', 'inl2-supply', 'inl3=
+-supply', 'vp1-supply',
+>     'vp2-supply', 'vp3-supply', 'vp4-supply' do not match any of the rege=
+xes: 'pinctrl-[0-9]+'
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
+Conor.
 
-Bart.
+--iJymcqGfrN7u5Pd8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMApLAAKCRB4tDGHoIJi
+0mk6AP4maaYAoYDHYAxUsS81QOcs65RzGJhK4NRV7kltV3rG2wEAg1JNLisoHypA
+SAjZ5v3e0Qh+eS+GF3UIGmBskLrrywU=
+=u9wa
+-----END PGP SIGNATURE-----
+
+--iJymcqGfrN7u5Pd8--
