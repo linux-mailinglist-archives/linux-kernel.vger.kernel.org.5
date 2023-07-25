@@ -2,223 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AFE7617A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234D57617A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjGYLvo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        id S230205AbjGYLwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjGYLve (ORCPT
+        with ESMTP id S232106AbjGYLwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:51:34 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A01BD9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:51:22 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-193-s-6Rkip7Mw6xr8p2mw5K7w-1; Tue, 25 Jul 2023 12:51:20 +0100
-X-MC-Unique: s-6Rkip7Mw6xr8p2mw5K7w-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 12:51:18 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 12:51:18 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: [PATCH next resend 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Topic: [PATCH next resend 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Index: Adm+7j8pPhAgcq+TRICTXJcSfHQLRA==
-Date:   Tue, 25 Jul 2023 11:51:18 +0000
-Message-ID: <a09512c8526b46759669d0b879144563@AcuMS.aculab.com>
-References: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
-In-Reply-To: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 25 Jul 2023 07:52:23 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5F310EC
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690285928; x=1721821928;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Fd/RDz89cgDhh0kuNdhH2IWsW1WRaHvoArD8ju6Ge28=;
+  b=fbVFzRs4VXkMnS4d6aA+faeIsdgZRBflas6O5bG/GO3SNcLEB9acJ/rG
+   TaBLR1H9NDcn08lQPXFxjWwjWSWK8CXhIcXoTWFBAH5Zl0yBa4nQjPkls
+   SiRhGHb0na+ZjNjEO1oxfS7lw7jazwk1Tx3m5Z7zC90OKIEKAnRhda59F
+   5PUJ0byBxmN8j4hAfKgs/KLMbG4dbjqczWuwrBynMQ5sES5zB/iw8Hrdl
+   UedOPuRmxbe/sq40XXMpkxiRhoXOIuuTWUaKsNIqp776NHgp03cR4KcNU
+   7CtMFaqxlAABm16wyOgqzIXm7jAxwKvo4sybhPdpWjOtE8++t1nW/eolw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="357700524"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="357700524"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 04:52:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="729323683"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="729323683"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.37.150])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 04:52:02 -0700
+Message-ID: <d81c192a-49e1-b02a-b6e7-6c44927f041d@intel.com>
+Date:   Tue, 25 Jul 2023 14:51:58 +0300
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/1] perf dlfilter: Initialize addr_location before
+ passing it to thread__find_symbol_fb()
 Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Disha Goel <disgoel@linux.vnet.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>, Kajol Jain <kjain@linux.ibm.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ZL7ocEWxjRtWR80T@kernel.org>
+ <CAP-5=fVy8cYrYH5EmdrJo0+q0CHj=chTxWYkieLi6LwTSjFCAQ@mail.gmail.com>
+ <ZL7tv45K3zKqkHhZ@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZL7tv45K3zKqkHhZ@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type-check in min()/max() is there to stop unexpected results if a
-negative value gets converted to a large unsigned value.
-However it also rejects 'unsigned int' v 'unsigned long' compares
-which are common and never problematc.
+On 25/07/23 00:31, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jul 24, 2023 at 02:16:05PM -0700, Ian Rogers escreveu:
+>> On Mon, Jul 24, 2023 at 2:09 PM Arnaldo Carvalho de Melo
+>> <acme@kernel.org> wrote:
+>>>
+>>> As thread__find_symbol_fb() will end up calling thread__find_map() and
+>>> it in turn will call these on uninitialized memory:
+>>>
+>>>         maps__zput(al->maps);
+>>>         map__zput(al->map);
+>>>         thread__zput(al->thread);
+>>
+>> Normally there would be a addr_location__exit. It looks here like most
+>> values are copied in al_to_d_al, which copies reference counted values
+>> without doing appropriate gets. Perhaps add the gets in al_to_d_al and
+>> add the exit to make it clear there can't be addr_location related
+>> leaks here.
+> 
+> I'll do that as well and add the addr_location__exit() then send a V2.
 
-Replace the 'same type' check with a 'same signedness' check.
+The data is not valid outside the context of ->filter_event() or
+->filter_event_early(), so the reference counts should not be changed.
+That probably needs to be made clearer in the documentation.
 
-The new test isn't itself a compile time error, so use static_assert()
-to report the error and give a meaningful error message.
-
-Due to the way builtin_choose_expr() works detecting the error in the
-'non-constant' side (where static_assert() can be used) also detects
-errors when the arguments are constant.
-
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-
-resend as response to 0/5
-
- include/linux/minmax.h | 61 +++++++++++++++++++-----------------------
- 1 file changed, 28 insertions(+), 33 deletions(-)
-
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 531860e9cc55..10d236ac7da6 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -9,33 +9,31 @@
-  *
-  * - avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - perform strict type-checking (to generate warnings instead of
-- *   nasty runtime surprises). See the "unnecessary" pointer comparison
-- *   in __typecheck().
-+ * - perform signed v unsigned type-checking (to generate compile
-+ *   errors instead of nasty runtime surprises).
-  * - retain result as a constant expressions when called with only
-  *   constant expressions (to avoid tripping VLA warnings in stack
-  *   allocation usage).
-  */
--#define __typecheck(x, y) \
--	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-+#define __types_ok(x, y) \
-+	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)))
- 
--#define __no_side_effects(x, y) \
--		(__is_constexpr(x) && __is_constexpr(y))
-+#define __cmp_op_min <
-+#define __cmp_op_max >
- 
--#define __safe_cmp(x, y) \
--		(__typecheck(x, y) && __no_side_effects(x, y))
-+#define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
- 
--#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
--
--#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
-+#define __cmp_once(op, x, y, unique_x, unique_y) ({	\
- 		typeof(x) unique_x = (x);		\
- 		typeof(y) unique_y = (y);		\
--		__cmp(unique_x, unique_y, op); })
-+		static_assert(__types_ok(x, y),		\
-+			#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
-+		__cmp(op, unique_x, unique_y); })
- 
--#define __careful_cmp(x, y, op) \
--	__builtin_choose_expr(__safe_cmp(x, y), \
--		__cmp(x, y, op), \
--		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
-+#define __careful_cmp(op, x, y)					\
-+	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
-+		__cmp(op, x, y),				\
-+		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
- 
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
-@@ -44,17 +42,14 @@
- 		typeof(val) unique_val = (val);				\
- 		typeof(lo) unique_lo = (lo);				\
- 		typeof(hi) unique_hi = (hi);				\
-+		static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),		\
-+			"clamp() low limit " #lo " greater than high limit " #hi);	\
-+		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
-+		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
- 		__clamp(unique_val, unique_lo, unique_hi); })
- 
--#define __clamp_input_check(lo, hi)					\
--        (BUILD_BUG_ON_ZERO(__builtin_choose_expr(			\
--                __is_constexpr((lo) > (hi)), (lo) > (hi), false)))
--
- #define __careful_clamp(val, lo, hi) ({					\
--	__clamp_input_check(lo, hi) +					\
--	__builtin_choose_expr(__typecheck(val, lo) && __typecheck(val, hi) && \
--			      __typecheck(hi, lo) && __is_constexpr(val) && \
--			      __is_constexpr(lo) && __is_constexpr(hi),	\
-+	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
- 		__clamp(val, lo, hi),					\
- 		__clamp_once(val, lo, hi, __UNIQUE_ID(__val),		\
- 			     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
-@@ -64,14 +59,14 @@
-  * @x: first value
-  * @y: second value
-  */
--#define min(x, y)	__careful_cmp(x, y, <)
-+#define min(x, y)	__careful_cmp(min, x, y)
- 
- /**
-  * max - return maximum of two values of the same or compatible types
-  * @x: first value
-  * @y: second value
-  */
--#define max(x, y)	__careful_cmp(x, y, >)
-+#define max(x, y)	__careful_cmp(max, x, y)
- 
- /**
-  * min_unsigned - return minimum of two non-negative values
-@@ -79,16 +74,16 @@
-  * @x: first value
-  * @y: second value
-  */
--#define min_unsigned(x, y)	\
--	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
-+#define min_unsigned(x, y) \
-+	__careful_cmp(min, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
- 
- /**
-  * max_unsigned - return maximum of two non-negative values
-  * @x: first value
-  * @y: second value
-  */
--#define max_unsigned(x, y)	\
--	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
-+#define max_unsigned(x, y) \
-+	__careful_cmp(max, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
- 
- /**
-  * min3 - return minimum of three values
-@@ -140,7 +135,7 @@
-  * @x: first value
-  * @y: second value
-  */
--#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
-+#define min_t(type, x, y)	__careful_cmp(min, (type)(x), (type)(y))
- 
- /**
-  * max_t - return maximum of two values, using the specified type
-@@ -148,7 +143,7 @@
-  * @x: first value
-  * @y: second value
-  */
--#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
-+#define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
- 
- /**
-  * clamp_t - return a value clamped to a given range using a given type
--- 
-2.17.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> 
+> - Arnaldo
+>  
+>> Thanks,
+>> Ian
+>>
+>>> Fixes: 0dd5041c9a0eaf8c ("perf addr_location: Add init/exit/copy functions")
+>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+>>> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+>>> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+>>> Cc: Disha Goel <disgoel@linux.vnet.ibm.com>
+>>> Cc: Ian Rogers <irogers@google.com>
+>>> Cc: Jiri Olsa <jolsa@kernel.org>
+>>> Cc: Kajol Jain <kjain@linux.ibm.com>
+>>> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+>>> Cc: Namhyung Kim <namhyung@kernel.org>
+>>> Link: https://lore.kernel.org/lkml/
+>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>>> ---
+>>>  tools/perf/util/dlfilter.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
+>>> index 46f74b2344dbb34c..798a53d7e6c9dfc5 100644
+>>> --- a/tools/perf/util/dlfilter.c
+>>> +++ b/tools/perf/util/dlfilter.c
+>>> @@ -166,6 +166,7 @@ static __s32 dlfilter__resolve_address(void *ctx, __u64 address, struct perf_dlf
+>>>         if (!thread)
+>>>                 return -1;
+>>>
+>>> +       addr_location__init(&al);
+>>>         thread__find_symbol_fb(thread, d->sample->cpumode, address, &al);
+>>>
+>>>         al_to_d_al(&al, &d_al);
+>>> --
+>>> 2.37.1
+>>>
+> 
 
