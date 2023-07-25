@@ -2,109 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D6A760CBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5D9760CCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjGYIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
+        id S229577AbjGYISy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjGYIOy (ORCPT
+        with ESMTP id S229850AbjGYISv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:14:54 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976F8E53
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:14:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690272893; x=1721808893;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=W8mV1wjIqvrGQnvQyNg9bRQ5AyE3RsOi23YmwOJilmM=;
-  b=X48L6Bfyv9C13e78YV6MxWrhBdpk/uBxy7B+GWwlGV9bv2yDn0/3LjND
-   29JBzh68NL+VwCFVKf+XzqJaBngtbPRZhv9Sohq1q92YpX2dWnC8bTz7H
-   wuO2ugiz5hvi4N+n122ed+lUIRk0xG/yeMrDGjhBVk70VoZbCoW/pUj4/
-   L/JUwzvxjSF4zhYndbRI/3n3sBf8GbAgNn8agwL7nIuD4G7UKCDoWbF5O
-   JIFw054zupmjPR38TUv64Q+nBWJYYpe5NuIH1IiTgB3NmN2mxOUd7A268
-   W9jt6cg7xI3Udrze10QioOCFYn9PRSddH6dZQyfOq4jx+8n5fF2LUiU0G
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347926620"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="347926620"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:14:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="729262924"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="729262924"
-Received: from dmacnerl-mobl1.amr.corp.intel.com (HELO [10.252.34.151]) ([10.252.34.151])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:14:51 -0700
-Message-ID: <01518d81-0b1d-6190-631c-01cc00da2bb6@linux.intel.com>
-Date:   Tue, 25 Jul 2023 11:16:10 +0300
+        Tue, 25 Jul 2023 04:18:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508C9E7B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690273083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3yzqiXhC1UF6kcx0o3Qs1VmhKMD7xafUTqbIR8LZgYk=;
+        b=HySbZRwszuaN2E1+A3ae8Ra/sk0h8tlmrHDv7TWPB5IxaFbTU/3qSHLO5fqi2CMI8liDvF
+        fK0gM0YjKbpuo2HqQq7WY1pE+UIWmA6/vhw6xR6Z9clRxQJ8zzgou8SP7QVgp3q4RZvUHs
+        HqiS9Ue2fpEi1QYLJlr6ub0BkqwPscg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-nV040Y2vNoSP_5sJUWEaRw-1; Tue, 25 Jul 2023 04:18:01 -0400
+X-MC-Unique: nV040Y2vNoSP_5sJUWEaRw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3176ace3f58so237608f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:18:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690273080; x=1690877880;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3yzqiXhC1UF6kcx0o3Qs1VmhKMD7xafUTqbIR8LZgYk=;
+        b=U2XbI5AHyYvl4VHZYeP4nyB1cASI4VB2mgErNUBqaWH5N4C72JJU+iuYATmxP+OB1t
+         nWxk4hSjGDcclnqMYCo+Aq9z8o45BYmJixQmyRuahq3HfJpGk8R3dahVPahnOrQJREVa
+         d0wDvVNQwtL4+lWYmAvc+smiGyE5zZ0PkH9EJo9X6talQGK0FroQCmLqvY0MFG9nzQ/V
+         g+Dnr6Hm1DiKgfNV75xovCumwyORermpoc5ZhZgInxmqFchYrCCq4v50EmXews6jZStK
+         iTbJifVxKews9/2ekDjj3JW5C7PC/YAZOcOgQk6+gY3Dhhs67C7bzmaYwSPq6VmaC1xA
+         A+qw==
+X-Gm-Message-State: ABy/qLYex0t6JVS9sJIOz7EXGYKybm49/QYMiss8qPx3ntnGYDu7j3u3
+        HUv6MTtaThH/abjQw/V5UHU+UnBB0BV64dsQRlmIxDmniZ5BGXaeWPGyCWaO505L+iZwpmrz+3O
+        rYVDFFNrU3ixXvKiRrf7T6/jm
+X-Received: by 2002:a5d:6507:0:b0:313:ef96:84c8 with SMTP id x7-20020a5d6507000000b00313ef9684c8mr8687886wru.67.1690273080448;
+        Tue, 25 Jul 2023 01:18:00 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFPc/VAU250QGQYgpOMkW4RaBwKVZ3ddrW1YR4h8aiQOpLSV8Prs3MtGQBtJV+o8e48BrZ/aw==
+X-Received: by 2002:a5d:6507:0:b0:313:ef96:84c8 with SMTP id x7-20020a5d6507000000b00313ef9684c8mr8687872wru.67.1690273080102;
+        Tue, 25 Jul 2023 01:18:00 -0700 (PDT)
+Received: from sgarzare-redhat ([193.207.217.123])
+        by smtp.gmail.com with ESMTPSA id j6-20020adfff86000000b0031274a184d5sm15506412wrr.109.2023.07.25.01.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 01:17:59 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:17:55 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v3 2/4] vsock/virtio: support to send non-linear
+ skb
+Message-ID: <5lemb27slnjt3hieixwa744ghzu6zj5fc3eimfng7a2ba7y2as@ueve2vn2cxpl>
+References: <20230720214245.457298-1-AVKrasnov@sberdevices.ru>
+ <20230720214245.457298-3-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: fix application of sizeof to
- pointer
-To:     sunran001@208suo.com, perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-References: <20230720073836.3285-1-xujianghui@cdjrlc.com>
- <74739aaaa05f52084757b526bc8348c8@208suo.com>
-Content-Language: en-US
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <74739aaaa05f52084757b526bc8348c8@208suo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230720214245.457298-3-AVKrasnov@sberdevices.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 12:42:43AM +0300, Arseniy Krasnov wrote:
+>For non-linear skb use its pages from fragment array as buffers in
+>virtio tx queue. These pages are already pinned by 'get_user_pages()'
+>during such skb creation.
+>
+>Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>---
+> Changelog:
+> v2 -> v3:
+>  * Comment about 'page_to_virt()' is updated. I don't remove R-b,
+>    as this change is quiet small I guess.
 
+Ack!
 
-On 20/07/2023 11:43, sunran001@208suo.com wrote:
-> The coccinelle check report:
-> ./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR: application of
-> sizeof to pointer
+Thanks,
+Stefano
 
-Please include the maintainers for patches to enusre they reach the
-correct audience, if in doubt who should be on TO/CC, use the
-scripts/get_maintainer.pl <patch file>
+>
+> net/vmw_vsock/virtio_transport.c | 41 +++++++++++++++++++++++++++-----
+> 1 file changed, 35 insertions(+), 6 deletions(-)
+>
+>diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>index e95df847176b..7bbcc8093e51 100644
+>--- a/net/vmw_vsock/virtio_transport.c
+>+++ b/net/vmw_vsock/virtio_transport.c
+>@@ -100,7 +100,9 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 	vq = vsock->vqs[VSOCK_VQ_TX];
+>
+> 	for (;;) {
+>-		struct scatterlist hdr, buf, *sgs[2];
+>+		/* +1 is for packet header. */
+>+		struct scatterlist *sgs[MAX_SKB_FRAGS + 1];
+>+		struct scatterlist bufs[MAX_SKB_FRAGS + 1];
+> 		int ret, in_sg = 0, out_sg = 0;
+> 		struct sk_buff *skb;
+> 		bool reply;
+>@@ -111,12 +113,39 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+>
+> 		virtio_transport_deliver_tap_pkt(skb);
+> 		reply = virtio_vsock_skb_reply(skb);
+>+		sg_init_one(&bufs[out_sg], virtio_vsock_hdr(skb),
+>+			    sizeof(*virtio_vsock_hdr(skb)));
+>+		sgs[out_sg] = &bufs[out_sg];
+>+		out_sg++;
+>+
+>+		if (!skb_is_nonlinear(skb)) {
+>+			if (skb->len > 0) {
+>+				sg_init_one(&bufs[out_sg], skb->data, skb->len);
+>+				sgs[out_sg] = &bufs[out_sg];
+>+				out_sg++;
+>+			}
+>+		} else {
+>+			struct skb_shared_info *si;
+>+			int i;
+>+
+>+			si = skb_shinfo(skb);
+>+
+>+			for (i = 0; i < si->nr_frags; i++) {
+>+				skb_frag_t *skb_frag = &si->frags[i];
+>+				void *va;
+>
+>-		sg_init_one(&hdr, virtio_vsock_hdr(skb), sizeof(*virtio_vsock_hdr(skb)));
+>-		sgs[out_sg++] = &hdr;
+>-		if (skb->len > 0) {
+>-			sg_init_one(&buf, skb->data, skb->len);
+>-			sgs[out_sg++] = &buf;
+>+				/* We will use 'page_to_virt()' for the userspace page
+>+				 * here, because virtio or dma-mapping layers will call
+>+				 * 'virt_to_phys()' later to fill the buffer descriptor.
+>+				 * We don't touch memory at "virtual" address of this page.
+>+				 */
+>+				va = page_to_virt(skb_frag->bv_page);
+>+				sg_init_one(&bufs[out_sg],
+>+					    va + skb_frag->bv_offset,
+>+					    skb_frag->bv_len);
+>+				sgs[out_sg] = &bufs[out_sg];
+>+				out_sg++;
+>+			}
+> 		}
+>
+> 		ret = virtqueue_add_sgs(vq, sgs, out_sg, in_sg, skb, GFP_KERNEL);
+>-- 
+>2.25.1
+>
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  sound/soc/sof/ipc4-topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-> index a4e1a70b607d..2dbe87dbd239 100644
-> --- a/sound/soc/sof/ipc4-topology.c
-> +++ b/sound/soc/sof/ipc4-topology.c
-> @@ -218,7 +218,7 @@ static int sof_ipc4_get_audio_fmt(struct
-> snd_soc_component *scomp,
-> 
->      ret = sof_update_ipc_object(scomp, available_fmt,
->                      SOF_AUDIO_FMT_NUM_TOKENS, swidget->tuples,
-> -                    swidget->num_tuples, sizeof(available_fmt), 1);
-> +                    swidget->num_tuples, sizeof(*available_fmt), 1);
-
-The second last parameter is in essence unused since we only update a
-single item.
-The patch is correct in a semantic way but the original code worked
-correctly.
-
->      if (ret) {
->          dev_err(scomp->dev, "Failed to parse audio format token count\n");
->          return ret;
-
--- 
-Péter
