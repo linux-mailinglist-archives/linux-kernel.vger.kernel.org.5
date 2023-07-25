@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89461762759
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBB376275E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjGYXcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S232010AbjGYXep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjGYXcc (ORCPT
+        with ESMTP id S231886AbjGYXen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:32:32 -0400
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F8F19BA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:32:30 -0700 (PDT)
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-560c7abdbdcso9728623eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:32:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690327950; x=1690932750;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAib9FhsF/p+ZXO7Hu3qYWPzTDSVp9gbYDlcfRv4tfU=;
-        b=L10osn/f/Kq/PqCI4+4pHEGbDw5lnNfFZjeFY/a6to4JCR9e22AqIF2DSppv6/Q9/a
-         0XXDijgBQsh39Ih9VHY+vWx1lgagqZj73ZzvYu3kcuAtYrGric20ULy2mBP/iJWY9dDk
-         hZ2RaW7MpH+Bc/4qXycKJYoRpdmC9YFbgs3pg82t0qi2JjlQMJMFFxxALjznBZ0r/I4P
-         yyMstTa6lGAKHZT077vJcMY9Ucus21tDgHWDiG1aKMkKAE8Clh2wFVbYfTJ3ZEqPTHRu
-         5vVzgqq4jQWvmO9+G48HoJoFTKKFmzUGNMfbKeyMZMCQOaJNBx/OvTSVFJJeqXwRjC9k
-         RwYA==
-X-Gm-Message-State: ABy/qLZbtgergmX9KeEwyMF6F5d3qa5/olAYeCz4QXznatRB4iDOwb5Y
-        StmYfY9hCAvK//DhI1qMM2nDt80JRdS0EwV1K+3s4uTYpoyT
-X-Google-Smtp-Source: APBJJlFEYk/bqYGyuJAaHAL1JEWuUOwkkcZpbbHJ/FVewEDv5hVdmh7chgIV5DaFhIO4BzQtyA3NJlRpkIZDZVk0K+a5hwacR/az
+        Tue, 25 Jul 2023 19:34:43 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE4E1BD5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690328082; x=1721864082;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=PrZs6REpcSVjQjLttbz9hc0QGh+tUGcg58hDcxEoPkA=;
+  b=TQ0Vr8MlrM9MxI+7CZaAMZhL741MBlT22A9BrQFxtDuogtXeoGQVw8SD
+   oJ0PtooeXRC80eZrCboEPRilb/hOOjXU9D/lUFIO2xdfrOJvpSATYC0bC
+   eMbTqA3a5uidDO+Jr770s/L2yzhEZv8grHDiVeoaAdBiuunGjN8NOaRUj
+   hoTwy7fKDwpalnZdesvjlF24itb6fXrwcwyIOZGMWvMVu6rs0octv33Y3
+   MsN7WZjd7FXWuRSFaNWRMb5xPQWZtjCFcR9om4HW0OWC6Q2FNDEGY3MI0
+   VjoHYOK0lFLiWAdQI5RBXPtWI7xOSCN0UVTrkXoRSkumTMcTZqsuJYQJj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366747665"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="366747665"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 16:34:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755945610"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="755945610"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jul 2023 16:34:40 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qORY7-0000Ql-2S;
+        Tue, 25 Jul 2023 23:34:39 +0000
+Date:   Wed, 26 Jul 2023 07:34:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: arch/riscv/net/bpf_jit.h:241:30: sparse: sparse: cast truncates bits
+ from constant value (7ff becomes ff)
+Message-ID: <202307260704.dUElCrWU-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a4a:4f8b:0:b0:569:d5ae:eb6e with SMTP id
- c133-20020a4a4f8b000000b00569d5aeeb6emr495681oob.0.1690327949950; Tue, 25 Jul
- 2023 16:32:29 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 16:32:29 -0700
-In-Reply-To: <0000000000000ced8905fecceeba@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000002c74d0601582595@google.com>
-Subject: Re: [syzbot] [crypto?] general protection fault in shash_async_update
-From:   syzbot <syzbot+0bc501b7bf9e1bc09958@syzkaller.appspotmail.com>
-To:     alexander.deucher@amd.com, davem@davemloft.net,
-        dhowells@redhat.com, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mario.limonciello@amd.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   af2e19389c2c1d8a299e04c5105b180ef0c5b5b5
+commit: 2d311f480b52eeb2e1fd432d64b78d82952c3808 riscv, bpf: Fix patch_text implicit declaration
+date:   5 months ago
+config: riscv-randconfig-r072-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260704.dUElCrWU-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260704.dUElCrWU-lkp@intel.com/reproduce)
 
-commit 30c3d3b70aba2464ee8c91025e91428f92464077
-Author: Mario Limonciello <mario.limonciello@amd.com>
-Date:   Tue May 30 16:57:59 2023 +0000
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260704.dUElCrWU-lkp@intel.com/
 
-    drm/amd: Disallow s0ix without BIOS support again
+sparse warnings: (new ones prefixed by >>)
+   WARNING: invalid argument to '-march': '_zicbom_zihintpause'
+   arch/riscv/net/bpf_jit_comp64.c: note: in included file:
+>> arch/riscv/net/bpf_jit.h:241:30: sparse: sparse: cast truncates bits from constant value (7ff becomes ff)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122e2c31a80000
-start commit:   [unknown] 
-git tree:       net-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
-dashboard link: https://syzkaller.appspot.com/bug?extid=0bc501b7bf9e1bc09958
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f71275280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11081055280000
+vim +241 arch/riscv/net/bpf_jit.h
 
-If the result looks correct, please mark the issue as fixed by replying with:
+ca6cb5447ceca6 Luke Nelson 2020-03-04  238  
+ca6cb5447ceca6 Luke Nelson 2020-03-04  239  static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
+ca6cb5447ceca6 Luke Nelson 2020-03-04  240  {
+ca6cb5447ceca6 Luke Nelson 2020-03-04 @241  	u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
+ca6cb5447ceca6 Luke Nelson 2020-03-04  242  
+ca6cb5447ceca6 Luke Nelson 2020-03-04  243  	return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
+ca6cb5447ceca6 Luke Nelson 2020-03-04  244  		(imm4_0 << 7) | opcode;
+ca6cb5447ceca6 Luke Nelson 2020-03-04  245  }
+ca6cb5447ceca6 Luke Nelson 2020-03-04  246  
 
-#syz fix: drm/amd: Disallow s0ix without BIOS support again
+:::::: The code at line 241 was first introduced by commit
+:::::: ca6cb5447ceca6a87d6b62c9e5d41042c34f7ffa riscv, bpf: Factor common RISC-V JIT code
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+:::::: TO: Luke Nelson <lukenels@cs.washington.edu>
+:::::: CC: Daniel Borkmann <daniel@iogearbox.net>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
