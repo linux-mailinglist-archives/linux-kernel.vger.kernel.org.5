@@ -2,201 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B12760F76
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9370760F7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbjGYJhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
+        id S233479AbjGYJjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233303AbjGYJhE (ORCPT
+        with ESMTP id S233431AbjGYJih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:37:04 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8F21BF9;
-        Tue, 25 Jul 2023 02:35:58 -0700 (PDT)
-X-UUID: a1ab4eda2ace11eeb20a276fd37b9834-20230725
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=zBOKlXR9UJkQg3cVyddpTc3TB9/Vh3QFP5WBjAxlAXs=;
-        b=fPlH0fl/qK/fGTOx9MFJrjJiZlR3A0t9YsNDioJvnwp2GO4ZN7QyG5mRwfiuppgStkWVWsu2OL76dJ8x4MWckLGGX9I16baPksfg/73E58elmbBeZeYyoDodYnuyT7sed4sV1NQeRes80jiMrcce7ai/ILCtacwjnsZ1lmgInXk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.29,REQID:f41919c1-4205-4049-b1c0-f0eb2bb054ab,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:e7562a7,CLOUDID:7fd1c3b3-a467-4aa9-9e04-f584452e3794,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: a1ab4eda2ace11eeb20a276fd37b9834-20230725
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 930015652; Tue, 25 Jul 2023 17:35:45 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 25 Jul 2023 17:35:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 25 Jul 2023 17:35:44 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     <chinwen.chang@mediatek.com>, <qun-wei.lin@mediatek.com>,
-        <linux-mm@kvack.org>, <linux-modules@vger.kernel.org>,
-        <casper.li@mediatek.com>, <akpm@linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>
-Subject: [PATCH 8/8] scripts/gdb/vmalloc: add vmallocinfo support
-Date:   Tue, 25 Jul 2023 17:34:58 +0800
-Message-ID: <20230725093458.30064-9-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230725093458.30064-1-Kuan-Ying.Lee@mediatek.com>
-References: <20230725093458.30064-1-Kuan-Ying.Lee@mediatek.com>
+        Tue, 25 Jul 2023 05:38:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FD64223;
+        Tue, 25 Jul 2023 02:37:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51C16615D3;
+        Tue, 25 Jul 2023 09:37:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C2CC433B9;
+        Tue, 25 Jul 2023 09:37:23 +0000 (UTC)
+Message-ID: <b2f44154-79a2-b5e4-4f59-bc578e19e31f@xs4all.nl>
+Date:   Tue, 25 Jul 2023 11:37:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v7,06/11] media: mediatek: vcodec: replace pr_* with dev_*
+ for v4l2 debug message
+Content-Language: en-US
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230722074230.30558-1-yunfei.dong@mediatek.com>
+ <20230722074230.30558-7-yunfei.dong@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230722074230.30558-7-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This GDB script shows the vmallocinfo for user to
-analyze the vmalloc memory usage.
+On 22/07/2023 09:42, Yunfei Dong wrote:
+> Adding different macro mtk_v4l2_vdec_dbg and mtk_v4l2_venc_dbg for
+> encoder and decoder. Then calling the common macro mtk_v4l2_debug to
+> print debug message.
+> 
+> Replace pr_err with dev_err for 'mtk_v4l2_err' debug message.
+> Replace pr_debug with dev_dbg for 'mtk_v4l2_debug' debug message.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../platform/mediatek/vcodec/mtk_vcodec_dec.c | 116 +++++-----
+>  .../mediatek/vcodec/mtk_vcodec_dec_drv.c      |  54 +++--
+>  .../mediatek/vcodec/mtk_vcodec_dec_hw.c       |   7 +-
+>  .../mediatek/vcodec/mtk_vcodec_dec_pm.c       |  19 +-
+>  .../mediatek/vcodec/mtk_vcodec_dec_stateful.c | 143 ++++++------
+>  .../vcodec/mtk_vcodec_dec_stateless.c         |  62 ++---
+>  .../platform/mediatek/vcodec/mtk_vcodec_enc.c | 211 ++++++++----------
+>  .../mediatek/vcodec/mtk_vcodec_enc_drv.c      |  45 ++--
+>  .../mediatek/vcodec/mtk_vcodec_enc_pm.c       |   8 +-
+>  .../platform/mediatek/vcodec/mtk_vcodec_fw.c  |   2 +-
+>  .../mediatek/vcodec/mtk_vcodec_fw_scp.c       |   2 +-
+>  .../mediatek/vcodec/mtk_vcodec_fw_vpu.c       |   7 +-
+>  .../mediatek/vcodec/mtk_vcodec_intr.c         |  12 +-
+>  .../mediatek/vcodec/mtk_vcodec_util.c         |  30 ++-
+>  .../mediatek/vcodec/mtk_vcodec_util.h         |  27 ++-
+>  .../vcodec/vdec/vdec_av1_req_lat_if.c         |  10 +-
+>  .../mediatek/vcodec/vdec/vdec_h264_req_if.c   |  14 +-
+>  .../vcodec/vdec/vdec_h264_req_multi_if.c      |  16 +-
+>  .../vcodec/vdec/vdec_hevc_req_multi_if.c      |  14 +-
+>  .../platform/mediatek/vcodec/vdec_drv_if.c    |   4 +-
+>  .../platform/mediatek/vcodec/vdec_msg_queue.c |  52 +++--
+>  .../platform/mediatek/vcodec/vdec_msg_queue.h |   2 +
+>  .../platform/mediatek/vcodec/vdec_vpu_if.c    |   2 +-
+>  23 files changed, 417 insertions(+), 442 deletions(-)
+> 
 
-Example output:
-0xffff800008000000-0xffff800008009000      36864 <start_kernel+372> pages=8 vmalloc
-0xffff800008009000-0xffff80000800b000       8192 <gicv2m_init_one+400> phys=0x8020000 ioremap
-0xffff80000800b000-0xffff80000800d000       8192 <bpf_prog_alloc_no_stats+72> pages=1 vmalloc
-0xffff80000800d000-0xffff80000800f000       8192 <bpf_jit_alloc_exec+16> pages=1 vmalloc
-0xffff800008010000-0xffff80000ad30000   47316992 <paging_init+452> phys=0x40210000 vmap
-0xffff80000ad30000-0xffff80000c1c0000   21561344 <paging_init+556> phys=0x42f30000 vmap
-0xffff80000c1c0000-0xffff80000c370000    1769472 <paging_init+592> phys=0x443c0000 vmap
-0xffff80000c370000-0xffff80000de90000   28442624 <paging_init+692> phys=0x44570000 vmap
-0xffff80000de90000-0xffff80000f4c1000   23269376 <paging_init+788> phys=0x46090000 vmap
-0xffff80000f4c1000-0xffff80000f4c3000       8192 <gen_pool_add_owner+112> pages=1 vmalloc
-0xffff80000f4c3000-0xffff80000f4c5000       8192 <gen_pool_add_owner+112> pages=1 vmalloc
-0xffff80000f4c5000-0xffff80000f4c7000       8192 <gen_pool_add_owner+112> pages=1 vmalloc
+<snip>
 
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
----
- scripts/gdb/linux/constants.py.in |  8 +++++
- scripts/gdb/linux/vmalloc.py      | 56 +++++++++++++++++++++++++++++++
- scripts/gdb/vmlinux-gdb.py        |  1 +
- 3 files changed, 65 insertions(+)
- create mode 100644 scripts/gdb/linux/vmalloc.py
+> diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_util.h b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_util.h
+> index fd951ff47fc3..6bc822c7d825 100644
+> --- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_util.h
+> +++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_util.h
+> @@ -11,6 +11,9 @@
+>  #include <linux/types.h>
+>  #include <linux/dma-direction.h>
+>  
+> +#define MTK_DBG_VCODEC_STR "[MTK_VCODEC]"
+> +#define MTK_DBG_V4L2_STR "[MTK_V4L2]"
+> +
+>  struct mtk_vcodec_mem {
+>  	size_t size;
+>  	void *va;
+> @@ -28,8 +31,8 @@ struct mtk_vcodec_dev;
+>  #undef pr_fmt
+>  #define pr_fmt(fmt) "%s(),%d: " fmt, __func__, __LINE__
+>  
+> -#define mtk_v4l2_err(fmt, args...)                \
+> -	pr_err("[MTK_V4L2][ERROR] " fmt "\n", ##args)
+> +#define mtk_v4l2_err(plat_dev, fmt, args...)                            \
+> +	dev_err(&(plat_dev)->dev, "[MTK_V4L2][ERROR] " fmt "\n", ##args)
+>  
+>  #define mtk_vcodec_err(inst_id, plat_dev, fmt, args...)                                 \
+>  	dev_err(&(plat_dev)->dev, "[MTK_VCODEC][ERROR][%d]: " fmt "\n", inst_id, ##args)
+> @@ -38,11 +41,11 @@ struct mtk_vcodec_dev;
+>  extern int mtk_v4l2_dbg_level;
+>  extern int mtk_vcodec_dbg;
+>  
+> -#define mtk_v4l2_debug(level, fmt, args...)				\
+> -	do {								\
+> -		if (mtk_v4l2_dbg_level >= (level))			\
+> -			pr_debug("[MTK_V4L2] %s, %d: " fmt "\n",        \
+> -				 __func__, __LINE__, ##args);	        \
+> +#define mtk_v4l2_debug(plat_dev, level, fmt, args...)                             \
+> +	do {                                                                      \
+> +		if (mtk_v4l2_dbg_level >= (level))                                \
+> +			dev_dbg(&(plat_dev)->dev, "[MTK_V4L2] %s, %d: " fmt "\n", \
+> +				 __func__, __LINE__, ##args);                     \
+>  	} while (0)
 
-diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constants.py.in
-index fa23f4e3546a..3cf3c0b9eaea 100644
---- a/scripts/gdb/linux/constants.py.in
-+++ b/scripts/gdb/linux/constants.py.in
-@@ -22,6 +22,7 @@
- #include <linux/radix-tree.h>
- #include <linux/slab.h>
- #include <linux/threads.h>
-+#include <linux/vmalloc.h>
- #include <asm/memory.h>
- 
- /* We need to stringify expanded macros so that they can be parsed */
-@@ -96,6 +97,13 @@ if IS_BUILTIN(CONFIG_ARM64):
-     LX_GDBPARSED(VA_BITS_MIN)
-     LX_GDBPARSED(MODULES_VSIZE)
- 
-+/* linux/vmalloc.h */
-+LX_VALUE(VM_IOREMAP)
-+LX_VALUE(VM_ALLOC)
-+LX_VALUE(VM_MAP)
-+LX_VALUE(VM_USERMAP)
-+LX_VALUE(VM_DMA_COHERENT)
-+
- /* linux/page_ext.h */
- LX_GDBPARSED(PAGE_EXT_OWNER)
- LX_GDBPARSED(PAGE_EXT_OWNER_ALLOCATED)
-diff --git a/scripts/gdb/linux/vmalloc.py b/scripts/gdb/linux/vmalloc.py
-new file mode 100644
-index 000000000000..48e4a4fae7bb
---- /dev/null
-+++ b/scripts/gdb/linux/vmalloc.py
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2023 MediaTek Inc.
-+#
-+# Authors:
-+#  Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-+#
-+
-+import gdb
-+import re
-+from linux import lists, utils, stackdepot, constants, mm
-+
-+vmap_area_type = utils.CachedType('struct vmap_area')
-+vmap_area_ptr_type = vmap_area_type.get_type().pointer()
-+
-+def is_vmalloc_addr(x):
-+    pg_ops = mm.page_ops().ops
-+    addr = pg_ops.kasan_reset_tag(x)
-+    return addr >= pg_ops.VMALLOC_START and addr < pg_ops.VMALLOC_END
-+
-+class LxVmallocInfo(gdb.Command):
-+    """Show vmallocinfo"""
-+
-+    def __init__(self):
-+        super(LxVmallocInfo, self).__init__("lx-vmallocinfo", gdb.COMMAND_DATA)
-+
-+    def invoke(self, arg, from_tty):
-+        vmap_area_list = gdb.parse_and_eval('vmap_area_list')
-+        for vmap_area in lists.list_for_each_entry(vmap_area_list, vmap_area_ptr_type, "list"):
-+            if not vmap_area['vm']:
-+                gdb.write("0x%x-0x%x %10d vm_map_ram\n" % (vmap_area['va_start'], vmap_area['va_end'],
-+                    vmap_area['va_end'] - vmap_area['va_start']))
-+                continue
-+            v = vmap_area['vm']
-+            gdb.write("0x%x-0x%x %10d" % (v['addr'], v['addr'] + v['size'], v['size']))
-+            if v['caller']:
-+                gdb.write(" %s" % str(v['caller']).split(' ')[-1])
-+            if v['nr_pages']:
-+                gdb.write(" pages=%d" % v['nr_pages'])
-+            if v['phys_addr']:
-+                gdb.write(" phys=0x%x" % v['phys_addr'])
-+            if v['flags'] & constants.LX_VM_IOREMAP:
-+                gdb.write(" ioremap")
-+            if v['flags'] & constants.LX_VM_ALLOC:
-+                gdb.write(" vmalloc")
-+            if v['flags'] & constants.LX_VM_MAP:
-+                gdb.write(" vmap")
-+            if v['flags'] & constants.LX_VM_USERMAP:
-+                gdb.write(" user")
-+            if v['flags'] & constants.LX_VM_DMA_COHERENT:
-+                gdb.write(" dma-coherent")
-+            if is_vmalloc_addr(v['pages']):
-+                gdb.write(" vpages")
-+            gdb.write("\n")
-+
-+LxVmallocInfo()
-diff --git a/scripts/gdb/vmlinux-gdb.py b/scripts/gdb/vmlinux-gdb.py
-index 2526364f31fd..fc53cdf286f1 100644
---- a/scripts/gdb/vmlinux-gdb.py
-+++ b/scripts/gdb/vmlinux-gdb.py
-@@ -48,3 +48,4 @@ else:
-     import linux.stackdepot
-     import linux.page_owner
-     import linux.slab
-+    import linux.vmalloc
--- 
-2.18.0
+You forgot to add 'plat_dev' to the argument list of the mtk_v4l2_debug
+macro when CONFIG_DEBUG_FS is not set. That causes zillions of compiler
+warnings.
+
+>  
+>  #define mtk_vcodec_debug(inst_id, plat_dev, fmt, args...)                               \
+> @@ -70,6 +73,16 @@ extern int mtk_vcodec_dbg;
+>  #define mtk_venc_debug(ctx, fmt, args...)                              \
+>  	mtk_vcodec_debug((ctx)->id, (ctx)->dev->plat_dev, fmt, ##args)
+>  
+> +#define mtk_v4l2_vdec_err(ctx, fmt, args...) mtk_v4l2_err((ctx)->dev->plat_dev, fmt, ##args)
+> +
+> +#define mtk_v4l2_vdec_dbg(level, ctx, fmt, args...)             \
+> +	mtk_v4l2_debug((ctx)->dev->plat_dev, level, fmt, ##args)
+> +
+> +#define mtk_v4l2_venc_err(ctx, fmt, args...) mtk_v4l2_err((ctx)->dev->plat_dev, fmt, ##args)
+> +
+> +#define mtk_v4l2_venc_dbg(level, ctx, fmt, args...)             \
+> +	mtk_v4l2_debug((ctx)->dev->plat_dev, level, fmt, ##args)
+> +
+>  void __iomem *mtk_vcodec_get_reg_addr(void __iomem **reg_base, unsigned int reg_idx);
+>  int mtk_vcodec_write_vdecsys(struct mtk_vcodec_ctx *ctx, unsigned int reg, unsigned int val);
+>  int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem);
+
+Regards,
+
+	Hans
 
