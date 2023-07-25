@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A387621C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB0E7621D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbjGYStc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S230253AbjGYSz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjGYStb (ORCPT
+        with ESMTP id S229930AbjGYSz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:49:31 -0400
-Received: from s.wrqvwxzv.outbound-mail.sendgrid.net (s.wrqvwxzv.outbound-mail.sendgrid.net [149.72.154.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FFE1BC2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=mime-version:subject:references:from:in-reply-to:to:cc:content-type:
-        content-transfer-encoding:cc:content-type:from:subject:to;
-        s=s1; bh=slvye5wtN2LtYZ0xLS1A+7DvQJ4v5mIZFeSvFvmOaQM=;
-        b=M63E3U9ADds9ZQIDFmYyogYxQVR8reCaFsFRNX5EMSPduM3QH7Z+bn4ZLzCV8aTzaIY8
-        q75HevhruLSdG77YeO7l9PcfYvZP0RAFq868NCiESDB06mbM6XRrko0vg1ur7iYVdsGEXZ
-        jraVRo8DVCjoqDjlQzyiPsN/xnaUFymcBw6CIFk6EVayn62eZ1lc6Xu5RxLkSUitu5t64L
-        jP0H23nXPGgJIOcfOUOtZj2Fu6zaPupp3//erDVP8gSnu4rANPEAe9i+4aASVmwQPpJik+
-        9dMdx8rr2F9MCQ+XgjJ8rotGhY4uya2I32EMLUlZFqwdtLOrEpLAqwlhcBHwTugA==
-Received: by filterdrecv-66949dbc98-2h875 with SMTP id filterdrecv-66949dbc98-2h875-1-64C01936-5A
-        2023-07-25 18:49:26.85580565 +0000 UTC m=+6548987.779244678
-Received: from [192.168.1.50] (unknown)
-        by geopod-ismtpd-3 (SG) with ESMTP
-        id CzoI7C93Q8C6ozvHpFDwpw
-        Tue, 25 Jul 2023 18:49:26.565 +0000 (UTC)
-Message-ID: <294d2905-79b5-3a49-88e5-47df9a2447ec@kwiboo.se>
-Date:   Tue, 25 Jul 2023 18:49:27 +0000 (UTC)
+        Tue, 25 Jul 2023 14:55:57 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866EF1BC2;
+        Tue, 25 Jul 2023 11:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690311356; x=1721847356;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZVyS4i+R5tCisp4JnaVX/EGHRJPoy0lk8ITVH6T/ixc=;
+  b=TJZ6OkPEpoH0nzPvXxGeAqns9AwhExUMe5QjTf40nHVfGPy3v4H/6MQn
+   0PDa1x07LdfmoggYwVpiAhWxe54ZpWpRd/HT4wl4BuPSqwO6oUM/TNfO7
+   RYK9r/IJogBjCvmCUuyQhZ6jF5lY1vju0PFqJDYxpNmBN053Ovp2pRX0P
+   maP1BOmcvOfZNcG0wgK/WoHK/aLUYiRKUmqojwZ10LrT/918z29iNOrKN
+   dVq3o44t9BMo0U2rpoKpOC9FqLvVWPM1rn8F+zUmHfnoHZ4LZj3Rd+PTr
+   Wh2so5ekA20/dtmWulLAvrZCON7j3dIAJ/z6b7DUYHghyO7lamXMwl2ur
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="434075297"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="434075297"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 11:55:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="816357216"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="816357216"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 25 Jul 2023 11:55:53 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qONCK-0000FZ-2I;
+        Tue, 25 Jul 2023 18:55:52 +0000
+Date:   Wed, 26 Jul 2023 02:54:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in
+ SVID mode
+Message-ID: <202307260241.BetLbnxd-lkp@intel.com>
+References: <20230725114030.1860571-3-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] arm64: dts: rockchip: Fix regulators and enable SATA on
- Radxa E25
-Content-Language: en-US
-References: <20230724145213.3833099-1-jonas@kwiboo.se>
- <169030979754.2939984.9282914456412331786.b4-ty@sntech.de>
-From:   Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <169030979754.2939984.9282914456412331786.b4-ty@sntech.de>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hzhHxSPpdSFr4pHYV?=
- =?us-ascii?Q?0qIOofIH=2FsXgZ+Dsy7M6zY8SPImb9EjGkNHQzKu?=
- =?us-ascii?Q?75EkYebQpT1O=2FE6195t1I78Rk8V34asePV+50Ii?=
- =?us-ascii?Q?+br5O20o4XaI20AHgCqhwWTUTi=2Fib1r9GdwXTmJ?=
- =?us-ascii?Q?vvyW=2FpWoa1D7yezQnKITr9EPeDeSmHR=2FxlIqzC?=
-To:     Heiko Stuebner <heiko@sntech.de>, Chukun Pan <amadeus@jmu.edu.cn>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, FUKAUMI Naoki <naoki@radxa.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-X-Entity-ID: P7KYpSJvGCELWjBME/J5tg==
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <20230725114030.1860571-3-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-25 20:32, Heiko Stuebner wrote:
-> On Mon, 24 Jul 2023 14:52:16 +0000 (UTC), Jonas Karlman wrote:
->> Despite its name, the regulator vcc3v3_pcie30x1 has nothing to do with
->> pcie30x1. Instead, it supply power to VBAT1-5 on the M.2 KEY B port as
->> seen on page 8 of the schematic [1].
->>
->> pcie30x1 is used for the mini PCIe slot, and as seen on page 9 the
->> vcc3v3_minipcie regulator is instead related to pcie30x1.
->>
->> [...]
-> 
-> Applied, thanks!
-> 
-> [1/2] arm64: dts: rockchip: Fix PCIe regulators on Radxa E25
-> commit: a87852e37f782257ebc57cc44a0d3fbf806471f6
-> 
-> [2/2] arm64: dts: rockchip: Enable SATA on Radxa E25
-> commit: 2bdfe84fbd57a4ed9fd65a67210442559ce078f0
-> 
-> As you can see, I've split them in two. Please check that I didn't
-> mess anything up. Having an "and" in the commit subject is always a
-> very strong indicator that a split is probably a good thing ;-)
+Hi Naresh,
 
-Thanks, and they look fine. Should probably have split it in two from
-the beginning, I will try to do better next time :-)
+kernel test robot noticed the following build errors:
 
-Regards,
-Jonas
+[auto build test ERROR on 55612007f16b5d7b1fb83a7b0f5bb686829db7c7]
 
-> 
-> 
-> Best regards,
+url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/hwmon-pmbus-Add-ON_OFF_CONFIG-register-bits/20230725-194318
+base:   55612007f16b5d7b1fb83a7b0f5bb686829db7c7
+patch link:    https://lore.kernel.org/r/20230725114030.1860571-3-Naresh.Solanki%409elements.com
+patch subject: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in SVID mode
+config: x86_64-randconfig-x014-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260241.BetLbnxd-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260241.BetLbnxd-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260241.BetLbnxd-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/hwmon/pmbus/tda38640.c:118:7: error: use of undeclared identifier 'CONFIG_SENSORS_TDA38640_REGULATOR'
+           if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
+                ^
+   1 error generated.
+
+
+vim +/CONFIG_SENSORS_TDA38640_REGULATOR +118 drivers/hwmon/pmbus/tda38640.c
+
+   106	
+   107	static int tda38640_probe(struct i2c_client *client)
+   108	{
+   109		struct device *dev = &client->dev;
+   110		struct device_node *np = dev_of_node(dev);
+   111		struct tda38640_data *data;
+   112	
+   113		data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+   114		if (!data)
+   115			return -ENOMEM;
+   116		memcpy(&data->info, &tda38640_info, sizeof(tda38640_info));
+   117	
+ > 118		if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
+   119		    of_property_read_u32(np, "infineon,en-pin-fixed-level", &data->en_pin_lvl))
+   120			return pmbus_do_probe(client, &data->info);
+   121	
+   122		/*
+   123		 * Apply ON_OFF_CONFIG workaround as enabling the regulator using the
+   124		 * OPERATION register doesn't work in SVID mode.
+   125		 */
+   126		data->info.read_byte_data = tda38640_read_byte_data;
+   127		data->info.write_byte_data = tda38640_write_byte_data;
+   128		/*
+   129		 * One should configure PMBUS_ON_OFF_CONFIG here, but
+   130		 * PB_ON_OFF_CONFIG_POWERUP_CONTROL, PB_ON_OFF_CONFIG_EN_PIN_REQ and
+   131		 * PB_ON_OFF_CONFIG_EN_PIN_REQ are ignored by the device.
+   132		 * Only PB_ON_OFF_CONFIG_POLARITY_HIGH has an effect.
+   133		 */
+   134	
+   135		return pmbus_do_probe(client, &data->info);
+   136	}
+   137	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
