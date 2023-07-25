@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A125D760CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBE5760CA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjGYIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S232579AbjGYIHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjGYIHe (ORCPT
+        with ESMTP id S231942AbjGYIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:07:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EB0194
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690272408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=znFfHLJbWiyN9pMP2AMMfy/9G3ZnnV8jtsrk5zhq4sQ=;
-        b=iMPKlqV0coF8yz0FrVMIsgHEfI5QZ5fAzhOvUZfqAsYqt8BuSPjy63fcRKVdCWoZVfK/MY
-        Ya0i90ITPcBeCcuSrrmtvh1ilpk9q9gGEWZGjv/iKv5122UFrZ1PCtmlNqaSrCl4W8xKH1
-        k3zfAHrMrsx2Qbp9d7szl7dCyG+9hho=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-167-cLlFzzGUOGa4ShxPE0ugaQ-1; Tue, 25 Jul 2023 04:06:46 -0400
-X-MC-Unique: cLlFzzGUOGa4ShxPE0ugaQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-978a991c3f5so452611966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:06:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690272405; x=1690877205;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=znFfHLJbWiyN9pMP2AMMfy/9G3ZnnV8jtsrk5zhq4sQ=;
-        b=FCby7/H3ZWv7fXCpjAwtIR5PYJat9XHXv101DAK6jAdX1nBnOn4EwBCuFsdNFNCgtD
-         EQr7vwuZn2vkmUJcY970/P3pJ43HtKVrfsvP1G7nloy4AqQwiF7DtdoVTwO15uclsVaZ
-         OrqJqiDPCPRuHdxf8yfmyxBa4OLmGPTKh7eKZgeyjM+Bhx/TCiuLwWM9VKqluXyL5Jpq
-         aLPZ3bXLDZp/qoriKX7HL+U+FYawVyEejh39Ky9EpdD/2YnIPSlcvvEwJUZedGQArsTq
-         b0ROSfQOseCpcbn9dJ4R+1E5sp+M/oqR6WOeLRmofnhbmW1Ve6UOs8/JDLIB5KDeBkF+
-         q6Aw==
-X-Gm-Message-State: ABy/qLY8G+AgbjhXDcTdnAxgqTI/Fw4R3+Dia5QvuPy52Bvoe6qzOFGZ
-        OBxSkRD5l+NaUR+HB/tQ0MoBSJY6fw+EoroN3sxXoFZFbPF23dmRXoIIqQ0I2XICBucBKBpVVfW
-        swda+OMunyMykPuDTyta1L8sm
-X-Received: by 2002:a17:906:844f:b0:997:b843:7cb2 with SMTP id e15-20020a170906844f00b00997b8437cb2mr12863554ejy.60.1690272405718;
-        Tue, 25 Jul 2023 01:06:45 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE3D4D8K7hbcxTbSaSiYgnMLi23XavkH92746u3yNn+xpzMYhDK6WGTVziN9NOwXyXDZs16Eg==
-X-Received: by 2002:a17:906:844f:b0:997:b843:7cb2 with SMTP id e15-20020a170906844f00b00997b8437cb2mr12863539ejy.60.1690272405385;
-        Tue, 25 Jul 2023 01:06:45 -0700 (PDT)
-Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170906130800b00992b510089asm7885039ejb.84.2023.07.25.01.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 01:06:44 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 10:06:44 +0200
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     Woody Suwalski <terraluna977@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, mst@redhat.com
-Subject: Re: [PATCH] hack to debug acpiphp crash
-Message-ID: <20230725100644.6138efb6@imammedo.users.ipa.redhat.com>
-In-Reply-To: <92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com>
-References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
-        <20230724135902.2217991-1-imammedo@redhat.com>
-        <92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 25 Jul 2023 04:07:51 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E9F102;
+        Tue, 25 Jul 2023 01:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690272469; x=1721808469;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=S1C6UZ72UcgoyakEvkbEicyn8aR4o2mt1dR1fFY40UY=;
+  b=i7op6SUrw0EmeVUDej1NiTERYr9OBxFbvqE6u5B0mN0N0T0C9h9KSqv1
+   iV7d9Twqxxp9uaBf+Zw0xa1So8hMAPKQkw1mbWgzLQZF/x9HdXohR6pei
+   TkyPJ+rQWu7IwWVgM5ZOcxzGBkLbpHCCfViwrWlDnIo9KP1zGilaNyRwI
+   WEWAB+8o7XIkzQuPHFKZj+X83dKmvXRZqXVg+rl3RsG/rcwkXDZwhlNHI
+   uUEj2l4SJVswwc6IREtzJEgQQtwsy+Vz8lC1JbPbs5ZzxbjB2rTxaWqLN
+   sv6+A/TV7mrWlY9ZGisEs3sp661BfvnDPlriGCpe/KYCLZaI5SSLeb+nc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="370320072"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="370320072"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:07:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719961358"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="719961358"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 25 Jul 2023 01:07:43 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOD55-000AS0-02;
+        Tue, 25 Jul 2023 08:07:43 +0000
+Date:   Tue, 25 Jul 2023 16:07:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mike Tipton <quic_mdtipton@quicinc.com>, djakov@kernel.org,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, quic_okukatla@quicinc.com,
+        quic_viveka@quicinc.com, Mike Tipton <quic_mdtipton@quicinc.com>
+Subject: Re: [PATCH 2/3] interconnect: Reintroduce icc_get()
+Message-ID: <202307251508.Z4w38USw-lkp@intel.com>
+References: <20230725012859.18474-3-quic_mdtipton@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725012859.18474-3-quic_mdtipton@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 21:52:34 -0400
-Woody Suwalski <terraluna977@gmail.com> wrote:
+Hi Mike,
 
-> Igor Mammedov wrote:
-> > Woody thanks for testing,
-> >
-> > can you try following patch which will try to workaround NULL bus->self if it's
-> > a really cuplrit and print an extra debug information.
-> > Add following to kernel command line(make sure that CONFIG_DYNAMIC_DEBUG is enabled):
-> >
-> > dyndbg="file drivers/pci/access.c +p; file drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p" ignore_loglevel
-> >
-> > What I find odd in you logs is that enable_slot() is called while native PCIe
-> > should be used. Additional info might help to understand what's going on:
-> >    1: 'lspci' output
-> >    2:  DSDT and all SSDT ACPI tables (you can use 'acpidump -b' to get them).
-> >
-> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-[...]
-> >   
-> >   /**  
-> Unfortunately the patch above does not seem to prevent the kernel crash.
-> Here comes the requested diagnostic info: dmesg's before and after, 
-> choice of lspci's and acpi tables. Hope that will help :-)
+kernel test robot noticed the following build warnings:
 
-Looking at dmesg-6.5-debug_after.txt
-there aren't "BUG: kernel NULL pointer dereference" line anymore
-The call traces you see are induced by WARN(), which purpose is
-to show call path that calls enable_slot().
+[auto build test WARNING on driver-core/driver-core-testing]
+[also build test WARNING on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.5-rc3 next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Let me split potential fix from debug and repost that as separate
-patches for you to try.
-I'd like to see debug output without 'fix' to track down which
-root port/device causes NULL pointer dereference. And hopefully
-in a few roundtrips figure out why old code doesn't crash.
+url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Tipton/debugfs-Add-write-support-to-debugfs_create_str/20230725-093242
+base:   driver-core/driver-core-testing
+patch link:    https://lore.kernel.org/r/20230725012859.18474-3-quic_mdtipton%40quicinc.com
+patch subject: [PATCH 2/3] interconnect: Reintroduce icc_get()
+config: um-randconfig-m031-20230725 (https://download.01.org/0day-ci/archive/20230725/202307251508.Z4w38USw-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251508.Z4w38USw-lkp@intel.com/reproduce)
 
-PS:
-What happens is that on resume firmware (likely EC),
-issues ACPI bus check on root ports which (bus check) is
-wired to acpiphp module (though pciehp module was initialized
-at boot to manage root ports), it's likely firmware bug.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307251508.Z4w38USw-lkp@intel.com/
 
-I'd guess the intent behind this was to check if PCIe devices
-were hotplugged while laptop has been asleep, and for
-some reason they didn't use native PCIe hotplug to handle that. 
-However looking at laptop specs you can't hotplug PCIe
-devices via external ports. Given how old laptop is
-it isn't going to be fixed, so we would need a workaround
-or fixup DSDT to skip buscheck.
+All warnings (new ones prefixed by >>):
 
-The options I see is to keep old kernel as for such case,
-or bail out early from bus check/enable_slot since root port
-is managed by pciehp module (and let it handle hotplug).
+   In file included from drivers/opp/opp.h:15,
+                    from drivers/opp/core.c:23:
+>> include/linux/interconnect.h:63:18: warning: no previous prototype for 'icc_get' [-Wmissing-prototypes]
+      63 | struct icc_path *icc_get(struct device *dev, const char *src, const char *dst)
+         |                  ^~~~~~~
 
-> Thanks, Woody
-> 
-> 
 
+vim +/icc_get +63 include/linux/interconnect.h
+
+    62	
+  > 63	struct icc_path *icc_get(struct device *dev, const char *src, const char *dst)
+    64	{
+    65		return NULL;
+    66	}
+    67	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
