@@ -2,141 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752CE761D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2958761D18
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232803AbjGYPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
+        id S232982AbjGYPPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232819AbjGYPOC (ORCPT
+        with ESMTP id S231728AbjGYPPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:14:02 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97731BD9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=BV1xB/2XbmJZJAGcy1cpgotCP6ChotEIwq9HRVIEYeY=; b=NWkwQWiG7sj2qpHxVC3/1m2x2L
-        YABumZgyt/lBp/yaJkXDEUZmKPwiq1wkTqiRXuUsBNn7wqAFIpmBqnjLN3hvLTbmO+olrTeKrb7E/
-        B71F01nH7+lh+Vt80zSa6WCxWbtkHmXbMKMcQoe9iNhuobr//Ox/PzODxIhMc1oBIEc0=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:39448 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qOJjX-0003j2-87; Tue, 25 Jul 2023 11:13:55 -0400
-Date:   Tue, 25 Jul 2023 11:13:54 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Tue, 25 Jul 2023 11:15:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151A919BA;
+        Tue, 25 Jul 2023 08:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=mYmfoCdflZ9uHA5txqbILukt8Ar2VVGNn6p5XL0M74c=; b=Z0QafXBY9g7/F8RhSqaEe5YZJH
+        VwZdQaj/KqdXcx4sTag58JbhWnT09v8dwx1+7N816ztPp4sVJISvCg1ZxCvXwmUhSginMUOmuCZMS
+        GY6lVyPtJYpRb9BPB+xhggWXjYetlOshGlx8DbNqHEjChWsq1LFY83hSGZXJ1U/IB9Ev8X6nXEHz0
+        CHAG2uRdHea8Zxbs9SgTk56p9eaDV5E+/NnZyGKc1aaV59zbV40ky/EhuXXM3BPvQpRDwOWMhOE8Y
+        2lO1jGhdlKyumMevKErHr9G73KY/LsqECnQwPb7Oo3VmqUT7zCHa9tlMvf9XNp+te9kf4x21+rERw
+        WWN7NQBw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOJjv-007taN-1z;
+        Tue, 25 Jul 2023 15:14:19 +0000
+Message-ID: <6cc4f622-0e83-cd49-73d7-06ad90a3f5d8@infradead.org>
+Date:   Tue, 25 Jul 2023 08:14:17 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 4/4] ASoC: codecs: aw88261 chip register file, Kconfig
+ and Makefile
+Content-Language: en-US
+To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
+        rf@opensource.cirrus.com, shumingf@realtek.com,
+        povik+lin@cutebit.org, 13916275206@139.com,
+        herve.codina@bootlin.com, ryans.lee@analog.com,
+        ckeepax@opensource.cirrus.com,
+        ajye_huang@compal.corp-partner.google.com,
+        sebastian.reichel@collabora.com, yijiangtao@awinic.com,
+        trix@redhat.com, colin.i.king@gmail.com, liweilei@awinic.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Message-Id: <20230725111354.160f32cfba0b53923ac2aae6@hugovil.com>
-In-Reply-To: <CAMuHMdVTDrTowx2-MgYaaNASKLZw=ra5z7pL5WtemDgZ3HS5sQ@mail.gmail.com>
-References: <20230722180925.1408885-1-hugo@hugovil.com>
-        <CAMuHMdVTDrTowx2-MgYaaNASKLZw=ra5z7pL5WtemDgZ3HS5sQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+Cc:     zhangjianming@awinic.com
+References: <20230725115649.67560-1-wangweidong.a@awinic.com>
+ <20230725115649.67560-5-wangweidong.a@awinic.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230725115649.67560-5-wangweidong.a@awinic.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v2] auxdisplay: hd44780: move cursor home after clear
- display command
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 18:08:00 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-> Hi Hugo,
-> 
-> On Sat, Jul 22, 2023 at 8:18 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> >
-> > The DISPLAY_CLEAR command on the NewHaven NHD-0220DZW-AG5 display
-> > does NOT change the DDRAM address to 00h (home position) like the
-> > standard Hitachi HD44780 controller. As a consequence, the starting
-> > position of the initial string LCD_INIT_TEXT is not guaranteed to be
-> > at 0,0 depending on where the cursor was before the DISPLAY_CLEAR
-> > command.
-> >
-> > Extract of DISPLAY_CLEAR command from datasheets of:
-> >
-> >     Hitachi HD44780:
-> >         ... It then sets DDRAM address 0 into the address counter...
-> >
-> >     NewHaven NHD-0220DZW-AG5 datasheet:
-> >         ... This instruction does not change the DDRAM Address
-> >
-> > Move the cursor home after sending DISPLAY_CLEAR command to support
-> > non-standard LCDs.
-> >
-> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> 
-> Thanks for your patch!
-> 
-> > --- a/drivers/auxdisplay/hd44780_common.c
-> > +++ b/drivers/auxdisplay/hd44780_common.c
-> > @@ -82,7 +82,15 @@ int hd44780_common_clear_display(struct charlcd *lcd)
-> >         hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
-> >         /* datasheet says to wait 1,64 milliseconds */
-> >         long_sleep(2);
-> > -       return 0;
-> > +
-> > +       /*
-> > +        * The Hitachi HD44780 controller (and compatible ones) reset the DDRAM
-> > +        * address when executing the DISPLAY_CLEAR command, thus the
-> > +        * following call is not required. However, other controllers do not
-> > +        * (e.g. NewHaven NHD-0220DZW-AG5), thus move the cursor to home
-> > +        * unconditionally to support both.
-> > +        */
-> > +       return hd44780_common_home(lcd);
-> 
-> Sorry, I haven't tested your patch yet, as my HD44780 display is
-> currently not connected to any system.
-> 
-> Your patch LGTM, so
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Note that hd44780_common_home() calls hd44780_common_gotoxy().
-> According to the documentation, both HD44780U and NHD-0220DZW-AG5
-> support the Return Home command (0x02), so that could be a good
-> alternative.
-
-Hi Geert,
-If this is desired, I think maybe it would be best to do it in a
-separate patch. Maybe there is a good reason why hd44780_common_home()
-calls hd44780_common_gotoxy() instead of using Return Home command?
-
-Hugo.
 
 
-> 
-> >  }
-> >  EXPORT_SYMBOL_GPL(hd44780_common_clear_display);
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+On 7/25/23 04:56, wangweidong.a@awinic.com wrote:
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index c2de4ee72183..ab21ad20978f 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -55,6 +55,7 @@ config SND_SOC_ALL_CODECS
+>  	imply SND_SOC_ALC5632
+>  	imply SND_SOC_AW8738
+>  	imply SND_SOC_AW88395
+> +	imply SND_SOC_AW88261
+>  	imply SND_SOC_BT_SCO
+>  	imply SND_SOC_BD28623
+>  	imply SND_SOC_CHV3_CODEC
+> @@ -640,6 +641,18 @@ config SND_SOC_AW88395
+>  	  digital Smart K audio amplifier with an integrated 10V
+>  	  smart boost convert.
+>  
+> +config SND_SOC_AW88261
+> +	tristate "Soc Audio for awinic aw88261"
+> +	depends on I2C
+> +	select CRC8
+> +	select REGMAP_I2C
+> +	select GPIOLIB
+> +	select SND_SOC_AW88395_LIB
+> +	help
+> +	  this option enables support for aw88261 Smart PA.
+
+	  This
+
+> +	  The awinic AW88261 is an I2S/TDM input, high efficiency
+> +	  digital Smart K audio amplifier.
+
+-- 
+~Randy
