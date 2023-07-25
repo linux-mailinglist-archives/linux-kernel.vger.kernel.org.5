@@ -2,179 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5545F761D1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DED761CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbjGYPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
+        id S230347AbjGYPFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbjGYPPY (ORCPT
+        with ESMTP id S229798AbjGYPFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:15:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569D619A0;
-        Tue, 25 Jul 2023 08:15:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC6B6613DC;
-        Tue, 25 Jul 2023 15:15:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D457AC433C7;
-        Tue, 25 Jul 2023 15:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690298122;
-        bh=uXKJ00uasfRVR16k4FOy30lC5u9cvvfPEmi295ROSWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fTH8UPAM+yn81R7Z0KXVtP8plOMp2TcJp0PSNVyugUwDyax88EbHRxI8m3I4eBcPe
-         eCUj3cznRsiQJPalXVlO1yJwcrPx1GgSKlTsZyrW8dttQooC1l9Z3xIxmzxrrkuF7d
-         BjQlmEtI/Wl52M+s6tiFDpazwACyKEJ0Coprc0z7wWUm08GqlSodUDVzyJ9fLTfhMe
-         v+kB9e1cPeBd6ISw2Tay9SDLaUykUHhD3+pMt7p9WWVOh0uG3TJYYR0fndhiQKwoSR
-         Q88j5PyK4KPrdVMx1vKzfwgcsCGmTcSzMiUUODzInRjVYgm/y56VRwPFXwZ6cGFg62
-         0vVfY0WzOcw9Q==
-Date:   Tue, 25 Jul 2023 23:03:44 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>
-Subject: Re: [PATCH RFC 4/4] mmc: sdhci-of-dwcmshc: Add support for T-Head
- TH1520
-Message-ID: <ZL/kUPicOEPWz5NP@xhacker>
-References: <20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com>
- <20230724-th1520-emmc-v1-4-cca1b2533da2@baylibre.com>
+        Tue, 25 Jul 2023 11:05:17 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8ED219A7;
+        Tue, 25 Jul 2023 08:05:15 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PEfRpK020730;
+        Tue, 25 Jul 2023 15:05:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=5hFheaSKGmfOKtZHhZmpjzVgtdHwInm/xNbWooEA+zw=;
+ b=dDsuV3zEqkrCQZ6mpI7KvnGT0kt2Z0cVlI3PJ/8EUbDOvHnUWTxokfuXGccxmcVCpEGL
+ t1CNXmau8gYfBF48eAV0Kd7vXyM/u7coENwJdwb+/HiNr9bc2AqIVjVpYHY128XYJ8lA
+ 3N5qgIl7zjoTBxbaRkSc7VIMGKEzpF2NAwI3MJOfHaOMamW/FHF5BzvkfxP0bXPqsCQf
+ b1sGvCOUWjkoAOd0Csxs/MUJjHl+YsFMZhKch9IzBJBGpuaO3cDyqV8q7JrmJ3DyEkGN
+ RNreWwxwm1aNPPeJ95EfLMLW3wlAEPOMmn5axyEZ9DVpmHhsYxx31133un9vlspOHdaL tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2942d9ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 15:05:06 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36PF3pHc030393;
+        Tue, 25 Jul 2023 15:04:25 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2942d83f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 15:04:24 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36PEUA0I026197;
+        Tue, 25 Jul 2023 15:04:00 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0serwafw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 15:04:00 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36PF3uck40894740
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 15:03:57 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D41642004E;
+        Tue, 25 Jul 2023 15:03:56 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D2A22004B;
+        Tue, 25 Jul 2023 15:03:56 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 25 Jul 2023 15:03:56 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, irogers@google.com, wangnan0@huawei.com,
+        jolsa@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH 1/2 Resend] perf build: Update feature check for clang and llvm
+Date:   Tue, 25 Jul 2023 17:03:46 +0200
+Message-Id: <20230725150347.3479291-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: AqhTr4dx7muIig6b4ujwkOk9wPZyG1xi
+X-Proofpoint-GUID: -G55YXqjURpmZ5aIIwPZoaj5WAa4Hms2
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230724-th1520-emmc-v1-4-cca1b2533da2@baylibre.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 impostorscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250133
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:59:18PM -0700, Drew Fustini wrote:
-> Add basic support for the T-Head TH1520 SoC mmc controller. The new
-> compatible "thead,th1520-dwcmshc" enables basic support by:
+Perf build auto-detects features and packages already installed
+for its build. This is done in directory tools/build/feature. This
+directory contains small sample programs. When they successfully
+compile the necessary prereqs in form of libraries and header
+files are present.
 
-Hi Drew,
+Such a check is also done for llvm and clang. And the checks fail.
 
-> 
->  - Enabling v4 mode to properly communicate with the mmc device
->  - Setting quirk to disable ADMA
->  - Setting flag to disable SDMA and force PIO mode
->  - Turing .reset op into a no-op as the driver does not yet know how to
->    configure the phy. Rely on the vendor u-boot to have configured the
->    phy and do not reset the controller in Linux.
+Fix this and update to the latest C++ standard and use the
+new library provided by clang (which contains new packaging)
+see this link for reference:
+ https://fedoraproject.org/wiki/Changes/Stop-Shipping-Individual-Component-Libraries-In-clang-lib-Package
 
-The last three itmes are not acceptable. The controller supports ADMA
-well, can you plz bring in the phy driver? We can't rely on bootloader to
-configure phy.
+Output before:
+ # rm -f ./test-clang.bin; make test-clang.bin; ./test-clang.bin; \
+	ll test-clang.make.output
+ g++  -MD -Wall -Werror -o test-clang.bin test-clang.cpp \
+	 	> test-clang.make.output 2>&1 -std=gnu++14 \
+	-I/usr/include 		\
+	-L/usr/lib64		\
+	-Wl,--start-group -lclangBasic -lclangDriver	\
+	  -lclangFrontend -lclangEdit -lclangLex	\
+	  -lclangAST -Wl,--end-group 			\
+	-lLLVM-16	\
+			\
+	> test-clang.make.output 2>&1
+ make: *** [Makefile:356: test-clang.bin] Error 1
+ -bash: ./test-clang.bin: No such file or directory
+ -rw-r--r--. 1 root root 252041 Jul 12 09:56 test-clang.make.output
+ #
 
-> 
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 42 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index e68cd87998c8..8573aff25a81 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -337,6 +337,14 @@ static void rk35xx_sdhci_reset(struct sdhci_host *host, u8 mask)
->  	sdhci_reset(host, mask);
->  }
->  
-> +static void th1520_sdhci_reset(struct sdhci_host *host, u8 mask)
-> +{
-> +	/*
-> +	 * MMC controller and phy is configured by vendor u-boot so
-> +	 * take the simplistic approach of not doing reset in Linux.
-> +	 */
-> +}
-> +
->  static const struct sdhci_ops sdhci_dwcmshc_ops = {
->  	.set_clock		= sdhci_set_clock,
->  	.set_bus_width		= sdhci_set_bus_width,
-> @@ -355,6 +363,15 @@ static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
->  	.adma_write_desc	= dwcmshc_adma_write_desc,
->  };
->  
-> +static const struct sdhci_ops sdhci_dwcmshc_th1520_ops = {
-> +	.set_clock		= sdhci_set_clock,
-> +	.set_bus_width		= sdhci_set_bus_width,
-> +	.set_uhs_signaling	= dwcmshc_set_uhs_signaling,
-> +	.get_max_clock		= dwcmshc_get_max_clock,
-> +	.reset			= th1520_sdhci_reset,
-> +	.adma_write_desc	= dwcmshc_adma_write_desc,
-> +};
-> +
->  static const struct sdhci_pltfm_data sdhci_dwcmshc_pdata = {
->  	.ops = &sdhci_dwcmshc_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-> @@ -378,6 +395,13 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk35xx_pdata = {
->  		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
->  };
->  
-> +static const struct sdhci_pltfm_data sdhci_dwcmshc_th1520_pdata = {
-> +	.ops = &sdhci_dwcmshc_th1520_ops,
-> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN | SDHCI_QUIRK_BROKEN_DMA |
-> +		  SDHCI_QUIRK_BROKEN_ADMA,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-> +};
-> +
->  static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
->  {
->  	int err;
-> @@ -434,6 +458,10 @@ static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv
->  }
->  
->  static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
-> +	{
-> +		.compatible = "thead,th1520-dwcmshc",
-> +		.data = &sdhci_dwcmshc_th1520_pdata,
-> +	},
->  	{
->  		.compatible = "rockchip,rk3588-dwcmshc",
->  		.data = &sdhci_dwcmshc_rk35xx_pdata,
-> @@ -546,6 +574,20 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  		sdhci_enable_v4_mode(host);
->  #endif
->  
-> +	if (pltfm_data == &sdhci_dwcmshc_th1520_pdata) {
-> +		/*
-> +		 * The controller needs v4 mode enabled to properly
-> +		 * communicate with the mmc device.
-> +		 */
-> +		sdhci_enable_v4_mode(host);
-> +
-> +		/*
-> +		 * Set flag so the SDHCI host core will disable DMA
-> +		 * and use PIO mode.
-> +		 */
-> +		host->flags &= ~SDHCI_USE_SDMA;
-> +	}
-> +
->  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->  
->  	err = sdhci_setup_host(host);
-> 
-> -- 
-> 2.34.1
-> 
+File test-clang.make.output contains many lines of unreferenced
+symbols.
+
+Output after:
+ # rm -f ./test-clang.bin; make test-clang.bin; ./test-clang.bin; \
+	cat test-clang.make.output
+ g++  -MD -Wall -Werror -o test-clang.bin test-clang.cpp \
+	 > test-clang.make.output 2>&1 -std=gnu++17	\
+	-I/usr/include 		\
+	-L/usr/lib64		\
+	-Wl,--start-group -lclang-cpp -Wl,--end-group	\
+	-lLLVM-16	\
+			\
+	> test-clang.make.output 2>&1
+ #
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+---
+ tools/build/feature/Makefile | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 2cd6dbbee088..3184f387990a 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -340,7 +340,7 @@ $(OUTPUT)test-jvmti-cmlr.bin:
+ 	$(BUILD)
+ 
+ $(OUTPUT)test-llvm.bin:
+-	$(BUILDXX) -std=gnu++14 				\
++	$(BUILDXX) -std=gnu++17 				\
+ 		-I$(shell $(LLVM_CONFIG) --includedir) 		\
+ 		-L$(shell $(LLVM_CONFIG) --libdir)		\
+ 		$(shell $(LLVM_CONFIG) --libs Core BPF)		\
+@@ -348,17 +348,15 @@ $(OUTPUT)test-llvm.bin:
+ 		> $(@:.bin=.make.output) 2>&1
+ 
+ $(OUTPUT)test-llvm-version.bin:
+-	$(BUILDXX) -std=gnu++14					\
++	$(BUILDXX) -std=gnu++17					\
+ 		-I$(shell $(LLVM_CONFIG) --includedir)		\
+ 		> $(@:.bin=.make.output) 2>&1
+ 
+ $(OUTPUT)test-clang.bin:
+-	$(BUILDXX) -std=gnu++14					\
++	$(BUILDXX) -std=gnu++17					\
+ 		-I$(shell $(LLVM_CONFIG) --includedir) 		\
+ 		-L$(shell $(LLVM_CONFIG) --libdir)		\
+-		-Wl,--start-group -lclangBasic -lclangDriver	\
+-		  -lclangFrontend -lclangEdit -lclangLex	\
+-		  -lclangAST -Wl,--end-group 			\
++		-Wl,--start-group -lclang-cpp -Wl,--end-group	\
+ 		$(shell $(LLVM_CONFIG) --libs Core option)	\
+ 		$(shell $(LLVM_CONFIG) --system-libs)		\
+ 		> $(@:.bin=.make.output) 2>&1
+-- 
+2.41.0
+
