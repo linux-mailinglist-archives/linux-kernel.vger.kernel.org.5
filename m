@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00B37608C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035117608CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjGYEmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 00:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
+        id S230315AbjGYEn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 00:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjGYEmJ (ORCPT
+        with ESMTP id S229625AbjGYEn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 00:42:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF0110EF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:42:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD9FF61518
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:42:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C66BC433CC;
-        Tue, 25 Jul 2023 04:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690260123;
-        bh=9xmLr5/SpwYPrO0t5OmP14xdMu9QQB8l/VYyS/cO+r8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ul69iYXkJmam1GUGJy/8oyYaGKYYZqCv1IooPEqIJAPloVQuj3Rkt7/pmw8X/pL/u
-         9wb65jYb0pdr0t5nEni6wxFmmcsjwJEq+P6IGCohPPoRzMRny96OgqEicXxKFJm7nU
-         HxnX0ZGs8ig7WXONybrQEMehS2VFJxDwsNw9Tqv8QReaVDgg4iaT+Q8lO8L9yAfCCo
-         mtmjBLXslM5zmURhXe4fz2gY4klsbRgix89Dwm9m7pJYLhncabl0qVKteBaw3UOlxm
-         L+XvCFL76dQz7P04UDQM2S9LEo1LkrD6NPmTviDPq+fHMSK77OjVx9lYzwpXmmsw4E
-         HtB0FkF4SyXQQ==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-4fb7589b187so7721587e87.1;
-        Mon, 24 Jul 2023 21:42:03 -0700 (PDT)
-X-Gm-Message-State: ABy/qLas06e0YiMhptpW2X9WSMwAtiJHXILpFrUX2OBPj4TSEfTqD3xI
-        BwldGqlo8WqwqaLAb/FwOD8gv00y1L5nL3AJBAQ=
-X-Google-Smtp-Source: APBJJlFyAtElYyCfGJawPIpDGRfQKoZBHaUMfu6wlS9BjtKBT27GNCsuhDzHyvmFmL9/bO6ckhxumh8R8ccwgK3sBbE=
-X-Received: by 2002:a05:6512:220f:b0:4fd:f84a:9901 with SMTP id
- h15-20020a056512220f00b004fdf84a9901mr3455408lfu.66.1690260121101; Mon, 24
- Jul 2023 21:42:01 -0700 (PDT)
+        Tue, 25 Jul 2023 00:43:27 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB45710E7;
+        Mon, 24 Jul 2023 21:43:25 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90D1112FC;
+        Mon, 24 Jul 2023 21:44:08 -0700 (PDT)
+Received: from [10.163.51.115] (unknown [10.163.51.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2574E3F67D;
+        Mon, 24 Jul 2023 21:43:17 -0700 (PDT)
+Message-ID: <04bc4e49-8633-63db-5c13-12953f3349bc@arm.com>
+Date:   Tue, 25 Jul 2023 10:13:15 +0530
 MIME-Version: 1.0
-References: <20230724090044.2668064-1-ilia.lin@kernel.org> <20230724181105.GD11388@unreal>
-In-Reply-To: <20230724181105.GD11388@unreal>
-From:   Ilia Lin <ilia.lin@kernel.org>
-Date:   Tue, 25 Jul 2023 07:41:49 +0300
-X-Gmail-Original-Message-ID: <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com>
-Message-ID: <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com>
-Subject: Re: [PATCH] xfrm: kconfig: Fix XFRM_OFFLOAD dependency on XFRM
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Ilia Lin <ilia.lin@kernel.org>, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeffrey.t.kirsher@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 4/4] perf: Remove unused
+ PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+Content-Language: en-US
+To:     James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        will@kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230724134500.970496-1-james.clark@arm.com>
+ <20230724134500.970496-5-james.clark@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230724134500.970496-5-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
-
-This is exactly like I described:
-* xfrm.h is included from the net/core/sock.c unconditionally.
-* If CONFIG_XFRM_OFFLOAD is set, then the xfrm_dst_offload_ok() is
-being compiled.
-* If CONFIG_XFRM is not set, the struct dst_entry doesn't have the xfrm mem=
-ber.
-* xfrm_dst_offload_ok() tries to access the dst->xfrm and that fails to com=
-pile.
 
 
-Thanks,
-Ilia Lin
+On 7/24/23 19:14, James Clark wrote:
+> Since commit bd2756811766 ("perf: Rewrite core context handling") the
+> relationship between perf_event_context and PMUs has changed so that
+> the error scenario that PERF_PMU_CAP_HETEROGENEOUS_CPUS originally
+> silenced no longer exists.
+> 
+> Remove the capability to avoid confusion that it actually influences
+> any perf core behavior and shift down the following capability bits to
+> fill in the unused space. This change should be a no-op.
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-On Mon, Jul 24, 2023 at 9:11=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Mon, Jul 24, 2023 at 12:00:44PM +0300, Ilia Lin wrote:
-> > If XFRM_OFFLOAD is configured, but XFRM is not
->
-> How did you do it?
->
-> >, it will cause
-> > compilation error on include xfrm.h:
-> >  C 05:56:39 In file included from /src/linux/kernel_platform/msm-kernel=
-/net/core/sock.c:127:
-> >  C 05:56:39 /src/linux/kernel_platform/msm-kernel/include/net/xfrm.h:19=
-32:30: error: no member named 'xfrm' in 'struct dst_entry'
-> >  C 05:56:39         struct xfrm_state *x =3D dst->xfrm;
-> >  C 05:56:39                                ~~~  ^
-> >
-> > Making the XFRM_OFFLOAD select the XFRM.
-> >
-> > Fixes: 48e01e001da31 ("ixgbe/ixgbevf: fix XFRM_ALGO dependency")
-> > Reported-by: Ilia Lin <ilia.lin@kernel.org>
-> > Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
-> > ---
-> >  net/xfrm/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/net/xfrm/Kconfig b/net/xfrm/Kconfig
-> > index 3adf31a83a79a..3fc2c1bcb5bbe 100644
-> > --- a/net/xfrm/Kconfig
-> > +++ b/net/xfrm/Kconfig
-> > @@ -10,6 +10,7 @@ config XFRM
-> >
-> >  config XFRM_OFFLOAD
-> >       bool
-> > +     select XFRM
->
-> struct dst_entry depends on CONFIG_XFRM and not on CONFIG_XFRM_OFFLOAD,
-> so it is unclear to me why do you need to add new "select XFRM" line.
->
->    26 struct dst_entry {
->    27         struct net_device       *dev;
->    28         struct  dst_ops         *ops;
->    29         unsigned long           _metrics;
->    30         unsigned long           expires;
->    31 #ifdef CONFIG_XFRM
->    32         struct xfrm_state       *xfrm;
->    33 #else
->    34         void                    *__pad1;
->    35 #endif
->    36         int
->
-> Thanks
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+> ---
+>  include/linux/perf_event.h | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 2166a69e3bf2..c617badd1e76 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -288,10 +288,9 @@ struct perf_event_pmu_context;
+>  #define PERF_PMU_CAP_EXTENDED_REGS		0x0008
+>  #define PERF_PMU_CAP_EXCLUSIVE			0x0010
+>  #define PERF_PMU_CAP_ITRACE			0x0020
+> -#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x0040
+> -#define PERF_PMU_CAP_NO_EXCLUDE			0x0080
+> -#define PERF_PMU_CAP_AUX_OUTPUT			0x0100
+> -#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0200
+> +#define PERF_PMU_CAP_NO_EXCLUDE			0x0040
+> +#define PERF_PMU_CAP_AUX_OUTPUT			0x0080
+> +#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0100
+>  
+>  struct perf_output_handle;
+>  
