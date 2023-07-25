@@ -2,114 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD867620D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708437620D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjGYSBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
+        id S232490AbjGYSBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjGYSBl (ORCPT
+        with ESMTP id S232311AbjGYSBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:01:41 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FCA2115;
-        Tue, 25 Jul 2023 11:01:38 -0700 (PDT)
-X-QQ-mid: bizesmtp62t1690308093t9wenc48
-Received: from localhost.localdomain ( [42.242.128.198])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 26 Jul 2023 02:01:32 +0800 (CST)
-X-QQ-SSF: 01200000000000403000B00A0000000
-X-QQ-FEAT: hoArX50alxGfKCqcoJrDpBOVNpOBAj8Euz2UJh6j3yf0pnrWIamc1qk6NJsZy
-        ZPdG6F8iyNMtFTdqKUKL/Y80gyczqCycfftYBrPWMlKrVYIJUsBXBCwq4dUDN9P/gRGQ6MX
-        5v25aVNj8TMCLPo2SaYhIll5Zlpo/tzxtqGCtW+EvmEfl+bowYQeHhK06ZkQGRojxoMsHfg
-        MqDHWHmeJCKE0avHl7btJ2zcdw0ZpQYhMGYIfLkonv5xzILyLqC5SGFCNe5IWZOyxn6z4Po
-        ldkvveqgISSqk/h/KcsH8ZmcYKQNEg/GrmvqFlrnIlsXP1TvwXRssxHReSNcT3OpPUS3rSb
-        WI54hW64St4bxdwyT/GZd0Tt13b2WiJypbOQ+ol1nT5mO47I77QYh81YNn2RQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4769715897786675155
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>
-Subject: [PATCH 2/2] selftests/nolibc: add testcase for pipe.
-Date:   Tue, 25 Jul 2023 14:01:30 -0400
-Message-Id: <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1690307717.git.tanyuan@tinylab.org>
-References: <cover.1690307717.git.tanyuan@tinylab.org>
+        Tue, 25 Jul 2023 14:01:38 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FEE1FDA;
+        Tue, 25 Jul 2023 11:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690308091; x=1690912891; i=w_armin@gmx.de;
+ bh=MFtLul5oSSszrVcEGTe5MHBdR1ywo9IPpRQm1iAxTkQ=;
+ h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+ b=YiWu5QIPYvSyzXtriM0HxjVutXRgVWMrt+kI1AIMfhieHyxHyoO6FlOU/uxofV+zon1iKUr
+ DZImf7mQxyTV4uZiXw/Cwad1XAK+qtRdmifdVln+UEeW04PIrT2mzYNYxCdC73tLOfldla9wi
+ uzApNc+Q/olWynM06M1kb116ArHX2jXbgvK1B2F+wlCUMOfc/QFyIFIx8AhlKtCAKguAfMbQQ
+ Q+05yo9BCbD/k9cOyfNdMy9pYRpBNLddYYPjG6tZjyqhuJNTVVaBzvKz22FyIajcDWrtcLJhV
+ 97QGeD4pERdjf+n/zpCWcjeZypXIrCeBpaK4RNQlTHQvkvguUTog==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.14] ([141.30.226.119]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MzyuS-1pdphV0oKs-00x0HG; Tue, 25
+ Jul 2023 20:01:31 +0200
+Subject: Re: WMI probe failure when reprobing
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1252c8fb-8d5f-98ad-b24a-5fabec2e1c8b@gmx.de>
+ <d219e8b4-f57e-a546-3794-6f6bc7030e9e@redhat.com>
+From:   Armin Wolf <W_Armin@gmx.de>
+Message-ID: <0062ade3-bff2-781f-0e31-ce3bdcf6942e@gmx.de>
+Date:   Tue, 25 Jul 2023 20:01:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+In-Reply-To: <d219e8b4-f57e-a546-3794-6f6bc7030e9e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Provags-ID: V03:K1:zdgyd6+mj1/oDa66NphThoBJhYf606sGkiEGKlJv1SjB2FcTCW1
+ x/i6m/i0T9D90+Si6LO3r5M8cQzbMVnTSk3FGY7m2Fdu6NxeqfCiDtKZ7HXnHIDBRmDmPVK
+ YhakcowSs6DiFq6IqyLpHvG9w/8w/ZRx3khegt544sQgyPdjuYjUO7U94tJFXNavx3uGjkk
+ 0fLNAhs/OQ7xDaklJk+dw==
+UI-OutboundReport: notjunk:1;M01:P0:tGGP/1a9zok=;OdjcMc/me4OEtbU96mZNcMp9mCb
+ GdVYabUUy/EKLU9HyKdlQMd6Tm2NgbqhhVoEvazBEe/JDXA0gN6iCTYBv1sAOef1ESznGf4tj
+ UltLGxou29/TEfghMHCZ93m3rOgD7NNu+2Jx9NIHbvhT/3TV2mVkNyeowpat6c6NXy+raoJW9
+ pAr3gUGCYIUVGStgYNnj5SZtDiEixhA/ONYdaNaF3oFYx1r4bPVrhYmtmsjEp2hAeRdenMRi+
+ kDwK20EgucUSX2Y/xcQAXLe/KzgelE+nYyEhy3Pw2p/mQWg9ofp4YxJ5vIzCFk0kXwcpA5jQ0
+ KpHRkDMQ2Nk8BX+7xuA2P1U/uiE5laRb+5lFgEpiGXjgQ6DAHFQ90CeW6l9UyV0hPzS8Xgs2N
+ ggi90jkOqPhnOEMgk+iGrIZDhV19+aZBCHNZDBoyfqkPhkD2hxIqkvYUJiwqkbvJYbyN+Ot0u
+ klQ3qDfSUwS6HqV5bCpISNuJcISHpJ+Vj4gJbxAUVFou8hfgoB7kFWfsD2M8VJDf3CyXTnob6
+ tNxE8UxkojyBDnvX6wfewI/KJk+KrpqwIVKalckk2nUh1dpjsGC6c14bl6kVTAb4XE7lHjSCH
+ EGqML3PiIBIOeMttAmSfCs+QNI0xfiYMxuE5QFkxz40GolvZDLazCVKlLJTxrnbS3WKeOqTjs
+ QNGVT+DE/O2UC+lg8mvSTYL+foS2hWDqMMoQbAxJ43Z0BcF9BraM/zrYi2UH3z3osgEOgvBXJ
+ MaXMVyYT0c/0zyGuWh7/cUSJwieEEFYD4oDCGCIx83TVnruUx16BFYevhuooxgXSxyIg/Q1rs
+ 4Hevqsm4I9/LOKbxRiazhCiDD98DES5R/LVl2x03ilvi/dYyhzUhnmowbiiOm8AEyXEtah/td
+ uilGPD9Ew2ASEQHalNI3SNPfXv1AfNQSv++5ynKaElDl36m0+oULpIlQ1rb5Bh4Jbgu9AYXxs
+ m3+vQSCk/cgyCf20C/N+QIkvASM=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a testcase of pipe that child process sends message to parent process.
+Am 25.07.23 um 17:07 schrieb Hans de Goede:
 
-Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
----
- tools/testing/selftests/nolibc/nolibc-test.c | 34 ++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+> Hi Armin,
+>
+> On 7/22/23 02:09, Armin Wolf wrote:
+>> Hello,
+>>
+>> i just noticed that under some circumstances, ACPI WMI devices might fa=
+il to reprobe
+>> when being manually unbound and later rebound.
+>> Example:
+>>
+>> 1. ACPI WMI device #1 binds and registers WMI device with GUID
+>> "05901221-D566-11D1-B2F0-00A0C9062910", resulting in the device
+>> being named "05901221-D566-11D1-B2F0-00A0C9062910".
+>> 2. ACPI WMI device #2 binds and registers WMI device with GUID
+>> "05901221-D566-11D1-B2F0-00A0C9062910", resulting in the device
+>> being named "05901221-D566-11D1-B2F0-00A0C9062910-1".
+>> 3. ACPI WMI device #1 is manually unbound and later rebound,
+>> now the WMI device with GUID "05901221-D566-11D1-B2F0-00A0C9062910"
+>> is being named "05901221-D566-11D1-B2F0-00A0C9062910-1" too, since
+>> device naming depends on the number of GUIDs currently known to
+>> the WMI subsystem.
+>> 4. A WMI device named "05901221-D566-11D1-B2F0-00A0C9062910-1" already
+>> exists, causing the registration of the new WMI device to fail.
+>>
+>> I thought about some possible ways to solve this naming issue:
+>>
+>> - symlinks to simulate old WMI devices names, new WMI device names simi=
+lar to "wmiX" with X being a global unique id
+>> - no symlinks, new WMI device names similar to "wmiX" with X being a gl=
+obal unique id
+>> - use global id instead of GUID number
+>>
+>> The first approach has full sysfs backward compatibility but i do not k=
+now how to create symlinks inside the "devices"
+>> directory. The second approach is the easiest and cleanest one, but pro=
+vides no sysfs backward compatibility. The last
+>> approach provides only limited sysfs backward compatibility and only fo=
+r programs which can handle "<GUID>-X" WMI device
+>> names.
+>>
+>> Currently, there is one single stable sysfs ABI entry concerning the WM=
+I subsystem (for wmi-bmof), and two testing
+>> sysfs ABI entries (dell-wmi-privacy, sbl-fw-update). I do not know of a=
+ny userspace programs relying on these ABIs,
+>> but i suspect there might be a couple of scripts which might be affecte=
+d.
+>>
+>> Which approach should i take to solve this problem?
+>
+> The standard approach to get reliable unique ids in the kernel is to use
+> something like this:
+>
+> #include <linux/idr.h>
+>
+> static DEFINE_MUTEX(ida_lock);
+>
+> struct guid_data {
+> 	guid_t guid;
+> 	struct ida ida;
+> 	struct list_head list;
+> };
+>
+> int guid_init() {
+> 	ida_init(&guid_data->ida);
+> }
+>
+> int wmi_create_device()
+> {
+> 	int index;
+> 	...
+> 	mutex_lock(&ida_lock);
+> 	index =3D ida_alloc(&guid_data->ida, GFP_KERNEL);
+> 	mutex_unlock(&ida_lock);
+> 	if (index < 0)
+> 		return index;
+>
+> 	// store index for use on acpi_wmi_remove
+> 	wmi_block->index =3D index;
+> 	// use index to generate name, don't add -%d for index=3D=3D0
+> 	...
+> }
+>
+> static void wmi_dev_release(struct device *dev)
+> {
+>          struct wmi_block *wblock =3D dev_to_wblock(dev);
+>
+> 	mutex_lock(&ida_lock);
+> 	ida_free(&guid_data->ida, wblock->index);
+> 	mutex_unlock(&ida_lock);
+>          kfree(wblock);
+> }
+>
+>
+> This is going to need a linked-list of struct guid_data
+> structs and a new wmi_get_guid_data() function which
+> takes a new global mutex to protect the list and then
+> first walks that list looking for a guid match
+>
+> If nothing is found kzalloc a new struct, init
+> the ida struct and add it to the list before releasing
+> the mutex protecting the list.
+>
+> At the end of wmi_get_guid_data() return the found
+> or created struct guid_data or NULL on kzalloc error.
+>
+> And in wmi_create_device() and wmi_dev_release()
+> use this to get a struct_guid_data matching the wblock
+> GUID so that we have 1 ida struct per GUID.
+>
+> I would not worry about releasing the struct guid_data
+> if somehow the last wblock with that GUID disappears
+> chances are we are going to need it again soon and
+> the ida id-array will be empty then so we will start
+> with a clean-slate if we just re-use the old one
+> when a new wblock with the same GUID shows up again.
+>
+> ###
+>
+> Not the prettiest with the need to have a new linked
+> lists of structs to get a per GUID ida, but it nicely
+> matches how most subsystems do this so I think it is
+> best.
+>
+> I hope this small sketch of what a solution for this
+> could look like is useful.
+>
+> Regards,
+>
+> Hans
+>
+Would it be feasible to use the duplicate GUID allowlist instead?
+Since the issue does only exists on GUIDs which can be duplicated, only WM=
+I devices handling those
+need a unique id after the GUID, the rest keeps the classic WMI device nam=
+e.
+This would also allow for individual WMI drivers to provide backwards comp=
+atibility in case userspace
+needs the old WMI device name for the WMI devices they control. If a WMI d=
+river knows that userspace
+can handle the new WMI device name for his GUIDs, then they can just add t=
+hem to the allowlist.
 
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 03b1d30f5507..43ba2884fd1e 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -767,6 +767,39 @@ int test_mmap_munmap(void)
- 	return ret;
- }
- 
-+int test_pipe(void)
-+{
-+	int pipefd[2];
-+	char buf[32];
-+	pid_t pid;
-+	char *msg = "hello, nolibc";
-+
-+	if (pipe(pipefd) == -1)
-+		return 1;
-+
-+	pid = fork();
-+
-+	switch (pid) {
-+	case -1:
-+		return 1;
-+
-+	case 0:
-+		close(pipefd[0]);
-+		write(pipefd[1], msg, strlen(msg));
-+		close(pipefd[1]);
-+		exit(EXIT_SUCCESS);
-+
-+	default:
-+		close(pipefd[1]);
-+		read(pipefd[0], buf, 32);
-+		close(pipefd[0]);
-+		wait(NULL);
-+
-+		if (strcmp(buf, msg))
-+			return 1;
-+		return 0;
-+	}
-+}
- 
- /* Run syscall tests between IDs <min> and <max>.
-  * Return 0 on success, non-zero on failure.
-@@ -851,6 +884,7 @@ int run_syscall(int min, int max)
- 		CASE_TEST(mmap_munmap_good);  EXPECT_SYSZR(1, test_mmap_munmap()); break;
- 		CASE_TEST(open_tty);          EXPECT_SYSNE(1, tmp = open("/dev/null", 0), -1); if (tmp != -1) close(tmp); break;
- 		CASE_TEST(open_blah);         EXPECT_SYSER(1, tmp = open("/proc/self/blah", 0), -1, ENOENT); if (tmp != -1) close(tmp); break;
-+		CASE_TEST(pipe);              EXPECT_SYSZR(1, test_pipe()); break;
- 		CASE_TEST(poll_null);         EXPECT_SYSZR(1, poll(NULL, 0, 0)); break;
- 		CASE_TEST(poll_stdout);       EXPECT_SYSNE(1, ({ struct pollfd fds = { 1, POLLOUT, 0}; poll(&fds, 1, 0); }), -1); break;
- 		CASE_TEST(poll_fault);        EXPECT_SYSER(1, poll((void *)1, 1, 0), -1, EFAULT); break;
--- 
-2.39.2
+Armin Wolf
 
