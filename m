@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223217608F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79737608F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjGYFBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S231576AbjGYFCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjGYFB3 (ORCPT
+        with ESMTP id S231435AbjGYFCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:01:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF49C10F9;
-        Mon, 24 Jul 2023 22:01:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3448961530;
-        Tue, 25 Jul 2023 05:01:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E770C433CD;
-        Tue, 25 Jul 2023 05:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690261286;
-        bh=+FyEzIHHHu86QHrIoXwjeeWi+fV/oC+M1YZ91MsjQXQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BnI66cA59lweu/0a+Q3u7Ol/c21g7OcL6K6YkWORXYvQrvrj4qh94ARo/HvjORaMe
-         qTvOs1yXe/Pdpia5RAMtcbWVHN+tOdW39vwGAp775rngcIf+JpNfIN0/VpOUHyon2O
-         CMzMrsFzfNc7Tpmsab8Sy2MM5ufE3IOjmHSUBUcCO/Bq97fwVFpkqFpYx+DDEuVZ1P
-         2ac4U8pBgan/zJ/OGRzjsI3dlcgGMSPPhR++d4+CAb/GAqMxFcwZG3numGUbjCaQUq
-         +sUwSJqOpwNCnmIrYRgRoaRfAdc+cEAKSnm0EMb6kknpf08EpNdbEsGW/QKOZzSX7h
-         kkuLgyreoWyuw==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-56597d949b1so3147964eaf.1;
-        Mon, 24 Jul 2023 22:01:26 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbj+Xl0xHHFuX9A6LVIALec8H7W5N/t+NOFMhW0hT7mv8nakfLI
-        hrbGgdLQodnt+TeIhL/sbZYXXmOk20s2cIXb9vY=
-X-Google-Smtp-Source: APBJJlHNMewixjluZirFDxPtZ/xyBhT/i9rV3VOmKVpLXySF76A/9PjhZyiOUBiUZa72yxWxXdde6eDqTDRyg9svjDM=
-X-Received: by 2002:a4a:91d0:0:b0:566:fa3f:82af with SMTP id
- e16-20020a4a91d0000000b00566fa3f82afmr9199256ooh.5.1690261285620; Mon, 24 Jul
- 2023 22:01:25 -0700 (PDT)
+        Tue, 25 Jul 2023 01:02:10 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CF910F6;
+        Mon, 24 Jul 2023 22:02:08 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36P51kiF041738;
+        Tue, 25 Jul 2023 00:01:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690261306;
+        bh=lFcom0UEatOELuZQ3twVXHZVMBsbFaCWpz0qBp7HjBU=;
+        h=Date:CC:Subject:To:References:From:In-Reply-To;
+        b=Z1lm6Yh3dbERaUw6yZFjGBwWAJFAkaf2xSfi6vHvaYV0qvmSxp1CL3sEUsMuN5HZp
+         POQ2QO7eNdnMaZwWKJpTgfC53PAXPo00gKyGhGYWlQBYGvoOH1fdXkOycBPZDmIGta
+         XJfVQoUiQuQlUD10RE3z/v5SjmTLabPw0o3rp2Uo=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36P51kEY031608
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 25 Jul 2023 00:01:46 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
+ Jul 2023 00:01:46 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 25 Jul 2023 00:01:46 -0500
+Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36P51gFb031988;
+        Tue, 25 Jul 2023 00:01:43 -0500
+Message-ID: <d0adc3f5-134c-83e3-ca52-5eef4e579f9e@ti.com>
+Date:   Tue, 25 Jul 2023 10:31:42 +0530
 MIME-Version: 1.0
-References: <20230723142128.194339-1-ojeda@kernel.org>
-In-Reply-To: <20230723142128.194339-1-ojeda@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 25 Jul 2023 14:00:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR_CaZ8fJ+fOm9-X83MOtwDa9aavZ5JM6DFOAA00GgULw@mail.gmail.com>
-Message-ID: <CAK7LNAR_CaZ8fJ+fOm9-X83MOtwDa9aavZ5JM6DFOAA00GgULw@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: rust: avoid creating temporary files
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Raphael Nestler <raphael.nestler@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        stable@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <afd@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: ti: k3-j721s2: Add overlay to enable
+ main CPSW2G with GESI
+To:     Nishanth Menon <nm@ti.com>
+References: <20230710094328.1359377-1-s-vadapalli@ti.com>
+ <20230710094328.1359377-3-s-vadapalli@ti.com>
+ <20230724175655.svvjykhkrifoyx3b@botanist>
+Content-Language: en-US
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20230724175655.svvjykhkrifoyx3b@botanist>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,TRACKER_ID,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 11:21=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wr=
-ote:
->
-> `rustc` outputs by default the temporary files (i.e. the ones saved
-> by `-Csave-temps`, such as `*.rcgu*` files) in the current working
-> directory when `-o` and `--out-dir` are not given (even if
-> `--emit=3Dx=3Dpath` is given, i.e. it does not use those for temporaries)=
-.
->
-> Since out-of-tree modules are compiled from the `linux` tree,
-> `rustc` then tries to create them there, which may not be accessible.
->
-> Thus pass `--out-dir` explicitly, even if it is just for the temporary
-> files.
->
-> Similarly, do so for Rust host programs too.
->
-> Reported-by: Raphael Nestler <raphael.nestler@gmail.com>
-> Closes: https://github.com/Rust-for-Linux/linux/issues/1015
-> Reported-by: Andrea Righi <andrea.righi@canonical.com>
-> Tested-by: Raphael Nestler <raphael.nestler@gmail.com> # non-hostprogs
-> Tested-by: Andrea Righi <andrea.righi@canonical.com> # non-hostprogs
-> Fixes: 295d8398c67e ("kbuild: specify output names separately for each em=
-ission type from rustc")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-> v2:
->   - Add fix for host programs too (Masahiro).
 
 
-This is now available in the mainline.
+On 24/07/23 23:26, Nishanth Menon wrote:
+> On 15:13-20230710, Siddharth Vadapalli wrote:
+>> +	rgmii1_pins_default: rgmii1-pins-default {
+> 
+> Could you make sure that the node names matches up with the json-schema
+> conversion:
+> https://lore.kernel.org/all/169021456020.3622493.10284534202541859578.robh@kernel.org/
 
-df01b7cfcef08bf3fdcac2909d0e1910781d6bfd
+Sure. I will update the node name and post the v3 series.
 
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+Regards,
+Siddharth.
