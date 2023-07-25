@@ -2,187 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE51A760C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1DA760CA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbjGYIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        id S231812AbjGYIGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbjGYIEJ (ORCPT
+        with ESMTP id S230164AbjGYIGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:04:09 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A78120
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:04:08 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1a1fa977667so4012973fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690272248; x=1690877048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oQ04m2mgXyxdxnuWbV0zRomtSyCFjCa11c8E/6QMRLA=;
-        b=Glp75s3Qru9qtU/75zTwGijITmJdiNviTxxVSuUeFpc+43Ng4UxWFGSy+ib2h22X6R
-         9ELZ7yZnJR8lShxo3JGhqoies4mVNRrQfi4qht8WlTA6PJldwk4ahJ7oZf+jap3TjGYt
-         eIpFDab5F/8AYrQmU7XJdneJoyzXWx0OmDAdcPrM+pxsEXIJzyRrmgE83wMo3PhysTsy
-         YdACaJ2+5rSdI0D4lFgdFFrd148At9k9Yr6RjbwOFzkh04CCdo6lhTqr6QVr0egHJcBF
-         wr6HpQuA2oxxCJzc2k/S2KiBIqAW7aJtR0TeEksG3ftg7GlI2cWp1ECJ2CqpL61nObPI
-         uG1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690272248; x=1690877048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQ04m2mgXyxdxnuWbV0zRomtSyCFjCa11c8E/6QMRLA=;
-        b=clUxZmRYAy7TbxOCr2xMlLFWbTsBTJfNfuJDiJ9OpR0BsmEk90akzfM5ghjKWZxsKd
-         tD7mSBpqmqPzz+FnMv8yoZrszRUG6Mk2Arq9nvIwoEspiEu30srJBQcoC1E+uZpocoeV
-         ZUmKqiRaV3ua08L3pRrHgaVdH3xfe++9NMKjN4u06YNLHgw8aWzjVpCDg9rywlIibgjo
-         QlfTk7BTtbl7FWeE/HPki+Qb3f8DKtW54PO/Bk6Uyoidk7RaPHr7utt4vBLwN9e3uYCN
-         qpGUMmDlglb60kkiqfruN/UwWbMDDl6hyoBemHlfUYbzQD/IV3lxmPpPAlbUB127Ye4L
-         hJgQ==
-X-Gm-Message-State: ABy/qLa5WDinI5+zxpjT3wHQJch1Jnc8GHPiHGS4a9B8k0MRxZo3ioyo
-        nNgGUn70gP2rocy9sfYTy9wT/WjeUZhzmMXQlmI=
-X-Google-Smtp-Source: APBJJlEE32iRJIl1HaETRlOMGBsoQJRQDz1yuBtZ3gl0fAODhR06dO0WeJzLKEkgbjEXwu0nkMJ66KlhtNzz4iQ/flY=
-X-Received: by 2002:a05:6870:9a05:b0:1ba:1998:1d23 with SMTP id
- fo5-20020a0568709a0500b001ba19981d23mr13834004oab.35.1690272247963; Tue, 25
- Jul 2023 01:04:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <202307242310.CdOnd2py-lkp@intel.com>
-In-Reply-To: <202307242310.CdOnd2py-lkp@intel.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 25 Jul 2023 10:03:56 +0200
-Message-ID: <CAMhs-H8Zz_8w7Lcq5f=mEiucjwx+TAfBbVZ12PE1a47ioxTu2A@mail.gmail.com>
-Subject: Re: drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match'
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 04:06:38 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC64116;
+        Tue, 25 Jul 2023 01:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690272397; x=1721808397;
+  h=from:to:cc:subject:date:message-id;
+  bh=nMTbfPgVcvacXEUWqJGCOueLTjOGIDiOh188sMtapls=;
+  b=QXRten4v66Ez8U9ef1nDbRhFkJSmXU/4VaPhQE8pSZV3sK8oZTJfGQtM
+   Y3KhpkEPbCWPX0F4/rk6sJAYUcLqrBrN4ZyQlycQAhhOmPTv1mEuU5qqZ
+   vNfanIMaTuVPkS4EO0k6OUeMPfm8YniTmxv/rxmLOjZaJM9X6UZr1ijIp
+   1E1f+czoi/BX4KG68qFy8p+xv7AHdhe6IHDTs9L9ejirUjh+VJlMXlVFO
+   ylmWyhZu+cI544AgvqeC2IHz/4O5oRs9a0wKZqppX/tQqxLm5xYdqXDHS
+   CoXNhkqp4AVwh0EcLuzqqAKq/hj6Cr0E+rvsiReXNyvAxBv5dUtH8Axv7
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347258863"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="347258863"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:06:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="972570573"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="972570573"
+Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:06:25 -0700
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ee Wey Lim <ee.wey.lim@intel.com>
+Subject: [PATCH 1/1] EDAC/igen6: Fix the issue of no error events
+Date:   Tue, 25 Jul 2023 16:04:27 +0800
+Message-Id: <20230725080427.23883-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Current igen6_edac checks for pending errors before the registration
+of the error handler. However, there is a possibility that the error
+occurs during the registration process, leading to unhandled pending
+errors and no future error events. This issue can be reproduced by
+repeatedly injecting errors during the loading of the igen6_edac.
 
-On Mon, Jul 24, 2023 at 5:21=E2=80=AFPM kernel test robot <lkp@intel.com> w=
-rote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
-> commit: 6f3b15586eef736831abe6a14f2a6906bc0dc074 clk: ralink: add clock a=
-nd reset driver for MTMIPS SoCs
-> date:   5 weeks ago
-> config: x86_64-buildonly-randconfig-r003-20230723 (https://download.01.or=
-g/0day-ci/archive/20230724/202307242310.CdOnd2py-lkp@intel.com/config)
-> compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git =
-8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-> reproduce: (https://download.01.org/0day-ci/archive/20230724/202307242310=
-.CdOnd2py-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->    drivers/clk/ralink/clk-mtmips.c:309:9: warning: variable 'ret' is unin=
-itialized when used here [-Wuninitialized]
->            return ret;
->                   ^~~
->    drivers/clk/ralink/clk-mtmips.c:285:9: note: initialize the variable '=
-ret' to silence this warning
->            int ret, i;
->                   ^
->                    =3D 0
->    drivers/clk/ralink/clk-mtmips.c:359:9: warning: variable 'ret' is unin=
-itialized when used here [-Wuninitialized]
->            return ret;
->                   ^~~
->    drivers/clk/ralink/clk-mtmips.c:335:9: note: initialize the variable '=
-ret' to silence this warning
->            int ret, i;
->                   ^
->                    =3D 0
+Fix this issue by moving the pending error handler after the registration
+of the error handler, ensuring that no pending errors are left unhandled.
 
-This two errors were already fixed in:
+Fixes: 10590a9d4f23 ("EDAC/igen6: Add EDAC driver for Intel client SoCs using IBECC")
+Reported-by: Ee Wey Lim <ee.wey.lim@intel.com>
+Tested-by: Ee Wey Lim <ee.wey.lim@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+---
+ drivers/edac/igen6_edac.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-6e68dae946e3: ("clk: ralink: mtmips: Fix uninitialized use of ret in
-mtmips_register_{fixed,factor}_clocks()")
+diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
+index 544dd19072ea..1a18693294db 100644
+--- a/drivers/edac/igen6_edac.c
++++ b/drivers/edac/igen6_edac.c
+@@ -27,7 +27,7 @@
+ #include "edac_mc.h"
+ #include "edac_module.h"
+ 
+-#define IGEN6_REVISION	"v2.5"
++#define IGEN6_REVISION	"v2.5.1"
+ 
+ #define EDAC_MOD_STR	"igen6_edac"
+ #define IGEN6_NMI_NAME	"igen6_ibecc"
+@@ -1216,9 +1216,6 @@ static int igen6_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	INIT_WORK(&ecclog_work, ecclog_work_cb);
+ 	init_irq_work(&ecclog_irq_work, ecclog_irq_work_cb);
+ 
+-	/* Check if any pending errors before registering the NMI handler */
+-	ecclog_handler();
+-
+ 	rc = register_err_handler();
+ 	if (rc)
+ 		goto fail3;
+@@ -1230,6 +1227,9 @@ static int igen6_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto fail4;
+ 	}
+ 
++	/* Check if any pending errors before/during the registration of the error handler */
++	ecclog_handler();
++
+ 	igen6_debug_setup();
+ 	return 0;
+ fail4:
+-- 
+2.17.1
 
-> >> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmi=
-ps_of_match' [-Wunused-const-variable]
->    static const struct of_device_id mtmips_of_match[] =3D {
->                                     ^
->    3 warnings generated.
-
-This one is because CONFIG_OF is disabled so 'of_match_node()' turns
-into a dummy macro. What would be the correct approach here?
-Add select OF in Kconfig for this driver or silence the warning
-declaring 'mtmips_of_match' with __maybe_unused?
-
-Thanks in advance for clarification.
-
-Best regards,
-    Sergio Paracuellos
-
->
->
-> vim +/mtmips_of_match +821 drivers/clk/ralink/clk-mtmips.c
->
->    820
->  > 821  static const struct of_device_id mtmips_of_match[] =3D {
->    822          {
->    823                  .compatible =3D "ralink,rt2880-sysc",
->    824                  .data =3D &rt2880_clk_data,
->    825          },
->    826          {
->    827                  .compatible =3D "ralink,rt3050-sysc",
->    828                  .data =3D &rt305x_clk_data,
->    829          },
->    830          {
->    831                  .compatible =3D "ralink,rt3052-sysc",
->    832                  .data =3D &rt305x_clk_data,
->    833          },
->    834          {
->    835                  .compatible =3D "ralink,rt3352-sysc",
->    836                  .data =3D &rt3352_clk_data,
->    837          },
->    838          {
->    839                  .compatible =3D "ralink,rt3883-sysc",
->    840                  .data =3D &rt3883_clk_data,
->    841          },
->    842          {
->    843                  .compatible =3D "ralink,rt5350-sysc",
->    844                  .data =3D &rt5350_clk_data,
->    845          },
->    846          {
->    847                  .compatible =3D "ralink,mt7620-sysc",
->    848                  .data =3D &mt7620_clk_data,
->    849          },
->    850          {
->    851                  .compatible =3D "ralink,mt7628-sysc",
->    852                  .data =3D &mt76x8_clk_data,
->    853          },
->    854          {
->    855                  .compatible =3D "ralink,mt7688-sysc",
->    856                  .data =3D &mt76x8_clk_data,
->    857          },
->    858          {}
->    859  };
->    860
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
