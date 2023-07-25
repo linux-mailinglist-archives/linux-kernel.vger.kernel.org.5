@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F68C7623CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436B57623D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjGYUo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
+        id S230437AbjGYUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbjGYUo1 (ORCPT
+        with ESMTP id S231209AbjGYUoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:44:27 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E6526B7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:44:00 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d16639e16e6so1668062276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1690317840; x=1690922640;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWFtInZ1K1dOfuS7k8qAbtMBBIEMrxLy4VGVUtC5gnI=;
-        b=C8boa0Mv2x13zaBKrUj+xzuVti30LteOQD/85/WnBKhzbeDHEzvYvZ3kQdHoCjYdG0
-         ftqVyfqFa6NOhebzP3zMyFH7Nlp1JPPPKMGc1aE91kApgf84Ufspb27OrNQYnal4fJdI
-         RuMjkIlaBANH5JbWHDMSmJYGIzqqyjVZTAseBtkUxPVzAHisNHbe6FS0O0hpPY2Mahdy
-         fdrDOGG8cimzMGhjO/sM3c08lCiYTBbFA4aZL9R/TiSrtJIosdGWlE6hbhCkOQUU/TaG
-         FqmFBGWx8K2cus33+JbUinADhEt8mhX8e9cNl+6Pf8/2HVcctD7B/+1vZNujcT3jVfWL
-         BwBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690317840; x=1690922640;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nWFtInZ1K1dOfuS7k8qAbtMBBIEMrxLy4VGVUtC5gnI=;
-        b=RAIRjLV4KLwYvMwff3XgIwJv7pjA0t7R0/A//dtGhCP6xJvD/hmpyYcgiYtvunTE74
-         q9BpVvCPHwG92oCB5XBH1Yqdjyr1k/KikgUo9nGTe9qYbybI4N5ItcZ2ZNDIfGEVVNrN
-         VU8KrJ9arQZMuo8v6t/qSTWLHYnNjiYWCqUS/oHbQXZ6uxpXQhpiDJ0WPJoQ/IVt5dKD
-         40R4+qcsgUyZLZVGZM8n4pifGl7jd2qNxbcUgMPkxbQ/tyFxe8UlsrY1x203HTy2mSpW
-         KiA5ivvpeD0txhMsrSqwD7aauacW2hTuyGCwvmsBFu+gm4c1SUMt5RIHRy4E90FocyYp
-         qTGw==
-X-Gm-Message-State: ABy/qLbJAxtBgIQd4ya5duJVM366D8EKzwmqZceZaBfLboc+HKnyQYYy
-        AZhFNMLhtorwf2vdQ0F/54lOT2csCY+kDKtcF2o0
-X-Google-Smtp-Source: APBJJlFkTo4MqIRboyJijfvAESH41Sn7XZLb7Wq1Qb4xbUmcbmJhG5qWNqiv1iYXWOFUlllWKuTA5JqszvfgcdQJA1g=
-X-Received: by 2002:a25:2f16:0:b0:c83:27d4:c0d6 with SMTP id
- v22-20020a252f16000000b00c8327d4c0d6mr98124ybv.37.1690317839194; Tue, 25 Jul
- 2023 13:43:59 -0700 (PDT)
+        Tue, 25 Jul 2023 16:44:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6C22125;
+        Tue, 25 Jul 2023 13:44:15 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 65EAE6606EEE;
+        Tue, 25 Jul 2023 21:44:12 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690317854;
+        bh=l0QdiZLVFikXd6djh9oMfl+C2ChjeqPpqf7ac5R2fis=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=it21CKyA7WekFPItXvp7zTV3pDdq7MTw11C+d6Is0wunsHAzgQejIaLMW1dys51cx
+         +OfSQ7YlmutsGoj53fpg/NrFVhxHMK34h8dJBprpBewiLkzYVFrv6FL44P9pehWXUq
+         KoxEtTIKIkHDt3tmM0EjxGGmrDM8b0etKHAWFyHf3oGkbKQ9l9p4IruVoUCtDavvbm
+         jPSTj2Yx2jLAbDstlibyw3qu+WxzlZfaw5oHtFeOZnQ63BAP1cB7zdy7PD5VoRIIOS
+         SR16Wuo4/DxpM8rSzTNHgsZsewEfLoGqqDYAfNuaB4Wmnru+cRqQ43MTGyLOFFsHJj
+         o8FxFs63Pw7UA==
+Date:   Tue, 25 Jul 2023 16:44:08 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v5 5/7] media: mediatek: vcodec: Read HW active status
+ from syscon
+Message-ID: <b5ba26b8-7c03-4ead-97ff-8ee3ae0efa26@notapiano>
+References: <20230630151436.155586-1-nfraprado@collabora.com>
+ <20230630151436.155586-6-nfraprado@collabora.com>
+ <b5fd2dff-14a5-3ad8-9698-d1a50f4516fa@xs4all.nl>
 MIME-Version: 1.0
-References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
- <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
- <ZKgm+ffQbdDTxrg9@redhat.com> <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To: <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 25 Jul 2023 16:43:48 -0400
-Message-ID: <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
- signature data via LSM hook
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     Mike Snitzer <snitzer@kernel.org>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b5fd2dff-14a5-3ad8-9698-d1a50f4516fa@xs4all.nl>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 11:43=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com>=
- wrote:
-> On Fri, Jul 07, 2023 at 10:53:45AM -0400, Mike Snitzer wrote:
+On Tue, Jul 25, 2023 at 12:15:03PM +0200, Hans Verkuil wrote:
+> Hi Nicolas,
+> 
+> On 30/06/2023 17:14, Nícolas F. R. A. Prado wrote:
+> > Remove the requirement of a VDEC_SYS reg iospace for both MT8173 and
+> > MT8183. To achieve that, rely on a vdecsys syscon to be passed through
+> > the DT, and use it to directly read the VDEC_HW_ACTIVE bit during IRQ
+> > handling to check whether the HW is active. Also update the VP8 stateful
+> > decoder to use the syscon, if present, for writes to VDEC_SYS.
+> > 
+> > The old behavior is still present when reg-names aren't supplied, as
+> > to keep backward compatibility.
+> > 
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > 
+> > ---
+> > 
+> > Changes in v5:
+> > - Added explicit linux/bitfield.h include for FIELD_GET(), following
+> >   0day report
+> > 
+> > Changes in v4:
+> > - Added new helper and updated VP8 stateful decoder to use it, so the
+> >   syscon can also be used by mt8173
+> > - Made handling cleaner
+> > - Reworded commit
+> > 
+> > Changes in v3:
+> > - Switched handling of VDEC_HW_ACTIVE to use a syscon instead of the
+> >   'active' clock
+> > - Reworded commit
+> > - Removed changes to subdev part of driver, since they aren't used by
+> >   MT8183
+> > 
+> >  .../mediatek/vcodec/mtk_vcodec_dec_drv.c      | 77 ++++++++++++++++---
+> >  .../platform/mediatek/vcodec/mtk_vcodec_drv.h |  1 +
+> >  .../mediatek/vcodec/mtk_vcodec_util.c         | 15 ++++
+> >  .../mediatek/vcodec/mtk_vcodec_util.h         |  2 +
+> >  .../mediatek/vcodec/vdec/vdec_vp8_if.c        | 10 +--
+> >  5 files changed, 87 insertions(+), 18 deletions(-)
+> 
+> This patch introduced this new smatch error:
+> 
+> drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c:143 mtk_vcodec_get_reg_bases() error: buffer overflow 'mtk_dec_reg_names' 11 <= 11
+> 
+> I think it is due to:
+> 
+> if (reg_num <= 0 || reg_num > NUM_MAX_VDEC_REG_BASE) {
+> 
+> in mtk_vcodec_get_reg_bases(): the '>' should probably be '>='.
+> 
+> Can you post a follow-up patch fixing this?
 
-...
+Hi Hans,
 
-> > Both of your calls to security_bdev_setsecurity() to set your blobs in
-> > the bdev are suspect because you're doing so from the verity_ctr().
-> > The mapped_device has 2 dm_table slots (active and inactive).  The
-> > verity_ctr() becomes part of the inactive slot, there is an extra step
-> > to bind the inactive table to the active table.
-> >
-> > This leads to you changing the blobs in the global bdev _before_ the
-> > table is actually active.  It is possible that the inactive table will
-> > simply be removed and the DM verity device put back in service;
-> > leaving your blob(s) in the bdev inconsistent.
-> >
-> > This issue has parallels to how we need to defer changing the global
-> > queue_limits associated with a request_queue until _after_ all table
-> > loading is settled and then the update is done just before resuming
-> > the DM device (mapped_device) -- see dm_table_set_restrictions().
-> >
-> > Unfortunately, this feels like it may require a new hook in the
-> > target_type struct (e.g. ->finalize())
->
-> Thanks for pointing out this issue. We were calling security_bdev_setsecu=
-rity()
-> because the roothash signature data is only available in verity_ctr()
-> and it is discarded after verity_ctr() finishes.
-> After digging deeper into the table_load, I realized that we were indeed
-> wrong here.
->
-> Based on my understanding of your suggestion, it seems that the correct
-> approach would be to save the roothash signature into the struct dm_targe=
-t
+sorry about that, and thanks for noticing it.
 
-Would you be doing this with a LSM hook, or would this live in the
-device mapper layer?
+I've just sent the fix:
+https://lore.kernel.org/all/20230725204043.569799-1-nfraprado@collabora.com
 
-> and then invoke security_bdev_setsecurity() before activating
-> the inactive table in the __bind function (where dm_table_set_restriction=
-s is called).
->
-> To facilitate this process, it seems appropriate to introduce a new hook
-> called finalize() within the struct target_type. This hook would enable
-> targets to define tasks that need to be completed before activating
-> a new table.
->
-> In our specific case, we would add a finalize hook to the dm-verity modul=
-e,
-> allowing us to call security_bdev_setsecurity() and associate the roothas=
-h
-> information in the struct dm_target with the struct block_device of
-> the struct mapped_device. Is this correct?
-
-Where would the finalize() hook be called?
-
---=20
-paul-moore.com
+Thanks,
+Nícolas
