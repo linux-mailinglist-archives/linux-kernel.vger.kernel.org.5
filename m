@@ -2,76 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0107618AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2B97618BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbjGYMqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S230235AbjGYMsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbjGYMqh (ORCPT
+        with ESMTP id S231787AbjGYMsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:46:37 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978C5B0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:46:36 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so933354266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690289195; x=1690893995;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=70cgH7bcTezXiFaY+4RlRcKU5uTrnjXCHWZFlgmgH40=;
-        b=vZruUF3l7G9M/Qs7fx13Nq6q7Xt4B31DfefiM9maCXsLl7SHRZlX7dmPDAi2cqbkfV
-         r311SrWYNErkvw3Y8pn32iObCCP/ZwM5Ha3wHmPueD+rKNyCRLEODVmX7zOIpMjcGPlR
-         /PV87IF4YRLW7nIidvwxpg0WqebvDIPKBfZryDNEzt3Uc4KOjLIbd6ZM0eyC4Ef/VCbf
-         bqgXfPP3tsNbawD8+waZBUigGw6l9TE/NFnQ18uXKi1sOb2vXuiH34kQRkrrc50G4F3i
-         TZsp0cs0yJ1GJw59dTLw5c3KjPId9MjS3yOcFdWoKDr30WXVQEyzWg5PWdaI7PXq3pJV
-         NG1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690289195; x=1690893995;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=70cgH7bcTezXiFaY+4RlRcKU5uTrnjXCHWZFlgmgH40=;
-        b=N2mo46lFMpfS4Y0874Z3jCyimN7a4n3OVxNiz4Oq38EbJjcHGMHiYJ/GdDd0Thwn3p
-         6pgAFiNfRe/yhz+cDKiNDVwAbk2kpidJsoIOAiBx2pii+BpGASpA8t8qnZsAbIKH5gJO
-         1EenLMMvX5VIxGo+a8xQF/TQjHvh9f/IeHufA5BeNyqZOG9h0ewCKVUIeFtlpmwI+cYM
-         8T1lqOyumY5SMfgUAgndjN+97+gE9kxnaFwV2j2AEU5AUWx9Hfu0nFonutSrXjFq95c9
-         HZ06RFlFJdLZayxhMSpmXtLVN2Q1RiuRXWnSksJj//pKGlyHLhFF0KCav3xlfSX/iRF6
-         TN9w==
-X-Gm-Message-State: ABy/qLYR7EHLRqpIT+p8gWcFKX1nkN6xN4zuPwLlPn4P8q1dAbjGh5j1
-        Lmh15Pnnu2mWR0EWsfYi1UxeYoA+GnqL8+IG2MM=
-X-Google-Smtp-Source: APBJJlHjcFCQPbCZPxda5Sw+HCmSh48wGz11AgbOvYmiM3xmc6PtjaJLwXjzXSLP5fZ9HMGQQZXZ7g==
-X-Received: by 2002:a17:906:73c1:b0:993:f4cd:34b5 with SMTP id n1-20020a17090673c100b00993f4cd34b5mr13377645ejl.29.1690289195056;
-        Tue, 25 Jul 2023 05:46:35 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id xo18-20020a170907bb9200b0099b5a71b0bfsm7970576ejc.94.2023.07.25.05.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 05:46:34 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 3/3] regulator: dt-bindings: active-semi,act8846: correct supplies
-Date:   Tue, 25 Jul 2023 14:46:29 +0200
-Message-Id: <20230725124629.150113-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230725124629.150113-1-krzysztof.kozlowski@linaro.org>
-References: <20230725124629.150113-1-krzysztof.kozlowski@linaro.org>
+        Tue, 25 Jul 2023 08:48:10 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA0319BD
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690289289; x=1721825289;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CtaLAo17SyqSmF25npVDsvpSdoJ2LEGMP9QqEPffeXI=;
+  b=JTAuRyb1ZG+vdySNSQRgA3+YmS4zLrZ0e9JPLdLTPH8ha2Q/lokJ4VKo
+   eWSxXDzqyhjStzxvUpqNW4lzMhaD2nwTO5ON+f+wRFQecLBR3GlstLD93
+   8xIG1aUQQsfhRDFNlfTB12hDBdMvJioUbbr76xEoEsIHeIP93Sh156mhl
+   cHhwavEhp79tkq1084jHyi6kLd+1JiopkpM/fQL+sXYdPAx5zMDFdgLIY
+   CiBVONQSzt7gp2BaOCS6A7POI/rOIXbxU9VzkAYil3IXIiynPq7Ofkvpo
+   6N4kDmijdyQqohvSofRrvWj5VLvcTqawdjj2FjgF7EC/QAPhwUsJZKhSn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="366590767"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="366590767"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 05:48:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="703264756"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="703264756"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 25 Jul 2023 05:48:07 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOHSQ-000AcG-2m;
+        Tue, 25 Jul 2023 12:48:06 +0000
+Date:   Tue, 25 Jul 2023 20:47:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: arch/powerpc/mm/book3s64/pgtable.c:422:6: error: no previous
+ prototype for 'arch_report_meminfo'
+Message-ID: <202307252035.aAJZfroP-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,122 +64,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regulator supplies are per-device, not per regulator, so they are
-expected to be present in device node.  Moving them to proper place
-allows to simplify a lot, because now none of the regulators differ.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
+commit: ef104443bffa004f631729dfc924f0b84abbd602 procfs: consolidate arch_report_meminfo declaration
+date:   10 weeks ago
+config: powerpc-maple_defconfig (https://download.01.org/0day-ci/archive/20230725/202307252035.aAJZfroP-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307252035.aAJZfroP-lkp@intel.com/reproduce)
 
-This also fixes dtbs_check warnings like:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307252035.aAJZfroP-lkp@intel.com/
 
-  rk3368-evb-act8846.dtb: act8846@5a: 'inl1-supply', 'inl2-supply', 'inl3-supply', 'vp1-supply',
-    'vp2-supply', 'vp3-supply', 'vp4-supply' do not match any of the regexes: 'pinctrl-[0-9]+'
+All errors (new ones prefixed by >>):
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../regulator/active-semi,act8846.yaml        | 82 +++++--------------
- 1 file changed, 22 insertions(+), 60 deletions(-)
+>> arch/powerpc/mm/book3s64/pgtable.c:422:6: error: no previous prototype for 'arch_report_meminfo' [-Werror=missing-prototypes]
+     422 | void arch_report_meminfo(struct seq_file *m)
+         |      ^~~~~~~~~~~~~~~~~~~
+   arch/powerpc/mm/book3s64/pgtable.c:478:5: error: no previous prototype for 'pmd_move_must_withdraw' [-Werror=missing-prototypes]
+     478 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
+         |     ^~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
-diff --git a/Documentation/devicetree/bindings/regulator/active-semi,act8846.yaml b/Documentation/devicetree/bindings/regulator/active-semi,act8846.yaml
-index 3725348bb235..02f45b5834d0 100644
---- a/Documentation/devicetree/bindings/regulator/active-semi,act8846.yaml
-+++ b/Documentation/devicetree/bindings/regulator/active-semi,act8846.yaml
-@@ -28,75 +28,37 @@ properties:
-       the VSEL pin is assumed to be low.
-     type: boolean
- 
-+  inl1-supply:
-+    description: Handle to the INL1 input supply (REG5-7)
-+
-+  inl2-supply:
-+    description: Handle to the INL2 input supply (REG8-9)
-+
-+  inl3-supply:
-+    description: Handle to the INL3 input supply (REG10-12)
-+
-+  vp1-supply:
-+    description: Handle to the VP1 input supply (REG1)
-+
-+  vp2-supply:
-+    description: Handle to the VP2 input supply (REG2)
-+
-+  vp3-supply:
-+    description: Handle to the VP3 input supply (REG3)
-+
-+  vp4-supply:
-+    description: Handle to the VP4 input supply (REG4)
-+
-   regulators:
-     type: object
-     additionalProperties: false
- 
--    properties:
--      REG1:
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          vp1-supply:
--            description: Handle to the VP1 input supply
--
--      REG2:
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          vp2-supply:
--            description: Handle to the VP2 input supply
--
--      REG3:
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          vp3-supply:
--            description: Handle to the VP3 input supply
--
--      REG4:
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          vp4-supply:
--            description: Handle to the VP4 input supply
--
-     patternProperties:
--      "^REG[5-7]$":
-+      "^REG([1-9]|1[0-2])$":
-         type: object
-         $ref: /schemas/regulator/regulator.yaml#
-         unevaluatedProperties: false
- 
--        properties:
--          inl1-supply:
--            description: Handle to the INL1 input supply
--
--      "^REG[8-9]$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          inl2-supply:
--            description: Handle to the INL2 input supply
--
--      "^REG1[0-2]$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
--
--        properties:
--          inl3-supply:
--            description: Handle to the INL3 input supply
--
- additionalProperties: false
- 
- required:
+
+vim +/arch_report_meminfo +422 arch/powerpc/mm/book3s64/pgtable.c
+
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  421  
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13 @422  void arch_report_meminfo(struct seq_file *m)
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  423  {
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  424  	/*
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  425  	 * Hash maps the memory with one size mmu_linear_psize.
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  426  	 * So don't bother to print these on hash
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  427  	 */
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  428  	if (!radix_enabled())
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  429  		return;
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  430  	seq_printf(m, "DirectMap4k:    %8lu kB\n",
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  431  		   atomic_long_read(&direct_pages_count[MMU_PAGE_4K]) << 2);
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  432  	seq_printf(m, "DirectMap64k:    %8lu kB\n",
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  433  		   atomic_long_read(&direct_pages_count[MMU_PAGE_64K]) << 6);
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  434  	seq_printf(m, "DirectMap2M:    %8lu kB\n",
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  435  		   atomic_long_read(&direct_pages_count[MMU_PAGE_2M]) << 11);
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  436  	seq_printf(m, "DirectMap1G:    %8lu kB\n",
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  437  		   atomic_long_read(&direct_pages_count[MMU_PAGE_1G]) << 20);
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  438  }
+a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  439  #endif /* CONFIG_PROC_FS */
+579b9239c1f386 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2019-01-23  440  
+
+:::::: The code at line 422 was first introduced by commit
+:::::: a2dc009afa9ae8b92305be7728676562a104cb40 powerpc/mm/book3s/radix: Add mapping statistics
+
+:::::: TO: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
