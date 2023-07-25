@@ -2,110 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD46761830
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71105761836
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbjGYMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48048 "EHLO
+        id S233445AbjGYMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjGYMYj (ORCPT
+        with ESMTP id S230424AbjGYMZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:24:39 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A09610FA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:37 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso8540947e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690287876; x=1690892676;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ks3nUOn/9qR1jrhxbqY2QCJrSfWExHFhLwuG1z7B3TE=;
-        b=oG/p44haSlMMr+HRlqE79VaQqZhwEwmSo8ZjOOxune3yqh629GMwSMWSfjhBRB6e1N
-         Ty+ROSaV6OoS+5cfAdwcbR95051XyeG62lmnXUG5w3qZ+zOQtg5qQjfL+4WJDxj78FFu
-         OFMo5tqWAXhiRMT6YtLLFlxatsASqPfnU0ENTThzCY6Wm9Ojz4JrWgVquG0QToNSLubx
-         121/JSosd5nylMRCQ8nabStMWVBxe4A8MnsaqCqMH5g+9cQJ3S9SQ71cnWg/XON5GSny
-         MIphdr8uB18GYn4a7e85ZU/DHzuPYZ/d+rNC/Xlmh/E7Z11Vls1o6jQny4kJnAcuS+/Q
-         jXqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690287876; x=1690892676;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ks3nUOn/9qR1jrhxbqY2QCJrSfWExHFhLwuG1z7B3TE=;
-        b=cXvSZnh7h8RpZWRfegiyN2YYYwhp8MyBMCUlRDzKZmqTZdLqBsVfbuJ2HpY7IqXwlc
-         HGROv/ldUtU4g47ke7OY4iG+OsopbuI1J51U6HdWIUKfqOmBkAxEtiPeDA6jQmVvnRUX
-         07RWcLow735m4jgSMRjkam9DhP4iUBzBEsGoFw8h1ll9f2SjjyZbBrvkkRI/neuAdh7w
-         Zr0bxfbmUGW/pd+Difza5Q8Wk46EttxWMVmUMfR3UpSC7o4P6R/IM0+QS8b7rjuBLotr
-         ECcCjzInPMKk+paneJ3piwCYUR68scPC4Hu01R+ZHcApo+fujMUWdzHT9ZY5U5jqE2W3
-         fpjg==
-X-Gm-Message-State: ABy/qLb0oOxYjFD7t+me78I5nK5Mg5jw2x1Wcl3skLGD054O4zdSiU3n
-        i99ADVLWTbaOk4UKtNsuYeiv0g==
-X-Google-Smtp-Source: APBJJlGqYyD2TAEiCN22VeSTnnKHBifqwY0pQj3pRX2YJUU6lNpsvdxSXZzil9Y7DBLk3s87zMs/hw==
-X-Received: by 2002:ac2:5e2c:0:b0:4fb:92a9:cbe8 with SMTP id o12-20020ac25e2c000000b004fb92a9cbe8mr6559105lfg.18.1690287875901;
-        Tue, 25 Jul 2023 05:24:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id j11-20020aa7c0cb000000b00522274c3775sm3771264edp.68.2023.07.25.05.24.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 05:24:35 -0700 (PDT)
-Message-ID: <c6e8c950-9d1f-099a-b48a-2b838ed04ac7@linaro.org>
-Date:   Tue, 25 Jul 2023 14:24:32 +0200
+        Tue, 25 Jul 2023 08:25:31 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9232010FA;
+        Tue, 25 Jul 2023 05:25:29 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id e507cf09bb8f3b1c; Tue, 25 Jul 2023 14:25:27 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id AC6F0661B0F;
+        Tue, 25 Jul 2023 14:25:26 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v3 8/8] ACPI: thermal: Drop unnecessary thermal zone callbacks
+Date:   Tue, 25 Jul 2023 14:24:55 +0200
+Message-ID: <1960604.usQuhbGJ8B@kreacher>
+In-Reply-To: <12254967.O9o76ZdvQC@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V2 1/4] ASoC: codecs: Add code for bin parsing compatible
- with aw88261
-Content-Language: en-US
-To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
-        rf@opensource.cirrus.com, shumingf@realtek.com,
-        povik+lin@cutebit.org, 13916275206@139.com,
-        herve.codina@bootlin.com, ryans.lee@analog.com,
-        ckeepax@opensource.cirrus.com,
-        ajye_huang@compal.corp-partner.google.com,
-        sebastian.reichel@collabora.com, yijiangtao@awinic.com,
-        trix@redhat.com, colin.i.king@gmail.com, liweilei@awinic.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhangjianming@awinic.com
-References: <20230725115649.67560-1-wangweidong.a@awinic.com>
- <20230725115649.67560-2-wangweidong.a@awinic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725115649.67560-2-wangweidong.a@awinic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 13:56, wangweidong.a@awinic.com wrote:
-> From: Weidong Wang <wangweidong.a@awinic.com>
-> 
-> Add the awinic,aw88261 property to the awinic,aw88395.yaml file
-> Add aw88395_lib.c file compatible with aw88261 bin file parsing code
-> 
-> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
-> ---
->  .../bindings/sound/awinic,aw88395.yaml        |   4 +-
->  sound/soc/codecs/aw88395/aw88395_lib.c        | 194 ++++++++++++++++--
->  sound/soc/codecs/aw88395/aw88395_reg.h        |   1 +
->  3 files changed, 181 insertions(+), 18 deletions(-)
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Bindings are always separate patches.
+Drop the .get_trip_type(), .get_trip_temp() and .get_crit_temp() thermal
+zone callbacks that are not necessary any more from the ACPI thermal
+driver along with the corresponding callback functions.
 
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Best regards,
-Krzysztof
+v2 -> v3: Rebase on top of the v2 of the previous patch.
+
+v1 -> v2: No changes.
+
+---
+ drivers/acpi/thermal.c |  115 -------------------------------------------------
+ 1 file changed, 115 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -465,118 +465,6 @@ static int thermal_get_temp(struct therm
+ 	return 0;
+ }
+ 
+-static int thermal_get_trip_type(struct thermal_zone_device *thermal,
+-				 int trip, enum thermal_trip_type *type)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_CRITICAL;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_HOT;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_PASSIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_ACTIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_trip_temp(struct thermal_zone_device *thermal,
+-				 int trip, int *temp)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.hot.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.passive.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE &&
+-		tz->trips.active[i].valid; i++) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.active[i].temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
+-				int *temperature)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-
+-	if (tz->trips.critical.valid) {
+-		*temperature = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static struct thermal_trip *get_thermal_trip(struct acpi_thermal *tz, int trip_index)
+ {
+ 	struct thermal_trip *trip;
+@@ -773,9 +661,6 @@ static struct thermal_zone_device_ops ac
+ 	.bind = acpi_thermal_bind_cooling_device,
+ 	.unbind	= acpi_thermal_unbind_cooling_device,
+ 	.get_temp = thermal_get_temp,
+-	.get_trip_type = thermal_get_trip_type,
+-	.get_trip_temp = thermal_get_trip_temp,
+-	.get_crit_temp = thermal_get_crit_temp,
+ 	.get_trend = thermal_get_trend,
+ 	.hot = acpi_thermal_zone_device_hot,
+ 	.critical = acpi_thermal_zone_device_critical,
+
+
 
