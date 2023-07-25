@@ -2,220 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0937622AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8AF7622A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbjGYTvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S231292AbjGYTuK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 15:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjGYTvI (ORCPT
+        with ESMTP id S229572AbjGYTuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:51:08 -0400
-X-Greylist: delayed 118 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 12:50:23 PDT
-Received: from us-smtp-delivery-162.mimecast.com (us-smtp-delivery-162.mimecast.com [170.10.133.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6447E1BCC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
-        t=1690314622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sufhrMxuR6De3yDY1epOJ1EtNjfVaEPMJu2zXJEU/VA=;
-        b=Ow+sgsLO5eUCKYa4Ffyh7hR5Z/DYWzQS0RjOvD2KL4qQRkvtDWwsS9nNME3xWFhiRN/cJ5
-        71cUIhxV0C4j0uj0N4VyMHSFQL8T2u+DwZgklpHveo/pxn/ZIakvPIB2CF7t1TZZcjnpIS
-        T6kFdTlxTcKQVs+KQ/y21hlYXdHNcNM=
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam02lp2046.outbound.protection.outlook.com [104.47.56.46]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-464-iikB6d2SOWuOs1D78y3mVQ-2; Tue, 25 Jul 2023 15:48:22 -0400
-X-MC-Unique: iikB6d2SOWuOs1D78y3mVQ-2
-Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:160::10)
- by PH0PR84MB1383.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:16c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Tue, 25 Jul
- 2023 19:48:19 +0000
-Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::5e6b:1f96:bb19:ec40]) by PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::5e6b:1f96:bb19:ec40%7]) with mapi id 15.20.6609.031; Tue, 25 Jul 2023
- 19:48:19 +0000
-From:   "Lopez, Jorge A (Security)" <jorge.lopez2@hp.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        =?iso-8859-1?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: RE: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
- hp_populate_enumeration_elements_from_package()
-Thread-Topic: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
- hp_populate_enumeration_elements_from_package()
-Thread-Index: AQHZuPHkIWGabZ7ClU64DUVfhVGEta/K7pLA
-Date:   Tue, 25 Jul 2023 19:48:19 +0000
-Message-ID: <PH0PR84MB1953EC528F8D549E6B3B7669A803A@PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM>
-References: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-bromium-msgid: 21ed85f3-5ec8-4d30-8b43-dd11a07cc5f7
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR84MB1953:EE_|PH0PR84MB1383:EE_
-x-ms-office365-filtering-correlation-id: 6cc94ba3-eae3-4140-e9a8-08db8d4818d9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: J5QMgXsiTopUiRw6j1NCHSpc2Sfx8BMztzA5SrhJWHipjEy/7YlCpj8klnJ/IpDz5S/kpHPhVL+Ez5zW9k3L+8j389tPWa3bDIlQ3RxDeE9r4B3mOaDEzStRBk6BOH8oqFWU77UtSrqeUmMfnMy93mrBxt/61vzyX9WNHt6YmmvVR18xt/LOD0vpQVgSvjg//Sqn+vJEqpRr3h4zs/qtrTuf6DMBHllxSTAKJeu0SGksvFSJE2TwiPpP/tCdNOngJx95LYggdkU0SO/bugTrojs2MnFyzD/Pah6hBDdMNJfMdTa1zfeSThPp0QrwxQK+kFfhkH+WYzEu/r5xe0qvS3jJFTvdFge9mYnoLadsoqnBnlhmrquruXVw5/81Vq1y7CBHyXNY8Y3voQBC63w5fA8j4pdfgRwqzSIqzzrsBSsLTI+PPMQMg/8+hnF1JHP/zwwbtP//ZB8EhKo/ORYNKm4/VZ7PeENisjQEfzRp1n6P7ep0j7FI5J889gNhSNqmR0C2BNuVeuZaczNVmZvqA0l5cmOnS5GkG0+uZhckSjd3qVWMKXsui3vQ2ha/Ge4GuM95w7kuep1Kk9dFq3oX376j0LX2wPiDMptjKU1qXIz4pRKEqA6L8W1n96hKBOhx
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(39860400002)(376002)(346002)(396003)(451199021)(33656002)(38070700005)(86362001)(82960400001)(55016003)(38100700002)(66446008)(64756008)(478600001)(316002)(4326008)(54906003)(76116006)(41300700001)(110136005)(66946007)(9686003)(52536014)(5660300002)(8936002)(8676002)(7696005)(66476007)(2906002)(186003)(26005)(71200400001)(6506007)(66556008)(122000001)(83380400001)(66574015)(53546011);DIR:OUT;SFP:1102
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?0OMOe995bRNnE2Qjn9aoZIo5ULzUzcI9bvXc7QIDegVmaR7sCxCYvG1XGG?=
- =?iso-8859-1?Q?MZoTE9TTceS9rXSBhT7NqEu7JHjMRUeWj6oFuQlT9jDBakn735VAoc7+1i?=
- =?iso-8859-1?Q?hKo/LP/eRnl6Hnn9Of/EYXTcG28AtT/oZVQAOfu6ynUqYTQJ5rZsvnYDGG?=
- =?iso-8859-1?Q?X4CM5B1SRtLBwSVLBq33I5R4Dk78A1jCbTlqPTItU0FhpKoAUsToSzY7JQ?=
- =?iso-8859-1?Q?bdnvlnw5cyW2wJae9oMqNtJbIC9/AabRyfj5OX/8lylyEvz7ScZgK/ftqs?=
- =?iso-8859-1?Q?jQs0WvZ10mF4K6wBhaGuwlyW1Jr0EZW33vlAuwzXwDIxfgqTzuDLRuk2nJ?=
- =?iso-8859-1?Q?z4FdGemZ+FFW6mlwymErnK8Td7BXe2QntMRtCve1L1kp8AfUu+JZkszFFN?=
- =?iso-8859-1?Q?MU6Dz7E4wfs/BSuKqIL9Lm9Jg50KzRMyg8RNI947bSUd/sSD41cWPMMhri?=
- =?iso-8859-1?Q?EtPMjw9mJo1uzqgxycHhJ4OXYYFM3/lxnGB04nOANzXpdOe/Gx62bl1sK7?=
- =?iso-8859-1?Q?dAPQr0vwUl44Z0/8hh9s+P1w4GGZMUnNzF7y6521spcOd8Px3fLnYRB+H4?=
- =?iso-8859-1?Q?iIvoHJ17+XmH7KVwPIBGUqxKcHkB2PPPRqeT8dClOSOkjDLZKwsdNQyjyJ?=
- =?iso-8859-1?Q?jlwj0xh+bYozjC9qTl4bSVFGAYO2x2XvKsDw2VNi5kDbfXEDQfc+BzqE46?=
- =?iso-8859-1?Q?5lDlD4mJLKZKkolnBlN2dOWJzo1opinkHdTw+qlc/mnAbkkZuNbwVvmmzj?=
- =?iso-8859-1?Q?9u19zOWrAOtrwqznBdhmZ+8dS2A1lQ6y5YI11s2A0mQaDUj/pvffqlAknr?=
- =?iso-8859-1?Q?Lzv+wqfFb1bJDgehW+91NP39AngHlCRq6qNv9ul77jelmzZtotJ6nFJlhb?=
- =?iso-8859-1?Q?VCIoGBCwugyxBMtc1uN1VtwTy1DIYTPPgl43wmD2u0Ss1S4qt92GmDSHky?=
- =?iso-8859-1?Q?AdpXWpbUjZ6GO2viRTtJ31+Cz7m6Ab87NolIm2nS/ZEXN1KjvwPYidR909?=
- =?iso-8859-1?Q?S8qpaFetW/deL45zhcDPtlpxUoWI4rKVz6wRw+cIu+wtPv76/9hqaBSbus?=
- =?iso-8859-1?Q?mzkp+QlT3es/W5tIxm4oomOcLV6F9VVuZHwbg2hVgUYtd6OTN5zWEgl7G5?=
- =?iso-8859-1?Q?qV7hVnNjR/cQZergp9K5dLYEzLw2ZM+qdomhRU8Hve8Of2DgN8KX15ifXG?=
- =?iso-8859-1?Q?uKgZFbxA4DyaFpHVIDs30+IKnYHckgSNPKXNsM4lj7WDsW/WJzlFTDDk5e?=
- =?iso-8859-1?Q?nHBd2mRETwZdGFc0wK+SlX1H9gl9T9Az9LI/LmQv0GkDh8YP9jKjOiS0i8?=
- =?iso-8859-1?Q?rKBC2jLdLwgUX7cGI4obz87I7LjNwhNxO8Ipl/W9WBds4C2kLKCE/wUCB1?=
- =?iso-8859-1?Q?iZUt8wrMSDqtK1BykT6JJEZ09Vnj0ovZoaMZcGrU/4UFksWqhMkySMRMeI?=
- =?iso-8859-1?Q?CbzdXtuQFheQ8m1YlbAr3gZs3zYdYC4A1iaHKsiDh1wosoRABsewdv7iOw?=
- =?iso-8859-1?Q?Who/q6h4TjujsY8WrRRqjsbiypRIxSH+yD50DwFFDZt8Jp+qFFH1PfbN5v?=
- =?iso-8859-1?Q?OttiSmzBDZbsxWhcFh3nAOOD76CU8Cu2eeDMVC2Dlhy+Yadyi6HRulErBy?=
- =?iso-8859-1?Q?OvWsYhdqhvNBW+CHKTqohPPv+0GOVVEpbj?=
+        Tue, 25 Jul 2023 15:50:09 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF3710D4;
+        Tue, 25 Jul 2023 12:50:08 -0700 (PDT)
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay10.hostedemail.com (Postfix) with ESMTP id 92CE3C0F0F;
+        Tue, 25 Jul 2023 19:50:05 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 6D7F52002A;
+        Tue, 25 Jul 2023 19:50:01 +0000 (UTC)
+Message-ID: <4ce3c7a980be3ce9012ba02a5d9d4285cdf4fd07.camel@perches.com>
+Subject: Re: [PATCH v2] net/sched: mqprio: Add length check for
+ TCA_MQPRIO_{MAX/MIN}_RATE64
+From:   Joe Perches <joe@perches.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lin Ma <linma@zju.edu.cn>, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 25 Jul 2023 12:50:00 -0700
+In-Reply-To: <20230725123842.546045f1@kernel.org>
+References: <20230724014625.4087030-1-linma@zju.edu.cn>
+         <20230724160214.424573ac@kernel.org>
+         <63d69a72.e2656.1898a66ca22.Coremail.linma@zju.edu.cn>
+         <20230724175612.0649ef67@kernel.org>
+         <d02a90c5ca1475c27e06d3d592bac89ab17b37ea.camel@perches.com>
+         <20230725123842.546045f1@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-OriginatorOrg: hp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6cc94ba3-eae3-4140-e9a8-08db8d4818d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2023 19:48:19.7098
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sVIsTshVf9/pDoynhl5cWmJ/H+li87Whgxhomwa/TLhPGppAZw02nBV6fZAI7Ks0G+JHcv82pdBkg6ZkgIr2cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR84MB1383
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hp.com
-Content-Language: en-US
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Rspamd-Queue-Id: 6D7F52002A
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no
         autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: iafnjui4t1dsw8jioq5af4htufncp3q4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/1BwcFPMc+exIE8tEWXVMCn8VrkCjkOTc=
+X-HE-Tag: 1690314601-210224
+X-HE-Meta: U2FsdGVkX1/hJEPKF2zr3TJgtWEyLqffK/2NfpekyNdd1d2qPBSjNPF3zb/rolffaxdixAJchpDFZMz6ez43RrK2pcoLUdXJwfWmA3omsXsKY8hZcPV90QuT81iUJziDwfj+9MTNCMk5RD7EmN7QBAkC59majWbDNr55FxvrBhzaRiGJR4ZBo1eL8ESRle1EDGuRr/mc171zFMBT+HGuvp2Vh+JOrqAEOj3VqkonXb8rCD7Jk8UDmx24njhpVn/yz/U+tkb2YBy75Ylk0kumbY1I4+amn7O+ZDkLUcgzS2UOuMGcqQwZipwBsnXqxOs7hxF63acs4rRt2TzSCYQ6zyFjDUh6Y3vKR2+yLqSRGXbR8+NSFZixcHvIY2FPysOZ
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Tue, 2023-07-25 at 12:38 -0700, Jakub Kicinski wrote:
+> On Mon, 24 Jul 2023 20:59:53 -0700 Joe Perches wrote:
+> > > Joe, here's another case.  
+> > 
+> > What do you think the "case" is here?
+> > 
+> > Do you think John Fastabend, who hasn't touched the file in 7+ years
+> > should be cc'd?  Why?
+> 
+> Nope. The author of the patch under Fixes.
 
-I will submit a patch to address memory leaks in hp_populate_enumeration_el=
-ements_from_package() reported here and to address some uninitialized varia=
-ble errors reported in a separate email.
+It adds that already since 2019.
 
+commit 2f5bd343694ed53b3abc4a616ce975505271afe7
+Author: Joe Perches <joe@perches.com>
+Date:   Wed Dec 4 16:50:29 2019 -0800
 
-Regards,
-
-Jorge Lopez
-HP Inc
-
-"Once you stop learning, you start dying"
-Albert Einstein
-
-> -----Original Message-----
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Sent: Monday, July 17, 2023 3:54 PM
-> To: Lopez, Jorge A (Security) <jorge.lopez2@hp.com>; Hans de Goede
-> <hdegoede@redhat.com>; Mark Gross <markgross@kernel.org>; Thomas
-> Wei=DFschuh <linux@weissschuh.net>
-> Cc: linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org;
-> Christophe JAILLET <christophe.jaillet@wanadoo.fr>; platform-driver-
-> x86@vger.kernel.org
-> Subject: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
-> hp_populate_enumeration_elements_from_package()
->=20
-> CAUTION: External Email
->=20
-> In the loop in the ENUM_POSSIBLE_VALUES case, we allocate some memory
-> that is never freed.
->=20
-> While at it, add some "str_value =3D NULL" to avoid some potential double
-> free.
->=20
-> Fixes: 6b2770bfd6f9 ("platform/x86: hp-bioscfg: enum-attributes")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> /!\ Speculative /!\
->=20
->    This patch is based on analysis of the surrounding code and should be
->    reviewed with care !
->=20
-> /!\ Speculative /!\
-> ---
->  drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c
-> b/drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c
-> index b1b241f0205a..dd173020c747 100644
-> --- a/drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c
-> +++ b/drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c
-> @@ -224,6 +224,7 @@ static int
-> hp_populate_enumeration_elements_from_package(union acpi_object
-> *enum
->                                         sizeof(enum_data->common.prerequi=
-sites[reqs]));
->=20
->                                 kfree(str_value);
-> +                               str_value =3D NULL;
->                         }
->                         break;
->=20
-> @@ -275,6 +276,9 @@ static int
-> hp_populate_enumeration_elements_from_package(union acpi_object
-> *enum
->                                         strscpy(enum_data->possible_value=
-s[pos_values],
->                                                 str_value,
->                                                 sizeof(enum_data-
-> >possible_values[pos_values]));
-> +
-> +                               kfree(str_value);
-> +                               str_value =3D NULL;
->                         }
->                         break;
->                 default:
-> @@ -283,6 +287,7 @@ static int
-> hp_populate_enumeration_elements_from_package(union acpi_object
-> *enum
->                 }
->=20
->                 kfree(str_value);
-> +               str_value =3D NULL;
->         }
->=20
->  exit_enumeration_package:
-> --
-> 2.34.1
+    scripts/get_maintainer.pl: add signatures from Fixes: <badcommit> lines in commit message
+    
+    A Fixes: lines in a commit message generally indicate that a previous
+    commit was inadequate for whatever reason.
+    
+    The signers of the previous inadequate commit should also be cc'd on
+    this new commit so update get_maintainer to find the old commit and add
+    the original signers.
+    
 
