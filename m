@@ -2,203 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F7C76235C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358E876235E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjGYUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S230400AbjGYUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGYUfF (ORCPT
+        with ESMTP id S229495AbjGYUfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:35:05 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BE11BC8
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:02 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686baccf661so378761b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:02 -0700 (PDT)
+        Tue, 25 Jul 2023 16:35:21 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6FF1BF6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6689430d803so3664484b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690317302; x=1690922102;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dEBFhajNAbJA8oyQ3SzCNr6bDDYsCg4XK+Nkm+WUeyo=;
-        b=eY6zQW3yCE3HW7dgVJNQZhe10AN6qBQt2ko/chealQwqHrG4pM7GbfZSTeJjki77ur
-         vvleenmBb5FbgzGEaPwOFmpaKUTOWBHwreBUUoapzQSDFCTju1zARvVMKgp7X7voD+Nl
-         sXGfLqWP8rjifH8hqHsJWCsAktmKU/tFHQMq5EuvNH/TroIDEQo6kCLEp9pwNh7VUb3c
-         zLdZA9nSTj/zpvIkmp2CT+s8H4mAClm9FNigMM4FuVifUsUmWhUx+sNaPxSb6axgGSDq
-         g0fPFLH/O4qJeu+Cfaye5RHsStJDo8BFlqz0YObnHUoCnMYpBXWeebG+Imz7w0UTWiHL
-         YF4w==
+        d=broadcom.com; s=google; t=1690317317; x=1690922117;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z0BDxns+Fl9sLUnEwh5F99rLcyZenrQanFjB5BbbgHQ=;
+        b=YqW5/jm+a8OyrQDhYK1sB6+6m/Xjx25ofn8j4eA7xNR1oZ9C6r2T2ECfatMBPXYFe/
+         2QrdGpgjXMIhH/Lowm1Bo+gzFbhLA08yfqkno0PiGvnFM7aWFHmZ+11ush0vrziUOcfH
+         uVXhPcVa2Lvf6OaPbIapl6MwKxWcds0/swLP8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690317302; x=1690922102;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20221208; t=1690317317; x=1690922117;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dEBFhajNAbJA8oyQ3SzCNr6bDDYsCg4XK+Nkm+WUeyo=;
-        b=J4XjCiTmulUkzY793rjHldvgNZP+bh9IPPMswRd50Usv9X6fCYz6ezrzmwrsc9JgqG
-         YpKJBSIHnJS82yf81c39eQbKbjn8rW/icYyTWDv+xYNJ3/JgBYM4piqbdB+2sxUtIe2V
-         JdfkTYbFIPQ4WEQGGfWJanpUW2sV9xAs6ppLHiYVwHBCGWdYm+Vxl7I6iwnffFxRLfXZ
-         JkKmGgrOB5+m7DiFWPLhhw4u+Wi4kqEA/l0nHz4D2YHrgGA9oAmtLT8KRLAtSM0wmaK0
-         /L/IXM9w6ZiIHjJsxTAZVARD2Hge+cExWedGkq7xeVl1Ap/Xt4dFpu01/SjJ0f+H+YKy
-         X5Pg==
-X-Gm-Message-State: ABy/qLYz3gqSRnf2HoWKdQJfEXzEoWoaLm3uhs5uWREjXnUBoGO9RxgS
-        DpuM1Cqylufhg2dIo3/mZ8FbtA==
-X-Google-Smtp-Source: APBJJlGSzayuOHxBmo/tEETnK6cmj1CrVYQ2LOCdES+hgyiq0gr838HgHLCeJA/FeOOzp9ZE+OXsYw==
-X-Received: by 2002:a05:6a20:914d:b0:122:10f9:f635 with SMTP id x13-20020a056a20914d00b0012210f9f635mr119916pzc.19.1690317301899;
-        Tue, 25 Jul 2023 13:35:01 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:2116:2b1f:2fd8:ec8d])
-        by smtp.gmail.com with ESMTPSA id s11-20020a63770b000000b0052c22778e64sm10847608pgc.66.2023.07.25.13.35.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 13:35:01 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 14:34:58 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v15 00/13] Add support for MT8195 SCP 2nd core
-Message-ID: <ZMAx8mc0tjgPvU3j@p14s>
-References: <20230721024132.6548-1-tinghan.shen@mediatek.com>
+        bh=Z0BDxns+Fl9sLUnEwh5F99rLcyZenrQanFjB5BbbgHQ=;
+        b=Q+lOphKha8JHp5/RQsux2sngVDWN52Qn6oMc28MU3j38AXUP6glsWlwTRsYYOHL8eH
+         L0B6kaQkrOhrSyxxlHlzPCsV4KIxL3gde+3WiepuIfrYA5+jJ8Z6rxuAm/tCj6ahfwpA
+         ZHcrJj9bqq4AT6FQx5ga72nsqOdF3W0NAHqET401AtuP1iU6ULae49+YPRmfZHM8iQo4
+         M0bMpD91S3btN+2ZwUzqoUXgtAowbCkklvATm7XJiEKD4tpD/F4mfhdBrD8w+QqYHoLq
+         GqU56PAvBtoq8Kfjyq4CZxUWv6hpIkK+/REWLhdFwMD5axVPNg/FGHHnuHwYxi9rz0+I
+         4a3g==
+X-Gm-Message-State: ABy/qLY1a1Qj7NByFKA23jK5R85973Gb8DfBKddN/4YnR9g/ugWIR1mB
+        VTv/pJlyPNwa1FF/GAn+h/unKw==
+X-Google-Smtp-Source: APBJJlFku5InCFMw043n+/fR7Px9bK0sggZQ7nAq+I345tWEpuYGDhsjWrhsH1kHgFyhWvYqj+Di5Q==
+X-Received: by 2002:a17:903:1c7:b0:1b7:f611:a66b with SMTP id e7-20020a17090301c700b001b7f611a66bmr245907plh.31.1690317317218;
+        Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
+Received: from [10.69.71.77] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id iz11-20020a170902ef8b00b001bbbc655ca1sm2038646plb.219.2023.07.25.13.35.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 13:35:13 -0700 (PDT)
+Message-ID: <d2d45566-b96c-5505-1f7e-92c6f33c08dd@broadcom.com>
+Date:   Tue, 25 Jul 2023 13:35:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721024132.6548-1-tinghan.shen@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH net] bcmasp: BCMASP should depend on ARCH_BRCMSTB
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1e8b998aa8dcc6e38323e295ee2430b48245cc79.1690299794.git.geert+renesas@glider.be>
+From:   Justin Chen <justin.chen@broadcom.com>
+In-Reply-To: <1e8b998aa8dcc6e38323e295ee2430b48245cc79.1690299794.git.geert+renesas@glider.be>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004519ad060155ab81"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:41:19AM +0800, Tinghan Shen wrote:
-> The mediatek remoteproc driver currently only allows bringing up a 
-> single core SCP, e.g. MT8183. It also only bringing up the 1st 
-> core in SoCs with a dual-core SCP, e.g. MT8195. This series support 
-> to bring-up the 2nd core of the dual-core SCP.
-> 
-> v15 -> v14:
-> 1. Use the common SCP registers in struct mtk_scp_of_cluster instead of
->    copy it to struct mtk_scp at patchset 5 
-> 2. Use platform_set_drvdata instead of platform_device_add_data at patchset 5 
-> 3. Rename l2tcm_lock to cluster_lock at patchset 8
-> 4. Check l2tcm_refcnt value before decreasing at patchset 8
-> 5. Revise the commit message at patchset 11
+--0000000000004519ad060155ab81
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I am done reviewing this set.  Checkpatch is giving a warning for patch 01/13,
-something I would expect to have been dealt with after 15 iterations.  I will be
-away for the next 3 weeks so no point in rushing another revision to sqeeze
-in the v6.6 merge window.
 
-Mathieu
 
+On 7/25/23 8:46 AM, Geert Uytterhoeven wrote:
+> The Broadcom ASP 2.0 Ethernet controller is only present on Broadcom STB
+> SoCs.  Hence add a dependency on ARCH_BRCMSTB, to prevent asking the
+> user about this driver when configuring a kernel without Broadcom
+> ARM-based set-top box chipset support.
 > 
-> v13 -> v14:
-> 1. add review tag to patchset 1,6
-> 2. exchange the order of sram power on and reset assert in
-> mt8195_scp_c1_before_load at patchset 2
-> 3. Use ERR_CAST in patchset 5
-> 4. Re-write patchset 7 to remove dependency between core 0 and core 1 
-> 5. Add patch set 10 to report watchdot timeout to all cores
+> Fixes: 490cb412007de593 ("net: bcmasp: Add support for ASP2.0 Ethernet controller")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Acked-by: Justin Chen <justin.chen@broadcom.com>
+
+> ---
+>   drivers/net/ethernet/broadcom/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> v12 -> v13:
-> 1. replace subdevice with new mediatek scp operations in patchset 7 
-> 2. add review tag to patchset 3
-> 3. modify mediatek,scp phandle name of video-codec@18000000 at patchset 11
-> 
-> v11 -> v12:
-> 1. add scp_add_single/multi_core() to patchset 6
-> 2. remove unused comment in patchset 6
-> 3. rename list name from mtk_scp_cluster to mtk_scp_list
-> 4. rewrite the multi-core probe flow 
-> 5. disable rproc->autoboot and boot rproc by request_firmware_nowait at patchset 7 
-> 6. remove patchset 7 review tag  
-> 
-> v10 -> v11:
-> 1. rewrite patchset 5 to probe single-core SCP with the cluster list
-> 2. Also in patchset 5, move the pointer of mtk_scp object from the
->    platform data property to the driver data property 
-> 3. move the appearance of mtk_scp cluster property to patcheset 7
-> 
-> v9 -> v10:
-> 1. move the global mtk_scp list into the platform device driver data structure
-> 2. remove an unnecessary if() condition
-> 
-> v8 -> v9:
-> 1. initialize l1tcm_size/l1tcm_phys at patchset 05/11 
-> 2. rewrite patchset 06/11 to unify the flow and remove hacks
-> 
-> v7 -> v8:
-> 1. update the node name of mt8192 asurada SCP rpmsg subnode
-> 2. squash register definitions into driver patches
-> 3. initialize local variables on the declaration at patch v8 06/11 
-> 
-> v6 -> v7:
-> 1. merge the mtk_scp_cluster struct into the mtk_scp structure
->    at the "Probe multi-core SCP" patch
-> 
-> v5 -> v6:
-> 1. move the mtk_scp_of_regs structure from mtk_common.h to mtk_scp.c
-> 2. rename the SCP core 0 label from 'scp' to 'scp_c0'
-> 
-> v4 -> v5:
-> 1. move resource release actions to the platform driver remove operation 
-> 2. fix dual-core watchdog handling
-> 
-> v3 -> v4:
-> 1. change the representation of dual-core SCP in dts file and update SCP yaml
-> 2. rewrite SCP driver to reflect the change of dts node
-> 3. drop 'remove redundant call of rproc_boot for SCP' in v3 for further investigation
-> 
-> v2 -> v3:
-> 1. change the representation of dual-core SCP in dts file and update SCP yaml
-> 2. rewrite SCP driver to reflect the change of dts node
-> 3. add SCP core 1 node to mt8195.dtsi
-> 4. remove redundant call of rproc_boot for SCP
-> 5. refine IPI error message
-> 
-> v1 -> v2:
-> 1. update dt-binding property description
-> 2. remove kconfig for scp dual driver
-> 3. merge mtk_scp_dual.c and mtk_scp_subdev.c to mtk_scp.c
-> 
-> 
-> Tinghan Shen (13):
->   dt-bindings: remoteproc: mediatek: Improve the rpmsg subnode
->     definition
->   arm64: dts: mediatek: Update the node name of SCP rpmsg subnode
->   dt-bindings: remoteproc: mediatek: Support MT8195 dual-core SCP
->   remoteproc: mediatek: Add MT8195 SCP core 1 operations
->   remoteproc: mediatek: Extract SCP common registers
->   remoteproc: mediatek: Probe SCP cluster on single-core SCP
->   remoteproc: mediatek: Probe SCP cluster on multi-core SCP
->   remoteproc: mediatek: Remove dependency of MT8195 SCP L2TCM power
->     control on dual-core SCP
->   remoteproc: mediatek: Setup MT8195 SCP core 1 SRAM offset
->   remoteproc: mediatek: Handle MT8195 SCP core 1 watchdog timeout
->   remoteproc: mediatek: Report watchdog crash to all cores
->   remoteproc: mediatek: Refine ipi handler error message
->   arm64: dts: mediatek: mt8195: Add SCP 2nd core
-> 
->  .../bindings/remoteproc/mtk,scp.yaml          | 176 +++++-
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   2 +-
->  .../boot/dts/mediatek/mt8192-asurada.dtsi     |   2 +-
->  .../boot/dts/mediatek/mt8195-cherry.dtsi      |   6 +-
->  arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  34 +-
->  drivers/remoteproc/mtk_common.h               |  39 +-
->  drivers/remoteproc/mtk_scp.c                  | 534 ++++++++++++++----
->  drivers/remoteproc/mtk_scp_ipi.c              |   4 +-
->  8 files changed, 651 insertions(+), 146 deletions(-)
-> 
-> -- 
-> 2.18.0
-> 
+> diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
+> index d4166141145d631c..75ca3ddda1f5e09f 100644
+> --- a/drivers/net/ethernet/broadcom/Kconfig
+> +++ b/drivers/net/ethernet/broadcom/Kconfig
+> @@ -257,6 +257,7 @@ config BNXT_HWMON
+>   
+>   config BCMASP
+>   	tristate "Broadcom ASP 2.0 Ethernet support"
+> +	depends on ARCH_BRCMSTB || COMPILE_TEST
+>   	default ARCH_BRCMSTB
+>   	depends on OF
+>   	select MII
+
+--0000000000004519ad060155ab81
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
+4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
+BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
+NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
+A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
+aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
+cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
+MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
+DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
+dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
+xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
+sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
+VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
+ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
+bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGcQJ9VXQfniMDTN6D8xnucnYK33wvuQoudE
+80SVVMlNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcyNTIw
+MzUxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
+BgkqhkiG9w0BAQEFAASCAQAfYe7xSqQaHSduot98NlT/FEQnMBHRXsigjCjXTqbFU+MBs3OPIZsp
+fh3YZJBZGAEWfzNTsEfxHQV3JLaJanDuDC6Zy8Clna2pE7orlpQ5YeMCF6og9Mzbpkh4Sj+h2ICs
+MwQG90VgdyLkpJjDsfFBgdHQRZyy9ovU+Utppycc5W6j4Z1BrsksPo+LpEmGbCBwkPi1ENa6cHQi
+4heBwIrlCAiTqVf2Jlh+1Y7aLOy5V4ttVRc2XZH8gmyNwSiccVZCaL9CMARLhJPVspKC+/XPwOpF
+2LVcOqsCXiE75MZjRXSEJINai4hWQ0KlhI1G7+UTCfWO2yZNCwB3cXcmu6Ht
+--0000000000004519ad060155ab81--
