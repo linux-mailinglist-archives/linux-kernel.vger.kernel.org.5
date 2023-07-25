@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D36C76131E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E16761321
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbjGYLIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S233990AbjGYLIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbjGYLIA (ORCPT
+        with ESMTP id S234100AbjGYLIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Jul 2023 07:08:00 -0400
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281DB199E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:06:33 -0700 (PDT)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4AB19A0;
+        Tue, 25 Jul 2023 04:06:33 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68336d06620so5031777b3a.1;
+        Tue, 25 Jul 2023 04:06:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1690283193; x=1721819193;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=f3+5Ws3IvZL4KRwctyVp9MLtU2uqQxu77BXFalL2nZY=;
-  b=i+tZ5gr9K6viNO1kIDc6+CC5DwKjeTs8Kf+u3SzueOfi2RljooXBCv3V
-   DYsYfnOwEXTMdsJ7kIOdCepa2xXyUXgqij9kCfmYFvkzriG6JslaT1Jvi
-   WYfkVHmJIHSkXhvc7TmUTIHlvt//8ZNAokJ5idVq8XFdkJDfFSkmQXTRl
-   k=;
-X-IronPort-AV: E=Sophos;i="6.01,230,1684800000"; 
-   d="scan'208";a="348734793"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 11:06:30 +0000
-Received: from EX19D019EUA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com (Postfix) with ESMTPS id 61984A0AD0;
-        Tue, 25 Jul 2023 11:06:27 +0000 (UTC)
-Received: from EX19D028EUB001.ant.amazon.com (10.252.61.99) by
- EX19D019EUA002.ant.amazon.com (10.252.50.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 25 Jul 2023 11:06:26 +0000
-Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
- EX19D028EUB001.ant.amazon.com (10.252.61.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 25 Jul 2023 11:06:26 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Tue, 25 Jul 2023 11:06:26 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-        id 0142E23299; Tue, 25 Jul 2023 13:06:25 +0200 (CEST)
-From:   Pratyush Yadav <ptyadav@amazon.de>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        "Christoph Hellwig" <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>
-CC:     Pratyush Yadav <ptyadav@amazon.de>,
-        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nvme-pci: do not set the NUMA node of device if it has none
-Date:   Tue, 25 Jul 2023 13:06:22 +0200
-Message-ID: <20230725110622.129361-1-ptyadav@amazon.de>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        d=gmail.com; s=20221208; t=1690283193; x=1690887993;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jxo6App/CgZGpWLnlrQ5JN9zlgf5XBdiJvk1vlDo3iA=;
+        b=cv9wUDYGjfqpNaB58SD8ThhvBpLaBiF/sXeDoHd/7Y+ZpbHv7Y8CO6+wVI3acHT4Bv
+         CHfeCexJJDavZma+i4mV+sqYN7a+oK/dkoW8rkupyOh4TZRv4qJ+0RiCEG+frPgNXLkh
+         Zjj7tK+G+W5N57Qc7MdfuOz06Kqj4au6yIJBMhduZxy5b7AJ+7lDIXZQCBP7XV9caRZJ
+         LiaZAMXCp01riRPPNYUsJx8l4YBh8GexAzncVYS4OgH41CH9wmFXpupILyf+9Nl9YWi+
+         xJM3Rv/5ZgcTaCaVhwWEeeaC661tTv8RS5Wo4YiNC1WCAJsF4XX0AwxU+FOyOU3waPh6
+         kFhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690283193; x=1690887993;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jxo6App/CgZGpWLnlrQ5JN9zlgf5XBdiJvk1vlDo3iA=;
+        b=QQ5veCkpH5b9pp+gSAQ3fnTho3rc4bi7YYnmVHr40S/tdwx1E01UJvh2t82GXIXu95
+         RS39Zo8ZSbVgJw8JvcgMHE16WgG9QLLO1fgTZ69qtLq4EOj5Itg8t9XVjBtbQavcUPk/
+         2iz7TR+7eDKyHZfEBADhpOfEAmUveNFacapkBCoRfSQXCR48ce79V6zL8WE5CSy6v/ov
+         MUlVSNaC4MxLxprVoETlrcca7aS5C1R58L8TnSZTBkUSJJSiFoobc4v7qN08iAMvK8FL
+         SyrQEAQG/Vy3N5IMwfBS9LiAIOP7ID8wTfy0XJUwpMtD114GRCLmLTyZsiDB6VpJ2SbS
+         8jbQ==
+X-Gm-Message-State: ABy/qLbxgCxy6+6cX/WHHUtR3U1+XPZhmPrbe05eielkAekviHY4o3qu
+        NdWRS5qyAg5xPnNpozAOkIU=
+X-Google-Smtp-Source: APBJJlHwRxH/Fvv74vzZz4XH1TFYiZ4TZ3W6xoZXj8Y8xEsigfSH89MIbQzL3kNJzAv5Q/KwKAj8yA==
+X-Received: by 2002:a05:6a20:1058:b0:133:bc8:8a47 with SMTP id gt24-20020a056a20105800b001330bc88a47mr12562878pzc.3.1690283193035;
+        Tue, 25 Jul 2023 04:06:33 -0700 (PDT)
+Received: from dw-tp ([49.207.232.207])
+        by smtp.gmail.com with ESMTPSA id k9-20020a633d09000000b0054fd46531a1sm10328402pga.5.2023.07.25.04.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 04:06:32 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 16:36:24 +0530
+Message-Id: <87a5vkw8r3.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: Re: [PATCH v2 01/10] ext4: correct grp validation in ext4_mb_good_group
+In-Reply-To: <20230725185106.2147273-2-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device has no NUMA node information associated with it, the driver
-puts the device in node first_memory_node (say node 0). As a side
-effect, this gives an indication to userspace IRQ balancing programs
-that the device is in node 0 so they prefer CPUs in node 0 to handle the
-IRQs associated with the queues. For example, irqbalance will only let
-CPUs in node 0 handle the interrupts. This reduces random access
-performance on CPUs in node 1 since the interrupt for command completion
-will fire on node 0.
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-For example, AWS EC2's i3.16xlarge instance does not expose NUMA
-information for the NVMe devices. This means all NVMe devices have
-NUMA_NO_NODE by default. Without this patch, random 4k read performance
-measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
-less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
-both nodes get similar performance (around 315k IOPS).
+> Group corruption check will access memory of grp and will trigger kernel
+> crash if grp is NULL. So do NULL check before corruption check.
+>
+> Fixes: 5354b2af3406 ("ext4: allow ext4_get_group_info() to fail")
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Pratyush Yadav <ptyadav@amazon.de>
----
- drivers/nvme/host/pci.c | 3 ---
- 1 file changed, 3 deletions(-)
+Looks good to me. Feel free to add: 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index baf69af7ea78e..f5ba2d7102eae 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2916,9 +2916,6 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
- 	struct nvme_dev *dev;
- 	int ret = -ENOMEM;
- 
--	if (node == NUMA_NO_NODE)
--		set_dev_node(&pdev->dev, first_memory_node);
--
- 	dev = kzalloc_node(sizeof(*dev), GFP_KERNEL, node);
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
--- 
-2.40.1
-
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 456150ef6111..62e7a045ad79 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2553,7 +2553,7 @@ static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
+>  
+>  	BUG_ON(cr < CR_POWER2_ALIGNED || cr >= EXT4_MB_NUM_CRS);
+>  
+> -	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp) || !grp))
+> +	if (unlikely(!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+>  		return false;
+>  
+>  	free = grp->bb_free;
+> -- 
+> 2.30.0
