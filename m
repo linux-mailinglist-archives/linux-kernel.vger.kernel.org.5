@@ -2,293 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CE4760533
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E41B760536
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjGYCdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        id S230232AbjGYCd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGYCdo (ORCPT
+        with ESMTP id S230216AbjGYCdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:33:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DC4198
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 19:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690252375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TLi69c4E4L5eZQg22PEMzi9DRqiDnwUXsa6MfQ9GlAI=;
-        b=g1hclesLfqPxLdvTaT8gMkKqCYTrQOWTrW4U9H/YdJZ04FSJshX39gViNYzjQjjvNQXTrW
-        KsQBvaqW7J2MF+xyxtvouZQezeuFEO2dGPliCZRXMXO1U9VMj5yRYnTOUwJPcdtvxbnbJg
-        MtHDYPAudbfnWsPP5DWxMdWsGk3FL6c=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-J_8sJxz_MgOxkOFIxDmnMg-1; Mon, 24 Jul 2023 22:32:53 -0400
-X-MC-Unique: J_8sJxz_MgOxkOFIxDmnMg-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-67f1947c0easo359551b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 19:32:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690252373; x=1690857173;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TLi69c4E4L5eZQg22PEMzi9DRqiDnwUXsa6MfQ9GlAI=;
-        b=hMlClQxP89ah68Ckm40Bx0iVDeYFcCnOZ7yCSt+f/tstqVojh3k2a8mo5Ta4aUrsCN
-         Uz8U17UkkYyZa2cFXW8I+ORW4p12iJMftNxxSpDco1cs2ILs5Ju9auaCfGANRqMqmX+c
-         nlJJCZMJVfchxKi6sRlpKlxD48pv/hHDfQqM9wYQndZHMI5CBO2p3VhE7Uizdp3DRMgq
-         +TtHH0x59MuB3kdw1QsxTgenU4O7YIdLmV2hEImnIwFOroROphqMJ9bB/4KdfT4RvV7F
-         1e8gZOn1AAMVbZ6BibUyqAJbRX/iaCS2CtT9efFgsl5BBv1mgJvktYwS0cJLsGjog3qO
-         g7QA==
-X-Gm-Message-State: ABy/qLaKZ7BKNz4nuoM/DcIKOl8rm+mVv6eqEPBDcjQZ2y20lznHwZHH
-        9D0k+YEaRwA78lwIFrPew33332CUGI+he+cVvY7ljPR3Cdhe13DYw2s8MhxApv7PpT0c4WGRhtr
-        yv2yA9PAMkLJwTVr4jDZ6W1ep
-X-Received: by 2002:a05:6a20:6a04:b0:134:1671:6191 with SMTP id p4-20020a056a206a0400b0013416716191mr15770068pzk.0.1690252372801;
-        Mon, 24 Jul 2023 19:32:52 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGjytb4S6qopsC3NLp/h8iyv5snZM1Dlt1GebDQMZ0uJY6y/Dhu0KlQgL9HrcCz12eAJGPfUw==
-X-Received: by 2002:a05:6a20:6a04:b0:134:1671:6191 with SMTP id p4-20020a056a206a0400b0013416716191mr15770035pzk.0.1690252372422;
-        Mon, 24 Jul 2023 19:32:52 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id h16-20020aa786d0000000b00678cb336f3csm8655609pfo.142.2023.07.24.19.32.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 19:32:52 -0700 (PDT)
-Message-ID: <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
-Date:   Tue, 25 Jul 2023 10:32:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for
- unmap
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230722022251.3446223-1-rananta@google.com>
- <20230722022251.3446223-13-rananta@google.com>
- <0841aca6-2824-6a1b-a568-119f8bd220de@redhat.com>
- <CAJHc60znT5ThqKE3TgTW-0Us3oNv8+KF=81TSK0PbG3tTyJLFQ@mail.gmail.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <CAJHc60znT5ThqKE3TgTW-0Us3oNv8+KF=81TSK0PbG3tTyJLFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 24 Jul 2023 22:33:54 -0400
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29C711737;
+        Mon, 24 Jul 2023 19:33:50 -0700 (PDT)
+Received: from localhost.localdomain (unknown [36.24.99.225])
+        by mail-app3 (Coremail) with SMTP id cC_KCgBXPot7NL9k9rWkCw--.5856S4;
+        Tue, 25 Jul 2023 10:33:31 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, martin.lau@kernel.org,
+        yhs@fb.com, void@manifault.com, andrii@kernel.org,
+        houtao1@huawei.com, inwardvessel@gmail.com, linma@zju.edu.cn,
+        kuniyu@amazon.com, songliubraving@fb.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v2] bpf: Add length check for SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
+Date:   Tue, 25 Jul 2023 10:33:30 +0800
+Message-Id: <20230725023330.422856-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgBXPot7NL9k9rWkCw--.5856S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4kXFy8JryDuw13KFykZrb_yoW8GFy7pa
+        s7Gr9xKr9rJrWfCFn7Jrsxua4UCw4UXFy3WFs8Zw4fZw4qqa43Gry3GF1Fqw15ArWrW3Wa
+        yr1YgFy3ur9rZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUOTmhUUUUU
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The nla_for_each_nested parsing in function bpf_sk_storage_diag_alloc
+does not check the length of the nested attribute. This can lead to an
+out-of-attribute read and allow a malformed nlattr (e.g., length 0) to
+be viewed as a 4 byte integer.
 
+This patch adds an additional check when the nlattr is getting counted.
+This makes sure the latter nla_get_u32 can access the attributes with
+the correct length.
 
-On 7/25/23 00:47, Raghavendra Rao Ananta wrote:
-> On Mon, Jul 24, 2023 at 2:35 AM Shaoqin Huang <shahuang@redhat.com> wrote:
->>
->> Hi Raghavendra,
->>
->> On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
->>> The current implementation of the stage-2 unmap walker traverses
->>> the given range and, as a part of break-before-make, performs
->>> TLB invalidations with a DSB for every PTE. A multitude of this
->>> combination could cause a performance bottleneck on some systems.
->>>
->>> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
->>> invalidations until the entire walk is finished, and then
->>> use range-based instructions to invalidate the TLBs in one go.
->>> Condition deferred TLB invalidation on the system supporting FWB,
->>> as the optimization is entirely pointless when the unmap walker
->>> needs to perform CMOs.
->>>
->>> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
->>> now serves the stage-2 unmap walker specifically, rather than
->>> acting generic.
->>>
->>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
->>> ---
->>>    arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
->>>    1 file changed, 58 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>> index 5ef098af1736..cf88933a2ea0 100644
->>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgtable_visit_ctx *ctx, kvm_pte_t n
->>>        smp_store_release(ctx->ptep, new);
->>>    }
->>>
->>> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, struct kvm_s2_mmu *mmu,
->>> -                        struct kvm_pgtable_mm_ops *mm_ops)
->>> +struct stage2_unmap_data {
->>> +     struct kvm_pgtable *pgt;
->>> +     bool defer_tlb_flush_init;
->>> +};
->>> +
->>> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
->>> +{
->>> +     /*
->>> +      * If FEAT_TLBIRANGE is implemented, defer the individual
->>> +      * TLB invalidations until the entire walk is finished, and
->>> +      * then use the range-based TLBI instructions to do the
->>> +      * invalidations. Condition deferred TLB invalidation on the
->>> +      * system supporting FWB, as the optimization is entirely
->>> +      * pointless when the unmap walker needs to perform CMOs.
->>> +      */
->>> +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
->>> +}
->>> +
->>> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unmap_data)
->>> +{
->>> +     bool defer_tlb_flush = __stage2_unmap_defer_tlb_flush(unmap_data->pgt);
->>> +
->>> +     /*
->>> +      * Since __stage2_unmap_defer_tlb_flush() is based on alternative
->>> +      * patching and the TLBIs' operations behavior depend on this,
->>> +      * track if there's any change in the state during the unmap sequence.
->>> +      */
->>> +     WARN_ON(unmap_data->defer_tlb_flush_init != defer_tlb_flush);
->>> +     return defer_tlb_flush;
->>> +}
->>> +
->>> +static void stage2_unmap_put_pte(const struct kvm_pgtable_visit_ctx *ctx,
->>> +                             struct kvm_s2_mmu *mmu,
->>> +                             struct kvm_pgtable_mm_ops *mm_ops)
->>>    {
->>> +     struct stage2_unmap_data *unmap_data = ctx->arg;
->>> +
->>>        /*
->>> -      * Clear the existing PTE, and perform break-before-make with
->>> -      * TLB maintenance if it was valid.
->>> +      * Clear the existing PTE, and perform break-before-make if it was
->>> +      * valid. Depending on the system support, the TLB maintenance for
->>> +      * the same can be deferred until the entire unmap is completed.
->>>         */
->>>        if (kvm_pte_valid(ctx->old)) {
->>>                kvm_clear_pte(ctx->ptep);
->>> -             kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, ctx->addr, ctx->level);
->>> +
->>> +             if (!stage2_unmap_defer_tlb_flush(unmap_data))
->> Why not directly check (unmap_data->defer_tlb_flush_init) here?
->>
-> (Re-sending the reply as the previous one was formatted as HTML and
-> was blocked by many lists)
-> 
-> No particular reason per say, but I was just going with the logic of
-> determining if we need to defer the flush and the WARN_ON() parts
-> separate.
-> Any advantage if we directly check in stage2_unmap_put_pte() that I
-> missed or is this purely for readability?
+Fixes: 1ed4d92458a9 ("bpf: INET_DIAG support in bpf_sk_storage")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+V1 -> V2: moves the check to the counting loop as Jakub suggested,
+          alters the commit message accordingly.
 
-Hi Raghavendra,
+ net/core/bpf_sk_storage.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I just wondering if before the stage2 walk, we want to defer the tlb 
-flush, but if when walk the stage2, the stage2_unmap_defer_tlb_flush() 
-trigger the WARN_ON() and return don't defer the tlb flush, it will 
-flush the ctx->addr's tlb. But before the WARN_ON() triggered, these tlb 
-will not be flushed, since when walk stage2 done in the 
-kvm_pgtable_stage2_unmap(), the stage2_unmap_defer_tlb_flush() still 
-trigger the WARN_ON() and don't use the tlb range-based flush. Thus some 
-of the tlb are not flushed.
-
-If we directly check the (unmap_data->defer_tlb_flush_init), this isn't 
-change during walking the stage2, so the WARN_ON() should only trigger 
-in kvm_pgtable_stage2_unmap()->stage2_unmap_defer_tlb_flush().
-
-I'm not sure if it's right since I just think once we set up use the 
-TLBI range-based flush, the result of the 
-__stage2_unmap_defer_tlb_flush() shouldn't change. Otherwise there must 
-have some stale TLB entry.
-
-Thanks,
-Shaoqin
-
-> 
->>> +                     kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
->>> +                                     ctx->addr, ctx->level);
->> Small indent hint. The ctx->addr can align with __kvm_tlb_flush_vmid_ipa.
->>
-> Ah, yes. I'll adjust this if I send out a v8.
-> 
-> Thank you.
-> Raghavendra
->> Thanks,
->> Shaoqin
->>>        }
->>>
->>>        mm_ops->put_page(ctx->ptep);
->>> @@ -1070,7 +1108,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
->>>    static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>                               enum kvm_pgtable_walk_flags visit)
->>>    {
->>> -     struct kvm_pgtable *pgt = ctx->arg;
->>> +     struct stage2_unmap_data *unmap_data = ctx->arg;
->>> +     struct kvm_pgtable *pgt = unmap_data->pgt;
->>>        struct kvm_s2_mmu *mmu = pgt->mmu;
->>>        struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
->>>        kvm_pte_t *childp = NULL;
->>> @@ -1098,7 +1137,7 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>         * block entry and rely on the remaining portions being faulted
->>>         * back lazily.
->>>         */
->>> -     stage2_put_pte(ctx, mmu, mm_ops);
->>> +     stage2_unmap_put_pte(ctx, mmu, mm_ops);
->>>
->>>        if (need_flush && mm_ops->dcache_clean_inval_poc)
->>>                mm_ops->dcache_clean_inval_poc(kvm_pte_follow(ctx->old, mm_ops),
->>> @@ -1112,13 +1151,23 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>
->>>    int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size)
->>>    {
->>> +     int ret;
->>> +     struct stage2_unmap_data unmap_data = {
->>> +             .pgt = pgt,
->>> +             .defer_tlb_flush_init = __stage2_unmap_defer_tlb_flush(pgt),
->>> +     };
->>>        struct kvm_pgtable_walker walker = {
->>>                .cb     = stage2_unmap_walker,
->>> -             .arg    = pgt,
->>> +             .arg    = &unmap_data,
->>>                .flags  = KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_TABLE_POST,
->>>        };
->>>
->>> -     return kvm_pgtable_walk(pgt, addr, size, &walker);
->>> +     ret = kvm_pgtable_walk(pgt, addr, size, &walker);
->>> +     if (stage2_unmap_defer_tlb_flush(&unmap_data))
->>> +             /* Perform the deferred TLB invalidations */
->>> +             kvm_tlb_flush_vmid_range(pgt->mmu, addr, size);
->>> +
->>> +     return ret;
->>>    }
->>>
->>>    struct stage2_attr_data {
->>
->> --
->> Shaoqin
->>
-> 
-
+diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+index d4172534dfa8..cca7594be92e 100644
+--- a/net/core/bpf_sk_storage.c
++++ b/net/core/bpf_sk_storage.c
+@@ -496,8 +496,11 @@ bpf_sk_storage_diag_alloc(const struct nlattr *nla_stgs)
+ 		return ERR_PTR(-EPERM);
+ 
+ 	nla_for_each_nested(nla, nla_stgs, rem) {
+-		if (nla_type(nla) == SK_DIAG_BPF_STORAGE_REQ_MAP_FD)
++		if (nla_type(nla) == SK_DIAG_BPF_STORAGE_REQ_MAP_FD) {
++			if (nla_len(nla) != sizeof(u32))
++				return ERR_PTR(-EINVAL);
+ 			nr_maps++;
++		}
+ 	}
+ 
+ 	diag = kzalloc(struct_size(diag, maps, nr_maps), GFP_KERNEL);
 -- 
-Shaoqin
+2.17.1
 
