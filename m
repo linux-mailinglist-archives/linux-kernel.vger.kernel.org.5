@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9618676239B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F7C76235C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbjGYUiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        id S230005AbjGYUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbjGYUhi (ORCPT
+        with ESMTP id S229495AbjGYUfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:37:38 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC6B2D50
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:37:20 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-267fc19280bso174436a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:37:20 -0700 (PDT)
+        Tue, 25 Jul 2023 16:35:05 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BE11BC8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:02 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686baccf661so378761b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690317440; x=1690922240;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kZ7YK7+MOq9X+RTweOdEeLPvYNyqsXxq2qSFOs1mT3s=;
-        b=BuN5tKldtTLx2sEHuuuAagR2QfiguR7+L5jScpcBlZCtNRwzluFw4euj+TZAsdvP26
-         EDACAv0XTZF3vF/p2//utmh8C9vbXaUnVYNuAmPvGVxAktKJPkiFXYmd2itCZRx075gV
-         Jy580G+wiVMstRe0Eq3zIfvwRU2mZmMau5NKA=
+        d=linaro.org; s=google; t=1690317302; x=1690922102;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dEBFhajNAbJA8oyQ3SzCNr6bDDYsCg4XK+Nkm+WUeyo=;
+        b=eY6zQW3yCE3HW7dgVJNQZhe10AN6qBQt2ko/chealQwqHrG4pM7GbfZSTeJjki77ur
+         vvleenmBb5FbgzGEaPwOFmpaKUTOWBHwreBUUoapzQSDFCTju1zARvVMKgp7X7voD+Nl
+         sXGfLqWP8rjifH8hqHsJWCsAktmKU/tFHQMq5EuvNH/TroIDEQo6kCLEp9pwNh7VUb3c
+         zLdZA9nSTj/zpvIkmp2CT+s8H4mAClm9FNigMM4FuVifUsUmWhUx+sNaPxSb6axgGSDq
+         g0fPFLH/O4qJeu+Cfaye5RHsStJDo8BFlqz0YObnHUoCnMYpBXWeebG+Imz7w0UTWiHL
+         YF4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690317440; x=1690922240;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kZ7YK7+MOq9X+RTweOdEeLPvYNyqsXxq2qSFOs1mT3s=;
-        b=CG70tIKmc+bwNzTp+pZ6lexaNxhmEqbwnIgYU2euPudJ60TwqePzY8vK1+lrPxG2Kt
-         RLueBevMB/99W9Bj0n2aZnHAYFBpSafEzsU/Ut/nxvFHB4bHDBfTktQJ54D8wvznGv1Y
-         0EDl/Gikcd0JcvqlfPNkitZNFdxU4B2MNucXPutSJmG3KB+lV0gbcTtXVzOUx4YX/DK8
-         DTNxPjBcqHke5laW6X267UYtT/yS9cTWcfaR7Sxsju4LtbMd4A4qO8TjVCJTgudre592
-         gWly2CxKcwMrze/Owxqo4zaqhCZJFH4/5255zCs2g4zk3ZNblbROMyw2xGFJam6+IO/b
-         3CYA==
-X-Gm-Message-State: ABy/qLYzTWsPtSaFj4ASZRG3KCIp5Ak1L1xyNYkOGoXfY1m8sTJYKiow
-        KdiECCk/NCmcYRJAW4qDKEzx1Q==
-X-Google-Smtp-Source: APBJJlEgCBbPkr5YZubPWhaNBGqUI6g2VhIUIc6BoH6rzAKhCVoah7Aeybahr/mZ0cE03NvH+GwQSA==
-X-Received: by 2002:a17:90b:1d90:b0:268:3ca4:6152 with SMTP id pf16-20020a17090b1d9000b002683ca46152mr180277pjb.15.1690317439920;
-        Tue, 25 Jul 2023 13:37:19 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:c363:4681:f5b8:301])
-        by smtp.gmail.com with ESMTPSA id bg1-20020a17090b0d8100b002676e961261sm1396951pjb.1.2023.07.25.13.37.17
+        d=1e100.net; s=20221208; t=1690317302; x=1690922102;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dEBFhajNAbJA8oyQ3SzCNr6bDDYsCg4XK+Nkm+WUeyo=;
+        b=J4XjCiTmulUkzY793rjHldvgNZP+bh9IPPMswRd50Usv9X6fCYz6ezrzmwrsc9JgqG
+         YpKJBSIHnJS82yf81c39eQbKbjn8rW/icYyTWDv+xYNJ3/JgBYM4piqbdB+2sxUtIe2V
+         JdfkTYbFIPQ4WEQGGfWJanpUW2sV9xAs6ppLHiYVwHBCGWdYm+Vxl7I6iwnffFxRLfXZ
+         JkKmGgrOB5+m7DiFWPLhhw4u+Wi4kqEA/l0nHz4D2YHrgGA9oAmtLT8KRLAtSM0wmaK0
+         /L/IXM9w6ZiIHjJsxTAZVARD2Hge+cExWedGkq7xeVl1Ap/Xt4dFpu01/SjJ0f+H+YKy
+         X5Pg==
+X-Gm-Message-State: ABy/qLYz3gqSRnf2HoWKdQJfEXzEoWoaLm3uhs5uWREjXnUBoGO9RxgS
+        DpuM1Cqylufhg2dIo3/mZ8FbtA==
+X-Google-Smtp-Source: APBJJlGSzayuOHxBmo/tEETnK6cmj1CrVYQ2LOCdES+hgyiq0gr838HgHLCeJA/FeOOzp9ZE+OXsYw==
+X-Received: by 2002:a05:6a20:914d:b0:122:10f9:f635 with SMTP id x13-20020a056a20914d00b0012210f9f635mr119916pzc.19.1690317301899;
+        Tue, 25 Jul 2023 13:35:01 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:2116:2b1f:2fd8:ec8d])
+        by smtp.gmail.com with ESMTPSA id s11-20020a63770b000000b0052c22778e64sm10847608pgc.66.2023.07.25.13.35.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 13:37:18 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Tue, 25 Jul 2023 13:35:01 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 14:34:58 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tinghan Shen <tinghan.shen@mediatek.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     cros-qcom-dts-watchers@chromium.org,
-        Chris Morgan <macroalpha82@gmail.com>,
-        linux-input@vger.kernel.org, hsinyi@google.com,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        yangcong5@huaqin.corp-partner.google.com,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH v3 10/10] arm64: dts: qcom: sc7180: Link trogdor touchscreens to the panels
-Date:   Tue, 25 Jul 2023 13:34:45 -0700
-Message-ID: <20230725133443.v3.10.Ia06c340e3482563e6bfd3106ecd0d3139f173ca4@changeid>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230725203545.2260506-1-dianders@chromium.org>
-References: <20230725203545.2260506-1-dianders@chromium.org>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v15 00/13] Add support for MT8195 SCP 2nd core
+Message-ID: <ZMAx8mc0tjgPvU3j@p14s>
+References: <20230721024132.6548-1-tinghan.shen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721024132.6548-1-tinghan.shen@mediatek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,104 +80,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's provide the proper link from the touchscreen to the panel on
-trogdor devices where the touchscreen support it. This allows the OS
-to power sequence the touchscreen more properly.
+On Fri, Jul 21, 2023 at 10:41:19AM +0800, Tinghan Shen wrote:
+> The mediatek remoteproc driver currently only allows bringing up a 
+> single core SCP, e.g. MT8183. It also only bringing up the 1st 
+> core in SoCs with a dual-core SCP, e.g. MT8195. This series support 
+> to bring-up the 2nd core of the dual-core SCP.
+> 
+> v15 -> v14:
+> 1. Use the common SCP registers in struct mtk_scp_of_cluster instead of
+>    copy it to struct mtk_scp at patchset 5 
+> 2. Use platform_set_drvdata instead of platform_device_add_data at patchset 5 
+> 3. Rename l2tcm_lock to cluster_lock at patchset 8
+> 4. Check l2tcm_refcnt value before decreasing at patchset 8
+> 5. Revise the commit message at patchset 11
 
-For the most part, this is just expected to marginally improve power
-consumption while the screen is off. However, in at least one trogdor
-model (wormdingler) it's suspected that this will fix some behavorial
-corner cases when the panel power cycles (like for a modeset) without
-the touchscreen power cycling.
+I am done reviewing this set.  Checkpatch is giving a warning for patch 01/13,
+something I would expect to have been dealt with after 15 iterations.  I will be
+away for the next 3 weeks so no point in rushing another revision to sqeeze
+in the v6.6 merge window.
 
-NOTE: some trogdor variants use touchscreens that don't (yet) support
-linking the touchscreen and the panel. Those variants are left alone.
+Mathieu
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-(no changes since v1)
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi        | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi      | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi         | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi        | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi   | 1 +
- 6 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-index 8b8ea8af165d..b4f328d3e1f6 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-@@ -104,6 +104,7 @@ ap_ts: touchscreen@5d {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
- 
-+		panel = <&panel>;
- 		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
- 
- 		vdd-supply = <&pp3300_ts>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-index b3ba23a88a0b..88aeb415bd5b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
-@@ -116,6 +116,7 @@ ap_ts: touchscreen@14 {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
- 
-+		panel = <&panel>;
- 		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
- 
- 		vdd-supply = <&pp3300_touch>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-index 269007d73162..c65f18ea3e5c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-@@ -43,6 +43,7 @@ ap_ts: touchscreen@10 {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
- 
-+		panel = <&panel>;
- 		post-power-on-delay-ms = <20>;
- 		hid-descr-addr = <0x0001>;
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-index 6c5287bd27d6..d2aafd1ea672 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-@@ -102,6 +102,7 @@ ap_ts: touchscreen@10 {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
- 
-+		panel = <&panel>;
- 		post-power-on-delay-ms = <20>;
- 		hid-descr-addr = <0x0001>;
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi
-index 62ab6427dd65..e5d6a7898f8c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi
-@@ -69,6 +69,7 @@ ap_ts: touchscreen@10 {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
- 
-+		panel = <&panel>;
- 		post-power-on-delay-ms = <20>;
- 		hid-descr-addr = <0x0001>;
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi
-index 2efa8a4bcda6..0e2b4d06b490 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler.dtsi
-@@ -123,6 +123,7 @@ ap_ts: touchscreen@1 {
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
- 
-+		panel = <&panel>;
- 		post-power-on-delay-ms = <70>;
- 		hid-descr-addr = <0x0001>;
- 
--- 
-2.41.0.487.g6d72f3e995-goog
-
+> 
+> v13 -> v14:
+> 1. add review tag to patchset 1,6
+> 2. exchange the order of sram power on and reset assert in
+> mt8195_scp_c1_before_load at patchset 2
+> 3. Use ERR_CAST in patchset 5
+> 4. Re-write patchset 7 to remove dependency between core 0 and core 1 
+> 5. Add patch set 10 to report watchdot timeout to all cores
+> 
+> v12 -> v13:
+> 1. replace subdevice with new mediatek scp operations in patchset 7 
+> 2. add review tag to patchset 3
+> 3. modify mediatek,scp phandle name of video-codec@18000000 at patchset 11
+> 
+> v11 -> v12:
+> 1. add scp_add_single/multi_core() to patchset 6
+> 2. remove unused comment in patchset 6
+> 3. rename list name from mtk_scp_cluster to mtk_scp_list
+> 4. rewrite the multi-core probe flow 
+> 5. disable rproc->autoboot and boot rproc by request_firmware_nowait at patchset 7 
+> 6. remove patchset 7 review tag  
+> 
+> v10 -> v11:
+> 1. rewrite patchset 5 to probe single-core SCP with the cluster list
+> 2. Also in patchset 5, move the pointer of mtk_scp object from the
+>    platform data property to the driver data property 
+> 3. move the appearance of mtk_scp cluster property to patcheset 7
+> 
+> v9 -> v10:
+> 1. move the global mtk_scp list into the platform device driver data structure
+> 2. remove an unnecessary if() condition
+> 
+> v8 -> v9:
+> 1. initialize l1tcm_size/l1tcm_phys at patchset 05/11 
+> 2. rewrite patchset 06/11 to unify the flow and remove hacks
+> 
+> v7 -> v8:
+> 1. update the node name of mt8192 asurada SCP rpmsg subnode
+> 2. squash register definitions into driver patches
+> 3. initialize local variables on the declaration at patch v8 06/11 
+> 
+> v6 -> v7:
+> 1. merge the mtk_scp_cluster struct into the mtk_scp structure
+>    at the "Probe multi-core SCP" patch
+> 
+> v5 -> v6:
+> 1. move the mtk_scp_of_regs structure from mtk_common.h to mtk_scp.c
+> 2. rename the SCP core 0 label from 'scp' to 'scp_c0'
+> 
+> v4 -> v5:
+> 1. move resource release actions to the platform driver remove operation 
+> 2. fix dual-core watchdog handling
+> 
+> v3 -> v4:
+> 1. change the representation of dual-core SCP in dts file and update SCP yaml
+> 2. rewrite SCP driver to reflect the change of dts node
+> 3. drop 'remove redundant call of rproc_boot for SCP' in v3 for further investigation
+> 
+> v2 -> v3:
+> 1. change the representation of dual-core SCP in dts file and update SCP yaml
+> 2. rewrite SCP driver to reflect the change of dts node
+> 3. add SCP core 1 node to mt8195.dtsi
+> 4. remove redundant call of rproc_boot for SCP
+> 5. refine IPI error message
+> 
+> v1 -> v2:
+> 1. update dt-binding property description
+> 2. remove kconfig for scp dual driver
+> 3. merge mtk_scp_dual.c and mtk_scp_subdev.c to mtk_scp.c
+> 
+> 
+> Tinghan Shen (13):
+>   dt-bindings: remoteproc: mediatek: Improve the rpmsg subnode
+>     definition
+>   arm64: dts: mediatek: Update the node name of SCP rpmsg subnode
+>   dt-bindings: remoteproc: mediatek: Support MT8195 dual-core SCP
+>   remoteproc: mediatek: Add MT8195 SCP core 1 operations
+>   remoteproc: mediatek: Extract SCP common registers
+>   remoteproc: mediatek: Probe SCP cluster on single-core SCP
+>   remoteproc: mediatek: Probe SCP cluster on multi-core SCP
+>   remoteproc: mediatek: Remove dependency of MT8195 SCP L2TCM power
+>     control on dual-core SCP
+>   remoteproc: mediatek: Setup MT8195 SCP core 1 SRAM offset
+>   remoteproc: mediatek: Handle MT8195 SCP core 1 watchdog timeout
+>   remoteproc: mediatek: Report watchdog crash to all cores
+>   remoteproc: mediatek: Refine ipi handler error message
+>   arm64: dts: mediatek: mt8195: Add SCP 2nd core
+> 
+>  .../bindings/remoteproc/mtk,scp.yaml          | 176 +++++-
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   2 +-
+>  .../boot/dts/mediatek/mt8192-asurada.dtsi     |   2 +-
+>  .../boot/dts/mediatek/mt8195-cherry.dtsi      |   6 +-
+>  arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  34 +-
+>  drivers/remoteproc/mtk_common.h               |  39 +-
+>  drivers/remoteproc/mtk_scp.c                  | 534 ++++++++++++++----
+>  drivers/remoteproc/mtk_scp_ipi.c              |   4 +-
+>  8 files changed, 651 insertions(+), 146 deletions(-)
+> 
+> -- 
+> 2.18.0
+> 
