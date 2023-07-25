@@ -2,225 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E84FF761951
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE5376194E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbjGYNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S233507AbjGYNHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbjGYNHV (ORCPT
+        with ESMTP id S233294AbjGYNHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:07:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF281FD3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690290370;
+        Tue, 25 Jul 2023 09:07:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60C319AF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:07:07 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 15:07:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690290426;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=K1X8yDKyRljjlgsdrNt2jAkyf6vXFbNpPQPsSIK0WH0=;
-        b=I4Bmg4F9jSblxWBTjewMbOkDXhn/ssUHopnOGDVr8Gjk1h7S8eHHghlsB+KcER8k1tZd5S
-        1Omr/yn23tbDn6aKyIynrYvQ6WnirqRBFDyuEU3vFMdMJr7Y5m7znNfx9NOlG5spwJ/q7H
-        sscAnPMgznK/Kg5VZ69zaJDkyHXwyQU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-c7Pe2a-fPDKDNFNN6wNYpw-1; Tue, 25 Jul 2023 09:06:08 -0400
-X-MC-Unique: c7Pe2a-fPDKDNFNN6wNYpw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-994320959f4so406511566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:06:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690290367; x=1690895167;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K1X8yDKyRljjlgsdrNt2jAkyf6vXFbNpPQPsSIK0WH0=;
-        b=YEKKLB1HuJJBPpne/t0FFD4xbpF9YHV40ZdDHSGxKe95ESteDmwqNY121/vrFrVQbr
-         nY7AL50CtZT9d0SztLiYIIRSe0FBhnIqLrW55vcRwBqgODyQYSqNAkPosqZsmVrWAiGM
-         XvGD5pkZrN/1dbS+w96LBnRF5WIIyNhUsNPxoPlKIQs4DclkNpMYG8gs8YAoBUW8Zl6l
-         8qCW5vaoSuLXzpVWPJmq9MNmQZmw/C89JT66YwdN9L2jq2/+cfRkkBVltX/R5LI+c33Y
-         uYiRwkz+cN8FA28mpYMi2Cts1KV4ToIgVkJJ6Efx1uFmCPFETVxEa+FlVT+XDJZ9JiXW
-         hDKg==
-X-Gm-Message-State: ABy/qLZkiwgyRuoqHxxpJpqLUzMY5nItdefJCJ5AtO3jSXuhxmSFM3nq
-        S/Zf+NHWgWlV42s/z4nzFEkO6SBEk5J4/e2J3ZmCHVdjswpZpE80fh0f0J1jTZd0fNLY8Enm0RY
-        3DU/U/szTBaVU5yD4bjO4MB5I
-X-Received: by 2002:a17:907:7784:b0:982:2278:bcef with SMTP id ky4-20020a170907778400b009822278bcefmr12112974ejc.60.1690290367676;
-        Tue, 25 Jul 2023 06:06:07 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFKe/e8kfIwy1WsKWMlpZ+w+bWS7V5xC/G665qa9FumF0OUD5sCTH9kWU/ysoN0KlGWemAgsA==
-X-Received: by 2002:a17:907:7784:b0:982:2278:bcef with SMTP id ky4-20020a170907778400b009822278bcefmr12112938ejc.60.1690290367254;
-        Tue, 25 Jul 2023 06:06:07 -0700 (PDT)
-Received: from redhat.com ([2.55.164.187])
-        by smtp.gmail.com with ESMTPSA id r7-20020a170906c28700b0099b42c90830sm8133731ejz.36.2023.07.25.06.06.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 06:06:06 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 09:06:02 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Arseniy Krasnov <avkrasnov@sberdevices.ru>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v3 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-Message-ID: <20230725090514-mutt-send-email-mst@kernel.org>
-References: <20230720214245.457298-1-AVKrasnov@sberdevices.ru>
- <20230720214245.457298-5-AVKrasnov@sberdevices.ru>
- <091c067b-43a0-da7f-265f-30c8c7e62977@sberdevices.ru>
- <20230725042544-mutt-send-email-mst@kernel.org>
- <mul7yiwl2pspfegeanqyezhmw6ol4cxsdshch7ln6w3i2b54bw@7na6bf5kfxwy>
+        bh=slZ+HWqP5Nh2Vfnh5tKdfOTtxtBTJigSsF0f1sQ2R7k=;
+        b=aNUAvLLjE840g7XLjSuGLFItAxJXS4Ala6goJzmEfDTwrFYCbWIZVhAICCjzIVbCndFQXO
+        s+SEP374tt+Ks52VT2A1OFu9jQM6Ahry0ltdHLTmA+N1mfJDtyDziIb6suBuhlE5HAb09X
+        FpHF/X9dWsMxvfK4Nr4F7Jlz7bSYIfA8GoZsZQ6d6tGyWqyrsKAjzG3timtfTaSIXzp0JP
+        4pNfe24B78xP5Sz8wzBYZbErRjPhlw/M4tBWfWXrs1zXTjz7N0Clr2Gs/lc0wfEIUI856G
+        9OzQN/PGOJ6TFiFafl+yfz6CFtGecSHAVQnJ5tU9HyurfpEVQc5tLsdGXE+pSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690290426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=slZ+HWqP5Nh2Vfnh5tKdfOTtxtBTJigSsF0f1sQ2R7k=;
+        b=I1G2QydmlIynsJRDxJCycE73K62asE1hABSu2ckeB0XHx2p7g75ScshSab40vHdx9KBfDM
+        rZ9WsqzkDnZrxqBg==
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: Re: Stopping the tick on a fully loaded system
+In-Reply-To: <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
+Message-ID: <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
+References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de> <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com> <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de> <ZL2Z8InSLmI5GU9L@localhost.localdomain>
+ <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mul7yiwl2pspfegeanqyezhmw6ol4cxsdshch7ln6w3i2b54bw@7na6bf5kfxwy>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1942303961-1690290426=:3394"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 02:53:39PM +0200, Stefano Garzarella wrote:
-> On Tue, Jul 25, 2023 at 07:50:53AM -0400, Michael S. Tsirkin wrote:
-> > On Fri, Jul 21, 2023 at 08:09:03AM +0300, Arseniy Krasnov wrote:
-> > > 
-> > > 
-> > > On 21.07.2023 00:42, Arseniy Krasnov wrote:
-> > > > This adds handling of MSG_ZEROCOPY flag on transmission path: if this
-> > > > flag is set and zerocopy transmission is possible (enabled in socket
-> > > > options and transport allows zerocopy), then non-linear skb will be
-> > > > created and filled with the pages of user's buffer. Pages of user's
-> > > > buffer are locked in memory by 'get_user_pages()'. Second thing that
-> > > > this patch does is replace type of skb owning: instead of calling
-> > > > 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
-> > > > change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
-> > > > of socket, so to decrease this field correctly proper skb destructor is
-> > > > needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
-> > > >
-> > > > Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> > > > ---
-> > > >  Changelog:
-> > > >  v5(big patchset) -> v1:
-> > > >   * Refactorings of 'if' conditions.
-> > > >   * Remove extra blank line.
-> > > >   * Remove 'frag_off' field unneeded init.
-> > > >   * Add function 'virtio_transport_fill_skb()' which fills both linear
-> > > >     and non-linear skb with provided data.
-> > > >  v1 -> v2:
-> > > >   * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
-> > > >  v2 -> v3:
-> > > >   * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
-> > > >     provided 'iov_iter' with data could be sent in a zerocopy mode.
-> > > >     If this callback is not set in transport - transport allows to send
-> > > >     any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
-> > > >     then zerocopy is allowed. Reason of this callback is that in case of
-> > > >     G2H transmission we insert whole skb to the tx virtio queue and such
-> > > >     skb must fit to the size of the virtio queue to be sent in a single
-> > > >     iteration (may be tx logic in 'virtio_transport.c' could be reworked
-> > > >     as in vhost to support partial send of current skb). This callback
-> > > >     will be enabled only for G2H path. For details pls see comment
-> > > >     'Check that tx queue...' below.
-> > > >
-> > > >  include/net/af_vsock.h                  |   3 +
-> > > >  net/vmw_vsock/virtio_transport.c        |  39 ++++
-> > > >  net/vmw_vsock/virtio_transport_common.c | 257 ++++++++++++++++++------
-> > > >  3 files changed, 241 insertions(+), 58 deletions(-)
-> > > >
-> > > > diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-> > > > index 0e7504a42925..a6b346eeeb8e 100644
-> > > > --- a/include/net/af_vsock.h
-> > > > +++ b/include/net/af_vsock.h
-> > > > @@ -177,6 +177,9 @@ struct vsock_transport {
-> > > >
-> > > >  	/* Read a single skb */
-> > > >  	int (*read_skb)(struct vsock_sock *, skb_read_actor_t);
-> > > > +
-> > > > +	/* Zero-copy. */
-> > > > +	bool (*msgzerocopy_check_iov)(const struct iov_iter *);
-> > > >  };
-> > > >
-> > > >  /**** CORE ****/
-> > > > diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> > > > index 7bbcc8093e51..23cb8ed638c4 100644
-> > > > --- a/net/vmw_vsock/virtio_transport.c
-> > > > +++ b/net/vmw_vsock/virtio_transport.c
-> > > > @@ -442,6 +442,43 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
-> > > >  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
-> > > >  }
-> > > >
-> > > > +static bool virtio_transport_msgzerocopy_check_iov(const struct iov_iter *iov)
-> > > > +{
-> > > > +	struct virtio_vsock *vsock;
-> > > > +	bool res = false;
-> > > > +
-> > > > +	rcu_read_lock();
-> > > > +
-> > > > +	vsock = rcu_dereference(the_virtio_vsock);
-> > > > +	if (vsock) {
-> > > > +		struct virtqueue *vq;
-> > > > +		int iov_pages;
-> > > > +
-> > > > +		vq = vsock->vqs[VSOCK_VQ_TX];
-> > > > +
-> > > > +		iov_pages = round_up(iov->count, PAGE_SIZE) / PAGE_SIZE;
-> > > > +
-> > > > +		/* Check that tx queue is large enough to keep whole
-> > > > +		 * data to send. This is needed, because when there is
-> > > > +		 * not enough free space in the queue, current skb to
-> > > > +		 * send will be reinserted to the head of tx list of
-> > > > +		 * the socket to retry transmission later, so if skb
-> > > > +		 * is bigger than whole queue, it will be reinserted
-> > > > +		 * again and again, thus blocking other skbs to be sent.
-> > > > +		 * Each page of the user provided buffer will be added
-> > > > +		 * as a single buffer to the tx virtqueue, so compare
-> > > > +		 * number of pages against maximum capacity of the queue.
-> > > > +		 * +1 means buffer for the packet header.
-> > > > +		 */
-> > > > +		if (iov_pages + 1 <= vq->num_max)
-> > > 
-> > > I think this check is actual only for case one we don't have indirect buffer feature.
-> > > With indirect mode whole data to send will be packed into one indirect buffer.
-> > > 
-> > > Thanks, Arseniy
-> > 
-> > Actually the reverse. With indirect you are limited to num_max.
-> > Without you are limited to whatever space is left in the
-> > queue (which you did not check here, so you should).
-> > 
-> > 
-> > > > +			res = true;
-> > > > +	}
-> > > > +
-> > > > +	rcu_read_unlock();
-> > 
-> > Just curious:
-> > is the point of all this RCU dance to allow vsock
-> > to change from under us? then why is it ok to
-> > have it change? the virtio_transport_msgzerocopy_check_iov
-> > will then refer to the old vsock ...
-> 
-> IIRC we introduced the RCU to handle hot-unplug issues:
-> commit 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on
-> the_virtio_vsock")
-> 
-> When we remove the device, we flush all the works, etc. so we should
-> not be in this case (referring the old vsock), except for an irrelevant
-> transient as the device is disappearing.
-> 
-> Stefano
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-what if old device goes away then new one appears?
+--8323329-1942303961-1690290426=:3394
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
--- 
-MST
+Hi,
 
+On Mon, 24 Jul 2023, Rafael J. Wysocki wrote:
+
+> On Sun, Jul 23, 2023 at 11:21 PM Frederic Weisbecker
+> <frederic@kernel.org> wrote:
+> >
+> From the governor's perspective, tick_nohz_get_sleep_length() is
+> supposed to return a deterministic upper bound on the upcoming idle
+> duration (or at least it is used in the governors this way).  IOW, it
+> is expected that the CPU will not be idle longer that the
+> tick_nohz_get_sleep_length() return value.
+> 
+> There are other factors that may cause the governor to predict a
+> shorter idle duration and the information coming from the scheduler
+> may be regarded as one of them, but they are not deterministic.
+
+Ok. Thanks for this explanation why two separate checks are required.
+
+> > > Sure, teo takes scheduler utilization into account directly in the
+> > > governor. But for me it is not comprehensible, why the CPU utilization
+> > > check is done after asking for the possible sleep length where timers are
+> > > taken into account. If the CPU is busy anyway, the information generated by
+> > > tick_nohz_next_event() is irrelevant.
+> 
+> Why isn't it?
+> 
+> The CPU is idle at that point and it has gone idle for a reason.
+> Surely, there was nothing to run on it at.
+> 
+> The scheduler only knows that the CPU has been busy recently, which
+> may not imply anything on whether or not and when it is going to be
+> busy again.
+>
+
+I went back one step and simply had a look at current upstream to
+understand the behavior when going idle under load more detailed. I wanted
+to see the distribution of idle time duration when the tick is stopped. I
+used dbench tests with a script provided by Gautham to generate three
+different loads: 100% load, 50% load and 25% load. The kernel is configured
+with HZ=250. The system has 2 sockets, 64 cores per socket, 2 threads each
+-> 256 CPUs. Three minutes trace data - idle periods larger than three
+minutes are not tracked. The governor is teo.
+
+I added tracepoints to the point where the tick is stopped and where the
+tick is started again. I calculated the delta between the timestamps of
+those two trace points and had a look at the distribution:
+
+
+			100% load		50% load		25% load
+			(top: ~2% idle)		(top: ~49% idle)	(top: ~74% idle;
+									33 CPUs are completely idle)
+			---------------		----------------	----------------------------
+Idle Total		1658703	100%		3150522	100%		2377035 100%
+x >= 4ms		2504	0.15%		2	0.00%		53	0.00%
+4ms> x >= 2ms		390	0.02%		0	0.00%		4563	0.19%
+2ms > x >= 1ms		62	0.00%		1	0.00%		54	0.00%
+1ms > x >= 500us	67	0.00%		6	0.00%		2	0.00%
+500us > x >= 250us	93	0.01%		39	0.00%		11	0.00%
+250us > x >=100us	280	0.02%		1145	0.04%		633	0.03%
+100us > x >= 50us	942	0.06%		30722	0.98%		13347	0.56%
+50us > x >= 25us	26728	1.61%		310932	9.87%		106083	4.46%
+25us > x >= 10us	825920	49.79%		2320683	73.66%		1722505	72.46%
+10us > x > 5us		795197	47.94%		442991	14.06%		506008	21.29%
+5us > x			6520	0.39%		43994	1.40%		23645	0.99%
+
+
+99% of the tick stops only have an idle period shorter than 50us (50us is
+1,25% of a tick length).
+
+This is also the reason for my opinion, that the return of
+tick_nohz_next_event() is completely irrelevant in a (fully) loaded case:
+The return is in the range of ticks, and a tick is ~100 times longer than
+the the duration of the majority of idle periods.
+
+
+> > > And when the CPU is not busy, then it
+> > > makes sense to ask for the sleep length also from a timer perspective.
+> > >
+> > > When this CPU utilization check is implemented directly inside the
+> > > governor, every governor has to implement it on it's own. So wouldn't it
+> > > make sense to implement a "how utilized is the CPU out of a scheduler
+> 
+> Yes, it would make sense to do that, but I thought that PELT was that
+> thing.  Wasn't it?
+> 
+> > > perspective" in one place and use this as the first check in
+> > > tick_nohz_get_sleep_length()/tick_nohz_next_event()?
+
+[...]
+
+> > As such, calling tmigr_cpu_deactivate() on next tick _evaluation_ time instead of
+> > tick _stop_ time is always going to be problematic.
+> >
+> > Can we fix that and call tmigr_cpu_deactivate() from tick_nohz_stop_tick()
+> > instead? This will change a bit the locking scenario because
+> > tick_nohz_stop_tick() doesn't hold the base lock. Is it a problem though?
+> > In the worst case a remote tick happens and handles the earliest timer
+> > for the current CPU while it's between tick_nohz_next_event() and
+> > tick_nohz_stop_tick(), but then the current CPU would just propagate
+> > an earlier deadline than needed. No big deal.
+> 
+> FWIW, this sounds reasonable to me.
+> 
+
+The worst case scenario will not happen, because remote timer expiry only
+happens when CPU is not active in the hierarchy. And with your proposal
+this is valid after tick_nohz_stop_tick().
+
+Nevertheless, I see some problems with this. But this also depends if there
+is the need to change current idle behavior or not. Right now, this are my
+concerns:
+
+- The determinism of tick_nohz_next_event() will break: The return of
+  tick_nohz_next_event() will not take into account, if it is the last CPU
+  going idle and then has to take care of remote timers. So the first timer
+  of the CPU (regardless of global or local) has to be handed back even if
+  it could be handled by the hierarchy.
+
+- When moving the tmigr_cpu_deactivate() to tick_nohz_stop_tick() and the
+  return value of tmigr_cpu_deactivate() is before the ts->next_tick, the
+  expiry has to be modified in tick_nohz_stop_tick().
+
+- The load is simply moved to a later place - tick_nohz_stop_tick() is
+  never called without a preceding tick_nohz_next_event() call. Yes,
+  tick_nohz_next_event() is called under load ~8% more than
+  tick_nohz_stop_tick(), but the 'quality' of the return value of
+  tick_nohz_next_event() is getting worse.
+
+- timer migration hierarchy is not a standalone timer infrastructure. It
+  only makes sense to handle it in combination with the existing timer
+  wheel. When the timer base is idle, the timer migration hierarchy with
+  the migrators will do the job for global timers. So, I'm not sure about
+  the impact of the changed locking - but I'm pretty sure changing that
+  increases the probability for ugly races hidden somewhere between the
+  lines.
+
+Thanks,
+
+	Anna-Maria
+--8323329-1942303961-1690290426=:3394--
