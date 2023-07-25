@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B4076067E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB9D760681
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbjGYDYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
+        id S231593AbjGYDYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 23:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjGYDYe (ORCPT
+        with ESMTP id S231338AbjGYDYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:24:34 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123F810FD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690255472; x=1721791472;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qSMxqWxnfw1VlaarhARlRpDNyuQz7fliBgIx397u8v4=;
-  b=Xh1INGhZzJqFctfcxEPmWICuwGfKdAGB3XtbQqBVOnHor4dj1HDJkONZ
-   8RTf5zFc2+qfusWblEpT5ydXgcafEQW4jC5sfytzdjytLPDZU4AxnwCeB
-   dC6pZ/pQ7NyidRTqJIOGyr/8MDzhLoHzg/ZDK+3JVI0BqFsBdtkqZKKUp
-   +In27H3RmVeM8P2OcXbOWToMMSr2+QYsRoC3pObhM+wAHgZu8Eqd2jd9H
-   erT7Ss8GlEpz1jswu5Fv/kO5CGniccKAdlaCLX9vZrm3uph5KAWVWq8fe
-   vFO8wPjfg+LemV5UsivzPkc7AtckT3KCoJmSVUDvna3EMN0wlTtFGOTjl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347213241"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="347213241"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 20:24:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="729175680"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="729175680"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Jul 2023 20:24:29 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qO8eq-000AGg-1J;
-        Tue, 25 Jul 2023 03:24:22 +0000
-Date:   Tue, 25 Jul 2023 11:22:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: drivers/clocksource/timer-loongson1-pwm.c:31:1: sparse: sparse:
- symbol 'ls1x_timer_lock' was not declared. Should it be static?
-Message-ID: <202307251129.FrFaFbwI-lkp@intel.com>
+        Mon, 24 Jul 2023 23:24:46 -0400
+Received: from out-14.mta0.migadu.com (out-14.mta0.migadu.com [91.218.175.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC891728
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:24:43 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690255481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6p0DFvIoLJzSIVM0qRIM/GXeN12xkckyA9Fji4TGEhI=;
+        b=r9D+tXFVa/N1RN+BLv5WgR5iQ4rwtyebnPM62Sh3w2AQ+19WlSlFOjsJl5wosr8TEtJchn
+        V877L2MD6oNieyuMlTG6JawmQ1ns/Fjh33pHsVXqhR6CCRTDc2499SUTwOS+JRsWVrdweW
+        vS3GyBw0+b28Uj9NeJVk00fqQ8IPfLM=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 01/47] mm: vmscan: move shrinker-related code into a
+ separate file
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <d2621ad0-8b99-9154-5ff5-509dec2f32a3@bytedance.com>
+Date:   Tue, 25 Jul 2023 11:23:54 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6FE62F56-1B4E-4E2A-BEA9-0DA6907A2FA9@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-2-zhengqi.arch@bytedance.com>
+ <97E80C37-8872-4C5A-A027-A0B35F39152A@linux.dev>
+ <d2621ad0-8b99-9154-5ff5-509dec2f32a3@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
-commit: e738521a11f13e40af89f66527e59306c4169782 clocksource/drivers/loongson1: Move PWM timer to clocksource framework
-date:   5 weeks ago
-config: nios2-randconfig-r093-20230723 (https://download.01.org/0day-ci/archive/20230725/202307251129.FrFaFbwI-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251129.FrFaFbwI-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307251129.FrFaFbwI-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/clocksource/timer-loongson1-pwm.c:31:1: sparse: sparse: symbol 'ls1x_timer_lock' was not declared. Should it be static?
+> On Jul 25, 2023, at 11:09, Qi Zheng <zhengqi.arch@bytedance.com> =
+wrote:
+>=20
+>=20
+>=20
+> On 2023/7/25 10:35, Muchun Song wrote:
+>>> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> =
+wrote:
+>>>=20
+>>> The mm/vmscan.c file is too large, so separate the shrinker-related
+>>> code from it into a separate file. No functional changes.
+>>>=20
+>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>> ---
+>>> include/linux/shrinker.h |   3 +
+>>> mm/Makefile              |   4 +-
+>>> mm/shrinker.c            | 707 =
++++++++++++++++++++++++++++++++++++++++
+>>> mm/vmscan.c              | 701 =
+--------------------------------------
+>>> 4 files changed, 712 insertions(+), 703 deletions(-)
+>>> create mode 100644 mm/shrinker.c
+>>>=20
+>>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>>> index 224293b2dd06..961cb84e51f5 100644
+>>> --- a/include/linux/shrinker.h
+>>> +++ b/include/linux/shrinker.h
+>>> @@ -96,6 +96,9 @@ struct shrinker {
+>>>  */
+>>> #define SHRINKER_NONSLAB (1 << 3)
+>>>=20
+>>> +unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct =
+mem_cgroup *memcg,
+>>> +    int priority);
+>> A good cleanup, vmscan.c is so huge.
+>> I'd like to introduce a new header in mm/ directory and contains =
+those
+>> declarations of functions (like this and other debug function in
+>> shrinker_debug.c) since they are used internally across mm.
+>=20
+> How about putting them in the mm/internal.h file?
 
-vim +/ls1x_timer_lock +31 drivers/clocksource/timer-loongson1-pwm.c
+Either is fine to me.
 
-    30	
-  > 31	DEFINE_RAW_SPINLOCK(ls1x_timer_lock);
-    32	
+>=20
+>> Thanks.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
