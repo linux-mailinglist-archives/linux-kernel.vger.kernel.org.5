@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A8F761E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237D7761E5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjGYQXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54988 "EHLO
+        id S231680AbjGYQXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbjGYQWz (ORCPT
+        with ESMTP id S230351AbjGYQXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:22:55 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E068CEC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:22:52 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6b9c744df27so8937512a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:22:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690302172; x=1690906972;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/RUjeoNU1GLoQKADl/ixw/TxZx18p8HttwKhB2hjIa0=;
-        b=ST6IpgM7/GfyK0s/btcZyUyQAMQxqLbqV2Oneokusg3hqCVfI9xzNVUh1L5VVAzVDx
-         RE+ooMd7XUCi1TP5cNlzTzcjQHHocixss4x2e8q5xrYgRXT2aUoZDpJmE6NHIQYwWjsG
-         s9a7H4Z8L2oNUp24EqpsgGvuvDlAqzZMoUIyEgcy9NzVp4h1Kzsemq7In+aK3NHm1dx2
-         uK+WIVuxmtCzK1scC7LkDfxiA8mBhjGXxrHsaZdcTJ8m/2ChVDrPllX2ch0hHVwed7yY
-         0M0U1b2oObp0/8nIiZ/1ho5EWHQbHBWQecNLZIIk5yq0cBtpbtCgqPEklgpYxHJDaQWL
-         QJrw==
-X-Gm-Message-State: ABy/qLZkmOctnoP2XW5l3Y8Rlp3MAdpaFqu2twpu3GIuMux9tqbDbPCk
-        x3NggjgIZxlO/VTrgEDFI1my7KJK+E4jU+9lELm4fwqoGOHf
-X-Google-Smtp-Source: APBJJlFbnOcag6iqozo/+3f7QhqH65++VpMbTZmqwxmmBPhLzlYAYBE4kKMY5PXMCc9Dl8z7QqfTtO37VZSOlRKe2SHEI6OYcIP1
+        Tue, 25 Jul 2023 12:23:17 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF28F197;
+        Tue, 25 Jul 2023 09:23:14 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 096A16015F;
+        Tue, 25 Jul 2023 18:23:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690302192; bh=a82ds4IhDyA0Ek1BfPDooey1kwHm8FJGh4Iyc8T7Piw=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=CFd8/Kg9c48yDeDwWNx8PE/R7IyufDRNAGTOvqokxdxAQPGfwyZbelJRAqH6ChXI5
+         uEnQkBQ4Kt5tut7pUYepDHn1mVe92mehCUpcGbLLE22n38z/b432Otuxr1pGLtl/uo
+         RWJy+SSb67X1PmgsWDdHNV7GR1UfyqTKSuvfpFvEfColM6ltAN4cv5tk+C0CV4axeg
+         N5EsIk5mJXhM6cZvOEW1KNTCWECv8yO6kiegerEZZv5zc1IqDc4AeTz0casUC8MMhr
+         OMDE2UJvpXfiFz/269ePNOCT0f+tUXb711W+bEtH4oJhFlKZ33PWTrbk8UbMN2JdR6
+         l87hXfMaJEg5g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7DbcnmC5btGb; Tue, 25 Jul 2023 18:23:09 +0200 (CEST)
+Received: from [192.168.1.4] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id D61916016E;
+        Tue, 25 Jul 2023 18:23:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690302189; bh=a82ds4IhDyA0Ek1BfPDooey1kwHm8FJGh4Iyc8T7Piw=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=OwyZ3swXzx/Wo3S/0imXB6fP9upCpyQpG85S6QolTZv/XVa85S/DIhSCRSgBJJSeY
+         lR1Zneyi0vS9SqB5chnbzPDxIvKr9hoq2g8CDkgr2GXipekrL6fkNX9lJIbk7bC940
+         rqr7hQTHb8x2lLyuE/OoyQ6IHb6627DX54w6D6L3a9oHInAXUgbO8GTaiHi+f4D62j
+         rTaq3j+qVV9ITXIE62U0TL5/aJeJFPQVQJFm1viQR1wNZ2ZZJHjE3t/1EkWzV/kKWw
+         VDthWzDd1S98BBn1QzQZ+OVcHrmsFy6OK/OzP+tOqONQ5c04xBTkkX7FUbsE0oqn/6
+         2sHCV0IdJv82g==
+Message-ID: <10f4d621-7376-0266-b8e3-1da065c4aac5@alu.unizg.hr>
+Date:   Tue, 25 Jul 2023 18:23:08 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:1287:b0:6b7:1e75:18e with SMTP id
- z7-20020a056830128700b006b71e75018emr13263178otp.2.1690302172226; Tue, 25 Jul
- 2023 09:22:52 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 09:22:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000089e8b806015224ff@google.com>
-Subject: [syzbot] [net?] BUG: soft lockup in addrconf_rs_timer (3)
-From:   syzbot <syzbot+521990714fbdf5ffce04@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, jhs@mojatatu.com,
-        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, vinicius.gomes@intel.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
+ add cleanup for SIGTERM sent by timeout
+To:     Petr Machata <petrm@nvidia.com>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+ <87mszkjrvc.fsf@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <87mszkjrvc.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,136 +74,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 7/25/23 10:44, Petr Machata wrote:
+> 
+> Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> writes:
+> 
+>> Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
+>> keyboard, for the test times out and leaves incoherent network stack.
+>>
+>> Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
+>> Cc: Ido Schimmel <idosch@nvidia.com>
+>> Cc: netdev@vger.kernel.org
+>> ---
+>>   tools/testing/selftests/net/forwarding/custom_multipath_hash.sh | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/net/forwarding/custom_multipath_hash.sh b/tools/testing/selftests/net/forwarding/custom_multipath_hash.sh
+>> index 56eb83d1a3bd..c7ab883d2515 100755
+>> --- a/tools/testing/selftests/net/forwarding/custom_multipath_hash.sh
+>> +++ b/tools/testing/selftests/net/forwarding/custom_multipath_hash.sh
+>> @@ -363,7 +363,7 @@ custom_hash()
+>>   	custom_hash_v6
+>>   }
+>>   
+>> -trap cleanup EXIT
+>> +trap cleanup INT TERM EXIT
+>>   
+>>   setup_prepare
+>>   setup_wait
+> 
+> I believe the EXIT trap covers whatever the cause of the exit was, i.e.
+> INT and TERM are implicitly covered:
+> 
+>      $ vim tmp/x.sh
+>      $ cat tmp/x.sh
+>      foo() { date; }
+>      trap foo EXIT
+>      read -p Ready.
+>      $ bash tmp/x.sh
+>      Ready.^CTue Jul 25 10:44:20 AM CEST 2023
 
-syzbot found the following issue on:
+Thank you Petr for going to the bottom of this.
 
-HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=13fb9fd1a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
-dashboard link: https://syzkaller.appspot.com/bug?extid=521990714fbdf5ffce04
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1049c776a80000
+This is probably specific to bash. I tried to figure out from the manual,
+but it wasn't so precise as direct experiment.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
+> Also, the interrupt trap seems to prevent the exit actually:
+> 
+>      $ cat tmp/x.sh
+>      foo() { date; }
+>      trap foo INT TERM EXIT
+>      read -p Ready.
+>      [petr@yaviefel ~]$ bash tmp/x.sh
+>      Ready.^CTue Jul 25 10:43:35 AM CEST 2023
+>      ^CTue Jul 25 10:43:35 AM CEST 2023
+>      ^CTue Jul 25 10:43:36 AM CEST 2023
+>      ^CTue Jul 25 10:43:36 AM CEST 2023
+> 
+> (I see the same when I kill -TERM the script.)
+> 
+> This would call cleanup, which would dismantle the configuration, but
+> then would happilly proceed in the script. I might be missing something,
+> but I don't see how this can work.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+521990714fbdf5ffce04@syzkaller.appspotmail.com
+Certainly, an explicit 'exit' from the 'cleanup' function would do.
 
-watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor.1:16445]
-Modules linked in:
-irq event stamp: 5993
-hardirqs last  enabled at (5992): [<ffff80008a44626c>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (5992): [<ffff80008a44626c>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (5993): [<ffff80008a443ea4>] __el1_irq arch/arm64/kernel/entry-common.c:470 [inline]
-hardirqs last disabled at (5993): [<ffff80008a443ea4>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:488
-softirqs last  enabled at (14): [<ffff800080034380>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (677): [<ffff80008002b660>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
-CPU: 0 PID: 16445 Comm: syz-executor.1 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : find_entry_to_transmit+0x4e0/0x6d0
-lr : find_entry_to_transmit+0x4c4/0x6d0
-sp : ffff800080007000
-x29: ffff8000800070c0 x28: ffff800080007230 x27: ffff0000e7bb1940
-x26: ffff0000e7bb1800 x25: 0000000000000000 x24: 0000000000000080
-x23: 04c978811b43be81 x22: 04c978811b43bec0 x21: 04c978811b43bf01
-x20: dfff800000000000 x19: 7fffffffffffffff x18: ffff800096460080
-x17: 0000000000000000 x16: ffff80008050b28c x15: 0000000000000100
-x14: 1ffff00011bde0ac x13: ffffffff80000040 x12: 0000000080000040
-x11: 0000000000000301 x10: 0000000000000100 x9 : 0000000000000000
-x8 : 0000000000000000 x7 : 0000000000000000 x6 : ffff800080007210
-x5 : ffff800080007230 x4 : 04c978809b43bf5d x3 : ffff80008898bde8
-x2 : 0000000000000000 x1 : 7fffffffffffffff x0 : 04c978811b43bf01
-Call trace:
- find_entry_to_transmit+0x4e0/0x6d0 net/sched/sch_taprio.c:382
- get_packet_txtime net/sched/sch_taprio.c:505 [inline]
- taprio_enqueue_one+0xdb0/0x146c net/sched/sch_taprio.c:574
- taprio_enqueue+0x328/0x544 net/sched/sch_taprio.c:655
- dev_qdisc_enqueue+0x60/0x35c net/core/dev.c:3773
- __dev_xmit_skb net/core/dev.c:3862 [inline]
- __dev_queue_xmit+0xb24/0x3318 net/core/dev.c:4210
- dev_queue_xmit include/linux/netdevice.h:3088 [inline]
- neigh_resolve_output+0x518/0x618 net/core/neighbour.c:1552
- neigh_output include/net/neighbour.h:544 [inline]
- ip6_finish_output2+0xd60/0x1a1c net/ipv6/ip6_output.c:134
- __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
- ip6_finish_output+0x538/0x8c8 net/ipv6/ip6_output.c:206
- NF_HOOK_COND include/linux/netfilter.h:292 [inline]
- ip6_output+0x270/0x594 net/ipv6/ip6_output.c:227
- dst_output include/net/dst.h:458 [inline]
- NF_HOOK include/linux/netfilter.h:303 [inline]
- ndisc_send_skb+0xc30/0x1790 net/ipv6/ndisc.c:508
- ndisc_send_rs+0x47c/0x5d4 net/ipv6/ndisc.c:718
- addrconf_rs_timer+0x300/0x58c net/ipv6/addrconf.c:3936
- call_timer_fn+0x19c/0x8cc kernel/time/timer.c:1700
- expire_timers kernel/time/timer.c:1751 [inline]
- __run_timers+0x55c/0x734 kernel/time/timer.c:2022
- run_timer_softirq+0x7c/0x114 kernel/time/timer.c:2035
- __do_softirq+0x2d0/0xd54 kernel/softirq.c:571
- ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
- call_on_irq_stack+0x24/0x4c arch/arm64/kernel/entry.S:882
- do_softirq_own_stack+0x20/0x2c arch/arm64/kernel/irq.c:85
- invoke_softirq kernel/softirq.c:452 [inline]
- __irq_exit_rcu+0x28c/0x534 kernel/softirq.c:650
- irq_exit_rcu+0x14/0x84 kernel/softirq.c:662
- __el1_irq arch/arm64/kernel/entry-common.c:474 [inline]
- el1_interrupt+0x38/0x68 arch/arm64/kernel/entry-common.c:488
- el1h_64_irq_handler+0x18/0x24 arch/arm64/kernel/entry-common.c:493
- el1h_64_irq+0x64/0x68 arch/arm64/kernel/entry.S:587
- __daif_local_irq_enable arch/arm64/include/asm/irqflags.h:33 [inline]
- arch_local_irq_enable arch/arm64/include/asm/irqflags.h:55 [inline]
- lookup_bh_lru fs/buffer.c:1340 [inline]
- __find_get_block+0x1a4/0xe8c fs/buffer.c:1352
- __getblk_gfp+0x48/0xa50 fs/buffer.c:1378
- sb_getblk include/linux/buffer_head.h:365 [inline]
- __ext4_get_inode_loc+0x3b4/0xb90 fs/ext4/inode.c:4376
- ext4_get_inode_loc fs/ext4/inode.c:4504 [inline]
- ext4_reserve_inode_write+0x130/0x2e0 fs/ext4/inode.c:5734
- __ext4_mark_inode_dirty+0x1c4/0x848 fs/ext4/inode.c:5911
- ext4_ext_tree_init+0xc0/0x184 fs/ext4/extents.c:879
- __ext4_new_inode+0x2ce0/0x39fc fs/ext4/ialloc.c:1335
- ext4_symlink+0x328/0x9a0 fs/ext4/namei.c:3393
- vfs_symlink+0x138/0x260 fs/namei.c:4475
- do_symlinkat+0x364/0x6b0 fs/namei.c:4501
- __do_sys_symlinkat fs/namei.c:4517 [inline]
- __se_sys_symlinkat fs/namei.c:4514 [inline]
- __arm64_sys_symlinkat+0xa4/0xbc fs/namei.c:4514
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+It is bound to exit in any case, so explicit exit can't hurt. But if 'trap cleanup EXIT'
+catches all cases, then my patch set is clearly obsoleted.
 
+I didn't see the logic in EXIT catching SIGINT and SIGTERM when there are explicit
+traps, but that's bash issue, not  selftest/net/forwarding issue :-)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I should apologise, but my understanding of the manuals went after the 'ash' semanthics
+of the trap.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The manual does say:
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+       trap [-lp] [[arg] sigspec ...]
+              The command arg is to be read and executed when the shell receives signal(s) sigspec.  If arg is absent (and there is a  single  sigspec)  or  -,  each
+              specified signal is reset to its original disposition (the value it had upon entrance to the shell).  If arg is the null string the signal specified by
+              each sigspec is ignored by the shell and by the commands it invokes.  If arg is not present and -p has been supplied, then the trap commands associated
+              with  each  sigspec  are displayed.  If no arguments are supplied or if only -p is given, trap prints the list of commands associated with each signal.
+              The -l option causes the shell to print a list of signal names and their corresponding numbers.  Each sigspec is either a signal name defined in  <sig‐
+              nal.h>, or a signal number.  Signal names are case insensitive and the SIG prefix is optional.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+              If  a  sigspec  is EXIT (0) the command arg is executed on exit from the shell.  If a sigspec is DEBUG, the command arg is executed before every simple
+              command, for command, case command, select command, every arithmetic for command, and before the first command executes in a shell function (see  SHELL
+              GRAMMAR above).  Refer to the description of the extdebug option to the shopt builtin for details of its effect on the DEBUG trap.  If a sigspec is RE‐
+              TURN, the command arg is executed each time a shell function or a script executed with the . or source builtins finishes executing.
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+              If a sigspec is ERR, the command arg is executed whenever a pipeline (which may consist of a single simple command), a list, or a compound command  re‐
+              turns  a non-zero exit status, subject to the following conditions.  The ERR trap is not executed if the failed command is part of the command list im‐
+              mediately following a while or until keyword, part of the test in an if statement, part of a command executed in a && or ||  list  except  the  command
+              following  the  final && or ||, any command in a pipeline but the last, or if the command's return value is being inverted using !.  These are the same
+              conditions obeyed by the errexit (-e) option.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+              Signals ignored upon entry to the shell cannot be trapped or reset.  Trapped signals that are not being ignored are reset to their original values in a
+              subshell or subshell environment when one is created.  The return status is false if any sigspec is invalid; otherwise trap returns true.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Maybe "If  a  sigspec  is EXIT (0) the command arg is executed on exit from the shell." should
+have had less assumptions on what is obvious to the reader?
+
+But from this it wasn't obvious to me that EXIT will catch exit by signals SIGINT and SIGTERM.
+
+Perhaps mostly because of the leftovers after cleanup()?
+
+Still it seems impossible to run two consecutive test runs without an intermediate reboot.
+('systemctl restart networking' didn't help on ubuntu 22.04).
+
+It doesn't seem impossible to fix these, but I think you as authors and knowers of the Linux
+networking stack will do a better job at it.
+
+Though I seem to benefit from these brainstorming exercises as well :-)
+
+Thanks
+Mirsad
