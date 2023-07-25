@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C4776177E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A330876179C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjGYLsr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
+        id S232241AbjGYLuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbjGYLsT (ORCPT
+        with ESMTP id S233225AbjGYLuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:48:19 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747F4E74
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:48:18 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-261-6tnbdoQ-OpiVapn2n1orTg-1; Tue, 25 Jul 2023 12:48:15 +0100
-X-MC-Unique: 6tnbdoQ-OpiVapn2n1orTg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 12:48:14 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 12:48:14 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: [PATCH next resend 1/5] minmax: Add min_unsigned(a, b) and
- max_unsigned(a, b)
-Thread-Topic: [PATCH next resend 1/5] minmax: Add min_unsigned(a, b) and
- max_unsigned(a, b)
-Thread-Index: Adm+7eUTa4I5Whq+QJmE/BdQ09ksJA==
-Date:   Tue, 25 Jul 2023 11:48:14 +0000
-Message-ID: <62d82a41b94c475bacceb0f6b11583a1@AcuMS.aculab.com>
-References: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
-In-Reply-To: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 25 Jul 2023 07:50:08 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBB21FFF;
+        Tue, 25 Jul 2023 04:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690285776; x=1690890576; i=rwarsow@gmx.de;
+ bh=NpgYHY92yhV2ghhqvnhRZPVQ8bxQDuTD6hTJWP8TYdc=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=gE+y/NKTe3o5dRCCb8hq6xVu32ZaPoXV7eFJqtuHDDFfWXjpyluFI6glF3ZqK8sak52Qmuk
+ 4Y3dW9HT39Z+rhTM0pKrP9VYySBa30A6mPXveONOs1dDwlJNP72mwLnouQtkevuPMZ5dYYnPM
+ WHZCT+DGtdCZmS064aKjhQLAU5PXzwyc5w1tmR7DZm//Har1EQBX6SkE937Xy/ZoRP6Jfgux4
+ ZePc3u3Eis+1SlLmBU7q1rCma6vy4vrGoXYFZiPPH4Pqi6wrkn9PfFBBTcFnkxfYUIVjvWU44
+ htxRokk8KO8A6PD8/lV08utRS5GRtiYsZaOCIID1/DVmvPNnPe/A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.33.156]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhlKs-1pkVsl3Zjs-00dnR9; Tue, 25
+ Jul 2023 13:49:35 +0200
+Message-ID: <c2f6b497-873c-cd0d-ea36-4d8c6ebe4f39@gmx.de>
+Date:   Tue, 25 Jul 2023 13:49:35 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:1uLTZrxHFwwSE5x+jFwl5SSnFtvfxBgotAsj0XJVKmc1faTAKvB
+ w2RSRjL71j3vfxhfK6UKJaJk10bsV5+GxYjnQHZP1W667QAW4VMqRLOnHTMdgEqbidGoWv8
+ bk0ZXAWn8YuPVyNLkmL1MdHtOGbPosjUpPR2Frr6Vrr6a7Gc+9LUUf4ie1JIVXfM+ErVR5K
+ sOy1I+skfLmJsTRUwqT6w==
+UI-OutboundReport: notjunk:1;M01:P0:vGgSNf3lHVk=;9KTRvt63Rlr3Ki1DZijNpMG+bwO
+ axHoHk9itTrBagkbt9YY9EMbrCfGJ3JKVF+cB8kve0CGMtYB7J84vBKb9N9+oB5HeS9axD9mM
+ z6GX729HJiM2TRTNKeHg3CJBxEN/svYM3Oea4/xqaKqWZox9EhTzQzLMfRncFrYs4Xtyy2aze
+ EPejHA59g+5FKmRY+QVV+VCqOAQakFJl9kJuXX3Eih7rS/n+kplv80McMd1TSPqnsBzbbZPY0
+ HQbSo+ADcJctkTnp1ygahMfV62KRXTwPLcqTCjknEPnltEqjQkIqaEygRfcnsFf62E+/aISbz
+ JUT8KFHYUDv3ESqN8G+6BLp7HaBDX7XSGBpaQdZN+gsKwMMwVZ4sEpR/5fyhp6JCU9s5EeRrE
+ BOHezYvSQ0ewyKR987JEixPpRQg1D/pdIC/u6T2xZYh9tMI0mzetfSUIOcvPdvVkePd36ufC/
+ saC0n1E/rWgohWn1HeXxCG/M0l7Usemd5LRWTt+ih7g6YdkXagP/cC4v/5yizpYntjrhZMxzS
+ AQClXaRSlRiMdV+1iB+ziwdB9qqD7WnVniJYpRdeOSD40puR+k9ehjK3wMskFdXtnkmOxsO+7
+ IjpB0YLVOduvyzFxmwZMgbmTq5/axLwV4nk7ZMfWlEvxdBIMujscUEqrzAikB8/2rFoAH5GSZ
+ bHKIkhUkxlC2JEg0oRqy1hur8BYUxrKUOjKDZt/m5sKBzfk3A/lBxxcMLskQ1ERJBUtUC9QxY
+ 2kH9aYUbxGagY/HvZMSEI3XCODZkN984aQpz2gxb+MElGhG+TkwagHdP+/LyXruCIVvKm50+T
+ vwmqxPdK/FgPhP28tocomc+pbrfgexfVZ6qt+37TcsCfQorq2RumrJNgaaXZc0igsh+YAHCY/
+ R1iFL+cb56iRFriT1HPDeM17WCcgVRoUH++yh7YZjMcAoYfFdhdVh1nFHVirSPRMggEWDYYDI
+ QpCzJn7cQOGxhDSHMFp6s4boPLU=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These can be used when min()/max() errors a signed v unsigned
-compare when the signed value is known to be non-negative.
+Hi Greg
 
-Unlike min_t(some_unsigned_type, a, b) min_unsigned() will never
-mask off high bits if an inappropriate type is selected.
+6.4.7-rc1
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
- include/linux/minmax.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake, i5-11400)
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 396df1121bff..531860e9cc55 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -73,6 +73,23 @@
-  */
- #define max(x, y)	__careful_cmp(x, y, >)
- 
-+/**
-+ * min_unsigned - return minimum of two non-negative values
-+ *   Signed types are zero extended to match a larger unsigned type.
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min_unsigned(x, y)	\
-+	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
-+
-+/**
-+ * max_unsigned - return maximum of two non-negative values
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max_unsigned(x, y)	\
-+	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
-+
- /**
-  * min3 - return minimum of three values
-  * @x: first value
--- 
-2.17.1
+Thanks
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
