@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC4376099E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734EA7609A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjGYFpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        id S231164AbjGYFpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYFpV (ORCPT
+        with ESMTP id S230106AbjGYFpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:45:21 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BC21FCC;
-        Mon, 24 Jul 2023 22:44:54 -0700 (PDT)
-X-QQ-mid: bizesmtp78t1690263859tdcrm94y
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 25 Jul 2023 13:44:18 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: dKvkn8qoLrHzKNEaeuHi1ESJuzl2btKeC/hNKaYrVC0TiCoNiC4/d3bBmF5dY
-        ccfltpJNOW2OW888NOdGqG7+WfJVRo80Z2aWBcpjAgtACVkYrn3lGpQw8MgUqiKs0HnRzVQ
-        PNBt7ofCsa70N5sLl1Lm56jfLUil0QU5WCNLRJEfvUaTkEd57113aJy2SOmyQ9mW1Uo7w1r
-        yfJLSicRwuoV34TWkmR1zFKM+TL7dudiPIk7I2pxr1c31LVUP2sctm6rVA8KNeQVMN2P24c
-        3yE/XnII5Yw+ucd8VUeyOx3DaLiFuwpKT0q4W9sefA+6RV+B96S3bR4vztn17M+d2thZ/eP
-        J81g4HRJ1MW+ctrtZ9VnXjOs36DLA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5121908991366495097
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v1 1/8] tools/nolibc: add support for powerpc
-Date:   Tue, 25 Jul 2023 13:44:14 +0800
-Message-Id: <20230725054414.15055-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230723081520.GA19768@1wt.eu>
-References: <20230723081520.GA19768@1wt.eu>
+        Tue, 25 Jul 2023 01:45:39 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1101BD1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:45:17 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so7720916a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690263898; x=1690868698;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v33ozQ7B6ao7S8GXOqhbCmLv9i1PznqZJpCCfKR6El8=;
+        b=W8ow4T6QCbknM6LYJrvRs61dhmH+OsgCnRAL4+3He+s4j1KKLP77X+XHsBbjbNNe08
+         EQTTf8SYxMeAxenUWmbyv6eQqZi8WGRaRgbpUgsUSeHJw8wZBgFDbhk/S1iQfyh6Dn79
+         1urwf5z/sh/C6EPaP3kuhAJZ0JmqzTkgdf0qFNROs5NasYe8j0+8d75WAiImudRKxCly
+         Pmcs5XB5urgVpgUP8MraLUudXNlZv0JlUd+KwZ13jLsI+I9pmYGxyWpxMCyzeBDDBLFP
+         48WtAwuUrz3L0yJCgDYD19wdmkM5rKDwDD3Fqs84vzlTvs/PQ5XIhK8USqLxvSc1bA0p
+         MOWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690263898; x=1690868698;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v33ozQ7B6ao7S8GXOqhbCmLv9i1PznqZJpCCfKR6El8=;
+        b=jKqh2pRUHte/qsukhS/CDUVqvS2gkgkh7ilzWzo6B6W0pxJa85TAAS89Y7P7pTBqvu
+         SFT7qTaSji5kAkjo+sqaPLfYwKpbqOFHSqNZV+rs9iNs4kU5pLUHM0CHs2wii7PJSePq
+         o8alva4fRjEyVPb5BxCOulh3SqLc8AftxQL9BaurScZhojFEJparBCdu5+UGsPtpJWZ4
+         wkkmun8ee+I+J473JIOk97dT1ve4UgNJypHxhMXJ4wAykZvsg39WxonapuzBcz05emlm
+         nvL46IX0h1AHyrvKeJeBSRU3Af7T5ovC21xOkB/vhY5QVFMPDDDh5NhTmSeE/6oLJicJ
+         ypRw==
+X-Gm-Message-State: ABy/qLZ+bgu7E+2Z99kppRVnRtcnYecJO1S0+A106a7g71W+hE2qG8Uv
+        CPpDGSifU8rSRL0IoHFXlzKzWsggmE8c45RZmJA=
+X-Google-Smtp-Source: APBJJlFYMcUVdRl92ALTBddlIcRlR2SkNHcjfoIcS0YhJsvhd5KWQ7u6T8eH+KE6AZnGJPlMAZ6MIQ==
+X-Received: by 2002:a05:6402:b11:b0:51d:e2c4:f94a with SMTP id bm17-20020a0564020b1100b0051de2c4f94amr10375703edb.20.1690263898239;
+        Mon, 24 Jul 2023 22:44:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b11-20020aa7c90b000000b0052228721f84sm3253052edt.77.2023.07.24.22.44.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 22:44:50 -0700 (PDT)
+Message-ID: <0f39d36c-4c28-b7eb-14f7-47105f03f459@linaro.org>
+Date:   Tue, 25 Jul 2023 07:44:47 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 4/4] power: reset: Implement a PSCI SYSTEM_RESET2
+ reboot-mode driver
+Content-Language: en-US
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, kernel@quicinc.com,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Prasad Sodagudi <quic_psodagud@quicinc.com>
+References: <20230724223057.1208122-1-quic_eberman@quicinc.com>
+ <20230724223057.1208122-5-quic_eberman@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724223057.1208122-5-quic_eberman@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas, Willy
-
-> On Sun, Jul 23, 2023 at 09:32:37AM +0200, Thomas Weißschuh wrote:
-> > On 2023-07-19 05:10:48+0800, Zhangjin Wu wrote:
-> > > diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
-> > > new file mode 100644
-> > > index 000000000000..100ec0f412dc
-> > > --- /dev/null
-> > > +++ b/tools/include/nolibc/arch-powerpc.h
-> > > @@ -0,0 +1,156 @@
-> > > +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-> > > +/*
-> > > + * PowerPC specific definitions for NOLIBC
-> > > + * Copyright (C) 2023 Zhangjin Wu <falcon@tinylab.org>
-> > 
-> > If it is taken from musl, shouldn't there also be a musl copyright?
+On 25/07/2023 00:30, Elliot Berman wrote:
+> PSCI implements a restart notifier for architectural defined resets.
+> The SYSTEM_RESET2 allows vendor firmware to define additional reset
+> types which could be mapped to the reboot reason.
 > 
-> In fact it depends. If code was taken there, not only the copyright is
-> needed, but the license' compatibility must be verified. If, however,
-> the code was only disassembled to be understood and reimplemented (as
-> it seems to me), then no code was taken there and it's not needed.
->
 
-This discussion does inspire me a lot to shrink the whole architecture
-specific nolibc my_syscall<N>() macros, like crt.h, a common syscall.h
-is added to do so. I have finished most of them except the ones passing
-arguments via stack, still trying to merge these ones.
 
-With this new syscall.h, to support my_syscall<N>, the arch-<ARCH>.h
-will only require to add ~10 lines to define their own syscall
-instructions, registers and clobberlist, which looks like this (for
-powerpc):
+> +
+> +static const struct of_device_id psci_vendor_reset_id_table[] = {
+> +	{ .compatible = "arm,psci-vendor-reset" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, psci_vendor_reset_id_table);
+> +
+> +static struct platform_driver psci_vendor_reset_driver = {
+> +	.probe = psci_vendor_reset_probe,
+> +	.driver = {
+> +		.name = "psci-vendor-reset",
+> +		.of_match_table = of_match_ptr(psci_vendor_reset_id_table),
 
-    #define _NOLIBC_SYSCALL_CALL "sc; bns+ 1f; neg  %0, %0; 1:"
+Drop of_match_ptr() - it is useless and if used, then it must be
+balanced with conditional table.
 
-    /* PowerPC doesn't always restore r3-r12 for us */
-    #define _NOLIBC_SYSCALL_CLOBBERLIST 
-    	"memory", "cr0", "r12", "r11", "r10", "r9", "r8", "r7", "r6", "r5", "r4"
+> +	},
+> +};
+> +module_platform_driver(psci_vendor_reset_driver);
+> +
 
-    /* PowerPC write GPRS in kernel side but not restore them */
-    #define _NOLIBC_GPRS_AS_OUTPUT_OPERANDS
-    
-    #define _NOLIBC_REG_NUM  "r0"
-    #define _NOLIBC_REG_RET  "r3"
-    #define _NOLIBC_REG_arg1 "r3"
-    #define _NOLIBC_REG_arg2 "r4"
-    #define _NOLIBC_REG_arg3 "r5"
-    #define _NOLIBC_REG_arg4 "r6"
-    #define _NOLIBC_REG_arg5 "r7"
-    #define _NOLIBC_REG_arg6 "r8"
+Best regards,
+Krzysztof
 
-Before:
-
-    $ ls tools/include/nolibc/arch-*.h | while read f; do git show dfef4fc45d5713eb23d87f0863aff9c33bd4bfaf:$f 2>/dev/null | wc -l | tr -d '\n'; echo " $f"; done
-    157 tools/include/nolibc/arch-aarch64.h
-    199 tools/include/nolibc/arch-arm.h
-    178 tools/include/nolibc/arch-i386.h
-    164 tools/include/nolibc/arch-loongarch.h
-    195 tools/include/nolibc/arch-mips.h
-    0 tools/include/nolibc/arch-powerpc.h
-    160 tools/include/nolibc/arch-riscv.h
-    186 tools/include/nolibc/arch-s390.h
-    176 tools/include/nolibc/arch-x86_64.h
-
-After:
-
-    $ wc -l tools/include/nolibc/arch-*.h
-       54 tools/include/nolibc/arch-aarch64.h
-       84 tools/include/nolibc/arch-arm.h
-       90 tools/include/nolibc/arch-i386.h                        /* the last one use stack to pass arguments, reserve as-is */
-       59 tools/include/nolibc/arch-loongarch.h
-      120 tools/include/nolibc/arch-mips.h                        /* the last two use stack to pass arguments, reserve as-is */
-       73 tools/include/nolibc/arch-powerpc.h
-       58 tools/include/nolibc/arch-riscv.h
-       87 tools/include/nolibc/arch-s390.h
-       67 tools/include/nolibc/arch-x86_64.h
-
-syscall.h itself:
-
-    $ wc -l tools/include/nolibc/syscall.h
-    112 tools/include/nolibc/syscall.h 
-
-Willy, do we need to rename my_syscall<N> to _nolibc_syscall<N> to limit
-these macros nolibc internally? I plan to rename all of the new adding
-macros with _nolibc_ (for funcs) or _NOLIBC_ (for variables).
-
-Thomas, do we need to merge the syscall macros from unistd.h to this new
-syscall.h? we do reuse the macros between them, like the _syscall_narg* ones.
-
-Since this new syscall.h does help a lot to shrink the arch-powerpc.h, I plan
-to send this syscall.h at first and then renew our powerpc patchset, what's
-your idea? 
-
-Thanks,
-Zhangjin
-
-> Thanks,
-> Willy
