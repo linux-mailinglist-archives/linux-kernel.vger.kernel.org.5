@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035117608CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A927608CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjGYEn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 00:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S229461AbjGYEoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 00:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjGYEn1 (ORCPT
+        with ESMTP id S231545AbjGYEn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 00:43:27 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB45710E7;
-        Mon, 24 Jul 2023 21:43:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90D1112FC;
-        Mon, 24 Jul 2023 21:44:08 -0700 (PDT)
-Received: from [10.163.51.115] (unknown [10.163.51.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2574E3F67D;
-        Mon, 24 Jul 2023 21:43:17 -0700 (PDT)
-Message-ID: <04bc4e49-8633-63db-5c13-12953f3349bc@arm.com>
-Date:   Tue, 25 Jul 2023 10:13:15 +0530
+        Tue, 25 Jul 2023 00:43:58 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB28173F
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:43:54 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R94DP2XGnzBRydY
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:43:49 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690260229; x=1692852230; bh=yoXvsWFvf4lKS3sGNABj8yYPLom
+        //8oxSw6PzoA5XC0=; b=cfdL1uME29Wi+vu6AB8vmDcXtRTcjiQtd491WU8OtKD
+        Eq4UhKsYI78gbMHXrARnLoZCBoPrwDfqXWRup6h7le1dyQ6E9lgJ02hHPDyb22no
+        U5aXzR00sAWLmJPF4kAEddNaontPwdns1JtIuQmCzd3jdlk/+EKlYxKHsfVLbWK7
+        myVNDmYX19MrjlY/H3ynRg7ha8NmrHk1cib7blpapztwxUXjFJHTJGh8uqvPHfBE
+        SCW1C0ceXdeQKLdWXDIFUKZttdnLQa2OdvrCBPfsdNVABlWiBTD6uFCVTDO2dNr4
+        QR5cjGrFFvBpWL/zxgkrwnttEY49GI34LGnrChiSACw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id k2m7NmeAlmmy for <linux-kernel@vger.kernel.org>;
+        Tue, 25 Jul 2023 12:43:49 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R94DN6rDnzBRDrQ;
+        Tue, 25 Jul 2023 12:43:48 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 4/4] perf: Remove unused
- PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        will@kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230724134500.970496-1-james.clark@arm.com>
- <20230724134500.970496-5-james.clark@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230724134500.970496-5-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 25 Jul 2023 12:43:48 +0800
+From:   wuyonggang001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/radeon: Fix format error
+In-Reply-To: <20230725043946.33470-1-zhanglibing@cdjrlc.com>
+References: <20230725043946.33470-1-zhanglibing@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <6bf7217253d188c37004e8793bd58c88@208suo.com>
+X-Sender: wuyonggang001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the error(s):
 
+ERROR: space required before the open parenthesis '('
 
-On 7/24/23 19:14, James Clark wrote:
-> Since commit bd2756811766 ("perf: Rewrite core context handling") the
-> relationship between perf_event_context and PMUs has changed so that
-> the error scenario that PERF_PMU_CAP_HETEROGENEOUS_CPUS originally
-> silenced no longer exists.
-> 
-> Remove the capability to avoid confusion that it actually influences
-> any perf core behavior and shift down the following capability bits to
-> fill in the unused space. This change should be a no-op.
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: James Clark <james.clark@arm.com>
+Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+---
+  drivers/gpu/drm/radeon/r300.c | 6 +++---
+  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+diff --git a/drivers/gpu/drm/radeon/r300.c 
+b/drivers/gpu/drm/radeon/r300.c
+index 9c1a92fa2af6..25201b9a5aae 100644
+--- a/drivers/gpu/drm/radeon/r300.c
++++ b/drivers/gpu/drm/radeon/r300.c
+@@ -249,7 +249,7 @@ void r300_ring_start(struct radeon_device *rdev, 
+struct radeon_ring *ring)
 
-> ---
->  include/linux/perf_event.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 2166a69e3bf2..c617badd1e76 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -288,10 +288,9 @@ struct perf_event_pmu_context;
->  #define PERF_PMU_CAP_EXTENDED_REGS		0x0008
->  #define PERF_PMU_CAP_EXCLUSIVE			0x0010
->  #define PERF_PMU_CAP_ITRACE			0x0020
-> -#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x0040
-> -#define PERF_PMU_CAP_NO_EXCLUDE			0x0080
-> -#define PERF_PMU_CAP_AUX_OUTPUT			0x0100
-> -#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0200
-> +#define PERF_PMU_CAP_NO_EXCLUDE			0x0040
-> +#define PERF_PMU_CAP_AUX_OUTPUT			0x0080
-> +#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0100
->  
->  struct perf_output_handle;
->  
+  	/* Sub pixel 1/12 so we can have 4K rendering according to doc */
+  	gb_tile_config = (R300_ENABLE_TILING | R300_TILE_SIZE_16);
+-	switch(rdev->num_gb_pipes) {
++	switch (rdev->num_gb_pipes) {
+  	case 2:
+  		gb_tile_config |= R300_PIPE_COUNT_R300;
+  		break;
+@@ -638,7 +638,7 @@ static int r300_packet0_check(struct 
+radeon_cs_parser *p,
+  	track = (struct r100_cs_track *)p->track;
+  	idx_value = radeon_get_ib_value(p, idx);
+
+-	switch(reg) {
++	switch (reg) {
+  	case AVIVO_D1MODE_VLINE_START_END:
+  	case RADEON_CRTC_GUI_TRIG_VLINE:
+  		r = r100_cs_packet_parse_vline(p);
+@@ -1180,7 +1180,7 @@ static int r300_packet3_check(struct 
+radeon_cs_parser *p,
+  	ib = p->ib.ptr;
+  	idx = pkt->idx + 1;
+  	track = (struct r100_cs_track *)p->track;
+-	switch(pkt->opcode) {
++	switch (pkt->opcode) {
+  	case PACKET3_3D_LOAD_VBPNTR:
+  		r = r100_packet3_load_vbpntr(p, pkt, idx);
+  		if (r)
