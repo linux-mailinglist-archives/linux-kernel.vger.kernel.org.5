@@ -2,281 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56617761F8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E1761F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbjGYQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S232486AbjGYQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbjGYQv2 (ORCPT
+        with ESMTP id S232520AbjGYQwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:51:28 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D997226BD;
-        Tue, 25 Jul 2023 09:51:10 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 24A124AD;
-        Tue, 25 Jul 2023 18:49:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690303790;
-        bh=OUH2UO06FE1Yc4mv58o73QrmPohAjApDYUMWdkTc/qo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r3Gy54DwM0rWGPlkTZ3DAijUNMAQH7CA/OctTMrVIv1KtLNsEDe982BTxTs1/5DWa
-         iwq6mbmRhwZezJmsgJiEFwzSCY7xn2AM38BUIRcrvhlm1hXZv/xK03/U8wB2lKZs/W
-         JqnjQO4+i44jcOh6COCQMo6DIw/gWNg4pnM8hKNE=
-Date:   Tue, 25 Jul 2023 19:50:56 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Satish Nagireddy <satish.nagireddy@getcruise.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] media: i2c: ds90ub953: Restructure clkout
- management
-Message-ID: <20230725165056.GO31069@pendragon.ideasonboard.com>
-References: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
- <20230720-fpdlink-additions-v2-6-b91b1eca2ad3@ideasonboard.com>
+        Tue, 25 Jul 2023 12:52:21 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D38A2698;
+        Tue, 25 Jul 2023 09:51:51 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so33440b3a.1;
+        Tue, 25 Jul 2023 09:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690303906; x=1690908706;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=A+r2r5mfvosFn/xncTREw8QjIuYYBGolcffweMnuptc=;
+        b=G3NJvYKBwDkkjAdxaM/bYSjXav5fGSAHj1L3ZB/WDRvgXq2v3ZLKnRJerKyYQYOVhe
+         6vvKfFNiLTM06apWFW8pnmgTPRs5oBS3fXA0D95hZrY6Oeia7/uxbpkoguO+XkgZgrtf
+         bwsI7wj+8palBoasNdsJ3EjlQ57WHiQPUNcZ0/BvGu4cqD9pT7JCWf4sdkIVhab/g36o
+         n3fxcqCEKTT93YfCW1uhK1vVCRfBEMKa+Kvaqt9+/8CT+ApKxidzMvAbhxEIdABfML6n
+         wQlDN+W3OiS0inSpeWMGwTJqSdRTzt58SVOqyBMt4YcpGtGKzMQWhdWKaPCNJjUCg5VN
+         c51g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690303906; x=1690908706;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A+r2r5mfvosFn/xncTREw8QjIuYYBGolcffweMnuptc=;
+        b=LZU1jQ/a8aOn6OgYGi79kXTN7ihTVxoHu670OwQn+8JDHtgK4e+LBalq8RjHFPKmZ2
+         ec2bdY2a8SRntBETsq/uJL0CMnaTk/GDikE+m0nfKSf701eGXAIJCF2jX6Huzy1HcaEi
+         8ZSwUZErPgjs4DH6zUFUNPdAT2FKwiiwgg56HGTF2JSU68HSTjOiiK0wL8At6ulN05mL
+         HudoXAm3PME9Gwyg9wc9ovWcqSynn047FcnzRQz14s6qJbDiSMbMjctaXjphFbO+H+rM
+         F8nCCC40Y0QqXFaUpkkxmhPfr/m1mFfGZNHhjdQSGf5dxZQ0yDdiCH+9qnj16SZdd+yW
+         FZtw==
+X-Gm-Message-State: ABy/qLZ0Dcb/M/J7WJsvjLhT+cinBuGTAKorRcDpIk/p++Mrx46QQb0Y
+        oeEZ5LjlYFsm07d191nKKHg=
+X-Google-Smtp-Source: APBJJlF0cwPMn0q7z3jjxEhagRb/CzXUXSeAY/nagVwlcA0j1JzqnmpHqJq6Aww9fIbZaFfcudLc5g==
+X-Received: by 2002:a05:6a21:998e:b0:12b:40d3:aeb1 with SMTP id ve14-20020a056a21998e00b0012b40d3aeb1mr1407749pzb.25.1690303906284;
+        Tue, 25 Jul 2023 09:51:46 -0700 (PDT)
+Received: from ?IPv6:2605:59c8:448:b800:82ee:73ff:fe41:9a02? ([2605:59c8:448:b800:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id a20-20020a637f14000000b0055fedbf1938sm4722537pgd.31.2023.07.25.09.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 09:51:45 -0700 (PDT)
+Message-ID: <70b71e7bb8a7dff2dacab99b0746e7bf2bee9344.camel@gmail.com>
+Subject: Re: [PATCH net] net: fec: tx processing does not call XDP APIs if
+ budget is 0
+From:   Alexander H Duyck <alexander.duyck@gmail.com>
+To:     Wei Fang <wei.fang@nxp.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, shenwei.wang@nxp.com,
+        xiaoning.wang@nxp.com, pabeni@redhat.com, netdev@vger.kernel.org
+Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org
+Date:   Tue, 25 Jul 2023 09:51:44 -0700
+In-Reply-To: <20230725074148.2936402-1-wei.fang@nxp.com>
+References: <20230725074148.2936402-1-wei.fang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230720-fpdlink-additions-v2-6-b91b1eca2ad3@ideasonboard.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
-
-Thank you for the patch.
-
-On Thu, Jul 20, 2023 at 01:30:37PM +0300, Tomi Valkeinen wrote:
-> Separate clkout calculations and register writes into two functions:
-> ub953_calc_clkout_params and ub953_write_clkout_regs, and add a struct
-> ub953_clkout_data that is used to store the clkout parameters.
-> 
-> This simplifies the clkout management.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+On Tue, 2023-07-25 at 15:41 +0800, Wei Fang wrote:
+> According to the clarification [1] in the latest napi.rst, the tx
+> processing cannot call any XDP (or page pool) APIs if the "budget"
+> is 0. Because NAPI is called with the budget of 0 (such as netpoll)
+> indicates we may be in an IRQ context, however, we cannot use the
+> page pool from IRQ context.
+>=20
+> [1] https://lore.kernel.org/all/20230720161323.2025379-1-kuba@kernel.org/
+>=20
+> Fixes: 20f797399035 ("net: fec: recycle pages for transmitted XDP frames"=
+)
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
 > ---
->  drivers/media/i2c/ds90ub953.c | 135 ++++++++++++++++++++++--------------------
->  1 file changed, 70 insertions(+), 65 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ds90ub953.c b/drivers/media/i2c/ds90ub953.c
-> index ad479923d2b4..3a19c6dedd2f 100644
-> --- a/drivers/media/i2c/ds90ub953.c
-> +++ b/drivers/media/i2c/ds90ub953.c
-> @@ -131,6 +131,13 @@ struct ub953_hw_data {
->  	bool is_ub971;
->  };
->  
-> +struct ub953_clkout_data {
-> +	u32 hs_div;
-> +	u32 m;
-> +	u32 n;
-> +	unsigned long rate;
-> +};
-> +
->  struct ub953_data {
->  	const struct ub953_hw_data	*hw_data;
->  
-> @@ -906,6 +913,58 @@ static unsigned long ub953_calc_clkout_ub971(struct ub953_data *priv,
->  	return res;
+>  drivers/net/ethernet/freescale/fec_main.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethe=
+rnet/freescale/fec_main.c
+> index 073d61619336..66b5cbdb43b9 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -1372,7 +1372,7 @@ fec_enet_hwtstamp(struct fec_enet_private *fep, uns=
+igned ts,
 >  }
->  
-> +static void ub953_calc_clkout_params(struct ub953_data *priv,
-> +				     unsigned long target_rate,
-> +				     struct ub953_clkout_data *clkout_data)
-> +{
-> +	struct device *dev = &priv->client->dev;
-> +	unsigned long clkout_rate;
-> +	u64 fc_rate;
-> +
-> +	fc_rate = ub953_get_fc_rate(priv);
-> +
-> +	if (priv->hw_data->is_ub971) {
-> +		u8 m, n;
-> +
-> +		clkout_rate = ub953_calc_clkout_ub971(priv, target_rate,
-> +						      fc_rate, &m, &n);
-> +
-> +		clkout_data->m = m;
-> +		clkout_data->n = n;
-> +
-> +		dev_dbg(dev, "%s %llu * %u / (8 * %u) = %lu (requested %lu)",
-> +			__func__, fc_rate, m, n, clkout_rate, target_rate);
-> +	} else {
-> +		u8 hs_div, m, n;
-> +
-> +		clkout_rate = ub953_calc_clkout_ub953(priv, target_rate,
-> +						      fc_rate, &hs_div, &m, &n);
-> +
-> +		clkout_data->hs_div = hs_div;
-> +		clkout_data->m = m;
-> +		clkout_data->n = n;
-> +
-> +		dev_dbg(dev, "%s %llu / %u * %u / %u = %lu (requested %lu)",
-> +			__func__, fc_rate, hs_div, m, n, clkout_rate,
-> +			target_rate);
-> +	}
-> +
-> +	clkout_data->rate = clkout_rate;
-> +}
-> +
-> +static void ub953_write_clkout_regs(struct ub953_data *priv,
-> +				    struct ub953_clkout_data *clkout_data)
-
-const
-
-> +{
-> +	if (priv->hw_data->is_ub971) {
-> +		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, clkout_data->m);
-> +		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, clkout_data->n);
-
-This line is common to both branches, you could move it after the
-conditional part.
-
-> +	} else {
-> +		ub953_write(priv, UB953_REG_CLKOUT_CTRL0,
-> +			    (__ffs(clkout_data->hs_div) << 5) | clkout_data->m);
-> +		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, clkout_data->n);
-> +	}
-> +}
-> +
->  static unsigned long ub953_clkout_recalc_rate(struct clk_hw *hw,
->  					      unsigned long parent_rate)
+> =20
+>  static void
+> -fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+> +fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
 >  {
-> @@ -965,52 +1024,25 @@ static long ub953_clkout_round_rate(struct clk_hw *hw, unsigned long rate,
->  				    unsigned long *parent_rate)
->  {
->  	struct ub953_data *priv = container_of(hw, struct ub953_data, clkout_clk_hw);
-> -	struct device *dev = &priv->client->dev;
-> -	unsigned long res;
-> -	u64 fc_rate;
-> -	u8 hs_div, m, n;
-> -
-> -	fc_rate = ub953_get_fc_rate(priv);
-> +	struct ub953_clkout_data clkout_data;
->  
-> -	if (priv->hw_data->is_ub971) {
-> -		res = ub953_calc_clkout_ub971(priv, rate, fc_rate, &m, &n);
-> +	ub953_calc_clkout_params(priv, rate, &clkout_data);
->  
-> -		dev_dbg(dev, "%s %llu * %u / (8 * %u) = %lu (requested %lu)",
-> -			__func__, fc_rate, m, n, res, rate);
-> -	} else {
-> -		res = ub953_calc_clkout_ub953(priv, rate, fc_rate, &hs_div, &m, &n);
-> -
-> -		dev_dbg(dev, "%s %llu / %u * %u / %u = %lu (requested %lu)",
-> -			__func__, fc_rate, hs_div, m, n, res, rate);
-> -	}
-> -
-> -	return res;
-> +	return clkout_data.rate;
+>  	struct	fec_enet_private *fep;
+>  	struct xdp_frame *xdpf;
+> @@ -1416,6 +1416,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 que=
+ue_id)
+>  			if (!skb)
+>  				goto tx_buf_done;
+>  		} else {
+> +			/* Tx processing cannot call any XDP (or page pool) APIs if
+> +			 * the "budget" is 0. Because NAPI is called with budget of
+> +			 * 0 (such as netpoll) indicates we may be in an IRQ context,
+> +			 * however, we can't use the page pool from IRQ context.
+> +			 */
+> +			if (unlikely(!budget))
+> +				break;
+> +
+>  			xdpf =3D txq->tx_buf[index].xdp;
+>  			if (bdp->cbd_bufaddr)
+>  				dma_unmap_single(&fep->pdev->dev,
+
+This statement isn't correct. There are napi enabled and non-napi
+versions of these calls. This is the reason for things like the
+"allow_direct" parameter in page_pool_put_full_page and the
+"napi_direct" parameter in __xdp_return.
+
+By blocking on these cases you can end up hanging the Tx queue which is
+going to break netpoll as you are going to stall the ring on XDP
+packets if they are already in the queue.
+
+From what I can tell your driver is using xdp_return_frame in the case
+of an XDP frame which doesn't make use of the NAPI optimizations in
+freeing from what I can tell. The NAPI optimized version is
+xdp_return_frame_rx.
+
+> @@ -1508,14 +1516,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 qu=
+eue_id)
+>  		writel(0, txq->bd.reg_desc_active);
 >  }
->  
->  static int ub953_clkout_set_rate(struct clk_hw *hw, unsigned long rate,
->  				 unsigned long parent_rate)
+> =20
+> -static void fec_enet_tx(struct net_device *ndev)
+> +static void fec_enet_tx(struct net_device *ndev, int budget)
 >  {
->  	struct ub953_data *priv = container_of(hw, struct ub953_data, clkout_clk_hw);
-> -	u64 fc_rate;
-> -	u8 hs_div, m, n;
-> -	unsigned long res;
-> +	struct ub953_clkout_data clkout_data;
->  
-> -	fc_rate = ub953_get_fc_rate(priv);
-> -
-> -	if (priv->hw_data->is_ub971) {
-> -		res = ub953_calc_clkout_ub971(priv, rate, fc_rate, &m, &n);
-> -
-> -		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, m);
-> -		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
-> -	} else {
-> -		res = ub953_calc_clkout_ub953(priv, rate, fc_rate, &hs_div, &m, &n);
-> +	ub953_calc_clkout_params(priv, rate, &clkout_data);
->  
-> -		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, (__ffs(hs_div) << 5) | m);
-> -		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
-> -	}
-> +	dev_dbg(&priv->client->dev, "%s %lu (requested %lu)\n", __func__,
-> +		clkout_data.rate, rate);
->  
-> -	dev_dbg(&priv->client->dev, "%s %lu (requested %lu)\n", __func__, res,
-> -		rate);
-> +	ub953_write_clkout_regs(priv, &clkout_data);
->  
->  	return 0;
+>  	struct fec_enet_private *fep =3D netdev_priv(ndev);
+>  	int i;
+> =20
+>  	/* Make sure that AVB queues are processed first. */
+>  	for (i =3D fep->num_tx_queues - 1; i >=3D 0; i--)
+> -		fec_enet_tx_queue(ndev, i);
+> +		fec_enet_tx_queue(ndev, i, budget);
 >  }
-> @@ -1021,32 +1053,6 @@ static const struct clk_ops ub953_clkout_ops = {
->  	.set_rate	= ub953_clkout_set_rate,
->  };
->  
-> -static void ub953_init_clkout_ub953(struct ub953_data *priv)
-> -{
-> -	u64 fc_rate;
-> -	u8 hs_div, m, n;
-> -
-> -	fc_rate = ub953_get_fc_rate(priv);
-> -
-> -	ub953_calc_clkout_ub953(priv, 25000000, fc_rate, &hs_div, &m, &n);
-> -
-> -	ub953_write(priv, UB953_REG_CLKOUT_CTRL0, (__ffs(hs_div) << 5) | m);
-> -	ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
-> -}
-> -
-> -static void ub953_init_clkout_ub971(struct ub953_data *priv)
-> -{
-> -	u64 fc_rate;
-> -	u8 m, n;
-> -
-> -	fc_rate = ub953_get_fc_rate(priv);
-> -
-> -	ub953_calc_clkout_ub971(priv, 25000000, fc_rate, &m, &n);
-> -
-> -	ub953_write(priv, UB953_REG_CLKOUT_CTRL0, m);
-> -	ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
-> -}
-> -
->  static int ub953_register_clkout(struct ub953_data *priv)
->  {
->  	struct device *dev = &priv->client->dev;
-> @@ -1055,16 +1061,15 @@ static int ub953_register_clkout(struct ub953_data *priv)
->  				  priv->hw_data->model, dev_name(dev)),
->  		.ops = &ub953_clkout_ops,
->  	};
-> +	struct ub953_clkout_data clkout_data;
->  	int ret;
->  
->  	if (!init.name)
->  		return -ENOMEM;
->  
->  	/* Initialize clkout to 25MHz by default */
-> -	if (priv->hw_data->is_ub971)
-> -		ub953_init_clkout_ub971(priv);
-> -	else
-> -		ub953_init_clkout_ub953(priv);
-> +	ub953_calc_clkout_params(priv, 25000000, &clkout_data);
+> =20
+>  static void fec_enet_update_cbd(struct fec_enet_priv_rx_q *rxq,
+> @@ -1858,7 +1866,7 @@ static int fec_enet_rx_napi(struct napi_struct *nap=
+i, int budget)
+> =20
+>  	do {
+>  		done +=3D fec_enet_rx(ndev, budget - done);
+> -		fec_enet_tx(ndev);
+> +		fec_enet_tx(ndev, budget);
+>  	} while ((done < budget) && fec_enet_collect_events(fep));
+> =20
+>  	if (done < budget) {
 
-While at it, a macro to replace the numerical constant could be nice.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +	ub953_write_clkout_regs(priv, &clkout_data);
->  
->  	priv->clkout_clk_hw.init = &init;
->  
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+Since you are passing budget, one optimization you could make use of
+would be napi_consume_skb in your Tx path instead of dev_kfree_skb_any.
