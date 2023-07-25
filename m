@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFE3761E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB31761E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjGYQFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S231205AbjGYQHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjGYQFv (ORCPT
+        with ESMTP id S230022AbjGYQHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:05:51 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048FD211B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:47 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5634dbfb8b1so2611938a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690301146; x=1690905946;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjapE+rCKmy4P5VPPxVo+ODABt8kwoerpZYMWCIKvUE=;
-        b=LwsxLZ6AuVYhmtLCQOubxgsSk2SGUoAfIe0hne7HeGjZV0XGh64QIkV2zlXzbAnLeG
-         kT3m8OHeyQw9nrZ1taSu34Tv5G12H9xzbEEIA3CgHW/JXKh7h4Wu1sIEnODxWRkuraGO
-         1LyLFhJyUUIY0BuwYyRoMQ1YSyw7HqVNd68xzOUIE0OEl0CyZ3Fn6yKRY363qzKFgXAi
-         LfGtgsQ/jm32boUoK3P8HSJtRgdhL1KOXmwlWvMMgJXossJ9wbHkRKUgp2q0ig5l0Zq7
-         xmSB/JJc7Da1ato/gj2rSnD24hB3uBp4wkp8S7/TR/gCn8xgTrdUM+RyJ9Z9uRGBE4dM
-         47Aw==
+        Tue, 25 Jul 2023 12:07:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1ACE77
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690301219;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n8WDoL0557ijucVnvFFhXFlCk91a1heL5kHgluQGr74=;
+        b=gP1EUWJb6512h3UBcsR5ABj4T3U9X2xkkxIK+Am8Fq4qe8roZtOL+dO/kYNfOfuAV4m5lu
+        2+kHLl5dsnflgFyhXT/A9eaWfrRexG05Jcx/kqAOS0sJd8FVF9/6gsswuHfYc61BGYOZmr
+        35m/fHnFkYhChhlDOCH6DA7y4+dPqwo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-144-8WdKB3y_N6-izulTGti8Eg-1; Tue, 25 Jul 2023 12:06:57 -0400
+X-MC-Unique: 8WdKB3y_N6-izulTGti8Eg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so30265095e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:06:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690301146; x=1690905946;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjapE+rCKmy4P5VPPxVo+ODABt8kwoerpZYMWCIKvUE=;
-        b=gATE6F8vwM3kttwx4+rJvqbnQxIXmixmfQlbOQwMzJ2Y0p4BN/Pbw/tTyCU1eG4R73
-         c+gYT803sdqg7NJOkbUcXmLtEl+bytdv0nM5oUPiNnRPu34S1Xg/We2TNOvChiJi5eXT
-         Ju/CF+cBaIeAcU3OaN2p2trPiil8E1nYEDIvd1VOkTpuvh0MkN/KpPBLEsV4J88wxewj
-         MQubTN+t1LR5D0oQazP45ZNl/72WY+4qNQdVSS4RyybyMTbsdO4EHFoC/UAsI+omoqGb
-         z0TmyRyI4UwTBweBQ3cdtqqfPWol6KY/iTPiot4ZAlD86DTmIYBUpL2zefczT/JI6goZ
-         JosA==
-X-Gm-Message-State: ABy/qLaiwHa/S3gJPj9uLf27yI9JZGrwRMmbiwsDfEiDfXmgyDpW6Mfs
-        ZSe09u8n2LyrHDCoSaDGhdSkutWQ7Dw=
-X-Google-Smtp-Source: APBJJlHGaS5DZDQ6cJZl3UVRA7dtu3lyMT6BLjhuEPtr88IwuNDtXc+LBb78syThVbNsaXb6qjo4AYxA5zg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c409:b0:1b5:2871:cd1 with SMTP id
- k9-20020a170902c40900b001b528710cd1mr55353plk.0.1690301146436; Tue, 25 Jul
- 2023 09:05:46 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 09:05:44 -0700
-In-Reply-To: <6086d09d-f218-d962-18dc-7b1a0390f258@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <20230719144131.29052-3-binbin.wu@linux.intel.com> <20230720235352.GH25699@ls.amr.corp.intel.com>
- <e84129b1-603b-a6c4-ade5-8cf529929675@linux.intel.com> <ZLqeUXerpNlri7Px@google.com>
- <6086d09d-f218-d962-18dc-7b1a0390f258@linux.intel.com>
-Message-ID: <ZL/y2CKoJ/bTOR0M@google.com>
-Subject: Re: [PATCH v10 2/9] KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to
- check CR3's legality
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        chao.gao@intel.com, kai.huang@intel.com, David.Laight@aculab.com,
-        robert.hu@linux.intel.com, guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690301211; x=1690906011;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n8WDoL0557ijucVnvFFhXFlCk91a1heL5kHgluQGr74=;
+        b=QqmezVQi2l6rBR36Ob0teGvd/XCxQk86jSoxvnDmRrIHSb3GGRjolR+nwt1M+rGNjZ
+         xsxRBInQh+o63OkzY8FfAk6fSZ5L/3wJTt2ETEwLz5lZ7GsFE4tRU9ITeRNH9wrjL120
+         FGR+QvC65crzeAABE/2WmM1LoalsQMxdpQE7a3WFKn4l7CSJvoQjaGzOm4n2oCIswDIo
+         4tGgm7vJM1j2bCGSboffzdGL1w4evGcWDuptNVnpsk1PZSB4xmZoDIyQ+kPVV+dMSwS4
+         ow6RGYTtfnnuKXHPnUqfRMpU01xRsjfs7mxOyoK2/yDjzAx8u9tKu6eAe7dKGB2c4S6N
+         Rvtg==
+X-Gm-Message-State: ABy/qLZS7RyUROXOppGr+CrXFydx5jH/0KQNZdnzePQ1lhvBsG3t9LXj
+        vF8QI1f5NQFkJYVIeUe9kdqd7Vfi77M45+JNThZG4i/a+9+AEq+PLytpIlB9EZOd0PNSB3982uq
+        ihYj0pyS1nejKBS+2BHDRPvYS
+X-Received: by 2002:a05:600c:2043:b0:3fa:934c:8350 with SMTP id p3-20020a05600c204300b003fa934c8350mr10062658wmg.27.1690301211264;
+        Tue, 25 Jul 2023 09:06:51 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHhB4b1r6/9EKYpbymuXJFkp9iRDrryPS4kRN5/XpdtSoEVtQGo358UOoZiWwF6PdI9lwFdRA==
+X-Received: by 2002:a05:600c:2043:b0:3fa:934c:8350 with SMTP id p3-20020a05600c204300b003fa934c8350mr10062636wmg.27.1690301210864;
+        Tue, 25 Jul 2023 09:06:50 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id a17-20020adffad1000000b003143cdc5949sm16909129wrs.9.2023.07.25.09.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 09:06:50 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+In-Reply-To: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+Date:   Tue, 25 Jul 2023 18:06:49 +0200
+Message-ID: <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023, Binbin Wu wrote:
-> 
-> 
-> On 7/21/2023 11:03 PM, Sean Christopherson wrote:
-> > On Fri, Jul 21, 2023, Binbin Wu wrote:
-> > > 
-> > > On 7/21/2023 7:53 AM, Isaku Yamahata wrote:
-> > > > On Wed, Jul 19, 2023 at 10:41:24PM +0800,
-> > > > Binbin Wu <binbin.wu@linux.intel.com> wrote:
-> > > > 
-> > > > > Add and use kvm_vcpu_is_legal_cr3() to check CR3's legality to provide
-> > > > > a clear distinction b/t CR3 and GPA checks. So that kvm_vcpu_is_legal_cr3()
-> > > > > can be adjusted according to new feature(s).
-> > > > > 
-> > > > > No functional change intended.
-> > > > > 
-> > > > > Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> > > > > ---
-> > > > >    arch/x86/kvm/cpuid.h      | 5 +++++
-> > > > >    arch/x86/kvm/svm/nested.c | 4 ++--
-> > > > >    arch/x86/kvm/vmx/nested.c | 4 ++--
-> > > > >    arch/x86/kvm/x86.c        | 4 ++--
-> > > > >    4 files changed, 11 insertions(+), 6 deletions(-)
-> > > > > 
-> > > > > diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> > > > > index f61a2106ba90..8b26d946f3e3 100644
-> > > > > --- a/arch/x86/kvm/cpuid.h
-> > > > > +++ b/arch/x86/kvm/cpuid.h
-> > > > > @@ -283,4 +283,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
-> > > > >    	return vcpu->arch.governed_features.enabled & kvm_governed_feature_bit(x86_feature);
-> > > > >    }
-> > > > > +static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
-> > > > > +{
-> > > > > +	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
-> > > > > +}
-> > > > > +
-> > > > The remaining user of kvm_vcpu_is_illegal_gpa() is one left.  Can we remove it
-> > > > by replacing !kvm_vcpu_is_legal_gpa()?
-> > > There are still two callsites of kvm_vcpu_is_illegal_gpa() left (basing on
-> > > Linux 6.5-rc2), in handle_ept_violation() and nested_vmx_check_eptp().
-> > > But they could be replaced by !kvm_vcpu_is_legal_gpa() and then remove
-> > > kvm_vcpu_is_illegal_gpa().
-> > > I am neutral to this.
-> > I'm largely neutral on this as well, though I do like the idea of having only
-> > "legal" APIs.  I think it makes sense to throw together a patch, we can always
-> > ignore the patch if end we up deciding to keep kvm_vcpu_is_illegal_gpa().
-> OK. Thanks for the advice.
-> Should I send a seperate patch or add a patch to remove
-> kvm_vcpu_is_illegal_gpa() in next version?
+Geert Uytterhoeven <geert+renesas@glider.be> writes:
 
-Add a patch in the next version, eliminating kvm_vcpu_is_illegal_gpa() without
-the context of this series probably isn't worth the churn.
+Hello Geert,
+
+Thanks a lot for your patch!
+
+> If CONFIG_FB_CORE=y but CONFIG_FB=n, the frame buffer bootup logos can
+> no longer be enabled.  Fix this by making CONFIG_LOGO depend on
+> CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
+> logo code to depend on the presence of real frame buffer device drivers.
+>
+
+Indeed.
+
+> Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/video/Kconfig      | 2 +-
+>  drivers/video/logo/Kconfig | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+> index e5b1cc54cafa10d5..b694d7669d3200b1 100644
+> --- a/drivers/video/Kconfig
+> +++ b/drivers/video/Kconfig
+> @@ -63,7 +63,7 @@ if VT
+>  	source "drivers/video/console/Kconfig"
+>  endif
+>  
+> -if FB || SGI_NEWPORT_CONSOLE
+> +if FB_CORE || SGI_NEWPORT_CONSOLE
+>  	source "drivers/video/logo/Kconfig"
+>  
+>  endif
+> diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
+> index 6d6f8c08792dc897..b7d94d1dd1585a84 100644
+> --- a/drivers/video/logo/Kconfig
+> +++ b/drivers/video/logo/Kconfig
+> @@ -5,7 +5,7 @@
+>  
+>  menuconfig LOGO
+>  	bool "Bootup logo"
+> -	depends on FB || SGI_NEWPORT_CONSOLE
+> +	depends on FB_CORE || SGI_NEWPORT_CONSOLE
+>  	help
+>  	  Enable and select frame buffer bootup logos.
+
+Should then move this option to drivers/video/fbdev/core/Kconfig ?
+
+Regardless, could be done as a follow-up and the fix looks good to me.
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
