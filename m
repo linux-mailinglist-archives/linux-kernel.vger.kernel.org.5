@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069027623DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4397623E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjGYUqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S230289AbjGYUr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjGYUqi (ORCPT
+        with ESMTP id S229907AbjGYUr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:46:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3ACE1733;
-        Tue, 25 Jul 2023 13:46:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 374D4618EA;
-        Tue, 25 Jul 2023 20:46:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52251C433C7;
-        Tue, 25 Jul 2023 20:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690317995;
-        bh=DLA6OAhIubZj4rPsH89WQo5bkfHHHDQZqjjyCtICNoo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=P15Cwmwe3zkRSOi5sZtydKCn1t9svJ7FkJvS2yQHsKRGfMJkIIclKL2pya708tdZX
-         GQHGK+uoG4Azgywc3NbM0ZpCVsvXzPzSxjCHGNcx+ul6KwyfoOVqRh2d14cZEAIu0B
-         hOmkVXnZIvjLrAfjx3Gpx14hBhXdGaHHmEXZXbbrLlJDUBfpVVi9C3xPD6LSHIsGFS
-         uVmLUS6rhZehpMLjrHlzigGCOLy/lfmCZ5SAJ/IzehRg3Rga74lZuUgW/MCNzt/wrI
-         XfLXr3vTl6GHefhiXXY17tG/8QAyR7G4zNFRLPXyB5pKCqfZno8JBKVncxYxE/qGss
-         8j67/qhKSCN4A==
-Date:   Tue, 25 Jul 2023 15:46:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kevin Xie <kevin.xie@starfivetech.com>
-Cc:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Message-ID: <20230725204633.GA664368@bhelgaas>
+        Tue, 25 Jul 2023 16:47:26 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27BE193
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:47:24 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-316feb137a7so5478454f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1690318043; x=1690922843;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jmHZQ9ca3QHt8MEuJo/iyae9grobgo7Zqpkp40Wn1M0=;
+        b=lgfMQw3veIdghW9Yl7OpwneqlZXLUat4NwHjoq63ji8EGZunt7c6/VdjtwpPKMA+/b
+         xe3A7RvGIoTqBuxT7xQl9Pq0VPoKqNOCYWkjGsD4SCsH3u8RFfHfXLJwJlA4poAcoE4m
+         7aPhekuT84/g6XcaNhGQRLnZzR9t25LFqOBko=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690318043; x=1690922843;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jmHZQ9ca3QHt8MEuJo/iyae9grobgo7Zqpkp40Wn1M0=;
+        b=VY60DxrZnTWyaLnNJZPZ9Q+V4DaKPtBRHP6hLD74OAZCxowKIcxyzLmnzt+n2VPgIA
+         6B/jVSwxuY71ce66K2lS8WB2nUt95QxH5fROZ44JXADwtWhz/tW9zrDwujW/ZEW8UFmc
+         ryCOcMXpw+GMYOcJP2PN3hoCxXYFM6EkngP5xWIoCkNNfs/RuqRVXHUnpiASb5mQvuyO
+         9E6Eg8xC22krOZ+FYQEHjNJ+/wFvxsp4AHI1RHEfgknak+nx/4QjwGAjOjbko4RGkvrE
+         VfloiR8oOIT6JeV+tsnLz0CeqL/cIOcRk8+LI5i7+ybu/brbTGHdNHZ7QQLjmT56DMSg
+         9tmg==
+X-Gm-Message-State: ABy/qLYBktXeBjqkp4xSr2gpJ2q9WH3kpStbkjZusnSeTKjSJ1FiuiFs
+        3M3Tn1eESI/oM3sTWOMBLzk68A==
+X-Google-Smtp-Source: APBJJlE8gXbu6RiaQ/1LDuMOPzlFlEC/EuPXYPSa37TMXkYaU+8syIDUyGVqt4v4FCa9ajG3U+1qqA==
+X-Received: by 2002:a5d:4523:0:b0:314:36c5:e4c0 with SMTP id j3-20020a5d4523000000b0031436c5e4c0mr11566204wra.11.1690318043126;
+        Tue, 25 Jul 2023 13:47:23 -0700 (PDT)
+Received: from fastly.com ([188.225.251.141])
+        by smtp.gmail.com with ESMTPSA id k11-20020adfd84b000000b0031773e3cf46sm471947wrl.61.2023.07.25.13.47.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 25 Jul 2023 13:47:22 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 13:47:19 -0700
+From:   Joe Damato <jdamato@fastly.com>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
+        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
+        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net 0/2] rxfh with custom RSS fixes
+Message-ID: <20230725204719.GA1789@fastly.com>
+References: <20230723150658.241597-1-jdamato@fastly.com>
+ <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
+ <20230724150815.494ae294@kernel.org>
+ <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a687c273-48b1-651e-313f-d8140732c5d8@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,60 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
-> On 2023/7/21 0:15, Bjorn Helgaas wrote:
-> > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
-> >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
-> >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
-> >> >> Add StarFive JH7110 SoC PCIe controller platform
-> >> >> driver codes.
-
-> >> However, in the compatibility testing with several NVMe SSD, we
-> >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
-> >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
-> >> value to 300ms for the better device compatibility.
-> > ...
-> > 
-> > Thanks for this valuable information!  This NVMe issue potentially
-> > affects many similar drivers, and we may need a more generic fix so
-> > this device works well with all of them.
-> > 
-> > T_PVPERL is defined to start when power is stable.  Do you have a way
-> > to accurately determine that point?  I'm guessing this:
-> > 
-> >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
-> > 
-> > turns the power on?  But of course that doesn't mean it is instantly
-> > stable.  Maybe your testing is telling you that your driver should
-> > have a hardware-specific 200ms delay to wait for power to become
-> > stable, followed by the standard 100ms for T_PVPERL?
+On Tue, Jul 25, 2023 at 09:40:24AM +0100, Edward Cree wrote:
+> On 24/07/2023 23:08, Jakub Kicinski wrote:
+> > It'd be great to push the uAPI extensions back and make them
+> > netlink-only, but we can't make Joe wait if it takes a long time
+> > to finish up the basic conversion :(
 > 
-> You are right, we did not take the power stable cost into account.
-> T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
-> and the extra cost is from the power circuit of a PCIe to M.2 connector,
-> which is used to verify M.2 SSD with our EVB at early stage.
+> Yeah as I said upthread I don't think we should make Joe wait, if
+>  he's got a use case that actually needs it (have you, Joe?  Or
+>  is it only GRXFH you need and the investigation just led you to
+>  notice SRXFH was broken?)
 
-Hmm.  That sounds potentially interesting.  I assume you're talking
-about something like this: https://www.amazon.com/dp/B07JKH5VTL
+In short, yes: I'd like to be able to get and set the flow hash keys for
+custom RSS contexts on mlx5 which is why I included the patch to mlx5 in
+this series... but to be fair I am just one user :) I think it's really
+up to you all on the direction you want to go.
 
-I'm not familiar with the timing requirements for something like this.
-There is a PCIe M.2 spec with some timing requirements, but I don't
-know whether or how software is supposed to manage this.  There is a
-T_PVPGL (power valid to PERST# inactive) parameter, but it's
-implementation specific, so I don't know what the point of that is.
-And I don't see a way for software to even detect the presence of such
-an adapter.
+Longer story: I am working on building a system which relies on custom RSS
+contexts, flow rules to associate flows with RSS contexts (and thus
+specific sets of queues), and epoll based busy poll. It's a long story ;)
 
-But I assume some end users will use adapters like this and expect it
-to "just work," so it would be nice if it did.
+I had considered changing the flow hash key to see if I could alter the
+behavior of the system I am working on, but I ran into both issues
+immediately (GRXFH and FLOW_RSS was not supported by mlx5, and SRXFH
+was broken) which led me down the path of attempting to fix both so that I
+could get and set the flow hash keys. I thought the code might be useful,
+so I submit it upstream -- I was not aware of the netlink work (but it
+looks really useful!).
 
-> As the Thinklife NVMe SSD may be a halted product, and the onboard
-> power circuit of VisionFive V2 is no problem, we decided revert the
-> sleep time to be 100ms.
-
-Even though the product may be end-of-life, people will probably still
-try to use it, and I would like it to work.  Otherwise we end up with
-frustrated users and problem reports that are hard to resolve.  But I
-don't know where to go here.
-
-Bjorn
+It seems that the Mellanox folks are OK with the proposed driver change,
+so I am going to send a v2 rebased on net-next with their requested changes.
