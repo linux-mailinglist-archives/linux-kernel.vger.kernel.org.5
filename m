@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C93761D00
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBF6761D06
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbjGYPKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S232428AbjGYPME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbjGYPKP (ORCPT
+        with ESMTP id S230376AbjGYPMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:10:15 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08621FF3;
-        Tue, 25 Jul 2023 08:10:08 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b8ad907ba4so29147565ad.0;
-        Tue, 25 Jul 2023 08:10:08 -0700 (PDT)
+        Tue, 25 Jul 2023 11:12:02 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2346F128;
+        Tue, 25 Jul 2023 08:12:02 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-563de62f861so7157a12.1;
+        Tue, 25 Jul 2023 08:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690297808; x=1690902608;
+        d=gmail.com; s=20221208; t=1690297921; x=1690902721;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
         bh=1K+i7mlSf2+UQsadMuz2ht79KN5VhwZVnNbPb9Y0ncE=;
-        b=gZsR9O+6lSmiy4LzYiS855WPSn4QWJUZ/0QmdmQdjPZHwinY1ruFsvPXiJlBbdzF+t
-         30IL6IxLhwbUE3aIyxxlTOlt2FiRPvNEmWxlxeTAAKdKdPPj2iF7Y4mtKnbQWr9FoJ4j
-         vHf1a+AtFuwAQw6eZ6p+hSgVCd3lWnnJHlkN8DRNCFyFPH+rkkGJFJN76AaM4tmf/1K7
-         xatywjfwJRxX8SbpfpEMZFtjaVn7lUY5+JY5qsAuxvyRyUAKajdXOKHl5Pj/ZjN3yXK/
-         tyf9MLJZ0NNivxqiUQElrUF6vo+Ex+ZfFByyZCMOCLFiVkjX7G1ffOy6H8fawau/yjtv
-         +jlQ==
+        b=Fuw2K/IiWZgWLZow/It4IMeAsOn9oA0KIRavpmmuefFzF0OEMS37Q0+sD9gLbhbn9M
+         baSNjKDfZybqhKMUmhHqUm/yYKWARfQqGHZALVfbgcxMvdztBlgm5P+64f6/KGT1rmhw
+         X1LzS6JF+VY59pm/0MMKt8cj/wkWIeheS2TEgP1NLRoJedV6xf8ujOxI3M/wQL5iv0TD
+         hISaaM+6w9lIF80bmnb/8TBiGC4lHI3POsuOzSp3U0HtNgRFLXkJAIEY8JaJMnB2RGUm
+         FkcL21SeZmjlzl6lyAf/odFonpohMDz2BdrBbwiTKtqYZozhp2lEUpu0mBheBx2pDBMr
+         /veA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690297808; x=1690902608;
+        d=1e100.net; s=20221208; t=1690297921; x=1690902721;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
         bh=1K+i7mlSf2+UQsadMuz2ht79KN5VhwZVnNbPb9Y0ncE=;
-        b=G5+E/ZmsDnycLrxyRQgUmr2+2ZDML2fmBRL1sorgpVxDc+YG4+pACdfLEYO4WAcpE0
-         zAwQ8ctvkIMC+nloaFH5zHgcrMFGB6VaD5h3j+O37VtLAjXYjGKFQerlefOUY92S5Z0g
-         CC+llx9q7y3IavOpuCkM19RScCcFJWxw7KRPjUUfCK3AsBDv6HsdGYRUCa/wCoQbVbWK
-         vAnO9NOqDAAnDR8G10vNdJ2Gal8QcfC1W21055bIjhvFO/QrK7G4XNvzTrrAtBYegGBb
-         h3j/y0eqyXCf0f342EATxNwmfDGWu8llvypnCDFz5ycRxqZ5DLyMxY2XrUZr/pdklfBt
-         EvGw==
-X-Gm-Message-State: ABy/qLZ6GP4EYt0LfOznRyTHLN4fOYIPFuAzzTXQbEUTPmiXKSXAz9tI
-        xHuaZSXObuptZJTUkOewZWp5riT0SQ8=
-X-Google-Smtp-Source: APBJJlFnx77ckpnQMESYR7HJ9waI0Jko3LiJyOZb8alJ21T+1O9EQ5Gu93l4HnQEf9LtqWAObpg2RA==
-X-Received: by 2002:a17:902:e805:b0:1b8:4e69:c8f7 with SMTP id u5-20020a170902e80500b001b84e69c8f7mr11932791plg.23.1690297808087;
-        Tue, 25 Jul 2023 08:10:08 -0700 (PDT)
+        b=hIHC6JaqqswLppq6awKk66+T1BgDcyNhtwCfT00275S3gcKKY4IgeaDHnPmhml/GKd
+         X3E1BTF8xnb9oQwDK3PKFbUHWwTqLeVrVoW+hU7xQfCuTn1BCtWXtl24hDLewSU23ZJO
+         wcEqhvtrByz7cLIyPfZ4C/6++rwwTFtjXngpEOtOiemudKHClIsjjvGvI2sRTK7bp5zd
+         kbQvAhmdBDQ/xs09+TMUmvNvw6ArIE83FgM9HeDLSteY07h6knBqFVoOEDllLlfKn2hh
+         c2ZVtYB6EaFumtdmKUOhSc3SQfRmCIn+5LQvQfc7OVCaRuXp0XfhVfR0WZoC3i/frcJo
+         9zxg==
+X-Gm-Message-State: ABy/qLZyRnIelF+dHorQCgLHHQxpyeA2zGlyJSschPIbKHdpyXZ7Q1ys
+        J73CTpa9EMuSWcfrepNzNgA=
+X-Google-Smtp-Source: APBJJlFzRkJFGHJD6i4My0dQn8buh5u10emnPTWynCNoKwvLzyLDMgHocPqch0Xif0RMyK/R1W7D5A==
+X-Received: by 2002:a05:6a00:9a0:b0:686:baf2:35f4 with SMTP id u32-20020a056a0009a000b00686baf235f4mr388055pfg.29.1690297921510;
+        Tue, 25 Jul 2023 08:12:01 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d1-20020a170902728100b001a5260a6e6csm11174298pll.206.2023.07.25.08.10.07
+        by smtp.gmail.com with ESMTPSA id m7-20020aa79007000000b006636c4f57a6sm9793039pfo.27.2023.07.25.08.12.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:10:07 -0700 (PDT)
+        Tue, 25 Jul 2023 08:12:01 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 25 Jul 2023 08:10:06 -0700
+Date:   Tue, 25 Jul 2023 08:12:00 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     James Seo <james@equiv.tech>
 Cc:     Jean Delvare <jdelvare@suse.com>,
@@ -60,7 +60,7 @@ Cc:     Jean Delvare <jdelvare@suse.com>,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] hwmon: (hp-wmi-sensors) Initialize pevents in
  hp_wmi_sensors_init()
-Message-ID: <324b865f-9afb-43cf-8a84-b16c360fbcce@roeck-us.net>
+Message-ID: <46734914-d323-44b3-8e97-b34aa4fc9f89@roeck-us.net>
 References: <20230725094817.588640-1-james@equiv.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
