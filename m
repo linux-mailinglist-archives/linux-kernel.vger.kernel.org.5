@@ -2,200 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFB976272B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBBE76272D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjGYXFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S231561AbjGYXFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjGYXFN (ORCPT
+        with ESMTP id S231294AbjGYXFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:05:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770B5E7;
-        Tue, 25 Jul 2023 16:05:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 132DB61926;
-        Tue, 25 Jul 2023 23:05:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 790C3C433C7;
-        Tue, 25 Jul 2023 23:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690326311;
-        bh=8u87rzOYUB7/c0OvMvcaBKrY8ZfQ238ZrdAu8eLiTwg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hsDb2Qjx8BUPWaF60ohr/F1CAxiNAoYO7jMn5YnLaysGynJ+IZm/QXijsZDnt1HPA
-         08j6hV8YMhhfQjtB3GaOiC6C1YyBtgcy5XG65sPdmuDKHCFmSNKgReuEgpcXocFQ1T
-         7j0TrtViuUMXIISXWkBd/7eh47cxhlcm9JEHq3jVd8hvvjF1lmEpWyyWWMHFVzoAMO
-         Wcq+/YOGCwbym2N/CK/9NJB1LyYRLs5f0IH0ykG5WOGnUr+Rz5A/cL/ZZszkedH3uI
-         20IaHZDrDMZAxmfg1NRj1Mr5fDkABbYj/MPkbSJ06vKVr/wiQEx1bz1M0w2mTehfL1
-         k1v9V9DuZp6wg==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso90630761fa.1;
-        Tue, 25 Jul 2023 16:05:11 -0700 (PDT)
-X-Gm-Message-State: ABy/qLaaG97ixLESOiv+kDbzXjxD6RgeeccdQe3Q5+4WpWAiXbQQf9L+
-        nN4suHDRtjnLbk2W/BS6h8MfSkY1J3cX2GhVuA==
-X-Google-Smtp-Source: APBJJlGiuk90Ip8gZC0eU2XxptJIjyvn4OaCBsXt9I6gU9jTBi07iiZP0B89Sux6tgm+ZK1Mh1tlaz8wsswH5R/ur4Y=
-X-Received: by 2002:a2e:9556:0:b0:2b6:c2e4:a57a with SMTP id
- t22-20020a2e9556000000b002b6c2e4a57amr110000ljh.38.1690326309410; Tue, 25 Jul
- 2023 16:05:09 -0700 (PDT)
+        Tue, 25 Jul 2023 19:05:30 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A1DE47;
+        Tue, 25 Jul 2023 16:05:25 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6689430d803so3759773b3a.0;
+        Tue, 25 Jul 2023 16:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690326325; x=1690931125;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5+Rj5HE+U7eILrOCnywUgryQcn05XBMLVDPwImnu2yQ=;
+        b=fdLyJVPOR/Q7tVlvJo9S4VR7dGrlRV+GhT9Tia9yYAq+3mpyNrJ42gC7S34jT8qQIh
+         nSEuAvM9051/3Vj1Z7Tl+qFsp41VWqUylatlnrcdsQ8F+n2aoPv7f0bha4ZDy6HeJ18t
+         4YFIm5JXkn0nFRbJWowSE1aRhwOcgTQFPDibwfFffEovnBMuKcxIuHYaCt08oUoO9kfn
+         ZytoPsiBND2zT05LtikjbUpq+OrEVUqZp4tPwHhBlL4M3fq7H7xVGffFJQfrcy67SXAs
+         QzjO5sjRRGj1Y6K91mpcj670616djZ9e5Pq3MzrNaN8HGWJ4JQHM6BUoqauwdGgPWk6m
+         I/ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690326325; x=1690931125;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5+Rj5HE+U7eILrOCnywUgryQcn05XBMLVDPwImnu2yQ=;
+        b=bV8FYvd2JysDNBuAVYJS+Le5TBtIbzZJrvqInS4KrMBs74ZRO1cPJP3efZhsW8HZVv
+         Nv+yJP0D4pA0vCxhocZhsuGWG9QGJ94WyzDHAemHIH9E8M66IKdxGWW0J4R8bYh+yc/4
+         sgPy8BwEbFgxIshGWdcUepaeq2KTd54XajcCTfBYn++0jM+THuHqjvo34Wiv/xEecYHg
+         Bd7MocAWHyOIbaKbX7o0chmmyWqv4oVk8alxIoCaRXN0jEsAFDj1RXFio7WxeRTwyGDa
+         1Yp4a/e4NkoKBlrxem+OKYVfw5fDwrB9tvObQVkXj33XNiuxSOaGtgA+KMYCM+bc7HyN
+         NlsQ==
+X-Gm-Message-State: ABy/qLZ3+3XIudwubJNyAyH1ArINPgGKBCUSOl5QPmScHdxsfWmaRiei
+        vG1NN0BHJa5Iln/5geYw7RE=
+X-Google-Smtp-Source: APBJJlHi3dgidEaSE0dFIGHL5Now0nZ4TpUmbeH8G3nq5VuJfWmw5hdmCqVsCKwY6/udTT+GDgUapQ==
+X-Received: by 2002:a05:6a20:9697:b0:133:ec83:598 with SMTP id hp23-20020a056a20969700b00133ec830598mr308514pzc.28.1690326325180;
+        Tue, 25 Jul 2023 16:05:25 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c16-20020aa78810000000b006828ee9fdaesm10082027pfo.127.2023.07.25.16.05.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 16:05:24 -0700 (PDT)
+Message-ID: <19226f61-7e47-eaab-f463-50b88ae1f2f0@gmail.com>
+Date:   Tue, 25 Jul 2023 16:05:22 -0700
 MIME-Version: 1.0
-References: <1690323318-6103-1-git-send-email-lizhi.hou@amd.com> <1690323318-6103-3-git-send-email-lizhi.hou@amd.com>
-In-Reply-To: <1690323318-6103-3-git-send-email-lizhi.hou@amd.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 25 Jul 2023 17:04:57 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLoJzqnXtJ4BZZo6Y5fVz7PW701968K1VkZX93oKzxf5w@mail.gmail.com>
-Message-ID: <CAL_JsqLoJzqnXtJ4BZZo6Y5fVz7PW701968K1VkZX93oKzxf5w@mail.gmail.com>
-Subject: Re: [PATCH V11 2/5] PCI: Create device tree node for bridge
-To:     Lizhi Hou <lizhi.hou@amd.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230725104514.821564989@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230725104514.821564989@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 4:15=E2=80=AFPM Lizhi Hou <lizhi.hou@amd.com> wrote=
-:
->
-> The PCI endpoint device such as Xilinx Alveo PCI card maps the register
-> spaces from multiple hardware peripherals to its PCI BAR. Normally,
-> the PCI core discovers devices and BARs using the PCI enumeration process=
-.
-> There is no infrastructure to discover the hardware peripherals that are
-> present in a PCI device, and which can be accessed through the PCI BARs.
->
-> Apparently, the device tree framework requires a device tree node for the
-> PCI device. Thus, it can generate the device tree nodes for hardware
-> peripherals underneath. Because PCI is self discoverable bus, there might
-> not be a device tree node created for PCI devices. Furthermore, if the PC=
-I
-> device is hot pluggable, when it is plugged in, the device tree nodes for
-> its parent bridges are required. Add support to generate device tree node
-> for PCI bridges.
->
-> Add an of_pci_make_dev_node() interface that can be used to create device
-> tree node for PCI devices.
->
-> Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
-> the kernel will generate device tree nodes for PCI bridges unconditionall=
-y.
->
-> Initially, add the basic properties for the dynamically generated device
-> tree nodes which include #address-cells, #size-cells, device_type,
-> compatible, ranges, reg.
->
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
-> ---
->  drivers/pci/Kconfig       |  12 ++
->  drivers/pci/Makefile      |   1 +
->  drivers/pci/bus.c         |   2 +
->  drivers/pci/of.c          |  96 +++++++++++++++-
->  drivers/pci/of_property.c | 232 ++++++++++++++++++++++++++++++++++++++
->  drivers/pci/pci.h         |  12 ++
->  drivers/pci/remove.c      |   1 +
->  7 files changed, 354 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/pci/of_property.c
->
-> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-> index 3c07d8d214b3..49bd09c7dd0a 100644
-> --- a/drivers/pci/Kconfig
-> +++ b/drivers/pci/Kconfig
-> @@ -194,6 +194,18 @@ config PCI_HYPERV
->           The PCI device frontend driver allows the kernel to import arbi=
-trary
->           PCI devices from a PCI backend to support PCI driver domains.
->
-> +config PCI_DYNAMIC_OF_NODES
-> +       bool "Create device tree nodes for PCI devices"
-> +       depends on OF
-> +       select OF_DYNAMIC
-> +       help
-> +         This option enables support for generating device tree nodes fo=
-r some
-> +         PCI devices. Thus, the driver of this kind can load and overlay
-> +         flattened device tree for its downstream devices.
-> +
-> +         Once this option is selected, the device tree nodes will be gen=
-erated
-> +         for all PCI bridges.
-> +
->  choice
->         prompt "PCI Express hierarchy optimization setting"
->         default PCIE_BUS_DEFAULT
-> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-> index 2680e4c92f0a..cc8b4e01e29d 100644
-> --- a/drivers/pci/Makefile
-> +++ b/drivers/pci/Makefile
-> @@ -32,6 +32,7 @@ obj-$(CONFIG_PCI_P2PDMA)      +=3D p2pdma.o
->  obj-$(CONFIG_XEN_PCIDEV_FRONTEND) +=3D xen-pcifront.o
->  obj-$(CONFIG_VGA_ARB)          +=3D vgaarb.o
->  obj-$(CONFIG_PCI_DOE)          +=3D doe.o
-> +obj-$(CONFIG_PCI_DYNAMIC_OF_NODES) +=3D of_property.o
->
->  # Endpoint library must be initialized before its users
->  obj-$(CONFIG_PCI_ENDPOINT)     +=3D endpoint/
-> diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> index 5bc81cc0a2de..ab7d06cd0099 100644
-> --- a/drivers/pci/bus.c
-> +++ b/drivers/pci/bus.c
-> @@ -340,6 +340,8 @@ void pci_bus_add_device(struct pci_dev *dev)
->          */
->         pcibios_bus_add_device(dev);
->         pci_fixup_device(pci_fixup_final, dev);
-> +       if (pci_is_bridge(dev))
-> +               of_pci_make_dev_node(dev);
->         pci_create_sysfs_dev_files(dev);
->         pci_proc_attach_device(dev);
->         pci_bridge_d3_update(dev);
-> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> index e51219f9f523..11d3be165e32 100644
-> --- a/drivers/pci/of.c
-> +++ b/drivers/pci/of.c
-> @@ -495,8 +495,21 @@ static int of_irq_parse_pci(const struct pci_dev *pd=
-ev, struct of_phandle_args *
->                  * to rely on this function (you ship a firmware that doe=
-sn't
->                  * create device nodes for all PCI devices).
->                  */
-> -               if (ppnode)
-> -                       break;
-> +               if (ppnode) {
-> +                       /*
-> +                        * When PCI_DYNAMIC_OF_NODES is on, a device tree
-> +                        * node will be generated for PCI bridge. For the
-> +                        * dynamically generated node, interrupt mapping =
-is
-> +                        * not supported. Thus, it needs to check interru=
-pt-map
-> +                        * property and set ppnode to NULL to do standard
-> +                        * swizzling if interrupt-map does not present.
-> +                        */
-> +                       if (IS_ENABLED(CONFIG_PCI_DYNAMIC_OF_NODES) &&
-> +                           !of_property_present(ppnode, "interrupt-map")=
-)
-> +                               ppnode =3D NULL;
+On 7/25/23 03:42, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.7 release.
+> There are 227 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-We cannot use a kconfig option to determine behavior. You don't get to
-decide the value of the kconfig option. The OS distro does. As I've
-said in the past, the kconfig option is not a long term solution. You
-need things to work the same way whether PCI nodes were populated
-before the kernel runs or dynamically.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-Perhaps what you need to do is read PCI_INTERRUPT_PIN and if it's
-non-zero for a device, populate 'interrupts' property using the value.
-Then the standard DT interrupt parsing code should work. That code
-will walk up nodes until it finds the host bridge interrupt-map.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-Rob
