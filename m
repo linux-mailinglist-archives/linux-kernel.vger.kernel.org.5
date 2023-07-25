@@ -2,174 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6C07622AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924197622AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjGYTvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        id S231446AbjGYTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjGYTu5 (ORCPT
+        with ESMTP id S230403AbjGYTvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:50:57 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2118.outbound.protection.outlook.com [40.107.102.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA41510D4;
-        Tue, 25 Jul 2023 12:50:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LylnVk7WW1C4HJ6pXjS0nhai3RStKXiXBOjvye0qfbXzFhbOLLLmKuGp7YcdBG9hE6N1HzyHlptGIkt0j4kK/CkmYdnezMmt1yCNOiBrj73bHcfINejzFKddVrjXPOr1WBTIOo6hdq5LqLX5IOhbwz6UQxdPveUv8jvsX/+FG5VGZQdSv6CUpjBsN9IOXkoKDCo+0MMSgLYaUBGQmhCr5iCr4dhGGaJJZo4JpR6OdGh4Wd1qMK5DQKsgdFJu14mItEGDe/BzMvXFDNYWxCh3jBdtWKdYBuRi0Mjs/I59AzBT1ssdWufFU9NzJs/FAOtjlJh3kbMExO49Ipp4gv6spg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sIZFrdAvnjdSbi5tBtDX7CsMXQwWH7kGYs9tRGOOTQE=;
- b=c5uSGWd5WlUZDsfXWUav0tTS6z0OJY+wn/gJSS/xTABedh3KT9ymJSlVrUKHPIV+pCvk91XLBk78NUx0BnGc19C+AVHBvNQJrc+ylJ1V8SYUkneieAGVRB0zVSYySr3pFWzP+MTf3CuuKlH8uPjYyaa5iFRCWx38BMZJNnMaD7kGHZh1rXIyvVp+r/x4sC5W+F5mQuFtPowJP265fEMjkqTTKyZSd3Mes6rGx5bq2oHmrblMkdHRv8RK6F0CgY2rpZXPfD06EU3MmYv4gq1yRIWA5nox19XuiNA1RjkWuvYF3MvlhxRWjuYVmqf663BDdKwx0qDEv4nN85Cu2XPSYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+        Tue, 25 Jul 2023 15:51:05 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F56F1FF7;
+        Tue, 25 Jul 2023 12:51:03 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba48b0bd2so15313795ad.3;
+        Tue, 25 Jul 2023 12:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sIZFrdAvnjdSbi5tBtDX7CsMXQwWH7kGYs9tRGOOTQE=;
- b=klaL49PqRyItwYhvTaqnmeLqrxiy8AtDL6EQveFnxaIoppg0u7caujRdy0fIt/HXx2OUXAnVofymR8p502YUw93ECv0uL52e2P1UKLsL8QQ3r91Hdb5zR26b8wYtO5ipG3EGOe+uhdhPX6EQxm2jYWb8LzTBlKfHg7I8ud54i3Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH0PR13MB5297.namprd13.prod.outlook.com (2603:10b6:510:f5::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Tue, 25 Jul
- 2023 19:50:53 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 19:50:53 +0000
-Date:   Tue, 25 Jul 2023 21:50:43 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH net-next] flow_dissector: Add IPSEC dissectors
-Message-ID: <ZMAnk5Kl3qp17fko@corigine.com>
-References: <20230725032451.505189-1-rkannoth@marvell.com>
+        d=gmail.com; s=20221208; t=1690314663; x=1690919463;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dM6PVN/UVPsx9akBfcdMrUXeZyjQENh7tRqhuMoKNtg=;
+        b=hAb3Qm1QG+r6tIyuVNrs1EeeIUiPm8r80oQw5K4H7lWeg8XWu4UhqKUBnn+ESLSFGv
+         iEfLyh+HD0ES08w5+8Zu7RaztH01hkAC7pjqNqk4v6rvTGUPHwBqBg7dpwijLb6UX76t
+         i7VGX5PnSAcYablL/o3ZvFvxoC9gotU8oWRnAIWHnkud0xahYmAuDdiKhnQxj2l/5Mnj
+         aA18idNdYQyLdLDpndVOBsDRi0fpkxE5X34mc0W0QxbKh8K4CHBHGUjsiV6oqUjSmR0a
+         Oi2bGnCsPNrxeUCdmQFiK3BbQG18xxIOoErzLhGfqC0ZZWxcsJ1GXyI2oqm1LNVnmT8N
+         gy2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690314663; x=1690919463;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dM6PVN/UVPsx9akBfcdMrUXeZyjQENh7tRqhuMoKNtg=;
+        b=IQ1HZj1wLVnUocofr+Bxm+nsQIE8Qj/gwtVaf3yfsut4fO7gEIk8yszV20c+8305uz
+         /V4giPAMGjCQEufhCkcly2ln+K/vUwXThr07eTteLmDjVSLB5DPy+fMDxxAlGnBxj5XS
+         EaJVYsLPPUNWVLHIx7lKqMjRWJwW3wHDgSxpyCAsFz+lMbOEe+lwwyrh181C6TUN/vHK
+         qIGOdqZqGJWAXtnelX0ChaxBegH6ftHih7+cQPoJIhkF/wuHfDyXP2tW3ABdBIdUD5Or
+         lWrncMU/iRR7Fk6L4VQVbD//3a4zq4lDsXfeYe3Z5OMZ1GMDoWfEqw8qsaIscM3uEzxi
+         Uv8w==
+X-Gm-Message-State: ABy/qLb5njZHCt9i2wd6ebbrYcax1pVznitnmB8YR9UEH42+/ChtdDJ1
+        yWhBXw2ptec7KqGNn6rQPVA=
+X-Google-Smtp-Source: APBJJlGbkUe5BvV7or4sKMrmi21B5+NOUzEkmj8GDIfZZSZBwAgtngWYUPce3WJQcRB2njJdSxqM6A==
+X-Received: by 2002:a17:902:c3d5:b0:1b8:77b3:6bf6 with SMTP id j21-20020a170902c3d500b001b877b36bf6mr113591plj.33.1690314662876;
+        Tue, 25 Jul 2023 12:51:02 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:83ca:1b31:2c:d986])
+        by smtp.gmail.com with ESMTPSA id x2-20020a170902820200b001bb750189desm8409174pln.255.2023.07.25.12.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 12:51:02 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 12:50:59 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Silvan Jegen <s.jegen@gmail.com>
+Cc:     linux-input@vger.kernel.org, Yangtao Li <frank.li@vivo.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] Input: tca6416-keypad - switch to using input core's
+ polling features
+Message-ID: <ZMAno7jWmlBZpAO/@google.com>
+References: <20230724053024.352054-1-dmitry.torokhov@gmail.com>
+ <20230724053024.352054-5-dmitry.torokhov@gmail.com>
+ <2KN6Z0RZYGDKU.2GGSSC8MYU6GX@homearch.localdomain>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725032451.505189-1-rkannoth@marvell.com>
-X-ClientProxiedBy: AS4P190CA0045.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d1::16) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB5297:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d015b64-fd28-4e8e-e799-08db8d48743e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6tQLgncjiXCHHwJUyT+rc/fnjL4VEsH2RGG3XrPd3hKe2ALWbaTT3xT3/Wdk+7beDSIJ1Hii9dsCnU/poTu5sf8IWwbwPZgBKmJS7tU9LSmvX69I1R5HqwGcAR9Tc9BMcHm0l3+JT5K/vcwGCF2eyFNVs3Vyq+YuI3CdaeQbnfvYA6bYQYqs0Xm+w6yIEMcsIlLHk9LoCRirYCWUtv1IKxydVFKcJIxvGB40RcSjmXHtL1j7pHLXgJfLGOG7sv3vPaPHyQ8wlk/7mSYcKu7C9MBuLNMjaot4dnYS4iXTtvfi6TPX3bvK4gx+i1K8HGRrfrkIfurI26LYu+z3Ew12TM5I0d1tcu7V5MqaAQ9Z/npo1HQxWxg3wZBRmY47NhdEZo1SPp/r9jJ51jbt5mYyDHOIzB86mCnpZRztXQwdZBJL5bhCSROYdoafTvzcowrMAP9xSnzu1H5yoaObLDEkWmiiHTluzaPRBuCmje8SQUmWFIkTAK7vpBkQ1lezJh+a8KjmKd6rChebka/I07O84wAEiku1PVE1IAVx2YRnUmKEXAQVWVrWQFTBT7Mhs/OVJJZa0o8mjMmktz9CUF163JFflzwfPQV6fnJLtdP6/ZU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(376002)(366004)(39840400004)(451199021)(41300700001)(6506007)(186003)(83380400001)(478600001)(2616005)(6666004)(6512007)(2906002)(6486002)(86362001)(36756003)(7416002)(44832011)(6916009)(5660300002)(66946007)(4326008)(66556008)(66476007)(8936002)(8676002)(316002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rEd2o5jmg9xd1rSqNv5w1LPEQexgqIAmxQ84NicQkeKFNUDD+GoDwW7hRcF3?=
- =?us-ascii?Q?/xiNaBETv5p9Gd+sYNlg2XrUQMV6a0qk0DIqhAINliCkVr2l8TKl9J4bAo7d?=
- =?us-ascii?Q?RkLeCxejDdHO+kBEjQ8+mPqO+oXWWAdiKw+hlMwOUDTEzA6YIzPTQlYiYBYn?=
- =?us-ascii?Q?Wb7HqsI0XB/4RTf9P2qTZT8Eu5T8XmRjST+D3aXaKgHQB6A3U5WUg1hE5n9W?=
- =?us-ascii?Q?8ByqpNfZ5ZvSVxOFqSeZyQNZXpMiWQAWhsXVJxC+h0TIUHHggvS/V2jE7BMc?=
- =?us-ascii?Q?rJXBpCyVuMh3Xj4udEFPTLNRAs1Y30Mj1/uAvzSIJqwMsHRXr5vX9NMGoDJz?=
- =?us-ascii?Q?LB1BSRPjlBpb047gFSfAAPwboizWXX2iumKewTUmtSxHWp4cnQx/Ia3vA4Bz?=
- =?us-ascii?Q?DeNsOCjkjNB2YJJRm8WsgwAhzFFDbgsrEuHuXzwnR5wEM0Alu8euxv3qTeS/?=
- =?us-ascii?Q?vwx5aflJnsQKKaUOe7Caz30qUF0jPK0tbXJqC5XHFHTykRElnHT0jF1lASGr?=
- =?us-ascii?Q?UDoNruIoNxJ1d4wyobWd6CfZCQ3gbuUyz9szWNKrzVHYBZFyRXGoApyxD9Ur?=
- =?us-ascii?Q?GiGw1hlxFiq3RM2X2cauEOw7HaSLqVFazGrIolPloIuqo6bFY9t9FvEpEcUl?=
- =?us-ascii?Q?hxG555T404rDsEYhomlVLKJ5gIE6Q2KiAbOwjKej+UmJiOx0hd+HNmsGXUHI?=
- =?us-ascii?Q?Cgf3IqxBjg4xXfm9WAQDl6GI3WtC7VjPDxWT8Pve0+Jgh8kiPeQ60TtAMlX6?=
- =?us-ascii?Q?FuJKqaTLHzvz/aXusOc0Y4Lybglg7u8rVUReDVR/TNW5Y0aVgA8G0dmOh3Ep?=
- =?us-ascii?Q?zOBJ3VCnlzDX3gPpDfBcAp/ygGSn8v+5JWr+MJ5Ngoks3lZ5yNxQ9wPLKjAw?=
- =?us-ascii?Q?j+/bkRTj5OyitbLAy9SBPid1qdXFJ02OyauUDzxUWLRQqiDola5PiNfm/hJs?=
- =?us-ascii?Q?KohqXF0v4BLHOVH9p3FdNoY+JjmmAJgtdxcj9kt0NWF+ZERgl8r5sLNPUymT?=
- =?us-ascii?Q?S3337VNbPToYq6l0h0XZtXqLT/MWAPtVHxHeJ4BAU7acDe1kKEulFO9QB52N?=
- =?us-ascii?Q?a4r1z15+wyL2bkdItlnzixGw8PCjQt8cgd6Jspoi84V/rYlOnYhogfO+aGoL?=
- =?us-ascii?Q?2dXoQYPbKk5GBO87v4la4Qn7cFLgCI34olx9P2VZWFAv7X6CSED8WoB9M8aF?=
- =?us-ascii?Q?zmbmbok82RPm037IRjjTUI+ZCVfIf7hMp2uuJHkWNhfynQFP8KNdMKqow9iq?=
- =?us-ascii?Q?tHGtJxKDksY3zn4k+qw4IMLXTnnJQ4aCHHxh7XCfdG5yMQBl6xu+iN/is9rt?=
- =?us-ascii?Q?gaIGQWCg7/Y7eSYgGM0zLl6emqMvOlMjBotvVkS1vPfn6acATsUoOjAvZVzL?=
- =?us-ascii?Q?YT/ONLDEH7CYY67Hm32h2HCcvJojpFYPbQIrkj8YMyfGvpUv3F3Be3tiq6zK?=
- =?us-ascii?Q?iZrqDRdF1LO1yEGOWp5Zct7nByOrPSGpeqalEYO5QdOHWr7jiVSflneiDg+a?=
- =?us-ascii?Q?e3lu3YulCCV/Fc6gMq9xYWw9FGZZt3QQ+PIV4f6Y4YatV+RSneB2EmpeE29F?=
- =?us-ascii?Q?CqloeJtehTGV/baESyC1PH3RU+7m2EcOiQMf664reJHCvQgKEPtaE10qHJiW?=
- =?us-ascii?Q?5WRqLP2mrFqlaBU6tynqzkERK7b1gIIkno7pEZzmNIAGeQmFbCUqC4KYCOqb?=
- =?us-ascii?Q?rdVUFQ=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d015b64-fd28-4e8e-e799-08db8d48743e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 19:50:53.2802
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1hmpqVQgFhuOHJ1qIxLZ5r/C+VQB1L/sMvrUyz4wOPGr89l8mpu9+hy6jnbv3TULe6zlY2X1+xQZQkpvSQXUOGGbNj4Si7P9/3RifSGhkPQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5297
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2KN6Z0RZYGDKU.2GGSSC8MYU6GX@homearch.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:54:51AM +0530, Ratheesh Kannoth wrote:
+On Tue, Jul 25, 2023 at 09:43:12PM +0200, Silvan Jegen wrote:
+> Hi
+> 
+> Just one question below.
+> 
+> Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> > Instead of rolling custom polling implementation use input core
+> > facilities.
+> > 
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> >  drivers/input/keyboard/tca6416-keypad.c | 46 ++++++++++---------------
+> >  1 file changed, 19 insertions(+), 27 deletions(-)
+> > 
+> > diff --git a/drivers/input/keyboard/tca6416-keypad.c b/drivers/input/keyboard/tca6416-keypad.c
+> > index ff665319791e..ebc8b9561266 100644
+> > --- a/drivers/input/keyboard/tca6416-keypad.c
+> > +++ b/drivers/input/keyboard/tca6416-keypad.c
+> > @@ -24,6 +24,8 @@
+> >  #define TCA6416_INVERT         2
+> >  #define TCA6416_DIRECTION      3
+> >  
+> > +#define TCA6416_POLL_INTERVAL	100 /* msec */
+> > +
+> >  static const struct i2c_device_id tca6416_id[] = {
+> >  	{ "tca6416-keys", 16, },
+> >  	{ "tca6408-keys", 8, },
+> > @@ -43,7 +45,6 @@ struct tca6416_keypad_chip {
+> >  
+> >  	struct i2c_client *client;
+> >  	struct input_dev *input;
+> > -	struct delayed_work dwork;
+> >  	int io_size;
+> >  	int irqnum;
+> >  	u16 pinmask;
+> > @@ -85,9 +86,9 @@ static int tca6416_read_reg(struct tca6416_keypad_chip *chip, int reg, u16 *val)
+> >  	return 0;
+> >  }
+> >  
+> > -static void tca6416_keys_scan(struct tca6416_keypad_chip *chip)
+> > +static void tca6416_keys_scan(struct input_dev *input)
+> >  {
+> > -	struct input_dev *input = chip->input;
+> > +	struct tca6416_keypad_chip *chip = input_get_drvdata(input);
+> >  	u16 reg_val, val;
+> >  	int error, i, pin_index;
+> >  
+> > @@ -122,33 +123,20 @@ static void tca6416_keys_scan(struct tca6416_keypad_chip *chip)
+> >   */
+> >  static irqreturn_t tca6416_keys_isr(int irq, void *dev_id)
+> >  {
+> > -	struct tca6416_keypad_chip *chip = dev_id;
+> > -
+> > -	tca6416_keys_scan(chip);
+> > +	tca6416_keys_scan(dev_id);
+> >  
+> >  	return IRQ_HANDLED;
+> >  }
+> >  
+> > -static void tca6416_keys_work_func(struct work_struct *work)
+> > -{
+> > -	struct tca6416_keypad_chip *chip =
+> > -		container_of(work, struct tca6416_keypad_chip, dwork.work);
+> > -
+> > -	tca6416_keys_scan(chip);
+> > -	schedule_delayed_work(&chip->dwork, msecs_to_jiffies(100));
+> > -}
+> > -
+> >  static int tca6416_keys_open(struct input_dev *dev)
+> >  {
+> >  	struct tca6416_keypad_chip *chip = input_get_drvdata(dev);
+> >  
+> > -	/* Get initial device state in case it has switches */
+> > -	tca6416_keys_scan(chip);
+> > -
+> > -	if (chip->use_polling)
+> > -		schedule_delayed_work(&chip->dwork, msecs_to_jiffies(100));
+> > -	else
+> > +	if (!chip->use_polling) {
+> > +		/* Get initial device state in case it has switches */
+> > +		tca6416_keys_scan(dev);
+> >  		enable_irq(chip->client->irq);
+> > +	}
+> >  
+> >  	return 0;
+> >  }
+> > @@ -157,9 +145,7 @@ static void tca6416_keys_close(struct input_dev *dev)
+> >  {
+> >  	struct tca6416_keypad_chip *chip = input_get_drvdata(dev);
+> >  
+> > -	if (chip->use_polling)
+> > -		cancel_delayed_work_sync(&chip->dwork);
+> > -	else
+> > +	if (!chip->use_polling)
+> >  		disable_irq(chip->client->irq);
+> >  }
+> >  
+> > @@ -232,8 +218,6 @@ static int tca6416_keypad_probe(struct i2c_client *client)
+> >  	chip->pinmask = pdata->pinmask;
+> >  	chip->use_polling = pdata->use_polling;
+> >  
+> > -	INIT_DELAYED_WORK(&chip->dwork, tca6416_keys_work_func);
+> > -
+> >  	input->phys = "tca6416-keys/input0";
+> >  	input->name = client->name;
+> >  
+> > @@ -268,12 +252,20 @@ static int tca6416_keypad_probe(struct i2c_client *client)
+> >  		return error;
+> >  
+> >  	if (!chip->use_polling) {
+> 
+> Sorry for my ignorant question but it seems counterituitive that we set
+> up polling when chip->use_polling is false. Is this intended?
 
-...
+Nope, this is my brain fart. Thanks for noticing! I'll fix up the
+condition before committing...
 
-> diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
-> index 8664ed4fbbdf..ffec739f049a 100644
-> --- a/include/net/flow_dissector.h
-> +++ b/include/net/flow_dissector.h
-> @@ -301,6 +301,14 @@ struct flow_dissector_key_l2tpv3 {
->  	__be32 session_id;
->  };
->  
-> +/**
-> + * struct flow_dissector_key_ipsec:
-> + * @spi: identifier for a ipsec connection
-> + */
-> +struct flow_dissector_key_ipsec {
-> +	__be32 spi;
-> +};
-> +
->  /**
->   * struct flow_dissector_key_cfm
->   * @mdl_ver: maintenance domain level (mdl) and cfm protocol version
-> @@ -353,6 +361,7 @@ enum flow_dissector_key_id {
->  	FLOW_DISSECTOR_KEY_NUM_OF_VLANS, /* struct flow_dissector_key_num_of_vlans */
->  	FLOW_DISSECTOR_KEY_PPPOE, /* struct flow_dissector_key_pppoe */
->  	FLOW_DISSECTOR_KEY_L2TPV3, /* struct flow_dissector_key_l2tpv3 */
-> +	FLOW_DISSECTOR_KEY_IPSEC, /* struct flow_dissector_key_ipsec */
->  	FLOW_DISSECTOR_KEY_CFM, /* struct flow_dissector_key_cfm */
->  
->  	FLOW_DISSECTOR_KEY_MAX,
-
-...
-
-Hi Ratheesh,
-
-With this change, this enum now has 33 values, excluding
-FLOW_DISSECTOR_KEY_MAX.  I.e the range of values is from 0 to 32.
-
-But dissector_uses_key() looks like this:
-
-
-static inline bool dissector_uses_key(const struct flow_dissector *flow_dissector,
-                                      enum flow_dissector_key_id key_id)
-{
-        return flow_dissector->used_keys & (1 << key_id);
-}
-
-And the type of the used_keys field of struct flow_dissector
-is unsigned int, a 32bit entity.
-
-So an overflow will now occur if key_id is FLOW_DISSECTOR_KEY_CFM.
-
-This is flagged by Sparse.
+Thanks.
 
 -- 
-pw-bot: changes-requested
+Dmitry
