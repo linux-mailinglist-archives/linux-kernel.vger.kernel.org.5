@@ -2,119 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBEB7609BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B767609BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjGYFsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        id S231545AbjGYFtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjGYFsq (ORCPT
+        with ESMTP id S231670AbjGYFtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:48:46 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3C1199F
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:48:41 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-992f6d7c7fbso882106866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690264120; x=1690868920;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=db7jObuhHF5sO1ePbYpHVcEiKjDc4AYN49BBeUvqECE=;
-        b=UuaUcf3CmpCgrW5PsVKEmQgCz3EJHaf8rOb4ERiRmyqNhnvOTZDRNTk8u56apWlSsk
-         +ZwnvA/g18ZgmMPdrP4qg0k3HgliHUeC4eMrisJ8kFJ3zu28FQAhv6q9CfBybbhK6nTX
-         l+ERY1J8CUCBj9teR7lio/JnVO6RV9uvyqTEl7RiguGQ4C+w65qwQV25HtS47hginbGw
-         WdG3+UaQZQMGshXKXQ2gy1AAl3WX0zuV57t/hn+POyk+RIxfD46l8bq6qEQq5mFLQvek
-         QI5XZnNINNfBPAyhJSfzHeNp7U8raLVuvxNSx180swydfbYfvv7YP43nQK1UV/nG5iMU
-         JnBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690264120; x=1690868920;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=db7jObuhHF5sO1ePbYpHVcEiKjDc4AYN49BBeUvqECE=;
-        b=E6BPaye/UoODJRjgV50TUlnGB/nAw52pzoHqely4KO0V32IJTJgCtP/0jQc+ZzNAnT
-         poVSFPIaWsTvhhNKW2F5qMCUdK1TarvOvCbGEgv/TNRxJ3BDRW5euE6huvefsiOBDe44
-         kgYEgRMaw20RS7aD5sEliCJpBnZxzRgJG49ewNCou6exH/xDKdZvtJSbL3T3rIus71C5
-         VuML6CcS44rAKxhNpb4uZwJPETcf/uIqkjCNbrdyPz+WUknD0KlgN2izukqRl2cIoGWJ
-         mZCZKtbdEZA9+ANbnesb2LQI8GVxFnIyRlxuPNYcw5lX7V7Sj6LmNaxhA4HVZ4fiVVux
-         pcig==
-X-Gm-Message-State: ABy/qLboWMS9oxSITTGDOCOLn8VA1BFtdfBSgqjWee7TC0KFzP6W0SZE
-        4leElWEUV13ed3eQYTHJ3DOp3w==
-X-Google-Smtp-Source: APBJJlGb3BfaT/FbfT9ufyHI/2h8HJmGpgTI1AqQItq9xpeW6o4NshTDmzGPvVhmWrODWiH5qYV5Ew==
-X-Received: by 2002:a17:907:2717:b0:997:e791:e823 with SMTP id w23-20020a170907271700b00997e791e823mr11198027ejk.28.1690264119812;
-        Mon, 24 Jul 2023 22:48:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id i7-20020a17090639c700b009934855d8f1sm7596369eje.34.2023.07.24.22.48.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 22:48:38 -0700 (PDT)
-Message-ID: <5c899d97-c73c-cc39-9a99-d83a92f70cf2@linaro.org>
-Date:   Tue, 25 Jul 2023 07:48:36 +0200
+        Tue, 25 Jul 2023 01:49:14 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A11BD3;
+        Mon, 24 Jul 2023 22:49:12 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P3chZQ015944;
+        Tue, 25 Jul 2023 05:49:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=N10CMOeBn2Dea+qimtcML/z48MsjuJ3i9QYQDygLgYA=;
+ b=SBrRdxwdP9zPP1yiIr3hHy97qnJVVqZMnauF0MyWQKsrn9A8DXNLER/r+OjMPplxIbKC
+ CcLJxTPu7J57HER68b/Ji4f8+9Q7Fpir7ZhzXi8JjGOuyno2ZBOVcBajghdP+NV5//72
+ SsecZNrFG1WvyGPvKJrXKOMoLIQw7SVJ1h2QJm4QrEG5EGhnBRFn8DUcbR+AjX3K09Hj
+ +mSw3Cb72dT7TLlbDy7U9+i0dWcUd99xDkruYBSPnGi7byEg2jHAZyvf+1bRb6Zfm8BU
+ RouhuEYMfqkINYY2653ylgLrdOf67+IM3Y62yHVqKoRskzLiTFOsMzu40+Ycg0TV8NPi Ag== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1s1jswp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 05:49:08 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P5n5KY011942
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 05:49:05 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 24 Jul 2023 22:49:02 -0700
+Date:   Tue, 25 Jul 2023 11:18:58 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Mike Tipton <quic_mdtipton@quicinc.com>
+CC:     <djakov@kernel.org>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <quic_okukatla@quicinc.com>,
+        <quic_viveka@quicinc.com>
+Subject: Re: [PATCH 2/3] interconnect: Reintroduce icc_get()
+Message-ID: <c68630ee-9f94-40ec-adb1-a899dc22ca1b@quicinc.com>
+References: <20230725012859.18474-1-quic_mdtipton@quicinc.com>
+ <20230725012859.18474-3-quic_mdtipton@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add
- initial device tree
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Apitzsch?= <git@apitzsch.eu>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
- <20230724-bq_m5-v1-2-17a0870a73be@apitzsch.eu>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230724-bq_m5-v1-2-17a0870a73be@apitzsch.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230725012859.18474-3-quic_mdtipton@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bJGnT5l6HhHVWeYwliyVY_wJT0QQvlOT
+X-Proofpoint-ORIG-GUID: bJGnT5l6HhHVWeYwliyVY_wJT0QQvlOT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ mlxlogscore=880 phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250052
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 22:52, André Apitzsch wrote:
-> This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
-> 2015.
+On Mon, Jul 24, 2023 at 06:28:58PM -0700, Mike Tipton wrote:
+> The original icc_get() that took integer node IDs was removed due to
+> lack of users. Reintroduce a new version that takes string node names,
+> which is needed for the debugfs client.
 > 
-> Add a device tree with initial support for:
-> 
+> Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
+> ---
+>  drivers/interconnect/core.c  | 64 ++++++++++++++++++++++++++++++++++++
+>  include/linux/interconnect.h |  6 ++++
+>  2 files changed, 70 insertions(+)
 
-...
+[...]
 
-> +&usb_hs_phy {
-> +	extcon = <&usb_id>;
-> +};
+> +/**
+> + * icc_get() - get a path handle between two endpoints
+> + * @dev: device pointer for the consumer device
+> + * @src: source node name
+> + * @dst: destination node name
+> + *
+> + * This function will search for a path between two endpoints and return an
+> + * icc_path handle on success. Use icc_put() to release constraints when they
+> + * are not needed anymore.
+> + *
+> + * Return: icc_path pointer on success or ERR_PTR() on error. NULL is returned
+> + * when the API is disabled.
+> + */
+> +struct icc_path *icc_get(struct device *dev, const char *src, const char *dst)
+> +{
+> +	struct icc_node *src_node, *dst_node;
+> +	struct icc_path *path = ERR_PTR(-EPROBE_DEFER);
 > +
-> +&wcnss {
-> +	status = "okay";
-> +};
+> +	mutex_lock(&icc_lock);
 > +
-> +&wcnss_iris {
-> +	compatible = "qcom,wcn3620";
-> +};
+> +	src_node = node_find_by_name(src);
+> +	if (!src_node) {
+> +		dev_err(dev, "%s: invalid src=%s\n", __func__, src);
+> +		goto out;
+> +	}
 > +
-> +&pm8916_rpm_regulators {
-> +	pm8916_l17: l17 {
-> +		regulator-min-microvolt = <2850000>;
-> +		regulator-max-microvolt = <2850000>;
-> +	};
-> +};
+> +	dst_node = node_find_by_name(dst);
+> +	if (!dst_node) {
+> +		dev_err(dev, "%s: invalid dst=%s\n", __func__, dst);
+> +		goto out;
+> +	}
 > +
-> +&tlmm {
+> +	path = path_find(dev, src_node, dst_node);
+> +	if (IS_ERR(path)) {
+> +		dev_err(dev, "%s: invalid path=%ld\n", __func__, PTR_ERR(path));
+> +		goto out;
+> +	}
+> +
+> +	path->name = kasprintf(GFP_KERNEL, "%s-%s", src_node->name, dst_node->name);
+> +	if (!path->name) {
+> +		kfree(path);
+> +		path = ERR_PTR(-ENOMEM);
+> +	}
+> +out:
+> +	mutex_unlock(&icc_lock);
+> +	return path;
+> +}
+> +EXPORT_SYMBOL_GPL(icc_get);
+> +
+>  /**
+>   * icc_set_tag() - set an optional tag on a path
+>   * @path: the path we want to tag
+> diff --git a/include/linux/interconnect.h b/include/linux/interconnect.h
+> index 97ac253df62c..39a98ddfdfd4 100644
+> --- a/include/linux/interconnect.h
+> +++ b/include/linux/interconnect.h
+> @@ -40,6 +40,7 @@ struct icc_bulk_data {
+>  
+>  #if IS_ENABLED(CONFIG_INTERCONNECT)
+>  
+> +struct icc_path *icc_get(struct device *dev, const char *src, const char *dst);
+>  struct icc_path *of_icc_get(struct device *dev, const char *name);
+>  struct icc_path *devm_of_icc_get(struct device *dev, const char *name);
+>  int devm_of_icc_bulk_get(struct device *dev, int num_paths, struct icc_bulk_data *paths);
+> @@ -59,6 +60,11 @@ void icc_bulk_disable(int num_paths, const struct icc_bulk_data *paths);
+>  
+>  #else
+>  
+> +struct icc_path *icc_get(struct device *dev, const char *src, const char *dst)
+> +{
+> +	return NULL;
+> +}
+> +
 
-Please sort all node extends/overrides by name.
+Is this API meant to be public()? As you pointed out, it was removed
+recently as there were no users. Since debugfs client is part of ICC
+frarmwork, should it be made private?
 
-Best regards,
-Krzysztof
-
+Thanks,
+Pavan
