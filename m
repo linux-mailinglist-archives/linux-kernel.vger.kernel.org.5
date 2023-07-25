@@ -2,187 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD986760BBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6608B760BC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbjGYH21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        id S232605AbjGYH3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbjGYH13 (ORCPT
+        with ESMTP id S231971AbjGYH2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:27:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893B7E0;
-        Tue, 25 Jul 2023 00:26:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 25 Jul 2023 03:28:17 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD5426A2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:27:14 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 29D9C1F8B3;
-        Tue, 25 Jul 2023 07:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690270018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Xc+x3bm0aDx5lBbs4AFmDsPjM7vKL6WtyoQNR4tK/E=;
-        b=dUBWqyHbQwKYt2wSpE/zBet21VuJXKX0vml+r+fr2TY7T0eNHKfjOMemkdeLEOF3L8t7tD
-        6HYrViDDuEocyARFPTuFhzfMHOJHE0vbuvYbxVmAqeI6bwngqbxoa0Tjnd/7Qcg3CuRNh0
-        kHIUixZr03XkU2opCeRtl5ZU0EyhlpM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690270018;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Xc+x3bm0aDx5lBbs4AFmDsPjM7vKL6WtyoQNR4tK/E=;
-        b=fPskUvashiZyTcb/ryCu/ZVCVXchmvSf2JCtlKNdPCRNZFa5H3oOqKqkTxEVVkooX0Rx2q
-        Y4nZGIVy99swIbAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CED513487;
-        Tue, 25 Jul 2023 07:26:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /chyJUF5v2SZFAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 07:26:57 +0000
-Date:   Tue, 25 Jul 2023 09:26:57 +0200
-Message-ID: <87bkg0v4ce.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <pierre-louis.bossart@linux.intel.com>,
-        <oneukum@suse.com>, <albertccwang@google.com>,
-        <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v4 18/32] sound: usb: Introduce QC USB SND offloading support
-In-Reply-To: <20230725023416.11205-19-quic_wcheng@quicinc.com>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
-        <20230725023416.11205-19-quic_wcheng@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BDAEB6607105;
+        Tue, 25 Jul 2023 08:27:11 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690270032;
+        bh=ZYUTx+BvPIPmtEGL5Ro9byEVVDfU167QGfKJqwSxeQI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Lb/i3/B0m7SIsXo4lLqu5960BB5UABN7MZGLiNob/Y5r/1X0Yjh3nUvReqhSQPtMT
+         gav5i4Hcu5gp7/v34u6xuMsMKOlThs8HrbU2Fb5tGdGEatEmCmAtYgRBFlKQdN/5K5
+         paNueNywLBSbpvtpHRFTrjhbWsqtYJXvHtCuSQ6dI2aFp81CWCm4qaRiksEzATd8Sp
+         Vz65V5XuJ4rQmIdt1j5khhTceEaZLch97epYz92mb1Df0G3iptwpVaNzqKsKi6BuPX
+         D2AkCHK3pberBqbc+Lej2HHzs/+THn+0ov8TohJxlO4iij2RcMR6Hy93tM1X7h73in
+         8wF+VwMvJgAjA==
+Date:   Tue, 25 Jul 2023 09:27:09 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
+Message-ID: <20230725092709.51356f39@collabora.com>
+In-Reply-To: <20230722234746.205949-3-dmitry.osipenko@collabora.com>
+References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
+        <20230722234746.205949-3-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 04:34:02 +0200,
-Wesley Cheng wrote:
+On Sun, 23 Jul 2023 02:47:36 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> And new pages_pin_count field to struct drm_gem_shmem_object that will
+> determine whether pages are evictable by memory shrinker. The pages will
+> be evictable only when pages_pin_count=0. This patch prepares code for
+> addition of the memory shrinker that will utilize the new field.
 > 
-> --- a/sound/usb/Kconfig
-> +++ b/sound/usb/Kconfig
-> @@ -165,6 +165,21 @@ config SND_BCD2000
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called snd-bcd2000.
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 9 +++++++++
+>  include/drm/drm_gem_shmem_helper.h     | 9 +++++++++
+>  2 files changed, 18 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 267153853e2c..42ba201dda50 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -274,15 +274,24 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
+>  	dma_resv_assert_held(shmem->base.resv);
 >  
-> +config QC_USB_AUDIO_OFFLOAD
-> +	tristate "Qualcomm Audio Offload driver"
-> +	depends on QCOM_QMI_HELPERS
-> +	select SND_PCM
-
-So the driver can be enabled without CONFIG_SND_USB_AUDIO?  It makes
-little sense without it.
-Or is it set so intentionally for testing purpose?
-
-About the code:
-
-> +/* Offloading IOMMU management */
-> +static unsigned long uaudio_get_iova(unsigned long *curr_iova,
-> +	size_t *curr_iova_size, struct list_head *head, size_t size)
-> +{
-> +	struct iova_info *info, *new_info = NULL;
-> +	struct list_head *curr_head;
-> +	unsigned long va = 0;
-> +	size_t tmp_size = size;
-> +	bool found = false;
+>  	ret = drm_gem_shmem_get_pages(shmem);
+> +	if (!ret)
+> +		shmem->pages_pin_count++;
+>  
+>  	return ret;
+>  }
+>  
+>  static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
+>  {
+> +	struct drm_gem_object *obj = &shmem->base;
 > +
-> +	if (size % PAGE_SIZE) {
-> +		dev_err(uaudio_qdev->dev, "size %zu is not page size multiple\n",
-> +			size);
-> +		goto done;
-
-This can be easily triggered by user-space as it's passed directly
-from the mmap call, and it implies that you can fill up the messages
-easily.  It's safer to make it debug message or add the rate limit.
-
-Ditto for other error messages.
-
-> +static void disable_audio_stream(struct snd_usb_substream *subs)
-> +{
-> +	struct snd_usb_audio *chip = subs->stream->chip;
+>  	dma_resv_assert_held(shmem->base.resv);
+>  
+> +	if (drm_WARN_ON_ONCE(obj->dev, !shmem->pages_pin_count))
+> +		return;
 > +
-> +	if (subs->data_endpoint || subs->sync_endpoint) {
-> +		close_endpoints(chip, subs);
+>  	drm_gem_shmem_put_pages(shmem);
 > +
-> +		mutex_lock(&chip->mutex);
-> +		subs->cur_audiofmt = NULL;
-> +		mutex_unlock(&chip->mutex);
-> +	}
+> +	shmem->pages_pin_count--;
+>  }
+>  
+>  /**
+> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+> index bf0c31aa8fbe..7111f5743006 100644
+> --- a/include/drm/drm_gem_shmem_helper.h
+> +++ b/include/drm/drm_gem_shmem_helper.h
+> @@ -39,6 +39,15 @@ struct drm_gem_shmem_object {
+>  	 */
+>  	unsigned int pages_use_count;
+>  
+> +	/**
+> +	 * @pages_pin_count:
+> +	 *
+> +	 * Reference count on the pinned pages table.
+> +	 * The pages allowed to be evicted by memory shrinker
+> +	 * only when the count is zero.
+> +	 */
+> +	unsigned int pages_pin_count;
 
-Now looking at this and...
+Can we make it an atomic_t, so we can avoid taking the lock when the
+GEM has already been pinned. That's something I need to be able to grab
+a pin-ref in a path where the GEM resv lock is already held[1]. We could
+of course expose the locked version, but in my case, I want to enforce
+the fact the GEM has been pinned before the drm_gem_shmem_pin() call in
+the section protected by the resv lock, so catching a "refcount 0 -> 1"
+situation would be useful. Beside, using an atomic to avoid the
+lock/unlock dance when refcount > 1 might be beneficial to everyone.
 
-> +static int enable_audio_stream(struct snd_usb_substream *subs,
-> +				snd_pcm_format_t pcm_format,
-> +				unsigned int channels, unsigned int cur_rate,
-> +				int datainterval)
-> +{
+[1]https://gitlab.freedesktop.org/bbrezillon/linux/-/commit/4420fa0d5768ebdc35b34d58d4ae5fad9fbb93f9
 
-... this implementation, I wonder whether it'd be better to modify and
-export  snd_usb_hw_params() snd snd_usb_hw_free() to fit with qcom
-driver.  Then you can avoid lots of open code.
-
-In general, if you see a direct use of chip->mutex, it can be often
-done better in a different form.  The use of an internal lock or such
-from an external driver is always fragile and error-prone.
-
-Also, the current open-code misses the potential race against the
-disconnection during the operation.  In snd-usb-audio, it protects
-with snd_usb_lock_shutdown() and snd_usb_unlock_shutdown() pairs.
-
-> +static int __init qc_usb_audio_offload_init(void)
-> +{
-> +	struct uaudio_qmi_svc *svc;
-> +	int ret;
 > +
-> +	ret = snd_usb_register_platform_ops(&offload_ops);
-> +	if (ret < 0)
-> +		return ret;
+>  	/**
+>  	 * @madv: State for madvise
+>  	 *
 
-Registering the ops at the very first opens a potential access to the
-uninitialized stuff.  Imagine a suspend happens right after this
-point.  As the ops is already registered, it'll enter to the
-suspend_cb callback and straight to Oops.
-
-> +static void __exit qc_usb_audio_offload_exit(void)
-> +{
-> +	struct uaudio_qmi_svc *svc = uaudio_svc;
-> +
-> +	qmi_handle_release(svc->uaudio_svc_hdl);
-> +	flush_workqueue(svc->uaudio_wq);
-> +	destroy_workqueue(svc->uaudio_wq);
-> +	kfree(svc);
-> +	uaudio_svc = NULL;
-> +	snd_usb_unregister_platform_ops();
-
-Similarly, the unregister order has to be careful, too.
-
-
-thanks,
-
-Takashi
