@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FC6760C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13324760C8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjGYH7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        id S232467AbjGYIBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjGYH66 (ORCPT
+        with ESMTP id S232514AbjGYIAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:58:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06609E5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:58:57 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F2EB6606F97;
-        Tue, 25 Jul 2023 08:58:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690271935;
-        bh=EcBa51UDSzC9yoULUX6VrJ7gf1EtZAt7KrCQOJ4AZv8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FUxRFjlbD+YFzZ9kzfmNA9K2+szybOMzGFar7er1WYgKYuf0eICkPTwI3dtJQSFF5
-         FuqGy+0TAXaV1EXMGVvfRmqfqmMnu0IaRBZc8iJbtwdQ7YAq9N3K8IZrju2igz1YWx
-         FQPDQbex+WYbg2Glf/s8K4ET646kxwzLvufhQYReJw0nUy+e11oLQ9b5ZXX0RyJsNb
-         BGa9Y9YQbMMyvlqysVjDvaYEfOBbXI+Zf+sL9sC3cUPB0T8UJA/VaORLM6keETnsej
-         opg6TRJJAfkym2E84FdocfKyPL92109gaiHoWbxr0gbCGenzPTPb5ziG5qdfV4ho68
-         CjuBT5OK18TSQ==
-Date:   Tue, 25 Jul 2023 09:58:51 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v14 10/12] drm/shmem-helper: Refactor locked/unlocked
- functions
-Message-ID: <20230725095851.5cbd7b6d@collabora.com>
-In-Reply-To: <20230725094702.4322fbb5@collabora.com>
-References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
-        <20230722234746.205949-11-dmitry.osipenko@collabora.com>
-        <20230725094702.4322fbb5@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 25 Jul 2023 04:00:50 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C8310E6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:00:38 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34617b29276so14953695ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690272037; x=1690876837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQlid0H2jkWZz9fgcu7Ae/8sWUNA4lIusDDxBLqkgag=;
+        b=D7zcjVWHISOKLg5CW3OV5+PRipG/tReoZSnpZoJTsmG/5xs2L5TZMxig2uenVh9aAb
+         EC/IGcb49Q5JfZm30NjwuQhVlW1lGuQuagBPMvfva1QvMkZHEXfV9Kyj/BWTUHmM9MqN
+         SkVFwczLrYHXRDqvnF1bR3jpFLfjPmtjujptw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690272037; x=1690876837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JQlid0H2jkWZz9fgcu7Ae/8sWUNA4lIusDDxBLqkgag=;
+        b=WNKuZkC/iBrplfebarQsJ+YEYmaa8SiCUwDhRMzSicH+upEjNu/9wf1sXhh669nKlC
+         FhFVnssLi7uRtR5Udt0xezN2WbkY8s0Z3TTpQBHxbmEJReGmxfNzQ7ls1HnlEa4p5Egl
+         R8vvhh7dY+ELQadqNPlP5yUaDUBwIeyh0mR4YJUjYzAbWmP9bZhks5J+iHDw40IuFJa5
+         FHu+SHhKOpgona3Nc4VXt1b7sU0Pf323p3AglRCNWHfMrHnJetluoVKqNFI0dK73K2UP
+         Iijd3zgXlIYuuqmaAYJotByi3sb9lgvfUivZ7Z1NB/QWNTQO4OfhcA33sECWBGInlDkJ
+         vLeA==
+X-Gm-Message-State: ABy/qLaW8WsdWt0TS6uy3cbel7Xy9Odi3PDsq8AYaOX1o6wHmeBg5cra
+        psN2Fyco1cWhP3iZkIHpD5CYD80ryS07+ulyyfk=
+X-Google-Smtp-Source: APBJJlFMclAGH5KNTL/odtFT/UdN6rf3T6+3rUQkfgWRnzF/mC/8rlxnauS3vBVJfnIdGTCK0/u3Zg==
+X-Received: by 2002:a92:cdaf:0:b0:346:15f5:2667 with SMTP id g15-20020a92cdaf000000b0034615f52667mr1242225ild.4.1690272037434;
+        Tue, 25 Jul 2023 01:00:37 -0700 (PDT)
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
+        by smtp.gmail.com with ESMTPSA id j26-20020a02a69a000000b0042b39f1c3d2sm3516943jam.144.2023.07.25.01.00.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 01:00:36 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-785d738d3feso124679139f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:00:36 -0700 (PDT)
+X-Received: by 2002:a6b:8d82:0:b0:789:dcd1:8eb9 with SMTP id
+ p124-20020a6b8d82000000b00789dcd18eb9mr1029181iod.6.1690272036013; Tue, 25
+ Jul 2023 01:00:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230602090227.7264-1-yong.wu@mediatek.com>
+In-Reply-To: <20230602090227.7264-1-yong.wu@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Tue, 25 Jul 2023 15:59:59 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nhgkj5zh-Oa+OJjZKmkNMfG63+WjSefB2swybm29KxDXA@mail.gmail.com>
+Message-ID: <CAC=S1nhgkj5zh-Oa+OJjZKmkNMfG63+WjSefB2swybm29KxDXA@mail.gmail.com>
+Subject: Re: [PATCH v12 0/7] MT8188 IOMMU SUPPORT
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, iommu@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mingyuan.ma@mediatek.com, yf.wang@mediatek.com,
+        jianjiao.zeng@mediatek.com, chengci.xu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 09:47:02 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+On Fri, Jun 2, 2023 at 5:03=E2=80=AFPM Yong Wu <yong.wu@mediatek.com> wrote=
+:
+>
+> MT8188 have 3 IOMMU HWs. 2 IOMMU HW is for multimedia, and 1 IOMMU HW
+> is for infra-master, like PCIe.
+>
+> About the 2 MM IOMMU HW, the connection could be something like this:
+>
+>         IOMMU(VDO)          IOMMU(VPP)
+>            |                   |
+>       SMI_COMMON(VDO)      SMI_COMMON(VPP)
+>       ---------------     ----------------
+>       |      |   ...      |      |     ...
+>     larb0 larb2  ...    larb1 larb3    ...
+>
+> INFRA IOMMU does not have SMI, the master connects to IOMMU directly.
+>
+> Although multiple banks supported in MT8188, we only use one of them,
+> which means PCIe is put in bank0 of INFRA IOMMU.
+>
+> So we have two pgtable for MT8188, specifically, these two MM IOMMU HW
+> share a pgtable while INFRA IOMMU HW use a independent pgtable.
+>
+> Another change is that we add some SMC command for INFRA master to
+> enable INFRA IOMMU in ATF considering security concerns.
+>
+> We also adjust the flow of mtk_iommu_config to reduce indention.
 
-> On Sun, 23 Jul 2023 02:47:44 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
-> > Add locked/unlocked postfixes to drm-shmem function names to make clear
-> > where reservation lock is taken and where not.  
-> 
-> Uh, ignore my comment on patch 1 then...
-> 
-> > Add more common helpers to drm_gem_shmem_helper.h  
-> 
-> I'd do the renaming and exporting in separate patches.
+A friendly ping - this series was reviewed, but I'm not sure if it's
+still on the radar today.
+This can be cleanly applied on top of next-20230725.
 
-Actually, I'd refrain from exporting functions until someone needs
-them, as you rightfully pointed out in your previous reply.
+To give more confidence, I also tested the basic multimedia and infra
+functionalities on my MT8188 with this series, so
 
-> 
-> > 
-> > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>  
+Tested-by: Fei Shao <fshao@chromium.org>
 
+to the entire v12 series.
+
+Regards,
+Fei
