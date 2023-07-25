@@ -2,285 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C0E7614DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF3C7614F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbjGYLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S234515AbjGYLYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbjGYLXN (ORCPT
+        with ESMTP id S234513AbjGYLYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:23:13 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4D2A6;
-        Tue, 25 Jul 2023 04:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690284192; x=1721820192;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Z1vqkq/iqAf0skLD29Ge2B3k4J5l8STsWPuG916UbLw=;
-  b=bDHJ76gQbYM1yi+zR464IkjWxs557c6mBv8xC6I065YfGrP56p3C8aQ3
-   fGGLQyubYHUo64P12BA6X0DX1WRmkG99VzjL1VCUZ8sF1Q7i6MXyTwX4r
-   RmPlhYhJT5wRLmi85q+wTZ76Aj7DEGC5JeZUCZI3NAYBbwfuovqYPG19L
-   fmZSyvu5jGhmuKZP1wx46HpMJ0/uKqc4pq2XFZp8URxV75AJr4hM/wo0x
-   1hab8KrAoGC+wvIZ7E/AyGd6s1wSWHxel3k2Xt/bLIPTeBmYB5ptzm8rT
-   BT8pM5ofOQR7jXI8q1AMvmynhz/idDLaDtR25TPC+ENBN7NOTeh6B/+Ct
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="365153434"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="365153434"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 04:22:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="703245451"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="703245451"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.37.150])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 04:22:51 -0700
-Message-ID: <ebb0a629-caa5-e038-341d-cc5f07683e7f@intel.com>
-Date:   Tue, 25 Jul 2023 14:22:47 +0300
+        Tue, 25 Jul 2023 07:24:00 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FFA9D;
+        Tue, 25 Jul 2023 04:23:54 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id B0D2F24E282;
+        Tue, 25 Jul 2023 19:23:46 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 19:23:46 +0800
+Received: from [192.168.60.113] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 19:23:45 +0800
+Message-ID: <3dd360e2-7521-6305-c543-58830cd60ec0@starfivetech.com>
+Date:   Tue, 25 Jul 2023 19:23:45 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 58/58] mmc: Convert to platform remove callback returning
- void
-To:     Yangtao Li <frank.li@vivo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Kamal Dasu <kamal.dasu@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230713080807.69999-1-frank.li@vivo.com>
- <20230713080807.69999-58-frank.li@vivo.com>
- <5d120109-cbec-f086-c442-f3bd3fd1ebe7@intel.com>
- <9269d1ae-0dc4-e633-082e-ccd75efd103f@vivo.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/9] drm/verisilicon: Add basic drm driver
 Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <9269d1ae-0dc4-e633-082e-ccd75efd103f@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <linaro-mm-sig@lists.linaro.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "Shengyang Chen" <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, <christian.koenig@amd.com>
+References: <20230602074043.33872-1-keith.zhao@starfivetech.com>
+ <20230602074043.33872-4-keith.zhao@starfivetech.com>
+ <e0eeae3b35e8efac7c577ca3159abcf7f43d5082.camel@pengutronix.de>
+ <b8e51384-4781-2710-e94f-38a88f43b801@starfivetech.com>
+In-Reply-To: <b8e51384-4781-2710-e94f-38a88f43b801@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/23 11:13, Yangtao Li wrote:
-> Hi Adria,
+
+
+On 2023/7/25 11:12, Keith Zhao wrote:
 > 
-> On 2023/7/14 15:49, Adrian Hunter wrote:
->> On 13/07/23 11:08, Yangtao Li wrote:
->>> The .remove() callback for a platform driver returns an int which makes
->>> many driver authors wrongly assume it's possible to do error handling by
->>> returning an error code. However the value returned is (mostly) ignored
->>> and this typically results in resource leaks. To improve here there is a
->>> quest to make the remove callback return void. In the first step of this
->>> quest all drivers are converted to .remove_new() which already returns
->>> void.
->>>
->>> Trivially convert this driver from always returning zero in the remove
->>> callback to the void returning variant.
->>>
->>> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
->>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> 
+> On 2023/6/7 16:53, Lucas Stach wrote:
+>> Hi Keith,
+>> 
+>> Am Freitag, dem 02.06.2023 um 15:40 +0800 schrieb Keith Zhao:
+>>> Add a basic platform driver of the DRM driver for JH7110 SoC.
+>>> 
+>>> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
 >>> ---
->>>   drivers/mmc/host/sdhci-bcm-kona.c  | 2 +-
->>>   drivers/mmc/host/sdhci-brcmstb.c   | 2 +-
->>>   drivers/mmc/host/sdhci-cadence.c   | 2 +-
->>>   drivers/mmc/host/sdhci-dove.c      | 2 +-
->>>   drivers/mmc/host/sdhci-iproc.c     | 2 +-
->>>   drivers/mmc/host/sdhci-of-esdhc.c  | 2 +-
->>>   drivers/mmc/host/sdhci-of-hlwd.c   | 2 +-
->>>   drivers/mmc/host/sdhci-of-sparx5.c | 2 +-
->>>   drivers/mmc/host/sdhci-pltfm.c     | 4 +---
->>>   drivers/mmc/host/sdhci-pltfm.h     | 2 +-
->>>   drivers/mmc/host/sdhci-pxav2.c     | 2 +-
->> Looks like drivers/mmc/host/sdhci-npcm.c was missed
+>>>  MAINTAINERS                          |   2 +
+>>>  drivers/gpu/drm/Kconfig              |   2 +
+>>>  drivers/gpu/drm/Makefile             |   1 +
+>>>  drivers/gpu/drm/verisilicon/Kconfig  |  13 ++
+>>>  drivers/gpu/drm/verisilicon/Makefile |   6 +
+>>>  drivers/gpu/drm/verisilicon/vs_drv.c | 284 +++++++++++++++++++++++++++
+>>>  drivers/gpu/drm/verisilicon/vs_drv.h |  48 +++++
+>>>  include/uapi/drm/drm_fourcc.h        |  83 ++++++++
+>>>  include/uapi/drm/vs_drm.h            |  50 +++++
+>>>  9 files changed, 489 insertions(+)
+>>>  create mode 100644 drivers/gpu/drm/verisilicon/Kconfig
+>>>  create mode 100644 drivers/gpu/drm/verisilicon/Makefile
+>>>  create mode 100644 drivers/gpu/drm/verisilicon/vs_drv.c
+>>>  create mode 100644 drivers/gpu/drm/verisilicon/vs_drv.h
+>>>  create mode 100644 include/uapi/drm/vs_drm.h
+>>> 
+>>> 
+>>> [...]
+>>> +#endif /* __VS_DRV_H__ */
+>>> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+>>> index de703c6be969..af4fb50f9207 100644
+>>> --- a/include/uapi/drm/drm_fourcc.h
+>>> +++ b/include/uapi/drm/drm_fourcc.h
+>>> @@ -419,6 +419,7 @@ extern "C" {
+>>>  #define DRM_FORMAT_MOD_VENDOR_ARM     0x08
+>>>  #define DRM_FORMAT_MOD_VENDOR_ALLWINNER 0x09
+>>>  #define DRM_FORMAT_MOD_VENDOR_AMLOGIC 0x0a
+>>> +#define DRM_FORMAT_MOD_VENDOR_VS      0x0b
+>>>  
+>>>  /* add more to the end as needed */
+>>>  
+>>> @@ -1519,6 +1520,88 @@ drm_fourcc_canonicalize_nvidia_format_mod(__u64 modifier)
+>>>  #define AMD_FMT_MOD_CLEAR(field) \
+>>>  	(~((__u64)AMD_FMT_MOD_##field##_MASK << AMD_FMT_MOD_##field##_SHIFT))
+>>>  
+>>> +#define DRM_FORMAT_MOD_VS_TYPE_NORMAL        0x00
+>>> +#define DRM_FORMAT_MOD_VS_TYPE_COMPRESSED    0x01
+>>> +#define DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT  0x02
+>>> +#define DRM_FORMAT_MOD_VS_TYPE_MASK     ((__u64)0x3 << 54)
+>>> +
+>>> +#define fourcc_mod_vs_code(type, val) \
+>>> +	fourcc_mod_code(VS, ((((__u64)type) << 54) | (val)))
+>>> +
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_MODE_MASK    0x3F
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_8X8_XMAJOR   0x00
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_8X8_YMAJOR   0x01
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_16X4     0x02
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_8X4      0x03
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_4X8      0x04
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_16X4   0x06
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_64X4     0x07
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_32X4     0x08
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_256X1  0x09
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_128X1  0x0A
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_64X4   0x0B
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_256X2  0x0C
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_128X2  0x0D
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_128X4  0x0E
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_64X1   0x0F
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_16X8     0x10
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_8X16     0x11
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_512X1  0x12
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_32X4   0x13
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_64X2   0x14
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_32X2   0x15
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_32X1   0x16
+>>> +#define DRM_FORMAT_MOD_VS_DEC_RASTER_16X1   0x17
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_128X4    0x18
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_256X4    0x19
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_512X4    0x1A
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_16X16    0x1B
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_32X16    0x1C
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_64X16    0x1D
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_128X8    0x1E
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_8X4_S    0x1F
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_16X4_S   0x20
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_32X4_S   0x21
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_16X4_LSB 0x22
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_32X4_LSB 0x23
+>>> +#define DRM_FORMAT_MOD_VS_DEC_TILE_32X8     0x24
+>>> +
+>>> +#define DRM_FORMAT_MOD_VS_DEC_ALIGN_32      (0x01 << 6)
+>>> +#define DRM_FORMAT_MOD_VS_DEC_ALIGN_64      (0x01 << 7)
+>>> +
+>>> +#define fourcc_mod_vs_dec_code(tile, align) \
+>>> +	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_COMPRESSED, \
+>>> +				((tile) | (align)))
+>>> +
+>>> +#define DRM_FORMAT_MOD_VS_NORM_MODE_MASK        0x1F
+>>> +#define DRM_FORMAT_MOD_VS_LINEAR                0x00
+>>> +#define DRM_FORMAT_MOD_VS_TILED4x4              0x01
+>>> +#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR    0x02
+>>> +#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR    0x03
+>>> +#define DRM_FORMAT_MOD_VS_TILE_8X8              0x04
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE1            0x05
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE2            0x06
+>>> +#define DRM_FORMAT_MOD_VS_TILE_8X4              0x07
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE4            0x08
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE5            0x09
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE6            0x0A
+>>> +#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR_8X4    0x0B
+>>> +#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR_4X8    0x0C
+>>> +#define DRM_FORMAT_MOD_VS_TILE_Y                0x0D
+>>> +#define DRM_FORMAT_MOD_VS_TILE_128X1            0x0F
+>>> +#define DRM_FORMAT_MOD_VS_TILE_256X1            0x10
+>>> +#define DRM_FORMAT_MOD_VS_TILE_32X1             0x11
+>>> +#define DRM_FORMAT_MOD_VS_TILE_64X1             0x12
+>>> +#define DRM_FORMAT_MOD_VS_TILE_MODE4X4          0x15
+>>> +
+>>> +#define fourcc_mod_vs_norm_code(tile) \
+>>> +	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_NORMAL, \
+>>> +				(tile))
+>>> +
+>>> +#define fourcc_mod_vs_custom_code(tile) \
+>>> +	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT, \
+>>> +				(tile))
+>>> +
+>> 
+>> You are opening a new namespace for what is effectively the VIVANTE
+>> tiling. While your list seems much more exhaustive than the (reverse
+>> engineered) list provided under the VIVANTE namespace, this is still
+>> unacceptable as it adds new aliases for existing modifiers.
+>> 
+> hi Lucas:
+> I got what you mean , I will check the whether the current existence can be reused.
+> In principle, can existing modefiers cover my definition?
 > 
-> 
-> Neither [1] nor [2] can find this driver, what am I missing?
 
-Sorry, it was some untracked rubbish left over in my tree.
+hello Lucas:
+I made it a little simpler: I removed what I didn't use in the code .
+Keep only these:
 
-In that case:
+#define DRM_FORMAT_MOD_VS_TYPE_NORMAL        0x00
+#define DRM_FORMAT_MOD_VS_TYPE_COMPRESSED    0x01
+#define DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT  0x02
+#define DRM_FORMAT_MOD_VS_TYPE_MASK     ((__u64)0x3 << 54)
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+#define fourcc_mod_vs_code(type, val) \
+	fourcc_mod_code(VS, ((((__u64)type) << 54) | (val)))
 
+#define DRM_FORMAT_MOD_VS_NORM_MODE_MASK        0x1F
+#define DRM_FORMAT_MOD_VS_LINEAR                0x00
+#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR    0x02
+#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR    0x03
+#define DRM_FORMAT_MOD_VS_TILE_8X8              0x04
+#define DRM_FORMAT_MOD_VS_TILE_8X4              0x07
+#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR_8X4    0x0B
+#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR_4X8    0x0C
+#define DRM_FORMAT_MOD_VS_TILE_MODE4X4          0x15
 
-> 
-> [1]
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git/tree/drivers/mmc/host?h=next
-> 
-> [2]
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mmc/host
-> 
-> 
-> Thx,
-> 
-> Yangtao
-> 
-> 
->>
->>>   11 files changed, 11 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/sdhci-bcm-kona.c b/drivers/mmc/host/sdhci-bcm-kona.c
->>> index 6a93a54fe067..2e3736603853 100644
->>> --- a/drivers/mmc/host/sdhci-bcm-kona.c
->>> +++ b/drivers/mmc/host/sdhci-bcm-kona.c
->>> @@ -319,7 +319,7 @@ static struct platform_driver sdhci_bcm_kona_driver = {
->>>           .of_match_table = sdhci_bcm_kona_of_match,
->>>       },
->>>       .probe        = sdhci_bcm_kona_probe,
->>> -    .remove        = sdhci_pltfm_unregister,
->>> +    .remove_new    = sdhci_pltfm_unregister,
->>>   };
->>>   module_platform_driver(sdhci_bcm_kona_driver);
->>>   diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
->>> index 4c22337199cf..a2b6d8f2eeb6 100644
->>> --- a/drivers/mmc/host/sdhci-brcmstb.c
->>> +++ b/drivers/mmc/host/sdhci-brcmstb.c
->>> @@ -430,7 +430,7 @@ static struct platform_driver sdhci_brcmstb_driver = {
->>>           .of_match_table = of_match_ptr(sdhci_brcm_of_match),
->>>       },
->>>       .probe        = sdhci_brcmstb_probe,
->>> -    .remove        = sdhci_pltfm_unregister,
->>> +    .remove_new    = sdhci_pltfm_unregister,
->>>       .shutdown    = sdhci_brcmstb_shutdown,
->>>   };
->>>   diff --git a/drivers/mmc/host/sdhci-cadence.c b/drivers/mmc/host/sdhci-cadence.c
->>> index d2f625054689..1702a499b36a 100644
->>> --- a/drivers/mmc/host/sdhci-cadence.c
->>> +++ b/drivers/mmc/host/sdhci-cadence.c
->>> @@ -617,7 +617,7 @@ static struct platform_driver sdhci_cdns_driver = {
->>>           .of_match_table = sdhci_cdns_match,
->>>       },
->>>       .probe = sdhci_cdns_probe,
->>> -    .remove = sdhci_pltfm_unregister,
->>> +    .remove_new = sdhci_pltfm_unregister,
->>>   };
->>>   module_platform_driver(sdhci_cdns_driver);
->>>   diff --git a/drivers/mmc/host/sdhci-dove.c b/drivers/mmc/host/sdhci-dove.c
->>> index 5e5bf82e5976..75335dbf223c 100644
->>> --- a/drivers/mmc/host/sdhci-dove.c
->>> +++ b/drivers/mmc/host/sdhci-dove.c
->>> @@ -110,7 +110,7 @@ static struct platform_driver sdhci_dove_driver = {
->>>           .of_match_table = sdhci_dove_of_match_table,
->>>       },
->>>       .probe        = sdhci_dove_probe,
->>> -    .remove        = sdhci_pltfm_unregister,
->>> +    .remove_new    = sdhci_pltfm_unregister,
->>>   };
->>>     module_platform_driver(sdhci_dove_driver);
->>> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
->>> index 86eb0045515e..0dbebcecd8fc 100644
->>> --- a/drivers/mmc/host/sdhci-iproc.c
->>> +++ b/drivers/mmc/host/sdhci-iproc.c
->>> @@ -432,7 +432,7 @@ static struct platform_driver sdhci_iproc_driver = {
->>>           .pm = &sdhci_pltfm_pmops,
->>>       },
->>>       .probe = sdhci_iproc_probe,
->>> -    .remove = sdhci_pltfm_unregister,
->>> +    .remove_new = sdhci_pltfm_unregister,
->>>       .shutdown = sdhci_iproc_shutdown,
->>>   };
->>>   module_platform_driver(sdhci_iproc_driver);
->>> diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
->>> index 48ca1cf15b19..5072b59f6165 100644
->>> --- a/drivers/mmc/host/sdhci-of-esdhc.c
->>> +++ b/drivers/mmc/host/sdhci-of-esdhc.c
->>> @@ -1521,7 +1521,7 @@ static struct platform_driver sdhci_esdhc_driver = {
->>>           .pm = &esdhc_of_dev_pm_ops,
->>>       },
->>>       .probe = sdhci_esdhc_probe,
->>> -    .remove = sdhci_pltfm_unregister,
->>> +    .remove_new = sdhci_pltfm_unregister,
->>>   };
->>>     module_platform_driver(sdhci_esdhc_driver);
->>> diff --git a/drivers/mmc/host/sdhci-of-hlwd.c b/drivers/mmc/host/sdhci-of-hlwd.c
->>> index 12675797b296..cba3ba48e9dc 100644
->>> --- a/drivers/mmc/host/sdhci-of-hlwd.c
->>> +++ b/drivers/mmc/host/sdhci-of-hlwd.c
->>> @@ -85,7 +85,7 @@ static struct platform_driver sdhci_hlwd_driver = {
->>>           .pm = &sdhci_pltfm_pmops,
->>>       },
->>>       .probe = sdhci_hlwd_probe,
->>> -    .remove = sdhci_pltfm_unregister,
->>> +    .remove_new = sdhci_pltfm_unregister,
->>>   };
->>>     module_platform_driver(sdhci_hlwd_driver);
->>> diff --git a/drivers/mmc/host/sdhci-of-sparx5.c b/drivers/mmc/host/sdhci-of-sparx5.c
->>> index 28e4ee69e100..26aaab068e00 100644
->>> --- a/drivers/mmc/host/sdhci-of-sparx5.c
->>> +++ b/drivers/mmc/host/sdhci-of-sparx5.c
->>> @@ -260,7 +260,7 @@ static struct platform_driver sdhci_sparx5_driver = {
->>>           .pm = &sdhci_pltfm_pmops,
->>>       },
->>>       .probe = sdhci_sparx5_probe,
->>> -    .remove = sdhci_pltfm_unregister,
->>> +    .remove_new = sdhci_pltfm_unregister,
->>>   };
->>>     module_platform_driver(sdhci_sparx5_driver);
->>> diff --git a/drivers/mmc/host/sdhci-pltfm.c b/drivers/mmc/host/sdhci-pltfm.c
->>> index 673e750a8490..72d07b49b0a3 100644
->>> --- a/drivers/mmc/host/sdhci-pltfm.c
->>> +++ b/drivers/mmc/host/sdhci-pltfm.c
->>> @@ -187,7 +187,7 @@ int sdhci_pltfm_register(struct platform_device *pdev,
->>>   }
->>>   EXPORT_SYMBOL_GPL(sdhci_pltfm_register);
->>>   -int sdhci_pltfm_unregister(struct platform_device *pdev)
->>> +void sdhci_pltfm_unregister(struct platform_device *pdev)
->>>   {
->>>       struct sdhci_host *host = platform_get_drvdata(pdev);
->>>       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->>> @@ -196,8 +196,6 @@ int sdhci_pltfm_unregister(struct platform_device *pdev)
->>>       sdhci_remove_host(host, dead);
->>>       clk_disable_unprepare(pltfm_host->clk);
->>>       sdhci_pltfm_free(pdev);
->>> -
->>> -    return 0;
->>>   }
->>>   EXPORT_SYMBOL_GPL(sdhci_pltfm_unregister);
->>>   diff --git a/drivers/mmc/host/sdhci-pltfm.h b/drivers/mmc/host/sdhci-pltfm.h
->>> index 9bd717ff784b..6e6a443dafd9 100644
->>> --- a/drivers/mmc/host/sdhci-pltfm.h
->>> +++ b/drivers/mmc/host/sdhci-pltfm.h
->>> @@ -102,7 +102,7 @@ extern void sdhci_pltfm_free(struct platform_device *pdev);
->>>   extern int sdhci_pltfm_register(struct platform_device *pdev,
->>>                   const struct sdhci_pltfm_data *pdata,
->>>                   size_t priv_size);
->>> -extern int sdhci_pltfm_unregister(struct platform_device *pdev);
->>> +extern void sdhci_pltfm_unregister(struct platform_device *pdev);
->>>     extern unsigned int sdhci_pltfm_clk_get_max_clock(struct sdhci_host *host);
->>>   diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
->>> index 91aca8f8d6ef..1c1e763ce209 100644
->>> --- a/drivers/mmc/host/sdhci-pxav2.c
->>> +++ b/drivers/mmc/host/sdhci-pxav2.c
->>> @@ -359,7 +359,7 @@ static struct platform_driver sdhci_pxav2_driver = {
->>>           .pm    = &sdhci_pltfm_pmops,
->>>       },
->>>       .probe        = sdhci_pxav2_probe,
->>> -    .remove        = sdhci_pltfm_unregister,
->>> +    .remove_new    = sdhci_pltfm_unregister,
->>>   };
->>>     module_platform_driver(sdhci_pxav2_driver);
+#define fourcc_mod_vs_norm_code(tile) \
+	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_NORMAL, \
+				(tile))
 
+#define fourcc_mod_vs_custom_code(tile) \
+	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT, \
+				(tile))
+
+I need you help to check what modifiers it should be (for existing modifiers) 
+
+DRM_FORMAT_MOD_VS_LINEAR			----> DRM_FORMAT_MOD_LINEAR
+DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR 		----> ?
+DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR 		----> ?
+DRM_FORMAT_MOD_VS_TILE_8X8           		----> ?  
+DRM_FORMAT_MOD_VS_TILE_8X4              	----> ?                    
+DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR_8X4    	----> ?
+DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR_4X8    	----> ?
+DRM_FORMAT_MOD_VS_TILE_MODE4X4          	----> DRM_FORMAT_MOD_VIVANTE_TILED
+
+Thanks a million!!
+Keith
+>> Also any modifier additions should be in a separate patch and not
+>> buried in another change.
+>> 
+> ok , no problem
+>> Regards,
+>> Lucas
