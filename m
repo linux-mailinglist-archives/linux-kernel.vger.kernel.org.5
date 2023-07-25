@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B87762779
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA9176277B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjGYXlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S231152AbjGYXlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjGYXlI (ORCPT
+        with ESMTP id S229548AbjGYXlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:41:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5759012E;
-        Tue, 25 Jul 2023 16:41:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E0426616C1;
-        Tue, 25 Jul 2023 23:41:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D8A6C433C8;
-        Tue, 25 Jul 2023 23:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690328466;
-        bh=sp25dJ6Y/KLI8MJmxJb9iKJpN51ML9wRrtiUXLyP2Ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bmzZKVNizAdrfrpWp6sIWXbqX7bRAuU8H3UFp7g4Ht0WGdLPoXLNU7gR5UK9iYYDA
-         cLYQf7qBnPJRxujlsHAPVhh18hhuboumHmWxKcPzwAcM3PM4ZwZWSdq37bRnASVayN
-         RBSl8WEN/Fcdn0wqPohzgo81Nonke3IvOPejYBCo1M5WvizQe2iGrB0mxi0Gi7ZJ1Z
-         3gNU1ccPFL4bqSirn9ZStTBQyLal28n1QpjRgy7Kn1tFC5I8K1adN3fvoqMq8uRRi+
-         zE0ZTECJ49u9ioiYikjozGCJ1MIMToMqHGMWgz898mUAoytlhjmdiG9zi3ZkthNwRE
-         SKHOyNGrz+I0A==
-Date:   Wed, 26 Jul 2023 01:41:02 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     carlos.song@nxp.com
-Cc:     u.kleine-koenig@pengutronix.de, aisheng.dong@nxp.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, xiaoning.wang@nxp.com, haibo.chen@nxp.com,
-        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] i2c: imx-lpi2c: return -EINVAL when i2c peripheral
- clk doesn't work
-Message-ID: <20230725234102.louqs6gvlhfehjur@intel.intel>
-References: <20230725083117.2745327-1-carlos.song@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725083117.2745327-1-carlos.song@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 19:41:52 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3632B1FDD
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:41:51 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563db371f05so408886a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690328510; x=1690933310;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UWcC6NZnwplKxnJubHdIw6W1xXpN9D0rWOANNHWmQz4=;
+        b=4QoIsgD0aKg8cm7D42eqOcaczpv+G18YfoUra8P5i9LdEAb4sPivfVku7GILRprbbn
+         876cPLdUSl+t4WX66PhvT9iozT/Y/zPI8TUxxbrS0qPqew4Ws3XF2/D6p0hOPa2AH+If
+         yztZ4H5r0HUHmzjuAhea6YhAgFzQmxLc7veIzn7nu3NnrH+wzpEbRL93XXs4LfqLShM4
+         q/kAXlzY52E1yg8s32d7kbHzVDtsSUp96nq4QDLa2xkcxq8oGPNgLui7lYD4BYqhWHUs
+         u1K8vywP6SK/80LYzu1X/hAXxa2QpWcBTau5IffV458XfYn3Xk4MsZ+zDbylKSBhG018
+         kcXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690328510; x=1690933310;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UWcC6NZnwplKxnJubHdIw6W1xXpN9D0rWOANNHWmQz4=;
+        b=B9y+FucnFQJTC4aI8E2TmvwbQ/2hjKl1nhr8zfeStcE1hYv6DIYLy5SfzP111JId23
+         VnbMjuifvOJCtdU4dqke+od4pqEMPlV4HlkyEbhneEZkzvzHO/OHCmP/QcV+Dw52SD5T
+         96j4+xR7fSk7wl1fWIUPefzDYedbk1WSvftADEfVuZsemvwx8ZGPXp69RI4TiO1GVRfc
+         b6SiE7yJ307hpSSg2QrNm87QPLZCC1qOPUPqsC+/odK/BgxLATvQsb/jpUP+JMOG+t0A
+         77zolYhX3sizhRjgpqR1daRkoS6sS9EHIM/wiTLmrdDebmZLhypx+tJxmOFEKvD+H1sc
+         HXiQ==
+X-Gm-Message-State: ABy/qLZ79+zxAPlRT5LmmThG/GjkiN/vGmU7GcG7JEsndajIDiSqfIig
+        lzMlND+lyBjNlH0vom1yfoO65bNokRE=
+X-Google-Smtp-Source: APBJJlEfUJLdUrmrbSlFBFGHSdTPzHYSaXbojZzRQq0Qqk2F9CvFkeKhfcnsFT29n4IYiT0HAeKLuEt5S3o=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:7411:0:b0:563:4869:f54d with SMTP id
+ p17-20020a637411000000b005634869f54dmr2530pgc.11.1690328510698; Tue, 25 Jul
+ 2023 16:41:50 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 25 Jul 2023 16:41:45 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230725234145.351635-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Agenda - 2023.07.19 - No topic
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Carlos,
+No topic for tomorrow.  I'll log on in case anyone wants to have an informal
+dicsussion about something.
 
-> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> @@ -209,6 +209,9 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
->  	lpi2c_imx_set_mode(lpi2c_imx);
->  
->  	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
-> +	if (!clk_rate)
-> +		return -EINVAL;
-> +
+Date:  2023.07.26 (July 26th)
+Time:  6am PDT
+Video: https://meet.google.com/vdb-aeqo-knk
+Phone: https://tel.meet/vdb-aeqo-knk?pin=3003112178656
 
-this is a very unlikely to happen and generally not really
-appreciated.
+Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
+Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
 
-If you got so far it's basically impossible that clk_rate is '0'.
-Uwe asked you in v2 if you actually had such case.
-
-I don't have a strong opinion, thoug... I would drop this patch
-unless Dong is OK with it and I can accept it with his ack.
-
-Andi
-
->  	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
->  		filt = 0;
->  	else
-> -- 
-> 2.34.1
-> 
+Future Schedule:
+August 2nd  - Available
+August 9th  - Available
+August 16th - Available
