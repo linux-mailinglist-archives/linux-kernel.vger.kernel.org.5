@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5448760E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A1D760E08
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbjGYJJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S232909AbjGYJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjGYJJt (ORCPT
+        with ESMTP id S232965AbjGYJKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:09:49 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FEF9B;
-        Tue, 25 Jul 2023 02:09:48 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.217.18])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AD6F6607108;
-        Tue, 25 Jul 2023 10:09:39 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690276186;
-        bh=XdNAqD8pBtuejUuQFT+jmKzDVpGQZBU3/DTPb3ihEmo=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=d7hVqBt3iuMHzYWfjG0CGNHi2ClrCmnXnBTsfB/r7HruJrbnSCqcl0i0Tg7QTfYQ6
-         NEbT9Gf30FbGxTKFtJrrJQlSSubGDgkKQHQ+ORIjYELSwWMG2oVJnCUm62xTckCxFB
-         jelQdGbUVo+0zxdWEwD895dvUagXZbyEbhEA3Aq6aEr0MVtd+tQ0D2fHTExwRtkTen
-         wGVREO5J1I63LV0rUN4hVnwdt0kWyGDsnwbF8HM4sFeGVeFVwQzO9MYJU7epJWQan7
-         Q9Bz2C8Y6/lcexEifufO2KP+gsE8uaxCCE00xg2rI5uasR2VO6ibEn8PUYe9IU+BdT
-         1VecNbs2To1Ug==
-Message-ID: <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
-Date:   Tue, 25 Jul 2023 14:09:32 +0500
+        Tue, 25 Jul 2023 05:10:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94280FD
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690276187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3q/xBZbb8dNJd9KUqNimqM/jz1gI+oQ8PYpYvQS8xzU=;
+        b=IdZljzV89I1lSCerkZaYxXvZYj6OkaMkihIqbVkYKYj2pXAgtT9iD7BLyVoVVFnFn7gP1p
+        D0Onn/P7y2CNXfVEA4bOfWzEYCnDmbD4UwUuLnroTVjc31NTD7gjQt9zhQtq0Jsiiv5qwT
+        HAubPnRoUb8To9IrSk/1CR/tSvqe6Aw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-283-DxcsshbhNIC5ym-ncxc87g-1; Tue, 25 Jul 2023 05:09:45 -0400
+X-MC-Unique: DxcsshbhNIC5ym-ncxc87g-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-315998d6e7fso2494147f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:09:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690276184; x=1690880984;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3q/xBZbb8dNJd9KUqNimqM/jz1gI+oQ8PYpYvQS8xzU=;
+        b=ZrnulNrWTl+iRYH8gegP8WnkgldlTxDnTTHOvYaR07eEfOORNHAXrcdVZ+p3rVjEij
+         tt5Jtw7rqtRfvXyYSPgwmb/9HeJewlRFGMbZZir56YoFd8ORe920kpTJ7wJN4tiXtNsF
+         LoejoSBX798/dA4XGK/aoQ2PADd26vpyWU6XFDVApnoazxZsisfntIKJ8DartwcFuIWi
+         /yKPCCwGkF31DFvVFFTq67ie0ITok0VezdcCEtU5rHKl96epYcqSIk/39IsnlGNtqPFg
+         BDBiZbg9T+1pWGrtBk4LlD1b5ODzXgZCgnnyYISeVQieM/QImQyBbm0WA03os0f2dmI1
+         vQmg==
+X-Gm-Message-State: ABy/qLaN4381nfslSfB4BVDi/Tsvd60VxfSLG+3l33vCkb0vjHAo8C1b
+        5w61cCR7LDLbYzJDRpSMF0fahQBWzHQpMJNjlftrYXDO/cXAjeZ5s/Mhzff3ymewHIKiPjQN7mH
+        hFDtXHrZk2ZezfwMuwhVdWUqT
+X-Received: by 2002:a05:6000:11d2:b0:317:6189:fe7a with SMTP id i18-20020a05600011d200b003176189fe7amr2929540wrx.58.1690276184632;
+        Tue, 25 Jul 2023 02:09:44 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHJhKb7Na5u7xDM7XxCVQynmdPLcEhJmCjHzDLFndkhKf7ubBFimSpfzjh7MV3QAw8D9D7c8A==
+X-Received: by 2002:a05:6000:11d2:b0:317:6189:fe7a with SMTP id i18-20020a05600011d200b003176189fe7amr2929526wrx.58.1690276184192;
+        Tue, 25 Jul 2023 02:09:44 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c73f:e900:3b0d:87a6:2953:20d1? (p200300cbc73fe9003b0d87a6295320d1.dip0.t-ipconnect.de. [2003:cb:c73f:e900:3b0d:87a6:2953:20d1])
+        by smtp.gmail.com with ESMTPSA id m9-20020a5d56c9000000b00313e2abfb8dsm15804076wrw.92.2023.07.25.02.09.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 02:09:43 -0700 (PDT)
+Message-ID: <d80ed0b8-c92a-f76a-6ed9-b844d58c0d14@redhat.com>
+Date:   Tue, 25 Jul 2023 11:09:42 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
+Subject: Re: [PATCH] docs: mm: Fix number of base pages for 1GB HugeTLB
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
- <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com>
- <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com>
- <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
- <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Usama Arif <usama.arif@bytedance.com>, songmuchun@bytedance.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com
+References: <20230207114456.2304801-1-usama.arif@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230207114456.2304801-1-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 12:23 PM, Muhammad Usama Anjum wrote:
-> On 7/24/23 9:10 PM, Michał Mirosław wrote:
-> [...]>>>> @@ -2219,22 +2225,24 @@ static int pagemap_scan_get_args(struct
-> pm_scan_arg
->>>>> *arg,
->>>>>              arg->category_anyof_mask | arg->return_mask) & ~PM_SCAN_CATEGORIES)
->>>>>                 return -EINVAL;
->>>>>
->>>>> -       start = untagged_addr((unsigned long)arg->start);
->>>>> -       end = untagged_addr((unsigned long)arg->end);
->>>>> -       vec = untagged_addr((unsigned long)arg->vec);
->>>>> +       arg->start = untagged_addr((unsigned long)arg->start);
->>>>> +       arg->end = untagged_addr((unsigned long)arg->end);
->>>>> +       arg->vec = untagged_addr((unsigned long)arg->vec);
->>>>
->>>> BTW, We should we keep the tag in args writeback().
->>> Sorry what?
->>> After this function, the start, end and vec would be used. We need to make
->>> sure that the address are untagged before that.
->>
->> We do write back the address the walk ended at to arg->start in
->> userspace. This pointer I think needs the tag reconstructed so that
->> retrying the ioctl() will be possible.
-> Even if we reconstruct the tag for end and vec, We need to update the start
-> address. Can we just put same tag as original start in it? I'm not sure.
-The special users would use tags. If they are using it, they'll just re-add
-the tag in next invocation. I think this implementation is correct.
-
+On 07.02.23 12:44, Usama Arif wrote:
+> 1GB HugeTLB page consists of 262144 base pages.
 > 
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> ---
+>   Documentation/mm/vmemmap_dedup.rst | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/mm/vmemmap_dedup.rst b/Documentation/mm/vmemmap_dedup.rst
+> index a4b12ff906c4..689a6907c70b 100644
+> --- a/Documentation/mm/vmemmap_dedup.rst
+> +++ b/Documentation/mm/vmemmap_dedup.rst
+> @@ -1,3 +1,4 @@
+> +
+>   .. SPDX-License-Identifier: GPL-2.0
+>   
+>   =========================================
+> @@ -17,7 +18,7 @@ HugeTLB pages consist of multiple base page size pages and is supported by many
+>   architectures. See Documentation/admin-guide/mm/hugetlbpage.rst for more
+>   details. On the x86-64 architecture, HugeTLB pages of size 2MB and 1GB are
+>   currently supported. Since the base page size on x86 is 4KB, a 2MB HugeTLB page
+> -consists of 512 base pages and a 1GB HugeTLB page consists of 4096 base pages.
+> +consists of 512 base pages and a 1GB HugeTLB page consists of 262144 base pages.
+>   For each base page, there is a corresponding ``struct page``.
+>   
+>   Within the HugeTLB subsystem, only the first 4 ``struct page`` are used to
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-BR,
-Muhammad Usama Anjum
+Cheers,
+
+David / dhildenb
+
