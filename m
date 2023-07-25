@@ -2,180 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD5B76214E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F6F762151
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjGYS3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S231265AbjGYSac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjGYS3r (ORCPT
+        with ESMTP id S229478AbjGYSaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:29:47 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2040.outbound.protection.outlook.com [40.107.223.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2AA1FC2;
-        Tue, 25 Jul 2023 11:29:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F3dVkOLpHYwatvrXxqx5LOroa1XfHxZRuA+30SdzKeH7r8k01QNmpxxOxkBFOycQnAvJ8D493NeKrmNWt3QZ4O8rRLnNnkqTUeK0O/6cs6vOO9ALxxXsxtu3WBrn1iUdWvYkND4UdOxIYyIIuYq0N5V3QbtD4N6KoUoESRPNas1Y/YZcXYzwPyDq2R6kFJGYc/Brr+pVhTBA2lTccWFJ6DqsGeqWgrF7G2XwSlYAzN5v2brwpBgcSGENAOkLH3tJKTgo5ajl3kh4pq5ly9NHrq1mh42ys8JeEn3zHEq1nFBzKRWxFJ973Li2+u5dN3aVFa3CH7fhaGFAAv67jvqrJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/FNgWxkBrrO8prou4EJ3XOxh43qJl5qtY61iWxSe3Iw=;
- b=PgS7dYuxhRpkRImeBvDppsrjsAT9DSfTH7G2IzFsNTv8b1rkW+zL8I3APvDg739o+OyQzt4TN/+P0TJVgE4Re+PYeEVRHqIF4PNIy9rU1ob1W9VP/ddiHoE16oHdKdwBq784ig0iw2aE/Q46Pv2BkI3/E9ZMRy/zM4L9AdYc2G/eW+N7ph9pudRpaMgy6RnOgpTPB0cdrZvrDGcEYkS1LH9hefIQyaTs9MJTTPgPcbGDeeAzLPr6stV/szhO1c61I6sWM0610uGcwTaTKDkpHifTuI3aaZ9eu5Sv7gQuhECKfnvwQ50OsPuzh23ZsOarCfYLlg6xmDnVz0DiLgYJqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/FNgWxkBrrO8prou4EJ3XOxh43qJl5qtY61iWxSe3Iw=;
- b=mMbq2f5MUxoHWxDRLi3CG/zS3wVswTn085YQQ2xYLfNdh+/lTUmiL7M+BCvvQhxg5SpmlZ4a+GwhsFNcUYvBkUR4I6JIhVab+Wpy2ez+88OaNj2zdLU1mflPNVgBUR/5uzjsjvmwS0TfbHPZnW212gHBpOVW7io9G+9NIMURea4x9WsAYKvwf6D6vJk5J9pu8E7dXIlGS4A8cQMY5xSyUeNHrif+vW5xojXvqXEo/fsKQCdYqowcr5sfN/duc6oN4NFdS0UoG75ApdlRb24XzVIqSeeyanATcFceZSJ6kg/olZncd8LA+jZYBtb1LcnGBbBS6zA0KwprcbRN4lUs+A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- CH0PR12MB8532.namprd12.prod.outlook.com (2603:10b6:610:191::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 18:29:43 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::8833:f1bb:7d8b:dce7]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::8833:f1bb:7d8b:dce7%4]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 18:29:43 +0000
-Message-ID: <df57e126-fe89-8a43-42aa-f0b4a5a404dc@nvidia.com>
-Date:   Tue, 25 Jul 2023 19:29:38 +0100
+        Tue, 25 Jul 2023 14:30:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086D31FC4;
+        Tue, 25 Jul 2023 11:30:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ADCAE1FD68;
+        Tue, 25 Jul 2023 18:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690309823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S826svsaPfMRwRLxYlPF8DuIM0qGHqTwTbsIE5uRIwE=;
+        b=aU6IJG8oiUfPpCcyD1At5aIb7tQRqhRhcx/usVFDPhH1xcB07UeZpuBSawrovduB0lC5iv
+        a1R314mffvxwh+SV8vCYd2aRbvHyFUa88e6HbrtrJHkqKYl9tdAZNQRalDkHFf7KhF8rjK
+        ASzIrcW2SBF8dQ3H+Tzp6fXLpgjTVGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690309823;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S826svsaPfMRwRLxYlPF8DuIM0qGHqTwTbsIE5uRIwE=;
+        b=7gnJEvZXWOG44NDJJfRwbtj3ONhEXrOuW7DoKzF6ccbJxhT0MYxHjbjQO9Bp0YoOXoIdpd
+        TGOHMAfVQ1YTGPDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81D1D13487;
+        Tue, 25 Jul 2023 18:30:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DgG7Hr8UwGQ/dgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 25 Jul 2023 18:30:23 +0000
+Message-ID: <c10d925b-8d37-caa0-8f66-a0206f948c69@suse.de>
+Date:   Tue, 25 Jul 2023 20:30:22 +0200
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [Patch RESEND 4/4] memory: tegra: make icc_set_bw return zero if
- BWMGR not supported
+Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+ <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
+ <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
 Content-Language: en-US
-To:     Sumit Gupta <sumitg@nvidia.com>, krzysztof.kozlowski@linaro.org,
-        treding@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Cc:     bbasu@nvidia.com, talho@nvidia.com
-References: <20230621134400.23070-1-sumitg@nvidia.com>
- <20230621134400.23070-5-sumitg@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20230621134400.23070-5-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0146.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:9::14) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|CH0PR12MB8532:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8b6d4925-b2f5-4666-bcf2-08db8d3d1d98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FgaU+6MFACocdWwkwEYRUY6hO4hpR7Mqv4Lx5cVTVnsZa/XFmSCja1KDxW6VasVIutJd/ImgoPxgQg+3M9w0QCOOe7TodViASwRlsepEbebXz0ugwEzaPV5BiOcdcBD/g8FqVBoT/eaDcOUfGpYid5zRJX3Z3DdI/qf2e2W4XKBXZaIT2OWkV6vYYwxp81EFaIldUV/1xT1d0XJh2+ZH/Siohc5CL3gCB1q8VL2/5r8M+4+kWjYcZ47I+lq9ZYadOyABpSgH37JpIRvdT/NQPPSVfStijZQUMXQs3ETuzAMgwaJyr6QVw2iUey5cuhm32zo9mopO8YizI28Xc4WuYLGWTv7YXmfzKWYCf6kdB9sA5KVwIw5rXM7AVHRi8EmMuVEUeALyz+phwfZQ/bNzZthddV0116jQf054UcTYGKo/59sPkOVb3EGRvm59BfpknnJU4ej70pufexdrAPrXXom0QP4hExGGOM7PGPI4eNnWohwEaruewF8osH2zq1uDZGF0F1NktaBGU/sIwBk1p7pRKCyIin4rl6nRp5pT6a9AS9J6+5iurYMt2E2SHR5ohR/kXU/19JdRuHxQ5P4nurmjP/z8GqaxxpF58jez4WL8NR+k5dVFcg5ljmBoiWC6Xio4PJWtXVk8M0wUz5nUsw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(451199021)(83380400001)(478600001)(66556008)(66946007)(66476007)(316002)(4326008)(2906002)(36756003)(38100700002)(8936002)(31696002)(55236004)(86362001)(26005)(31686004)(186003)(107886003)(53546011)(6506007)(41300700001)(6666004)(2616005)(6486002)(6512007)(8676002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?anBlb3dQMjcyZllrNEp2SVhYZWMzYnZIUVBKRUVUQnB1ODFoWjNMQ2V0RzFo?=
- =?utf-8?B?cGk1SjhjTS80cjZjMEhwV1ovOTNBejJCNS9ma3lVWDRwUENjWXNsaXJIdzFQ?=
- =?utf-8?B?dGpZVTAyWFk5ZlVBQmVZTTlVVGp0RXNCQXVxUFBRRzFCRnhXenBHSWxEVXA2?=
- =?utf-8?B?ZnRLSXFaQU9vZmdZWms2R0xIa3p3L3A5YW96eDJWSVdkeWJ1elEyaHRLSkF4?=
- =?utf-8?B?VkNEeDNmWi8xOFhRTngwc0xDMkxjMnpyRHhGSktPUUp1aUM0TitpRUFSamVI?=
- =?utf-8?B?NmlEUXF3TzU4b3VjZnBhbEZSYkN1MnI1c29MYlkyL3hobXNLRk9tQnBxd1hP?=
- =?utf-8?B?V0x3T1lzTE9TZ3orckVZU3ZraUVJdEMwL0ZvUkd1SHRkT0Z2MlJzcE9kYnNJ?=
- =?utf-8?B?aFpvYy93Rll6YmN4eWN0TDF1UEFpOFhYeHVRdU53OUttaFpqZ1ZnMVAvTncz?=
- =?utf-8?B?c2I2NXNzaWVQVjgxb2NEWXlLcENwMG1GVkNjZXFhc05tdDFoTEg3QzFtTGRX?=
- =?utf-8?B?Z1dPK3BOWm40VFRUdllzVEpkcnhLWWNJMlgvREt5NDF4SUU5UHdTVVpmNy9W?=
- =?utf-8?B?WVhpN3UrcFBKZEZGdWJRdVExN2luQ3F1aE1icGNmK255OVFEL2FNaFNCMmJx?=
- =?utf-8?B?L0M1Uy9DVGJWcGRlTTZoaFNwTHhBTVMvK2ZyVU13QzJhVk1kTjBZZUZ6RC9t?=
- =?utf-8?B?Z25XYTl6dXZKZFhveWpVN0dPSnpGUEkvUFZKcGpqdE85ZlNjOW5QRm9pZVl6?=
- =?utf-8?B?ZWd4V21PdXpuNXVCOUErS0dzRTlabXVIdlBMZlIwSFQyZHRGajB5d09wOEhm?=
- =?utf-8?B?cTJXcWF1Q3ZBYW1MYTcrZFVyV211Nm1XVXdPZy90NHdkRlV6eFQrbmtCck1X?=
- =?utf-8?B?WWh0UWhYRkM0ZnlXMEcvM010VzNVYzg2cEtEVEtMdDE2M2hrbXJiNXN3U1Vj?=
- =?utf-8?B?Q0NrUGVaSTZLNDdzM1FseEF5dmZMRnpFUU1oUHFSSTMrcU52cXlIVVgraFZD?=
- =?utf-8?B?a09WS2RUYXEzYVNDM29kUnJRbDhqZ21PemFpQzlkaENLaEpaSzdmaFhQdTcx?=
- =?utf-8?B?ZE5iOTBEcDdjZ0JiK294eUJheUtuTERJalpSSHNUUTVpWGsrYXluVGtuMkhr?=
- =?utf-8?B?MUtYbkpFRXdMdXBOdlFKSExyOWgwNS83cUhmcHhxbTJxL2wwK1JwN1kvWmVO?=
- =?utf-8?B?elZRVlRMSkFYUFdsT1RVNlZxcmNxUzF2WVVCb2xxMUFJanpvYkpiMExSS1BJ?=
- =?utf-8?B?dnhueTk1WkxKVXcySmNZbDZZV3NVYktEUUN5aEJGYWwzcTBaZVp5Mm1mSEtr?=
- =?utf-8?B?eGgxeStXRXRkcXpreDdkSDZjbmM2YVNsWHUzQ1JPTncxUUJnS1FDTlBTZDh4?=
- =?utf-8?B?b3ViNUU5RGRIMzlobnVGcitjcVJGSGU0NGkrODVQTGIzbnRITlZHRkNJWVB5?=
- =?utf-8?B?REVMMmtqNm9pNjBTNklHS2o0emhMZitMcDdJWTBvV3UzSnIwV2hHUlZuVGJQ?=
- =?utf-8?B?YytJWWU3dFI3LzJmYU1mYzEwQVpmcDlHc3ZpM3lsL25SL1dCQ3lHbzBvamND?=
- =?utf-8?B?LzFwR29LVXJFc1huRmhKMkwwNHQyYjdaaHdDUUhZTDk4TWt5Q0RrN2h1bkYy?=
- =?utf-8?B?a3QwTHhxZkVDUXRyNjRiSXVEWU81VkR2b3RIUkRmV1pCMVEyL3BSbnFraVlu?=
- =?utf-8?B?WkpzaHpLeFlYKzBYeklMNEp1Tk9YaXNhTG9UT3VMbU9WL3JUOW11T2h6WjhO?=
- =?utf-8?B?bWwzdW11ejlrOGRIdlpPbStzSnFhWE1qOWczaWVSR1FnbzNFOTNSYlpXZ01q?=
- =?utf-8?B?Nzl3TG5sUGlGQWtueVFkbjFYM1YraENPVTU4ZllmT3pNRitzNi9UV1hEdmRU?=
- =?utf-8?B?S1I1elVzS0ZUU1RWTkxXcytIaVFTOFA1b3JvQVgySG5meFczZVJKMUNZRDZE?=
- =?utf-8?B?RGRxTmFNd3N2T3FwdUlTeStVSnFTbzVWQzlDL0FteDJrMzIvdldFNVI0U0Nj?=
- =?utf-8?B?QThOQVYraFc0bGRpNzZTZWwzM3Jlb09OTHpVNGZIejhac1R5ZlQ2TnROY2Rw?=
- =?utf-8?B?eDBwaTlYemZYWitSTUhocjM0dysxaG94K282aVo3OVZIeTlweXZmVVl2QzM1?=
- =?utf-8?B?c3k3M3pXcGZoY1o5V3NxU0lsL1lIbDkvdWwrcVZDcW92R1dTTlJveWVITWZy?=
- =?utf-8?B?NFE9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b6d4925-b2f5-4666-bcf2-08db8d3d1d98
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 18:29:43.5131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pFq2joyV24RmcIL7ECVx3A5pFXS41DZPskVxnx1nfOj2OiO03fj4MHer6UiG/rjptikHAqc94oJrhLXozgbBiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8532
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Ihnd0X4BdvmaCj2zBQR900k9"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Ihnd0X4BdvmaCj2zBQR900k9
+Content-Type: multipart/mixed; boundary="------------izx5kFNS1CR1XwyjAzA0wvpZ";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <c10d925b-8d37-caa0-8f66-a0206f948c69@suse.de>
+Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+ <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
+ <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
 
-On 21/06/2023 14:44, Sumit Gupta wrote:
-> Return zero from icc_set_bw() to MC client driver if MRQ_BWMGR_INT
-> is not supported by the BPMP-FW. Currently, 'EINVAL' is returned
-> which causes error message in client drivers even when the platform
-> doesn't support scaling.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->   drivers/memory/tegra/tegra234.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
-> index bc73be7fe143..07aba301a173 100644
-> --- a/drivers/memory/tegra/tegra234.c
-> +++ b/drivers/memory/tegra/tegra234.c
-> @@ -951,7 +951,7 @@ static int tegra234_mc_icc_set(struct icc_node *src, struct icc_node *dst)
->   		return 0;
->   
->   	if (!mc->bwmgr_mrq_supported)
-> -		return -EINVAL;
-> +		return 0;
->   
->   	if (!mc->bpmp) {
->   		dev_err(mc->dev, "BPMP reference NULL\n");
-> @@ -998,7 +998,7 @@ static int tegra234_mc_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
->   	struct tegra_mc *mc = icc_provider_to_tegra_mc(p);
->   
->   	if (!mc->bwmgr_mrq_supported)
-> -		return -EINVAL;
-> +		return 0;
->   
->   	if (node->id == TEGRA_ICC_MC_CPU_CLUSTER0 ||
->   	    node->id == TEGRA_ICC_MC_CPU_CLUSTER1 ||
+--------------izx5kFNS1CR1XwyjAzA0wvpZ
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
+SGkNCg0KQW0gMjUuMDcuMjMgdW0gMTg6NTAgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
+aWxsYXM6DQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+IHdy
+aXRlczoNCj4gDQo+PiBIaSBKYXZpZXIsDQo+Pg0KPj4gT24gVHVlLCBKdWwgMjUsIDIwMjMg
+YXQgNjowN+KAr1BNIEphdmllciBNYXJ0aW5leiBDYW5pbGxhcw0KPj4gPGphdmllcm1AcmVk
+aGF0LmNvbT4gd3JvdGU6DQo+Pj4gR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydCtyZW5lc2Fz
+QGdsaWRlci5iZT4gd3JpdGVzOg0KPj4+PiBJZiBDT05GSUdfRkJfQ09SRT15IGJ1dCBDT05G
+SUdfRkI9biwgdGhlIGZyYW1lIGJ1ZmZlciBib290dXAgbG9nb3MgY2FuDQo+Pj4+IG5vIGxv
+bmdlciBiZSBlbmFibGVkLiAgRml4IHRoaXMgYnkgbWFraW5nIENPTkZJR19MT0dPIGRlcGVu
+ZCBvbg0KPj4+PiBDT05GSUdfRkJfQ09SRSBpbnN0ZWFkIG9mIENPTkZJR19GQiwgYXMgdGhl
+cmUgaXMgbm8gZ29vZCByZWFzb24gZm9yIHRoZQ0KPj4+PiBsb2dvIGNvZGUgdG8gZGVwZW5k
+IG9uIHRoZSBwcmVzZW5jZSBvZiByZWFsIGZyYW1lIGJ1ZmZlciBkZXZpY2UgZHJpdmVycy4N
+Cj4+Pg0KPj4+IEluZGVlZC4NCj4+Pg0KPj4+PiBGaXhlczogNTViZmZjODE3MGJiNTgxMyAo
+ImZiZGV2OiBTcGxpdCBmcmFtZSBidWZmZXIgc3VwcG9ydCBpbiBGQiBhbmQgRkJfQ09SRSBz
+eW1ib2xzIikNCj4+Pj4gU2lnbmVkLW9mZi1ieTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVy
+dCtyZW5lc2FzQGdsaWRlci5iZT4NCj4+Pj4gLS0tDQo+Pj4+ICAgZHJpdmVycy92aWRlby9L
+Y29uZmlnICAgICAgfCAyICstDQo+Pj4+ICAgZHJpdmVycy92aWRlby9sb2dvL0tjb25maWcg
+fCAyICstDQo+Pj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVs
+ZXRpb25zKC0pDQo+Pj4+DQo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL0tjb25m
+aWcgYi9kcml2ZXJzL3ZpZGVvL0tjb25maWcNCj4+Pj4gaW5kZXggZTViMWNjNTRjYWZhMTBk
+NS4uYjY5NGQ3NjY5ZDMyMDBiMSAxMDA2NDQNCj4+Pj4gLS0tIGEvZHJpdmVycy92aWRlby9L
+Y29uZmlnDQo+Pj4+ICsrKyBiL2RyaXZlcnMvdmlkZW8vS2NvbmZpZw0KPj4+PiBAQCAtNjMs
+NyArNjMsNyBAQCBpZiBWVA0KPj4+PiAgICAgICAgc291cmNlICJkcml2ZXJzL3ZpZGVvL2Nv
+bnNvbGUvS2NvbmZpZyINCj4+Pj4gICBlbmRpZg0KPj4+Pg0KPj4+PiAtaWYgRkIgfHwgU0dJ
+X05FV1BPUlRfQ09OU09MRQ0KPj4+PiAraWYgRkJfQ09SRSB8fCBTR0lfTkVXUE9SVF9DT05T
+T0xFDQo+Pj4+ICAgICAgICBzb3VyY2UgImRyaXZlcnMvdmlkZW8vbG9nby9LY29uZmlnIg0K
+Pj4+Pg0KPj4+PiAgIGVuZGlmDQo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL2xv
+Z28vS2NvbmZpZyBiL2RyaXZlcnMvdmlkZW8vbG9nby9LY29uZmlnDQo+Pj4+IGluZGV4IDZk
+NmY4YzA4NzkyZGM4OTcuLmI3ZDk0ZDFkZDE1ODVhODQgMTAwNjQ0DQo+Pj4+IC0tLSBhL2Ry
+aXZlcnMvdmlkZW8vbG9nby9LY29uZmlnDQo+Pj4+ICsrKyBiL2RyaXZlcnMvdmlkZW8vbG9n
+by9LY29uZmlnDQo+Pj4+IEBAIC01LDcgKzUsNyBAQA0KPj4+Pg0KPj4+PiAgIG1lbnVjb25m
+aWcgTE9HTw0KPj4+PiAgICAgICAgYm9vbCAiQm9vdHVwIGxvZ28iDQo+Pj4+IC0gICAgIGRl
+cGVuZHMgb24gRkIgfHwgU0dJX05FV1BPUlRfQ09OU09MRQ0KPj4+PiArICAgICBkZXBlbmRz
+IG9uIEZCX0NPUkUgfHwgU0dJX05FV1BPUlRfQ09OU09MRQ0KPj4+PiAgICAgICAgaGVscA0K
+Pj4+PiAgICAgICAgICBFbmFibGUgYW5kIHNlbGVjdCBmcmFtZSBidWZmZXIgYm9vdHVwIGxv
+Z29zLg0KPj4+DQo+Pj4gU2hvdWxkIHRoZW4gbW92ZSB0aGlzIG9wdGlvbiB0byBkcml2ZXJz
+L3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZyA/DQo+Pg0KPj4gTm8sIGFsbCBsb2dvIG9wdGlv
+bnMgYXJlIGluIHRoZWlyIG93biBmaWxlLg0KPj4NCj4gDQo+IFllcy4gSSBtZWFudCB0byBt
+b3ZlIGRyaXZlcnMvdmlkZW8vbG9nby8gdG8gZHJpdmVycy9mYmRldi9jb3JlL2xvZ28gYW5k
+IHRvDQo+IHNvdXJjZSBpdHMgS2NvbmZpZyBmcm9tIGRyaXZlcnMvZmJkZXYvY29yZS9LY29u
+ZmlnLCBzaW5jZSBpdCBub3cgZGVwZW5kcw0KPiBvbiBGQl9DT1JFLg0KDQpObywgcGxlYXNl
+IHJhdGhlciBsZWF2ZSBpdCB3aGVyZSBpdCBpcy4gVGhlcmUncyBubyBjb2RlIGRlcGVuZGVu
+Y2llcyB0byANCnRoZSBmYmRldiBjb3JlOyBpdCBtZXJlbHkgZGVwZW5kcyBvbiB0aGUgS2Nv
+bmZpZyB0b2tlbi4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gQnV0IEkgc2Vl
+IG5vdyB0aGF0IGl0IGFsc28gZGVwZW5kcyBvbiBTR0lfTkVXUE9SVF9DT05TT0xFLCBzbyBo
+YXZpbmcgdGhvc2UNCj4gaW4gZHJpdmVycy92aWRlby9sb2dvIG1ha2VzIHNlbnNlIGluZGVl
+ZC4NCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZl
+bG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0
+cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFu
+ZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgw
+OSAoQUcgTnVlcm5iZXJnKQ0K
 
-I have also found that this change is needed for Linux v6.5 in order to 
-work with current BPMP firmware. Without this patch PCIe does not work 
-on Tegra234. We should probably also add the following fixes tag for 
-this patch ...
+--------------izx5kFNS1CR1XwyjAzA0wvpZ--
 
-Fixes: 9365bf006f53 ("PCI: tegra194: Add interconnect support in Tegra234")
+--------------Ihnd0X4BdvmaCj2zBQR900k9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Thanks
-Jon
+-----BEGIN PGP SIGNATURE-----
 
--- 
-nvpublic
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTAFL4FAwAAAAAACgkQlh/E3EQov+C8
+kA/8D6v5Ub/5BVDcrNs4cdI8N5yfQQvY+5tqLuUdIrtKk37bdb48Ldkivu1+0uP4TAMEeo9Bo+3t
+HyZ7Mh0Y1EgfhSlI9Of7QO409IStKGyTc5XN/M95fRfUBGLRmjk5xrbqqnKaT8Sdpu3Er8SKAcel
+n0+jObocwSf50Auk5u5YyDsYECEAZMVfpVwoQP04t5VpCnlYCAPz9fP4vMPkpvJCtm2fTUCoaWwJ
+mUq2KWb1kUYiEWa09nAFtp24cJo1M81tfHNcawuCcNvg4+OHrvxFxGn48m3U3rqXEV2SDjah6xTJ
+hL6AwN5htSgKUbtaFp8N2cMgRKE5fVgEl2kaEX3XPrHrPDMjqM+2pFNfklt0FBKcLcrvp6HlBU3K
+qs0EXPFBKezDX15/2dEpOsGHxuKcHDRh5kRObySe+4fhcmkfx/AbW/xhDiXCgVPlPO6xEiLKqJvG
+vVuiGzMwPSaQhpfCQR1MIpH0hymrRFHJ4y8ZRU3G6i2GNjL76q6lSuSHokmI9e+kcQmXgrpD79kg
++nvsMB4Pr5MMtaxfdUtGubRTpDZ/ABsW6oTK1xoO+Jc6uSQTvzQIyBWixWUJ88mnBdsGCRsJttBe
+n6Jzpz3VT04T8BPAqjDQitQPT6G9mS+Wcy00zPtDc1rHHn0SJJv+ABhJyrJEbtkPIJL9nkY2fB2j
+mo8=
+=ydUH
+-----END PGP SIGNATURE-----
+
+--------------Ihnd0X4BdvmaCj2zBQR900k9--
