@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B107623C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F68C7623CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjGYUnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
+        id S229662AbjGYUo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbjGYUmb (ORCPT
+        with ESMTP id S229701AbjGYUo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:42:31 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0010B212F
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:42:28 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-98de21518fbso975917466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:42:28 -0700 (PDT)
+        Tue, 25 Jul 2023 16:44:27 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E6526B7
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:44:00 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d16639e16e6so1668062276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690317747; x=1690922547;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=luoqn8Oevn7bkqgAb6fNJnOH+RZZKqe9njAp7OGyFq0=;
-        b=TbDvrQE8gms3+U4G88aHi+ZQECy/VuP63cWu8W2dq0cyAMuW4okMl6e5H6YZGvHdFA
-         09cT8OdwzanTzAVTAKSYmHtIwNNfGdE/62luw5mHiryktLTpk+PT2BNNvVqFAwyFYGZN
-         sBrDQo0YMB61Ao/F3pwRV3nbm8415wyzaR8PxhuSqpANptSdsoxE5QwbaoaEupbkWsHL
-         y73d/08ukkJUV5YJdnkCfbpstBWhOXPQjiateZyzmIzqqZ0kLAooo216anwXs3I+gpVe
-         bWA2wSUbx23qnpu63RAUdMVJpNwyMQJRkmBrBvkTB1IOSjHX8KdaBgGLGOwdK0HstgAZ
-         8nbA==
+        d=paul-moore.com; s=google; t=1690317840; x=1690922640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nWFtInZ1K1dOfuS7k8qAbtMBBIEMrxLy4VGVUtC5gnI=;
+        b=C8boa0Mv2x13zaBKrUj+xzuVti30LteOQD/85/WnBKhzbeDHEzvYvZ3kQdHoCjYdG0
+         ftqVyfqFa6NOhebzP3zMyFH7Nlp1JPPPKMGc1aE91kApgf84Ufspb27OrNQYnal4fJdI
+         RuMjkIlaBANH5JbWHDMSmJYGIzqqyjVZTAseBtkUxPVzAHisNHbe6FS0O0hpPY2Mahdy
+         fdrDOGG8cimzMGhjO/sM3c08lCiYTBbFA4aZL9R/TiSrtJIosdGWlE6hbhCkOQUU/TaG
+         FqmFBGWx8K2cus33+JbUinADhEt8mhX8e9cNl+6Pf8/2HVcctD7B/+1vZNujcT3jVfWL
+         BwBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690317747; x=1690922547;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=luoqn8Oevn7bkqgAb6fNJnOH+RZZKqe9njAp7OGyFq0=;
-        b=D/xUlb2hISgrPIqVSeHP7OhkSs+Bvbqp0Cce3deRRaRF7AsAX/xWwMlwyZZf9alhJZ
-         0WXOrhAhPWHBiJ4I5RHUQNokALJaI7iuzVUUbdslaSQOHBilsisjgeAHYXvQKyEEf9rr
-         slJ/6Ye9qOZfxvi56wbA/lJqOfBv/BuUDZKyX0JZFiGcDrOctCCKImyxASIw7kMw8ojA
-         N7kvMX5CiE+OmhnCiTankd2IjsTtPYCgKQPsVP6s8JJXByORroDfMEH4DC6JEEj+5zqU
-         nGdTBOnGXeoIhZWwnuSsCnFKilOa4PuAlbURHWpc7HBNeUaccLaEljpRI2/Yf7omu3sh
-         PAQw==
-X-Gm-Message-State: ABy/qLZCfors5kQbbL+5ZA89UsMMK+iah+O0m4bkVlvLQtpzye3Qiro+
-        0/6+h6aisfONFEED5U40dzmhHw==
-X-Google-Smtp-Source: APBJJlEN+nPjs/HeMvPv2U7XvIehtqxdjyI+/5qdTTdyp4g8mGDSFv84MiTD2ay4Fs+0aghWfmNRYw==
-X-Received: by 2002:a17:906:224c:b0:993:e752:1a70 with SMTP id 12-20020a170906224c00b00993e7521a70mr14758414ejr.19.1690317747226;
-        Tue, 25 Jul 2023 13:42:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id rv14-20020a17090710ce00b0099b921de301sm3930223ejb.159.2023.07.25.13.42.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 13:42:26 -0700 (PDT)
-Message-ID: <aa2c2681-1593-2e5e-0131-2f916fbdd14a@linaro.org>
-Date:   Tue, 25 Jul 2023 22:42:24 +0200
+        d=1e100.net; s=20221208; t=1690317840; x=1690922640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nWFtInZ1K1dOfuS7k8qAbtMBBIEMrxLy4VGVUtC5gnI=;
+        b=RAIRjLV4KLwYvMwff3XgIwJv7pjA0t7R0/A//dtGhCP6xJvD/hmpyYcgiYtvunTE74
+         q9BpVvCPHwG92oCB5XBH1Yqdjyr1k/KikgUo9nGTe9qYbybI4N5ItcZ2ZNDIfGEVVNrN
+         VU8KrJ9arQZMuo8v6t/qSTWLHYnNjiYWCqUS/oHbQXZ6uxpXQhpiDJ0WPJoQ/IVt5dKD
+         40R4+qcsgUyZLZVGZM8n4pifGl7jd2qNxbcUgMPkxbQ/tyFxe8UlsrY1x203HTy2mSpW
+         KiA5ivvpeD0txhMsrSqwD7aauacW2hTuyGCwvmsBFu+gm4c1SUMt5RIHRy4E90FocyYp
+         qTGw==
+X-Gm-Message-State: ABy/qLbJAxtBgIQd4ya5duJVM366D8EKzwmqZceZaBfLboc+HKnyQYYy
+        AZhFNMLhtorwf2vdQ0F/54lOT2csCY+kDKtcF2o0
+X-Google-Smtp-Source: APBJJlFkTo4MqIRboyJijfvAESH41Sn7XZLb7Wq1Qb4xbUmcbmJhG5qWNqiv1iYXWOFUlllWKuTA5JqszvfgcdQJA1g=
+X-Received: by 2002:a25:2f16:0:b0:c83:27d4:c0d6 with SMTP id
+ v22-20020a252f16000000b00c8327d4c0d6mr98124ybv.37.1690317839194; Tue, 25 Jul
+ 2023 13:43:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] regulator: dt-bindings: add missing
- unevaluatedProperties for each regulator
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Saravanan Sekar <sravanhome@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Robin Gong <yibin.gong@nxp.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Pascal Paillet <p.paillet@foss.st.com>,
-        - <patches@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20230725105421.99160-1-krzysztof.kozlowski@linaro.org>
- <246eea6e-dd34-426f-9fc7-427d808fe8f0@sirena.org.uk>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <246eea6e-dd34-426f-9fc7-427d808fe8f0@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
+ <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
+ <ZKgm+ffQbdDTxrg9@redhat.com> <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 25 Jul 2023 16:43:48 -0400
+Message-ID: <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
+ signature data via LSM hook
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     Mike Snitzer <snitzer@kernel.org>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -93,21 +80,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 13:14, Mark Brown wrote:
-> On Tue, Jul 25, 2023 at 12:54:20PM +0200, Krzysztof Kozlowski wrote:
->> Each regulator node, which references common regulator.yaml schema,
->> should disallow additional or unevaluated properties.  Otherwise
->> mistakes in properties will go unnoticed.
-> 
-> This doesn't apply against current code, please check and resend.
-> 
->>  Documentation/devicetree/bindings/regulator/ti,tps65090.yaml  | 1 +
-> 
-> This doesn't seem to be upstream.
+On Tue, Jul 11, 2023 at 11:43=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com>=
+ wrote:
+> On Fri, Jul 07, 2023 at 10:53:45AM -0400, Mike Snitzer wrote:
 
-Indeed, I should exclude any work-in-progress. Apologies. I'll fix and
-send v2 of this patch.
+...
 
-Best regards,
-Krzysztof
+> > Both of your calls to security_bdev_setsecurity() to set your blobs in
+> > the bdev are suspect because you're doing so from the verity_ctr().
+> > The mapped_device has 2 dm_table slots (active and inactive).  The
+> > verity_ctr() becomes part of the inactive slot, there is an extra step
+> > to bind the inactive table to the active table.
+> >
+> > This leads to you changing the blobs in the global bdev _before_ the
+> > table is actually active.  It is possible that the inactive table will
+> > simply be removed and the DM verity device put back in service;
+> > leaving your blob(s) in the bdev inconsistent.
+> >
+> > This issue has parallels to how we need to defer changing the global
+> > queue_limits associated with a request_queue until _after_ all table
+> > loading is settled and then the update is done just before resuming
+> > the DM device (mapped_device) -- see dm_table_set_restrictions().
+> >
+> > Unfortunately, this feels like it may require a new hook in the
+> > target_type struct (e.g. ->finalize())
+>
+> Thanks for pointing out this issue. We were calling security_bdev_setsecu=
+rity()
+> because the roothash signature data is only available in verity_ctr()
+> and it is discarded after verity_ctr() finishes.
+> After digging deeper into the table_load, I realized that we were indeed
+> wrong here.
+>
+> Based on my understanding of your suggestion, it seems that the correct
+> approach would be to save the roothash signature into the struct dm_targe=
+t
 
+Would you be doing this with a LSM hook, or would this live in the
+device mapper layer?
+
+> and then invoke security_bdev_setsecurity() before activating
+> the inactive table in the __bind function (where dm_table_set_restriction=
+s is called).
+>
+> To facilitate this process, it seems appropriate to introduce a new hook
+> called finalize() within the struct target_type. This hook would enable
+> targets to define tasks that need to be completed before activating
+> a new table.
+>
+> In our specific case, we would add a finalize hook to the dm-verity modul=
+e,
+> allowing us to call security_bdev_setsecurity() and associate the roothas=
+h
+> information in the struct dm_target with the struct block_device of
+> the struct mapped_device. Is this correct?
+
+Where would the finalize() hook be called?
+
+--=20
+paul-moore.com
