@@ -2,157 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E62E760996
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FDC760999
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjGYFnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        id S231470AbjGYFnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbjGYFmx (ORCPT
+        with ESMTP id S231869AbjGYFnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:42:53 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DF301FC1;
-        Mon, 24 Jul 2023 22:42:45 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 841038176;
-        Tue, 25 Jul 2023 05:42:42 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v5 3/3] serial: core: Fix serial core controller port name to show controller id
-Date:   Tue, 25 Jul 2023 08:42:12 +0300
-Message-ID: <20230725054216.45696-4-tony@atomide.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230725054216.45696-1-tony@atomide.com>
-References: <20230725054216.45696-1-tony@atomide.com>
+        Tue, 25 Jul 2023 01:43:37 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064D51FCE
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:43:13 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4036bd4fff1so194481cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690263792; x=1690868592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hIDMt+ukB3iu96NN76V4i5aDHpFjPIK+TbAxUylXFbc=;
+        b=QVWmh30O5Tn5kmdIXi6k8D31VIjeVN906YLSjLLx5O2bPNaMTN+6zn/VxtFxdbslOo
+         BD02+q1ZpeCzY54p4D5C34hbNBNS8RC+OLFxOfrEBzWAo1R4QzuliySjeNiBcGxNrqQR
+         //zd2eKnCExJHH35DZesh/RxR+LCYO+8KVGEHfYu11V/nhf2+BlydSAJSDfqkDQ3gnww
+         mPt/3ApbceJb98bsS5A22Z/aIE6fyE+S+dHCEF5pHgfAOREeHYkRk66JqRiDpQxIZj6q
+         Cq/TEBs3QNI/Vs4EMZat48i2LI8r4gGpocKPmKdQq5knf7vdK81zwmkzxGxH/JBLPq5C
+         VowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690263792; x=1690868592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hIDMt+ukB3iu96NN76V4i5aDHpFjPIK+TbAxUylXFbc=;
+        b=bZUvnO6sgGjgZEBchLd5ukFbH/wwRUjH2pbblE0W20MJKy556USz67S5Avoim574tO
+         pZKrF9dQp30eQIaPyF2L4upeBq/syE0AcSXvuFsrhUP736sa2Vl88/s3nEJvLEowAYvn
+         I7XIc6TpNqpfgGP1pUzot+2snfrDYxtLMRBI7wuZSUI4GR1QDg18Ki5ZScVYV99VuXBy
+         1CRqIgtx9qQY+lN+4IQk2u1QY0X95hyKlijFZYICYn0k9Q34SZ4iQ8Bazu+diGdbiyf/
+         +8gaazVxRd3OkLni+J4Q11UfKxj3RL5juVjckTLQ/cZOAoeBLGhD+1ysHhBBJRwCUqiN
+         gepA==
+X-Gm-Message-State: ABy/qLaB3J6lAWSiwdN6izgKQDmQ58Y5zS7yXNErP13kyycfKTUye2zi
+        q4qImI8rE5tNU4o+c0NrPSJLY9uyUXNeRl5uhGpZHQ==
+X-Google-Smtp-Source: APBJJlHKdDVd54Lf9xjbg3FDc+aM4J4ZaWYYP3CYibYSXCA+p7hZQLopCR5e78Q47BMCmPHnqHhL6mA7VLoBNoo8xvg=
+X-Received: by 2002:a05:622a:16:b0:3ef:5f97:258f with SMTP id
+ x22-20020a05622a001600b003ef5f97258fmr93934qtw.16.1690263791937; Mon, 24 Jul
+ 2023 22:43:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230721094043.2506691-1-fengwei.yin@intel.com> <20230721094043.2506691-4-fengwei.yin@intel.com>
+In-Reply-To: <20230721094043.2506691-4-fengwei.yin@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 24 Jul 2023 23:42:35 -0600
+Message-ID: <CAOUHufZQr2Z+N2mVaMcnOZ8ukm_CkN51h6OdoAXTxytkVyAWSw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/4] mm: add functions folio_in_range() and folio_within_vma()
+To:     Yin Fengwei <fengwei.yin@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, willy@infradead.org,
+        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are missing the serial core controller id for the serial core port
-name. Let's fix the issue for sane sysfs output, and to avoid issues
-addressing serial ports later on.
+On Fri, Jul 21, 2023 at 3:41=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.com>=
+ wrote:
+>
+> It will be used to check whether the folio is mapped to specific
+> VMA and whether the mapping address of folio is in the range.
+>
+> Also a helper function folio_within_vma() to check whether folio
+> is in the range of vma based on folio_in_range().
+>
+> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+> ---
+>  mm/internal.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 483add0bfb28..c7dd15d8de3e 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -585,6 +585,38 @@ extern long faultin_vma_page_range(struct vm_area_st=
+ruct *vma,
+>                                    bool write, int *locked);
+>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>                                unsigned long bytes);
+> +
+> +static inline bool
+> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+> +               unsigned long start, unsigned long end)
+> +{
+> +       pgoff_t pgoff, addr;
+> +       unsigned long vma_pglen =3D (vma->vm_end - vma->vm_start) >> PAGE=
+_SHIFT;
+> +
+> +       VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
+> +       if (start < vma->vm_start)
+> +               start =3D vma->vm_start;
+> +
+> +       if (end > vma->vm_end)
+> +               end =3D vma->vm_end;
+> +
+> +       pgoff =3D folio_pgoff(folio);
+> +
+> +       /* if folio start address is not in vma range */
+> +       if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+> +               return false;
+> +
+> +       addr =3D vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> +
+> +       return ((addr >=3D start) && (addr + folio_size(folio) <=3D end))=
+;
 
-And as we're now showing the controller id, the "ctrl" and "port" prefix
-for the DEVNAME become useless, we can just drop them. Let's standardize on
-DEVNAME:0 for controller name, where 0 is the controller id. And
-DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
+Not sure how much we care but better to avoid (addr + folio_size()),
+since it might wrap to 0 on 32-bit systems.
 
-This makes the sysfs output nicer, on qemu for example:
-
-$ ls /sys/bus/serial-base/devices
-00:04:0         serial8250:0    serial8250:0.2
-00:04:0.0       serial8250:0.1  serial8250:0.3
-
-Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
-
-Andy, I kept your Reviewed-by although I updated the device naming and
-description, does the patch still look OK to you?
-
----
- drivers/tty/serial/serial_base_bus.c | 32 +++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -19,6 +19,14 @@
- 
- static bool serial_base_initialized;
- 
-+static const struct device_type serial_ctrl_type = {
-+	.name = "ctrl",
-+};
-+
-+static const struct device_type serial_port_type = {
-+	.name = "port",
-+};
-+
- static int serial_base_match(struct device *dev, struct device_driver *drv)
- {
- 	int len = strlen(drv->name);
-@@ -48,7 +56,8 @@ static int serial_base_device_init(struct uart_port *port,
- 				   struct device *parent_dev,
- 				   const struct device_type *type,
- 				   void (*release)(struct device *dev),
--				   int id)
-+				   unsigned int ctrl_id,
-+				   unsigned int port_id)
- {
- 	device_initialize(dev);
- 	dev->type = type;
-@@ -61,13 +70,16 @@ static int serial_base_device_init(struct uart_port *port,
- 		return -EPROBE_DEFER;
- 	}
- 
--	return dev_set_name(dev, "%s.%s.%d", type->name, dev_name(port->dev), id);
-+	if (type == &serial_ctrl_type)
-+		return dev_set_name(dev, "%s:%d", dev_name(port->dev), ctrl_id);
-+
-+	if (type == &serial_port_type)
-+		return dev_set_name(dev, "%s:%d.%d", dev_name(port->dev),
-+				    ctrl_id, port_id);
-+
-+	return -EINVAL;
- }
- 
--static const struct device_type serial_ctrl_type = {
--	.name = "ctrl",
--};
--
- static void serial_base_ctrl_release(struct device *dev)
- {
- 	struct serial_ctrl_device *ctrl_dev = to_serial_base_ctrl_device(dev);
-@@ -96,7 +108,7 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &ctrl_dev->dev,
- 				      parent, &serial_ctrl_type,
- 				      serial_base_ctrl_release,
--				      port->ctrl_id);
-+				      port->ctrl_id, 0);
- 	if (err)
- 		goto err_put_device;
- 
-@@ -112,10 +124,6 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	return ERR_PTR(err);
- }
- 
--static const struct device_type serial_port_type = {
--	.name = "port",
--};
--
- static void serial_base_port_release(struct device *dev)
- {
- 	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
-@@ -136,7 +144,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &port_dev->dev,
- 				      &ctrl_dev->dev, &serial_port_type,
- 				      serial_base_port_release,
--				      port->port_id);
-+				      port->ctrl_id, port->port_id);
- 	if (err)
- 		goto err_put_device;
- 
--- 
-2.41.0
+Reusing some helpers from mm/internal.h, e.g., vma_pgoff_address(),
+would be great, if it's possible (I'm not sure if it's).
