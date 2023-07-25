@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11CE760F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AADD760F28
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbjGYJbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S233313AbjGYJaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjGYJax (ORCPT
+        with ESMTP id S233393AbjGYJ35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:30:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5A92129;
-        Tue, 25 Jul 2023 02:28:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 25 Jul 2023 05:29:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9B730F4;
+        Tue, 25 Jul 2023 02:27:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4325821D19;
-        Tue, 25 Jul 2023 09:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690277248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlmzFCGGYQOm0hww9I94vhrQZ+jHyAZdm6rRpIEjF90=;
-        b=PRo+S7RmJ6Cc6bdhtacBMBVPU0SqboE3Y7rpFnOiK1Mq9XIrUJP3fSFbZsy9kfFcUwujD5
-        WAvLiRQ8NOGIh1o3Ewx9MCTnAAf/Ygz6kKruXb7xNcO4nHY6HHOCwUzydKccfWZjjhOAnQ
-        D5GnYf0ugpBwpFhA0yMmZBBMuaJsaq0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690277248;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlmzFCGGYQOm0hww9I94vhrQZ+jHyAZdm6rRpIEjF90=;
-        b=YgzmBwsIwCX1597u5bMv1SYnvoyq1qC84nN2STKtgbnSxaX9bLFt9yxYC1ntPATTKOE1F2
-        uFivkNfbgRwy6UCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE02A13487;
-        Tue, 25 Jul 2023 09:27:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GCooKX+Vv2RgWQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 09:27:27 +0000
-Date:   Tue, 25 Jul 2023 11:27:27 +0200
-Message-ID: <87wmyotk74.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
-        Thinh.Nguyen@synopsys.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        alsa-devel@alsa-project.org, quic_jackp@quicinc.com,
-        oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp
-Subject: Re: [PATCH v4 31/32] sound: usb: card: Allow for rediscovery of connected USB SND devices
-In-Reply-To: <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
-        <20230725023416.11205-32-quic_wcheng@quicinc.com>
-        <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 492C9615D8;
+        Tue, 25 Jul 2023 09:27:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2764C433C7;
+        Tue, 25 Jul 2023 09:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690277252;
+        bh=fLWQDFhIKT84Ujf3zUkd1gtFORNi2jEH6g6iRHoIukM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=SPA4NxHCfOnKRqGGO/VufO9L3Iw/LwEvSA5BmCXGW/6kAgBuRg45/v9hJKinclXqM
+         +3+2+9QqObGhirFLugHDjrcEGdZFNph1SJTpE6ljs6TJFZCSuNIXko5+m9h4Lp47vY
+         LlECHbyPBeDzbH8CKyd8v/88ZQ3/j/I/81j6jOR6UmIDQjjRbaye10zXAY0e5aJDAP
+         brQKIp/bqnG20V+PVQbQ0ggTagReg+jOm6MBu9lUAAfLjACHwUp4u5pIf9G1yY87Wd
+         fPkm9/hB3iUjIacYB6xfqi1ucmbySQAYSA04S557kTyTODytCa29FY/5kyeTDm68ef
+         B+63soEnTGlmA==
+Received: (nullmailer pid 2473010 invoked by uid 1000);
+        Tue, 25 Jul 2023 09:27:30 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+In-Reply-To: <20230725-topic-6375_rproc-v4-1-d55e8a6d0f5f@linaro.org>
+References: <20230725-topic-6375_rproc-v4-0-d55e8a6d0f5f@linaro.org>
+ <20230725-topic-6375_rproc-v4-1-d55e8a6d0f5f@linaro.org>
+Message-Id: <169027725059.2472994.10579462158675554822.robh@kernel.org>
+Subject: Re: [PATCH v4 1/3] dt-bindings: remoteproc: qcom,sm6375-pas:
+ Document remoteprocs
+Date:   Tue, 25 Jul 2023 03:27:30 -0600
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,70 +69,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 11:15:11 +0200,
-Pierre-Louis Bossart wrote:
+
+On Tue, 25 Jul 2023 11:00:28 +0200, Konrad Dybcio wrote:
+> SM6375 hosts an ADSP, CDSP and modem as remote processors. Create
+> related bindings.
 > 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  .../bindings/remoteproc/qcom,sm6375-pas.yaml       | 137 +++++++++++++++++++++
+>  1 file changed, 137 insertions(+)
 > 
-> 
-> On 7/25/23 04:34, Wesley Cheng wrote:
-> > In case of notifying SND platform drivers of connection events, some of
-> > these use cases, such as offloading, require an ASoC USB backend device to
-> > be initialized before the events can be handled.  If the USB backend device
-> > has not yet been probed, this leads to missing initial USB audio device
-> > connection events.
-> > 
-> > Expose an API that traverses the usb_chip array for connected devices, and
-> > to call the respective connection callback registered to the SND platform
-> > driver.
-> > 
-> > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> > ---
-> >  sound/usb/card.c | 19 +++++++++++++++++++
-> >  sound/usb/card.h |  2 ++
-> >  2 files changed, 21 insertions(+)
-> > 
-> > diff --git a/sound/usb/card.c b/sound/usb/card.c
-> > index 365f6d978608..27a89aaa0bf3 100644
-> > --- a/sound/usb/card.c
-> > +++ b/sound/usb/card.c
-> > @@ -170,6 +170,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-> >  }
-> >  EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
-> >  
-> > +/*
-> > + * in case the platform driver was not ready at the time of USB SND
-> > + * device connect, expose an API to discover all connected USB devices
-> > + * so it can populate any dependent resources/structures.
-> > + */
-> > +void snd_usb_rediscover_devices(void)
-> > +{
-> > +	int i;
-> > +
-> > +	mutex_lock(&register_mutex);
-> > +	for (i = 0; i < SNDRV_CARDS; i++) {
-> > +		if (usb_chip[i])
-> > +			if (platform_ops && platform_ops->connect_cb)
-> > +				platform_ops->connect_cb(usb_chip[i]);
-> 
-> what happens if the USB device is removed while the platform device adds
-> a port?
 
-That should be protected by the register_mutex.  But there can be
-other races (see below :)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> This sounds super-racy to me. It's the same set of problems we're having
-> between audio and display/DRM, I would be surprised if this function
-> dealt with all corner cases of insertion/removal, bind/unbind.
+yamllint warnings/errors:
 
-Yes, we need to be more careful about binding.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/remoteproc/qcom,sm6375-pas.example.dtb: remoteproc@a400000: Unevaluated properties are not allowed ('memory-region' was unexpected)
+	from schema $id: http://devicetree.org/schemas/remoteproc/qcom,sm6375-pas.yaml#
 
-For example, in the current patch set, I see no way to prevent
-unloading snd-usb-audio-qmi module, and it allows user to cut off the
-stuff during operation, which may break things while the kernel is
-running the code of the unloaded module.  You need to have a proper
-module refcount management for avoiding such a scenario.  Most of
-drivers don't need it because ALSA core part already takes care of
-it.  But in this case, it requires a manual adjustment.
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230725-topic-6375_rproc-v4-1-d55e8a6d0f5f@linaro.org
 
-Takashi
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
