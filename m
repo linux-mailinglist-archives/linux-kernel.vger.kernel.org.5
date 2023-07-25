@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52060760D0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5C7760C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjGYIcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S231593AbjGYIDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232624AbjGYIcr (ORCPT
+        with ESMTP id S230267AbjGYIDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:32:47 -0400
-X-Greylist: delayed 1836 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 01:32:46 PDT
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C4F10CC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-        s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=ByrEm1GEP6Pto5Qfd0Av8mnGlhq3HLawewGUcZoBqWg=; b=qnKtBzndkWiwr08ddY1CvlgIan
-        hkLK0Am/nbg/K1pN0RJnbMtuNnIIpB6mIT8S8W8Jub5RDMwcPaGf/6qOQQmCmL7uiKnuzJLd/VyoY
-        BY6mKEeTU6GH5VlEuxAX9S46ZomtnPcQM5/LnS89iKCu+p7l+xSHqy1CihlK1EOwFhleNE3ERq/8P
-        GeDjXbekrVj90JkJdLwXT5JhviD/93BNmAM0ZXkdNnDmRgKC/iQaaKu4oNvbxJw+T7m4PfbHAlRmZ
-        WWkL76pEPPTubJIwyL7sSdsjouuSmvO3Q6xxX5Vughr/pqthDSwiThfSn9Pcd74F/oCU2CQQSh+RI
-        Ctn74S+A==;
-Received: from 91-158-25-70.elisa-laajakaista.fi ([91.158.25.70] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1qOCl1-008eKy-1S;
-        Tue, 25 Jul 2023 10:46:59 +0300
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dma_buf/sync_file: Enable signaling for fences when querying status
-Date:   Tue, 25 Jul 2023 10:46:11 +0300
-Message-Id: <20230725074611.3309115-1-cyndis@kapsi.fi>
-X-Mailer: git-send-email 2.40.1
+        Tue, 25 Jul 2023 04:03:47 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570F2116
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:03:46 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4R98g24n4pz9slt;
+        Tue, 25 Jul 2023 10:03:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1690272222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=buprnnb3RBHF65zwm/IwwS5+aARu3i5003bm80ROWy0=;
+        b=SMCmyN7j9PVny7FrxgViukvSyWbJbnyin+9i3/syIV7wvZj88g0WycRcQdex1QetW2IciC
+        VvV997rgBQ04GtsEi4afak6/oJ82q/EP1Sixhh4AozCWGrfscEbJB5oTuq/drdllrij4U4
+        3zBEKDeJLCCszasmOi80lQfR5HgHc45T8vVfJBdOhs8Wr4zB1nMYunNGiY3+i6xh2vbj9+
+        8cOGV8gNDxujBtcO3eNKtmSJeygLwfbmRJcnC4TOoeO0lWo/7rfBd5Wd+BtvBLFcVT2JCO
+        dLGp1OX7zh4wg9xXKCIAcrm5fscLWqpIxn+KTZppI0hJig7zyPFqvZHd+55hig==
+Message-ID: <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+Date:   Tue, 25 Jul 2023 10:03:39 +0200
 MIME-Version: 1.0
+Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
+ Document DRM device reset expectations)
+Content-Language: de-CH-frami, en-CA
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 91.158.25.70
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+X-MBO-RS-META: 5k4x7euhw4r53ugwmd8sug3xp1cxcoqf
+X-MBO-RS-ID: 9afac7eeae3d16ec584
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,38 +69,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikko Perttunen <mperttunen@nvidia.com>
+On 7/25/23 04:55, André Almeida wrote:
+> Hi everyone,
+> 
+> It's not clear what we should do about non-robust OpenGL apps after GPU resets, so I'll try to summarize the topic, show some options and my proposal to move forward on that.
+> 
+> Em 27/06/2023 10:23, André Almeida escreveu:
+>> +Robustness
+>> +----------
+>> +
+>> +The only way to try to keep an application working after a reset is if it
+>> +complies with the robustness aspects of the graphical API that it is using.
+>> +
+>> +Graphical APIs provide ways to applications to deal with device resets. However,
+>> +there is no guarantee that the app will use such features correctly, and the
+>> +UMD can implement policies to close the app if it is a repeating offender,
+>> +likely in a broken loop. This is done to ensure that it does not keep blocking
+>> +the user interface from being correctly displayed. This should be done even if
+>> +the app is correct but happens to trigger some bug in the hardware/driver.
+>> +
+> Depending on the OpenGL version, there are different robustness API available:
+> 
+> - OpenGL ABR extension [0]
+> - OpenGL KHR extension [1]
+> - OpenGL ES extension  [2]
+> 
+> Apps written in OpenGL should use whatever version is available for them to make the app robust for GPU resets. That usually means calling GetGraphicsResetStatusARB(), checking the status, and if it encounter something different from NO_ERROR, that means that a reset has happened, the context is considered lost and should be recreated. If an app follow this, it will likely succeed recovering a reset.
+> 
+> What should non-robustness apps do then? They certainly will not be notified if a reset happens, and thus can't recover if their context is lost. OpenGL specification does not explicitly define what should be done in such situations[3], and I believe that usually when the spec mandates to close the app, it would explicitly note it.
+> 
+> However, in reality there are different types of device resets, causing different results. A reset can be precise enough to damage only the guilty context, and keep others alive.
+> 
+> Given that, I believe drivers have the following options:
+> 
+> a) Kill all non-robust apps after a reset. This may lead to lose work from innocent applications.
+> 
+> b) Ignore all non-robust apps OpenGL calls. That means that applications would still be alive, but the user interface would be freeze. The user would need to close it manually anyway, but in some corner cases, the app could autosave some work or the user might be able to interact with it using some alternative method (command line?).
+> 
+> c) Kill just the affected non-robust applications. To do that, the driver need to be 100% sure on the impact of its resets.
+> 
+> RadeonSI currently implements a), as can be seen at [4], while Iris implements what I think it's c)[5].
+> 
+> For the user experience point-of-view, c) is clearly the best option, but it's the hardest to archive. There's not much gain on having b) over a), perhaps it could be an optional env var for such corner case applications.
 
-dma_fence_get_status is not guaranteed to return valid information
-on if the fence has been signaled or not if SW signaling has not
-been enabled for the fence. To ensure valid information is reported,
-enable SW signaling for fences before getting their status.
+I disagree on these conclusions.
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
- drivers/dma-buf/sync_file.c | 2 ++
- 1 file changed, 2 insertions(+)
+c) is certainly better than a), but it's not "clearly the best" in all cases. The OpenGL UMD is not a privileged/special component and is in no position to decide whether or not the process as a whole (only some thread(s) of which may use OpenGL at all) gets to continue running or not.
 
-diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-index af57799c86ce..57f194b8477f 100644
---- a/drivers/dma-buf/sync_file.c
-+++ b/drivers/dma-buf/sync_file.c
-@@ -267,6 +267,7 @@ static int sync_fill_fence_info(struct dma_fence *fence,
- 	strscpy(info->driver_name, fence->ops->get_driver_name(fence),
- 		sizeof(info->driver_name));
- 
-+	dma_fence_enable_sw_signaling(fence);
- 	info->status = dma_fence_get_status(fence);
- 	while (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags) &&
- 	       !test_bit(DMA_FENCE_FLAG_TIMESTAMP_BIT, &fence->flags))
-@@ -307,6 +308,7 @@ static long sync_file_ioctl_fence_info(struct sync_file *sync_file,
- 	 * info->num_fences.
- 	 */
- 	if (!info.num_fences) {
-+		dma_fence_enable_sw_signaling(sync_file->fence);
- 		info.status = dma_fence_get_status(sync_file->fence);
- 		goto no_fences;
- 	} else {
+
+> [0] https://registry.khronos.org/OpenGL/extensions/ARB/ARB_robustness.txt
+> [1] https://registry.khronos.org/OpenGL/extensions/KHR/KHR_robustness.txt
+> [2] https://registry.khronos.org/OpenGL/extensions/EXT/EXT_robustness.txt
+> [3] https://registry.khronos.org/OpenGL/specs/gl/glspec46.core.pdf
+> [4] https://gitlab.freedesktop.org/mesa/mesa/-/blob/23.1/src/gallium/winsys/amdgpu/drm/amdgpu_cs.c#L1657
+> [5] https://gitlab.freedesktop.org/mesa/mesa/-/blob/23.1/src/gallium/drivers/iris/iris_batch.c#L842
+
 -- 
-2.40.1
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
 
