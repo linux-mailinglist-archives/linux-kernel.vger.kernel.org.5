@@ -2,146 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5537603FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A780760408
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbjGYA3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
+        id S230167AbjGYAce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjGYA27 (ORCPT
+        with ESMTP id S229850AbjGYAcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:28:59 -0400
+        Mon, 24 Jul 2023 20:32:32 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97ABC10EF;
-        Mon, 24 Jul 2023 17:28:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CBE4510EF;
+        Mon, 24 Jul 2023 17:32:30 -0700 (PDT)
 Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8DxPOtEF79kynoJAA--.18562S3;
-        Tue, 25 Jul 2023 08:28:52 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8DxxPAdGL9kEHsJAA--.24128S3;
+        Tue, 25 Jul 2023 08:32:29 +0800 (CST)
 Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxjiM_F79kAfE5AA--.50597S3;
-        Tue, 25 Jul 2023 08:28:48 +0800 (CST)
-Message-ID: <2fa14ef5-b2f7-459d-8b84-114d36ba3cf7@loongson.cn>
-Date:   Tue, 25 Jul 2023 08:28:47 +0800
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yMdGL9kkfE5AA--.51036S3;
+        Tue, 25 Jul 2023 08:32:29 +0800 (CST)
+Message-ID: <fbe94cf6-0fd0-fbb5-4308-e1730e3af214@loongson.cn>
+Date:   Tue, 25 Jul 2023 08:32:29 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
- might require ARM spec change?
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Salil Mehta <salil.mehta@opnsrc.net>,
-        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>, qemu-devel@nongnu.org,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "steven.price@arm.com" <steven.price@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+Subject: Re: [PATCH v2] ACPI: processor_core: LoongArch: Get physical id from
+ MADT table
 Content-Language: en-US
 From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230717022258.2579631-1-maobibo@loongson.cn>
+In-Reply-To: <20230717022258.2579631-1-maobibo@loongson.cn>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxjiM_F79kAfE5AA--.50597S3
+X-CM-TRANSID: AQAAf8Bx3yMdGL9kkfE5AA--.51036S3
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGrWDCF1DWw4rur18tF1UArc_yoW5Grykpr
-        W5GFyF9rZ8KrW0vws2vF15ury3ZrW8Cayaqwn7t34xZan8XF9F9r4aya1YyFyfXF1fW3W2
-        qF4avryfCFs8XFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUd529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoWxZr4xZw45KrW5XFWfXr1UArc_yoW5WrWxpF
+        yUKas8Kw15WFsFqw1fXayrWFZ8Z3y8ua4SgFs3Gr9xtF18GryrXFW3Xry3WryDAF4Fk3y0
+        vr40yaykGFW0vFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
         sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
         e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
         0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
-        XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUShiSDUUUU
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AK
+        xVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
+        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jOdb8U
+        UUUU=
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Is vcpu hotplug supported in arm virt-machine now?
+slightly ping :)
 
-There is arm64 vcpu hotplug patch in qemu mailing list, however it is not merged.
-I do not know why it is not merged. I ask this question because we propose
-similar patch about LoongArch system in qemu mailing list, and kernel need not be
-modified for vcpu hotplug.
-
-Regards
-Bibo, mao
-
-在 2023/7/19 10:35, Salil Mehta 写道:
-> [Reposting it here from Linaro Open Discussion List for more eyes to look at]
+在 2023/7/17 10:22, Bibo Mao 写道:
+> With ACPI Spec 6.5 chapter 5.2.12.20, each processor in LoongArch
+> system has a Core Programmable Interrupt Controller in MADT table,
+> value of its type is 0x11 in the spec and defined as enum variable
+> ACPI_MADT_TYPE_CORE_PIC in Linux kernel. Physical id can be parsed
+> from MADT table for LoongArch system, also it can be parsed from
+> MAT table for hotplug cpu. This patch adds physical id parsing for
+> LoongArch system.
 > 
-> Hello,
-> I have recently started to dabble with ARM CCA stuff and check if our
-> recent changes to support vCPU Hotplug in ARM64 can work in the realm
-> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
-> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
-> from the host. This might be required to support vCPU Hotplug feature
-> in the realm world in future. vCPU Hotplug is an important feature to
-> support kata-containers in realm world as it reduces the VM boot time
-> and facilitates dynamic adjustment of vCPUs (which I think should be
-> true even with Realm world as current implementation only makes use
-> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+> ---
+> Changes in v2:
+>  Refresh the changelog and add detailed description of acpi spec
+>  about MADT table for LoongArch system.
 > 
+>  Add comments in function map_core_pic_id.
+>  
+> ---
+>  drivers/acpi/processor_core.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 > 
-> As per our recent changes [2], [3] related to support vCPU Hotplug on
-> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
-> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
-> PSCI_CPU_ON should undergo similar policy checks and I think,
-> 
-> 1. Host should *deny* to online the target vCPUs which are NOT plugged
-> 2. This means target REC should be denied by host. Can host call
->    RMI_PSCI_COMPETE in such s case? 
-> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
-> 4. Failure condition (B5.3.3.2) should be amended with
->    runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
->             post: result == PSCI_DENIED (?)
-> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting 
->    PSCI_CPU_ON flow (D1.4.1)
->   
-> 
-> I do understand that ARM CCA support is in its infancy stage and
-> discussing about vCPU Hotplug in realm world seem to be a far-fetched
-> idea right now. But specification changes require lot of time and if
-> this change is really required then it should be further discussed
-> within ARM. 
-> 
-> Many thanks!
-> 
-> 
-> Bes regards
-> Salil
-> 
-> 
-> References:
-> 
-> [1] https://developer.arm.com/documentation/den0137/latest/
-> [2] https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
-> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
+> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+> index d6606a9f2da6..7dd6dbaa98c3 100644
+> --- a/drivers/acpi/processor_core.c
+> +++ b/drivers/acpi/processor_core.c
+> @@ -132,6 +132,30 @@ static int map_rintc_hartid(struct acpi_subtable_header *entry,
+>  	return -EINVAL;
+>  }
+>  
+> +/*
+> + * Retrieve LoongArch CPU physical id
+> + */
+> +static int map_core_pic_id(struct acpi_subtable_header *entry,
+> +		int device_declaration, u32 acpi_id, phys_cpuid_t *phys_id)
+> +{
+> +	struct acpi_madt_core_pic *core_pic =
+> +		container_of(entry, struct acpi_madt_core_pic, header);
+> +
+> +	if (!(core_pic->flags & ACPI_MADT_ENABLED))
+> +		return -ENODEV;
+> +
+> +	/* device_declaration means Device object in DSDT, in LoongArch
+> +	 * system, logical processor acpi_id is required in _UID property
+> +	 * of DSDT table, so we should check device_declaration here
+> +	 */
+> +	if (device_declaration && (core_pic->processor_id == acpi_id)) {
+> +		*phys_id = core_pic->core_id;
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+>  static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
+>  				   int type, u32 acpi_id)
+>  {
+> @@ -165,6 +189,9 @@ static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
+>  		} else if (header->type == ACPI_MADT_TYPE_RINTC) {
+>  			if (!map_rintc_hartid(header, type, acpi_id, &phys_id))
+>  				break;
+> +		} else if (header->type == ACPI_MADT_TYPE_CORE_PIC) {
+> +			if (!map_core_pic_id(header, type, acpi_id, &phys_id))
+> +				break;
+>  		}
+>  		entry += header->length;
+>  	}
+> @@ -216,6 +243,8 @@ static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
+>  		map_x2apic_id(header, type, acpi_id, &phys_id);
+>  	else if (header->type == ACPI_MADT_TYPE_GENERIC_INTERRUPT)
+>  		map_gicc_mpidr(header, type, acpi_id, &phys_id);
+> +	else if (header->type == ACPI_MADT_TYPE_CORE_PIC)
+> +		map_core_pic_id(header, type, acpi_id, &phys_id);
+>  
+>  exit:
+>  	kfree(buffer.pointer);
 
