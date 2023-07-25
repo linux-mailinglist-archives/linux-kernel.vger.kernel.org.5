@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C70760A2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0DD760A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjGYGR1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 02:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S230036AbjGYGRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbjGYGRT (ORCPT
+        with ESMTP id S232051AbjGYGRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:17:19 -0400
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBC7A1BE6;
-        Mon, 24 Jul 2023 23:17:07 -0700 (PDT)
-Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 36P6Fdmn023967;
-        Tue, 25 Jul 2023 01:15:40 -0500
-Message-ID: <bc6c3a08e3d0a343fe8317218106609ba159dfe2.camel@kernel.crashing.org>
-Subject: Re: VFIO (PCI) and write combine mapping of BARs
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, osamaabb@amazon.com,
-        linux-pci@vger.kernel.org, Clint Sbisa <csbisa@amazon.com>,
-        catalin.marinas@arm.com, maz@kernel.org
-Date:   Tue, 25 Jul 2023 16:15:39 +1000
-In-Reply-To: <ZLFBnACjoTbDmKuU@nvidia.com>
-References: <2838d716b08c78ed24fdd3fe392e21222ee70067.camel@kernel.crashing.org>
-         <ZLD1l1274hQQ54RT@lpieralisi> <ZLFBnACjoTbDmKuU@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Tue, 25 Jul 2023 02:17:21 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA1B1BC0;
+        Mon, 24 Jul 2023 23:17:09 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P690T9030295;
+        Tue, 25 Jul 2023 06:17:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=qg5UToZ80SPAYRKfm6KKrmL+JXtqbCd/dGOHTSiGNHU=;
+ b=JMvyFsI0zm1npG/I75aUbd7nNdvNvC2HmCWu3hKf6XiTDYkz2KdDcm66rq35ksT/H46Q
+ wuOMscKuVEquoVYHjNU2ajrb2XH4cK/Mq3FXEL5DSm7skn6osGS5cT7gRFN1gUT4qeR0
+ 6kkoZg45KG+LrfcHn5C9T3G/wv6HOeDSOTkSq8inzSG6sSMUul2efKha7kM58/BvdQgW
+ 8PKwIMVF5ozzYjJSn+HDnKeP2l9X1hZlkSZuRu36AsogZiZE46y1xNINw7oHrlcW7zM7
+ dDDR6iGxXKjygHC1GoX/RJpFj2v10AqJYrN0IHG8M0oa3zlZoKA0grSXkP9BL4jOeuFP /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s25vjkamg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 06:17:01 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36P695KO030996;
+        Tue, 25 Jul 2023 06:17:01 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s25vjkam8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 06:17:01 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36P57YMH026189;
+        Tue, 25 Jul 2023 06:17:00 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0sert2h0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 06:17:00 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36P6GvuA15074024
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 06:16:57 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C40C020040;
+        Tue, 25 Jul 2023 06:16:57 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0027D2004B;
+        Tue, 25 Jul 2023 06:16:54 +0000 (GMT)
+Received: from li-3c92a0cc-27cf-11b2-a85c-b804d9ca68fa.ibm.com.com (unknown [9.179.8.104])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 25 Jul 2023 06:16:53 +0000 (GMT)
+From:   Aditya Gupta <adityag@linux.ibm.com>
+To:     acme@kernel.org, jolsa@kernel.org, irogers@google.com,
+        namhyung@kernel.org
+Cc:     linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        kjain@linux.ibm.com, disgoel@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] perf tests task_analyzer: Check perf build options for libtraceevent support
+Date:   Tue, 25 Jul 2023 11:46:49 +0530
+Message-ID: <20230725061649.34937-1-adityag@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Au2LeecZb0ZVeUe0LYRK4dYEaek8Iiwh
+X-Proofpoint-ORIG-GUID: 7gVAge_J8glCS1OU5AXol1nqlG2cPNmt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250054
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 09:37 -0300, Jason Gunthorpe wrote:
-> 
-> There are two topics here
-> 
-> 1) Make ARM KVM allow the VM to select WC for its MMIO. This has
->    evolved in a way that is not related to VFIO
-> 
-> 2) Allow VFIO to create mmaps with WC for non-VM use cases like DPDK.
-> 
-> We have a draft patch for #1, and I think a general understanding with
-> ARM folks that this is the right direction.
-> 
-> 2 is more like what this email talks about - providing mmaps with
-> specific flags.
-> 
-> Benjamin, which are you interested in?
+Currently we depend on output of 'perf record -e "sched:sched_switch"', to
+check whether perf was built with libtraceevent support.
 
-Sorry for the delay, got caught up.... The customer request we have
-(and what I was indeed talking about) is 2. That said, when running in
-a VM, 2 won't do much without 1.
+Instead, a more straightforward approach can be to check the build options,
+using 'perf version --build-options', to check for libtraceevent support.
 
-> > > The problem isn't so much the low level implementation, we just have to
-> > > play with the pgprot, the question is more around what API to present
-> > > to control this.
-> 
-> Assuming this is for #2, I think VFIO has fallen into a bit of a trap
-> by allowing userspace to form the mmap offset. I've seen this happen
-> in other subsystems too. It seems like a good idea then you realize
-> you need more stuff in the mmap space and become sad.
-> 
-> Typically the way out is to covert the mmap offset into a cookie where
-> userspace issues some ioctl and then the ioctl returns an opaque mmap
-> offset to use.
-> 
-> eg in the vfio context you'd do some 'prepare region for mmap' ioctl
-> where you could specify flags. The kernel would encode the flags in
-> the cookie and then mmap would do the right thing. Adding more stuff
-> is done by enhancing the prepare ioctl.
-> 
-> Legacy mmap offsets are kept working.
+When perf is compiled WITHOUT libtraceevent ('make NO_LIBTRACEEVENT=1'),
+'perf version --build-options' outputs (output trimmed):
 
-This indeed what I have in mind. IE. VFIO has legacy regions and add-on
-regions though the latter is currently only exploited by some drivers
-that create their own add-on regions. My proposal is to add an ioctl to
-create them from userspace as "children" of an existing driver-provided
-region, allowing to set different attributes for mmap.
+	 ...
+         libtraceevent: [ OFF ]  # HAVE_LIBTRACEEVENT
+	 ...
 
-> > > This is still quite specific to PCI, but so is the entire regions
-> > > mechanism, so I don't see an easy path to something more generic at
-> > > this stage.
-> 
-> Regions are general, but the encoding of the mmap cookie has various
-> PCI semantics when used with the PCI interface..
-> 
-> We'd want the same ability with platform devices too, for instance.
+While, when perf is compiled WITH libtraceevent,
 
-In the current VFIO the implementation is *entirely* in vfio_pci_core
-for PCI and entirely in vfio_platform_common.c for platform, so while
-the same ioctls could be imagined to create sub-regions, it would have
-to be completely implemented twice unless we do a lot of heavy lifting
-to move some of that region stuff into common code.
+'perf version --build-options' outputs:
 
-But yes, appart from that, no objection :-)
+...
+         libtraceevent: [ on ]  # HAVE_LIBTRACEEVENT
+	 ...
 
-Cheers,
-Ben.
+Suggested-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Aditya Gupta <adityag@linux.ibm.com>
+---
+
+ tools/perf/tests/shell/test_task_analyzer.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/tests/shell/test_task_analyzer.sh b/tools/perf/tests/shell/test_task_analyzer.sh
+index 0095abbe20ca..a28d784987b4 100755
+--- a/tools/perf/tests/shell/test_task_analyzer.sh
++++ b/tools/perf/tests/shell/test_task_analyzer.sh
+@@ -52,7 +52,7 @@ find_str_or_fail() {
+ 
+ # check if perf is compiled with libtraceevent support
+ skip_no_probe_record_support() {
+-	perf record -e "sched:sched_switch" -a -- sleep 1 2>&1 | grep "libtraceevent is necessary for tracepoint support" && return 2
++	perf version --build-options | grep HAVE_LIBTRACEEVENT | grep -q OFF && return 2
+ 	return 0
+ }
+ 
+-- 
+2.41.0
+
