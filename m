@@ -2,212 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B19761314
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D36C76131E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234021AbjGYLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
+        id S233954AbjGYLIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjGYLHL (ORCPT
+        with ESMTP id S234094AbjGYLIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:07:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2602737;
-        Tue, 25 Jul 2023 04:05:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67D8B6166F;
-        Tue, 25 Jul 2023 11:05:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A34EC433CA;
-        Tue, 25 Jul 2023 11:05:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690283155;
-        bh=pOXvioLmt4HpMqW57Xv4XXd6GlnOcDy+UqsXfhkHrFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kbsxLGNFdM6qSh1jsLLP+MSRG3Nkflp9aMdnQyXq9KRnC7jcnHrYscu5AiJyW/CjG
-         6vidsGf1xTa3w/b9fcx6JxLPhCpsmeaqJ+tu976ejqJN7wAnGdbGlU6QuWVEG17TOW
-         rsAyVWCFCZxfnHGF9MOOEVjBTGhN1QP4VWQjCIpV24KKAqKhH3hrLvErt0bITTzA4b
-         uQMoXtGGG92ctUBFbJvXZzxBOHsP01uMxujb2oj61jq3+VhVIPsXeIC4CFrq+i23Af
-         amrQLDym688RQVV6YIHxxMOi5kxCv3SxAF6cWfPNZ/OE5H7fNQnSQkRJa31J+pQBLa
-         k4YHM0VOJB5JQ==
-Date:   Tue, 25 Jul 2023 13:05:40 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        James.Bottomley@hansenpartnership.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
-        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
-        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
-        dhowells@redhat.com, fenghua.yu@intel.com, geert@linux-m68k.org,
-        glebfm@altlinux.org, gor@linux.ibm.com, hare@suse.com,
-        hpa@zytor.com, ink@jurassic.park.msu.ru, jhogan@kernel.org,
-        kim.phillips@arm.com, ldv@altlinux.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
-        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
-        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
-        namhyung@kernel.org, paul.burton@mips.com, paulus@samba.org,
-        peterz@infradead.org, ralf@linux-mips.org, rth@twiddle.net,
-        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
-        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
-        x86@kernel.org, ysato@users.sourceforge.jp
-Subject: Re: [PATCH v3 0/5] Add a new fchmodat4() syscall
-Message-ID: <ZL+shMg5LJgYlsDd@example.org>
-References: <87o8pscpny.fsf@oldenburg2.str.redhat.com>
- <cover.1689074739.git.legion@kernel.org>
- <87lefmbppo.fsf@oldenburg.str.redhat.com>
- <20230711-quintessenz-auswechseln-92a4640c073d@brauner>
+        Tue, 25 Jul 2023 07:08:00 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281DB199E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1690283193; x=1721819193;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=f3+5Ws3IvZL4KRwctyVp9MLtU2uqQxu77BXFalL2nZY=;
+  b=i+tZ5gr9K6viNO1kIDc6+CC5DwKjeTs8Kf+u3SzueOfi2RljooXBCv3V
+   DYsYfnOwEXTMdsJ7kIOdCepa2xXyUXgqij9kCfmYFvkzriG6JslaT1Jvi
+   WYfkVHmJIHSkXhvc7TmUTIHlvt//8ZNAokJ5idVq8XFdkJDfFSkmQXTRl
+   k=;
+X-IronPort-AV: E=Sophos;i="6.01,230,1684800000"; 
+   d="scan'208";a="348734793"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 11:06:30 +0000
+Received: from EX19D019EUA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com (Postfix) with ESMTPS id 61984A0AD0;
+        Tue, 25 Jul 2023 11:06:27 +0000 (UTC)
+Received: from EX19D028EUB001.ant.amazon.com (10.252.61.99) by
+ EX19D019EUA002.ant.amazon.com (10.252.50.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 11:06:26 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D028EUB001.ant.amazon.com (10.252.61.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 11:06:26 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 25 Jul 2023 11:06:26 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+        id 0142E23299; Tue, 25 Jul 2023 13:06:25 +0200 (CEST)
+From:   Pratyush Yadav <ptyadav@amazon.de>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        "Christoph Hellwig" <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>
+CC:     Pratyush Yadav <ptyadav@amazon.de>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] nvme-pci: do not set the NUMA node of device if it has none
+Date:   Tue, 25 Jul 2023 13:06:22 +0200
+Message-ID: <20230725110622.129361-1-ptyadav@amazon.de>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711-quintessenz-auswechseln-92a4640c073d@brauner>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 05:14:24PM +0200, Christian Brauner wrote:
-> On Tue, Jul 11, 2023 at 02:24:51PM +0200, Florian Weimer wrote:
-> > * Alexey Gladkov:
-> > 
-> > > This patch set adds fchmodat4(), a new syscall. The actual
-> > > implementation is super simple: essentially it's just the same as
-> > > fchmodat(), but LOOKUP_FOLLOW is conditionally set based on the flags.
-> > > I've attempted to make this match "man 2 fchmodat" as closely as
-> > > possible, which says EINVAL is returned for invalid flags (as opposed to
-> > > ENOTSUPP, which is currently returned by glibc for AT_SYMLINK_NOFOLLOW).
-> > > I have a sketch of a glibc patch that I haven't even compiled yet, but
-> > > seems fairly straight-forward:
-> > >
-> > >     diff --git a/sysdeps/unix/sysv/linux/fchmodat.c b/sysdeps/unix/sysv/linux/fchmodat.c
-> > >     index 6d9cbc1ce9e0..b1beab76d56c 100644
-> > >     --- a/sysdeps/unix/sysv/linux/fchmodat.c
-> > >     +++ b/sysdeps/unix/sysv/linux/fchmodat.c
-> > >     @@ -29,12 +29,36 @@
-> > >      int
-> > >      fchmodat (int fd, const char *file, mode_t mode, int flag)
-> > >      {
-> > >     -  if (flag & ~AT_SYMLINK_NOFOLLOW)
-> > >     -    return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
-> > >     -#ifndef __NR_lchmod		/* Linux so far has no lchmod syscall.  */
-> > >     +  /* There are four paths through this code:
-> > >     +      - The flags are zero.  In this case it's fine to call fchmodat.
-> > >     +      - The flags are non-zero and glibc doesn't have access to
-> > >     +	__NR_fchmodat4.  In this case all we can do is emulate the error codes
-> > >     +	defined by the glibc interface from userspace.
-> > >     +      - The flags are non-zero, glibc has __NR_fchmodat4, and the kernel has
-> > >     +	fchmodat4.  This is the simplest case, as the fchmodat4 syscall exactly
-> > >     +	matches glibc's library interface so it can be called directly.
-> > >     +      - The flags are non-zero, glibc has __NR_fchmodat4, but the kernel does
-> > 
-> > If you define __NR_fchmodat4 on all architectures, we can use these
-> > constants directly in glibc.  We no longer depend on the UAPI
-> > definitions of those constants, to cut down the number of code variants,
-> > and to make glibc's system call profile independent of the kernel header
-> > version at build time.
-> > 
-> > Your version is based on 2.31, more recent versions have some reasonable
-> > emulation for fchmodat based on /proc/self/fd.  I even wrote a comment
-> > describing the same buggy behavior that you witnessed:
-> > 
-> > +      /* Some Linux versions with some file systems can actually
-> > +        change symbolic link permissions via /proc, but this is not
-> > +        intentional, and it gives inconsistent results (e.g., error
-> > +        return despite mode change).  The expected behavior is that
-> > +        symbolic link modes cannot be changed at all, and this check
-> > +        enforces that.  */
-> > +      if (S_ISLNK (st.st_mode))
-> > +       {
-> > +         __close_nocancel (pathfd);
-> > +         __set_errno (EOPNOTSUPP);
-> > +         return -1;
-> > +       }
-> > 
-> > I think there was some kernel discussion about that behavior before, but
-> > apparently, it hasn't led to fixes.
-> 
-> I think I've explained this somewhere else a couple of months ago but
-> just in case you weren't on that thread or don't remember and apologies
-> if you should already know.
-> 
-> A lot of filesystem will happily update the mode of a symlink. The VFS
-> doesn't do anything to prevent this from happening. This is filesystem
-> specific.
-> 
-> The EOPNOTSUPP you're seeing very likely comes from POSIX ACLs.
-> Specifically it comes from filesystems that call posix_acl_chmod(),
-> e.g., btrfs via
-> 
->         if (!err && attr->ia_valid & ATTR_MODE)
->                 err = posix_acl_chmod(idmap, dentry, inode->i_mode);
-> 
-> Most filesystems don't implement i_op->set_acl() for POSIX ACLs.
-> So posix_acl_chmod() will report EOPNOTSUPP. By the time
-> posix_acl_chmod() is called, most filesystems will have finished
-> updating the inode. POSIX ACLs also often aren't integrated into
-> transactions so a rollback wouldn't even be possible on some
-> filesystems.
-> 
-> Any filesystem that doesn't implement POSIX ACLs at all will obviously
-> never fail unless it blocks mode changes on symlinks. Or filesystems
-> that do have a way to rollback failures from posix_acl_chmod(), or
-> filesystems that do return an error on chmod() on symlinks such as 9p,
-> ntfs, ocfs2.
-> 
-> > 
-> > I wonder if it makes sense to add a similar error return to the system
-> > call implementation?
-> 
-> Hm, blocking symlink mode changes is pretty regression prone. And just
-> blocking it through one interface seems weird and makes things even more
-> inconsistent.
-> 
-> So two options I see:
-> (1) minimally invasive:
->     Filesystems that do call posix_acl_chmod() on symlinks need to be
->     changed to stop doing that.
-> (2) might hit us on the head invasive:
->     Try and block symlink mode changes in chmod_common().
-> 
-> Thoughts?
-> 
+If a device has no NUMA node information associated with it, the driver
+puts the device in node first_memory_node (say node 0). As a side
+effect, this gives an indication to userspace IRQ balancing programs
+that the device is in node 0 so they prefer CPUs in node 0 to handle the
+IRQs associated with the queues. For example, irqbalance will only let
+CPUs in node 0 handle the interrupts. This reduces random access
+performance on CPUs in node 1 since the interrupt for command completion
+will fire on node 0.
 
-We have third option. We can choose not to call chmod_common and return an
-error right away:
+For example, AWS EC2's i3.16xlarge instance does not expose NUMA
+information for the NVMe devices. This means all NVMe devices have
+NUMA_NO_NODE by default. Without this patch, random 4k read performance
+measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
+less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
+both nodes get similar performance (around 315k IOPS).
 
-diff --git a/fs/open.c b/fs/open.c
-index 39a7939f0d00..86a427a2a083 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -679,7 +679,9 @@ static int do_fchmodat(int dfd, const char __user *filename, umode_t mode, int l
- retry:
-        error = user_path_at(dfd, filename, lookup_flags, &path);
-        if (!error) {
--               error = chmod_common(&path, mode);
-+               error = -EOPNOTSUPP;
-+               if (!(flags & AT_SYMLINK_NOFOLLOW) || !S_ISLNK(path.dentry->d_inode->i_mode))
-+                       error = chmod_common(&path, mode);
-                path_put(&path);
-                if (retry_estale(error, lookup_flags)) {
-                        lookup_flags |= LOOKUP_REVAL;
+Signed-off-by: Pratyush Yadav <ptyadav@amazon.de>
+---
+ drivers/nvme/host/pci.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-It doesn't seem to be invasive.
-
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index baf69af7ea78e..f5ba2d7102eae 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2916,9 +2916,6 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+ 	struct nvme_dev *dev;
+ 	int ret = -ENOMEM;
+ 
+-	if (node == NUMA_NO_NODE)
+-		set_dev_node(&pdev->dev, first_memory_node);
+-
+ 	dev = kzalloc_node(sizeof(*dev), GFP_KERNEL, node);
+ 	if (!dev)
+ 		return ERR_PTR(-ENOMEM);
 -- 
-Rgrds, legion
+2.40.1
 
