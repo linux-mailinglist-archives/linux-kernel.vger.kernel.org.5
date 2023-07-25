@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E579D761FAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4CB761FB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbjGYRBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S232239AbjGYRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbjGYRBK (ORCPT
+        with ESMTP id S229573AbjGYRCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:01:10 -0400
-Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:401::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0778E1988
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:01:07 -0700 (PDT)
+        Tue, 25 Jul 2023 13:02:46 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92F1FE
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:02:42 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5635233876bso2958529a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=sduBUGWe44xQWwq5ehD9FZfNDPxgCDY8mIHiqy0iMz0=;
-        b=ajkMW1PbXV5ZNeCv6fGQDs8eCTKwm7tceSP+u4iKBg3fNgHNE5tV7E89uNWKbRZqpuCxzKkrJawHl
-         yZU3If0GP8ob2d0p3XB9VXvIVdrDkRxKoyhDrBpdtFTi2zket7AWCHMsbEuLLBJi/9yY2Ms/6kaMSb
-         iIi3sHzlOuMqcdRacGOcZ+YQvG7FbiE4V3usqsPR+psnzErUFIVQ3mKBQQytHSMsCIerdLp87Ap4Td
-         Vja0V543JkCFspeWF/652AuyFvyEPdg4xrxTvwa7zXia8h2N/jKULJp2EGJnNzeCPQWNt63WGu6VO2
-         OXhW0cGJGqGY4httMvwl2WXUcaj7i9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=sduBUGWe44xQWwq5ehD9FZfNDPxgCDY8mIHiqy0iMz0=;
-        b=ZO9RvjKMywyAQZYeVC+Ms4lsmJ/5kmXCirU8i8gP9NL5789egvdahQABh7frEO38MtS2NdXXsBrUx
-         QTBqrcmBA==
-X-HalOne-ID: d70c573f-2b0c-11ee-880d-5ba399456a4a
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay2 (Halon) with ESMTPSA
-        id d70c573f-2b0c-11ee-880d-5ba399456a4a;
-        Tue, 25 Jul 2023 17:01:05 +0000 (UTC)
-Date:   Tue, 25 Jul 2023 19:01:04 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     linux@treblig.org
-Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: Use shared font data
-Message-ID: <20230725170104.GA838289@ravnborg.org>
-References: <20230725000141.165985-1-linux@treblig.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725000141.165985-1-linux@treblig.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=google.com; s=20221208; t=1690304562; x=1690909362;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEq9wvoOmb79sxPImc43/8dWbsrHxgBnwc9vx2sbv8Q=;
+        b=VWIQdXO6C9fKgtTrf5l5sGCGnOSCXxT0RK4teBxBlWjA45NvBd2W2NUCMBvJqd1LuQ
+         +Ddme/UZOrkRccSEBHud08r7Hp2GlWNzroFWlyPl9a0XN1yaKOt47BItrQIH7itgaZ8L
+         7CtNgDjtQGmkhgbXcJKsSXADLMCaG9OXG3B/pCyg44pBrE8DUcsdx625AOB1ywFHFJWk
+         EVZCqM+29RfY09tnPa6AzfJ6TqZ3OX1xIi7nA+XQvQYYGtNtozEioR+Cj1IXxlTSyzX8
+         ydYByI9q5vC/t0bcAbs5zfmRgTZcIcMmZSWRvoBzoDE3/5ywsADDG9JPeOFXHIcXarLI
+         u7JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690304562; x=1690909362;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEq9wvoOmb79sxPImc43/8dWbsrHxgBnwc9vx2sbv8Q=;
+        b=mFcVpbLcfOWmFAETdkkJ6moJPIS563nb8w2IWggny5FHWT60G+Q/FRe45TSWVhIUcw
+         gViomM2kFaV4x1ewrZyaF84MrMRXPCOXtwIQ0YQhy3wgLw/NFNS/Oaf/CH3Yir9eNLbh
+         DrNKsM0jiycpE5k4LVKizsaypsMTMKt1RWVwLYUAxH6N8GiNFz+CQQhtUzZJcjhW/A98
+         elKjZNqWUoaEyyN7DG8wTFDIXDOTOLSIF6fM3eX6ZQNDf1QKBgEs1Tq4zAVLZZO6cwFo
+         kZDXmYNmao/BX7I4zsHEeekRHqdhSl8MEWGbVJ8pHN+t968xYbZZGAkpzaO4DSJoSTmy
+         ZdvA==
+X-Gm-Message-State: ABy/qLbxTdV0xk703w2LHKNuttyx6oTlaDVN0BlC5r5cFXxA/EtKT6NY
+        dvFBOEfblpfan9k5PwGmHidDbcQ=
+X-Google-Smtp-Source: APBJJlG+EQC6OFCeDlua8rQI6GRdjTdr0NTozio16Zq//4slIvlC7h02qvfKRrly0F7zWE7386X2IpM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:7d12:0:b0:55a:12cf:3660 with SMTP id
+ y18-20020a637d12000000b0055a12cf3660mr52472pgc.1.1690304562245; Tue, 25 Jul
+ 2023 10:02:42 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:02:40 -0700
+In-Reply-To: <ZL+VfRiJQqrrLe/9@gmail.com>
+Mime-Version: 1.0
+References: <20230724142237.358769-1-leitao@debian.org> <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com> <ZL+VfRiJQqrrLe/9@gmail.com>
+Message-ID: <ZMAAMKTaKSIKi1RW@google.com>
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On 07/25, Breno Leitao wrote:
+> On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > On 07/24, Breno Leitao wrote:
+> > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > such.
+> > > 
+> > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+> > 
+> > We probably need to also have bpf bits in the new
+> > io_uring_cmd_getsockopt?
+> 
+> It might be interesting to have the BPF hook for this function as
+> well, but I would like to do it in a following patch, so, I can
+> experiment with it better, if that is OK.
 
-On Tue, Jul 25, 2023 at 01:01:41AM +0100, linux@treblig.org wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> 
-> PowerPC has a 'btext' font used for the console which is almost identical
-> to the shared font_sun8x16, so use it rather than duplicating the data.
-> 
-> They were actually identical until about a decade ago when
->    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
->                         "broken bar" to "vertical line"")
-> 
-> which changed the | in the shared font to be a solid
-> bar rather than a broken bar.  That's the only difference.
-> 
-> This was originally spotted by PMD which noticed that sparc does
-> the same thing with the same data, and they also share a bunch
-> of functions to manipulate the data.  I've previously posted a near
-> identical patch for sparc.
-> 
-> One difference I notice in PowerPC is that there are a bunch of compile
-> options for the .c files for the early code to avoid a bunch of security
-> compilation features;  it's not clear to me if this is a problem for
-> this font data.
-> 
-> Tested very lightly with a boot without FS in qemu.
-> 
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+We are not using io_uring, so fine with me. However, having a way to bypass
+get/setsockopt bpf might be problematic for some other heavy io_uring
+users.
 
-Yep, looks very similar to sparc, so
-
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Lemme CC a bunch of Meta folks explicitly. I'm not sure what that state
+of bpf support in io_uring.
