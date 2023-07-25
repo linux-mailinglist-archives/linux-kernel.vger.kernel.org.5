@@ -2,160 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8F0760B46
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C19760B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjGYHQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        id S232375AbjGYHQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGYHQR (ORCPT
+        with ESMTP id S232333AbjGYHQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:16:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4642AF2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690269330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KWk1QNmGdF3nvk5gdxdbBJcvckgMM8MpVQ7sj6/rxuY=;
-        b=fhW7WltycetBR52UPZFfNFNQ8cOcOLHMQJ1xNpvxjpb4UF2hIfqZhN/xwbBbh2/nCE/r1n
-        eUUUP1RL7Txyr80AnzuZE+qqsYA+Iw3+eMdhKbaNV6mh4dMS+C8inXXvA2xAeVVGdFFi+8
-        XYl1hAX0RYm8sS7mLRU8vGqLRRWfdh0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-260-hOREJ9HJN2exAADOdQK6QA-1; Tue, 25 Jul 2023 03:15:29 -0400
-X-MC-Unique: hOREJ9HJN2exAADOdQK6QA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3175c93e7c3so64277f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:15:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690269328; x=1690874128;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KWk1QNmGdF3nvk5gdxdbBJcvckgMM8MpVQ7sj6/rxuY=;
-        b=JMk6gZ8qRsFbtg+DR4eDCrx7qZxNndxXBR7cNfojk4VMmer/K4883Q4Ndmr1xKLB2q
-         tmcP4tWNogC30BWx0x+m3dME+vAfqP3kpgUikUIhoedNn9nOy9E+NtUYF8X/lw59j+Mg
-         vSwhh7h6+h4Jxgy/OhgGnI1VOpwnvXGLIykROdcRrBQuMUWwu1lsnvbcU33nFlT1SXGp
-         JIMHXUj83NPA6P9YzVQKoAOvdtKt1hYYLHlK5dLJjOS7O3ruk33///FMdpayzLV3fiY7
-         8QWowrnPFL7fP7a14NwDpO3ZWQlefOdLPgBb7eJwhkim+RfIrQ2skXj+D8giWCqOUteF
-         45Fg==
-X-Gm-Message-State: ABy/qLYJGKspnyRURRd4I3fy1YNdl+SMh+XdSVQR2SbwYunXI9lKHPgo
-        x1TtzS1r8SgKNbTwPQj144SOLrrhMXzSNwzB08awZAq8IVq70eUwnoC0VOCR4/4YCm0e2osMO1Q
-        gw2/58wODu626OX5yAhPGgM7C
-X-Received: by 2002:a5d:5948:0:b0:317:5f08:329f with SMTP id e8-20020a5d5948000000b003175f08329fmr3375768wri.1.1690269328068;
-        Tue, 25 Jul 2023 00:15:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG3FJsaKirPS9RCkbt4lNXMtrL1cLC0EIjPJ2Gg0I27op4L4ECGqs0qtSHRxpN+luxQd1WZbA==
-X-Received: by 2002:a5d:5948:0:b0:317:5f08:329f with SMTP id e8-20020a5d5948000000b003175f08329fmr3375746wri.1.1690269327693;
-        Tue, 25 Jul 2023 00:15:27 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-81.dyn.eolo.it. [146.241.225.81])
-        by smtp.gmail.com with ESMTPSA id t7-20020a5d6a47000000b00313f7b077fesm15305129wrw.59.2023.07.25.00.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 00:15:27 -0700 (PDT)
-Message-ID: <17b4e630c63657249a7268943f8806004de4cdca.camel@redhat.com>
-Subject: Re: [PATCH v2 1/1] net: gro: fix misuse of CB in udp socket lookup
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org,
-        willemdebruijn.kernel@gmail.com, dsahern@kernel.org,
-        tom@herbertland.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gal@nvidia.com
-Date:   Tue, 25 Jul 2023 09:15:25 +0200
-In-Reply-To: <20230720162624.GA16428@debian>
-References: <20230720161322.GA16323@debian> <20230720162624.GA16428@debian>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 25 Jul 2023 03:16:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E50128;
+        Tue, 25 Jul 2023 00:16:33 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P55wMx029767;
+        Tue, 25 Jul 2023 07:16:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=fmru9uaTpeifsmlj0vuJw0McaJ23G7BD9xll9f0M2d8=;
+ b=Mk9nKbN1lqrE/Za+FIzuSDRKxdAmPXwB86oLi0/xhXC8gp6d/RKtoT4dPfGCIs3bHofn
+ W14ieWrB7nVIuJEcU9GLFFnoW5ZyptWbRIpGFBg0LCDrPHTvKG+ZeC6tmI8Ta94MD7sV
+ yz3/03ENuHkI46mqvIy8he4K7zzNv51NJUnAbOJFDy6ZvP42ooinOJ1S0xfJfUQMzcOd
+ a2RR6axr3v0mTjIEyrq9Ws5+BVxrojGYMfcj19JlWieNE/OHU6ZA97j6rK6fp01cOagf
+ 3Fs5rTXN0TkYY1ZYBHw9GVnXp1EiN2kx4jIOgN1Vpm3X6hFKIXdzXXg75d6RiAJNxtFN 0A== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1qasta7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 07:16:17 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P7GEQO031778
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 07:16:14 GMT
+Received: from taozha-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 00:16:09 -0700
+From:   Tao Zhang <quic_taozha@quicinc.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
+Subject: [PATCH v7 00/13] Add support to configure TPDM DSB subunit
+Date:   Tue, 25 Jul 2023 15:15:40 +0800
+Message-ID: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FJcDUTsU2ji4eU1QNonI6LsSVw_n2ar5
+X-Proofpoint-GUID: FJcDUTsU2ji4eU1QNonI6LsSVw_n2ar5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ clxscore=1015 spamscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307250064
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+Introduction of TPDM DSB subunit
+DSB subunit is responsible for creating a dataset element, and is also
+optionally responsible for packing it to fit multiple elements on a
+single ATB transfer if possible in the configuration. The TPDM Core
+Datapath requests timestamps be stored by the TPDA and then delivering
+ATB sized data (depending on ATB width and element size, this could
+be smaller or larger than a dataset element) to the ATB Mast FSM.
 
-On Thu, 2023-07-20 at 18:26 +0200, Richard Gobert wrote:
-> This patch fixes a misuse of IP{6}CB(skb) in GRO, while calling to
-> `udp6_lib_lookup2` when handling udp tunnels. `udp6_lib_lookup2` fetch th=
-e
-> device from CB. The fix changes it to fetch the device from `skb->dev`.
-> l3mdev case requires special attention since it has a master and a slave
-> device.
->=20
-> Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-> Reported-by: Gal Pressman <gal@nvidia.com>
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> ---
->  include/net/udp.h      |  2 ++
->  net/ipv4/udp.c         | 28 ++++++++++++++++++++++++++--
->  net/ipv4/udp_offload.c |  7 +++++--
->  net/ipv6/udp.c         | 29 +++++++++++++++++++++++++++--
->  net/ipv6/udp_offload.c |  7 +++++--
->  5 files changed, 65 insertions(+), 8 deletions(-)
->=20
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index 4d13424f8f72..48af1479882f 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -299,6 +299,7 @@ int udp_lib_getsockopt(struct sock *sk, int level, in=
-t optname,
->  int udp_lib_setsockopt(struct sock *sk, int level, int optname,
->  		       sockptr_t optval, unsigned int optlen,
->  		       int (*push_pending_frames)(struct sock *));
-> +void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
->  struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport=
-,
->  			     __be32 daddr, __be16 dport, int dif);
->  struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 spo=
-rt,
-> @@ -310,6 +311,7 @@ struct sock *udp6_lib_lookup(struct net *net,
->  			     const struct in6_addr *saddr, __be16 sport,
->  			     const struct in6_addr *daddr, __be16 dport,
->  			     int dif);
-> +void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
->  struct sock *__udp6_lib_lookup(struct net *net,
->  			       const struct in6_addr *saddr, __be16 sport,
->  			       const struct in6_addr *daddr, __be16 dport,
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 8c3ebd95f5b9..85eb9977db2c 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -550,15 +550,39 @@ static inline struct sock *__udp4_lib_lookup_skb(st=
-ruct sk_buff *skb,
->  				 inet_sdif(skb), udptable, skb);
->  }
-> =20
-> +/* This function is the alternative to 'inet_iif' and 'inet_sdif'
-> + * functions in case we can not rely on fields of IPCB.
-> + *
-> + * The caller must verify skb_valid_dst(skb) is false and skb->dev is in=
-itialized.
-> + * The caller must hold the RCU read lock.
-> + */
-> +inline void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *=
-sdif)
+The DSB subunit must be configured prior to enablement. This series
+adds support for TPDM to configure the configure DSB subunit.
 
-I think you misread David Ahern's suggestion on v1. The idea would be
-to move this function (and udp6_get_iif_sdif) in an header file, as
-'static inline'[1]. Additionally there is nothing specific about UDP
-here so I would rename them inet{,6}_gro_iif_sdif and place them in
-include/net/gro.h.
+Once this series patches are applied properly, the new tpdm nodes for
+should be observed at the tpdm path /sys/bus/coresight/devices/tpdm*
+which supports DSB subunit.
+e.g.
+/sys/devices/platform/soc@0/69d0000.tpdm/tpdm0#ls -l | grep dsb
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_edge_ctrl
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_edge_ctrl_mask
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_mode
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_patt_mask
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_patt_ts
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_patt_type
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_patt_val
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_trig_patt_mask
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_trig_patt_val
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_trig_ts
+-rw-r--r--    1 root     root      4096 Jan  1 00:01 dsb_trig_type
 
-Otherwise LGTM.
+We can use the commands are similar to the below to configure the
+TPDMs which support DSB subunit. Enable coresight sink first.
+echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
+echo 1 > /sys/bus/coresight/devices/tpdm0/reset
+echo 0x3 > /sys/bus/coresight/devices/tpdm0/dsb_edge_ctrl_idx
+echo 0x1 > /sys/bus/coresight/devices/tpdm0/dsb_edge_ctrl_mask
+echo 0x0 > /sys/bus/coresight/devices/tpdm0/dsb_edge_ctrl
+echo 1 > /sys/bus/coresight/devices/tpdm0/dsb_patt_ts
+echo 1 > /sys/bus/coresight/devices/tpdm0/dsb_patt_type
+echo 0 > /sys/bus/coresight/devices/tpdm0/dsb_trig_ts
+echo 0x5 > /sys/bus/coresight/devices/tpdm0/dsb_patt_idx
+echo 0 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/dsb_patt_mask
+echo 0x2 > /sys/bus/coresight/devices/tpdm0/dsb_trig_patt_idx
+echo 0 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/dsb_trig_patt_val
 
-Thanks,
+TPDM_DSB commit tree:
+https://git.codelinaro.org/clo/linux-kernel/coresight/-/tree/tpdm-dsb-v7
+https://git.codelinaro.org/clo/linux-kernel/coresight/-/commits/tpdm-dsb-v7
 
-Paolo
+Changes in V7:
+1. Since the "One value" limitation on SysFs file usage, add
+the nodes to read/write the index number for configuring the
+DSB TPDM. The following index number nodes are added.
+"dsb_edge_ctrl_idx" in the patch #9
+"dsb_trig_patt_idx" in the patch #10
+"dsb_patt_idx" in the patch #11
+"dsb_msr_idx" in the patch #13
+-- Suzuki K Poulose
 
-[1] the usage of the "inline" keyword is basically allowed only in
-header files
+Changes in V6:
+1. Align the code to fix the styling issue.
+-- Suzuki K Poulose
+
+Changes in V5:
+1. Correct data type for DSB element size in dt-bindings patch.
+2. Refine the recursive function "tpda_set_element_size".
+-- Suzuki K Poulose
+3. Get return value of the function "__tpda_enable" in
+"tpda_enable".
+-- Suzuki K Poulose
+4. Refine the comments on "dsb_esize".
+-- Suzuki K Poulose
+5. Split the chage that introduce the subtype
+"SUBTYPE_SOURCE_TPDM" to Coresight driver.
+-- Suzuki K Poulose
+6. Inline the trigger type setting to "tpdm_enable_dsb" simply.
+-- Suzuki K Poulose
+7. Split the change that remove the needless CS_{UN,}LOCK in
+the function "tpdm_datasets_setup".
+-- Suzuki K Poulose
+8. Remove the disablement step in the reset node.
+-- Suzuki K Poulose
+9. Update the kernel version to 6.5 in the sysfs document.
+-- Suzuki K Poulose
+10. Remove the needless check in "tpdm_dsb_is_visible".
+-- Suzuki K Poulose
+11. Change the macro to mask the mode of DSB TPDM.
+-- Suzuki K Poulose
+12. Add a check to make sure "sysfs_emit_at" calling will not
+cause overflow.
+-- Suzuki K Poulose
+13. Change the macro to get "edge_ctrl" value.
+-- Suzuki K Poulose
+14. Remove the needless comments in the sysfs document.
+-- Suzuki K Poulose
+15. Replace "TPDM_DSB_MAX_PATT" with "drvdata->dsb->msr_num" in
+"dsb_msr_show".
+-- Suzuki K Poulose
+16. Update the check of MSR number in "dsb_msr_store".
+-- Suzuki K Poulose
+17. Write data to the MSR registers in the DSB TPDM enablement
+function.
+-- Suzuki K Poulose
+
+Changes in V4:
+1. Change the range of the property "qcom,dsb-element-size", and
+change the type to enumeration.
+-- Suzuki K Poulose, Krzysztof Kozlowski
+2. Change dsb_esize from 32 bits to 8 bits.
+-- Suzuki K Poulose
+3. Update the function tpda_set_element_size since James has
+updated the dependency series. Meanwhile, it will send out a
+warning if it detects more than one TPDM from the same TPDA
+input port.
+-- Suzuki K Poulose
+4. Add a source_sub_type for TPDM to distinguish TPDM from
+the other coresight source.
+-- Suzuki K Poulose
+5. Return error if the element size is not configured on
+devicetree in TPDA enablement.
+-- Suzuki K Poulose
+6. Move memory allocation from "tpdm_init_datasets" to
+"tpdm_datasets_setup". Rename "tpdm_init_datasets" as
+"tpdm_reset_datasets".
+-- Suzuki K Poulose
+7. Replace "coresight_disable" with "coresight_disable_source"
+to disable the TPDM in resetting.
+-- Suzuki K Poulose
+8. Make sure "drvdata" is not NULL pointer before using it.
+-- Suzuki K Poulose
+9. Change "set_dsb_cycacc_mode" to "set_dsb_test_mode" since
+cycle accurate mode is not supported on the current targets.
+It is replaced by test mode.
+10. Document the value of "dsb_mode".
+-- Suzuki K Poulose
+11. Macros are used to replace the formulas on dsb edge control
+nodes.
+-- Suzuki K Poulose
+12. Document the values of "dsb_trig_patt_val" and
+"dsb_trig_patt_mask".
+-- Suzuki K Poulose
+13. Combine two pattern related loops to one. And move DSB TIER
+register configurations to the new function "set_dsb_tier".
+-- Suzuki K Poulose
+14. Rename the property "qcom,dsb_msr_num" to "qcom,dsb-msrs-num".
+-- Suzuki K Poulose, Krzysztof Kozlowski
+
+Changes in V3:
+1. Move the property "qcom,dsb-element-size" to TPDM
+devicetree and update the TPDM yaml file for this item.
+-- Suzuki K Poulose
+2. Add the error message when the DSB element size is not set to
+32-bit or 64-bit. -- Suzuki K Poulose
+3. Add more information to the comments of patch #3
+-- Suzuki K Poulose
+4. Combine the value updates to the TPDM_DSB_CR for TPDM.
+-- Suzuki K Poulose
+5. Remove the function "tpdm_datasets_alloc", and fold its code
+to a new function "tpdm_init_datasets". It will complete the
+initialization of TPDM.  -- Suzuki K Poulose
+6. Change the method of qualifying input values.
+-- Suzuki K Poulose
+7. Add the documentation of the new sysfs handles.
+-- Suzuki K Poulose
+8. Provide the separate handles for the "mode bits".
+-- Suzuki K Poulose
+
+Changes in V2:
+1. Change the name of the property "qcom,dsb-elem-size" to
+"qcom,dsb-element-size" -- Suzuki K Poulose
+2. Update the TPDA yaml file for the item "qcom,dsb-elem-size".
+-- Krzysztof Kozlowski
+3. Add the full name of DSB in the description of the item
+"qcom,dsb-elem-size". -- Rob Herring
+
+Changes in V1:
+1. Change the definition of the property "qcom,dsb-elem-size" from
+"uint32-array" to "uint32-matrix". -- Krzysztof Kozlowski
+2. Add the full name of DSB. -- Rob Herring
+3. Deal with 2 entries in an iteration in TPDA driver. -- Suzuki K Poulose
+4. Divide the function "tpdm_datasets_alloc" into two functions,
+"tpdm_datasets_setup" and "tpdm_datasets_alloc".
+5. Detecte the input string with the conventional semantics automatically,
+and constrain the size of the input value. -- Suzuki K Poulose
+6. Use the hook function "is_visible()" to hide the DSB related knobs if
+the data sets are missing. -- Suzuki K Poulose
+7. Use the macros "FIELD_GET" and "FIELD_PREP" to set the values.
+-- Suzuki K Poulose
+8. Update the definition of the macros in TPDM driver.
+9. Update the comments of the values for the nodes which are for DSB
+element creation and onfigure pattern match output. -- Suzuki K Poulose
+10. Use API "sysfs_emit" to "replace scnprintf". -- Suzuki K Poulose
+
+Tao Zhang (13):
+  coresight-tpdm: Remove the unnecessary lock
+  dt-bindings: arm: Add support for DSB element size
+  coresight-tpdm: Introduce TPDM subtype to TPDM driver
+  coresight-tpda: Add DSB dataset support
+  coresight-tpdm: Initialize DSB subunit configuration
+  coresight-tpdm: Add reset node to TPDM node
+  coresight-tpdm: Add nodes to set trigger timestamp and type
+  coresight-tpdm: Add node to set dsb programming mode
+  coresight-tpdm: Add nodes for dsb edge control
+  coresight-tpdm: Add nodes to configure pattern match output
+  coresight-tpdm: Add nodes for timestamp request
+  dt-bindings: arm: Add support for DSB MSR register
+  coresight-tpdm: Add nodes for dsb msr support
+
+ .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 192 +++++
+ .../bindings/arm/qcom,coresight-tpdm.yaml          |  20 +
+ drivers/hwtracing/coresight/coresight-core.c       |   1 +
+ drivers/hwtracing/coresight/coresight-tpda.c       |  96 ++-
+ drivers/hwtracing/coresight/coresight-tpda.h       |   4 +
+ drivers/hwtracing/coresight/coresight-tpdm.c       | 806 ++++++++++++++++++++-
+ drivers/hwtracing/coresight/coresight-tpdm.h       |  91 +++
+ include/linux/coresight.h                          |   1 +
+ 8 files changed, 1193 insertions(+), 18 deletions(-)
+
+-- 
+2.7.4
 
