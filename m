@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0170762557
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A259476255A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbjGYWB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S231787AbjGYWCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjGYWBR (ORCPT
+        with ESMTP id S231602AbjGYWB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:01:17 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CEE2139
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:12 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991ef0b464cso71993566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322471; x=1690927271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EitNPpdaQImS+UO+6gfA4PmDrc0gIvXFa/aFMwcLRHY=;
-        b=ffXmfym6N4mdb0c+soPvdHw9AnsEOLeiuBQ+yw4S7vov+SQonwJhjpAunJ8MZ/0I5z
-         vkrWDPPOpEOEBzeRbv5sOiO30J4bFlm2uaVwSYhHD0F3MKUR9bH25ZV/8P/V4vv+68DQ
-         Awc52OT0af4X6ruHifd5tQ1PogYcEQOfve3Ueg+a7WcGr5VWhifbZTc/db4frCI4n7g5
-         /cI4O00K/WdfHxccbUgsBgsHT0u3X1wgsRZRcCroOqmlSuxKZyBiWllsAHZDE0aYI863
-         HH03aEHMz4BpzVT211siQA6rfn6moa4eIizUAYEDOz1f4m0/qoh/lxD+/YVqk5FZbfS7
-         Pe0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322471; x=1690927271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EitNPpdaQImS+UO+6gfA4PmDrc0gIvXFa/aFMwcLRHY=;
-        b=cgbSobUhQjLqBXr7FO2L77qqy8mkOD7xx2Nf7/yb6zwUt6VejxEXP+LQfLcGZnog9f
-         JCvHon6xkpSpiDYupSWmmpcMQRTYIOHPZqPrmRbNR7cSA4brmGw/31ow8Ul+bdJ4Sabp
-         JmpUKlHXurq6OrL/7Uxgbms3QqLi+yj+4zvdgxSjF+0HOzJO/ggXGC25srIndHIN7qVm
-         Zka8t/oB/Io99O0GEA3ID7SWUi/eZt0xBF9gvOWWZauuBW10Z/CMyjthKfp0hy3lnJ8s
-         I8cX/LCHwmbc9zTffGg8jdZNdC/7TtGKTUSjfLd5atxbDJdaT+Fd8RqkcWtyTaD0wDZu
-         DBIg==
-X-Gm-Message-State: ABy/qLZUL0KCrlmgxkoxdMVKG07GVErbQYR/yv1wgxMTgr/InF7w1Mkm
-        Clzhn8ZJDSM6HiBNhw/CA2AYItBJFk9rFER0RdTLmg==
-X-Google-Smtp-Source: APBJJlFgTPyujUtZ8EgbKUjRjcN96PY7sGSk7GdBAe1Uf1XmD95bwOiGIXX+Oe7jKRmrKs4UJhAWrAaQohGw5cQDLp0=
-X-Received: by 2002:a17:906:32db:b0:994:5457:269e with SMTP id
- k27-20020a17090632db00b009945457269emr457378ejk.0.1690322471171; Tue, 25 Jul
- 2023 15:01:11 -0700 (PDT)
+        Tue, 25 Jul 2023 18:01:58 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647DE2D43;
+        Tue, 25 Jul 2023 15:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690322494; x=1721858494;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7dcdBb1/l78pg8+v1QmtAHi7qI73pAZdEwi0vo4frl0=;
+  b=i5udl0hLr6hEp0Gg0jZvTNHklyRZegRyZePCIQZlQzXSMsr1IsCx2qNd
+   AJ7S0ZSvsGy7Ugfg0X1rIyTgweBGPzgmgNrba1YJkRvX29R3gbsLA7KaO
+   S9EFsTRdOap93aX4Rb/aTtijzCAxmc80Vlv3/Hq9Hs0yaVl7tQIgewz4Q
+   6aR2xorKpEFx5ghtnVtpRdW+wIDqU9ggdBxxm4EQ+uufRRW4xAo9FTq8r
+   etokJtuKoBMiWva9n0B82H3rfAcKsHY+L1ZNqz+OkY9lJyG+Gb4/Wb4pm
+   tkYgKdIGkj4dof2zdZjoPUKO9f3BV5sJoMQwXdXTV4oE3WwkP5LqsSyw3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366734265"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="366734265"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 15:01:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="761370839"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="761370839"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 25 Jul 2023 15:01:28 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOQ5v-0000Nf-0M;
+        Tue, 25 Jul 2023 22:01:27 +0000
+Date:   Wed, 26 Jul 2023 06:00:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+Subject: Re: [PATCH v7 09/13] coresight-tpdm: Add nodes for dsb edge control
+Message-ID: <202307260533.MTqa5ObG-lkp@intel.com>
+References: <1690269353-10829-10-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-References: <20230719174613.3062124-1-yosryahmed@google.com>
- <20230725140435.GB1146582@cmpxchg.org> <CAJD7tkaYHvaX6SL=A6TsCQHT+rOTp-WhOiQ1XSN+ywOVN=-QBQ@mail.gmail.com>
- <20230725201811.GA1231514@cmpxchg.org>
-In-Reply-To: <20230725201811.GA1231514@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 25 Jul 2023 15:00:34 -0700
-Message-ID: <CAJD7tkZkTgt9kT_5BqYyB2w4EcL_M4v0zG6rrM+qAAnpq-AQdg@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690269353-10829-10-git-send-email-quic_taozha@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,147 +82,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 1:18=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Tue, Jul 25, 2023 at 12:24:19PM -0700, Yosry Ahmed wrote:
-> > On Tue, Jul 25, 2023 at 7:04=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
-.org> wrote:
-> > > We used to maintain *all* stats in per-cpu counters at the local
-> > > level. memory.stat reads would have to iterate and aggregate the
-> > > entire subtree every time. This was obviously very costly, so we adde=
-d
-> > > batched upward propagation during stat updates to simplify reads:
-> > >
-> > > commit 42a300353577ccc17ecc627b8570a89fa1678bec
-> > > Author: Johannes Weiner <hannes@cmpxchg.org>
-> > > Date:   Tue May 14 15:47:12 2019 -0700
-> > >
-> > >     mm: memcontrol: fix recursive statistics correctness & scalabilty
-> > >
-> > > However, that caused a regression in the stat write path, as the
-> > > upward propagation would bottleneck on the cachelines in the shared
-> > > parents. The fix for *that* re-introduced the per-cpu loops in the
-> > > local stat reads:
-> > >
-> > > commit 815744d75152078cde5391fc1e3c2d4424323fb6
-> > > Author: Johannes Weiner <hannes@cmpxchg.org>
-> > > Date:   Thu Jun 13 15:55:46 2019 -0700
-> > >
-> > >     mm: memcontrol: don't batch updates of local VM stats and events
-> > >
-> > > So I wouldn't say it's a regression from rstat. Except for that short
-> > > period between the two commits above, the read side for local stats
-> > > was always expensive.
-> >
-> > I was comparing from an 4.15 kernel, so I assumed the major change was
-> > from rstat, but that was not accurate. Thanks for the history.
-> >
-> > However, in that 4.15 kernel the local (non-hierarchical) stats were
-> > readily available without iterating percpu counters. There is a
-> > regression that was introduced somewhere.
-> >
-> > Looking at the history you described, it seems like up until
-> > 815744d75152 we used to maintain "local" (aka non-hierarchical)
-> > counters, so reading local stats was reading one counter, and starting
-> > 815744d75152 we started having to loop percpu counters for that.
-> >
-> > So it is not a regression of rstat, but seemingly it is a regression
-> > of 815744d75152. Is my understanding incorrect?
->
-> Yes, it actually goes back further. Bear with me.
->
-> For the longest time, it used to be local per-cpu counters. Every
-> memory.stat read had to do nr_memcg * nr_cpu aggregation. You can
-> imagine that this didn't scale in production.
->
-> We added local atomics and turned the per-cpu counters into buffers:
->
-> commit a983b5ebee57209c99f68c8327072f25e0e6e3da
-> Author: Johannes Weiner <hannes@cmpxchg.org>
-> Date:   Wed Jan 31 16:16:45 2018 -0800
->
->     mm: memcontrol: fix excessive complexity in memory.stat reporting
->
-> Local counts became a simple atomic_read(), but the hierarchy counts
-> would still have to aggregate nr_memcg counters.
->
-> That was of course still too much read-side complexity, so we switched
-> to batched upward propagation during the stat updates:
->
-> commit 42a300353577ccc17ecc627b8570a89fa1678bec
-> Author: Johannes Weiner <hannes@cmpxchg.org>
-> Date:   Tue May 14 15:47:12 2019 -0700
->
->     mm: memcontrol: fix recursive statistics correctness & scalabilty
->
-> This gave us two atomics at each level: one for local and one for
-> hierarchical stats.
->
-> However, that went too far the other direction: too many counters
-> touched during stat updates, and we got a regression report over memcg
-> cacheline contention during MM workloads. Instead of backing out
-> 42a300353 - since all the previous versions were terrible too - we
-> dropped write-side aggregation of *only* the local counters:
->
-> commit 815744d75152078cde5391fc1e3c2d4424323fb6
-> Author: Johannes Weiner <hannes@cmpxchg.org>
-> Date:   Thu Jun 13 15:55:46 2019 -0700
->
->     mm: memcontrol: don't batch updates of local VM stats and events
->
-> In effect, this kept all the stat optimizations for cgroup2 (which
-> doesn't have local counters), and reverted cgroup1 back to how it was
-> for the longest time: on-demand aggregated per-cpu counters.
->
-> For about a year, cgroup1 didn't have to per-cpu the local stats on
-> read. But for the recursive stats, it would either still have to do
-> subtree aggregation on read, or too much upward flushing on write.
->
-> So if I had to blame one commit for a cgroup1 regression, it would
-> probably be 815744d. But it's kind of a stretch to say that it worked
-> well before that commit.
->
-> For the changelog, maybe just say that there was a lot of back and
-> forth between read-side aggregation and write-side aggregation. Since
-> with rstat we now have efficient read-side aggregation, attempt a
-> conceptual revert of 815744d.
+Hi Tao,
 
-Now that's a much more complete picture. Thanks a lot for all the
-history, now it makes much more sense. I wouldn't blame 815744d then,
-as you said it's better framed as a conceptual revert of it. I will
-rewrite the commit log accordingly and send a v2.
+kernel test robot noticed the following build warnings:
 
-Thanks!
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.5-rc3 next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> > > But I want to be clear: this isn't a regression fix. It's a new
-> > > performance optimization for the deprecated cgroup1 code. And it come=
-s
-> > > at the cost of higher memory footprint for both cgroup1 AND cgroup2.
-> >
-> > I still think it is, but I can easily be wrong. I am hoping that the
-> > memory footprint is not a problem. There are *roughly* 80 per-memcg
-> > stats/events (MEMCG_NR_STAT + NR_MEMCG_EVENTS) and 55 per-lruvec stats
-> > (NR_VM_NODE_STAT_ITEMS). For each stat there is an extra 8 bytes, so
-> > on a two-node machine that's  8 * (80 + 55 * 2) ~=3D 1.5 KiB per memcg.
-> >
-> > Given that struct mem_cgroup is already large, and can easily be 100s
-> > of KiBs on a large machine with many cpus, I hope there won't be a
-> > noticeable regression.
->
-> Yes, the concern wasn't so much the memory consumption but the
-> cachelines touched during hot paths.
->
-> However, that was mostly because we either had a) write-side flushing,
-> which is extremely hot during MM stress, or b) read-side flushing with
-> huuuge cgroup subtrees due to zombie cgroups. A small cacheline
-> difference would be enormously amplified by these factors.
->
-> Rstat is very good at doing selective subtree flushing on reads, so
-> the big coefficients from a) and b) are no longer such a big concern.
-> A slightly bigger cache footprint is probably going to be okay.
+url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Zhang/coresight-tpdm-Remove-the-unnecessary-lock/20230725-152235
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/1690269353-10829-10-git-send-email-quic_taozha%40quicinc.com
+patch subject: [PATCH v7 09/13] coresight-tpdm: Add nodes for dsb edge control
+config: arm-randconfig-r013-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260533.MTqa5ObG-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260533.MTqa5ObG-lkp@intel.com/reproduce)
 
-Agreed, maintaining the local counters with rstat is much easier than
-the previous attempts. I will try to bake most of this into the commit
-log.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260533.MTqa5ObG-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/hwtracing/coresight/coresight-tpdm.c:383:21: warning: variable 'mask' set but not used [-Wunused-but-set-variable]
+     383 |         unsigned long val, mask, edge_ctrl;
+         |                            ^
+>> drivers/hwtracing/coresight/coresight-tpdm.c:451:3: warning: misleading indentation; statement is not part of the previous 'else' [-Wmisleading-indentation]
+     451 |                 drvdata->dsb->edge_ctrl_mask[reg] = set;
+         |                 ^
+   drivers/hwtracing/coresight/coresight-tpdm.c:449:2: note: previous statement is here
+     449 |         else
+         |         ^
+   2 warnings generated.
+
+
+vim +/else +451 drivers/hwtracing/coresight/coresight-tpdm.c
+
+   426	
+   427	static ssize_t dsb_edge_ctrl_mask_store(struct device *dev,
+   428						     struct device_attribute *attr,
+   429						     const char *buf,
+   430						     size_t size)
+   431	{
+   432		struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+   433		unsigned long val;
+   434		u32 set;
+   435		int reg;
+   436	
+   437		if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+   438			return -EINVAL;
+   439	
+   440		spin_lock(&drvdata->spinlock);
+   441		/*
+   442		 * There is 1 bit per DSB Edge Control Mark line.
+   443		 * Thus we have 32 lines in a 32bit word.
+   444		 */
+   445		reg = EDCMR_TO_WORD_IDX(drvdata->dsb->edge_ctrl_idx);
+   446		set = drvdata->dsb->edge_ctrl_mask[reg];
+   447		if (val)
+   448			set |= BIT(EDCMR_TO_WORD_SHIFT(drvdata->dsb->edge_ctrl_idx));
+   449		else
+   450			set &= ~BIT(EDCMR_TO_WORD_SHIFT(drvdata->dsb->edge_ctrl_idx));
+ > 451			drvdata->dsb->edge_ctrl_mask[reg] = set;
+   452		spin_unlock(&drvdata->spinlock);
+   453	
+   454		return size;
+   455	}
+   456	static DEVICE_ATTR_RW(dsb_edge_ctrl_mask);
+   457	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
