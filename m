@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2D5760A3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D281760A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjGYGWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S232119AbjGYGWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjGYGWR (ORCPT
+        with ESMTP id S231612AbjGYGWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:22:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B73512E;
+        Tue, 25 Jul 2023 02:22:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25171173F;
         Mon, 24 Jul 2023 23:22:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CA0C1224A6;
-        Tue, 25 Jul 2023 06:22:11 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0A9581F460;
+        Tue, 25 Jul 2023 06:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690266131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1690266132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EcdxqCmG3mAOAhJ1fymJ/Fn/pVctZV38y883Oxgbo8g=;
-        b=xJuOSinyF9CfS4YYb+ramDKanfvRdJ3wiFBUve+MkKJBHYvVhKXLgsDdufk9ioemGBXpTN
-        gHP758+3Qgg8R4rjLSwyF/7zRsm47NGxu6pwruOtzCaLR2Nr4U7ScXAgeQ0AMgmcghfOUR
-        AR3S81C0AlK7H6FvqCcfJUxmSm7DHRA=
+        bh=wz+K+MF0E29R6xWk5/OwTjFBIPIM9z4mkUoZpufqQ+E=;
+        b=ni3Ck6LoN4UvMEBGxjs3FKRLIWY0aJbKCv2N2ij9x0IO/tNgQvWfvIGTwcNz9TR0ZKQjtp
+        1VHcthr6Xm1MwT8ufk4EXlaz/8AfZHE0W+W8wahWmJWuBgrjGsyrLeT1Un2GrBpBhwGuS9
+        8bUj3nbJwzdt7qYVslyqivN+MZ0CBpM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690266131;
+        s=susede2_ed25519; t=1690266132;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EcdxqCmG3mAOAhJ1fymJ/Fn/pVctZV38y883Oxgbo8g=;
-        b=IYFQ/KGv8X0WGqR39ShmyIxBClJ6VpM8cSdDz+thxnczp0z5haGLo8rXbNT85yccGvi1Tw
-        YEz/FGDytZis5eDw==
+        bh=wz+K+MF0E29R6xWk5/OwTjFBIPIM9z4mkUoZpufqQ+E=;
+        b=8i0aWKdw1aDkfnXyAEIh53ce+FERunv+DBzZZO2L8jPrrdC6iHJZnAa4a41r6vVLoPsn3P
+        rqMCaWTXbVzdA0Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82F1113342;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEA7C1390F;
         Tue, 25 Jul 2023 06:22:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ENf5HhNqv2S0dQAAMHmgww
+        id 0IGQMRNqv2S0dQAAMHmgww
         (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 06:22:11 +0000
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] usb: gadget: Add support for USB MIDI 2.0 function driver
-Date:   Tue, 25 Jul 2023 08:22:00 +0200
-Message-Id: <20230725062206.9674-2-tiwai@suse.de>
+Subject: [PATCH 2/7] usb: gadget: midi2: Add configfs support
+Date:   Tue, 25 Jul 2023 08:22:01 +0200
+Message-Id: <20230725062206.9674-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230725062206.9674-1-tiwai@suse.de>
 References: <20230725062206.9674-1-tiwai@suse.de>
@@ -71,1883 +71,829 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the support for USB MIDI 2.0 gadget function driver.
-The driver emulates a USB MIDI 2.0 interface with one or more UMP
-Endpoints, where each of UMP Endpoint is a pair of MIDI Endpoints for
-handling MIDI 2.0 UMP packets.  When the function driver is bound, the
-driver creates an ALSA card object with UMP rawmidi devices.  This is
-a kind of loop-back where the incoming and upcoming UMP packets
-from/to the MIDI 2.0 UMP Endpoints are transferred as-is.  In
-addition, legacy (MIDI 1.0) rawmidi devices are created, so that
-legacy applications can work in the gadget side, too.
+This patch adds the support of configfs to MIDI 2.0 function driver
+for users to allow configuring the UMP Endpoint and Function Blocks
+more flexibly.  The configuration is in a tree form.  The top-most
+contains some card-level configurations.  UMP Endpoints are defined in
+subdirectories (ep.0, ep.1, etc) that contain Endpoint-specific
+configurations such as ep_name, etc.  And, UMP Function Blocks are
+defined in the subdirectories (block.0, block.1, etc) under EP
+subdirectory.  As default, the driver creates a single UMP Endpoint
+(ep.0) and a single Function Block (block.0) to work in a minimalistic
+manner.  User can modify those attributes freely to fit with the
+demands.
 
-When a USB MIDI 2.0 gadget interface appears, the connected host can
-use it with the snd-usb-audio driver where MIDI 2.0 support is
-enabled.  Both gadget and connected hosts will have the similar UMP
-Endpoint and Function Block (or Group Terminal Block) information.
-Slight differences are the direction and UI-hint bits; it's due to the
-nature of gadget driver, and the input/output direction is swapped in
-both sides (the input for gadget is the output for host, and vice
-versa).
+When multiple Function Blocks are required, user can create another
+directory as block.1, block.2, and so on (up to block.31).  A block.*
+directory can be deleted dynamically, too.  A caveat is that the block
+number has to be continuous.
 
-The driver supports the brand-new UMP v1.1 feature, including the UMP
-Stream message handling for providing UMP Endpoint and Function Block
-information as well as dealing with the MIDI protocol switch.  The
-driver responds to UMP Stream messages by itself.  OTOH, MIDI-CI
-message handling isn't implemented in the kernel driver; it should be
-processed in the user-space through the loopback UMP device.
+Similarly, when multiple UMP Endpoints are required, user can create
+another directory as ep.1, ep.2, up to ep.3.
 
-As of this patch, the whole configuration is fixed, providing only one
-bidirectional UMP Endpoint containing a single FB/GTB with a single
-UMP Group.  The configuration will be dynamically changeable in the
-following patches.
+Also, some driver behavior can be controlled in the card top-level
+configs.  e.g. you can pass process_ump=0 to disable the processing of
+UMP Stream messages.  This would be equivalent with the older MIDI 2.0
+spec that doesn't support UMP v1.1 features.
 
-The traditional MIDI 1.0 is still provided in the altset 0 (which is
-mandatory per spec).  But it's only about the configuration, and no
-actual I/O will be running for the altset 0 as of this patch.  The
-proper support MIDI 1.0 altset will follow in later patches, too.
+The configfs interface checks upper- / lower-bound of input values,
+and more sanity checks are performed at binding.
+
+Attributes can't be changed any longer once when the instance is
+linked to UDC.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/usb/gadget/Kconfig            |   18 +
- drivers/usb/gadget/function/Makefile  |    2 +
- drivers/usb/gadget/function/f_midi2.c | 1691 +++++++++++++++++++++++++
- drivers/usb/gadget/function/u_midi2.h |   79 ++
- 4 files changed, 1790 insertions(+)
- create mode 100644 drivers/usb/gadget/function/f_midi2.c
- create mode 100644 drivers/usb/gadget/function/u_midi2.h
+ .../ABI/testing/configfs-usb-gadget-midi2     |  52 ++
+ drivers/usb/gadget/function/f_midi2.c         | 621 +++++++++++++++++-
+ 2 files changed, 650 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/ABI/testing/configfs-usb-gadget-midi2
 
-diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
-index 336db8f92afa..b3592bcb0f96 100644
---- a/drivers/usb/gadget/Kconfig
-+++ b/drivers/usb/gadget/Kconfig
-@@ -208,6 +208,9 @@ config USB_F_UVC
- config USB_F_MIDI
- 	tristate
- 
-+config USB_F_MIDI2
-+	tristate
-+
- config USB_F_HID
- 	tristate
- 
-@@ -436,6 +439,21 @@ config USB_CONFIGFS_F_MIDI
- 	  connections can then be made on the gadget system, using
- 	  ALSA's aconnect utility etc.
- 
-+config USB_CONFIGFS_F_MIDI2
-+	bool "MIDI 2.0 function"
-+	depends on USB_CONFIGFS
-+	depends on SND
-+	select USB_LIBCOMPOSITE
-+	select SND_UMP
-+	select SND_UMP_LEGACY_RAWMIDI
-+	select USB_F_MIDI2
-+	help
-+	  The MIDI 2.0 function driver provides the generic emulated
-+	  USB MIDI 2.0 interface, looped back to ALSA UMP rawmidi
-+	  device on the gadget host. It supports UMP 1.1 spec and
-+	  responds UMP Stream messages for UMP Endpoint and Function
-+	  Block information / configuration.
-+
- config USB_CONFIGFS_F_HID
- 	bool "HID function"
- 	depends on USB_CONFIGFS
-diff --git a/drivers/usb/gadget/function/Makefile b/drivers/usb/gadget/function/Makefile
-index 5d3a6cf02218..87917a7d4a9b 100644
---- a/drivers/usb/gadget/function/Makefile
-+++ b/drivers/usb/gadget/function/Makefile
-@@ -44,6 +44,8 @@ usb_f_uvc-y			:= f_uvc.o uvc_queue.o uvc_v4l2.o uvc_video.o uvc_configfs.o
- obj-$(CONFIG_USB_F_UVC)		+= usb_f_uvc.o
- usb_f_midi-y			:= f_midi.o
- obj-$(CONFIG_USB_F_MIDI)	+= usb_f_midi.o
-+usb_f_midi2-y			:= f_midi2.o
-+obj-$(CONFIG_USB_F_MIDI2)	+= usb_f_midi2.o
- usb_f_hid-y			:= f_hid.o
- obj-$(CONFIG_USB_F_HID)		+= usb_f_hid.o
- usb_f_printer-y			:= f_printer.o
-diff --git a/drivers/usb/gadget/function/f_midi2.c b/drivers/usb/gadget/function/f_midi2.c
+diff --git a/Documentation/ABI/testing/configfs-usb-gadget-midi2 b/Documentation/ABI/testing/configfs-usb-gadget-midi2
 new file mode 100644
-index 000000000000..848cb3150deb
+index 000000000000..a3a036d784c7
 --- /dev/null
++++ b/Documentation/ABI/testing/configfs-usb-gadget-midi2
+@@ -0,0 +1,52 @@
++What:		/config/usb-gadget/gadget/functions/midi2.name
++Date:		Jul 2023
++KernelVersion:	6.6
++Description:
++		The attributes:
++
++		============	===============================================
++		process_ump	Flag to process UMP Stream messages (0 or 1)
++		static_block	Flag for static blocks (0 or 1)
++		iface_name	MIDI interface name string
++		============	===============================================
++
++What:		/config/usb-gadget/gadget/functions/midi2.name/ep.number
++Date:		Jul 2023
++KernelVersion:	6.6
++Description:
++		This group contains a UMP Endpoint configuration.
++		A new Endpoint starts from 0, and can be up to 3.
++
++		The attributes:
++
++		=============	===============================================
++		protocol_caps	MIDI protocol capabilities (1, 2 or 3 for both)
++		protocol	Default MIDI protocol (1 or 2)
++		ep_name		UMP Endpoint name string
++		product_id	Product ID string
++		manufacturer	Manufacture ID (24 bit)
++		family		Device family ID (16 bit)
++		model		Device model ID (16 bit)
++		sw_revision	Software Revision (32 bit)
++		=============	===============================================
++
++What:		/config/usb-gadget/gadget/functions/midi2.name/ep.number/block.number
++Date:		Jul 2023
++KernelVersion:	6.6
++Description:
++		This group contains a UMP Function Block configuration.
++		A new block starts from 0, and can be up to 31.
++
++		The attributes:
++
++		===============	===============================================
++		name		Function Block name string
++		direction	1: input, 2: output, 3: bidirectional
++		first_group	The first UMP Group number (0-15)
++		num_groups	The number of groups in this FB (1-16)
++		ui_hint		0: unknown, 1: receiver, 2: sender, 3: both
++		midi_ci_verison	Supported MIDI-CI version number (8 bit)
++		is_midi1	Legacy MIDI 1.0 device (0, 1 or 2)
++		sysex8_streams	Max number of SysEx8 streams (8 bit)
++		active		Active FB flag (0 or 1)
++		===============	===============================================
+diff --git a/drivers/usb/gadget/function/f_midi2.c b/drivers/usb/gadget/function/f_midi2.c
+index 848cb3150deb..c68a6fa0d237 100644
+--- a/drivers/usb/gadget/function/f_midi2.c
 +++ b/drivers/usb/gadget/function/f_midi2.c
-@@ -0,0 +1,1691 @@
-+// SPDX-License-Identifier: GPL-2.0+
+@@ -292,7 +292,7 @@ static struct usb_interface_descriptor midi2_midi2_if_desc = {
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 	.bInterfaceNumber =	0, // to be filled
+ 	.bAlternateSetting =	1,
+-	.bNumEndpoints =	2,
++	.bNumEndpoints =	2, // to be filled
+ 	.bInterfaceClass =	USB_CLASS_AUDIO,
+ 	.bInterfaceSubClass =	USB_SUBCLASS_MIDISTREAMING,
+ 	.bInterfaceProtocol =	0,
+@@ -1403,6 +1403,8 @@ static int f_midi2_bind(struct usb_configuration *c, struct usb_function *f)
+ 				midi2->strings[gtb_to_str_id(ep->blks[blk].gtb_id)].id;
+ 	}
+ 
++	midi2_midi2_if_desc.bNumEndpoints = midi2->num_eps * 2;
++
+ 	/* audio interface */
+ 	status = usb_interface_id(c, f);
+ 	if (status < 0)
+@@ -1510,16 +1512,274 @@ static void f_midi2_unbind(struct usb_configuration *c, struct usb_function *f)
+ 	usb_free_all_descriptors(f);
+ }
+ 
 +/*
-+ * f_midi2.c -- USB MIDI 2.0 class function driver
++ * ConfigFS interface
 + */
 +
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/ump.h>
-+#include <sound/ump_msg.h>
-+
-+#include <linux/usb/ch9.h>
-+#include <linux/usb/gadget.h>
-+#include <linux/usb/audio.h>
-+#include <linux/usb/midi-v2.h>
-+
-+#include "u_f.h"
-+#include "u_midi2.h"
-+
-+struct f_midi2;
-+struct f_midi2_ep;
-+struct f_midi2_usb_ep;
-+
-+/* Context for each USB request */
-+struct f_midi2_req_ctx {
-+	struct f_midi2_usb_ep *usb_ep;	/* belonging USB EP */
-+	unsigned int index;		/* array index: 0-31 */
-+	struct usb_request *req;	/* assigned request */
-+};
-+
-+/* Resources for a USB Endpoint */
-+struct f_midi2_usb_ep {
-+	struct f_midi2 *card;		/* belonging card */
-+	struct f_midi2_ep *ep;		/* belonging UMP EP (optional) */
-+	struct usb_ep *usb_ep;		/* assigned USB EP */
-+	void (*complete)(struct usb_ep *usb_ep, struct usb_request *req);
-+	unsigned long free_reqs;	/* bitmap for unused requests */
-+	unsigned int num_reqs;		/* number of allocated requests */
-+	struct f_midi2_req_ctx *reqs;	/* request context array */
-+};
-+
-+/* Resources for UMP Function Block (and USB Group Terminal Block) */
-+struct f_midi2_block {
-+	struct f_midi2_block_info info;	/* FB info, copied from configfs */
-+	struct snd_ump_block *fb;	/* assigned FB */
-+	unsigned int gtb_id;		/* assigned GTB id */
-+	unsigned int string_id;		/* assigned string id */
-+};
-+
-+/* Resources for UMP Endpoint */
-+struct f_midi2_ep {
-+	struct snd_ump_endpoint *ump;	/* assigned UMP EP */
-+	struct f_midi2 *card;		/* belonging MIDI 2.0 device */
-+
-+	struct f_midi2_ep_info info;	/* UMP EP info, copied from configfs */
-+	unsigned int num_blks;		/* number of FBs */
-+	struct f_midi2_block blks[SNDRV_UMP_MAX_BLOCKS];	/* UMP FBs */
-+
-+	struct f_midi2_usb_ep ep_in;	/* USB MIDI EP-in */
-+	struct f_midi2_usb_ep ep_out;	/* USB MIDI EP-out */
-+};
-+
-+/* indices for USB strings */
-+enum {
-+	STR_IFACE = 0,
-+	STR_GTB1 = 1,
-+};
-+
-+/* 1-based GTB id to string id */
-+#define gtb_to_str_id(id)	(STR_GTB1 + (id) - 1)
-+
-+/* operation mode */
-+enum {
-+	MIDI_OP_MODE_UNSET,	/* no altset set yet */
-+	MIDI_OP_MODE_MIDI1,	/* MIDI 1.0 (altset 0) is used */
-+	MIDI_OP_MODE_MIDI2,	/* MIDI 2.0 (altset 1) is used */
-+};
-+
-+/* Resources for MIDI 2.0 Device */
-+struct f_midi2 {
-+	struct usb_function func;
-+	struct usb_gadget *gadget;
-+	struct snd_card *card;
-+
-+	/* MIDI 1.0 in/out USB EPs */
-+	struct f_midi2_usb_ep midi1_ep_in;
-+	struct f_midi2_usb_ep midi1_ep_out;
-+
-+	int midi_if;			/* USB MIDI interface number */
-+	int operation_mode;		/* current operation mode */
-+
-+	spinlock_t queue_lock;
-+
-+	struct f_midi2_card_info info;	/* card info, copied from configfs */
-+
-+	unsigned int num_eps;
-+	struct f_midi2_ep midi2_eps[MAX_UMP_EPS];
-+
-+	unsigned int total_blocks;	/* total number of blocks of all EPs */
-+	struct usb_string *string_defs;
-+	struct usb_string *strings;
-+};
-+
-+#define func_to_midi2(f)	container_of(f, struct f_midi2, func)
-+
-+/* get EP name string */
-+static const char *ump_ep_name(const struct f_midi2_ep *ep)
++/* type conversion helpers */
++static inline struct f_midi2_opts *to_f_midi2_opts(struct config_item *item)
 +{
-+	return ep->info.ep_name ? ep->info.ep_name : "MIDI 2.0 Gadget";
++	return container_of(to_config_group(item), struct f_midi2_opts,
++			    func_inst.group);
 +}
 +
-+/* get EP product ID string */
-+static const char *ump_product_id(const struct f_midi2_ep *ep)
++static inline struct f_midi2_ep_opts *
++to_f_midi2_ep_opts(struct config_item *item)
 +{
-+	return ep->info.product_id ? ep->info.product_id : "Unique Product ID";
++	return container_of(to_config_group(item), struct f_midi2_ep_opts,
++			    group);
 +}
 +
-+/* get FB name string */
-+static const char *ump_fb_name(const struct f_midi2_block_info *info)
++static inline struct f_midi2_block_opts *
++to_f_midi2_block_opts(struct config_item *item)
 +{
-+	return info->name ? info->name : "MIDI 2.0 Gadget I/O";
++	return container_of(to_config_group(item), struct f_midi2_block_opts,
++			    group);
 +}
 +
-+/*
-+ * USB Descriptor Definitions
-+ */
-+/* GTB header descriptor */
-+static struct usb_ms20_gr_trm_block_header_descriptor gtb_header_desc = {
-+	.bLength =		sizeof(gtb_header_desc),
-+	.bDescriptorType =	USB_DT_CS_GR_TRM_BLOCK,
-+	.bDescriptorSubtype =	USB_MS_GR_TRM_BLOCK_HEADER,
-+	.wTotalLength =		__cpu_to_le16(0x12), // to be filled
-+};
-+
-+/* GTB descriptor template: most items are replaced dynamically */
-+static struct usb_ms20_gr_trm_block_descriptor gtb_desc = {
-+	.bLength =		sizeof(gtb_desc),
-+	.bDescriptorType =	USB_DT_CS_GR_TRM_BLOCK,
-+	.bDescriptorSubtype =	USB_MS_GR_TRM_BLOCK,
-+	.bGrpTrmBlkID =		0x01,
-+	.bGrpTrmBlkType =	USB_MS_GR_TRM_BLOCK_TYPE_BIDIRECTIONAL,
-+	.nGroupTrm =		0x00,
-+	.nNumGroupTrm =		1,
-+	.iBlockItem =		0,
-+	.bMIDIProtocol =	USB_MS_MIDI_PROTO_1_0_64,
-+	.wMaxInputBandwidth =	0,
-+	.wMaxOutputBandwidth =	0,
-+};
-+
-+DECLARE_USB_MIDI_OUT_JACK_DESCRIPTOR(1);
-+DECLARE_USB_MS_ENDPOINT_DESCRIPTOR(1);
-+DECLARE_UAC_AC_HEADER_DESCRIPTOR(1);
-+DECLARE_USB_MS20_ENDPOINT_DESCRIPTOR(32);
-+
-+#define EP_MAX_PACKET_INT	8
-+
-+/* Audio Control Interface */
-+static struct usb_interface_descriptor midi2_audio_if_desc = {
-+	.bLength =		USB_DT_INTERFACE_SIZE,
-+	.bDescriptorType =	USB_DT_INTERFACE,
-+	.bInterfaceNumber =	0, // to be filled
-+	.bNumEndpoints =	0,
-+	.bInterfaceClass =	USB_CLASS_AUDIO,
-+	.bInterfaceSubClass =	USB_SUBCLASS_AUDIOCONTROL,
-+	.bInterfaceProtocol =	0,
-+	.iInterface =		0,
-+};
-+
-+static struct uac1_ac_header_descriptor_1 midi2_audio_class_desc = {
-+	.bLength =		0x09,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	0x01,
-+	.bcdADC =		__cpu_to_le16(0x0100),
-+	.wTotalLength =		__cpu_to_le16(0x0009),
-+	.bInCollection =	0x01,
-+	.baInterfaceNr =	{ 0x01 }, // to be filled
-+};
-+
-+/* MIDI 1.0 Streaming Interface (altset 0) */
-+static struct usb_interface_descriptor midi2_midi1_if_desc = {
-+	.bLength =		USB_DT_INTERFACE_SIZE,
-+	.bDescriptorType =	USB_DT_INTERFACE,
-+	.bInterfaceNumber =	0, // to be filled
-+	.bAlternateSetting =	0,
-+	.bNumEndpoints =	2,
-+	.bInterfaceClass =	USB_CLASS_AUDIO,
-+	.bInterfaceSubClass =	USB_SUBCLASS_MIDISTREAMING,
-+	.bInterfaceProtocol =	0,
-+	.iInterface =		0, // to be filled
-+};
-+
-+static struct usb_ms_header_descriptor midi2_midi1_class_desc = {
-+	.bLength =		0x07,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_HEADER,
-+	.bcdMSC =		__cpu_to_le16(0x0100),
-+	.wTotalLength =		__cpu_to_le16(0x41), // to be calculated
-+};
-+
-+/* MIDI 1.0 IN (Embedded) Jack */
-+static struct usb_midi_in_jack_descriptor midi2_midi1_in_jack1_desc = {
-+	.bLength =		0x06,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_MIDI_IN_JACK,
-+	.bJackType =		USB_MS_EMBEDDED,
-+	.bJackID =		0x01,
-+	.iJack =		0,
-+};
-+
-+/* MIDI 1.0 IN (External) Jack */
-+static struct usb_midi_in_jack_descriptor midi2_midi1_in_jack2_desc = {
-+	.bLength =		0x06,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_MIDI_IN_JACK,
-+	.bJackType =		USB_MS_EXTERNAL,
-+	.bJackID =		0x02,
-+	.iJack =		0,
-+};
-+
-+/* MIDI 1.0 OUT (Embedded) Jack */
-+static struct usb_midi_out_jack_descriptor_1 midi2_midi1_out_jack1_desc = {
-+	.bLength =		0x09,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_MIDI_OUT_JACK,
-+	.bJackType =		USB_MS_EMBEDDED,
-+	.bJackID =		0x03,
-+	.bNrInputPins =		1,
-+	.pins =			{ { 0x02, 0x01 } },
-+	.iJack =		0,
-+};
-+
-+/* MIDI 1.0 OUT (External) Jack */
-+static struct usb_midi_out_jack_descriptor_1 midi2_midi1_out_jack2_desc = {
-+	.bLength =		0x09,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_MIDI_OUT_JACK,
-+	.bJackType =		USB_MS_EXTERNAL,
-+	.bJackID =		0x04,
-+	.bNrInputPins =		1,
-+	.pins =			{ { 0x01, 0x01 } },
-+	.iJack =		0,
-+};
-+
-+/* MIDI 1.0 EP OUT */
-+static struct usb_endpoint_descriptor midi2_midi1_ep_out_desc = {
-+	.bLength =		USB_DT_ENDPOINT_AUDIO_SIZE,
-+	.bDescriptorType =	USB_DT_ENDPOINT,
-+	.bEndpointAddress =	USB_DIR_OUT | 0, // set up dynamically
-+	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-+};
-+
-+static struct usb_ss_ep_comp_descriptor midi2_midi1_ep_out_ss_comp_desc = {
-+	.bLength                = sizeof(midi2_midi1_ep_out_ss_comp_desc),
-+	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
-+};
-+
-+static struct usb_ms_endpoint_descriptor_1 midi2_midi1_ep_out_class_desc = {
-+	.bLength =		0x05,
-+	.bDescriptorType =	USB_DT_CS_ENDPOINT,
-+	.bDescriptorSubtype =	USB_MS_GENERAL,
-+	.bNumEmbMIDIJack =	1,
-+	.baAssocJackID =	{ 0x01 },
-+};
-+
-+/* MIDI 1.0 EP IN */
-+static struct usb_endpoint_descriptor midi2_midi1_ep_in_desc = {
-+	.bLength =		USB_DT_ENDPOINT_AUDIO_SIZE,
-+	.bDescriptorType =	USB_DT_ENDPOINT,
-+	.bEndpointAddress =	USB_DIR_IN | 0, // set up dynamically
-+	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-+};
-+
-+static struct usb_ss_ep_comp_descriptor midi2_midi1_ep_in_ss_comp_desc = {
-+	.bLength                = sizeof(midi2_midi1_ep_in_ss_comp_desc),
-+	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
-+};
-+
-+static struct usb_ms_endpoint_descriptor_1 midi2_midi1_ep_in_class_desc = {
-+	.bLength =		0x05,
-+	.bDescriptorType =	USB_DT_CS_ENDPOINT,
-+	.bDescriptorSubtype =	USB_MS_GENERAL,
-+	.bNumEmbMIDIJack =	1,
-+	.baAssocJackID =	{ 0x03 },
-+};
-+
-+/* MIDI 2.0 Streaming Interface (altset 1) */
-+static struct usb_interface_descriptor midi2_midi2_if_desc = {
-+	.bLength =		USB_DT_INTERFACE_SIZE,
-+	.bDescriptorType =	USB_DT_INTERFACE,
-+	.bInterfaceNumber =	0, // to be filled
-+	.bAlternateSetting =	1,
-+	.bNumEndpoints =	2,
-+	.bInterfaceClass =	USB_CLASS_AUDIO,
-+	.bInterfaceSubClass =	USB_SUBCLASS_MIDISTREAMING,
-+	.bInterfaceProtocol =	0,
-+	.iInterface =		0, // to be filled
-+};
-+
-+static struct usb_ms_header_descriptor midi2_midi2_class_desc = {
-+	.bLength =		0x07,
-+	.bDescriptorType =	USB_DT_CS_INTERFACE,
-+	.bDescriptorSubtype =	USB_MS_HEADER,
-+	.bcdMSC =		__cpu_to_le16(0x0200),
-+	.wTotalLength =		__cpu_to_le16(0x07),
-+};
-+
-+/* MIDI 2.0 EP OUT */
-+static struct usb_endpoint_descriptor midi2_midi2_ep_out_desc[MAX_UMP_EPS];
-+
-+static struct usb_ss_ep_comp_descriptor midi2_midi2_ep_out_ss_comp_desc = {
-+	.bLength                = sizeof(midi2_midi1_ep_out_ss_comp_desc),
-+	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
-+};
-+
-+static struct usb_ms20_endpoint_descriptor_32 midi2_midi2_ep_out_class_desc[MAX_UMP_EPS];
-+
-+/* MIDI 2.0 EP IN */
-+static struct usb_endpoint_descriptor midi2_midi2_ep_in_desc[MAX_UMP_EPS];
-+
-+static struct usb_ss_ep_comp_descriptor midi2_midi2_ep_in_ss_comp_desc = {
-+	.bLength                = sizeof(midi2_midi2_ep_in_ss_comp_desc),
-+	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
-+};
-+
-+static struct usb_ms20_endpoint_descriptor_32 midi2_midi2_ep_in_class_desc[MAX_UMP_EPS];
-+
-+/* Arrays of descriptors to be created */
-+static void *midi2_audio_descs[] = {
-+	&midi2_audio_if_desc,
-+	&midi2_audio_class_desc,
-+	NULL
-+};
-+
-+static void *midi2_midi1_descs[] = {
-+	&midi2_midi1_if_desc,
-+	&midi2_midi1_class_desc,
-+	&midi2_midi1_in_jack1_desc,
-+	&midi2_midi1_in_jack2_desc,
-+	&midi2_midi1_out_jack1_desc,
-+	&midi2_midi1_out_jack2_desc,
-+	NULL
-+};
-+
-+static void *midi2_midi1_ep_descs[] = {
-+	&midi2_midi1_ep_out_desc,
-+	&midi2_midi1_ep_out_class_desc,
-+	&midi2_midi1_ep_in_desc,
-+	&midi2_midi1_ep_in_class_desc,
-+	NULL
-+};
-+
-+static void *midi2_midi1_ep_ss_descs[] = {
-+	&midi2_midi1_ep_out_desc,
-+	&midi2_midi1_ep_out_ss_comp_desc,
-+	&midi2_midi1_ep_out_class_desc,
-+	&midi2_midi1_ep_in_desc,
-+	&midi2_midi1_ep_in_ss_comp_desc,
-+	&midi2_midi1_ep_in_class_desc,
-+	NULL
-+};
-+
-+static void *midi2_midi2_descs[] = {
-+	&midi2_midi2_if_desc,
-+	&midi2_midi2_class_desc,
-+	NULL
-+};
-+
-+/*
-+ * USB request handling
-+ */
-+
-+/* get an empty request for the given EP */
-+static struct usb_request *get_empty_request(struct f_midi2_usb_ep *usb_ep)
++/* trim the string to be usable for EP and FB name strings */
++static void make_name_string(char *s)
 +{
-+	struct usb_request *req = NULL;
-+	unsigned long flags;
-+	int index;
++	char *p;
 +
-+	spin_lock_irqsave(&usb_ep->card->queue_lock, flags);
-+	if (!usb_ep->free_reqs)
-+		goto unlock;
-+	index = find_first_bit(&usb_ep->free_reqs, usb_ep->num_reqs);
-+	if (index >= usb_ep->num_reqs)
-+		goto unlock;
-+	req = usb_ep->reqs[index].req;
-+	if (!req)
-+		goto unlock;
-+	clear_bit(index, &usb_ep->free_reqs);
-+	req->length = 0;
-+ unlock:
-+	spin_unlock_irqrestore(&usb_ep->card->queue_lock, flags);
-+	return req;
++	p = strchr(s, '\n');
++	if (p)
++		*p = 0;
++
++	p = s + strlen(s);
++	for (; p > s && isspace(*p); p--)
++		*p = 0;
 +}
 +
-+/* put the empty request back */
-+static void put_empty_request(struct usb_request *req)
++/* configfs helpers: generic show/store for unisnged int */
++static ssize_t f_midi2_opts_uint_show(struct f_midi2_opts *opts,
++				      u32 val, const char *format, char *page)
 +{
-+	struct f_midi2_req_ctx *ctx = req->context;
-+	unsigned long flags;
++	int result;
 +
-+	spin_lock_irqsave(&ctx->usb_ep->card->queue_lock, flags);
-+	set_bit(ctx->index, &ctx->usb_ep->free_reqs);
-+	spin_unlock_irqrestore(&ctx->usb_ep->card->queue_lock, flags);
++	mutex_lock(&opts->lock);
++	result = sprintf(page, format, val);
++	mutex_unlock(&opts->lock);
++	return result;
++}
++
++static ssize_t f_midi2_opts_uint_store(struct f_midi2_opts *opts,
++				       u32 *valp, u32 minval, u32 maxval,
++				       const char *page, size_t len)
++{
++	int ret;
++	u32 val;
++
++	mutex_lock(&opts->lock);
++	if (opts->refcnt) {
++		ret = -EBUSY;
++		goto end;
++	}
++
++	ret = kstrtou32(page, 0, &val);
++	if (ret)
++		goto end;
++	if (val < minval || val > maxval) {
++		ret = -EINVAL;
++		goto end;
++	}
++
++	*valp = val;
++	ret = len;
++
++end:
++	mutex_unlock(&opts->lock);
++	return ret;
++}
++
++/* generic store for bool */
++static ssize_t f_midi2_opts_bool_store(struct f_midi2_opts *opts,
++				       bool *valp, const char *page, size_t len)
++{
++	int ret;
++	bool val;
++
++	mutex_lock(&opts->lock);
++	if (opts->refcnt) {
++		ret = -EBUSY;
++		goto end;
++	}
++
++	ret = kstrtobool(page, &val);
++	if (ret)
++		goto end;
++	*valp = val;
++	ret = len;
++
++end:
++	mutex_unlock(&opts->lock);
++	return ret;
++}
++
++/* generic show/store for string */
++static ssize_t f_midi2_opts_str_show(struct f_midi2_opts *opts,
++				     const char *str, char *page)
++{
++	int result = 0;
++
++	mutex_lock(&opts->lock);
++	if (str)
++		result = scnprintf(page, PAGE_SIZE, "%s\n", str);
++	mutex_unlock(&opts->lock);
++	return result;
++}
++
++static ssize_t f_midi2_opts_str_store(struct f_midi2_opts *opts,
++				      const char **strp, size_t maxlen,
++				      const char *page, size_t len)
++{
++	char *c;
++	int ret;
++
++	mutex_lock(&opts->lock);
++	if (opts->refcnt) {
++		ret = -EBUSY;
++		goto end;
++	}
++
++	c = kstrndup(page, min(len, maxlen), GFP_KERNEL);
++	if (!c) {
++		ret = -ENOMEM;
++		goto end;
++	}
++
++	kfree(*strp);
++	make_name_string(c);
++	*strp = c;
++	ret = len;
++
++end:
++	mutex_unlock(&opts->lock);
++	return ret;
 +}
 +
 +/*
-+ * UMP v1.1 Stream message handling
++ * Definitions for UMP Block config
 + */
 +
-+/* queue a request to UMP EP; request is either queued or freed after this */
-+static int queue_request_ep_raw(struct usb_request *req)
-+{
-+	struct f_midi2_req_ctx *ctx = req->context;
-+	int err;
++/* define an uint option for block */
++#define F_MIDI2_BLOCK_OPT(name, format, minval, maxval)			\
++static ssize_t f_midi2_block_opts_##name##_show(struct config_item *item,\
++					  char *page)			\
++{									\
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);	\
++	return f_midi2_opts_uint_show(opts->ep->opts, opts->info.name,	\
++				      format "\n", page);		\
++}									\
++									\
++static ssize_t f_midi2_block_opts_##name##_store(struct config_item *item,\
++					 const char *page, size_t len)	\
++{									\
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);	\
++	return f_midi2_opts_uint_store(opts->ep->opts, &opts->info.name,\
++				       minval, maxval, page, len);	\
++}									\
++									\
++CONFIGFS_ATTR(f_midi2_block_opts_, name)
 +
-+	req->complete = ctx->usb_ep->complete;
-+	err = usb_ep_queue(ctx->usb_ep->usb_ep, req, GFP_ATOMIC);
-+	if (err) {
-+		put_empty_request(req);
-+		return err;
-+	}
-+	return 0;
++/* define a boolean option for block */
++#define F_MIDI2_BLOCK_BOOL_OPT(name)					\
++static ssize_t f_midi2_block_opts_##name##_show(struct config_item *item,\
++					  char *page)			\
++{									\
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);	\
++	return f_midi2_opts_uint_show(opts->ep->opts, opts->info.name,	\
++				      "%u\n", page);			\
++}									\
++									\
++static ssize_t f_midi2_block_opts_##name##_store(struct config_item *item,\
++					 const char *page, size_t len)	\
++{									\
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);	\
++	return f_midi2_opts_bool_store(opts->ep->opts, &opts->info.name,\
++				       page, len);			\
++}									\
++									\
++CONFIGFS_ATTR(f_midi2_block_opts_, name)
++
++F_MIDI2_BLOCK_OPT(direction, "0x%x", 1, 3);
++F_MIDI2_BLOCK_OPT(first_group, "0x%x", 0, 15);
++F_MIDI2_BLOCK_OPT(num_groups, "0x%x", 1, 16);
++F_MIDI2_BLOCK_OPT(ui_hint, "0x%x", 0, 3);
++F_MIDI2_BLOCK_OPT(midi_ci_version, "%u", 0, 1);
++F_MIDI2_BLOCK_OPT(sysex8_streams, "%u", 0, 255);
++F_MIDI2_BLOCK_OPT(is_midi1, "%u", 0, 2);
++F_MIDI2_BLOCK_BOOL_OPT(active);
++
++static ssize_t f_midi2_block_opts_name_show(struct config_item *item,
++					    char *page)
++{
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);
++
++	return f_midi2_opts_str_show(opts->ep->opts, opts->info.name, page);
 +}
 +
-+/* queue a request with endianness conversion */
-+static int queue_request_ep_in(struct usb_request *req)
++static ssize_t f_midi2_block_opts_name_store(struct config_item *item,
++					     const char *page, size_t len)
 +{
-+	/* UMP packets have to be converted to little-endian */
-+	cpu_to_le32_array((u32 *)req->buf, req->length >> 2);
-+	return queue_request_ep_raw(req);
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);
++
++	return f_midi2_opts_str_store(opts->ep->opts, &opts->info.name, 128,
++				      page, len);
 +}
 +
-+/* reply a UMP packet via EP-in */
-+static int reply_ep_in(struct f_midi2_ep *ep, const void *buf, int len)
-+{
-+	struct f_midi2_usb_ep *usb_ep = &ep->ep_in;
-+	struct usb_request *req;
-+
-+	req = get_empty_request(usb_ep);
-+	if (!req)
-+		return -ENOSPC;
-+
-+	req->length = len;
-+	memcpy(req->buf, buf, len);
-+	return queue_request_ep_in(req);
-+}
-+
-+/* reply a UMP stream EP info */
-+static void reply_ump_stream_ep_info(struct f_midi2_ep *ep)
-+{
-+	struct snd_ump_stream_msg_ep_info rep = {
-+		.type = UMP_MSG_TYPE_STREAM,
-+		.status = UMP_STREAM_MSG_STATUS_EP_INFO,
-+		.ump_version_major = 0x01,
-+		.ump_version_minor = 0x01,
-+		.num_function_blocks = ep->num_blks,
-+		.static_function_block = !!ep->card->info.static_block,
-+		.protocol = (UMP_STREAM_MSG_EP_INFO_CAP_MIDI1 |
-+			     UMP_STREAM_MSG_EP_INFO_CAP_MIDI2) >> 8,
-+	};
-+
-+	reply_ep_in(ep, &rep, sizeof(rep));
-+}
-+
-+/* reply a UMP EP device info */
-+static void reply_ump_stream_ep_device(struct f_midi2_ep *ep)
-+{
-+	struct snd_ump_stream_msg_devince_info rep = {
-+		.type = UMP_MSG_TYPE_STREAM,
-+		.status = UMP_STREAM_MSG_STATUS_DEVICE_INFO,
-+		.manufacture_id = ep->info.manufacturer,
-+		.family_lsb = ep->info.family & 0xff,
-+		.family_msb = (ep->info.family >> 8) & 0xff,
-+		.model_lsb = ep->info.model & 0xff,
-+		.model_msb = (ep->info.model >> 8) & 0xff,
-+		.sw_revision = ep->info.sw_revision,
-+	};
-+
-+	reply_ep_in(ep, &rep, sizeof(rep));
-+}
-+
-+#define UMP_STREAM_PKT_BYTES	16	/* UMP stream packet size = 16 bytes*/
-+#define UMP_STREAM_EP_STR_OFF	2	/* offset of name string for EP info */
-+#define UMP_STREAM_FB_STR_OFF	3	/* offset of name string for FB info */
-+
-+/* Helper to replay a string */
-+static void reply_ump_stream_string(struct f_midi2_ep *ep, const u8 *name,
-+				    unsigned int type, unsigned int extra,
-+				    unsigned int start_ofs)
-+{
-+	struct f_midi2_usb_ep *usb_ep = &ep->ep_in;
-+	struct f_midi2 *midi2 = ep->card;
-+	struct usb_request *req;
-+	unsigned int pos;
-+	u32 *buf;
-+
-+	if (!*name)
-+		return;
-+	req = get_empty_request(usb_ep);
-+	if (!req)
-+		return;
-+
-+	buf = (u32 *)req->buf;
-+	pos = start_ofs;
-+	for (;;) {
-+		if (pos == start_ofs) {
-+			memset(buf, 0, UMP_STREAM_PKT_BYTES);
-+			buf[0] = ump_stream_compose(type, 0) | extra;
-+		}
-+		buf[pos / 4] |= *name++ << ((3 - (pos % 4)) * 8);
-+		if (!*name) {
-+			if (req->length)
-+				buf[0] |= UMP_STREAM_MSG_FORMAT_END << 26;
-+			req->length += UMP_STREAM_PKT_BYTES;
-+			break;
-+		}
-+		if (++pos == UMP_STREAM_PKT_BYTES) {
-+			if (!req->length)
-+				buf[0] |= UMP_STREAM_MSG_FORMAT_START << 26;
-+			else
-+				buf[0] |= UMP_STREAM_MSG_FORMAT_CONTINUE << 26;
-+			req->length += UMP_STREAM_PKT_BYTES;
-+			if (midi2->info.req_buf_size - req->length < UMP_STREAM_PKT_BYTES)
-+				break;
-+			buf += 4;
-+			pos = start_ofs;
-+		}
-+	}
-+
-+	if (req->length)
-+		queue_request_ep_in(req);
-+	else
-+		put_empty_request(req);
-+}
-+
-+/* Reply a UMP EP name string */
-+static void reply_ump_stream_ep_name(struct f_midi2_ep *ep)
-+{
-+	reply_ump_stream_string(ep, ump_ep_name(ep),
-+				UMP_STREAM_MSG_STATUS_EP_NAME, 0,
-+				UMP_STREAM_EP_STR_OFF);
-+}
-+
-+/* Reply a UMP EP product ID string */
-+static void reply_ump_stream_ep_pid(struct f_midi2_ep *ep)
-+{
-+	reply_ump_stream_string(ep, ump_product_id(ep),
-+				UMP_STREAM_MSG_STATUS_PRODUCT_ID, 0,
-+				UMP_STREAM_EP_STR_OFF);
-+}
-+
-+/* Reply a UMP EP stream config */
-+static void reply_ump_stream_ep_config(struct f_midi2_ep *ep)
-+{
-+	struct snd_ump_stream_msg_stream_cfg rep = {
-+		.type = UMP_MSG_TYPE_STREAM,
-+		.status = UMP_STREAM_MSG_STATUS_STREAM_CFG,
-+	};
-+
-+	if ((ep->info.protocol & SNDRV_UMP_EP_INFO_PROTO_MIDI_MASK) ==
-+	    SNDRV_UMP_EP_INFO_PROTO_MIDI2)
-+		rep.protocol = UMP_STREAM_MSG_EP_INFO_CAP_MIDI2 >> 8;
-+	else
-+		rep.protocol = UMP_STREAM_MSG_EP_INFO_CAP_MIDI1 >> 8;
-+
-+	reply_ep_in(ep, &rep, sizeof(rep));
-+}
-+
-+/* Reply a UMP FB info */
-+static void reply_ump_stream_fb_info(struct f_midi2_ep *ep, int blk)
-+{
-+	struct f_midi2_block_info *b = &ep->blks[blk].info;
-+	struct snd_ump_stream_msg_fb_info rep = {
-+		.type = UMP_MSG_TYPE_STREAM,
-+		.status = UMP_STREAM_MSG_STATUS_FB_INFO,
-+		.active = !!b->active,
-+		.function_block_id = blk,
-+		.ui_hint = b->ui_hint,
-+		.midi_10 = b->is_midi1,
-+		.direction = b->direction,
-+		.first_group = b->first_group,
-+		.num_groups = b->num_groups,
-+		.midi_ci_version = b->midi_ci_version,
-+		.sysex8_streams = b->sysex8_streams,
-+	};
-+
-+	reply_ep_in(ep, &rep, sizeof(rep));
-+}
-+
-+/* Reply a FB name string */
-+static void reply_ump_stream_fb_name(struct f_midi2_ep *ep, unsigned int blk)
-+{
-+	reply_ump_stream_string(ep, ump_fb_name(&ep->blks[blk].info),
-+				UMP_STREAM_MSG_STATUS_FB_NAME, blk << 8,
-+				UMP_STREAM_FB_STR_OFF);
-+}
-+
-+/* Process a UMP Stream message */
-+static void process_ump_stream_msg(struct f_midi2_ep *ep, const u32 *data)
-+{
-+	struct f_midi2 *midi2 = ep->card;
-+	unsigned int format, status, blk;
-+
-+	format = ump_stream_message_format(*data);
-+	status = ump_stream_message_status(*data);
-+	switch (status) {
-+	case UMP_STREAM_MSG_STATUS_EP_DISCOVERY:
-+		if (format)
-+			return; // invalid
-+		if (data[1] & UMP_STREAM_MSG_REQUEST_EP_INFO)
-+			reply_ump_stream_ep_info(ep);
-+		if (data[1] & UMP_STREAM_MSG_REQUEST_DEVICE_INFO)
-+			reply_ump_stream_ep_device(ep);
-+		if (data[1] & UMP_STREAM_MSG_REQUEST_EP_NAME)
-+			reply_ump_stream_ep_name(ep);
-+		if (data[1] & UMP_STREAM_MSG_REQUEST_PRODUCT_ID)
-+			reply_ump_stream_ep_pid(ep);
-+		if (data[1] & UMP_STREAM_MSG_REQUEST_STREAM_CFG)
-+			reply_ump_stream_ep_config(ep);
-+		return;
-+	case UMP_STREAM_MSG_STATUS_STREAM_CFG_REQUEST:
-+		if (*data & UMP_STREAM_MSG_EP_INFO_CAP_MIDI2) {
-+			ep->info.protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI2;
-+			DBG(midi2, "Switching Protocol to MIDI2\n");
-+		} else {
-+			ep->info.protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI1;
-+			DBG(midi2, "Switching Protocol to MIDI1\n");
-+		}
-+		snd_ump_switch_protocol(ep->ump, ep->info.protocol);
-+		reply_ump_stream_ep_config(ep);
-+		return;
-+	case UMP_STREAM_MSG_STATUS_FB_DISCOVERY:
-+		if (format)
-+			return; // invalid
-+		blk = (*data >> 8) & 0xff;
-+		if (blk >= ep->num_blks)
-+			return;
-+		if (*data & UMP_STREAM_MSG_REQUEST_FB_INFO)
-+			reply_ump_stream_fb_info(ep, blk);
-+		if (*data & UMP_STREAM_MSG_REQUEST_FB_NAME)
-+			reply_ump_stream_fb_name(ep, blk);
-+		return;
-+	}
-+}
-+
-+/* Process UMP messages included in a USB request */
-+static void process_ump(struct f_midi2_ep *ep, const struct usb_request *req)
-+{
-+	const u32 *data = (u32 *)req->buf;
-+	int len = req->actual >> 2;
-+	const u32 *in_buf = ep->ump->input_buf;
-+
-+	for (; len > 0; len--, data++) {
-+		if (snd_ump_receive_ump_val(ep->ump, *data) <= 0)
-+			continue;
-+		if (ump_message_type(*in_buf) == UMP_MSG_TYPE_STREAM)
-+			process_ump_stream_msg(ep, in_buf);
-+	}
-+}
-+
-+/*
-+ * MIDI 2.0 UMP USB request handling
-+ */
-+
-+/* complete handler for UMP EP-out requests */
-+static void f_midi2_ep_out_complete(struct usb_ep *usb_ep,
-+				    struct usb_request *req)
-+{
-+	struct f_midi2_req_ctx *ctx = req->context;
-+	struct f_midi2_ep *ep = ctx->usb_ep->ep;
-+	struct f_midi2 *midi2 = ep->card;
-+	int status = req->status;
-+
-+	if (status) {
-+		DBG(midi2, "%s complete error %d: %d/%d\n",
-+		    usb_ep->name, status, req->actual, req->length);
-+		goto error;
-+	}
-+
-+	/* convert to UMP packet in native endianness */
-+	le32_to_cpu_array((u32 *)req->buf, req->actual >> 2);
-+
-+	if (midi2->info.process_ump)
-+		process_ump(ep, req);
-+
-+	snd_ump_receive(ep->ump, req->buf, req->actual & ~3);
-+
-+	if (midi2->operation_mode != MIDI_OP_MODE_MIDI2)
-+		goto error;
-+
-+	if (queue_request_ep_raw(req))
-+		goto error;
-+	return;
-+
-+ error:
-+	put_empty_request(req);
-+}
-+
-+/* Transmit UMP packets received from user-space to the gadget */
-+static void process_ump_transmit(struct f_midi2_ep *ep)
-+{
-+	struct f_midi2_usb_ep *usb_ep = &ep->ep_in;
-+	struct f_midi2 *midi2 = ep->card;
-+	struct usb_request *req;
-+	int len;
-+
-+	if (!usb_ep->usb_ep->enabled)
-+		return;
-+
-+	for (;;) {
-+		req = get_empty_request(usb_ep);
-+		if (!req)
-+			break;
-+		len = snd_ump_transmit(ep->ump, (u32 *)req->buf,
-+				       midi2->info.req_buf_size);
-+		if (len <= 0) {
-+			put_empty_request(req);
-+			break;
-+		}
-+
-+		req->length = len;
-+		if (queue_request_ep_in(req) < 0)
-+			break;
-+	}
-+}
-+
-+/* Complete handler for UMP EP-in requests */
-+static void f_midi2_ep_in_complete(struct usb_ep *usb_ep,
-+				   struct usb_request *req)
-+{
-+	struct f_midi2_req_ctx *ctx = req->context;
-+	struct f_midi2_ep *ep = ctx->usb_ep->ep;
-+	struct f_midi2 *midi2 = ep->card;
-+	int status = req->status;
-+
-+	put_empty_request(req);
-+
-+	if (status) {
-+		DBG(midi2, "%s complete error %d: %d/%d\n",
-+		    usb_ep->name, status, req->actual, req->length);
-+		return;
-+	}
-+
-+	process_ump_transmit(ep);
-+}
-+
-+/* Start MIDI EP */
-+static int f_midi2_start_ep(struct f_midi2_usb_ep *usb_ep,
-+			    struct usb_function *fn)
-+{
-+	int err;
-+
-+	usb_ep_disable(usb_ep->usb_ep);
-+	err = config_ep_by_speed(usb_ep->card->gadget, fn, usb_ep->usb_ep);
-+	if (err)
-+		return err;
-+	return usb_ep_enable(usb_ep->usb_ep);
-+}
-+
-+/* Drop pending requests */
-+static void f_midi2_drop_reqs(struct f_midi2_usb_ep *usb_ep)
-+{
-+	int i;
-+
-+	if (!usb_ep->num_reqs)
-+		return;
-+
-+	for (i = 0; i < usb_ep->num_reqs; i++) {
-+		if (!test_bit(i, &usb_ep->free_reqs) && usb_ep->reqs[i].req) {
-+			usb_ep_dequeue(usb_ep->usb_ep, usb_ep->reqs[i].req);
-+			set_bit(i, &usb_ep->free_reqs);
-+		}
-+	}
-+}
-+
-+/* Allocate requests for the given EP */
-+static int f_midi2_alloc_ep_reqs(struct f_midi2_usb_ep *usb_ep)
-+{
-+	struct f_midi2 *midi2 = usb_ep->card;
-+	int i;
-+
-+	if (!usb_ep->reqs)
-+		return -EINVAL;
-+
-+	for (i = 0; i < midi2->info.num_reqs; i++) {
-+		if (usb_ep->reqs[i].req)
-+			continue;
-+		usb_ep->reqs[i].req = alloc_ep_req(usb_ep->usb_ep,
-+						   midi2->info.req_buf_size);
-+		if (!usb_ep->reqs[i].req)
-+			return -ENOMEM;
-+		usb_ep->reqs[i].req->context = &usb_ep->reqs[i];
-+	}
-+	return 0;
-+}
-+
-+/* Free allocated requests */
-+static void f_midi2_free_ep_reqs(struct f_midi2_usb_ep *usb_ep)
-+{
-+	struct f_midi2 *midi2 = usb_ep->card;
-+	int i;
-+
-+	for (i = 0; i < midi2->info.num_reqs; i++) {
-+		if (!usb_ep->reqs[i].req)
-+			continue;
-+		free_ep_req(usb_ep->usb_ep, usb_ep->reqs[i].req);
-+		usb_ep->reqs[i].req = NULL;
-+	}
-+}
-+
-+/* Initialize EP */
-+static int f_midi2_init_ep(struct f_midi2 *midi2, struct f_midi2_ep *ep,
-+			   struct f_midi2_usb_ep *usb_ep,
-+			   void *desc, int num_reqs,
-+			   void (*complete)(struct usb_ep *usb_ep,
-+					    struct usb_request *req))
-+{
-+	int i;
-+
-+	usb_ep->card = midi2;
-+	usb_ep->ep = ep;
-+	usb_ep->usb_ep = usb_ep_autoconfig(midi2->gadget, desc);
-+	if (!usb_ep->usb_ep)
-+		return -ENODEV;
-+	usb_ep->complete = complete;
-+
-+	if (num_reqs) {
-+		usb_ep->reqs = kcalloc(num_reqs, sizeof(*usb_ep->reqs),
-+				       GFP_KERNEL);
-+		if (!usb_ep->reqs)
-+			return -ENOMEM;
-+		for (i = 0; i < num_reqs; i++) {
-+			usb_ep->reqs[i].index = i;
-+			usb_ep->reqs[i].usb_ep = usb_ep;
-+			set_bit(i, &usb_ep->free_reqs);
-+			usb_ep->num_reqs++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Free EP */
-+static void f_midi2_free_ep(struct f_midi2_usb_ep *usb_ep)
-+{
-+	f_midi2_drop_reqs(usb_ep);
-+
-+	f_midi2_free_ep_reqs(usb_ep);
-+
-+	kfree(usb_ep->reqs);
-+	usb_ep->num_reqs = 0;
-+	usb_ep->free_reqs = 0;
-+	usb_ep->reqs = NULL;
-+}
-+
-+/* Queue requests for EP-out at start */
-+static void f_midi2_queue_out_reqs(struct f_midi2_usb_ep *usb_ep)
-+{
-+	int i, err;
-+
-+	for (i = 0; i < usb_ep->num_reqs; i++) {
-+		if (!test_bit(i, &usb_ep->free_reqs) || !usb_ep->reqs[i].req)
-+			continue;
-+		usb_ep->reqs[i].req->complete = usb_ep->complete;
-+		err = usb_ep_queue(usb_ep->usb_ep, usb_ep->reqs[i].req,
-+				   GFP_ATOMIC);
-+		if (!err)
-+			clear_bit(i, &usb_ep->free_reqs);
-+	}
-+}
-+
-+/*
-+ * Gadget Function callbacks
-+ */
-+
-+/* gadget function set_alt callback */
-+static int f_midi2_set_alt(struct usb_function *fn, unsigned int intf,
-+			   unsigned int alt)
-+{
-+	struct f_midi2 *midi2 = func_to_midi2(fn);
-+	struct f_midi2_ep *ep;
-+	int i, op_mode, err;
-+
-+	if (intf != midi2->midi_if || alt > 1)
-+		return 0;
-+
-+	if (alt == 0)
-+		op_mode = MIDI_OP_MODE_MIDI1;
-+	else if (alt == 1)
-+		op_mode = MIDI_OP_MODE_MIDI2;
-+	else
-+		op_mode = MIDI_OP_MODE_UNSET;
-+
-+	if (midi2->operation_mode == op_mode)
-+		return 0;
-+
-+	midi2->operation_mode = op_mode;
-+
-+	if (op_mode != MIDI_OP_MODE_MIDI2) {
-+		for (i = 0; i < midi2->num_eps; i++) {
-+			ep = &midi2->midi2_eps[i];
-+			f_midi2_drop_reqs(&ep->ep_in);
-+			f_midi2_drop_reqs(&ep->ep_out);
-+			f_midi2_free_ep_reqs(&ep->ep_in);
-+			f_midi2_free_ep_reqs(&ep->ep_out);
-+		}
-+		return 0;
-+	}
-+
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		ep = &midi2->midi2_eps[i];
-+
-+		err = f_midi2_start_ep(&ep->ep_in, fn);
-+		if (err)
-+			return err;
-+		err = f_midi2_start_ep(&ep->ep_out, fn);
-+		if (err)
-+			return err;
-+
-+		err = f_midi2_alloc_ep_reqs(&ep->ep_in);
-+		if (err)
-+			return err;
-+		err = f_midi2_alloc_ep_reqs(&ep->ep_out);
-+		if (err)
-+			return err;
-+
-+		f_midi2_queue_out_reqs(&ep->ep_out);
-+	}
-+
-+	return 0;
-+}
-+
-+/* gadget function get_alt callback */
-+static int f_midi2_get_alt(struct usb_function *fn, unsigned int intf)
-+{
-+	struct f_midi2 *midi2 = func_to_midi2(fn);
-+
-+	if (intf == midi2->midi_if &&
-+	    midi2->operation_mode == MIDI_OP_MODE_MIDI2)
-+		return 1;
-+	return 0;
-+}
-+
-+/* convert UMP direction to USB MIDI 2.0 direction */
-+static unsigned int ump_to_usb_dir(unsigned int ump_dir)
-+{
-+	switch (ump_dir) {
-+	case SNDRV_UMP_DIR_INPUT:
-+		return USB_MS_GR_TRM_BLOCK_TYPE_INPUT_ONLY;
-+	case SNDRV_UMP_DIR_OUTPUT:
-+		return USB_MS_GR_TRM_BLOCK_TYPE_OUTPUT_ONLY;
-+	default:
-+		return USB_MS_GR_TRM_BLOCK_TYPE_BIDIRECTIONAL;
-+	}
-+}
-+
-+/* assign GTB descriptors (for the given request) */
-+static void assign_block_descriptors(struct f_midi2 *midi2,
-+				     struct usb_request *req,
-+				     int max_len)
-+{
-+	struct usb_ms20_gr_trm_block_header_descriptor header;
-+	struct usb_ms20_gr_trm_block_descriptor *desc;
-+	struct f_midi2_block_info *b;
-+	struct f_midi2_ep *ep;
-+	int i, blk, len;
-+	char *data;
-+
-+	len = sizeof(gtb_header_desc) + sizeof(gtb_desc) * midi2->total_blocks;
-+	if (WARN_ON(len > midi2->info.req_buf_size))
-+		return;
-+
-+	header = gtb_header_desc;
-+	header.wTotalLength = cpu_to_le16(len);
-+	if (max_len < len) {
-+		len = min_t(int, len, sizeof(header));
-+		memcpy(req->buf, &header, len);
-+		req->length = len;
-+		req->zero = len < max_len;
-+		return;
-+	}
-+
-+	memcpy(req->buf, &header, sizeof(header));
-+	data = req->buf + sizeof(header);
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		ep = &midi2->midi2_eps[i];
-+		for (blk = 0; blk < ep->num_blks; blk++) {
-+			b = &ep->blks[blk].info;
-+			desc = (struct usb_ms20_gr_trm_block_descriptor *)data;
-+
-+			*desc = gtb_desc;
-+			desc->bGrpTrmBlkID = ep->blks[blk].gtb_id;
-+			desc->bGrpTrmBlkType = ump_to_usb_dir(b->direction);
-+			desc->nGroupTrm = b->first_group;
-+			desc->nNumGroupTrm = b->num_groups;
-+			desc->iBlockItem = ep->blks[blk].string_id;
-+
-+			if (ep->info.protocol & SNDRV_UMP_EP_INFO_PROTO_MIDI2)
-+				desc->bMIDIProtocol = USB_MS_MIDI_PROTO_2_0;
-+			else
-+				desc->bMIDIProtocol = USB_MS_MIDI_PROTO_1_0_128;
-+
-+			if (b->is_midi1 == 2) {
-+				desc->wMaxInputBandwidth = cpu_to_le16(1);
-+				desc->wMaxOutputBandwidth = cpu_to_le16(1);
-+			}
-+
-+			data += sizeof(*desc);
-+		}
-+	}
-+
-+	req->length = len;
-+	req->zero = len < max_len;
-+}
-+
-+/* gadget function setup callback: handle GTB requests */
-+static int f_midi2_setup(struct usb_function *fn,
-+			 const struct usb_ctrlrequest *ctrl)
-+{
-+	struct f_midi2 *midi2 = func_to_midi2(fn);
-+	struct usb_composite_dev *cdev = fn->config->cdev;
-+	struct usb_request *req = cdev->req;
-+	u16 value, length;
-+
-+	if ((ctrl->bRequestType & USB_TYPE_MASK) != USB_TYPE_STANDARD ||
-+	    ctrl->bRequest != USB_REQ_GET_DESCRIPTOR)
-+		return -EOPNOTSUPP;
-+
-+	value = le16_to_cpu(ctrl->wValue);
-+	length = le16_to_cpu(ctrl->wLength);
-+
-+	if ((value >> 8) != USB_DT_CS_GR_TRM_BLOCK)
-+		return -EOPNOTSUPP;
-+
-+	/* handle only altset 1 */
-+	if ((value & 0xff) != 1)
-+		return -EOPNOTSUPP;
-+
-+	assign_block_descriptors(midi2, req, length);
-+	return usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);
-+}
-+
-+/* gadget function disable callback */
-+static void f_midi2_disable(struct usb_function *fn)
-+{
-+	struct f_midi2 *midi2 = func_to_midi2(fn);
-+
-+	midi2->operation_mode = MIDI_OP_MODE_UNSET;
-+}
-+
-+/*
-+ * ALSA UMP ops: most of them are NOPs, only trigger for write is needed
-+ */
-+static int f_midi2_ump_open(struct snd_ump_endpoint *ump, int dir)
-+{
-+	return 0;
-+}
-+
-+static void f_midi2_ump_close(struct snd_ump_endpoint *ump, int dir)
-+{
-+}
-+
-+static void f_midi2_ump_trigger(struct snd_ump_endpoint *ump, int dir, int up)
-+{
-+	struct f_midi2_ep *ep = ump->private_data;
-+
-+	if (up && dir == SNDRV_RAWMIDI_STREAM_OUTPUT)
-+		process_ump_transmit(ep);
-+}
-+
-+static void f_midi2_ump_drain(struct snd_ump_endpoint *ump, int dir)
-+{
-+}
-+
-+static const struct snd_ump_ops f_midi2_ump_ops = {
-+	.open = f_midi2_ump_open,
-+	.close = f_midi2_ump_close,
-+	.trigger = f_midi2_ump_trigger,
-+	.drain = f_midi2_ump_drain,
++CONFIGFS_ATTR(f_midi2_block_opts_, name);
++
++static struct configfs_attribute *f_midi2_block_attrs[] = {
++	&f_midi2_block_opts_attr_direction,
++	&f_midi2_block_opts_attr_first_group,
++	&f_midi2_block_opts_attr_num_groups,
++	&f_midi2_block_opts_attr_ui_hint,
++	&f_midi2_block_opts_attr_midi_ci_version,
++	&f_midi2_block_opts_attr_sysex8_streams,
++	&f_midi2_block_opts_attr_is_midi1,
++	&f_midi2_block_opts_attr_active,
++	&f_midi2_block_opts_attr_name,
++	NULL,
 +};
 +
-+/*
-+ * ALSA UMP instance creation / deletion
-+ */
-+static void f_midi2_free_card(struct f_midi2 *midi2)
++static void f_midi2_block_opts_release(struct config_item *item)
 +{
-+	if (midi2->card) {
-+		snd_card_free_when_closed(midi2->card);
-+		midi2->card = NULL;
-+	}
-+}
++	struct f_midi2_block_opts *opts = to_f_midi2_block_opts(item);
 +
-+/* use a reverse direction for the gadget host */
-+static int reverse_dir(int dir)
-+{
-+	if (!dir || dir == SNDRV_UMP_DIR_BIDIRECTION)
-+		return dir;
-+	return (dir == SNDRV_UMP_DIR_OUTPUT) ?
-+		SNDRV_UMP_DIR_INPUT : SNDRV_UMP_DIR_OUTPUT;
-+}
-+
-+static int f_midi2_create_card(struct f_midi2 *midi2)
-+{
-+	struct snd_card *card;
-+	struct snd_ump_endpoint *ump;
-+	struct f_midi2_ep *ep;
-+	int i, id, blk, err;
-+	__be32 sw;
-+
-+	err = snd_card_new(&midi2->gadget->dev, -1, NULL, THIS_MODULE, 0,
-+			   &card);
-+	if (err < 0)
-+		return err;
-+	midi2->card = card;
-+
-+	strcpy(card->driver, "f_midi2");
-+	strcpy(card->shortname, "MIDI 2.0 Gadget");
-+	strcpy(card->longname, "MIDI 2.0 Gadget");
-+
-+	id = 0;
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		ep = &midi2->midi2_eps[i];
-+		err = snd_ump_endpoint_new(card, "MIDI 2.0 Gadget", id,
-+					   1, 1, &ump);
-+		if (err < 0)
-+			goto error;
-+		id++;
-+
-+		ep->ump = ump;
-+		ump->no_process_stream = true;
-+		ump->private_data = ep;
-+		ump->ops = &f_midi2_ump_ops;
-+		if (midi2->info.static_block)
-+			ump->info.flags |= SNDRV_UMP_EP_INFO_STATIC_BLOCKS;
-+		ump->info.protocol_caps = (ep->info.protocol_caps & 3) << 8;
-+		ump->info.protocol = (ep->info.protocol & 3) << 8;
-+		ump->info.version = 0x0101;
-+		ump->info.family_id = ep->info.family;
-+		ump->info.model_id = ep->info.model;
-+		ump->info.manufacturer_id = ep->info.manufacturer & 0xffffff;
-+		sw = cpu_to_be32(ep->info.sw_revision);
-+		memcpy(ump->info.sw_revision, &sw, 4);
-+
-+		strscpy(ump->info.name, ump_ep_name(ep),
-+			sizeof(ump->info.name));
-+		strscpy(ump->info.product_id, ump_product_id(ep),
-+			sizeof(ump->info.product_id));
-+		strscpy(ump->core.name, ump->info.name, sizeof(ump->core.name));
-+
-+		for (blk = 0; blk < ep->num_blks; blk++) {
-+			const struct f_midi2_block_info *b = &ep->blks[blk].info;
-+			struct snd_ump_block *fb;
-+
-+			err = snd_ump_block_new(ump, blk,
-+						reverse_dir(b->direction),
-+						b->first_group, b->num_groups,
-+						&ep->blks[blk].fb);
-+			if (err < 0)
-+				goto error;
-+			fb = ep->blks[blk].fb;
-+			fb->info.active = !!b->active;
-+			fb->info.midi_ci_version = b->midi_ci_version;
-+			fb->info.ui_hint = reverse_dir(b->ui_hint);
-+			fb->info.sysex8_streams = b->sysex8_streams;
-+			fb->info.flags |= b->is_midi1;
-+			strscpy(fb->info.name, ump_fb_name(b),
-+				sizeof(fb->info.name));
-+		}
-+	}
-+
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		err = snd_ump_attach_legacy_rawmidi(midi2->midi2_eps[i].ump,
-+						    "Legacy MIDI", id);
-+		if (err < 0)
-+			goto error;
-+		id++;
-+	}
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	return 0;
-+
-+ error:
-+	f_midi2_free_card(midi2);
-+	return err;
-+}
-+
-+/*
-+ * Creation of USB descriptors
-+ */
-+struct f_midi2_usb_config {
-+	struct usb_descriptor_header **list;
-+	unsigned int size;
-+	unsigned int alloc;
-+};
-+
-+static int append_config(struct f_midi2_usb_config *config, void *d)
-+{
-+	unsigned int size;
-+	void *buf;
-+
-+	if (config->size + 2 >= config->alloc) {
-+		size = config->size + 16;
-+		buf = krealloc(config->list, size * sizeof(void *), GFP_KERNEL);
-+		if (!buf)
-+			return -ENOMEM;
-+		config->list = buf;
-+		config->alloc = size;
-+	}
-+
-+	config->list[config->size] = d;
-+	config->size++;
-+	config->list[config->size] = NULL;
-+	return 0;
-+}
-+
-+static int append_configs(struct f_midi2_usb_config *config, void **d)
-+{
-+	int err;
-+
-+	for (; *d; d++) {
-+		err = append_config(config, *d);
-+		if (err)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
-+				      struct f_midi2_usb_config *config,
-+				      int speed)
-+{
-+	void **midi1_eps;
-+	int i, err;
-+
-+	switch (speed) {
-+	default:
-+	case USB_SPEED_HIGH:
-+		midi2_midi1_ep_out_desc.wMaxPacketSize = cpu_to_le16(512);
-+		midi2_midi1_ep_in_desc.wMaxPacketSize = cpu_to_le16(512);
-+		for (i = 0; i < midi2->num_eps; i++)
-+			midi2_midi2_ep_out_desc[i].wMaxPacketSize =
-+				cpu_to_le16(512);
-+		fallthrough;
-+	case USB_SPEED_FULL:
-+		midi1_eps = midi2_midi1_ep_descs;
-+		break;
-+	case USB_SPEED_SUPER:
-+	case USB_SPEED_SUPER_PLUS:
-+		midi2_midi1_ep_out_desc.wMaxPacketSize = cpu_to_le16(1024);
-+		midi2_midi1_ep_in_desc.wMaxPacketSize = cpu_to_le16(1024);
-+		for (i = 0; i < midi2->num_eps; i++)
-+			midi2_midi2_ep_out_desc[i].wMaxPacketSize =
-+				cpu_to_le16(1024);
-+		midi1_eps = midi2_midi1_ep_ss_descs;
-+		break;
-+	}
-+
-+	err = append_configs(config, midi2_audio_descs);
-+	if (err < 0)
-+		return err;
-+	err = append_configs(config, midi2_midi1_descs);
-+	if (err < 0)
-+		return err;
-+	err = append_configs(config, midi1_eps);
-+	if (err < 0)
-+		return err;
-+	err = append_configs(config, midi2_midi2_descs);
-+	if (err < 0)
-+		return err;
-+
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		err = append_config(config, &midi2_midi2_ep_out_desc[i]);
-+		if (err < 0)
-+			return err;
-+		if (speed == USB_SPEED_SUPER || speed == USB_SPEED_SUPER_PLUS) {
-+			err = append_config(config, &midi2_midi2_ep_out_ss_comp_desc);
-+			if (err < 0)
-+				return err;
-+		}
-+		err = append_config(config, &midi2_midi2_ep_out_class_desc[i]);
-+		if (err < 0)
-+			return err;
-+		err = append_config(config, &midi2_midi2_ep_in_desc[i]);
-+		if (err < 0)
-+			return err;
-+		if (speed == USB_SPEED_SUPER || speed == USB_SPEED_SUPER_PLUS) {
-+			err = append_config(config, &midi2_midi2_ep_in_ss_comp_desc);
-+			if (err < 0)
-+				return err;
-+		}
-+		err = append_config(config, &midi2_midi2_ep_in_class_desc[i]);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static void f_midi2_free_usb_configs(struct f_midi2_usb_config *config)
-+{
-+	kfree(config->list);
-+	memset(config, 0, sizeof(*config));
-+}
-+
-+/* as we use the static descriptors for simplicity, serialize bind call */
-+static DEFINE_MUTEX(f_midi2_desc_mutex);
-+
-+/* fill MIDI2 EP class-specific descriptor */
-+static void fill_midi2_class_desc(struct f_midi2_ep *ep,
-+				  struct usb_ms20_endpoint_descriptor_32 *cdesc)
-+{
-+	int blk;
-+
-+	cdesc->bLength = USB_DT_MS20_ENDPOINT_SIZE(ep->num_blks);
-+	cdesc->bDescriptorType = USB_DT_CS_ENDPOINT;
-+	cdesc->bDescriptorSubtype = USB_MS_GENERAL_2_0;
-+	cdesc->bNumGrpTrmBlock = ep->num_blks;
-+	for (blk = 0; blk < ep->num_blks; blk++)
-+		cdesc->baAssoGrpTrmBlkID[blk] = ep->blks[blk].gtb_id;
-+}
-+
-+/* initialize MIDI2 EP-in */
-+static int f_midi2_init_midi2_ep_in(struct f_midi2 *midi2, int index)
-+{
-+	struct f_midi2_ep *ep = &midi2->midi2_eps[index];
-+	struct usb_endpoint_descriptor *desc = &midi2_midi2_ep_in_desc[index];
-+
-+	desc->bLength = USB_DT_ENDPOINT_SIZE;
-+	desc->bDescriptorType = USB_DT_ENDPOINT;
-+	desc->bEndpointAddress = USB_DIR_IN;
-+	desc->bmAttributes = USB_ENDPOINT_XFER_INT;
-+	desc->wMaxPacketSize = cpu_to_le16(EP_MAX_PACKET_INT);
-+	desc->bInterval = 1;
-+
-+	fill_midi2_class_desc(ep, &midi2_midi2_ep_in_class_desc[index]);
-+
-+	return f_midi2_init_ep(midi2, ep, &ep->ep_in, desc,
-+			       midi2->info.num_reqs, f_midi2_ep_in_complete);
-+}
-+
-+/* initialize MIDI2 EP-out */
-+static int f_midi2_init_midi2_ep_out(struct f_midi2 *midi2, int index)
-+{
-+	struct f_midi2_ep *ep = &midi2->midi2_eps[index];
-+	struct usb_endpoint_descriptor *desc = &midi2_midi2_ep_out_desc[index];
-+
-+	desc->bLength = USB_DT_ENDPOINT_SIZE;
-+	desc->bDescriptorType = USB_DT_ENDPOINT;
-+	desc->bEndpointAddress = USB_DIR_OUT;
-+	desc->bmAttributes = USB_ENDPOINT_XFER_BULK;
-+
-+	fill_midi2_class_desc(ep, &midi2_midi2_ep_out_class_desc[index]);
-+
-+	return f_midi2_init_ep(midi2, ep, &ep->ep_out, desc,
-+			       midi2->info.num_reqs, f_midi2_ep_out_complete);
-+}
-+
-+/* gadget function bind callback */
-+static int f_midi2_bind(struct usb_configuration *c, struct usb_function *f)
-+{
-+	struct usb_composite_dev *cdev = c->cdev;
-+	struct f_midi2 *midi2 = func_to_midi2(f);
-+	struct f_midi2_ep *ep;
-+	struct f_midi2_usb_config config = {};
-+	struct usb_gadget_strings string_fn = {
-+		.language = 0x0409,	/* en-us */
-+		.strings = midi2->string_defs,
-+	};
-+	struct usb_gadget_strings *strings[] = {
-+		&string_fn,
-+		NULL,
-+	};
-+	int i, blk, status;
-+
-+	midi2->gadget = cdev->gadget;
-+	midi2->operation_mode = MIDI_OP_MODE_UNSET;
-+
-+	status = f_midi2_create_card(midi2);
-+	if (status < 0)
-+		goto fail_register;
-+
-+	/* maybe allocate device-global string ID */
-+	midi2->strings = usb_gstrings_attach(c->cdev, strings,
-+					     midi2->total_blocks + 1);
-+	if (IS_ERR(midi2->strings)) {
-+		status = PTR_ERR(midi2->strings);
-+		goto fail_string;
-+	}
-+
-+	mutex_lock(&f_midi2_desc_mutex);
-+	midi2_midi1_if_desc.iInterface = midi2->strings[STR_IFACE].id;
-+	midi2_midi2_if_desc.iInterface = midi2->strings[STR_IFACE].id;
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		ep = &midi2->midi2_eps[i];
-+		for (blk = 0; blk < ep->num_blks; blk++)
-+			ep->blks[blk].string_id =
-+				midi2->strings[gtb_to_str_id(ep->blks[blk].gtb_id)].id;
-+	}
-+
-+	/* audio interface */
-+	status = usb_interface_id(c, f);
-+	if (status < 0)
-+		goto fail;
-+	midi2_audio_if_desc.bInterfaceNumber = status;
-+
-+	/* MIDI streaming */
-+	status = usb_interface_id(c, f);
-+	if (status < 0)
-+		goto fail;
-+	midi2->midi_if = status;
-+	midi2_midi1_if_desc.bInterfaceNumber = status;
-+	midi2_midi2_if_desc.bInterfaceNumber = status;
-+	midi2_audio_class_desc.baInterfaceNr[0] = status;
-+
-+	/* allocate instance-specific endpoints */
-+	status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_in,
-+				 &midi2_midi1_ep_in_desc, 0, NULL);
-+	if (status)
-+		goto fail;
-+	status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_out,
-+				 &midi2_midi1_ep_out_desc, 0, NULL);
-+	if (status)
-+		goto fail;
-+
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		status = f_midi2_init_midi2_ep_in(midi2, i);
-+		if (status)
-+			goto fail;
-+		status = f_midi2_init_midi2_ep_out(midi2, i);
-+		if (status)
-+			goto fail;
-+	}
-+
-+	status = f_midi2_create_usb_configs(midi2, &config, USB_SPEED_FULL);
-+	if (status < 0)
-+		goto fail;
-+	f->fs_descriptors = usb_copy_descriptors(config.list);
-+	if (!f->fs_descriptors) {
-+		status = -ENOMEM;
-+		goto fail;
-+	}
-+	f_midi2_free_usb_configs(&config);
-+
-+	if (gadget_is_dualspeed(midi2->gadget)) {
-+		status = f_midi2_create_usb_configs(midi2, &config, USB_SPEED_HIGH);
-+		if (status < 0)
-+			goto fail;
-+		f->hs_descriptors = usb_copy_descriptors(config.list);
-+		if (!f->hs_descriptors) {
-+			status = -ENOMEM;
-+			goto fail;
-+		}
-+		f_midi2_free_usb_configs(&config);
-+	}
-+
-+	if (gadget_is_superspeed(midi2->gadget)) {
-+		status = f_midi2_create_usb_configs(midi2, &config, USB_SPEED_SUPER);
-+		if (status < 0)
-+			goto fail;
-+		f->ss_descriptors = usb_copy_descriptors(config.list);
-+		if (!f->ss_descriptors) {
-+			status = -ENOMEM;
-+			goto fail;
-+		}
-+		if (gadget_is_superspeed_plus(midi2->gadget)) {
-+			f->ssp_descriptors = usb_copy_descriptors(config.list);
-+			if (!f->ssp_descriptors) {
-+				status = -ENOMEM;
-+				goto fail;
-+			}
-+		}
-+		f_midi2_free_usb_configs(&config);
-+	}
-+
-+	mutex_unlock(&f_midi2_desc_mutex);
-+	return 0;
-+
-+fail:
-+	f_midi2_free_usb_configs(&config);
-+	mutex_unlock(&f_midi2_desc_mutex);
-+	usb_free_all_descriptors(f);
-+fail_string:
-+	f_midi2_free_card(midi2);
-+fail_register:
-+	ERROR(midi2, "%s: can't bind, err %d\n", f->name, status);
-+	return status;
-+}
-+
-+/* gadget function unbind callback */
-+static void f_midi2_unbind(struct usb_configuration *c, struct usb_function *f)
-+{
-+	struct f_midi2 *midi2 = func_to_midi2(f);
-+	int i;
-+
-+	f_midi2_free_card(midi2);
-+
-+	f_midi2_free_ep(&midi2->midi1_ep_in);
-+	f_midi2_free_ep(&midi2->midi1_ep_out);
-+	for (i = 0; i < midi2->num_eps; i++) {
-+		f_midi2_free_ep(&midi2->midi2_eps[i].ep_in);
-+		f_midi2_free_ep(&midi2->midi2_eps[i].ep_out);
-+	}
-+
-+	usb_free_all_descriptors(f);
-+}
-+
-+/* create a f_midi2_block_opts instance for the given block number */
-+static int f_midi2_block_opts_create(struct f_midi2_ep_opts *ep_opts,
-+				     unsigned int blk,
-+				     struct f_midi2_block_opts **block_p)
-+{
-+	struct f_midi2_block_opts *block_opts;
-+
-+	block_opts = kzalloc(sizeof(*block_opts), GFP_KERNEL);
-+	if (!block_opts)
-+		return -ENOMEM;
-+
-+	block_opts->ep = ep_opts;
-+	block_opts->id = blk;
-+
-+	/* set up the default values */
-+	block_opts->info.direction = SNDRV_UMP_DIR_BIDIRECTION;
-+	block_opts->info.first_group = 0;
-+	block_opts->info.num_groups = 1;
-+	block_opts->info.ui_hint = SNDRV_UMP_BLOCK_UI_HINT_BOTH;
-+	block_opts->info.active = 1;
-+
-+	ep_opts->blks[blk] = block_opts;
-+	*block_p = block_opts;
-+	return 0;
-+}
-+
-+/* create a f_midi2_ep_opts instance */
-+static int f_midi2_ep_opts_create(struct f_midi2_opts *opts,
-+				  unsigned int index,
-+				  struct f_midi2_ep_opts **ep_p)
-+{
-+	struct f_midi2_ep_opts *ep_opts;
-+
-+	ep_opts = kzalloc(sizeof(*ep_opts), GFP_KERNEL);
-+	if (!ep_opts)
-+		return -ENOMEM;
-+
-+	ep_opts->opts = opts;
-+	ep_opts->index = index;
-+
-+	/* set up the default values */
-+	ep_opts->info.protocol = 2;
-+	ep_opts->info.protocol_caps = 3;
-+
-+	opts->eps[index] = ep_opts;
-+	*ep_p = ep_opts;
-+	return 0;
-+}
-+
-+static const struct config_item_type f_midi2_func_type = {
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+static void f_midi2_free_inst(struct usb_function_instance *f)
-+{
-+	struct f_midi2_opts *opts;
-+
-+	opts = container_of(f, struct f_midi2_opts, func_inst);
-+
-+	/* we have only one EP and one FB */
-+	if (opts->eps[0]) {
-+		kfree(opts->eps[0]->blks[0]);
-+		kfree(opts->eps[0]);
-+	}
++	kfree(opts->info.name);
 +	kfree(opts);
 +}
 +
-+/* gadget alloc_inst */
-+static struct usb_function_instance *f_midi2_alloc_inst(void)
++static struct configfs_item_operations f_midi2_block_item_ops = {
++	.release	= f_midi2_block_opts_release,
++};
++
++static const struct config_item_type f_midi2_block_type = {
++	.ct_item_ops	= &f_midi2_block_item_ops,
++	.ct_attrs	= f_midi2_block_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
+ /* create a f_midi2_block_opts instance for the given block number */
+ static int f_midi2_block_opts_create(struct f_midi2_ep_opts *ep_opts,
+ 				     unsigned int blk,
+ 				     struct f_midi2_block_opts **block_p)
+ {
+ 	struct f_midi2_block_opts *block_opts;
++	int ret = 0;
++
++	mutex_lock(&ep_opts->opts->lock);
++	if (ep_opts->opts->refcnt || ep_opts->blks[blk]) {
++		ret = -EBUSY;
++		goto out;
++	}
+ 
+ 	block_opts = kzalloc(sizeof(*block_opts), GFP_KERNEL);
+-	if (!block_opts)
+-		return -ENOMEM;
++	if (!block_opts) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 
+ 	block_opts->ep = ep_opts;
+ 	block_opts->id = blk;
+@@ -1533,9 +1793,143 @@ static int f_midi2_block_opts_create(struct f_midi2_ep_opts *ep_opts,
+ 
+ 	ep_opts->blks[blk] = block_opts;
+ 	*block_p = block_opts;
+-	return 0;
++
++	mutex_unlock(&ep_opts->opts->lock);
++ out:
++	return ret;
+ }
+ 
++/* make_group callback for a block */
++static struct config_group *
++f_midi2_opts_block_make(struct config_group *group, const char *name)
++{
++	struct f_midi2_ep_opts *ep_opts;
++	struct f_midi2_block_opts *block_opts;
++	unsigned int blk;
++	int ret;
++
++	if (strncmp(name, "block.", 6))
++		return ERR_PTR(-EINVAL);
++	ret = kstrtouint(name + 6, 10, &blk);
++	if (ret)
++		return ERR_PTR(ret);
++
++	ep_opts = to_f_midi2_ep_opts(&group->cg_item);
++
++	if (blk >= SNDRV_UMP_MAX_BLOCKS)
++		return ERR_PTR(-EINVAL);
++	if (ep_opts->blks[blk])
++		return ERR_PTR(-EBUSY);
++	ret = f_midi2_block_opts_create(ep_opts, blk, &block_opts);
++	if (ret)
++		return ERR_PTR(ret);
++
++	config_group_init_type_name(&block_opts->group, name,
++				    &f_midi2_block_type);
++	return &block_opts->group;
++}
++
++/* drop_item callback for a block */
++static void
++f_midi2_opts_block_drop(struct config_group *group, struct config_item *item)
++{
++	struct f_midi2_block_opts *block_opts = to_f_midi2_block_opts(item);
++
++	mutex_lock(&block_opts->ep->opts->lock);
++	block_opts->ep->blks[block_opts->id] = NULL;
++	mutex_unlock(&block_opts->ep->opts->lock);
++	config_item_put(item);
++}
++
++/*
++ * Definitions for UMP Endpoint config
++ */
++
++/* define an uint option for EP */
++#define F_MIDI2_EP_OPT(name, format, minval, maxval)			\
++static ssize_t f_midi2_ep_opts_##name##_show(struct config_item *item,	\
++					     char *page)		\
++{									\
++	struct f_midi2_ep_opts *opts = to_f_midi2_ep_opts(item);	\
++	return f_midi2_opts_uint_show(opts->opts, opts->info.name,	\
++				      format "\n", page);		\
++}									\
++									\
++static ssize_t f_midi2_ep_opts_##name##_store(struct config_item *item,	\
++					   const char *page, size_t len)\
++{									\
++	struct f_midi2_ep_opts *opts = to_f_midi2_ep_opts(item);	\
++	return f_midi2_opts_uint_store(opts->opts, &opts->info.name,	\
++				       minval, maxval, page, len);	\
++}									\
++									\
++CONFIGFS_ATTR(f_midi2_ep_opts_, name)
++
++/* define a string option for EP */
++#define F_MIDI2_EP_STR_OPT(name, maxlen)				\
++static ssize_t f_midi2_ep_opts_##name##_show(struct config_item *item,	\
++					     char *page)		\
++{									\
++	struct f_midi2_ep_opts *opts = to_f_midi2_ep_opts(item);	\
++	return f_midi2_opts_str_show(opts->opts, opts->info.name, page);\
++}									\
++									\
++static ssize_t f_midi2_ep_opts_##name##_store(struct config_item *item,	\
++					 const char *page, size_t len)	\
++{									\
++	struct f_midi2_ep_opts *opts = to_f_midi2_ep_opts(item);	\
++	return f_midi2_opts_str_store(opts->opts, &opts->info.name, maxlen,\
++				      page, len);			\
++}									\
++									\
++CONFIGFS_ATTR(f_midi2_ep_opts_, name)
++
++F_MIDI2_EP_OPT(protocol, "0x%x", 1, 2);
++F_MIDI2_EP_OPT(protocol_caps, "0x%x", 1, 3);
++F_MIDI2_EP_OPT(manufacturer, "0x%x", 0, 0xffffff);
++F_MIDI2_EP_OPT(family, "0x%x", 0, 0xffff);
++F_MIDI2_EP_OPT(model, "0x%x", 0, 0xffff);
++F_MIDI2_EP_OPT(sw_revision, "0x%x", 0, 0xffffffff);
++F_MIDI2_EP_STR_OPT(ep_name, 128);
++F_MIDI2_EP_STR_OPT(product_id, 128);
++
++static struct configfs_attribute *f_midi2_ep_attrs[] = {
++	&f_midi2_ep_opts_attr_protocol,
++	&f_midi2_ep_opts_attr_protocol_caps,
++	&f_midi2_ep_opts_attr_ep_name,
++	&f_midi2_ep_opts_attr_product_id,
++	&f_midi2_ep_opts_attr_manufacturer,
++	&f_midi2_ep_opts_attr_family,
++	&f_midi2_ep_opts_attr_model,
++	&f_midi2_ep_opts_attr_sw_revision,
++	NULL,
++};
++
++static void f_midi2_ep_opts_release(struct config_item *item)
++{
++	struct f_midi2_ep_opts *opts = to_f_midi2_ep_opts(item);
++
++	kfree(opts->info.ep_name);
++	kfree(opts->info.product_id);
++	kfree(opts);
++}
++
++static struct configfs_item_operations f_midi2_ep_item_ops = {
++	.release	= f_midi2_ep_opts_release,
++};
++
++static struct configfs_group_operations f_midi2_ep_group_ops = {
++	.make_group	= f_midi2_opts_block_make,
++	.drop_item	= f_midi2_opts_block_drop,
++};
++
++static const struct config_item_type f_midi2_ep_type = {
++	.ct_item_ops	= &f_midi2_ep_item_ops,
++	.ct_group_ops	= &f_midi2_ep_group_ops,
++	.ct_attrs	= f_midi2_ep_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
+ /* create a f_midi2_ep_opts instance */
+ static int f_midi2_ep_opts_create(struct f_midi2_opts *opts,
+ 				  unsigned int index,
+@@ -1559,7 +1953,119 @@ static int f_midi2_ep_opts_create(struct f_midi2_opts *opts,
+ 	return 0;
+ }
+ 
++/* make_group callback for an EP */
++static struct config_group *
++f_midi2_opts_ep_make(struct config_group *group, const char *name)
 +{
 +	struct f_midi2_opts *opts;
 +	struct f_midi2_ep_opts *ep_opts;
-+	struct f_midi2_block_opts *block_opts;
++	unsigned int index;
 +	int ret;
 +
-+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
-+	if (!opts)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mutex_init(&opts->lock);
-+	opts->func_inst.free_func_inst = f_midi2_free_inst;
-+	opts->info.process_ump = true;
-+	opts->info.static_block = true;
-+	opts->info.num_reqs = 32;
-+	opts->info.req_buf_size = 512;
-+
-+	ret = f_midi2_ep_opts_create(opts, 0, &ep_opts);
-+	if (ret) {
-+		kfree(opts);
++	if (strncmp(name, "ep.", 3))
++		return ERR_PTR(-EINVAL);
++	ret = kstrtouint(name + 3, 10, &index);
++	if (ret)
 +		return ERR_PTR(ret);
-+	}
 +
-+	/* create the default block */
-+	ret = f_midi2_block_opts_create(ep_opts, 0, &block_opts);
-+	if (ret) {
-+		kfree(ep_opts);
-+		kfree(opts);
++	opts = to_f_midi2_opts(&group->cg_item);
++	if (index >= MAX_UMP_EPS)
++		return ERR_PTR(-EINVAL);
++	if (opts->eps[index])
++		return ERR_PTR(-EBUSY);
++	ret = f_midi2_ep_opts_create(opts, index, &ep_opts);
++	if (ret)
 +		return ERR_PTR(ret);
-+	}
 +
-+	config_group_init_type_name(&opts->func_inst.group, "",
-+				    &f_midi2_func_type);
-+	return &opts->func_inst;
++	config_group_init_type_name(&ep_opts->group, name, &f_midi2_ep_type);
++	return &ep_opts->group;
 +}
 +
-+static void do_f_midi2_free(struct f_midi2 *midi2, struct f_midi2_opts *opts)
++/* drop_item callback for an EP */
++static void
++f_midi2_opts_ep_drop(struct config_group *group, struct config_item *item)
 +{
-+	mutex_lock(&opts->lock);
-+	--opts->refcnt;
-+	mutex_unlock(&opts->lock);
-+	kfree(midi2->string_defs);
-+	kfree(midi2);
++	struct f_midi2_ep_opts *ep_opts = to_f_midi2_ep_opts(item);
++
++	mutex_lock(&ep_opts->opts->lock);
++	ep_opts->opts->eps[ep_opts->index] = NULL;
++	mutex_unlock(&ep_opts->opts->lock);
++	config_item_put(item);
 +}
 +
-+static void f_midi2_free(struct usb_function *f)
-+{
-+	do_f_midi2_free(func_to_midi2(f),
-+			container_of(f->fi, struct f_midi2_opts, func_inst));
-+}
-+
-+/* gadget alloc callback */
-+static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
-+{
-+	struct f_midi2 *midi2;
-+	struct f_midi2_opts *opts;
-+	int i;
-+
-+	midi2 = kzalloc(sizeof(*midi2), GFP_KERNEL);
-+	if (!midi2)
-+		return ERR_PTR(-ENOMEM);
-+
-+	opts = container_of(fi, struct f_midi2_opts, func_inst);
-+	mutex_lock(&opts->lock);
-+	++opts->refcnt;
-+	mutex_unlock(&opts->lock);
-+
-+	spin_lock_init(&midi2->queue_lock);
-+
-+	midi2->func.name = "midi2_func";
-+	midi2->func.bind = f_midi2_bind;
-+	midi2->func.unbind = f_midi2_unbind;
-+	midi2->func.get_alt = f_midi2_get_alt;
-+	midi2->func.set_alt = f_midi2_set_alt;
-+	midi2->func.setup = f_midi2_setup;
-+	midi2->func.disable = f_midi2_disable;
-+	midi2->func.free_func = f_midi2_free;
-+
-+	midi2->info = opts->info;
-+
-+	/* fixed 1 UMP EP and 1 UMP FB as of now */
-+	midi2->num_eps = 1;
-+	midi2->midi2_eps[0].info = opts->eps[0]->info;
-+	midi2->midi2_eps[0].card = midi2;
-+	midi2->midi2_eps[0].num_blks = 1;
-+	midi2->midi2_eps[0].blks[0].info = opts->eps[0]->blks[0]->info;
-+	midi2->midi2_eps[0].blks[0].gtb_id = 1;
-+
-+	for (i = 0; i < midi2->num_eps; i++)
-+		midi2->total_blocks += midi2->midi2_eps[i].num_blks;
-+
-+	midi2->string_defs = kcalloc(midi2->total_blocks + 1,
-+				     sizeof(*midi2->string_defs), GFP_KERNEL);
-+	if (!midi2->string_defs) {
-+		do_f_midi2_free(midi2, opts);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	if (opts->info.iface_name && *opts->info.iface_name)
-+		midi2->string_defs[0].s = opts->info.iface_name;
-+	else
-+		midi2->string_defs[0].s = ump_ep_name(&midi2->midi2_eps[0]);
-+	midi2->string_defs[1].s = ump_fb_name(&midi2->midi2_eps[0].blks[0].info);
-+
-+	return &midi2->func;
-+}
-+
-+DECLARE_USB_FUNCTION_INIT(midi2, f_midi2_alloc_inst, f_midi2_alloc);
-+
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/usb/gadget/function/u_midi2.h b/drivers/usb/gadget/function/u_midi2.h
-new file mode 100644
-index 000000000000..a68dc2ea035e
---- /dev/null
-+++ b/drivers/usb/gadget/function/u_midi2.h
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0+
 +/*
-+ * Utility definitions for MIDI 2.0 function
++ * Definitions for card config
 + */
 +
-+#ifndef U_MIDI2_H
-+#define U_MIDI2_H
++/* define a bool option for card */
++#define F_MIDI2_BOOL_OPT(name)						\
++static ssize_t f_midi2_opts_##name##_show(struct config_item *item,	\
++					  char *page)			\
++{									\
++	struct f_midi2_opts *opts = to_f_midi2_opts(item);		\
++	return f_midi2_opts_uint_show(opts, opts->info.name,		\
++				      "%u\n", page);			\
++}									\
++									\
++static ssize_t f_midi2_opts_##name##_store(struct config_item *item,	\
++					 const char *page, size_t len)	\
++{									\
++	struct f_midi2_opts *opts = to_f_midi2_opts(item);		\
++	return f_midi2_opts_bool_store(opts, &opts->info.name,		\
++				       page, len);			\
++}									\
++									\
++CONFIGFS_ATTR(f_midi2_opts_, name)
 +
-+#include <linux/usb/composite.h>
-+#include <sound/asound.h>
++F_MIDI2_BOOL_OPT(process_ump);
++F_MIDI2_BOOL_OPT(static_block);
 +
-+struct f_midi2_opts;
-+struct f_midi2_ep_opts;
-+struct f_midi2_block_opts;
++static ssize_t f_midi2_opts_iface_name_show(struct config_item *item,
++					    char *page)
++{
++	struct f_midi2_opts *opts = to_f_midi2_opts(item);
 +
-+/* UMP Function Block info */
-+struct f_midi2_block_info {
-+	unsigned int direction;		/* FB direction: 1-3 */
-+	unsigned int first_group;	/* first UMP group: 0-15 */
-+	unsigned int num_groups;	/* number of UMP groups: 1-16 */
-+	unsigned int ui_hint;		/* UI-hint: 0-3 */
-+	unsigned int midi_ci_version;	/* MIDI-CI version: 0-255 */
-+	unsigned int sysex8_streams;	/* number of sysex8 streams: 0-255 */
-+	unsigned int is_midi1;		/* MIDI 1.0 port: 0-2 */
-+	bool active;			/* FB active flag: bool */
-+	const char *name;		/* FB name */
++	return f_midi2_opts_str_show(opts, opts->info.iface_name, page);
++}
++
++static ssize_t f_midi2_opts_iface_name_store(struct config_item *item,
++					     const char *page, size_t len)
++{
++	struct f_midi2_opts *opts = to_f_midi2_opts(item);
++
++	return f_midi2_opts_str_store(opts, &opts->info.iface_name, 128,
++				      page, len);
++}
++
++CONFIGFS_ATTR(f_midi2_opts_, iface_name);
++
++static struct configfs_attribute *f_midi2_attrs[] = {
++	&f_midi2_opts_attr_process_ump,
++	&f_midi2_opts_attr_static_block,
++	&f_midi2_opts_attr_iface_name,
++	NULL
 +};
 +
-+/* UMP Endpoint info */
-+struct f_midi2_ep_info {
-+	unsigned int protocol_caps;	/* protocol capabilities: 1-3 */
-+	unsigned int protocol;		/* default protocol: 1-2 */
-+	unsigned int manufacturer;	/* manufacturer id: 0-0xffffff */
-+	unsigned int family;		/* device family id: 0-0xffff */
-+	unsigned int model;		/* device model id: 0x-0xffff */
-+	unsigned int sw_revision;	/* software revision: 32bit */
++static void f_midi2_opts_release(struct config_item *item)
++{
++	struct f_midi2_opts *opts = to_f_midi2_opts(item);
 +
-+	const char *ep_name;		/* Endpoint name */
-+	const char *product_id;		/* Product ID */
++	usb_put_function_instance(&opts->func_inst);
++}
++
++static struct configfs_item_operations f_midi2_item_ops = {
++	.release	= f_midi2_opts_release,
 +};
 +
-+struct f_midi2_card_info {
-+	bool process_ump;		/* process UMP stream: bool */
-+	bool static_block;		/* static FBs: bool */
-+	unsigned int req_buf_size;	/* request buffer size */
-+	unsigned int num_reqs;		/* number of requests */
-+	const char *iface_name;		/* interface name */
++static struct configfs_group_operations f_midi2_group_ops = {
++	.make_group	= f_midi2_opts_ep_make,
++	.drop_item	= f_midi2_opts_ep_drop,
 +};
 +
-+struct f_midi2_block_opts {
-+	struct config_group group;
-+	unsigned int id;
-+	struct f_midi2_block_info info;
-+	struct f_midi2_ep_opts *ep;
-+};
+ static const struct config_item_type f_midi2_func_type = {
++	.ct_item_ops	= &f_midi2_item_ops,
++	.ct_group_ops	= &f_midi2_group_ops,
++	.ct_attrs	= f_midi2_attrs,
+ 	.ct_owner	= THIS_MODULE,
+ };
+ 
+@@ -1569,11 +2075,7 @@ static void f_midi2_free_inst(struct usb_function_instance *f)
+ 
+ 	opts = container_of(f, struct f_midi2_opts, func_inst);
+ 
+-	/* we have only one EP and one FB */
+-	if (opts->eps[0]) {
+-		kfree(opts->eps[0]->blks[0]);
+-		kfree(opts->eps[0]);
+-	}
++	kfree(opts->info.iface_name);
+ 	kfree(opts);
+ }
+ 
+@@ -1596,6 +2098,7 @@ static struct usb_function_instance *f_midi2_alloc_inst(void)
+ 	opts->info.num_reqs = 32;
+ 	opts->info.req_buf_size = 512;
+ 
++	/* create the default ep */
+ 	ret = f_midi2_ep_opts_create(opts, 0, &ep_opts);
+ 	if (ret) {
+ 		kfree(opts);
+@@ -1612,6 +2115,15 @@ static struct usb_function_instance *f_midi2_alloc_inst(void)
+ 
+ 	config_group_init_type_name(&opts->func_inst.group, "",
+ 				    &f_midi2_func_type);
 +
-+struct f_midi2_ep_opts {
-+	struct config_group group;
-+	unsigned int index;
-+	struct f_midi2_ep_info info;
-+	struct f_midi2_block_opts *blks[SNDRV_UMP_MAX_BLOCKS];
-+	struct f_midi2_opts *opts;
-+};
++	config_group_init_type_name(&ep_opts->group, "ep.0",
++				    &f_midi2_ep_type);
++	configfs_add_default_group(&ep_opts->group, &opts->func_inst.group);
 +
-+#define MAX_UMP_EPS		4
-+#define MAX_CABLES		16
++	config_group_init_type_name(&block_opts->group, "block.0",
++				    &f_midi2_block_type);
++	configfs_add_default_group(&block_opts->group, &ep_opts->group);
 +
-+struct f_midi2_opts {
-+	struct usb_function_instance func_inst;
-+	struct mutex lock;
-+	int refcnt;
+ 	return &opts->func_inst;
+ }
+ 
+@@ -1630,12 +2142,58 @@ static void f_midi2_free(struct usb_function *f)
+ 			container_of(f->fi, struct f_midi2_opts, func_inst));
+ }
+ 
++/* verify the parameters set up via configfs;
++ * return the number of EPs or a negative error
++ */
++static int verify_parameters(struct f_midi2_opts *opts)
++{
++	int i, j, num_eps, num_blks;
++	struct f_midi2_ep_info *ep;
++	struct f_midi2_block_info *bp;
 +
-+	struct f_midi2_card_info info;
++	for (num_eps = 0; num_eps < MAX_UMP_EPS && opts->eps[num_eps];
++	     num_eps++)
++		;
++	if (!num_eps) {
++		pr_err("f_midi2: No EP is defined\n");
++		return -EINVAL;
++	}
 +
-+	unsigned int num_eps;
-+	struct f_midi2_ep_opts *eps[MAX_UMP_EPS];
-+};
++	num_blks = 0;
++	for (i = 0; i < num_eps; i++) {
++		ep = &opts->eps[i]->info;
++		if (!(ep->protocol_caps & ep->protocol)) {
++			pr_err("f_midi2: Invalid protocol 0x%x (caps 0x%x) for EP %d\n",
++			       ep->protocol, ep->protocol_caps, i);
++			return -EINVAL;
++		}
 +
-+#endif /* U_MIDI2_H */
++		for (j = 0; j < SNDRV_UMP_MAX_BLOCKS && opts->eps[i]->blks[j];
++		     j++, num_blks++) {
++			bp = &opts->eps[i]->blks[j]->info;
++			if (bp->first_group + bp->num_groups > SNDRV_UMP_MAX_GROUPS) {
++				pr_err("f_midi2: Invalid group definitions for block %d:%d\n",
++				       i, j);
++				return -EINVAL;
++			}
++		}
++	}
++	if (!num_blks) {
++		pr_err("f_midi2: No block is defined\n");
++		return -EINVAL;
++	}
++
++	return num_eps;
++}
++
+ /* gadget alloc callback */
+ static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
+ {
+ 	struct f_midi2 *midi2;
+ 	struct f_midi2_opts *opts;
+-	int i;
++	struct f_midi2_ep *ep;
++	struct f_midi2_block *bp;
++	int i, num_eps, blk;
+ 
+ 	midi2 = kzalloc(sizeof(*midi2), GFP_KERNEL);
+ 	if (!midi2)
+@@ -1643,6 +2201,12 @@ static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
+ 
+ 	opts = container_of(fi, struct f_midi2_opts, func_inst);
+ 	mutex_lock(&opts->lock);
++	num_eps = verify_parameters(opts);
++	if (num_eps < 0) {
++		mutex_unlock(&opts->lock);
++		kfree(midi2);
++		return ERR_PTR(num_eps);
++	}
+ 	++opts->refcnt;
+ 	mutex_unlock(&opts->lock);
+ 
+@@ -1658,17 +2222,20 @@ static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
+ 	midi2->func.free_func = f_midi2_free;
+ 
+ 	midi2->info = opts->info;
++	midi2->num_eps = num_eps;
+ 
+-	/* fixed 1 UMP EP and 1 UMP FB as of now */
+-	midi2->num_eps = 1;
+-	midi2->midi2_eps[0].info = opts->eps[0]->info;
+-	midi2->midi2_eps[0].card = midi2;
+-	midi2->midi2_eps[0].num_blks = 1;
+-	midi2->midi2_eps[0].blks[0].info = opts->eps[0]->blks[0]->info;
+-	midi2->midi2_eps[0].blks[0].gtb_id = 1;
+-
+-	for (i = 0; i < midi2->num_eps; i++)
+-		midi2->total_blocks += midi2->midi2_eps[i].num_blks;
++	for (i = 0; i < num_eps; i++) {
++		ep = &midi2->midi2_eps[i];
++		ep->info = opts->eps[i]->info;
++		ep->card = midi2;
++		for (blk = 0; blk < SNDRV_UMP_MAX_BLOCKS &&
++			     opts->eps[i]->blks[blk]; blk++) {
++			bp = &ep->blks[blk];
++			ep->num_blks++;
++			bp->info = opts->eps[i]->blks[blk]->info;
++			bp->gtb_id = ++midi2->total_blocks;
++		}
++	}
+ 
+ 	midi2->string_defs = kcalloc(midi2->total_blocks + 1,
+ 				     sizeof(*midi2->string_defs), GFP_KERNEL);
+@@ -1678,10 +2245,18 @@ static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
+ 	}
+ 
+ 	if (opts->info.iface_name && *opts->info.iface_name)
+-		midi2->string_defs[0].s = opts->info.iface_name;
++		midi2->string_defs[STR_IFACE].s = opts->info.iface_name;
+ 	else
+-		midi2->string_defs[0].s = ump_ep_name(&midi2->midi2_eps[0]);
+-	midi2->string_defs[1].s = ump_fb_name(&midi2->midi2_eps[0].blks[0].info);
++		midi2->string_defs[STR_IFACE].s = ump_ep_name(&midi2->midi2_eps[0]);
++
++	for (i = 0; i < midi2->num_eps; i++) {
++		ep = &midi2->midi2_eps[i];
++		for (blk = 0; blk < ep->num_blks; blk++) {
++			bp = &ep->blks[blk];
++			midi2->string_defs[gtb_to_str_id(bp->gtb_id)].s =
++				ump_fb_name(&bp->info);
++		}
++	}
+ 
+ 	return &midi2->func;
+ }
 -- 
 2.35.3
 
