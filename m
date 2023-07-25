@@ -2,152 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44651762446
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B69762449
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjGYVWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S229874AbjGYVYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjGYVWS (ORCPT
+        with ESMTP id S229441AbjGYVYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:22:18 -0400
-Received: from out-1.mta1.migadu.com (out-1.mta1.migadu.com [95.215.58.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78605E70
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:22:16 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 23:22:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=grimler.se; s=key1;
-        t=1690320134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tHqrqD8etAmFPoplWVHS6xgjs7yFI6bgpUy2PExyaBw=;
-        b=lpg23rv0b5yAMBdEBTGiVqKzZ5nlcCQaUn5sXVFujyxLf4FUNyH5LGF4XT6sPC6RMkESeJ
-        2IlxEb8lyMvI59riJo1Mmds0qqAZHDNRJ2SjdDTcVYQqCEas+ezNDxtD/NMMSAa79N4ocg
-        n+ssBDzw4ym09d16PDOwWeVMwKPw81E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Henrik Grimler <henrik@grimler.se>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        replicant@osuosl.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Martin =?iso-8859-1?Q?J=FCcker?= <martin.juecker@gmail.com>,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: samsung: exynos4412-midas: add USB
- connector and USB OTG
-Message-ID: <ZMA9AcfElvuYZTiV@grimlerstat.localdomain>
-References: <20230723142417.97734-1-krzysztof.kozlowski@linaro.org>
- <ZMAfSIF0Rwc69nEv@grimlerstat.localdomain>
- <d04af4a2-a07b-66b7-47e1-5c90fb11fe54@linaro.org>
+        Tue, 25 Jul 2023 17:24:34 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14AC1FD2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:24:32 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b867f9198dso11706225ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690320272; x=1690925072;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qOwYhJqUq3D663PZgGRKI9AwUgB7kco5aTPJuVz2jM8=;
+        b=T9+ZPl9/0tvDMUzT9Qz/Q2qYTagxybCNzCvcrJHrK0Z7jl1FNa9B1DsbqsGbzcfsIq
+         Wio5R3fISiDCcsqkIOC3D+G490z/P71YTO6xie7bgXcG+mRIsH1GAv/GsUkUc/GDX+iM
+         HGhuTMA9RTPaAInNJQfXvGmY1UymyOQV94GfnjeVH0e0aQ2nOKl0nA19KpuREqKYH8oe
+         QR9e5aEyqS8gzBlojWjc53/IivuSH6wW+qp1ELdrVynTWpTq04Oo8Cwz4vr15W4FaQsZ
+         RnLQVc2jgHUTiBG070OO00xgH+ptoWz6WzrG9N2pNg1S7Fn8bx0f7Psgt1gcd9r89ZtK
+         wacQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690320272; x=1690925072;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOwYhJqUq3D663PZgGRKI9AwUgB7kco5aTPJuVz2jM8=;
+        b=kMsdGJy9KlE02TVDsBPSTbztQTFXFl1ExpkeoVY0q0s6tFpxtiL8ZLj3zKdCtQHT+z
+         78CRqu6x1qUOceH+zq0N5v5PRbzAiIbI4eYYIWjBKqnyF1Qu9LpbVWlJqtJo2YWOFDV2
+         foR/F9xEmcxeoOk6iB+Z45MDn3ZYfNVEffXeOT1pF1Q9CsfnoeKpSmSxddfNy2RhxxaG
+         tJE5nMpswRNjXQQoo+mAu58kbWcmrMGUJPL75vkQ7y7S8nfML9qArUrZ0hhrHQtKkZQP
+         satJp02vLH8ZBWBlEueoMOTG+jHBEqq5xX5kAtcnd0LgTWv5A3RpCHKHTh0ASsieLpor
+         cmoQ==
+X-Gm-Message-State: ABy/qLbc2jE4k8k8lDTBEMvmCMCyySEauX58JqMMBt59gzqjW8A8WIHF
+        pqtCvRkPrQZuY+LlsEkKcPDjAA==
+X-Google-Smtp-Source: APBJJlG7TkPzcrMBGkjgwzK5p/lgqRVZou7FiQ7zGUbGbapfzthrBdbYTD6lHekcLlEn7WUee66umQ==
+X-Received: by 2002:a17:902:da82:b0:1b8:811:b079 with SMTP id j2-20020a170902da8200b001b80811b079mr496471plx.0.1690320272274;
+        Tue, 25 Jul 2023 14:24:32 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id m9-20020a170902768900b001a80ad9c599sm11431754pll.294.2023.07.25.14.24.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 14:24:31 -0700 (PDT)
+Message-ID: <9b6522bc-314e-d663-a035-c4614b21b756@kernel.dk>
+Date:   Tue, 25 Jul 2023 15:24:30 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d04af4a2-a07b-66b7-47e1-5c90fb11fe54@linaro.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andres@anarazel.de
+References: <20230720221858.135240-1-axboe@kernel.dk>
+ <20230720221858.135240-7-axboe@kernel.dk>
+ <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
+ <20230721113718.GA3638458@hirez.programming.kicks-ass.net>
+ <d95bfb98-8d76-f0fd-6283-efc01d0cc015@kernel.dk>
+ <94b8fcc4-12b5-8d8c-3eb3-fe1e73a25456@kernel.dk>
+ <20230725130015.GI3765278@hirez.programming.kicks-ass.net>
+ <28a42d23-6d70-bc4c-5abc-0b3cc5d7338d@kernel.dk>
+ <9a197037-4732-c524-2eb9-250ef7175a82@kernel.dk>
+ <20230725151909.GT4253@hirez.programming.kicks-ass.net>
+ <24a8a74a-e218-6105-ee97-02f60b1523bb@kernel.dk>
+In-Reply-To: <24a8a74a-e218-6105-ee97-02f60b1523bb@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Tue, Jul 25, 2023 at 10:08:00PM +0200, Krzysztof Kozlowski wrote:
-> On 25/07/2023 21:15, Henrik Grimler wrote:
-> > On Sun, Jul 23, 2023 at 04:24:17PM +0200, Krzysztof Kozlowski wrote:
-> >> Add full description of USB-MUIC (MAX77693 MUIC) and MUIC-MHL
-> >> connections, along with proper USB connector and OTG mode for DWC2 USB
-> >> controller.
-> >>
-> >> This fixes dtc W=1 warnings:
-> >>
-> >>   Warning (graph_child_address): /i2c-mhl/hdmi-bridge@39/ports: graph node has single child node 'port@0', #address-cells/#size-cells are not necessary
-> >>
-> >> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> >> Cc: replicant@osuosl.org
-> >> Cc: phone-devel@vger.kernel.org
-> >> Cc: ~postmarketos/upstreaming@lists.sr.ht
-> >> Cc: Martin Jücker <martin.juecker@gmail.com>
-> >> Cc: Henrik Grimler <henrik@grimler.se>
-> >> Cc: Artur Weber <aweber.kernel@gmail.com>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > 
-> > Tested-by: Henrik Grimler <henrik@grimler.se>
-> > 
-> > * Peripheral mode (still) works
-> > * MHL somewhat works
-> > * OTG (still) does not work
-> > 
-> > Further details for those interested:
-> > 
-> > MHL works reliably if cable is attached before boot, but if cable is
-> > attached on already running device it sometimes work after detaching
-> > and attaching cable a few times.  On cable attach, when it does not
-> > work, we get:
-> > 
-> >   [  252.831734] max77693-muic max77693-muic: external connector is detached(chg_type:0x0, prev_chg_type:0x0)
-> >   [  253.733916] max77693-muic max77693-muic: external connector is attached(chg_type:0x1, prev_chg_type:0x1)
-> >   [  253.735232] max77693-muic max77693-muic: CONTROL1 : 0x09, CONTROL2 : 0x04, state : attached
-> >   [  254.691877] i2c i2c-15: sendbytes: NAK bailout.
-> >   [  254.692150] sii9234 15-0039: writebm:  TPI[0x3d] <- 0x3e
-> >   [  255.984336] sii9234 15-0039: RGND is not 1k
-> >   [  256.068970] sii9234 15-0039: RSEN_HIGH without RGND_1K
-> >   [  256.104457] sii9234 15-0039: discovery failed, no power for MHL?
-> >   [  256.118272] i2c i2c-15: sendbytes: NAK bailout.
-> >   [  256.118539] sii9234 15-0039: writebm:  TPI[0x3d] <- 0x3e
-> >   [  256.375966] sii9234 15-0039: RSEN_HIGH without RGND_1K
-> >   [  256.411561] sii9234 15-0039: discovery failed, no power for MHL?
-> > 
-> > while when it works:
-> > 
-> >   [  175.348307] max77693-muic max77693-muic: external connector is detached(chg_type:0x1, prev_chg_type:0x0)
-> >   [  175.349576] max77693-muic max77693-muic: CONTROL1 : 0x00, CONTROL2 : 0x01, state : detached
-> >   [  179.304373] dwc2 12480000.usb: new device is full-speed
-> >   [  179.305920] max77693-muic max77693-muic: external connector is detached(chg_type:0x0, prev_chg_type:0x0)
-> >   [  180.205735] max77693-muic max77693-muic: external connector is attached(chg_type:0x1, prev_chg_type:0x1)
-> >   [  180.207211] max77693-muic max77693-muic: CONTROL1 : 0x09, CONTROL2 : 0x04, state : attached
-> >   [  180.309727] i2c i2c-15: sendbytes: NAK bailout.
-> >   [  180.309996] sii9234 15-0039: writebm:  TPI[0x3d] <- 0x3e
-> > 
-> > Not sure if issue here is in muic driver or sii9234 driver.
-> > 
-> > OTG still does not seem to work, the muic driver detects (only) a
-> > detach when OTG cable is attached:
-> > 
-> >   max77693-muic max77693-muic: external connector is detached(chg_type:0x0, prev_chg_type:0x0)
-> > 
-> > Same happened when otg cable was attached before these hsotg changes
-> > as well. I suppose issue here is with max77693-muic driver.
-> > 
+On 7/25/23 2:42?PM, Jens Axboe wrote:
+> On 7/25/23 9:19?AM, Peter Zijlstra wrote:
+>> On Tue, Jul 25, 2023 at 07:57:28AM -0600, Jens Axboe wrote:
+>>
+>>> Something like the below - totally untested, but just to show what I
+>>> mean. Will need to get split and folded into the two separate patches.
+>>> Will test and fold them later today.
+>>>
+>>>
+>>> diff --git a/io_uring/futex.c b/io_uring/futex.c
+>>> index 4c9f2c841b98..b0f90154d974 100644
+>>> --- a/io_uring/futex.c
+>>> +++ b/io_uring/futex.c
+>>> @@ -168,7 +168,7 @@ bool io_futex_remove_all(struct io_ring_ctx *ctx, struct task_struct *task,
+>>>  	return found;
+>>>  }
+>>>  
+>>> -int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>>> +static int __io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>>>  {
+>>>  	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>>>  	u32 flags;
+>>> @@ -179,9 +179,6 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>>>  	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+>>>  	iof->futex_val = READ_ONCE(sqe->addr2);
+>>>  	iof->futex_mask = READ_ONCE(sqe->addr3);
+>>> -	iof->futex_nr = READ_ONCE(sqe->len);
+>>> -	if (iof->futex_nr && req->opcode != IORING_OP_FUTEX_WAITV)
+>>> -		return -EINVAL;
+>>>  
+>>>  	flags = READ_ONCE(sqe->futex_flags);
+>>>  	if (flags & ~FUTEX2_MASK)
+>>> @@ -191,14 +188,36 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>>>  	if (!futex_flags_valid(iof->futex_flags))
+>>>  		return -EINVAL;
+>>>  
+>>> -	if (!futex_validate_input(iof->futex_flags, iof->futex_val) ||
+>>> -	    !futex_validate_input(iof->futex_flags, iof->futex_mask))
+>>> +	if (!futex_validate_input(iof->futex_flags, iof->futex_mask))
+>>>  		return -EINVAL;
+>>>  
+>>> -	iof->futexv_owned = 0;
+>>>  	return 0;
+>>>  }
+>>
+>> I think you can/should split more into io_futex_prep(), specifically
+>> waitv should also have zero @val and @mask.
 > 
-> Thanks for testing. I miss here one important thing - did anything
-> regressed? Is MHL behaving not worse than before? OTG, as non-working,
-> matters less in such case.
+> Yep, I'll include that. Updating them now...
 
-No regressions as far as I can tell, only improvements.  We want the
-muic node and mhl_to_muic/muic_to_mhl ports so that muic can notify
-the mhl chip of cable attachment/detachment (with requires an
-additional patch to the sii9234 driver that I will send soon [1]).
-The alternative, having the mhl chip always on, has caused issues with
-some GUIs [2].
+It ends up just being this incremental for the very last patch, moving
+all the waitv related prep to the wait prep and not relying on the
+non-vectored one at all.
 
-> Best regards,
-> Krzysztof
 
-[1] https://gitlab.com/exynos4-mainline/linux/-/commit/742d05797799
-[2] https://gitlab.gnome.org/World/Phosh/phosh/-/issues/828#note_1542189
+diff --git a/io_uring/futex.c b/io_uring/futex.c
+index 4c9f2c841b98..e885aac12df8 100644
+--- a/io_uring/futex.c
++++ b/io_uring/futex.c
+@@ -179,9 +179,6 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+ 	iof->futex_val = READ_ONCE(sqe->addr2);
+ 	iof->futex_mask = READ_ONCE(sqe->addr3);
+-	iof->futex_nr = READ_ONCE(sqe->len);
+-	if (iof->futex_nr && req->opcode != IORING_OP_FUTEX_WAITV)
+-		return -EINVAL;
+ 
+ 	flags = READ_ONCE(sqe->futex_flags);
+ 	if (flags & ~FUTEX2_MASK)
+@@ -195,7 +192,6 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	    !futex_validate_input(iof->futex_flags, iof->futex_mask))
+ 		return -EINVAL;
+ 
+-	iof->futexv_owned = 0;
+ 	return 0;
+ }
+ 
+@@ -220,10 +216,13 @@ int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	struct futex_vector *futexv;
+ 	int ret;
+ 
+-	ret = io_futex_prep(req, sqe);
+-	if (ret)
+-		return ret;
++	/* No flags or mask supported for waitv */
++	if (unlikely(sqe->fd || sqe->buf_index || sqe->file_index ||
++		     sqe->addr2 || sqe->addr3))
++		return -EINVAL;
+ 
++	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
++	iof->futex_nr = READ_ONCE(sqe->len);
+ 	if (!iof->futex_nr || iof->futex_nr > FUTEX_WAITV_MAX)
+ 		return -EINVAL;
+ 
+@@ -238,6 +237,7 @@ int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 		return ret;
+ 	}
+ 
++	iof->futexv_owned = 0;
+ 	req->flags |= REQ_F_ASYNC_DATA;
+ 	req->async_data = futexv;
+ 	return 0;
 
-Best regards,
-Henrik Grimler
+-- 
+Jens Axboe
+
