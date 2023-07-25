@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAE3760A18
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C70760A2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbjGYGO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S232102AbjGYGR1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 02:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjGYGO0 (ORCPT
+        with ESMTP id S231640AbjGYGRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:14:26 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B566173F;
-        Mon, 24 Jul 2023 23:14:23 -0700 (PDT)
-X-QQ-mid: bizesmtp91t1690265652t0kk5fjv
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 25 Jul 2023 14:14:11 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: 3M0okmaRx3jg2U2V57q1XRrz+rfT0OKy4F0qemDz2c+HpO10L1OXgGmMgjwLd
-        eSaF0Af04DD1+z+S18+z41Ner1wY2hsQV6e8yo7lsUc6Jm4QOZhxB2NzUlwVF51rZufjqS1
-        euzmdwAn1lCAlPkzfsqkNLEi+KCRM87ngBVx5YciofSILPc8j8n9kmSOyFlDtYOh33z2TTf
-        o2KsTKT5BG3xtwKYnUcH40cYJOEK/U9fzfr4i2maBdxtBMGRSUmAkd/cQh1z9S2ImOOvTOo
-        WbVYKbdc2qjxAYtuvZaDCQ3F+VgEz4Q81+rbHwWDPppZ8GVGfQS/G0rQxsPV8M8oAVzqM8+
-        a2iH6PeO+4Ne3+Rg8/rxU/QM22yh5ntFpcNc1TPAawjzAjD/+6nAXC3j5CqiQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 674923569547464683
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, w@1wt.eu
-Subject: Re: [PATCH v1 1/8] tools/nolibc: add support for powerpc
-Date:   Tue, 25 Jul 2023 14:14:11 +0800
-Message-Id: <20230725061411.15500-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <64a95595-9716-4276-a747-0c985997c1ab@t-8ch.de>
-References: <64a95595-9716-4276-a747-0c985997c1ab@t-8ch.de>
+        Tue, 25 Jul 2023 02:17:19 -0400
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBC7A1BE6;
+        Mon, 24 Jul 2023 23:17:07 -0700 (PDT)
+Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 36P6Fdmn023967;
+        Tue, 25 Jul 2023 01:15:40 -0500
+Message-ID: <bc6c3a08e3d0a343fe8317218106609ba159dfe2.camel@kernel.crashing.org>
+Subject: Re: VFIO (PCI) and write combine mapping of BARs
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, osamaabb@amazon.com,
+        linux-pci@vger.kernel.org, Clint Sbisa <csbisa@amazon.com>,
+        catalin.marinas@arm.com, maz@kernel.org
+Date:   Tue, 25 Jul 2023 16:15:39 +1000
+In-Reply-To: <ZLFBnACjoTbDmKuU@nvidia.com>
+References: <2838d716b08c78ed24fdd3fe392e21222ee70067.camel@kernel.crashing.org>
+         <ZLD1l1274hQQ54RT@lpieralisi> <ZLFBnACjoTbDmKuU@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas
-
+On Fri, 2023-07-14 at 09:37 -0300, Jason Gunthorpe wrote:
 > 
-> On 2023-07-19 05:10:48+0800, Zhangjin Wu wrote:
-> > Both syscall declarations and _start code definition are added for
-> > powerpc to nolibc.
-> > 
-[...]
-> > 
-> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > ---
-> >  tools/include/nolibc/arch-powerpc.h | 156 ++++++++++++++++++++++++++++
+> There are two topics here
 > 
-> This also should be added to nolibc/arch.h.
->
-
-Thanks, it should be.
-
-> >  1 file changed, 156 insertions(+)
-> >  create mode 100644 tools/include/nolibc/arch-powerpc.h
-> > 
-> > diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
-> > new file mode 100644
-> > index 000000000000..100ec0f412dc
-> > --- /dev/null
-> > +++ b/tools/include/nolibc/arch-powerpc.h
-> > @@ -0,0 +1,156 @@
-> > +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-> > +/*
-> > + * PowerPC specific definitions for NOLIBC
-> > + * Copyright (C) 2023 Zhangjin Wu <falcon@tinylab.org>
+> 1) Make ARM KVM allow the VM to select WC for its MMIO. This has
+>    evolved in a way that is not related to VFIO
 > 
-> If it is taken from musl, shouldn't there also be a musl copyright?
->
+> 2) Allow VFIO to create mmaps with WC for non-VM use cases like DPDK.
+> 
+> We have a draft patch for #1, and I think a general understanding with
+> ARM folks that this is the right direction.
+> 
+> 2 is more like what this email talks about - providing mmaps with
+> specific flags.
+> 
+> Benjamin, which are you interested in?
 
-For this copyright issue, I have prepared two new versions without a line from
-musl. even in our old version, most of them are different except the 'sc; bns+
-1f; neg %1, %1; 1:' line and the register variables.
+Sorry for the delay, got caught up.... The customer request we have
+(and what I was indeed talking about) is 2. That said, when running in
+a VM, 2 won't do much without 1.
 
-Seems 'sc; bns+ 1f; neg %1, %1; 1:' is also used in linux kernel:
-arch/powerpc/include/asm/vdso/gettimeofday.h, so, it should be ok enough to
-apply it.
+> > > The problem isn't so much the low level implementation, we just have to
+> > > play with the pgprot, the question is more around what API to present
+> > > to control this.
+> 
+> Assuming this is for #2, I think VFIO has fallen into a bit of a trap
+> by allowing userspace to form the mmap offset. I've seen this happen
+> in other subsystems too. It seems like a good idea then you realize
+> you need more stuff in the mmap space and become sad.
+> 
+> Typically the way out is to covert the mmap offset into a cookie where
+> userspace issues some ioctl and then the ioctl returns an opaque mmap
+> offset to use.
+> 
+> eg in the vfio context you'd do some 'prepare region for mmap' ioctl
+> where you could specify flags. The kernel would encode the flags in
+> the cookie and then mmap would do the right thing. Adding more stuff
+> is done by enhancing the prepare ioctl.
+> 
+> Legacy mmap offsets are kept working.
 
-The register varibles have been changed and aligned with othe arch-<ARCH>.h
-locally, they are completely different now, and even further with the new
-syscall.h mentioned in this reply [1], the file will be completely different.
+This indeed what I have in mind. IE. VFIO has legacy regions and add-on
+regions though the latter is currently only exploited by some drivers
+that create their own add-on regions. My proposal is to add an ioctl to
+create them from userspace as "children" of an existing driver-provided
+region, allowing to set different attributes for mmap.
 
-Thomas, Have added your Reviewed-by lines too, thanks a lot!
+> > > This is still quite specific to PCI, but so is the entire regions
+> > > mechanism, so I don't see an easy path to something more generic at
+> > > this stage.
+> 
+> Regions are general, but the encoding of the mmap cookie has various
+> PCI semantics when used with the PCI interface..
+> 
+> We'd want the same ability with platform devices too, for instance.
 
-Best regards,
-Zhangjin
-----
-[1]: https://lore.kernel.org/lkml/20230725054414.15055-1-falcon@tinylab.org/
+In the current VFIO the implementation is *entirely* in vfio_pci_core
+for PCI and entirely in vfio_platform_common.c for platform, so while
+the same ioctls could be imagined to create sub-regions, it would have
+to be completely implemented twice unless we do a lot of heavy lifting
+to move some of that region stuff into common code.
 
+But yes, appart from that, no objection :-)
+
+Cheers,
+Ben.
