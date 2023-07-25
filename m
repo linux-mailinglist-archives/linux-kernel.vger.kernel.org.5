@@ -2,95 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05BE760FEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB0D760FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbjGYJ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
+        id S232986AbjGYJ6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbjGYJ5c (ORCPT
+        with ESMTP id S232939AbjGYJ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:57:32 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18710E7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:57:31 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-98e011f45ffso785117366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:57:30 -0700 (PDT)
+        Tue, 25 Jul 2023 05:58:23 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8757E1FC6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:58:13 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-794b8fe8cc4so4212943241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690279049; x=1690883849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wC6uOAAWWshiU7HM0RaHJ6XLqbUAShyDQVdsD3q4R3A=;
-        b=mVZGMZlCiF1F6HADarxCSEJ1MaLMUtXiR3oM2qyw2oGwaGxxU7SwWx4LwS3BmlM3Bv
-         ytMZ4w23uqOjuxcrrQM47eHvV4QXgFGAUoc4enoBm7nt7QMgcNB7tCVduRauDCN3uLc4
-         M1D1RGNM+k21uF4lgcSf+0UCq/47yuxXI4ZbBv6LV1BPjRyUNfXu3Jv42aN2OEu34Mqs
-         KKZGZ3LMkUO/0/+E+mCG3x4EhYaQbg4gVzjbjTtvd3KudbzY3uPdSyt7ApuWzO599Hfx
-         scuMwYTBeVjHFfoJjHW1KVup4wWNXJ6A5LhlwkD3YcbnPra2xfDdtONBPUCGBrZITYK6
-         uxXQ==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690279092; x=1690883892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l0CXr8qUO3I0b7KpmPpq9/x2xv1za5Y0XE1WB4W2dco=;
+        b=lL+qxX++mKtv4r4f3KBsqJpG6c+NUpeIZF7o8MnMcy+bdBdH7QAGMhjJD+hATUi3V3
+         6uHgehJ6yU6DCnQ5z2KMjsI6OGboAZiIPy45Eyu8SEh24DIiOdYd76Dp3u8vGPGBX5nm
+         HY8JhyPgSv3zfr0ULBKqdi/spIsqYrkDvLYEzRUDAQxbkfIzpbse4pWmwovfd+Hpf8xH
+         1lUspD322S0cE1WXgBeDjIO8sZ6ARh4/K6gsk2HaSLVyf3BbcCv5tiAf+JlGaUnj/tPM
+         BaJqcicgsKxWwJeUlnUS2/U4ZfWGCoBFkEAsewMSAq9+rL++k5Dig/Yg5ldU8qmR8o+X
+         PUdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690279049; x=1690883849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wC6uOAAWWshiU7HM0RaHJ6XLqbUAShyDQVdsD3q4R3A=;
-        b=KoiVRbrsj5phslPoMcgr34adhRZ9lnijrrm3IgOt5eyb1ZMFHwnPBXrSgPVqbA2jtu
-         zV3so/FriRFW6XOO8uJJdJnOOaX9DJZJRhhr8diZS9/34tqWg3TcXYvao5ywjQCL0ZLo
-         wICMEpQoK963oM1Mt72VG48Mfn87U65WFpdDgjEjUNyicxYZARCbqIWBKRa2b9DikE6m
-         cNswXJzcFq6/YaV6apC3JmJgitUb8rE6M3NPd8w8wE4t6HEwBoBDEvj+lmmW6k7C9Zov
-         D5FOBLFedmvDnkoT2WzEDyR61sB94KLYL4Dx5Rlr9PYLjhapK0Gtqvb6LV+WORYBNzlB
-         OtMQ==
-X-Gm-Message-State: ABy/qLZO8eU88PWOY/Tk71tglhUZN6DAAhycWHZbiFlxOV1HcSnBqZnL
-        WFWh13jHQ3UTQkcn5apzpRyv+g==
-X-Google-Smtp-Source: APBJJlEPuZg32/18BhFO9sCz6xyx84ncx78sRSeoQ4NSWs2kTf61C9KzuN6EfDO1IbzjsJhDu7dLpg==
-X-Received: by 2002:a17:907:75cc:b0:99b:4890:812d with SMTP id jl12-20020a17090775cc00b0099b4890812dmr11202687ejc.16.1690279049518;
-        Tue, 25 Jul 2023 02:57:29 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id lv19-20020a170906bc9300b00989257be620sm7853476ejb.200.2023.07.25.02.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 02:57:28 -0700 (PDT)
-Message-ID: <6f899f68-a44e-ef50-4236-007a73eb0431@linaro.org>
-Date:   Tue, 25 Jul 2023 11:57:25 +0200
+        d=1e100.net; s=20221208; t=1690279092; x=1690883892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l0CXr8qUO3I0b7KpmPpq9/x2xv1za5Y0XE1WB4W2dco=;
+        b=dwW3hmzETpUK90IWHTHVzdqNBcXQ3u/9S37zgkhoky0WOLw2MQdydJmzZvM6MNJZKJ
+         z2bJGitpqn7WmL7q3c1ihtQ265VHmD2WWgOoYmcd+P8KW+AdHuJ58r4OOVhbUPENJZ7W
+         iiqi54OXpXsbzGjf8Eo/aNPnZDhX4CMSo9LJbMYyl+9rysP43p/xPWkwYvrTe9hqdndw
+         5tazZ/6iq0+AG/K4sFCSnVHXfsTTBS0ReyOltuuH3omFJTGPzzewaWNugbDVJmYCm/xN
+         i6n6y3fgjp5NVl1hA+BAevbWIxN1TuMaqGJxfGzZVZwtUUPw2ZHPuHAdOlEbQ8TJcYYY
+         1w+A==
+X-Gm-Message-State: ABy/qLYo4VqmQxuU4CX5P6yzTPYxbmLtGnjAkZrzj+MxO7Vfoej7kwA1
+        DTJ071op7pe0VjIuIojd9zoEzUbnig4txAfKnEhzdw==
+X-Google-Smtp-Source: APBJJlFdl4pjj60VCQ6ocL2zvFgFApGyitoMmdpxPHUtlbE9IO6z24Zk9if6TZexgwuwVsc1CxNfczNoRuu0LPDWCZA=
+X-Received: by 2002:a67:f5c3:0:b0:43f:3426:9e35 with SMTP id
+ t3-20020a67f5c3000000b0043f34269e35mr517225vso.12.1690279092356; Tue, 25 Jul
+ 2023 02:58:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: Add Nuvoton ma35d1 rtc
-Content-Language: en-US
-To:     Jacky Huang <ychuang570808@gmail.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
-        Jacky Huang <ychuang3@nuvoton.com>
-References: <20230725094030.32877-1-ychuang570808@gmail.com>
- <20230725094030.32877-2-ychuang570808@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725094030.32877-2-ychuang570808@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711072053.2837327-1-geert+renesas@glider.be>
+ <CAMRc=Mef-J-WinQxphm+CU8u-PoBan1hPT2yLih4i-RFUDePBQ@mail.gmail.com>
+ <CAMRc=MfsbngW4dor9UXX1ncyabZ=NjUFZFTarcfgOO3iMz4zgw@mail.gmail.com> <CAMuHMdUratvH_C=EXaMxY+SDpvdRbLGPhe4qN7h_TtvHc_zWSg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUratvH_C=EXaMxY+SDpvdRbLGPhe4qN7h_TtvHc_zWSg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 25 Jul 2023 11:58:01 +0200
+Message-ID: <CAMRc=Mcqk+DSGS6co8oLD1K+_BFaUwirCgy0j0oTPDH3R_MKCw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mxc: Improve PM configuration
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 11:40, Jacky Huang wrote:
-> From: Jacky Huang <ychuang3@nuvoton.com>
-> 
-> Add documentation describing the Nuvoton ma35d1 rtc controller.
-> 
-> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
-> ---
->  .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 48 +++++++++++++++++++
+On Mon, Jul 24, 2023 at 6:50=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Bartosz,
+>
+> On Thu, Jul 20, 2023 at 5:23=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> > On Thu, Jul 20, 2023 at 5:17=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev=
+.pl> wrote:
+> > > On Tue, Jul 11, 2023 at 9:20=E2=80=AFAM Geert Uytterhoeven
+> > > <geert+renesas@glider.be> wrote:
+> > > > If CONFIG_PM=3Dn (e.g. m68k/allmodconfig):
+> > > >
+> > > >     drivers/gpio/gpio-mxc.c:612:12: error: =E2=80=98mxc_gpio_runtim=
+e_resume=E2=80=99 defined but not used [-Werror=3Dunused-function]
+> > > >       612 | static int mxc_gpio_runtime_resume(struct device *dev)
+> > > >           |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > > >     drivers/gpio/gpio-mxc.c:602:12: error: =E2=80=98mxc_gpio_runtim=
+e_suspend=E2=80=99 defined but not used [-Werror=3Dunused-function]
+> > > >       602 | static int mxc_gpio_runtime_suspend(struct device *dev)
+> > > >           |            ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > >
+> > > > Fix this by using the non-SET *_PM_OPS to configure the dev_pm_ops
+> > > > callbacks, and by wrapping the driver.pm initializer insider pm_ptr=
+().
+> > > >
+> > > > As NOIRQ_SYSTEM_SLEEP_PM_OPS() uses pm_sleep_ptr() internally, the
+> > > > __maybe_unused annotations for the noirq callbacks are no longer ne=
+eded,
+> > > > and can be removed.
+> > > >
+> > > > Fixes: 3283d820dce649ad ("gpio: mxc: add runtime pm support")
+> > > > Reported-by: noreply@ellerman.id.au
+> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > ---
+> > > >  drivers/gpio/gpio-mxc.c | 10 +++++-----
+> > > >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
+> > > > index a9fb6bd9aa6f9645..a43df5d5006e62d3 100644
+> > > > --- a/drivers/gpio/gpio-mxc.c
+> > > > +++ b/drivers/gpio/gpio-mxc.c
+> > > > @@ -623,7 +623,7 @@ static int mxc_gpio_runtime_resume(struct devic=
+e *dev)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > -static int __maybe_unused mxc_gpio_noirq_suspend(struct device *de=
+v)
+> > > > +static int mxc_gpio_noirq_suspend(struct device *dev)
+> > > >  {
+> > > >         struct platform_device *pdev =3D to_platform_device(dev);
+> > > >         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
+> > > > @@ -634,7 +634,7 @@ static int __maybe_unused mxc_gpio_noirq_suspen=
+d(struct device *dev)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > -static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev=
+)
+> > > > +static int mxc_gpio_noirq_resume(struct device *dev)
+> > > >  {
+> > > >         struct platform_device *pdev =3D to_platform_device(dev);
+> > > >         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
+> > > > @@ -647,8 +647,8 @@ static int __maybe_unused mxc_gpio_noirq_resume=
+(struct device *dev)
+> > > >  }
+> > > >
+> > > >  static const struct dev_pm_ops mxc_gpio_dev_pm_ops =3D {
+> > > > -       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_g=
+pio_noirq_resume)
+> > > > -       SET_RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runti=
+me_resume, NULL)
+> > > > +       NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_=
+noirq_resume)
+> > > > +       RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_r=
+esume, NULL)
+> > > >  };
+> > > >
+> > > >  static int mxc_gpio_syscore_suspend(void)
+> > > > @@ -695,7 +695,7 @@ static struct platform_driver mxc_gpio_driver =
+=3D {
+> > > >                 .name   =3D "gpio-mxc",
+> > > >                 .of_match_table =3D mxc_gpio_dt_ids,
+> > > >                 .suppress_bind_attrs =3D true,
+> > > > -               .pm =3D &mxc_gpio_dev_pm_ops,
+> > > > +               .pm =3D pm_ptr(&mxc_gpio_dev_pm_ops),
+> > > >         },
+> > > >         .probe          =3D mxc_gpio_probe,
+> > > >  };
+> > > > --
+> > > > 2.34.1
+> > > >
+> > >
+> > > Applied, thanks!
+> > >
+> > > Bart
+> >
+> > Nevermind, Arnd has a better fix for that so I'll apply his change.
+>
+> I disagree. And my patch was first ;-)
+>
+> Arnd's version lacks the pm_ptr() around the mxc_gpio_driver.driver.pm
+> initializer, so the compiler cannot throw out the (rather large) unused
+> mxc_gpio_dev_pm_ops structure.
+>
+> Thanks!
+>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Fair enough, I replaced Arnd's patch with yours.
 
-Best regards,
-Krzysztof
-
+Thanks,
+Bartosz
