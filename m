@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430E4762793
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B8A762797
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjGYXzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
+        id S230269AbjGYX7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjGYXzR (ORCPT
+        with ESMTP id S229568AbjGYX7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:55:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641E0E7;
-        Tue, 25 Jul 2023 16:55:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 028A660F8A;
-        Tue, 25 Jul 2023 23:55:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C2CC433C7;
-        Tue, 25 Jul 2023 23:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690329315;
-        bh=LaWGO6FB51BoI4x0QvDk+gLLZfsA9FHjkVjMztqhaeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KzOGvR8VoaUt/GJ6o7tu6QMZ8nY3rZDbM55d7kFUMQ7ypch0td9RTh9EM4aKuPgYq
-         4eCKXJggIQEN4Vum1R+hpD8KvcaFG8iLkW8SMpFwv+/Pd3goEmQkaJ0CdhWF5KRpVI
-         cz0m0BxdOjqv5LkaI41z5k+NmK4jshwHXedo4XzCxOtzmbNOzL+smiEj6gMIgMkJgt
-         AznnAqJGeKIzWBsMXogcU+qSE9aSf4hGgsoSkhTABaWytqBNsVHooyRjhBI1kGoLGM
-         48S+6P+7zYCY+RzMZDzGp1sFQlpOeUzDwhcB23sY3Dezp70I80Y3MD2r5nGocxV/W+
-         LlRlgJ0EyEU+A==
-Date:   Wed, 26 Jul 2023 01:55:11 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     carlos.song@nxp.com
-Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, xiaoning.wang@nxp.com,
-        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] i2c: imx-lpi2c: directly return ISR when detect a
- NACK
-Message-ID: <20230725235511.lt62ubfw7geu5cfu@intel.intel>
-References: <20230724105546.1964059-1-carlos.song@nxp.com>
+        Tue, 25 Jul 2023 19:59:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEC82696
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:58:59 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3174aac120aso2926621f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690329538; x=1690934338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y0V/EEMFzUDgOJY1HEZ2mzSgEOY/cF7JWrxdvLNmC4c=;
+        b=HQmhRjdDvJ1uYczgxWnKD2vuEgMQ1C34U5qNTVu5bgQnwC4Bo65ZfziU37Xl9ReMuI
+         ljgsg+zC1ZyZKpd6J4xCbFL7r/WFBlobzR0fNJHPHHsEVIs1APIzpwzPPIJWZ9biqp/R
+         QfbRvQeOQiOMI8y/jOcru47WwYghRDHy+nC0Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690329538; x=1690934338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y0V/EEMFzUDgOJY1HEZ2mzSgEOY/cF7JWrxdvLNmC4c=;
+        b=YYEX/o59HauFbXrEzI6+Pp4rCOgPIAvEKQbicfFmXSGm3/hq0wIxC3rEc1XEcpFI6l
+         2U1YClzQ8vflRswK5JQdQIe1nYruxpNedZDLg3WdAkhKKex3GxzZT8VYaGeq9+7mZdrH
+         JO/uEiY1TTAdZ11vbuEeKxXZZinOYG/SkXjHgCI+B38IiUsr6/Y0q44x6+IvV7VO5Oti
+         1hAuMYRIOpdUlAjeBVsO816yjpwueI0LzbftNrgxguPS/n8gTGjYzpH1OPuPj+cYDAWB
+         fGguWE6RVTkbVskgL9NNxev6COepjNYcboRKNZ3y9I0gUW5mXDTNaR27tncPZrpAr1wq
+         N6XQ==
+X-Gm-Message-State: ABy/qLZehDnSraV98OEgKYQ2DY429Jta02DUVrJV7oF8awsTtSlmLibT
+        JHDvoAbujOMhypgAbQ6SxRG0JtVifdr5ZpyJcSZAhw==
+X-Google-Smtp-Source: APBJJlGy2L5/2cNwOkSULYyldMb4TDytCVWiZW6+dAHiJcS7YGt/MlduX4KyitS9hJny3oNNGjQrpGffL7wmLJmUKA8=
+X-Received: by 2002:a5d:49c5:0:b0:316:fb39:e045 with SMTP id
+ t5-20020a5d49c5000000b00316fb39e045mr180608wrs.48.1690329538460; Tue, 25 Jul
+ 2023 16:58:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724105546.1964059-1-carlos.song@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230710183338.58531-1-ivan@cloudflare.com> <2023071039-negate-stalemate-6987@gregkh>
+ <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com> <jy7ktvlb4tkg6pl2vll6u4gozfji7giddyseypj4w2d2ue4gvn@4tw7dmjy4hfv>
+In-Reply-To: <jy7ktvlb4tkg6pl2vll6u4gozfji7giddyseypj4w2d2ue4gvn@4tw7dmjy4hfv>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Tue, 25 Jul 2023 16:58:47 -0700
+Message-ID: <CABWYdi1k1gNwkWT8TH7kPv=tA8qaZbjaaogYoMRnFPtBqvR_Uw@mail.gmail.com>
+Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in fsid
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Carlos,
+On Tue, Jul 25, 2023 at 7:07=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> Hello.
+>
+> On Mon, Jul 10, 2023 at 02:21:10PM -0700, Ivan Babrou <ivan@cloudflare.co=
+m> wrote:
+> > I want to monitor cgroup changes, so that I can have an up to date map
+> > of inode -> cgroup path, so that I can resolve the value returned from
+> > bpf_get_current_cgroup_id() into something that a human can easily
+> > grasp (think system.slice/nginx.service).
+>
+> Have you considered cgroup_path_from_kernfs_id()?
 
-On Mon, Jul 24, 2023 at 06:55:44PM +0800, carlos.song@nxp.com wrote:
-> From: Gao Pan <pandy.gao@nxp.com>
-> 
-> A NACK flag in ISR means i2c bus error. In such codition,
-> there is no need to do read/write operation. It's better
-> to return ISR directly and then stop i2c transfer.
-> 
-> Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
-> Signed-off-by: Gao Pan <pandy.gao@nxp.com>
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> ---
->  drivers/i2c/busses/i2c-imx-lpi2c.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> index c3287c887c6f..158de0b7f030 100644
-> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> @@ -514,15 +514,14 @@ static irqreturn_t lpi2c_imx_isr(int irq, void *dev_id)
->  	temp = readl(lpi2c_imx->base + LPI2C_MSR);
->  	temp &= enabled;
->  
-> -	if (temp & MSR_RDF)
-> +	if (temp & MSR_NDF) {
-> +		complete(&lpi2c_imx->complete);
-> +		return IRQ_HANDLED;
+* It's not available from bpf from what I see (should I send a patch?)
+* It turns short numeric keys into large string keys (you mention this belo=
+w)
+* It's a lot more work upfront for every event under a spinlock
 
-you can actually remove the return here
+> > Currently I do a full sweep to build a map, which doesn't work if a
+> > cgroup is short lived, as it just disappears before I can resolve it.
+> > Unfortunately, systemd recycles cgroups on restart, changing inode
+> > number, so this is a very real issue.
+>
+> So, a historical map of cgroup id -> path is also useful for you, right?
+> (IOW, cgroup_path_from_kernfs_id() is possible but it'd inflate log
+> buffer size if full paths were stored instead of ids.)
 
-	if (temp & MSR_NDF)
-		complete();
-	else if (temp & MSR_RDF)
-		exfifo();
-	else if (temp & MSR_TDF)
-		txfifo();
+For the most part the historical map would not be necessary if we had
+cgroup paths (except for the points I mentioned above).
 
-	return IRQ_HANDLED;
+> (I think a similar map would be beneficial for SCM_CGROUP [1] idea too.)
 
+Yes, it seems like it.
 
-BTW, the logic here is changing, as well and it's not described
-in the commit log. This patch is not only stopping when a nack is
-received (MSR_NDF), but it's also making mutually exclusive
-read/write (which I guess are MSR_RDF and MSR_TDF).
+> > There's also this old wiki page from systemd:
+> >
+> > * https://freedesktop.org/wiki/Software/systemd/Optimizations
+>
+> The page also states:
+>
+> > Last edited Sat 18 May 2013 08:20:38 AM UTC
+>
+> Emptiness notifications via release_agent are so 2016 :-), unified
+> hiearchy has more convenient API [2], this is FTR.
 
-Is this what you want? If so, can you please describe it in the
-commit log or add a comment describing that the three states are
-all mutually exclusive.
-
-Thanks,
-Andi
-
-
-> +	} else if (temp & MSR_RDF)
->  		lpi2c_imx_read_rxfifo(lpi2c_imx);
-> -
-> -	if (temp & MSR_TDF)
-> +	else if (temp & MSR_TDF)
->  		lpi2c_imx_write_txfifo(lpi2c_imx);
->  
-> -	if (temp & MSR_NDF)
-> -		complete(&lpi2c_imx->complete);
-> -
->  	return IRQ_HANDLED;
->  }
->  
-> -- 
-> 2.34.1
-> 
+Sure, but these aren't arguments against having fanotify for cgroup filesys=
+tem.
