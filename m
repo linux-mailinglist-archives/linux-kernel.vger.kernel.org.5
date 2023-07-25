@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC29A760C4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B90760C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjGYHqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
+        id S232721AbjGYHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjGYHqc (ORCPT
+        with ESMTP id S230428AbjGYHq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:46:32 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D21797;
-        Tue, 25 Jul 2023 00:46:30 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7306D1BF20C;
-        Tue, 25 Jul 2023 07:46:22 +0000 (UTC)
-Message-ID: <aee383e3-0e62-716e-4b07-f7557d63cc74@ghiti.fr>
-Date:   Tue, 25 Jul 2023 09:46:22 +0200
+        Tue, 25 Jul 2023 03:46:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281AF97;
+        Tue, 25 Jul 2023 00:46:25 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690271183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MwlQeCse0p+PDVAUpXy5OS86DdcWiW2W0yctq9JW4YU=;
+        b=UV5iHfgs84Vzben7Ls/EN8AacDD4keKPQa6CkpOHdqYXxXKmW4QbOtGxhQ+RWU740YNYDm
+        xoplp+6QwC/iwzLhLxxHFOsdr3Zs61Wcn6s3GQdBooOrQvRUMCIR0arURIqr8ykUoPyFuA
+        2fdPYc9hFKn+I0B6tP9P/CAbyTOSEPsiXOJss88yFxmpeVfhF5yZZnJYq3Mr3UFw1zFt5d
+        5qxL5SMeIdkjn5l6aQms8LF2buK+HKS+U8KrBMadgTrGH81vmYp7qmtXruuIuQzuzIsUza
+        xgjtAx65WpTFajlfmqHTDGEZJ5ib+Xj5yOTxfiIfw7G66ZymwCFZQPJ16qVlkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690271183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MwlQeCse0p+PDVAUpXy5OS86DdcWiW2W0yctq9JW4YU=;
+        b=L6pYgAhSdpmx7S0bNGsgkCM3d/UYiFUS7u3Ilt+BnxOEVnP/BmE0LRZHRyAgKEOB1KWeqI
+        9EXhBYcSVw8dV+Cg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [patch 01/29] x86/cpu: Encapsulate topology information in
+ cpuinfo_x86
+In-Reply-To: <20230724172843.757723854@linutronix.de>
+References: <20230724155329.474037902@linutronix.de>
+ <20230724172843.757723854@linutronix.de>
+Date:   Tue, 25 Jul 2023 09:46:23 +0200
+Message-ID: <877cqotovk.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH -fixes 1/2] riscv: Export va_kernel_pa_offset in
- vmcoreinfo
-Content-Language: en-US
-To:     Song Shuai <suagrfillet@gmail.com>, bhe@redhat.com,
-        vgoyal@redhat.com, dyoung@redhat.com, corbet@lwn.net,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, xianting.tian@linux.alibaba.com,
-        anup@brainfault.org, robh@kernel.org, ajones@ventanamicro.com,
-        alexghiti@rivosinc.com, conor.dooley@microchip.com
-Cc:     kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20230724100917.309061-1-suagrfillet@gmail.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20230724100917.309061-1-suagrfillet@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
+On Mon, Jul 24 2023 at 19:43, Thomas Gleixner wrote:
+> +struct cpuinfo_topology {
+> +	u16			apicid;
+> +	u16			initial_apicid;
 
+There was an offlist question whether these should be u32 because with
+X2APIC the APIC ID is 32bit wide.
 
-On 24/07/2023 12:09, Song Shuai wrote:
-> Since RISC-V Linux v6.4, the commit 3335068f8721 ("riscv: Use
-> PUD/P4D/PGD pages for the linear mapping") changes phys_ram_base
-> from the physical start of the kernel to the actual start of the DRAM.
->
-> The Crash-utility's VTOP() still uses phys_ram_base and kernel_map.virt_addr
-> to translate kernel virtual address, that failed the Crash with Linux v6.4 [1].
->
-> Export kernel_map.va_kernel_pa_offset in vmcoreinfo to help Crash translate
-> the kernel virtual address correctly.
->
-> Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mapping")
-> Link: https://lore.kernel.org/linux-riscv/20230724040649.220279-1-suagrfillet@gmail.com/ [1]
-> Signed-off-by: Song Shuai <suagrfillet@gmail.com>
-> ---
->   arch/riscv/kernel/crash_core.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/arch/riscv/kernel/crash_core.c b/arch/riscv/kernel/crash_core.c
-> index b351a3c01355..55f1d7856b54 100644
-> --- a/arch/riscv/kernel/crash_core.c
-> +++ b/arch/riscv/kernel/crash_core.c
-> @@ -18,4 +18,6 @@ void arch_crash_save_vmcoreinfo(void)
->   	vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
->   #endif
->   	vmcoreinfo_append_str("NUMBER(KERNEL_LINK_ADDR)=0x%lx\n", KERNEL_LINK_ADDR);
-> +	vmcoreinfo_append_str("NUMBER(va_kernel_pa_offset)=0x%lx\n",
-> +						kernel_map.va_kernel_pa_offset);
->   }
+The answer is yes, no, maybe. Why?
 
+In practice there are limitations, both on the hardware side and on the
+kernel side.
 
-You can add:
+The kernel limits the max. APIC ID to 32768 and the maximum number of
+CPUs to 8192 right now. Increasing the maximum APIC ID is possible, but
+that needs some deep thoughts as we have one array which is
+MAX_LOCAL_APIC sized and a bitmap of that size too. Even the bitmap
+would require (1 << 32)/8 = 5.36871e+08 B = 512MB of memory. With a limit
+of 32768 it's a reasonable 4KB. :)
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+On the hardware side the topology information is in the APIC ID:
 
-Thanks for that and for the instructions on how to reproduce the problem 
-BTW!
+      [PKGID][DIEID]...[COREID][THREADID]
 
-Alex
+where everything below the PKGID is relative to the package. Right now
+the vendors have that space packed, i.e. the number of bits below PKGID
+is sized that its the next power of 2 which allows to fit the actual
+number of logical processors.
 
+There have been systems where the PKGID shift was larger than that which
+caused us to do the logical package mapping because we ended up with
+package ID gaps. That was caused by incorrect information in leaf
+0xB/0x1F, i.e. the package shift enumerated was smaller than the actual
+one.
 
+So with an upper limit of 8192 CPUs the limitation to 32K APIC IDs
+should be really sufficient. The largest package shift I've seen so far
+is 8, i.e. 256 logical processors per package. That means 32 packages
+max. That should be sufficient for a while, right? The HPE/UV people
+might have a word to say here though.
+
+So no, u16 is fine, but yes, we can make it u32 just for simplicity
+sake, which still does not allow you to have an APIC ID >= 32k, but
+makes it easy enough to expand that to e.g. 64K or 128K if the need ever
+arises. Let me rework that accordingly.
+
+Thanks,
+
+        tglx
