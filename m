@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F502761D4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B955E761D0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjGYPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S231485AbjGYPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbjGYPYV (ORCPT
+        with ESMTP id S230376AbjGYPNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:24:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44371BD8;
-        Tue, 25 Jul 2023 08:24:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 25 Jul 2023 11:13:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5535A172A
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690297975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yOQIR2zaeadSLX9E8o3+NewD2VrhC+k+gYgvHB3PhWc=;
+        b=DTTV5lsrCjymjGnq1NgkoQjRmjKk27YDWGgQhfpbR8HZ1ebSrFP7KD09IO9oxUr8yeKR6m
+        E9fOi06g91c1ceyldDcvSy8m8LHk2puozt18A7S6pTsrjNPAnP2bjlsjBR7ugfOECCtjst
+        2JBp7tJHqMblNjJPuaQDTKqykAVdWlc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-88-o9K8OLO8NnSGOesA7YpMdQ-1; Tue, 25 Jul 2023 11:12:54 -0400
+X-MC-Unique: o9K8OLO8NnSGOesA7YpMdQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78244617B9;
-        Tue, 25 Jul 2023 15:24:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF6FC433C8;
-        Tue, 25 Jul 2023 15:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690298655;
-        bh=+MfVjB/wjdps2ovrI3oDMNYk7WQRpUGIc0K5gkQDUIs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gPq8eVoFZT6gk5cJ4o3gDvI8uBvnJ6TORQWk/GOfQzPjuE9rZvceL+zOQYNP7fUh2
-         fNDsDS/AaOFWe1KSsuQQcW39LJyqTn240qTgogqgJNy6jkTj/jdc1o+gVHiOwqkANA
-         oDc6Eabr7/YJw5+lNZA4pDAO/S/bI4VYTouqQBJ2d209+JwGdpicCKYueCP2ykjzMK
-         zPTnnFqMHLVkXymEQNIu/9MjJCK09GEpowCDOMtrIxDAYGpqqz+hp6rwa7VoK0Ycul
-         7ZImFTWJ3mCi329bhEx2C9ALC9ntpS47htqEfnmNa3U4GjX1v9rq0JEA7QGb4e//9T
-         E44CiymAS7qMw==
-Date:   Tue, 25 Jul 2023 23:12:38 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Conor Dooley <conor@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next 07/10] dt-bindings: net: snps,dwmac: add safety
- irq support
-Message-ID: <ZL/mZiLQFLv1rpib@xhacker>
-References: <20230723161029.1345-1-jszhang@kernel.org>
- <20230723161029.1345-8-jszhang@kernel.org>
- <20230724-cleat-tricolor-e455afa60b14@spud>
- <20230724232624.GA1112850-robh@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 761FB857FF8;
+        Tue, 25 Jul 2023 15:12:53 +0000 (UTC)
+Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8958C4094DC0;
+        Tue, 25 Jul 2023 15:12:52 +0000 (UTC)
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     terraluna977@gmail.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com
+Subject: [RFC v2 1/3] acpiphp: extra debug hack
+Date:   Tue, 25 Jul 2023 17:12:50 +0200
+Message-Id: <20230725151250.2287988-1-imammedo@redhat.com>
+In-Reply-To: <20230725113938.2277420-2-imammedo@redhat.com>
+References: <20230725113938.2277420-2-imammedo@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230724232624.GA1112850-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:26:24PM -0600, Rob Herring wrote:
-> On Mon, Jul 24, 2023 at 06:23:13PM +0100, Conor Dooley wrote:
-> > On Mon, Jul 24, 2023 at 12:10:26AM +0800, Jisheng Zhang wrote:
-> > > The snps dwmac IP support safety features, and those Safety Feature
-> > > Correctible Error and Uncorrectible Error irqs may be separate irqs.
-> > > 
-> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > index ddf9522a5dc2..bb80ca205d26 100644
-> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > @@ -107,6 +107,8 @@ properties:
-> > >        - description: Combined signal for various interrupt events
-> > >        - description: The interrupt to manage the remote wake-up packet detection
-> > >        - description: The interrupt that occurs when Rx exits the LPI state
-> > > +      - description: The interrupt that occurs when Safety Feature Correctible Errors happen
-> > > +      - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
-> > >  
-> > >    interrupt-names:
-> > >      minItems: 1
-> > > @@ -114,6 +116,8 @@ properties:
-> > >        - const: macirq
-> > >        - enum: [eth_wake_irq, eth_lpi]
-> > >        - const: eth_lpi
-> > > +      - const: sfty_ce_irq
-> > > +      - const: sfty_ue_irq
-> > 
-> > Putting _irq in an interrupt name seems rather redundant to me although,
-> > clearly not the first time for it here.
-> 
-> It's already inconsistent, so don't follow that pattern. Drop '_irq'.
+v3:
+drop recent debug line that probably causing crash
 
-Thanks for the suggestion, will wait a bit to get more feedbacks before
-sending out v2.
-> 
-> > 
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > 
-> > Thanks,
-> > Conor.
-> 
-> 
+Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+---
+ drivers/pci/hotplug/acpiphp_glue.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 5b1f271c6034..ea8ed608f2a7 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -485,6 +485,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 	struct pci_bus *bus = slot->bus;
+ 	struct acpiphp_func *func;
+ 
++pci_info(bus, "enable_slot bus: bridge: %d, bus->self: %p\n", bridge, bus->self);
+ 	if (bridge && bus->self && hotplug_is_native(bus->self)) {
+ 		/*
+ 		 * If native hotplug is used, it will take care of hotplug
+@@ -544,6 +545,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 		}
+ 		pci_dev_put(dev);
+ 	}
++pr_err("enable_slot: end\n");
+ }
+ 
+ /**
+@@ -702,16 +704,20 @@ static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
+ 	if (bridge->is_going_away)
+ 		return;
+ 
+-	if (bridge->pci_dev)
++	if (bridge->pci_dev) {
+ 		pm_runtime_get_sync(&bridge->pci_dev->dev);
++pci_info(bridge->pci_dev, "acpiphp_check_bridge\n");
++        }
+ 
+ 	list_for_each_entry(slot, &bridge->slots, node) {
+ 		struct pci_bus *bus = slot->bus;
+ 		struct pci_dev *dev, *tmp;
+ 
+ 		if (slot_no_hotplug(slot)) {
++pr_err("acpiphp_check_bridge: slot_no_hotplug\n");
+ 			; /* do nothing */
+ 		} else if (device_status_valid(get_slot_status(slot))) {
++pr_err("acpiphp_check_bridge: device_status_valid\n");
+ 			/* remove stale devices if any */
+ 			list_for_each_entry_safe_reverse(dev, tmp,
+ 							 &bus->devices, bus_list)
+@@ -799,7 +805,7 @@ static void hotplug_event(u32 type, struct acpiphp_context *context)
+ 	switch (type) {
+ 	case ACPI_NOTIFY_BUS_CHECK:
+ 		/* bus re-enumerate */
+-		acpi_handle_debug(handle, "Bus check in %s()\n", __func__);
++		acpi_handle_debug(handle, "Bus check in %s(): bridge: %p\n", __func__, bridge);
+ 		if (bridge)
+ 			acpiphp_check_bridge(bridge);
+ 		else if (!(slot->flags & SLOT_IS_GOING_AWAY))
+-- 
+2.39.3
+
