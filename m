@@ -2,116 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E7A7624FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0170762557
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjGYV6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        id S231673AbjGYWB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjGYV54 (ORCPT
+        with ESMTP id S231691AbjGYWBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:57:56 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7A6193
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:55 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso9616238e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:55 -0700 (PDT)
+        Tue, 25 Jul 2023 18:01:17 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CEE2139
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:12 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991ef0b464cso71993566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690322273; x=1690927073;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9b1rum3dNzgjEBji3blebo6bNVhtpdwh9Flr67JyHF0=;
-        b=Drur1jsGwj8bxxj5nirqU9Bnu417zSMei1kZzT8XEiP5HClskNp3V1gGNTJjlnAz8p
-         Zx+juq2DJrdrvzv5o8jNGGW0YuBmK63ElQK0fcmV2kh8dj+pyg98KRBVqrn7w4aKtN6B
-         sSYVXeRc6z3RRaE9A2/OM9s4J7EP/7LHO11Us=
+        d=google.com; s=20221208; t=1690322471; x=1690927271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EitNPpdaQImS+UO+6gfA4PmDrc0gIvXFa/aFMwcLRHY=;
+        b=ffXmfym6N4mdb0c+soPvdHw9AnsEOLeiuBQ+yw4S7vov+SQonwJhjpAunJ8MZ/0I5z
+         vkrWDPPOpEOEBzeRbv5sOiO30J4bFlm2uaVwSYhHD0F3MKUR9bH25ZV/8P/V4vv+68DQ
+         Awc52OT0af4X6ruHifd5tQ1PogYcEQOfve3Ueg+a7WcGr5VWhifbZTc/db4frCI4n7g5
+         /cI4O00K/WdfHxccbUgsBgsHT0u3X1wgsRZRcCroOqmlSuxKZyBiWllsAHZDE0aYI863
+         HH03aEHMz4BpzVT211siQA6rfn6moa4eIizUAYEDOz1f4m0/qoh/lxD+/YVqk5FZbfS7
+         Pe0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322273; x=1690927073;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9b1rum3dNzgjEBji3blebo6bNVhtpdwh9Flr67JyHF0=;
-        b=HQpq1LkC7TFAfY+OWWB+LNnZ5iHPd5Qn4XeifzVG7vqfgG0KBZb5iqBs+S5/Q9QkID
-         sOHSnUySEAQyIrTwFvZl2liSDViVbBfww91RlIIzIOwvvdl4vHsfvuOIcXEMQForVxLL
-         4AJFvs6y1ajprmwgM5e5WxZ/PiGTdcPxxYhQnYJPk8k9L6dwQsxdb3cWMtnPpfaacuf6
-         iGWSarPJtVXC9Z525PDsOaqitIDHnR38C65Z2jzA2IhPlXMsK7vOQWD+x/vVLD+FnEjH
-         bFKLK7uf9MZdKWUynw5LjSPKqRZAA1YmiKG2XqXFEcqlm3j9UCohsACErxa+moL6dt/m
-         YOOA==
-X-Gm-Message-State: ABy/qLa2Vh/iK+H63NYtb3+EmYX4BemegMaLNySSjCL9nJ2hcwzwVAGq
-        4wfVvdHdgofHroBADosRPv1HkTbDZfGyUE0VMhVzG35b
-X-Google-Smtp-Source: APBJJlEAKrpki/5D4JGPqTC5K+RsGX8zY+2KdyDbIca5EVPG7W+NLhdFPUq4aWDXBRoWI87a/XphNA==
-X-Received: by 2002:a05:6512:202f:b0:4fb:8ee0:b8a5 with SMTP id s15-20020a056512202f00b004fb8ee0b8a5mr84516lfs.46.1690322273618;
-        Tue, 25 Jul 2023 14:57:53 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id a11-20020aa7d90b000000b005222a38c7b2sm3900552edr.48.2023.07.25.14.57.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 14:57:52 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-991c786369cso934169366b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:52 -0700 (PDT)
-X-Received: by 2002:a17:906:3296:b0:970:c9f:2db6 with SMTP id
- 22-20020a170906329600b009700c9f2db6mr82102ejw.63.1690322272256; Tue, 25 Jul
- 2023 14:57:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690322471; x=1690927271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EitNPpdaQImS+UO+6gfA4PmDrc0gIvXFa/aFMwcLRHY=;
+        b=cgbSobUhQjLqBXr7FO2L77qqy8mkOD7xx2Nf7/yb6zwUt6VejxEXP+LQfLcGZnog9f
+         JCvHon6xkpSpiDYupSWmmpcMQRTYIOHPZqPrmRbNR7cSA4brmGw/31ow8Ul+bdJ4Sabp
+         JmpUKlHXurq6OrL/7Uxgbms3QqLi+yj+4zvdgxSjF+0HOzJO/ggXGC25srIndHIN7qVm
+         Zka8t/oB/Io99O0GEA3ID7SWUi/eZt0xBF9gvOWWZauuBW10Z/CMyjthKfp0hy3lnJ8s
+         I8cX/LCHwmbc9zTffGg8jdZNdC/7TtGKTUSjfLd5atxbDJdaT+Fd8RqkcWtyTaD0wDZu
+         DBIg==
+X-Gm-Message-State: ABy/qLZUL0KCrlmgxkoxdMVKG07GVErbQYR/yv1wgxMTgr/InF7w1Mkm
+        Clzhn8ZJDSM6HiBNhw/CA2AYItBJFk9rFER0RdTLmg==
+X-Google-Smtp-Source: APBJJlFgTPyujUtZ8EgbKUjRjcN96PY7sGSk7GdBAe1Uf1XmD95bwOiGIXX+Oe7jKRmrKs4UJhAWrAaQohGw5cQDLp0=
+X-Received: by 2002:a17:906:32db:b0:994:5457:269e with SMTP id
+ k27-20020a17090632db00b009945457269emr457378ejk.0.1690322471171; Tue, 25 Jul
+ 2023 15:01:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
-In-Reply-To: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 25 Jul 2023 14:57:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
-Message-ID: <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/traps: Fix load_unaligned_zeropad() handling for
- shared TDX memory
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>
+References: <20230719174613.3062124-1-yosryahmed@google.com>
+ <20230725140435.GB1146582@cmpxchg.org> <CAJD7tkaYHvaX6SL=A6TsCQHT+rOTp-WhOiQ1XSN+ywOVN=-QBQ@mail.gmail.com>
+ <20230725201811.GA1231514@cmpxchg.org>
+In-Reply-To: <20230725201811.GA1231514@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 25 Jul 2023 15:00:34 -0700
+Message-ID: <CAJD7tkZkTgt9kT_5BqYyB2w4EcL_M4v0zG6rrM+qAAnpq-AQdg@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 at 16:03, Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
+On Tue, Jul 25, 2023 at 1:18=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> Commit c4e34dd99f2e ("x86: simplify load_unaligned_zeropad()
-> implementation") changes how exceptions around load_unaligned_zeropad()
-> handled. Kernel now relies on fault_address in fixup_exception() to
-> detect that the exception happened due to load_unaligned_zeropad().
+> On Tue, Jul 25, 2023 at 12:24:19PM -0700, Yosry Ahmed wrote:
+> > On Tue, Jul 25, 2023 at 7:04=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > > We used to maintain *all* stats in per-cpu counters at the local
+> > > level. memory.stat reads would have to iterate and aggregate the
+> > > entire subtree every time. This was obviously very costly, so we adde=
+d
+> > > batched upward propagation during stat updates to simplify reads:
+> > >
+> > > commit 42a300353577ccc17ecc627b8570a89fa1678bec
+> > > Author: Johannes Weiner <hannes@cmpxchg.org>
+> > > Date:   Tue May 14 15:47:12 2019 -0700
+> > >
+> > >     mm: memcontrol: fix recursive statistics correctness & scalabilty
+> > >
+> > > However, that caused a regression in the stat write path, as the
+> > > upward propagation would bottleneck on the cachelines in the shared
+> > > parents. The fix for *that* re-introduced the per-cpu loops in the
+> > > local stat reads:
+> > >
+> > > commit 815744d75152078cde5391fc1e3c2d4424323fb6
+> > > Author: Johannes Weiner <hannes@cmpxchg.org>
+> > > Date:   Thu Jun 13 15:55:46 2019 -0700
+> > >
+> > >     mm: memcontrol: don't batch updates of local VM stats and events
+> > >
+> > > So I wouldn't say it's a regression from rstat. Except for that short
+> > > period between the two commits above, the read side for local stats
+> > > was always expensive.
+> >
+> > I was comparing from an 4.15 kernel, so I assumed the major change was
+> > from rstat, but that was not accurate. Thanks for the history.
+> >
+> > However, in that 4.15 kernel the local (non-hierarchical) stats were
+> > readily available without iterating percpu counters. There is a
+> > regression that was introduced somewhere.
+> >
+> > Looking at the history you described, it seems like up until
+> > 815744d75152 we used to maintain "local" (aka non-hierarchical)
+> > counters, so reading local stats was reading one counter, and starting
+> > 815744d75152 we started having to loop percpu counters for that.
+> >
+> > So it is not a regression of rstat, but seemingly it is a regression
+> > of 815744d75152. Is my understanding incorrect?
 >
-> It works fine for #PF, but breaks on #VE since no fault address is
-> passed down to fixup_exception().
+> Yes, it actually goes back further. Bear with me.
 >
-> Propagating ve_info.gla down to fixup_exception() resolves the issue.
+> For the longest time, it used to be local per-cpu counters. Every
+> memory.stat read had to do nr_memcg * nr_cpu aggregation. You can
+> imagine that this didn't scale in production.
+>
+> We added local atomics and turned the per-cpu counters into buffers:
+>
+> commit a983b5ebee57209c99f68c8327072f25e0e6e3da
+> Author: Johannes Weiner <hannes@cmpxchg.org>
+> Date:   Wed Jan 31 16:16:45 2018 -0800
+>
+>     mm: memcontrol: fix excessive complexity in memory.stat reporting
+>
+> Local counts became a simple atomic_read(), but the hierarchy counts
+> would still have to aggregate nr_memcg counters.
+>
+> That was of course still too much read-side complexity, so we switched
+> to batched upward propagation during the stat updates:
+>
+> commit 42a300353577ccc17ecc627b8570a89fa1678bec
+> Author: Johannes Weiner <hannes@cmpxchg.org>
+> Date:   Tue May 14 15:47:12 2019 -0700
+>
+>     mm: memcontrol: fix recursive statistics correctness & scalabilty
+>
+> This gave us two atomics at each level: one for local and one for
+> hierarchical stats.
+>
+> However, that went too far the other direction: too many counters
+> touched during stat updates, and we got a regression report over memcg
+> cacheline contention during MM workloads. Instead of backing out
+> 42a300353 - since all the previous versions were terrible too - we
+> dropped write-side aggregation of *only* the local counters:
+>
+> commit 815744d75152078cde5391fc1e3c2d4424323fb6
+> Author: Johannes Weiner <hannes@cmpxchg.org>
+> Date:   Thu Jun 13 15:55:46 2019 -0700
+>
+>     mm: memcontrol: don't batch updates of local VM stats and events
+>
+> In effect, this kept all the stat optimizations for cgroup2 (which
+> doesn't have local counters), and reverted cgroup1 back to how it was
+> for the longest time: on-demand aggregated per-cpu counters.
+>
+> For about a year, cgroup1 didn't have to per-cpu the local stats on
+> read. But for the recursive stats, it would either still have to do
+> subtree aggregation on read, or too much upward flushing on write.
+>
+> So if I had to blame one commit for a cgroup1 regression, it would
+> probably be 815744d. But it's kind of a stretch to say that it worked
+> well before that commit.
+>
+> For the changelog, maybe just say that there was a lot of back and
+> forth between read-side aggregation and write-side aggregation. Since
+> with rstat we now have efficient read-side aggregation, attempt a
+> conceptual revert of 815744d.
 
-Ahh.
+Now that's a much more complete picture. Thanks a lot for all the
+history, now it makes much more sense. I wouldn't blame 815744d then,
+as you said it's better framed as a conceptual revert of it. I will
+rewrite the commit log accordingly and send a v2.
 
-The faulting address was really only used as a sanity check, so I
-guess another option would have been to just remove it.
+Thanks!
 
-We do need to get the "real" address anyway just to get the right
-offset, and that comes from
+>
+> > > But I want to be clear: this isn't a regression fix. It's a new
+> > > performance optimization for the deprecated cgroup1 code. And it come=
+s
+> > > at the cost of higher memory footprint for both cgroup1 AND cgroup2.
+> >
+> > I still think it is, but I can easily be wrong. I am hoping that the
+> > memory footprint is not a problem. There are *roughly* 80 per-memcg
+> > stats/events (MEMCG_NR_STAT + NR_MEMCG_EVENTS) and 55 per-lruvec stats
+> > (NR_VM_NODE_STAT_ITEMS). For each stat there is an extra 8 bytes, so
+> > on a two-node machine that's  8 * (80 + 55 * 2) ~=3D 1.5 KiB per memcg.
+> >
+> > Given that struct mem_cgroup is already large, and can easily be 100s
+> > of KiBs on a large machine with many cpus, I hope there won't be a
+> > noticeable regression.
+>
+> Yes, the concern wasn't so much the memory consumption but the
+> cachelines touched during hot paths.
+>
+> However, that was mostly because we either had a) write-side flushing,
+> which is extremely hot during MM stress, or b) read-side flushing with
+> huuuge cgroup subtrees due to zombie cgroups. A small cacheline
+> difference would be enormously amplified by these factors.
+>
+> Rstat is very good at doing selective subtree flushing on reads, so
+> the big coefficients from a) and b) are no longer such a big concern.
+> A slightly bigger cache footprint is probably going to be okay.
 
-        addr = (unsigned long) insn_get_addr_ref(&insn, regs);
-
-and all we do is to then check they "yep, the faulting address is the
-start of the next aligned word".
-
-The faulting address in itself was never sufficient, since it has lost
-the original offset in the previous page, and typically just points to
-the first word in the next page.
-
-That said, your patch looks fine to me, even if it might have been
-easier to just remove the fault_addr thing entirely. And the
-fault_addr verification is nice in that it validates our instruction
-decoder result, so maybe it is all better this way.
-
-I can apply this directly (having written that ex_handler_zeropad())
-or wait for it to come from the x86 tree?
-
-                 Linus
+Agreed, maintaining the local counters with rstat is much easier than
+the previous attempts. I will try to bake most of this into the commit
+log.
