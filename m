@@ -2,121 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5EE762052
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B177576205E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjGYRhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
+        id S231232AbjGYRlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjGYRhg (ORCPT
+        with ESMTP id S231302AbjGYRli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:37:36 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CDA1FCF;
-        Tue, 25 Jul 2023 10:37:35 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686be28e1a8so57972b3a.0;
-        Tue, 25 Jul 2023 10:37:35 -0700 (PDT)
+        Tue, 25 Jul 2023 13:41:38 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4531B1BE2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-403ea0a50f7so44449071cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690306655; x=1690911455;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GnTumbdoXA7kD4l0sgFMoj5lddIfZfyLgk/Pn05/htE=;
-        b=O6fh574qQ2nGINq2T31huCYSAL0r6voZnPFKravwzEZ8hYSssxDLcKp4qt6v5Jp76G
-         g+0RXK4Cgo+sS2aoFe8APnzagkw+UD23/mQpS9nSAqCIbxhErxSYkL4106NNHjZzT+RF
-         lTIJgDfg9r+nbSxqQLcsejgUhrGiymCxRqK6VDp5KAPLz0HvbHwW3+Z7diF7+Kx8aUsH
-         uf6UpU+ITmF2UXF3e4bsnOZBZKTpHG7e4ngtwMqJ+yLoHTfkSsvI0KJQwG9AyPaBolXA
-         519wH9e3liCq1fi7qxI98xi3iTgrLUMnriEADmiUnz5BgQsXiIp4nTvz38KOEvjDZuzc
-         AulQ==
+        d=joelfernandes.org; s=google; t=1690306895; x=1690911695;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
+        b=e5ID1UqXliZ+Zyl9RyCsKE4cEfBV1Yk3CrsZNrSv5V3zn6E8LT99TL1D17Nwe6Lqiv
+         nW/9bnXAFTLNnHj1mEGcktsTtyeTL09GQF65dj1XCRs8uhbyeGqbtPrqeu2zjjCtPw6E
+         CGqFZ4KvpaNSKdpjWcT/8chMGtdRtPBD4m7d8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690306655; x=1690911455;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GnTumbdoXA7kD4l0sgFMoj5lddIfZfyLgk/Pn05/htE=;
-        b=R/tFQtP2nH/1xSv7V9huStJF7WwGLBSQk3CSWW3F+AIFI50qyA+QYwyd5R2h2tZkgr
-         JDFRoq/vs3O7ihWJtf7ApOT1bqGzB765N4K47FPpBMXpMPDuMW/fCCUyVT/1YyfiFoP0
-         IwfCDZUZdMrpxvF8U86shLxZQT0XSvr4PPulfVdjwp0ZiyPtzLTHl2zA70CUQPYmBqRV
-         7BP6WNTKQ//I+ZvjXeqQePpkn5wHQ8vMySuLFJLBinUl0FkkSnqHzj5iFBsM6I9G944z
-         nPIX6VxX41SvJXGyugF2q3F9m9x9AR/Z4FuoKXan+xStjaJXtIR2XgYPCZ4Iz06tx2Ji
-         /3MQ==
-X-Gm-Message-State: ABy/qLaBgeiZ/MPfLH36XwNa/PdUYiiNMpFk1gewhQjv6iwbE6SXLkWD
-        HBtFph4z9OMMrIAxJsDqTok=
-X-Google-Smtp-Source: APBJJlFM3Aa14VXpHuV0rtSBjneVPfgDeOZeusNwsl0Rw0ZzY4nuc1/0bx36X+Jp0nCH1r7poiYFiA==
-X-Received: by 2002:a05:6a20:7d9f:b0:123:828f:68c with SMTP id v31-20020a056a207d9f00b00123828f068cmr12790754pzj.50.1690306655077;
-        Tue, 25 Jul 2023 10:37:35 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id e17-20020a62ee11000000b0064d57ecaa1dsm9906645pfi.28.2023.07.25.10.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 10:37:34 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     isdn@linux-pingi.de, alexanderduyck@fb.com, duoming@zju.edu.cn,
-        yangyingliang@huawei.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] mISDN: hfcpci: Fix potential deadlock on &hc->lock
-Date:   Tue, 25 Jul 2023 17:37:28 +0000
-Message-Id: <20230725173728.13816-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690306895; x=1690911695;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
+        b=NrBqpBgoZpOy0HzM31hCvHIwUiI+EdUwcLkGWfWKuzBBUIqUKjWdZRbSqKVqSHvY/o
+         q4PlLOPwtE5twM8K+D+uERK03Dzi7ehE0kE7xWHk/JcHA/xAnQFC1+O71+CbRYAUHduR
+         9M7FC7xeeLrFUdzGQ9sv0xZPdK+jtYY1Vsqr4bXhTgozoBEgvgCHbKotNUOfRHkLW83w
+         +b4lBpnMot/fFEKG6DzL0PHramZtZdyks2a6ntq/WkQIyq3Ha9dkuOrtQctWEGuP9DSO
+         SZoFA+cPGRdi/n37qDZkEu8bKwsB2Ypk76tCeYgRh6ZzcwonBdesOvErMHzvfodAhO4Z
+         wyYQ==
+X-Gm-Message-State: ABy/qLZVgAssjgpywKMY3tqBiVz2vv/UqtQtBMsHUhiR12MzXn5g6h6e
+        f4tbCJKxYci29BVSIBjllvqoLg==
+X-Google-Smtp-Source: APBJJlHBHpNnHoYZv15+3LbjPWhNhvppPgE8W+pmrg9pYJauopPMXA+KIqGV321IR1oTEDcTpImI2Q==
+X-Received: by 2002:a05:622a:1742:b0:403:b6a9:b8f9 with SMTP id l2-20020a05622a174200b00403b6a9b8f9mr3981171qtk.36.1690306895263;
+        Tue, 25 Jul 2023 10:41:35 -0700 (PDT)
+Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id z4-20020a05622a124400b004054b7cc490sm3480130qtx.73.2023.07.25.10.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 10:41:34 -0700 (PDT)
+Message-ID: <1e254a35-d0c2-8d41-f020-21694945911a@joelfernandes.org>
+Date:   Tue, 25 Jul 2023 13:41:32 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
+ patching IPIs
+Content-Language: en-US
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+References: <20230720163056.2564824-19-vschneid@redhat.com>
+ <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
+ <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &hc->lock is acquired by both timer _hfcpci_softirq() and hardirq
-hfcpci_int(), the timer should disable irq before lock acquisition
-otherwise deadlock could happen if the timmer is preemtped by the hadr irq.
 
-Possible deadlock scenario:
-hfcpci_softirq() (timer)
-    -> _hfcpci_softirq()
-    -> spin_lock(&hc->lock);
-        <irq interruption>
-        -> hfcpci_int()
-        -> spin_lock(&hc->lock); (deadlock here)
 
-This flaw was found by an experimental static analysis tool I am developing
-for irq-related deadlock.
+On 7/25/23 09:36, Valentin Schneider wrote:
+> On 25/07/23 06:49, Joel Fernandes wrote:
+>> Interesting series Valentin. Some high-level question/comments on this one:
+>>
+>>> On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> wrote:
+>>>
+>>> ﻿text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
+>>> them vs the newly patched instruction. CPUs that are executing in userspace
+>>> do not need this synchronization to happen immediately, and this is
+>>> actually harmful interference for NOHZ_FULL CPUs.
+>>
+>> Does the amount of harm not correspond to practical frequency of text_poke?
+>> How often does instruction patching really happen? If it is very infrequent
+>> then I am not sure if it is that harmful.
+>>
+> 
+> Being pushed over a latency threshold *once* is enough to impact the
+> latency evaluation of your given system/application.
+> 
+> It's mainly about shielding the isolated, NOHZ_FULL CPUs from whatever the
+> housekeeping CPUs may be up to (flipping static keys, loading kprobes,
+> using ftrace...) - frequency of the interference isn't such a big part of
+> the reasoning.
 
-The tentative patch fixes the potential deadlock by spin_lock_irq()
-in timer.
+Makes sense.
 
-But the patch could be not enough since between the lock critical section
-inside the timer, tx_birq() is called in which a lot of stuff is executed
-such as dev_kfree_skb(). I am not sure what's the best way to solve this
-potential deadlock problem.
+>>> As the synchronization IPIs are sent using a blocking call, returning from
+>>> text_poke_bp_batch() implies all CPUs will observe the patched
+>>> instruction(s), and this should be preserved even if the IPI is deferred.
+>>> In other words, to safely defer this synchronization, any kernel
+>>> instruction leading to the execution of the deferred instruction
+>>> sync (ct_work_flush()) must *not* be mutable (patchable) at runtime.
+>>
+>> If it is not infrequent, then are you handling the case where userland
+>> spends multiple seconds before entering the kernel, and all this while
+>> the blocking call waits? Perhaps in such situation you want the real IPI
+>> to be sent out instead of the deferred one?
+>>
+> 
+> The blocking call only waits for CPUs for which it queued a CSD. Deferred
+> calls do not queue a CSD thus do not impact the waiting at all. See
+> smp_call_function_many_cond().
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/isdn/hardware/mISDN/hfcpci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ah I see you are using on_each_cpu_cond(). I should have gone through
+the other patch before making noise.
 
-diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
-index c0331b268010..ca77f259fd93 100644
---- a/drivers/isdn/hardware/mISDN/hfcpci.c
-+++ b/drivers/isdn/hardware/mISDN/hfcpci.c
-@@ -2277,7 +2277,7 @@ _hfcpci_softirq(struct device *dev, void *unused)
- 		return 0;
- 
- 	if (hc->hw.int_m2 & HFCPCI_IRQ_ENABLE) {
--		spin_lock(&hc->lock);
-+		spin_lock_irq(&hc->lock);
- 		bch = Sel_BCS(hc, hc->hw.bswapped ? 2 : 1);
- 		if (bch && bch->state == ISDN_P_B_RAW) { /* B1 rx&tx */
- 			main_rec_hfcpci(bch);
-@@ -2288,7 +2288,7 @@ _hfcpci_softirq(struct device *dev, void *unused)
- 			main_rec_hfcpci(bch);
- 			tx_birq(bch);
- 		}
--		spin_unlock(&hc->lock);
-+		spin_unlock_irq(&hc->lock);
- 	}
- 	return 0;
- }
--- 
-2.17.1
+thanks,
+
+ - Joel
 
