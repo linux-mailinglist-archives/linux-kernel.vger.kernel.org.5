@@ -2,164 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09917760E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B40C760F5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbjGYJTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S233437AbjGYJfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbjGYJTQ (ORCPT
+        with ESMTP id S233314AbjGYJfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:19:16 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7E62100;
-        Tue, 25 Jul 2023 02:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690276748; x=1721812748;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3ftlTnZLDKGNw8f2OS/kJtQKY7p+STDvyqbF9dlRCEA=;
-  b=jEswhuXsF+3gcluUA76NV7Ww2hZ1njxfxw33M5+FrtFaAdnkPPT39rfu
-   /7pb/TPFVhRwk+xagQ7sV0RQbE3Jah4zCr8ogUarxP73WtfvQiVWICWg+
-   +UUIzm9rjqVBI/PB981QwCV6qIKImQcUDxZZPaCydbW51Smam88zP/iKJ
-   3Ls0K/EPJs46EwtGo9RGL9uda4qhC1FAn1cTsiDlIK9PjGVZIHE6G0F3E
-   zqZexdbCPQIz2UHLxokHprzh00Qq9Neu5ozV/TPmXs1LoUWRCWrHeKong
-   RBkL+8iohGYPU4gglsgbC8SX+TrJHHtjZEqWyjHsWO3yukndMErc0DXMG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367690997"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="367690997"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:19:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719980480"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="719980480"
-Received: from mongola-mobl.ger.corp.intel.com (HELO [10.249.37.129]) ([10.249.37.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:18:58 -0700
-Message-ID: <987394fd-9724-aa42-37fe-be9707565405@linux.intel.com>
-Date:   Tue, 25 Jul 2023 11:10:52 +0200
+        Tue, 25 Jul 2023 05:35:15 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E14C63582
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:33:52 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36P9AiOA2025204, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36P9AiOA2025204
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 25 Jul 2023 17:10:44 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 25 Jul 2023 17:10:55 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Tue, 25 Jul 2023 17:10:55 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
+ RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
+ 15.01.2375.007; Tue, 25 Jul 2023 17:10:55 +0800
+From:   Ricky WU <ricky_wu@realtek.com>
+To:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Ricky WU <ricky_wu@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] misc: rtsx: judge ASPM Mode to set PETXCFG Reg
+Thread-Topic: [PATCH] misc: rtsx: judge ASPM Mode to set PETXCFG Reg
+Thread-Index: AQHZvtWFTRjHKzyG2k2yMch6mMuURw==
+Date:   Tue, 25 Jul 2023 09:10:54 +0000
+Message-ID: <52906c6836374c8cb068225954c5543a@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.81.102]
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 29/32] sound: soc: qcom: q6usb: Add headphone jack for
- offload connection status
-Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
-        quic_jackp@quicinc.com, oneukum@suse.com, albertccwang@google.com,
-        o-takashi@sakamocchi.jp
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-30-quic_wcheng@quicinc.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230725023416.11205-30-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/25/23 04:34, Wesley Cheng wrote:
-> The headphone jack framework has a well defined intrastructure for
-
-infrastructure
-
-> notifying userspace entities through input devices.  Expose a jack device
-> that carries information about if an offload capable device is connected.
-> Applications can further identify specific offloading information through
-> other SND kcontrols.
-
-What if you connect a set of USB speakers? Would they show as a
-headphone/headset?
-
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  sound/soc/qcom/qdsp6/q6usb.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-> index e4ccb9d912b0..860dff8c1438 100644
-> --- a/sound/soc/qcom/qdsp6/q6usb.c
-> +++ b/sound/soc/qcom/qdsp6/q6usb.c
-> @@ -20,6 +20,7 @@
->  #include <sound/pcm_params.h>
->  #include <sound/asound.h>
->  #include <sound/q6usboffload.h>
-> +#include <sound/jack.h>
->  
->  #include "q6dsp-lpass-ports.h"
->  #include "q6afe.h"
-> @@ -37,6 +38,7 @@ struct q6usb_status {
->  struct q6usb_port_data {
->  	struct q6afe_usb_cfg usb_cfg;
->  	struct snd_soc_usb *usb;
-> +	struct snd_soc_jack hs_jack;
->  	struct q6usb_offload priv;
->  	struct mutex mutex;
->  	unsigned long available_card_slot;
-> @@ -279,6 +281,7 @@ static const struct snd_kcontrol_new q6usb_offload_control = {
->  /* Build a mixer control for a UAC connector control (jack-detect) */
->  static void q6usb_connector_control_init(struct snd_soc_component *component)
->  {
-> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
->  	int ret;
->  
->  	ret = snd_ctl_add(component->card->snd_card,
-> @@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
->  				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
->  	if (ret < 0)
->  		return;
-> +
-> +	ret = snd_soc_card_jack_new(component->card, "USB offload",
-> +					SND_JACK_HEADSET, &data->hs_jack);
-
-not all USB devices are headsets...
-
-> +	if (ret)
-> +		return;
->  }
->  
->  static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *component,
-> @@ -322,7 +330,10 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->  
->  	mutex_lock(&data->mutex);
->  	if (connected) {
-> -		snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
-> +		if (!data->available_card_slot) {
-> +			snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
-> +			snd_jack_report(data->hs_jack.jack, 1);
-> +		}
->  		/*
->  		 * Update the latest USB headset plugged in, if session is
->  		 * idle.
-> @@ -338,8 +349,10 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->  		clear_bit(card_idx, &data->available_card_slot);
->  		data->status[card_idx].num_pcm = 0;
->  		data->status[card_idx].chip_index = 0;
-> -		if (!data->available_card_slot)
-> +		if (!data->available_card_slot) {
->  			snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
-> +			snd_jack_report(data->hs_jack.jack, 0);
-> +		}
->  	}
->  	snd_soc_dapm_sync(dapm);
->  	mutex_unlock(&data->mutex);
+QVNQTSBNb2RlIGlzIEFTUE1fTU9ERV9DRkcgbmVlZCB0byBqdWRnZSB0aGUgdmFsdWUgb2YgY2xr
+cmVxXzANCnRvIHNldCBISUdIIG9yIExPVywgaWYgdGhlIEFTUE0gTW9kZSBpcyBBU1BNX01PREVf
+UkVHDQphbHdheXMgc2V0IHRvIEhJR0ggZHVyaW5nIHRoZSBpbml0aWFsaXphdGlvbi4NCg0KQ2M6
+IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNClNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxyaWNreV93
+dUByZWFsdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYyAg
+fCAgMiArLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyAgfCAxOCAtLS0tLS0t
+LS0tLS0tLS0tLS0NCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMgIHwgIDMgKy0t
+DQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jICB8IDE4IC0tLS0tLS0tLS0tLS0t
+LS0tLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjEuYyAgfCAxOCAtLS0tLS0tLS0t
+LS0tLS0tLS0NCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jIHwgIDUgKysrKy0N
+CiA2IGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNTggZGVsZXRpb25zKC0pDQoNCmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMgYi9kcml2ZXJzL21p
+c2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCmluZGV4IGQ2NzZjZjYzYTk2Ni4uM2RhZTVlM2ExNjk3
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jDQorKysgYi9k
+cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCkBAIC0xOTUsNyArMTk1LDcgQEAgc3Rh
+dGljIGludCBydHM1MjI3X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCQl9
+DQogCX0NCiANCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQorCWlmIChvcHRpb24tPmZv
+cmNlX2Nsa3JlcV8wICYmIHBjci0+YXNwbV9tb2RlID09IEFTUE1fTU9ERV9DRkcpDQogCQlydHN4
+X3BjaV9hZGRfY21kKHBjciwgV1JJVEVfUkVHX0NNRCwgUEVUWENGRywNCiAJCQkJRk9SQ0VfQ0xL
+UkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCiAJZWxzZQ0KZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVh
+ZGVyL3J0czUyMjguYw0KaW5kZXggY2ZlYmFkNTFkMWQ4Li5mNGFiMDk0MzlkYTcgMTAwNjQ0DQot
+LS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI4LmMNCisrKyBiL2RyaXZlcnMvbWlz
+Yy9jYXJkcmVhZGVyL3J0czUyMjguYw0KQEAgLTQzNSwxNyArNDM1LDEwIEBAIHN0YXRpYyB2b2lk
+IHJ0czUyMjhfaW5pdF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlvcHRpb24t
+Pmx0cl9lbmFibGVkID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hlY2tfZGV2
+X2ZsYWcocGNyLCBBU1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9MMV8xX0VO
+IHwgUE1fTDFfMl9FTikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7DQotCWVs
+c2UNCi0JCW9wdGlvbi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0aWMgaW50
+IHJ0czUyMjhfZXh0cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQotCXN0cnVj
+dCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIA0KIAlydHN4X3BjaV93
+cml0ZV9yZWdpc3RlcihwY3IsIFJUUzUyMjhfQVVUT0xPQURfQ0ZHMSwNCiAJCQlDRF9SRVNVTUVf
+RU5fTUFTSywgQ0RfUkVTVU1FX0VOX01BU0spOw0KQEAgLTQ3NiwxNyArNDY5LDYgQEAgc3RhdGlj
+IGludCBydHM1MjI4X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCWVsc2UN
+CiAJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywgMHgzMCwgMHgwMCk7DQog
+DQotCS8qDQotCSAqIElmIHVfZm9yY2VfY2xrcmVxXzAgaXMgZW5hYmxlZCwgQ0xLUkVRIyBQSU4g
+d2lsbCBiZSBmb3JjZWQNCi0JICogdG8gZHJpdmUgbG93LCBhbmQgd2UgZm9yY2libHkgcmVxdWVz
+dCBjbG9jay4NCi0JICovDQotCWlmIChvcHRpb24tPmZvcmNlX2Nsa3JlcV8wKQ0KLQkJcnRzeF9w
+Y2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBQRVRYQ0ZHLA0KLQkJCQkgRk9SQ0VfQ0xLUkVRX0RFTElO
+S19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCi0JZWxzZQ0KLQkJcnRzeF9wY2lfd3JpdGVfcmVn
+aXN0ZXIocGNyLCBQRVRYQ0ZHLA0KLQkJCQkgRk9SQ0VfQ0xLUkVRX0RFTElOS19NQVNLLCBGT1JD
+RV9DTEtSRVFfSElHSCk7DQotDQogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUFdEX1NV
+U1BFTkRfRU4sIDB4RkYsIDB4RkIpOw0KIA0KIAlpZiAocGNyLT5ydGQzX2VuKSB7DQpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI0OS5jIGIvZHJpdmVycy9taXNjL2Nh
+cmRyZWFkZXIvcnRzNTI0OS5jDQppbmRleCA5MWQyNDBkZDY4ZmEuLjQ3YWI3MmE0MzI1NiAxMDA2
+NDQNCi0tLSBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNDkuYw0KKysrIGIvZHJpdmVy
+cy9taXNjL2NhcmRyZWFkZXIvcnRzNTI0OS5jDQpAQCAtMzI3LDEyICszMjcsMTEgQEAgc3RhdGlj
+IGludCBydHM1MjQ5X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCQl9DQog
+CX0NCiANCi0NCiAJLyoNCiAJICogSWYgdV9mb3JjZV9jbGtyZXFfMCBpcyBlbmFibGVkLCBDTEtS
+RVEjIFBJTiB3aWxsIGJlIGZvcmNlZA0KIAkgKiB0byBkcml2ZSBsb3csIGFuZCB3ZSBmb3JjaWJs
+eSByZXF1ZXN0IGNsb2NrLg0KIAkgKi8NCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQor
+CWlmIChvcHRpb24tPmZvcmNlX2Nsa3JlcV8wICYmIHBjci0+YXNwbV9tb2RlID09IEFTUE1fTU9E
+RV9DRkcpDQogCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIFBFVFhDRkcsDQogCQkJRk9S
+Q0VfQ0xLUkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCiAJZWxzZQ0KZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAuYyBiL2RyaXZlcnMvbWlzYy9j
+YXJkcmVhZGVyL3J0czUyNjAuYw0KaW5kZXggOWI0MmIyMGEzZTVhLi43OWIxOGY2ZjczYTggMTAw
+NjQ0DQotLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjYwLmMNCisrKyBiL2RyaXZl
+cnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAuYw0KQEAgLTUxNywxNyArNTE3LDEwIEBAIHN0YXRp
+YyB2b2lkIHJ0czUyNjBfaW5pdF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlv
+cHRpb24tPmx0cl9lbmFibGVkID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hl
+Y2tfZGV2X2ZsYWcocGNyLCBBU1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9M
+MV8xX0VOIHwgUE1fTDFfMl9FTikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7
+DQotCWVsc2UNCi0JCW9wdGlvbi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0
+aWMgaW50IHJ0czUyNjBfZXh0cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQot
+CXN0cnVjdCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIA0KIAkvKiBT
+ZXQgbWN1X2NudCB0byA3IHRvIGVuc3VyZSBkYXRhIGNhbiBiZSBzYW1wbGVkIHByb3Blcmx5ICov
+DQogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgMHhGQzAzLCAweDdGLCAweDA3KTsNCkBA
+IC01NDYsMTcgKzUzOSw2IEBAIHN0YXRpYyBpbnQgcnRzNTI2MF9leHRyYV9pbml0X2h3KHN0cnVj
+dCBydHN4X3BjciAqcGNyKQ0KIA0KIAlydHM1MjYwX2luaXRfaHcocGNyKTsNCiANCi0JLyoNCi0J
+ICogSWYgdV9mb3JjZV9jbGtyZXFfMCBpcyBlbmFibGVkLCBDTEtSRVEjIFBJTiB3aWxsIGJlIGZv
+cmNlZA0KLQkgKiB0byBkcml2ZSBsb3csIGFuZCB3ZSBmb3JjaWJseSByZXF1ZXN0IGNsb2NrLg0K
+LQkgKi8NCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQotCQlydHN4X3BjaV93cml0ZV9y
+ZWdpc3RlcihwY3IsIFBFVFhDRkcsDQotCQkJCSBGT1JDRV9DTEtSRVFfREVMSU5LX01BU0ssIEZP
+UkNFX0NMS1JFUV9MT1cpOw0KLQllbHNlDQotCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3Is
+IFBFVFhDRkcsDQotCQkJCSBGT1JDRV9DTEtSRVFfREVMSU5LX01BU0ssIEZPUkNFX0NMS1JFUV9I
+SUdIKTsNCi0NCiAJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBwY3ItPnJlZ19wbV9jdHJs
+MywgMHgxMCwgMHgwMCk7DQogDQogCXJldHVybiAwOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlz
+Yy9jYXJkcmVhZGVyL3J0czUyNjEuYyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjEu
+Yw0KaW5kZXggYjFlNzYwMzBjYWZkLi45NGFmNmJmOGEyNWEgMTAwNjQ0DQotLS0gYS9kcml2ZXJz
+L21pc2MvY2FyZHJlYWRlci9ydHM1MjYxLmMNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVy
+L3J0czUyNjEuYw0KQEAgLTQ5OCwxNyArNDk4LDEwIEBAIHN0YXRpYyB2b2lkIHJ0czUyNjFfaW5p
+dF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlvcHRpb24tPmx0cl9lbmFibGVk
+ID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hlY2tfZGV2X2ZsYWcocGNyLCBB
+U1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9MMV8xX0VOIHwgUE1fTDFfMl9F
+TikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7DQotCWVsc2UNCi0JCW9wdGlv
+bi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0aWMgaW50IHJ0czUyNjFfZXh0
+cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQotCXN0cnVjdCBydHN4X2NyX29w
+dGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIAl1MzIgdmFsOw0KIA0KIAlydHN4X3BjaV93
+cml0ZV9yZWdpc3RlcihwY3IsIFJUUzUyNjFfQVVUT0xPQURfQ0ZHMSwNCkBAIC01NTQsMTcgKzU0
+Nyw2IEBAIHN0YXRpYyBpbnQgcnRzNTI2MV9leHRyYV9pbml0X2h3KHN0cnVjdCBydHN4X3BjciAq
+cGNyKQ0KIAllbHNlDQogCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIFBFVFhDRkcsIDB4
+MzAsIDB4MDApOw0KIA0KLQkvKg0KLQkgKiBJZiB1X2ZvcmNlX2Nsa3JlcV8wIGlzIGVuYWJsZWQs
+IENMS1JFUSMgUElOIHdpbGwgYmUgZm9yY2VkDQotCSAqIHRvIGRyaXZlIGxvdywgYW5kIHdlIGZv
+cmNpYmx5IHJlcXVlc3QgY2xvY2suDQotCSAqLw0KLQlpZiAob3B0aW9uLT5mb3JjZV9jbGtyZXFf
+MCkNCi0JCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCi0JCQkJIEZPUkNF
+X0NMS1JFUV9ERUxJTktfTUFTSywgRk9SQ0VfQ0xLUkVRX0xPVyk7DQotCWVsc2UNCi0JCXJ0c3hf
+cGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCi0JCQkJIEZPUkNFX0NMS1JFUV9ERUxJ
+TktfTUFTSywgRk9SQ0VfQ0xLUkVRX0hJR0gpOw0KLQ0KIAlydHN4X3BjaV93cml0ZV9yZWdpc3Rl
+cihwY3IsIFBXRF9TVVNQRU5EX0VOLCAweEZGLCAweEZCKTsNCiANCiAJaWYgKHBjci0+cnRkM19l
+bikgew0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmMgYi9k
+cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jDQppbmRleCAzMmI3NzgzZTlkNGYuLmEz
+ZjRiNTJiYjE1OSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNy
+LmMNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmMNCkBAIC0xMzI2LDgg
+KzEzMjYsMTEgQEAgc3RhdGljIGludCBydHN4X3BjaV9pbml0X2h3KHN0cnVjdCBydHN4X3BjciAq
+cGNyKQ0KIAkJCXJldHVybiBlcnI7DQogCX0NCiANCi0JaWYgKHBjci0+YXNwbV9tb2RlID09IEFT
+UE1fTU9ERV9SRUcpDQorCWlmIChwY3ItPmFzcG1fbW9kZSA9PSBBU1BNX01PREVfUkVHKSB7DQog
+CQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEFTUE1fRk9SQ0VfQ1RMLCAweDMwLCAweDMw
+KTsNCisJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCisJCQkJRk9SQ0Vf
+Q0xLUkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfSElHSCk7DQorCX0NCiANCiAJLyogTm8g
+Q0QgaW50ZXJydXB0IGlmIHByb2JpbmcgZHJpdmVyIHdpdGggY2FyZCBpbnNlcnRlZC4NCiAJICog
+U28gd2UgbmVlZCB0byBpbml0aWFsaXplIHBjci0+Y2FyZF9leGlzdCBoZXJlLg0KLS0gDQoyLjI1
+LjENCg==
