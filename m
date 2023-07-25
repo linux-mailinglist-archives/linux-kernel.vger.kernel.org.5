@@ -2,159 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6915D7623D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9EC7623DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjGYUpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
+        id S230174AbjGYUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjGYUoz (ORCPT
+        with ESMTP id S230131AbjGYUql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:44:55 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2078.outbound.protection.outlook.com [40.107.244.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC39B26BB;
-        Tue, 25 Jul 2023 13:44:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I1T6VPBeaM1JHWtLPdJNgrvi5eiGg1jZdzyc1JdbI8YwWQ/XHK/uxW8e7ff8SkwQDjON26QbaGTsw4MAFrIz8PfPaNDIAYxT7JzrbypQPx1LA0Tlofc7kAYfOoycMr6gMX+TOWag/iCacAOyildvcqfOErqA6KRvla88ei/2nwZAv/6vUyhn96hkAF3249H0TIWFNhoh7ZHtN4wqWUtczHPS1Lj7PB3qzmmJtivxUS05U973SgF8PCQLiKutZYCSvCDNxBH1pD+ApJrVPqKoRgSXrfG3Yb4heIHHzh/T9B32NzmyqwKKQgBSAalxRNDsWNxbo228V2cXgOuEW2VW9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y6k4EUt8qHCAK9dvSVnWkfkvSJXXZKggAUGnJG3EkyI=;
- b=OhGX+UPQtounqkMU9m5oCLfMZ+asuYlYP34luvG+r4Cu6YNTQYe4E+ba88BeOF0qZ8rkZn4pXEYUtk4q8XxyDE1saw55YFim/mYIkvViKgm173mm6PAwtdjk0I0FHvpzOqkNqkV8KQhxBkhk7kSd6AFcRCKXCDakJI/zk52IKeuKt2jHQCOcL+I5J7PNSQIpKeb0GzcUAf34IrzK6E2t37qSiEI3Afe98N6ZiLbDhmDzVCoqN6pdjPj9Ddve/nHAWdGpCsD2jT4y9SWCSrjegf/t0416R/4STExjtM0TkJEjET9p32kwk7CoAn3GGLUWQMnhkEcwt9i7V6A6Y9Xd1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y6k4EUt8qHCAK9dvSVnWkfkvSJXXZKggAUGnJG3EkyI=;
- b=wJ1Qj0a1DafLSiz6bily1OGROkK62ApkfOpgHRChb7XMbqTM0xvcBptnKpIp+rU5Q8eohkt3BUbTPepF44Rjxo/eekBDFX0MUxiugTEKeHfMYkEt3BV4O2oXqVj/A3n4IpduB06hkdc9HC84TTUDjU/BzpjljBMHbUNunTfZzJc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by CH0PR12MB5299.namprd12.prod.outlook.com (2603:10b6:610:d6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 20:44:37 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6609.031; Tue, 25 Jul 2023
- 20:44:36 +0000
-Message-ID: <1f4c1c2f-ba17-63fb-2f55-9265cc3d31fb@amd.com>
-Date:   Tue, 25 Jul 2023 15:44:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V7 4/9] wifi: mac80211: Add support for ACPI WBRF
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "Quan, Evan" <Evan.Quan@amd.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "mdaenzer@redhat.com" <mdaenzer@redhat.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "jingyuwang_vip@163.com" <jingyuwang_vip@163.com>,
-        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
-        "jim.cromie@gmail.com" <jim.cromie@gmail.com>,
-        "bellosilicio@gmail.com" <bellosilicio@gmail.com>,
-        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "jsg@jsg.id.au" <jsg@jsg.id.au>, "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20230719090020.2716892-1-evan.quan@amd.com>
- <20230719090020.2716892-5-evan.quan@amd.com>
- <9b1f45f9-02a3-4c03-b9d5-cc3b9ab3a058@lunn.ch>
- <7d059aed-fac0-cdcd-63d5-58185bb345db@amd.com>
- <DM6PR12MB26196A993B3BA93392AA0FEDE403A@DM6PR12MB2619.namprd12.prod.outlook.com>
- <d4cfbbae-9cd0-4767-8c80-ec09d1dbaf9c@lunn.ch>
- <6aa9061b-1702-b8f2-9cb8-982895b9def4@amd.com>
- <5e92b45a-d99b-4a8a-9987-46c75a5fcb3c@lunn.ch>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <5e92b45a-d99b-4a8a-9987-46c75a5fcb3c@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH0PR03CA0043.namprd03.prod.outlook.com
- (2603:10b6:610:b3::18) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Tue, 25 Jul 2023 16:46:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D88E47
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690317957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ePQHpPP/m2zFLGwnISEyrwq9ac4YxSfkwTurK23ce8w=;
+        b=CFfhw5Wu8m9KOCQmYDPyCQlg7G2YlLNaF++Y66cGCywVgb3YHfcrlkg0gnT5GDig3ezJZN
+        Wj9Z1tjKTRlFcqS2H+i+ssO4ssYbGizW9jRwsfsFpJVdQxKdukDbb8hTJTxY+ssFBfRfWK
+        e65tl5VYkeVycEk+gEQxMBDhW/qGPSs=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-217-4NkOkLwcPZGcOnX2_xcNmQ-1; Tue, 25 Jul 2023 16:45:51 -0400
+X-MC-Unique: 4NkOkLwcPZGcOnX2_xcNmQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E3D528088A7;
+        Tue, 25 Jul 2023 20:45:50 +0000 (UTC)
+Received: from [10.22.18.12] (unknown [10.22.18.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4529BF7830;
+        Tue, 25 Jul 2023 20:45:49 +0000 (UTC)
+Message-ID: <f5f25279-bbb5-e040-aeaa-dd3d8686c670@redhat.com>
+Date:   Tue, 25 Jul 2023 16:45:49 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CH0PR12MB5299:EE_
-X-MS-Office365-Filtering-Correlation-Id: 27918d82-8500-4a0d-5135-08db8d4ff59e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mJVZxhRVqmI14EhjWYD10LCIrFqyHoXDoB0Vu6qlQCqrY8hE6AKErxnS3ahYJ+68Zl8LEXleFw0jX2yaGM45q2Rf3PnbdN1ls1HfApMSezQNIjJKjp+hMZ1tAeSr5jegN5HBiVGEuzQ16S+YNLMlwlN6+qD7CXY78wlzqIvU5+XfPWF9sC223VbATbaTkzK7vGrDQHtN6RS7jepIFeIxiGTNvCoZhh9qSzJKPdBgGvbgcMBM3E5iUfMLClpZ/etfg47oHrTR1IYpt7F4kUl3g2uzxdwh33cmROWWjCZWYmD+1DdAaAyHHGFktK2ySicU7oGPODpnUcL3Unfd039fZXJNnxTEuI6VnX3M0U0E1wQxpVUBKfy7eJFUVx7efjuYRdH3ZQJM/pUstdYl3Cv6bxXOnjoLaUzShgR/BamriPvOdA4WqQ1ZszKE5ayz0Lrhn2SHZ4pfSWuhpPJl0iUeM0cP2o+OYigZIYQhPkN2EafcCkCU9/b3CwC9H8HmymxuMWOKLLyWQj2X3GKuvWs7vhr/loFRzXxzz0Yl3StWUgtzJArqao/oYEkcOquFFKJe87HFBDlyKRHByq66Et8SDhu1JegSfqHA173R6SEjkiKmOoQOCSPiXirly61jyDZTmd2wc+rSsjbI+k2gtxhAIg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(451199021)(31686004)(7416002)(44832011)(8936002)(8676002)(5660300002)(41300700001)(316002)(6916009)(4326008)(54906003)(2906002)(66476007)(66556008)(66946007)(6486002)(6512007)(53546011)(478600001)(186003)(6506007)(6666004)(31696002)(86362001)(36756003)(2616005)(83380400001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Vjg1SnhFWVRUQk9wODFuVDNUMlpqOEp1aklBeloyMVd6ekNQNnZPOVpIMFBt?=
- =?utf-8?B?ZXkrbitNL2ZnVHdwNWNJbjc4YUhGY0pmT2JOUjhPWVB2NGxSeE1IU0V4Q01H?=
- =?utf-8?B?ZG9JeTViWmNUeXJrd2h1bVJIRVJtbGdIazRLVmVsakI0d3lYMWp2Z0hEaTFH?=
- =?utf-8?B?ZFdGcThGVHNQYU10TmtmQVk5TytMbFRncjZxSVNNRnlVcU9YczgxYlIwZGxN?=
- =?utf-8?B?d21rOVJFZHpSNU9nOGdEOFBpQnJRWEpMcVo1VE9BRzBmZDJYc1laVEthZWtX?=
- =?utf-8?B?d2l0bGpKbkt0MFhhbEU2dG5pVHBhMFZWMk9WNnZJQjI2N3gyVjZsQnhlUWhj?=
- =?utf-8?B?Y0E5dnJkNHY2TERpN3ZxTVFvNmMzSlpEMHJBeEJKdU9jVjAwS05rTTlITjNq?=
- =?utf-8?B?emtUM0FWcTNEME42eFdJaTFzdGlHTlkyTTNCNXFBVjYvZnA3SjlFWXpyTnFu?=
- =?utf-8?B?K1Y1S3A0RjZoNnN4Q1lFWkdXT2FYS00xblRQcnlOdE5aV21sUEVnUmV2VHdx?=
- =?utf-8?B?QmZuVE5rc2FmcFFaWEh3bHpWL05pZlphMFh3Y0VOWngyTCtGQmExUitmYVg2?=
- =?utf-8?B?Q1hmdDFHOW96U2RXa2Q4Ym5CUy9pNVhiQ2c2ZGF1QzY2Zk41TngxbVVBZ2J6?=
- =?utf-8?B?WUU2djE5TmE5US8yQndqVko1NFBzeW1MdmxXSUhIejJxRjhJWnRlL2pOWVZM?=
- =?utf-8?B?YkVVWExFU3VkZlNNNWVvWHhNTGRZYnBHcHhTR3AwQTY3MHo3S0NHMmgvWEx5?=
- =?utf-8?B?Q0trc0xKVWZoaEtJN240cm5UT2xQSHpEZUhBTm5Kcy9RRElMcnZGZTR2L09o?=
- =?utf-8?B?WmtIL0EzL1NOdWh2bW9RZitaalhPUjRBVWh0bnUxMWpPeXF6TEVtRWpWZWl1?=
- =?utf-8?B?ZS9QdVdWbUNNRHNUSXRCa1RYK3lVVnhGbS8xeTdpRU1vb0xuNkVpaXZsSTJ2?=
- =?utf-8?B?YmkxMWRBaXdKWmZSL29aa2REOElZNWVOcWlFZEtab3BWVDlSZk1BY2RjY1U5?=
- =?utf-8?B?bE5DOXJLNmk0U3l2R21zQXpoQUpqRTI1YXpHOWJPbjZJNFdBWWlESW1ldU02?=
- =?utf-8?B?TUMrQnRaenplWUphTmJFc1ltSVpZemF2TnlTNXpNL1NPZEZmaTI4RWFpeHpC?=
- =?utf-8?B?L0sxVS9LMXpmeVlNVGhMRjl3MXMvTHJQalQ0NG01ckMvbDZHUXdTZG5DSjNO?=
- =?utf-8?B?L3VrVVhSM0tMREVOWWtJdU51d2JaT1dPMmpQbjJGZVBNY0Y0WTBsRHdVRVh3?=
- =?utf-8?B?ek04NWZ0eUVvUUFYZDFlMEZOMldwV09RZXJvMFp5bmltWVZjL1kraGhLTksv?=
- =?utf-8?B?c0ZiQ2RyeHZsb2d4SncvMG02dUNsb290ZmVkRkJCdkxiM3NuRkxJNkFIczJY?=
- =?utf-8?B?Z2VvTlczYjRXYS9TRjQ1eEdvTHdHbzlrMzNmNnliRk53MncwSjF3dEdERzZu?=
- =?utf-8?B?YmR1ZWRvcGg2b0NncEc4aUVHdkRqbUxKalVpNnl3NG5Gc0NSUzNZTzZsQU05?=
- =?utf-8?B?OUVMY1Zmb29VV1puSWRmQVp6TENISHgyYmxPa2ZXM091cVFaL3BDM2VEMHVO?=
- =?utf-8?B?cEQ4MkQ4aWRSZGVUUE9zcDV6NnR2VTVJZFFkT3ZaVGlkcE82c1lySGI5V3VD?=
- =?utf-8?B?S2Z6eTQ2c2l1VkVObTg3MEhmVkh0dkpHT1B6UmFocHlLSWpJSnkrRDRVank1?=
- =?utf-8?B?UFFRUm0veTlRbFV5NkM4bkNzckE1dVhabmZqL2xMVThnQlQ5OFNUeFRoVFE1?=
- =?utf-8?B?UWEzRHdKZTF4bHBTSkN3SnVmbzFzelgrdWRuNXU4NVVoZy80aHhJUWJwbTdq?=
- =?utf-8?B?NVJ2TmhHTmg0cUY1MEpCQ0JjMzA3d0thUFcvVTBJeEp1aC9zRlBIQjJuQXhr?=
- =?utf-8?B?UW1qR3diNk1xazlCY1lEQjBucjZDQXZoaGxFS2xXNXc5V3hVNStsRURnV0Fw?=
- =?utf-8?B?NkNWa0FvSkxFclM5Zm0yR0ZidnlkMXRabkpiRzhmYUpPSFZ2Y0ZFMHNxNnBP?=
- =?utf-8?B?L0Q2Z1lmYVNXUWt1NHJSOU9FZlBHQ2I3RjZBQUpOS05FVXZ2WlhVUDZ6RjJQ?=
- =?utf-8?B?L3NwVVBlcUhIY2U2bC9uQ2NQYnpPM0hpS2FkWDU2bWxZdUVPMFRjT2NMV0pQ?=
- =?utf-8?B?N0ZUL213WUZyNUx0ellsNHhMMDB0eU8xaExLMlI0aW1PQW51d3oxR3ZIR0dm?=
- =?utf-8?Q?FBE63AEvA1/okTCl0B6KovtDJoFVOathJgzG6KCrkUmN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27918d82-8500-4a0d-5135-08db8d4ff59e
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 20:44:36.7004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XTwf2cy+6E6r2v2Ddk17agf6nop5w0Es3i+trTK1DDcoLY1+HPcH32dlmJ7AVivoc5dqUeOsJqFD7FiGi8KzXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5299
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 4/4] intel_idle: Add ibrs_off module parameter to force
+ disable IBRS
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        x86@kernel.org, linux-pm@vger.kernel.org,
+        Robin Jarry <rjarry@redhat.com>, Joe Mario <jmario@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20230710194857.2898284-1-longman@redhat.com>
+ <20230710194857.2898284-5-longman@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230710194857.2898284-5-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -162,54 +78,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 15:09, Andrew Lunn wrote:
->> This comes back to the point that was mentioned by Johannes - you need to
->> have deep design understanding of the hardware to know whether or not you
->> will have producers that a consumer need to react to.
-> Yes, this is the policy is keep referring to. I would expect that
-> there is something somewhere in ACPI which says for this machine, the
-> policy is Yes/No.
-It's not yes/no for a "model" or "machine".  It's yes/no for a given 
-*device*
-within a machine.
+On 7/10/23 15:48, Waiman Long wrote:
+> Commit bf5835bcdb96 ("intel_idle: Disable IBRS during long idle")
+> disables IBRS when the cstate is 6 or lower. However, there are
+> some use cases where a customer may want to use max_cstate=1 to
+> lower latency. Such use cases will suffer from the performance
+> degradation caused by the enabling of IBRS in the sibling idle thread.
+> Add a "ibrs_off" module parameter to force disable IBRS and the
+> CPUIDLE_FLAG_IRQ_ENABLE flag if set.
 >
-> It could well be that AMD based machine has a different ACPI extension
-> to indicate this policy to what Intel machine has. As far as i
-> understand it, you have not submitted this yet for formal approval,
-> this is all vendor specific, so Intel could do it completely
-> differently. Hence i would expect a generic API to tell the core what
-> the policy is, and your glue code can call into ACPI to find out that
-> information, and then tell the core.
-Which is exactly what wbrf_supported_producer() and 
-wbrf_supported_consumer() do.
-If there is another vendor's implementation introduced they can make 
-those functions
-return TRUE for their implementations.
->> If all producers indicate their frequency and all consumers react to it you
->> may have activated mitigations that are unnecessary. The hardware designer
->> may have added extra shielding or done the layout such that they're not
->> needed.
-> And the policy will indicate No, nothing needs to be done. The core
-> can then tell produces and consumes not to bother telling the core
-> anything.
+> In the case of a Skylake server with max_cstate=1, this new ibrs_off
+> option will likely increase the IRQ response latency as IRQ will now
+> be disabled.
 >
->> So I don't think we're ever going to be in a situation that the generic
->> implementation should be turned on by default.  It's a "developer knob".
-> Wrong. You should have a generic core, which your AMD CPU DDR device
-> plugs into. The Intel CPU DDR device can plug into, the nvidea GPU can
-> plug into, your Radeon GPU can plug into, the intel ARC can plug into,
-> the generic WiFi core plugs into, etc.
-It's not a function of "device" though, it's "device within machine".
+> When running SPECjbb2015 with cstates set to C1 on a Skylake system.
 >
->> If needed these can then be enabled using the AMD ACPI interface, a DT one
->> if one is developed or maybe even an allow-list of SMBIOS strings.
-> Notice i've not mentioned DT for a while. I just want a generic core,
-> which AMD, Intel, nvidea, Ampare, Graviton, Qualcomm, Marvell, ...,
-> etc can use. We should be solving this problem once, for everybody,
-> not adding a solution for just one vendor.
+> First test when the kernel is booted with: "intel_idle.ibrs_off"
+>    max-jOPS = 117828, critical-jOPS = 66047
 >
->        Andrew
-I don't see why other implementations can't just come up with other
-platform specific ways to respond affirmatively to
-wbrf_supported_producer() or
-wbrf_supported_consumer().
+> Then retest when the kernel is booted without the "intel_idle.ibrs_off"
+> added.
+>    max-jOPS = 116408, critical-jOPS = 58958
+>
+> That means booting with "intel_idle.ibrs_off" improves performance by:
+>    max-jOPS:   1.2%, which could be considered noise range.
+>    critical-jOPS: 12%, which is definitely a solid improvement.
+>
+> The admin-guide/pm/intel_idle.rst file is updated to add a description
+> about the new "ibrs_off" module parameter.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   Documentation/admin-guide/pm/intel_idle.rst | 17 ++++++++++++++++-
+>   drivers/idle/intel_idle.c                   | 11 ++++++++++-
+>   2 files changed, 26 insertions(+), 2 deletions(-)
+
+Ping! Is there further suggested changes for this patch series or is it 
+good enough to be merged?
+
+Thanks,
+Longman
+
+>
+> diff --git a/Documentation/admin-guide/pm/intel_idle.rst b/Documentation/admin-guide/pm/intel_idle.rst
+> index b799a43da62e..39bd6ecce7de 100644
+> --- a/Documentation/admin-guide/pm/intel_idle.rst
+> +++ b/Documentation/admin-guide/pm/intel_idle.rst
+> @@ -170,7 +170,7 @@ and ``idle=nomwait``.  If any of them is present in the kernel command line, the
+>   ``MWAIT`` instruction is not allowed to be used, so the initialization of
+>   ``intel_idle`` will fail.
+>   
+> -Apart from that there are four module parameters recognized by ``intel_idle``
+> +Apart from that there are five module parameters recognized by ``intel_idle``
+>   itself that can be set via the kernel command line (they cannot be updated via
+>   sysfs, so that is the only way to change their values).
+>   
+> @@ -216,6 +216,21 @@ are ignored).
+>   The idle states disabled this way can be enabled (on a per-CPU basis) from user
+>   space via ``sysfs``.
+>   
+> +The ``ibrs_off`` module parameter is a boolean flag (defaults to
+> +false). If set, it is used to control if IBRS (Indirect Branch Restricted
+> +Speculation) should be turned off when the CPU enters an idle state.
+> +This flag does not affect CPUs that use Enhanced IBRS which can remain
+> +on with little performance impact.
+> +
+> +For some CPUs, IBRS will be selected as mitigation for Spectre v2 and Retbleed
+> +security vulnerabilities by default.  Leaving the IBRS mode on while idling may
+> +have a performance impact on its sibling CPU.  The IBRS mode will be turned off
+> +by default when the CPU enters into a deep idle state, but not in some
+> +shallower ones.  Setting the ``ibrs_off`` module parameter will force the IBRS
+> +mode to off when the CPU is in any one of the available idle states.  This may
+> +help performance of a sibling CPU at the expense of a slightly higher wakeup
+> +latency for the idle CPU.
+> +
+>   
+>   .. _intel-idle-core-and-package-idle-states:
+>   
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index c9479f089037..e1b826344682 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -69,6 +69,7 @@ static int max_cstate = CPUIDLE_STATE_MAX - 1;
+>   static unsigned int disabled_states_mask __read_mostly;
+>   static unsigned int preferred_states_mask __read_mostly;
+>   static bool force_irq_on __read_mostly;
+> +static bool ibrs_off __read_mostly;
+>   
+>   static struct cpuidle_device __percpu *intel_idle_cpuidle_devices;
+>   
+> @@ -1919,11 +1920,13 @@ static void state_update_enter_method(struct cpuidle_state *state, int cstate)
+>   	}
+>   
+>   	if (cpu_feature_enabled(X86_FEATURE_KERNEL_IBRS) &&
+> -			   state->flags & CPUIDLE_FLAG_IBRS) {
+> +			((state->flags & CPUIDLE_FLAG_IBRS) || ibrs_off)) {
+>   		/*
+>   		 * IBRS mitigation requires that C-states are entered
+>   		 * with interrupts disabled.
+>   		 */
+> +		if (ibrs_off && (state->flags & CPUIDLE_FLAG_IRQ_ENABLE))
+> +			state->flags &= ~CPUIDLE_FLAG_IRQ_ENABLE;
+>   		WARN_ON_ONCE(state->flags & CPUIDLE_FLAG_IRQ_ENABLE);
+>   		state->enter = intel_idle_ibrs;
+>   		return;
+> @@ -2346,3 +2349,9 @@ MODULE_PARM_DESC(preferred_cstates, "Mask of preferred idle states");
+>    * 'CPUIDLE_FLAG_INIT_XSTATE' and 'CPUIDLE_FLAG_IBRS' flags.
+>    */
+>   module_param(force_irq_on, bool, 0444);
+> +/*
+> + * Force the disabling of IBRS when X86_FEATURE_KERNEL_IBRS is on and
+> + * CPUIDLE_FLAG_IRQ_ENABLE isn't set.
+> + */
+> +module_param(ibrs_off, bool, 0444);
+> +MODULE_PARM_DESC(ibrs_off, "Disable IBRS when idle");
+
