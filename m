@@ -2,116 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C485A761B4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520F0761B47
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbjGYOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S232574AbjGYOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjGYOUs (ORCPT
+        with ESMTP id S232553AbjGYOUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:20:48 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1F2715;
-        Tue, 25 Jul 2023 07:19:03 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PE8Bcw023085;
-        Tue, 25 Jul 2023 14:16:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=9LrowsiH0qimY8fx2iBLQSsR4UWWIwLCcdpsJLPZPu0=;
- b=Euk4s757QmqtZB9mP+aBEDO/iuW5O+nUvxsOuMnksIg8tR0wg3PWPstld27PoBRJqd1v
- JWY0P7BYdFertLBczb5ssB3NGFWhxE7obkHzK7wJ//nweDZMgtFVXmRko8bUrEqZIyEw
- K93eoVljCz3pICrCvQA9UJ102/h9F45NjTBAYeJ7fg9Dr3bjlB8Q1Pq04BSv8AMtEkqr
- 47qQrX7PqfPDQm5MZagJYUaTJJUrCP0T6Z+taE/aC0VrytUI3pYHdhUVQw4yL1pWibWt
- qv/37HKLoD1GzNois7JxycVmIrTBIBP6U8VCel/4WEpnGEhWd1FWi+Eo5lasHr+pweER 7A== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2942bpbe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 14:16:40 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36PDHXpF002068;
-        Tue, 25 Jul 2023 14:16:39 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0temvkv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 14:16:39 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36PEGc3h721432
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jul 2023 14:16:38 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CCE158067;
-        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CFA958052;
-        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
-Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
-Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
-        id 89E8E7401EF; Tue, 25 Jul 2023 09:16:37 -0500 (CDT)
-From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-Subject: [PATCH 1/1] ARM: dts: aspeed: Rainier: Remove TPM device
-Date:   Tue, 25 Jul 2023 09:16:06 -0500
-Message-Id: <20230725141606.1641080-2-lakshmiy@us.ibm.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230725141606.1641080-1-lakshmiy@us.ibm.com>
-References: <20230725141606.1641080-1-lakshmiy@us.ibm.com>
+        Tue, 25 Jul 2023 10:20:46 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357452690
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:18:52 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-78654448524so197749439f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1690294639; x=1690899439;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5zbYkfh1SiDjJgqpmePBnLBoSwyu543XXUBw08SwriI=;
+        b=V6SpvZQnSwXd0cziqK5ZBgj+giZ3kTGHlNOo0Kyo2vuouII4BN1LlbqKfw4l2v+pFR
+         RhaJROiPVwXpZNL2loi1avSfzBpAPSN5I/blvkKx8nihlRfbQzNRGoY0R0s9/p2hwJxm
+         LBg3EuPYuNqnYsDUCRx2SklUAjnF9l/Z8eD4/d9xW0nZVQyi1g8b5EE3PuE1FxpzrXgW
+         tbTdQ14YwCC73g9J/Gb7HdDQo3mRkLJ1LJBPzLiHsVGwbc6h8YTKQc+rwNyxX9w2jk8x
+         N39n49amyD4Xf4Mw8Zcdf36FTv1DfCglG2JljEcEIGA8669+cYCCSETiUnZCrg8+t8JL
+         RIqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690294639; x=1690899439;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5zbYkfh1SiDjJgqpmePBnLBoSwyu543XXUBw08SwriI=;
+        b=jaOwrQzfWvZ7+2Zg4qps5M92WvEbPy/mtmO1tukowlXWufwsotp2dS0nsE8TnMtwHs
+         N4NCEAbrq0JP19hLz14Lb4iiNanGe1dtd5YfzSCxpGo3b5BW0BzDzXZYDKrhhEiMixWO
+         MoAQeb2Fmvj9TUYGidjiu9yYV4NykV54lgneyJybQ2qbKWH8vETeenPqZcypwlUKZUAp
+         cHL9ImHIKE5GNP4h1BOZsvoyUyd/tsQ7C4OSF67YLsKcGPu+77KU382RBRX4YJ//H56Z
+         sJgU8uIQbysge6bfP9IKD6R1f/BO1rwl1g11r/tbCpEBos6lAHXZcF1wzuf6UtYhcPxg
+         2fiw==
+X-Gm-Message-State: ABy/qLZvUzUaKSx4hk7j//fVYeQwa5CbKzpMtd0W/NxAvP1X8sG3I0uM
+        H6D2LbJ0/aWwvRjQvsQEWLa9Y1Zlx8XGMWmxxV6RnA==
+X-Google-Smtp-Source: APBJJlESVOsBHoa/sJ5VjYkg6XtupM70WUQs7FfzV+C9VGLCYKZr0yzLZXvlnWCeUUMe64jWPzi9qNjCF7n6bmFaJ9k=
+X-Received: by 2002:a05:6e02:20ec:b0:346:77f7:e0e with SMTP id
+ q12-20020a056e0220ec00b0034677f70e0emr3258932ilv.23.1690294639174; Tue, 25
+ Jul 2023 07:17:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Uzub2ztTzDP-xb-rHHtdLY7nuxO2Judr
-X-Proofpoint-GUID: Uzub2ztTzDP-xb-rHHtdLY7nuxO2Judr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0
- mlxlogscore=684 clxscore=1015 impostorscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250124
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230725114030.1860571-1-Naresh.Solanki@9elements.com> <20230725131006.GA2879331-robh@kernel.org>
+In-Reply-To: <20230725131006.GA2879331-robh@kernel.org>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Tue, 25 Jul 2023 19:47:09 +0530
+Message-ID: <CABqG17iChAyb0gzb2uXfsv5GkiM3a+LoSavdqhjvw3FUccaw8A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TPM is disabled in Rainier, remove TPM device.
+Hi Rob,
 
-Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts | 5 -----
- 1 file changed, 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts
-index 7162e65b8115..8dd94cd478fc 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts
-@@ -2092,11 +2092,6 @@ eeprom@51 {
- &i2c12 {
- 	status = "okay";
- 
--	tpm@2e {
--		compatible = "nuvoton,npct75x";
--		reg = <0x2e>;
--	};
--
- 	eeprom@50 {
- 		compatible = "atmel,24c64";
- 		reg = <0x50>;
--- 
-2.37.2
+On Tue, 25 Jul 2023 at 18:40, Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Jul 25, 2023 at 01:40:26PM +0200, Naresh Solanki wrote:
+> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> >
+> > The TDA38640 has a bug in SVID mode and to enable a workaround
+> > remove the TDA38640 from trivial-devices and add a complete schema.
+> >
+> > The schema adds the custom property 'infineon,en-pin-fixed-level' to
+> > signal a fixed level on the ENABLE pin and to enable the workaround.
+> > When the ENABLE pin is left floating it's internally pulled low.
+> >
+> > If not specified the driver will continue to use the PMBUS_OPERATION
+> > register to enable the regulator. When specified the driver will use
+> > the PMBUS_ON_OFF_CONFIG register to enable the regulator.
+> >
+> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > ---
+> >  .../hwmon/pmbus/infineon,tda38640.yaml        | 50 +++++++++++++++++++
+> >  .../devicetree/bindings/trivial-devices.yaml  |  2 -
+> >  2 files changed, 50 insertions(+), 2 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+> > new file mode 100644
+> > index 000000000000..520112e4e271
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+> > @@ -0,0 +1,50 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +
+> > +$id: http://devicetree.org/schemas/hwmon/pmbus/infineon,tda38640.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Infineon TDA38640 Synchronous Buck Regulator with SVID and I2C
+> > +
+> > +description: |
+> > +  The Infineon TDA38640 is a 40A Single-voltage Synchronous Buck
+> > +  Regulator with SVID and I2C designed for Industrial use.
+> > +
+> > +  Datasheet: https://www.infineon.com/dgdl/Infineon-TDA38640-0000-DataSheet-v02_04-EN.pdf?fileId=8ac78c8c80027ecd018042f2337f00c9
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - infineon,tda38640
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  infineon,en-pin-fixed-level:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description: |
+> > +      Fixed level of the ENABLE pin. When specified the PMBUS_ON_OFF_CONFIG
+> > +      register is used to enable the regulator instead of the PMBUS_OPERATION
+> > +      register to workaround a bug of the tda38640 when operating in SVID-mode.
+> > +      If the ENABLE pin is left floating the internal pull-down causes a low
+> > +      level on the pin.
+>
+> Neither this nor the commit message answers how do I decide if I set
+> this property or not? How you work-around it is not that relevant to the
+> binding.
+Sure will update this as:
+The property becomes relevant when dealing with the tda38640 in
+SVID-mode, providing an alternative method to enable the regulator by
+using the PMBUS_ON_OFF_CONFIG register instead of the PMBUS_OPERATION
+register
 
+Regards,
+Naresh
+>
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        tda38640@40 {
+> > +            compatible = "infineon,tda38640";
+> > +            reg = <0x40>;
+> > +        };
+> > +    };
+> > +
+> > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> > index 6e24c4d25ec3..2b1fbb2a672b 100644
+> > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> > @@ -151,8 +151,6 @@ properties:
+> >            - infineon,slb9645tt
+> >              # Infineon SLB9673 I2C TPM 2.0
+> >            - infineon,slb9673
+> > -            # Infineon TDA38640 Voltage Regulator
+> > -          - infineon,tda38640
+> >              # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
+> >            - infineon,tlv493d-a1b6
+> >              # Infineon Multi-phase Digital VR Controller xdpe11280
+> >
+> > base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
+> > --
+> > 2.41.0
+> >
