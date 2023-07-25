@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CC3760C03
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CB1760C09
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjGYHf6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 03:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        id S231217AbjGYHgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjGYHeP (ORCPT
+        with ESMTP id S232665AbjGYHfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:34:15 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B261FF5;
-        Tue, 25 Jul 2023 00:34:07 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-577ddda6ab1so77060567b3.0;
-        Tue, 25 Jul 2023 00:34:07 -0700 (PDT)
+        Tue, 25 Jul 2023 03:35:04 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FD9211E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:34:20 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso4079519f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690270458; x=1690875258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UDGnj8E3hyVERnnPmi0+OR2KS7yE69P/gg3JEe0kCmw=;
+        b=TlcCv3r+21MtMVb5A8K/NLO8fQ8h8l+y4kP/EbvetnIgoXORNiqaD/6zqCXbDgouwv
+         owi575Vwe2Xj0CTVc4Zc0SbvuyuKkDLvgeLnoHLiTJBZSvFLIz4C55aMwO8DG9WEB4H2
+         042pg7XEaGwDkuNn+tPjJbNvLMYv6O5EFDJiwPnTNaLtPDuvfiGre2RKUDbc9k+lb+3Z
+         H0HYHrK4VVYLxDlSWNDWdAY2T1JV7/+9/qAcggtFcucW3O2WIFvGpDN1fb3b3X28QKbk
+         lQthahjxqe+w1A/F2Bpzvd/RZsPVsRk/8M3IukRIBCuv6Em7KolCyYXVn7V6rJUbj1bp
+         R2GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690270447; x=1690875247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f0qL9IZYgpO3GCH2h6qtSZKecTbJOQZsWeaP2pk98kY=;
-        b=HMayid02j2VOY7byYGkgJr1TCrYuNo3jvY9vEfE2NMcozg6xWYlRG0qwD5as3KheMk
-         QDwfEM2mpriIqzGndaFnO+yIDj+LxMbRf0ifz1ot4oLZMmRxTfx2vuzFhEsWvt3dXIJ6
-         nL8AvljVncnNxhT7kY5Sw8pka9Gil/B7Uoy7jZFX6R5e6X04A+PfJ9k6QPjsNPglujPF
-         ngzSoX+eRyj58QqDm/Uhw2hffmLgmm5vXXwS4plCmHeVEF4lr1XY3YQ1yzkcHJz+z0Nc
-         Xk4oKz9dN+fR+qxuAnaaj/ZU0WC17iP2VGYQTGpJZCpa+rSq0iss50wduFN9ReO71BhW
-         ofTQ==
-X-Gm-Message-State: ABy/qLb419yb6yWaWPkmOXU8TBa4qsO13FMp+lwI3MyvLtiTT5u7bGht
-        WJuv+P8xpErCbx9tUtfA/6fIe9hMdo1yjA==
-X-Google-Smtp-Source: APBJJlFlAGoRaosh5iZDK3DZ9eQN1ijqTENzra5syEOOY8reEQGVOI54toXgjXUJFjYSH8A2zyJYgw==
-X-Received: by 2002:a81:6d88:0:b0:583:821b:603a with SMTP id i130-20020a816d88000000b00583821b603amr1624421ywc.20.1690270446837;
-        Tue, 25 Jul 2023 00:34:06 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id d205-20020a8168d6000000b00577269ba9e9sm3394641ywc.86.2023.07.25.00.34.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 00:34:06 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d13e0bfbbcfso1926945276.0;
-        Tue, 25 Jul 2023 00:34:06 -0700 (PDT)
-X-Received: by 2002:a25:ac5b:0:b0:d0d:f4c0:ddb3 with SMTP id
- r27-20020a25ac5b000000b00d0df4c0ddb3mr1443938ybd.6.1690270446138; Tue, 25 Jul
- 2023 00:34:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690270458; x=1690875258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UDGnj8E3hyVERnnPmi0+OR2KS7yE69P/gg3JEe0kCmw=;
+        b=eSFfHUTbWdubBjdFMyxnqQEvymdAymj9rBFf8yoxKq64OcB/VVXJRnHDgiWcelH2na
+         LZN/EpXkGgtVXjXCKilom4j4R2nCmBvq72Eqvqg37SLWrqbXCpP4wthSmMqtsWPKp1h4
+         zyM8GEQ3cFCv03k1++0RqNwSBGIFKLSAAJuRfBDi4zBsf3qpiyDRIpdH4oR7O0sCWXV8
+         aDdEmjTrg7qy3M5PaIzzyD/ofsd5eAP4bGHKy8FMzkk9tZ9MSx8E49Nz8gz+UxR+jMou
+         FWvoDezF8ifcXKKwnTwowK26w3/wermrp1HDEXm4jcVEA4GikC0kBFHgKp3QCHCk+cRt
+         rx2w==
+X-Gm-Message-State: ABy/qLZZShYJryqvokvx7+tc6tUeFiB1gzoNNUAxLx3p2CcmRtmNxAfq
+        bJpjxXqnslO3ZRet88275N3AiA==
+X-Google-Smtp-Source: APBJJlGleX5XZxoJnhR1vJzLx6A099QP8YxZB9OyiN955KOB/2yaWckeRZ6hXvmNOT311YutWCoVDA==
+X-Received: by 2002:a5d:6204:0:b0:315:a17d:dbc6 with SMTP id y4-20020a5d6204000000b00315a17ddbc6mr7952152wru.14.1690270458478;
+        Tue, 25 Jul 2023 00:34:18 -0700 (PDT)
+Received: from linaro.org ([82.78.74.213])
+        by smtp.gmail.com with ESMTPSA id r5-20020a5d52c5000000b003143bb5ecd5sm15439765wrv.69.2023.07.25.00.34.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 00:34:17 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:34:15 +0300
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Abel Vesa <abelvesa@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        Peng Fan <peng.fan@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marek Vasut <marex@denx.de>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] dt-bindings: clock: imx6ul: Support optional
+ enet*_ref_pad clocks
+Message-ID: <ZL969wWEhZkWNLy5@linaro.org>
+References: <20230621093245.78130-1-o.rempel@pengutronix.de>
+ <20230621093245.78130-5-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20230721062617.9810-1-boon.khai.ng@intel.com> <20230721062617.9810-2-boon.khai.ng@intel.com>
- <e552cea3-abbb-93e3-4167-aebe979aac6b@kernel.org> <DM8PR11MB5751EAB220E28AECF6153522C13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
- <8e2f9c5f-6249-4325-58b2-a14549eb105d@kernel.org> <20230721185557.199fb5b8@kernel.org>
- <c690776ce6fd247c2b2aeb805744d5779b6293ab.camel@perches.com>
- <20230724180428.783866cc@kernel.org> <213f5d2b13225f9ed4bdadda3c492ffc79940b13.camel@perches.com>
-In-Reply-To: <213f5d2b13225f9ed4bdadda3c492ffc79940b13.camel@perches.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 25 Jul 2023 09:33:54 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX0DpNSDRSJ7D85NGV2ri2kFHjTtXJE5aOaTD3jNoyc-w@mail.gmail.com>
-Message-ID: <CAMuHMdX0DpNSDRSJ7D85NGV2ri2kFHjTtXJE5aOaTD3jNoyc-w@mail.gmail.com>
-Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 1/2] dt-bindings:
- net: snps,dwmac: Add description for rx-vlan-offload
-To:     Joe Perches <joe@perches.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        workflows@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MarioLimonciello <mario.limonciello@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230621093245.78130-5-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+On 23-06-21 11:32:44, Oleksij Rempel wrote:
+> Extend the 'clocks' and 'clock-names' properties to support optional
+> 'enet1_ref_pad' and 'enet2_ref_pad' clocks to resolve the following
+> dtbs_check warning:
+> imx6ul-prti6g.dtb: clock-controller@20c4000: clocks: [[17], [18], [19], [20], [21]] is too long
+> imx6ul-prti6g.dtb: clock-controller@20c4000: clock-names: ['ckil', 'osc', 'ipp_di0', 'ipp_di1', 'enet1_ref_pad'] is too long
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/clock/imx6ul-clock.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
+> index be54d4df5afa2..3b71ebc100bf6 100644
+> --- a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
+> +++ b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
+> @@ -28,18 +28,24 @@ properties:
+>      const: 1
+>  
+>    clocks:
+> +    minItems: 4
+>      items:
+>        - description: 32k osc
+>        - description: 24m osc
+>        - description: ipp_di0 clock input
+>        - description: ipp_di1 clock input
+> +      - description: Optional lenet1_ref_pad or enet2_ref_pad clocks
+> +      - description: Optional lenet1_ref_pad or enet2_ref_pad clocks
 
-On Tue, Jul 25, 2023 at 6:22 AM Joe Perches <joe@perches.com> wrote:
-> I do suggest you instead write wrapper scripts to get
-> the output you want rather than updating the defaults
-> for the script and update the process documentation
-> to let other people know what do to as well.
->
-> Something akin to Mario Limonciello's suggestion back in 2022:
->
-> https://lore.kernel.org/lkml/20220617183215.25917-1-mario.limonciello@amd.com/
+s/lenet1_ref_pad/enet1_ref_pad/g
 
-FTR, this is more or less what I am using to generate a script
-to send out patches:
+with that:
 
-    OUT=...
-    echo git send-email \\ > $OUT
-    # Add -cc
-    # Wrap comment inside $(: ...)
-    # Replace (...) in comment by [...]
-    # Replace ] at EOL by ) again
-    # Add continuation to EOL
-    scripts/get_maintainer.pl $* | \
-    tr -d \" | \
-    sed -e 's/^/--cc "/' \
-        -e 's/ (/" $(: /' \
-        -e 's/ (/ [/' -e 's/)/]/' \
-        -e 's/]$/)/' \
-        -e 's/$/ \\/' | \
-    tee -a $OUT
-    echo "*[0-9][0-9][0-9][0-9]-*.*" >> $OUT
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
 
-After generation, I edit the script to
-  - Replace some --cc by --to,
-  - Add/remove some people,
-and run "source $OUT" to send the patches...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>  
+>    clock-names:
+> +    minItems: 4
+>      items:
+>        - const: ckil
+>        - const: osc
+>        - const: ipp_di0
+>        - const: ipp_di1
+> +      - pattern: '^enet[12]_ref_pad$'
+> +      - pattern: '^enet[12]_ref_pad$'
+>  
+>  required:
+>    - compatible
+> -- 
+> 2.39.2
+> 
