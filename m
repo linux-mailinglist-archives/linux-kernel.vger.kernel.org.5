@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B87C761BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D057761BB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbjGYOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S230263AbjGYOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjGYOaU (ORCPT
+        with ESMTP id S229521AbjGYOaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:30:20 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92077CD;
-        Tue, 25 Jul 2023 07:30:18 -0700 (PDT)
-X-QQ-mid: bizesmtp63t1690295407t5fn9pna
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 25 Jul 2023 22:30:06 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: 5q30pvLz2idm6eGUKnhD29MMjU+BWKNUCYmE2YhHu34X2nvYfFSUxj32XjACV
-        aIqKUwI+BasNiTdoDyFtHtMkn16npcuE7XdblWOGfPHf4ZkbZjCo7hJ3GkSlHo4Uh2t8Q8U
-        b1HKet2rWr8hh9CPLs69dcZanl/yKSBaNV90y6ByeNjQsqVFTbxTdo5WjgR7sr274bBfsTW
-        RN1u5zi6bIZ424y091n+sUxr3DuuCsHEY14CXrHpHSN7ack5B7Kf5QkfjlYafkaq7kVM2c9
-        EOuAFrZYZ5QcA4mYZVzpUEP7ucDOrQDze0K2m0FFvedKGl4okpZF/w0chsC7SVO25cqSgi1
-        J07Jy6W0h15JOfh7xUof8BuCjd/IW2futU4SfuKrsKie3NwlRJvH9WcSOztnqF6zTovSoaJ
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 502512354175558940
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v1 4/8] selftests/nolibc: add extra config file customize support
-Date:   Tue, 25 Jul 2023 22:30:06 +0800
-Message-Id: <20230725143006.37452-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230722120037.GA17311@1wt.eu>
-References: <20230722120037.GA17311@1wt.eu>
+        Tue, 25 Jul 2023 10:30:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D27102;
+        Tue, 25 Jul 2023 07:30:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D68236177D;
+        Tue, 25 Jul 2023 14:30:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8007DC433C7;
+        Tue, 25 Jul 2023 14:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690295413;
+        bh=KtnE5dhLNoiRTXkG83CVq0c4MoLSC/g14BIHi5712yA=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=UFJqsqrdVYDzkb111b+WY8IfFVpYAbcpMIXP5Kx/w7E13GQo1REYEFa9w6dTRqI12
+         ePMUDHni89hp/ApW1oE+zmavdGt04xnpRDcs4PyfrwhgQa3wXCStkrdHwNM6hshfoL
+         TeSDdy2ECDI6SYO8M+XXD6FC4AKmUeqFfwBy1TCiX9e5RPXgkIW57z+1QbNJ7aDzPc
+         RaXTv2xBBy/JxJD5+D67fcffKnow1ZFEG/cJRFBqns0VektMi5dttUQqTjyqvTuzEN
+         Uk0mN4vwAEcAX7zS7Xg2bJytNCmpF6t0+s3mREeGfInj+8GEB2eF59RpvSieGrRmNC
+         6BSYmU6DfDxww==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v6] wifi: ath5k: remove phydir check from
+ ath5k_debug_init_device()
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20230714081619.2032-1-duminjie@vivo.com>
+References: <20230714081619.2032-1-duminjie@vivo.com>
+To:     Minjie Du <duminjie@vivo.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-wireless@vger.kernel.org (open list:ATHEROS ATH5K WIRELESS DRIVER),
+        linux-kernel@vger.kernel.org (open list),
+        opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169029540951.3210124.15107643923652179216.kvalo@kernel.org>
+Date:   Tue, 25 Jul 2023 14:30:11 +0000 (UTC)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+Minjie Du <duminjie@vivo.com> wrote:
 
-> On Wed, Jul 19, 2023 at 05:14:07AM +0800, Zhangjin Wu wrote:
-> > The default DEFCONFIG_<ARCH> may not always work for all architectures,
-> > some architectures require to add extra kernel config options, this adds
-> > a new 'extconfig' target for this requirement.
-> > 
-> > It allows to customize extra kernel config options via the common
-> > common.config and the architecture specific <ARCH>.config, at last
-> > trigger 'allnoconfig' to let them take effect with missing config
-> > options as disabled.
-> > 
-> > The scripts/kconfig/merge_config.sh tool is used to merge the extra
-> > config files.
-> > 
-> > Suggested-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
-> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > ---
-> >  tools/testing/selftests/nolibc/Makefile | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> > index f42adef87e12..08a5ca5f418b 100644
-> > --- a/tools/testing/selftests/nolibc/Makefile
-> > +++ b/tools/testing/selftests/nolibc/Makefile
-> > @@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
-> >  DEFCONFIG_loongarch  = defconfig
-> >  DEFCONFIG            = $(DEFCONFIG_$(ARCH))
-> >  
-> > +# extra kernel config files under configs/, include common + architecture specific
-> > +EXTCONFIG            = common.config $(ARCH).config
-> > +
-> >  # optional tests to run (default = all)
-> >  TEST =
-> >  
-> > @@ -162,6 +165,10 @@ initramfs: nolibc-test
-> >  defconfig:
-> >  	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-> >  
-> > +extconfig:
-> > +	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
-> > +	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
-> > +
+> 'phydir' returned from debugfs_create_dir() is checked against NULL.
+> As the debugfs API returns an error pointer,
+> the returned value can never be NULL.
 > 
-> Please also mention this entry in the "help" message.
-> Other than that, OK.
->
+> Therefore, as the documentation suggests that the check is unnecessary
+> and other debugfs calls have no operation in error cases,
+> it is advisable to completely eliminate the check.
+> 
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Willy, as we discussed in another tinyconfig series, in order to avoid
-add more complexity to users, I plan to drop this standalone 'extconfig'
-target and move the extra config operations to defconfig target like
-this:
+Patch applied to ath-next branch of ath.git, thanks.
 
-    defconfig:
-     	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-     	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
-     	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
+f7eb8315b22a wifi: ath5k: remove phydir check from ath5k_debug_init_device()
 
-This extra config options are really critical to default boot and test, so, it
-should be a 'default' config action as the 'defconfig' target originally mean.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20230714081619.2032-1-duminjie@vivo.com/
 
-Will test carefully about this change, what's your idea?
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Thanks,
-Zhangjin
-
-> Willy
