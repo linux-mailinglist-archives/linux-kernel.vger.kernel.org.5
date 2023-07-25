@@ -2,242 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F78760CE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347DE760CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjGYIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S232164AbjGYI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjGYIY3 (ORCPT
+        with ESMTP id S231254AbjGYI01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:24:29 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2055.outbound.protection.outlook.com [40.107.15.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146EBE66;
-        Tue, 25 Jul 2023 01:24:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AN92UHzQTXjIBN8QX1mvWr9ShmEshDQQSqqi/cULdGij/kYV5EwAU66LubONfDjZmc7q1I3ND+HXQGqjE4XH169/LXAu4dKXsHGeI99kKq4ZgcTaP6nIj1Ae3ipQWdl1KcvCgPA3WfJiI8b9MAax2AFeDAeN7h2lyRbsnus1dGICnT08OVRxS7XRevifyYAG9hh1eH/DUPybIfrOGjF8Y146Z/x/rKpXjQU98+4i0ufjJ1glpix9fImZ+1uIjDyxivBdWXisW/fhFPHW7syr2oV1P5kAgKfByZD1wKpyaMuL+6+50JNe9J0VAWS6jsA7Iltbgisi1lkBRdgXaxCPJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1XunXLFLUyKRlnDiq25Wd5fVf9AmTD08zPktBuOFELE=;
- b=VZRhEROgBUosBTsKpTgKNfCTUBmIFACX8UFQReqvkR23V2P20XQpRzGNj+dt3cmRR9+BU6tKoMcjewoKLvnXqVzL07pCp91Hzj90Lh8ZNQyHBMGXSNZZMIx8NSruA2gHNetww7o65wOOiMTIxEM6lZYih8YPm/0i3oyr8HIujXATV+xP5b/t9ZPXI8sPwcQiXGcU8azFCo/FFWlLlr9vpgNKkBtgjfo6U+N9d97+Fboj0V0NZY2EQQUIyxHWwk/qKyy5Mo8HsibEGeplT7BADqR3RUQ2Pu+Nta9aWoxugzK46s0UXgJgUN8VxCvjWPNNjHxvCReknQ5Yb3JOym+7Xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1XunXLFLUyKRlnDiq25Wd5fVf9AmTD08zPktBuOFELE=;
- b=UbsGlHOsH17GmqV5hgMcJv/E1igr89TOSL578QrnJbyuPq6a3ISgLKinzZNyZXoLGe/O0en+FqFmfw39LYf2hDIQMfjy5NUXASrwZuaKMiEFqJDfPI9t3Lvm1An8xf1YBB0qxtwTpa1+afRi8+knewfj3EzuwpUjpv8ITy5qn5k=
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
- by AS8PR04MB8562.eurprd04.prod.outlook.com (2603:10a6:20b:421::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 08:24:25 +0000
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::ea2b:9b70:e669:f0e4]) by VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::ea2b:9b70:e669:f0e4%3]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 08:24:25 +0000
-From:   Carlos Song <carlos.song@nxp.com>
-To:     =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     "festevam@gmail.com" <festevam@gmail.com>,
-        "andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Bough Chen <haibo.chen@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [EXT] Re: [PATCH v3] i2c: imx-lpi2c: add error message when i2c
- peripheral clk doesn't work
-Thread-Topic: [EXT] Re: [PATCH v3] i2c: imx-lpi2c: add error message when i2c
- peripheral clk doesn't work
-Thread-Index: AQHZvpzCEhXw709NyE6D1CfKwLq1CK/KCdGAgAAR+BA=
-Date:   Tue, 25 Jul 2023 08:24:24 +0000
-Message-ID: <VI1PR04MB50052C30E9D8F6108C0D0B91E803A@VI1PR04MB5005.eurprd04.prod.outlook.com>
-References: <20230725021108.1977494-1-carlos.song@nxp.com>
- <20230725064455.i5oq5y2jvjatxesc@pengutronix.de>
-In-Reply-To: <20230725064455.i5oq5y2jvjatxesc@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR04MB5005:EE_|AS8PR04MB8562:EE_
-x-ms-office365-filtering-correlation-id: f1ce3556-48f4-45e9-c724-08db8ce88e2c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5QDrlMfSqulbMCJxOfYj/lT6hyEBXSNxfWs19k/5Tw9dWnqE+S/V4RR8vIAsui6cHLIXQ25xZbXCD2gxXOjs8Y3dBWHowj+HW5ScWfVDJbQeMupgqdGVn+h63qygrh5IYpOlIPZEAru1zVckcfM+7+7656wdNTZxv3qqGWQay0bJkEPofUzCf1O0CijbqsXsi7y6xE+pM+cHNMOglZx4kOb0vc0yOIz8JKLcAcjSxI+Xr6hfGhtRvIHZ3iy16tbZrrQb7WgNMTk3xu8BCxO5gnmUM9BZsA8Z31viWdWbLpLdKdOPEtP47SSmNNXmUMiT0F+AJdJbxcBGQHJg7Wg0J9mtevbu7b2O+tOwQuhwLtyxBgDLf2ktvx9Moo1REYuA9/IuSKndcWqqp6Z3Y/JGDh5TmwivfqF+9cVqCUjI4q2bUcer1lekjhknbYIhVgQByLtPvaIKKXZJrkePr0p8P+RcL5Jfggvye6h+FKr0JRHAD/kRxQkipgaJnwMzaz5t8U6zgXM7WpENis00zUXiVcMLRZURXNQD4sr5BPPtlSYWWw0HpcnYr/UQeDvp6aMWCacxQQlnCPd8GZ3Ke3vAnDqMLKhsYp8By7FVkIkDfLE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(396003)(39860400002)(376002)(451199021)(15650500001)(2906002)(71200400001)(26005)(6506007)(186003)(4326008)(38100700002)(122000001)(66574015)(53546011)(83380400001)(41300700001)(5660300002)(52536014)(76116006)(44832011)(66946007)(33656002)(316002)(66476007)(66556008)(64756008)(6916009)(8676002)(8936002)(38070700005)(86362001)(55016003)(66446008)(54906003)(478600001)(966005)(7696005)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?0wmIqvDggTYYOKnqHGBf1h4DAZ+QpwxlNuTFKwUUalkKWoskjApftLVyqL?=
- =?iso-8859-1?Q?o6wfBnUUEYuYxSuvza+s0BCAUopRS30cNiKwos+zw5RJ+JJOC9nLLHlDKH?=
- =?iso-8859-1?Q?moxrtwIwSb1HYcmNqC0M3rM/Fp9n1I07LZtKCCYMMT2PmTqK/Uz1Ro/vOC?=
- =?iso-8859-1?Q?QcD6jxmX5T/pP2tDMdMH0acVY+SQLXsRIFdmfGsM2o/SRuDaiPnNR8bKJL?=
- =?iso-8859-1?Q?3Z29w1lTkOsUq/dOlipWQQEOLnajwoikNAIQI4cbegY/dn/pBc7nWpwgLO?=
- =?iso-8859-1?Q?VSidrajRQEmK8x1ILazxo7+nsM9KFypcAXBPqQo6SMwmfUWJpxsR7FNZs6?=
- =?iso-8859-1?Q?pTO65oMabYG2VbFikXg+Kp0E4DrCF0qJogXnOB/+0W2/9g8LsvJXFHIJxr?=
- =?iso-8859-1?Q?R1DRW9eN7m0oZjei8dnl8DahZ1ALQkeeWakbqeeHGLvRhYN52PgF3T7+TI?=
- =?iso-8859-1?Q?L23N/gFMC7J0IyrqBG49p9yCE3OI8Z76ZnlgYpxDtpxBESspfk6nWR+BP+?=
- =?iso-8859-1?Q?o4sOBmlhAxzrUDPBOhV3YCk4fq9Ph2Q8BhlhvumW8BQq6SLzr6qVqHcTQd?=
- =?iso-8859-1?Q?sxvdgl2kKZQz5Ot8ofWCdQUHLzmB5Ucun56ui+GxMsIWrtS9fSityFo5wL?=
- =?iso-8859-1?Q?ZTsA6UrWUmVbOMFj5CQT2i2qLWsPeOoJq1obeIwGEdgPwhpiZSWhWUc6hU?=
- =?iso-8859-1?Q?SR7HHfYN4cIjejUqC7IGQAe0xJVVj6CzUImaojGNQ8muZdMMe48kZ2Olvy?=
- =?iso-8859-1?Q?HN+/MX98bmdT6XniQ8RdajfcN4bRKf8Joq/eDYi9Tv4apsCVrKB9JQjwao?=
- =?iso-8859-1?Q?wj790X0yZSm/HI9tA9ZNcyagskNG2POKJp29sY8GV0E8OHKfbhYRMLcpQI?=
- =?iso-8859-1?Q?A7aGzcPlHzCZ3KeTgenzIytRCfau7Qfg+jbadTRfXspV4ww+G2dCXRPnJ0?=
- =?iso-8859-1?Q?DLb3d2afARpaS8Cvkwmio/9l8qyrUBeAw1qfYd2s8CBr+rksdgIxQ4Fls3?=
- =?iso-8859-1?Q?S7ocNsNfJ8SfPiqg7XIRfskNpBjTH3vcNvTV6tyGsN1GxO/iVrNsSrmCI6?=
- =?iso-8859-1?Q?ZNDV629P8Wf8pfhjlRk5eNgFBadQkoNcPw3QMqWCCv8cJGUOpz6fbLvUlL?=
- =?iso-8859-1?Q?HHFbHkO7Iwml16x7M4CJpc6x5Q6fwpEHOkHFtVOo6u5gzz5Y4jBv4oRkCk?=
- =?iso-8859-1?Q?ftyI1wQo6gnjgNL1IlqdjReWY4+e4hZ54HFeU87ziPALxk1SST20he2VOY?=
- =?iso-8859-1?Q?2wQS3rTNU3Zvp+YG3CxfG4fBdZGyx6wC7IpCOlknoX5C7Rp2UVSb23yxNH?=
- =?iso-8859-1?Q?o1IwK1Hw24nhKw4EFFWvWvnChD56UkxbjBgdlr811yvfwZjr6C6aaN5Clg?=
- =?iso-8859-1?Q?ABe+5QTP087rfG3LCdabYCJVHv8PaqY6emSXzx2A92CfP0HKrJTuocFS60?=
- =?iso-8859-1?Q?vonPWbLeqfG2OiWUH0tRIeESs0avv3jrRvSO1xZy5sG/qQyhD91ozm6YrP?=
- =?iso-8859-1?Q?pRu7gVjmmRdfRgEMrGZNohilJyrZVoHB/6+C9Eb5s+v4PNy2m2ePJYrcRJ?=
- =?iso-8859-1?Q?pruap/6YvYcCrs2MDekxv0XeWIp8av09T+Ct1v1/x25C3CfHJDGEFxIm98?=
- =?iso-8859-1?Q?0WDm2bqikHdIc=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 25 Jul 2023 04:26:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E56E66
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690273544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L07Zy5zeSCzepZobyD48kAYbd6KXiZ0kfO57sZ3HITM=;
+        b=LrxOC+UWHV22YfUmBam9xVYbJDal73G6W44SLMRL2nPQHYjzRuDz/3i78WeiY0FFVZo9kv
+        vu40TuV3GQiEFSYB+3LfGxVKvi6xqyOI+u/1ZMca/Aw71f8+kI4PpUH98VomJLj7fD7ql5
+        zjijRn7qd0UsvIpJEvwJzz5kusG1Qyo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-SPP-xoLENUiWPTTCT3Xahg-1; Tue, 25 Jul 2023 04:25:42 -0400
+X-MC-Unique: SPP-xoLENUiWPTTCT3Xahg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-97542592eb9so340295766b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:25:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690273541; x=1690878341;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L07Zy5zeSCzepZobyD48kAYbd6KXiZ0kfO57sZ3HITM=;
+        b=DsXesr7gbEzo9D3gOvs0jRg7JfoGiOxNX0e2XBmP7Sh0BATGKVOQN7ac0pVh8u9UiL
+         PbbYitWwcgeNwIJdVGI/ZR8J5eBAR440CnD3AhMGZ7L3OsMy3H3RRolaxseDLvlJu3LL
+         9VsXT0yM6MB3NvnHMlQyETETKRCwGDM8NHrlwN8dNLO6wkjoMOHGYJ2uO4ADiX1sgYlv
+         M0IK3ceJAIe3Iobvx/HNYlbXtqT7vRnpg46kbZj11MVZxHexKu+Gvj5Ex0sNdLBOXi2w
+         fFgmg3cChWW95sxo8OP+dZEhiATmcf3TENIaYNNasCC7hL30KjbbbFPaEGdMPyLkffKW
+         daxg==
+X-Gm-Message-State: ABy/qLYl/ig/yqOd9JW+KLWyntvxjMmpYIMuqux6xn4+kDqkAZgcJqp9
+        HaZDl6RpYCJWwifYorJ1ljAYNhe7n72MvYjswo/kW68gOYtJ2H+v6R1RycJIOkwVsoYu3Wo3F8v
+        ItWNwSspfM0kEnohFRJ416OoS
+X-Received: by 2002:a17:906:30c3:b0:993:f996:52cf with SMTP id b3-20020a17090630c300b00993f99652cfmr12490839ejb.28.1690273541400;
+        Tue, 25 Jul 2023 01:25:41 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF5PSWig/M23c8KhxPndHOhr8/RbuTR4n5bnMTJKG9TQj2kEGlMqBT5rapabLnqvMaEEsnumQ==
+X-Received: by 2002:a17:906:30c3:b0:993:f996:52cf with SMTP id b3-20020a17090630c300b00993f99652cfmr12490817ejb.28.1690273541017;
+        Tue, 25 Jul 2023 01:25:41 -0700 (PDT)
+Received: from redhat.com ([2.55.164.187])
+        by smtp.gmail.com with ESMTPSA id u20-20020a170906c41400b00993928e4d1bsm7771094ejz.24.2023.07.25.01.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 01:25:40 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 04:25:36 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v3 4/4] vsock/virtio: MSG_ZEROCOPY flag support
+Message-ID: <20230725042452-mutt-send-email-mst@kernel.org>
+References: <20230720214245.457298-1-AVKrasnov@sberdevices.ru>
+ <20230720214245.457298-5-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1ce3556-48f4-45e9-c724-08db8ce88e2c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2023 08:24:24.8149
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hsteosfI/J9jIZTmvmphyRUcq34WNF6BOxOhfrG2ns2Is0eHr1Q+Fb//zrttEH0pVooDQ+/byEV7Dvqk+j8J4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8562
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720214245.457298-5-AVKrasnov@sberdevices.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Jul 21, 2023 at 12:42:45AM +0300, Arseniy Krasnov wrote:
+> This adds handling of MSG_ZEROCOPY flag on transmission path: if this
+> flag is set and zerocopy transmission is possible (enabled in socket
+> options and transport allows zerocopy), then non-linear skb will be
+> created and filled with the pages of user's buffer. Pages of user's
+> buffer are locked in memory by 'get_user_pages()'. Second thing that
+> this patch does is replace type of skb owning: instead of calling
+> 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
+> change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
+> of socket, so to decrease this field correctly proper skb destructor is
+> needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
+> 
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> ---
+>  Changelog:
+>  v5(big patchset) -> v1:
+>   * Refactorings of 'if' conditions.
+>   * Remove extra blank line.
+>   * Remove 'frag_off' field unneeded init.
+>   * Add function 'virtio_transport_fill_skb()' which fills both linear
+>     and non-linear skb with provided data.
+>  v1 -> v2:
+>   * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
+>  v2 -> v3:
+>   * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
+>     provided 'iov_iter' with data could be sent in a zerocopy mode.
+>     If this callback is not set in transport - transport allows to send
+>     any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
+>     then zerocopy is allowed. Reason of this callback is that in case of
+>     G2H transmission we insert whole skb to the tx virtio queue and such
+>     skb must fit to the size of the virtio queue to be sent in a single
+>     iteration (may be tx logic in 'virtio_transport.c' could be reworked
+>     as in vhost to support partial send of current skb). This callback
+>     will be enabled only for G2H path. For details pls see comment 
+>     'Check that tx queue...' below.
+> 
+>  include/net/af_vsock.h                  |   3 +
+>  net/vmw_vsock/virtio_transport.c        |  39 ++++
+>  net/vmw_vsock/virtio_transport_common.c | 257 ++++++++++++++++++------
+>  3 files changed, 241 insertions(+), 58 deletions(-)
+> 
+> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+> index 0e7504a42925..a6b346eeeb8e 100644
+> --- a/include/net/af_vsock.h
+> +++ b/include/net/af_vsock.h
+> @@ -177,6 +177,9 @@ struct vsock_transport {
+>  
+>  	/* Read a single skb */
+>  	int (*read_skb)(struct vsock_sock *, skb_read_actor_t);
+> +
+> +	/* Zero-copy. */
+> +	bool (*msgzerocopy_check_iov)(const struct iov_iter *);
+>  };
+>  
+>  /**** CORE ****/
+> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> index 7bbcc8093e51..23cb8ed638c4 100644
+> --- a/net/vmw_vsock/virtio_transport.c
+> +++ b/net/vmw_vsock/virtio_transport.c
+> @@ -442,6 +442,43 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
+>  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
+>  }
+>  
+> +static bool virtio_transport_msgzerocopy_check_iov(const struct iov_iter *iov)
+> +{
+> +	struct virtio_vsock *vsock;
+> +	bool res = false;
+> +
+> +	rcu_read_lock();
+> +
+> +	vsock = rcu_dereference(the_virtio_vsock);
+> +	if (vsock) {
+> +		struct virtqueue *vq;
+> +		int iov_pages;
+> +
+> +		vq = vsock->vqs[VSOCK_VQ_TX];
+> +
+> +		iov_pages = round_up(iov->count, PAGE_SIZE) / PAGE_SIZE;
+> +
+> +		/* Check that tx queue is large enough to keep whole
+> +		 * data to send. This is needed, because when there is
+> +		 * not enough free space in the queue, current skb to
+> +		 * send will be reinserted to the head of tx list of
+> +		 * the socket to retry transmission later, so if skb
+> +		 * is bigger than whole queue, it will be reinserted
+> +		 * again and again, thus blocking other skbs to be sent.
+> +		 * Each page of the user provided buffer will be added
+> +		 * as a single buffer to the tx virtqueue, so compare
+> +		 * number of pages against maximum capacity of the queue.
+> +		 * +1 means buffer for the packet header.
+> +		 */
+> +		if (iov_pages + 1 <= vq->num_max)
+> +			res = true;
 
-> -----Original Message-----
-> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Sent: Tuesday, July 25, 2023 2:45 PM
-> To: Carlos Song <carlos.song@nxp.com>
-> Cc: festevam@gmail.com; andi.shyti@kernel.org; Aisheng Dong
-> <aisheng.dong@nxp.com>; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> kernel@pengutronix.de; Bough Chen <haibo.chen@nxp.com>;
-> linux-kernel@vger.kernel.org; Clark Wang <xiaoning.wang@nxp.com>;
-> linux-i2c@vger.kernel.org; linux-arm-kernel@lists.infradead.org; dl-linux=
--imx
-> <linux-imx@nxp.com>
-> Subject: [EXT] Re: [PATCH v3] i2c: imx-lpi2c: add error message when i2c
-> peripheral clk doesn't work
->=20
-> On Tue, Jul 25, 2023 at 10:11:08AM +0800, carlos.song@nxp.com wrote:
-> > From: Gao Pan <pandy.gao@nxp.com>
-> >
-> > Output error log when i2c peripheral clk rate is 0, then directly
-> > return -EINVAL.
-> >
-> > Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
-> > Signed-off-by: Gao Pan <pandy.gao@nxp.com>
-> > Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> > ---
-> > Changes for V2:
-> > - adjust the Subject from "debug message" to "error message"
-> > ---
-> >  drivers/i2c/busses/i2c-imx-lpi2c.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > index e93ff3b5373c..12b4f2a89343 100644
->=20
-> I wonder which tree you based this on. The object e93ff3b5373c is neither=
- in
-> v6.5-rc1 nor next nor in Wolfram's tree. (Probably not critical for this =
-patch. But
-> if you base your patch on a public tree, you're making things easier for =
-the build
-> bots. Related to that I recommend git format-patch --base=3D...)
->=20
 
-I make the patch on linux-next master branch at:
-commit 4d2c646ac07cf4a35ef1c4a935a1a4fd6c6b1a36 (tag: next-20230724, origin=
-/master, origin/HEAD)
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Mon Jul 24 14:07:27 2023 +1000
+Yes but can't there already be buffers in the queue?
+Then you can't stick num_max there.
 
-Just now I git fetch and rebase on the linux-next, now I am on master branc=
-h at:
-commit 1e25dd7772483f477f79986d956028e9f47f990a (tag: next-20230725, origin=
-/master, origin/HEAD)
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Tue Jul 25 14:08:59 2023 +1000
 
-    Add linux-next specific files for 20230725
+> +	}
+> +
+> +	rcu_read_unlock();
+> +
+> +	return res;
+> +}
+> +
+>  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
+>  
+>  static struct virtio_transport virtio_transport = {
+> @@ -475,6 +512,8 @@ static struct virtio_transport virtio_transport = {
+>  		.seqpacket_allow          = virtio_transport_seqpacket_allow,
+>  		.seqpacket_has_data       = virtio_transport_seqpacket_has_data,
+>  
+> +		.msgzerocopy_check_iov	  = virtio_transport_msgzerocopy_check_iov,
+> +
+>  		.notify_poll_in           = virtio_transport_notify_poll_in,
+>  		.notify_poll_out          = virtio_transport_notify_poll_out,
+>  		.notify_recv_init         = virtio_transport_notify_recv_init,
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 26a4d10da205..e4e3d541aff4 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -37,73 +37,122 @@ virtio_transport_get_ops(struct vsock_sock *vsk)
+>  	return container_of(t, struct virtio_transport, transport);
+>  }
+>  
+> -/* Returns a new packet on success, otherwise returns NULL.
+> - *
+> - * If NULL is returned, errp is set to a negative errno.
+> - */
+> -static struct sk_buff *
+> -virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
+> -			   size_t len,
+> -			   u32 src_cid,
+> -			   u32 src_port,
+> -			   u32 dst_cid,
+> -			   u32 dst_port)
+> -{
+> -	const size_t skb_len = VIRTIO_VSOCK_SKB_HEADROOM + len;
+> -	struct virtio_vsock_hdr *hdr;
+> -	struct sk_buff *skb;
+> -	void *payload;
+> -	int err;
+> +static bool virtio_transport_can_zcopy(struct virtio_vsock_pkt_info *info,
+> +				       size_t max_to_send)
+> +{
+> +	const struct vsock_transport *t;
+> +	struct iov_iter *iov_iter;
+>  
+> -	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
+> -	if (!skb)
+> -		return NULL;
+> +	if (!info->msg)
+> +		return false;
+>  
+> -	hdr = virtio_vsock_hdr(skb);
+> -	hdr->type	= cpu_to_le16(info->type);
+> -	hdr->op		= cpu_to_le16(info->op);
+> -	hdr->src_cid	= cpu_to_le64(src_cid);
+> -	hdr->dst_cid	= cpu_to_le64(dst_cid);
+> -	hdr->src_port	= cpu_to_le32(src_port);
+> -	hdr->dst_port	= cpu_to_le32(dst_port);
+> -	hdr->flags	= cpu_to_le32(info->flags);
+> -	hdr->len	= cpu_to_le32(len);
+> +	iov_iter = &info->msg->msg_iter;
+>  
+> -	if (info->msg && len > 0) {
+> -		payload = skb_put(skb, len);
+> -		err = memcpy_from_msg(payload, info->msg, len);
+> -		if (err)
+> -			goto out;
+> +	t = vsock_core_get_transport(info->vsk);
+>  
+> -		if (msg_data_left(info->msg) == 0 &&
+> -		    info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
+> -			hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+> +	if (t->msgzerocopy_check_iov &&
+> +	    !t->msgzerocopy_check_iov(iov_iter))
+> +		return false;
+>  
+> -			if (info->msg->msg_flags & MSG_EOR)
+> -				hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+> -		}
+> +	/* Data is simple buffer. */
+> +	if (iter_is_ubuf(iov_iter))
+> +		return true;
+> +
+> +	if (!iter_is_iovec(iov_iter))
+> +		return false;
+> +
+> +	if (iov_iter->iov_offset)
+> +		return false;
+> +
+> +	/* We can't send whole iov. */
+> +	if (iov_iter->count > max_to_send)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static int virtio_transport_init_zcopy_skb(struct vsock_sock *vsk,
+> +					   struct sk_buff *skb,
+> +					   struct msghdr *msg,
+> +					   bool zerocopy)
+> +{
+> +	struct ubuf_info *uarg;
+> +
+> +	if (msg->msg_ubuf) {
+> +		uarg = msg->msg_ubuf;
+> +		net_zcopy_get(uarg);
+> +	} else {
+> +		struct iov_iter *iter = &msg->msg_iter;
+> +		struct ubuf_info_msgzc *uarg_zc;
+> +		int len;
+> +
+> +		/* Only ITER_IOVEC or ITER_UBUF are allowed and
+> +		 * checked before.
+> +		 */
+> +		if (iter_is_iovec(iter))
+> +			len = iov_length(iter->__iov, iter->nr_segs);
+> +		else
+> +			len = iter->count;
+> +
+> +		uarg = msg_zerocopy_realloc(sk_vsock(vsk),
+> +					    len,
+> +					    NULL);
+> +		if (!uarg)
+> +			return -1;
+> +
+> +		uarg_zc = uarg_to_msgzc(uarg);
+> +		uarg_zc->zerocopy = zerocopy ? 1 : 0;
+>  	}
+>  
+> -	if (info->reply)
+> -		virtio_vsock_skb_set_reply(skb);
+> +	skb_zcopy_init(skb, uarg);
+>  
+> -	trace_virtio_transport_alloc_pkt(src_cid, src_port,
+> -					 dst_cid, dst_port,
+> -					 len,
+> -					 info->type,
+> -					 info->op,
+> -					 info->flags);
+> +	return 0;
+> +}
+>  
+> -	if (info->vsk && !skb_set_owner_sk_safe(skb, sk_vsock(info->vsk))) {
+> -		WARN_ONCE(1, "failed to allocate skb on vsock socket with sk_refcnt == 0\n");
+> -		goto out;
+> +static int virtio_transport_fill_skb(struct sk_buff *skb,
+> +				     struct virtio_vsock_pkt_info *info,
+> +				     size_t len,
+> +				     bool zcopy)
+> +{
+> +	if (zcopy) {
+> +		return __zerocopy_sg_from_iter(info->msg, NULL, skb,
+> +					      &info->msg->msg_iter,
+> +					      len);
+> +	} else {
+> +		void *payload;
+> +		int err;
+> +
+> +		payload = skb_put(skb, len);
+> +		err = memcpy_from_msg(payload, info->msg, len);
+> +		if (err)
+> +			return -1;
+> +
+> +		if (msg_data_left(info->msg))
+> +			return 0;
+> +
+> +		return 0;
+>  	}
+> +}
+>  
+> -	return skb;
+> +static void virtio_transport_init_hdr(struct sk_buff *skb,
+> +				      struct virtio_vsock_pkt_info *info,
+> +				      u32 src_cid,
+> +				      u32 src_port,
+> +				      u32 dst_cid,
+> +				      u32 dst_port,
+> +				      size_t len)
+> +{
+> +	struct virtio_vsock_hdr *hdr;
+>  
+> -out:
+> -	kfree_skb(skb);
+> -	return NULL;
+> +	hdr = virtio_vsock_hdr(skb);
+> +	hdr->type	= cpu_to_le16(info->type);
+> +	hdr->op		= cpu_to_le16(info->op);
+> +	hdr->src_cid	= cpu_to_le64(src_cid);
+> +	hdr->dst_cid	= cpu_to_le64(dst_cid);
+> +	hdr->src_port	= cpu_to_le32(src_port);
+> +	hdr->dst_port	= cpu_to_le32(dst_port);
+> +	hdr->flags	= cpu_to_le32(info->flags);
+> +	hdr->len	= cpu_to_le32(len);
+>  }
+>  
+>  static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
+> @@ -214,6 +263,70 @@ static u16 virtio_transport_get_type(struct sock *sk)
+>  		return VIRTIO_VSOCK_TYPE_SEQPACKET;
+>  }
+>  
+> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
+> +						  struct virtio_vsock_pkt_info *info,
+> +						  size_t payload_len,
+> +						  bool zcopy,
+> +						  u32 src_cid,
+> +						  u32 src_port,
+> +						  u32 dst_cid,
+> +						  u32 dst_port)
+> +{
+> +	struct sk_buff *skb;
+> +	size_t skb_len;
+> +
+> +	skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
+> +
+> +	if (!zcopy)
+> +		skb_len += payload_len;
+> +
+> +	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
+> +	if (!skb)
+> +		return NULL;
+> +
+> +	virtio_transport_init_hdr(skb, info, src_cid, src_port,
+> +				  dst_cid, dst_port,
+> +				  payload_len);
+> +
+> +	/* Set owner here, because '__zerocopy_sg_from_iter()' uses
+> +	 * owner of skb without check to update 'sk_wmem_alloc'.
+> +	 */
+> +	if (vsk)
+> +		skb_set_owner_w(skb, sk_vsock(vsk));
+> +
+> +	if (info->msg && payload_len > 0) {
+> +		int err;
+> +
+> +		err = virtio_transport_fill_skb(skb, info, payload_len, zcopy);
+> +		if (err)
+> +			goto out;
+> +
+> +		if (info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
+> +			struct virtio_vsock_hdr *hdr = virtio_vsock_hdr(skb);
+> +
+> +			hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+> +
+> +			if (info->msg->msg_flags & MSG_EOR)
+> +				hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+> +		}
+> +	}
+> +
+> +	if (info->reply)
+> +		virtio_vsock_skb_set_reply(skb);
+> +
+> +	trace_virtio_transport_alloc_pkt(src_cid, src_port,
+> +					 dst_cid, dst_port,
+> +					 payload_len,
+> +					 info->type,
+> +					 info->op,
+> +					 info->flags);
+> +
+> +	return skb;
+> +out:
+> +	kfree_skb(skb);
+> +	return NULL;
+> +}
+> +
+>  /* This function can only be used on connecting/connected sockets,
+>   * since a socket assigned to a transport is required.
+>   *
+> @@ -222,10 +335,12 @@ static u16 virtio_transport_get_type(struct sock *sk)
+>  static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
+>  					  struct virtio_vsock_pkt_info *info)
+>  {
+> +	u32 max_skb_len = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
+>  	u32 src_cid, src_port, dst_cid, dst_port;
+>  	const struct virtio_transport *t_ops;
+>  	struct virtio_vsock_sock *vvs;
+>  	u32 pkt_len = info->pkt_len;
+> +	bool can_zcopy = false;
+>  	u32 rest_len;
+>  	int ret;
+>  
+> @@ -254,15 +369,30 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
+>  	if (pkt_len == 0 && info->op == VIRTIO_VSOCK_OP_RW)
+>  		return pkt_len;
+>  
+> +	if (info->msg) {
+> +		/* If zerocopy is not enabled by 'setsockopt()', we behave as
+> +		 * there is no MSG_ZEROCOPY flag set.
+> +		 */
+> +		if (!sock_flag(sk_vsock(vsk), SOCK_ZEROCOPY))
+> +			info->msg->msg_flags &= ~MSG_ZEROCOPY;
+> +
+> +		if (info->msg->msg_flags & MSG_ZEROCOPY)
+> +			can_zcopy = virtio_transport_can_zcopy(info, pkt_len);
+> +
+> +		if (can_zcopy)
+> +			max_skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE,
+> +					    (MAX_SKB_FRAGS * PAGE_SIZE));
+> +	}
+> +
+>  	rest_len = pkt_len;
+>  
+>  	do {
+>  		struct sk_buff *skb;
+>  		size_t skb_len;
+>  
+> -		skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE, rest_len);
+> +		skb_len = min(max_skb_len, rest_len);
+>  
+> -		skb = virtio_transport_alloc_skb(info, skb_len,
+> +		skb = virtio_transport_alloc_skb(vsk, info, skb_len, can_zcopy,
+>  						 src_cid, src_port,
+>  						 dst_cid, dst_port);
+>  		if (!skb) {
+> @@ -270,6 +400,17 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
+>  			break;
+>  		}
+>  
+> +		/* This is last skb to send this portion of data. */
+> +		if (info->msg && info->msg->msg_flags & MSG_ZEROCOPY &&
+> +		    skb_len == rest_len && info->op == VIRTIO_VSOCK_OP_RW) {
+> +			if (virtio_transport_init_zcopy_skb(vsk, skb,
+> +							    info->msg,
+> +							    can_zcopy)) {
+> +				ret = -ENOMEM;
+> +				break;
+> +			}
+> +		}
+> +
+>  		virtio_transport_inc_tx_pkt(vvs, skb);
+>  
+>  		ret = t_ops->send_pkt(skb);
+> @@ -934,7 +1075,7 @@ static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
+>  	if (!t)
+>  		return -ENOTCONN;
+>  
+> -	reply = virtio_transport_alloc_skb(&info, 0,
+> +	reply = virtio_transport_alloc_skb(NULL, &info, 0, false,
+>  					   le64_to_cpu(hdr->dst_cid),
+>  					   le32_to_cpu(hdr->dst_port),
+>  					   le64_to_cpu(hdr->src_cid),
+> -- 
+> 2.25.1
 
-    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-I can still git am the patch.
-
-> > --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-> > @@ -214,6 +214,11 @@ static int lpi2c_imx_config(struct lpi2c_imx_struc=
-t
-> *lpi2c_imx)
-> >  	lpi2c_imx_set_mode(lpi2c_imx);
-> >
-> >  	clk_rate =3D clk_get_rate(lpi2c_imx->clks[0].clk);
-> > +	if (!clk_rate) {
-> > +		dev_err(&lpi2c_imx->adapter.dev, "clk_per rate is 0\n");
-> > +		return -EINVAL;
-> > +	}
->=20
-> I'm not sure this is a good idea. In my book error messages in functions =
-that
-> might be called often (and triggered by user space) do more harm than goo=
-d as
-> they flood the kernel log buffer and so might make it hard to find the or=
-iginal
-> cause of the problem. I'd say returning an error code should be enough he=
-re.
->=20
-> Having said that I wonder if you're fixing a real issue? (i.e. did it hap=
-pen to you
-> that clk_rate was 0? Did this result in a div-by-zero? Or a hardware hang=
-? Or a
-> too fast (or too slow) bus speed?) Or is this just addressing a warning b=
-y some
-> static checker?
->=20
-
-Thanks for you suggestion. I will rm the line " dev_err(&lpi2c_imx->adapter=
-.dev, "clk_per rate is 0\n");"
-And resend the patch.
-
-The per_clk is a critical i2c function clk. If it is 0, it will cause lpi2c=
- can't work. This is a double check for lpi2c clk before configing clk regi=
-ster. It can improve the stability of the driver, even though it rarely tri=
-ggers.
-> Best regards
-> Uwe
->=20
-> --
-> Pengutronix e.K.                           | Uwe Kleine-K=F6nig
-> |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
-|
