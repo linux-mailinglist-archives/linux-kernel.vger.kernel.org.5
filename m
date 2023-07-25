@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CF976053A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23938760581
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjGYCex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
+        id S231367AbjGYCgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGYCep (ORCPT
+        with ESMTP id S230397AbjGYCfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:34:45 -0400
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2147.outbound.protection.outlook.com [40.92.63.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9022319A0;
-        Mon, 24 Jul 2023 19:34:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZBiu4Jtlt4cadHQBjU4AGF4t/na7lcSpqLRH6o/CfmQuwIXVdfOuCgy1bG5nMqq5U7ChzUvnSVuiXPGzy1toExHtEHEo74c27hCJ5KRR2zoZl+TA+uigCe+wXXxv7n2le/IxCF4DqBKvLWsTHGgCkwKrxihneNarT0OKCPML9F1tOdu0/TelQaIAW5Z6Oh73CIr8VppGVkNqcjGe8lSnHzMFwF88XDUYKEwnR8oihcfLgcJA3NIWF0K9ZXNfyYV2uR9dEQ58/EqInUsGDb5zoKCuF8A1pwvsSICJ+u09JgPEtp0aMSPv3TRg+zf6gmugnbr6bikKJxXWRGaAAIbOMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XPYBkDA5gmPQvCzhGN+ImDhQ2CCq8JHGiJzn1xhc3+0=;
- b=kIVP+4HtaLYU0aPOFKBPAGotbKbYT5fdB5DMdPRDCwBKR0D7JxxxSGpAJqFPD2meAF/nNJd0ROeW+bxAJ0Yn8XKOznp+czEbQRBeDSY46cxmbnBTQ1Y/p/eT1Pmy34bm/sA+Q7ky7o6iAx7did1HfUzkrVoxiIKbO2uixzKpa2gKogUafFbYShSZ7PQRKFGsM82cUu7XsIoyv0rBPHYWAL2yCS6BMavgilCZqtLOMrRF6ESjqKDb4C0lh+eJ63QZ3SI4KOmpyQabu8/bCU2DIUX/UVdPxjr5X2wjrCVGKij94wVUb4dFGOfGd19j3trOHiDFyDzsx6NOiuB3jo+6og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XPYBkDA5gmPQvCzhGN+ImDhQ2CCq8JHGiJzn1xhc3+0=;
- b=Rob5dLdAvs/p0n5cVyzPbXGNL5RRRVw0XnjwmFB4VTUqSoRZ94/5hA737TANpLOT0OLRp14fszHdSEpo3SBHvpZt53ZezswQ8tp5NlMiS+4bsNoc4OCc3pR51iHBw9APb9u4I/VTyv22yFXkRvRrL1ouFpn8uDkPJq9tZ8PB9+dpr2hhPp/FT82SgPMs98DHwvMGKdvn6MLLaDirOhBipsadINjW5bJcuKpLZfh8kaiAu7Bl8H5hxyQsq0wN0PT26IKBvd2IjBTXnvGuG2h8t3csMLNr8UDU8rXyLIQpiuuEytuBdFia2vz0to7oyvUOXClSlPocR05URf/Qy8bA0w==
-Received: from SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1e3::6) by
- MEYP282MB2118.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:c0::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.33; Tue, 25 Jul 2023 02:34:20 +0000
-Received: from SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
- ([fe80::67bc:436f:32c5:3cd9]) by SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
- ([fe80::67bc:436f:32c5:3cd9%3]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 02:34:20 +0000
-From:   qaz6750 lzy <qaz6750@outlook.com>
-To:     konrad.dybcio@linaro.org, agross@kernel.org, andersson@kernel.org
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, qaz6750 lzy <qaz6750@outlook.com>
-Subject: [PATCH v2] arm64: dts: qcom: sm8150: Fix the I2C7 interrupt
-Date:   Tue, 25 Jul 2023 10:33:49 +0800
-Message-ID: <SY7P282MB378789DB6E1F86190DA3068CB203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <SY7P282MB37872A5CB962A92934C83125B203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
-References: <SY7P282MB37872A5CB962A92934C83125B203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [uGXmNvLHlsoUox/lPN9kMj2pIo4ytGXd]
-X-ClientProxiedBy: SI2PR02CA0016.apcprd02.prod.outlook.com
- (2603:1096:4:194::9) To SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:1e3::6)
-X-Microsoft-Original-Message-ID: <20230725023349.1877-1-qaz6750@outlook.com>
+        Mon, 24 Jul 2023 22:35:20 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A4C173E;
+        Mon, 24 Jul 2023 19:35:11 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P29ieL004483;
+        Tue, 25 Jul 2023 02:34:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=hNMyBmIu9r/HwzkzpGQFW5q035L4p8kfphT92WFsXks=;
+ b=Vz2QpOE5suUjDqIIqiVHIJ6hCe8FNagudfCabm/UxT92wo8LIKUoKitDMzt5lVs+lxzf
+ SIQoBNd9IQKuwe+1etIlJg55DdHK0k9vMJKTlX55q4VzdG8Zj4atNFI3Tn2SDZQcF294
+ 9Tgm6r+TdUzNpVwzJdtMCA/I5cg90CKT18gHxV6QEqatb8KKLGpMpth1r6KwUpeMF6rI
+ DqAZm5Tp1sk/fbZbvQy8xZsv0yJI30fblhyGHuSBqPAG1dZ6OxbJD2w3iqNtELdl4+hL
+ 07wzc6jC9f2LB7MQAn1aEVZbgN85dsXpjr/f50h17Ky55Z4cpZ4/yw2pqRAWOdFetI+b 6Q== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1r4v9sw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 02:34:39 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P2YXeJ012417
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 02:34:33 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 24 Jul 2023 19:34:32 -0700
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
+        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <quic_jackp@quicinc.com>, <pierre-louis.bossart@linux.intel.com>,
+        <oneukum@suse.com>, <albertccwang@google.com>,
+        <o-takashi@sakamocchi.jp>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v4 05/32] usb: host: xhci-mem: Allow for interrupter clients to choose specific index
+Date:   Mon, 24 Jul 2023 19:33:49 -0700
+Message-ID: <20230725023416.11205-6-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230725023416.11205-1-quic_wcheng@quicinc.com>
+References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY7P282MB3787:EE_|MEYP282MB2118:EE_
-X-MS-Office365-Filtering-Correlation-Id: 75f65d30-0b5d-423b-9fba-08db8cb7a63b
-X-MS-Exchange-SLBlob-MailProps: YfhX3sd/0TV/513dIBdqwQkLcByTPpqYh+MZr3ZOmc+T6wb3v+2fGwbPhUdGHMHql/QT9ochF5KgCUGDlFuZCPQKnY1IgUD2A3Ms4c9uhw18Cba7XbdPKKtbQ8oAKKA0tmSWqa/frst9tSRRQCbpXOGnHv9BMeMLG4DNdqZZ3SsUJt07bfiBt2qNC34J8C5p7HandgtYYiPtPlgXWV4ywUHYPMmmZ/0ujI5Ry+whIM8c+zSq+0d+sJYuj5rdrioNHdopUR4uWNcGuzsnJi3vymHgf+pojfE8cUZQpVsMn6Je9lmww2eOGaIPDVod6/Z07YWuRZNLPGpxMEx3Bv0+JwaETKbmP8I69UwbUXzJFO3j3FbYfqnA2q9oS7lHGqawjRvhpiTXEBgH/41X8s91pK6pJ3sfbav3i1yoj4izx1qX5JzSnoormJ1VRlmeq/oVXQsadFYYV+bsU3kuNpxnJvzdrPfvOSFT2AMDkCNgARJbbBjxyLpKcSf9atf4W2K0OjXSAvOYz5BJkh0rwWYo11v9WeV8AckdjNQJTehAPGyjAjrjXwu5WsHCchGO+XRnXniuuq3asdFYj8HoWE6wRJy9GfC2seO7GVE+x2tjjkryEebpPz4elf/42gj7H74sxUd8snK9PMhSl8W8DuZCB2NGOeGV1e0wvkV/EeePxbu8barSSz4N6mMJC+vj55xkOrRQzT0ej51hmVr/1Jdvf20d5ZcSboeVj1xON4NAqrf4FWhf9kIHjovBIvEZ5+oWWDwp1YBqUCvLPzjK396w/IX7xWpZy2FOZxcYDGiGg/I=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1/OleHpfCe0UykOQO/8wpWIlyUx0vcBG6/X5WguS0tCD1XHWtk8PWDVdZ1k6UiXvDhFJb0+0mabu8U9Uh+SzVIWDCb7K5wx6jGYhR0MUw5SBdnbj74vWm3At9hYRSJNdbDrruRBPftt0RBFVpa7WhMWWNse47h84OXoEsWYJnrjfXmiXnY9t4olWCoMIJpnd6b6QVySLrNQE3+xzE4ZZKP4RCBayV38aIahykmm0WhBHRIYZUPSbZ73ZhywvkK86yOO89N3Z55h++RK+bXxk2yuOEP1cAAXwPTyvbTOlvc8FywRL4+HrNyec2YJWM10z1Z2c5xZ+sRKykubxdF/5y5+YMBVcrYnAW2I7XQbWx9e/Yn1e2TcfkczTcbyTl2Qv3XiiwT6FQH6qxUAcBWttnM8zl6CNr6DWz6+MJ20b2Iy3suKLZFiRUv2CZJ+r0ywJ9HLixvEigoYinHm5LoaGb/N7yCKoNBwL1NnMQpkpEStz52qSpMuyPTOeUae4tvv4a7pjXcquwPWDenqq4DeqH4/YHyDwyqXpNj8lsLdU+PHsuLENySEpcP1vW2WgZFDIGVSM63ZvDoJMVVFMm6ttq978q7ZX3tlTAdaYFKXC4pbV3YLWpHFKjNRVtZQIwKA1
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fkj8eZjsNWAjF/jqWcjrSAUsAtbL3T/qc9I6AFv/8vAyPcweCpTvQEpI9ZSA?=
- =?us-ascii?Q?LvaZlgtxkokdVV+kh1AVOYB9IvdhW7INqdZhIwJhWzuz5vw9M++qWtl/cpqT?=
- =?us-ascii?Q?OtWtkium/cgluyM03IL2JR3ZRD5nSI11NYpn9zHO8yQn/kAJZTAzFNp3TdCY?=
- =?us-ascii?Q?6SILcH/S0Fpzejfnhj/xXR+kNkYz5VuEDN0JrOILoCaojfcTbbOjHecxf6Ne?=
- =?us-ascii?Q?i8qpfeaqkWbwL6B1lOCy9AMX2KpgtjPPlDsdjZUNN9ptc3/qv+zKDtm6rbIt?=
- =?us-ascii?Q?6KkYNxrpi4WSwU1JLp8uX6TeB3TAiCBqmZ1Ln8iMBaAS97PSeWkD4X8Jjkvf?=
- =?us-ascii?Q?BYIoXdiZd+dNPLu0KA81QUCQdSrWSRzEInjcPoBtZk7IxxoY2g52jC3OOAtG?=
- =?us-ascii?Q?3yU3uujRssjWkVgCEaemBmHKkT3KGw4sP0xou1HOSjLF/PPE4VUdCP6kIcS2?=
- =?us-ascii?Q?4xW17eGwF76bjG0F8eOKXelSVU5Cw+WPwxj3uvDqAyZ+UhkbkkOXEnBUrpQ2?=
- =?us-ascii?Q?PliUoypbpex2OZ99c8u0GPLa0VQ5Ly8CSvRhtGSK8SYxXHFFiJd2zqAIWCWM?=
- =?us-ascii?Q?iSEsfTaoNlh+WpJBZSNwh03bQhC8P9Fg+RAMHWtVZVi0fBfl9Wm+gjC691vk?=
- =?us-ascii?Q?XNfrcDwg0uFDvypcs44ViEa9EriaGU6Px6K2pvX7yFAZZ9kA/kDjtyzBFZ2P?=
- =?us-ascii?Q?WnLgYgJwFsnMaJO1SUmJB0ombK4dnsFs9gAsGzbTfr9fVud+1yCYNCyr1mOq?=
- =?us-ascii?Q?Znc0mgyoY6c3MLC1JLlKnvkN7v5fUjKutv38TvTEoGTeKfkTroIvzf2E31Hp?=
- =?us-ascii?Q?JKCqGvhS2aPAZXl/8KaS3syOWzes7EEzoQ4Op3DIIuaZLefADuOOFx+S9Y0L?=
- =?us-ascii?Q?Xms16EjOx2WiPdl7s7uwTBRV8XNwS6wKQQteSmeeNWCizcQRKnzNwoFS56lu?=
- =?us-ascii?Q?7yaNiRvTdo5jPnwm6PFTkb15T7YqQfw853i/6uiEIwwK3S2ToIQZmpNKhU7V?=
- =?us-ascii?Q?H5fJAvgX9sAcWxDULGaYp7TmcEkvQNCCnhcZGMahO3yfsGuaBJaiXJjSqy1I?=
- =?us-ascii?Q?E7XwBeJ281OPHcrJWYZq9NOc/ZTUMurc63zHdMa67dXrpvdWXwGmlPk6YF1L?=
- =?us-ascii?Q?woR1aGZBT4bK5NwvcNaKjnMtZ35NZ5kq2Z7IbXgEzVtJJDtGgq4pSXGgQA1c?=
- =?us-ascii?Q?kDJ7Cp8IcBt/Crr5WoRO75Iraz/LfYU68e3yOQ=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75f65d30-0b5d-423b-9fba-08db8cb7a63b
-X-MS-Exchange-CrossTenant-AuthSource: SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 02:34:20.2627
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MEYP282MB2118
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8NtBFMTlu9DJf5AFkOujwuY3Lw0IY9tG
+X-Proofpoint-ORIG-GUID: 8NtBFMTlu9DJf5AFkOujwuY3Lw0IY9tG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-24_18,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 mlxlogscore=593
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxscore=0 phishscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250021
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I2C6 and I2C7 use the same interrupts, which is incorrect.
-In the downstream kernel, I2C7 has interrupts of 608 instead of 607.
+Some clients may operate only on a specific XHCI interrupter instance.
+Allow for the associated class driver to request for the interrupter that
+it requires.
 
-Signed-off-by: qaz6750 lzy <qaz6750@outlook.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci-mem.c   | 12 ++++++------
+ include/linux/usb/xhci-intr.h |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 18c822abd..214f6e028 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -1231,7 +1231,7 @@ i2c7: i2c@89c000 {
- 				dma-names = "tx", "rx";
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&qup_i2c7_default>;
--				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 				status = "disabled";
--- 
-2.34.1
-
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 6b01d56c176f..310137df06eb 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -2396,7 +2396,7 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+ }
+ 
+ struct xhci_interrupter *
+-xhci_create_secondary_interrupter(struct usb_hcd *hcd)
++xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num)
+ {
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+ 	struct xhci_interrupter *ir;
+@@ -2411,15 +2411,15 @@ xhci_create_secondary_interrupter(struct usb_hcd *hcd)
+ 		return NULL;
+ 
+ 	spin_lock_irq(&xhci->lock);
+-
+ 	/* Find available secondary interrupter, interrupter 0 is reserverd for primary */
+ 	for (i = 1; i < xhci->max_interrupters; i++) {
+-		if (xhci->interrupters[i] == NULL) {
+-			err = xhci_add_interrupter(xhci, ir, i);
+-			break;
++		if ((intr_num > 0 && i == intr_num) || intr_num <= 0) {
++			if (xhci->interrupters[i] == NULL) {
++				err = xhci_add_interrupter(xhci, ir, i);
++				break;
++			}
+ 		}
+ 	}
+-
+ 	spin_unlock_irq(&xhci->lock);
+ 
+ 	if (!err) {
+diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
+index e0091ee2c73a..738b0f0481a6 100644
+--- a/include/linux/usb/xhci-intr.h
++++ b/include/linux/usb/xhci-intr.h
+@@ -81,6 +81,6 @@ struct xhci_interrupter {
+ };
+ 
+ struct xhci_interrupter *
+-xhci_create_secondary_interrupter(struct usb_hcd *hcd);
++xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num);
+ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
+ #endif
