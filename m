@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6970761A22
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACD3761A23
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjGYNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
+        id S231209AbjGYNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbjGYNiL (ORCPT
+        with ESMTP id S231183AbjGYNiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:38:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2761FE6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690292233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YuHDDSh+hqntXfEBDTeZy9lkclJmyfPYzRYLt1ff+f8=;
-        b=D+Py+Dz7QtVFbXp+d+7w+d4ly9UsAicqh8rLFTGaF2dMyGXOYCp0CcCF0WAg7PDCdy1afF
-        +DbHSQtnNscCM6BczQZKFD+YXh7CWzjd7Fy9OoFCVprNCJgqb3oA2cRkBqtWpkOrPbC+tO
-        4vFw5xBJ5SDaHYNfo8sSACNMhmLSnoU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-_NnqUJvLOrCOcSRG-kBFWA-1; Tue, 25 Jul 2023 09:37:08 -0400
-X-MC-Unique: _NnqUJvLOrCOcSRG-kBFWA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3142665f122so3270144f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:37:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690292223; x=1690897023;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YuHDDSh+hqntXfEBDTeZy9lkclJmyfPYzRYLt1ff+f8=;
-        b=Gwlh4stVXGYJj2oK3J2z6c+o9pDlGpt8MZ9+8MYRQpCrXVibIfmPQ+QpyiNyYUS6vI
-         c3XACwlHsQKFTBsrtc652OYzJiIWXrHbkB8HbFS+T66/+B1PHiLEtAF+Qgh5XkI+Eoys
-         8A8emZUFSvDbOFfxFYp/Grgqc/Qvps3u1f0/LMIdVVaVgDYTpHGKJgd+c0NO84YGb5Co
-         1QnLL4fQPPY60xKMgJIcPtTg2GYaO3hWa8la0ccUaIybNrTAdRJr75BraGZFTS/6zuwi
-         1VqZI/yhgVEUp++XxaWu5iH31q1cJ5FVUTQt/f+hxrHsoBfYO/k6sD/0Dc93rlHM2Hnm
-         Qy3g==
-X-Gm-Message-State: ABy/qLbP2rFHaRQWMzm5Fbvh8KMBHPtjYsze4yhKNhrwcgFAFYKOoKYU
-        LOOSGlJask26m0YRPff0yYJ/XTG0HBm1aRzbHRwO0rNQzGHIorii8CeOx6FOqvm5i7Ux030GUTc
-        wC8z1h+yCPboIlTpKoDjBy543
-X-Received: by 2002:adf:edd1:0:b0:313:df09:ad04 with SMTP id v17-20020adfedd1000000b00313df09ad04mr11718257wro.57.1690292223005;
-        Tue, 25 Jul 2023 06:37:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEu1q96uzpYLmrQ6ZyLxOIliHI6bjUjLVOksOKXP2KWpblMNlkbQak2J3cKJncV5JGWmoXhZA==
-X-Received: by 2002:adf:edd1:0:b0:313:df09:ad04 with SMTP id v17-20020adfedd1000000b00313df09ad04mr11718201wro.57.1690292222669;
-        Tue, 25 Jul 2023 06:37:02 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id h3-20020a5d4fc3000000b00314329f7d8asm16390715wrw.29.2023.07.25.06.36.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 06:37:01 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
- patching IPIs
-In-Reply-To: <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
-References: <20230720163056.2564824-19-vschneid@redhat.com>
- <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
-Date:   Tue, 25 Jul 2023 14:36:59 +0100
-Message-ID: <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+        Tue, 25 Jul 2023 09:38:55 -0400
+X-Greylist: delayed 96650 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 06:38:54 PDT
+Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43028B1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1690292332;
+        bh=AdfHt3Mj4blctd0g0eDARZn1RH+CByTruNyU6BaefNQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=eHPRp4ArdsmL7+CbDyT5EYJUA/FsY1EB0zTtz+uHBFxbJHDWBOT/VBl6WWWNsawyZ
+         hR+XbxE0/bidXnLoT+4UdSu+IbiIFi8iA6hTsae9k1gLqwpQNxEcuUibKxloeZkr7Z
+         k72jVdthnmkI5x80iV32yzFarqKcku4T4Nach8q0=
+Received: from rtoax.. ([124.126.138.181])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id 9B0A70F7; Tue, 25 Jul 2023 21:38:48 +0800
+X-QQ-mid: xmsmtpt1690292328tl7kbwypm
+Message-ID: <tencent_B02B6BED124665ED9563140A71C1004D0805@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6i501fQFuXPjAv5bioexygK3kaUoT7EBKjZlraf5185vqqQB0Bi
+         BR82zgob0IMDs+KFNM1MyYCiKKj2ved7L4H8Mk3H/cZY2nE/jZDceBnlne3COcl6VcRWqQ0qahCl
+         2Syh1CO8xwvE4jgS7zjFqrNrSlYeVcOlulkLl3/5FW8J45klOB43aXBG+/7CzgmSyH1FtYDrfjNk
+         WPZZ5AymWSyUot76xJDXtcVVHTzedrXiZUgA6oH6QYz3SEou6HHV6sveu2iVR8xYMfey+AzidCWw
+         UFLeYV3KZAjo0MJDJZIcqaII7cvu046f0TkQ8ihygds+BypSoLZehk+dBROCV9OCFwdHvt87TXyX
+         aDMv5kmk+Yk4JQZd87mMUXMh1MlAyywZVk7io8YfhxI1ywfP3JcMYT9MYh2TMR69vS1rzudwwfi0
+         7hsu74JRsnJ7KKz1afqc2k5fwmN9NVojzqRy7P5E+UoqXMDA4imM4jaZ9MGoED3OTXtd4jFFwmd8
+         eP+XEawVvuqyJXDXvX5qWznRER1JSjU1mMl7CIhsNca2tLfLFPh0ge4Ew1lNCv0BDJtYt27IwLFo
+         kMOSAxr2vb9KM3ZT1Xwc5sDs9olzNqH4WYsDxD+XzcsfdHBiPCRxKnCFsBWR7tmkUhNZ6gFKvCMo
+         JpqiyBtimDNfX2SqjVgBbSZmhZWql3Etq0sHcsDXKf9vVXsw2RWnq+xXrpwa422g/gQ91m1c2Wu9
+         Q1uSWf2mgDgrzH4H8MPbyit9y8iV93ZwwfI7GRNYfgP+jBjVX7VDR0L4mdC0Fd0EzMekzWRx6i8i
+         iQDd5qnQ92HVOc7FaDvxacZrRuSxl0U8y/BiSPX/Ob6pVj++gxOGZ+vrVC81lzhzrFj9aTR75GQB
+         eBFu02t52IqZ9hsqlQYTTqGQ0uMXI1+YIWISbSzthB022X6zlAx/Ssz539mx8OCavax+211yGlYe
+         6k7J3APue2E4KnZ+mJCvVPZlfVB7j4Rb+DgKZrX6gejyNJQbzsQLDYSu4hcjT3
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     mcgrof@kernel.org
+Cc:     ast@kernel.org, frederic@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, mbenes@suse.cz, mhiramat@kernel.org,
+        pmladek@suse.com, prasad@linux.vnet.ibm.com, qperret@google.com,
+        rongtao@cestc.cn, rtoax@foxmail.com, tglx@linutronix.de,
+        will@kernel.org
+Subject: Re: [PATCH] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
+Date:   Tue, 25 Jul 2023 21:38:48 +0800
+X-OQ-MSGID: <20230725133848.3869-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <ZL7OJQBXBz1a3Sk3@bombadil.infradead.org>
+References: <ZL7OJQBXBz1a3Sk3@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/23 06:49, Joel Fernandes wrote:
-> Interesting series Valentin. Some high-level question/comments on this on=
-e:
->
->> On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> w=
-rote:
->>
->> =EF=BB=BFtext_poke_bp_batch() sends IPIs to all online CPUs to synchroni=
-ze
->> them vs the newly patched instruction. CPUs that are executing in usersp=
-ace
->> do not need this synchronization to happen immediately, and this is
->> actually harmful interference for NOHZ_FULL CPUs.
->
-> Does the amount of harm not correspond to practical frequency of text_pok=
-e?
-> How often does instruction patching really happen? If it is very infreque=
-nt
-> then I am not sure if it is that harmful.
->
+Hi Luis
 
-Being pushed over a latency threshold *once* is enough to impact the
-latency evaluation of your given system/application.
+The 'kernel test robot' report an error [0]:
 
-It's mainly about shielding the isolated, NOHZ_FULL CPUs from whatever the
-housekeeping CPUs may be up to (flipping static keys, loading kprobes,
-using ftrace...) - frequency of the interference isn't such a big part of
-the reasoning.
+	>> samples/hw_breakpoint/data_breakpoint.c:73:2: error: call to undeclared function '__symbol_put'; 
+	ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+	           __symbol_put(ksym_name);
+	           ^
+	   samples/hw_breakpoint/data_breakpoint.c:73:2: note: did you mean '__symbol_get'?
+	   include/linux/module.h:301:7: note: '__symbol_get' declared here
+	   void *__symbol_get(const char *symbol);
+	         ^
+	   1 error generated.
 
->>
->> As the synchronization IPIs are sent using a blocking call, returning fr=
-om
->> text_poke_bp_batch() implies all CPUs will observe the patched
->> instruction(s), and this should be preserved even if the IPI is deferred.
->> In other words, to safely defer this synchronization, any kernel
->> instruction leading to the execution of the deferred instruction
->> sync (ct_work_flush()) must *not* be mutable (patchable) at runtime.
->
-> If it is not infrequent, then are you handling the case where userland
-> spends multiple seconds before entering the kernel, and all this while
-> the blocking call waits? Perhaps in such situation you want the real IPI
-> to be sent out instead of the deferred one?
->
+Do I need to do something? It seems that no changes need to be made from the
+mainline code.
 
-The blocking call only waits for CPUs for which it queued a CSD. Deferred
-calls do not queue a CSD thus do not impact the waiting at all. See
-smp_call_function_many_cond().
+[0] https://lore.kernel.org/oe-kbuild-all/202307250926.06DQZjVe-lkp@intel.com/
+
+Rong
 
