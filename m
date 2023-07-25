@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C4B7619E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DD87619ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjGYN1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S230358AbjGYN2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGYN1Y (ORCPT
+        with ESMTP id S230344AbjGYN2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:27:24 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D17910E5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:27:23 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-79969c14964so1622608241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:27:23 -0700 (PDT)
+        Tue, 25 Jul 2023 09:28:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93A5E6D
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:28:10 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3144098df56so5197944f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:28:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690291642; x=1690896442;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ioiyZipNYQNpGagkyruO8NE61Cv2rplOTlMfdFh0CCk=;
-        b=B5oIVzIvrI6yphVwz5iUuGiAcqTLBSfjfUDCebR/4w70SIZ7ZTGIAwsK7PdDEu/K4I
-         sG7Oky5B/CK8YxQo/cHvcAKjsvUDPBt68n95wjBJbrTqsIG1anTLiwZlrRG8tn1dNVKj
-         grfnmg2ie+/ajWinc2ZsNwooO7Q4osaM7B8Isqdt3Qwt4pZMrISx6T+eHlUi5DslIwyv
-         R3U94lhpAuLtKRLKdwhYL35BO5nYJE7jCr6WaqUV5Nu4/wQkkJm6N8okt9ZxC72cNQrT
-         6Wru4RTC7UcBhHOR1U0BH5FZDn4ZtAljd6me15mMSp1KY/TYrx/K7IvUCGkmlTggEIef
-         spVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690291642; x=1690896442;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=linaro.org; s=google; t=1690291689; x=1690896489;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ioiyZipNYQNpGagkyruO8NE61Cv2rplOTlMfdFh0CCk=;
-        b=DjoR3y1EVOxJVqLbnxiNcECcDXOv81GRQF7MvycJrr46PgYb/jBFGcc7YjFYvrGskd
-         xa88Dt800kTp8uIEDO2Ly5NIeFJzTbUoQeXsE8SsE7/U+dVumT9XuhxcpYwysb+ZIQA1
-         CQs+2gCY2Ev12dZ14Q5Jc1AGWrJT9VIlctKGnJl0FRyKh8o+TfYwzh5giwU+FGTRCcuN
-         kP3cgXS1qd3y1J8N5eznWTc02N8xqNnOtEiybcYA/GMG1cDkMKfppOvTOm94A4IWyGog
-         xH/vMTpfw8rpiFyCzl6SjceRwf4KB07QRUb2QZA2+LIPUfNmB/3cHfPswA/EYKVrQ5Bp
-         2dEw==
-X-Gm-Message-State: ABy/qLZAMT8dGeosgp8io0sYOaRt/RA8o6iS8Pkne+kJQSKIG9Wa34L5
-        XnNwDouoOQhu4ih26aOURe+DXFl2B9j2TPkCF7BH92B46wsh467bbBI=
-X-Google-Smtp-Source: APBJJlFNvn3s+3oAm8bOTez+axljqCb0cdR/HKWhBcUfLXHM467GPio5fZcYZwWXG5SRV0YkJpZLQMlUHpBTLGG1gt4=
-X-Received: by 2002:a05:6102:3d7:b0:443:5ce7:e62d with SMTP id
- n23-20020a05610203d700b004435ce7e62dmr4261554vsq.21.1690291641801; Tue, 25
- Jul 2023 06:27:21 -0700 (PDT)
+        bh=HL0T6H/EfUbYgBfW0MPg+n5xypCoWhi+Eukq1dYSLSU=;
+        b=Yyqy/6LQz7P0c6LN2BJ8PYCKWIbJTGfBx5WmBhojsqhf1+nWU6KbwLK70p56PaKpkb
+         3UBGxh06++q61haJ9+Ug1scKRTfZbR0SDEPuUfCiSwRiqF6EXUJF63BfiFD0KEp/PNbd
+         NUSnvFr+9vY0Q+Kd46yOmC7NUx1uPGqTqCwG3EKf8MiZAmmXXpEkfzRtnfwlrRLcwolG
+         xEfp12ZUCd1gFSuW6kS+fVWI9w5Y491kAJMlIPQqhmjOr9oXAeoskMmEFc6PSq5F6yry
+         X3hS9AuUnBELD/3xt8+5pr/bJ2bT8E/AFsODzX9yBrjLNRyk1hDFlqxwizcRuaUI+N9e
+         ml0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690291689; x=1690896489;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HL0T6H/EfUbYgBfW0MPg+n5xypCoWhi+Eukq1dYSLSU=;
+        b=aEIxl3ZGjsIMG3GeLzlGJHKVhlGwlMSYmFyDHqS+4NhLIzgHEKSSb4ia92yQdyWSCk
+         QGRk3fd5szxbXYtkVZUQA4QcHUsbIU6PoAq+Zo5Bf5YxX1lMegwnlvt0a5VLpIFVE3xf
+         Zu1xEVjmbfcjoYTcLoRfhF+RyqYjqfYr7UA0ZUJziFkStdQNDOhUFunbO89mt6g3jMeU
+         CcHiQWFp8BbzMRx3FDRJ4zXBvPSxiv9F8a1vWIawZlNtWv6/8fNuTkp9/ObcAWwT5y/p
+         3ZUAgOoq4SAo3S+plK4q0sonRe/s/7HnAIF8tnm+ldtlTS/VkD0Ym255y96aWVoIiMtR
+         FxmQ==
+X-Gm-Message-State: ABy/qLbSYNB+kiBpAkS4I1mK6aBPpZa7lPBw90mew2uE/TuPEndkMC7I
+        Szg1QjogaRztgbO0FWh1VMyPaA==
+X-Google-Smtp-Source: APBJJlHKh1Rx41U19FhczWdPNN/82vyW/RshDVEPcQ4Q4DIvjB94EasFuMPtFRQ4ByoPGusL9OKOug==
+X-Received: by 2002:a5d:484c:0:b0:317:6ea5:ab71 with SMTP id n12-20020a5d484c000000b003176ea5ab71mr989517wrs.30.1690291689222;
+        Tue, 25 Jul 2023 06:28:09 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.203.142])
+        by smtp.gmail.com with ESMTPSA id v5-20020a5d6785000000b0031770443c4bsm947250wru.28.2023.07.25.06.28.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 06:28:08 -0700 (PDT)
+Message-ID: <5ba5530d-cc5c-9e20-742c-946c0af6c98b@linaro.org>
+Date:   Tue, 25 Jul 2023 15:28:06 +0200
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 25 Jul 2023 18:57:10 +0530
-Message-ID: <CA+G9fYvV-71XqpCr_jhdDfEtN701fBdG3q+=bafaZiGwUXy_aA@mail.gmail.com>
-Subject: selftests: mm: mremap_dontunmap.c:53:6: error: use of undeclared
- identifier 'MREMAP_DONTUNMAP'
-To:     open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        linux-mm <linux-mm@kvack.org>,
-        clang-built-linux <llvm@lists.linux.dev>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        David Hildenbrand <david@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Roesch <shr@devkernel.io>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] docs: move mips under arch
+Content-Language: en-US
+To:     Costa Shulyupin <costa.shul@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Wu XiangCheng <bobwxc@email.cn>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <20230725043835.2249678-1-costa.shul@redhat.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230725043835.2249678-1-costa.shul@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,49 +92,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-selftests:mm: mremap_dontunmap build failed with clang-16 due to below
-warnings / errors on Linux next-20230725 ( or older kernels ).
+On 25/7/23 06:38, Costa Shulyupin wrote:
+> and fix all in-tree references.
+> 
+> Architecture-specific documentation is being moved into Documentation/arch/
+> as a way of cleaning up the top-level documentation directory and making
+> the docs hierarchy more closely match the source hierarchy.
+> 
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> ---
+>   Documentation/arch/index.rst                                  | 2 +-
+>   Documentation/{ => arch}/mips/booting.rst                     | 0
+>   Documentation/{ => arch}/mips/features.rst                    | 0
+>   Documentation/{ => arch}/mips/index.rst                       | 0
+>   Documentation/{ => arch}/mips/ingenic-tcu.rst                 | 0
+>   Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      | 2 +-
+>   Documentation/translations/zh_CN/arch/index.rst               | 2 +-
+>   Documentation/translations/zh_CN/{ => arch}/mips/booting.rst  | 4 ++--
+>   Documentation/translations/zh_CN/{ => arch}/mips/features.rst | 4 ++--
+>   Documentation/translations/zh_CN/{ => arch}/mips/index.rst    | 4 ++--
+>   .../translations/zh_CN/{ => arch}/mips/ingenic-tcu.rst        | 4 ++--
+>   MAINTAINERS                                                   | 2 +-
+>   12 files changed, 12 insertions(+), 12 deletions(-)
+>   rename Documentation/{ => arch}/mips/booting.rst (100%)
+>   rename Documentation/{ => arch}/mips/features.rst (100%)
+>   rename Documentation/{ => arch}/mips/index.rst (100%)
+>   rename Documentation/{ => arch}/mips/ingenic-tcu.rst (100%)
+>   rename Documentation/translations/zh_CN/{ => arch}/mips/booting.rst (92%)
+>   rename Documentation/translations/zh_CN/{ => arch}/mips/features.rst (65%)
+>   rename Documentation/translations/zh_CN/{ => arch}/mips/index.rst (79%)
+>   rename Documentation/translations/zh_CN/{ => arch}/mips/ingenic-tcu.rst (97%)
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-clang --target=aarch64-linux-gnu -fintegrated-as
--Werror=unknown-warning-option -Werror=ignored-optimization-argument
--Werror=option-ignored -Werror=unused-command-line-argument
---target=aarch64-linux-gnu -fintegrated-as -Wall -I
-tools/testing/selftests/../../..  -isystem
-/home/tuxbuild/.cache/tuxmake/builds/1/build/usr/include
-mremap_dontunmap.c vm_util.c -lrt -lpthread -o
-/home/tuxbuild/.cache/tuxmake/builds/1/build/kselftest/mm/mremap_dontunmap
-mremap_dontunmap.c:53:6: error: use of undeclared identifier 'MREMAP_DONTUNMAP'
-                   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, 0);
-                   ^
-mremap_dontunmap.c:108:6: error: use of undeclared identifier 'MREMAP_DONTUNMAP'
-                   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-                   ^
-mremap_dontunmap.c:149:6: error: use of undeclared identifier 'MREMAP_DONTUNMAP'
-                   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-                   ^
-mremap_dontunmap.c:200:21: error: use of undeclared identifier
-'MREMAP_DONTUNMAP'
-                   MREMAP_FIXED | MREMAP_DONTUNMAP | MREMAP_MAYMOVE,
-                                  ^
-mremap_dontunmap.c:252:6: error: use of undeclared identifier 'MREMAP_DONTUNMAP'
-                   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-                   ^
-mremap_dontunmap.c:310:6: error: use of undeclared identifier 'MREMAP_DONTUNMAP'
-                   MREMAP_DONTUNMAP | MREMAP_MAYMOVE | MREMAP_FIXED,
-dest_mapping);
-                   ^
-6 errors generated.
-make[4]: Leaving directory 'tools/testing/selftests/mm'
-
-
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2T3676HpK243gMBLYJCp4OXDmWl/
-
-steps to reproduce:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2T3676HpK243gMBLYJCp4OXDmWl/tuxmake_reproducer.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org
