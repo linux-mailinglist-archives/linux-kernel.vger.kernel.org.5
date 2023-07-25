@@ -2,113 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADECC760644
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989B9760648
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjGYDFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        id S231454AbjGYDFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 23:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjGYDFP (ORCPT
+        with ESMTP id S230164AbjGYDF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:05:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4305210C3;
-        Mon, 24 Jul 2023 20:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=oa+so10xLETAgc5pdBX8v/zloJHSFamiykfxB9L3iNQ=; b=pqw9oioaugNc/2kx9y0xlJ9NId
-        jyWlek+X1AoKk0llItmIC3Bf3mzcoWu0ZTlj6G2sYvsHiO6+UHsis4MxPhQujAYnQ0Z42oQw3MOUm
-        aT1/QNOaq2uLaY9aJkIkqTjTvcxMB7aL12fQ/Vc3M2yGTqobvXOkxeikSUdxkM1cr1WxiIOdyE7ny
-        +Gqkh6ljwnDBIToS47UTxIXHDk8B9zX34r2/93tHSoD4aLc9GQOhHrL10cFO7Dxj7xxU3c6KCEofm
-        0GPJb3RuDytDWvYT1xQclal3ZH3bsRt6VE4SnFbBhLygs70kHMgmJ+w7zzOo3Q/2D610I+JeyZFt3
-        roNC6HaA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qO8M8-005zR5-1M;
-        Tue, 25 Jul 2023 03:05:00 +0000
-Message-ID: <9fa8e67e-e46b-074d-8406-bfd11303e95f@infradead.org>
-Date:   Mon, 24 Jul 2023 20:04:59 -0700
+        Mon, 24 Jul 2023 23:05:29 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B2D1736
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:05:25 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6864c144897so1189010b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690254325; x=1690859125;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=niSMZqBCvW/Me9jsMaxXz5gtuZ44llk1Ot3soT0LhIs=;
+        b=FniJo6cfZiXO48N3LrJPbrRtsXuGwEsrxL+rPNcNzpIfBU8e0vwfaKRVcngIxQ6/Nq
+         uV6IwXjWItzg/7IWT04hxNl0ft8u0yvH7EyRJ6POcXsP6dFyjR2vvuievKT7V7wXKj9i
+         Hs4OFXg82m4uyRZZDGIHYrUPf7Daiin7owJFDMH9ALFzGhGiMR/jo54iE9PQ2yCszEax
+         GduXKZlfrLf0f1lI69b+SeFKsM1fBAPgAwEi9/QiPJB5pr3rcwSAawR7U6Bt6cbBHX1B
+         l+6jljnScvspLgnoIuyzCCNBX+9PGgFUwcZiZbmROS7agCNCVVXov8LOv0CsZfjvTopq
+         9j6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690254325; x=1690859125;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=niSMZqBCvW/Me9jsMaxXz5gtuZ44llk1Ot3soT0LhIs=;
+        b=GZ6rpqcZysYLRcOIPf1fMcNofV2iBdBzcnxCiP4DT68vaiSwanXlnkqnfk0bS7rwLv
+         eJGeee1U4ngexrb0FAUoTZ/hbcmbQ+wFN5EisUjynSehQGI7VlfBE6lVaAOJw5bBYyNF
+         UJ78kEis0aOAxI4qEGqcdZB6Ci9o4IKwmUtdAtt/RfRtwetzY9seYInYgWR1g1vr1/jK
+         9DdO1uCK9GbT1xL7ysAWEWwody6xoFwL39b2Cjl7blpSp2dWzawFCLy9L+5O7c8END9e
+         gs1Isv0V/WhtsImKoHWOr05s6z30BGctkao1yyKu7hjKXKQ+Zh/MSQOUdBjXLlRrl9Gc
+         mFSQ==
+X-Gm-Message-State: ABy/qLZOUSKguLu2oel1ly394HkbjShCuG1QWG3pJrWKo221LJtZM6aI
+        CJnk1Am25ujpfruS8d/sYu4vvw==
+X-Google-Smtp-Source: APBJJlFB/cQTGj3IlIfGF+HAM8hU50IJB+Lr29ujA3cHbbDSAB3N90HdGCOpa8iydTeMw+f8qxyL2Q==
+X-Received: by 2002:a17:90a:1d46:b0:268:abc:83d5 with SMTP id u6-20020a17090a1d4600b002680abc83d5mr6012554pju.4.1690254324674;
+        Mon, 24 Jul 2023 20:05:24 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([2408:8000:b001:1:1f:58ff:f102:103])
+        by smtp.gmail.com with ESMTPSA id t10-20020a17090aba8a00b002681d44071csm2043968pjr.46.2023.07.24.20.05.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 20:05:24 -0700 (PDT)
+Message-ID: <6049aa99-aa47-5137-f66e-350bc4723914@bytedance.com>
+Date:   Tue, 25 Jul 2023 11:05:04 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH] rework top page and organize toc on the sidebar
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 24/47] drm/panfrost: dynamically allocate the
+ drm-panfrost shrinker
 Content-Language: en-US
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION PROCESS" <workflows@vger.kernel.org>,
-        "open list:RUST" <rust-for-linux@vger.kernel.org>
-References: <20230724193118.2204673-1-costa.shul@redhat.com>
- <87ila9atuk.fsf@meer.lwn.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <87ila9atuk.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8
+To:     Steven Price <steven.price@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-25-zhengqi.arch@bytedance.com>
+ <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steven,
 
-
-On 7/24/23 14:21, Jonathan Corbet wrote:
-> Costa Shulyupin <costa.shul@redhat.com> writes:
-> 
->> Template {{ toctree(maxdepth=3) }} in
->> Documentation/sphinx/templates/kernel-toc.html
->> uses directives toctree and doesn't use sections on the top page
->> Documentation/index.rst
->> to generate expandable toc on the sidebar.
+On 2023/7/24 19:17, Steven Price wrote:
+> On 24/07/2023 10:43, Qi Zheng wrote:
+>> In preparation for implementing lockless slab shrink, use new APIs to
+>> dynamically allocate the drm-panfrost shrinker, so that it can be freed
+>> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+>> read-side critical section when releasing the struct panfrost_device.
 >>
->> BTW, other template {{ toc }} uses only sections, and doesn't
->> use directives toctree.
->>
->> Summary of changes:
->> - split top page index.rst to several pages
->> - convert sections of Documentation/index.rst to hierarchical toctree
->> - vertical bars '|' add empty lines
->>
->> Benefits:
->> - collapsed toc is just seven short lines length
->> - toc is expandable
->>
->> References:
->> - https://www.sphinx-doc.org/en/master/development/templating.html#toctree
->> - https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
->> - https://www.sphinx-doc.org/en/master/development/templating.html#toc
->> - https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
->> - https://sphinx-rtd-theme.readthedocs.io/
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> What is the purpose of all these links in a patch changelog?
+> One nit below, but otherwise:
 > 
-> This patch is somewhat difficult to apply, as a result of:
+> Reviewed-by: Steven Price <steven.price@arm.com>
 > 
->> Content-Type: text/plain; charset=true
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
+>>   drivers/gpu/drm/panfrost/panfrost_drv.c       |  6 +++-
+>>   drivers/gpu/drm/panfrost/panfrost_gem.h       |  2 +-
+>>   .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 32 ++++++++++++-------
+>>   4 files changed, 27 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index b0126b9fbadc..e667e5689353 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -118,7 +118,7 @@ struct panfrost_device {
+>>   
+>>   	struct mutex shrinker_lock;
+>>   	struct list_head shrinker_list;
+>> -	struct shrinker shrinker;
+>> +	struct shrinker *shrinker;
+>>   
+>>   	struct panfrost_devfreq pfdevfreq;
+>>   };
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> index bbada731bbbd..f705bbdea360 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> @@ -598,10 +598,14 @@ static int panfrost_probe(struct platform_device *pdev)
+>>   	if (err < 0)
+>>   		goto err_out1;
+>>   
+>> -	panfrost_gem_shrinker_init(ddev);
+>> +	err = panfrost_gem_shrinker_init(ddev);
+>> +	if (err)
+>> +		goto err_out2;
+>>   
+>>   	return 0;
+>>   
+>> +err_out2:
+>> +	drm_dev_unregister(ddev);
+>>   err_out1:
+>>   	pm_runtime_disable(pfdev->dev);
+>>   	panfrost_device_fini(pfdev);
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
+>> index ad2877eeeccd..863d2ec8d4f0 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
+>> @@ -81,7 +81,7 @@ panfrost_gem_mapping_get(struct panfrost_gem_object *bo,
+>>   void panfrost_gem_mapping_put(struct panfrost_gem_mapping *mapping);
+>>   void panfrost_gem_teardown_mappings_locked(struct panfrost_gem_object *bo);
+>>   
+>> -void panfrost_gem_shrinker_init(struct drm_device *dev);
+>> +int panfrost_gem_shrinker_init(struct drm_device *dev);
+>>   void panfrost_gem_shrinker_cleanup(struct drm_device *dev);
+>>   
+>>   #endif /* __PANFROST_GEM_H__ */
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>> index bf0170782f25..9a90dfb5301f 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+>> @@ -18,8 +18,7 @@
+>>   static unsigned long
+>>   panfrost_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
+>>   {
+>> -	struct panfrost_device *pfdev =
+>> -		container_of(shrinker, struct panfrost_device, shrinker);
+>> +	struct panfrost_device *pfdev = shrinker->private_data;
+>>   	struct drm_gem_shmem_object *shmem;
+>>   	unsigned long count = 0;
+>>   
+>> @@ -65,8 +64,7 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
+>>   static unsigned long
+>>   panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+>>   {
+>> -	struct panfrost_device *pfdev =
+>> -		container_of(shrinker, struct panfrost_device, shrinker);
+>> +	struct panfrost_device *pfdev = shrinker->private_data;
+>>   	struct drm_gem_shmem_object *shmem, *tmp;
+>>   	unsigned long freed = 0;
+>>   
+>> @@ -97,13 +95,24 @@ panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+>>    *
+>>    * This function registers and sets up the panfrost shrinker.
+>>    */
+>> -void panfrost_gem_shrinker_init(struct drm_device *dev)
+>> +int panfrost_gem_shrinker_init(struct drm_device *dev)
+>>   {
+>>   	struct panfrost_device *pfdev = dev->dev_private;
+>> -	pfdev->shrinker.count_objects = panfrost_gem_shrinker_count;
+>> -	pfdev->shrinker.scan_objects = panfrost_gem_shrinker_scan;
+>> -	pfdev->shrinker.seeks = DEFAULT_SEEKS;
+>> -	WARN_ON(register_shrinker(&pfdev->shrinker, "drm-panfrost"));
+>> +
+>> +	pfdev->shrinker = shrinker_alloc(0, "drm-panfrost");
+>> +	if (!pfdev->shrinker) {
+>> +		WARN_ON(1);
+> 
+> I don't think this WARN_ON is particularly useful - if there's a failed
+> memory allocation we should see output from the kernel anyway. And we're
+> changing the semantics from "continue just without a shrinker" (which
+> argueably justifies the warning) to "probe fails, device doesn't work"
+> which will be obvious to the user so I don't feel we need the additional
+> warn.
 
-I didn't have any problem applying and testing it.
+Make sense. Will delete this WARN_ON() in the next version.
 
-> But the real problem is that you seem to have ignored my last message.
-> The purpose of the front page isn't to create a nice-looking sidebar, it
-> is the entry point to our documentation as a whole.  I am all for a
-> better sidebar, but this is not the way to do it.
+Thanks,
+Qi
 
-Regardless of what the purpose of the front page is, I prefer this one
-from Costa.  The other one is a huge mess.
-
--- 
-~Randy
+> 
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	pfdev->shrinker->count_objects = panfrost_gem_shrinker_count;
+>> +	pfdev->shrinker->scan_objects = panfrost_gem_shrinker_scan;
+>> +	pfdev->shrinker->seeks = DEFAULT_SEEKS;
+>> +	pfdev->shrinker->private_data = pfdev;
+>> +
+>> +	shrinker_register(pfdev->shrinker);
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   /**
+>> @@ -116,7 +125,6 @@ void panfrost_gem_shrinker_cleanup(struct drm_device *dev)
+>>   {
+>>   	struct panfrost_device *pfdev = dev->dev_private;
+>>   
+>> -	if (pfdev->shrinker.nr_deferred) {
+>> -		unregister_shrinker(&pfdev->shrinker);
+>> -	}
+>> +	if (pfdev->shrinker)
+>> +		shrinker_unregister(pfdev->shrinker);
+>>   }
+> 
