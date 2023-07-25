@@ -2,250 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEB1762584
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064D76271A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbjGYWDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S230229AbjGYW6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjGYWCz (ORCPT
+        with ESMTP id S229871AbjGYW6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:02:55 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEECD2D74
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:26 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563bcd2cb78so1654342a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322526; x=1690927326;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYoHm0187aVmMw5EiDV+/p+2G+Xcv8nQ5x5t2ykYALE=;
-        b=o9opizQ/zFXQRV698u1ycbrvblnr5KccskgEOwKZQlXXsWJ1w6iUyEudiYlYoQajbS
-         CHQ+vAlzO5mCwMES0DP46gbtmmpkTzGj3VGX4qqNr/zJLdX4EfRwCMnKAz4dUt37qmAQ
-         cY0pRMohOpsgFPn1kMssCyV9XOAHsvOD6duXPWOIqRPF14HHR/bEfglENkfK0fQj9zXn
-         DqzXTQCxHCzYcTYvR+36DC2InogaTYFR39Oct6lRsyt18FWUkt7k+n8cml+DCIs01TFP
-         DiyCHp/a4y4tMLjRm3sA19nOMVWY+1uhemHpkY1dG9rNqWGwn64MUs2Bpg6UoEcR00m1
-         qraA==
+        Tue, 25 Jul 2023 18:58:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC862681
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690325724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqtwPYmHGNsoP1pFuN8jF45AEQfTNG8g69I653X2PAs=;
+        b=coIxTWlBFt7DxqhYdq6clg0eCa8bVmqNmUBfFmiNfW1Rp7LFZwyXmTsoMhaET5bII+wQJq
+        zxcmM46Uk46Y1ynwe30+0imH1M9Di7Qsc0YmtOrQkwv81pYcl1Ht+/Haf3n4MxwDIC/VVP
+        ThWiRpnZqyhYS12DaIY9gmFAPgO+bNE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-VmRFm4C_PnW2jw5yCArkmg-1; Tue, 25 Jul 2023 18:48:46 -0400
+X-MC-Unique: VmRFm4C_PnW2jw5yCArkmg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-98e40d91fdfso350377166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:48:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322526; x=1690927326;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYoHm0187aVmMw5EiDV+/p+2G+Xcv8nQ5x5t2ykYALE=;
-        b=BgcbXPSmq1GzBGMYaa++no/6dp9mXzuGdMHRZVy/I6Kbp68ie5FqhjOWaeJgVe0/x1
-         e/H2F2/qKI6LwNW+oPuGR5GfmtvciRxPfR8CclxtXA/SWBnLmtb1cubgAUSE7QFP8CN2
-         F5pAz/V//IsTOJ7R0AWSEKSJMww+PqcBEVvj9IeIFDZBR28HTV+HA7zkPDBDQGJA+MFm
-         vd2OinE7qIsozsc9xvJqV0kH2ClEfdg51d865vJuzfN72Z3kTpRWrC22ENnyejmzgzmL
-         j68pNsBHr5znfjx2CzbUVeFr0ppFusOyGej5EWPcuit4lo57ySW2KWHNHZJOidetV2zm
-         6Zpg==
-X-Gm-Message-State: ABy/qLZYdHwUiAN39aXoC2/eEt5zhlICMVUB4Fl9+OPlQ+QiXd3+ee4x
-        FJ+mHmsab7i2jBX3O72rC2egLUdcEhUE
-X-Google-Smtp-Source: APBJJlEsog4CFBvvxPJK0n0TDEbg1vP3bg49dw8C2QIvi1Dc5wqkX3+cnEuJWlG5G4cD3gyJicbkuLBqAk/p
-X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
- (user=afranji job=sendgmr) by 2002:a63:7548:0:b0:563:d407:55d1 with SMTP id
- f8-20020a637548000000b00563d40755d1mr2407pgn.11.1690322526162; Tue, 25 Jul
- 2023 15:02:06 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 22:01:03 +0000
-In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
-Mime-Version: 1.0
-References: <20230725220132.2310657-1-afranji@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230725220132.2310657-11-afranji@google.com>
-Subject: [PATCH v4 10/28] KVM: selftests: TDX: Adding test case for TDX port IO
-From:   Ryan Afranji <afranji@google.com>
-To:     linux-kselftest@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
-        sagis@google.com, erdemaktas@google.com, afranji@google.com,
-        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
-        maz@kernel.org, bgardon@google.com, jmattson@google.com,
-        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
-        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
-        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
-        borntraeger@de.ibm.com, eric.auger@redhat.com,
-        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
-        pshier@google.com, axelrasmussen@google.com,
-        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
-        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, ackerleytng@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1690325325; x=1690930125;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fqtwPYmHGNsoP1pFuN8jF45AEQfTNG8g69I653X2PAs=;
+        b=f4S2MO1qvA4Q1cb3Co1Z4KH0O5vOQ18pCGRR8Scg9ia8hSA+UlB+ziSTveD12ujKZV
+         iuIUXsSCOU7aSoOFmV5vwVvpZD4wC7YsSYZoCuQJPjQs86W59WBFOCqJFmlaUhL1cREE
+         1swIfJpMjPv01A49uipCkSzvv5C7GaJhZl+NGphXFVQsmEApWMNV0s5xrZJmMWlJPYtK
+         HnLtgWCnT47t3Z95Q5shJnNdIxGgmC1ByKNIXmVML4+cHse6vNBo5GkYgCEBZOrce5Ci
+         qIWF9tCKF5uzOHA3wOTiiMaVQtobdE3zPcpoENP7Ty2u8N1bv99JusphQwVDKAgOv4Mj
+         51DQ==
+X-Gm-Message-State: ABy/qLYpaW9NVBpoR/3Ks9WreGh64DznRmqa85guGWGbybYC+/bLxlmL
+        ay0rQ27nrKhyzdyVYdRHjfgx3j6fUDErqVtuqar2K/J31qvukA9ALCTiZHGavhxuwIZW+k1I3cU
+        6G1Qs19J7UWbsKPnIyjR4Y4Rg
+X-Received: by 2002:a17:907:2be9:b0:982:7545:efb6 with SMTP id gv41-20020a1709072be900b009827545efb6mr158286ejc.66.1690325324933;
+        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFjV59E7oAEbgLcfuvqGzUWbSIkW/kHUTr3BMaofJ0Plmev7uMfuohC5/16L7eW3+4p7WZnVA==
+X-Received: by 2002:a17:907:2be9:b0:982:7545:efb6 with SMTP id gv41-20020a1709072be900b009827545efb6mr158266ejc.66.1690325324597;
+        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id lg23-20020a170906f89700b0098733a40bb7sm8814043ejb.155.2023.07.25.15.48.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
+Message-ID: <21ea63fe-33d7-a075-7291-35dd1b2a9b64@redhat.com>
+Date:   Tue, 25 Jul 2023 23:00:23 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH drm-misc-next v8 11/12] drm/nouveau: implement new VM_BIND
+ uAPI
+Content-Language: en-US
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Faith Ekstrand <faith@gfxstrand.net>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
+        mripard@kernel.org, corbet@lwn.net, christian.koenig@amd.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com,
+        matthew.brost@intel.com, boris.brezillon@collabora.com,
+        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
+        willy@infradead.org, jason@jlekstrand.net,
+        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230720001443.2380-1-dakr@redhat.com>
+ <20230720001443.2380-12-dakr@redhat.com>
+ <CAOFGe945tp344=g-++=EAT89t0qJHZ=3yeW-k9OTbGNJodvwAg@mail.gmail.com>
+ <542203c6-781a-dc44-6fa1-13cd20ab9e21@redhat.com>
+ <CAOFGe94sG5==GM+spcTihcAtMCoj2xZYpN8NsYE6CEckdHJ8rQ@mail.gmail.com>
+ <75c86224-6183-07fe-da04-6a2101615a50@redhat.com>
+Organization: RedHat
+In-Reply-To: <75c86224-6183-07fe-da04-6a2101615a50@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erdem Aktas <erdemaktas@google.com>
+On 7/25/23 18:43, Danilo Krummrich wrote:
+> On 7/25/23 18:16, Faith Ekstrand wrote:
+>> Thanks for the detailed write-up! That would definitely explain it. If 
+>> I remember, I'll try to do a single-threaded run or two. If your 
+>> theory is correct, there should be no real perf difference when 
+>> running single-threaded. Those runs will take a long time, though, so 
+>> I'll have to run them over night. I'll let you know in a few days once 
+>> I have the results.
+> 
+> I can also push a separate branch where I just print out a warning 
+> whenever we run into such a condition including the time we were waiting 
+> for things to complete. I can probably push something later today.
 
-Verifies TDVMCALL<INSTRUCTION.IO> READ and WRITE operations.
+https://gitlab.freedesktop.org/nouvelles/kernel/-/tree/new-uapi-drm-next-track-stalls
 
-Signed-off-by: Erdem Aktas <erdemaktas@google.com>
-Signed-off-by: Sagi Shahar <sagis@google.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Change-Id: I03efbb2fc69fd9de08d537a26a980792de79c72b
-Signed-off-by: Ryan Afranji <afranji@google.com>
----
- .../kvm/include/x86_64/tdx/test_util.h        | 34 ++++++++
- .../selftests/kvm/x86_64/tdx_vm_tests.c       | 82 +++++++++++++++++++
- 2 files changed, 116 insertions(+)
+It prints out the duration of every wait as well as the total wait time 
+since boot.
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-index 6d69921136bd..95a5d5be7f0b 100644
---- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-@@ -9,6 +9,40 @@
- #define TDX_TEST_SUCCESS_PORT 0x30
- #define TDX_TEST_SUCCESS_SIZE 4
- 
-+/**
-+ * Assert that some IO operation involving tdg_vp_vmcall_instruction_io() was
-+ * called in the guest.
-+ */
-+#define TDX_TEST_ASSERT_IO(VCPU, PORT, SIZE, DIR)			\
-+	do {								\
-+		TEST_ASSERT((VCPU)->run->exit_reason == KVM_EXIT_IO,	\
-+			"Got exit_reason other than KVM_EXIT_IO: %u (%s)\n", \
-+			(VCPU)->run->exit_reason,			\
-+			exit_reason_str((VCPU)->run->exit_reason));	\
-+									\
-+		TEST_ASSERT(((VCPU)->run->exit_reason == KVM_EXIT_IO) && \
-+			((VCPU)->run->io.port == (PORT)) &&		\
-+			((VCPU)->run->io.size == (SIZE)) &&		\
-+			((VCPU)->run->io.direction == (DIR)),		\
-+			"Got unexpected IO exit values: %u (%s) %d %d %d\n", \
-+			(VCPU)->run->exit_reason,			\
-+			exit_reason_str((VCPU)->run->exit_reason),	\
-+			(VCPU)->run->io.port, (VCPU)->run->io.size,	\
-+			(VCPU)->run->io.direction);			\
-+	} while (0)
-+
-+/**
-+ * Check and report if there was some failure in the guest, either an exception
-+ * like a triple fault, or if a tdx_test_fatal() was hit.
-+ */
-+#define TDX_TEST_CHECK_GUEST_FAILURE(VCPU)				\
-+	do {								\
-+		if ((VCPU)->run->exit_reason == KVM_EXIT_SYSTEM_EVENT)	\
-+			TEST_FAIL("Guest reported error. error code: %lld (0x%llx)\n", \
-+				(VCPU)->run->system_event.data[1],	\
-+				(VCPU)->run->system_event.data[1]);	\
-+	} while (0)
-+
- /**
-  * Assert that tdx_test_success() was called in the guest.
-  */
-diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-index 7741c6f585c0..cde4b171446f 100644
---- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-+++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-@@ -2,6 +2,7 @@
- 
- #include <signal.h>
- #include "kvm_util_base.h"
-+#include "tdx/tdcall.h"
- #include "tdx/tdx.h"
- #include "tdx/tdx_util.h"
- #include "tdx/test_util.h"
-@@ -74,6 +75,86 @@ void verify_report_fatal_error(void)
- 	printf("\t ... PASSED\n");
- }
- 
-+#define TDX_IOEXIT_TEST_PORT 0x50
-+
-+/*
-+ * Verifies IO functionality by writing a |value| to a predefined port.
-+ * Verifies that the read value is |value| + 1 from the same port.
-+ * If all the tests are passed then write a value to port TDX_TEST_PORT
-+ */
-+void guest_ioexit(void)
-+{
-+	uint64_t data_out, data_in, delta;
-+	uint64_t ret;
-+
-+	data_out = 0xAB;
-+	ret = tdg_vp_vmcall_instruction_io(TDX_IOEXIT_TEST_PORT, 1,
-+					TDG_VP_VMCALL_INSTRUCTION_IO_WRITE,
-+					&data_out);
-+	if (ret)
-+		tdx_test_fatal(ret);
-+
-+	ret = tdg_vp_vmcall_instruction_io(TDX_IOEXIT_TEST_PORT, 1,
-+					TDG_VP_VMCALL_INSTRUCTION_IO_READ,
-+					&data_in);
-+	if (ret)
-+		tdx_test_fatal(ret);
-+
-+	delta = data_in - data_out;
-+	if (delta != 1)
-+		tdx_test_fatal(ret);
-+
-+	tdx_test_success();
-+}
-+
-+void verify_td_ioexit(void)
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_vcpu *vcpu;
-+
-+	uint32_t port_data;
-+
-+	vm = td_create();
-+	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-+	vcpu = td_vcpu_add(vm, 0, guest_ioexit);
-+	td_finalize(vm);
-+
-+	printf("Verifying TD IO Exit:\n");
-+
-+	/* Wait for guest to do a IO write */
-+	td_vcpu_run(vcpu);
-+	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-+	TDX_TEST_ASSERT_IO(vcpu, TDX_IOEXIT_TEST_PORT, 1,
-+			TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
-+	port_data = *(uint8_t *)((void *)vcpu->run + vcpu->run->io.data_offset);
-+
-+	printf("\t ... IO WRITE: OK\n");
-+
-+	/*
-+	 * Wait for the guest to do a IO read. Provide the previous written data
-+	 * + 1 back to the guest
-+	 */
-+	td_vcpu_run(vcpu);
-+	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-+	TDX_TEST_ASSERT_IO(vcpu, TDX_IOEXIT_TEST_PORT, 1,
-+			TDG_VP_VMCALL_INSTRUCTION_IO_READ);
-+	*(uint8_t *)((void *)vcpu->run + vcpu->run->io.data_offset) = port_data + 1;
-+
-+	printf("\t ... IO READ: OK\n");
-+
-+	/*
-+	 * Wait for the guest to complete execution successfully. The read
-+	 * value is checked within the guest.
-+	 */
-+	td_vcpu_run(vcpu);
-+	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-+	TDX_TEST_ASSERT_SUCCESS(vcpu);
-+
-+	printf("\t ... IO verify read/write values: OK\n");
-+	kvm_vm_free(vm);
-+	printf("\t ... PASSED\n");
-+}
-+
- int main(int argc, char **argv)
- {
- 	setbuf(stdout, NULL);
-@@ -85,6 +166,7 @@ int main(int argc, char **argv)
- 
- 	run_in_new_process(&verify_td_lifecycle);
- 	run_in_new_process(&verify_report_fatal_error);
-+	run_in_new_process(&verify_td_ioexit);
- 
- 	return 0;
- }
--- 
-2.41.0.487.g6d72f3e995-goog
+- Danilo
+
+> 
+>>
+>> If this theory holds, then I'm not concerned about the performance of 
+>> the API itself. It would still be good to see if we can find a way to 
+>> reduce the cross-process drag in the implementation but that's a perf 
+>> optimization we can do later.
+> 
+>  From the kernel side I think the only thing we could really do is to 
+> temporarily run a secondary drm_gpu_scheduler instance, one for VM_BINDs 
+> and one for EXECs until we got the new page table handling in place.
+> 
+> However, the UMD could avoid such conditions more effectively, since it 
+> controls the address space. Namely, avoid re-using the same region of 
+> the address space right away in certain cases. For instance, instead of 
+> replacing a sparse region A[0x0, 0x4000000] with a larger sparse region 
+> B[0x0, 0x8000000], replace it with B'[0x4000000, 0xC000000] if possible.
+> 
+> However, just mentioning this for completeness. The UMD surely shouldn't 
+> probably even temporarily work around such a kernel limitation.
+> 
+> Anyway, before doing any of those, let's see if the theory holds and 
+> we're actually running into such cases.
+> 
+>>
+>> Does it actually matter? Yes, it kinda does. No, it probably doesn't 
+>> matter for games because you're typically only running one game at a 
+>> time. From a development PoV, however, if it makes CI take longer then 
+>> that slows down development and that's not good for the users, either.
+> 
+> Fully agree.
+> 
+> - Danilo
+> 
+>>
+>> ~Faith
+>>
+>>     - Danilo
+>>
+>>      >
+>>      > ~Faith
+>>      >
+>>
 
