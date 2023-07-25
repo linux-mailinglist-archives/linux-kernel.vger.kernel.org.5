@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A8C760B20
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D404C760B23
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjGYHFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S231372AbjGYHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbjGYHFF (ORCPT
+        with ESMTP id S231387AbjGYHFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:05:05 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08C819A2;
-        Tue, 25 Jul 2023 00:05:01 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so12970664a12.0;
-        Tue, 25 Jul 2023 00:05:01 -0700 (PDT)
+        Tue, 25 Jul 2023 03:05:52 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A451B3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:50 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3143ccb0f75so4787109f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690268700; x=1690873500;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690268749; x=1690873549;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/rywQXgpO5u1DqjN9adyjvwJjSzTGessRPrLO7F1AaE=;
-        b=ULJE+D89TTUVUUaP/IV1jDtGzFhTHxd3L2rCo5moFvzGPfdJWn8qj9gVJ5/8ROoSAY
-         Y1uUA7kCezicqsqNgUJRCZ1X34+FvkYxU7vFy/mRT8EbhU3Swa6T/bVyspBnXJXAfzLK
-         dMAljKWUsJA9utFvN81GcHWPxiRKj9xjCm+mCwSiVGEecL38ojOF2UtwMfo7ij+fnsjy
-         JMJMkrOEDlYsX0Svgn4Ajf5qgGE9Ao2zQqmgUZ36WNxrkKUEi3ysVgpI03jMAZniNRte
-         gdFYsQm0+r5oO4+4dRMJ+87H2B4C3bbel467x1GBaAPcZzc8hpwaaGbqheDFmdBrwkYa
-         3c4A==
+        bh=BCISgvcHkLE+IYvaLKjaAqSLgVkajEMYvriq0KgJeCs=;
+        b=0HrQ3XBYZYdQcpqn/WILlevCOv0Bed+FdoMxOX6PFlSRZn2EEExBoyX+tV5PzdSsDH
+         T4bBkG2MctRNxqI0VKGmx2AP9nq8LV1LUD954cloloOgmY9bkCcOiRmci+4li2ptKFRS
+         dZ9LSG+zpvba62+Wz4a2CCjysdfTiWpkBYpfwyF37ncG6HSFKG161nZPu6x+B9JBdYuy
+         lAuGeQCLugERaSurpdpOpHj2CSCUscIjju/abM6zecQAZaQvGp4XxA1OfDB92BX5GitP
+         7iXoVDSHMaKMJH+rcxDgjQaXqs7QScLW54a7Htx0jqIzjVkOJ/ZAZRFvcWr21JUlVbkV
+         m0ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690268700; x=1690873500;
+        d=1e100.net; s=20221208; t=1690268749; x=1690873549;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/rywQXgpO5u1DqjN9adyjvwJjSzTGessRPrLO7F1AaE=;
-        b=W0A3Yuyqp3Vdvr8rOS9C9sf6iDG5kkTrLrc2RQ5LaT2xJkLiuYjIRXFWvW5ytGNt56
-         GJIKrYrExphW9qOrgWN9NFHai9ZUnN73VYzbx+1K6KM9INfB5xb4kBcNCLv1iMl9eXyZ
-         ueJzjvYdWNuUawOqegBqtPmH260/3NYH4HqxhK0e4pWsOHjelY+z4JJ/veHlJO0t8mP9
-         gHPJhtgL8JJIbdq1Q0fs4u+7jEZSAUOmRN1z1NqRDDmk+KBx+BXKO30P5iNDu1oMUASE
-         /0cwQpOCd4gvrvxqdBidDQRR63N7IMYF/JDuXiWSR3GN5XZ0xwqE42hgPVLEhyzjTmLk
-         77SA==
-X-Gm-Message-State: ABy/qLZ1hzuvqsDtdO2pFYs6T7SclEpMigXe0tITjB32rkz9x6Bv43X6
-        wCX/1MM9ilpci0LZa6INDkR3tM1EhVncmY9oItk=
-X-Google-Smtp-Source: APBJJlEwr7S33twyOTE3LTF9R7r+4PcAikCXfdNapTZNDBhbNtanpC9v0bta0ngKhzUbGrvaADJi7TYq+dhgQNlWrrc=
-X-Received: by 2002:a17:907:a089:b0:98d:f2c9:a1eb with SMTP id
- hu9-20020a170907a08900b0098df2c9a1ebmr1800076ejc.24.1690268700144; Tue, 25
- Jul 2023 00:05:00 -0700 (PDT)
+        bh=BCISgvcHkLE+IYvaLKjaAqSLgVkajEMYvriq0KgJeCs=;
+        b=RNn9BBHy79cb8uyJC5QT6krSuXEBXJasHFfQSfyq6N8tC4jpG+tmXLp1JOdt8cQip4
+         GBz+M9062V3vFxjmfm5Iq+90KqNhsjFTX9pTEQ+IUPcIHyqCFBjsw+pO4DvzNLH5Y/ql
+         H3jxX3TrycHQa0Nj5wrDafZzC98ePBWB0uLp6GG7gIwOM0LOOl7zqnFWXxbzjP/V+DGT
+         AKgPZdSaZb7ZshQ55zMOMrQXur73VZzkxEDVpPJXpn7Vf66zBJ9RZ0piigBM/SiWGEU+
+         N9YQFgM8lHjZ52mCbFgqfc1YBRPLq40BnKHAc3WoZib6D8hBjQQiyxL2oZ5dHQoJ3eZj
+         +j9w==
+X-Gm-Message-State: ABy/qLbqfeDyawzOIkZVl6MCmhDGNvvK2TXjo9cNV5zl3qsi1h/K0Nkp
+        Soc2OweYxLTHOtUqbe8+pItVJEcY43h86SDWbRDWQA==
+X-Google-Smtp-Source: APBJJlHW5uTkeyUukPBI67eBenwUVtqS23RaHFSnsmXqJ6eKmnPPYkuP9xkRhbcOO0uBVEGmXWnjsnoOmWsrsJiIoxg=
+X-Received: by 2002:adf:f251:0:b0:314:1249:d5d7 with SMTP id
+ b17-20020adff251000000b003141249d5d7mr10276585wrp.16.1690268748838; Tue, 25
+ Jul 2023 00:05:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230725004043.381573-1-samuel.holland@sifive.com>
-In-Reply-To: <20230725004043.381573-1-samuel.holland@sifive.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 25 Jul 2023 10:04:23 +0300
-Message-ID: <CAHp75Vf5FvoshtHj+3MWFCr6-6MioCydSF8c5=tZueZHPZj=XA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] gpio: sifive: Module support
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
+References: <20230722123850.634544-1-alexghiti@rivosinc.com>
+ <20230722123850.634544-3-alexghiti@rivosinc.com> <20230724-fineness-sectional-8cdd1e4bbff2@wendy>
+In-Reply-To: <20230724-fineness-sectional-8cdd1e4bbff2@wendy>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Tue, 25 Jul 2023 09:05:37 +0200
+Message-ID: <CAHVXubhVOpdZhmENkNbavAYGVZB47K9Q_4GN6RZ+rCex4uBb5g@mail.gmail.com>
+Subject: Re: [PATCH v6 2/5] riscv: Dump out kernel offset information on panic
+To:     Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Zong Li <zong.li@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 3:40=E2=80=AFAM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> With the call to of_irq_count() removed, the SiFive GPIO driver can be
-> built as a module. This helps to minimize the size of a multiplatform
-> kernel, and is required by some downstream distributions (Android GKI).
->
-> This series removes the rest of the of_* API usage in the process.
+Hi Conor,
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-for unreviewed (by me) patches.
+On Mon, Jul 24, 2023 at 4:20=E2=80=AFPM Conor Dooley <conor.dooley@microchi=
+p.com> wrote:
+>
+> Hey Alex,
+>
+> On Sat, Jul 22, 2023 at 02:38:47PM +0200, Alexandre Ghiti wrote:
+> > Dump out the KASLR virtual kernel offset when panic to help debug kerne=
+l.
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+>
+> Either you're missing a Co-developed-by: or the author of this patch is
+> incorrect.
 
-Thank you!
+Ok, I thought it would work this way, Zong first did something similar
+a few years ago, so we need his name here. @Palmer Dabbelt if no other
+changes are needed, do you mind replacing the SoB with a
+Co-developed-by?
 
-> Changes in v3:
->  - Use dev_fwnode() instead of member access
->  - Mention the SIFIVE_GPIO_MAX check in the commit message
->  - Keep the variable for the parent IRQ domain
->  - Add a comment explaining why the IRQ data lookup will succeed
->
-> Changes in v2:
->  - Add 3 new patches removing of_* API usage
->  - Add MODULE_AUTHOR and MODULE_DESCRIPTION
->
-> Samuel Holland (4):
->   gpio: sifive: Directly use the device's fwnode
->   gpio: sifive: Look up IRQs only once during probe
->   gpio: sifive: Get the parent IRQ's domain from its irq_data
->   gpio: sifive: Allow building the driver as a module
->
->  drivers/gpio/Kconfig       |  2 +-
->  drivers/gpio/gpio-sifive.c | 47 ++++++++++++++++----------------------
->  2 files changed, 21 insertions(+), 28 deletions(-)
->
-> --
-> 2.40.1
->
+Thanks,
 
+Alex
 
---=20
-With Best Regards,
-Andy Shevchenko
+>
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
