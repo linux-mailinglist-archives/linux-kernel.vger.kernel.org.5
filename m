@@ -2,67 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B86760A42
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6E2760A49
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjGYGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        id S232109AbjGYGZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbjGYGWS (ORCPT
+        with ESMTP id S232075AbjGYGZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:22:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CAE199F;
-        Mon, 24 Jul 2023 23:22:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EDEEB1FD5F;
-        Tue, 25 Jul 2023 06:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690266132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8zpF+SUkasNIWZkOfvZPls/jKPiZoHAEyqDm14jWo0I=;
-        b=FPbrBhG1xYDJ0nukBafO+w9XnYaYRRIJP+tHjBzL3ZxiEgOztLNp1BTEgOCnnWqS2kraE3
-        o+d4p4LIIsIfJo9FKKpe+O/E9r/NlwWrTOUqY8mHYilgrZWTpOkFtNZ3FbHWdmL0uXG8Dx
-        ERwjP6v5kMJ30fmN8hLk3zuztjONolg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690266132;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8zpF+SUkasNIWZkOfvZPls/jKPiZoHAEyqDm14jWo0I=;
-        b=2QK4mNqYOktfyFo9ydlm3Y3pDHY9KYqGe51P+fTRPJxQMJbVqm59sSUBBwE8+7Ml8oQ5Im
-        R4Zbme2YdE3JAUAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C1EF71390F;
-        Tue, 25 Jul 2023 06:22:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cIyOLhRqv2S0dQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 06:22:12 +0000
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] usb: gadget: midi2: More flexible MIDI 1.0 configuration
-Date:   Tue, 25 Jul 2023 08:22:06 +0200
-Message-Id: <20230725062206.9674-8-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230725062206.9674-1-tiwai@suse.de>
-References: <20230725062206.9674-1-tiwai@suse.de>
+        Tue, 25 Jul 2023 02:25:09 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3D3CC19BD;
+        Mon, 24 Jul 2023 23:24:32 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8Ax1fCLar9kmZkJAA--.23998S3;
+        Tue, 25 Jul 2023 14:24:11 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTSOBar9kMUA6AA--.7512S3;
+        Tue, 25 Jul 2023 14:24:02 +0800 (CST)
+Message-ID: <935e68ed-2ada-03ac-c6e0-40b7972515c1@loongson.cn>
+Date:   Tue, 25 Jul 2023 14:24:01 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
+ might require ARM spec change?
+Content-Language: en-US
+To:     Salil Mehta <salil.mehta@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        Salil Mehta <salil.mehta@opnsrc.net>,
+        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
+        yuzenghui <yuzenghui@huawei.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "steven.price@arm.com" <steven.price@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+ <2fa14ef5-b2f7-459d-8b84-114d36ba3cf7@loongson.cn>
+ <d13c4cb44a2b4b42a8b534c38c402a1d@huawei.com>
+ <5cb437f8-2e33-55b2-d5e4-2c5757af8b44@loongson.cn>
+ <12959471e1424974979eef4e32812d60@huawei.com>
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <12959471e1424974979eef4e32812d60@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-CM-TRANSID: AQAAf8AxTSOBar9kMUA6AA--.7512S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Jw45Cw1DCFWfXr1xWryrXwc_yoW3ZF48pr
+        WrGFs0grWDJry0kw4Iqa45Zr10v3y8JFW7Xrn5Jry8Zryqqrn7Kr4Iyr45uF93Xr17GF12
+        vF1ayr97ua45ZFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUd529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUShiSDU
+        UUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,467 +90,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch allows users to set up MIDI 1.0 ports more flexibly.
-Namely, instead of the fixed mapping only from FB 0, now multiple
-block definitions are applied to build up the MIDI 1.0 mapping.
 
-The each block config has midi1_first_group and midi1_num_groups
-attributes, and those specify which Groups are used for MIDI 1.0.
-Those fields must be within the UMP Groups defined in the block
-itself.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- .../ABI/testing/configfs-usb-gadget-midi2     |  24 +--
- Documentation/usb/gadget-testing.rst          |  34 ++--
- drivers/usb/gadget/function/f_midi2.c         | 154 ++++++++++++++----
- drivers/usb/gadget/function/u_midi2.h         |   2 +
- 4 files changed, 153 insertions(+), 61 deletions(-)
+在 2023/7/25 13:45, Salil Mehta 写道:
+> Hello,
+> 
+>> From: bibo mao <maobibo@loongson.cn>
+>> Sent: Tuesday, July 25, 2023 2:14 AM
+>> To: Salil Mehta <salil.mehta@huawei.com>
+> 
+> 
+> [...]
+> 
+> 
+>> 在 2023/7/25 08:56, Salil Mehta 写道:
+>>> Hi Bibo,
+>>>
+>>>> From: bibo mao <maobibo@loongson.cn>
+>>>> Sent: Tuesday, July 25, 2023 1:29 AM
+>>>> To: Salil Mehta <salil.mehta@huawei.com>
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>; Jonathan Cameron
+>>>> <jonathan.cameron@huawei.com>; Marc Zyngier <maz@kernel.org>; Will Deacon
+>>>> <will@kernel.org>; christoffer.dall@arm.com; oliver.upton@linux.dev;
+>>>> mark.rutland@arm.com; pbonzini@redhat.com; Salil Mehta
+>>>> <salil.mehta@opnsrc.net>; andrew.jones@linux.dev; yuzenghui
+>>>> <yuzenghui@huawei.com>; kvmarm@lists.cs.columbia.edu; linux-arm-
+>>>> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+>>>> kvm@vger.kernel.org; qemu-devel@nongnu.org; james.morse@arm.com;
+>>>> steven.price@arm.com; Suzuki K Poulose <suzuki.poulose@arm.com>; Jean-
+>>>> Philippe Brucker <jean-philippe@linaro.org>; kvmarm@lists.linux.dev; linux-coco@lists.linux.dev
+>>>> Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world might require ARM spec change?
+>>>>
+>>>> Is vcpu hotplug supported in arm virt-machine now?
+>>>
+>>> Not yet. We are working on it. Please check the RFCs being tested.
+>>>
+>>>
+>>> [1] Pre-RFC V2 Changes: Support of Virtual CPU Hotplug for ARMv8 Arch (WIP)
+>>>     https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
+>>> [2] [RFC PATCH 00/32] ACPI/arm64: add support for virtual cpuhotplug
+>>>     https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
+>>>
+>>>
+>>>> There is arm64 vcpu hotplug patch in qemu mailing list, however it is not merged.
+>>>> I do not know why it is not merged.
+>>>
+>>>
+>>> I think you are referring to patches [3], [4]? Please follow the discussion
+>>> for details.
+>>
+>> yeap, we reference the patch [3], [4] and benefit from them greatly -:)
+> 
+> 
+> I am glad that our current work is useful to more than one architecture and it
+> was one of the aim of our work as well but...
+> 
+>> The patch for LoongArch vcpu hotplug link is:
+>> https://lore.kernel.org/qemu-devel/cover.1689837093.git.lixianglai@loongson.cn/T/#t
+> 
+> 
+> I quickly went through above patches and it looks like this patch-set is mostly
+> based on our latest patches which are at [1], [2] and not just at [3], [4]. As I
+> could see most of the functions which you have ported to your architecture are
+> part of our Qemu repositories [2] which we have yet to push to community. As I
+> am working towards RFC V2 patches and which shall be floated soon. It does not
+> makes sense for you to duplicate the GED/ACPI changes which are common across
+> architectures and which have been derived from the ARM64 vCPU Hotplug support
+> original patches. 
+> 
+> This will create merge conflicts, will break large part of our original patch-set.
+> 
+> Hence, I would request you to drop patches 1-4 from your patch-set or rebase
+> it over ARM64 original patches in a week or 2 week of time. This is to avoid
+> spoiling our previous years of hard work for the topic we have been persistently
+> making efforts as you can see through the code and our detailed presentations.
+Do you have a plan to post new vcpu hotplug patch soon ? If there is, we can
+postpone  our patch for reviewing and wait for your arm64 vcpu hotplug patch,
+and hope that your patch can merge into qemu asap. 
 
-diff --git a/Documentation/ABI/testing/configfs-usb-gadget-midi2 b/Documentation/ABI/testing/configfs-usb-gadget-midi2
-index a3a036d784c7..0eac3aaba137 100644
---- a/Documentation/ABI/testing/configfs-usb-gadget-midi2
-+++ b/Documentation/ABI/testing/configfs-usb-gadget-midi2
-@@ -39,14 +39,16 @@ Description:
- 
- 		The attributes:
- 
--		===============	===============================================
--		name		Function Block name string
--		direction	1: input, 2: output, 3: bidirectional
--		first_group	The first UMP Group number (0-15)
--		num_groups	The number of groups in this FB (1-16)
--		ui_hint		0: unknown, 1: receiver, 2: sender, 3: both
--		midi_ci_verison	Supported MIDI-CI version number (8 bit)
--		is_midi1	Legacy MIDI 1.0 device (0, 1 or 2)
--		sysex8_streams	Max number of SysEx8 streams (8 bit)
--		active		Active FB flag (0 or 1)
--		===============	===============================================
-+		=================	==============================================
-+		name			Function Block name string
-+		direction		1: input, 2: output, 3: bidirectional
-+		first_group		The first UMP Group number (0-15)
-+		num_groups		The number of groups in this FB (1-16)
-+		midi1_first_group	The first UMP Group number for MIDI 1.0 (0-15)
-+		midi1_num_groups	The number of groups for MIDI 1.0 (0-16)
-+		ui_hint			0: unknown, 1: receiver, 2: sender, 3: both
-+		midi_ci_verison		Supported MIDI-CI version number (8 bit)
-+		is_midi1		Legacy MIDI 1.0 device (0, 1 or 2)
-+		sysex8_streams		Max number of SysEx8 streams (8 bit)
-+		active			Active FB flag (0 or 1)
-+		=================	==============================================
-diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
-index 1fb181d61322..394cd226bfae 100644
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -1009,22 +1009,24 @@ Each Endpoint subdirectory contains a subdirectory "block.0", which
- represents the Function Block for Block 0 information.
- Its attributes are:
- 
--	===============	===============================================
--	name		Function Block name string
--	direction	Direction of this FB
--			1: input, 2: output, or 3: bidirectional
--	first_group	The first UMP Group number (0-15)
--	num_groups	The number of groups in this FB (1-16)
--	ui_hint		UI-hint of this FB
--			0: unknown, 1: receiver, 2: sender, 3: both
--	midi_ci_verison	Supported MIDI-CI version number (8 bit)
--	is_midi1	Legacy MIDI 1.0 device (0-2)
--			0: MIDI 2.0 device,
--			1: MIDI 1.0 without restriction, or
--			2: MIDI 1.0 with low speed
--	sysex8_streams	Max number of SysEx8 streams (8 bit)
--	active		Bool flag for FB activity (0 or 1)
--	===============	===============================================
-+	=================	===============================================
-+	name			Function Block name string
-+	direction		Direction of this FB
-+				1: input, 2: output, or 3: bidirectional
-+	first_group		The first UMP Group number (0-15)
-+	num_groups		The number of groups in this FB (1-16)
-+	midi1_first_group	The first UMP Group number for MIDI 1.0 (0-15)
-+	midi1_num_groups	The number of groups for MIDI 1.0 (0-16)
-+	ui_hint			UI-hint of this FB
-+				0: unknown, 1: receiver, 2: sender, 3: both
-+	midi_ci_verison		Supported MIDI-CI version number (8 bit)
-+	is_midi1		Legacy MIDI 1.0 device (0-2)
-+				0: MIDI 2.0 device,
-+				1: MIDI 1.0 without restriction, or
-+				2: MIDI 1.0 with low speed
-+	sysex8_streams		Max number of SysEx8 streams (8 bit)
-+	active			Bool flag for FB activity (0 or 1)
-+	=================	===============================================
- 
- If multiple Function Blocks are required, you can add more Function
- Blocks by creating subdirectories "block.<num>" with the corresponding
-diff --git a/drivers/usb/gadget/function/f_midi2.c b/drivers/usb/gadget/function/f_midi2.c
-index ec9ef15abfea..f1c47753e0c1 100644
---- a/drivers/usb/gadget/function/f_midi2.c
-+++ b/drivers/usb/gadget/function/f_midi2.c
-@@ -84,6 +84,8 @@ struct f_midi2_ep {
- 
- 	struct f_midi2_usb_ep ep_in;	/* USB MIDI EP-in */
- 	struct f_midi2_usb_ep ep_out;	/* USB MIDI EP-out */
-+
-+	u8 in_group_to_cable[SNDRV_UMP_MAX_GROUPS]; /* map to cable; 1-based! */
- };
- 
- /* indices for USB strings */
-@@ -95,6 +97,13 @@ enum {
- /* 1-based GTB id to string id */
- #define gtb_to_str_id(id)	(STR_GTB1 + (id) - 1)
- 
-+/* mapping from MIDI 1.0 cable to UMP group */
-+struct midi1_cable_mapping {
-+	struct f_midi2_ep *ep;
-+	unsigned char block;
-+	unsigned char group;
-+};
-+
- /* operation mode */
- enum {
- 	MIDI_OP_MODE_UNSET,	/* no altset set yet */
-@@ -112,10 +121,17 @@ struct f_midi2 {
- 	struct f_midi2_usb_ep midi1_ep_in;
- 	struct f_midi2_usb_ep midi1_ep_out;
- 
-+	/* number of MIDI 1.0 I/O cables */
-+	unsigned int num_midi1_in;
-+	unsigned int num_midi1_out;
-+
- 	/* conversion for MIDI 1.0 EP-in */
- 	struct f_midi2_midi1_port midi1_port[MAX_CABLES];
- 	/* conversion for MIDI 1.0 EP-out */
- 	struct ump_cvt_to_ump midi1_ump_cvt;
-+	/* mapping between cables and UMP groups */
-+	struct midi1_cable_mapping in_cable_mapping[MAX_CABLES];
-+	struct midi1_cable_mapping out_cable_mapping[MAX_CABLES];
- 
- 	int midi_if;			/* USB MIDI interface number */
- 	int operation_mode;		/* current operation mode */
-@@ -917,8 +933,7 @@ static bool process_midi1_pending_buf(struct f_midi2 *midi2,
- {
- 	unsigned int cable, c;
- 
--	for (cable = 0; cable < midi2->midi2_eps[0].blks[0].info.num_groups;
--	     cable++) {
-+	for (cable = 0; cable < midi2->num_midi1_in; cable++) {
- 		struct f_midi2_midi1_port *port = &midi2->midi1_port[cable];
- 
- 		if (!port->pending)
-@@ -960,8 +975,8 @@ static void process_midi1_transmit(struct f_midi2 *midi2)
- 	struct usb_request *req = NULL;
- 	/* 12 is the largest outcome (4 MIDI1 cmds) for a single UMP packet */
- 	unsigned char outbuf[12];
--	unsigned char group;
--	int len, size, cable;
-+	unsigned char group, cable;
-+	int len, size;
- 	u32 ump;
- 
- 	if (!usb_ep->usb_ep || !usb_ep->usb_ep->enabled)
-@@ -986,9 +1001,10 @@ static void process_midi1_transmit(struct f_midi2 *midi2)
- 						&group);
- 		if (size <= 0)
- 			continue;
--		cable = group - ep->blks[0].info.first_group;
--		if (cable < 0 || cable >= ep->blks[0].info.num_groups)
-+		cable = ep->in_group_to_cable[group];
-+		if (!cable)
- 			continue;
-+		cable--; /* to 0-base */
- 		fill_midi1_pending_buf(midi2, cable, outbuf, size);
- 	}
- 
-@@ -1025,12 +1041,12 @@ static void f_midi2_midi1_ep_out_complete(struct usb_ep *usb_ep,
- {
- 	struct f_midi2_req_ctx *ctx = req->context;
- 	struct f_midi2 *midi2 = ctx->usb_ep->card;
--	struct f_midi2_ep *ep = &midi2->midi2_eps[0];
-+	struct f_midi2_ep *ep;
- 	struct ump_cvt_to_ump *cvt = &midi2->midi1_ump_cvt;
- 	static const u8 midi1_packet_bytes[16] = {
- 		0, 0, 2, 3, 3, 1, 2, 3, 3, 3, 3, 3, 2, 2, 3, 1
- 	};
--	unsigned int group, bytes, c, len;
-+	unsigned int group, cable, bytes, c, len;
- 	int status = req->status;
- 	const u8 *buf = req->buf;
- 
-@@ -1042,10 +1058,11 @@ static void f_midi2_midi1_ep_out_complete(struct usb_ep *usb_ep,
- 
- 	len = req->actual >> 2;
- 	for (; len; len--, buf += 4) {
--		group = *buf >> 4;
--		if (group >= ep->blks[0].info.num_groups)
-+		cable = *buf >> 4;
-+		ep = midi2->out_cable_mapping[cable].ep;
-+		if (!ep)
- 			continue;
--		group += ep->blks[0].info.first_group;
-+		group = midi2->out_cable_mapping[cable].group;
- 		bytes = midi1_packet_bytes[*buf & 0x0f];
- 		for (c = 0; c < bytes; c++) {
- 			snd_ump_convert_to_ump(cvt, group, ep->info.protocol,
-@@ -1641,6 +1658,7 @@ static int append_configs(struct f_midi2_usb_config *config, void **d)
- 
- static int append_midi1_in_jack(struct f_midi2 *midi2,
- 				struct f_midi2_usb_config *config,
-+				struct midi1_cable_mapping *map,
- 				unsigned int type)
- {
- 	struct usb_midi_in_jack_descriptor *jack =
-@@ -1653,7 +1671,9 @@ static int append_midi1_in_jack(struct f_midi2 *midi2,
- 	jack->bDescriptorSubtype = USB_MS_MIDI_IN_JACK;
- 	jack->bJackType = type;
- 	jack->bJackID = id;
--	jack->iJack = midi2->strings[STR_GTB1].id; // TODO: better names?
-+	/* use the corresponding block name as jack name */
-+	if (map->ep)
-+		jack->iJack = map->ep->blks[map->block].string_id;
- 
- 	err = append_config(config, jack);
- 	if (err < 0)
-@@ -1663,6 +1683,7 @@ static int append_midi1_in_jack(struct f_midi2 *midi2,
- 
- static int append_midi1_out_jack(struct f_midi2 *midi2,
- 				 struct f_midi2_usb_config *config,
-+				 struct midi1_cable_mapping *map,
- 				 unsigned int type, unsigned int source)
- {
- 	struct usb_midi_out_jack_descriptor_1 *jack =
-@@ -1678,7 +1699,9 @@ static int append_midi1_out_jack(struct f_midi2 *midi2,
- 	jack->bNrInputPins = 1;
- 	jack->pins[0].baSourceID = source;
- 	jack->pins[0].baSourcePin = 0x01;
--	jack->iJack = midi2->strings[STR_GTB1].id; // TODO: better names?
-+	/* use the corresponding block name as jack name */
-+	if (map->ep)
-+		jack->iJack = map->ep->blks[map->block].string_id;
- 
- 	err = append_config(config, jack);
- 	if (err < 0)
-@@ -1690,7 +1713,6 @@ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
- 				      struct f_midi2_usb_config *config,
- 				      int speed)
- {
--	struct f_midi2_block *blk = &midi2->midi2_eps[0].blks[0];
- 	void **midi1_in_eps, **midi1_out_eps;
- 	int i, jack, total;
- 	int err;
-@@ -1724,56 +1746,55 @@ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
- 	if (err < 0)
- 		return err;
- 
--	switch (blk->info.direction) {
--	case SNDRV_UMP_DIR_INPUT:
--	case SNDRV_UMP_DIR_OUTPUT:
--		midi2_midi1_if_desc.bNumEndpoints = 1;
--		break;
--	default:
-+	if (midi2->num_midi1_in && midi2->num_midi1_out)
- 		midi2_midi1_if_desc.bNumEndpoints = 2;
--		break;
--	}
-+	else
-+		midi2_midi1_if_desc.bNumEndpoints = 1;
- 
- 	err = append_configs(config, midi2_midi1_descs);
- 	if (err < 0)
- 		return err;
- 
- 	total = USB_DT_MS_HEADER_SIZE;
--	if (blk->info.direction != SNDRV_UMP_DIR_INPUT) {
-+	if (midi2->num_midi1_out) {
- 		midi2_midi1_ep_out_class_desc.bLength =
--			USB_DT_MS_ENDPOINT_SIZE(blk->info.num_groups);
-+			USB_DT_MS_ENDPOINT_SIZE(midi2->num_midi1_out);
- 		total += midi2_midi1_ep_out_class_desc.bLength;
- 		midi2_midi1_ep_out_class_desc.bNumEmbMIDIJack =
--			blk->info.num_groups;
--		total += blk->info.num_groups *
-+			midi2->num_midi1_out;
-+		total += midi2->num_midi1_out *
- 			(USB_DT_MIDI_IN_SIZE + USB_DT_MIDI_OUT_SIZE(1));
--		for (i = 0; i < blk->info.num_groups; i++) {
-+		for (i = 0; i < midi2->num_midi1_out; i++) {
- 			jack = append_midi1_in_jack(midi2, config,
-+						    &midi2->in_cable_mapping[i],
- 						    USB_MS_EMBEDDED);
- 			if (jack < 0)
- 				return jack;
- 			midi2_midi1_ep_out_class_desc.baAssocJackID[i] = jack;
- 			jack = append_midi1_out_jack(midi2, config,
-+						     &midi2->in_cable_mapping[i],
- 						     USB_MS_EXTERNAL, jack);
- 			if (jack < 0)
- 				return jack;
- 		}
- 	}
- 
--	if (blk->info.direction != SNDRV_UMP_DIR_OUTPUT) {
-+	if (midi2->num_midi1_in) {
- 		midi2_midi1_ep_in_class_desc.bLength =
--			USB_DT_MS_ENDPOINT_SIZE(blk->info.num_groups);
-+			USB_DT_MS_ENDPOINT_SIZE(midi2->num_midi1_in);
- 		total += midi2_midi1_ep_in_class_desc.bLength;
- 		midi2_midi1_ep_in_class_desc.bNumEmbMIDIJack =
--			blk->info.num_groups;
--		total += blk->info.num_groups *
-+			midi2->num_midi1_in;
-+		total += midi2->num_midi1_in *
- 			(USB_DT_MIDI_IN_SIZE + USB_DT_MIDI_OUT_SIZE(1));
--		for (i = 0; i < blk->info.num_groups; i++) {
-+		for (i = 0; i < midi2->num_midi1_in; i++) {
- 			jack = append_midi1_in_jack(midi2, config,
-+						    &midi2->out_cable_mapping[i],
- 						    USB_MS_EXTERNAL);
- 			if (jack < 0)
- 				return jack;
- 			jack = append_midi1_out_jack(midi2, config,
-+						     &midi2->out_cable_mapping[i],
- 						     USB_MS_EMBEDDED, jack);
- 			if (jack < 0)
- 				return jack;
-@@ -1783,12 +1804,12 @@ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
- 
- 	midi2_midi1_class_desc.wTotalLength = cpu_to_le16(total);
- 
--	if (blk->info.direction != SNDRV_UMP_DIR_INPUT) {
-+	if (midi2->num_midi1_out) {
- 		err = append_configs(config, midi1_out_eps);
- 		if (err < 0)
- 			return err;
- 	}
--	if (blk->info.direction != SNDRV_UMP_DIR_OUTPUT) {
-+	if (midi2->num_midi1_in) {
- 		err = append_configs(config, midi1_in_eps);
- 		if (err < 0)
- 			return err;
-@@ -2236,6 +2257,8 @@ CONFIGFS_ATTR(f_midi2_block_opts_, name)
- F_MIDI2_BLOCK_OPT(direction, "0x%x", 1, 3);
- F_MIDI2_BLOCK_OPT(first_group, "0x%x", 0, 15);
- F_MIDI2_BLOCK_OPT(num_groups, "0x%x", 1, 16);
-+F_MIDI2_BLOCK_OPT(midi1_first_group, "0x%x", 0, 15);
-+F_MIDI2_BLOCK_OPT(midi1_num_groups, "0x%x", 0, 16);
- F_MIDI2_BLOCK_OPT(ui_hint, "0x%x", 0, 3);
- F_MIDI2_BLOCK_OPT(midi_ci_version, "%u", 0, 1);
- F_MIDI2_BLOCK_OPT(sysex8_streams, "%u", 0, 255);
-@@ -2265,6 +2288,8 @@ static struct configfs_attribute *f_midi2_block_attrs[] = {
- 	&f_midi2_block_opts_attr_direction,
- 	&f_midi2_block_opts_attr_first_group,
- 	&f_midi2_block_opts_attr_num_groups,
-+	&f_midi2_block_opts_attr_midi1_first_group,
-+	&f_midi2_block_opts_attr_midi1_num_groups,
- 	&f_midi2_block_opts_attr_ui_hint,
- 	&f_midi2_block_opts_attr_midi_ci_version,
- 	&f_midi2_block_opts_attr_sysex8_streams,
-@@ -2644,6 +2669,9 @@ static struct usb_function_instance *f_midi2_alloc_inst(void)
- 		return ERR_PTR(ret);
- 	}
- 
-+	/* set up the default MIDI1 (that is mandatory) */
-+	block_opts->info.midi1_num_groups = 1;
-+
- 	config_group_init_type_name(&opts->func_inst.group, "",
- 				    &f_midi2_func_type);
- 
-@@ -2707,6 +2735,16 @@ static int verify_parameters(struct f_midi2_opts *opts)
- 				       i, j);
- 				return -EINVAL;
- 			}
-+
-+			if (bp->midi1_num_groups) {
-+				if (bp->midi1_first_group < bp->first_group ||
-+				    bp->midi1_first_group + bp->midi1_num_groups >
-+				    bp->first_group + bp->num_groups) {
-+					pr_err("f_midi2: Invalid MIDI1 group definitions for block %d:%d\n",
-+					       i, j);
-+					return -EINVAL;
-+				}
-+			}
- 		}
- 	}
- 	if (!num_blks) {
-@@ -2717,6 +2755,46 @@ static int verify_parameters(struct f_midi2_opts *opts)
- 	return num_eps;
- }
- 
-+/* fill mapping between MIDI 1.0 cable and UMP EP/group */
-+static void fill_midi1_cable_mapping(struct f_midi2 *midi2,
-+				     struct f_midi2_ep *ep,
-+				     int blk)
-+{
-+	const struct f_midi2_block_info *binfo = &ep->blks[blk].info;
-+	struct midi1_cable_mapping *map;
-+	int i, group;
-+
-+	if (!binfo->midi1_num_groups)
-+		return;
-+	if (binfo->direction != SNDRV_UMP_DIR_OUTPUT) {
-+		group = binfo->midi1_first_group;
-+		map = midi2->in_cable_mapping + midi2->num_midi1_in;
-+		for (i = 0; i < binfo->midi1_num_groups; i++, group++, map++) {
-+			if (midi2->num_midi1_in >= MAX_CABLES)
-+				break;
-+			map->ep = ep;
-+			map->block = blk;
-+			map->group = group;
-+			midi2->num_midi1_in++;
-+			/* store 1-based cable number */
-+			ep->in_group_to_cable[group] = midi2->num_midi1_in;
-+		}
-+	}
-+
-+	if (binfo->direction != SNDRV_UMP_DIR_INPUT) {
-+		group = binfo->midi1_first_group;
-+		map = midi2->out_cable_mapping + midi2->num_midi1_out;
-+		for (i = 0; i < binfo->midi1_num_groups; i++, group++, map++) {
-+			if (midi2->num_midi1_out >= MAX_CABLES)
-+				break;
-+			map->ep = ep;
-+			map->block = blk;
-+			map->group = group;
-+			midi2->num_midi1_out++;
-+		}
-+	}
-+}
-+
- /* gadget alloc callback */
- static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
- {
-@@ -2786,9 +2864,17 @@ static struct usb_function *f_midi2_alloc(struct usb_function_instance *fi)
- 			bp = &ep->blks[blk];
- 			midi2->string_defs[gtb_to_str_id(bp->gtb_id)].s =
- 				ump_fb_name(&bp->info);
-+
-+			fill_midi1_cable_mapping(midi2, ep, blk);
- 		}
- 	}
- 
-+	if (!midi2->num_midi1_in && !midi2->num_midi1_out) {
-+		pr_err("f_midi2: MIDI1 definition is missing\n");
-+		do_f_midi2_free(midi2, opts);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
- 	return &midi2->func;
- }
- 
-diff --git a/drivers/usb/gadget/function/u_midi2.h b/drivers/usb/gadget/function/u_midi2.h
-index a68dc2ea035e..4e7adb41dfb7 100644
---- a/drivers/usb/gadget/function/u_midi2.h
-+++ b/drivers/usb/gadget/function/u_midi2.h
-@@ -18,6 +18,8 @@ struct f_midi2_block_info {
- 	unsigned int direction;		/* FB direction: 1-3 */
- 	unsigned int first_group;	/* first UMP group: 0-15 */
- 	unsigned int num_groups;	/* number of UMP groups: 1-16 */
-+	unsigned int midi1_first_group;	/* first UMP group for MIDI 1.0 */
-+	unsigned int midi1_num_groups;	/* number of UMP groups for MIDI 1.0 */
- 	unsigned int ui_hint;		/* UI-hint: 0-3 */
- 	unsigned int midi_ci_version;	/* MIDI-CI version: 0-255 */
- 	unsigned int sysex8_streams;	/* number of sysex8 streams: 0-255 */
--- 
-2.35.3
+We always rebase on the mainline qemu version, rather than personal private tree -:)
+
+Regards
+Bibo Mao
+> 
+> Hope you will agree we all need to respect others efforts and time in this
+> mode of open-source collaboration. 
+> 
+> Rest assured I will help you in review of your architecture specific patch-set
+> as it is a work of mutual interest.
+> 
+> Thanks for understanding!
+> 
+> 
+> Best Wishes,
+> Salil.
+> 
+> 
+> 
+>> Regards
+>> Bibo Mao
+>>
+>>>
+>>>
+>>> [3] [PATCH RFC 00/22] Support of Virtual CPU Hotplug for ARMv8 Arch
+>>>     https://lore.kernel.org/all/20200613213629.21984-1-salil.mehta@huawei.com/
+>>> [4] [PATCH RFC 0/4] Changes to Support *Virtual* CPU Hotplug for ARM64
+>>>     https://lore.kernel.org/all/20200625133757.22332-1-salil.mehta@huawei.com/#r
+>>>
+>>>
+>>> In summary, there were some ARM64 Architecture constraints which were being
+>>> violated in the earlier patches of the kernel [4] so we had to re-think of the
+>>> kernel changes. The Qemu part mostly remains same with some new introductions
+>>> of Guest HVC/SMC hyper call exit handling in user space etc. for policy checks
+>>> in VMM/Qemu.
+>>>
+>>>
+>>> You can follow the KVMForum conference presentations [5], [6] delivered in the
+>>> year 2020 and 2023 to get hold of more details related to this.
+>>>
+>>>
+>>> [5] KVMForum 2023: Challenges Revisited in Supporting Virt CPU Hotplug on architectures that don't Support CPU Hotplug (like ARM64)
+>>>     https://kvm-forum.qemu.org/2023/talk/9SMPDQ/
+>>> [6] KVMForum 2020: Challenges in Supporting Virtual CPU Hotplug on SoC Based Systems (like ARM64)
+>>>     https://kvmforum2020.sched.com/event/eE4m
+>>>
+>>>
+>>>
+>>>> I ask this question because we propose
+>>>> similar patch about LoongArch system in qemu mailing list, and kernel need not be
+>>>> modified for vcpu hotplug.
+>>>
+>>>
+>>> Could you please share the link of your patches so that we can have a look and
+>>> draw a comparison?
+>>>
+>>>
+>>> Thanks
+>>> Salil.
+>>>
+>>>>
+>>>> Regards
+>>>> Bibo, mao
+>>>>
+>>>> 在 2023/7/19 10:35, Salil Mehta 写道:
+>>>>> [Reposting it here from Linaro Open Discussion List for more eyes to look at]
+>>>>>
+>>>>> Hello,
+>>>>> I have recently started to dabble with ARM CCA stuff and check if our
+>>>>> recent changes to support vCPU Hotplug in ARM64 can work in the realm
+>>>>> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
+>>>>> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
+>>>>> from the host. This might be required to support vCPU Hotplug feature
+>>>>> in the realm world in future. vCPU Hotplug is an important feature to
+>>>>> support kata-containers in realm world as it reduces the VM boot time
+>>>>> and facilitates dynamic adjustment of vCPUs (which I think should be
+>>>>> true even with Realm world as current implementation only makes use
+>>>>> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
+>>>>>
+>>>>>
+>>>>> As per our recent changes [2], [3] related to support vCPU Hotplug on
+>>>>> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
+>>>>> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
+>>>>> PSCI_CPU_ON should undergo similar policy checks and I think,
+>>>>>
+>>>>> 1. Host should *deny* to online the target vCPUs which are NOT plugged
+>>>>> 2. This means target REC should be denied by host. Can host call
+>>>>>    RMI_PSCI_COMPETE in such s case?
+>>>>> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
+>>>>> 4. Failure condition (B5.3.3.2) should be amended with
+>>>>>    runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
+>>>>>             post: result == PSCI_DENIED (?)
+>>>>> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting
+>>>>>    PSCI_CPU_ON flow (D1.4.1)
+>>>>>
+>>>>>
+>>>>> I do understand that ARM CCA support is in its infancy stage and
+>>>>> discussing about vCPU Hotplug in realm world seem to be a far-fetched
+>>>>> idea right now. But specification changes require lot of time and if
+>>>>> this change is really required then it should be further discussed
+>>>>> within ARM.
+>>>>>
+>>>>> Many thanks!
+>>>>>
+>>>>>
+>>>>> Bes regards
+>>>>> Salil
+>>>>>
+>>>>>
+>>>>> References:
+>>>>>
+>>>>> [1] https://developer.arm.com/documentation/den0137/latest/
+>>>>> [2] https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
+>>>>> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
+> 
+> 
 
