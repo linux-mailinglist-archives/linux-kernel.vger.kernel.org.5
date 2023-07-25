@@ -2,502 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAEB7617CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5DC7617D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjGYL5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
+        id S232803AbjGYL6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbjGYL5U (ORCPT
+        with ESMTP id S232626AbjGYL6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:57:20 -0400
-Received: from out28-194.mail.aliyun.com (out28-194.mail.aliyun.com [115.124.28.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB211BC5;
-        Tue, 25 Jul 2023 04:57:14 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06712922|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0130341-0.00350051-0.983465;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.U.y2wtw_1690286225;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.U.y2wtw_1690286225)
-          by smtp.aliyun-inc.com;
-          Tue, 25 Jul 2023 19:57:08 +0800
-From:   wangweidong.a@awinic.com
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
-        shumingf@realtek.com, wangweidong.a@awinic.com,
-        povik+lin@cutebit.org, 13916275206@139.com,
-        herve.codina@bootlin.com, ryans.lee@analog.com,
-        ckeepax@opensource.cirrus.com,
-        ajye_huang@compal.corp-partner.google.com,
-        sebastian.reichel@collabora.com, yijiangtao@awinic.com,
-        trix@redhat.com, colin.i.king@gmail.com, liweilei@awinic.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhangjianming@awinic.com
-Subject: [PATCH V2 4/4] ASoC: codecs: aw88261 chip register file, Kconfig and Makefile
-Date:   Tue, 25 Jul 2023 19:56:49 +0800
-Message-ID: <20230725115649.67560-5-wangweidong.a@awinic.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230725115649.67560-1-wangweidong.a@awinic.com>
-References: <20230725115649.67560-1-wangweidong.a@awinic.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 07:58:41 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAADE1FF5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:58:03 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-573d70da2afso68430337b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690286283; x=1690891083;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1VPOZThFJv0JHnA6Avw8TCcPUHE62XLzLeg/XcbHXkE=;
+        b=5tXnrBdCveXXrzYmqLZ1P2TeCsTuXDBPcVAxBik99PdwIIaCnKOQ0o3W2dJBX22QCB
+         lJUZFdhNrHpsBhPchNHK4cbzfV3bQWfX3FdfYs/OofZewWZ9rYEAjqDdrInhybQ8ML8x
+         ddmDpmbBoHDqd3ndTwKxLV/jy4bu0yXDr7gg7uLu70CsMRHe000a6GzH9QotuIx1VCZ9
+         iyM2gFIYapePiJc+W2cPeNMy7okUEk+iCV/DobjQf4Umhk/JWC/cBYvnoL79e1kw+4+D
+         sImJ8rYQu3m0/+L/fidMEBVVrziwD56GAaZX1K9XyTiNNeSk/04m3awxawmUJMLptZfO
+         oMTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690286283; x=1690891083;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1VPOZThFJv0JHnA6Avw8TCcPUHE62XLzLeg/XcbHXkE=;
+        b=Mci+mW5OVC/oRg6Wg83Q84tLblaxDgmL9nrhyJTsiMEb6PhynpFst3RNZtEqMTTQFP
+         L5KirBPTvdysqFjg7M/3ljTmNFf0OtBY7ERc+uKv3iK833z6NwjjMBpK8Dfjz9/qrKd1
+         Oy5iK43vL/jk5mJjIbBl+vkB0HTZfdGbKYLn6QA1EHoPcihHYFDVgDyQZqrFK9Y2jows
+         hb/MdwHDw7tDzQzLYLEVnHsIG51mMoPWjmFU9rk84qnr60TBiWaK23hauV0ecRcYRIWa
+         ksQ5LoT87G3q1lmKKY2hWvRQpNb5FIKpHY8HNjlodgt7E3XeIzN4rpuQdcqRi07meJnr
+         xrUg==
+X-Gm-Message-State: ABy/qLYRn+1/jSinOfdQVD/wL21tC5KlKBBcMXZZqAsj0euOTHiZPNHl
+        2dogPU2LkqWjNWduU647o4lMOCqZxAnB5Xo=
+X-Google-Smtp-Source: APBJJlHGSHNCFMtiM27C/TIFHTgwQEAjSMl35nON1bWo4KcF0K6HUmOjyrPq5jt2EXoF14KZN1gEEEL9/6p6lsU=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a81:af21:0:b0:579:fa4c:1f25 with SMTP id
+ n33-20020a81af21000000b00579fa4c1f25mr90464ywh.7.1690286282821; Tue, 25 Jul
+ 2023 04:58:02 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 11:57:59 +0000
+In-Reply-To: <16fb9977-2efc-2412-e906-3d320e37c45c@proton.me>
+Mime-Version: 1.0
+References: <16fb9977-2efc-2412-e906-3d320e37c45c@proton.me>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230725115759.424300-1-aliceryhl@google.com>
+Subject: Re: [PATCH v2 09/12] rust: init: implement Zeroable for Opaque<T>
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, nmi@metaspace.dk, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weidong Wang <wangweidong.a@awinic.com>
-
-Mainly includes aw88261 register table, Makefile and Kconfig
-
-Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
----
- sound/soc/codecs/Kconfig               |  13 +
- sound/soc/codecs/Makefile              |   3 +
- sound/soc/codecs/aw88261/aw88261_reg.h | 377 +++++++++++++++++++++++++
- 3 files changed, 393 insertions(+)
- create mode 100644 sound/soc/codecs/aw88261/aw88261_reg.h
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c2de4ee72183..ab21ad20978f 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -55,6 +55,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_ALC5632
- 	imply SND_SOC_AW8738
- 	imply SND_SOC_AW88395
-+	imply SND_SOC_AW88261
- 	imply SND_SOC_BT_SCO
- 	imply SND_SOC_BD28623
- 	imply SND_SOC_CHV3_CODEC
-@@ -640,6 +641,18 @@ config SND_SOC_AW88395
- 	  digital Smart K audio amplifier with an integrated 10V
- 	  smart boost convert.
+Benno Lossin <benno.lossin@proton.me> writes:
+> On 20.07.23 15:34, Alice Ryhl wrote:
+>> Benno Lossin <benno.lossin@proton.me> writes:
+>>> Since `Opaque<T>` contains a `MaybeUninit<T>`, all bytes zero is a valid
+>>> bit pattern for that type.
+>>>
+>>> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+>>> ---
+>>>   ///
+>>>   /// This is meant to be used with FFI objects that are never interpreted by Rust code.
+>>>   #[repr(transparent)]
+>>> +#[derive(Zeroable)]
+>>>   pub struct Opaque<T> {
+>>>       value: UnsafeCell<MaybeUninit<T>>,
+>>>       _pin: PhantomPinned,
+>>>   }
+>> 
+>> Does this actually work? I don't think we implement Zeroable for
+>> UnsafeCell.
+> 
+> Good catch, this does compile, but only because the current
+> implementation of the derive expands to (modulo correct paths):
+> ```
+> impl<T> Zeroable for Opaque<T>
+> where
+>      UnsafeCell<MaybeUninit<T>>: Zeroable,
+>      PhantomPinned: Zeroable,
+> {}
+> ```
+> This implementation is of course useless, since `UnsafeCell` is never
+> `Zeroable` at the moment. We could of course implement that and then this
+> should work, but the question is if this is actually the desired output in
+> general. I thought before that this would be a good idea, but I forgot that
+> if the bounds are never satisfied it would silently compile.
+> 
+> Do you think that we should have this expanded output instead?
+> ```
+> impl<T: Zeroable> Zeroable for Foo<T> {}
+> const _: () = {
+>      fn assert_zeroable<T: Zeroable>() {}
+>      fn ensure_zeroable<T: Zeroable>() {
+>          assert_zeroable::<Field1>();
+>          assert_zeroable::<Field2>();
+>      }
+> };
+> ```
+> If the input was
+> ```
+> #[derive(Zeroable)]
+> struct Foo<T> {
+>      field1: Field1,
+>      field2: Field2,
+> }
+> ```
  
-+config SND_SOC_AW88261
-+	tristate "Soc Audio for awinic aw88261"
-+	depends on I2C
-+	select CRC8
-+	select REGMAP_I2C
-+	select GPIOLIB
-+	select SND_SOC_AW88395_LIB
-+	help
-+	  this option enables support for aw88261 Smart PA.
-+	  The awinic AW88261 is an I2S/TDM input, high efficiency
-+	  digital Smart K audio amplifier.
-+
- config SND_SOC_BD28623
- 	tristate "ROHM BD28623 CODEC"
- 	help
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index b48a9a323b84..9df43de213f0 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -49,6 +49,8 @@ snd-soc-aw8738-objs := aw8738.o
- snd-soc-aw88395-lib-objs := aw88395/aw88395_lib.o
- snd-soc-aw88395-objs := aw88395/aw88395.o \
- 			aw88395/aw88395_device.o
-+snd-soc-aw88261-objs := aw88261/aw88261.o \
-+			aw88261/aw88261_device.o
- snd-soc-bd28623-objs := bd28623.o
- snd-soc-bt-sco-objs := bt-sco.o
- snd-soc-chv3-codec-objs := chv3-codec.o
-@@ -431,6 +433,7 @@ obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
- obj-$(CONFIG_SND_SOC_AW8738)	+= snd-soc-aw8738.o
- obj-$(CONFIG_SND_SOC_AW88395_LIB) += snd-soc-aw88395-lib.o
- obj-$(CONFIG_SND_SOC_AW88395)	+=snd-soc-aw88395.o
-+obj-$(CONFIG_SND_SOC_AW88261)	+=snd-soc-aw88261.o
- obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
- obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
- obj-$(CONFIG_SND_SOC_CHV3_CODEC) += snd-soc-chv3-codec.o
-diff --git a/sound/soc/codecs/aw88261/aw88261_reg.h b/sound/soc/codecs/aw88261/aw88261_reg.h
-new file mode 100644
-index 000000000000..1d569ba6a583
---- /dev/null
-+++ b/sound/soc/codecs/aw88261/aw88261_reg.h
-@@ -0,0 +1,377 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// aw88261_reg.h --  AW88261 chip register file
-+//
-+// Copyright (c) 2023 awinic Technology CO., LTD
-+//
-+// Author: Jimmy Zhang <zhangjianming@awinic.com>
-+// Author: Weidong Wang <wangweidong.a@awinic.com>
-+//
-+
-+#ifndef __AW88261_REG_H__
-+#define __AW88261_REG_H__
-+
-+#define AW88261_ID_REG			(0x00)
-+#define AW88261_SYSST_REG		(0x01)
-+#define AW88261_SYSINT_REG		(0x02)
-+#define AW88261_SYSINTM_REG		(0x03)
-+#define AW88261_SYSCTRL_REG		(0x04)
-+#define AW88261_SYSCTRL2_REG		(0x05)
-+#define AW88261_I2SCTRL1_REG		(0x06)
-+#define AW88261_I2SCTRL2_REG		(0x07)
-+#define AW88261_I2SCTRL3_REG		(0x08)
-+#define AW88261_DACCFG1_REG		(0x09)
-+#define AW88261_DACCFG2_REG		(0x0A)
-+#define AW88261_DACCFG3_REG		(0x0B)
-+#define AW88261_DACCFG4_REG		(0x0C)
-+#define AW88261_DACCFG5_REG		(0x0D)
-+#define AW88261_DACCFG6_REG		(0x0E)
-+#define AW88261_DACCFG7_REG		(0x0F)
-+#define AW88261_DACCFG8_REG		(0x10)
-+#define AW88261_PWMCTRL1_REG		(0x11)
-+#define AW88261_PWMCTRL2_REG		(0x12)
-+#define AW88261_I2SCFG1_REG		(0x13)
-+#define AW88261_DBGCTRL_REG		(0x14)
-+#define AW88261_DACCFG9_REG		(0x15)
-+#define AW88261_DACCFG10_REG		(0x16)
-+#define AW88261_DACST_REG		(0x20)
-+#define AW88261_VBAT_REG		(0x21)
-+#define AW88261_TEMP_REG		(0x22)
-+#define AW88261_PVDD_REG		(0x23)
-+#define AW88261_ISNDAT_REG		(0x24)
-+#define AW88261_VSNDAT_REG		(0x25)
-+#define AW88261_I2SINT_REG		(0x26)
-+#define AW88261_I2SCAPCNT_REG		(0x27)
-+#define AW88261_ANASTA1_REG		(0x28)
-+#define AW88261_ANASTA2_REG		(0x29)
-+#define AW88261_ANASTA3_REG		(0x2A)
-+#define AW88261_TESTDET_REG		(0x2B)
-+#define AW88261_DSMCFG1_REG		(0x30)
-+#define AW88261_DSMCFG2_REG		(0x31)
-+#define AW88261_DSMCFG3_REG		(0x32)
-+#define AW88261_DSMCFG4_REG		(0x33)
-+#define AW88261_DSMCFG5_REG		(0x34)
-+#define AW88261_DSMCFG6_REG		(0x35)
-+#define AW88261_DSMCFG7_REG		(0x36)
-+#define AW88261_DSMCFG8_REG		(0x37)
-+#define AW88261_TESTIN_REG		(0x38)
-+#define AW88261_TESTOUT_REG		(0x39)
-+#define AW88261_SADCCTRL1_REG		(0x3A)
-+#define AW88261_SADCCTRL2_REG		(0x3B)
-+#define AW88261_SADCCTRL3_REG		(0x3C)
-+#define AW88261_SADCCTRL4_REG		(0x3D)
-+#define AW88261_SADCCTRL5_REG		(0x3E)
-+#define AW88261_SADCCTRL6_REG		(0x3F)
-+#define AW88261_SADCCTRL7_REG		(0x40)
-+#define AW88261_VSNTM1_REG		(0x50)
-+#define AW88261_VSNTM2_REG		(0x51)
-+#define AW88261_ISNCTRL1_REG		(0x52)
-+#define AW88261_ISNCTRL2_REG		(0x53)
-+#define AW88261_PLLCTRL1_REG		(0x54)
-+#define AW88261_PLLCTRL2_REG		(0x55)
-+#define AW88261_PLLCTRL3_REG		(0x56)
-+#define AW88261_CDACTRL1_REG		(0x57)
-+#define AW88261_CDACTRL2_REG		(0x58)
-+#define AW88261_DITHERCFG1_REG		(0x59)
-+#define AW88261_DITHERCFG2_REG		(0x5A)
-+#define AW88261_DITHERCFG3_REG		(0x5B)
-+#define AW88261_CPCTRL_REG		(0x5C)
-+#define AW88261_BSTCTRL1_REG		(0x60)
-+#define AW88261_BSTCTRL2_REG		(0x61)
-+#define AW88261_BSTCTRL3_REG		(0x62)
-+#define AW88261_BSTCTRL4_REG		(0x63)
-+#define AW88261_BSTCTRL5_REG		(0x64)
-+#define AW88261_BSTCTRL6_REG		(0x65)
-+#define AW88261_BSTCTRL7_REG		(0x66)
-+#define AW88261_BSTCTRL8_REG		(0x67)
-+#define AW88261_BSTCTRL9_REG		(0x68)
-+#define AW88261_TM_REG			(0x6F)
-+#define AW88261_TESTCTRL1_REG		(0x70)
-+#define AW88261_TESTCTRL2_REG		(0x71)
-+#define AW88261_EFCTRL1_REG		(0x72)
-+#define AW88261_EFCTRL2_REG		(0x73)
-+#define AW88261_EFWH_REG		(0x74)
-+#define AW88261_EFWM2_REG		(0x75)
-+#define AW88261_EFWM1_REG		(0x76)
-+#define AW88261_EFWL_REG		(0x77)
-+#define AW88261_EFRH4_REG		(0x78)
-+#define AW88261_EFRH3_REG		(0x79)
-+#define AW88261_EFRH2_REG		(0x7A)
-+#define AW88261_EFRH1_REG		(0x7B)
-+#define AW88261_EFRL4_REG		(0x7C)
-+#define AW88261_EFRL3_REG		(0x7D)
-+#define AW88261_EFRL2_REG		(0x7E)
-+#define AW88261_EFRL1_REG		(0x7F)
-+
-+enum aw88261_id {
-+	AW88261_CHIP_ID = 0x2113,
-+};
-+
-+#define AW88261_REG_MAX		(0x80)
-+#define AW88261_EF_DBMD_MASK		(0xfff7)
-+#define AW88261_OR_VALUE		(0x0008)
-+
-+#define AW88261_TEMH_MASK		(0x83ff)
-+#define AW88261_TEML_MASK		(0x83ff)
-+#define AW88261_DEFAULT_CFG		(0x0000)
-+
-+#define AW88261_ICALK_SHIFT		(0)
-+#define AW88261_ICALKL_SHIFT		(0)
-+#define AW88261_VCALK_SHIFT		(0)
-+#define AW88261_VCALKL_SHIFT		(0)
-+
-+#define AW88261_AMPPD_START_BIT	(1)
-+#define AW88261_AMPPD_BITS_LEN		(1)
-+#define AW88261_AMPPD_MASK		\
-+	(~(((1<<AW88261_AMPPD_BITS_LEN)-1) << AW88261_AMPPD_START_BIT))
-+
-+#define AW88261_UVLS_START_BIT		(14)
-+#define AW88261_UVLS_NORMAL		(0)
-+#define AW88261_UVLS_NORMAL_VALUE	\
-+	(AW88261_UVLS_NORMAL << AW88261_UVLS_START_BIT)
-+
-+#define AW88261_BSTOCS_START_BIT	(11)
-+#define AW88261_BSTOCS_OVER_CURRENT	(1)
-+#define AW88261_BSTOCS_OVER_CURRENT_VALUE	\
-+	(AW88261_BSTOCS_OVER_CURRENT << AW88261_BSTOCS_START_BIT)
-+
-+#define AW88261_BSTS_START_BIT		(9)
-+#define AW88261_BSTS_FINISHED		(1)
-+#define AW88261_BSTS_FINISHED_VALUE	\
-+	(AW88261_BSTS_FINISHED << AW88261_BSTS_START_BIT)
-+
-+#define AW88261_SWS_START_BIT		(8)
-+#define AW88261_SWS_SWITCHING		(1)
-+#define AW88261_SWS_SWITCHING_VALUE	\
-+	(AW88261_SWS_SWITCHING << AW88261_SWS_START_BIT)
-+
-+#define AW88261_NOCLKS_START_BIT	(5)
-+#define AW88261_NOCLKS_NO_CLOCK	(1)
-+#define AW88261_NOCLKS_NO_CLOCK_VALUE	\
-+	(AW88261_NOCLKS_NO_CLOCK << AW88261_NOCLKS_START_BIT)
-+
-+#define AW88261_CLKS_START_BIT		(4)
-+#define AW88261_CLKS_STABLE		(1)
-+#define AW88261_CLKS_STABLE_VALUE	\
-+	(AW88261_CLKS_STABLE << AW88261_CLKS_START_BIT)
-+
-+#define AW88261_OCDS_START_BIT		(3)
-+#define AW88261_OCDS_OC		(1)
-+#define AW88261_OCDS_OC_VALUE		\
-+	(AW88261_OCDS_OC << AW88261_OCDS_START_BIT)
-+
-+#define AW88261_OTHS_START_BIT		(1)
-+#define AW88261_OTHS_OT		(1)
-+#define AW88261_OTHS_OT_VALUE		\
-+	(AW88261_OTHS_OT << AW88261_OTHS_START_BIT)
-+
-+#define AW88261_PLLS_START_BIT		(0)
-+#define AW88261_PLLS_LOCKED		(1)
-+#define AW88261_PLLS_LOCKED_VALUE	\
-+	(AW88261_PLLS_LOCKED << AW88261_PLLS_START_BIT)
-+
-+#define AW88261_BIT_PLL_CHECK \
-+		(AW88261_CLKS_STABLE_VALUE | \
-+		AW88261_PLLS_LOCKED_VALUE)
-+
-+#define AW88261_BIT_SYSST_CHECK_MASK \
-+		(~(AW88261_UVLS_NORMAL_VALUE | \
-+		AW88261_BSTOCS_OVER_CURRENT_VALUE | \
-+		AW88261_BSTS_FINISHED_VALUE | \
-+		AW88261_SWS_SWITCHING_VALUE | \
-+		AW88261_NOCLKS_NO_CLOCK_VALUE | \
-+		AW88261_CLKS_STABLE_VALUE | \
-+		AW88261_OCDS_OC_VALUE | \
-+		AW88261_OTHS_OT_VALUE | \
-+		AW88261_PLLS_LOCKED_VALUE))
-+
-+#define AW88261_BIT_SYSST_CHECK \
-+		(AW88261_BSTS_FINISHED_VALUE | \
-+		AW88261_SWS_SWITCHING_VALUE | \
-+		AW88261_CLKS_STABLE_VALUE | \
-+		AW88261_PLLS_LOCKED_VALUE)
-+
-+#define AW88261_ULS_HMUTE_START_BIT	(14)
-+#define AW88261_ULS_HMUTE_BITS_LEN	(1)
-+#define AW88261_ULS_HMUTE_MASK		\
-+	(~(((1<<AW88261_ULS_HMUTE_BITS_LEN)-1) << AW88261_ULS_HMUTE_START_BIT))
-+
-+#define AW88261_ULS_HMUTE_DISABLE	(0)
-+#define AW88261_ULS_HMUTE_DISABLE_VALUE	\
-+	(AW88261_ULS_HMUTE_DISABLE << AW88261_ULS_HMUTE_START_BIT)
-+
-+#define AW88261_ULS_HMUTE_ENABLE	(1)
-+#define AW88261_ULS_HMUTE_ENABLE_VALUE	\
-+	(AW88261_ULS_HMUTE_ENABLE << AW88261_ULS_HMUTE_START_BIT)
-+
-+#define AW88261_HMUTE_START_BIT	(8)
-+#define AW88261_HMUTE_BITS_LEN		(1)
-+#define AW88261_HMUTE_MASK		\
-+	(~(((1<<AW88261_HMUTE_BITS_LEN)-1) << AW88261_HMUTE_START_BIT))
-+
-+#define AW88261_HMUTE_DISABLE		(0)
-+#define AW88261_HMUTE_DISABLE_VALUE	\
-+	(AW88261_HMUTE_DISABLE << AW88261_HMUTE_START_BIT)
-+
-+#define AW88261_HMUTE_ENABLE		(1)
-+#define AW88261_HMUTE_ENABLE_VALUE	\
-+	(AW88261_HMUTE_ENABLE << AW88261_HMUTE_START_BIT)
-+
-+#define AW88261_AMPPD_START_BIT	(1)
-+#define AW88261_AMPPD_BITS_LEN		(1)
-+#define AW88261_AMPPD_MASK		\
-+	(~(((1<<AW88261_AMPPD_BITS_LEN)-1) << AW88261_AMPPD_START_BIT))
-+
-+#define AW88261_AMPPD_WORKING		(0)
-+#define AW88261_AMPPD_WORKING_VALUE	\
-+	(AW88261_AMPPD_WORKING << AW88261_AMPPD_START_BIT)
-+
-+#define AW88261_AMPPD_POWER_DOWN	(1)
-+#define AW88261_AMPPD_POWER_DOWN_VALUE	\
-+	(AW88261_AMPPD_POWER_DOWN << AW88261_AMPPD_START_BIT)
-+
-+#define AW88261_PWDN_START_BIT		(0)
-+#define AW88261_PWDN_BITS_LEN		(1)
-+#define AW88261_PWDN_MASK		\
-+	(~(((1<<AW88261_PWDN_BITS_LEN)-1) << AW88261_PWDN_START_BIT))
-+
-+#define AW88261_PWDN_WORKING		(0)
-+#define AW88261_PWDN_WORKING_VALUE	\
-+	(AW88261_PWDN_WORKING << AW88261_PWDN_START_BIT)
-+
-+#define AW88261_PWDN_POWER_DOWN	(1)
-+#define AW88261_PWDN_POWER_DOWN_VALUE	\
-+	(AW88261_PWDN_POWER_DOWN << AW88261_PWDN_START_BIT)
-+
-+#define AW88261_MUTE_VOL		(90 * 8)
-+#define AW88261_VOLUME_STEP_DB		(6 * 8)
-+
-+#define AW88261_VOL_6DB_START		(6)
-+
-+#define AW88261_VOL_START_BIT		(0)
-+#define AW88261_VOL_BITS_LEN		(10)
-+#define AW88261_VOL_MASK		\
-+	(~(((1<<AW88261_VOL_BITS_LEN)-1) << AW88261_VOL_START_BIT))
-+
-+#define AW88261_VOL_DEFAULT_VALUE	(0)
-+
-+#define AW88261_I2STXEN_START_BIT	(6)
-+#define AW88261_I2STXEN_BITS_LEN	(1)
-+#define AW88261_I2STXEN_MASK		\
-+	(~(((1<<AW88261_I2STXEN_BITS_LEN)-1) << AW88261_I2STXEN_START_BIT))
-+
-+#define AW88261_I2STXEN_DISABLE	(0)
-+#define AW88261_I2STXEN_DISABLE_VALUE	\
-+	(AW88261_I2STXEN_DISABLE << AW88261_I2STXEN_START_BIT)
-+
-+#define AW88261_I2STXEN_ENABLE		(1)
-+#define AW88261_I2STXEN_ENABLE_VALUE	\
-+	(AW88261_I2STXEN_ENABLE << AW88261_I2STXEN_START_BIT)
-+
-+#define AW88261_CCO_MUX_START_BIT	(14)
-+#define AW88261_CCO_MUX_BITS_LEN	(1)
-+#define AW88261_CCO_MUX_MASK		\
-+	(~(((1<<AW88261_CCO_MUX_BITS_LEN)-1) << AW88261_CCO_MUX_START_BIT))
-+
-+#define AW88261_CCO_MUX_DIVIDED	(0)
-+#define AW88261_CCO_MUX_DIVIDED_VALUE	\
-+	(AW88261_CCO_MUX_DIVIDED << AW88261_CCO_MUX_START_BIT)
-+
-+#define AW88261_CCO_MUX_BYPASS		(1)
-+#define AW88261_CCO_MUX_BYPASS_VALUE	\
-+	(AW88261_CCO_MUX_BYPASS << AW88261_CCO_MUX_START_BIT)
-+
-+#define AW88261_EF_VSN_GESLP_H_START_BIT	(0)
-+#define AW88261_EF_VSN_GESLP_H_BITS_LEN	(10)
-+#define AW88261_EF_VSN_GESLP_H_MASK		\
-+	(~(((1<<AW88261_EF_VSN_GESLP_H_BITS_LEN)-1) << AW88261_EF_VSN_GESLP_H_START_BIT))
-+
-+#define AW88261_EF_VSN_GESLP_L_START_BIT	(0)
-+#define AW88261_EF_VSN_GESLP_L_BITS_LEN	(10)
-+#define AW88261_EF_VSN_GESLP_L_MASK		\
-+	(~(((1<<AW88261_EF_VSN_GESLP_L_BITS_LEN)-1) << AW88261_EF_VSN_GESLP_L_START_BIT))
-+
-+#define AW88261_FORCE_PWM_START_BIT	(12)
-+#define AW88261_FORCE_PWM_BITS_LEN	(1)
-+#define AW88261_FORCE_PWM_MASK		\
-+	(~(((1<<AW88261_FORCE_PWM_BITS_LEN)-1) << AW88261_FORCE_PWM_START_BIT))
-+
-+#define AW88261_FORCE_PWM_FORCEMINUS_PWM	(1)
-+#define AW88261_FORCE_PWM_FORCEMINUS_PWM_VALUE	\
-+	(AW88261_FORCE_PWM_FORCEMINUS_PWM << AW88261_FORCE_PWM_START_BIT)
-+
-+#define AW88261_BST_OS_WIDTH_START_BIT	(0)
-+#define AW88261_BST_OS_WIDTH_BITS_LEN	(3)
-+#define AW88261_BST_OS_WIDTH_MASK	\
-+	(~(((1<<AW88261_BST_OS_WIDTH_BITS_LEN)-1) << AW88261_BST_OS_WIDTH_START_BIT))
-+
-+#define AW88261_BST_OS_WIDTH_50NS	(4)
-+#define AW88261_BST_OS_WIDTH_50NS_VALUE	\
-+	(AW88261_BST_OS_WIDTH_50NS << AW88261_BST_OS_WIDTH_START_BIT)
-+
-+/* BST_LOOPR bit 1:0 (BSTCTRL6 0x65) */
-+#define AW88261_BST_LOOPR_START_BIT	(0)
-+#define AW88261_BST_LOOPR_BITS_LEN	(2)
-+#define AW88261_BST_LOOPR_MASK		\
-+	(~(((1<<AW88261_BST_LOOPR_BITS_LEN)-1) << AW88261_BST_LOOPR_START_BIT))
-+
-+#define AW88261_BST_LOOPR_340K		(2)
-+#define AW88261_BST_LOOPR_340K_VALUE	\
-+	(AW88261_BST_LOOPR_340K << AW88261_BST_LOOPR_START_BIT)
-+
-+/* RSQN_DLY bit 15:14 (BSTCTRL7 0x66) */
-+#define AW88261_RSQN_DLY_START_BIT	(14)
-+#define AW88261_RSQN_DLY_BITS_LEN	(2)
-+#define AW88261_RSQN_DLY_MASK		\
-+	(~(((1<<AW88261_RSQN_DLY_BITS_LEN)-1) << AW88261_RSQN_DLY_START_BIT))
-+
-+#define AW88261_RSQN_DLY_35NS		(2)
-+#define AW88261_RSQN_DLY_35NS_VALUE	\
-+	(AW88261_RSQN_DLY_35NS << AW88261_RSQN_DLY_START_BIT)
-+
-+/* BURST_SSMODE bit 3 (BSTCTRL8 0x67) */
-+#define AW88261_BURST_SSMODE_START_BIT	(3)
-+#define AW88261_BURST_SSMODE_BITS_LEN	(1)
-+#define AW88261_BURST_SSMODE_MASK	\
-+	(~(((1<<AW88261_BURST_SSMODE_BITS_LEN)-1) << AW88261_BURST_SSMODE_START_BIT))
-+
-+#define AW88261_BURST_SSMODE_FAST	(0)
-+#define AW88261_BURST_SSMODE_FAST_VALUE	\
-+	(AW88261_BURST_SSMODE_FAST << AW88261_BURST_SSMODE_START_BIT)
-+
-+/* BST_BURST bit 9:7 (BSTCTRL9 0x68) */
-+#define AW88261_BST_BURST_START_BIT	(7)
-+#define AW88261_BST_BURST_BITS_LEN	(3)
-+#define AW88261_BST_BURST_MASK		\
-+	(~(((1<<AW88261_BST_BURST_BITS_LEN)-1) << AW88261_BST_BURST_START_BIT))
-+
-+#define AW88261_BST_BURST_30MA		(2)
-+#define AW88261_BST_BURST_30MA_VALUE	\
-+	(AW88261_BST_BURST_30MA << AW88261_BST_BURST_START_BIT)
-+
-+#define AW88261_EF_VSN_GESLP_SIGN_MASK		(~0x0200)
-+#define AW88261_EF_VSN_GESLP_NEG		(~0xfc00)
-+
-+#define AW88261_EF_ISN_GESLP_SIGN_MASK		(~0x0200)
-+#define AW88261_EF_ISN_GESLP_NEG		(~0xfc00)
-+
-+#define AW88261_EF_ISN_GESLP_H_START_BIT	(0)
-+#define AW88261_EF_ISN_GESLP_H_BITS_LEN	(10)
-+#define AW88261_EF_ISN_GESLP_H_MASK		\
-+	(~(((1<<AW88261_EF_ISN_GESLP_H_BITS_LEN)-1) << AW88261_EF_ISN_GESLP_H_START_BIT))
-+
-+#define AW88261_EF_ISN_GESLP_L_START_BIT	(0)
-+#define AW88261_EF_ISN_GESLP_L_BITS_LEN	(10)
-+#define AW88261_EF_ISN_GESLP_L_MASK		\
-+	(~(((1<<AW88261_EF_ISN_GESLP_L_BITS_LEN)-1) << AW88261_EF_ISN_GESLP_L_START_BIT))
-+
-+#define AW88261_CABL_BASE_VALUE		(1000)
-+#define AW88261_ICABLK_FACTOR		(1)
-+#define AW88261_VCABLK_FACTOR		(1)
-+
-+#define AW88261_VCAL_FACTOR		(1<<13)
-+
-+#define AW88261_TEMP_SIGN_MASK		(~(1<<9))
-+#define AW88261_TEMP_NEG_MASK		(0xFC00)
-+
-+#endif
--- 
-2.41.0
+Yeah. The way that these macros usually expand is by adding `where T:
+Zeroable` to the impl for each generic parameter, and failing
+compilation if that is not enough to ensure that all of the fields are
+`Zeroable`.
+
+You might want to consider this expansion instead:
+```
+impl<T: Zeroable> Zeroable for Foo<T> {}
+const _: () = {
+     fn assert_zeroable<T: Zeroable>(arg: &T) {}
+     fn ensure_zeroable<T: Zeroable>(arg: &Foo<T>) {
+         assert_zeroable(&arg.field1);
+         assert_zeroable(&arg.field2);
+     }
+};
+```
+
+>> I suggest you instead add Opaque to the `impl_zeroable!` macro in
+>> `rust/kernel/init.rs`.
+> 
+> We would have to do this when using the alternative approach from
+> above, since we do not want the `Zeroable` bound on `T` for `Opaque`.
+> I wanted to avoid the `SAFETY` comment, since that is needed for the
+> `impl_zeroable` macro (as it has an unsafe block inside).
+
+Indeed, if we expand the derive macro in the standard way, then it
+doesn't work for `Opaque` due to the extra unnecessary bound.
+
+Alice
 
