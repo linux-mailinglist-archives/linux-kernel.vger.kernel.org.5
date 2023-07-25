@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1A97624F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E7A7624FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbjGYV4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        id S231624AbjGYV6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjGYV4D (ORCPT
+        with ESMTP id S231630AbjGYV54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:56:03 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A8A1FE6;
-        Tue, 25 Jul 2023 14:56:02 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4814bea10e0so2241347e0c.1;
-        Tue, 25 Jul 2023 14:56:02 -0700 (PDT)
+        Tue, 25 Jul 2023 17:57:56 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7A6193
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:55 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso9616238e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690322161; x=1690926961;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=volTAAeL8fKmMhSVDeFyV0ZoI3X0kFdQ4vEkodcC4os=;
-        b=aPfoBPRnQhWQ2T9EzFVNum8zlrhaNbwkP4cUQoofLJYJ24jlKvcUpTEGPl73BvsB9w
-         +/wHawbHaVoRAqXAkoe+e7N66jWegqcpCGhGHfNmjbJLP7kegofOmRNSFuKPzLv1r5zS
-         7asIYDgODM0udnr1i6GkFY4SunbJDIb2EL2RmnMMnOPrnyRBdtL5orw+SndgAY665wbk
-         UKCVx5iZgohjHdehGk6plJKSDdRd7V0qKw/RrGfrbF66UvUWtU5BhVr3YRy0peF/wO5Z
-         aeo1JOB8VDhT3z56HaSBfIdX0lczj2PXON82KA8ywR6WaNv0kZLT3OZJK9Tukqwz81oP
-         aL4Q==
+        d=linux-foundation.org; s=google; t=1690322273; x=1690927073;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9b1rum3dNzgjEBji3blebo6bNVhtpdwh9Flr67JyHF0=;
+        b=Drur1jsGwj8bxxj5nirqU9Bnu417zSMei1kZzT8XEiP5HClskNp3V1gGNTJjlnAz8p
+         Zx+juq2DJrdrvzv5o8jNGGW0YuBmK63ElQK0fcmV2kh8dj+pyg98KRBVqrn7w4aKtN6B
+         sSYVXeRc6z3RRaE9A2/OM9s4J7EP/7LHO11Us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322161; x=1690926961;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=volTAAeL8fKmMhSVDeFyV0ZoI3X0kFdQ4vEkodcC4os=;
-        b=VZ4ZLDzFak9nER4UjbzCvWsmAiP+4PZf/uqF1gCXKCKyNhj/LL61OzUVjJV8yGcpFr
-         vybSXGC4Hy7+WZM517Yblih3EunRMLED9ouw6p5CFxecUXGfPCjjh9fDdkCHnW3OH3AR
-         3EAZ+FVdZKoWaEVy1v/aZ//w9QssILzYXeI20BG3JvQRMyd9ij541gdPypBRBa4O8ta2
-         Vq1Z/qiyxpEzsXMvpHkKiI5j6XS4jWL87NIjE/xE5md3iH/ao4gSWO/GCXckibIqu5ih
-         +I8xMpUIaEuNf4a9seHgKwhSHgVNkIHeOi2qHBdrvl4qI4NSP/yt4E0EQRoj1nti8GNI
-         vU9Q==
-X-Gm-Message-State: ABy/qLbh8jrQ61FyrYCllSTvQDWzgCGGNTcYPDJFwSgiWcCnHsBWimna
-        PxVBY/ImNZjGVuNzREISjiXX4ZflCRmCjzFBouq7ak/f+Co=
-X-Google-Smtp-Source: APBJJlFrZXsEVlYjvUdXZadZoz1nNgOSknSdQxqfQtqPBmWiZfPtnvvcE8DUans9nthQr12q3SVEZSnMXq13Bx4wbWM=
-X-Received: by 2002:a1f:45c9:0:b0:486:3e05:da14 with SMTP id
- s192-20020a1f45c9000000b004863e05da14mr372750vka.12.1690322161172; Tue, 25
- Jul 2023 14:56:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690322273; x=1690927073;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9b1rum3dNzgjEBji3blebo6bNVhtpdwh9Flr67JyHF0=;
+        b=HQpq1LkC7TFAfY+OWWB+LNnZ5iHPd5Qn4XeifzVG7vqfgG0KBZb5iqBs+S5/Q9QkID
+         sOHSnUySEAQyIrTwFvZl2liSDViVbBfww91RlIIzIOwvvdl4vHsfvuOIcXEMQForVxLL
+         4AJFvs6y1ajprmwgM5e5WxZ/PiGTdcPxxYhQnYJPk8k9L6dwQsxdb3cWMtnPpfaacuf6
+         iGWSarPJtVXC9Z525PDsOaqitIDHnR38C65Z2jzA2IhPlXMsK7vOQWD+x/vVLD+FnEjH
+         bFKLK7uf9MZdKWUynw5LjSPKqRZAA1YmiKG2XqXFEcqlm3j9UCohsACErxa+moL6dt/m
+         YOOA==
+X-Gm-Message-State: ABy/qLa2Vh/iK+H63NYtb3+EmYX4BemegMaLNySSjCL9nJ2hcwzwVAGq
+        4wfVvdHdgofHroBADosRPv1HkTbDZfGyUE0VMhVzG35b
+X-Google-Smtp-Source: APBJJlEAKrpki/5D4JGPqTC5K+RsGX8zY+2KdyDbIca5EVPG7W+NLhdFPUq4aWDXBRoWI87a/XphNA==
+X-Received: by 2002:a05:6512:202f:b0:4fb:8ee0:b8a5 with SMTP id s15-20020a056512202f00b004fb8ee0b8a5mr84516lfs.46.1690322273618;
+        Tue, 25 Jul 2023 14:57:53 -0700 (PDT)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id a11-20020aa7d90b000000b005222a38c7b2sm3900552edr.48.2023.07.25.14.57.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 14:57:52 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-991c786369cso934169366b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:57:52 -0700 (PDT)
+X-Received: by 2002:a17:906:3296:b0:970:c9f:2db6 with SMTP id
+ 22-20020a170906329600b009700c9f2db6mr82102ejw.63.1690322272256; Tue, 25 Jul
+ 2023 14:57:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <cyninzffkwhc7mqbxpwhhpm7bav67tp7a7rqkpeu5bh3kafbyo@wx3q2x5nm3he> <20230725214628.25246-1-pchelkin@ispras.ru>
-In-Reply-To: <20230725214628.25246-1-pchelkin@ispras.ru>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Tue, 25 Jul 2023 17:55:39 -0400
-Message-ID: <CADvbK_eUm0KF1GOSkOu5HRO91yr3BSD8Ha9kh3b+Omd=pPNdvg@mail.gmail.com>
-Subject: Re: [PATCH v2] tipc: stop tipc crypto on failure in tipc_node_create
-To:     Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
+References: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 25 Jul 2023 14:57:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
+Message-ID: <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
+Subject: Re: [PATCH] x86/traps: Fix load_unaligned_zeropad() handling for
+ shared TDX memory
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 5:46=E2=80=AFPM Fedor Pchelkin <pchelkin@ispras.ru>=
- wrote:
+On Mon, 24 Jul 2023 at 16:03, Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
 >
-> If tipc_link_bc_create() fails inside tipc_node_create() for a newly
-> allocated tipc node then we should stop its tipc crypto and free the
-> resources allocated with a call to tipc_crypto_start().
+> Commit c4e34dd99f2e ("x86: simplify load_unaligned_zeropad()
+> implementation") changes how exceptions around load_unaligned_zeropad()
+> handled. Kernel now relies on fault_address in fixup_exception() to
+> detect that the exception happened due to load_unaligned_zeropad().
 >
-> As the node ref is initialized to one to that point, just put the ref on
-> tipc_link_bc_create() error case that would lead to tipc_node_free() be
-> eventually executed and properly clean the node and its crypto resources.
+> It works fine for #PF, but breaks on #VE since no fault address is
+> passed down to fixup_exception().
 >
-> Found by Linux Verification Center (linuxtesting.org).
->
-> Fixes: cb8092d70a6f ("tipc: move bc link creation back to tipc_node_creat=
-e")
-> Suggested-by: Xin Long <lucien.xin@gmail.com>
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
-> v1->v2: simplify the patch per Xin Long's advice: putting the ref on erro=
-r
-> case would solve the problem more conveniently; update the patch
-> description accordingly.
->
->  net/tipc/node.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/tipc/node.c b/net/tipc/node.c
-> index 5e000fde8067..a9c5b6594889 100644
-> --- a/net/tipc/node.c
-> +++ b/net/tipc/node.c
-> @@ -583,7 +583,7 @@ struct tipc_node *tipc_node_create(struct net *net, u=
-32 addr, u8 *peer_id,
->                                  n->capabilities, &n->bc_entry.inputq1,
->                                  &n->bc_entry.namedq, snd_l, &n->bc_entry=
-.link)) {
->                 pr_warn("Broadcast rcv link creation failed, no memory\n"=
-);
-> -               kfree(n);
-> +               tipc_node_put(n);
->                 n =3D NULL;
->                 goto exit;
->         }
-> --
-> 2.41.0
->
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
+> Propagating ve_info.gla down to fixup_exception() resolves the issue.
+
+Ahh.
+
+The faulting address was really only used as a sanity check, so I
+guess another option would have been to just remove it.
+
+We do need to get the "real" address anyway just to get the right
+offset, and that comes from
+
+        addr = (unsigned long) insn_get_addr_ref(&insn, regs);
+
+and all we do is to then check they "yep, the faulting address is the
+start of the next aligned word".
+
+The faulting address in itself was never sufficient, since it has lost
+the original offset in the previous page, and typically just points to
+the first word in the next page.
+
+That said, your patch looks fine to me, even if it might have been
+easier to just remove the fault_addr thing entirely. And the
+fault_addr verification is nice in that it validates our instruction
+decoder result, so maybe it is all better this way.
+
+I can apply this directly (having written that ex_handler_zeropad())
+or wait for it to come from the x86 tree?
+
+                 Linus
