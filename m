@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9DF7615F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDA5761602
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbjGYLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        id S234730AbjGYLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234713AbjGYLfA (ORCPT
+        with ESMTP id S234733AbjGYLfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:35:00 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B167F3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:34:58 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PBYine102793;
-        Tue, 25 Jul 2023 06:34:44 -0500
+        Tue, 25 Jul 2023 07:35:24 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F9119F;
+        Tue, 25 Jul 2023 04:35:19 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PBZ7ck129415;
+        Tue, 25 Jul 2023 06:35:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690284884;
-        bh=r57juT7OIUHCqROWpa4pCTjhUDbWfb8atyHyBW1NZb8=;
+        s=ti-com-17Q1; t=1690284907;
+        bh=HwkSSVMzoKSXpChMNEH6JVw75Ry2mLxObzxTy3P02E4=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=wJO42upCRyUCkN6Rwzm5X3Ly5N90a6kk3+yaxB9CZ+U29SIFbKoyKuyOQgwp5qH6n
-         MEkdsBwV9XdE0i8Go7vdrD7Uyqa7WzekuFHve28NmNBUw/F1vMbc3cQg3IZtpz4BCP
-         J6BOLGT9gmAFLHWQDl+WH6nJC4GASPjlDw2YQX44=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PBYitn124959
+        b=JxdYmPOPRMu9Jvrf5Lqmnd6LBaQmHlfnr9RKDiH33xNqm6513NJ6urkkzcO4JROsd
+         vY6jBUdjernwrLORfXikTl2+Uo+3q9MRWcxNBHc/4Ok+JhF+lVSnJY8F6Z5JWfs6jg
+         aaNQRUdk4Fyv2Af1KxHe9RH5W3Sod0PmTWBY9fj0=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PBZ762006128
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 06:34:44 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 25 Jul 2023 06:35:07 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 06:34:44 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 06:35:07 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 06:34:44 -0500
+ Frontend Transport; Tue, 25 Jul 2023 06:35:07 -0500
 Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PBYiQp034302;
-        Tue, 25 Jul 2023 06:34:44 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PBZ7gr031013;
+        Tue, 25 Jul 2023 06:35:07 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Yangtao Li <frank.li@vivo.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
+        Tero Kristo <kristo@kernel.org>, Rob Herring <robh@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: Re: (subset) [PATCH 1/6] soc: ti: omap-prm: Use devm_platform_get_and_ioremap_resource()
-Date:   Tue, 25 Jul 2023 06:34:43 -0500
-Message-ID: <169028478084.1712705.16568303200442092857.b4-ty@ti.com>
+Subject: Re: [PATCH] soc: ti: Explicitly include correct DT includes
+Date:   Tue, 25 Jul 2023 06:35:06 -0500
+Message-ID: <169028489331.1717471.8557093683075764275.b4-ty@ti.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230705122644.32236-1-frank.li@vivo.com>
-References: <20230705122644.32236-1-frank.li@vivo.com>
+In-Reply-To: <20230714175156.4068520-1-robh@kernel.org>
+References: <20230714175156.4068520-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -65,20 +66,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yangtao Li,
+Hi Rob Herring,
 
-On Wed, 05 Jul 2023 20:26:39 +0800, Yangtao Li wrote:
-> Convert platform_get_resource(), devm_ioremap_resource() to a single
-> call to devm_platform_get_and_ioremap_resource(), as this is exactly
-> what this function does.
+On Fri, 14 Jul 2023 11:51:56 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> 
+> [...]
 
 I have applied the following to branch ti-drivers-soc-next on [1].
 Thank you!
 
-[1/6] soc: ti: omap-prm: Use devm_platform_get_and_ioremap_resource()
-      commit: 5542c7cfc1082608959b4317ab7c3867b5f4aa7c
+[1/1] soc: ti: Explicitly include correct DT includes
+      commit: cdbab28c3728e6c47228585eb6e84669518a1e7d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
