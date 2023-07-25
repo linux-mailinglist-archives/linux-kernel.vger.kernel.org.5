@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B85761D5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59E6761D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbjGYP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        id S232844AbjGYP2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjGYP1V (ORCPT
+        with ESMTP id S229478AbjGYP2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:27:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90668E2;
-        Tue, 25 Jul 2023 08:27:20 -0700 (PDT)
+        Tue, 25 Jul 2023 11:28:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A3E19AF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FWv8YUOLDpc9XWpy42XZkr/o/V+IgMX0b+gKuTdbiQw=; b=B71INnRD3fJ67zcj/KlULhsLsr
-        JKhVWS0RbQwwHsaf29JeM5y1H5uLxqnrd0ZD8geKFJfRzeq9YupOKsw2VgDe997O9slDnrZQaOACq
-        yxi7N75Gi1mWxylYinAqJ4Mo1bN6COCOzQynpSA8H7If9YmM7/TXZgVwSSKtsmZDPO6tIw6YbtM7a
-        2qhntEHm+2yPxp1Q0iite7DpMrKhIJ9U4EpotaPaxO2xOLnO00gaenS3LxX/1kv/r4OZfU/PkHosy
-        uA063/A20TsAvT7r3IAb5Tu4lwRishzfojqHcxUzlwZfEzuVO3dF+99+Nmxz4LwoWSmnB0lTPSz3E
-        NF8c+sEQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qOJw6-005aym-Jp; Tue, 25 Jul 2023 15:26:54 +0000
-Date:   Tue, 25 Jul 2023 16:26:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/2] softirq: fix integer overflow in function show_stat()
-Message-ID: <ZL/pvjMMtlxvBSCm@casper.infradead.org>
-References: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
- <20230724132224.916-2-thunder.leizhen@huaweicloud.com>
- <ZL6BwiHhvQneJZYH@casper.infradead.org>
- <6e38e31f-4413-1aff-8973-5c3d660bedea@huaweicloud.com>
- <3b1ba209-58c8-b2b6-115a-6c43cba80098@huaweicloud.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=yHIDH3l8nS0DiflUh1G8237ylog4AjfhZXROuCwR23k=; b=CzyeVHbb52nYoy0qM1pgd5syCt
+        F7BJYzK9MlDXL3P33HWcbVEqPRO+gNOrCmSWLRewddXvoV2d3RcwnP1In/+dLvEMZ0HBJtFcmDR8l
+        1sl15GKFuslbG74AmstMA0zC8jIy/03ysGMijlh7uQTsSIZeto391l26ifk5kVc3RYddXW8DqBpwH
+        ZfgQeQZD/8EjHzwy42NZhtfxxnRCvlEXv91EykXHRMKlBfWglOsk8V+EtobkZBy7awp/HVx0T1iMR
+        q6+H4fbqj9HRO7MsPneDJhmBYJOSQ3ljDg1OZ3bP7NdXweN/FD2kQZQW0p+TavDe5Dyrb9EBjMiIR
+        B7kr5b9g==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOJxc-007vLu-0g;
+        Tue, 25 Jul 2023 15:28:28 +0000
+Message-ID: <d35eddd6-0089-bbe8-c2f9-416941dcbed6@infradead.org>
+Date:   Tue, 25 Jul 2023 08:28:25 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b1ba209-58c8-b2b6-115a-6c43cba80098@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND v3 1/2] soc: hisilicon: Support HCCS driver on
+ Kunpeng SoC
+Content-Language: en-US
+To:     Huisong Li <lihuisong@huawei.com>, xuwei5@hisilicon.com,
+        arnd@arndb.de, krzk@kernel.org, sudeep.holla@arm.com
+Cc:     linux-kernel@vger.kernel.org, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, wanghuiqiang@huawei.com,
+        tanxiaofei@huawei.com, liuyonglong@huawei.com
+References: <20230424073020.4039-1-lihuisong@huawei.com>
+ <20230725075706.48939-1-lihuisong@huawei.com>
+ <20230725075706.48939-2-lihuisong@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230725075706.48939-2-lihuisong@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 05:09:05PM +0800, Leizhen (ThunderTown) wrote:
-> On 2023/7/25 10:00, Leizhen (ThunderTown) wrote:
-> > On 2023/7/24 21:50, Matthew Wilcox wrote:
-> >> On Mon, Jul 24, 2023 at 09:22:23PM +0800, thunder.leizhen@huaweicloud.com wrote:
-> >>> From: Zhen Lei <thunder.leizhen@huawei.com>
-> >>>
-> >>> The statistics function of softirq is supported by commit aa0ce5bbc2db
-> >>> ("softirq: introduce statistics for softirq") in 2009. At that time,
-> >>> 64-bit processors should not have many cores and would not face
-> >>> significant count overflow problems. Now it's common for a processor to
-> >>> have hundreds of cores. Assume that there are 100 cores and 10
-> >>> TIMER_SOFTIRQ are generated per second, then the 32-bit sum will be
-> >>> overflowed after 50 days.
-> >>
-> >> 50 days is long enough to take a snapshot.  You should always be using
-> >> difference between, not absolute values, and understand that they can
-> >> wrap.  We only tend to change the size of a counter when it can wrap
-> >> sufficiently quickly that we might miss a wrap (eg tens of seconds).
-> 
-> Sometimes it can take a long time to view it again. For example, it is
-> possible to run a complete business test for hours or even days, and
-> then calculate the average.
+Hi--
 
-I've been part of teams which have done such multi-hour tests.  That
-isn't how monitoring was performed.  Instead snapshots were taken every
-minute or even more frequently, because we wanted to know how these
-counters were fluctuating during the test -- were there time periods
-when the number of sortirqs spiked, or was it constant during the test?
+On 7/25/23 00:57, Huisong Li wrote:
+> diff --git a/drivers/soc/hisilicon/Kconfig b/drivers/soc/hisilicon/Kconfig
+> new file mode 100644
+> index 000000000000..87a1f15cbedb
+> --- /dev/null
+> +++ b/drivers/soc/hisilicon/Kconfig
+> @@ -0,0 +1,19 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +menu "Hisilicon SoC drivers"
+> +	depends on ARCH_HISI || COMPILE_TEST
+> +
+> +config KUNPENG_HCCS
+> +	tristate "HCCS driver on Kunpeng SoC"
+> +	depends on ACPI
+> +	depends on ARM64 || COMPILE_TEST
+> +	help
+> +	  The Huawei Cache-Coherent System (HCCS) is a bus protocol standard
 
-> > Yes, I think patch 2/2 can be dropped. I reduced the number of soft
-> > interrupts generated in one second, and actually 100+ or 1000 is normal.
-> > But I think patch 1/2 is necessary. The sum of the output scattered values
-> > does not match the output sum. To solve this problem, we only need to
-> > adjust the type of a local variable.
-> 
-> However, it is important to consider that when the local variable is changed
-> to u64, the output string becomes longer. It is not clear if the user-mode
-> program parses it only by u32.
+Just curious: what makes it a standard?
 
-There's no need for the numbers to add up.  They won't anyway, because
-summing them is racy , so they'll always be a little off.
+> +	  for ensuring cache coherent on HiSilicon SoC. The performance of
+
+	                     coherence
+
+> +	  the application may be affected if some hccs ports are in non-full
+
+	                                          HCCS
+
+> +	  lane status, have a large number of CRC errors and so on.
+> +
+> +	  Say M here if you want to include support for querying the health
+> +	  status and port information of HCCS on Kunpeng SoC.
+> +
+> +endmenu
+
+thanks.
+-- 
+~Randy
