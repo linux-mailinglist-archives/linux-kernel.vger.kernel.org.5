@@ -2,115 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E898762095
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE88B76209D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjGYRvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S230438AbjGYRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbjGYRvh (ORCPT
+        with ESMTP id S229778AbjGYRwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:51:37 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80005E2;
-        Tue, 25 Jul 2023 10:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=yNyoNVRI5+OCod59EicTdcPDoMu4zFqhfsWIGBVcAYg=; b=vkRAHPvlC1MAJG2qnz3G/UvB5y
-        O9rFGsc7O5vUdb46RoWwHvf7PtGdD7zY2dN1k+nI8Q+HRfdZI9IAuDDLl6TK+R+m8uu4HY8ZRRtkc
-        SZ//OGAADklx9x6UmAHweHZzAOulObMwM+Zw4WaHCIcHFzaznp0HplOG8a9kOQzrvSFI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qOMBp-002IJZ-4m; Tue, 25 Jul 2023 19:51:17 +0200
-Date:   Tue, 25 Jul 2023 19:51:17 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
-Cc:     "Verdun, Jean-Marie" <verdun@hpe.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/5] dt-bindings: net: Add HPE GXP UMAC
-Message-ID: <4c19532d-a909-4ca6-a0a7-d4cd9cc828b0@lunn.ch>
-References: <20230721212044.59666-1-nick.hawkins@hpe.com>
- <20230721212044.59666-4-nick.hawkins@hpe.com>
- <57d882ed-82e5-4584-8126-ca2007064126@lunn.ch>
- <DM4PR84MB192785EC6F2B8A76FF9E5E3F8803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+        Tue, 25 Jul 2023 13:52:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A41E2115
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690307507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ht71+ytnrpXSHx2moGem4zAvWEqI+p9KhmtDtZeMjAg=;
+        b=YarrbDZjrAnB1oc5u0x0YNImnV4vkV3Etu+yGGiJJQWCOOd67SNLlUIb0D1Zcr66Di18g+
+        9nYq5hYbv6vnu0GdNRSRbOwQR2sL9q7DnGZJ3N+5F7UU+6jE4u9J24n130JR5Q/qIr8WsY
+        met8KaskBW7oC534mTnTX9QJw4gQ98c=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-397-lANvnhS5Mcy70XWD1vNeHA-1; Tue, 25 Jul 2023 13:51:46 -0400
+X-MC-Unique: lANvnhS5Mcy70XWD1vNeHA-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403a4cdbfa2so66522501cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:51:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690307505; x=1690912305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ht71+ytnrpXSHx2moGem4zAvWEqI+p9KhmtDtZeMjAg=;
+        b=bNGXO370TB+FxB/FPOMBcdqT0I9eh7BCHGWvEx6+vahMHa6Pm2iWHTN4TTRwDrGeOu
+         QOcu0glfTW6LoLYq/I/yM+H8bfQepHI4WZzq8mFfLFyCo6K8fecbtyE2uKKKMPWnqWOE
+         AFxpb19Iz3UpRTIc0ag8SrfpHszu3cy/4HiO77+EikK2JB0xJxrgc8TxrfriS5bky3s1
+         O9PBx4S8ykNzWbGbOiOSZJKRd/1mAIwlSwbaK6T6w+x942ErkNQbRN+xKaqFzejN+xIg
+         kvslSNbvoMoJzjZ1flAtj+KBqAHOkHhS1gaYlQnF/krvp/suzHZSkINptVtEgpNZVHuy
+         7dOQ==
+X-Gm-Message-State: ABy/qLaCU6+QmEwyLGgh8nKdIzdwaaJoWK4E9UxxfmjjMhlHDCpIQRk/
+        KEGLCpoJjW5OPFNqC7gQ1XZR+th4+Ps+dnnNasHwX9HKNI+MRujEsmRAPJ583Vzwscfys+/0WTG
+        eXpIsrL1zKvUXIFLd6Pt/JfbgXqQ4+7KJ
+X-Received: by 2002:a05:622a:1488:b0:403:cd14:8f with SMTP id t8-20020a05622a148800b00403cd14008fmr3326844qtx.57.1690307505558;
+        Tue, 25 Jul 2023 10:51:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGSa0nCWmMbPWJbZR6wFN48R9hc4qEYNSaYYTSwy4C5YEFIRwnrCb6WaT328GKqxkr0FeDhCQ==
+X-Received: by 2002:a05:622a:1488:b0:403:cd14:8f with SMTP id t8-20020a05622a148800b00403cd14008fmr3326816qtx.57.1690307505290;
+        Tue, 25 Jul 2023 10:51:45 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::17])
+        by smtp.gmail.com with ESMTPSA id ff20-20020a05622a4d9400b00403f1a7be90sm4221230qtb.88.2023.07.25.10.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 10:51:44 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 12:51:42 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: phy: qcom,qmp: Add sa8775p QMP PCIe
+ PHY
+Message-ID: <y7tuvgc7r4o6jhe7hhyqxaksalld4zn5ou53ywdkwfrp2y773v@z3nvbgd2i6lz>
+References: <1689311319-22054-1-git-send-email-quic_msarkar@quicinc.com>
+ <1689311319-22054-3-git-send-email-quic_msarkar@quicinc.com>
+ <132e9514-7eb9-8915-6130-5bf656c1aaac@linaro.org>
+ <ca51b1dc-5805-5b01-01e0-a7dff535cb6c@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM4PR84MB192785EC6F2B8A76FF9E5E3F8803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ca51b1dc-5805-5b01-01e0-a7dff535cb6c@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 01:44:30PM +0000, Hawkins, Nick wrote:
-> Hi Andrew,
+On Fri, Jul 21, 2023 at 04:33:20PM +0530, Mrinmay Sarkar wrote:
 > 
-> Thank you for the feedback.
-> 
-> > > +examples:
-> > > +  - |
-> > > +    ethernet@4000 {
-> > > +      compatible = "hpe,gxp-umac";
-> > > +      reg = <0x4000 0x80>;
-> > > +      interrupts = <22>;
-> > > +      mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
-> 
-> > Do both ports get the sane MAC address?
-> 
-> No they do not. The first one will get the MAC address, the second
-> will be an external phy we are managing via the MDIO path.
-
-Then please put the mac-address property in the correct place, inside
-port@0.
-
-> > > +      ethernet-ports {
-> > > +        #address-cells = <1>;
-> > > +        #size-cells = <0>;
+> On 7/17/2023 12:55 PM, Krzysztof Kozlowski wrote:
+> > On 14/07/2023 07:08, Mrinmay Sarkar wrote:
+> > > Add devicetree YAML binding for Qualcomm QMP PCIe PHY
+> > > for SA8775p platform.
+> > > 
+> > > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> > > ---
+> > >   .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml      | 19 ++++++++++++++++++-
+> > >   1 file changed, 18 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+> > > index a0407fc..ca55ed9 100644
+> > > --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+> > > +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+> > > @@ -16,6 +16,8 @@ description:
+> > >   properties:
+> > >     compatible:
+> > >       enum:
+> > > +      - qcom,sa8775p-qmp-gen4x2-pcie-phy
+> > > +      - qcom,sa8775p-qmp-gen4x4-pcie-phy
+> > >         - qcom,sc8280xp-qmp-gen3x1-pcie-phy
+> > >         - qcom,sc8280xp-qmp-gen3x2-pcie-phy
+> > >         - qcom,sc8280xp-qmp-gen3x4-pcie-phy
+> > > @@ -30,7 +32,7 @@ properties:
+> > >     clocks:
+> > >       minItems: 5
+> > > -    maxItems: 6
+> > > +    maxItems: 7
+> > >     clock-names:
+> > >       minItems: 5
+> > > @@ -41,6 +43,7 @@ properties:
+> > >         - const: rchng
+> > >         - const: pipe
+> > >         - const: pipediv2
+> > > +      - const: phy_aux
+> > >     power-domains:
+> > >       maxItems: 1
+> > > @@ -141,6 +144,20 @@ allOf:
+> > >           compatible:
+> > >             contains:
+> > >               enum:
+> > > +              - qcom,sa8775p-qmp-gen4x2-pcie-phy
+> > > +              - qcom,sa8775p-qmp-gen4x4-pcie-phy
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          minItems: 7
+> > > +        clock-names:
+> > > +          minItems: 7
 > > > +
-> > > +        port@0 {
-> > > +          reg = <0>;
-> > > +          phy-handle = <&eth_phy0>;
-> > > +        };
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > This probably works but is not obvious and easy to read. You have here
+> > if:then:else: block, so else applies to your variant. Change all these
+> > if clauses for clocks into separate clauses per matching variant
+> > (if:then: ... if:then:... if:then:...)
 
-> > > +      mdio {
+As far as I can tell, this actually doesn't work :(
+
+> > 
+> > Best regards,
+> > Krzysztof
 > 
-> > This seems to be wrong. You have a standalone MDIO bus driver, not
-> > part of the MAC address space?
+> My Bad here, This patch already applied we will take care this in next patch
+> set.
 > 
-> I based this from other yaml examples I found. Is there a better way to
-> represent it?
+> Thanks,
+> Mrinmay
+> 
 
-The validator when given examples does not validate phy-handle
-actually points to a known node. So you can just leave the mdio bus
-out all together.
+Mrinmay, do you plan on spinning what Krzysztof suggested? I grabbed
+linux-next today and ran into this (looks like clocks, clock-names in
+binding is broken and looks like we're either missing the required
+power-domain in the dts or it isn't actually required):
 
-> mdio0: mdio@4080 {
-> 	compatible = "hpe,gxp-umac-mdio";
-> 	reg = <0x4080 0x10>;
-> 	#address-cells = <1>;
-> 	#size-cells = <0>;
-> 	ext_phy0: ethernt-phy@0 {
-> 		compatible = "marvell,88e1415","ethernet-phy-ieee802.3-c22";
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
+      UPD     include/config/kernel.release
+      LINT    Documentation/devicetree/bindings
+      CHKDT   Documentation/devicetree/bindings/processed-schema.json
+      SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+    /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
+      DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: 'power-domains' is a required property
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clocks: [[31, 66], [31, 68], [31, 94], [31, 72], [31, 74], [31, 77], [31, 70]] is too long
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: 'power-domains' is a required property
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clocks: [[31, 80], [31, 82], [31, 94], [31, 86], [31, 88], [31, 91], [31, 84]] is too long
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
+        from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+    ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.65s user 0.52s system 99% cpu 8.231 total
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % 
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % 
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % 
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % # Total hack just to show our issues in current binding
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
+    diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+    index ca55ed9d74ac..5476cf2422da 100644
+    --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+    +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+    @@ -87,7 +87,6 @@ required:
+       - reg
+       - clocks
+       - clock-names
+    -  - power-domains
+       - resets
+       - reset-names
+       - vdda-phy-supply
+    @@ -132,12 +131,6 @@ allOf:
+               maxItems: 5
+             clock-names:
+               maxItems: 5
+    -    else:
+    -      properties:
+    -        clocks:
+    -          minItems: 6
+    -        clock-names:
+    -          minItems: 6
+     
+       - if:
+           properties:
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
+      UPD     include/config/kernel.release
+      LINT    Documentation/devicetree/bindings
+      CHKDT   Documentation/devicetree/bindings/processed-schema.json
+      SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+    /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
+      DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
+    ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.58s user 0.87s system 98% cpu 8.618 total
+    (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % 
 
-which is wrong. Please read the binding document for PHYs.
 
-      Andrew
+Thanks,
+Andrew
+
