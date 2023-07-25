@@ -2,88 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AEB761812
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3F3761842
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbjGYMPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S232014AbjGYMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbjGYMPk (ORCPT
+        with ESMTP id S233410AbjGYMZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:15:40 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82439E47
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:15:39 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id ED1245C01FA;
-        Tue, 25 Jul 2023 08:15:38 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 25 Jul 2023 08:15:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690287338; x=1690373738; bh=x7
-        RdA6HkHk9XBkKwdbWXosbMRCX7flB76C3ELguQTWE=; b=a99vJQgQu58AY9xeH8
-        /KMQwZ056KkvG+FiIoaaAAXjf1d4QEvxBW/hv1BJlnpa1bkEWyVK+ugCLjMrf6Lv
-        bmGj2hfvaoPadFPstdg2T5OsrH+/b18Zk5Inc7BYSidHMdsIrQloIkFuVR/nwHBr
-        l4+hlTYZd1HeN+LnVt4G2etOytfFO7UDIVE+EggRXijIrDrLCCDGVTPHnpBaX/Pr
-        1AeWgUiketUVuq1Qom/bAJhiZHe+6nMUNGdGOz6jcOvfHBzB1kwCWan+vgfWjis3
-        m3AWWBo84thPCpPyB28/t8Lc6Y/3lOp6e1N4izj1MtG+bJCipaHbQftVjYDK9Upt
-        oW/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690287338; x=1690373738; bh=x7RdA6HkHk9XB
-        kKwdbWXosbMRCX7flB76C3ELguQTWE=; b=BRBch4Cjhh2ZBXU0Xkez1VZujaKMu
-        nj+CctUgfHwnNKDiDvkRz0TreXSHj1M8UhzRb+4nafV7dt5MRiz/aMruKINhRz3d
-        qNdv2fUeyp+DLcb7GnqiNCEF2o/LsnuLTmnVfEr2rGx5AdQHMYDvABXOHaada1My
-        YcgriJhz9gpqDhntMJ3WGupHUM2r5L0SKbsXaFy/uniO1sQbmvv4rmKJlfPbpAGm
-        pO0CdZRMpekVBZZAKiNX8P5hwnk0Qxe3K3RBJu8bcfoeCO8RD6Ih6aSMdaquhcyV
-        AgTRKHk/3P7uv9ViXWiNP17OlG4jDw8Ca80K6PV78A6yiYX3wXylSsMmA==
-X-ME-Sender: <xms:6by_ZIIosGTOSfn0C_a-DWZAG5YwPzIw2mW-2fuiy02svcb267HK_Q>
-    <xme:6by_ZIInNH-G5KmCTLIJpm4j5fPAeTw80sMKOAbQPiPz4ia_94Gpwt8Xy0tjA0bZx
-    iH49W2SgJSL7RU-ITY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdegkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:6ry_ZIv26yOl29wWRnMYXUnS5nFCrGN8E1q67b52ba-Md57va4x_Bw>
-    <xmx:6ry_ZFZHAGIQCee1kSBBOMPZN5E129DL5v23qTBHZ0H23G76t1oDmA>
-    <xmx:6ry_ZPZnwY0TsBWAJNnoLybG0PkUIrgyH2ZoMIX6mbKQaXnW80g26A>
-    <xmx:6ry_ZNOXgQUgS6GPZGbeC3JlLgAnDKhh0bAHR1f3y0F51Wo9LKvCBg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D3B11B60089; Tue, 25 Jul 2023 08:15:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-590-ga55e740577-fm-defalarms-20230718.001-ga55e7405
-Mime-Version: 1.0
-Message-Id: <eef33234-40f1-41da-a9ac-73b24a764123@app.fastmail.com>
-In-Reply-To: <20230725092046.GAZL+T7ln/TKBOuihi@fat_crate.local>
-References: <20230725082638.956675-1-arnd@kernel.org>
- <20230725092046.GAZL+T7ln/TKBOuihi@fat_crate.local>
-Date:   Tue, 25 Jul 2023 14:15:16 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Borislav Petkov" <bp@alien8.de>, "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Kim Phillips" <kim.phillips@amd.com>,
-        "Alexey Kardashevskiy" <aik@amd.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86: Fix amd_check_microcode() declaration
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        Tue, 25 Jul 2023 08:25:32 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66976172A;
+        Tue, 25 Jul 2023 05:25:31 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 3810275855d39208; Tue, 25 Jul 2023 14:25:29 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5404B661B0E;
+        Tue, 25 Jul 2023 14:25:29 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v3 5/8] ACPI: thermal: Hold thermal zone lock around trip updates
+Date:   Tue, 25 Jul 2023 14:16:33 +0200
+Message-ID: <7552439.EvYhyI6sBW@kreacher>
+In-Reply-To: <12254967.O9o76ZdvQC@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdehudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,38 +55,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023, at 11:20, Borislav Petkov wrote:
-> On Tue, Jul 25, 2023 at 10:26:13AM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The newly added amd_check_microcode() function has two conflicting definitions
->> if CONFIG_CPU_SUP_AMD is enabled and CONFIG_MICROCODE_AMD is disabled. Since
->> the header with the stub definition is not included in cpu/amd.c, this only
->> causes a -Wmissing-prototype warning with W=1
->
-> Can we please promote -Wmissing-prototype to default or is it too noisy
-> yet?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I'm working on it, currently missing just 15 patches (down from 70 in 6.3)
-before all randconfigs on x86 and arm are clean.
+There is a race condition between acpi_thermal_trips_update() and
+acpi_thermal_check_fn(), because the trip points may get updated while
+the latter is running which in theory may lead to inconsistent results.
+For example, if two trips are updated together, using the temperature
+value of one of them from before the update and the temperature value
+of the other one from after the update may not lead to the expected
+outcome.
 
->> diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
->> index 9675c621c1ca4..6a860d40b0411 100644
->> --- a/arch/x86/include/asm/microcode_amd.h
->> +++ b/arch/x86/include/asm/microcode_amd.h
+To address this, make acpi_thermal_trips_update() hold the thermal zone
+lock across the entire update of trip points.
 
->> +#ifdef CONFIG_CPU_SUP_AMD
->> +extern void amd_check_microcode(void);
->> +#else
->>  static inline void amd_check_microcode(void) {}
->>  #endif
->> +
->>  #endif /* _ASM_X86_MICROCODE_AMD_H */
->
-> Considering how cpu/amd.c provides the function implementation, that
-> header gunk should not be in microcode_amd.h but in ...asm/processor.h,
-> I'd say.
+While at it, change the acpi_thermal_trips_update() return data type
+to void as that function always returns 0 anyway.
 
-Ok, I'll send a v2 with that changed.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-     Arnd
+v2 -> v3: No changes.
+
+v1 -> v2:
+   * Hold the thermal zone lock instead of thermal_check_lock around trip
+     point updates (this also helps to protect thermal_get_trend() from using
+     stale trip temperatures).
+   * Add a comment documenting the purpose of the locking.
+   * Make acpi_thermal_trips_update() void.
+
+---
+ drivers/acpi/thermal.c |   21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -190,7 +190,7 @@ static int acpi_thermal_get_polling_freq
+ 	return 0;
+ }
+ 
+-static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+ {
+ 	acpi_status status;
+ 	unsigned long long tmp;
+@@ -398,17 +398,28 @@ static int acpi_thermal_trips_update(str
+ 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
+ 		}
+ 	}
++}
+ 
+-	return 0;
++static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++{
++	/*
++	 * The locking is needed here to protect thermal_get_trend() from using
++	 * a stale passive trip temperature and to synchronize with the trip
++	 * temperature updates in acpi_thermal_check_fn().
++	 */
++	thermal_zone_device_lock(tz->thermal_zone);
++
++	__acpi_thermal_trips_update(tz, flag);
++
++	thermal_zone_device_unlock(tz->thermal_zone);
+ }
+ 
+ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+ {
+-	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 	bool valid;
++	int i;
+ 
+-	if (ret)
+-		return ret;
++	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 
+ 	valid = tz->trips.critical.valid |
+ 		tz->trips.hot.valid |
+
+
+
