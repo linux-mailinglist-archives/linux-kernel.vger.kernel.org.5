@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D287617BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440E17617B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjGYLyF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
+        id S231381AbjGYLyI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjGYLwo (ORCPT
+        with ESMTP id S235115AbjGYLx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:52:44 -0400
+        Tue, 25 Jul 2023 07:53:27 -0400
 Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC1B1FC6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:52:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60CAE7B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:53:25 -0700 (PDT)
 Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
  relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-165-H6xFc8x9NC2sfZVKsh3vxw-1; Tue, 25 Jul 2023 12:52:24 +0100
-X-MC-Unique: H6xFc8x9NC2sfZVKsh3vxw-1
+ uk-mta-209-ynE3GkS8M1eGKh0OmdtE4w-1; Tue, 25 Jul 2023 12:53:23 +0100
+X-MC-Unique: ynE3GkS8M1eGKh0OmdtE4w-1
 Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
  (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 12:52:23 +0100
+ 2023 12:53:22 +0100
 Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 12:52:23 +0100
+ id 15.00.1497.048; Tue, 25 Jul 2023 12:53:22 +0100
 From:   David Laight <David.Laight@ACULAB.COM>
 To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
         "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
@@ -32,13 +32,13 @@ To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
         "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
         'Christoph Hellwig' <hch@infradead.org>,
         "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: [PATCH next resend 3/5] minmax: Fix indentation of __cmp_once() and
- __clamp_once()
-Thread-Topic: [PATCH next resend 3/5] minmax: Fix indentation of __cmp_once()
- and __clamp_once()
-Thread-Index: Adm+7mryLv4TUEU+RQuYrphbr7/2bw==
-Date:   Tue, 25 Jul 2023 11:52:23 +0000
-Message-ID: <665ddc9dd2bc4cb595061fc509481012@AcuMS.aculab.com>
+Subject: [PATCH next resend 4/5] minmax: Allow comparisons of 'int' against
+ 'unsigned char/short'.
+Thread-Topic: [PATCH next resend 4/5] minmax: Allow comparisons of 'int'
+ against 'unsigned char/short'.
+Thread-Index: Adm+7pBZ9m8pSBI1SiGSpdnyAYxAOg==
+Date:   Tue, 25 Jul 2023 11:53:22 +0000
+Message-ID: <a3309fcd947a4fb3826f1e8b8b9da585@AcuMS.aculab.com>
 References: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
 In-Reply-To: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
 Accept-Language: en-GB, en-US
@@ -61,62 +61,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the extra indentation and align continuation markers.
+Since 'unsigned char/short' get promoted to 'signed int' it is
+safe to compare them against an 'int' value.
 
 Signed-off-by: David Laight <david.laight@aculab.com>
 ---
 
 Resend as reply to 0/5
 
- include/linux/minmax.h | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ include/linux/minmax.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 10d236ac7da6..179034479d5e 100644
+index 179034479d5e..baffbe5c855d 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -24,11 +24,11 @@
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
+@@ -16,7 +16,8 @@
+  *   allocation usage).
+  */
+ #define __types_ok(x, y) \
+-	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)))
++	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)) ||	\
++		is_signed_type(typeof((x) + 0)) == is_signed_type(typeof((y) + 0)))
  
- #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--		typeof(x) unique_x = (x);		\
--		typeof(y) unique_y = (y);		\
--		static_assert(__types_ok(x, y),		\
--			#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
--		__cmp(op, unique_x, unique_y); })
-+	typeof(x) unique_x = (x);			\
-+	typeof(y) unique_y = (y);			\
-+	static_assert(__types_ok(x, y),			\
-+		#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
-+	__cmp(op, unique_x, unique_y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
-@@ -38,15 +38,15 @@
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
- 
--#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({	\
--		typeof(val) unique_val = (val);				\
--		typeof(lo) unique_lo = (lo);				\
--		typeof(hi) unique_hi = (hi);				\
--		static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),		\
--			"clamp() low limit " #lo " greater than high limit " #hi);	\
--		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
--		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
--		__clamp(unique_val, unique_lo, unique_hi); })
-+#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
-+	typeof(val) unique_val = (val);						\
-+	typeof(lo) unique_lo = (lo);						\
-+	typeof(hi) unique_hi = (hi);						\
-+	static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),		\
-+		"clamp() low limit " #lo " greater than high limit " #hi);	\
-+	static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
-+	static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
-+	__clamp(unique_val, unique_lo, unique_hi); })
- 
- #define __careful_clamp(val, lo, hi) ({					\
- 	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
+ #define __cmp_op_min <
+ #define __cmp_op_max >
 -- 
 2.17.1
 
