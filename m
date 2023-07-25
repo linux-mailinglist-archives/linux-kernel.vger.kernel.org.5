@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C18F762146
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC40776218A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjGYSYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        id S231460AbjGYShh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjGYSYP (ORCPT
+        with ESMTP id S230040AbjGYShf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:24:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047A41FC1;
-        Tue, 25 Jul 2023 11:24:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E11361862;
-        Tue, 25 Jul 2023 18:24:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4461C433C8;
-        Tue, 25 Jul 2023 18:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690309453;
-        bh=WnZ1MywMJ9vsHmTwWNSt2lizDXojVU7oDoLa/kmN9kU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nqGpAhZNTlIOpXKfZt/IhpyUjJVGynu7+sdfijWYrxoUBVn7xQJcqhC5ziPcA3ZkO
-         9J19kV/+wKuu9KJN8UXPgtfDp+jwdjEdHkc+i5eOZnFD7z+EpmR9yrbkEE2M5NjaSO
-         D2V0SqGwwyo5a6nn/UIqmRBZgo5dLzO178h0vjC2rBsrsoP5toThvJFjdSoKtix7LY
-         momzFRNC1nYP/8w3RqHzInJHvOaSuSf3I7dAO4HLUgOG8tH4Bwqc9z3zO2X0L0vOFl
-         482+9BTo0IiAlUMq90cLyi850nVYCzBJV5r8Nz8t/wi4jug0jY9sFLmR8XB/PNJ/Oc
-         cYgEKJ7CnSUQQ==
-Date:   Tue, 25 Jul 2023 19:24:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 2/2] spi: spi-qcom-qspi: Add mem_ops to avoid PIO for
- badly sized reads
-Message-ID: <1e7225c2-3ac6-43d0-a1cc-e9a207d263d4@sirena.org.uk>
-References: <20230725110226.1.Ia2f980fc7cd0b831e633391f0bb1272914d8f381@changeid>
- <20230725110226.2.Id4a39804e01e4a06dae9b73fd2a5194c4c7ea453@changeid>
+        Tue, 25 Jul 2023 14:37:35 -0400
+X-Greylist: delayed 614 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 11:37:34 PDT
+Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2695DE7E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:37:33 -0700 (PDT)
+X-ASG-Debug-ID: 1690309638-1cf4391f27191450001-xx1T2L
+Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id AgqoKPh6mtqctUOz; Tue, 25 Jul 2023 14:27:18 -0400 (EDT)
+X-Barracuda-Envelope-From: tonyb@cybernetics.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
+X-ASG-Whitelist: Client
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
+        bh=sqgCX8jCizbiss5Ej3xSHSZPy6tYWsQXvnSrbIT7X1Y=;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
+        Content-Language:Subject:MIME-Version:Date:Message-ID; b=bO01tCHXQGGiGrxrvNAh
+        3EO4zOLDWGYl8YBummCO+KlHJVSp4Vl0pyZIyWp3FeTPFCzSN2k8eJCc1iY8ftsuljBCGXAAeDx1d
+        qbr0EQvGHgzngU7fYwAAAG46jEEgN4ZsfXya+jXrx467mLwfmhhwLQtTZaZehtSQ7eNqNaz8Co=
+Received: from [10.157.2.224] (HELO [192.168.200.1])
+  by cybernetics.com (CommuniGate Pro SMTP 7.1.1)
+  with ESMTPS id 12732468; Tue, 25 Jul 2023 14:27:18 -0400
+Message-ID: <9adfd67b-4327-9233-8e87-3fd5f3f7280b@cybernetics.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
+Date:   Tue, 25 Jul 2023 14:27:18 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SVnmq4fcVsYJnkFF"
-Content-Disposition: inline
-In-Reply-To: <20230725110226.2.Id4a39804e01e4a06dae9b73fd2a5194c4c7ea453@changeid>
-X-Cookie: Happiness is the greatest good.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: SCSI: fix parsing of /proc/scsci/scsi file
+Content-Language: en-US
+X-ASG-Orig-Subj: Re: SCSI: fix parsing of /proc/scsci/scsi file
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Martin K Petersen <martin.petersen@oracle.com>,
+        James Bottomley <jejb@linux.ibm.com>, Willy Tarreau <w@1wt.eu>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wiu-dX+CGUnhsk3KfPbP1h-1kCmVoTV6FEETQmafGWdLQ@mail.gmail.com>
+From:   Tony Battersby <tonyb@cybernetics.com>
+In-Reply-To: <CAHk-=wiu-dX+CGUnhsk3KfPbP1h-1kCmVoTV6FEETQmafGWdLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Barracuda-Connect: UNKNOWN[10.10.4.126]
+X-Barracuda-Start-Time: 1690309638
+X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at cybernetics.com
+X-Barracuda-Scan-Msg-Size: 4589
+X-Barracuda-BRTS-Status: 0
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,37 +65,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/25/23 13:30, Linus Torvalds wrote:
+> This is the simplified version of the fix proposed by Tony Battersby
+> for the horrid scsi /proc parsing code.
+>
+Something that I just thought of: the old parser could also skip over
+NUL characters used as separators within the buffer that aren't at the
+end of the buffer, as in: "host\0id\0channel\0lun".  If you want to
+continue to allow that unlikely usage, then my patch comparing p to the
+end pointer would work better.
 
---SVnmq4fcVsYJnkFF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From 61dc8daf4b6aa149882e425d58f68d50182222be Mon Sep 17 00:00:00 2001
+From: Tony Battersby <tonyb@cybernetics.com>
+Date: Mon, 24 Jul 2023 14:25:40 -0400
+Subject: [PATCH] scsi: fix legacy /proc parsing buffer overflow
 
-On Tue, Jul 25, 2023 at 11:02:27AM -0700, Douglas Anderson wrote:
-> In the patch ("spi: spi-qcom-qspi: Fallback to PIO for xfers that
-> aren't multiples of 4 bytes") we detect reads that we can't handle
-> properly and fallback to PIO mode. While that's correct behavior, we
-> can do better by adding "spi_controller_mem_ops" for our
-> controller. Once we do this then the caller will give us a transfer
-> that's a multiple of 4-bytes so we can DMA.
+(lightly modified commit message mostly by Linus Torvalds)
 
-This is more of an optimisation for the case where we're using flash -
-if someone has hung some other hardware off the controller (which seems
-reasonable enough if they don't need it for flash) then we'll not use
-the mem_ops.
+The parsing code for /proc/scsi/scsi is disgusting and broken.  We
+should have just used 'sscanf()' or something simple like that, but the
+logic may actually predate our kernel sscanf library routine for all I
+know.  It certainly predates both git and BK histories.
 
---SVnmq4fcVsYJnkFF
-Content-Type: application/pgp-signature; name="signature.asc"
+And we can't change it to be something sane like that now, because the
+string matching at the start is done case-insensitively, and the
+separator parsing between numbers isn't done at all, so *any* separator
+will work, including a possible terminating NUL character.
 
------BEGIN PGP SIGNATURE-----
+This interface is root-only, and entirely for legacy use, so there is
+absolutely no point in trying to tighten up the parsing.  Because any
+separator has traditionally worked, it's entirely possible that people
+have used random characters rather than the suggested space.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTAE0cACgkQJNaLcl1U
-h9DQ8gf/blcWhskfPKyQA9bm9rMncitJHYBDO/9Dy0cZv3Gyau8BxK3roKUVteYh
-OsuHjDHVSXNXb6P7dPrezAsdT0bJbryFAH3truRstqLVCkrHMsTY9IPz4LWMWDoZ
-nPD+zIq46tKapKys7UM1RXQX4ai1A6Z1p2BPCHPAiQ1XVuo5dhlMOEsEdgevUSHj
-Kcw740LFPDxNwH6O2zM4XQyokUtdG6ByTEuhxsRfVjWRrIjVfwA7XDGooqfGbNDf
-c2gE3XMSTX8RQnAEPmlfagttfgf0KA/gEXAYjP/0MdsWNzfUgV28Oix+otUm1b1z
-LCPFzyGSOqu4faNxjvoXYlrhhbJjrQ==
-=XHPv
------END PGP SIGNATURE-----
+So don't bother to try to pretty it up, and let's just make a minimal
+patch that can be back-ported and we can forget about this whole sorry
+thing for another two decades.
 
---SVnmq4fcVsYJnkFF--
+Just make it at least not read past the end of the supplied data.
+
+Link: https://lore.kernel.org/linux-scsi/b570f5fe-cb7c-863a-6ed9-f6774c219b88@cybernetics.com/
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Martin K Petersen <martin.petersen@oracle.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: stable@kernel.org
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
+---
+ drivers/scsi/scsi_proc.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/scsi/scsi_proc.c b/drivers/scsi/scsi_proc.c
+index 4a6eb1741be0..41f23cd0bfb4 100644
+--- a/drivers/scsi/scsi_proc.c
++++ b/drivers/scsi/scsi_proc.c
+@@ -406,7 +406,7 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 			       size_t length, loff_t *ppos)
+ {
+ 	int host, channel, id, lun;
+-	char *buffer, *p;
++	char *buffer, *end, *p;
+ 	int err;
+ 
+ 	if (!buf || length > PAGE_SIZE)
+@@ -421,10 +421,14 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 		goto out;
+ 
+ 	err = -EINVAL;
+-	if (length < PAGE_SIZE)
+-		buffer[length] = '\0';
+-	else if (buffer[PAGE_SIZE-1])
+-		goto out;
++	if (length < PAGE_SIZE) {
++		end = buffer + length;
++		*end = '\0';
++	} else {
++		end = buffer + PAGE_SIZE - 1;
++		if (*end)
++			goto out;
++	}
+ 
+ 	/*
+ 	 * Usage: echo "scsi add-single-device 0 1 2 3" >/proc/scsi/scsi
+@@ -433,10 +437,10 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 	if (!strncmp("scsi add-single-device", buffer, 22)) {
+ 		p = buffer + 23;
+ 
+-		host = simple_strtoul(p, &p, 0);
+-		channel = simple_strtoul(p + 1, &p, 0);
+-		id = simple_strtoul(p + 1, &p, 0);
+-		lun = simple_strtoul(p + 1, &p, 0);
++		host    = (p     < end) ? simple_strtoul(p, &p, 0) : 0;
++		channel = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		id      = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		lun     = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
+ 
+ 		err = scsi_add_single_device(host, channel, id, lun);
+ 
+@@ -447,10 +451,10 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 	} else if (!strncmp("scsi remove-single-device", buffer, 25)) {
+ 		p = buffer + 26;
+ 
+-		host = simple_strtoul(p, &p, 0);
+-		channel = simple_strtoul(p + 1, &p, 0);
+-		id = simple_strtoul(p + 1, &p, 0);
+-		lun = simple_strtoul(p + 1, &p, 0);
++		host    = (p     < end) ? simple_strtoul(p, &p, 0) : 0;
++		channel = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		id      = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		lun     = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
+ 
+ 		err = scsi_remove_single_device(host, channel, id, lun);
+ 	}
+-- 
+2.25.1
+
