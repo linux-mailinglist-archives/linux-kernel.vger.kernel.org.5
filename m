@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC63376099B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4376099E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjGYFoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        id S230250AbjGYFpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbjGYFo0 (ORCPT
+        with ESMTP id S229452AbjGYFpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:44:26 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D28B1FC1;
-        Mon, 24 Jul 2023 22:43:55 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3656726a12.3;
-        Mon, 24 Jul 2023 22:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690263831; x=1690868631;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sWpeQEXkxx6moDjPwLRjO33o1MVNetkxDTfjChMiebs=;
-        b=EvoK59qtrucIfirbBPE8V2OhcYmt3T48AT1joPDN1D9Qu+qEE73r4/cc1daLi60Ydu
-         W9OjfU6BEWgE9r5RajS4qZrLP5UQcsIxhFCeTxvvj0fepgYJ05eb82mpkxo5rssbsg9M
-         O9LnhOGLbT6aHlqvHX3rkQ44kG3WCtwfmRzCiu7oGkCj07RQcLnNb+pzVNlsMY8zP+Ds
-         mmmnbup8yyyj2xJCK7RK0HJ5nRTGUuSj/K4D4w045x0iMMuXZ7Mr3RMJyMpbV6609UYf
-         pOMcY58xYhu9AUaZv+QAuzNr1EBwFmXyMcKCqbdXlcHjE3J5mOBlAS+i5o6bXO6qiebk
-         Q4lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690263831; x=1690868631;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sWpeQEXkxx6moDjPwLRjO33o1MVNetkxDTfjChMiebs=;
-        b=bXoR9iGbXvbNXlHZIw1qHHFaPOISozdFew7yK2gWSLITzemJuDNj6VAqTTvCwee5U8
-         KYShkQyUG9WsaAvCMw9/tmqVuCweJxb4CZzi9mnXj/nuDA/a6aFXxDeTwX2kw4XhIODB
-         eSsJi2eoZFJiZ48kjNNk2KIiNQaaTuCtbMyvzqE2bDjTLDEZ8doRV9RZnFioeaCKOL10
-         uZp81ZAzyZr5WhUL8ddoi8WOqIx+q1Mb3ZNlCp6UR1v2UjGV2iv09O7MY4wDpAmj6pBL
-         KX58dkR2I6cF1oT+UwURDRA82ojts/xspO5UEK27fPve0E6lDiQlzSxva7Lpof9+zc70
-         WCQw==
-X-Gm-Message-State: ABy/qLbvjPh9Ts4RXTSeGe7Bp8jETSsQWhTe3LaTjFwI1VoGiQhLE566
-        Gd5qEgJ2qopqh00qalcFX2g=
-X-Google-Smtp-Source: APBJJlH1oBzcBGr7tDO/0eNp6ihGNRlQs70V0KM9UGizlqp6a736sZfqH/REEYad9RTEhLNxX62GsA==
-X-Received: by 2002:a17:902:7893:b0:1b9:d961:69b7 with SMTP id q19-20020a170902789300b001b9d96169b7mr11745734pll.10.1690263830757;
-        Mon, 24 Jul 2023 22:43:50 -0700 (PDT)
-Received: from zephyrusG14 ([103.251.210.209])
-        by smtp.gmail.com with ESMTPSA id jj22-20020a170903049600b001bb54b6c4e4sm9961732plb.147.2023.07.24.22.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 22:43:50 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 11:13:43 +0530
-From:   Yogesh Hegde <yogi.kernel@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-rockchip@lists.infradead.org, ivan.orlov0322@gmail.com,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v2] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4
- boards
-Message-ID: <ZL9hD2db5xbtpmLu@zephyrusG14>
-References: <ZLbATQRjOl09aLAp@zephyrusG14>
- <169022470428.2905604.14514573882052237409.b4-ty@sntech.de>
+        Tue, 25 Jul 2023 01:45:21 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BC21FCC;
+        Mon, 24 Jul 2023 22:44:54 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1690263859tdcrm94y
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 25 Jul 2023 13:44:18 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: dKvkn8qoLrHzKNEaeuHi1ESJuzl2btKeC/hNKaYrVC0TiCoNiC4/d3bBmF5dY
+        ccfltpJNOW2OW888NOdGqG7+WfJVRo80Z2aWBcpjAgtACVkYrn3lGpQw8MgUqiKs0HnRzVQ
+        PNBt7ofCsa70N5sLl1Lm56jfLUil0QU5WCNLRJEfvUaTkEd57113aJy2SOmyQ9mW1Uo7w1r
+        yfJLSicRwuoV34TWkmR1zFKM+TL7dudiPIk7I2pxr1c31LVUP2sctm6rVA8KNeQVMN2P24c
+        3yE/XnII5Yw+ucd8VUeyOx3DaLiFuwpKT0q4W9sefA+6RV+B96S3bR4vztn17M+d2thZ/eP
+        J81g4HRJ1MW+ctrtZ9VnXjOs36DLA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5121908991366495097
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v1 1/8] tools/nolibc: add support for powerpc
+Date:   Tue, 25 Jul 2023 13:44:14 +0800
+Message-Id: <20230725054414.15055-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230723081520.GA19768@1wt.eu>
+References: <20230723081520.GA19768@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169022470428.2905604.14514573882052237409.b4-ty@sntech.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
-On Mon, Jul 24, 2023 at 08:52:37PM +0200, Heiko Stuebner wrote:
-> 
-> Applied, thanks!
-> 
-> [1/1] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4 boards
->       commit: ebceec271e552a2b05e47d8ef0597052b1a39449
-> 
-> and added the "Cc: stable@vger.kernel.org"
-> 
-> Best regards,
-> -- 
-> Heiko Stuebner <heiko@sntech.de>
-Thanks and my heartfelt gratitude to you for fixing and applying the patch. 
-I am truly grateful for your support. 
+Hi, Thomas, Willy
 
-Due to an increased workload and pressing commitments, there is a considerable 
-delay in my responses and patch submissions.
+> On Sun, Jul 23, 2023 at 09:32:37AM +0200, Thomas Weißschuh wrote:
+> > On 2023-07-19 05:10:48+0800, Zhangjin Wu wrote:
+> > > diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
+> > > new file mode 100644
+> > > index 000000000000..100ec0f412dc
+> > > --- /dev/null
+> > > +++ b/tools/include/nolibc/arch-powerpc.h
+> > > @@ -0,0 +1,156 @@
+> > > +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
+> > > +/*
+> > > + * PowerPC specific definitions for NOLIBC
+> > > + * Copyright (C) 2023 Zhangjin Wu <falcon@tinylab.org>
+> > 
+> > If it is taken from musl, shouldn't there also be a musl copyright?
+> 
+> In fact it depends. If code was taken there, not only the copyright is
+> needed, but the license' compatibility must be verified. If, however,
+> the code was only disassembled to be understood and reimplemented (as
+> it seems to me), then no code was taken there and it's not needed.
+>
 
-Thanks and Regards 
--- Yogesh
+This discussion does inspire me a lot to shrink the whole architecture
+specific nolibc my_syscall<N>() macros, like crt.h, a common syscall.h
+is added to do so. I have finished most of them except the ones passing
+arguments via stack, still trying to merge these ones.
+
+With this new syscall.h, to support my_syscall<N>, the arch-<ARCH>.h
+will only require to add ~10 lines to define their own syscall
+instructions, registers and clobberlist, which looks like this (for
+powerpc):
+
+    #define _NOLIBC_SYSCALL_CALL "sc; bns+ 1f; neg  %0, %0; 1:"
+
+    /* PowerPC doesn't always restore r3-r12 for us */
+    #define _NOLIBC_SYSCALL_CLOBBERLIST 
+    	"memory", "cr0", "r12", "r11", "r10", "r9", "r8", "r7", "r6", "r5", "r4"
+
+    /* PowerPC write GPRS in kernel side but not restore them */
+    #define _NOLIBC_GPRS_AS_OUTPUT_OPERANDS
+    
+    #define _NOLIBC_REG_NUM  "r0"
+    #define _NOLIBC_REG_RET  "r3"
+    #define _NOLIBC_REG_arg1 "r3"
+    #define _NOLIBC_REG_arg2 "r4"
+    #define _NOLIBC_REG_arg3 "r5"
+    #define _NOLIBC_REG_arg4 "r6"
+    #define _NOLIBC_REG_arg5 "r7"
+    #define _NOLIBC_REG_arg6 "r8"
+
+Before:
+
+    $ ls tools/include/nolibc/arch-*.h | while read f; do git show dfef4fc45d5713eb23d87f0863aff9c33bd4bfaf:$f 2>/dev/null | wc -l | tr -d '\n'; echo " $f"; done
+    157 tools/include/nolibc/arch-aarch64.h
+    199 tools/include/nolibc/arch-arm.h
+    178 tools/include/nolibc/arch-i386.h
+    164 tools/include/nolibc/arch-loongarch.h
+    195 tools/include/nolibc/arch-mips.h
+    0 tools/include/nolibc/arch-powerpc.h
+    160 tools/include/nolibc/arch-riscv.h
+    186 tools/include/nolibc/arch-s390.h
+    176 tools/include/nolibc/arch-x86_64.h
+
+After:
+
+    $ wc -l tools/include/nolibc/arch-*.h
+       54 tools/include/nolibc/arch-aarch64.h
+       84 tools/include/nolibc/arch-arm.h
+       90 tools/include/nolibc/arch-i386.h                        /* the last one use stack to pass arguments, reserve as-is */
+       59 tools/include/nolibc/arch-loongarch.h
+      120 tools/include/nolibc/arch-mips.h                        /* the last two use stack to pass arguments, reserve as-is */
+       73 tools/include/nolibc/arch-powerpc.h
+       58 tools/include/nolibc/arch-riscv.h
+       87 tools/include/nolibc/arch-s390.h
+       67 tools/include/nolibc/arch-x86_64.h
+
+syscall.h itself:
+
+    $ wc -l tools/include/nolibc/syscall.h
+    112 tools/include/nolibc/syscall.h 
+
+Willy, do we need to rename my_syscall<N> to _nolibc_syscall<N> to limit
+these macros nolibc internally? I plan to rename all of the new adding
+macros with _nolibc_ (for funcs) or _NOLIBC_ (for variables).
+
+Thomas, do we need to merge the syscall macros from unistd.h to this new
+syscall.h? we do reuse the macros between them, like the _syscall_narg* ones.
+
+Since this new syscall.h does help a lot to shrink the arch-powerpc.h, I plan
+to send this syscall.h at first and then renew our powerpc patchset, what's
+your idea? 
+
+Thanks,
+Zhangjin
+
+> Thanks,
+> Willy
