@@ -2,136 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ED1760921
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25989760927
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbjGYFT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
+        id S231450AbjGYFW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjGYFTX (ORCPT
+        with ESMTP id S231561AbjGYFW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:19:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3B0116
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:19:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AF5A614C7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:19:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F837C433C8;
-        Tue, 25 Jul 2023 05:19:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690262361;
-        bh=FTpOMJ1loIDWedIBp8bMdolnNSSRLdDcUGy5Kfd5820=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H0BK/gW2XqdWD8kelMjt/3dU/vT03Tox7sWL1DG0QuSVnyLC5luP9yY8Tvc0HcYwg
-         lbNEgpBi9jJ8s6MZHiG3kQ/B3sU/Zof9ocJFDXYi/HQYbKI5aIrmjZRwf72xLeoC8R
-         tvO01Oz0P86XQ2JGksGRknEHWlQq9cHl9ners+mdv75CfNKPq4yFsn3Bfs7Gp8HaXY
-         7l5hqjnos93WxOMDq2cRj09dwgW0RI3bgXyrQkn/fM0T6kPi2qZQv0QuXWGj+HTGo4
-         Pur3MP/m/kCE5fSv/sj7DBmKjVgsUw1wiDm5G/hndw1DdrFttOj0I313NEJRkCTJc/
-         6eZbE2/xdKl2w==
-Date:   Tue, 25 Jul 2023 08:19:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ilia Lin <ilia.lin@kernel.org>
-Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeffrey.t.kirsher@intel.com
-Subject: Re: [PATCH] xfrm: kconfig: Fix XFRM_OFFLOAD dependency on XFRM
-Message-ID: <20230725051917.GH11388@unreal>
-References: <20230724090044.2668064-1-ilia.lin@kernel.org>
- <20230724181105.GD11388@unreal>
- <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com>
+        Tue, 25 Jul 2023 01:22:56 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A03A6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:22:53 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so190321cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690262573; x=1690867373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hY+1xbPxNkFP+3LBebcLpH4YNa6U3rIKa7VhFfz0qD0=;
+        b=GOGBZJ4slEjppt1kv078jezT7qk0WPKcKJZ9mviuJxxuP4RwMUFRyxjNFCWVCSyM0e
+         vQN2eGLro43tzAlpARzR9GfH/7mKHjjLJeyegz4lljSxm9o+yffK6XiMFynpYSqv0y0B
+         fb2gAAEuP4dECvd9VpIv2EuwxVZBCgepKFmdtZdAGnx13Hz8sK5Lh97s8Gsnm2+/wbS9
+         dDzmwjm89Gb1r8vrpTRs5V+aayo7IpDP7Fi419yJGzMZXsVZDT4j6zpeWkJ9nyz/Enoz
+         R1boZ9sNKSMmqdrG9VKKojAg0/vsVaQdVFj0CwwXCnEh/zqe92cNVHw6ltoBzQilvI2I
+         ZBRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690262573; x=1690867373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hY+1xbPxNkFP+3LBebcLpH4YNa6U3rIKa7VhFfz0qD0=;
+        b=hZVYLgJ1ymOYZTmdtcmTItIhQt9jwocGSCaKxKxHycbG43Fn+K2NmN7kcQt0jekUPQ
+         Txu0Rfzb/fcWOQvTj0ysqMaK7tehbc0xQiq9cHsX5wC6sNC26Hrqe3QBNx3Z+ctyrS0b
+         aGcRR13MwDbaZud6wYIq1E6D7WUOnCI0ZZAAgzgCViAbGudH38B8pHDgZb+XRlLErNYN
+         3ea0a+gEyP+ZmFfyRAj83pkM6MrBZWsAd5VmU0QBIFsf5s7K2TCaBS740jFJwGVnQvKV
+         cReqo1FkZCyGAztJ6hUi8AzaNEWKql96EJPYe2qsBSx+Sj+sczLCtVwyojnd/gkAyE4H
+         LeVg==
+X-Gm-Message-State: ABy/qLYX9ZxFZD6kWkR2H4Ao3njqSqUDDB1yYnx7yawYzAFC17y1Br1e
+        gG5rMsCw83NTM/NX5rDkFFrmYVmXUg7U8J/XrE6Mug==
+X-Google-Smtp-Source: APBJJlGXl38AIBCxI+gAPDOq7kVP63ezo9ZpB9gUdDZ9ohmaYamCQePEpqUqe9YRHsaM5M+c3ldEpTtHiYY7pKmhkPg=
+X-Received: by 2002:a05:622a:104d:b0:3ed:86f6:6eab with SMTP id
+ f13-20020a05622a104d00b003ed86f66eabmr95579qte.14.1690262572894; Mon, 24 Jul
+ 2023 22:22:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230721094043.2506691-1-fengwei.yin@intel.com>
+ <20230721094043.2506691-2-fengwei.yin@intel.com> <CAOUHufY0AX_wyBCZ3dNMfTg7C1ZBOZHpYSgG=uOwbeeemyFX6Q@mail.gmail.com>
+ <cd64f4f5-e77b-d51d-637e-51cf8dba8277@intel.com>
+In-Reply-To: <cd64f4f5-e77b-d51d-637e-51cf8dba8277@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 24 Jul 2023 23:22:16 -0600
+Message-ID: <CAOUHufbnsPhjX2nD95dXQmRokHRSZ3hQAmhcVymO9qXUJ-2xpQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/4] madvise: not use mapcount() against large
+ folio for sharing check
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, willy@infradead.org,
+        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 07:41:49AM +0300, Ilia Lin wrote:
-> Hi Leon,
-
-You was already asked do not top-post.
-https://lore.kernel.org/netdev/20230718105446.GD8808@unreal/
-Please stop it.
-
-> 
-> This is exactly like I described:
-> * xfrm.h is included from the net/core/sock.c unconditionally.
-> * If CONFIG_XFRM_OFFLOAD is set, then the xfrm_dst_offload_ok() is
-> being compiled.
-> * If CONFIG_XFRM is not set, the struct dst_entry doesn't have the xfrm member.
-> * xfrm_dst_offload_ok() tries to access the dst->xfrm and that fails to compile.
-
-I asked two questions. First one was "How did you set XFRM_OFFLOAD
-without XFRM?".
-
-Thanks
-
-
-> 
-> 
-> Thanks,
-> Ilia Lin
-> 
-> On Mon, Jul 24, 2023 at 9:11 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Sun, Jul 23, 2023 at 6:27=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel.com=
+> wrote:
+>
+>
+>
+> On 7/22/2023 2:57 AM, Yu Zhao wrote:
+> > On Fri, Jul 21, 2023 at 3:41=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.=
+com> wrote:
+> >>
+> >> The commit
+> >> 07e8c82b5eff ("madvise: convert madvise_cold_or_pageout_pte_range() to
+> >> use folios") replaced the page_mapcount() with folio_mapcount() to
+> >> check whether the folio is shared by other mapping.
+> >>
+> >> But it's not correct for large folio. folio_mapcount() returns the
+> >> total mapcount of large folio which is not suitable to detect whether
+> >> the folio is shared.
+> >>
+> >> Use folio_estimated_sharers() which returns a estimated number of
+> >> shares. That means it's not 100% correct. But it should be OK for
+> >> madvise case here.
+> >>
+> >> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
 > >
-> > On Mon, Jul 24, 2023 at 12:00:44PM +0300, Ilia Lin wrote:
-> > > If XFRM_OFFLOAD is configured, but XFRM is not
+> > Fixes:
+> > Cc: stable
+> OK
+>
 > >
-> > How did you do it?
+> >> @@ -383,7 +383,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t=
+ *pmd,
+> >>                 folio =3D pfn_folio(pmd_pfn(orig_pmd));
+> >>
+> >>                 /* Do not interfere with other mappings of this folio =
+*/
+> >> -               if (folio_mapcount(folio) !=3D 1)
+> >> +               if (folio_estimated_sharers(folio) !=3D 1)
 > >
-> > >, it will cause
-> > > compilation error on include xfrm.h:
-> > >  C 05:56:39 In file included from /src/linux/kernel_platform/msm-kernel/net/core/sock.c:127:
-> > >  C 05:56:39 /src/linux/kernel_platform/msm-kernel/include/net/xfrm.h:1932:30: error: no member named 'xfrm' in 'struct dst_entry'
-> > >  C 05:56:39         struct xfrm_state *x = dst->xfrm;
-> > >  C 05:56:39                                ~~~  ^
-> > >
-> > > Making the XFRM_OFFLOAD select the XFRM.
-> > >
-> > > Fixes: 48e01e001da31 ("ixgbe/ixgbevf: fix XFRM_ALGO dependency")
-> > > Reported-by: Ilia Lin <ilia.lin@kernel.org>
-> > > Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
-> > > ---
-> > >  net/xfrm/Kconfig | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/net/xfrm/Kconfig b/net/xfrm/Kconfig
-> > > index 3adf31a83a79a..3fc2c1bcb5bbe 100644
-> > > --- a/net/xfrm/Kconfig
-> > > +++ b/net/xfrm/Kconfig
-> > > @@ -10,6 +10,7 @@ config XFRM
-> > >
-> > >  config XFRM_OFFLOAD
-> > >       bool
-> > > +     select XFRM
+> > Strictly speaking, this isn't a bug. But it may be ok to include it in
+> > the same patch.
+> OK. I will drop the change for pmd.
+>
 > >
-> > struct dst_entry depends on CONFIG_XFRM and not on CONFIG_XFRM_OFFLOAD,
-> > so it is unclear to me why do you need to add new "select XFRM" line.
+> >>                         goto huge_unlock;
+> >>
+> >>                 if (pageout_anon_only_filter && !folio_test_anon(folio=
+))
+> >> @@ -459,7 +459,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t=
+ *pmd,
+> >>                 if (folio_test_large(folio)) {
+> >>                         int err;
+> >>
+> >> -                       if (folio_mapcount(folio) !=3D 1)
+> >> +                       if (folio_estimated_sharers(folio) !=3D 1)
+> >>                                 break;
+> >>                         if (pageout_anon_only_filter && !folio_test_an=
+on(folio))
+> >>                                 break;
+> >> @@ -682,7 +682,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsi=
+gned long addr,
 > >
-> >    26 struct dst_entry {
-> >    27         struct net_device       *dev;
-> >    28         struct  dst_ops         *ops;
-> >    29         unsigned long           _metrics;
-> >    30         unsigned long           expires;
-> >    31 #ifdef CONFIG_XFRM
-> >    32         struct xfrm_state       *xfrm;
-> >    33 #else
-> >    34         void                    *__pad1;
-> >    35 #endif
-> >    36         int
+> > What about madvise_free_huge_pmd()? Should it be changed as well so
+> > that it's consistent with the first change? Either change both or neith=
+er.
 > >
-> > Thanks
+> >>                 if (folio_test_large(folio)) {
+> >>                         int err;
+> >>
+> >> -                       if (folio_mapcount(folio) !=3D 1)
+> >> +                       if (folio_estimated_sharers(folio) !=3D 1)
+> >
+> > This is another bug fix and should be in a separate patch.
+> OK. Will split to two patches.
+>
+> >
+> >>                                 break;
+> >>                         if (!folio_trylock(folio))
+> >>                                 break;
+> >
+> > Please send two separate fixes, and then:
+> >
+> > Reviewed-by: Yu Zhao <yuzhao@google.com>
+> Thanks a lot. I will drop the mapcount() change for pmd and sent to patch=
+es
+> for madvise_cold_or_pageout_pte_range() and madvise_free_pte_range().
+
+I don't mind including the PMD changes. Either way works for me :)
