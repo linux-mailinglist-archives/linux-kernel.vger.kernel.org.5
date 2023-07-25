@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C1C7626C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E1A7626F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbjGYWfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        id S232897AbjGYWjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbjGYWfY (ORCPT
+        with ESMTP id S232854AbjGYWj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:35:24 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF4B7D95;
-        Tue, 25 Jul 2023 15:28:53 -0700 (PDT)
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1bba04b9df3so21459925ad.0;
-        Tue, 25 Jul 2023 15:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690323762; x=1690928562;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sMgEKoIgRmYHSw5zUWSAc6Af8lxf/je615muBTBUKCE=;
-        b=ht3FIqp84HH+sxd+PXppnv4kRpPWSfaavWRAX3AVIeEjRs/HBIEPWFepnNKauK0xfw
-         I5AYiOygguukZjZKrs6kHeUFUcqImLm80V9hSI1hQn/lAdie7pbhh99scf280RJFd5mi
-         5MCDQm/xQKTFlQFXEk5riiGTPPMsmmPTdea7HJO8HcqrnaCyt2ZGHEaNdm2TW31hkSGT
-         xiJ8Re/rimXDGcFw01MaECDD3k3LzHDjsTFXJxVjnXasT1J3qZh7kUlds46Z34It/It3
-         mgG4d050SC+CZdOSYBH3kVz9i4fNcc0EqxqjrQ0YuZiJNOPtO0PT1BMpNq8wkbQ/NXLi
-         4q9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690323762; x=1690928562;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMgEKoIgRmYHSw5zUWSAc6Af8lxf/je615muBTBUKCE=;
-        b=TCzNjT8JZo9s+HyQFOmqxq5VAg6j2xSYrTSpdifr1bLVjxXrw9S7i6V5YnyzSMqQOV
-         XWufStOwCz1p0LZOQbHgYi+P8JNB1Y+LYWNSTM+w9HB2yFvR9LgnAulOwc+96+gqWaHV
-         oIgHgNZYLcOzwvMTIULyIsYbYpxS47tKOzhfekBJt0oL73SOA7SsZP3YdpOe/Gk1Ry25
-         6sLD9T+a7H9SsYi6Gt/LETPz2jNHgFNfx5c5QrF4WQjX45WWggXdSGmJsD8a0Vr95nL3
-         E/tHa7CgOtojZizE/zK4QXh1WB/WuD/YsjusPF3vwW13sdTDf1BP2LrLeDoj5SJ3+kV2
-         iGSw==
-X-Gm-Message-State: ABy/qLageZtp1sUdCuYiJwTSOM7Eb9GatPltcnOpHfPCRjqTNoMjSi/Y
-        lkw6AxTSdQyThEaleCMRlj4=
-X-Google-Smtp-Source: APBJJlG3HbUkXg5FKlJENU46NUjywMvrQdOG3Eof0CGN+g3dpDqpEave+YEEHOfDYU+4ZMyaCkqBzA==
-X-Received: by 2002:a17:902:820a:b0:1b9:d335:2216 with SMTP id x10-20020a170902820a00b001b9d3352216mr407500pln.20.1690323762263;
-        Tue, 25 Jul 2023 15:22:42 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 1-20020a170902c10100b001bba7aab822sm4443841pli.5.2023.07.25.15.22.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 15:22:41 -0700 (PDT)
-Message-ID: <3040a7d2-6097-4609-c7a3-9e544773f06c@gmail.com>
-Date:   Tue, 25 Jul 2023 15:22:39 -0700
+        Tue, 25 Jul 2023 18:39:29 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089A193E6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690324371; x=1721860371;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=y6b8JOpE4JCii4usujU0tRnoeL9l3tVMhMzSjzkNSlo=;
+  b=DEfcuL1ed4uGGdAZ5PfONHlLq6dedWnbbgPuZtNMrxBXbPGsXfsC2KzX
+   gZfavMlf5wmrC9ARmBTKLjPMwsR4OaPY/0259Oe7bl5jnsm2K75qY+HHN
+   rzUIVYNMPQNWOjQKGwAp3VK1qO+Ft3OA+GLl0ifHMb4fLXIHNw8hKDPj7
+   gXGascnPLp8IIZQcdUzIjwF5dD5IHrqN7zpKxH9Z8q9rzCL9w0NSBw5Ai
+   04BqtTcJBUmvnTTYsjPkMRL7LxU0/kQe3OkFINQPblsa28ahC7WHS6ams
+   JBSOd6OwlCfLXwvWWvSVCEMvGlkw6XZkxPThz+Hz3c9cezZ7RsuSHtPcG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="348132909"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="348132909"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 15:23:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755928194"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="755928194"
+Received: from chrisper-mobl.amr.corp.intel.com (HELO [10.209.69.88]) ([10.209.69.88])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 15:23:45 -0700
+Message-ID: <6f56c604-7580-2d8b-cab0-ad656aa0728a@intel.com>
+Date:   Tue, 25 Jul 2023 15:23:44 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 000/183] 6.1.42-rc1 review
+Subject: Re: [PATCH] x86/traps: Fix load_unaligned_zeropad() handling for
+ shared TDX memory
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230725104507.756981058@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230725104507.756981058@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>
+References: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
+ <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 03:43, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.42 release.
-> There are 183 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.42-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 7/25/23 14:57, Linus Torvalds wrote:
+> I can apply this directly (having written that ex_handler_zeropad())
+> or wait for it to come from the x86 tree?
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Feel free to pull it directly.  Looks fine to me as well:
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
