@@ -2,317 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F8C762006
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFFE762008
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjGYRXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
+        id S231673AbjGYRX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbjGYRXp (ORCPT
+        with ESMTP id S230437AbjGYRXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:23:45 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468A61BDA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:23:42 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-348c7075afcso5835ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:23:42 -0700 (PDT)
+        Tue, 25 Jul 2023 13:23:48 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E5B1BDA;
+        Tue, 25 Jul 2023 10:23:47 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fd190065a7so49103615e9.2;
+        Tue, 25 Jul 2023 10:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690305821; x=1690910621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qF3sszjf/FrquSylk/9mRr73+l28Kpb/a/YUFbhXNsk=;
-        b=VmZvA+x2brUzUH+KemvgtyWwYjvTwhjT3qLhjqHCM5bFgErI9zEQJ5eH5IgUVUpAuJ
-         b+y16Wv3NEhx/j+7Unp82pY5Vlw17+m4FTPZTo6mdUi6NypfKOnYIhc8vDN4l44FXi3b
-         MFLRNodUMeYL0Kj9YFOQrc0mCabxXY/OS0kDtSKlGU8lqYa1xYO3SjiXTF4BYODs63pR
-         CXLjuByBS0nPQrgo6HpGRCT+iPfUUHg5qQkLM2C8QX/J73/FSAuXRdruClViIWGwOcQu
-         +MCXVT09fW9Hz1MwOxPP7fQmrftT/DyGhQg/4VS0HI9BnUNvVceAcD94kWujSD3OrOrJ
-         uOrQ==
+        d=gmail.com; s=20221208; t=1690305826; x=1690910626;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lCjYLQGpUi9LZHFadFMiEEo7QqPcY2DeKsVFl+2aKNU=;
+        b=rZc8FbgcxGUFmb5gc7OQU/Sro9b3WDYmvOw10TDvtAUsu45MuNvr++Eq95bscNrb+k
+         IUgBx4ERTdGauOFSedmrIcK3/t+rDumodi7q1zQT+2bIrKxxECphKHejt2JWdbKcl66V
+         rHfVbPlwquRdRlR/aGKeqoyJuLsIOYZWbJg2LdkArn4E6JOhGoC8lq+YmYPKuYd4FMc7
+         yaauj+HK/2YDF+z3WWiKEdVgiYY2s9ZQieXJWMPrxP+3qaqqEecvJDOjb+UbIVP/3WiH
+         4esQtyY0gLaq7Fo/+jUMe7fyFcNfbVI0jG5LoXY4yuCuFKvhltBndVGX07VQy/BVgkQD
+         4XHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690305821; x=1690910621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qF3sszjf/FrquSylk/9mRr73+l28Kpb/a/YUFbhXNsk=;
-        b=OhDlG/gFYWQubpRoBWDxYxBqNmgN1Ecnw+5UQgXEhFxEE0cpPdSD9TJ+5tymlQRGb2
-         Cj/fadf7lz1P3qOz2l0qjMJ/8oS0OIIPN80NQaNV9NTeahITd10uN2uwgPGtR0VkuM5w
-         Btua9GYF3uJ1XQLQm6mAFfipNzhdLryJ89YZl5I0XnWh62BNi7GXX5BK2yRSc/On+sG6
-         zkEiyWdrZTz14we/RKbQUlhNgaFJdW8GoIkqgrzxyJvf1RVGQP0goSTGNkRJTSA+BEYt
-         2rXBprbM1QExRnBEwRzfwuoho/q6rk6dcCcApDBDBCAEOR2r+Djgt+cCiacmgoZCAYOI
-         DKRQ==
-X-Gm-Message-State: ABy/qLaG8gIFOz+XJ4suwjALC1xozZ1c18kh2xXB+BDSrNYAQ8nl7nSF
-        cUvYVHxgUNlsrMIv+0QfaMD62K4A0E93ElR879GbUQ==
-X-Google-Smtp-Source: APBJJlHnKSkz23cMqgDihmAd3S7ocw9dOBIQVbbrr7YrGS16ZbyRrVTTCw1N5MJAqbqik5Kvt4D4vMItqdgr32+IthU=
-X-Received: by 2002:a05:6e02:1c83:b0:346:676f:350d with SMTP id
- w3-20020a056e021c8300b00346676f350dmr211797ill.11.1690305821406; Tue, 25 Jul
- 2023 10:23:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690305826; x=1690910626;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lCjYLQGpUi9LZHFadFMiEEo7QqPcY2DeKsVFl+2aKNU=;
+        b=ELBmt/MvYE321gdoFk+VboXTTqUfFxm66qCS180F+0/Vx2YktuvU1mxP8MyGGFAmyD
+         hRVZ0oI/yFgYS/ma4FgyUGWXHHGbeiKTH3JfC0vYKAGzUhwgr4iTZg/sF7t5YxGWC6hn
+         yP33UM42p7ibK4NO1cFQVx93Fc8J5NC5aoFqlPENZTXsJExM+YGPyTPu101wLkp2Xt3D
+         o+eX5HMXCUZBZqmBoYZkgIJ8lNtvLYeKMRCbZx4MEf52OUUPJ2rKqqQJW6B6n661h8S2
+         uWFjySYDACoUUVPy30oRwt84adPeQbaLBHZCF935+uYjWjLEVAru0Flh7WqrpBMq6cQ1
+         UJcA==
+X-Gm-Message-State: ABy/qLbDK5zNATJfxdu5AFBdvimwWFcKJNj59sLJicQre6vqKJKuYmIJ
+        nUXqcWStkw3pHtUQQSE2D60=
+X-Google-Smtp-Source: APBJJlGnSy9IQ24p2o5A8KVMr5JGQSx2IGkAk/3kl493CMkTV5w3ePXFoTlGVb108Sah7vITokuXyw==
+X-Received: by 2002:a1c:f707:0:b0:3fc:175:ade7 with SMTP id v7-20020a1cf707000000b003fc0175ade7mr11115010wmh.38.1690305825941;
+        Tue, 25 Jul 2023 10:23:45 -0700 (PDT)
+Received: from skbuf ([188.25.175.105])
+        by smtp.gmail.com with ESMTPSA id e23-20020a05600c219700b003fc02218d6csm16239587wme.25.2023.07.25.10.23.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 10:23:45 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 20:23:43 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v3] net: dsa: mv88e6xxx: Add erratum 3.14 for
+ 88E6390X and 88E6190X
+Message-ID: <20230725172343.qcqmcoygyhcgunmh@skbuf>
+References: <20230721102618.13408-1-ante.knezic@helmholz.de>
+ <20230721102618.13408-1-ante.knezic@helmholz.de>
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-13-rananta@google.com>
- <0841aca6-2824-6a1b-a568-119f8bd220de@redhat.com> <CAJHc60znT5ThqKE3TgTW-0Us3oNv8+KF=81TSK0PbG3tTyJLFQ@mail.gmail.com>
- <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
-In-Reply-To: <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Tue, 25 Jul 2023 10:23:29 -0700
-Message-ID: <CAJHc60xaygC8tX8yFnoFM9YqWg8iE6r5d+kugGwO5KZxDtG3rQ@mail.gmail.com>
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
-To:     Shaoqin Huang <shahuang@redhat.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721102618.13408-1-ante.knezic@helmholz.de>
+ <20230721102618.13408-1-ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shaoqin,
+On Fri, Jul 21, 2023 at 12:26:18PM +0200, Ante Knezic wrote:
+> Fixes XAUI/RXAUI lane alignment errors.
+> Issue causes dropped packets when trying to communicate over
+> fiber via SERDES lanes of port 9 and 10.
+> Errata document applies only to 88E6190X and 88E6390X devices.
+> Requires poking in undocumented registers.
+> 
+> Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> ---
+> V3 : Rework to fit the new phylink_pcs infrastructure
+> V2 : Rework as suggested by Andrew Lunn <andrew@lun.ch> 
+>  * make int lanes[] const 
+>  * reorder prod_nums
+>  * update commit message to indicate we are dealing with
+>    undocumented Marvell registers and magic values
+> ---
+>  drivers/net/dsa/mv88e6xxx/pcs-639x.c | 42 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/drivers/net/dsa/mv88e6xxx/pcs-639x.c b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
+> index 98dd49dac421..50b14804c360 100644
+> --- a/drivers/net/dsa/mv88e6xxx/pcs-639x.c
+> +++ b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
+> @@ -20,6 +20,7 @@ struct mv88e639x_pcs {
+>  	struct mdio_device mdio;
+>  	struct phylink_pcs sgmii_pcs;
+>  	struct phylink_pcs xg_pcs;
+> +	struct mv88e6xxx_chip *chip;
+>  	bool supports_5g;
+>  	phy_interface_t interface;
+>  	unsigned int irq;
+> @@ -205,13 +206,52 @@ static void mv88e639x_sgmii_pcs_pre_config(struct phylink_pcs *pcs,
+>  	mv88e639x_sgmii_pcs_control_pwr(mpcs, false);
+>  }
+>  
+> +static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
+> +{
+> +	const int lanes[] = { MV88E6390_PORT9_LANE0, MV88E6390_PORT9_LANE1,
+> +		MV88E6390_PORT9_LANE2, MV88E6390_PORT9_LANE3,
+> +		MV88E6390_PORT10_LANE0, MV88E6390_PORT10_LANE1,
+> +		MV88E6390_PORT10_LANE2, MV88E6390_PORT10_LANE3 };
+> +	struct mdio_device mdio;
+> +	int err, i;
+> +
+> +	/* 88e6190x and 88e6390x errata 3.14:
+> +	 * After chip reset, SERDES reconfiguration or SERDES core
+> +	 * Software Reset, the SERDES lanes may not be properly aligned
+> +	 * resulting in CRC errors
+> +	 */
+> +
+> +	mdio.bus = mpcs->mdio.bus;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(lanes); i++) {
+> +		mdio.addr = lanes[i];
+> +
+> +		err = mdiodev_c45_write(&mdio, MDIO_MMD_PHYXS,
+> +					0xf054, 0x400C);
+> +		if (err)
+> +			return err;
+> +
+> +		err = mdiodev_c45_write(&mdio, MDIO_MMD_PHYXS,
+> +					0xf054, 0x4000);
+> +		if (err)
+> +			return err;
 
-On Mon, Jul 24, 2023 at 7:32=E2=80=AFPM Shaoqin Huang <shahuang@redhat.com>=
- wrote:
->
->
->
-> On 7/25/23 00:47, Raghavendra Rao Ananta wrote:
-> > On Mon, Jul 24, 2023 at 2:35=E2=80=AFAM Shaoqin Huang <shahuang@redhat.=
-com> wrote:
-> >>
-> >> Hi Raghavendra,
-> >>
-> >> On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
-> >>> The current implementation of the stage-2 unmap walker traverses
-> >>> the given range and, as a part of break-before-make, performs
-> >>> TLB invalidations with a DSB for every PTE. A multitude of this
-> >>> combination could cause a performance bottleneck on some systems.
-> >>>
-> >>> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
-> >>> invalidations until the entire walk is finished, and then
-> >>> use range-based instructions to invalidate the TLBs in one go.
-> >>> Condition deferred TLB invalidation on the system supporting FWB,
-> >>> as the optimization is entirely pointless when the unmap walker
-> >>> needs to perform CMOs.
-> >>>
-> >>> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
-> >>> now serves the stage-2 unmap walker specifically, rather than
-> >>> acting generic.
-> >>>
-> >>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> >>> ---
-> >>>    arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-=
-----
-> >>>    1 file changed, 58 insertions(+), 9 deletions(-)
-> >>>
-> >>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtabl=
-e.c
-> >>> index 5ef098af1736..cf88933a2ea0 100644
-> >>> --- a/arch/arm64/kvm/hyp/pgtable.c
-> >>> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> >>> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pg=
-table_visit_ctx *ctx, kvm_pte_t n
-> >>>        smp_store_release(ctx->ptep, new);
-> >>>    }
-> >>>
-> >>> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, =
-struct kvm_s2_mmu *mmu,
-> >>> -                        struct kvm_pgtable_mm_ops *mm_ops)
-> >>> +struct stage2_unmap_data {
-> >>> +     struct kvm_pgtable *pgt;
-> >>> +     bool defer_tlb_flush_init;
-> >>> +};
-> >>> +
-> >>> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
-> >>> +{
-> >>> +     /*
-> >>> +      * If FEAT_TLBIRANGE is implemented, defer the individual
-> >>> +      * TLB invalidations until the entire walk is finished, and
-> >>> +      * then use the range-based TLBI instructions to do the
-> >>> +      * invalidations. Condition deferred TLB invalidation on the
-> >>> +      * system supporting FWB, as the optimization is entirely
-> >>> +      * pointless when the unmap walker needs to perform CMOs.
-> >>> +      */
-> >>> +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
-> >>> +}
-> >>> +
-> >>> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *u=
-nmap_data)
-> >>> +{
-> >>> +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_d=
-ata->pgt);
-> >>> +
-> >>> +     /*
-> >>> +      * Since __stage2_unmap_defer_tlb_flush() is based on alternati=
-ve
-> >>> +      * patching and the TLBIs' operations behavior depend on this,
-> >>> +      * track if there's any change in the state during the unmap se=
-quence.
-> >>> +      */
-> >>> +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
-> >>> +     return defer_tlb_flush;
-> >>> +}
-> >>> +
-> >>> +static void stage2_unmap_put_pte(const struct kvm_pgtable_visit_ctx =
-*ctx,
-> >>> +                             struct kvm_s2_mmu *mmu,
-> >>> +                             struct kvm_pgtable_mm_ops *mm_ops)
-> >>>    {
-> >>> +     struct stage2_unmap_data *unmap_data =3D ctx->arg;
-> >>> +
-> >>>        /*
-> >>> -      * Clear the existing PTE, and perform break-before-make with
-> >>> -      * TLB maintenance if it was valid.
-> >>> +      * Clear the existing PTE, and perform break-before-make if it =
-was
-> >>> +      * valid. Depending on the system support, the TLB maintenance =
-for
-> >>> +      * the same can be deferred until the entire unmap is completed=
-.
-> >>>         */
-> >>>        if (kvm_pte_valid(ctx->old)) {
-> >>>                kvm_clear_pte(ctx->ptep);
-> >>> -             kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, ctx->addr, =
-ctx->level);
-> >>> +
-> >>> +             if (!stage2_unmap_defer_tlb_flush(unmap_data))
-> >> Why not directly check (unmap_data->defer_tlb_flush_init) here?
-> >>
-> > (Re-sending the reply as the previous one was formatted as HTML and
-> > was blocked by many lists)
-> >
-> > No particular reason per say, but I was just going with the logic of
-> > determining if we need to defer the flush and the WARN_ON() parts
-> > separate.
-> > Any advantage if we directly check in stage2_unmap_put_pte() that I
-> > missed or is this purely for readability?
->
-> Hi Raghavendra,
->
-> I just wondering if before the stage2 walk, we want to defer the tlb
-> flush, but if when walk the stage2, the stage2_unmap_defer_tlb_flush()
-> trigger the WARN_ON() and return don't defer the tlb flush, it will
-> flush the ctx->addr's tlb. But before the WARN_ON() triggered, these tlb
-> will not be flushed, since when walk stage2 done in the
-> kvm_pgtable_stage2_unmap(), the stage2_unmap_defer_tlb_flush() still
-> trigger the WARN_ON() and don't use the tlb range-based flush. Thus some
-> of the tlb are not flushed.
->
-Excellent point!
-> If we directly check the (unmap_data->defer_tlb_flush_init), this isn't
-> change during walking the stage2, so the WARN_ON() should only trigger
-> in kvm_pgtable_stage2_unmap()->stage2_unmap_defer_tlb_flush().
->
-> I'm not sure if it's right since I just think once we set up use the
-> TLBI range-based flush, the result of the
-> __stage2_unmap_defer_tlb_flush() shouldn't change. Otherwise there must
-> have some stale TLB entry.
->
-One solution that I can think of is, if the code triggers the
-WARN_ON(), we flush the entire VM's TLB using
-kvm_call_hyp(__kvm_tlb_flush_vmid) after the entire walk is finished.
-In this special/rare situation, it'll be a little expensive, but we
-will at least be correct, leaving no stale TLBs behind. WDYT?
+I'm not sure which way is preferred by PHY maintainers, but it seems to
+be a useless complication to simulate that you have a struct mdio_device
+for the other lanes when you don't. It appears more appropriate to just
+use mdiobus_c45_write(mpcs->mdio.bus, lanes[i]).
 
-Thank you.
-Raghavendra
-> Thanks,
-> Shaoqin
->
-> >
-> >>> +                     kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
-> >>> +                                     ctx->addr, ctx->level);
-> >> Small indent hint. The ctx->addr can align with __kvm_tlb_flush_vmid_i=
-pa.
-> >>
-> > Ah, yes. I'll adjust this if I send out a v8.
-> >
-> > Thank you.
-> > Raghavendra
-> >> Thanks,
-> >> Shaoqin
-> >>>        }
-> >>>
-> >>>        mm_ops->put_page(ctx->ptep);
-> >>> @@ -1070,7 +1108,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgt=
-able *pgt, u64 addr, u64 size,
-> >>>    static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx =
-*ctx,
-> >>>                               enum kvm_pgtable_walk_flags visit)
-> >>>    {
-> >>> -     struct kvm_pgtable *pgt =3D ctx->arg;
-> >>> +     struct stage2_unmap_data *unmap_data =3D ctx->arg;
-> >>> +     struct kvm_pgtable *pgt =3D unmap_data->pgt;
-> >>>        struct kvm_s2_mmu *mmu =3D pgt->mmu;
-> >>>        struct kvm_pgtable_mm_ops *mm_ops =3D ctx->mm_ops;
-> >>>        kvm_pte_t *childp =3D NULL;
-> >>> @@ -1098,7 +1137,7 @@ static int stage2_unmap_walker(const struct kvm=
-_pgtable_visit_ctx *ctx,
-> >>>         * block entry and rely on the remaining portions being faulte=
-d
-> >>>         * back lazily.
-> >>>         */
-> >>> -     stage2_put_pte(ctx, mmu, mm_ops);
-> >>> +     stage2_unmap_put_pte(ctx, mmu, mm_ops);
-> >>>
-> >>>        if (need_flush && mm_ops->dcache_clean_inval_poc)
-> >>>                mm_ops->dcache_clean_inval_poc(kvm_pte_follow(ctx->old=
-, mm_ops),
-> >>> @@ -1112,13 +1151,23 @@ static int stage2_unmap_walker(const struct k=
-vm_pgtable_visit_ctx *ctx,
-> >>>
-> >>>    int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u6=
-4 size)
-> >>>    {
-> >>> +     int ret;
-> >>> +     struct stage2_unmap_data unmap_data =3D {
-> >>> +             .pgt =3D pgt,
-> >>> +             .defer_tlb_flush_init =3D __stage2_unmap_defer_tlb_flus=
-h(pgt),
-> >>> +     };
-> >>>        struct kvm_pgtable_walker walker =3D {
-> >>>                .cb     =3D stage2_unmap_walker,
-> >>> -             .arg    =3D pgt,
-> >>> +             .arg    =3D &unmap_data,
-> >>>                .flags  =3D KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_T=
-ABLE_POST,
-> >>>        };
-> >>>
-> >>> -     return kvm_pgtable_walk(pgt, addr, size, &walker);
-> >>> +     ret =3D kvm_pgtable_walk(pgt, addr, size, &walker);
-> >>> +     if (stage2_unmap_defer_tlb_flush(&unmap_data))
-> >>> +             /* Perform the deferred TLB invalidations */
-> >>> +             kvm_tlb_flush_vmid_range(pgt->mmu, addr, size);
-> >>> +
-> >>> +     return ret;
-> >>>    }
-> >>>
-> >>>    struct stage2_attr_data {
-> >>
-> >> --
-> >> Shaoqin
-> >>
-> >
->
-> --
-> Shaoqin
->
+There's also the locking question (with the big caveat that we don't
+know what the register writes do!). There's locking at the bus level,
+but the MDIO device isn't locked. So phylink on those other PCSes can
+still do stuff, even in-between the first and the second write to
+undocumented register 0xf054.
+
+I can speculate that writing 0x400c -> 0x4000 is something like: set
+RX_RESET | TX_RESET followed by clear RX_RESET | TX_RESET. Is it ok if
+stuff happens in between these writes - will it stick, or does this
+logically interact with anything else in any other way? I guess we won't
+know. I might be a bit closer to being okay with it if you could confirm
+that some other (unrelated) register write to the PCS does make it
+through (and can be read back) in between the 2 erratum writes.
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int mv88e639x_sgmii_pcs_post_config(struct phylink_pcs *pcs,
+>  					   phy_interface_t interface)
+>  {
+>  	struct mv88e639x_pcs *mpcs = sgmii_pcs_to_mv88e639x_pcs(pcs);
+> +	struct mv88e6xxx_chip *chip = mpcs->chip;
+>  
+>  	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
+>  
+> +	if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
+> +	    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
+> +		mv88e6390_erratum_3_14(mpcs);
+
+You could at least print an error if a write failure occurred, so that
+it doesn't go completely unnoticed.
+
+> +
+>  	return 0;
+>  }
+>  
+> @@ -523,6 +563,7 @@ static int mv88e6390_pcs_init(struct mv88e6xxx_chip *chip, int port)
+>  	mpcs->sgmii_pcs.neg_mode = true;
+>  	mpcs->xg_pcs.ops = &mv88e6390_xg_pcs_ops;
+>  	mpcs->xg_pcs.neg_mode = true;
+> +	mpcs->chip = chip;
+>  
+>  	err = mv88e639x_pcs_setup_irq(mpcs, chip, port);
+>  	if (err)
+> @@ -873,6 +914,7 @@ static int mv88e6393x_pcs_init(struct mv88e6xxx_chip *chip, int port)
+>  	mpcs->xg_pcs.ops = &mv88e6393x_xg_pcs_ops;
+>  	mpcs->xg_pcs.neg_mode = true;
+>  	mpcs->supports_5g = true;
+> +	mpcs->chip = chip;
+>  
+>  	err = mv88e6393x_erratum_4_6(mpcs);
+>  	if (err)
+> -- 
+> 2.11.0
+> 
+
