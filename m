@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9C7761FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8500A761FAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjGYQyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
+        id S232086AbjGYRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbjGYQyC (ORCPT
+        with ESMTP id S231251AbjGYRAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:54:02 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF056270E;
-        Tue, 25 Jul 2023 09:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=m7fAhDuATOTXbBw+03CG8AVOeMC/rQ7dwdJI39b0ePg=; b=iaoymfNpP7Rxl+UOcYficA+N+s
-        l76BWfP+K8D3cEK0NFqByra2UfIii9iAU9yi3DGpbWt/GbeQmPBJmxzdHEyqX9FCRzAjCVP35nrlE
-        9V2dk3mhEr99hLFMuufsq+v8jNeeZhgpPBMgPcSewFpvMrieO6tCdEPV0yiszELJRZTH86jEWJYSY
-        Y8KM344otcBhjcMqabyWxdLInoIyoiaYVf82/kmGEi1cGt1r3BEqZWi+hmR3/DRBjAs8xvJJzAeTQ
-        mnhTz29x7G6U1tN9Ngal6GfWLFrIT2dZDRWnpawLTM4ZUTYoRXJnsyyXpWErzGE/e8fPQhEdTcd51
-        5uFuAOMg==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qOLHr-003GkY-DG; Tue, 25 Jul 2023 16:53:27 +0000
-Date:   Tue, 25 Jul 2023 16:53:27 +0000
-From:   "Dr. David Alan Gilbert" <linux@treblig.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     davem@davemloft.net, benh@kernel.crashing.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sparc: Use shared font data
-Message-ID: <ZL/+Bz5C2Mxx0Msw@gallifrey>
-References: <20230724235851.165871-1-linux@treblig.org>
- <20230725161040.GA832394@ravnborg.org>
+        Tue, 25 Jul 2023 13:00:24 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5EFE3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:00:23 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4R9NZC6kLYz9t5Y;
+        Tue, 25 Jul 2023 19:00:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1690304419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/pQQfYRCDlCBmZdXVr5vu8FxRm/DvMuMVGJa4w/JGdY=;
+        b=KCk2qgSS+AIOhowwapN+Koz2eUV8IhQmMXu3YYKqzvOV+wuLECwVmPr0VOCvgdbe71vNpp
+        9MUvVo9tncKgrRw8kL3NhUpkDbjd0OBBrwjZXPWlIjC8XBq3Dbhx9/SPaEICLUeNHvfBQr
+        gmcv1TCV3AR4/UMdyHULWxAQn1k97kqbE5K8wGnLb2hGvnoBTdrKHbYFLJQSNrk8ymtk1j
+        Pqakchx2m8n3YtBHNwtOv9yNTAG+3Go1F7YpK4zuQuPhqNOih3DfLsmRHZ0KztaKaxYeop
+        XYwgi4PbWYCs7qHgsi2tWe6YWebFies3l+WBSUnkZum6aBlB5vbOlZxX0m8mIQ==
+Message-ID: <36bc5f30-dc72-10a3-c9cb-de9cb5400eb3@mailbox.org>
+Date:   Tue, 25 Jul 2023 19:00:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20230725161040.GA832394@ravnborg.org>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 16:51:09 up 19 days,  2:22,  1 user,  load average: 0.04, 0.03, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
+ Document DRM device reset expectations)
+To:     =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        christian.koenig@amd.com
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
+ <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+ <CAAxE2A6OhFVKSm8VY1iNJx_FvDH-ojfgxvSjTmJUwtcmouoLMw@mail.gmail.com>
+Content-Language: de-CH-frami, en-CA
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <CAAxE2A6OhFVKSm8VY1iNJx_FvDH-ojfgxvSjTmJUwtcmouoLMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: qynhqbm36kdiz38f1fdiu3tjour1z9xz
+X-MBO-RS-ID: 483f794fbe48f4c4bf9
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,46 +71,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Sam Ravnborg (sam@ravnborg.org) wrote:
-> On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
-> > From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> > 
-> > sparc has a 'btext' font used for the console which is almost identical
-> > to the shared font_sun8x16, so use it rather than duplicating the data.
-> > 
-> > They were actually identical until about a decade ago when
-> >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
-> >                         "broken bar" to "vertical line"")
-> > 
-> > which changed the | in the shared font to be a solid
-> > bar rather than a broken bar.  That's the only difference.
-> > 
-> > This was originally spotted by PMD which noticed that PPC does
-> > the same thing with the same data, and they also share a bunch
-> > of functions to manipulate the data.  The PPC code and the functions
-> > I'll look at another time if this patch is OK.
-> > 
-> > Tested very lightly with a boot without FS in qemu.
-> > 
-> > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+On 7/25/23 17:05, Marek Olšák wrote:
+> On Tue, Jul 25, 2023 at 4:03 AM Michel Dänzer
+> <michel.daenzer@mailbox.org> wrote:
+>> On 7/25/23 04:55, André Almeida wrote:
+>>> Hi everyone,
+>>>
+>>> It's not clear what we should do about non-robust OpenGL apps after GPU resets, so I'll try to summarize the topic, show some options and my proposal to move forward on that.
+>>>
+>>> Em 27/06/2023 10:23, André Almeida escreveu:
+>>>> +Robustness
+>>>> +----------
+>>>> +
+>>>> +The only way to try to keep an application working after a reset is if it
+>>>> +complies with the robustness aspects of the graphical API that it is using.
+>>>> +
+>>>> +Graphical APIs provide ways to applications to deal with device resets. However,
+>>>> +there is no guarantee that the app will use such features correctly, and the
+>>>> +UMD can implement policies to close the app if it is a repeating offender,
+>>>> +likely in a broken loop. This is done to ensure that it does not keep blocking
+>>>> +the user interface from being correctly displayed. This should be done even if
+>>>> +the app is correct but happens to trigger some bug in the hardware/driver.
+>>>> +
+>>> Depending on the OpenGL version, there are different robustness API available:
+>>>
+>>> - OpenGL ABR extension [0]
+>>> - OpenGL KHR extension [1]
+>>> - OpenGL ES extension  [2]
+>>>
+>>> Apps written in OpenGL should use whatever version is available for them to make the app robust for GPU resets. That usually means calling GetGraphicsResetStatusARB(), checking the status, and if it encounter something different from NO_ERROR, that means that a reset has happened, the context is considered lost and should be recreated. If an app follow this, it will likely succeed recovering a reset.
+>>>
+>>> What should non-robustness apps do then? They certainly will not be notified if a reset happens, and thus can't recover if their context is lost. OpenGL specification does not explicitly define what should be done in such situations[3], and I believe that usually when the spec mandates to close the app, it would explicitly note it.
+>>>
+>>> However, in reality there are different types of device resets, causing different results. A reset can be precise enough to damage only the guilty context, and keep others alive.
+>>>
+>>> Given that, I believe drivers have the following options:
+>>>
+>>> a) Kill all non-robust apps after a reset. This may lead to lose work from innocent applications.
+>>>
+>>> b) Ignore all non-robust apps OpenGL calls. That means that applications would still be alive, but the user interface would be freeze. The user would need to close it manually anyway, but in some corner cases, the app could autosave some work or the user might be able to interact with it using some alternative method (command line?).
+>>>
+>>> c) Kill just the affected non-robust applications. To do that, the driver need to be 100% sure on the impact of its resets.
+>>>
+>>> RadeonSI currently implements a), as can be seen at [4], while Iris implements what I think it's c)[5].
+>>>
+>>> For the user experience point-of-view, c) is clearly the best option, but it's the hardest to archive. There's not much gain on having b) over a), perhaps it could be an optional env var for such corner case applications.
+>>
+>> I disagree on these conclusions.
+>>
+>> c) is certainly better than a), but it's not "clearly the best" in all cases. The OpenGL UMD is not a privileged/special component and is in no position to decide whether or not the process as a whole (only some thread(s) of which may use OpenGL at all) gets to continue running or not.
 > 
-> Looks good, thanks for the fixes.
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> That's not true.
 
-Thanks
+Which part of what I wrote are you referring to?
 
-> Let's hope someone picks it up...
 
-I was hoping Dave would, but I realise Sparc doesn't get much
-these days.
-Of course if anyone feels guilty about their own patches adding code
-they can take this patch to make ~340 lines of penance.
+> I recommend that you enable b) with your driver and then hang the GPU under different scenarios and see the result.
 
-Dave
+I've been doing GPU driver development for over two decades, I'm perfectly aware what it means. It doesn't change what I wrote above.
 
-> 	Sam
+
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
