@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82B176106C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91111761070
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbjGYKQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        id S232932AbjGYKQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjGYKQm (ORCPT
+        with ESMTP id S233084AbjGYKQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:16:42 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8561BCB
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:16:17 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5221f193817so4212490a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:16:17 -0700 (PDT)
+        Tue, 25 Jul 2023 06:16:48 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C981BDB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:16:29 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99364ae9596so917385466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690280176; x=1690884976;
+        d=linaro.org; s=google; t=1690280188; x=1690884988;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kgjzM14QEiL69p/YLX8lqgzuetXlnguUNrcPLd50K6I=;
-        b=C4czm/+Xz2UutJXlca3VkY/5VlywrDLHuMNp4CGjo7VZ0TpqzJjydvmrSDzTVSgAEt
-         +K3IZtgfB7epGyj4hbxX3wdBDlHFLyGYF8k87sMiH+G1gcqAMx40aZLy7MF9s5xeQP5x
-         fhnbmSwYWkAVdLsXKHBG7KQami1/9ue4beRYmJdyrSe/ka3umBmFTIAsEMhYhkmED0+n
-         h/tD+XzOhnhPcv7zRtsI2fsZdxpvyQNcwnEGlJZJJczCbDOtfM40WLASHHbA4aiLIfjA
-         D/rEU4Og78VLM9QbuzZ0XS+STA60ygyZjzHaQn79vehoGSKmUMX5h5wYMfmhLuvrMwXR
-         vuJQ==
+        bh=qh91NfZ3U4C6egIsotV0MBnxWbLv8ptyWOp86GqgOLI=;
+        b=y1Trlnb4gB4mMV4VUMtKvQCOE5d+e2N3T7I2rUWDAWcYxUHtecj9Bh8rgMshZVdikm
+         1O/Ct4WQ3Xkr4rSfYFzsaZXtoNjQq5CK2Ct1OKaQ/rawtrP0juyFtU/X0c5uRCc6KAa4
+         22j3tPkoy7NOi722CIRS2UkiWX7gQfC9zMQXnFQhE0BxTxscDLsUo/v/mzwPgIyAZutJ
+         0ULT/0ordlkAJ+E7vp0EnJGosyjsm0/ETV52MAKTb+CjFU/QL5lf7soUEjBV9dpYjMiO
+         qElMpzbIFwxB4rwZKJmBTf8ylm5Uya9Futfaf9Vd6OBFxLzyMfq4ZYvabARM0aHe7F4Y
+         uB3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690280176; x=1690884976;
+        d=1e100.net; s=20221208; t=1690280188; x=1690884988;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kgjzM14QEiL69p/YLX8lqgzuetXlnguUNrcPLd50K6I=;
-        b=kHoVgVIg7k3TranJqQ8E0iLtdA45ojOiG9vdBiueq/82mZZ08/BLebDj7YtlBqzyT4
-         L8uGv/CDaYnBsaK8az3x50uItVlvkyYXr5qAOQNZ//78C9/lZ2UvDyZXZ1Y3/Bp1wiAU
-         IyVDJQxrmUYaXdKxXWVYhZ9sSbL04qzmUzrv2edZ22ea+r2aOxokF/JpTeHWyQGzfJHQ
-         NG70WNTeXzF0lJhecSgoHfegTWwhBzd2+b9pATd/ydTbTfZIPCmmnxxlnrSnu2wGrIGx
-         iCK+0LxvJVingLBoQ9FG9UHohbhrn9n/AGy3VppXa0xApTF0/wDvhPiL/27LB1jujRlU
-         hlKg==
-X-Gm-Message-State: ABy/qLaIVBvN/F44gm4aOKlazkbSOg7DyCFBTGukDeUfZZpzL78UgJmg
-        opw5W3kvCXcifCleoUmKqMdg/A==
-X-Google-Smtp-Source: APBJJlGBMU5DGuFGwk0qtfh0c2aQo1t0zRXQTiXXDi0POVtlnNNbgD2TyBllza9yPhuzHMFnWRx1Kg==
-X-Received: by 2002:aa7:d410:0:b0:522:3a0d:38c2 with SMTP id z16-20020aa7d410000000b005223a0d38c2mr3214909edq.9.1690280176127;
-        Tue, 25 Jul 2023 03:16:16 -0700 (PDT)
+        bh=qh91NfZ3U4C6egIsotV0MBnxWbLv8ptyWOp86GqgOLI=;
+        b=ApwsVo9ePDexKZSEjRMQUgXo7Q0x3CLutsXwVeXjntVuaz8ydbe/evY8gE5BX/1zNS
+         yasWa3F8cQkkKnkjWPda2mMyxB0IqVgsiqJp1oGCZ8ZEl/3GIhtjNEwKnQCnKvSx7+A8
+         g3iGCO1pcOgKLVNBXHHGFAbqy3xOSXO+w1Q+PPVv50/sVyYvYHEwxCzPaCvIJ00196BL
+         swMZVM+2P/S6cXiEC62jynfDUlD282lrrxTBTQFF/mjeTp5LKD33QRODMbQr7b84RkwY
+         N3jqBTHRQc31/FbhE6bEdTB9C1a9FzOyhpQWY7RV72DbWejVDP78TcAuNsuix/EfTRuS
+         XYFQ==
+X-Gm-Message-State: ABy/qLadfztkkVZbUI3fe8gDM0RL3i05EEw2YIWlLLi7vOx8UUYlQoK5
+        p/EaF+bo6k/pXIZMSQ2kzcHtHw==
+X-Google-Smtp-Source: APBJJlH33uo36eZTl/SakfzC2vCOa5Iq3OoPoR12EwPKr7KqHe676HH+tsYFj1dM6TCCidzg3zGjDA==
+X-Received: by 2002:a17:906:15b:b0:993:e9b8:90f4 with SMTP id 27-20020a170906015b00b00993e9b890f4mr13107763ejh.8.1690280188528;
+        Tue, 25 Jul 2023 03:16:28 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id f23-20020a05640214d700b005224ec27dd7sm544171edx.66.2023.07.25.03.16.14
+        by smtp.gmail.com with ESMTPSA id l23-20020a1709065a9700b00997e00e78e6sm7944779ejq.112.2023.07.25.03.16.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 03:16:15 -0700 (PDT)
+        Tue, 25 Jul 2023 03:16:28 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: display: msm: sm6125-mdss: drop unneeded status from examples
-Date:   Tue, 25 Jul 2023 12:16:10 +0200
-Message-Id: <20230725101610.75122-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] media: dt-bindings: drop unneeded status from examples
+Date:   Tue, 25 Jul 2023 12:16:25 +0200
+Message-Id: <20230725101625.75162-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -84,40 +82,33 @@ Example DTS should not have 'status' property.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml   | 6 ------
- 1 file changed, 6 deletions(-)
+ .../devicetree/bindings/media/cec/nvidia,tegra114-cec.yaml       | 1 -
+ Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml   | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-index 2525482424cb..479c82e6a0d8 100644
---- a/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-@@ -95,8 +95,6 @@ examples:
-         #size-cells = <1>;
-         ranges;
- 
+diff --git a/Documentation/devicetree/bindings/media/cec/nvidia,tegra114-cec.yaml b/Documentation/devicetree/bindings/media/cec/nvidia,tegra114-cec.yaml
+index 369c48fd9bf9..a6b73498bc21 100644
+--- a/Documentation/devicetree/bindings/media/cec/nvidia,tegra114-cec.yaml
++++ b/Documentation/devicetree/bindings/media/cec/nvidia,tegra114-cec.yaml
+@@ -53,6 +53,5 @@ examples:
+         interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+         clocks = <&tegra_car TEGRA124_CLK_CEC>;
+         clock-names = "cec";
 -        status = "disabled";
--
-         display-controller@5e01000 {
-             compatible = "qcom,sm6125-dpu";
-             reg = <0x05e01000 0x83208>,
-@@ -170,8 +168,6 @@ examples:
-             #address-cells = <1>;
-             #size-cells = <0>;
- 
--            status = "disabled";
--
-             ports {
-                 #address-cells = <1>;
-                 #size-cells = <0>;
-@@ -210,8 +206,6 @@ examples:
- 
-             required-opps = <&rpmpd_opp_svs>;
-             power-domains = <&rpmpd SM6125_VDDMX>;
--
--            status = "disabled";
-         };
+         hdmi-phandle = <&hdmi>;
      };
- ...
+diff --git a/Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml b/Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml
+index 19a39d753aad..b68141264c0e 100644
+--- a/Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml
+@@ -143,7 +143,6 @@ examples:
+         mipid02: csi2rx@14 {
+             compatible = "st,st-mipid02";
+             reg = <0x14>;
+-            status = "okay";
+             clocks = <&clk_ext_camera_12>;
+             clock-names = "xclk";
+             VDDE-supply = <&vdd>;
 -- 
 2.34.1
 
