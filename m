@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E51761205
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F66476120B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbjGYK6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S233501AbjGYK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjGYK5j (ORCPT
+        with ESMTP id S229896AbjGYK5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:57:39 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05B744AE
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:54:55 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PAsHwK123353;
-        Tue, 25 Jul 2023 05:54:17 -0500
+        Tue, 25 Jul 2023 06:57:48 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9B74681
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:54:58 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PAsM5E120210;
+        Tue, 25 Jul 2023 05:54:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690282457;
-        bh=SwcMFWiCJYUPWBsu0oXOCaBNv7L8/pesXlNBfjmF+7M=;
+        s=ti-com-17Q1; t=1690282462;
+        bh=1Tr16exx6DXVaYsuFc9m0k4ZA754UJ5X8BwrxSc7E3w=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UMsoaCaeaSB58ScEoaK0XR+mmWNMNUonHG7QytsKAyfWmzU/mDJX1kGqzX1/lh07D
-         t8EzKo4UJR5EhFycJmUVi0K6oYYevZ86qOea0bR/SxBxHMO4PXlhBUHRbCGNyqLsLX
-         LSH33BSmIK1qAbFP3puomjXYJIZ1H3pGkTxBfB14=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PAsH54102825
+        b=rUqgbDOfY6XkBX2dV/QOC3zx3tQRJW3gYhVAZ1+uFHBfOIJ8uxbA8JLw33Es4CGN/
+         zEr/hzfZFp+FW6kWd8rfyS/tmi6HPMP6ckxfT8+IIn6cLkE1mUohzWaQ7V3d00oic3
+         3xafXuF4/zQY3yxXyfB0fvWESrd1nYAuStaKYJsA=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PAsM0i076843
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 05:54:17 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 25 Jul 2023 05:54:22 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 05:54:16 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 05:54:21 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 05:54:16 -0500
+ Frontend Transport; Tue, 25 Jul 2023 05:54:21 -0500
 Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PArnkY091635;
-        Tue, 25 Jul 2023 05:54:12 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PArnkZ091635;
+        Tue, 25 Jul 2023 05:54:17 -0500
 From:   Udit Kumar <u-kumar1@ti.com>
 To:     <vigneshr@ti.com>, <nm@ti.com>, <catalin.marinas@arm.com>,
         <will@kernel.org>, <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
@@ -48,10 +48,12 @@ To:     <vigneshr@ti.com>, <nm@ti.com>, <catalin.marinas@arm.com>,
         <rafal@milecki.pl>, <peng.fan@nxp.com>, <john.garry@huawei.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-CC:     Judith Mendez <jm@ti.com>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH 5/7] arm64: defconfig: Enable MCAN driver
-Date:   Tue, 25 Jul 2023 16:23:44 +0530
-Message-ID: <20230725105346.1981285-6-u-kumar1@ti.com>
+CC:     Udit Kumar <u-kumar1@ti.com>,
+        Martin Petersen <martin.petersen@oracle.com>,
+        James Bottomley <jejb@linux.ibm.com>
+Subject: [PATCH 6/7] arm64: defconfig: Enable UFS config
+Date:   Tue, 25 Jul 2023 16:23:45 +0530
+Message-ID: <20230725105346.1981285-7-u-kumar1@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230725105346.1981285-1-u-kumar1@ti.com>
 References: <20230725105346.1981285-1-u-kumar1@ti.com>
@@ -69,33 +71,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Judith Mendez <jm@ti.com>
+This patch enables UFS BSG device node.
 
-Enable CAN_M_CAN and CAN_M_CAN_PLATFORM to be built
-as modules by default.
-CAN is used in AM68 SK, J721E EVM, J721S2, AM642
-AM642-Phyboards.
+Also enable CDNS and TI UFS drivers as modules,
+needed for UFS feature on TI platform J721E EVM .
 
-Signed-off-by: Judith Mendez <jm@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Martin Petersen <martin.petersen@oracle.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
 Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/configs/defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 28c03799d1e0..743c165e31a4 100644
+index 743c165e31a4..63ca68081139 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -180,6 +180,8 @@ CONFIG_NET_ACT_GATE=m
- CONFIG_QRTR_SMD=m
- CONFIG_QRTR_TUN=m
- CONFIG_CAN=m
-+CONFIG_CAN_M_CAN=m
-+CONFIG_CAN_M_CAN_PLATFORM=m
- CONFIG_BT=m
- CONFIG_BT_HIDP=m
- # CONFIG_BT_LE is not set
+@@ -1052,10 +1052,13 @@ CONFIG_MMC_SDHCI_XENON=y
+ CONFIG_MMC_SDHCI_AM654=y
+ CONFIG_MMC_OWL=y
+ CONFIG_SCSI_UFSHCD=y
++CONFIG_SCSI_UFS_BSG=y
+ CONFIG_SCSI_UFSHCD_PLATFORM=y
++CONFIG_SCSI_UFS_CDNS_PLATFORM=m
+ CONFIG_SCSI_UFS_QCOM=m
+ CONFIG_SCSI_UFS_HISI=y
+ CONFIG_SCSI_UFS_RENESAS=m
++CONFIG_SCSI_UFS_TI_J721E=m
+ CONFIG_SCSI_UFS_EXYNOS=y
+ CONFIG_NEW_LEDS=y
+ CONFIG_LEDS_CLASS=y
 -- 
 2.34.1
 
