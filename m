@@ -2,332 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BC7760DEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DB2760DF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbjGYJDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S232229AbjGYJGm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 05:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbjGYJDV (ORCPT
+        with ESMTP id S232045AbjGYJGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:03:21 -0400
-Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [IPv6:2001:41d0:203:375::22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164EE1FFE;
-        Tue, 25 Jul 2023 02:03:05 -0700 (PDT)
-Message-ID: <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690275782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jkjBh/Kp2KZsbd5A9bxpjAJZxN02Eft+lFTspqPnOCk=;
-        b=C86+NnAgVOWWduY0bypLj9pEd8+f7K2hQWQRdMiOl+4lNoex/sNqQF/OzRY+XF6R/pQj3x
-        RJfrwmBw/U62Xz7gGIQfDrsff33dmTRFy6JUY2ZoASoV8vvmjWXkOHfSOC62P8ONIDS3dq
-        14Z/qjc5TC07VTaeF50qDKBsNsdzhz4=
-Date:   Tue, 25 Jul 2023 17:02:47 +0800
+        Tue, 25 Jul 2023 05:06:39 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698B29B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:06:38 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-583d63ca1e9so29375387b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:06:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690275997; x=1690880797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ke/nyKRStFvVZneO5nE6RIQDFpH9Z/vnZAMFeZPsEiA=;
+        b=TieZfeJWUo3Dm/xxU37zYKNgwAJVnhSMXHi8Thfev3R7ZjhlUyiRbVolnpRs6c0dba
+         4hUI9TMzmbClKTzZqBlcripjBDt4s2AyDZnzniPiZqLDXTtvp7VMSrR5vjSI1KuvTwSD
+         QJ86vhOeJclk9hVi0qGZe9Zm8sl3QaXx8aeH11wTY5VUGa8QxL3kYNQYU1gywkTDGJuS
+         HYmnlBSaCjFVRM20jgmRm8WjQjTEmJQKFiMfyKfgffWwI0dqcKzX4EhKfHQxs+TaAKvS
+         fhyy1Qlt3lVvVzkFw3It+T94z6XIdErz+s0rxgmrLcMb518vJWFQuquEBjHFSu0x97W3
+         UC0g==
+X-Gm-Message-State: ABy/qLbacAcmtEaCYt6uFGjoj4TJcpnCks3XdMLIzcPXtd7/+dog0rK7
+        SKtMziiVhfQj0qOJc6oD6SnZv7BBqDCycw==
+X-Google-Smtp-Source: APBJJlGJ0Yyrr1gog2l6X4lbBDvNtJ8DGnS8rqXgpkYgen55fu35RHcK9+APFY3Ub7mvyYcZgsnFrg==
+X-Received: by 2002:a81:74d6:0:b0:565:9a3d:a3f9 with SMTP id p205-20020a8174d6000000b005659a3da3f9mr9633633ywc.9.1690275997431;
+        Tue, 25 Jul 2023 02:06:37 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id w184-20020a817bc1000000b0057682d3f95fsm3429636ywc.136.2023.07.25.02.06.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 02:06:36 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-cf284f4d7afso5867448276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:06:36 -0700 (PDT)
+X-Received: by 2002:a25:d06:0:b0:d0d:65cf:bcdd with SMTP id
+ 6-20020a250d06000000b00d0d65cfbcddmr5201669ybn.51.1690275996395; Tue, 25 Jul
+ 2023 02:06:36 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-4-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <202307251518.4JYwdU5r-lkp@intel.com>
+In-Reply-To: <202307251518.4JYwdU5r-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 Jul 2023 11:06:24 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWj=FLmkazPbYKPevDrcym2_HDb_U7Mb9YE9ovrP0jJfA@mail.gmail.com>
+Message-ID: <CAMuHMdWj=FLmkazPbYKPevDrcym2_HDb_U7Mb9YE9ovrP0jJfA@mail.gmail.com>
+Subject: Re: drivers/base/regmap/regcache-maple.c:114:23: warning:
+ 'upper_index' is used uninitialized
+To:     kernel test robot <lkp@intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Robot,
 
+On Tue, Jul 25, 2023 at 10:17 AM kernel test robot <lkp@intel.com> wrote:
+> FYI, the error/warning still remains.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
+> commit: f033c26de5a5734625d2dd1dc196745fae186f1b regmap: Add maple tree based register cache
+> date:   4 months ago
+> config: arc-randconfig-r001-20230725 (https://download.01.org/0day-ci/archive/20230725/202307251518.4JYwdU5r-lkp@intel.com/config)
+> compiler: arc-elf-gcc (GCC) 12.3.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251518.4JYwdU5r-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307251518.4JYwdU5r-lkp@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    drivers/base/regmap/regcache-maple.c: In function 'regcache_maple_drop':
+> >> drivers/base/regmap/regcache-maple.c:114:23: warning: 'upper_index' is used uninitialized [-Wuninitialized]
+>      114 |         unsigned long upper_index, upper_last;
+>          |                       ^~~~~~~~~~~
+> >> drivers/base/regmap/regcache-maple.c:114:36: warning: 'upper_last' is used uninitialized [-Wuninitialized]
+>      114 |         unsigned long upper_index, upper_last;
+>          |                                    ^~~~~~~~~~
+>    drivers/base/regmap/regcache-maple.c:113:23: warning: 'lower_index' is used uninitialized [-Wuninitialized]
+>      113 |         unsigned long lower_index, lower_last;
+>          |                       ^~~~~~~~~~~
+>    drivers/base/regmap/regcache-maple.c:113:36: warning: 'lower_last' is used uninitialized [-Wuninitialized]
+>      113 |         unsigned long lower_index, lower_last;
+>          |                                    ^~~~~~~~~~
 
-On 2023/7/24 17:43, Qi Zheng wrote:
-> Currently, the shrinker instances can be divided into the following three
-> types:
->
-> a) global shrinker instance statically defined in the kernel, such as
->     workingset_shadow_shrinker.
->
-> b) global shrinker instance statically defined in the kernel modules, such
->     as mmu_shrinker in x86.
->
-> c) shrinker instance embedded in other structures.
->
-> For case a, the memory of shrinker instance is never freed. For case b,
-> the memory of shrinker instance will be freed after synchronize_rcu() when
-> the module is unloaded. For case c, the memory of shrinker instance will
-> be freed along with the structure it is embedded in.
->
-> In preparation for implementing lockless slab shrink, we need to
-> dynamically allocate those shrinker instances in case c, then the memory
-> can be dynamically freed alone by calling kfree_rcu().
->
-> So this commit adds the following new APIs for dynamically allocating
-> shrinker, and add a private_data field to struct shrinker to record and
-> get the original embedded structure.
->
-> 1. shrinker_alloc()
->
-> Used to allocate shrinker instance itself and related memory, it will
-> return a pointer to the shrinker instance on success and NULL on failure.
->
-> 2. shrinker_free_non_registered()
->
-> Used to destroy the non-registered shrinker instance.
-
-At least I don't like this name. I know you want to tell others
-this function only should be called when shrinker has not been
-registed but allocated. Maybe shrinker_free() is more simple.
-And and a comment to tell the users when to use it.
+These are false positives...
 
 >
-> 3. shrinker_register()
 >
-> Used to register the shrinker instance, which is same as the current
-> register_shrinker_prepared().
+> vim +/upper_index +114 drivers/base/regmap/regcache-maple.c
 >
-> 4. shrinker_unregister()
->
-> Used to unregister and free the shrinker instance.
->
-> In order to simplify shrinker-related APIs and make shrinker more
-> independent of other kernel mechanisms, subsequent submissions will use
-> the above API to convert all shrinkers (including case a and b) to
-> dynamically allocated, and then remove all existing APIs.
->
-> This will also have another advantage mentioned by Dave Chinner:
->
-> ```
-> The other advantage of this is that it will break all the existing
-> out of tree code and third party modules using the old API and will
-> no longer work with a kernel using lockless slab shrinkers. They
-> need to break (both at the source and binary levels) to stop bad
-> things from happening due to using uncoverted shrinkers in the new
-> setup.
-> ```
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->   include/linux/shrinker.h |   6 +++
->   mm/shrinker.c            | 113 +++++++++++++++++++++++++++++++++++++++
->   2 files changed, 119 insertions(+)
->
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 961cb84e51f5..296f5e163861 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -70,6 +70,8 @@ struct shrinker {
->   	int seeks;	/* seeks to recreate an obj */
->   	unsigned flags;
->   
-> +	void *private_data;
-> +
->   	/* These are for internal use */
->   	struct list_head list;
->   #ifdef CONFIG_MEMCG
-> @@ -98,6 +100,10 @@ struct shrinker {
->   
->   unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
->   			  int priority);
-> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
-> +void shrinker_free_non_registered(struct shrinker *shrinker);
-> +void shrinker_register(struct shrinker *shrinker);
-> +void shrinker_unregister(struct shrinker *shrinker);
->   
->   extern int __printf(2, 3) prealloc_shrinker(struct shrinker *shrinker,
->   					    const char *fmt, ...);
-> diff --git a/mm/shrinker.c b/mm/shrinker.c
-> index 0a32ef42f2a7..d820e4cc5806 100644
-> --- a/mm/shrinker.c
-> +++ b/mm/shrinker.c
-> @@ -548,6 +548,119 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
->   	return freed;
->   }
->   
-> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...)
-> +{
-> +	struct shrinker *shrinker;
-> +	unsigned int size;
-> +	va_list __maybe_unused ap;
-> +	int err;
-> +
-> +	shrinker = kzalloc(sizeof(struct shrinker), GFP_KERNEL);
-> +	if (!shrinker)
-> +		return NULL;
-> +
-> +#ifdef CONFIG_SHRINKER_DEBUG
-> +	va_start(ap, fmt);
-> +	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
-> +	va_end(ap);
-> +	if (!shrinker->name)
-> +		goto err_name;
-> +#endif
+>    106
+>    107  static int regcache_maple_drop(struct regmap *map, unsigned int min,
+>    108                                 unsigned int max)
+>    109  {
+>    110          struct maple_tree *mt = map->cache;
+>    111          MA_STATE(mas, mt, min, max);
+>    112          unsigned long *entry, *lower, *upper;
+>    113          unsigned long lower_index, lower_last;
+>  > 114          unsigned long upper_index, upper_last;
+>    115          int ret;
+>    116
+>    117          lower = NULL;
+>    118          upper = NULL;
+>    119
+>    120          mas_lock(&mas);
+>    121
+>    122          mas_for_each(&mas, entry, max) {
+>    123                  /*
+>    124                   * This is safe because the regmap lock means the
+>    125                   * Maple lock is redundant, but we need to take it due
+>    126                   * to lockdep asserts in the maple tree code.
+>    127                   */
+>    128                  mas_unlock(&mas);
+>    129
+>    130                  /* Do we need to save any of this entry? */
+>    131                  if (mas.index < min) {
+>    132                          lower_index = mas.index;
+>    133                          lower_last = min -1;
+>    134
+>    135                          lower = kmemdup(entry, ((min - mas.index) *
+>    136                                                  sizeof(unsigned long)),
+>    137                                          GFP_KERNEL);
 
-So why not introduce another helper to handle this and declare it
-as a void function when !CONFIG_SHRINKER_DEBUG? Something like the
-following:
+ lower{,_index,_last} and ...
 
-#ifdef CONFIG_SHRINKER_DEBUG
-static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-char *fmt,
-                                        va_list vargs)
+>    138                          if (!lower) {
+>    139                                  ret = -ENOMEM;
+>    140                                  goto out;
+>    141                          }
+>    142                  }
+>    143
+>    144                  if (mas.last > max) {
+>    145                          upper_index = max + 1;
+>    146                          upper_last = mas.last;
+>    147
+>    148                          upper = kmemdup(&entry[max + 1],
+>    149                                          ((mas.last - max) *
+>    150                                           sizeof(unsigned long)),
+>    151                                          GFP_KERNEL);
 
-{
-     shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, vargs);
-     return shrinker->name ? 0 : -ENOMEM;
-}
-#else
-static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-char *fmt,
-                                        va_list vargs)
-{
-     return 0;
-}
-#endif
+upper{,_index,_last} are always initialized together, ...
 
-> +	shrinker->flags = flags;
-> +
-> +	if (flags & SHRINKER_MEMCG_AWARE) {
-> +		err = prealloc_memcg_shrinker(shrinker);
-> +		if (err == -ENOSYS)
-> +			shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
-> +		else if (err == 0)
-> +			goto done;
-> +		else
-> +			goto err_flags;
-> +	}
-> +
-> +	/*
-> +	 * The nr_deferred is available on per memcg level for memcg aware
-> +	 * shrinkers, so only allocate nr_deferred in the following cases:
-> +	 *  - non memcg aware shrinkers
-> +	 *  - !CONFIG_MEMCG
-> +	 *  - memcg is disabled by kernel command line
-> +	 */
-> +	size = sizeof(*shrinker->nr_deferred);
-> +	if (flags & SHRINKER_NUMA_AWARE)
-> +		size *= nr_node_ids;
-> +
-> +	shrinker->nr_deferred = kzalloc(size, GFP_KERNEL);
-> +	if (!shrinker->nr_deferred)
-> +		goto err_flags;
-> +
-> +done:
-> +	return shrinker;
-> +
-> +err_flags:
-> +#ifdef CONFIG_SHRINKER_DEBUG
-> +	kfree_const(shrinker->name);
-> +	shrinker->name = NULL;
+>    152                          if (!upper) {
+>    153                                  ret = -ENOMEM;
+>    154                                  goto out;
+>    155                          }
+>    156                  }
+>    157
+>    158                  kfree(entry);
+>    159                  mas_lock(&mas);
+>    160                  mas_erase(&mas);
+>    161
+>    162                  /* Insert new nodes with the saved data */
+>    163                  if (lower) {
 
-This could be shrinker_debugfs_name_free()
+but these gatekeepers...
 
-> +err_name:
-> +#endif
-> +	kfree(shrinker);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL(shrinker_alloc);
-> +
-> +void shrinker_free_non_registered(struct shrinker *shrinker)
-> +{
-> +#ifdef CONFIG_SHRINKER_DEBUG
-> +	kfree_const(shrinker->name);
-> +	shrinker->name = NULL;
+>    164                          mas_set_range(&mas, lower_index, lower_last);
+>    165                          ret = mas_store_gfp(&mas, lower, GFP_KERNEL);
+>    166                          if (ret != 0)
+>    167                                  goto out;
+>    168                          lower = NULL;
+>    169                  }
+>    170
+>    171                  if (upper) {
 
-This could be shrinker_debugfs_name_free()
+check only one of them (which are preinitialized at lines 117/118).
 
-> +#endif
-> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-> +		down_write(&shrinker_rwsem);
-> +		unregister_memcg_shrinker(shrinker);
-> +		up_write(&shrinker_rwsem);
-> +	}
-> +
-> +	kfree(shrinker->nr_deferred);
-> +	shrinker->nr_deferred = NULL;
-> +
-> +	kfree(shrinker);
-> +}
-> +EXPORT_SYMBOL(shrinker_free_non_registered);
-> +
-> +void shrinker_register(struct shrinker *shrinker)
-> +{
-> +	down_write(&shrinker_rwsem);
-> +	list_add_tail(&shrinker->list, &shrinker_list);
-> +	shrinker->flags |= SHRINKER_REGISTERED;
-> +	shrinker_debugfs_add(shrinker);
-> +	up_write(&shrinker_rwsem);
-> +}
-> +EXPORT_SYMBOL(shrinker_register);
-> +
-> +void shrinker_unregister(struct shrinker *shrinker)
+>    172                          mas_set_range(&mas, upper_index, upper_last);
+>    173                          ret = mas_store_gfp(&mas, upper, GFP_KERNEL);
+>    174                          if (ret != 0)
+>    175                                  goto out;
+>    176                          upper = NULL;
+>    177                  }
+>    178          }
+>    179
+>    180  out:
+>    181          mas_unlock(&mas);
+>    182          kfree(lower);
+>    183          kfree(upper);
+>    184
+>    185          return ret;
+>    186  }
+>    187
 
-You have made all shrinkers to be dynamically allocated, so
-we should prevent users from allocating shrinkers statically and
-use this function to unregister it. It is better to add a
-flag like SHRINKER_ALLOCATED which is set in shrinker_alloc(),
-and check whether it is set in shrinker_unregister(), if not
-maybe a warning should be added to tell the users what happened.
+Gr{oetje,eeting}s,
 
-> +{
-> +	struct dentry *debugfs_entry;
-> +	int debugfs_id;
-> +
-> +	if (!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))
-> +		return;
-> +
-> +	down_write(&shrinker_rwsem);
-> +	list_del(&shrinker->list);
-> +	shrinker->flags &= ~SHRINKER_REGISTERED;
-> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> +		unregister_memcg_shrinker(shrinker);
-> +	debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
+                        Geert
 
-In the internal of this function, you also could use
-shrinker_debugfs_name_free().
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thanks.
-
-> +	up_write(&shrinker_rwsem);
-> +
-> +	shrinker_debugfs_remove(debugfs_entry, debugfs_id);
-> +
-> +	kfree(shrinker->nr_deferred);
-> +	shrinker->nr_deferred = NULL;
-> +
-> +	kfree(shrinker);
-> +}
-> +EXPORT_SYMBOL(shrinker_unregister);
-> +
->   /*
->    * Add a shrinker callback to be called from the vm.
->    */
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
