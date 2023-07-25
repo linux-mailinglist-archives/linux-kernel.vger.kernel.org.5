@@ -2,117 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DCA761FC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91056761FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjGYRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        id S231542AbjGYRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjGYRFn (ORCPT
+        with ESMTP id S229541AbjGYRHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:05:43 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8211985;
-        Tue, 25 Jul 2023 10:05:39 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbef8ad9bbso58359665e9.0;
-        Tue, 25 Jul 2023 10:05:39 -0700 (PDT)
+        Tue, 25 Jul 2023 13:07:41 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B18FE
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c79a5565aso2640717a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690304738; x=1690909538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2YUR+1v8W/voZcNojBPaaUUVvQAZPetxDPBBz2RD/0k=;
-        b=sOBtHCrgt0k5pmbqlkrW8pb55VVzKoYoLL3sk2y04bbxPHs61Cw1IF6RCGAGm/V1Xk
-         TxcBND/FDqb5MOUP0gwEK35nnoZvlyJuB/mMAWOU+Ob9NbUbjBwENxs6LzlT8rydNGsK
-         piIjq4sOavk3fyVyIzmbiI0VluAhLe4fzlgG/QwFRLKRg36EMP+wXq1Y32/fNZBQcF8w
-         ybSVFjcV/UXoAjmnQntWjjnGhWF8sh4GszangyMoVM3ch2gjD6fcmXi3vT/cxWPyZLHV
-         ieaslON89JBQbWSjL3RFLUnZ7Zip2WeewXM2IqWxFUUSFt+0z3JiMG3kKWA4EtQuOQ3A
-         QEXA==
+        d=google.com; s=20221208; t=1690304859; x=1690909659;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
+        b=YYBgqqNMeO+qTKuQPbqUC7IDLnv4u0Q6/fZRrhVzRrD1vQJLdYUBl9fwaXsv2osqhb
+         mUL26l3vMZXHCIiWM5kdv45k+KqE2mtH+HToDMZ/s9V1G6hRsLM1vZ/2z8h/J0aStSJZ
+         AYbrJqXwvQr21fQWicMEugqbDDiQFNg/ErYyvJvdVca4ig7YnXp+IMFCtssrcA1TXfa3
+         Hb6ImsLjF0aw8W3BUIm19fhfKWZpKyw2OoUI2AX4jWXMIjhYF0NQvfGbWrGkuBkd2qWs
+         JWoLs5i5tIz2eq33yKup8BRZY/HiSg/1fpQzARS/pO2cQVqwVWtUBJG7oV3kD44W2Ufl
+         F21g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690304738; x=1690909538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2YUR+1v8W/voZcNojBPaaUUVvQAZPetxDPBBz2RD/0k=;
-        b=dLw+7H62tBnroYO72HYGlLtftubzeufT9vMK0l27feUxq7WLyKqwm5VP7vxCIAG5GZ
-         ZBLyqr/h/jNukfl4HWitdm/KqtwTPe3WTzeZrASYVCwIo5VYoYFDZ6P0U8MfEkeBicz1
-         usah05OXUNbpzRgB6B7xK/vxajzCEKXDR5E/vc7KSiRuDyrcfgzyTg0GEL98NHhzXNah
-         mSNbTw6qFLufdqoLbAFpVrvbN+yoWTvmRuxGGiplWVTKvTf2XKWMdB0NuY/h7u/dDhoB
-         ylDZ1znwv7/IO+9V2pVhYZngYPR05ZimVsTn5E8cAzfqI23QmdLLNR9pDp3Ekew+WKzM
-         z9tg==
-X-Gm-Message-State: ABy/qLbsNBf4kClNSdbiVwy8q45Ey0R587LcW3vbm+uDoxj7reSmMMBT
-        vF0hAn8jRtWbRjLvxdrZ2Sw=
-X-Google-Smtp-Source: APBJJlEFgSWnRgXdmQ2o6ZO165MFWF2IIzaMFL2OnqpUcFLM56F3JlqVQWktiFO+/Ju2MIyFi3VYHw==
-X-Received: by 2002:a5d:4b4e:0:b0:313:ef93:925a with SMTP id w14-20020a5d4b4e000000b00313ef93925amr10499644wrs.24.1690304737872;
-        Tue, 25 Jul 2023 10:05:37 -0700 (PDT)
-Received: from skbuf ([188.25.175.105])
-        by smtp.gmail.com with ESMTPSA id h18-20020a5d5492000000b003142e438e8csm16970811wrv.26.2023.07.25.10.05.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 10:05:37 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 20:05:35 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "open list:FREESCALE DSPI DRIVER" <linux-spi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PTP HARDWARE CLOCK SUPPORT" <netdev@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH v2] spi: fsl-dspi: Use dev_err_probe() in
- dspi_request_dma()
-Message-ID: <20230725170535.7eh7gciw4j33ds3p@skbuf>
-References: <20230725035038.1702-1-duminjie@vivo.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725035038.1702-1-duminjie@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690304859; x=1690909659;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
+        b=hZlAM7GWPeOqptruRxNQiBuV+rgEgBTi2N/Z3L/vLz5S1G+7MCrREr80qksMORcDL6
+         loKUTncBPi1KGjQuhKIZsehE4+dl+pe99NAo6csd83kvoc8DZiq0plUQ5wSnG+UZbIHz
+         4/gOUIdGivFNqPCdWdrCfoiORySzm9C+845rOP75Kz9p39oIIpXXtrq3wXZ8ztvvjYid
+         7+T8cG+pavQ5lPJ9YsLYYGTTWYqp5K+oArBgD7WWHOnTiYyrrkro3yVlgt820oUqtidf
+         vwRi8Tz8KQliC/j5HZNyp1L+kKsGS/ik9d2O2PspjUrApA7xk1vZTkJ+4qvqqkWKRjCA
+         RKNg==
+X-Gm-Message-State: ABy/qLbsAfRjh1fXKBu1PaVQESq+3LGxxfbaW9U3fxmd4JxzuH1kZV60
+        2fuYTyFZ9nNazpwB97ICIgdq3ps=
+X-Google-Smtp-Source: APBJJlF8ZssWRYSd7JTzlSp3mXs+ZIaAfSkYXZUzHMiFu7ahRQCi+Z+0gx3cYs8KCZ5sHVO59ZX5gy8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a65:67d8:0:b0:55a:f882:137 with SMTP id
+ b24-20020a6567d8000000b0055af8820137mr53902pgs.5.1690304859273; Tue, 25 Jul
+ 2023 10:07:39 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:07:37 -0700
+In-Reply-To: <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <cover.1690255889.git.yan@cloudflare.com> <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
+ <87v8e8xsih.fsf@cloudflare.com> <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
+Message-ID: <ZMABWdaR5/JbBld3@google.com>
+Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Jordan Griege <jgriege@cloudflare.com>,
+        kernel-team@cloudflare.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:50:37AM +0800, Minjie Du wrote:
-> It is possible for dma_request_chan() to return EPROBE_DEFER, which means
-> dev is not ready yet.
-> At this point dev_err() will have no output.
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->  drivers/spi/spi-fsl-dspi.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-> index ca41c8a8b..6aaa529b7 100644
-> --- a/drivers/spi/spi-fsl-dspi.c
-> +++ b/drivers/spi/spi-fsl-dspi.c
-> @@ -503,15 +503,14 @@ static int dspi_request_dma(struct fsl_dspi *dspi, phys_addr_t phy_addr)
->  
->  	dma->chan_rx = dma_request_chan(dev, "rx");
->  	if (IS_ERR(dma->chan_rx)) {
-> -		dev_err(dev, "rx dma channel not available\n");
-> -		ret = PTR_ERR(dma->chan_rx);
-> -		return ret;
-> +		return dev_err_probe(dev, PTR_ERR(dma->chan_rx),
-> +			"rx dma channel not available\n");
+On 07/25, Yan Zhai wrote:
+> On Tue, Jul 25, 2023 at 4:14=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.=
+com> wrote:
+> >
+> > On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
+> > > skb_do_redirect returns various of values: error code (negative), 0
+> > > (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DR=
+OP.
+> > > Such code are not handled at lwt xmit hook in function ip_finish_outp=
+ut2
+> > > and ip6_finish_output, which can cause unexpected problems. This chan=
+ge
+> > > converts the positive status code to proper error code.
+> > >
+> > > Suggested-by: Stanislav Fomichev <sdf@google.com>
+> > > Reported-by: Jordan Griege <jgriege@cloudflare.com>
+> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > >
+> > > ---
+> > > v3: converts also RX side return value in addition to TX values
+> > > v2: code style change suggested by Stanislav Fomichev
+> > > ---
+> > >  net/core/filter.c | 12 +++++++++++-
+> > >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 06ba0e56e369..3e232ce11ca0 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_le=
+vel_proto =3D {
+> > >
+> > >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buf=
+f *skb)
+> > >  {
+> > > -     return dev_forward_skb_nomtu(dev, skb);
+> > > +     int ret =3D dev_forward_skb_nomtu(dev, skb);
+> > > +
+> > > +     if (unlikely(ret > 0))
+> > > +             return -ENETDOWN;
+> > > +
+> > > +     return 0;
+> > >  }
+> > >
+> > >  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+> > > @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct ne=
+t_device *dev,
+> > >       if (likely(!ret)) {
+> > >               skb->dev =3D dev;
+> > >               ret =3D netif_rx(skb);
+> > > +     } else if (ret > 0) {
+> > > +             return -ENETDOWN;
+> > >       }
+> > >
+> > >       return ret;
+> > > @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_devic=
+e *dev, struct sk_buff *skb)
+> > >       ret =3D dev_queue_xmit(skb);
+> > >       dev_xmit_recursion_dec();
+> > >
+> > > +     if (unlikely(ret > 0))
+> > > +             ret =3D net_xmit_errno(ret);
+> > > +
+> > >       return ret;
+> > >  }
+> >
+> > net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to m=
+e
+> > to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
+> > consistent.
+> >
+> In fact I looked at all those errno, but found none actually covers
+> this situation completely. For the redirect ingress case, there are
+> three reasons to fail: backlog full, dev down, and MTU issue. This
+> won't be a problem for typical RX paths, since the error code is
+> usually discarded by call sites of deliver_skb. But redirect ingress
+> opens a call chain that would propagate this error to local sendmsg,
+> which may be very confusing to troubleshoot in a complex environment
+> (especially when backlog fills).
+>=20
+> That said I agree ENOBUF covers the most likely reason to fail
+> (backlog). Let me change to that one in the next version if there are
+> no new suggestions.
 
-This does not have correct alignment either. Tabs are supposed to be
-rendered using 8 spaces.
-
->  	}
->  
->  	dma->chan_tx = dma_request_chan(dev, "tx");
->  	if (IS_ERR(dma->chan_tx)) {
-> -		dev_err(dev, "tx dma channel not available\n");
->  		ret = PTR_ERR(dma->chan_tx);
-> +		dev_err_probe(dev, ret, "tx dma channel not available\n");
->  		goto err_tx_channel;
->  	}
->  
-> -- 
-> 2.39.0
-> 
+nit: also maybe wrap these rx paths into some new net_rx_errno ?
+To mirror the tx side.
+=20
+> > It looks like the Fixes tag for this should point to the change that
+> > introduced BPF for LWT:
+> >
+> > Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+> >
+> Thanks for finding the tag. I was debating if it should be LWT commit
+> or bpf_redirect commit: the error is not handled at LWT, but it seems
+> actually innocent. The actual fix is the return value from the bpf
+> redirect code. Let me incorporate both in the next one to justify
+> better.
+>=20
+> --
+> Yan
