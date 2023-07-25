@@ -2,202 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C49BF76101F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C2C761024
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjGYKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
+        id S233565AbjGYKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbjGYKDO (ORCPT
+        with ESMTP id S233789AbjGYKD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:03:14 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3EA10C7;
-        Tue, 25 Jul 2023 03:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690279359; x=1721815359;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nRox8bHxS/39eurF4RvG/G/NsD5J1/KSWjHQMAHx2Iw=;
-  b=hJbp/KoxPdxIAFE3pe5pmYJiBWE+tC2XE/+OTVkCGIooYC7ji59uYt2G
-   hifdjvh/9rPVvis+2jMuGCwCE5V7nzZOxSmrRLt1SrCnKKYtjvuWf2YXv
-   aMU8UO1k4lOkl73/YttIkl81gNpGm/sZAjkcg5/m2E1kvHTGOSz3vp8Tz
-   7bjkyFRR9wVqPVuZgmUwRzbgqSySsdKQciz1lxHwmAA+3VWyUBbfxnTdr
-   6S7Vedx6dZ/h1iimH9hJsI/DZ3Yn4LW7IeEFEY78Ts4KPM8f+wXak24D6
-   3WfaU1KCLhNQAuGGarvy7fuDq2GKIqtPsM346KY1fs7cWjaDr2za7FXZ4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="366558548"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="366558548"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 03:02:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="972607892"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="972607892"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Jul 2023 03:02:30 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOEs9-000AWl-2Z;
-        Tue, 25 Jul 2023 10:02:29 +0000
-Date:   Tue, 25 Jul 2023 18:01:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org,
-        dmitry.baryshkov@linaro.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
-        quic_fenglinw@quicinc.com, quic_kamalw@quicinc.com,
-        jestar@qti.qualcomm.com
-Subject: Re: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new
- SPMI vibrator
-Message-ID: <202307251741.PMtlVAgD-lkp@intel.com>
-References: <20230725054138.129497-2-quic_fenglinw@quicinc.com>
+        Tue, 25 Jul 2023 06:03:27 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38056270B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:06 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso7991903e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690279384; x=1690884184;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eekhgAluWaFaGs01AcApU+TB0QDmBFjsMaqdtb7wo2M=;
+        b=ettR/lM0ZlPGtXVrR5af8WV5Sn5xjjiEjcig57hnVsgwCzfl1YAQ7UcdWPNNdx26J6
+         EoEJ/KykOSiyVp3V64Rj7plpZf+BNZP1U+4KzJDDrjF1DTd44e1gv69Y9PHGYPEKnzGv
+         AUdIKwD0dmCHezDRqWU965lgMHWjSop+7rAqHd5j/6ISoa2hMbZ6IVsX2jW8ZbDC3T6c
+         shutV2A55O6nCSqFuFIdZ2tu7Qmqz/6dOniqrgBxjQ4jGSkZwLcsJmYqvi6LhGZjPS7C
+         v6fpeHuJx8/IY7HplDMSsnO6rCgaeUyf6zFqe15U2m/vHi55BpGCRxdVOUG9eHD8hO83
+         KgnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690279384; x=1690884184;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eekhgAluWaFaGs01AcApU+TB0QDmBFjsMaqdtb7wo2M=;
+        b=M3FQ7AxN29Q2VlItOmZiD1cKmadJlEpebzzFwuTBy6dKrCaJrNLyjH86wu3uviUbr1
+         HqU7YDs+HumKYsgurfU2xSK6UOfP4urllE8rOrOLa1WRqjdGxApKDGS+CffhNb+/ewba
+         NWxX1vA+Ryo4tPCvVm7TEHBdhcg0loO/rOz9bOl+vT9q3kvAuAJgdm7nRYStWj+Qe/Fv
+         ankpZCpTDNXt4r8VJH0G/HuDE6pSzWujD8OyT3Azvcooi7Ke8PvOwOrVLfaV4nynNP3H
+         fRDUfjR5Ak6EwOtrX5Topwv5dHGMv8C7MGb1sJX4dCWROv/C5Nl14E4N5J+WJTrtkaSg
+         QpQA==
+X-Gm-Message-State: ABy/qLYu5rfyfFfp86gt9ABpXUfS6Y/wCIXaH0kiDF24bULUZ8pdr7i2
+        MOAyfGA1Jp26keV9/k7qXur9uA==
+X-Google-Smtp-Source: APBJJlEo3YetWlnTYjT06dfeYEJnxxnzXnrcm5NDhRIuIq3mSgcEFHkmT4JpwnvCBKmkGLOWIOdgSA==
+X-Received: by 2002:ac2:5931:0:b0:4fb:7d73:d097 with SMTP id v17-20020ac25931000000b004fb7d73d097mr6197340lfi.39.1690279384247;
+        Tue, 25 Jul 2023 03:03:04 -0700 (PDT)
+Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
+        by smtp.gmail.com with ESMTPSA id z3-20020ac25de3000000b004fdc0f2caafsm2695915lfq.48.2023.07.25.03.03.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 03:03:03 -0700 (PDT)
+Message-ID: <1717ccb1-46b3-8ac3-2c09-9558bd12cc40@linaro.org>
+Date:   Tue, 25 Jul 2023 12:03:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725054138.129497-2-quic_fenglinw@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
+ <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
+ <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
+ <d51dee67-02f4-1256-877f-61629c04b08f@linaro.org>
+ <a90461fa-8319-5b87-397f-53ba169a3d31@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <a90461fa-8319-5b87-397f-53ba169a3d31@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenglin,
+On 25.07.2023 11:43, Krzysztof Kozlowski wrote:
+> On 25/07/2023 10:13, Konrad Dybcio wrote:
+>> On 25.07.2023 07:46, Krzysztof Kozlowski wrote:
+>>> On 24/07/2023 22:52, André Apitzsch wrote:
+>>>> Add a compatible for BQ Aquaris M5 (Longcheer L9100).
+>>>>
+>>>> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+>>>> ---
+>>>>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>
+>>>
+>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>
+>>>
+>>> ---
+>>>
+>>> This is an automated instruction, just in case, because many review tags
+>>> are being ignored. If you do not know the process, here is a short
+>>> explanation:
+>>>
+>>> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+>>> versions, under or above your Signed-off-by tag. Tag is "received", when
+>>> provided in a message replied to you on the mailing list. Tools like b4
+>>> can help here. However, there's no need to repost patches *only* to add
+>>> the tags. The upstream maintainer will do that for acks received on the
+>>> version they apply.
+>>>
+>>> https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
+>> Krzysztof, update your bot to paste this link with s/v5.17/latest/g
+> 
+> Is there any difference? :) I would need to update links in all my
+> templates and re-check the links...
+Don't know, but the keyword "latest" in the link always points to the..
+latest available release
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on dtor-input/next]
-[also build test WARNING on dtor-input/for-linus linus/master v6.5-rc3 next-20230725]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Fenglin-Wu/input-pm8xxx-vib-refactor-to-easily-support-new-SPMI-vibrator/20230725-134504
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20230725054138.129497-2-quic_fenglinw%40quicinc.com
-patch subject: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new SPMI vibrator
-config: x86_64-buildonly-randconfig-r002-20230725 (https://download.01.org/0day-ci/archive/20230725/202307251741.PMtlVAgD-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251741.PMtlVAgD-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307251741.PMtlVAgD-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/input/misc/pm8xxx-vibrator.c:190:17: warning: cast to smaller integer type 'enum pm8xxx_vib_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-           vib->hw_type = (enum pm8xxx_vib_type)of_device_get_match_data(dev);
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning generated.
-
-
-vim +190 drivers/input/misc/pm8xxx-vibrator.c
-
-   163	
-   164	static int pm8xxx_vib_probe(struct platform_device *pdev)
-   165	{
-   166		struct pm8xxx_vib *vib;
-   167		struct input_dev *input_dev;
-   168		struct device *dev = &pdev->dev;
-   169		struct regmap *regmap;
-   170		struct reg_field *regs;
-   171		int error, i;
-   172		unsigned int val;
-   173		u32 reg_base;
-   174	
-   175		vib = devm_kzalloc(dev, sizeof(*vib), GFP_KERNEL);
-   176		if (!vib)
-   177			return -ENOMEM;
-   178	
-   179		regmap = dev_get_regmap(dev->parent, NULL);
-   180		if (!regmap)
-   181			return -ENODEV;
-   182	
-   183		input_dev = devm_input_allocate_device(dev);
-   184		if (!input_dev)
-   185			return -ENOMEM;
-   186	
-   187		INIT_WORK(&vib->work, pm8xxx_work_handler);
-   188		vib->vib_input_dev = input_dev;
-   189	
- > 190		vib->hw_type = (enum pm8xxx_vib_type)of_device_get_match_data(dev);
-   191	
-   192		regs = ssbi_vib_regs;
-   193		if (vib->hw_type != SSBI_VIB) {
-   194			error = fwnode_property_read_u32(dev->fwnode, "reg", &reg_base);
-   195			if (error < 0) {
-   196				dev_err(dev, "Failed to read reg address, rc=%d\n", error);
-   197				return error;
-   198			}
-   199	
-   200			if (vib->hw_type == SPMI_VIB_GEN1)
-   201				regs = spmi_vib_gen1_regs;
-   202	
-   203			for (i = 0; i < VIB_MAX_REG; i++)
-   204				if (regs[i].reg != 0)
-   205					regs[i].reg += reg_base;
-   206		}
-   207	
-   208		error = devm_regmap_field_bulk_alloc(dev, regmap, vib->r_fields, regs, VIB_MAX_REG);
-   209		if (error < 0)
-   210		{
-   211			dev_err(dev, "Failed to allocate regmap failed, rc=%d\n", error);
-   212			return error;
-   213		}
-   214	
-   215		error = regmap_field_read(vib->r_fields[VIB_DRV_REG], &val);
-   216		if (error < 0)
-   217			return error;
-   218	
-   219		/* operate in manual mode */
-   220		if (vib->hw_type == SSBI_VIB) {
-   221			val &= SSBI_VIB_DRV_EN_MANUAL_MASK;
-   222			error = regmap_field_write(vib->r_fields[VIB_DRV_REG], val);
-   223			if (error < 0)
-   224				return error;
-   225		}
-   226	
-   227		vib->reg_vib_drv = val;
-   228	
-   229		input_dev->name = "pm8xxx_vib_ffmemless";
-   230		input_dev->id.version = 1;
-   231		input_dev->close = pm8xxx_vib_close;
-   232		input_set_drvdata(input_dev, vib);
-   233		input_set_capability(vib->vib_input_dev, EV_FF, FF_RUMBLE);
-   234	
-   235		error = input_ff_create_memless(input_dev, NULL,
-   236						pm8xxx_vib_play_effect);
-   237		if (error) {
-   238			dev_err(dev, "couldn't register vibrator as FF device\n");
-   239			return error;
-   240		}
-   241	
-   242		error = input_register_device(input_dev);
-   243		if (error) {
-   244			dev_err(dev, "couldn't register input device\n");
-   245			return error;
-   246		}
-   247	
-   248		platform_set_drvdata(pdev, vib);
-   249		return 0;
-   250	}
-   251	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
