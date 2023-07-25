@@ -2,116 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3130576229C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65A076229A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjGYTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
+        id S229798AbjGYTrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjGYTrV (ORCPT
+        with ESMTP id S229470AbjGYTrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Jul 2023 15:47:21 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8141FF7;
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079871FF5;
         Tue, 25 Jul 2023 12:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690314440; x=1721850440;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iYyiH/seA0PV9vabelhVPt3S47rffBj5ZGMDDUyw+Zc=;
-  b=lgQqLgIuTEXosrHhlKsc7suUSA3sgt61TiUH8+MkdYLPr1iKBAGATHD8
-   JCqK1nguofoaIz7285Y9ZtTjr7B5ec9jSUMsuVSRjGuXWgzx8shDTTbJa
-   ARAade3SCXncaNy5Ft1QpBxhIhlWfVAXb3FMWLXKCL+lmV7OvjZAPm+Ag
-   AggiUNvjsfyAskoD1uST/CIOFuTrkeByUAi26+TVaqS+5BfxbH0AFy/1J
-   afOyUeaTFlRVUzywe+GxEbAAWurTY6Nsz7nOQK0csq9Yw7TLRl61cBa7h
-   13tvhEPTPno/6fr/kK1oaDtwLAfeMbBcQvPSUz6DI/wsN2+1sO3sWDy3t
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366710901"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="366710901"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 12:47:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="839957352"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="839957352"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jul 2023 12:47:15 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOO02-0000IH-1J;
-        Tue, 25 Jul 2023 19:47:14 +0000
-Date:   Wed, 26 Jul 2023 03:46:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Tao Zhang <quic_taozha@quicinc.com>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-Subject: Re: [PATCH v7 08/13] coresight-tpdm: Add node to set dsb programming
- mode
-Message-ID: <202307260312.vf3OCV58-lkp@intel.com>
-References: <1690269353-10829-9-git-send-email-quic_taozha@quicinc.com>
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d1c988afebfso153481276.2;
+        Tue, 25 Jul 2023 12:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690314439; x=1690919239;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qeJhTxpV2KdMMMSZLbWge8qm6rDJ0HM+acsXY0ytlKU=;
+        b=PA8xavyt2HOc4k97SAdgucxOUb3/+ImBN0gn0fioaV5W7ZXer4eSAu5M8BGv/3eRWE
+         zhnXJU6OHzjfhVfABYLNdRTWxq9A4xYiX8Wl7v0rzzay3LYVquG2a2RScYvOEUTRwekI
+         KUz+Tafe9+FElePdyBczThkkG5IMK7Blre42rTJRxXJq/D4uA6AXbwc8KwenybeJFBds
+         DsyMMNByA8XSUg7+L2E9pMBEmzBUnOjShg/Au8+v527dXfAPrUNKtHGs/Dcee8wTQXVH
+         rYlTVSWNHl6ldbo60kazW5+mQ+scbOdGhCsm7oA7erwxmacAdo/1TzyV6akyg/SQw7lX
+         xF4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690314439; x=1690919239;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qeJhTxpV2KdMMMSZLbWge8qm6rDJ0HM+acsXY0ytlKU=;
+        b=M3mP1cYpH8BFNzGeaixrNOxOuit1OyGwgIrlplbbifNovroOiS+JfRLB2EJhpwsYMo
+         8sSAVs92KjnBnkuexFXnMqgPBquMIDujRFZWd/6c8Ovbdp3kzS1oymsyhTYEdIdvx8jn
+         fNraJB945L+llzYX5/Q95ICJcYlMvs3D1Vbc+4qsgCrrOhK3bhgihPgn+Mh3ODKw9cm0
+         Bc5JQWvlyVX5Cz3Fm1RkMRYtSavkpS2tXLoBTA5PYU3rLMEgj7N3j73M8fLY7CLgKQ6r
+         HRdTuIzTWsgbJPQ7K/H3+hAGsfJ+vQVB3DonjDf51J6VBIZcuhDTG7sDdkPJcLh3ZSOK
+         GMKw==
+X-Gm-Message-State: ABy/qLb57eKvjiP9B6R9F1MicVyn1OVDE3kv05Sb6EGC7OwIJ1Rop8Fj
+        BwQpJkSJ9MmX0vfF7MNLTGUvg7CXwLvxfwyFGQg=
+X-Google-Smtp-Source: APBJJlH3O1N0+A/LhmIX/UCjjCLprcxDzwP9u1Pgqo1ZYHVk7bomcjWnNWvdljBnCzytABCnQ5kTgfY4xxBUvevldvs=
+X-Received: by 2002:a25:2986:0:b0:d06:66be:b22 with SMTP id
+ p128-20020a252986000000b00d0666be0b22mr9621709ybp.19.1690314439137; Tue, 25
+ Jul 2023 12:47:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690269353-10829-9-git-send-email-quic_taozha@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230725183646.5668-1-pchelkin@ispras.ru>
+In-Reply-To: <20230725183646.5668-1-pchelkin@ispras.ru>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Tue, 25 Jul 2023 15:46:57 -0400
+Message-ID: <CADvbK_dN4Z3kOqmJcNcUGHp56KLF87tKLHt-3BNbyRa=QOR0dw@mail.gmail.com>
+Subject: Re: [PATCH] tipc: stop tipc crypto on failure in tipc_node_create
+To:     Fedor Pchelkin <pchelkin@ispras.ru>
+Cc:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+On Tue, Jul 25, 2023 at 2:37=E2=80=AFPM Fedor Pchelkin <pchelkin@ispras.ru>=
+ wrote:
+>
+> If tipc_link_bc_create() fails inside tipc_node_create() for a newly
+> allocated tipc node then we should stop its tipc crypto and free the
+> resources allocated with a call to tipc_crypto_start().
+>
+> Call tipc_crypto_stop() in that case. Also extract the similar error exit
+> paths into a goto statement.
+>
+> Found by Linux Verification Center (linuxtesting.org).
+>
+> Fixes: cb8092d70a6f ("tipc: move bc link creation back to tipc_node_creat=
+e")
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> ---
+>  net/tipc/node.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/tipc/node.c b/net/tipc/node.c
+> index 5e000fde8067..0d64005a803b 100644
+> --- a/net/tipc/node.c
+> +++ b/net/tipc/node.c
+> @@ -546,9 +546,7 @@ struct tipc_node *tipc_node_create(struct net *net, u=
+32 addr, u8 *peer_id,
+>  #ifdef CONFIG_TIPC_CRYPTO
+>         if (unlikely(tipc_crypto_start(&n->crypto_rx, net, n))) {
+>                 pr_warn("Failed to start crypto RX(%s)!\n", n->peer_id_st=
+ring);
+> -               kfree(n);
+> -               n =3D NULL;
+> -               goto exit;
+> +               goto free_node;
+>         }
+>  #endif
+>         n->addr =3D addr;
+> @@ -583,9 +581,7 @@ struct tipc_node *tipc_node_create(struct net *net, u=
+32 addr, u8 *peer_id,
+>                                  n->capabilities, &n->bc_entry.inputq1,
+>                                  &n->bc_entry.namedq, snd_l, &n->bc_entry=
+.link)) {
+>                 pr_warn("Broadcast rcv link creation failed, no memory\n"=
+);
+> -               kfree(n);
+> -               n =3D NULL;
+> -               goto exit;
+> +               goto stop_crypto;
+>         }
+>         tipc_node_get(n);
+Can you please try moving up tipc_node_get(n) ahead tipc_link_bc_create()
+and use tipc_node_put(n) to replace kfree(n) to avoid the extra
+tipc_crypto_stop() call below?
 
-kernel test robot noticed the following build warnings:
+Thanks.
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.5-rc3 next-20230725]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Zhang/coresight-tpdm-Remove-the-unnecessary-lock/20230725-152235
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/1690269353-10829-9-git-send-email-quic_taozha%40quicinc.com
-patch subject: [PATCH v7 08/13] coresight-tpdm: Add node to set dsb programming mode
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260312.vf3OCV58-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260312.vf3OCV58-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:50: WARNING: Unexpected indentation.
->> Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:50: WARNING: Block quote ends without a blank line; unexpected unindent.
-
-vim +50 Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-
-  > 50	Date:		March 2023
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>         timer_setup(&n->timer, tipc_node_timeout, 0);
+> @@ -610,6 +606,15 @@ struct tipc_node *tipc_node_create(struct net *net, =
+u32 addr, u8 *peer_id,
+>  exit:
+>         spin_unlock_bh(&tn->node_list_lock);
+>         return n;
+> +stop_crypto:
+> +
+> +#ifdef CONFIG_TIPC_CRYPTO
+> +       tipc_crypto_stop(&n->crypto_rx);
+> +free_node:
+> +#endif
+> +       kfree(n);
+> +       spin_unlock_bh(&tn->node_list_lock);
+> +       return NULL;
+>  }
+>
+>  static void tipc_node_calculate_timer(struct tipc_node *n, struct tipc_l=
+ink *l)
+> --
+> 2.41.0
+>
