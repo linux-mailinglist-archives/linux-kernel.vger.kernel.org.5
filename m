@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC13760FFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32BA761001
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjGYJ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S233492AbjGYJ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbjGYJ6z (ORCPT
+        with ESMTP id S233534AbjGYJ7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:58:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A461FDB;
-        Tue, 25 Jul 2023 02:58:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DFAB615E6;
-        Tue, 25 Jul 2023 09:58:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F016AC433C7;
-        Tue, 25 Jul 2023 09:58:37 +0000 (UTC)
-Message-ID: <231e9976-93fe-b8b1-29d9-6c799a8e6a3a@xs4all.nl>
-Date:   Tue, 25 Jul 2023 11:58:36 +0200
+        Tue, 25 Jul 2023 05:59:35 -0400
+Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEAA19B0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:59:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
+        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
+        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=PimzidlpgVVhnYRjK6c7cWmgfe1QJE0ZbWUIM7tRxic=; b=uFtA+5T+aDNXiKrLjNf+s7IXYs
+        MZraosNLvDIjvZqyxSuMpJF5iXcMyQsuxbWxwwzbWaoD4OOJ1mq8SBtP3uxUA0et3vXO0LrMv9piq
+        +Z3F/w27GpUnfIUD2sigx08XWPX5UJzhaoG9J+P8NpN5H6eY2ctkOLur5BlfCxPU3Jx6oDsM4Ka11
+        9B963IwlxbaHZmttu7POHuV7bZSTozKtIiv9I3EV2GGlL+jfIl8nGfUQe1kKc+OZjlweIkJ0c48WZ
+        N/ipy2+lFuop+R4lwSSKU9c4+LFC9iAdFBJ+lE0UzilihTvJMZNnkH+7u/fZntWbH8H50qVUhnWsD
+        FMkb2ARQ==;
+Received: from [192.168.1.4] (port=54975 helo=SH-EX2013.helmholz.local)
+        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.96)
+        (envelope-from <Ante.Knezic@helmholz.de>)
+        id 1qOEpC-0000oB-10;
+        Tue, 25 Jul 2023 11:59:26 +0200
+Received: from linuxdev.helmholz.local (192.168.6.7) by
+ SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.48; Tue, 25 Jul 2023 11:59:25 +0200
+From:   Ante Knezic <ante.knezic@helmholz.de>
+To:     <pabeni@redhat.com>
+CC:     <andrew@lunn.ch>, <ante.knezic@helmholz.de>, <davem@davemloft.net>,
+        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <olteanv@gmail.com>
+Subject: Re: [PATCH net-next v3] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
+Date:   Tue, 25 Jul 2023 11:59:25 +0200
+Message-ID: <20230725095925.25121-1-ante.knezic@helmholz.de>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <30e262679bfdfd975c2880b990fe8375b9860aab.camel@redhat.com>
+References: <30e262679bfdfd975c2880b990fe8375b9860aab.camel@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v7,0/11] media: mediatek: vcodec: separate encoder and
- decoder
-Content-Language: en-US
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230722074230.30558-1-yunfei.dong@mediatek.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230722074230.30558-1-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [192.168.6.7]
+X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
+ SH-EX2013.helmholz.local (192.168.1.4)
+X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/07/2023 09:42, Yunfei Dong wrote:
-> From: Yunfei Dong <yunfei.dong@mediatek.corp-partner.google.com>
+On Tue, 25 Jul 2023 10:56:25 +0200 Paolo Abeni wrote
+> It looks like you are ignoring the errors reported by
+> mv88e6390_erratum_3_14(). Should the above be:
 > 
-> With the driver more and more complex, encoder and decoder need to add more parameter
-> in shared struct 'mtk_vcodec_ctx' and 'mtk_vcodec_dev'. Encoder use about 40% and
-> decoder use 60% parameter. Need to allocate extra unused memory when encoder and decoder
-> working.
+> 		return mv88e6390_erratum_3_14(mpcs);
 > 
-> Separate encoder and decoder in different folder and use independent data struct.
+> instead?
 > 
-> patch 1 remove unused parameter.
-> patch 2~3 align fw and interrupt related interface.
-> patch 4~6 remove the dependency of debug log
-> patch 7~8 separate mtk_vcodec_ctx and mtk_vcodec_dev
-> patch 9 fix unreasonable parameter
-> patch 10 removed unused header files
-> patch 11 separate encoder and decoder in different folder
-> ---
-> Changed from v6:
-> - rebase to: https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=fo-v6.6g.
-> Changed from v5:
-> - fix some words error for patch 3/6/11.
-> - rename mtk_vcodec_comm_drv.h to mtk_vcodec_cmn_drv.h for patch 7.
-> Changed from v4:
-> - add one parameter to record register base for reg_base for patch 3.
-> - add debug string for non ctx log for patch 6.
-> - change the comment of struct mtk_vcodec_dec_ctx and struct mtk_vcodec_enc_ctx for patch 7.
-> - prefer to use struct mtk_vcodec_dec_dev an current period, will re-construct in the future for patch 8.
-> Changed from v3:
-> - re-write commit message for patch 3.
-> Changed from v2:
-> - This patch main changed:
->   1: add different macro mtk_dec_debug and mtk_enc_debug calling common
->      macro mtk_vcodec_debug in order to use dev_dbg instead of pr_debug.
->   2: add different macro mtk_v4l2_venc_dbg and mtk_v4l2_vdec_dbg calling common
->      macro  in order to use dev_dbg instead of pr_debug.
-> Changed from v1:
-> - Change pr_dbg to dev_dbg for mtk_v4l2_level and mtk_vcodec_dbg for patch 4.
-> - Change pr_err to dev_err for mtk_v4l2_err and mtk_vcodec_err for patch 5.
-> - Fix unreasonable parameter for patch 8.
-> ---
-> Yunfei Dong (11):
->   media: mediatek: vcodec: remove unused parameter
->   media: mediatek: vcodec: align fw interface
->   media: mediatek: vcodec: Removing struct 'mtk_vcodec_ctx/dev' for
->     shared interface
->   media: mediatek: vcodec: Removing useless debug log
->   media: mediatek: vcodec: remove the dependency of vcodec debug log
->   media: mediatek: vcodec: replace pr_* with dev_* for v4l2 debug
->     message
->   media: mediatek: vcodec: separate struct 'mtk_vcodec_ctx'
->   media: mediatek: vcodec: separate struct mtk_vcodec_dev
->   media: mediatek: vcodec: fix unreasonable parameter definition and
->     style
->   media: mediatek: vcodec: remove unused include header
->   media: mediatek: vcodec: separate decoder and encoder
 
-Besides the missing argument in patch 6/11 I also get this compiler warning:
-
-drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c: In function 'vpu_enc_ipi_handler':
-drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c:64:31: warning: 'vpu' may be used uninitialized [-Wmaybe-uninitialized]
-   64 |         struct venc_vpu_inst *vpu;
-      |                               ^~~
-
-and this smatch error:
-
-drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:138 mtk_vcodec_get_reg_bases() error: buffer overflow 'mtk_dec_reg_names' 11 <= 11
-
-However, I believe that was introduced by Nicolas' patch series.
-
-I'll try to pinpoint the precise patch.
-
-Regards,
-
-	Hans
+I guess you are right. Would it make sense to do the evaluation for the 
+	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
+above as well?
