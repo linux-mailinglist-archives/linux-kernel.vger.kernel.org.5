@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A561B7603BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2337603C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjGYATj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S231203AbjGYATm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGYATh (ORCPT
+        with ESMTP id S231142AbjGYATj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:19:37 -0400
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500CD115;
-        Mon, 24 Jul 2023 17:19:36 -0700 (PDT)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1bb571ea965so1630771fac.0;
-        Mon, 24 Jul 2023 17:19:36 -0700 (PDT)
+        Mon, 24 Jul 2023 20:19:39 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F1B115;
+        Mon, 24 Jul 2023 17:19:39 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668704a5b5bso4634042b3a.0;
+        Mon, 24 Jul 2023 17:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690244375; x=1690849175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=+qqh8d+I8JLYjOqqDKxKO6P5GvaoCVd7uoNdS5hjoc8=;
-        b=WznFZ7R0xXINrzBLd+nnNChtTQYJDmLk1KC+Y3X999aWQ/YIod2Ab79WDPD/+bAMRk
-         gbsSq7hg12K9hedgWn+H9DwZZj2U1uX6lvkZHmCGFWjEKSbjP5ogBwE3GeHSgM00BOWH
-         uPvcGQD+/JZ/pM2Pj9Xm73hB6lNHAV2sjU0vtGsHGAk6iIzyLTnAtWVHp7JkKbfqZj6O
-         pIYNp8xmN0KM3JjcR3zplzYMUtDaZpBeyyelk92Parj0PRAlBXuiOcbPRaTReLAa+utu
-         9GReVM2JenR8DiUVOCwGYrlRSQknn8wx7KmzW/um1QvGnScZ43qlTBAJQqZwqm0vXCBC
-         1WMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690244375; x=1690849175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690244378; x=1690849178;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+qqh8d+I8JLYjOqqDKxKO6P5GvaoCVd7uoNdS5hjoc8=;
-        b=BA0kfODlhQESsKf6zIbdLUxHACXp2oPKlZ+vnUH++yppOTgxlKgKsVIAgCBzsrjK+x
-         ONbm+yliWJ7CaV7s3SNgtp1vV3aMZOKLBLLky4JJKiGz4xizSiLDtjOiC3/hyduNxERv
-         2ToWlC/mk2HsfMwGXM6d18AGkF1oj/42GlFsSJlCAxlObdVwG7V9zUaA0onZFXsPfahW
-         3kpaCdwGOchHv9hjtdm9qhPZbFUX7GQKGERcff/V34NuH8mL7LgXs2iM2IbEY8xcItNk
-         ozQKIiM1u3YNZFZy7VzEc6gTmnZOLT087yyHt8GWJqotmKaitS5jX9A5sngKDH0quob8
-         opQw==
-X-Gm-Message-State: ABy/qLYxDVk/HDZ484/bJPM0GItTb92hHfPA2K5j649MLlDncSZZfsPj
-        8wiBsJikF4At2Xli4UOEYas=
-X-Google-Smtp-Source: APBJJlFrbO7bpn60zPnXYA0LTLsksVXo6BfRRkQ++wql/vS+iBqNGNOBySOZBqa9PXmjD9ZaTcubGw==
-X-Received: by 2002:a05:6870:51c8:b0:1b7:89b5:7c11 with SMTP id b8-20020a05687051c800b001b789b57c11mr15582524oaj.9.1690244375460;
-        Mon, 24 Jul 2023 17:19:35 -0700 (PDT)
+        bh=ur/5UIDBgXwG6Jd780Yg5waMFnc/eDxnmfp27sGRL7Y=;
+        b=UV8wFxFPlSwyHsXrydC1BGttSUD8lOYHmBhZvhaf/T2014SOsJQLM4SFjYjxITN3Ei
+         /d5uvS56wDOZAdMe9C3XDtvK1JYm22RTo5uN3bZmmiFQmwD6cYOu8wMhXLdP+EqxDzke
+         A1e3A2tm2INM9SnAGh559S/O2gfw6jmkTf/+LzwStrt14aXD2lmOO6cY43yujd/CJdiY
+         3zEVSjNS2nn68dMVK7gutTTViD9b15P7Jp7KVh0Fb9sk0o6/43VeTXyfGP1Op4MYx+Fg
+         FNUnz1SanvO5enx9h3MDiX/BlWnqBIFUjI27Bz92yBRh/UGMK0M7ppyRcP/xK2YE8mzI
+         iyKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690244378; x=1690849178;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ur/5UIDBgXwG6Jd780Yg5waMFnc/eDxnmfp27sGRL7Y=;
+        b=RjvTSt5jE0qxOEsFVOAX65WQhNtUGE6WvMl0ieosHM1mpLVzzY7OV5dGxmGzrh8IGN
+         P4+ApawiI2l67fSWPK4vJUg1zBXxIh31vE9lItCeiCD/ER3i4lwtpQxSGrTLq9gFVZn+
+         IRfzTMBvHV+O5G7CTw0yQ+YB1/em62d1EslVo4so0eTOtub2n4qfdCC2DPfxVI7Tlx5k
+         uuITqJbzg/j47uiGf5dWOHUtUJ/UN1zyreov6I24xF98W1XSpwPLjQVNc9sBHcWq2HaA
+         piKAdWWi+Vt+wL7CmzuygzcwjETRkzjrUV0dHlAYcO0Qq1I2kJEvQ06PeBhgYMYnNZEe
+         Ub8w==
+X-Gm-Message-State: ABy/qLbpXAydVz+XoCgJ8UzzrO8iD6wRwMkyCgKNd4fQpRgZNfuoDLpS
+        qxqVjkc1/rDfjgBMYdwaaJo=
+X-Google-Smtp-Source: APBJJlE0zu9xQr1b0Yyk1rWyWtZRdcIrob1s3mfM+a0+bLXLjgA2N8iULbEgxbjKaZhnSnITG9QZqw==
+X-Received: by 2002:a05:6a00:14c4:b0:675:8f71:28ee with SMTP id w4-20020a056a0014c400b006758f7128eemr13956213pfu.34.1690244378333;
+        Mon, 24 Jul 2023 17:19:38 -0700 (PDT)
 Received: from bangji.roam.corp.google.com ([101.235.25.38])
-        by smtp.gmail.com with ESMTPSA id i22-20020aa787d6000000b006736bce8581sm8602432pfo.16.2023.07.24.17.19.32
+        by smtp.gmail.com with ESMTPSA id i22-20020aa787d6000000b006736bce8581sm8602432pfo.16.2023.07.24.17.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 17:19:34 -0700 (PDT)
+        Mon, 24 Jul 2023 17:19:37 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,10 +60,12 @@ Cc:     Ian Rogers <irogers@google.com>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 1/2] perf tools: Add kallsyms__get_symbol_start()
-Date:   Mon, 24 Jul 2023 17:19:28 -0700
-Message-ID: <20230725001929.368041-1-namhyung@kernel.org>
+Subject: [PATCH v2 2/2] perf machine: Include data symbols in the kernel map
+Date:   Mon, 24 Jul 2023 17:19:29 -0700
+Message-ID: <20230725001929.368041-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+In-Reply-To: <20230725001929.368041-1-namhyung@kernel.org>
+References: <20230725001929.368041-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,82 +79,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kallsyms__get_symbol_start() to get any symbol address from
-kallsyms.  The existing kallsyms__get_function_start() only allows text
-symbols so create this to allow data symbols too.
+When perf record -d is used, it needs data mmaps to symbolize global data.
+But it missed to collect kernel data maps so it cannot symbolize them.
+Instead of having a separate map, just increase the kernel map size to
+include the data section.
 
-Acked-by: Ian Rogers <irogers@google.com>
+Probably we can have a separate kernel map for data, but the current
+code assumes a single kernel map.  So it'd require more changes in other
+places and looks error-prone.  I decided not to go that way for now.
+
+Also it seems the kernel module size already includes the data section.
+
+For example, my system has the following.
+
+  $ grep -e _stext -e _etext -e _edata /proc/kallsyms
+  ffffffff99800000 T _stext
+  ffffffff9a601ac8 T _etext
+  ffffffff9b446a00 D _edata
+
+Size of the text section is (0x9a601ac8 - 0x99800000 = 0xe01ac8) and
+size including data section is (0x9b446a00 - 0x99800000 = 0x1c46a00).
+
+Before:
+  $ perf record -d true
+
+  $ perf report -D | grep MMAP | head -1
+  0 0 0x460 [0x60]: PERF_RECORD_MMAP -1/0: [0xffffffff99800000(0xe01ac8) @ 0xffffffff99800000]: x [kernel.kallsyms]_text
+                                                               ^^^^^^^^
+                                                                 here
+After:
+  $ perf report -D | grep MMAP | head -1
+  0 0 0x460 [0x60]: PERF_RECORD_MMAP -1/0: [0xffffffff99800000(0x1c46a00) @ 0xffffffff99800000]: x [kernel.kallsyms]_text
+                                                               ^^^^^^^^^
+
+Instead of just replacing it to _edata, try _edata first and then fall
+back to _etext just in case.
+
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/event.c | 30 +++++++++++++++++++++++++++---
- tools/perf/util/event.h |  2 ++
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ tools/perf/util/machine.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-index 4cbb092e0684..923c0fb15122 100644
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -93,8 +93,8 @@ struct process_symbol_args {
- 	u64	   start;
- };
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 4e62843d51b7..11de3ca8d4fa 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1216,7 +1216,9 @@ static int machine__get_running_kernel_start(struct machine *machine,
  
--static int find_symbol_cb(void *arg, const char *name, char type,
--			  u64 start)
-+static int find_func_symbol_cb(void *arg, const char *name, char type,
-+			       u64 start)
- {
- 	struct process_symbol_args *args = arg;
+ 	*start = addr;
  
-@@ -110,12 +110,36 @@ static int find_symbol_cb(void *arg, const char *name, char type,
- 	return 1;
- }
- 
-+static int find_any_symbol_cb(void *arg, const char *name,
-+			      char type __maybe_unused, u64 start)
-+{
-+	struct process_symbol_args *args = arg;
-+
-+	if (strcmp(name, args->name))
-+		return 0;
-+
-+	args->start = start;
-+	return 1;
-+}
-+
- int kallsyms__get_function_start(const char *kallsyms_filename,
- 				 const char *symbol_name, u64 *addr)
- {
- 	struct process_symbol_args args = { .name = symbol_name, };
- 
--	if (kallsyms__parse(kallsyms_filename, &args, find_symbol_cb) <= 0)
-+	if (kallsyms__parse(kallsyms_filename, &args, find_func_symbol_cb) <= 0)
-+		return -1;
-+
-+	*addr = args.start;
-+	return 0;
-+}
-+
-+int kallsyms__get_symbol_start(const char *kallsyms_filename,
-+			       const char *symbol_name, u64 *addr)
-+{
-+	struct process_symbol_args args = { .name = symbol_name, };
-+
-+	if (kallsyms__parse(kallsyms_filename, &args, find_any_symbol_cb) <= 0)
- 		return -1;
- 
- 	*addr = args.start;
-diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-index de20e01c9d72..d8bcee2e9b93 100644
---- a/tools/perf/util/event.h
-+++ b/tools/perf/util/event.h
-@@ -360,6 +360,8 @@ size_t perf_event__fprintf(union perf_event *event, struct machine *machine, FIL
- 
- int kallsyms__get_function_start(const char *kallsyms_filename,
- 				 const char *symbol_name, u64 *addr);
-+int kallsyms__get_symbol_start(const char *kallsyms_filename,
-+			       const char *symbol_name, u64 *addr);
- 
- void event_attr_init(struct perf_event_attr *attr);
+-	err = kallsyms__get_function_start(filename, "_etext", &addr);
++	err = kallsyms__get_symbol_start(filename, "_edata", &addr);
++	if (err)
++		err = kallsyms__get_function_start(filename, "_etext", &addr);
+ 	if (!err)
+ 		*end = addr;
  
 -- 
 2.41.0.487.g6d72f3e995-goog
