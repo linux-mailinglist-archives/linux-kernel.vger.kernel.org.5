@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A86761363
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20330761379
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbjGYLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
+        id S234072AbjGYLKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234192AbjGYLKD (ORCPT
+        with ESMTP id S234080AbjGYLK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:10:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B31B30FD
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690283288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIk2rY8kbIKJb0IQXAUy6YHfdWW3cnFIe2mfNcTspbo=;
-        b=XmGrg45GoBLwLHRn8ciWtS/vheV/iLrDIVZ6lcGDNlI6xOtnDAug/0qMZYtIAU+gf4rtgR
-        ypUmF55KXOj84sju0LToqpBnRaED8QnRxx3JnJgYL5dmCg3qxykV0iv2qWcaHeCn7FBAF/
-        DOTp9CFgWIH+daX480IRwmA7YkLxZiY=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-250-h3T_mLCjPcCyaGxxkpZ_GQ-1; Tue, 25 Jul 2023 07:08:06 -0400
-X-MC-Unique: h3T_mLCjPcCyaGxxkpZ_GQ-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-563b4d68e07so1148702a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:08:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690283285; x=1690888085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EIk2rY8kbIKJb0IQXAUy6YHfdWW3cnFIe2mfNcTspbo=;
-        b=gnYnzfQ1sHDbXTj4xOy0bUMgiSUYR9yALwTHdxlcjcBiZJh/wHjfmzI0YPswjUDsgV
-         a3Wb4SqrMCTZREuSSSun0eCGaVh3Cyf+MsdQ89GGfMPmhwFU+FACbVNJ708LTEa4htf9
-         CPxCJ+dT+Obs7U52YMzLpdbHegcMSU+4zc0WwLoL/+16juBC9IArzCeLqmWbnHKExI/V
-         6o/csAgSCU8aIWGL11nK2HShyD9iWof7AHzXPt2yMdyMoq2EtMShw6PjAb7f1KPxWC99
-         q8VgRENC+W0K/p7yqPtOfI+kpgH8gTFd5wAXAX1RtNKTgIRUmj9En15Rf/woY5OeaLSd
-         XHmA==
-X-Gm-Message-State: ABy/qLY315b5z2FcR7gvfIChuxS4wJCnZSWwJEj23If8upHVUwDRn4Nb
-        36CVQ257OXz7iJFGORKRcEiOfbW4G70Z7PwhfozP91Q+MkpXHTzfE4fOUNvocRr4S10gdXkjhuz
-        Kdwp2BCFwCMLg37Ngpqy6ZDqUaK8jDXoOndJL5K3j
-X-Received: by 2002:a17:90b:30cb:b0:268:abf:6431 with SMTP id hi11-20020a17090b30cb00b002680abf6431mr2408052pjb.24.1690283284970;
-        Tue, 25 Jul 2023 04:08:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEUO5iRoKmcTndiV1yc+RB63ntBijY7f5j5g118bUiJEFickPVx8jsUlZUrzSyxeXZ1uOPR28AIDchVPKuta5A=
-X-Received: by 2002:a17:90b:30cb:b0:268:abf:6431 with SMTP id
- hi11-20020a17090b30cb00b002680abf6431mr2408031pjb.24.1690283284663; Tue, 25
- Jul 2023 04:08:04 -0700 (PDT)
+        Tue, 25 Jul 2023 07:10:26 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A55B19AD;
+        Tue, 25 Jul 2023 04:09:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BA2F6558;
+        Tue, 25 Jul 2023 13:08:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690283316;
+        bh=7+4Il3IVc/Zbx80Gpy5A1lPMlipCJSb39p9XylhbdCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qVJz0cSZAewPPEQ3YAJpcHbDNvfn4ykHHKGUEqIBMQC3vzvCxrfbjUZ/T4EW1lKjP
+         S5b0BvCJYCzXqsSKhCCTRAlKcEbrnRFu5PC82egC+C/yGq6qU0zliKQrVPu7E/gwY7
+         D5a64R6qTWA8yiIsH+58SLMCDzKbwLYPiOrtGhts=
+Date:   Tue, 25 Jul 2023 14:09:42 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        petr@tesarici.cz, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
+ dma_declare_coherent_memory()
+Message-ID: <20230725110942.GB31069@pendragon.ideasonboard.com>
+References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
+ <20230724171229.GC11977@pendragon.ideasonboard.com>
+ <31ad16fe8f1435805185ba8e889512ec181a867e.camel@physik.fu-berlin.de>
+ <20230724174331.GD11977@pendragon.ideasonboard.com>
+ <314b21abaade55ba55ccdd930f9fdf24028cadf0.camel@physik.fu-berlin.de>
 MIME-Version: 1.0
-References: <20230718115607.65652-1-omosnace@redhat.com> <x49lefd4aad.fsf@segfault.boston.devel.redhat.com>
-In-Reply-To: <x49lefd4aad.fsf@segfault.boston.devel.redhat.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Tue, 25 Jul 2023 13:07:53 +0200
-Message-ID: <CAFqZXNt5UXWagXu5QR5k5wOAeQJVKWrET4prEzb+5aftFEtyZw@mail.gmail.com>
-Subject: Re: [PATCH] io_uring: don't audit the capability check in io_uring_create()
-To:     Jeff Moyer <jmoyer@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <314b21abaade55ba55ccdd930f9fdf24028cadf0.camel@physik.fu-berlin.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,52 +63,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 3:24=E2=80=AFPM Jeff Moyer <jmoyer@redhat.com> wrot=
-e:
->
-> Hi, Ondrej,
->
-> Ondrej Mosnacek <omosnace@redhat.com> writes:
->
-> > The check being unconditional may lead to unwanted denials reported by
-> > LSMs when a process has the capability granted by DAC, but denied by an
-> > LSM. In the case of SELinux such denials are a problem, since they can'=
-t
-> > be effectively filtered out via the policy and when not silenced, they
-> > produce noise that may hide a true problem or an attack.
-> >
-> > Since not having the capability merely means that the created io_uring
-> > context will be accounted against the current user's RLIMIT_MEMLOCK
-> > limit, we can disable auditing of denials for this check by using
-> > ns_capable_noaudit() instead of capable().
->
-> Could you add a comment, or add some documentation to
-> ns_capable_noaudit() about when it should be used?  It wasn't apparent
-> to me, at least, before this explanation.
+On Tue, Jul 25, 2023 at 07:50:56AM +0200, John Paul Adrian Glaubitz wrote:
+> On Mon, 2023-07-24 at 20:43 +0300, Laurent Pinchart wrote:
+> > > arch/sh is being maintained again, so it's save to keep these boards. At some point, we're
+> > > going to convert the architecture to using Device Trees which should reduce the maintenance
+> > > burden anyways.
+> > 
+> > Keeping the architecture is fine for newer systems, but is anyone really
+> > maintaining the Renesas SH board ?
+> 
+> I own Renesas evaluation boards, including SH7785LCR-based and
+> SH7724-based boards.
 
-This has been requested before, so I finally forced myself to look
-into it and only now I realized that there is a subtle difference
-between the has_capability and capable helpers. As the docstrings say,
-the former doesn't set the PF_SUPERPRIV on the task when the check
-succeeds, while the latter does. The problem is that I don't know what
-the exact implications are and thus I'm not able to document which
-helper should be used in what situation... It is possible some of the
-existing call sites use the wrong helper in the noaudit case (possibly
-including ones that I added/suggested).
+Will you have time to port them to DT, or would you rather focus on
+J-core systems ? Do those boards still boot a mainline kernel ?
 
-The comment at its declaration says "Used super-user privileges" and
-it seems to be used only to propagate into the ASU flag in task
-accounting information. But in the case of capability checks that do
-not fail the syscall it is not easy to tell if "super-user privileges"
-were "used" or not (or, rather, whether the task should be accounted
-as such or not after a successful check).
+Dropping Renesas SH board files doesn't preclude anyone from moving them
+to DT, all the information will remain in the git history. Unless you
+plan to move to DT in a reasonably near future, I think dropping support
+for the CEU at least, if not the whole board files, could be a good
+option.
 
-If anyone is reading this and has a better understanding of the
-PF_SUPERPRIV flag semantics, I'd be thankful for a clarification so
-that we can sort out this mess :)
+-- 
+Regards,
 
---
-Ondrej Mosnacek
-Senior Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
-
+Laurent Pinchart
