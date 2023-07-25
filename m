@@ -2,161 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0064D76271A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A371762592
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjGYW6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
+        id S231918AbjGYWDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjGYW6j (ORCPT
+        with ESMTP id S231891AbjGYWDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:58:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC862681
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690325724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqtwPYmHGNsoP1pFuN8jF45AEQfTNG8g69I653X2PAs=;
-        b=coIxTWlBFt7DxqhYdq6clg0eCa8bVmqNmUBfFmiNfW1Rp7LFZwyXmTsoMhaET5bII+wQJq
-        zxcmM46Uk46Y1ynwe30+0imH1M9Di7Qsc0YmtOrQkwv81pYcl1Ht+/Haf3n4MxwDIC/VVP
-        ThWiRpnZqyhYS12DaIY9gmFAPgO+bNE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-VmRFm4C_PnW2jw5yCArkmg-1; Tue, 25 Jul 2023 18:48:46 -0400
-X-MC-Unique: VmRFm4C_PnW2jw5yCArkmg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-98e40d91fdfso350377166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:48:45 -0700 (PDT)
+        Tue, 25 Jul 2023 18:03:01 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE21030C1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:27 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583b256faf5so5277187b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690322528; x=1690927328;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7xhc4eOKi5wp2n2R0SFVFds9ep1FeOoOAgAXPOq++kg=;
+        b=ac5P4dYrAOCuHR280ftIr+OhbOuN7M6/qOCna+H3VrY6YDyU3RfTCOP1lEPB8X71X/
+         iNCo078JP4qqvUs2UdE7KaDYIeLSLKoq/d+qq1ZWjBGGaYpTMGOXAbZhff6MDkk2atNX
+         B8VkccwihlwSu8p2mH7u1vzPmx2TpUfY8EHhn9FTCcbDUHHStzHDyXljuFKsqAcgOAFX
+         O1a5twBPrMKaqS57qhZdp43+ncIJfLxR/P6EafUiyNz3puUrmAWrRBZGzFmp7qt+3ZUA
+         4T1ylcH0jKz6ATDWA11whySnFbmUqZk4vYkfBmd+xgav1adN7rGlJuLG5L+tVKqzdkdd
+         Cj2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690325325; x=1690930125;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fqtwPYmHGNsoP1pFuN8jF45AEQfTNG8g69I653X2PAs=;
-        b=f4S2MO1qvA4Q1cb3Co1Z4KH0O5vOQ18pCGRR8Scg9ia8hSA+UlB+ziSTveD12ujKZV
-         iuIUXsSCOU7aSoOFmV5vwVvpZD4wC7YsSYZoCuQJPjQs86W59WBFOCqJFmlaUhL1cREE
-         1swIfJpMjPv01A49uipCkSzvv5C7GaJhZl+NGphXFVQsmEApWMNV0s5xrZJmMWlJPYtK
-         HnLtgWCnT47t3Z95Q5shJnNdIxGgmC1ByKNIXmVML4+cHse6vNBo5GkYgCEBZOrce5Ci
-         qIWF9tCKF5uzOHA3wOTiiMaVQtobdE3zPcpoENP7Ty2u8N1bv99JusphQwVDKAgOv4Mj
-         51DQ==
-X-Gm-Message-State: ABy/qLYpaW9NVBpoR/3Ks9WreGh64DznRmqa85guGWGbybYC+/bLxlmL
-        ay0rQ27nrKhyzdyVYdRHjfgx3j6fUDErqVtuqar2K/J31qvukA9ALCTiZHGavhxuwIZW+k1I3cU
-        6G1Qs19J7UWbsKPnIyjR4Y4Rg
-X-Received: by 2002:a17:907:2be9:b0:982:7545:efb6 with SMTP id gv41-20020a1709072be900b009827545efb6mr158286ejc.66.1690325324933;
-        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFjV59E7oAEbgLcfuvqGzUWbSIkW/kHUTr3BMaofJ0Plmev7uMfuohC5/16L7eW3+4p7WZnVA==
-X-Received: by 2002:a17:907:2be9:b0:982:7545:efb6 with SMTP id gv41-20020a1709072be900b009827545efb6mr158266ejc.66.1690325324597;
-        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id lg23-20020a170906f89700b0098733a40bb7sm8814043ejb.155.2023.07.25.15.48.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 15:48:44 -0700 (PDT)
-Message-ID: <21ea63fe-33d7-a075-7291-35dd1b2a9b64@redhat.com>
-Date:   Tue, 25 Jul 2023 23:00:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH drm-misc-next v8 11/12] drm/nouveau: implement new VM_BIND
- uAPI
-Content-Language: en-US
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Faith Ekstrand <faith@gfxstrand.net>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
-        mripard@kernel.org, corbet@lwn.net, christian.koenig@amd.com,
-        bskeggs@redhat.com, Liam.Howlett@oracle.com,
-        matthew.brost@intel.com, boris.brezillon@collabora.com,
-        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
-        willy@infradead.org, jason@jlekstrand.net,
-        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230720001443.2380-1-dakr@redhat.com>
- <20230720001443.2380-12-dakr@redhat.com>
- <CAOFGe945tp344=g-++=EAT89t0qJHZ=3yeW-k9OTbGNJodvwAg@mail.gmail.com>
- <542203c6-781a-dc44-6fa1-13cd20ab9e21@redhat.com>
- <CAOFGe94sG5==GM+spcTihcAtMCoj2xZYpN8NsYE6CEckdHJ8rQ@mail.gmail.com>
- <75c86224-6183-07fe-da04-6a2101615a50@redhat.com>
-Organization: RedHat
-In-Reply-To: <75c86224-6183-07fe-da04-6a2101615a50@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690322528; x=1690927328;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7xhc4eOKi5wp2n2R0SFVFds9ep1FeOoOAgAXPOq++kg=;
+        b=WI6+t8JFA/HWIPtkpuCs5+415MchiYfrB/27vD9c/P2VBOR6C2aC8vQD5oggaGUE4A
+         2qrF4Dy0bIeQvQ4Hpls4jpalFfYNRQBnEV9BuHg/bWxE9R1vgeR6GaCRtUN/X8yJTMvb
+         iUT4r4UqU8DDvk2myAWBQCbfaNkyrry9XSDeV9nbAqazOwEY5wqpb77xFYoz8WWnhgN7
+         zPrxrvcBTyl1RYQzDo8PQS65oOTuaB90y/KKkiLOw3T1WguYkDz90SAY4RwBbTwNbrSK
+         iuKk3jKa8PUxg6gVR3zjjD2MzYxrxW7oxFLSt4D5UZBXDn5nxfAGvWbm23g6TmGZX5N+
+         5UFw==
+X-Gm-Message-State: ABy/qLYr9edNTea92f+NWdfi94w//ZYwpS4IvbiN66IdqVo1f7DOC7Wg
+        /Aoiao8SSfXhukOwzcSx71x7pLn20gHk
+X-Google-Smtp-Source: APBJJlEYlG7qzc/hpBc7Pflw28PgfP/vuFvUMKwwL4ygbVoco2Ufx+JY8F9po7QifP+wcexxECYSu416UpWl
+X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
+ (user=afranji job=sendgmr) by 2002:a81:99d7:0:b0:576:e268:903d with SMTP id
+ q206-20020a8199d7000000b00576e268903dmr7818ywg.2.1690322527809; Tue, 25 Jul
+ 2023 15:02:07 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 22:01:04 +0000
+In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
+Mime-Version: 1.0
+References: <20230725220132.2310657-1-afranji@google.com>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230725220132.2310657-12-afranji@google.com>
+Subject: [PATCH v4 11/28] KVM: selftests: TDX: Add basic TDX CPUID test
+From:   Ryan Afranji <afranji@google.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
+        sagis@google.com, erdemaktas@google.com, afranji@google.com,
+        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
+        maz@kernel.org, bgardon@google.com, jmattson@google.com,
+        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
+        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
+        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
+        borntraeger@de.ibm.com, eric.auger@redhat.com,
+        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
+        pshier@google.com, axelrasmussen@google.com,
+        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
+        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, ackerleytng@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 18:43, Danilo Krummrich wrote:
-> On 7/25/23 18:16, Faith Ekstrand wrote:
->> Thanks for the detailed write-up! That would definitely explain it. If 
->> I remember, I'll try to do a single-threaded run or two. If your 
->> theory is correct, there should be no real perf difference when 
->> running single-threaded. Those runs will take a long time, though, so 
->> I'll have to run them over night. I'll let you know in a few days once 
->> I have the results.
-> 
-> I can also push a separate branch where I just print out a warning 
-> whenever we run into such a condition including the time we were waiting 
-> for things to complete. I can probably push something later today.
+From: Sagi Shahar <sagis@google.com>
 
-https://gitlab.freedesktop.org/nouvelles/kernel/-/tree/new-uapi-drm-next-track-stalls
+The test reads CPUID values from inside a TD VM and compare them
+to expected values.
 
-It prints out the duration of every wait as well as the total wait time 
-since boot.
+The test targets CPUID values which are virtualized as "As Configured",
+"As Configured (if Native)", "Calculated", "Fixed" and "Native"
+according to the TDX spec.
 
-- Danilo
+Signed-off-by: Sagi Shahar <sagis@google.com>
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+Change-Id: I8d1760e39c3c14a69d69181232d523425211bcfb
+Signed-off-by: Ryan Afranji <afranji@google.com>
+---
+ .../kvm/include/x86_64/tdx/test_util.h        |   9 ++
+ .../selftests/kvm/lib/x86_64/tdx/test_util.c  |  11 ++
+ .../selftests/kvm/x86_64/tdx_vm_tests.c       | 106 ++++++++++++++++++
+ 3 files changed, 126 insertions(+)
 
-> 
->>
->> If this theory holds, then I'm not concerned about the performance of 
->> the API itself. It would still be good to see if we can find a way to 
->> reduce the cross-process drag in the implementation but that's a perf 
->> optimization we can do later.
-> 
->  From the kernel side I think the only thing we could really do is to 
-> temporarily run a secondary drm_gpu_scheduler instance, one for VM_BINDs 
-> and one for EXECs until we got the new page table handling in place.
-> 
-> However, the UMD could avoid such conditions more effectively, since it 
-> controls the address space. Namely, avoid re-using the same region of 
-> the address space right away in certain cases. For instance, instead of 
-> replacing a sparse region A[0x0, 0x4000000] with a larger sparse region 
-> B[0x0, 0x8000000], replace it with B'[0x4000000, 0xC000000] if possible.
-> 
-> However, just mentioning this for completeness. The UMD surely shouldn't 
-> probably even temporarily work around such a kernel limitation.
-> 
-> Anyway, before doing any of those, let's see if the theory holds and 
-> we're actually running into such cases.
-> 
->>
->> Does it actually matter? Yes, it kinda does. No, it probably doesn't 
->> matter for games because you're typically only running one game at a 
->> time. From a development PoV, however, if it makes CI take longer then 
->> that slows down development and that's not good for the users, either.
-> 
-> Fully agree.
-> 
-> - Danilo
-> 
->>
->> ~Faith
->>
->>     - Danilo
->>
->>      >
->>      > ~Faith
->>      >
->>
+diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+index 95a5d5be7f0b..af0ddbfe8d71 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
++++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+@@ -9,6 +9,9 @@
+ #define TDX_TEST_SUCCESS_PORT 0x30
+ #define TDX_TEST_SUCCESS_SIZE 4
+ 
++#define TDX_TEST_REPORT_PORT 0x31
++#define TDX_TEST_REPORT_SIZE 4
++
+ /**
+  * Assert that some IO operation involving tdg_vp_vmcall_instruction_io() was
+  * called in the guest.
+@@ -102,4 +105,10 @@ void tdx_test_fatal(uint64_t error_code);
+  */
+ void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa);
+ 
++/**
++ * Report a 32 bit value from the guest to user space using TDG.VP.VMCALL
++ * <Instruction.IO> call. Data is reported on port TDX_TEST_REPORT_PORT.
++ */
++uint64_t tdx_test_report_to_user_space(uint32_t data);
++
+ #endif // SELFTEST_TDX_TEST_UTIL_H
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
+index 0419c3c54341..36d2647210da 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
+@@ -42,3 +42,14 @@ void tdx_test_fatal(uint64_t error_code)
+ {
+ 	tdx_test_fatal_with_data(error_code, 0);
+ }
++
++uint64_t tdx_test_report_to_user_space(uint32_t data)
++{
++	/* Upcast data to match tdg_vp_vmcall_instruction_io signature */
++	uint64_t data_64 = data;
++
++	return tdg_vp_vmcall_instruction_io(TDX_TEST_REPORT_PORT,
++					TDX_TEST_REPORT_SIZE,
++					TDG_VP_VMCALL_INSTRUCTION_IO_WRITE,
++					&data_64);
++}
+diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+index cde4b171446f..d68ace3db097 100644
+--- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
++++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+@@ -2,6 +2,7 @@
+ 
+ #include <signal.h>
+ #include "kvm_util_base.h"
++#include "processor.h"
+ #include "tdx/tdcall.h"
+ #include "tdx/tdx.h"
+ #include "tdx/tdx_util.h"
+@@ -155,6 +156,110 @@ void verify_td_ioexit(void)
+ 	printf("\t ... PASSED\n");
+ }
+ 
++/*
++ * Verifies CPUID functionality by reading CPUID values in guest. The guest
++ * will then send the values to userspace using an IO write to be checked
++ * against the expected values.
++ */
++void guest_code_cpuid(void)
++{
++	uint64_t err;
++	uint32_t ebx, ecx;
++
++	/* Read CPUID leaf 0x1 */
++	asm volatile (
++		"cpuid"
++		: "=b" (ebx), "=c" (ecx)
++		: "a" (0x1)
++		: "edx");
++
++	err = tdx_test_report_to_user_space(ebx);
++	if (err)
++		tdx_test_fatal(err);
++
++	err = tdx_test_report_to_user_space(ecx);
++	if (err)
++		tdx_test_fatal(err);
++
++	tdx_test_success();
++}
++
++void verify_td_cpuid(void)
++{
++	struct kvm_vm *vm;
++	struct kvm_vcpu *vcpu;
++
++	uint32_t ebx, ecx;
++	const struct kvm_cpuid_entry2 *cpuid_entry;
++	uint32_t guest_clflush_line_size;
++	uint32_t guest_max_addressable_ids, host_max_addressable_ids;
++	uint32_t guest_sse3_enabled;
++	uint32_t guest_fma_enabled;
++	uint32_t guest_initial_apic_id;
++
++	vm = td_create();
++	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
++	vcpu = td_vcpu_add(vm, 0, guest_code_cpuid);
++	td_finalize(vm);
++
++	printf("Verifying TD CPUID:\n");
++
++	/* Wait for guest to report ebx value */
++	td_vcpu_run(vcpu);
++	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
++	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, 4,
++			TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
++	ebx = *(uint32_t *)((void *)vcpu->run + vcpu->run->io.data_offset);
++
++	/* Wait for guest to report either ecx value or error */
++	td_vcpu_run(vcpu);
++	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
++	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, 4,
++			TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
++	ecx = *(uint32_t *)((void *)vcpu->run + vcpu->run->io.data_offset);
++
++	/* Wait for guest to complete execution */
++	td_vcpu_run(vcpu);
++	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
++	TDX_TEST_ASSERT_SUCCESS(vcpu);
++
++	/* Verify the CPUID values we got from the guest. */
++	printf("\t ... Verifying CPUID values from guest\n");
++
++	/* Get KVM CPUIDs for reference */
++	cpuid_entry = get_cpuid_entry(kvm_get_supported_cpuid(), 1, 0);
++	TEST_ASSERT(cpuid_entry, "CPUID entry missing\n");
++
++	host_max_addressable_ids = (cpuid_entry->ebx >> 16) & 0xFF;
++
++	guest_sse3_enabled = ecx & 0x1;  // Native
++	guest_clflush_line_size = (ebx >> 8) & 0xFF;  // Fixed
++	guest_max_addressable_ids = (ebx >> 16) & 0xFF;  // As Configured
++	guest_fma_enabled = (ecx >> 12) & 0x1;  // As Configured (if Native)
++	guest_initial_apic_id = (ebx >> 24) & 0xFF;  // Calculated
++
++	ASSERT_EQ(guest_sse3_enabled, 1);
++	ASSERT_EQ(guest_clflush_line_size, 8);
++	ASSERT_EQ(guest_max_addressable_ids, host_max_addressable_ids);
++
++	/* TODO: This only tests the native value. To properly test
++	 * "As Configured (if Native)" we need to override this value
++	 * in the TD params
++	 */
++	ASSERT_EQ(guest_fma_enabled, 1);
++
++	/* TODO: guest_initial_apic_id is calculated based on the number of
++	 * VCPUs in the TD. From the spec: "Virtual CPU index, starting from 0
++	 * and allocated sequentially on each successful TDH.VP.INIT"
++	 * To test non-trivial values we either need a TD with multiple VCPUs
++	 * or to pick a different calculated value.
++	 */
++	ASSERT_EQ(guest_initial_apic_id, 0);
++
++	kvm_vm_free(vm);
++	printf("\t ... PASSED\n");
++}
++
+ int main(int argc, char **argv)
+ {
+ 	setbuf(stdout, NULL);
+@@ -167,6 +272,7 @@ int main(int argc, char **argv)
+ 	run_in_new_process(&verify_td_lifecycle);
+ 	run_in_new_process(&verify_report_fatal_error);
+ 	run_in_new_process(&verify_td_ioexit);
++	run_in_new_process(&verify_td_cpuid);
+ 
+ 	return 0;
+ }
+-- 
+2.41.0.487.g6d72f3e995-goog
 
