@@ -2,124 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C4D76168A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC6A761684
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbjGYLkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        id S234895AbjGYLj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbjGYLkF (ORCPT
+        with ESMTP id S234881AbjGYLjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:40:05 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F383D10C7;
-        Tue, 25 Jul 2023 04:40:04 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PBdnOS130110;
-        Tue, 25 Jul 2023 06:39:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690285189;
-        bh=/fa+z+CUWBeCBalWhS3n0PD609rlDIlHp3Fx7siEkOY=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=PtHM3Him0DVTFvhELrCAh/ohVkHl3IRsCQtYyytH1r117BXkyftmeroDOzpssBqcj
-         rG3DLKwHrXeonYH1nqpnG7TEPFIU3wLmDZtSEWzlrWYSFp/0e5WVA/+01fHCKDNm3J
-         LnNdHk/QnfsHGbH+NHaG8wx35oKcxmEAecUso4NE=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PBdnFO002980
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 06:39:49 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 06:39:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 06:39:49 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PBdnIZ045291;
-        Tue, 25 Jul 2023 06:39:49 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Tero Kristo" <t-kristo@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Kamlesh Gurudasani <kamlesh@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, <linux-crypto@vger.kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v5 0/2] Remove power-domains property for devices with compatible ti,am62-sa3ul
-Date:   Tue, 25 Jul 2023 06:39:48 -0500
-Message-ID: <169028509342.1718778.15078093695331558450.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230614-sa3ul-v5-0-29dd2366fba3@ti.com>
-References: <20230614-sa3ul-v5-0-29dd2366fba3@ti.com>
+        Tue, 25 Jul 2023 07:39:55 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13E811B;
+        Tue, 25 Jul 2023 04:39:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YHCgUMnwpKaopgL+JwQr/5EvbyV2Urq4aL6ebjzy44BQVvnCgEfn1kcUyK7RFdb3v371QAJ419pNzEJtkvCFREwNgDear3725EPtjRc+rhojl9QWLXpxRfFDhJ1VgcLnPtQ9R3Fvvbr5+S7ZQhdkiVpUnf+TZJDnstgUS6F8uMiLBsjwFGCkWniwCHuyN64wOTqLEyCXjQUJZtBgJWVlXaB6AZQZyJbc1OW9J85fJXCqdwc65nSRkVW5ssN+B0odya4+ISzISdp6ccUOqx3AgSqFBtLYKld/UjBcM7OenTD34Uc2igI9pKn3M9XQwVed2/oSJIc5o48xset6LefoXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0Rq3oo6dG5NtyjCqzeaOhQmL6y9md63CI+T7ceOBsFk=;
+ b=I19+g6YuzMcyjzLvqXM8uyckmq/qq3xJOjkjJrT2rPOEA8ZsHnHREHGyEFd31LYX8SigpXr82jIpW/lQf7ynZlxlAHLl5F1u720zMvmHr37tGkK08RI7AS9Y3xi2DFb3Qiout65xqeUdY4wh81gpzH2Q1HVl5/g4ttBCIWCVKB2NnUlx+oT8WkJbTfT62mDbtpN5ry93AyvTv/pNzRqy7tpdfWDj+Qa8aVkbqUJF+q21Rbfy8HFgOIQc13hCppRQav9cp52GmOM9kuk9QrAzjFW5WB+Jnd7eCfqX1zQmIid4VoBtIRzKCbxAjqq/K++DFbHu/CMkFPjrqDgjQfHNJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Rq3oo6dG5NtyjCqzeaOhQmL6y9md63CI+T7ceOBsFk=;
+ b=HWFUg6qd3/YB6CqUlJAdDdrku2vZozLsFnCuB919yRG7EmZtbQ1DbzJhK6HcjenfMJSb3v9exxHr7DW9gkbS4tHDQHvQUrm2CY+n8/5aJnTTqkiVtjdnvnxt/a7KwEtAxNUaKfBQ2lRcKnst/ZbHTaRrht1L/aLPxkUUXWaQZqCI8oS70chiM+3gBECzLx4XF8m/dP4wFwiTHijb5AdN6MXKRalEWvqHuSjUZ1S6un0U1K0PuHHQO+g7ZOJD9cdoLjhayK1mhlZ4YHjeBtqRtaHDHMgVJDUL0wjbgBLCeVBlBO5Aud5WFEhECCN+HqhC2XRnizqG5tnokC35/R084w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH0PR12MB8030.namprd12.prod.outlook.com (2603:10b6:510:28d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Tue, 25 Jul
+ 2023 11:39:52 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 11:39:52 +0000
+Date:   Tue, 25 Jul 2023 08:39:51 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        osamaabb@amazon.com, linux-pci@vger.kernel.org,
+        Clint Sbisa <csbisa@amazon.com>, catalin.marinas@arm.com,
+        maz@kernel.org
+Subject: Re: VFIO (PCI) and write combine mapping of BARs
+Message-ID: <ZL+0h9gvJGTyWKZX@nvidia.com>
+References: <2838d716b08c78ed24fdd3fe392e21222ee70067.camel@kernel.crashing.org>
+ <ZLD1l1274hQQ54RT@lpieralisi>
+ <ZLFBnACjoTbDmKuU@nvidia.com>
+ <bc6c3a08e3d0a343fe8317218106609ba159dfe2.camel@kernel.crashing.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc6c3a08e3d0a343fe8317218106609ba159dfe2.camel@kernel.crashing.org>
+X-ClientProxiedBy: BLAPR03CA0066.namprd03.prod.outlook.com
+ (2603:10b6:208:329::11) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,TVD_SUBJ_WIPE_DEBT,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB8030:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca050d60-a27d-475e-9ac9-08db8d03dc46
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g4kfOMAUNjHmP+1uJAphXxSAXubL+Wc9hsFKWUwomfYWsokmoM/eRpshwVkalGW9zIuUzG63IpEcjgvnvcsVp6/6sczMuC1i46Dsxxazw4RWXz2cg9TdMC7Ea9Zwi3Q1s8RLtzWgF92X8Hx0jqOw6NHBgkPwjmQUWBHnayKq8xsjg6atqphRaxWbbxDQprma5afM9LdnNFennnZNhf06obWgBSdpWfEr3XcM9ISuny+rtLIy07u/TTSBTLpi90P5WDylXjSy7XVmyqwgkLMJTyn1LzywGnUmQF5yDoIwd0OF4W2Aui/E7IH/lnAaYS91JwwT2I0dHDj+vw2yB/vzz7dgjmutuZoUApAlCrVpVgKIONDG9x2KeRc8niaIpymUeAIgdfGihf14Ni36D9yQrUhSFHFS5FW9CgvG1oyqD9Uc/5vC4im/4zd3N2smqIUjXi8YP68cAMywuSVhalet+LJ/AD4TzXfwGQBRZXD36XbcGR5zrsC6F/jUj0qO+Ddsl6IalczUYzJ2GQdZRErAuJZ6pvMURMoNLq3/hy7q+O989MkzKjY/5pqghUPs3+p4Sa4DWIER+rCBwl735RsHzLejszyIvvTaBR8p0Au1xBY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(451199021)(26005)(186003)(6506007)(5660300002)(36756003)(8676002)(8936002)(7416002)(2906002)(2616005)(86362001)(38100700002)(6916009)(4326008)(316002)(66946007)(66556008)(66476007)(478600001)(6512007)(6486002)(41300700001)(54906003)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CBcXgRrjIDB4Gppv7rz0tF0WJyBS5v6v2Mair4S3RsUC6wqspUi03n5Czu/R?=
+ =?us-ascii?Q?Lk877nlq9WI1h4m951yA7B+JVSoRDSHXopnSvoYLNwNOpMLtfuXgMIB+4D8O?=
+ =?us-ascii?Q?rY+P8v4mJ93Hrm4S3UsxZaw3PrxoT3WebqRSWIU1wjhtlTMngS60CyDXtoiF?=
+ =?us-ascii?Q?1+JiBx+lIU/z0J0kH9PCL+DgYuAt/lhyPd2llgcxlNs66QoMO6ikVfsVqbxI?=
+ =?us-ascii?Q?MgSm/vFzOHWSzDtJyolc/jxQFHbwkker+lkoMTH7kNMx7ni9wqPhBKffRT5w?=
+ =?us-ascii?Q?CfSS67sfMpAQJqFraDFgE7y0Se+4qEeXcD6/fFXG6xzFCXhAI8rfXnqhE/Tt?=
+ =?us-ascii?Q?j2mw/G9LOQe1St6TNFSKIL8pp4T97LK6bDAI3wUTh7Go9npB4sHQJuvD7ywM?=
+ =?us-ascii?Q?D1tLSBaj7sbHs0NU55PAd0vowaKLj7Ynu5OwAWRvy99XoZZF+h3v/QmSaJWV?=
+ =?us-ascii?Q?Rn/HoBkpy/Nht9fynuj341+IA/afflA1XVrwaJCUDlWOfPGnioO/yoszofgJ?=
+ =?us-ascii?Q?iAzbp40Ne/X4tFg5o+LKReVjyN8ayTlUl+bLO9qUeX6EDskn0RE0VGypgLbr?=
+ =?us-ascii?Q?119zQNeLTmPWwRnTOXTG5E5Gx940YZTR1vvfd3YqFJ0ZW+X9DVBrUH8+f2Jo?=
+ =?us-ascii?Q?NcWwx1f849lZheqMyM/7+c6WT39809yKEd0CsRGn8BaVnY6lp2hnOYhyiUiU?=
+ =?us-ascii?Q?MaVwd3l65rOFw7rHTtuq/5aYtGPw8hbjAZNS7hnFDBNqw8EDt5DG84nnJF42?=
+ =?us-ascii?Q?xGX8PQcZ7vCt8mMSZPIDUKUFxZ5MhVHnVLHHIrfFwMafwlXn15Q/1fNYXUwD?=
+ =?us-ascii?Q?IbvtOK08XpXpMHTVM2Cq6/gtN0buoUD/Zcw1zVTG4cvnOtWES55/cvVQ5UyC?=
+ =?us-ascii?Q?7Ok1I5mLU5h8XejIbTLhG0AXvQnPNUU2n2BUhoyMPq6+9PR1rvQoYU+Tf2tV?=
+ =?us-ascii?Q?w9BgAcPSZNfAIPngFpyuuL7EJhF/UXSuZxY00mNpqGl3B94JbTeNER1QpoSL?=
+ =?us-ascii?Q?E9a2rBvev6Su4x5w6L0a2GEp47/0lH0Eupj1/v3wEaX2MV5QUjZEzpOiXosw?=
+ =?us-ascii?Q?hzgxCz4hZSoK/DqGB/RSIW+DgiVqT+9Tn/8az4BIPUG5axFwjThE6SNdOGKq?=
+ =?us-ascii?Q?x4ceK3bSgOdxYJ18XNC8vApgD5eZB+NbZpEORdqhlCxLdq6YNzYtCTOCA78O?=
+ =?us-ascii?Q?C5GCsq9dGsA3Pu0Fxd+xbHBix1cAZaeiUkLPFrJAbwTCsfOM7GG+uAL7H7Ec?=
+ =?us-ascii?Q?/W3yQabg1JtaaylV6CB/8p24K91YlFHxYJcFnuSmR12kBh03/EfEdM9rVEB4?=
+ =?us-ascii?Q?ZL4q+ZA14fQGWfWBoGRm9X2N4XERCmiskI09qlL6b/RzQyBHEKhPRuhw+hXv?=
+ =?us-ascii?Q?faOxLu1h7h90TpP1KmbSSb3us1pfBFgCqSlGupBe99yF5qU5p1FGRffvkJZ1?=
+ =?us-ascii?Q?Le3LSBL7++8XYqZiiUMRXMbMPZjFA3LivGXfMfX/sUP+LA03ig365DnemrlZ?=
+ =?us-ascii?Q?9qbRPUp6pamZxbdIIGCXGjI3n5AAB28hULuBSkPXgBwgs+vjbCUYkbG9MWHB?=
+ =?us-ascii?Q?X3tqGzN1OH+gmZQI5oOqN1XQwbb3J8JUMYJMaZ5L?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca050d60-a27d-475e-9ac9-08db8d03dc46
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 11:39:52.4458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nxKk3DwDh3suPpYy1D5aLGcqiKAS3ycBERNS90Rp37KgQwBu/x+oyVdq0ayBFMNI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8030
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert,
-
-I am going to assume that you are ok with me picking this series up as this
-results in a few broken boots for various boards. Let me know if that is not
-the case, and I will drop the series from my tree.
-
-Hi Kamlesh Gurudasani,
-
-On Fri, 14 Jul 2023 14:42:40 +0530, Kamlesh Gurudasani wrote:
-> SYSFW don't allow access to power of devices with compatible ti,am62-sa3ul
-> from main domain.
+On Tue, Jul 25, 2023 at 04:15:39PM +1000, Benjamin Herrenschmidt wrote:
+> > Assuming this is for #2, I think VFIO has fallen into a bit of a trap
+> > by allowing userspace to form the mmap offset. I've seen this happen
+> > in other subsystems too. It seems like a good idea then you realize
+> > you need more stuff in the mmap space and become sad.
+> > 
+> > Typically the way out is to covert the mmap offset into a cookie where
+> > userspace issues some ioctl and then the ioctl returns an opaque mmap
+> > offset to use.
+> > 
+> > eg in the vfio context you'd do some 'prepare region for mmap' ioctl
+> > where you could specify flags. The kernel would encode the flags in
+> > the cookie and then mmap would do the right thing. Adding more stuff
+> > is done by enhancing the prepare ioctl.
+> > 
+> > Legacy mmap offsets are kept working.
 > 
-> Power-domains property, if present will try to access the power of the
-> device, which will result into failure in probing of driver for that
-> device.
-> 
-> [...]
+> This indeed what I have in mind. IE. VFIO has legacy regions and add-on
+> regions though the latter is currently only exploited by some drivers
+> that create their own add-on regions. My proposal is to add an ioctl to
+> create them from userspace as "children" of an existing driver-provided
+> region, allowing to set different attributes for mmap.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+I wouldn't call it children, you are just getting a different mmap
+cookie for the same region object.
+ 
+> In the current VFIO the implementation is *entirely* in vfio_pci_core
+> for PCI and entirely in vfio_platform_common.c for platform, so while
+> the same ioctls could be imagined to create sub-regions, it would have
+> to be completely implemented twice unless we do a lot of heavy lifting
+> to move some of that region stuff into common code.
 
-[1/2] dt-bindings: crypto: ti,sa2ul: make power-domains conditional
-      commit: e1f7d17a734c5c617d05c3d188939d5032d3d5a2
-[2/2] arm64: dts: ti: k3-am62-main: Remove power-domains from crypto node
-      commit: b573bf35ef3f113c1717fa22cefdfdfbb83aec70
+The machinery for managing the mmap cookies should be in common code
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Jason
