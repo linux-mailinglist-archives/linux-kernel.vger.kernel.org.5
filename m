@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132527610DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F69E7610E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbjGYK3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S233595AbjGYKcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233659AbjGYK32 (ORCPT
+        with ESMTP id S232900AbjGYKb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:29:28 -0400
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3FA10F6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:29:10 -0700 (PDT)
-Message-ID: <1bb7858d-fab0-f3c2-b786-a93f3789b400@linux.intel.com>
-Date:   Tue, 25 Jul 2023 12:29:07 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
- <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Tue, 25 Jul 2023 06:31:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A915CE3;
+        Tue, 25 Jul 2023 03:31:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 58CE421B1C;
+        Tue, 25 Jul 2023 10:31:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690281112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
+        b=2E6InrqrO0fh9B/S8gCc7r8uaPULJu6d9QonzUOqig3Tqrg4zeuY7l+cD/cGOGgu88lcey
+        kUZHfG0/hn2fk6JKmcGosYlMVJIXwaP4rfbm23nDR7NT/7KFN5PzLM9BcVMAHyXpdWqysR
+        i4TEyyaFCwk2DSFjE7z58B7T3maCk9w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690281112;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
+        b=jpSzcBP8X5BN69Mp94riZKXN5aC0pds9VC0lrxN/V8rtzZVJiy0Dtxf8WjhHqm3IXjnDpd
+        73t15FnLNugR6sDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F02A613342;
+        Tue, 25 Jul 2023 10:31:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id U4WHOZekv2ScfQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 10:31:51 +0000
+Date:   Tue, 25 Jul 2023 12:31:51 +0200
+Message-ID: <87jzuoth7s.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v2] um/drivers: Kconfig: fix hostaudio build errors
+In-Reply-To: <20230723215756.18307-1-rdunlap@infradead.org>
+References: <20230723215756.18307-1-rdunlap@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,46 +78,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
-
-On 2023-07-24 13:32, Pierre-Louis Bossart wrote:
+On Sun, 23 Jul 2023 23:57:56 +0200,
+Randy Dunlap wrote:
 > 
+> Use "select"s to ensure that the required kconfig symbols are set
+> as expected.
 > 
-> On 7/19/23 18:41, Maarten Lankhorst wrote:
->> This was only used to allow modprobing i915, by converting to the
->> -EPROBE_DEFER mechanism, it can be completely removed, and is in
->> fact counterproductive since -EPROBE_DEFER otherwise won't be
->> handled correctly.
+> This fixes build errors when CONFIG_SOUND is not set.
 > 
-> I personally remember only that the request_module("i915") was the main
-> motivation for the use of the workqueue, but when it comes to the
-> HDaudio codec management we don't even know what we don't know.
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
 > 
-> I am a bit worried that the snd-hda-intel driver keeps the workqueue for
-> HDaudio codec initialization, and this patch removes the workqueue
-> completely for SOF. That doesn't seem right. Either both drivers need a
-> workqueue or none need a workqueue.
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: linux-kbuild@vger.kernel.org
+> ---
+> v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
 > 
-> Maybe what we need is to move the i915/xe initialization out of the
-> workqueue, and see in a second pass if that workqueue can be safely
-> removed from the SOF driver?
+>  arch/um/drivers/Kconfig |   10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
 > 
-As I mentioned in some of the other sound driver conversions. I believe 
-it's possible to completely kill off most workqueues.
+> diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+> --- a/arch/um/drivers/Kconfig
+> +++ b/arch/um/drivers/Kconfig
+> @@ -111,20 +111,14 @@ config SSL_CHAN
+>  
+>  config UML_SOUND
+>  	tristate "Sound support"
+> +	select SOUND
+> +	select SOUND_OSS_CORE
+>  	help
+>  	  This option enables UML sound support.  If enabled, it will pull in
+>  	  soundcore and the UML hostaudio relay, which acts as a intermediary
+>  	  between the host's dsp and mixer devices and the UML sound system.
+>  	  It is safe to say 'Y' here.
+>  
+> -config SOUND
+> -	tristate
+> -	default UML_SOUND
+> -
+> -config SOUND_OSS_CORE
+> -	bool
+> -	default UML_SOUND
+> -
+>  config HOSTAUDIO
+>  	tristate
+>  	default UML_SOUND
 
-However, I don´t have the hardware or knowledge to test it. I saw that 
-the SOF had the non-workqueue path already, so it felt less risky to 
-simply convert it to always use that path.
+And now essentially CONFIG_HOSTAUDIO is equal with CONFIG_UML_SOUND.
+Then isn't it better to replace CONFIG_HOSTAUDIO in
+arch/um/drivers/Makefile with CONFIG_UML_SOUND, so that you can drop
+CONFIG_HOSTAUDIO as well?
 
-avs/skylake drivers should be easy to convert too. This is why I left 
-the comment: "Removing the workqueue would simplify init even further, 
-but is left as exercise for the reviewer."
 
-HDA-intel has this retry-probe logic used on AMD's,
-which makes me more hesitant to convert it.
+thanks,
 
-I wanted to tackle one problem at a time, I believe workqueue removal 
-can be done by anyone.
-
-Cheers,
-~Maarten
+Takashi
