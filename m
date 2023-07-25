@@ -2,81 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501B7760F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11CE760F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbjGYJee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S233342AbjGYJbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbjGYJeJ (ORCPT
+        with ESMTP id S233332AbjGYJax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:34:09 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE08944AE;
-        Tue, 25 Jul 2023 02:32:38 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99342a599e9so917908766b.3;
-        Tue, 25 Jul 2023 02:32:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690277248; x=1690882048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xlOFKCeP+4hVLbD69I004lHDv56Nbmt05BTtQgudZs4=;
-        b=eSLDJIzinf8TLMkeDXBYeOsHYt8l/voNitBMIIYNaSx6NAbQ7JuxkkZq9jCnQLVWcv
-         KOLaNVkKuR3jrNeGCfyUqMYh7vBBbUUUXoktIqOvlbFVguoqJWsVQANMuqi32m+PNBEU
-         ztpJtbF0wBcSTrRvEmbCs7sfMuL9VtgWEpeKSynMg8oMN4ZvZ3cqnUV+izBSZvMjyc8H
-         x5hhUv9C9l5TJqhQny1XPg8VDcrFdFUvspCGH1Jwu4W5tuGm1WCp4kDEST781KpO9N81
-         xwDnBihP1oUp/QLH1oUF3AF6WOqZ1lO6k27t4k3eHLYVo/Z/5Vnf4n9Gyp+TfMmPYvlO
-         mymQ==
-X-Gm-Message-State: ABy/qLb2/zQbqg7wgZzadMo4XXTwDhSTAWGVD4GpSLaweZUHnz2/APBM
-        dtN77Rc/C9hrFwMz2LPPnh/ezMpulHk=
-X-Google-Smtp-Source: APBJJlHT3V/1QY83Hn6Q8+8JyqL3OEJLhTClEq/l18a51Yfc9VPCcKK34BhhyZJYKET9soqC4Ur5yw==
-X-Received: by 2002:a17:906:7a0f:b0:987:4e89:577f with SMTP id d15-20020a1709067a0f00b009874e89577fmr11829450ejo.24.1690277248142;
-        Tue, 25 Jul 2023 02:27:28 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-014.fbsv.net. [2a03:2880:31ff:e::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jx16-20020a170906ca5000b00993664a9987sm7955470ejb.103.2023.07.25.02.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 02:27:27 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 02:27:25 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <ZL+VfRiJQqrrLe/9@gmail.com>
-References: <20230724142237.358769-1-leitao@debian.org>
- <20230724142237.358769-3-leitao@debian.org>
- <ZL61cIrQuo92Xzbu@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZL61cIrQuo92Xzbu@google.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 25 Jul 2023 05:30:53 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5A92129;
+        Tue, 25 Jul 2023 02:28:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4325821D19;
+        Tue, 25 Jul 2023 09:27:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690277248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dlmzFCGGYQOm0hww9I94vhrQZ+jHyAZdm6rRpIEjF90=;
+        b=PRo+S7RmJ6Cc6bdhtacBMBVPU0SqboE3Y7rpFnOiK1Mq9XIrUJP3fSFbZsy9kfFcUwujD5
+        WAvLiRQ8NOGIh1o3Ewx9MCTnAAf/Ygz6kKruXb7xNcO4nHY6HHOCwUzydKccfWZjjhOAnQ
+        D5GnYf0ugpBwpFhA0yMmZBBMuaJsaq0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690277248;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dlmzFCGGYQOm0hww9I94vhrQZ+jHyAZdm6rRpIEjF90=;
+        b=YgzmBwsIwCX1597u5bMv1SYnvoyq1qC84nN2STKtgbnSxaX9bLFt9yxYC1ntPATTKOE1F2
+        uFivkNfbgRwy6UCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE02A13487;
+        Tue, 25 Jul 2023 09:27:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GCooKX+Vv2RgWQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 09:27:27 +0000
+Date:   Tue, 25 Jul 2023 11:27:27 +0200
+Message-ID: <87wmyotk74.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
+        Thinh.Nguyen@synopsys.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        alsa-devel@alsa-project.org, quic_jackp@quicinc.com,
+        oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp
+Subject: Re: [PATCH v4 31/32] sound: usb: card: Allow for rediscovery of connected USB SND devices
+In-Reply-To: <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
+References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
+        <20230725023416.11205-32-quic_wcheng@quicinc.com>
+        <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
-> On 07/24, Breno Leitao wrote:
-> > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
-> > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
-> > where a sockptr_t is either userspace or kernel space, and handled as
-> > such.
-> > 
-> > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+On Tue, 25 Jul 2023 11:15:11 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> We probably need to also have bpf bits in the new
-> io_uring_cmd_getsockopt?
+> 
+> 
+> On 7/25/23 04:34, Wesley Cheng wrote:
+> > In case of notifying SND platform drivers of connection events, some of
+> > these use cases, such as offloading, require an ASoC USB backend device to
+> > be initialized before the events can be handled.  If the USB backend device
+> > has not yet been probed, this leads to missing initial USB audio device
+> > connection events.
+> > 
+> > Expose an API that traverses the usb_chip array for connected devices, and
+> > to call the respective connection callback registered to the SND platform
+> > driver.
+> > 
+> > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > ---
+> >  sound/usb/card.c | 19 +++++++++++++++++++
+> >  sound/usb/card.h |  2 ++
+> >  2 files changed, 21 insertions(+)
+> > 
+> > diff --git a/sound/usb/card.c b/sound/usb/card.c
+> > index 365f6d978608..27a89aaa0bf3 100644
+> > --- a/sound/usb/card.c
+> > +++ b/sound/usb/card.c
+> > @@ -170,6 +170,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> >  }
+> >  EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
+> >  
+> > +/*
+> > + * in case the platform driver was not ready at the time of USB SND
+> > + * device connect, expose an API to discover all connected USB devices
+> > + * so it can populate any dependent resources/structures.
+> > + */
+> > +void snd_usb_rediscover_devices(void)
+> > +{
+> > +	int i;
+> > +
+> > +	mutex_lock(&register_mutex);
+> > +	for (i = 0; i < SNDRV_CARDS; i++) {
+> > +		if (usb_chip[i])
+> > +			if (platform_ops && platform_ops->connect_cb)
+> > +				platform_ops->connect_cb(usb_chip[i]);
+> 
+> what happens if the USB device is removed while the platform device adds
+> a port?
 
-It might be interesting to have the BPF hook for this function as
-well, but I would like to do it in a following patch, so, I can
-experiment with it better, if that is OK.
+That should be protected by the register_mutex.  But there can be
+other races (see below :)
+
+> This sounds super-racy to me. It's the same set of problems we're having
+> between audio and display/DRM, I would be surprised if this function
+> dealt with all corner cases of insertion/removal, bind/unbind.
+
+Yes, we need to be more careful about binding.
+
+For example, in the current patch set, I see no way to prevent
+unloading snd-usb-audio-qmi module, and it allows user to cut off the
+stuff during operation, which may break things while the kernel is
+running the code of the unloaded module.  You need to have a proper
+module refcount management for avoiding such a scenario.  Most of
+drivers don't need it because ALSA core part already takes care of
+it.  But in this case, it requires a manual adjustment.
+
+
+Takashi
