@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C249761B2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04FD761B20
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbjGYOON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S232389AbjGYONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbjGYOOI (ORCPT
+        with ESMTP id S230298AbjGYONJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:14:08 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BDC1FC9;
-        Tue, 25 Jul 2023 07:14:03 -0700 (PDT)
-Received: from dggpeml100024.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R9JqL1f8mzLnwZ;
-        Tue, 25 Jul 2023 22:11:26 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.26) by
- dggpeml100024.china.huawei.com (7.185.36.115) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 25 Jul 2023 22:14:00 +0800
-From:   Xiu Jianfeng <xiujianfeng@huawei.com>
-To:     <john.johansen@canonical.com>, <paul@paul-moore.com>,
-        <jmorris@namei.org>, <serge@hallyn.com>,
-        <mike.salvatore@canonical.com>
-CC:     <apparmor@lists.ubuntu.com>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] apparmor: cleanup unused declarations in policy.h
-Date:   Tue, 25 Jul 2023 14:12:39 +0000
-Message-ID: <20230725141239.233372-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 25 Jul 2023 10:13:09 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FBFE4;
+        Tue, 25 Jul 2023 07:13:07 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8607F12002B;
+        Tue, 25 Jul 2023 17:13:04 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8607F12002B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690294384;
+        bh=hZFB0w5NSFKiON9JVJJaIk3Acr9yVPgY1wcvAHY5Duc=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=CJEFm2ZWRx8lrVAm9wxl6AfLtykmVYShFRdsZTMP8JMx40N2vbmkkJqbGepKdCFf7
+         bUrwTtWDeZdr0NK/vkeeDxdUjCyo0T+qqtEIbT7wIQkciGpdvzeg7TDehmMXX7UYDr
+         GlB+6HYN6bzc+U2/1LBBnMtbt9EYa+hCpdk1Ty/u0EThfgo1YGSnzKLFNEK3d4n/NB
+         c1i97zb2s2/P/1ELVwvEmzsMMv0YfwR+qYQ83UJClm0xGTFKF2hnJONvmbG0SPXBOJ
+         3ihkk4z6u1FxYEsdf9NoqNHzkxrvp/prq3uT5eNEcXtb8qRwWUk1ZWShG/a3i/Qhh1
+         MsZOImSkFsstA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue, 25 Jul 2023 17:13:04 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 17:13:03 +0300
+From:   Alexey Romanov <avromanov@sberdevices.ru>
+To:     <narmstrong@baylibre.com>, <neil.armstrong@linaro.org>,
+        <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <khilman@baylibre.com>,
+        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
+        <f.fainelli@gmail.com>, <hkallweit1@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <kernel@sberdevices.ru>,
+        Alexey Romanov <avromanov@sberdevices.ru>
+Subject: [PATCH v1 0/3] Meson S4 HW RNG Support
+Date:   Tue, 25 Jul 2023 17:12:49 +0300
+Message-ID: <20230725141252.98848-1-avromanov@sberdevices.ru>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.26]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml100024.china.huawei.com (7.185.36.115)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVRomanov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The implementions of these declarations do not exist, remove them all.
+Hello!
 
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- security/apparmor/include/policy.h | 6 ------
- 1 file changed, 6 deletions(-)
+This patch series adds hwrng support for Amlogic S4-series.
+Now, S4 uses a new random number generation algorithm.
+This changes implemnents new algo and also adds description
+to meson-s4.dtsi.
 
-diff --git a/security/apparmor/include/policy.h b/security/apparmor/include/policy.h
-index 545f791cabda..6e5ec9c37b48 100644
---- a/security/apparmor/include/policy.h
-+++ b/security/apparmor/include/policy.h
-@@ -227,10 +227,6 @@ extern enum profile_mode aa_g_profile_mode;
- #define profiles_ns(P) ((P)->ns)
- #define name_is_shared(A, B) ((A)->hname && (A)->hname == (B)->hname)
- 
--void aa_add_profile(struct aa_policy *common, struct aa_profile *profile);
--
--
--void aa_free_proxy_kref(struct kref *kref);
- struct aa_ruleset *aa_alloc_ruleset(gfp_t gfp);
- struct aa_profile *aa_alloc_profile(const char *name, struct aa_proxy *proxy,
- 				    gfp_t gfp);
-@@ -239,14 +235,12 @@ struct aa_profile *aa_alloc_null(struct aa_profile *parent, const char *name,
- struct aa_profile *aa_new_learning_profile(struct aa_profile *parent, bool hat,
- 					   const char *base, gfp_t gfp);
- void aa_free_profile(struct aa_profile *profile);
--void aa_free_profile_kref(struct kref *kref);
- struct aa_profile *aa_find_child(struct aa_profile *parent, const char *name);
- struct aa_profile *aa_lookupn_profile(struct aa_ns *ns, const char *hname,
- 				      size_t n);
- struct aa_profile *aa_lookup_profile(struct aa_ns *ns, const char *name);
- struct aa_profile *aa_fqlookupn_profile(struct aa_label *base,
- 					const char *fqname, size_t n);
--struct aa_profile *aa_match_profile(struct aa_ns *ns, const char *name);
- 
- ssize_t aa_replace_profiles(struct aa_ns *view, struct aa_label *label,
- 			    u32 mask, struct aa_loaddata *udata);
+Alexey Romanov (3):
+  drivers: rng: add check status bit feature
+  dt-bindings: rng: meson: add meson-rng-s4 compatible
+  arch/arm64: dts: meson-s4: add hwrng node
+
+ .../bindings/rng/amlogic,meson-rng.yaml       |  1 +
+ arch/arm64/boot/dts/amlogic/meson-s4.dtsi     |  5 ++
+ drivers/char/hw_random/meson-rng.c            | 77 ++++++++++++++++++-
+ 3 files changed, 80 insertions(+), 3 deletions(-)
+
 -- 
-2.34.1
+2.38.1
 
