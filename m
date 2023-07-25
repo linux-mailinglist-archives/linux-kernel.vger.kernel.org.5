@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5814762021
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D987E762045
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbjGYR31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S231722AbjGYRfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjGYR3Z (ORCPT
+        with ESMTP id S230123AbjGYRe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:29:25 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BB21BD5;
-        Tue, 25 Jul 2023 10:29:22 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bb893e6365so17841835ad.2;
-        Tue, 25 Jul 2023 10:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690306162; x=1690910962;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KhSutx2xpmr+Ow/Hq799MNdtT0rBQlKqEtbWDNTHqEc=;
-        b=aJRjU0eoXRM0w5MfLyM6EfCnY+GQe0irHXXroRhccmEO0eYf+VopxHjxAYZYPF7bdT
-         94g9iMzFH59tBRtE56JZWFy8M8+4d5hCTiOyAFyHrHtDEph4LTztbGscu/dj7IsY/oh4
-         n/jQYDGAcZG3mpyJoQKbmIF8XqAj6yFb1v360x35l8KUygl7pJc7078Yp1znIulXeT5j
-         /ecZu/PGySMx1vuUic6gd8u5Y5FpjleH1aMXGbQX2awIloj2PINAyd/sTx2M3QUSirp7
-         Oifp214sxPMGsZDKoGdw+koCRP817kE/O5+OK4annRcgvujA4sg9YWdn6ugFr1epZaBB
-         LgDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690306162; x=1690910962;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KhSutx2xpmr+Ow/Hq799MNdtT0rBQlKqEtbWDNTHqEc=;
-        b=D8dS3FBEy/ree3RI2rvsCuURjQCHrtj8cSKDaeYhfARK9Le3a+vHK69fGdNA8bdPOW
-         8qpp3hGY3/Jbp29f55rqCqc0k8/kjMoFicYSekNUL1EO/fGGQmc23+nh4dRVTln3lx9i
-         P3SjYPf9zfHHOPDipqwua37VoytVpegu80RHgvIbe5TLAfmtbfYD/F4NOrsDaXFOWKX2
-         AvvA6Ev4UL/Fn5U7sNq4W67AIP1ZpBOBCRQfu3p7YnxDttN16IqjLd/qlW8ADhtgZ+lL
-         BvTbIFmU05qrTk7rlDCM9OF+Qa2hdkRLHvsqSblQksH17vd2o5k80wxT1L9u8wnuRiz/
-         At9g==
-X-Gm-Message-State: ABy/qLaHq2uFGDpYhInFvkeHwaD9RaKZgjSu1iVb+9BMIwBThWGaTGpt
-        AAHh7BPakxswro+GtgZ9QDU=
-X-Google-Smtp-Source: APBJJlGmyt5c0pH0DplGvkPP8bpfsD4fX2k7w9Pemgjs9UeRy+9vHDrqOYOiLy1rlBfrslbOlY4l5w==
-X-Received: by 2002:a17:902:dacc:b0:1bb:a922:4a1a with SMTP id q12-20020a170902dacc00b001bba9224a1amr5190839plx.6.1690306162012;
-        Tue, 25 Jul 2023 10:29:22 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id jf6-20020a170903268600b001b801044466sm11390423plb.114.2023.07.25.10.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 10:29:21 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 22:59:10 +0530
-Message-Id: <871qgvdhnd.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-        libaokun1@huawei.com
-Subject: Re: [PATCH v2 1/3] ext4: add two helper functions extent_logical_end() and pa_logical_end()
-In-Reply-To: <20230724121059.11834-2-libaokun1@huawei.com>
+        Tue, 25 Jul 2023 13:34:58 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D3D193;
+        Tue, 25 Jul 2023 10:34:56 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 5B14412002E;
+        Tue, 25 Jul 2023 20:34:55 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5B14412002E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690306495;
+        bh=hkPVZZW7FY29VzrDqyCApfvhv3kL+ZGFwXryqGExqv8=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Re9/ZO1DwCfTipC74HkGlGhlVzGdfjrre2WDK5Bc9vX1kgBjUouyee7HDajbOYCBN
+         YPcy7xpaDbujgQODiC/G0qGlMaSX/ioQ4JH7mA9oZRivLCgC6I091ty8QwoGrOhpqS
+         cUTh1+x2uI/apM4cuwISKgJ7LlQoGI4eLgjF6LVD3oajTcCzL3CNDqbLJhpkQQ4Q91
+         2pFoHX+JRR7iTd41kQycE+5FvWk325Cxr5bNggioiF8LtF72i7UnZK5C0uat/0YEzU
+         EfMdUxFmdjdrKy0N43XG4qf5ajvxVxrJehL0W/bYd099Hkqcazejdv9s6ObxhTlojZ
+         6fJSomb9KJ7oA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue, 25 Jul 2023 20:34:55 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 25 Jul 2023 20:34:52 +0300
+From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@sberdevices.ru>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Subject: [PATCH net-next v3 2/4] virtio/vsock: support MSG_PEEK for SOCK_SEQPACKET
+Date:   Tue, 25 Jul 2023 20:29:10 +0300
+Message-ID: <20230725172912.1659970-3-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
+In-Reply-To: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
+References: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,96 +91,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baokun Li <libaokun1@huawei.com> writes:
+This adds support of MSG_PEEK flag for SOCK_SEQPACKET type of socket.
+Difference with SOCK_STREAM is that this callback returns either length
+of the message or error.
 
-> When we use lstart + len to calculate the end of free extent or prealloc
-> space, it may exceed the maximum value of 4294967295(0xffffffff) supported
-> by ext4_lblk_t and cause overflow, which may lead to various problems.
->
-> Therefore, we add two helper functions, extent_logical_end() and
-> pa_logical_end(), to limit the type of end to loff_t, and also convert
-> lstart to loff_t for calculation to avoid overflow.
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ net/vmw_vsock/virtio_transport_common.c | 63 +++++++++++++++++++++++--
+ 1 file changed, 60 insertions(+), 3 deletions(-)
 
-Sure. extent_logical_end() is not as bad after dropping the third param.
-Thanks for addressing review comments and identifying overflow issues :) 
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 2ee40574c339..352d042b130b 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -460,6 +460,63 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 	return err;
+ }
+ 
++static ssize_t
++virtio_transport_seqpacket_do_peek(struct vsock_sock *vsk,
++				   struct msghdr *msg)
++{
++	struct virtio_vsock_sock *vvs = vsk->trans;
++	struct sk_buff *skb;
++	size_t total, len;
++
++	spin_lock_bh(&vvs->rx_lock);
++
++	if (!vvs->msg_count) {
++		spin_unlock_bh(&vvs->rx_lock);
++		return 0;
++	}
++
++	total = 0;
++	len = msg_data_left(msg);
++
++	skb_queue_walk(&vvs->rx_queue, skb) {
++		struct virtio_vsock_hdr *hdr;
++
++		if (total < len) {
++			size_t bytes;
++			int err;
++
++			bytes = len - total;
++			if (bytes > skb->len)
++				bytes = skb->len;
++
++			spin_unlock_bh(&vvs->rx_lock);
++
++			/* sk_lock is held by caller so no one else can dequeue.
++			 * Unlock rx_lock since memcpy_to_msg() may sleep.
++			 */
++			err = memcpy_to_msg(msg, skb->data, bytes);
++			if (err)
++				return err;
++
++			spin_lock_bh(&vvs->rx_lock);
++		}
++
++		total += skb->len;
++		hdr = virtio_vsock_hdr(skb);
++
++		if (le32_to_cpu(hdr->flags) & VIRTIO_VSOCK_SEQ_EOM) {
++			if (le32_to_cpu(hdr->flags) & VIRTIO_VSOCK_SEQ_EOR)
++				msg->msg_flags |= MSG_EOR;
++
++			break;
++		}
++	}
++
++	spin_unlock_bh(&vvs->rx_lock);
++
++	return total;
++}
++
+ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+ 						 struct msghdr *msg,
+ 						 int flags)
+@@ -554,9 +611,9 @@ virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+ 				   int flags)
+ {
+ 	if (flags & MSG_PEEK)
+-		return -EOPNOTSUPP;
+-
+-	return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags);
++		return virtio_transport_seqpacket_do_peek(vsk, msg);
++	else
++		return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags);
+ }
+ EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
+ 
+-- 
+2.25.1
 
-Looks good to me. Feel free to add: 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  fs/ext4/mballoc.c |  9 +++------
->  fs/ext4/mballoc.h | 14 ++++++++++++++
->  2 files changed, 17 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 21b903fe546e..4cb13b3e41b3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4432,7 +4432,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
->  
->  	/* first, let's learn actual file size
->  	 * given current request is allocated */
-> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
-> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
->  	size = size << bsbits;
->  	if (size < i_size_read(ac->ac_inode))
->  		size = i_size_read(ac->ac_inode);
-> @@ -4766,7 +4766,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
->  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
->  	struct ext4_locality_group *lg;
->  	struct ext4_prealloc_space *tmp_pa = NULL, *cpa = NULL;
-> -	loff_t tmp_pa_end;
->  	struct rb_node *iter;
->  	ext4_fsblk_t goal_block;
->  
-> @@ -4862,9 +4861,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
->  	 * pa can possibly satisfy the request hence check if it overlaps
->  	 * original logical start and stop searching if it doesn't.
->  	 */
-> -	tmp_pa_end = (loff_t)tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-> -
-> -	if (ac->ac_o_ex.fe_logical >= tmp_pa_end) {
-> +	if (ac->ac_o_ex.fe_logical >= pa_logical_end(sbi, tmp_pa)) {
->  		spin_unlock(&tmp_pa->pa_lock);
->  		goto try_group_pa;
->  	}
-> @@ -5769,7 +5766,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
->  
->  	group_pa_eligible = sbi->s_mb_group_prealloc > 0;
->  	inode_pa_eligible = true;
-> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
-> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
->  	isize = (i_size_read(ac->ac_inode) + ac->ac_sb->s_blocksize - 1)
->  		>> bsbits;
->  
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index df6b5e7c2274..d7aeb5da7d86 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -233,6 +233,20 @@ static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
->  		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
->  }
->  
-> +static inline loff_t extent_logical_end(struct ext4_sb_info *sbi,
-> +					struct ext4_free_extent *fex)
-> +{
-> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
-> +	return (loff_t)fex->fe_logical + EXT4_C2B(sbi, fex->fe_len);
-> +}
-> +
-> +static inline loff_t pa_logical_end(struct ext4_sb_info *sbi,
-> +				    struct ext4_prealloc_space *pa)
-> +{
-> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
-> +	return (loff_t)pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
-> +}
-> +
->  typedef int (*ext4_mballoc_query_range_fn)(
->  	struct super_block		*sb,
->  	ext4_group_t			agno,
-> -- 
-> 2.31.1
