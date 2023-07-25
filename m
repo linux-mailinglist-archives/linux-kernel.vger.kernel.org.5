@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67367760392
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFC8760399
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjGYAHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        id S231181AbjGYAKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYAHy (ORCPT
+        with ESMTP id S229499AbjGYAKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:07:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5907E5A
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:07:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF36461475
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:07:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A379EC433C8;
-        Tue, 25 Jul 2023 00:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690243672;
-        bh=6fFzXgixupyns0zqBY+W9+AYz+IuYhEoIO0CBPqLwwM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AU/aFu+QxDh0Qi98dayhr9GSqJ1rIao4ZFzCl0J0PLB/zIk5/GtgXPSiD4ZGQMkjR
-         360+7InYgx2NfacD9QhVdmbbb+ab9ejg/tDfkolMeUZz8peo4fE+hukhqel9bV8zky
-         vFLzYfrFTY9irOdbX9zpgKR6jqUHyQaaVoOpPz0GFamzjtOugeTXmBmVTYI+/JsFdL
-         rv/O6e35efXnMwHT6uTy2yaINhS9o6CkqmYB18McXC5rjlDizJyMh+iHNRDtLcKpQD
-         gRl4+TL+2tBNef2XN8iKuPWmT2Pk8ySjqvoPQZImjprSCDYzX0B0QWQeFJeyYAR/eo
-         qPmjwUKbA852A==
-Date:   Mon, 24 Jul 2023 17:07:49 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        John Stultz <jstultz@google.com>
-Subject: Re: [PATCH 2/2] scripts/faddr2line: Use LLVM addr2line and readelf
- if LLVM=1
-Message-ID: <20230725000749.24qsqlqn5llfan7g@treble>
-References: <20230724174517.15736-1-will@kernel.org>
- <20230724174517.15736-3-will@kernel.org>
+        Mon, 24 Jul 2023 20:10:08 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A650171E;
+        Mon, 24 Jul 2023 17:10:07 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b2b60731so25737675ad.2;
+        Mon, 24 Jul 2023 17:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690243807; x=1690848607;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wf+PzXduxiuJ48KWawZ3LtkdVEPJb3KLiKU+A4/q/2Q=;
+        b=Nwak+FBzHWKFDHev4q7rUdCqtjOpRdeo8NZ7uewmPCm1t8Fc/f898eg2UPv/lkF2zT
+         kUo19a/Fr1oVZ644KlIMpDycApZmVe0nxCdQxWqTiR18zd0heFmNDkASykhFTYzmMXcZ
+         m3bhxyp1/xORSc64j9NKNMWSLgwhnyktIyzI890T2BoWTGMKwOx0EUoXaTEA9F1nB5m0
+         p1rjyztq2FzyYVWtAwR4UqHPTJb5Q6AcmQ3D4YsVCZE1AmIDvTW7W6CYUO6aQlSzMrWt
+         xC+CA4tXHhXqy7KNJlOx2elZlcY0cKA1bZJW8Ud7n++QdJPKY7Jf5FjpocKQUEfZIuzG
+         N5fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690243807; x=1690848607;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wf+PzXduxiuJ48KWawZ3LtkdVEPJb3KLiKU+A4/q/2Q=;
+        b=Z8ABkU/QwWVBH2u5EDnBlOWxwqX8xY8NSB92F81IiSaZEfN2tNRNW4YPQ+eaByT6aV
+         M2tDy/eshalkzwvXiCPpYmXRR0BkueUeMSMqZzuSV/46qdhKSkTZH6OejUbyFuyLizBc
+         VEg2oGtlX55GjCTT3wRex3WflPR2663liRdpBnBdN0peXActPOKtBy0hX4LQufJ6stop
+         jzP/4XKxdYqaNhv+uhtKHdoHVb43k5Y4etWk6ypYIGRqptqC3hqS6ApTGwSnrKAy9kkx
+         tjSe2vmkAX103HOvaAKf5HAvf9l0X2LyMTOJqtuhjsHV4JRzfBHAZpVrZ+m0OVKdQ0gH
+         vgVQ==
+X-Gm-Message-State: ABy/qLahXtfYdt9iAwmqrDmhnr3xNs5fpGgIYv0mQmpzUsnc+bcNTS1R
+        WL3Lm8qYfdMOGjG5rAUPauw=
+X-Google-Smtp-Source: APBJJlFQDcA1kqMEZOG673r5dxMQmDtqfPe2bqvQzV4rQfkTn5yubhCV2ENLPI25inl8aF8V5TdnjA==
+X-Received: by 2002:a17:902:9b98:b0:1b9:e9f1:91e0 with SMTP id y24-20020a1709029b9800b001b9e9f191e0mr7323365plp.41.1690243806657;
+        Mon, 24 Jul 2023 17:10:06 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:9d8f:da31:e274:eeb5])
+        by smtp.gmail.com with ESMTPSA id q3-20020a170902dac300b001b04b1bd774sm9570519plx.208.2023.07.24.17.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 17:10:06 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 17:10:03 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Henrik Rydberg <rydberg@bitmath.org>,
+        Verot <verot.wrongdoer713@simplelogin.com>,
+        Linux Input Devices <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Stable <stable@vger.kernel.org>
+Subject: Re: Fwd: Kernel 6.4.4 breaks Elan Touchpad 1206
+Message-ID: <ZL8S2/Ujprk4KgzT@google.com>
+References: <42bc8e02-5ee0-f1c8-610e-e16391e54ee2@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724174517.15736-3-will@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <42bc8e02-5ee0-f1c8-610e-e16391e54ee2@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:45:17PM +0100, Will Deacon wrote:
-> GNU utilities cannot necessarily parse objects built by LLVM, which can
-> result in confusing errors when using 'faddr2line':
+On Tue, Jul 25, 2023 at 07:00:21AM +0700, Bagas Sanjaya wrote:
+> Hi,
 > 
-> $ CROSS_COMPILE=aarch64-linux-gnu- ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-> aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-> aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-> do_one_initcall+0xf4/0x260:
-> aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-> aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-> $x.73 at main.c:?
+> I notice a regression report on Bugzilla [1]. Quoting from it:
 > 
-> Although this can be worked around by setting CROSS_COMPILE to "llvm=-",
-> it's cleaner to follow the same syntax as the top-level Makefile and
-> accept LLVM=1 as an indication to use the llvm- tools.
+> > Description:
+> > When booting into Linux 6.4.4, system no longer recognizes touchpad input (confirmed with xinput). On the lts release, 6.1.39, the input is still recognized.
+> > 
+> > Additional info:
+> > * package version(s): Linux 6.4.4, 6.1.39
+> > * Device: ELAN1206:00 04F3:30F1 Touchpad
+> > 
+> > Steps to reproduce:
+> > - Install 6.4.4 with Elan Touchpad 1206
+> > - Reboot
+> > 
+> > The issue might be related to bisected commit id: 7b63a88bb62ba2ddf5fcd956be85fe46624628b9
+> > This is the only recent commit related to Elantech drivers I've noticed that may have broken the input.
 > 
-> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> Cc: John Stultz <jstultz@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
+> See Bugzilla for the full thread:
+> 
+> To the reporter (Verot): Can you attach dmesg and lspci output?
+> 
+> Anyway, I'm adding this regression to be tracked by regzbot:
+> 
+> #regzbot introduced: 7b63a88bb62ba2 https://bugzilla.kernel.org/show_bug.cgi?id=217701
+> #regzbot title: OOB protocol access fix breaks Elan Touchpad 1206
 
-This one looks good to me, I'll go ahead and queue it.
+Please don't as ELAN1206:00 04F3:30F1 looks like I2C-HID and not PS/2
+device that 7b63a88bb62ba2 would affect.
+
+Thanks.
 
 -- 
-Josh
+Dmitry
