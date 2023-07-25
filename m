@@ -2,221 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78365760C21
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE57760C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjGYHl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        id S232335AbjGYHly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbjGYHlP (ORCPT
+        with ESMTP id S232761AbjGYHle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:41:15 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82D81BF0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:40:01 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-993a37b79e2so830244466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690270800; x=1690875600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DrHfPZx3m7ETdKsggeDbNp4hUSj5sbEikKTzBEPpJZo=;
-        b=M4BL6Vzj6qPiA0kpPiwDs5DA8QbI7iWtNGRxzHNfKLOm90271SME9alsDDcYQFxwv3
-         KZ1isUhITNnPXPuQo9iQuee381kWbfyMI7XN7jQRSP/vJEhgr2PQDXBjlHd8nNATY0r5
-         E1/h71XLyIVU6nEoYker+c7vep4pEOA7L2IodD2p72vG1jFaaolXLBy9IOS1/2zhkQgG
-         ofuUOnTfJkIZ5RIZKtUX3diBDAL8FFXlh2cuMWLTmKbGpgVJIHQhvLQ3goWTb4+ZzlwW
-         xK8d5Vzgw4Xvn9L2qiwaB4W38T71zYvGVJRQVW7pAaqgj1c5BqT6QvNF96XXx18Z3MC1
-         J9lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690270800; x=1690875600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DrHfPZx3m7ETdKsggeDbNp4hUSj5sbEikKTzBEPpJZo=;
-        b=Bd/wtSGsXa1R9TCJPxuGo/u1K+hjEnyQxlemgQxfhA/Jc1SU/atOqaSDR9CLcZ7ndn
-         OezFQbPG6phleTLm0GOo9ga9x5pfYTHT2xj8DQbPleZLiZTxXek78JGouIP0eosjIDOM
-         t2/zz8EqojRmqCa+HmBrlfwxgItQF0towfoSNHJwkQUlwqtYVydrwHUR0d29frnV0Iig
-         TrQMf6HPmjC17nje1gsqDenttRebGYgGh8OOzreldKlmASKj1ZuPQiqjpTRyh4Ht4JBH
-         BF5A1esxEpdnB/NZTmQtOnZwMEBwhOHtmuBobus3PyV3drAbrMmndI4hkhNkADCnMhPn
-         8bcA==
-X-Gm-Message-State: ABy/qLaEogHoyISgKUPt/SsjUTojqrZK+DkVF3onFZ/kcXEfaxgSN61N
-        Ad8lfH7OTp9sY+grlb26fSNBuQ==
-X-Google-Smtp-Source: APBJJlFEWtBoJHCaLUCiJnxrCzyyTztNzwfHwUzo9iTlF+mQeheI/8NYatU7cCMbzB3HSzm8DvyVNQ==
-X-Received: by 2002:a17:906:8476:b0:994:54af:e27d with SMTP id hx22-20020a170906847600b0099454afe27dmr11362150ejc.29.1690270800268;
-        Tue, 25 Jul 2023 00:40:00 -0700 (PDT)
-Received: from linaro.org ([82.78.74.213])
-        by smtp.gmail.com with ESMTPSA id c21-20020a170906341500b00992b2c55c67sm7862383ejb.156.2023.07.25.00.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 00:39:59 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 10:39:58 +0300
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     abelvesa@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ye Li <ye.li@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Subject: Re: [PATCH 1/2] clk: imx: pllv4: Fix SPLL2 MULT range
-Message-ID: <ZL98Tgpb29HLXYDr@linaro.org>
-References: <20230625123340.4067536-1-peng.fan@oss.nxp.com>
+        Tue, 25 Jul 2023 03:41:34 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97C11B3;
+        Tue, 25 Jul 2023 00:41:05 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36P7eaLB078862;
+        Tue, 25 Jul 2023 02:40:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690270837;
+        bh=qHKTTygeeH82schrrvP3laQUGHdtt+a7Gv1Kpgd9SQs=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=kacMc2QErSx8ugBhVMqDX3BRzKshrgoWADhxjWKmB0juxu+oKEUesCXtJj+49s7V+
+         ib5cFgv/8EKjBtGcPo0LLoRWetphr/OR84D8zrQZIBY8oLJXfX8hWwNO2hBpOINF4U
+         UDFt1FqaF8JlzwCkI9JCL7HdmlbSFYHwH8x2+yHM=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36P7eaBM005583
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 25 Jul 2023 02:40:36 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
+ Jul 2023 02:40:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 25 Jul 2023 02:40:36 -0500
+Received: from [172.24.227.217] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36P7eU0l088544;
+        Tue, 25 Jul 2023 02:40:31 -0500
+Message-ID: <b2016718-b8e4-a1f8-92ed-f0d9e3cb9c17@ti.com>
+Date:   Tue, 25 Jul 2023 13:10:30 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230625123340.4067536-1-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [EXTERNAL] Re: [PATCH v11 03/10] net: ti: icssg-prueth: Add
+ Firmware config and classification APIs.
+Content-Language: en-US
+To:     Simon Horman <simon.horman@corigine.com>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230724112934.2637802-1-danishanwar@ti.com>
+ <20230724112934.2637802-4-danishanwar@ti.com> <ZL94/L1RMlU5TiAb@corigine.com>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <ZL94/L1RMlU5TiAb@corigine.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-06-25 20:33:39, Peng Fan (OSS) wrote:
-> From: Ye Li <ye.li@nxp.com>
-> 
-> The SPLL2 on iMX8ULP is different with other frac PLLs, it can
-> support VCO from 650Mhz to 1Ghz. According to RM, the MULT is
-> using a range from 27 to 54, not some fixed values. If using
-> current PLL implementation, some clock rate can't be supported.
-> 
-> Fix the issue by adding new type for the SPLL2 and use MULT range
-> to replace MULT table
-> 
-> Fixes: 5f0601c47c33 ("clk: imx: Update the pllv4 to support imx8ulp")
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> Reviewed-by: Jacky Bai <ping.bai@nxp.com>
-> Signed-off-by: Ye Li <ye.li@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Hi Simon,
 
-LGTM.
-
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-
-> ---
->  drivers/clk/imx/clk-pllv4.c | 46 +++++++++++++++++++++++++++++--------
->  drivers/clk/imx/clk.h       |  1 +
->  2 files changed, 37 insertions(+), 10 deletions(-)
+On 25/07/23 12:55 pm, Simon Horman wrote:
+> On Mon, Jul 24, 2023 at 04:59:27PM +0530, MD Danish Anwar wrote:
+>> Add icssg_config.h / .c and icssg_classifier.c files. These are firmware
+>> configuration and classification related files. These will be used by
+>> ICSSG ethernet driver.
+>>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 > 
-> diff --git a/drivers/clk/imx/clk-pllv4.c b/drivers/clk/imx/clk-pllv4.c
-> index 6e7e34571fc8..9b136c951762 100644
-> --- a/drivers/clk/imx/clk-pllv4.c
-> +++ b/drivers/clk/imx/clk-pllv4.c
-> @@ -44,11 +44,15 @@ struct clk_pllv4 {
->  	u32		cfg_offset;
->  	u32		num_offset;
->  	u32		denom_offset;
-> +	bool		use_mult_range;
->  };
->  
->  /* Valid PLL MULT Table */
->  static const int pllv4_mult_table[] = {33, 27, 22, 20, 17, 16};
->  
-> +/* Valid PLL MULT range, (max, min) */
-> +static const int pllv4_mult_range[] = {54, 27};
-> +
->  #define to_clk_pllv4(__hw) container_of(__hw, struct clk_pllv4, hw)
->  
->  #define LOCK_TIMEOUT_US		USEC_PER_MSEC
-> @@ -94,17 +98,30 @@ static unsigned long clk_pllv4_recalc_rate(struct clk_hw *hw,
->  static long clk_pllv4_round_rate(struct clk_hw *hw, unsigned long rate,
->  				 unsigned long *prate)
->  {
-> +	struct clk_pllv4 *pll = to_clk_pllv4(hw);
->  	unsigned long parent_rate = *prate;
->  	unsigned long round_rate, i;
->  	u32 mfn, mfd = DEFAULT_MFD;
->  	bool found = false;
->  	u64 temp64;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(pllv4_mult_table); i++) {
-> -		round_rate = parent_rate * pllv4_mult_table[i];
-> -		if (rate >= round_rate) {
-> +	u32 mult;
-> +
-> +	if (pll->use_mult_range) {
-> +		temp64 = (u64)rate;
-> +		do_div(temp64, parent_rate);
-> +		mult = temp64;
-> +		if (mult >= pllv4_mult_range[1] &&
-> +		    mult <= pllv4_mult_range[0]) {
-> +			round_rate = parent_rate * mult;
->  			found = true;
-> -			break;
-> +		}
-> +	} else {
-> +		for (i = 0; i < ARRAY_SIZE(pllv4_mult_table); i++) {
-> +			round_rate = parent_rate * pllv4_mult_table[i];
-> +			if (rate >= round_rate) {
-> +				found = true;
-> +				break;
-> +			}
->  		}
->  	}
->  
-> @@ -138,14 +155,20 @@ static long clk_pllv4_round_rate(struct clk_hw *hw, unsigned long rate,
->  	return round_rate + (u32)temp64;
->  }
->  
-> -static bool clk_pllv4_is_valid_mult(unsigned int mult)
-> +static bool clk_pllv4_is_valid_mult(struct clk_pllv4 *pll, unsigned int mult)
->  {
->  	int i;
->  
->  	/* check if mult is in valid MULT table */
-> -	for (i = 0; i < ARRAY_SIZE(pllv4_mult_table); i++) {
-> -		if (pllv4_mult_table[i] == mult)
-> +	if (pll->use_mult_range) {
-> +		if (mult >= pllv4_mult_range[1] &&
-> +		    mult <= pllv4_mult_range[0])
->  			return true;
-> +	} else {
-> +		for (i = 0; i < ARRAY_SIZE(pllv4_mult_table); i++) {
-> +			if (pllv4_mult_table[i] == mult)
-> +				return true;
-> +		}
->  	}
->  
->  	return false;
-> @@ -160,7 +183,7 @@ static int clk_pllv4_set_rate(struct clk_hw *hw, unsigned long rate,
->  
->  	mult = rate / parent_rate;
->  
-> -	if (!clk_pllv4_is_valid_mult(mult))
-> +	if (!clk_pllv4_is_valid_mult(pll, mult))
->  		return -EINVAL;
->  
->  	if (parent_rate <= MAX_MFD)
-> @@ -227,10 +250,13 @@ struct clk_hw *imx_clk_hw_pllv4(enum imx_pllv4_type type, const char *name,
->  
->  	pll->base = base;
->  
-> -	if (type == IMX_PLLV4_IMX8ULP) {
-> +	if (type == IMX_PLLV4_IMX8ULP ||
-> +	    type == IMX_PLLV4_IMX8ULP_1GHZ) {
->  		pll->cfg_offset = IMX8ULP_PLL_CFG_OFFSET;
->  		pll->num_offset = IMX8ULP_PLL_NUM_OFFSET;
->  		pll->denom_offset = IMX8ULP_PLL_DENOM_OFFSET;
-> +		if (type == IMX_PLLV4_IMX8ULP_1GHZ)
-> +			pll->use_mult_range = true;
->  	} else {
->  		pll->cfg_offset = PLL_CFG_OFFSET;
->  		pll->num_offset = PLL_NUM_OFFSET;
-> diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
-> index af19d9f6aed0..adb7ad649a0d 100644
-> --- a/drivers/clk/imx/clk.h
-> +++ b/drivers/clk/imx/clk.h
-> @@ -45,6 +45,7 @@ enum imx_pll14xx_type {
->  enum imx_pllv4_type {
->  	IMX_PLLV4_IMX7ULP,
->  	IMX_PLLV4_IMX8ULP,
-> +	IMX_PLLV4_IMX8ULP_1GHZ,
->  };
->  
->  enum imx_pfdv2_type {
-> -- 
-> 2.37.1
+> Hi Danish,
 > 
+> some feedback from my side.
+> 
+
+Thanks for the feedback.
+
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/ti/icssg_classifier.c b/drivers/net/ethernet/ti/icssg_classifier.c
+> 
+> ...
+> 
+>> +void icssg_class_set_mac_addr(struct regmap *miig_rt, int slice, u8 *mac)
+> 
+> This function appears to be unused.
+> Perhaps it would be better placed in a later patch?
+> 
+> Or perhaps not, if it makes it hard to split up the patches nicely.
+> In which case, perhaps the __maybe_unused annotation could be added,
+> temporarily.
+> 
+
+Due to splitting the patch into 8-9 patches, I had to introduce these helper
+APIs earlier. All these APIs are helper APIs, they will be used in patch 6
+(Introduce ICSSG Prueth driver).
+
+I had this concern that some APIs which will be used later but introduced
+earlier can create some warnings, before splitting the patches.
+
+I had raised this concern in [1] and asked Jakub if it would be OK to introduce
+these APIs earlier. Jakub said it would be fine [2], so I went ahead with this
+approach.
+
+It will make very hard to break patches if these APIs are introduced and used
+in same patch.
+
+> Flagged by clang-16 W=1, and gcc=12 W=1 builds.
+> Likewise for other issues flagged below regarding
+> function declarations/definitions.
+> 
+>> +{
+>> +	regmap_write(miig_rt, offs[slice].mac0, (u32)(mac[0] | mac[1] << 8 |
+>> +		     mac[2] << 16 | mac[3] << 24));
+>> +	regmap_write(miig_rt, offs[slice].mac1, (u32)(mac[4] | mac[5] << 8));
+>> +}
+>> +
+>> +/* disable all RX traffic */
+>> +void icssg_class_disable(struct regmap *miig_rt, int slice)
+> 
+> This function is only used in this file.
+> Please consider making it static.
+> 
+
+This is later used in icssg_prueth.c, that is why this is not static.
+
+> ...
+> 
+>> +void icssg_class_default(struct regmap *miig_rt, int slice, bool allmulti)
+> 
+> This function also appears to be unused.
+> 
+
+This is later used in icssg_prueth.c
+
+> ...
+> 
+>> +/* required for SAV check */
+>> +void icssg_ft1_set_mac_addr(struct regmap *miig_rt, int slice, u8 *mac_addr)
+> 
+> This function also appears to be unused.
+> 
+
+This is later used in icssg_prueth.c
+
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/ti/icssg_config.c b/drivers/net/ethernet/ti/icssg_config.c
+> 
+> ...
+> 
+>> +void icssg_config_ipg(struct prueth_emac *emac)
+> 
+> This function is also only used in this file.
+> 
+
+This is later used in icssg_prueth.c
+
+> ...
+> 
+>> +static void icssg_init_emac_mode(struct prueth *prueth)
+>> +{
+>> +	/* When the device is configured as a bridge and it is being brought
+>> +	 * back to the emac mode, the host mac address has to be set as 0.
+>> +	 */
+>> +	u8 mac[ETH_ALEN] = { 0 };
+>> +
+>> +	if (prueth->emacs_initialized)
+>> +		return;
+>> +
+>> +	regmap_update_bits(prueth->miig_rt, FDB_GEN_CFG1,
+>> +			   SMEM_VLAN_OFFSET_MASK, 0);
+>> +	regmap_write(prueth->miig_rt, FDB_GEN_CFG2, 0);
+>> +	/* Clear host MAC address */
+>> +	icssg_class_set_host_mac_addr(prueth->miig_rt, mac);
+> 
+
+This is later used in icssg_prueth.c
+
+> icssg_class_set_host_mac_addr() is defined in icssg_classifier.c
+> but used here in icssg_config.c.
+> 
+> Please consider providing a declaration of this function,
+> ideally in a .h file.
+> 
+
+The declaration of this function is added later(in patch 6) in icssg_prueth.h
+
+> ...
+> 
+>> +int emac_set_port_state(struct prueth_emac *emac,
+>> +			enum icssg_port_state_cmd cmd)
+> 
+> This function also appears to be unused.
+> 
+> ...
+> 
+>> +void icssg_config_set_speed(struct prueth_emac *emac)
+> 
+> Ditto.
+> 
+
+Both these APIs are later used in icssg_prueth.c
+
+> ...
+
+[1] https://lore.kernel.org/all/17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com/
+[2] https://lore.kernel.org/all/20230720081741.0c32d5e6@kernel.org/
+
+-- 
+Thanks and Regards,
+Danish.
