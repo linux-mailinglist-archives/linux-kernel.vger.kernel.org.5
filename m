@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A98AA761C09
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825C9761C02
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbjGYOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S230077AbjGYOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjGYOli (ORCPT
+        with ESMTP id S229974AbjGYOlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:41:38 -0400
-Received: from m13148.mail.163.com (m13148.mail.163.com [220.181.13.148])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BA7D2689;
-        Tue, 25 Jul 2023 07:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=n8RN2LeHuyQLewQVgikaE+mv7gglBurfr1Oy3pNDegs=; b=q
-        DGvcG/WaJXSxkLAoSwW0/kn/ItnZyfMiJTHXChN6SCfdzn2nIN1y6oKEauRC+bw6
-        Nc6qRUrpPNSsZUILugnyORsG94TmaufwiHrpFYhI0oMYBBs/6y6CGbHmC4ZYTUrL
-        v3Zbul3f4zCCChrpUnGqIQ5WHNNJ5CLUR3Hnmcbon8=
-Received: from 18500469033$163.com ( [114.253.21.2] ) by
- ajax-webmail-wmsvr148 (Coremail) ; Tue, 25 Jul 2023 22:40:10 +0800 (CST)
-X-Originating-IP: [114.253.21.2]
-Date:   Tue, 25 Jul 2023 22:40:10 +0800 (CST)
-From:   "Dingyan Li" <18500469033@163.com>
-To:     "Oliver Neukum" <oneukum@suse.com>
-Cc:     "Greg KH" <gregkh@linuxfoundation.org>, stern@rowland.harvard.edu,
-        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH] USB: add usbfs ioctl to get specific superspeedplus
- rates
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <ca4ad735-5605-3fd4-c903-fe5b039cf6a8@suse.com>
-References: <20230721084039.9728-1-18500469033@163.com>
- <2023072105-lethargic-saddling-ad97@gregkh>
- <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
- <2023072159-carol-underfeed-43eb@gregkh>
- <781b3f95-96e7-af83-e089-887ec7f2d255@suse.com>
- <2023072546-denture-half-5ceb@gregkh>
- <4edabcb3.7e65.1898d54679e.Coremail.18500469033@163.com>
- <ca4ad735-5605-3fd4-c903-fe5b039cf6a8@suse.com>
-X-NTES-SC: AL_QuySAv6SuUgq5iacZukXkkYVgew6WsC4vf4k3IReOps0pyzy0yYpdn1MHmrp98KlOQmxshqMdjJLwcVkXYJAUalIgNO15SOEnADG2j+fGlEt
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Tue, 25 Jul 2023 10:41:10 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6294B26B6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:40:44 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48147a5f0c0so1777589e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690296035; x=1690900835;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6jl5+LreKnh1yykcifdBl1Q5Q7VSb/IZl7szWKJ4qmg=;
+        b=Mj6Q7S1oyu3AZqRp93gZmaewJj5yosETUiPOwu6KNnAU+nygtqcGHXHS1UU+geok/s
+         YzBpQH6kzLq5IkR6AfJT0/eMZ1TCjFgvX2L/rH6CsYW7p6ni8+18gn7hYAbu02W6twzB
+         PK8Q7AQvCBjxO6t5+P7GsdfZHHMzx0qPZKRXKh/lOoYeRIWdXHRNcPBNBm/Seixu5fam
+         2bCnldqL1PEiWNAZ5GkXmiXRqaGWVdWLHTJ8C8fc0gj0eJuAA9snKlL1e7sdA3pjf80m
+         oxZ0549lzTrUUA9AJCjFqFrjqTYYG/kSX3j2oD4m8n17OC5B0ihqwoQ1HvWiql6DPFuv
+         47JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690296035; x=1690900835;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6jl5+LreKnh1yykcifdBl1Q5Q7VSb/IZl7szWKJ4qmg=;
+        b=Rg5G0vjRkIgJ8D7sEHdE7HdjrXKDmm6y8jEjHQwdACVib+ouMBT+daSaSGtCfokNbW
+         ADGyR/24CB6MyTiMiQFOQjoLF/Jg3R8DotHfY80AK8vyrp8iLDmWvS2oqh8m/wMxQRvi
+         7UQ88oAOnC1Y/S6mU8lJEKV4Zx8kNnHzgzaE2CBYXcImsVtuFaW+D1XwR578a9NLZ8/K
+         GizF7TEj9PIpzbffv37dCRE4aWwXq6ptn8U6L269VlDGDxIlTABinKFIgs2Gd3pitzxO
+         FBUt3VK/ccubAAvmQwV4UUL6wPu0SGjUCAdtfgnkjCt1iohuX3VhbyCL9aadShl8dFUO
+         /QIg==
+X-Gm-Message-State: ABy/qLZsyu5uhOxOwX+Y3/IPtQ/q028zeKrbr38sGMzyIAAMyAY73DsY
+        xgfnIB9fyP4CYa/i1HcHJ9aCpylu+5WFjlgzdXPtIA==
+X-Google-Smtp-Source: APBJJlFV7dvTCeRGn11UfmRwNmuLCKBZhzcl8QTcjtuYmrQjASgxv35b4LwwCFqfZmlNl6OUiU2x+8GQyQCnUVlFY2o=
+X-Received: by 2002:a1f:4191:0:b0:471:b18a:f9e5 with SMTP id
+ o139-20020a1f4191000000b00471b18af9e5mr4357499vka.4.1690296035612; Tue, 25
+ Jul 2023 07:40:35 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <3018cd33.7ee4.1898d7e4798.Coremail.18500469033@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: lMGowAC3nzLK3r9keXwJAA--.10896W
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbB5xK3y2BHLCLnLgABso
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230725104553.588743331@linuxfoundation.org>
+In-Reply-To: <20230725104553.588743331@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 25 Jul 2023 20:10:24 +0530
+Message-ID: <CA+G9fYs217H+k5pNx_uobpHmg0vM4qRk9UT_OKspxn5d-NoNqA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/509] 5.10.188-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chao Yu <chao@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMDctMjUgMjI6MDg6NDQsICJPbGl2ZXIgTmV1a3VtIiA8b25ldWt1bUBzdXNlLmNv
-bT4gd3JvdGU6Cj5PbiAyNS4wNy4yMyAxNTo1NCwgRGluZ3lhbiBMaSB3cm90ZToKPgo+PiBJZiB3
-ZSBjYW4ndCAiZGVwcmVjYXRlIiBpb2N0bHMsIGNhbiB3ZSBjaGFuZ2UgdGhlIHJldHVybmVkIGNv
-bnRlbnRzIG9mIGV4aXN0aW5nIG9uZXM/Cj4KPk5vLiBBYnNvbHV0ZWx5IG5vdC4gVGhhdCBpcyB0
-b3RhbGx5IHVuYWNjZXB0YWJsZS4gSXQgd291bGQgYmUgbXVjaAo+d29yc2UgdGhhbiBqdXN0IHJl
-bW92aW5nIHRoZSBzdXBwb3J0Lgo+Cj4JUmVnYXJkcwo+CQlPbGl2ZXIKCkdvdCBpdCwgSSBndWVz
-cyB0aGlzIGlzIGZvciBiYWNrd2FyZC1jb21wYXRpYmlsaXR5LgoKSSBhbHNvIGhhdmUgYW5vdGhl
-ciB0aG91Z2h0LiBVU0JERVZGU19DT05OSU5GT19FWCBpcyBraW5kIG9mIHNwZWNpYWwgYW5kCnVz
-ZWQgdG8gcmV0cmlldmUgY29udGVudHMgb2YgdmFyaWFibGUgbGVuZ3RoLiBJZiB5b3UgY2hlY2sg
-cHJvY19jb25uaW5mb19leCgpLApJIHRoaW5rIG1heWJlIHdlIGNhbiBhcHBlbmQgYSBuZXcgbWVt
-YmVyIHRvICJzdHJ1Y3QgdXNiZGV2ZnNfY29ubmluZm9fZXgiCndpdGhvdXQgYnJlYWtpbmcgYmFj
-a3dhcmQtY29tcGF0aWJpbGl0eS4KCkJ5IHRoaXMgd2F5LCB3ZSBjYW4gYXZvaWQgYWRkaW5nIGEg
-bmV3IGlvY3RsLiBPciBldmVuIG1vcmUgYWdncmVzc2l2ZWx5LApkcm9wIFVTQkRFVkZTX0dFVF9T
-UEVFRCBhbmQgZm9yY2UgZXZlcnlvbmUgdG8gdXNlIFVTQkRFVkZTX0NPTk5JTkZPX0VYCnNpbmNl
-IGl0IGNhbiBhbHNvIHJldHVybiBkZXZpY2Ugc3BlZWQuCgoKUmVnYXJkcywKRGluZ3lhbg==
+On Tue, 25 Jul 2023 at 16:42, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.188 release.
+> There are 509 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.188-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Following commit caused build failures on all the architectures,
+
+> Chao Yu <chao@kernel.org>
+>     ext4: fix to check return value of freeze_bdev() in ext4_shutdown()
+
+ext4: fix to check return value of freeze_bdev() in ext4_shutdown()
+commit c4d13222afd8a64bf11bc7ec68645496ee8b54b9 upstream
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/2/build ARCH=x86_64 SRCARCH=x86
+CROSS_COMPILE=x86_64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang' LLVM=1 LLVM_IAS=1
+/builds/linux/fs/ext4/ioctl.c:634:7: error: incompatible pointer to
+integer conversion assigning to 'int' from 'struct super_block *'
+[-Wint-conversion]
+                ret = freeze_bdev(sb->s_bdev);
+                    ^ ~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+make[3]: *** [/builds/linux/scripts/Makefile.build:286: fs/ext4/ioctl.o] Error 1
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
