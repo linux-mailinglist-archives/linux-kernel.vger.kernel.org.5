@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1DA760CA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A125D760CA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjGYIGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
+        id S231526AbjGYIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjGYIGi (ORCPT
+        with ESMTP id S229780AbjGYIHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:06:38 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC64116;
-        Tue, 25 Jul 2023 01:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690272397; x=1721808397;
-  h=from:to:cc:subject:date:message-id;
-  bh=nMTbfPgVcvacXEUWqJGCOueLTjOGIDiOh188sMtapls=;
-  b=QXRten4v66Ez8U9ef1nDbRhFkJSmXU/4VaPhQE8pSZV3sK8oZTJfGQtM
-   Y3KhpkEPbCWPX0F4/rk6sJAYUcLqrBrN4ZyQlycQAhhOmPTv1mEuU5qqZ
-   vNfanIMaTuVPkS4EO0k6OUeMPfm8YniTmxv/rxmLOjZaJM9X6UZr1ijIp
-   1E1f+czoi/BX4KG68qFy8p+xv7AHdhe6IHDTs9L9ejirUjh+VJlMXlVFO
-   ylmWyhZu+cI544AgvqeC2IHz/4O5oRs9a0wKZqppX/tQqxLm5xYdqXDHS
-   CoXNhkqp4AVwh0EcLuzqqAKq/hj6Cr0E+rvsiReXNyvAxBv5dUtH8Axv7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347258863"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="347258863"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:06:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="972570573"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="972570573"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:06:25 -0700
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ee Wey Lim <ee.wey.lim@intel.com>
-Subject: [PATCH 1/1] EDAC/igen6: Fix the issue of no error events
-Date:   Tue, 25 Jul 2023 16:04:27 +0800
-Message-Id: <20230725080427.23883-1-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 04:07:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EB0194
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690272408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=znFfHLJbWiyN9pMP2AMMfy/9G3ZnnV8jtsrk5zhq4sQ=;
+        b=iMPKlqV0coF8yz0FrVMIsgHEfI5QZ5fAzhOvUZfqAsYqt8BuSPjy63fcRKVdCWoZVfK/MY
+        Ya0i90ITPcBeCcuSrrmtvh1ilpk9q9gGEWZGjv/iKv5122UFrZ1PCtmlNqaSrCl4W8xKH1
+        k3zfAHrMrsx2Qbp9d7szl7dCyG+9hho=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167-cLlFzzGUOGa4ShxPE0ugaQ-1; Tue, 25 Jul 2023 04:06:46 -0400
+X-MC-Unique: cLlFzzGUOGa4ShxPE0ugaQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-978a991c3f5so452611966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:06:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690272405; x=1690877205;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=znFfHLJbWiyN9pMP2AMMfy/9G3ZnnV8jtsrk5zhq4sQ=;
+        b=FCby7/H3ZWv7fXCpjAwtIR5PYJat9XHXv101DAK6jAdX1nBnOn4EwBCuFsdNFNCgtD
+         EQr7vwuZn2vkmUJcY970/P3pJ43HtKVrfsvP1G7nloy4AqQwiF7DtdoVTwO15uclsVaZ
+         OrqJqiDPCPRuHdxf8yfmyxBa4OLmGPTKh7eKZgeyjM+Bhx/TCiuLwWM9VKqluXyL5Jpq
+         aLPZ3bXLDZp/qoriKX7HL+U+FYawVyEejh39Ky9EpdD/2YnIPSlcvvEwJUZedGQArsTq
+         b0ROSfQOseCpcbn9dJ4R+1E5sp+M/oqR6WOeLRmofnhbmW1Ve6UOs8/JDLIB5KDeBkF+
+         q6Aw==
+X-Gm-Message-State: ABy/qLY8G+AgbjhXDcTdnAxgqTI/Fw4R3+Dia5QvuPy52Bvoe6qzOFGZ
+        OBxSkRD5l+NaUR+HB/tQ0MoBSJY6fw+EoroN3sxXoFZFbPF23dmRXoIIqQ0I2XICBucBKBpVVfW
+        swda+OMunyMykPuDTyta1L8sm
+X-Received: by 2002:a17:906:844f:b0:997:b843:7cb2 with SMTP id e15-20020a170906844f00b00997b8437cb2mr12863554ejy.60.1690272405718;
+        Tue, 25 Jul 2023 01:06:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE3D4D8K7hbcxTbSaSiYgnMLi23XavkH92746u3yNn+xpzMYhDK6WGTVziN9NOwXyXDZs16Eg==
+X-Received: by 2002:a17:906:844f:b0:997:b843:7cb2 with SMTP id e15-20020a170906844f00b00997b8437cb2mr12863539ejy.60.1690272405385;
+        Tue, 25 Jul 2023 01:06:45 -0700 (PDT)
+Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id w8-20020a170906130800b00992b510089asm7885039ejb.84.2023.07.25.01.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 01:06:44 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:06:44 +0200
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Woody Suwalski <terraluna977@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, mst@redhat.com
+Subject: Re: [PATCH] hack to debug acpiphp crash
+Message-ID: <20230725100644.6138efb6@imammedo.users.ipa.redhat.com>
+In-Reply-To: <92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com>
+References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+        <20230724135902.2217991-1-imammedo@redhat.com>
+        <92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current igen6_edac checks for pending errors before the registration
-of the error handler. However, there is a possibility that the error
-occurs during the registration process, leading to unhandled pending
-errors and no future error events. This issue can be reproduced by
-repeatedly injecting errors during the loading of the igen6_edac.
+On Mon, 24 Jul 2023 21:52:34 -0400
+Woody Suwalski <terraluna977@gmail.com> wrote:
 
-Fix this issue by moving the pending error handler after the registration
-of the error handler, ensuring that no pending errors are left unhandled.
+> Igor Mammedov wrote:
+> > Woody thanks for testing,
+> >
+> > can you try following patch which will try to workaround NULL bus->self if it's
+> > a really cuplrit and print an extra debug information.
+> > Add following to kernel command line(make sure that CONFIG_DYNAMIC_DEBUG is enabled):
+> >
+> > dyndbg="file drivers/pci/access.c +p; file drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p" ignore_loglevel
+> >
+> > What I find odd in you logs is that enable_slot() is called while native PCIe
+> > should be used. Additional info might help to understand what's going on:
+> >    1: 'lspci' output
+> >    2:  DSDT and all SSDT ACPI tables (you can use 'acpidump -b' to get them).
+> >
+> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+[...]
+> >   
+> >   /**  
+> Unfortunately the patch above does not seem to prevent the kernel crash.
+> Here comes the requested diagnostic info: dmesg's before and after, 
+> choice of lspci's and acpi tables. Hope that will help :-)
 
-Fixes: 10590a9d4f23 ("EDAC/igen6: Add EDAC driver for Intel client SoCs using IBECC")
-Reported-by: Ee Wey Lim <ee.wey.lim@intel.com>
-Tested-by: Ee Wey Lim <ee.wey.lim@intel.com>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
----
- drivers/edac/igen6_edac.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Looking at dmesg-6.5-debug_after.txt
+there aren't "BUG: kernel NULL pointer dereference" line anymore
+The call traces you see are induced by WARN(), which purpose is
+to show call path that calls enable_slot().
 
-diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index 544dd19072ea..1a18693294db 100644
---- a/drivers/edac/igen6_edac.c
-+++ b/drivers/edac/igen6_edac.c
-@@ -27,7 +27,7 @@
- #include "edac_mc.h"
- #include "edac_module.h"
- 
--#define IGEN6_REVISION	"v2.5"
-+#define IGEN6_REVISION	"v2.5.1"
- 
- #define EDAC_MOD_STR	"igen6_edac"
- #define IGEN6_NMI_NAME	"igen6_ibecc"
-@@ -1216,9 +1216,6 @@ static int igen6_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	INIT_WORK(&ecclog_work, ecclog_work_cb);
- 	init_irq_work(&ecclog_irq_work, ecclog_irq_work_cb);
- 
--	/* Check if any pending errors before registering the NMI handler */
--	ecclog_handler();
--
- 	rc = register_err_handler();
- 	if (rc)
- 		goto fail3;
-@@ -1230,6 +1227,9 @@ static int igen6_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto fail4;
- 	}
- 
-+	/* Check if any pending errors before/during the registration of the error handler */
-+	ecclog_handler();
-+
- 	igen6_debug_setup();
- 	return 0;
- fail4:
--- 
-2.17.1
+Let me split potential fix from debug and repost that as separate
+patches for you to try.
+I'd like to see debug output without 'fix' to track down which
+root port/device causes NULL pointer dereference. And hopefully
+in a few roundtrips figure out why old code doesn't crash.
+
+PS:
+What happens is that on resume firmware (likely EC),
+issues ACPI bus check on root ports which (bus check) is
+wired to acpiphp module (though pciehp module was initialized
+at boot to manage root ports), it's likely firmware bug.
+
+I'd guess the intent behind this was to check if PCIe devices
+were hotplugged while laptop has been asleep, and for
+some reason they didn't use native PCIe hotplug to handle that. 
+However looking at laptop specs you can't hotplug PCIe
+devices via external ports. Given how old laptop is
+it isn't going to be fixed, so we would need a workaround
+or fixup DSDT to skip buscheck.
+
+The options I see is to keep old kernel as for such case,
+or bail out early from bus check/enable_slot since root port
+is managed by pciehp module (and let it handle hotplug).
+
+> Thanks, Woody
+> 
+> 
 
