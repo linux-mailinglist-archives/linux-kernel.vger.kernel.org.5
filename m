@@ -2,165 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC3B761EB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CAC761EB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjGYQiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        id S231733AbjGYQiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGYQiu (ORCPT
+        with ESMTP id S229840AbjGYQiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:38:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813B91BDA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690303084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jLj18oLOp3KH/CAHpxuqfsfjyo2yWkCl10MaSaKRkoU=;
-        b=fvYEHmW/pzhUUC/yffxXyc9zUuOUQv/2UjrDCqvD5hlFHcxS6YnpvFTeI/97GphyrCiSoM
-        x/56fFy5W+u+6Cc+iHZBhAxr5iKJfswZqTsbJ0kjV0TWi/hL2P54PcZmUhxYMLaf5RwRIT
-        AegqVcPu89q+a39lhAePLiSe2C9ANew=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-130-1Gk68m60OaugU8loWBg99g-1; Tue, 25 Jul 2023 12:38:00 -0400
-X-MC-Unique: 1Gk68m60OaugU8loWBg99g-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 27C681044597;
-        Tue, 25 Jul 2023 16:38:00 +0000 (UTC)
-Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D021492B01;
-        Tue, 25 Jul 2023 16:37:59 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-        id B479B4018E672; Tue, 25 Jul 2023 13:37:32 -0300 (-03)
-Date:   Tue, 25 Jul 2023 13:37:32 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        Nadav Amit <namit@vmware.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-Message-ID: <ZL/6THDvmC5mVyBI@tpad>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-21-vschneid@redhat.com>
- <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
- <xhsmh8rb5tui1.mognet@vschneid.remote.csb>
- <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com>
+        Tue, 25 Jul 2023 12:38:12 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46FA1BDB;
+        Tue, 25 Jul 2023 09:38:11 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6CD634AD;
+        Tue, 25 Jul 2023 18:37:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690303032;
+        bh=Pvi3D2FQ9AgiAljI9g5y72aMEJY7/WXS4skrAkOmGCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VlGXA2gcLYu8+BKOBeDLyJY7fsssy7DXWqhoNBjWlxBwtLLYXGE5W/N5Fe/vmaKXk
+         q6MQpS7vyDBDW8DJOh6KVyacSPvqAmCQcHOejv7W+o3k4ywWDfJJj3z6/iY3AUz1gl
+         +wICd+WQGIRlFOCvHD0SbS5VI9U4qlT0sC+p1C8Y=
+Date:   Tue, 25 Jul 2023 19:38:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Satish Nagireddy <satish.nagireddy@getcruise.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 5/8] media: i2c: ds90ub960: Allow FPD-Link async mode
+Message-ID: <20230725163818.GL31069@pendragon.ideasonboard.com>
+References: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
+ <20230720-fpdlink-additions-v2-5-b91b1eca2ad3@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230720-fpdlink-additions-v2-5-b91b1eca2ad3@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:40:04AM -0700, Dave Hansen wrote:
-> On 7/24/23 04:32, Valentin Schneider wrote:
-> > AFAICT the only reasonable way to go about the deferral is to prove that no
-> > such access happens before the deferred @operation is done. We got to prove
-> > that for sync_core() deferral, cf. PATCH 18.
-> > 
-> > I'd like to reason about it for deferring vunmap TLB flushes:
-> > 
-> > What addresses in VMAP range, other than the stack, can early entry code
-> > access? Yes, the ranges can be checked at runtime, but is there any chance
-> > of figuring this out e.g. at build-time?
+Hi Tomi,
+
+Thank you for the patch.
+
+On Thu, Jul 20, 2023 at 01:30:36PM +0300, Tomi Valkeinen wrote:
+> Allow using FPD-Link in async mode. The driver handles it correctly, but
+> the mode was blocked at probe time as there wasn't HW to test this with.
+> Now the mode has been tested, and it works.
 > 
-> Nadav was touching on a very important point: TLB flushes for addresses
-> are relatively easy to defer.  You just need to ensure that the CPU
-> deferring the flush does an actual flush before it might architecturally
-> consume the contents of the flushed entry.
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/ds90ub960.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> TLB flushes for freed page tables are another game entirely.  The CPU is
-> free to cache any part of the paging hierarchy it wants at any time.
-
-Depend on CONFIG_PAGE_TABLE_ISOLATION=y, which flushes TLB (and page
-table caches) on user->kernel and kernel->user context switches ?
-
-So freeing a kernel pagetable page does not require interrupting a CPU 
-which is in userspace (therefore does not have visibility into kernel
-pagetables).
-
-> It's also free to set accessed and dirty bits at any time, even for
-> instructions that may never execute architecturally.
+> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
+> index a83091f47140..ea819fb6e99b 100644
+> --- a/drivers/media/i2c/ds90ub960.c
+> +++ b/drivers/media/i2c/ds90ub960.c
+> @@ -3240,7 +3240,6 @@ ub960_parse_dt_rxport_link_properties(struct ub960_data *priv,
+>  	switch (rx_mode) {
+>  	case RXPORT_MODE_RAW12_HF:
+>  	case RXPORT_MODE_RAW12_LF:
+> -	case RXPORT_MODE_CSI2_ASYNC:
+>  		dev_err(dev, "rx%u: unsupported 'ti,rx-mode' %u\n", nport,
+>  			rx_mode);
+>  		return -EINVAL;
 > 
-> That basically means that if you have *ANY* freed page table page
-> *ANYWHERE* in the page table hierarchy of any CPU at any time ... you're
-> screwed.
-> 
-> There's no reasoning about accesses or ordering.  As soon as the CPU
-> does *anything*, it's out to get you.
-> 
-> You're going to need to do something a lot more radical to deal with
-> free page table pages.
 
+-- 
+Regards,
 
-
+Laurent Pinchart
