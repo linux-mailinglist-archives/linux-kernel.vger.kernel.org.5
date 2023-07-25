@@ -2,313 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E182760E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F827760E36
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjGYJUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
+        id S233006AbjGYJSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbjGYJTe (ORCPT
+        with ESMTP id S232241AbjGYJST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:19:34 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814DB10C9;
-        Tue, 25 Jul 2023 02:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690276763; x=1721812763;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=fT7UdVgdEEl+ZFiS15hmRCtO+NdZ6vDRswmYs/CTzQQ=;
-  b=iQrCyOjVDmixuP8nOaoBuPuLNpzk9ZKGtspGaX0nCFHqMCKliS+h1Qlq
-   G/WxubDguxdkZYWB+38cBL/Lw1FNHTdkUP6Du8Be1lYM0Sv4RFuKUv8hN
-   /s2/zVcjd2TEIKHrT4YdFjgCeqsTXSxoFvyfb1RnPXrK2vSeSrdoPH4GT
-   tgQmh1NyuL2B9AAztXYlAuaDCJc+RFqh4z7JNMNd22JMSyWrwqkS5xjzy
-   5jOTav220z5mEWnKGyLYDaP77jZIwv+Q7WS384z38CWr8V6tPxyEb3zLC
-   47bgFaEL/au28AhxHDBuUsB6m1ndT4x0cpU9rNyhQXN+485J4+oSsJ5NY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367691144"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="367691144"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:19:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719980588"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="719980588"
-Received: from mongola-mobl.ger.corp.intel.com (HELO [10.249.37.129]) ([10.249.37.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:19:16 -0700
-Message-ID: <82568c9d-05b8-54dc-47e9-05c74a9260be@linux.intel.com>
-Date:   Tue, 25 Jul 2023 11:16:57 +0200
+        Tue, 25 Jul 2023 05:18:19 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEAE11B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:18:18 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P89KDW020373;
+        Tue, 25 Jul 2023 09:17:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=EtaXHcheHiL150xLPJfR+EAbk5fAJAvdft9o7hOW2yY=;
+ b=ciDDADRbWoRWglcC0RkraVtgpHH8DB0HM1NPNAvQ4DZ7/KsdVAUg7q0oyB6aqCXzOECK
+ q0KnTwLJ64EMLFOJ+tzBxrwKP2jElNavUOTbo9vt8qO0P72pckxQVRilQWULHU5yLPkG
+ CS5AlSC+wR7D7225tQUDqknIym+n/M9XY5QLyRW4dIlXOqCcF/gwAIfBgrNc6LnPnyNq
+ MvbL2hW+zLisAJaCwg6IqoXJrFcEUdn+iszWFy+eeX9HNThJWDCP8u/pGiE5zZpHJYCU
+ P6LWBfK2WFIo/MeJXrsSOAOmvoP4A/3S+JywsZX7yjPxjGM4FLdGj+e3B1hucVwuvlCx Rw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1y6m1ct4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 09:17:54 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P9Hrtu025701
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 09:17:53 GMT
+Received: from [10.204.118.225] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 02:17:16 -0700
+Message-ID: <16885654-09f0-c139-cc9b-c6c4d666932e@quicinc.com>
+Date:   Tue, 25 Jul 2023 14:47:14 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 27/32] sound: soc: qdsp6: Add SND kcontrol to select
- offload device
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
-        quic_jackp@quicinc.com, oneukum@suse.com, albertccwang@google.com,
-        o-takashi@sakamocchi.jp
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-28-quic_wcheng@quicinc.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: Fwd: ath11k: QCN9074: ce desc not available for wmi command
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        "Bagas Sanjaya" <bagasdotme@gmail.com>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        "Johannes Berg" <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Atheros 11K" <ath11k@lists.infradead.org>
+References: <1326a6e4-758d-3344-d90c-8a126748b034@gmail.com>
+ <6a0c3aa0-86a8-8c06-81df-2d7085946cf5@leemhuis.info>
 Content-Language: en-US
-In-Reply-To: <20230725023416.11205-28-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
+In-Reply-To: <6a0c3aa0-86a8-8c06-81df-2d7085946cf5@leemhuis.info>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: i5r0EHj-DCqgOd8XKG_jdGWBaU8g-B9U
+X-Proofpoint-ORIG-GUID: i5r0EHj-DCqgOd8XKG_jdGWBaU8g-B9U
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_04,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ mlxlogscore=654 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250080
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/25/23 04:34, Wesley Cheng wrote:
-> Expose a kcontrol on the platform sound card, which will allow for
-> userspace to determine which USB card number and PCM device to offload.
-> This allows for userspace to potentially tag an alternate path for a
-> specific USB SND card and PCM device.  Previously, control was absent, and
-> the offload path would be enabled on the last USB SND device which was
-> connected.  This logic will continue to be applicable if no mixer input is
-> received for specific device selection.
+On 6/26/2023 6:19 PM, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+> for once, to make this easily accessible to everyone.
 > 
-> An example to configure the offload device using tinymix:
-> tinymix -D 0 set 'Q6USB offload SND device select' 1 0
+> Hmmm, there afaics was no real progress and not even a single reply from
+> a developer (neither here or in bugzilla) since the issue was reported
+> ~10 days ago. :-/
 > 
-> The above will set the Q6AFE device token to choose offload on card#1 and
-> pcm#0.  Device selection is made possible by setting the Q6AFE device
-> token.  The audio DSP utilizes this parameter, and will pass this field
-> back to the USB offload driver within the QMI stream requests.
-
-I must be missing something... If you have a card 0 which exposes a
-control to change what the card1 does, then it means you have a card0
-with a PCM device what can potentially be used concurrently with the
-card1 exposing an offload device.
-
-Is there any sort of mutual exclusion to make sure the same USB endpoint
-is not used twice?
-
-One would hope that when a device is opened the matching non-offloaded
-one (or ones in the case of implicit feedback) is disabled or marked as
-used?
-
-I would guess in your Android setup you have control on such behavior at
-the HAL level, but in the more generic Linux use I don't see what
-would orchestrate the use of two devices, and at the kernel level what
-would prevent it.
-
-
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  sound/soc/qcom/qdsp6/q6usb.c | 126 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 123 insertions(+), 3 deletions(-)
+> Manikanta, did you maybe just miss that this is caused by change of
+> yours (and thus is something you should look into)?
 > 
-> diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-> index 2fb6159bd2a8..87e88dafd8ad 100644
-> --- a/sound/soc/qcom/qdsp6/q6usb.c
-> +++ b/sound/soc/qcom/qdsp6/q6usb.c
-> @@ -14,6 +14,7 @@
->  #include <linux/dma-map-ops.h>
->  
->  #include <sound/pcm.h>
-> +#include <sound/control.h>
->  #include <sound/soc.h>
->  #include <sound/soc-usb.h>
->  #include <sound/pcm_params.h>
-> @@ -35,9 +36,12 @@ struct q6usb_port_data {
->  	struct q6afe_usb_cfg usb_cfg;
->  	struct snd_soc_usb *usb;
->  	struct q6usb_offload priv;
-> +	struct mutex mutex;
->  	unsigned long available_card_slot;
->  	struct q6usb_status status[SNDRV_CARDS];
-> -	int active_idx;
-> +	bool idx_valid;
-> +	int sel_card_idx;
-> +	int sel_pcm_idx;
->  };
->  
->  static const struct snd_soc_dapm_widget q6usb_dai_widgets[] = {
-> @@ -53,10 +57,36 @@ static int q6usb_hw_params(struct snd_pcm_substream *substream,
->  			   struct snd_soc_dai *dai)
->  {
->  	struct q6usb_port_data *data = dev_get_drvdata(dai->dev);
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +	struct q6afe_port *q6usb_afe;
->  	int direction = substream->stream;
-> +	int chip_idx;
-> +	int ret;
-> +
-> +	mutex_lock(&data->mutex);
-> +	chip_idx = data->status[data->sel_card_idx].chip_index;
-> +
-> +	ret = snd_soc_usb_find_format(chip_idx, params, direction);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	q6usb_afe = q6afe_port_get_from_id(cpu_dai->dev, USB_RX);
-> +	if (IS_ERR(q6usb_afe))
-> +		goto out;
-> +
-> +	ret = afe_port_send_usb_dev_param(q6usb_afe, data->sel_card_idx,
-> +						data->sel_pcm_idx);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	data->status[data->sel_card_idx].pcm_index = data->sel_pcm_idx;
-> +out:
-> +	mutex_unlock(&data->mutex);
->  
-> -	return snd_soc_usb_find_format(data->active_idx, params, direction);
-> +	return ret;
->  }
-> +
->  static const struct snd_soc_dai_ops q6usb_ops = {
->  	.hw_params = q6usb_hw_params,
->  };
-> @@ -85,6 +115,89 @@ static struct snd_soc_dai_driver q6usb_be_dais[] = {
->  	},
->  };
->  
-> +static int q6usb_get_offload_dev(struct snd_kcontrol *kcontrol,
-> +				   struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
-> +	int pcm_idx;
-> +	int card_idx;
-> +
-> +	mutex_lock(&data->mutex);
-> +	if (!data->idx_valid) {
-> +		card_idx = -1;
-> +		pcm_idx = -1;
-> +	} else {
-> +		card_idx = data->sel_card_idx;
-> +		pcm_idx = data->sel_pcm_idx;
-> +	}
-> +
-> +	ucontrol->value.integer.value[0] = card_idx;
-> +	ucontrol->value.integer.value[1] = pcm_idx;
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return 0;
-> +}
-> +
-> +static int q6usb_put_offload_dev(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
-> +	int changed = 0;
-> +	int pcmidx;
-> +	int cardidx;
-> +
-> +	cardidx = ucontrol->value.integer.value[0];
-> +	pcmidx = ucontrol->value.integer.value[1];
-> +
-> +	mutex_lock(&data->mutex);
-> +	if ((cardidx >= 0 && test_bit(cardidx, &data->available_card_slot))) {
-> +		data->sel_card_idx = cardidx;
-> +		changed = 1;
-> +	}
-> +
-> +	if ((pcmidx >= 0 && pcmidx < data->status[cardidx].num_pcm)) {
-> +		data->sel_pcm_idx = pcmidx;
-> +		data->idx_valid = true;
-> +		changed = 1;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return changed;
-> +}
-> +
-> +static int q6usb_offload_dev_info(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-> +	uinfo->count = 2;
-> +	uinfo->value.integer.min = -1;
-> +	uinfo->value.integer.max = SNDRV_CARDS;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_kcontrol_new q6usb_offload_dev_ctrl = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-> +	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-> +	.name = "Q6USB offload SND device select",
-> +	.info = q6usb_offload_dev_info,
-> +	.get = q6usb_get_offload_dev,
-> +	.put = q6usb_put_offload_dev,
-> +};
-> +
-> +/* Build a mixer control for a UAC connector control (jack-detect) */
-> +static void q6usb_connector_control_init(struct snd_soc_component *component)
-> +{
-> +	int ret;
-> +
-> +	ret = snd_ctl_add(component->card->snd_card,
-> +				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
-> +	if (ret < 0)
-> +		return;
-> +}
-> +
->  static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *component,
->  					const struct of_phandle_args *args,
->  					const char **dai_name)
-> @@ -113,10 +226,12 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->  	dapm = snd_soc_component_get_dapm(usb->component);
->  	data = dev_get_drvdata(usb->component->dev);
->  
-> +	mutex_lock(&data->mutex);
->  	if (connected) {
->  		snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
->  		/* We only track the latest USB headset plugged in */
-> -		data->active_idx = card_idx;
-> +		if (!data->idx_valid || data->sel_card_idx < 0)
-> +			data->sel_card_idx = card_idx;
->  
->  		set_bit(card_idx, &data->available_card_slot);
->  		data->status[card_idx].num_pcm = num_pcm;
-> @@ -129,6 +244,7 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->  			snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
->  	}
->  	snd_soc_dapm_sync(dapm);
-> +	mutex_unlock(&data->mutex);
->  
->  	return 0;
->  }
-> @@ -141,6 +257,8 @@ static int q6usb_component_probe(struct snd_soc_component *component)
->  	snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
->  	snd_soc_dapm_sync(dapm);
->  
-> +	q6usb_connector_control_init(component);
-> +
->  	data->usb = snd_soc_usb_add_port(component->dev, &data->priv, q6usb_alsa_connection_cb);
->  	if (IS_ERR(data->usb)) {
->  		dev_err(component->dev, "failed to add usb port\n");
-> @@ -189,6 +307,8 @@ static int q6usb_dai_dev_probe(struct platform_device *pdev)
->  
->  	data->priv.domain = iommu_get_domain_for_dev(&pdev->dev);
->  
-> +	mutex_init(&data->mutex);
-> +
->  	data->priv.dev = dev;
->  	dev_set_drvdata(dev, data);
->  
+
+Extremely sorry for having this missed due to incorrect mail filters on 
+my machine. I have looked the logs attached to the buganizer.
+
+The issue from the logs looks like it is happening during the boot.
+Generally, issues like these "ce desc not available for wmi command" 
+occur when there is no room in the copy engine pipe for driver to 
+enqueue the command to the firmware and in many cases these would have 
+happen when firmware is reaping the ring slowly.
+
+It is puzzling to know that thread NAPI is causing this and reverting 
+this got the issue fixed. NAPI generally acts on the RX rings and has 
+nothing to do with the TX.
+
+Hi Sanjay,
+
+This issue is seen just with the kernel upgrade alone? Or firmware has 
+also been upgraded?
+
+Meanwhile, I'll try to repro the issue on my local setup and try to root 
+cause the problem. Pls let me know the firmware version that has been 
+used for testing.
+
+Although I'm okay reverting the threaded NAPI patch for now, in the long 
+run we want that back as threaded NAPI brings significant improvement on 
+the throughput front.
+
+Thanks,
+Manikanta
