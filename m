@@ -2,284 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70E97622D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7BA7622DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjGYUAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
+        id S231265AbjGYUBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjGYT75 (ORCPT
+        with ESMTP id S229545AbjGYUBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:59:57 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F192685
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:59:48 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bba2318546so19590665ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690315188; x=1690919988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YCIAEkv+xo6a49Qxw52m347tO8F3UsV4ScqWgSVtBQo=;
-        b=qF9waU9+2RMo/5zIqF66WCIqhSsv8BKJs/OYENeuVcblNZi/YbyvAY+j7734s2X7ku
-         uTLI476KfO3Czm7k0elNhrBsmPKb/ToDS9X3WFxWoSRJUg2vIM7pQJT/rGgPjkJX5rN0
-         K7gyMiXy6D/BVBkmUbWhuzaIJScKRgA1kLtpDWA7tpdIvv1cVzF9KkR6bmc5nYNCfrwB
-         bploaPpfjsKEo+9F7nz9vD37aTfP5m28YvI8nv5V4V2AVYMn5ezFOM9Zx0Q3OSTzCYx4
-         VAMhuLcBkgK4EhdG+szZZ8wKTzhtORVAEQRkNbLRrNoh4US57B+0xo9rtwv0PTYfyPf0
-         vhUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690315188; x=1690919988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YCIAEkv+xo6a49Qxw52m347tO8F3UsV4ScqWgSVtBQo=;
-        b=E9OaKQJY5gBi9cpxO+5x3GQsXdC8XAHbFK9P/JpsKfyL0/hZQMhmotHmCqrowcUsjF
-         rJylM96QZ+FxGgTS4jJBaZBhd8mU/IZoVsOXi8RPWu+dSnOBZdQjTQiaTWfDNMV0orPx
-         ADHioTCyuinzfjv8jqOG2bXc6Ccth3EnJ/trkSFIdp9kEY38px8SU1Jn0lWw8aV4ou1P
-         1YH8NsVrSUQnTnDc9vH2gRKtWmv3IX+KGzvDf8BaZTP5jUW4kd4hKyMbluQW2s8UEpXQ
-         IJ3KH0tR49fnczCsUx8c9WYZAuYDVEnbUN67Qv2WtTK8NvVxtTaMlv1UAtLD+2NFqFR3
-         06jw==
-X-Gm-Message-State: ABy/qLZzNhdv8P+/Ikq4yfc215vWX7GflHWu5ZtoKBh14siCDsMFVaB3
-        5Htf+vZve0nwAKvGbct07LG0mQ==
-X-Google-Smtp-Source: APBJJlF1l2EcR2KvAHiOLZNdxhN7VEpRtLbQN/aC9DJyjv6CyzU2xaQ3vc5pri03CX6P4rhkc43o6g==
-X-Received: by 2002:a17:902:d2c4:b0:1bb:14e7:4fdf with SMTP id n4-20020a170902d2c400b001bb14e74fdfmr244864plc.22.1690315187915;
-        Tue, 25 Jul 2023 12:59:47 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:2116:2b1f:2fd8:ec8d])
-        by smtp.gmail.com with ESMTPSA id 20-20020a170902e9d400b001bba27d1b65sm4939667plk.85.2023.07.25.12.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 12:59:47 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 13:59:44 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v15 07/13] remoteproc: mediatek: Probe SCP cluster on
- multi-core SCP
-Message-ID: <ZMApsFKHbj2WPLE8@p14s>
-References: <20230721024132.6548-1-tinghan.shen@mediatek.com>
- <20230721024132.6548-8-tinghan.shen@mediatek.com>
+        Tue, 25 Jul 2023 16:01:14 -0400
+Received: from us-smtp-delivery-162.mimecast.com (us-smtp-delivery-162.mimecast.com [170.10.133.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACF82110
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
+        t=1690315224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkaJyAw8A7NAbYoC4CjLz0tzHnovXo3a+ZjSNoiarB4=;
+        b=I0eC2+l1DT4ozTVSQRZaMuyhh0ELNyuk+X9fuxCPGDSWHEVMqjUc0AIJrrI5kVNQfaHeXb
+        xxy7qwGw2uxAdXsNDgXTK2PnC39geAkFqVlFYwcrzxHPb5ovAu6CrQEmzsmD85RpljHiIc
+        1U6rcd7dE9M14esGL5Pvh7J+yjXLBzE=
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam04lp2049.outbound.protection.outlook.com [104.47.74.49]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-402-hmHK8lunNMOxg1W0gBqaCA-1; Tue, 25 Jul 2023 16:00:23 -0400
+X-MC-Unique: hmHK8lunNMOxg1W0gBqaCA-1
+Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:160::10)
+ by CH3PR84MB3571.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:610:1ad::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.28; Tue, 25 Jul
+ 2023 20:00:20 +0000
+Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::5e6b:1f96:bb19:ec40]) by PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::5e6b:1f96:bb19:ec40%7]) with mapi id 15.20.6609.031; Tue, 25 Jul 2023
+ 20:00:20 +0000
+From:   "Lopez, Jorge A (Security)" <jorge.lopez2@hp.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        =?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <linux@weissschuh.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
+ hp_populate_enumeration_elements_from_package()
+Thread-Topic: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
+ hp_populate_enumeration_elements_from_package()
+Thread-Index: AQHZuPHkIWGabZ7ClU64DUVfhVGEta+/KHuAgACigoCACyVmUA==
+Date:   Tue, 25 Jul 2023 20:00:20 +0000
+Message-ID: <PH0PR84MB19533DF0CE1E2F5951031150A803A@PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM>
+References: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
+ <81fd0ef0-e254-4a24-a88a-459b1d773354@kadam.mountain>
+ <8d98b544-6191-53ce-fcb7-07d932c40f82@wanadoo.fr>
+In-Reply-To: <8d98b544-6191-53ce-fcb7-07d932c40f82@wanadoo.fr>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-bromium-msgid: 40c4c1de-bccc-4f64-84c2-5d6be3a2cf58
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR84MB1953:EE_|CH3PR84MB3571:EE_
+x-ms-office365-filtering-correlation-id: 6abc66eb-911e-4872-edaa-08db8d49c693
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: tir1SWJ/m2HL9O1Wdb4gQ2k8dSC/2HinKM/oqN+gFNKATupUIhZs7KxXBT67bnyJx749htVI/qShjsHykMRu0qYvjx9giZf9l6u7KtOcPkqLcxyWC7R6xC/1FCcXGrE8pFCuhjoadRrGzRl6Tt9Af7zcTAQ5skEEkOA2G75Uy8xh6A07x7FEmhr12RjRrWeLbftzkd7PKZH4+XuOTOZH97xFT4/ETaQ+5N7p0KDoDk1ARnBox9R+c1ymQWU1MpIRFYTdy/yu0bLRAALvdE0W3ZY1Trwyi9HTMecLZVQHB06iX1q+pEeYizTOiyMytJ0K9SY5rdosdYAcnMQcxpXnrBLeRSsC4ZTsEIawuQYUPthnzS1LxMNiCbMPnJnpbNNxhdqVEN2eOj3Nkn2VN0EvDHkevhjHGHFD75KG8U481s/n+ohy9RVJrv9MppYrG9JnFZ9wHJwAO4ZuS9OSKYCQA1ywbZx+OAq/JBHo4/FcHkmj1/O4RFhTLXEGHgAV8lcaek52BIcE1kVYRMd1XjgPNhfJ0hy2GTlMjkbL0gmWma7UnM7teyw7dd2GuDcyvJOAHnhmOu9xKntyJ3br64Df5mi3r3tHMiGpiIqDMJwgYEHk6pUdIPizIFErZXjR8t99
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(366004)(39860400002)(376002)(451199021)(53546011)(122000001)(38100700002)(82960400001)(71200400001)(38070700005)(186003)(6506007)(66574015)(83380400001)(55016003)(2906002)(26005)(52536014)(5660300002)(8936002)(41300700001)(8676002)(86362001)(110136005)(478600001)(7696005)(9686003)(66476007)(66556008)(66946007)(66446008)(64756008)(76116006)(316002)(4326008)(54906003)(33656002);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eDlYUFBrdlc4dHQrZkh4ZCtMTVVWdUhKTzNlaWlnaGE1MU5oa0lLeFk1dEFm?=
+ =?utf-8?B?dmU3YkJheXVrdlZQL1BnVWNkUUszbE8wOUNNWEFxdWNiZkorYjE2aExNekVD?=
+ =?utf-8?B?VW1KMFRvNEN5MmV1YzRaZGRwamlQNndmQVBOczU4SzRTcUp4NTRKYXE1TVVE?=
+ =?utf-8?B?M2xEUlF4OEdrdm9MUytwZ1Q2ejdNdmo1aHB5Qkxzc2I5TnR5Uk5IOEQzSFo0?=
+ =?utf-8?B?aENjcHJoeEZ1dkRxcng3TEMyb1d1L1Q4UTBwYTA1ZXFCNk1Bc1AxYVJhSG1y?=
+ =?utf-8?B?N2lTd3dIT1Q5aVpJUkR4M2h5U2dKOVFEQ09WNnpZM3NqWmpnNnBLWURiUTI5?=
+ =?utf-8?B?dHNIVk01cjVsTVN3SXpZSzdvOFphdkNZNVRPTTlSWG16RzRkRHp2V29rWmFW?=
+ =?utf-8?B?d1N1Y3ZMdjlQYUF4bzdmSTJybVNpbFpIV2J1NVB2UXhncW5xV2J3aGd4ajBa?=
+ =?utf-8?B?bkFycWlFSEdWb0QrekpRQTcxWWdMY2pqMXhvRHo2K0ZEdTR2Wldueno5ekQ4?=
+ =?utf-8?B?VWREKzZ5OHBVNXVCM0ZwL0NGVkhSOUVJM0pBTzlFcFpQQnRUVFZrVFREcmxi?=
+ =?utf-8?B?UFJYSFVBTzFHR3QxZnJrb1Q5Y1BwMjB4UDZaeEJoc0FVN003NllCN2dJYWl5?=
+ =?utf-8?B?VjZlbisreEJUZS9QS2F4K0IzNTRuTmRRci9PWWhCUk1XMGE5aFMvKy9DQUdn?=
+ =?utf-8?B?a1l5SXFXMzRuNEJtSUxjOWRQTDRscWJHTHBNbmFuRTRiQXIwdUVGTTNjNHlM?=
+ =?utf-8?B?UEp4cU9CMWdhQ0JvUU13S05yWUU0TFd1YWtRbEg4cGhIQjAxa2RvM2g5TWZD?=
+ =?utf-8?B?Z3FXZlZGZm42b3kwVkswbEhUbXo4Vk8yd0E1NmZVc3ZQcXljQ0pZUFpPMFhJ?=
+ =?utf-8?B?Q1hOUFhrdm04SkhMUlFvdjNLWDd0UHpJOEY0L3dFVlFTVGM0c3owd3VIdHUv?=
+ =?utf-8?B?aG5hSDl5bkdVS2daN2RwUURNZ0NEa2tHcGtQeFJHUUFsWm1IMFVEQUNDL0E5?=
+ =?utf-8?B?R04yQVNyVEczYWxIL3d0K3V5SWFiaUZxZXg0QU9tU1VLM2tqcXdmNHpyQ1Zx?=
+ =?utf-8?B?TDZLSFBFTVFrUXovVkcrZmtlclV1Y3JzVS9mWU5hcCtUaVVwZ2R2bld0dm1I?=
+ =?utf-8?B?NkxHTytteXJXWnUyWVNtYzkvYmMweHBwL1pNNlRPeHlnMXFtVUxPWWlRRWwy?=
+ =?utf-8?B?SlhqRkFYcWRHZGVjbUcvck9VSGlHdi9EQTVFT242NFE0clBRK2lVNkNSSjZJ?=
+ =?utf-8?B?R1pOWUxKVSt0d3AvcUtPV0dVRWdOa3JjYjBuS2NYUStibUNsV013UVJhRmVN?=
+ =?utf-8?B?YURENGNaaWtiMnczZWc1ZHJ5cis5NjkycDgwOCtKSG1ZTVBsRGUrSU1ac2xz?=
+ =?utf-8?B?Mm1JRG14a1BQU1puU0l2NjdkYmxKRFl6elFLK244dk4za0ZEb3BMY2tWeHZR?=
+ =?utf-8?B?OG45MHNmQ0trek43bVVRZEpZVW12RlRTZWQvUjl0RVNCeHJwZzhBcjBZZ0p5?=
+ =?utf-8?B?YmxoM3ZTZkY2Lyt6U29Vcmw5Z29IV0pSQ2luczNjcnVLL1ZtRXdaYUgyVkNs?=
+ =?utf-8?B?NWI5VDdSL0w0dHB3Qmh5b1orbFhzeko5UUsvN2F4YzVQN2RUSlFkWHZxV1hx?=
+ =?utf-8?B?WG5tQWlhSXV6SUl6TzRVRzlpRFM0aFRyekRrYmtXVzUyWFlCVEh3WlV3Q2R6?=
+ =?utf-8?B?bHRSUDFua1MybGRNVGYvL3pqTzJUV1FCdERYQVhEVUt6QTg5YS9NQXU1Mitk?=
+ =?utf-8?B?Zng1NExxbjJkVWhLK2tPWjF4WG1JOUd2aGhIQXBTT21Cb3V6M29CS3JFQ0E3?=
+ =?utf-8?B?L00zeVFncXV4UXdhRkozakNuRmhtakJlQVl6OWU4czFhSUVXUzBLZGY3V2NU?=
+ =?utf-8?B?UG1iQ1JLcFFuVm9LWWVuWDI4UnUvU0NXeVB6ZDc5a3MvZTFCa2xKbTZKeTJM?=
+ =?utf-8?B?ZTNwUFdVdzA5WHNCcGI5aDJtNjRtVDdZdkx2dlExME5qb045S2llNjFhRXFL?=
+ =?utf-8?B?elFSMkNibUVhSjhFd1QxTU1ieVlubTY0bEh4eCtSVXJCZWVpOHF4TE1hSWxv?=
+ =?utf-8?B?bS9XWXE1N08vQ0EyOGdFNFd4cVU5WnE5b0tvTmlGeS9wRTZwV2VUZ0dMMFBD?=
+ =?utf-8?Q?+3UJDEojFWSlMrt+zYuWyGsfI?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721024132.6548-8-tinghan.shen@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: hp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6abc66eb-911e-4872-edaa-08db8d49c693
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2023 20:00:20.6272
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eZ8fcaL3FQBoSpX0IiWT+0uV5rSnVnnPKlvfhfSkWZXKMbj9KHaF2mrnrS1tgc6B4b39+IDOoziNXY3wrTayRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR84MB3571
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hp.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:41:26AM +0800, Tinghan Shen wrote:
-> The difference of single-core SCP and multi-core SCP device tree is
-> the presence of child device nodes described SCP cores. The SCP
-> driver populates the platform device and checks the child nodes
-> to identify whether it's a single-core SCP or a multi-core SCP.
-> 
-> Add the remoteproc instances of multi-core SCP to the SCP cluster list.
-> When the SCP driver is removed, it cleanup resources by walking
-> through the cluster list.
-> 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  drivers/remoteproc/mtk_scp.c | 118 +++++++++++++++++++++++++++++++++--
->  1 file changed, 113 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index d67dcabdab9e..34095a461e15 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -855,7 +855,8 @@ static void scp_remove_rpmsg_subdev(struct mtk_scp *scp)
->  }
->  
->  static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
-> -				      struct mtk_scp_of_cluster *scp_cluster)
-> +				      struct mtk_scp_of_cluster *scp_cluster,
-> +				      const struct mtk_scp_of_data *of_data)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct device_node *np = dev->of_node;
-> @@ -878,7 +879,7 @@ static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
->  	scp = rproc->priv;
->  	scp->rproc = rproc;
->  	scp->dev = dev;
-> -	scp->data = of_device_get_match_data(dev);
-> +	scp->data = of_data;
->  	scp->cluster = scp_cluster;
->  	platform_set_drvdata(pdev, scp);
->  
-> @@ -951,15 +952,15 @@ static void scp_free(struct mtk_scp *scp)
->  	mutex_destroy(&scp->send_lock);
->  }
->  
-> -static int scp_cluster_init(struct platform_device *pdev,
-> -			    struct mtk_scp_of_cluster *scp_cluster)
-> +static int scp_add_single_core(struct platform_device *pdev,
-> +			       struct mtk_scp_of_cluster *scp_cluster)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
->  	struct mtk_scp *scp;
->  	int ret;
->  
-> -	scp = scp_rproc_init(pdev, scp_cluster);
-> +	scp = scp_rproc_init(pdev, scp_cluster, of_device_get_match_data(dev));
->  	if (IS_ERR(scp))
->  		return PTR_ERR(scp);
->  
-> @@ -975,6 +976,102 @@ static int scp_cluster_init(struct platform_device *pdev,
->  	return 0;
->  }
->  
-> +static int scp_add_multi_core(struct platform_device *pdev,
-> +			      struct mtk_scp_of_cluster *scp_cluster)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev_of_node(dev);
-> +	struct platform_device *cpdev;
-> +	struct device_node *child;
-> +	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
-> +	const struct mtk_scp_of_data **cluster_of_data;
-> +	struct mtk_scp *scp, *temp;
-> +	int core_id = 0;
-> +	int ret;
-> +
-> +	cluster_of_data = (const struct mtk_scp_of_data **)of_device_get_match_data(dev);
-> +
-> +	for_each_available_child_of_node(np, child) {
-> +		if (!cluster_of_data[core_id]) {
-> +			ret = -EINVAL;
-> +			dev_err(dev, "Not support core %d\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		cpdev = of_find_device_by_node(child);
-> +		if (!cpdev) {
-> +			ret = -ENODEV;
-> +			dev_err(dev, "Not found platform device for core %d\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		scp = scp_rproc_init(cpdev, scp_cluster, cluster_of_data[core_id]);
-> +		put_device(&cpdev->dev);
-> +		if (IS_ERR(scp)) {
-> +			ret = PTR_ERR(scp);
-> +			dev_err(dev, "Failed to initialize core %d rproc\n", core_id);
-> +			of_node_put(child);
-> +			goto init_fail;
-> +		}
-> +
-> +		ret = rproc_add(scp->rproc);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to add rproc of core %d\n", core_id);
-> +			of_node_put(child);
-> +			scp_free(scp);
-> +			goto init_fail;
-> +		}
-> +
-> +		list_add_tail(&scp->elem, scp_list);
-> +		core_id++;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, list_first_entry(scp_list, struct mtk_scp, elem));
+SGkgQ2hyaXN0b3BoZSwNCg0KSSB3aWxsIHN1Ym1pdCBpbmRpdmlkdWFsIHBhdGNoZXMgdG8gYWRk
+cmVzcyBtZW1vcnkgbGVha3MgYW5kIHVuaW5pdGlhbGl6ZWQgdmFyaWFibGUgZXJyb3JzIGZvciBl
+YWNoIHNvdXJjZSBmaWxlIGxpc3RlZCBiZWxvdy4NCg0KPiBocF9wb3B1bGF0ZV9zdHJpbmdfZWxl
+bWVudHNfZnJvbV9wYWNrYWdlDQpkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL3N0
+cmluZy1hdHRyaWJ1dGVzLmMNCg0KPiBocF9wb3B1bGF0ZV9vcmRlcmVkX2xpc3RfZWxlbWVudHNf
+ZnJvbV9wYWNrYWdlKCkNCmRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvb3JkZXIt
+bGlzdC1hdHRyaWJ1dGVzLmMNCg0KPiBocF9wb3B1bGF0ZV9pbnRlZ2VyX2VsZW1lbnRzX2Zyb21f
+cGFja2FnZSgpDQpkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2ludC1hdHRyaWJ1
+dGVzLmMNCg0KPiBocF9wb3B1bGF0ZV9lbnVtZXJhdGlvbl9lbGVtZW50c19mcm9tX3BhY2thZ2Uo
+KQ0KZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9lbnVtLWF0dHJpYnV0ZXMuYw0K
+DQo+IGhwX3BvcHVsYXRlX3Bhc3N3b3JkX2VsZW1lbnRzX2Zyb21fcGFja2FnZSgpDQpkcml2ZXJz
+L3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL3Bhc3N3ZG9iai1hdHRyaWJ1dGVzLmMNCg0KDQpS
+ZWdhcmRzLA0KDQpKb3JnZSBMb3Bleg0KSFAgSW5jDQoNCuKAnE9uY2UgeW91IHN0b3AgbGVhcm5p
+bmcsIHlvdSBzdGFydCBkeWluZ+KAnQ0KQWxiZXJ0IEVpbnN0ZWluDQoNCj4gLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ2hyaXN0b3BoZSBKQUlMTEVUIDxjaHJpc3RvcGhlLmph
+aWxsZXRAd2FuYWRvby5mcj4NCj4gU2VudDogVHVlc2RheSwgSnVseSAxOCwgMjAyMyAxMjozNyBQ
+TQ0KPiBUbzogRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBsaW5hcm8ub3JnPg0KPiBDYzog
+TG9wZXosIEpvcmdlIEEgKFNlY3VyaXR5KSA8am9yZ2UubG9wZXoyQGhwLmNvbT47IEhhbnMgZGUg
+R29lZGUNCj4gPGhkZWdvZWRlQHJlZGhhdC5jb20+OyBNYXJrIEdyb3NzIDxtYXJrZ3Jvc3NAa2Vy
+bmVsLm9yZz47IFRob21hcw0KPiBXZWnDn3NjaHVoIDxsaW51eEB3ZWlzc3NjaHVoLm5ldD47IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGtlcm5lbC0NCj4gamFuaXRvcnNAdmdlci5rZXJu
+ZWwub3JnOyBwbGF0Zm9ybS1kcml2ZXIteDg2QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
+ZTogW1BBVENIXSBwbGF0Zm9ybS94ODY6IGhwLWJpb3NjZmc6IEZpeCBzb21lIG1lbW9yeSBsZWFr
+cyBpbg0KPiBocF9wb3B1bGF0ZV9lbnVtZXJhdGlvbl9lbGVtZW50c19mcm9tX3BhY2thZ2UoKQ0K
+PiANCj4gQ0FVVElPTjogRXh0ZXJuYWwgRW1haWwNCj4gDQo+IExlIDE4LzA3LzIwMjMgw6AgMDk6
+NTUsIERhbiBDYXJwZW50ZXIgYSDDqWNyaXQgOg0KPiA+IE9uIE1vbiwgSnVsIDE3LCAyMDIzIGF0
+IDEwOjUzOjM3UE0gKzAyMDAsIENocmlzdG9waGUgSkFJTExFVCB3cm90ZToNCj4gPj4gSW4gdGhl
+IGxvb3AgaW4gdGhlIEVOVU1fUE9TU0lCTEVfVkFMVUVTIGNhc2UsIHdlIGFsbG9jYXRlIHNvbWUN
+Cj4gbWVtb3J5DQo+ID4+IHRoYXQgaXMgbmV2ZXIgZnJlZWQuDQo+ID4+DQo+ID4+IFdoaWxlIGF0
+IGl0LCBhZGQgc29tZSAic3RyX3ZhbHVlID0gTlVMTCIgdG8gYXZvaWQgc29tZSBwb3RlbnRpYWwN
+Cj4gPj4gZG91YmxlIGZyZWUuDQo+ID4+DQo+ID4+IEZpeGVzOiA2YjI3NzBiZmQ2ZjkgKCJwbGF0
+Zm9ybS94ODY6IGhwLWJpb3NjZmc6IGVudW0tYXR0cmlidXRlcyIpDQo+ID4+IFNpZ25lZC1vZmYt
+Ynk6IENocmlzdG9waGUgSkFJTExFVCA8Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI+DQo+
+ID4+IC0tLQ0KPiA+PiAvIVwgU3BlY3VsYXRpdmUgLyFcDQo+ID4+DQo+ID4+ICAgICBUaGlzIHBh
+dGNoIGlzIGJhc2VkIG9uIGFuYWx5c2lzIG9mIHRoZSBzdXJyb3VuZGluZyBjb2RlIGFuZCBzaG91
+bGQgYmUNCj4gPj4gICAgIHJldmlld2VkIHdpdGggY2FyZSAhDQo+ID4+DQo+ID4+IC8hXCBTcGVj
+dWxhdGl2ZSAvIVwNCj4gPg0KPiA+IEkgcmVwb3J0ZWQgdGhlc2UgYnVncyB5ZXN0ZXJkYXkuDQo+
+IA0KPiBPaywgc2VlbiBub3cuLi4NCj4gLi4uIGJ1dCBJIGRvbid0IHJlYWQgcGxhdGZvcm0tZHJp
+dmVyLXg4NkB2Z2VyLmtlcm5lbC5vcmcgOikNCj4gDQo+IENKDQo+IA0KPiA+IEkgZG9uJ3QgdGhp
+bmsgdGhpcyBpcyB0aGUgY29ycmVjdCBmaXguDQo+ID4gSSB0aG91Z2h0IGFib3V0IG1ha2luZyB0
+aGUgc3RyX3ZhbHVlIGxvY2FsIHRvIHRoZSBmb3IgbG9vcC4gIFRoYXQncw0KPiA+IHNvcnQgb2Yg
+bGlrZSB3aGF0IHlvdXIgcGF0Y2ggZG9lcy4gIEJ1dCBJIHdhc24ndCBzdXJlIHRoYXQgd2FzDQo+
+ID4gbmVjZXNzYXJpbHkgY29ycmVjdCBlaXRoZXIuDQo+ID4NCj4gPiBUaGlzIGNvZGUgbmVlZHMg
+bW9yZSB0ZXN0aW5nIGFzIHdlbGwuICBJdCBzZWVtcyBubyBvbmUgaGFzIGNhbGxlZCB0aGlzDQo+
+ID4gZnVuY3Rpb24uDQo+ID4NCj4gPiBTbWF0Y2ggY29tcGxhaW5lZCBhYm91dCB1bmluaXRpYWxp
+emVkIHZhcmlhYmxlcyBhcyB3ZWxsLiAgSSBkaWRuJ3QNCj4gPiBib3RoZXIgdG8gcmVwb3J0IHRo
+YXQgeWVzdGVyZGF5IGJ1dCBJIG1heSBhcyB3ZWxsLg0KPiA+DQo+ID4gcmVnYXJkcywNCj4gPiBk
+YW4gY2FycGVudGVyDQo+ID4NCj4gPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2Zn
+L3N0cmluZy1hdHRyaWJ1dGVzLmM6MTg4DQo+IGhwX3BvcHVsYXRlX3N0cmluZ19lbGVtZW50c19m
+cm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wNCj4gJ2ludF92YWx1ZScu
+DQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9zdHJpbmctYXR0cmlidXRl
+cy5jOjE5MQ0KPiBocF9wb3B1bGF0ZV9zdHJpbmdfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJy
+b3I6IHVuaW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxh
+dGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvc3RyaW5nLWF0dHJpYnV0ZXMuYzoxOTQNCj4gaHBfcG9w
+dWxhdGVfc3RyaW5nX2VsZW1lbnRzX2Zyb21fcGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVk
+IHN5bWJvbA0KPiAnaW50X3ZhbHVlJy4NCj4gPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1i
+aW9zY2ZnL3N0cmluZy1hdHRyaWJ1dGVzLmM6MTk3DQo+IGhwX3BvcHVsYXRlX3N0cmluZ19lbGVt
+ZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wNCj4gJ2ludF92
+YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9zdHJpbmctYXR0
+cmlidXRlcy5jOjIwMA0KPiBocF9wb3B1bGF0ZV9zdHJpbmdfZWxlbWVudHNfZnJvbV9wYWNrYWdl
+KCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZl
+cnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvc3RyaW5nLWF0dHJpYnV0ZXMuYzoyMzkNCj4g
+aHBfcG9wdWxhdGVfc3RyaW5nX2VsZW1lbnRzX2Zyb21fcGFja2FnZSgpIGVycm9yOiB1bmluaXRp
+YWxpemVkIHN5bWJvbA0KPiAnaW50X3ZhbHVlJy4NCj4gPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9o
+cC9ocC1iaW9zY2ZnL3N0cmluZy1hdHRyaWJ1dGVzLmM6MjQyDQo+IGhwX3BvcHVsYXRlX3N0cmlu
+Z19lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wNCj4g
+J2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9zdHJp
+bmctYXR0cmlidXRlcy5jOjI0NQ0KPiBocF9wb3B1bGF0ZV9zdHJpbmdfZWxlbWVudHNfZnJvbV9w
+YWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+
+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvb3JkZXItbGlzdC1hdHRyaWJ1dGVz
+LmM6MTkyDQo+IGhwX3BvcHVsYXRlX29yZGVyZWRfbGlzdF9lbGVtZW50c19mcm9tX3BhY2thZ2Uo
+KSBlcnJvcjogdW5pbml0aWFsaXplZA0KPiBzeW1ib2wgJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVy
+cy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9vcmRlci1saXN0LWF0dHJpYnV0ZXMuYzoxOTUN
+Cj4gaHBfcG9wdWxhdGVfb3JkZXJlZF9saXN0X2VsZW1lbnRzX2Zyb21fcGFja2FnZSgpIGVycm9y
+OiB1bmluaXRpYWxpemVkDQo+IHN5bWJvbCAnaW50X3ZhbHVlJy4NCj4gPiBkcml2ZXJzL3BsYXRm
+b3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL29yZGVyLWxpc3QtYXR0cmlidXRlcy5jOjE5OA0KPiBocF9w
+b3B1bGF0ZV9vcmRlcmVkX2xpc3RfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5p
+dGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2
+L2hwL2hwLWJpb3NjZmcvb3JkZXItbGlzdC1hdHRyaWJ1dGVzLmM6MjAxDQo+IGhwX3BvcHVsYXRl
+X29yZGVyZWRfbGlzdF9lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXpl
+ZA0KPiBzeW1ib2wgJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAt
+Ymlvc2NmZy9vcmRlci1saXN0LWF0dHJpYnV0ZXMuYzoyMDQNCj4gaHBfcG9wdWxhdGVfb3JkZXJl
+ZF9saXN0X2VsZW1lbnRzX2Zyb21fcGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVkDQo+IHN5
+bWJvbCAnaW50X3ZhbHVlJy4NCj4gPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2Zn
+L29yZGVyLWxpc3QtYXR0cmlidXRlcy5jOjIzOA0KPiBocF9wb3B1bGF0ZV9vcmRlcmVkX2xpc3Rf
+ZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdp
+bnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvb3JkZXIt
+bGlzdC1hdHRyaWJ1dGVzLmM6MjQyDQo+IGhwX3BvcHVsYXRlX29yZGVyZWRfbGlzdF9lbGVtZW50
+c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZA0KPiBzeW1ib2wgJ2ludF92YWx1
+ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9vcmRlci1saXN0LWF0
+dHJpYnV0ZXMuYzoyNjINCj4gaHBfcG9wdWxhdGVfb3JkZXJlZF9saXN0X2VsZW1lbnRzX2Zyb21f
+cGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVkDQo+IHN5bWJvbCAndmFsdWVfbGVuJy4NCj4g
+PiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2ludC1hdHRyaWJ1dGVzLmM6MTk4
+DQo+IGhwX3BvcHVsYXRlX2ludGVnZXJfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVu
+aW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0v
+eDg2L2hwL2hwLWJpb3NjZmcvaW50LWF0dHJpYnV0ZXMuYzoyMDENCj4gaHBfcG9wdWxhdGVfaW50
+ZWdlcl9lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wN
+Cj4gJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9p
+bnQtYXR0cmlidXRlcy5jOjIwNA0KPiBocF9wb3B1bGF0ZV9pbnRlZ2VyX2VsZW1lbnRzX2Zyb21f
+cGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVkIHN5bWJvbA0KPiAnaW50X3ZhbHVlJy4NCj4g
+PiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2ludC1hdHRyaWJ1dGVzLmM6MjA3
+DQo+IGhwX3BvcHVsYXRlX2ludGVnZXJfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVu
+aW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0v
+eDg2L2hwL2hwLWJpb3NjZmcvaW50LWF0dHJpYnV0ZXMuYzoyNDYNCj4gaHBfcG9wdWxhdGVfaW50
+ZWdlcl9lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wN
+Cj4gJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9p
+bnQtYXR0cmlidXRlcy5jOjI0OQ0KPiBocF9wb3B1bGF0ZV9pbnRlZ2VyX2VsZW1lbnRzX2Zyb21f
+cGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVkIHN5bWJvbA0KPiAnaW50X3ZhbHVlJy4NCj4g
+PiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2ludC1hdHRyaWJ1dGVzLmM6MjUy
+DQo+IGhwX3BvcHVsYXRlX2ludGVnZXJfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVu
+aW5pdGlhbGl6ZWQgc3ltYm9sDQo+ICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0v
+eDg2L2hwL2hwLWJpb3NjZmcvaW50LWF0dHJpYnV0ZXMuYzoyNTUNCj4gaHBfcG9wdWxhdGVfaW50
+ZWdlcl9lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0aWFsaXplZCBzeW1ib2wN
+Cj4gJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9l
+bnVtLWF0dHJpYnV0ZXMuYzoxODANCj4gaHBfcG9wdWxhdGVfZW51bWVyYXRpb25fZWxlbWVudHNf
+ZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUn
+Lg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvZW51bS1hdHRyaWJ1dGVz
+LmM6MTgzDQo+IGhwX3BvcHVsYXRlX2VudW1lcmF0aW9uX2VsZW1lbnRzX2Zyb21fcGFja2FnZSgp
+IGVycm9yOiB1bmluaXRpYWxpemVkDQo+IHN5bWJvbCAnaW50X3ZhbHVlJy4NCj4gPiBkcml2ZXJz
+L3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2VudW0tYXR0cmlidXRlcy5jOjE4Ng0KPiBocF9w
+b3B1bGF0ZV9lbnVtZXJhdGlvbl9lbGVtZW50c19mcm9tX3BhY2thZ2UoKSBlcnJvcjogdW5pbml0
+aWFsaXplZA0KPiBzeW1ib2wgJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVycy9wbGF0Zm9ybS94ODYv
+aHAvaHAtYmlvc2NmZy9lbnVtLWF0dHJpYnV0ZXMuYzoxODkNCj4gaHBfcG9wdWxhdGVfZW51bWVy
+YXRpb25fZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3lt
+Ym9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcv
+ZW51bS1hdHRyaWJ1dGVzLmM6MTkyDQo+IGhwX3BvcHVsYXRlX2VudW1lcmF0aW9uX2VsZW1lbnRz
+X2Zyb21fcGFja2FnZSgpIGVycm9yOiB1bmluaXRpYWxpemVkDQo+IHN5bWJvbCAnaW50X3ZhbHVl
+Jy4NCj4gPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9ocC9ocC1iaW9zY2ZnL2VudW0tYXR0cmlidXRl
+cy5jOjIzMQ0KPiBocF9wb3B1bGF0ZV9lbnVtZXJhdGlvbl9lbGVtZW50c19mcm9tX3BhY2thZ2Uo
+KSBlcnJvcjogdW5pbml0aWFsaXplZA0KPiBzeW1ib2wgJ2ludF92YWx1ZScuDQo+ID4gZHJpdmVy
+cy9wbGF0Zm9ybS94ODYvaHAvaHAtYmlvc2NmZy9lbnVtLWF0dHJpYnV0ZXMuYzoyMzkNCj4gaHBf
+cG9wdWxhdGVfZW51bWVyYXRpb25fZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5p
+dGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2
+L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzoyNzkNCj4gaHBfcG9wdWxhdGVf
+cGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4g
+c3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3Nj
+ZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzoyODINCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxl
+bWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRf
+dmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2Jq
+LWF0dHJpYnV0ZXMuYzoyODUNCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9w
+YWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+
+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMu
+YzoyODgNCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJy
+b3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxh
+dGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzoyOTENCj4gaHBf
+cG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlh
+bGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hw
+L2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzozMjQNCj4gaHBfcG9wdWxhdGVfcGFz
+c3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3lt
+Ym9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcv
+cGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzozMjcNCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVu
+dHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFs
+dWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0
+dHJpYnV0ZXMuYzozMzANCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNr
+YWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRy
+aXZlcnMvcGxhdGZvcm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzoz
+MzMNCj4gaHBfcG9wdWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6
+IHVuaW5pdGlhbGl6ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+IGRyaXZlcnMvcGxhdGZv
+cm0veDg2L2hwL2hwLWJpb3NjZmcvcGFzc3dkb2JqLWF0dHJpYnV0ZXMuYzozNjINCj4gaHBfcG9w
+dWxhdGVfcGFzc3dvcmRfZWxlbWVudHNfZnJvbV9wYWNrYWdlKCkgZXJyb3I6IHVuaW5pdGlhbGl6
+ZWQNCj4gc3ltYm9sICdpbnRfdmFsdWUnLg0KPiA+DQoNCg==
 
-(sigh)
-
-Why is list_first_entry() used here rather than just @scp?  What is the purpose
-of using the list API?
-
-> +
-> +	return 0;
-> +
-> +init_fail:
-> +	list_for_each_entry_safe_reverse(scp, temp, scp_list, elem) {
-> +		list_del(&scp->elem);
-> +		rproc_del(scp->rproc);
-> +		scp_free(scp);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int scp_is_single_core(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev_of_node(dev);
-> +	struct device_node *child;
-> +
-> +	child = of_get_next_available_child(np, NULL);
-> +	if (!child)
-> +		return dev_err_probe(dev, -ENODEV, "No child node\n");
-> +
-> +	of_node_put(child);
-> +	return of_node_name_eq(child, "cros-ec-rpmsg");
-> +}
-> +
-> +static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
-> +{
-> +	int ret;
-> +
-> +	ret = scp_is_single_core(pdev);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret)
-> +		ret = scp_add_single_core(pdev, scp_cluster);
-> +	else
-> +		ret = scp_add_multi_core(pdev, scp_cluster);
-> +
-> +	return ret;
-> +}
-> +
->  static int scp_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -1007,6 +1104,10 @@ static int scp_probe(struct platform_device *pdev)
->  
->  	INIT_LIST_HEAD(&scp_cluster->mtk_scp_list);
->  
-> +	ret = devm_of_platform_populate(dev);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to populate platform devices\n");
-> +
->  	ret = scp_cluster_init(pdev, scp_cluster);
->  	if (ret)
->  		return ret;
-> @@ -1101,12 +1202,19 @@ static const struct mtk_scp_of_data mt8195_of_data_c1 = {
->  	.host_to_scp_int_bit = MT8195_CORE1_HOST_IPC_INT_BIT,
->  };
->  
-> +static const struct mtk_scp_of_data *mt8195_of_data_cores[] = {
-> +	&mt8195_of_data,
-> +	&mt8195_of_data_c1,
-> +	NULL
-> +};
-> +
->  static const struct of_device_id mtk_scp_of_match[] = {
->  	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
->  	{ .compatible = "mediatek,mt8186-scp", .data = &mt8186_of_data },
->  	{ .compatible = "mediatek,mt8188-scp", .data = &mt8188_of_data },
->  	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
->  	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
-> +	{ .compatible = "mediatek,mt8195-scp-dual", .data = &mt8195_of_data_cores },
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
-> -- 
-> 2.18.0
-> 
