@@ -2,215 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE5376194E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E126761953
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbjGYNHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S233525AbjGYNHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjGYNHK (ORCPT
+        with ESMTP id S233100AbjGYNHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:07:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60C319AF
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:07:07 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 15:07:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690290426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=slZ+HWqP5Nh2Vfnh5tKdfOTtxtBTJigSsF0f1sQ2R7k=;
-        b=aNUAvLLjE840g7XLjSuGLFItAxJXS4Ala6goJzmEfDTwrFYCbWIZVhAICCjzIVbCndFQXO
-        s+SEP374tt+Ks52VT2A1OFu9jQM6Ahry0ltdHLTmA+N1mfJDtyDziIb6suBuhlE5HAb09X
-        FpHF/X9dWsMxvfK4Nr4F7Jlz7bSYIfA8GoZsZQ6d6tGyWqyrsKAjzG3timtfTaSIXzp0JP
-        4pNfe24B78xP5Sz8wzBYZbErRjPhlw/M4tBWfWXrs1zXTjz7N0Clr2Gs/lc0wfEIUI856G
-        9OzQN/PGOJ6TFiFafl+yfz6CFtGecSHAVQnJ5tU9HyurfpEVQc5tLsdGXE+pSA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690290426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=slZ+HWqP5Nh2Vfnh5tKdfOTtxtBTJigSsF0f1sQ2R7k=;
-        b=I1G2QydmlIynsJRDxJCycE73K62asE1hABSu2ckeB0XHx2p7g75ScshSab40vHdx9KBfDM
-        rZ9WsqzkDnZrxqBg==
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Re: Stopping the tick on a fully loaded system
-In-Reply-To: <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
-Message-ID: <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
-References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de> <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com> <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de> <ZL2Z8InSLmI5GU9L@localhost.localdomain>
- <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
+        Tue, 25 Jul 2023 09:07:47 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2068.outbound.protection.outlook.com [40.107.92.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1E6173F;
+        Tue, 25 Jul 2023 06:07:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mPV3T2fVcW5UTSV74ow3vRcx2wt8PRU3JMqju3fTkoO8aHc1nWAu52pEajCpFOgyI4RvzgZnXPHgnfGd+fP6dNssqYCV0ZnN6lmpy+9633udWLW4gV5HjYHwYkqpP7vL3Sd7DIgHb6FESsvWWwzPHygItO2v2Gxs4/6b4Ylsq5tI4StbkaoOfl0/XqtwAylYK+yEm7HoONlMm00w3fedakyjWpnJRGEs2ZJW9OzdzA4yOZl7+M6e1cPYqox94KkIPvGY8xFf/DbkxRLXhFGIL0MCvQ+BZq/blafGyVGxENsVICQeCdSKCWveHlCBCX5UyLPJ57ZF4EXsR/uR1BATog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aK+8ALn189/VYcZZfobTNdm4LjWO8rr/qianUzVIx50=;
+ b=QAy2swkwMTphrCcrr5ihhBJLNSqspu++X1xfsklOg+eiLWMUsbK6zXbNzKD5EYGZ39goRnuUzABDIBoSLMJCqqrX9xK/xfUgntN5Huo0Nq63XrrCZrzoEIR3Qp1CJ43lLfjxBNn/pmB1z7v5AH/ZAtk15lTfd3bwFg3CeoiukvCk9XadsXnO6F2EqCxxNRNx4j5riAn9I3cwDZLwATIM6qxEL4hzXwBvAE9v82HUFKfVX2zg1B6xLh6/zqSqquKbk+/wj7WzkRi6cFB1VvlkpwG2WeW82xvz4d29paAbaehmCUL/BM2LQ2UbhdGMq2sOIAcJCMgwXbkGbvcF2dBkVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aK+8ALn189/VYcZZfobTNdm4LjWO8rr/qianUzVIx50=;
+ b=TxZQPLWKSlCevg1ua7hOpsCTz031DtNCepE1Y504auhNyipoRQLrwn+Jb7rkTzKHwhSe/UTtvhNXWkTR0m8zkBYYVziOoqBd6ZmyTfCizDrS/Ow5FHah7YzznMciFkjbMq2Oe4N5+jdWkc2q3V9RUSYV9xi0VwXaGBHPQ9t7+cZLAFdUygr6JD7XaYzyQtkOivR18Pg7frax4K0TtzwKN9gXWF68Y+uj7JuLMx7YJsAYWOYA8r7YxXgZo649KZkobc8khMJ0BKmRWUdAFgMBkA4n+XJQFYg0ENO5uo2Jvee/bVyALjnbmqNWWtnih9bbo6LMF3StaUbgLCM5qKSAbg==
+Received: from BN7PR02CA0018.namprd02.prod.outlook.com (2603:10b6:408:20::31)
+ by BL0PR12MB4915.namprd12.prod.outlook.com (2603:10b6:208:1c9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
+ 2023 13:07:42 +0000
+Received: from BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:20:cafe::2) by BN7PR02CA0018.outlook.office365.com
+ (2603:10b6:408:20::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33 via Frontend
+ Transport; Tue, 25 Jul 2023 13:07:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BN8NAM11FT033.mail.protection.outlook.com (10.13.177.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.25 via Frontend Transport; Tue, 25 Jul 2023 13:07:42 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 25 Jul 2023
+ 06:07:30 -0700
+Received: from nvidia.com (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 25 Jul
+ 2023 06:07:25 -0700
+From:   Gavin Li <gavinl@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <jiri@nvidia.com>,
+        <dtatulea@nvidia.com>
+CC:     <gavi@nvidia.com>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH net-next V4 0/3] virtio_net: add per queue interrupt coalescing support
+Date:   Tue, 25 Jul 2023 16:07:06 +0300
+Message-ID: <20230725130709.58207-1-gavinl@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1942303961-1690290426=:3394"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT033:EE_|BL0PR12MB4915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8987c99c-59db-45ea-c4f4-08db8d102187
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SKfLTiMKVgRqU/Wl6/sod3mmxpVs8Z619Uo+MCquKVxT45037wzQudYP09+YBvxGRpd645GJeF0y6wpSWlorp7U+qT2zqZUXskeFu2m6b25N+H88UOJiUW1dL37DAU+APo3jm+BTUWwyEnJuTWdxsIsuLElYRrOZAKWE7adPyGoac2Hn2lQfwMneObnWvyrrqmgGBjRYg5NIC+GRJqfGW9sAl2I5kYUaqKKvmGo06+O0GyWmqjsSyNrXjZBUtmPvAQqykxQVmhApoo3kGBaJiFxfdO6UE8xAVnEYnw7gM4OgjJym19px+5NbWw6zHE6qbPlNBi7NPZDyh33AgXcnE3498a7mjNVzF7QB8HlpQPmg7dZf0hxlmdvjjaXPo1iEXr/u/NjBtjtf/C0B61mWjPx2WYfB1hHv7Np7eOB+gD+hYNMBHZzBEekqlIEPCKPaMquPPZl9l2aIHsjjg9HtgY07FCsKY85P4J0yeNyEfz3HMVu2VU6HJ0J9nBp7KRTDfmkZgSQlsv319EQmaKci6IqaeNNdyZq7Hm5UR4f+kvHFeb+a46DPJFpD0d5wTvYu49CDw+mtjhLGAQz+9Ahr0L6mYM2L3S8bV70yVUIMH11xYEFkFmSLchm06cd3uirS8irzjHqb8a06zSUWMEtFW6z8wVguQLFlNpGRmdr5KYzaf4hxl3z8Odnxb51hoCDNR/Kfbz8Juvs4yCY6aYk/rcZBIXEGTOs4qxRb7QbGoax2rPlttwyCORl3MMGJBqwNcViF7i/63Ad8EV5hOT2BHpIacUxGtBa2cGT8i3zAXs9cWSa9xs2edub1pmZpuG6/
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(376002)(396003)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(6286002)(16526019)(26005)(1076003)(40460700003)(336012)(186003)(36756003)(36860700001)(5660300002)(356005)(7636003)(8936002)(8676002)(7416002)(921005)(2906002)(55016003)(40480700001)(82740400003)(86362001)(7696005)(6666004)(70206006)(70586007)(83380400001)(54906003)(478600001)(110136005)(41300700001)(426003)(316002)(2616005)(4326008)(6636002)(47076005)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 13:07:42.2721
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8987c99c-59db-45ea-c4f4-08db8d102187
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4915
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Currently, coalescing parameters are grouped for all transmit and receive
+virtqueues. This patch series add support to set or get the parameters for
+a specified virtqueue.
 
---8323329-1942303961-1690290426=:3394
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+When the traffic between virtqueues is unbalanced, for example, one virtqueue
+is busy and another virtqueue is idle, then it will be very useful to
+control coalescing parameters at the virtqueue granularity.
 
-Hi,
+Example command:
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
+Would set max_packets=10 to VQ 1.
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
+Would set max_packets=10 to VQ 0.
+$ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
+ Queue: 0
+ Adaptive RX: off  TX: off
+ stats-block-usecs: 0
+ sample-interval: 0
+ pkt-rate-low: 0
+ pkt-rate-high: 0
 
-On Mon, 24 Jul 2023, Rafael J. Wysocki wrote:
+ rx-usecs: 222
+ rx-frames: 0
+ rx-usecs-irq: 0
+ rx-frames-irq: 256
 
-> On Sun, Jul 23, 2023 at 11:21 PM Frederic Weisbecker
-> <frederic@kernel.org> wrote:
-> >
-> From the governor's perspective, tick_nohz_get_sleep_length() is
-> supposed to return a deterministic upper bound on the upcoming idle
-> duration (or at least it is used in the governors this way).  IOW, it
-> is expected that the CPU will not be idle longer that the
-> tick_nohz_get_sleep_length() return value.
-> 
-> There are other factors that may cause the governor to predict a
-> shorter idle duration and the information coming from the scheduler
-> may be regarded as one of them, but they are not deterministic.
+ tx-usecs: 222
+ tx-frames: 0
+ tx-usecs-irq: 0
+ tx-frames-irq: 256
 
-Ok. Thanks for this explanation why two separate checks are required.
+ rx-usecs-low: 0
+ rx-frame-low: 0
+ tx-usecs-low: 0
+ tx-frame-low: 0
 
-> > > Sure, teo takes scheduler utilization into account directly in the
-> > > governor. But for me it is not comprehensible, why the CPU utilization
-> > > check is done after asking for the possible sleep length where timers are
-> > > taken into account. If the CPU is busy anyway, the information generated by
-> > > tick_nohz_next_event() is irrelevant.
-> 
-> Why isn't it?
-> 
-> The CPU is idle at that point and it has gone idle for a reason.
-> Surely, there was nothing to run on it at.
-> 
-> The scheduler only knows that the CPU has been busy recently, which
-> may not imply anything on whether or not and when it is going to be
-> busy again.
->
+ rx-usecs-high: 0
+ rx-frame-high: 0
+ tx-usecs-high: 0
+ tx-frame-high: 0
 
-I went back one step and simply had a look at current upstream to
-understand the behavior when going idle under load more detailed. I wanted
-to see the distribution of idle time duration when the tick is stopped. I
-used dbench tests with a script provided by Gautham to generate three
-different loads: 100% load, 50% load and 25% load. The kernel is configured
-with HZ=250. The system has 2 sockets, 64 cores per socket, 2 threads each
--> 256 CPUs. Three minutes trace data - idle periods larger than three
-minutes are not tracked. The governor is teo.
+Gavin Li (3):
+  virtio_net: extract interrupt coalescing settings to a structure
+  virtio_net: support per queue interrupt coalesce command
+---
+changelog:
+v1->v2
+- Addressed the comment from Xuan Zhuo
+- Allocate memory from heap instead of using stack memory for control vq
+	messages
+v2->v3
+- Addressed the comment from Heng Qi
+- Use control_buf for control vq messages
+v3->v4
+- Addressed the comment from Michael S. Tsirkin
+- Refactor set_coalesce of both per queue and global config that were
+	littered with if/else branches
+---
+  virtio_net: enable per queue interrupt coalesce feature
 
-I added tracepoints to the point where the tick is stopped and where the
-tick is started again. I calculated the delta between the timestamps of
-those two trace points and had a look at the distribution:
+ drivers/net/virtio_net.c        | 187 ++++++++++++++++++++++++++++----
+ include/uapi/linux/virtio_net.h |  14 +++
+ 2 files changed, 177 insertions(+), 24 deletions(-)
 
+-- 
+2.39.1
 
-			100% load		50% load		25% load
-			(top: ~2% idle)		(top: ~49% idle)	(top: ~74% idle;
-									33 CPUs are completely idle)
-			---------------		----------------	----------------------------
-Idle Total		1658703	100%		3150522	100%		2377035 100%
-x >= 4ms		2504	0.15%		2	0.00%		53	0.00%
-4ms> x >= 2ms		390	0.02%		0	0.00%		4563	0.19%
-2ms > x >= 1ms		62	0.00%		1	0.00%		54	0.00%
-1ms > x >= 500us	67	0.00%		6	0.00%		2	0.00%
-500us > x >= 250us	93	0.01%		39	0.00%		11	0.00%
-250us > x >=100us	280	0.02%		1145	0.04%		633	0.03%
-100us > x >= 50us	942	0.06%		30722	0.98%		13347	0.56%
-50us > x >= 25us	26728	1.61%		310932	9.87%		106083	4.46%
-25us > x >= 10us	825920	49.79%		2320683	73.66%		1722505	72.46%
-10us > x > 5us		795197	47.94%		442991	14.06%		506008	21.29%
-5us > x			6520	0.39%		43994	1.40%		23645	0.99%
-
-
-99% of the tick stops only have an idle period shorter than 50us (50us is
-1,25% of a tick length).
-
-This is also the reason for my opinion, that the return of
-tick_nohz_next_event() is completely irrelevant in a (fully) loaded case:
-The return is in the range of ticks, and a tick is ~100 times longer than
-the the duration of the majority of idle periods.
-
-
-> > > And when the CPU is not busy, then it
-> > > makes sense to ask for the sleep length also from a timer perspective.
-> > >
-> > > When this CPU utilization check is implemented directly inside the
-> > > governor, every governor has to implement it on it's own. So wouldn't it
-> > > make sense to implement a "how utilized is the CPU out of a scheduler
-> 
-> Yes, it would make sense to do that, but I thought that PELT was that
-> thing.  Wasn't it?
-> 
-> > > perspective" in one place and use this as the first check in
-> > > tick_nohz_get_sleep_length()/tick_nohz_next_event()?
-
-[...]
-
-> > As such, calling tmigr_cpu_deactivate() on next tick _evaluation_ time instead of
-> > tick _stop_ time is always going to be problematic.
-> >
-> > Can we fix that and call tmigr_cpu_deactivate() from tick_nohz_stop_tick()
-> > instead? This will change a bit the locking scenario because
-> > tick_nohz_stop_tick() doesn't hold the base lock. Is it a problem though?
-> > In the worst case a remote tick happens and handles the earliest timer
-> > for the current CPU while it's between tick_nohz_next_event() and
-> > tick_nohz_stop_tick(), but then the current CPU would just propagate
-> > an earlier deadline than needed. No big deal.
-> 
-> FWIW, this sounds reasonable to me.
-> 
-
-The worst case scenario will not happen, because remote timer expiry only
-happens when CPU is not active in the hierarchy. And with your proposal
-this is valid after tick_nohz_stop_tick().
-
-Nevertheless, I see some problems with this. But this also depends if there
-is the need to change current idle behavior or not. Right now, this are my
-concerns:
-
-- The determinism of tick_nohz_next_event() will break: The return of
-  tick_nohz_next_event() will not take into account, if it is the last CPU
-  going idle and then has to take care of remote timers. So the first timer
-  of the CPU (regardless of global or local) has to be handed back even if
-  it could be handled by the hierarchy.
-
-- When moving the tmigr_cpu_deactivate() to tick_nohz_stop_tick() and the
-  return value of tmigr_cpu_deactivate() is before the ts->next_tick, the
-  expiry has to be modified in tick_nohz_stop_tick().
-
-- The load is simply moved to a later place - tick_nohz_stop_tick() is
-  never called without a preceding tick_nohz_next_event() call. Yes,
-  tick_nohz_next_event() is called under load ~8% more than
-  tick_nohz_stop_tick(), but the 'quality' of the return value of
-  tick_nohz_next_event() is getting worse.
-
-- timer migration hierarchy is not a standalone timer infrastructure. It
-  only makes sense to handle it in combination with the existing timer
-  wheel. When the timer base is idle, the timer migration hierarchy with
-  the migrators will do the job for global timers. So, I'm not sure about
-  the impact of the changed locking - but I'm pretty sure changing that
-  increases the probability for ugly races hidden somewhere between the
-  lines.
-
-Thanks,
-
-	Anna-Maria
---8323329-1942303961-1690290426=:3394--
