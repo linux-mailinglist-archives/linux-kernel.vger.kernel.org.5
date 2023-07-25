@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25449761A7A
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD35761A7B
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjGYNs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:48:59 -0400
+        id S231685AbjGYNtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:49:02 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjGYNsy (ORCPT
+        with ESMTP id S231599AbjGYNs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:48:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8540211E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:48:50 -0700 (PDT)
+        Tue, 25 Jul 2023 09:48:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A531FD0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:48:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A83061726
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:48:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1438DC433C8;
-        Tue, 25 Jul 2023 13:48:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5BB46171E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:48:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609C0C433CA;
+        Tue, 25 Jul 2023 13:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690292929;
-        bh=hMCNeSXwQytHGCgIoVl9q90tknzoEJ95XhZLTksbe2E=;
+        s=k20201202; t=1690292932;
+        bh=v5mmMDcLa9Qz+qTohnDO/9Jf2svRDFSXLGnLYI1Fcc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i30Mdi+ObSX/DddiqBUFhH+lrNYNyVlnliMlm65DvWNF9v2kMj2VV9m/gcmb+R6ai
-         8HVuAXnsFbIti0Faj2A23ZNut99GHsiE6j/CircdPswo/czk6DQQTa7wYYIi8jDwOj
-         aW4tdUWW7pfW4aP5um+rivNwa7cSFbmNKwmV8VCqMpeFDRjqVVYWkGqA/F8rwO1K7W
-         Wm22gPcB4XRbB/8COnoX2T7s3xWDzqLDzeh7M1bbnyFJOJioDs3PyJ+ArdIeHrGxgP
-         DkSLapIDPw7U2FAfGflgDkIpkTpAqBRd3QW1Ocqaut/M3vhEASgsDctjiuiA/0bk3J
-         M3a+lJo7K20Mw==
+        b=SFLrP4GFqOQh1yYxfBN3ODV9bJRXnvbtT/GzhtfnMr9ePZxfUcUQ5Tpbu6wCPpWiv
+         DEWidaqarR3eOw48om02/LZ0u+9Rm8NttxomDfeRglYP1kAkaxYz8U7vwU952avJxp
+         0z4EZWQHx9tE+V6WXJWWFalOHebK3xkhBjtd+p7wxI3Nz22nLbokLkXvbWjdjuZ6zX
+         bgiBdi+0YLD8sUs2wGrHHeDRn18ppYuUEwtRBChFKIc+vtRklup8j10Wj6oeDl6/vG
+         WnGaZP7eTI80FgbsesszEcFL11NNEu0hhaHcJNQsehnI1n5xnpbjlio1NAwdRNFEdd
+         QQjkIiZqz2AyA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -40,16 +40,16 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 1/5] [RESEND] x86: apic: hide unused safe_smp_processor_id on UP
-Date:   Tue, 25 Jul 2023 15:48:33 +0200
-Message-Id: <20230725134837.1534228-2-arnd@kernel.org>
+Subject: [PATCH 2/5] [RESEND] x86: avoid unneeded __div64_32 function definition
+Date:   Tue, 25 Jul 2023 15:48:34 +0200
+Message-Id: <20230725134837.1534228-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230725134837.1534228-1-arnd@kernel.org>
 References: <20230725134837.1534228-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,36 +60,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When CONFIG_SMP is disabled, the prototype for safe_smp_processor_id()
-is hidden, which causes a W=1 warning:
+The __div64_32() function is provided for 32-bit architectures that
+don't have a custom do_div() implementation. x86_32 has one, and
+does not use the header file that declares the function prototype,
+so the definition causes a W=1 warning:
 
-/home/arnd/arm-soc/arch/x86/kernel/apic/ipi.c:316:5: error: no previous prototype for 'safe_smp_processor_id' [-Werror=missing-prototypes]
+lib/math/div64.c:31:32: error: no previous prototype for '__div64_32' [-Werror=missing-prototypes]
 
-Since there are no callers in this configuration, just hide the definition
-as well.
+Define an empty macro to prevent the function definition from getting
+built, which avoids the warning and saves a little .text space.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/kernel/apic/ipi.c | 2 ++
+ arch/x86/include/asm/div64.h | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
-index 2a6509e8c840d..9bfd6e3973845 100644
---- a/arch/x86/kernel/apic/ipi.c
-+++ b/arch/x86/kernel/apic/ipi.c
-@@ -301,6 +301,7 @@ void default_send_IPI_mask_logical(const struct cpumask *cpumask, int vector)
- 	local_irq_restore(flags);
+diff --git a/arch/x86/include/asm/div64.h b/arch/x86/include/asm/div64.h
+index b8f1dc0761e4b..9826d5fc12e34 100644
+--- a/arch/x86/include/asm/div64.h
++++ b/arch/x86/include/asm/div64.h
+@@ -71,6 +71,8 @@ static inline u64 mul_u32_u32(u32 a, u32 b)
  }
+ #define mul_u32_u32 mul_u32_u32
  
-+#ifdef CONFIG_SMP
- /* must come after the send_IPI functions above for inlining */
- static int convert_apicid_to_cpu(int apic_id)
- {
-@@ -329,3 +330,4 @@ int safe_smp_processor_id(void)
- 	return cpuid >= 0 ? cpuid : 0;
- }
- #endif
-+#endif
++#define __div64_32 /* not needed */
++
+ #else
+ # include <asm-generic/div64.h>
+ 
 -- 
 2.39.2
 
