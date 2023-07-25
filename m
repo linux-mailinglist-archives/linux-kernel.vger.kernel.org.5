@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D9761BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDA4761BCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbjGYOa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
+        id S233022AbjGYObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbjGYOal (ORCPT
+        with ESMTP id S233179AbjGYOar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:30:41 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E32132;
-        Tue, 25 Jul 2023 07:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690295432; x=1721831432;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+N9ymJBNV/tblGLyZdQHs3Jj47uk20AjBI9Dx+1oNVA=;
-  b=Gkpks5v2/wip1ikvtu7ShJQzFhoUFqDCyKOZcRfuaqdCaXXI4bfmp16E
-   uw4eH8YCynSrR4vjRyXFvstSaMtp9S2TTUOKBeX+5KQ/zxOcyO3GU3iGg
-   ZUgjNwsvp+8HCx+xK3kFbu0TcgmCSR4QaXysS0XN/7QIGvZbfi7flvm06
-   znhwOQGEn/kMa1SSCQzEpjlBfMrDfTfpNsYDbcpmbVERbqrb5kGmOSnUi
-   hOVHwvRDFjUwWKrYq2h3EPQJq+gFaLsPY0uCB5T6LMiSVd+c0GDGA49zn
-   HoMSnyxXEQBGsfsdSiLoBJTvtNqcaTZ2mDF9nZrYIF4asy4ybHCn/0j4e
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="357742936"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="357742936"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 07:30:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="869491482"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Jul 2023 07:30:21 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E9DD2474; Tue, 25 Jul 2023 17:30:24 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: [PATCH v1 9/9] i2c: designware: Fix spelling and other issues in the comments
-Date:   Tue, 25 Jul 2023 17:30:23 +0300
-Message-Id: <20230725143023.86325-10-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+        Tue, 25 Jul 2023 10:30:47 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871D226A2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:30:35 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b734aea34aso81203451fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20221208.gappssmtp.com; s=20221208; t=1690295433; x=1690900233;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=QeJ+8u8ZaYUwpLiyi+CCaKydAPqb727pDz7pLVQc0Og=;
+        b=phE16iwCP31NqrlalixrwUIhuGyz7U0E5Y0skNncWEjB2mPNscOndY0shE0gYzdtAU
+         jj7Mqm1ohFxtjGGh6OVLBA6AjHcIsWRo+/pUpkh1pRhIiVynC5g15qj/kmFdslgdEPjP
+         ZoJEdEli/309kprYOVGjdq8EJ+Y7b7i2/QOr2PwEdLWyYf1+ypNr66Db1NmP2ih/v/lZ
+         pzFhUaBMVR0I3HxTNy2xbYptBHK8IHpHGKce1buo3UHXtWBGvjmAjBQ871KZcW5WAVXf
+         1O91WaEfDO96SSHQ6QXBMKW14FCNPqkK+/BqE1aFg/Qo32mBCh1APXwgs/RcGzT/2cNp
+         xjBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690295433; x=1690900233;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QeJ+8u8ZaYUwpLiyi+CCaKydAPqb727pDz7pLVQc0Og=;
+        b=SttvG49K5IUzjUwbDm1jKABdvdsd7cLqlruZsAWj0x05Yx+6qXCM16cqW91dv2YfGP
+         9yNOrDjOpeIu/qPnzdNwGwIQiUJs18s+TZ5gOw2o+nO/jSkd6OfBWp5mGh+nNQfyKqHS
+         fjWbKU1n6sa/sbQmDPTXy4NAWAryhc3Tac0b47BxtyrI8VybDLjBdhfQzz7RCHDHbmmN
+         ipEKLaureGiF7ccDH2fQcIsZubVUlBEpUswXvmgfW0D2HXDOyCLxPV8cmioFIjfTG0it
+         420zmcy7Rd2SvBUBpbjqfAZ17bc5ePyfhCMEabm5LCRahKlK8hvSuVBKDin1aNFZP18S
+         lTQg==
+X-Gm-Message-State: ABy/qLaU22061WTdu0F6e1L0c3MW1XF+bwSlaYleD23vrVPCwBUtnoCE
+        brmFujerFG8f89SJYSKXFR/GSA==
+X-Google-Smtp-Source: APBJJlGvML6v1TzuUhl0DWjxHNstRMRJ09utxtc+X2zC5yRiM128sQmgAqyZXsoCJCW3ExK9L8DIKQ==
+X-Received: by 2002:a2e:9650:0:b0:2b6:fa54:cec1 with SMTP id z16-20020a2e9650000000b002b6fa54cec1mr9474682ljh.48.1690295433490;
+        Tue, 25 Jul 2023 07:30:33 -0700 (PDT)
+Received: from [192.168.1.2] (handbookness.lineup.volia.net. [93.73.104.44])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170906378d00b0099b4ec39a19sm8348718ejc.6.2023.07.25.07.30.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 07:30:33 -0700 (PDT)
+Message-ID: <6a177bb3-0ee4-f453-695b-d9bdd441aa2c@blackwall.org>
+Date:   Tue, 25 Jul 2023 17:30:31 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v2] rtnetlink: let rtnl_bridge_setlink checks
+ IFLA_BRIDGE_MODE length
+To:     Lin Ma <linma@zju.edu.cn>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        idosch@nvidia.com, lucien.xin@gmail.com, liuhangbin@gmail.com,
+        edwin.peer@broadcom.com, jiri@resnulli.us,
+        md.fahad.iqbal.polash@intel.com, anirudh.venkataramanan@intel.com,
+        jeffrey.t.kirsher@intel.com, neerav.parikh@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230725055706.498774-1-linma@zju.edu.cn>
+Content-Language: en-US
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20230725055706.498774-1-linma@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,229 +80,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix spelling and other issues, such as kernel doc reported about,
-in the comments.
+On 7/25/23 08:57, Lin Ma wrote:
+> There are totally 9 ndo_bridge_setlink handlers in the current kernel,
+> which are 1) bnxt_bridge_setlink, 2) be_ndo_bridge_setlink 3)
+> i40e_ndo_bridge_setlink 4) ice_bridge_setlink 5)
+> ixgbe_ndo_bridge_setlink 6) mlx5e_bridge_setlink 7)
+> nfp_net_bridge_setlink 8) qeth_l2_bridge_setlink 9) br_setlink.
+> 
+> By investigating the code, we find that 1-7 parse and use nlattr
+> IFLA_BRIDGE_MODE but 3 and 4 forget to do the nla_len check. This can
+> lead to an out-of-attribute read and allow a malformed nlattr (e.g.,
+> length 0) to be viewed as a 2 byte integer.
+> 
+> To avoid such issues, also for other ndo_bridge_setlink handlers in the
+> future. This patch adds the nla_len check in rtnl_bridge_setlink and
+> does an early error return if length mismatches. To make it works, the
+> break is removed from the parsing for IFLA_BRIDGE_FLAGS to make sure
+> this nla_for_each_nested iterates every attribute.
+> 
+> Fixes: b1edc14a3fbf ("ice: Implement ice_bridge_getlink and ice_bridge_setlink")
+> Fixes: 51616018dd1b ("i40e: Add support for getlink, setlink ndo ops")
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+> ---
+> V1 -> V2: removes the break in parsing for IFLA_BRIDGE_FLAGS suggested
+>            by Hangbin Liu <liuhangbin@gmail.com>
+> 
+>   net/core/rtnetlink.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> index 3ad4e030846d..aef25aa5cf1d 100644
+> --- a/net/core/rtnetlink.c
+> +++ b/net/core/rtnetlink.c
+> @@ -5140,13 +5140,17 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+>   	br_spec = nlmsg_find_attr(nlh, sizeof(struct ifinfomsg), IFLA_AF_SPEC);
+>   	if (br_spec) {
+>   		nla_for_each_nested(attr, br_spec, rem) {
+> -			if (nla_type(attr) == IFLA_BRIDGE_FLAGS) {
+> +			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !have_flags) {
+>   				if (nla_len(attr) < sizeof(flags))
+>   					return -EINVAL;
+>   
+>   				have_flags = true;
+>   				flags = nla_get_u16(attr);
+> -				break;
+> +			}
+> +
+> +			if (nla_type(attr) == IFLA_BRIDGE_MODE) {
+> +				if (nla_len(attr) < sizeof(u16))
+> +					return -EINVAL;
+>   			}
+>   		}
+>   	}
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/busses/i2c-designware-amdpsp.c | 10 +++++-----
- drivers/i2c/busses/i2c-designware-common.c |  8 +++++---
- drivers/i2c/busses/i2c-designware-core.h   | 10 +++++-----
- drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
- drivers/i2c/busses/i2c-designware-slave.c  |  6 ++++--
- 5 files changed, 28 insertions(+), 21 deletions(-)
+Patch looks good now, you should probably remove the extra checks done
+by each driver that are now unnecessary (net-next material). As Hangbin
+commented you should target this fix at -net, with that:
 
-diff --git a/drivers/i2c/busses/i2c-designware-amdpsp.c b/drivers/i2c/busses/i2c-designware-amdpsp.c
-index 63454b06e5da..8fbd2a10c31a 100644
---- a/drivers/i2c/busses/i2c-designware-amdpsp.c
-+++ b/drivers/i2c/busses/i2c-designware-amdpsp.c
-@@ -155,7 +155,7 @@ static void psp_release_i2c_bus_deferred(struct work_struct *work)
- 
- 	/*
- 	 * If there is any pending transaction, cannot release the bus here.
--	 * psp_release_i2c_bus will take care of this later.
-+	 * psp_release_i2c_bus() will take care of this later.
- 	 */
- 	if (psp_i2c_access_count)
- 		goto cleanup;
-@@ -210,12 +210,12 @@ static void psp_release_i2c_bus(void)
- {
- 	mutex_lock(&psp_i2c_access_mutex);
- 
--	/* Return early if mailbox was malfunctional */
-+	/* Return early if mailbox was malfunctioned */
- 	if (psp_i2c_mbox_fail)
- 		goto cleanup;
- 
- 	/*
--	 * If we are last owner of PSP semaphore, need to release aribtration
-+	 * If we are last owner of PSP semaphore, need to release arbitration
- 	 * via mailbox.
- 	 */
- 	psp_i2c_access_count--;
-@@ -235,9 +235,9 @@ static void psp_release_i2c_bus(void)
- 
- /*
-  * Locking methods are based on the default implementation from
-- * drivers/i2c/i2c-core-base.c, but with psp acquire and release operations
-+ * drivers/i2c/i2c-core-base.c, but with PSP acquire and release operations
-  * added. With this in place we can ensure that i2c clients on the bus shared
-- * with psp are able to lock HW access to the bus for arbitrary number of
-+ * with PSP are able to lock HW access to the bus for arbitrary number of
-  * operations - that is e.g. write-wait-read.
-  */
- static void i2c_adapter_dw_psp_lock_bus(struct i2c_adapter *adapter,
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index de28dd66c5eb..beb190f7d005 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -123,6 +123,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
-  * Autodetects needed register access mode and creates the regmap with
-  * corresponding read/write callbacks. This must be called before doing any
-  * other register access.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
- {
-@@ -170,7 +172,7 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
- 	/*
- 	 * Note we'll check the return value of the regmap IO accessors only
- 	 * at the probe stage. The rest of the code won't do this because
--	 * basically we have MMIO-based regmap so non of the read/write methods
-+	 * basically we have MMIO-based regmap, so none of the read/write methods
- 	 * can fail.
- 	 */
- 	dev->map = devm_regmap_init(dev->dev, NULL, dev, &map_cfg);
-@@ -330,7 +332,7 @@ static u32 i2c_dw_acpi_round_bus_speed(struct device *device)
- 
- 	acpi_speed = i2c_acpi_find_bus_speed(device);
- 	/*
--	 * Some DSTDs use a non standard speed, round down to the lowest
-+	 * Some DSDTs use a non standard speed, round down to the lowest
- 	 * standard speed.
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(supported_speeds); i++) {
-@@ -508,7 +510,7 @@ void __i2c_dw_disable(struct dw_i2c_dev *dev)
- 
- 		/*
- 		 * Wait 10 times the signaling period of the highest I2C
--		 * transfer supported by the driver (for 400KHz this is
-+		 * transfer supported by the driver (for 400kHz this is
- 		 * 25us) as described in the DesignWare I2C databook.
- 		 */
- 		usleep_range(25, 250);
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 8547590fc91b..8eb037298670 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -139,10 +139,10 @@
- #define DW_IC_SLAVE				1
- 
- /*
-- * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register
-+ * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register.
-  *
-- * Only expected abort codes are listed here
-- * refer to the datasheet for the full list
-+ * Only expected abort codes are listed here,
-+ * refer to the datasheet for the full list.
-  */
- #define ABRT_7B_ADDR_NOACK			0
- #define ABRT_10ADDR1_NOACK			1
-@@ -197,7 +197,7 @@ struct reset_control;
-  * @rst: optional reset for the controller
-  * @slave: represent an I2C slave device
-  * @get_clk_rate_khz: callback to retrieve IP specific bus speed
-- * @cmd_err: run time hadware error code
-+ * @cmd_err: run time hardware error code
-  * @msgs: points to an array of messages currently being transferred
-  * @msgs_num: the number of elements in msgs
-  * @msg_write_idx: the element index of the current tx message in the msgs array
-@@ -232,7 +232,7 @@ struct reset_control;
-  * @release_lock: function to release a hardware lock on the bus
-  * @semaphore_idx: Index of table with semaphore type attached to the bus. It's
-  *	-1 if there is no semaphore.
-- * @shared_with_punit: true if this bus is shared with the SoCs PUNIT
-+ * @shared_with_punit: true if this bus is shared with the SoC's PUNIT
-  * @disable: function to disable the controller
-  * @init: function to initialize the I2C hardware
-  * @set_sda_hold_time: callback to retrieve IP specific SDA hold timing
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index 3bfd7a2232db..e81c5b6188a6 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -165,12 +165,14 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- }
- 
- /**
-- * i2c_dw_init_master() - Initialize the designware I2C master hardware
-+ * i2c_dw_init_master() - Initialize the DesignWare I2C master hardware
-  * @dev: device private data
-  *
-  * This functions configures and enables the I2C master.
-  * This function is called during I2C init function, and in case of timeout at
-  * run time.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- static int i2c_dw_init_master(struct dw_i2c_dev *dev)
- {
-@@ -311,7 +313,7 @@ static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 		/*
- 		 * Initiate the i2c read/write transaction of buffer length,
- 		 * and poll for bus busy status. For the last message transfer,
--		 * update the command with stopbit enable.
-+		 * update the command with stop bit enable.
- 		 */
- 		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
- 			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
-@@ -418,7 +420,7 @@ static int txgbe_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msg
- 
- /*
-  * Initiate (and continue) low level master read/write transaction.
-- * This function is only called from i2c_dw_isr, and pumping i2c_msg
-+ * This function is only called from i2c_dw_isr(), and pumping i2c_msg
-  * messages into the tx buffer.  Even if the size of i2c_msg data is
-  * longer than the size of the tx buffer, it handles everything.
-  */
-@@ -456,7 +458,8 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
- 			buf = msgs[dev->msg_write_idx].buf;
- 			buf_len = msgs[dev->msg_write_idx].len;
- 
--			/* If both IC_EMPTYFIFO_HOLD_MASTER_EN and
-+			/*
-+			 * If both IC_EMPTYFIFO_HOLD_MASTER_EN and
- 			 * IC_RESTART_EN are set, we must manually
- 			 * set restart bit between messages.
- 			 */
-@@ -910,7 +913,7 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
- 	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
- 	adap->bus_recovery_info = rinfo;
- 
--	dev_info(dev->dev, "running with gpio recovery mode! scl%s",
-+	dev_info(dev->dev, "running with GPIO recovery mode! scl%s",
- 		 rinfo->sda_gpiod ? ",sda" : "");
- 
- 	return 0;
-@@ -1015,7 +1018,7 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
- 	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr, irq_flags,
- 			       dev_name(dev->dev), dev);
- 	if (ret) {
--		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-+		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
- 			dev->irq, ret);
- 		return ret;
- 	}
-diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
-index 2e079cf20bb5..bb44f41efdfc 100644
---- a/drivers/i2c/busses/i2c-designware-slave.c
-+++ b/drivers/i2c/busses/i2c-designware-slave.c
-@@ -30,12 +30,14 @@ static void i2c_dw_configure_fifo_slave(struct dw_i2c_dev *dev)
- }
- 
- /**
-- * i2c_dw_init_slave() - Initialize the designware i2c slave hardware
-+ * i2c_dw_init_slave() - Initialize the DesignWare i2c slave hardware
-  * @dev: device private data
-  *
-  * This function configures and enables the I2C in slave mode.
-  * This function is called during I2C init function, and in case of timeout at
-  * run time.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- static int i2c_dw_init_slave(struct dw_i2c_dev *dev)
- {
-@@ -263,7 +265,7 @@ int i2c_dw_probe_slave(struct dw_i2c_dev *dev)
- 	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr_slave,
- 			       IRQF_SHARED, dev_name(dev->dev), dev);
- 	if (ret) {
--		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-+		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
- 			dev->irq, ret);
- 		return ret;
- 	}
--- 
-2.40.0.1.gaa8946217a0b
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
