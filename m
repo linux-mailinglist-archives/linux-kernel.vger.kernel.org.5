@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B125F760D4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9132C760D15
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbjGYIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S232160AbjGYIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbjGYIk7 (ORCPT
+        with ESMTP id S229745AbjGYIf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:40:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CCE2D44;
-        Tue, 25 Jul 2023 01:40:28 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbfa811667so39206065e9.1;
-        Tue, 25 Jul 2023 01:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690274426; x=1690879226;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GgtRdgA8tKSxtLzk81jR6TOCvg7DqWeabeNFPWwPwTQ=;
-        b=kHqbAzKeFsXBFmddI5JrFf6cmXRylrbxpkJKjlFeRX2k/vJnQkDi1aDHDQcE03dFxd
-         3c7NxlsHyr8Yo13TffpwIrjMEWKHhAQEDMed4CqPDCCDzwIzScxxF/Xl7OMJj9AjoA2/
-         m28jn4b+bIlXkZKDKwqxWmi3AWzifMjaYi7ard6csrhnvzJmBVyxoukNDWEyoGNKt5f2
-         /scHlSNvpVAQcAeeT3YbNTTDJTr758BiK0HYH3vbzTO0x79PwkmmcS3fgw9GI9oMOYDy
-         dNMfxxe9y+Hc3O5olybqU6X2eW7Rtjp4RMfW8gfY33VtfSUhozfn1zIW3ONv9uydIGiV
-         jdgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690274426; x=1690879226;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GgtRdgA8tKSxtLzk81jR6TOCvg7DqWeabeNFPWwPwTQ=;
-        b=bg58sSNJ45rxqLBV9EAiosZfZCv1MJs7kwLZCTYcaEDYHBWJGDDQlKlpWz1XjvhLOx
-         pHsy0S8j1zxphSzOD8Mp3AvkFFVtH9D/F1N/F7yTqm0RkFt1HNfQvRVcw2Zeaw6o8Z1O
-         cL8g/dLQA8RB1Dz7T1CPN6otokyet4SuMnNxK92m30IS4NVPnXb3suwrEiM6gJE5IZvp
-         nmMKt+SmwXaMudrZFe9S6a+rpoUP0Lp/7sM01tDA2s8gRPhRCFv8TnC8Ed3EuEpg77RT
-         lUA46KIdoD5MOD8/txV0xcdWadHQV4CFQ0xYRmd1Ry1RwO5kC9fXJuU/hepl3sYoEfPf
-         xGTQ==
-X-Gm-Message-State: ABy/qLaH5Egb2vDJB6Qsi0Q/7kYjVt6MEWLZyAEqFQRap52JQSTxXuyh
-        QJ+mKr+2CM3p+A0K8bOagTEwMLnfMuY=
-X-Google-Smtp-Source: APBJJlFPVvpDnmoUJfnPTabvgR2Qj3KB7XfS4GXE8gxPk3vKzl4GIedRmTQUbHdtXUzbbdzFRzkcUQ==
-X-Received: by 2002:a05:600c:22c3:b0:3f4:2a69:409 with SMTP id 3-20020a05600c22c300b003f42a690409mr1382426wmg.11.1690274426344;
-        Tue, 25 Jul 2023 01:40:26 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id w3-20020a05600c014300b003fc05b89e5bsm12308549wmm.34.2023.07.25.01.40.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 01:40:25 -0700 (PDT)
-Subject: Re: [net 0/2] rxfh with custom RSS fixes
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
-        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
-        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
-        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-References: <20230723150658.241597-1-jdamato@fastly.com>
- <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
- <20230724150815.494ae294@kernel.org>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
-Date:   Tue, 25 Jul 2023 09:40:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 25 Jul 2023 04:35:57 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB4919C;
+        Tue, 25 Jul 2023 01:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690274156; x=1721810156;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Oi5o0PQk3nmBZgGrsnz6JWHqLdL0Xutih7n1mhmf6sQ=;
+  b=RZL65WFyvfiOHJ0apQgV9QtLBlxh76m1BkpmlvHgzpeI0SFWokWh/BHA
+   qxc6gnDE/M6FF5wox1pi261Dg1ZYB77VAUgsXiO3Ud5UsX1rFc5OOLDph
+   Jb4KG9U12j20/sJEjGOHsZQVkEYAeo2yp0N4YKVfbEUqA9Ufkzxotv+Ak
+   R2kp3v5lQs1x9ZbQrxTOQ18JM8LTF5h/cJAIfjM90xHpJPaPvFcqa2QbQ
+   fnm4D5K8OAuDd9disW469guxi74//Bk2FfwcaEjXgvGRA3PejZJSbNAn+
+   UxXMfRvQsDAeLar+6V3B4Nx98IzQ0cCmwloLejDBS7DhxAPElrBmoOg1E
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="371264137"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="371264137"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:35:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="761129972"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="761129972"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:35:45 -0700
+From:   Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
+        maz@kernel.org, oliver.upton@linux.dev, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Subject: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
+Date:   Tue, 25 Jul 2023 16:41:26 +0800
+Message-Id: <cover.1690273969.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230724150815.494ae294@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 23:08, Jakub Kicinski wrote:
-> What's the status on your work? Are you planning to split the RSS
-> config from ethtool or am I reading too much into what you said?
+KVM_GET_REG_LIST will dump all register IDs that are available to
+KVM_GET/SET_ONE_REG and It's very useful to identify some platform
+regression issue during VM migration.
 
-I was just thinking that when netlink dumps get added it would make
- sense to also extend the netlink version of SRSSH (which is what
- calls the rxfh_context ethtool_ops, via the misleadingly named
- ethtool_set_rxfh()) to include the hash fields setting that's
- currently done through ETHTOOL_SRXFH.  In which case I should add
- that data to struct ethtool_rxfh_context, and include it in the
- get/create/modify_rss_context ethtool_ops API.
-Since it only occurred to me to consider that setting when I saw
- Joe's patches, I haven't really figured out yet how to go about
- the implementation of that.
+Patch 1-7 re-structured the get-reg-list test in aarch64 to make some
+of the code as common test framework that can be shared by riscv.
 
-More generally the status of my RSS work is that I've been umming
- and ahhing about that mutex you didn't like (I still think it's
- the Right Thing) so I've not made much progress with it.
-And I should place on record that probably once I've gotten the
- kernel-driver API done I'll leave the netlink/uAPI stuff for
- someone else to do as I really don't have the relevant expertise.
+Patch 8 move reject_set check logic to a function so as to check for
+different errno for different registers.
+Patch 9 move finalize_vcpu back to run_test so that riscv can implement
+its specific operation.
+Patch 10 change to do the get/set operation only on present-blessed list.
+Patch 11 add the skip_set facilities so that riscv can skip set operation
+on some registers.
+Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
+patch 13 added the corresponding kselftest for checking possible
+register regressions.
 
-> It'd be great to push the uAPI extensions back and make them
-> netlink-only, but we can't make Joe wait if it takes a long time
-> to finish up the basic conversion :(
+The get-reg-list kvm selftest was ported from aarch64 and tested with
+Linux v6.5-rc3 on a Qemu riscv64 virt machine.
 
-Yeah as I said upthread I don't think we should make Joe wait, if
- he's got a use case that actually needs it (have you, Joe?  Or
- is it only GRXFH you need and the investigation just led you to
- notice SRXFH was broken?)
+---
+Changed since v5:
+  * Rebase to v6.5-rc3
+  * Minor fix for Andrew's comments
 
--ed
+Andrew Jones (7):
+  KVM: arm64: selftests: Replace str_with_index with strdup_printf
+  KVM: arm64: selftests: Drop SVE cap check in print_reg
+  KVM: arm64: selftests: Remove print_reg's dependency on vcpu_config
+  KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
+  KVM: arm64: selftests: Delete core_reg_fixup
+  KVM: arm64: selftests: Split get-reg-list test code
+  KVM: arm64: selftests: Finish generalizing get-reg-list
+
+Haibo Xu (6):
+  KVM: arm64: selftests: Move reject_set check logic to a function
+  KVM: arm64: selftests: Move finalize_vcpu back to run_test
+  KVM: selftests: Only do get/set tests on present blessed list
+  KVM: selftests: Add skip_set facility to get_reg_list test
+  KVM: riscv: Add KVM_GET_REG_LIST API support
+  KVM: riscv: selftests: Add get-reg-list test
+
+ Documentation/virt/kvm/api.rst                |   2 +-
+ arch/riscv/kvm/vcpu.c                         | 375 +++++++++
+ tools/testing/selftests/kvm/Makefile          |  13 +-
+ .../selftests/kvm/aarch64/get-reg-list.c      | 554 ++-----------
+ tools/testing/selftests/kvm/get-reg-list.c    | 401 +++++++++
+ .../selftests/kvm/include/kvm_util_base.h     |  21 +
+ .../selftests/kvm/include/riscv/processor.h   |   3 +
+ .../testing/selftests/kvm/include/test_util.h |   2 +
+ tools/testing/selftests/kvm/lib/test_util.c   |  15 +
+ .../selftests/kvm/riscv/get-reg-list.c        | 780 ++++++++++++++++++
+ 10 files changed, 1670 insertions(+), 496 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/get-reg-list.c
+ create mode 100644 tools/testing/selftests/kvm/riscv/get-reg-list.c
+
+-- 
+2.34.1
+
