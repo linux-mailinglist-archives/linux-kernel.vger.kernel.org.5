@@ -2,73 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C09076144D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5858761484
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbjGYLRu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        id S234381AbjGYLUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234255AbjGYLRs (ORCPT
+        with ESMTP id S234383AbjGYLUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:17:48 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B1B11A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:17:42 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-314-5BXDLArzOWi1KksMJqImUw-1; Tue, 25 Jul 2023 12:17:39 +0100
-X-MC-Unique: 5BXDLArzOWi1KksMJqImUw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 12:17:38 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 12:17:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'Andrew Morton'" <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH next 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next 0/5] minmax: Relax type checks in min() and max().
-Thread-Index: Adm+3qTIWPucUji3SdukddxpeooE+f//+jkA///kgrA=
-Date:   Tue, 25 Jul 2023 11:17:38 +0000
-Message-ID: <761ad37ff9844547ab1bf4d95fa4e995@AcuMS.aculab.com>
-References: <caa84582f9414de895ac6c4fe2b53489@AcuMS.aculab.com>
- <ZL+mIJiXAJaXDSJF@smile.fi.intel.com>
-In-Reply-To: <ZL+mIJiXAJaXDSJF@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 25 Jul 2023 07:20:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93C89199F;
+        Tue, 25 Jul 2023 04:20:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94A5615BF;
+        Tue, 25 Jul 2023 04:20:43 -0700 (PDT)
+Received: from [10.57.89.166] (unknown [10.57.89.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7A7E3F67D;
+        Tue, 25 Jul 2023 04:19:56 -0700 (PDT)
+Message-ID: <8a828ef2-b09b-4322-26fa-eae6cc88753f@arm.com>
+Date:   Tue, 25 Jul 2023 12:19:54 +0100
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
+ might require ARM spec change?
+To:     Salil Mehta <salil.mehta@huawei.com>,
+        "steven.price@arm.com" <steven.price@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        Salil Mehta <salil.mehta@opnsrc.net>,
+        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
+        yuzenghui <yuzenghui@huawei.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Gareth Stockwell <Gareth.Stockwell@arm.com>
+References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+ <7da93c6e-1cbf-8840-282e-f115197b80c4@arm.com>
+ <0d268afa-c04b-7a4e-be5e-2362d3dfa64d@arm.com>
+ <93c9c8356e444fb287393a935a8c7899@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <93c9c8356e444fb287393a935a8c7899@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I don't know how you made this series, but it has no thread. You need to use
-> --thread when forming the patch series.
+Hi Salil
 
-I have to send the mails through outlook.
-It isn't possible to add any kind of thread-id.
+On 25/07/2023 01:05, Salil Mehta wrote:
+> Hi Suzuki,
+> Sorry for replying late as I was on/off last week to undergo some medical test.
+> 
+> 
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Sent: Monday, July 24, 2023 5:27 PM
+>>
+>> Hi Salil
+>>
+>> On 19/07/2023 10:28, Suzuki K Poulose wrote:
+>>> Hi Salil
+>>>
+>>> Thanks for raising this.
+>>>
+>>> On 19/07/2023 03:35, Salil Mehta wrote:
+>>>> [Reposting it here from Linaro Open Discussion List for more eyes to
+>>>> look at]
+>>>>
+>>>> Hello,
+>>>> I have recently started to dabble with ARM CCA stuff and check if our
+>>>> recent changes to support vCPU Hotplug in ARM64 can work in the realm
+>>>> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
+>>>> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
+>>>> from the host. This might be required to support vCPU Hotplug feature
+>>>> in the realm world in future. vCPU Hotplug is an important feature to
+>>>> support kata-containers in realm world as it reduces the VM boot time
+>>>> and facilitates dynamic adjustment of vCPUs (which I think should be
+>>>> true even with Realm world as current implementation only makes use
+>>>> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
+>>>>
+>>>>
+>>>> As per our recent changes [2], [3] related to support vCPU Hotplug on
+>>>> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
+>>>> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
+>>>> PSCI_CPU_ON should undergo similar policy checks and I think,
+>>>>
+>>>> 1. Host should *deny* to online the target vCPUs which are NOT plugged
+>>>> 2. This means target REC should be denied by host. Can host call
+>>>>      RMI_PSCI_COMPETE in such s case?
+>>>> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
+>>>
+>>> The Realm exit with EXIT_PSCI already provides the parameters passed
+>>> onto the PSCI request. This happens for all PSCI calls except
+>>> (PSCI_VERSION and PSCI_FEAUTRES). The hyp could forward these exits to
+>>> the VMM and could invoke the RMI_PSCI_COMPLETE only when the VMM blesses
+>>> the request (wherever applicable).
+>>>
+>>> However, the RMM spec currently doesn't allow denying the request.
+>>> i.e., without RMI_PSCI_COMPLETE, the REC cannot be scheduled back in.
+>>> We will address this in the RMM spec and get back to you.
+>>
+>> This is now resolved in RMMv1.0-eac3 spec, available here [0].
+>>
+>> This allows the host to DENY a PSCI_CPU_ON request. The RMM ensures that
+>> the response doesn't violate the security guarantees by checking the
+>> state of the target REC.
+>>
+>> [0] https://developer.arm.com/documentation/den0137/latest/
+> 
+> 
+> Many thanks for taking this up proactively and getting it done as well
+> very efficiently. Really appreciate this!
+> 
+> I acknowledge below new changes part of the newly released RMM
+> Specification [3] (Page-2) (Release Information 1.0-eac3 20-07-2023):
+> 
+> 1. Addition of B2.19 PsciReturnCodePermitted function [3] (Page-126)
+> 2. Addition of 'status' in B3.3.7.2 Failure conditions of the
+>     B3.3.7 RMI_PSCI_COMPLETE command [3] (Page-160)
+> 
+> 
+> Some Further Suggestions:
+> 1. It would be really helpful if PSCI_DENIED can be accommodated somewhere
+>     in the flow diagram (D1.4.1 PSCI_CPU_ON flow) [3] (Page-297) as well.
 
-	David
+Good point, yes, will get that added.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> 2. You would need changes to handle the return value of the PSCI_DENIED
+>     in this below patch [2] as well from ARM CCA series [1]
+> 
+
+Of course. Please note that the series [1] is based on RMMv1.0-beta0 and
+we are in the process of rebasing our changes to v1.0-eac3, which
+includes a lot of other changes. The updated series will have all the
+required changes.
+
+Kind regards
+Suzuki
+
+
+> 
+> @James, Any further thoughts on this?
+> 
+> 
+> References:
+> [1] [RFC PATCH 00/28] arm64: Support for Arm CCA in KVM
+> [2] [RFC PATCH 19/28] KVM: arm64: Validate register access for a Realm VM
+>       https://lore.kernel.org/lkml/20230127112248.136810-1-suzuki.poulose@arm.com/T/#m6c10b9a27c4a724967c1800facacaa9443b38b4c
+> [3] ARM Realm Management Monitor specification(DEN0137 1.0-eac3)
+>      https://developer.arm.com/documentation/den0137/latest/
+>   
+> 
+> Thanks
+> Salil.
+> 
+> 
+>>>> 4. Failure condition (B5.3.3.2) should be amended with
+>>>>      runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
+>>>>               post: result == PSCI_DENIED (?)
+>>>> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting
+>>>>      PSCI_CPU_ON flow (D1.4.1)
+>>>>
+>>>> I do understand that ARM CCA support is in its infancy stage and
+>>>> discussing about vCPU Hotplug in realm world seem to be a far-fetched
+>>>> idea right now. But specification changes require lot of time and if
+>>>> this change is really required then it should be further discussed
+>>>> within ARM.
+>>>>
+>>>> Many thanks!
+>>>>
+>>>>
+>>>> Bes regards
+>>>> Salil
+>>>>
+>>>>
+>>>> References:
+>>>>
+>>>> [1] https://developer.arm.com/documentation/den0137/latest/
+>>>> [2] https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
+>>>> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
+> 
 
