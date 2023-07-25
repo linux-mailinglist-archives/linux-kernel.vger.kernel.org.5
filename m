@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D547760BA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6BA760BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjGYH1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S231213AbjGYH1H convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 03:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjGYH00 (ORCPT
+        with ESMTP id S232503AbjGYH00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Jul 2023 03:26:26 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B1D18D;
-        Tue, 25 Jul 2023 00:23:03 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-668704a5b5bso4857432b3a.0;
-        Tue, 25 Jul 2023 00:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690269782; x=1690874582;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vKQjaMEJgYXDeiEqOBeyjwVlXPnI8CfInsVRC+pOwA0=;
-        b=HNKC0I6t6rPeziRa/W467uitLYzDJL0JmAEEtV+PzeyPtcsfK6xjU6i5LRr0JbYMDd
-         gbIL7MBrUvsfXzqJOQ3LJ+EaZGnHYSZb+rDbmADhP36HShfupzHX3qXwv2+FYCQtUbaq
-         KJnztmCHluVNxPtx3kCmC/zIjc1ORRb1DNYUtwU3PxpfiDA4QVScOEcTWkDQ97EKSGQq
-         ZklS4cJRnFDbV/JKnF0+5JAremo9ZwDtuRX+r1Nk5y2gQpM0O4Z/wTHIXoLEY4XYTXg+
-         69O/2xtkiQmEXFg6NXaZROy93fuJSHAGeAfyM7a3so07p3yujaKuKIHGCMHxrDXNtqfX
-         JJag==
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3C010F4;
+        Tue, 25 Jul 2023 00:23:07 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5701eaf0d04so61424387b3.2;
+        Tue, 25 Jul 2023 00:23:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690269782; x=1690874582;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vKQjaMEJgYXDeiEqOBeyjwVlXPnI8CfInsVRC+pOwA0=;
-        b=FhYF/GHQIIZp8a1KlBLZ2wnUGXZlGSdSmKeYhin3apOYm4JIYzRr/YKM1W61cxitob
-         tQOEPP87k0IuY60kZ2nyK0NdRKMWJUKm+eoFjaAHEHBpjVZI8hEkl3nd024pDskiTNdM
-         qSztPx0oMmnCYh7MBuIeaOozsaUm+6kYM4M8S47HQyQc9vFT6Yx/kEXeMca9qOpMbGX1
-         Xxg+bGjVPa+7MzyiFLEGTeMSqjtpweOHGkoK+Jv6WoTCy/kka1YI4Q+yntJlxMgd6hoz
-         KJo/K1E8rxqFgt6CeRbjkEjjnOtRgVoNY8zJo6clgU7UHhLpNCAXeMSEqjXvdmyKcMFT
-         I7jg==
-X-Gm-Message-State: ABy/qLazBL3fZOPNOI/XjiS5hyKel6cxbSFm45TseG1fhyRNpNOZc5TL
-        +UvC6iBHG/nhkfuP2rKaIjE=
-X-Google-Smtp-Source: APBJJlFjuoIgVBB2FhBq+74GoKcJSX+dXgAV1Y9+UPu8nu7svMqm2LdkIrh0NP5+f1Rj3TLNe/QZgQ==
-X-Received: by 2002:a05:6a00:130b:b0:67b:f249:35e2 with SMTP id j11-20020a056a00130b00b0067bf24935e2mr12223848pfu.21.1690269782467;
-        Tue, 25 Jul 2023 00:23:02 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.82])
-        by smtp.googlemail.com with ESMTPSA id d12-20020a63734c000000b0055acfd94c20sm9863908pgn.35.2023.07.25.00.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 00:23:01 -0700 (PDT)
-From:   Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH 0/3] report task state in symbolic chars in sched tracepoints
-Date:   Tue, 25 Jul 2023 15:22:51 +0800
-Message-Id: <20230725072254.32045-1-zegao@tencent.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20221208; t=1690269787; x=1690874587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cr/WmELX7sIB4KKGXjN39nbmOdcGP5Da53YhJ8tvtVs=;
+        b=KEqD/570LdsTacdTP8FWbn7qfAgwYyEDykHmAvxEQlXza2Z6e/S5mQnZ06uGA/X833
+         0ql+vb5rjs8PwNmishK6rIVggbooU9bTtQd9ggZKyPc/Ezz8hqRGtTWuMwfoqe46Iuyg
+         VIDA0KGEatEvfIJsZXErNt2fBy/Y2qHyYZALF9BW5ex4qWByBtv3z88N6UBpDqQPs0dH
+         Vv5g+30msf31Uf4w+m8/kZMIYdLjKiB1wEHHYV+tEzHA0KRJE5QHCmgs+cTFzcgSkrjL
+         6hYxLVzld5uvWlgNevfJ5jqHsl20gpLFLsCsZNengP6ZaKiyyQJQ2zVWZejxt1Or5LlR
+         SdEw==
+X-Gm-Message-State: ABy/qLYaxs/EFNbmJz1sNiNHBsrEml3pYGYkJDiWZuhKrNZUliFl34iE
+        0EbISDZokOq+TxuW5Btr+cV1KUe58MJydw==
+X-Google-Smtp-Source: APBJJlGvQtJ6ostEosIB9oh1Ggu+3KD7gL0trvs76YtA7gmHq7LbMsdcwfD61TPeSfTdwVgIF++XAw==
+X-Received: by 2002:a0d:f181:0:b0:577:3561:8a81 with SMTP id a123-20020a0df181000000b0057735618a81mr9869634ywf.22.1690269787006;
+        Tue, 25 Jul 2023 00:23:07 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id e126-20020a0df584000000b005773afca47bsm3372715ywf.27.2023.07.25.00.23.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 00:23:06 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d0548cf861aso4130822276.3;
+        Tue, 25 Jul 2023 00:23:05 -0700 (PDT)
+X-Received: by 2002:a05:6902:85:b0:c86:5651:aefa with SMTP id
+ h5-20020a056902008500b00c865651aefamr9272919ybs.10.1690269784970; Tue, 25 Jul
+ 2023 00:23:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230721102237.268073801@infradead.org> <20230721105744.090372309@infradead.org>
+In-Reply-To: <20230721105744.090372309@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 Jul 2023 09:22:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXbWeTbygVRHZRnG9eXdHu+t6bNYMZoW4g7Fp41YO7JrQ@mail.gmail.com>
+Message-ID: <CAMuHMdXbWeTbygVRHZRnG9eXdHu+t6bNYMZoW4g7Fp41YO7JrQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/14] futex: Add sys_futex_wait()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
+        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the status quo, we should see three different outcomes of the reported
-sched-out task state from perf-script, perf-sched-timehist, and Tp_printk
-of tracepoint sched_switch.  And it's not hard to figure out that the
-former two are built upon the third one, and the reason why we see this
-inconsistency is that the former two does not catch up with the internal
-change of reported task state definitions as the kernel evolves.
+On Fri, Jul 21, 2023 at 1:11 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> To complement sys_futex_waitv()/wake(), add sys_futex_wait(). This
+> syscall implements what was previously known as FUTEX_WAIT_BITSET
+> except it uses 'unsigned long' for the value and bitmask arguments,
+> takes timespec and clockid_t arguments for the absolute timeout and
+> uses FUTEX2 flags.
+>
+> The 'unsigned long' allows FUTEX2_64 on 64bit platforms.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-IMHO, exporting internal representations of task state in the tracepoint
-sched_switch is not a good practice and not encouraged at all, which can
-easily break userspace tools that relies on it. Especially when tracepoints
-are massively used in many observability tools nowadays due to its stable
-nature, which makes them no longer used for debug only purpose and we
-should be careful to decide what ought to be reported to userspace and what
-ought not.
+>  arch/m68k/kernel/syscalls/syscall.tbl       |    1
 
-Therefore, to fix the issues mentioned above for good, instead of choosing
-to sync the userspace tracing tools with the latest task states constants
-mapping, I proposed to replace reported task state in sched_switch with
-a symbolic character, and save the further processing of userspace tools
-and spare them from knowing further implementation details in the kernel.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-After this patch seires, we report 'RSDTtXZPI' the same as in procfs, plus
-a 'p' which denotes PREEMP_ACTIVE and is used for sched_switch tracepoint only.
+Gr{oetje,eeting}s,
 
-Reviews welcome!
-
-Regards,
-
-Ze
-
-Ze Gao (2):
-  sched, tracing: report task state in symbolic chars instead
-  perf sched: sync with latest sched_switch tracepoint definition
-
- include/trace/events/sched.h | 41 ++++++++++-----------------
- tools/perf/builtin-sched.c   | 55 ++++++------------------------------
- 2 files changed, 24 insertions(+), 72 deletions(-)
-
-Ze Gao (1):
-  libtraceevent: sync with latest sched_switch tracepoint definition
-
- plugins/plugin_sched_switch.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+                        Geert
 
 -- 
-2.40.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
