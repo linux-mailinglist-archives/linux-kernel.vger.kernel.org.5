@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6E5760C25
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A061760C8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjGYHl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        id S232496AbjGYIAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232599AbjGYHlj (ORCPT
+        with ESMTP id S232024AbjGYIAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:41:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6009949C9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690270770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4VEG98KIvt8LRb8tcIeahsb2VtaKO2Trib+565MxI7U=;
-        b=A21hSXhv2MhPnVoXmJrEam47krlLpR8GwvhN/R5fLu5xRrdgY2D/cuGgXoTE3W0sadYAz8
-        0VuFe2yujYBm5ibkElC2geb0TXXxel7Qf3e75IAGKN+C8N+qc40ZzNMpFjWATMKhqmhaYA
-        Ln+UYe8YkGojONCBF3iyx4dMKFlJu34=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-118-mzaR05g5NzOxCZaEh15oTA-1; Tue, 25 Jul 2023 03:36:20 -0400
-X-MC-Unique: mzaR05g5NzOxCZaEh15oTA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-993e73a4c4fso421141766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:36:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690270578; x=1690875378;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VEG98KIvt8LRb8tcIeahsb2VtaKO2Trib+565MxI7U=;
-        b=jJFGywQRijcAEW6lWa2sRj3iWlR6T/N0Ik2cF5uNMbm7nnfoJNyixG89foWCohHAcv
-         BWTom8gA2Udj2DEH5N4/BDlKu1uTVwhAlnvwmt/uPi9RKSBWb+LZhb3m9HkAXZ+D/Iz0
-         g/aryIy+qnE7TH8fHKlUE2k8RQdjP0CgwA8xVH//Wix/t1QMraTossIPJk1RsXTri83u
-         +HUUWVZk1UC3dSL46QJZFCwmYsFVKN7bZZojDi4+RJu4yD4csE2MoY1z5iegU+36YUED
-         LlAuXULuKdWidcgsiEXOZWGAQwdQy7w2sr57VodNnl6HXtZgJD0jS8CR5LPZc29VMNZw
-         mNPg==
-X-Gm-Message-State: ABy/qLa3hFSiKvlOnXcNdcY9srgDXLnjS4SPFmKk45/68tw1RT/LMHMi
-        urwdHaWKQidSPaXuN530+18T+IxuTdKCVUyJBovUsimqk45/6wHLVvamO6znNB1lFCraRjN0lAI
-        T5NHNwe+fuKCURiCgVVYQ1JdPysNiRIqrpaU=
-X-Received: by 2002:a17:907:7750:b0:992:4250:5462 with SMTP id kx16-20020a170907775000b0099242505462mr11927152ejc.50.1690270578557;
-        Tue, 25 Jul 2023 00:36:18 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEbuQ+B36ExWOmlZ5PK0JXR3LiRI6TjSV+5qKRE6dIJffKcs1oJ2j/QzHg1GhN52TQxfOi1cg==
-X-Received: by 2002:a17:907:7750:b0:992:4250:5462 with SMTP id kx16-20020a170907775000b0099242505462mr11927135ejc.50.1690270578169;
-        Tue, 25 Jul 2023 00:36:18 -0700 (PDT)
-Received: from redhat.com ([2.55.164.187])
-        by smtp.gmail.com with ESMTPSA id p26-20020a170906a01a00b00992f81122e1sm7750226ejy.21.2023.07.25.00.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 00:36:17 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 03:36:14 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
-Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
- command waiting loop
-Message-ID: <20230725033506-mutt-send-email-mst@kernel.org>
-References: <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com>
- <20230720170001-mutt-send-email-mst@kernel.org>
- <263a5ad7-1189-3be3-70de-c38a685bebe0@redhat.com>
- <20230721104445-mutt-send-email-mst@kernel.org>
- <6278a4aa-8901-b0e3-342f-5753a4bf32af@redhat.com>
- <20230721110925-mutt-send-email-mst@kernel.org>
- <e3490755-35ac-89b4-b0fa-b63720a9a5c9@redhat.com>
- <CACGkMEv1B9xFE7-LrLQC3FbH6CxTZC+toHXoLHFvJWn6wgobrA@mail.gmail.com>
- <20230724025720-mutt-send-email-mst@kernel.org>
- <CACGkMEs7zTXk77h-v_ORhvbtQ4FgehY6w6xCfFeVTeCnzChYkw@mail.gmail.com>
+        Tue, 25 Jul 2023 04:00:18 -0400
+X-Greylist: delayed 720 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 01:00:09 PDT
+Received: from rivendell.linuxfromscratch.org (rivendell.linuxfromscratch.org [208.118.68.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95CB31AA;
+        Tue, 25 Jul 2023 01:00:09 -0700 (PDT)
+Received: from [192.168.124.11] (unknown [61.150.43.67])
+        by rivendell.linuxfromscratch.org (Postfix) with ESMTPSA id 6045E1C1D3F;
+        Tue, 25 Jul 2023 07:39:07 +0000 (GMT)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 1.0.0 at rivendell.linuxfromscratch.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfromscratch.org;
+        s=cert4; t=1690270751;
+        bh=UIpvXwW/xYdqfcSUiumRa/BDuejdVgL9+aeWG6qzvZc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=l0Ogp2Jztzf2tuQRa4V+OiBiBuuYsgHYJ9u1/RO3NX+XfwORTTfVmAV+lP+1AC8Wn
+         aTZIhsudoVovrUkjFsNy1jkdkvQ0d4sQlfDhddF+wc4faCrWqwh5TozdZMAd/z9Xd5
+         QFK0sxQqYcbLL8RhqaFjdCVKS/IWTtAbrIYOep3hH8Z2LNLyULMolSoWAvUsP4QnuX
+         Fn+rIAAbkjaFbnNjPv3z3eOvKkmgrhA+fyUYMrdAmoA/smVMJT5a5wEKVI84WMlqSb
+         M9qlu62g8Ppm6z0/guG/XHlqJlm30Ylpghju9fICr2LWBoIJdHAkUFujQQ3IsdpkMY
+         oUsU/CV/w/BIw==
+Message-ID: <c9a44f534071a6d67f1e21bafdb713793c559124.camel@linuxfromscratch.org>
+Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
+From:   Xi Ruoyao <xry111@linuxfromscratch.org>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Date:   Tue, 25 Jul 2023 15:38:58 +0800
+In-Reply-To: <20230617161529.2092-1-jszhang@kernel.org>
+References: <20230617161529.2092-1-jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEs7zTXk77h-v_ORhvbtQ4FgehY6w6xCfFeVTeCnzChYkw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,166 +64,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:07:40AM +0800, Jason Wang wrote:
-> On Mon, Jul 24, 2023 at 3:17 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 02:52:05PM +0800, Jason Wang wrote:
-> > > On Sat, Jul 22, 2023 at 4:18 AM Maxime Coquelin
-> > > <maxime.coquelin@redhat.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 7/21/23 17:10, Michael S. Tsirkin wrote:
-> > > > > On Fri, Jul 21, 2023 at 04:58:04PM +0200, Maxime Coquelin wrote:
-> > > > >>
-> > > > >>
-> > > > >> On 7/21/23 16:45, Michael S. Tsirkin wrote:
-> > > > >>> On Fri, Jul 21, 2023 at 04:37:00PM +0200, Maxime Coquelin wrote:
-> > > > >>>>
-> > > > >>>>
-> > > > >>>> On 7/20/23 23:02, Michael S. Tsirkin wrote:
-> > > > >>>>> On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nelson wrote:
-> > > > >>>>>> On 7/20/23 1:38 AM, Jason Wang wrote:
-> > > > >>>>>>>
-> > > > >>>>>>> Adding cond_resched() to the command waiting loop for a better
-> > > > >>>>>>> co-operation with the scheduler. This allows to give CPU a breath to
-> > > > >>>>>>> run other task(workqueue) instead of busy looping when preemption is
-> > > > >>>>>>> not allowed on a device whose CVQ might be slow.
-> > > > >>>>>>>
-> > > > >>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > > >>>>>>
-> > > > >>>>>> This still leaves hung processes, but at least it doesn't pin the CPU any
-> > > > >>>>>> more.  Thanks.
-> > > > >>>>>> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-> > > > >>>>>>
-> > > > >>>>>
-> > > > >>>>> I'd like to see a full solution
-> > > > >>>>> 1- block until interrupt
-> > >
-> > > I remember in previous versions, you worried about the extra MSI
-> > > vector. (Maybe I was wrong).
-> > >
-> > > > >>>>
-> > > > >>>> Would it make sense to also have a timeout?
-> > > > >>>> And when timeout expires, set FAILED bit in device status?
-> > > > >>>
-> > > > >>> virtio spec does not set any limits on the timing of vq
-> > > > >>> processing.
-> > > > >>
-> > > > >> Indeed, but I thought the driver could decide it is too long for it.
-> > > > >>
-> > > > >> The issue is we keep waiting with rtnl locked, it can quickly make the
-> > > > >> system unusable.
-> > > > >
-> > > > > if this is a problem we should find a way not to keep rtnl
-> > > > > locked indefinitely.
-> > >
-> > > Any ideas on this direction? Simply dropping rtnl during the busy loop
-> > > will result in a lot of races. This seems to require non-trivial
-> > > changes in the networking core.
-> > >
-> > > >
-> > > >  From the tests I have done, I think it is. With OVS, a reconfiguration
-> > > > is performed when the VDUSE device is added, and when a MLX5 device is
-> > > > in the same bridge, it ends up doing an ioctl() that tries to take the
-> > > > rtnl lock. In this configuration, it is not possible to kill OVS because
-> > > > it is stuck trying to acquire rtnl lock for mlx5 that is held by virtio-
-> > > > net.
-> > >
-> > > Yeah, basically, any RTNL users would be blocked forever.
-> > >
-> > > And the infinite loop has other side effects like it blocks the freezer to work.
-> > >
-> > > To summarize, there are three issues
-> > >
-> > > 1) busy polling
-> > > 2) breaks freezer
-> > > 3) hold RTNL during the loop
-> > >
-> > > Solving 3 may help somehow for 2 e.g some pm routine e.g wireguard or
-> > > even virtnet_restore() itself may try to hold the lock.
-> >
-> > Yep. So my feeling currently is, the only real fix is to actually
-> > queue up the work in software.
-> 
-> Do you mean something like:
-> 
-> rtnl_lock();
-> queue up the work
-> rtnl_unlock();
-> return success;
-> 
-> ?
+Hi Jisheng,
 
-yes
+On Sun, 2023-06-18 at 00:15 +0800, Jisheng Zhang wrote:
+> Sipeed's Lichee Pi 4A development board uses Lichee Module 4A core
+> module which is powered by T-HEAD's TH1520 SoC. Add minimal device
+> tree files for the core module and the development board.
+>=20
+> Support basic uart/gpio/dmac drivers, so supports booting to a basic
+> shell.
 
+Thanks for the excellent work, but when I tried to boot Linux 6.5.0-rc3
+on my Lichee Pi 4A it fails with:
 
-> > It's mostly trivial to limit
-> > memory consumption, vid's is the
-> > only one where it would make sense to have more than
-> > 1 command of a given type outstanding.
-> 
-> And rx mode so this implies we will fail any command if the previous
-> work is not finished.
+## Flattened Device Tree blob at 01f00000
+   Booting using the fdt blob at 0x1f00000
+   Using Device Tree in place at 0000000001f00000, end 0000000001f050c4
 
-don't fail it, store it.
+Starting kernel ...
 
-> > have a tree
-> > or a bitmap with vids to add/remove?
-> 
-> Probably.
-> 
+[    0.000000] Linux version 6.5.0-rc3 (lfs@stargazer) (riscv64-lfs-linux-g=
+nu-gcc (GCC) 13.1.0, GNU ld (GNU Binutils) 2.40) #1 SMP PREEMPT Tue Jul 25 =
+13:38:20 CST 2023
+[    0.000000] Machine model: Sipeed Lichee Pi 4A
+[    0.000000] SBI specification v0.3 detected
+[    0.000000] SBI implementation ID=3D0x1 Version=3D0x9
+[    0.000000] SBI TIME extension detected
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] earlycon: uart0 at MMIO32 0x000000ffe7014000 (options '11520=
+0n8')
+[    0.000000] printk: bootconsole [uart0] enabled
+[    0.000000] efi: UEFI not found.
+[    0.000000] OF: reserved mem: 0x0000000000000000..0x000000000003ffff (25=
+6 KiB) nomap non-reusable mmode_resv0@0
+[    0.000000] Zone ranges:
+[    0.000000]   DMA32    [mem 0x0000000000000000-0x00000000ffffffff]
+[    0.000000]   Normal   [mem 0x0000000100000000-0x00000001ffffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000000000-0x000000000003ffff]
+[    0.000000]   node   0: [mem 0x0000000000040000-0x00000001ffffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x00000001fffff=
+fff]
+[    0.000000] SBI HSM extension detected
+[    0.000000] riscv: base ISA extensions acdfim
+[    0.000000] riscv: ELF capabilities acdfim
+[    0.000000] percpu: Embedded 17 pages/cpu s38184 r0 d31448 u69632
+[    0.000000] Kernel command line: console=3DttyS0,115200 earlycon logleve=
+l=3D7
+[    0.000000] Dentry cache hash table entries: 1048576 (order: 11, 8388608=
+ bytes, linear)
+[    0.000000] Inode-cache hash table entries: 524288 (order: 10, 4194304 b=
+ytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 20643=
+84
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:of=
+f
+[    0.000000] software IO TLB: area num 4.
+[    0.000000] software IO TLB: mapped [mem 0x00000000fbfff000-0x00000000ff=
+fff000] (64MB)
+[    0.000000] Memory: 8145304K/8388608K available (4922K kernel code, 4786=
+K rwdata, 2048K rodata, 2148K init, 393K bss, 243304K reserved, 0K cma-rese=
+rved)
+[    0.000000] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, N=
+odes=3D1
+[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[    0.000000] rcu:     RCU event tracing is enabled.
+[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=3D64 to nr_cpu_id=
+s=3D4.
+[    0.000000]  Trampoline variant of Tasks RCU enabled.
+[    0.000000]  Tracing variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 1=
+00 jiffies.
+[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_ids=
+=3D4
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 64 local interrupts mapped
+[    0.000000] Oops - load access fault [#1]
+[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc3 #1
+[    0.000000] Hardware name: Sipeed Lichee Pi 4A (DT)
+[    0.000000] epc : __plic_toggle+0x5a/0x62
+[    0.000000]  ra : __plic_init.isra.0+0x2d0/0x462
+[    0.000000] epc : ffffffff802ce8ec ra : ffffffff80618816 sp : ffffffff80=
+e03c90
+[    0.000000]  gp : ffffffff80ec5bb8 tp : ffffffff80e10d40 t0 : ffffffd900=
+045940
+[    0.000000]  t1 : 0000000000000002 t2 : ffffffd90004a10c s0 : ffffffd9fe=
+f6ed68
+[    0.000000]  s1 : ffffffd900045680 a0 : ffffffc801002080 a1 : 0000000000=
+000002
+[    0.000000]  a2 : 0000000000000000 a3 : 00000000000000f4 a4 : 0000000000=
+000001
+[    0.000000]  a5 : 0000000000000000 a6 : 0000000000000b40 a7 : ffffffd900=
+045940
+[    0.000000]  s2 : ffffffd9fef6ed78 s3 : ffffffff80ef9630 s4 : 0000000000=
+000001
+[    0.000000]  s5 : ffffffd9ffff5af8 s6 : 0000000000000001 s7 : ffffffff80=
+815d68
+[    0.000000]  s8 : 0000000000000008 s9 : 0000000000000000 s10: ffffffff80=
+815d68
+[    0.000000]  s11: ffffffff80b1b1b8 t3 : ffffffff80c003d0 t4 : 0000000000=
+000001
+[    0.000000]  t5 : 0000000000000003 t6 : 0000000000000001
+[    0.000000] status: 8000000201800100 badaddr: 000000ffd8002080 cause: 00=
+00000000000005
+[    0.000000] [<ffffffff802ce8ec>] __plic_toggle+0x5a/0x62
+[    0.000000] [<ffffffff8061ffc8>] of_irq_init+0x14a/0x248
+[    0.000000] [<ffffffff80600a7e>] start_kernel+0x40c/0x6fe
+[    0.000000] [<ffffffff806034f6>] init_IRQ+0xc6/0x100
+[    0.000000] [<ffffffff80600a7e>] start_kernel+0x40c/0x6fe
+[    0.000000] Code: 0007 c319 9123 00e7 8082 000f 0140 411c 000f 0820 (c59=
+3) fff5=20
+[    0.000000] ---[ end trace 0000000000000000 ]---
+[    0.000000] Kernel panic - not syncing: Fatal exception in interrupt
+
+I guess I'm either using some unsupported configuration or making some
+stupid mistakes, but I cannot find any documentation about how to
+configure the mainline kernel for Lichee Pi 4A properly.  Could you give
+some pointers?
+
+And this line
+
+Memory: 8145304K/8388608K available (4922K kernel code, 4786K rwdata, 2048K=
+ rodata, 2148K init, 393K bss, 243304K reserved, 0K cma-reserved)
+
+does not match my hardware (my board is a 16 GB DRAM variant).  So in
+the future we'll need multiple DTs for all the variants?
+
+> NOTE: the thead cpu reset dt-binding and DT node are removed in v3. This
+> makes secondary CPUs unable to be online. However, minimal th1520
+> support is better than nothing. And the community has been working on
+> and will work on the cpu reset dt-binding, for example, Conor, Guo and
+> Jessica are discussing about it, I have seen valuable comments and
+> inputs from them. I believe we can add back cpu reset in next
+> development window.
+>=20
 > Thanks
-> 
-> >
-> >
-> >
-> > > >
-> > > > >
-> > > > >>>>> 2- still handle surprise removal correctly by waking in that case
-> > >
-> > > This is basically what version 1 did?
-> > >
-> > > https://lore.kernel.org/lkml/6026e801-6fda-fee9-a69b-d06a80368621@redhat.com/t/
-> > >
-> > > Thanks
-> >
-> > Yes - except the timeout part.
-> >
-> >
-> > > > >>>>>
-> > > > >>>>>
-> > > > >>>>>
-> > > > >>>>>>> ---
-> > > > >>>>>>>      drivers/net/virtio_net.c | 4 +++-
-> > > > >>>>>>>      1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >>>>>>>
-> > > > >>>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > >>>>>>> index 9f3b1d6ac33d..e7533f29b219 100644
-> > > > >>>>>>> --- a/drivers/net/virtio_net.c
-> > > > >>>>>>> +++ b/drivers/net/virtio_net.c
-> > > > >>>>>>> @@ -2314,8 +2314,10 @@ static bool virtnet_send_command(struct virtnet_info *vi, u8 class, u8 cmd,
-> > > > >>>>>>>              * into the hypervisor, so the request should be handled immediately.
-> > > > >>>>>>>              */
-> > > > >>>>>>>             while (!virtqueue_get_buf(vi->cvq, &tmp) &&
-> > > > >>>>>>> -              !virtqueue_is_broken(vi->cvq))
-> > > > >>>>>>> +              !virtqueue_is_broken(vi->cvq)) {
-> > > > >>>>>>> +               cond_resched();
-> > > > >>>>>>>                     cpu_relax();
-> > > > >>>>>>> +       }
-> > > > >>>>>>>
-> > > > >>>>>>>             return vi->ctrl->status == VIRTIO_NET_OK;
-> > > > >>>>>>>      }
-> > > > >>>>>>> --
-> > > > >>>>>>> 2.39.3
-> > > > >>>>>>>
-> > > > >>>>>>> _______________________________________________
-> > > > >>>>>>> Virtualization mailing list
-> > > > >>>>>>> Virtualization@lists.linux-foundation.org
-> > > > >>>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
-> > > > >>>>>
-> > > > >>>
-> > > > >
-> > > >
-> >
+>=20
+> Since v2:
+> =C2=A0 - remove thead cpu-rst dt-binding doc and its DT node from th1520.=
+dtsi
+> =C2=A0 - collect Reviewed-by and Acked-by tags
+> =C2=A0 - update uart reg size as suggested by Yixun
+> =C2=A0 - Add Guo Ren and Fu Wei as THEAD SoCs Maintainers
+>=20
+> Since v1:
+> =C2=A0 - add missing plic, clint, th1520 itself dt-bindings
+> =C2=A0 - use c900-plic
+> =C2=A0 - s/light/th1520
+> =C2=A0 - add dt-binding for T-HEAD CPU reset
+> =C2=A0 - enable ARCH_THEAD in defconfig
+> =C2=A0 - fix all dtbs_check error/warning except the CPU RESET, see above=
+.
+>=20
+> Jisheng Zhang (8):
+> =C2=A0 dt-bindings: interrupt-controller: Add T-HEAD's TH1520 PLIC
+> =C2=A0 dt-bindings: timer: Add T-HEAD TH1520 clint
+> =C2=A0 dt-bindings: riscv: Add T-HEAD TH1520 board compatibles
+> =C2=A0 riscv: Add the T-HEAD SoC family Kconfig option
+> =C2=A0 riscv: dts: add initial T-HEAD TH1520 SoC device tree
+> =C2=A0 riscv: dts: thead: add sipeed Lichee Pi 4A board device tree
+> =C2=A0 MAINTAINERS: add entry for T-HEAD RISC-V SoC
+> =C2=A0 riscv: defconfig: enable T-HEAD SoC
+>=20
+> =C2=A0.../sifive,plic-1.0.0.yaml=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ |=C2=A0=C2=A0 1 +
+> =C2=A0.../devicetree/bindings/riscv/thead.yaml=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 29 ++
+> =C2=A0.../bindings/timer/sifive,clint.yaml=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
+> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ |=C2=A0=C2=A0 8 +
+> =C2=A0arch/riscv/Kconfig.socs=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 6 +
+> =C2=A0arch/riscv/boot/dts/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0 1 +
+> =C2=A0arch/riscv/boot/dts/thead/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +
+> =C2=A0.../dts/thead/th1520-lichee-module-4a.dtsi=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 38 ++
+> =C2=A0.../boot/dts/thead/th1520-lichee-pi-4a.dts=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 32 ++
+> =C2=A0arch/riscv/boot/dts/thead/th1520.dtsi=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | 422 ++++++++++++++++++
+> =C2=A0arch/riscv/configs/defconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0 1 +
+> =C2=A011 files changed, 541 insertions(+)
+> =C2=A0create mode 100644 Documentation/devicetree/bindings/riscv/thead.ya=
+ml
+> =C2=A0create mode 100644 arch/riscv/boot/dts/thead/Makefile
+> =C2=A0create mode 100644 arch/riscv/boot/dts/thead/th1520-lichee-module-4=
+a.dtsi
+> =C2=A0create mode 100644 arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dt=
+s
+> =C2=A0create mode 100644 arch/riscv/boot/dts/thead/th1520.dtsi
+>=20
 
