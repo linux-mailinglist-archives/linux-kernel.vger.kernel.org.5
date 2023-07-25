@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AE9760C2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C150760C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjGYHmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
+        id S232353AbjGYHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232760AbjGYHmS (ORCPT
+        with ESMTP id S232202AbjGYHmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:42:18 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2871AA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:42:09 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3176a439606so423033f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:42:09 -0700 (PDT)
+        Tue, 25 Jul 2023 03:42:35 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9332117
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:42:22 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bba2318546so14308995ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690270928; x=1690875728;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pCLjIbifB+cFFCdOAXQbgUeQlBxUTUV54U2xtQznvec=;
-        b=MX9Rn57dbYz+wSb43zZ55vSVx6eMgursjCMvkflhjADtn0IW4Ox6cYs4BG4m4VrOz1
-         zKJRsY0C1uJbmNNtzxu6BxwE7JervFt5XWg/KyzakWLH0YOQG8aQTzlEkvKN7AixNPr1
-         wiXXORSqPMWtFWhoFD1Byl1y2+pmhdhZlSkgNhxwLlhTuFyCJOt2vcV4TJBwVfI0jE/H
-         zJfQDWDtTd/uR/Oxy+lkGflfsX56gcjHxLagC2g4ZAxNiovEarEtDz5DNnX2OcQeTjWJ
-         L1WzFySNqJgADfFNFTdSCgRK2G5m4CUGNjycvAsJsWi5RrLtXcfMaV3O1ju1iHluijmT
-         UYag==
+        d=linaro.org; s=google; t=1690270941; x=1690875741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kewmDoSwKZcyBAfVPaIo9+Biv1FObKhjKX+FUtEeF3k=;
+        b=PA+fK6qXbHqYwEPVsLMv/2Ju1Mxrp9vScm/JmrJ7HPHfkOnZsCfnzfbxllwJPkxjV1
+         Hk+IVr0kEUHskUZVuUq0VBT5mNuJxc96HduKH0ezuRL7do8qgxgB5SJUIfF82pObwC+h
+         DXogbpdgn4C88+PsK3UNW0ZRNiXMoH9yh1/8x+wkMS5HtFRThUCrNALaEnu6+1tC3zjg
+         oljAojsu5/XpZUccb55Q7m1LgEJwQk8oQLqFk4Gtsd0p8otmccReDMDX0k/dXvdfJYN+
+         1LRWKACoE9ytjmLGfZfsjzn8+flAvCFYSQ/A1/Xt8FrfiBLsq+M0dwuZn/P5E3gUNYnN
+         GI+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690270928; x=1690875728;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCLjIbifB+cFFCdOAXQbgUeQlBxUTUV54U2xtQznvec=;
-        b=O1clh/nk+ei0KZUc75WUyH7HkKdcIMcdC287/nPvKqsSE801nSn8k0Kb1BjM9JbHzr
-         LtYcH1RezZCtfrNsPYFwJTwlvUF6KURepYvyZH/YmkW4Di5n87XLcusaUgL2DCla4iOX
-         e7zDtZfx4LmfgtzIPhNRdO1EWZdGVsXJGT7AvzBj63+fvJGmJ1PfzH2pxjpHlSJJWLaC
-         qg7iOfW0P5FXUz+ojtBx8zI4jI7Qrp8IppGWdDZNHSu4JlCIUXqEZq1eeSe/z8kLqgtW
-         vRx6nzp7/JD2NzRAN5GzLEfs1GWU3PdPrOnnpru+NshqYfZdaBxBOL4nuVJf1YbxXS2z
-         kX/g==
-X-Gm-Message-State: ABy/qLYtbPYaIqD7LhV6pE4FdojpWsGicTFSprBd6KZk8xtL5g54Cn98
-        jYzDZaYLHyASDvN9yejEdHfb+w==
-X-Google-Smtp-Source: APBJJlHCacu3b/duH9zwAoc05ArR+CSHw0jYnqggcZYd89yRr/pLJqEWApy4T0OfxoxetcmJjFW11g==
-X-Received: by 2002:a05:6000:86:b0:317:389b:1a2d with SMTP id m6-20020a056000008600b00317389b1a2dmr6339640wrx.8.1690270928383;
-        Tue, 25 Jul 2023 00:42:08 -0700 (PDT)
-Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
-        by smtp.gmail.com with ESMTPSA id z17-20020a5d4411000000b003176eab8868sm556942wrq.82.2023.07.25.00.42.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 00:42:07 -0700 (PDT)
-Message-ID: <f71c6097-9e9c-0edd-6d96-262ba34712e2@linaro.org>
-Date:   Tue, 25 Jul 2023 09:42:06 +0200
+        d=1e100.net; s=20221208; t=1690270941; x=1690875741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kewmDoSwKZcyBAfVPaIo9+Biv1FObKhjKX+FUtEeF3k=;
+        b=jxjIqPhpo5xw9i+4yNG8OHuj715cmCzSUuk1krztxAcdTHmuJTBRXqyNS/Y2BUcwL0
+         db+HYhAnJx1grSiCqE53zXFbO6pcJEVzYNpktq7ynb2nE9XoycQIAniGklz5e6BaLciI
+         IZqTYbdOd6Yrf4s9Sxta3IqmSU/5WBh+QTo4XcWrt74VmKBBfAruHxXeKtcdejzE46MO
+         8pfhItO5y2sri8uT2zR8GjPhw0ep9PyVl2iCRnDnvgiGZWBZsP1aMyBZogA4rA68DQuP
+         8TUVJrLnyDMi8/rrGQ8gRa/N+EaL3rIUMlQNpWkslFVHwkatzbVoL+vOKrpXpi8F8llq
+         Dfgg==
+X-Gm-Message-State: ABy/qLZzX4tDNintqjPLRtNe1Ws7PWCZCmfHNdyjtvtMdpsHNIa4gVhQ
+        TGZXAltTtZjiYjXRznaUopeefQ==
+X-Google-Smtp-Source: APBJJlHHSoNX8d5INhseTullEgrqBEXbHGAfAD9IQElyfVzOxJEv7mdJAxFRTer6Win8HqYFlgHQew==
+X-Received: by 2002:a17:903:2341:b0:1b8:a31b:ac85 with SMTP id c1-20020a170903234100b001b8a31bac85mr15445663plh.41.1690270941395;
+        Tue, 25 Jul 2023 00:42:21 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id l20-20020a170903005400b001b8a85489a3sm10254527pla.262.2023.07.25.00.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 00:42:20 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 13:12:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Subject: Re: [PATCH V3 1/2] xen: Update dm_op.h from Xen public header
+Message-ID: <20230725074218.zcgbkkx5pfgszimu@vireshk-i7>
+References: <ffae9d7021829fea19fd93fda3c30b52b0af923e.1690190453.git.viresh.kumar@linaro.org>
+ <1498bef6-ded0-1b1f-a5ca-e8755800b489@suse.com>
+ <20230725070914.m3dxlokedrgjlgcu@vireshk-i7>
+ <3770f13f-0621-48af-4c79-880a0ffaa8a6@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: qcom: sm8150: Fix the I2C7 interrupt
-Content-Language: en-US
-To:     qaz6750 lzy <qaz6750@outlook.com>, agross@kernel.org,
-        andersson@kernel.org
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org
-References: <40e3d1d7-468a-c822-6f2c-6c46f4a02f5d@linaro.org>
- <SY7P282MB3787D64A586E9DC55547BB2DB203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <SY7P282MB3787D64A586E9DC55547BB2DB203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3770f13f-0621-48af-4c79-880a0ffaa8a6@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -113,23 +82,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.07.2023 07:55, qaz6750 lzy wrote:
-> On 25/07/2023 13:50, qaz6750 lzy wrote:
->> On 25/07/2023 04:33, qaz6750 lzy wrote:
->>> I2C6 and I2C7 use the same interrupts, which is incorrect.
->>> In the downstream kernel, I2C7 has interrupts of 608 instead of 607.
->>>
->>> Signed-off-by: qaz6750 lzy <qaz6750@outlook.com>
->>
->> Neither From field nor Signed-off-by have the full name you mentioned
-> before.
->>
->> Also: Do not attach (thread) your patchsets to some other threads
->> (unrelated or older versions). This buries them deep in the mailbox and
->> might interfere with applying entire sets.
-> 
-> I'm sorry, this is my problem. As this is my first time submitting a patch,
-> I made some mistakes. So, what else do I need to do now? Thank you
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+On 25-07-23, 09:18, Jan Beulich wrote:
+> I question that use, btw, but it is not up to me to decide whether to
+> accept such a layering violation in Linux. dm-op is, as its name says,
+> for device models to use. Your intended use doesn't fall in that
+> category, aiui. Imo the present contents of dm_op.h in Linux is indeed
+> all a kernel is supposed to know about, unless it was to gain in-kernel
+> device models.
 
-Konrad
+Is there any other way by which an interrupt can be raised for the
+guest VM ? I was only aware of this method and so implemented it like
+this.
+
+I am open to suggestions on this.
+
+-- 
+viresh
