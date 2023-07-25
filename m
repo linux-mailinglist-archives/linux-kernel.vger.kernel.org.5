@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E500076100E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1429761010
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbjGYKBG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 06:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        id S233381AbjGYKBM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 06:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbjGYKA4 (ORCPT
+        with ESMTP id S233143AbjGYKA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:00:56 -0400
+        Tue, 25 Jul 2023 06:00:57 -0400
 Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337F710E3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:00:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8716C19BF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:00:53 -0700 (PDT)
 Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
  relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-124-SA4uouzBO965Nt6ACHgVHg-1; Tue, 25 Jul 2023 11:00:46 +0100
-X-MC-Unique: SA4uouzBO965Nt6ACHgVHg-1
+ uk-mta-306-g7AkR0QgMKSVaBT6vdJD5Q-1; Tue, 25 Jul 2023 11:00:51 +0100
+X-MC-Unique: g7AkR0QgMKSVaBT6vdJD5Q-1
 Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
  (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 25 Jul
- 2023 11:00:45 +0100
+ 2023 11:00:49 +0100
 Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 25 Jul 2023 11:00:45 +0100
+ id 15.00.1497.048; Tue, 25 Jul 2023 11:00:49 +0100
 From:   David Laight <David.Laight@ACULAB.COM>
 To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
@@ -32,13 +32,13 @@ To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Christoph Hellwig <hch@infradead.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH next 1/5] minmax: Add min_unsigned(a, b) and max_unsigned(a,
- b)
-Thread-Topic: [PATCH next 1/5] minmax: Add min_unsigned(a, b) and
- max_unsigned(a, b)
-Thread-Index: Adm+2zJY+ejT7PjHQ52rHHfvsNPoKA==
-Date:   Tue, 25 Jul 2023 10:00:45 +0000
-Message-ID: <eb4a78e460d040058f7f6299c083e25a@AcuMS.aculab.com>
+Subject: [PATCH next 2/5] minmax: Allow min()/max()/clamp() if the arguments
+ have the same signedness.
+Thread-Topic: [PATCH next 2/5] minmax: Allow min()/max()/clamp() if the
+ arguments have the same signedness.
+Thread-Index: Adm+2wKUQ5yQ6t/FR+W/hRy2DuErJQ==
+Date:   Tue, 25 Jul 2023 10:00:49 +0000
+Message-ID: <454f967d452548a9acfa7c0a0872507e@AcuMS.aculab.com>
 Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
@@ -60,45 +60,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These can be used when min()/max() errors a signed v unsigned
-compare when the signed value is known to be non-negative.
+The type-check in min()/max() is there to stop unexpected results if a
+negative value gets converted to a large unsigned value.
+However it also rejects 'unsigned int' v 'unsigned long' compares
+which are common and never problematc.
 
-Unlike min_t(some_unsigned_type, a, b) min_unsigned() will never
-mask off high bits if an inappropriate type is selected.
+Replace the 'same type' check with a 'same signedness' check.
+
+The new test isn't itself a compile time error, so use static_assert()
+to report the error and give a meaningful error message.
+
+Due to the way builtin_choose_expr() works detecting the error in the
+'non-constant' side (where static_assert() can be used) also detects
+errors when the arguments are constant.
 
 Signed-off-by: David Laight <david.laight@aculab.com>
 ---
- include/linux/minmax.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/linux/minmax.h | 61 +++++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 33 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 396df1121bff..531860e9cc55 100644
+index 531860e9cc55..10d236ac7da6 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -73,6 +73,23 @@
+@@ -9,33 +9,31 @@
+  *
+  * - avoid multiple evaluations of the arguments (so side-effects like
+  *   "x++" happen only once) when non-constant.
+- * - perform strict type-checking (to generate warnings instead of
+- *   nasty runtime surprises). See the "unnecessary" pointer comparison
+- *   in __typecheck().
++ * - perform signed v unsigned type-checking (to generate compile
++ *   errors instead of nasty runtime surprises).
+  * - retain result as a constant expressions when called with only
+  *   constant expressions (to avoid tripping VLA warnings in stack
+  *   allocation usage).
   */
- #define max(x, y)	__careful_cmp(x, y, >)
+-#define __typecheck(x, y) \
+-	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
++#define __types_ok(x, y) \
++	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)))
  
-+/**
-+ * min_unsigned - return minimum of two non-negative values
-+ *   Signed types are zero extended to match a larger unsigned type.
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min_unsigned(x, y)	\
-+	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
-+
-+/**
-+ * max_unsigned - return maximum of two non-negative values
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max_unsigned(x, y)	\
-+	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
-+
+-#define __no_side_effects(x, y) \
+-		(__is_constexpr(x) && __is_constexpr(y))
++#define __cmp_op_min <
++#define __cmp_op_max >
+ 
+-#define __safe_cmp(x, y) \
+-		(__typecheck(x, y) && __no_side_effects(x, y))
++#define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
+ 
+-#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
+-
+-#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
++#define __cmp_once(op, x, y, unique_x, unique_y) ({	\
+ 		typeof(x) unique_x = (x);		\
+ 		typeof(y) unique_y = (y);		\
+-		__cmp(unique_x, unique_y, op); })
++		static_assert(__types_ok(x, y),		\
++			#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
++		__cmp(op, unique_x, unique_y); })
+ 
+-#define __careful_cmp(x, y, op) \
+-	__builtin_choose_expr(__safe_cmp(x, y), \
+-		__cmp(x, y, op), \
+-		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
++#define __careful_cmp(op, x, y)					\
++	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
++		__cmp(op, x, y),				\
++		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+ 
+ #define __clamp(val, lo, hi)	\
+ 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+@@ -44,17 +42,14 @@
+ 		typeof(val) unique_val = (val);				\
+ 		typeof(lo) unique_lo = (lo);				\
+ 		typeof(hi) unique_hi = (hi);				\
++		static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),		\
++			"clamp() low limit " #lo " greater than high limit " #hi);	\
++		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
++		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
+ 		__clamp(unique_val, unique_lo, unique_hi); })
+ 
+-#define __clamp_input_check(lo, hi)					\
+-        (BUILD_BUG_ON_ZERO(__builtin_choose_expr(			\
+-                __is_constexpr((lo) > (hi)), (lo) > (hi), false)))
+-
+ #define __careful_clamp(val, lo, hi) ({					\
+-	__clamp_input_check(lo, hi) +					\
+-	__builtin_choose_expr(__typecheck(val, lo) && __typecheck(val, hi) && \
+-			      __typecheck(hi, lo) && __is_constexpr(val) && \
+-			      __is_constexpr(lo) && __is_constexpr(hi),	\
++	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
+ 		__clamp(val, lo, hi),					\
+ 		__clamp_once(val, lo, hi, __UNIQUE_ID(__val),		\
+ 			     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
+@@ -64,14 +59,14 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define min(x, y)	__careful_cmp(x, y, <)
++#define min(x, y)	__careful_cmp(min, x, y)
+ 
+ /**
+  * max - return maximum of two values of the same or compatible types
+  * @x: first value
+  * @y: second value
+  */
+-#define max(x, y)	__careful_cmp(x, y, >)
++#define max(x, y)	__careful_cmp(max, x, y)
+ 
+ /**
+  * min_unsigned - return minimum of two non-negative values
+@@ -79,16 +74,16 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define min_unsigned(x, y)	\
+-	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
++#define min_unsigned(x, y) \
++	__careful_cmp(min, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
+ 
+ /**
+  * max_unsigned - return maximum of two non-negative values
+  * @x: first value
+  * @y: second value
+  */
+-#define max_unsigned(x, y)	\
+-	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
++#define max_unsigned(x, y) \
++	__careful_cmp(max, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
+ 
  /**
   * min3 - return minimum of three values
+@@ -140,7 +135,7 @@
   * @x: first value
+  * @y: second value
+  */
+-#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
++#define min_t(type, x, y)	__careful_cmp(min, (type)(x), (type)(y))
+ 
+ /**
+  * max_t - return maximum of two values, using the specified type
+@@ -148,7 +143,7 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
++#define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
+ 
+ /**
+  * clamp_t - return a value clamped to a given range using a given type
 -- 
 2.17.1
 
