@@ -2,122 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A8076211F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B55762120
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbjGYSPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
+        id S230128AbjGYSQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjGYSPM (ORCPT
+        with ESMTP id S229689AbjGYSQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:15:12 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4BC1BF8
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:15:11 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d05883d850fso5698911276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:15:11 -0700 (PDT)
+        Tue, 25 Jul 2023 14:16:10 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38371BF8;
+        Tue, 25 Jul 2023 11:16:06 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b734aea34aso85316141fa.0;
+        Tue, 25 Jul 2023 11:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690308910; x=1690913710;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAZmELeq2ZhkyDgChb+RthHmv+q1lpfrw6foSOn/8ZY=;
-        b=rldnnWH7w/HourUe/RcpHwlb69EnTTdPK/pDOa8OZfeDJ35pA6WgI3FFvgz7Wjl7x6
-         98M310YVHhmfsVHJyCvBvyNc55l3cU8cn0/4gGT0AfkBYx9Uwj+M/TkJ/eJKoiYntE36
-         Xj8BoGO0yZu8Q5LvMFeprTGpzBWUO4Lzfx2Wb0cSQj5fYvwYd/+vhSArQPxwdvsH9q6W
-         PPWnYjEsWI2CzoXQWQC16CG4zFTZm4P/pBUKSRJOKCAhm8mqCiQIm7W8/bXxHKYWj9z4
-         UjcWrpsMKdV9ZNjmW86cd2ztYi8qdoEAwtj4AbVpQokSZjJk5JZDjGBobeDfhd0+Kd1K
-         4UVw==
+        d=gmail.com; s=20221208; t=1690308965; x=1690913765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iaqRX3//yycdBRgF192yYxUc3zXSOhtqD/ETouzUIao=;
+        b=UprsR88vr0GLaBEm8nrwJ1OiSXzsQassFUvc+KgsrGzJlEj+854tG5CVxNN+qHThKV
+         1XwqZq1COTTyAsvreFr4cRX8MiP2RsvB7BEipMumNR74sGJj3Y+SiGMBaThAasLUDOCb
+         F6WbwSYN3z9P21xMrmlTHciaftTz9xlE2n/7V5P1TzANKbz2TLkcaMABIJq8IGkeK18E
+         +wLa/BnNOs3phVXQ2EtjqMAyAM1DX18xJFdTtWsO+c7is3R/rAr8ze2D2vcqtQtO406K
+         Q29WH+XGb80WkL4x94K298uyANFlWApzsENgWSUdi4mR1qzgTz3XU50b2poc/Ip+5m/Z
+         oeCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690308910; x=1690913710;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAZmELeq2ZhkyDgChb+RthHmv+q1lpfrw6foSOn/8ZY=;
-        b=SXi3dn9G/fG/oFt/shNYIV1JkIv9cR/dSOMFt0kKySlfyUjcBz3I0ij6xyBgXlIg6s
-         c1uVMpaegWGK7K+huQjlfvUzL219tjSCHDXHFiEhUxL8Kzy56B8IA4Tf0pjUEsnCnZkp
-         GMMhVFeBo+vKFP7YjmzfCoSqJ7VCzJ+dGT+Ca9TckkWd7FjBLD5PEENkfTfk5bEVBM/u
-         4vwQ/ks0ceXT9/1ez4AUlLLHg1xPAq2wfYEhXLZBTdPWYm6rEuzQ5VMjBl9mM1DfRuKe
-         fq8HL4rvj7Mrm9zhmR5LVzTFow1vWwT5J5hzDeqDl7S68DKmnHFmBMiisbMwi6PV30aN
-         L6/Q==
-X-Gm-Message-State: ABy/qLZ/HKFq/jJRVPh8kz1BsvHO+8K7KrMyfJNDNeBb17QwP/VraI1t
-        k1PlCwaeY+Ck3+87De7BGWIwZr2z23s=
-X-Google-Smtp-Source: APBJJlFXrTcGU/9dXVrt8CbSBDCqA64SFKTYxJj7G92zNc7tdKvKFYWLRqCNhBTcCsblpCzONauc19v8DpM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8d83:0:b0:d15:d6da:7e97 with SMTP id
- o3-20020a258d83000000b00d15d6da7e97mr24208ybl.3.1690308910326; Tue, 25 Jul
- 2023 11:15:10 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 11:15:08 -0700
-In-Reply-To: <c90d244a6b372322028d0e5b42d60fb1a23476da.camel@intel.com>
-Mime-Version: 1.0
-References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-20-seanjc@google.com>
- <c90d244a6b372322028d0e5b42d60fb1a23476da.camel@intel.com>
-Message-ID: <ZMARLNcPwovmOZvg@google.com>
-Subject: Re: [PATCH v4 19/19] KVM: VMX: Skip VMCLEAR logic during emergency
- reboots if CR4.VMXE=0
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chao Gao <chao.gao@intel.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690308965; x=1690913765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iaqRX3//yycdBRgF192yYxUc3zXSOhtqD/ETouzUIao=;
+        b=Jqh0/bbB+kK0X0OTmIuE5Kk4xTFO4kkNFUNPVFpqX1n85jiZW72B/io5JzonrDSsEb
+         FjUkkeTie0w44j6Zel0k2RoLQzpQBIZkGJ4WvZtRvFQ8rOVlRC0bRBYmWe0Tb6/cCP63
+         EFjpZkHn2wELht/5aQqpQ+AOFTWSQyKFTgpuK9OsDSNFT2ME6lolcDIlE6xvE3NmxyHn
+         Y/6RA4RvXo6+pQ51x1eWn2TuJzGR3ez/MBMiAhTQhNYuTkFhbfIMFr0qd1SpbRSlEdDu
+         B9XJIxBVjafw0RsEaWUAavHfrqnqer/EOhPl+UKo4utyT+GhPK7qNyqZD5TzaEsG5DGb
+         z/nQ==
+X-Gm-Message-State: ABy/qLY9i9MeRjXsqAojHQ6tQi6W9MP3ZyjKsW3Vp/gXfahiRL4HperH
+        6cCzZqD15VTHMFLGVyuJirx7FtmWymCRKTBo1JM=
+X-Google-Smtp-Source: APBJJlHmnRezME3OEClXVRckbCJu4yj0xp2e8fzoqRIJIwyIidA5xA3aMSREZ1FZPSckRZatCXpej4hUifCyh9pCDvQ=
+X-Received: by 2002:a2e:9ad2:0:b0:2b5:9d78:213e with SMTP id
+ p18-20020a2e9ad2000000b002b59d78213emr10958148ljj.22.1690308964744; Tue, 25
+ Jul 2023 11:16:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230722074753.568696-1-arnd@kernel.org> <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
+ <CAADnVQKGe8DN+Zs387UVwpij3ROGqNEnc5r940h5ueqQYHTYCA@mail.gmail.com>
+ <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com> <CAADnVQ+p4wpd=tKJAiwB34O1y5vv4mibtkt9D-F7sG=rQapcew@mail.gmail.com>
+ <679d8d63-ce92-4294-8620-e98c82365b2c@app.fastmail.com> <39444a4e-70da-4d17-a40a-b51e05236d23@app.fastmail.com>
+ <CAADnVQ+zdV9+UNV9NeEzY2rWd8qvW3cvHxS9mYwfhnqZOV+9=A@mail.gmail.com> <3e202277-fe74-4105-93ec-b646efaaa956@app.fastmail.com>
+In-Reply-To: <3e202277-fe74-4105-93ec-b646efaaa956@app.fastmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 25 Jul 2023 11:15:53 -0700
+Message-ID: <CAADnVQJWfQVGWsruzTHB9v=kztkDeRbJJDANafVScEE4EJ1jbg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023, Kai Huang wrote:
-> On Fri, 2023-07-21 at 13:18 -0700, Sean Christopherson wrote:
-> > Bail from vmx_emergency_disable() without processing the list of loaded
-> > VMCSes if CR4.VMXE=0, i.e. if the CPU can't be post-VMXON.  It should be
-> > impossible for the list to have entries if VMX is already disabled, and
-> > even if that invariant doesn't hold, VMCLEAR will #UD anyways, i.e.
-> > processing the list is pointless even if it somehow isn't empty.
-> > 
-> > Assuming no existing KVM bugs, this should be a glorified nop.  The
-> > primary motivation for the change is to avoid having code that looks like
-> > it does VMCLEAR, but then skips VMXON, which is nonsensical.
-> > 
-> > Suggested-by: Kai Huang <kai.huang@intel.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 5d21931842a5..0ef5ede9cb7c 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -773,12 +773,20 @@ static void vmx_emergency_disable(void)
-> >  
-> >  	kvm_rebooting = true;
-> >  
-> > +	/*
-> > +	 * Note, CR4.VMXE can be _cleared_ in NMI context, but it can only be
-> > +	 * set in task context.  If this races with VMX is disabled by an NMI,
-> > +	 * VMCLEAR and VMXOFF may #UD, but KVM will eat those faults due to
-> > +	 * kvm_rebooting set.
-> > +	 */
-> 
-> I am not quite following this comment.  IIUC this code path is only called from
-> NMI context in case of emergency VMX disable.
+On Mon, Jul 24, 2023 at 1:41=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Mon, Jul 24, 2023, at 21:15, Alexei Starovoitov wrote:
+> > On Mon, Jul 24, 2023 at 11:30=E2=80=AFAM Arnd Bergmann <arnd@kernel.org=
+> wrote:
+> >> On Mon, Jul 24, 2023, at 20:13, Arnd Bergmann wrote:
+> >>
+> >> I have a minimized test case at https://godbolt.org/z/hK4ev17fv
+> >> that shows the problem happening with all versions of gcc
+> >> (4.1 through 14.0) if I force the dec_active() function to be
+> >> inline and force inc_active() to be non-inline.
+> >
+> > That's a bit of cheating, but I see your point now.
+> > How about we do:
+> > diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> > index 51d6389e5152..3fa0944cb975 100644
+> > --- a/kernel/bpf/memalloc.c
+> > +++ b/kernel/bpf/memalloc.c
+> > @@ -183,11 +183,11 @@ static void inc_active(struct bpf_mem_cache *c,
+> > unsigned long *flags)
+> >         WARN_ON_ONCE(local_inc_return(&c->active) !=3D 1);
+> >  }
+> >
+> > -static void dec_active(struct bpf_mem_cache *c, unsigned long flags)
+> > +static void dec_active(struct bpf_mem_cache *c, unsigned long *flags)
+> >  {
+> >         local_dec(&c->active);
+> >         if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> > -               local_irq_restore(flags);
+> > +               local_irq_restore(*flags);
+> >  }
+>
+>
+> Sure, that's fine. Between this and the two suggestions I had
+> (__always_inline or passing the flags from  inc_active as a
+> return code), I don't have a strong preference, so pick whichever
+> you like.
 
-The CPU that initiates the emergency reboot can invoke the callback from process
-context, only responding CPUs are guaranteed to be handled via NMI shootdown.
-E.g. `reboot -f` will reach this point synchronously.
-
-> How can it race with "VMX is disabled by an NMI"?
-
-Somewhat theoretically, a different CPU could panic() and do a shootdown of the
-CPU that is handling `reboot -f`.
+I think:
+static void dec_active(struct bpf_mem_cache *c, unsigned long *flags)
+is cleaner.
+Could you send a patch?
