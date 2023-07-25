@@ -2,110 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 206A6760C10
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798E9760C0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjGYHht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S232594AbjGYHh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232637AbjGYHh2 (ORCPT
+        with ESMTP id S232317AbjGYHhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:37:28 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C724146A3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:35:51 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qOCZX-0005zf-7L; Tue, 25 Jul 2023 09:35:07 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 82F4B1F928B;
-        Tue, 25 Jul 2023 07:35:02 +0000 (UTC)
-Date:   Tue, 25 Jul 2023 09:35:02 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v2] can: Explicitly include correct DT includes, part 2
-Message-ID: <20230725-squeamish-walrus-a6ed8833de74-mkl@pengutronix.de>
-References: <20230724211841.805053-1-robh@kernel.org>
+        Tue, 25 Jul 2023 03:37:12 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543041BE1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:35:23 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31759e6a4a1so1719378f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690270515; x=1690875315;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qy1+b1K519FpXkmyThSnFmRzN6pFlVKnNg610BuI7MA=;
+        b=Y1Y741t+P9RDREXrYmfmRP7Im2iZvT/2t5X35M4FEgebyODy107yyHKGzzduzu7oVs
+         7i7TfIq5srzIjlwZKmlX3jZroJNfrnIQ1x68Be5+BvAhpQdR4Lt22LovPXgMPbV9CvK2
+         MHMegHGW8CQq5bNmZmYHk41U8oYO5rmNDaJmqnbL1jYGv4UPPQch0g8RH5W0u8LP9JPF
+         I1P5aCQNGqjfe/Ucg4/kCJP2NiPByg0tB4y96td55gv7I751Dg+TsoK2I117gid6PH94
+         VCx5HJ/z/ewrUd2Qjq0BOpLjjqMuwTAJgjyAoTZvxaNdqhXFaJOYXH/276CJxZzmv3MQ
+         lE7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690270515; x=1690875315;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qy1+b1K519FpXkmyThSnFmRzN6pFlVKnNg610BuI7MA=;
+        b=eo+lttYTT/N4cKwp5wqgHK8wW+cMNRhuyTlrmI8VtBKACrVqbkaOaq17aO4XtVaT+y
+         1FDYix5EV3b8Pa6IjGkm2IqkjCfpn+X1XBeTOXHO5Qvfvf2extuRBZ2rUBgilI1z7BDQ
+         02SYj+TzA01R9xktYehkwIM+5yjT8q+YWFcAgecZfwgfNXfraXwUFuaFZrjjpoQqtfnY
+         9+wiS5s7PaQ3cPmD/is3ZX3kJ98tTfxuR5AjpEbay1EKPwANBgAxGHtCGr/oj04p16RF
+         yPITtFLsj9uPLufz4Z7lFWOhhQmm08aCYRJrXY22CGoW+u/P31L6y5ebFTruZPc19Bem
+         qxeg==
+X-Gm-Message-State: ABy/qLak41A4CVRM6U6Bt7KXtKIumZ3FJZo1Pgo9djKd6FHAyxrJFNMA
+        vAamPL3LH/h6p+gY2rXNJ3NnzY7gBuJqlNzXFuPxFg==
+X-Google-Smtp-Source: APBJJlEgoVwzOTj4qyh7bbPD5Y148/nsOgK9/pmcLRCusowR2d/kOU/yMmm/J3uwnDa9WNI+wzL+eqTf98zs6wW3zLg=
+X-Received: by 2002:a5d:4e12:0:b0:317:69d2:35c2 with SMTP id
+ p18-20020a5d4e12000000b0031769d235c2mr1018661wrt.2.1690270514987; Tue, 25 Jul
+ 2023 00:35:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ocgulp7ippdalqz4"
-Content-Disposition: inline
-In-Reply-To: <20230724211841.805053-1-robh@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230722113445.630714-1-alexghiti@rivosinc.com>
+ <20230722113445.630714-2-alexghiti@rivosinc.com> <b0826064-0cd6-dfd0-a377-5cd56c4035be@infradead.org>
+In-Reply-To: <b0826064-0cd6-dfd0-a377-5cd56c4035be@infradead.org>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Tue, 25 Jul 2023 09:35:04 +0200
+Message-ID: <CAHVXubg_gGqLnoCaQCLe4SgS4eVT0rqSTC1DHc+-CEmifH6V6Q@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] Documentation: riscv: Add early boot document
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Song Shuai <songshuaishuai@tinylab.org>,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Randy,
 
---ocgulp7ippdalqz4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, Jul 22, 2023 at 10:19=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
+>
+> Hi,
+>
+> On 7/22/23 04:34, Alexandre Ghiti wrote:
+> > This document describes the constraints and requirements of the early
+> > boot process in a RISC-V kernel.
+> >
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > Reviewed-by: Sunil V L <sunilvl@ventanamicro.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> > Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> > Reviewed-by: Song Shuai <songshuaishuai@tinylab.org>
+> > Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> > ---
+> > - Changes in v5:
+> >   * Rebase on top of docs-next
+> >
+> >  Documentation/riscv/boot-image-header.rst |   3 -
+> >  Documentation/riscv/boot.rst              | 169 ++++++++++++++++++++++
+> >  Documentation/riscv/index.rst             |   1 +
+> >  3 files changed, 170 insertions(+), 3 deletions(-)
+> >  create mode 100644 Documentation/riscv/boot.rst
+> >
+>
+> > diff --git a/Documentation/riscv/boot.rst b/Documentation/riscv/boot.rs=
+t
+> > new file mode 100644
+> > index 000000000000..f890ac442c91
+> > --- /dev/null
+> > +++ b/Documentation/riscv/boot.rst
+> > @@ -0,0 +1,169 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +RISC-V Kernel Boot Requirements and Constraints
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +:Author: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > +:Date: 23 May 2023
+> > +
+> > +This document describes what the RISC-V kernel expects from bootloader=
+s and
+> > +firmware, but also the constraints that any developer must have in min=
+d when
+>
+> I would s/but/and/.
 
-On 24.07.2023 15:18:40, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Ok I change that, thanks.
 
-Applied to linux-can-next/testing.
+>
+> > +touching the early boot process. For the purposes of this document, th=
+e
+> > +``early boot process`` refers to any code that runs before the final v=
+irtual
+> > +mapping is set up.
+> > +
+> > +Pre-kernel Requirements and Constraints
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +The RISC-V kernel expects the following of bootloaders and platform fi=
+rmware:
+> > +
+> > +Register state
+> > +--------------
+> > +
+> > +The RISC-V kernel expects:
+> > +
+> > +  * ``$a0`` to contain the hartid of the current core.
+> > +  * ``$a1`` to contain the address of the devicetree in memory.
+> > +
+> > +CSR state
+> > +---------
+> > +
+> > +The RISC-V kernel expects:
+> > +
+> > +  * ``$satp =3D 0``: the MMU, if present, must be disabled.
+> > +
+> > +Reserved memory for resident firmware
+> > +-------------------------------------
+> > +
+> > +The RISC-V kernel must not map any resident memory, or memory protecte=
+d with
+> > +PMPs, in the direct mapping, so the firmware must correctly mark those=
+ regions
+> > +as per the devicetree specification and/or the UEFI specification.
+> > +
+> > +Kernel location
+> > +---------------
+> > +
+> > +The RISC-V kernel expects to be placed at a PMD boundary (2MB aligned =
+for rv64
+> > +and 4MB aligned for rv32). Note that the EFI stub will physically relo=
+cate the
+> > +kernel if that's not the case.
+> > +
+> > +Hardware description
+> > +--------------------
+> > +
+> > +The firmware can pass either a devicetree or ACPI tables to the RISC-V=
+ kernel.
+> > +
+> > +The devicetree is either passed directly to the kernel from the previo=
+us stage
+> > +using the ``$a1`` register, or when booting with UEFI, it can be passe=
+d using the
+> > +EFI configuration table.
+> > +
+> > +The ACPI tables are passed to the kernel using the EFI configuration t=
+able. In
+> > +this case, a tiny devicetree is still created by the EFI stub. Please =
+refer to
+> > +"EFI stub and devicetree" section below for details about this devicet=
+ree.
+> > +
+> > +Kernel entrance
+> > +---------------
+>
+> How about "entry" instead of "entrance"?
 
-Thanks,
-Marc
+I have to admit that I don't have the nuance between both words, if
+'entry' is more appropriate, I'll change it.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+>
+> > +
+> > +On SMP systems, there are 2 methods to enter the kernel:
+> > +
+> > +- ``RISCV_BOOT_SPINWAIT``: the firmware releases all harts in the kern=
+el, one hart
+> > +  wins a lottery and executes the early boot code while the other hart=
+s are
+> > +  parked waiting for the initialization to finish. This method is most=
+ly used to
+> > +  support older firmwares without SBI HSM extension and M-mode RISC-V =
+kernel.
+> > +- ``Ordered booting``: the firmware releases only one hart that will e=
+xecute the
+> > +  initialization phase and then will start all other harts using the S=
+BI HSM
+> > +  extension. The ordered booting method is the preferred booting metho=
+d for
+> > +  booting the RISC-V kernel because it can support cpu hotplug and kex=
+ec.
+>
+> preferably s/cpu/CPU/
 
---ocgulp7ippdalqz4
-Content-Type: application/pgp-signature; name="signature.asc"
+Done!
 
------BEGIN PGP SIGNATURE-----
+>
+> > +
+> > +UEFI
+> > +----
+>
+> [snip]
+>
+> I can't say how correct the documentation is, but it is well-written
+> and has no issues with punctuation, grammar, or spelling AFAICT, so
+> you can take this if you want it:
+>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS/eyMACgkQvlAcSiqK
-BOi3zAf+PBBM2/u8saJpYng8AekPLMr62E/Shm6AKhzJpIQ9KfWUU60iNcdLffNX
-lOJTO4aWlkGy4zBNHRu96BFcV7f2O/SbHAXSalaZBGr7xwp16nsGa5OXgTzbcPK7
-F8yO0z2+/gNEGJiY85OnMufQ7EKpy7ediD4re0MfGss1rTDxtPh7IP4sTUjZjTgP
-n2kUSLz3Wn1wMbbG65XYGLYwQ93cDLDQBVaofbrwWWmQ3Alu64xocRB7rATc3YnB
-1TRLJNNtHM6GRveHKHCnWksXCPLWhxe+U1QaAybRqEm23GCHpWFEwihFNdrgGmxY
-1rzoVwgLdVQizK17N9saIHKjqQtQfw==
-=UTUe
------END PGP SIGNATURE-----
+Thanks for the nice comments, @Conor Dooley (and others) really helped!
 
---ocgulp7ippdalqz4--
+I'll respin a new version today,
+
+Alex
+
+>
+> thanks.
+> --
+> ~Randy
