@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 270C17624C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0A67624C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjGYVtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S231229AbjGYVtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbjGYVtC (ORCPT
+        with ESMTP id S230075AbjGYVtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:49:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D5C1FF0;
-        Tue, 25 Jul 2023 14:49:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B907616A3;
-        Tue, 25 Jul 2023 21:49:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85582C433C7;
-        Tue, 25 Jul 2023 21:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690321739;
-        bh=giBk76Wu2CNxIKQ+bWSMybNrR4Xwdbrb7bfqe39jKGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UTmiPxbosiW2nQ1ygwQpI0u0A4jO+VTQXLpQm8gykr4mpHK3Nbw0GxqExmFvJhKuo
-         K7gyCPZSlS34qRrp6CqEERKzht3NHErcrghZVkiqAvTGB5YnBfjKD8TDu64naG0m9+
-         0WdQ5D2fH9aiZ+BTkjukoVJeYUlPba/5saeEmpjCOAsqR3mOdVd7nB1nOdM13z4RRk
-         a2zClPLVbB77kQa2iQYXWUUkva6q41jzfJKrKzmfPn06MF0U1N/ptqUc5T7KicqYLW
-         HttCu5Irc4LxKIo1jgHA2dktF2NeeoDppcsSg5e2rqsipXR6/4h6hFmSxBtDRHsxKL
-         RJcaZWEpIopkQ==
-Date:   Tue, 25 Jul 2023 22:48:54 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Jiahao <chenjiahao16@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        conor.dooley@microchip.com, guoren@kernel.org, heiko@sntech.de,
-        bjorn@rivosinc.com, alex@ghiti.fr, akpm@linux-foundation.org,
-        atishp@rivosinc.com, bhe@redhat.com, thunder.leizhen@huawei.com,
-        horms@kernel.org
-Subject: Re: [PATCH -next v8 0/2] support allocating crashkernel above 4G
- explicitly on riscv
-Message-ID: <20230725-judiciary-auction-ef50be622175@spud>
-References: <20230725214413.2488159-1-chenjiahao16@huawei.com>
+        Tue, 25 Jul 2023 17:49:20 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D322129
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-666ecf9a0ceso3693191b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690321758; x=1690926558;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
+        b=WpyPx27WCr/WIbEfCSxs1Y8b4Gg4/pW0aKUoGH4ssc0OCZecu8jXj20aNS6wF3tblu
+         XmuW8qKYNhzHdxjrATt9wvXBBGzM0YrZmLmiyTq3oAuvOetPDU+3f+ZlV4hRm2orFEtE
+         6Y/7E3DwS9WBOPNuGwOQd0SCBuaLRzFC2vdQrxsADf3CZJ6+CcxSrtiN70KeKLvMagMy
+         eXf4wX/2fWzomv+wLjuS+ruBfpILqSMX2zATgJY5tevg8w5F0h1bTnw7NcR+ZInS1hoS
+         1h84VW506r3LzA6A4J8fgl+br0tUuPcuVEG5KoXcUAWT9U8qQH+ESRL+xre6zQGoA/R0
+         tqLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690321758; x=1690926558;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
+        b=aPBMZa40eL7GnKvZs++nV/FWovgli3UMnHDDoqvNNnqMy9Tiu53fUTOfLIu8+g6IeT
+         SOs6YvPvAwZeUlbnheYGnCHy8MbKnWZEBsWJ1LK9tlzkmeska1HdxQhIVEybra/Cq2N1
+         hSEKO4D4js596O6k2FgXyUGt1KdnlJEob5HSoiEN9rOVN7xl9u3vonhtvsgrZuw4krKz
+         R0BPRGXP+8nGZKOUdw5O+oi8bORYxwnLdpNaHVoBpEKqR9a1DKQSj8NSxbHPYu/0bBik
+         OuVSByn3WmNV83VyFQ6XI89uhWtQJabtYxG2OE3evw7WmmkjXXr+yRIjU65LsVxfTNiw
+         +BRQ==
+X-Gm-Message-State: ABy/qLaqgazo15YLEtRhgsJL289+IIMgqtaz0J7ql/19tFkElcXSH9wo
+        41wsYHbVZ4Cj/3hrba7+ZfvyOg==
+X-Google-Smtp-Source: APBJJlEkPBc//RP5lMftBxjIlZlZ6A6JNiLvfq/eGPDXJfguV4IQ7rGDXp7ppM4o8is0I+HWifddKw==
+X-Received: by 2002:a05:6a21:790a:b0:137:6958:d517 with SMTP id bg10-20020a056a21790a00b001376958d517mr263272pzc.24.1690321758506;
+        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
+Received: from google.com ([2620:15c:2d1:203:a7a4:bf67:c9d5:c1b7])
+        by smtp.gmail.com with ESMTPSA id i2-20020a63a842000000b0055fead55e81sm11269105pgp.57.2023.07.25.14.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 14:49:13 -0700
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] btrfs: remove unused pages_processed variable
+Message-ID: <ZMBDWbHiJVOt03u5@google.com>
+References: <20230724121934.1406807-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tppZMEkMOmCgNS1D"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725214413.2488159-1-chenjiahao16@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230724121934.1406807-1-arnd@kernel.org>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 24, 2023 at 02:19:15PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The only user of pages_processed was removed, so it's now a local write-only
+> variable that can be eliminated as well:
+> 
+> fs/btrfs/extent_io.c:214:16: error: variable 'pages_processed' set but not used [-Werror,-Wunused-but-set-variable]
+> 
+> Fixes: 9480af8687200 ("btrfs: split page locking out of __process_pages_contig")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307241541.8w52nEnt-lkp@intel.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---tppZMEkMOmCgNS1D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the patch!
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Link: https://lore.kernel.org/llvm/64c00cd4.630a0220.6ad79.0eac@mx.google.com/
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Hey,
-
-Your $subject says -next, but the patch failed to apply to
-riscv/for-next. What was the base for this patchset?
-
-Thanks,
-Conor.
-
---tppZMEkMOmCgNS1D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMBDRgAKCRB4tDGHoIJi
-0sf8AP4uEgceSAb5yQVnixLMnccgleBSjQoafJCHM7CMGvRtRQEA9nabe9G4Ghc/
-Xbr6ZvQqp/XMXGdRmePLtK0/PKv2pQs=
-=nSay
------END PGP SIGNATURE-----
-
---tppZMEkMOmCgNS1D--
+> ---
+>  fs/btrfs/extent_io.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index c0440a0988c9a..121edea2cfe85 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -211,7 +211,6 @@ static void __process_pages_contig(struct address_space *mapping,
+>  	pgoff_t start_index = start >> PAGE_SHIFT;
+>  	pgoff_t end_index = end >> PAGE_SHIFT;
+>  	pgoff_t index = start_index;
+> -	unsigned long pages_processed = 0;
+>  	struct folio_batch fbatch;
+>  	int i;
+>  
+> @@ -226,7 +225,6 @@ static void __process_pages_contig(struct address_space *mapping,
+>  
+>  			process_one_page(fs_info, &folio->page, locked_page,
+>  					 page_ops, start, end);
+> -			pages_processed += folio_nr_pages(folio);
+>  		}
+>  		folio_batch_release(&fbatch);
+>  		cond_resched();
+> -- 
+> 2.39.2
+> 
