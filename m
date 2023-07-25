@@ -2,241 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 989B9760648
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CA8760655
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjGYDFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        id S229937AbjGYDHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 23:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjGYDF3 (ORCPT
+        with ESMTP id S231661AbjGYDGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:05:29 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B2D1736
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:05:25 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6864c144897so1189010b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690254325; x=1690859125;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=niSMZqBCvW/Me9jsMaxXz5gtuZ44llk1Ot3soT0LhIs=;
-        b=FniJo6cfZiXO48N3LrJPbrRtsXuGwEsrxL+rPNcNzpIfBU8e0vwfaKRVcngIxQ6/Nq
-         uV6IwXjWItzg/7IWT04hxNl0ft8u0yvH7EyRJ6POcXsP6dFyjR2vvuievKT7V7wXKj9i
-         Hs4OFXg82m4uyRZZDGIHYrUPf7Daiin7owJFDMH9ALFzGhGiMR/jo54iE9PQ2yCszEax
-         GduXKZlfrLf0f1lI69b+SeFKsM1fBAPgAwEi9/QiPJB5pr3rcwSAawR7U6Bt6cbBHX1B
-         l+6jljnScvspLgnoIuyzCCNBX+9PGgFUwcZiZbmROS7agCNCVVXov8LOv0CsZfjvTopq
-         9j6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690254325; x=1690859125;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=niSMZqBCvW/Me9jsMaxXz5gtuZ44llk1Ot3soT0LhIs=;
-        b=GZ6rpqcZysYLRcOIPf1fMcNofV2iBdBzcnxCiP4DT68vaiSwanXlnkqnfk0bS7rwLv
-         eJGeee1U4ngexrb0FAUoTZ/hbcmbQ+wFN5EisUjynSehQGI7VlfBE6lVaAOJw5bBYyNF
-         UJ78kEis0aOAxI4qEGqcdZB6Ci9o4IKwmUtdAtt/RfRtwetzY9seYInYgWR1g1vr1/jK
-         9DdO1uCK9GbT1xL7ysAWEWwody6xoFwL39b2Cjl7blpSp2dWzawFCLy9L+5O7c8END9e
-         gs1Isv0V/WhtsImKoHWOr05s6z30BGctkao1yyKu7hjKXKQ+Zh/MSQOUdBjXLlRrl9Gc
-         mFSQ==
-X-Gm-Message-State: ABy/qLZOUSKguLu2oel1ly394HkbjShCuG1QWG3pJrWKo221LJtZM6aI
-        CJnk1Am25ujpfruS8d/sYu4vvw==
-X-Google-Smtp-Source: APBJJlFB/cQTGj3IlIfGF+HAM8hU50IJB+Lr29ujA3cHbbDSAB3N90HdGCOpa8iydTeMw+f8qxyL2Q==
-X-Received: by 2002:a17:90a:1d46:b0:268:abc:83d5 with SMTP id u6-20020a17090a1d4600b002680abc83d5mr6012554pju.4.1690254324674;
-        Mon, 24 Jul 2023 20:05:24 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([2408:8000:b001:1:1f:58ff:f102:103])
-        by smtp.gmail.com with ESMTPSA id t10-20020a17090aba8a00b002681d44071csm2043968pjr.46.2023.07.24.20.05.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 20:05:24 -0700 (PDT)
-Message-ID: <6049aa99-aa47-5137-f66e-350bc4723914@bytedance.com>
-Date:   Tue, 25 Jul 2023 11:05:04 +0800
+        Mon, 24 Jul 2023 23:06:45 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2099.outbound.protection.outlook.com [40.107.117.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E9F1BC0;
+        Mon, 24 Jul 2023 20:06:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FHw4lEI8i3SFQwVfdHy36Ct6dWyDWZxJ6eUzdyShgfa2JJKCD0H6R1hns1LhfimXLI3q8UtqlP5sznzKvJtUcENrAXNaCoEqIz3BB9HE+wfExYhUOujo/d98/JQYagCnx0EEtWuefZccNIU6YQKzwm9GGaZwdqam1BaD2V1VKL+ie+wIuQqZVZTX02fa9ZKO79roaJvPw6/daFWS0Qs8ZA140oaR64/SxEEFC/1jjS95Qu4ascHkkjSt8SSezpoClN8CxOsyuXwRMiKc+2YAYGcrs19tuQ9UrHh2l1E+eSuc+w303TVjeFKQaTzTa/xXmkGOu58hqZSbZJo7edyeYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JnjHj/K3ARr9yYIpaJTnsi1Gvp0PwUDHuiEUCJ3kUx4=;
+ b=Kxbe2fleGQzmxb9AAVX7rIpE8UgCnZ17+le7VQTuNUBnh5aeLOUvxG+NTKYjvMEWtkjAfzUNSF2lkrt0XSFSijwOPGbxysvq52o5FDwO9FQ+INiVyMC9mB0rIDijBa7/noJB3cMe3qXNKFSlgIkNNrjY4H1B26JSuqnK2m8sVUvVmzt0UVxMuh5lhhz4YtXP8MF8wD+K29Q+4wzjFpxElTA562mVC3e0sOKfWY+6XGziFOttS06nZkngW6FZhInLw/cvGsP3C/7KV2lCWV4P/bFDtiRuqDTsLXDVGWyBZVv+AmzB1HYvFfLotE39VJncWPPfuTVur5RGRIpanK9CEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JnjHj/K3ARr9yYIpaJTnsi1Gvp0PwUDHuiEUCJ3kUx4=;
+ b=l7xHZq8BhAblh4mQxmPXGShon/bgWD4gV9gF11RSbpmmEmecLS8KijUCIajkALlXNygHRLlAtAfRk/OTGaqY3xvpfLYyjyn/CXp4r3JkSjlBNVKbeUCVXHaithZ5lHTDWWxc9+njwtOPUD3HEYAM8+b0c5fUKLXdF2fBoN0s0/wBS/lfXVrzsD/5GlE/3g/E6+6dvmerzsz8E2btmAAOqCYTTg+ZY0lXOZwCKp78Bb2EW3r31PxJKVZMKgRekkaqY8cukoF/RTVOGxb6QuUZCqseqX+vlObkzxs+2+BvoNPYR6tQCMOsQRlKH4ltZbGQ3kqxAuTkOyjBlffn1o2J/w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ PUZPR06MB4602.apcprd06.prod.outlook.com (2603:1096:301:a6::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.33; Tue, 25 Jul 2023 03:06:38 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::75ed:803d:aa0a:703f]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::75ed:803d:aa0a:703f%7]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 03:06:38 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     Viresh Kumar <vireshk@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-ide@vger.kernel.org (open list:LIBATA PATA ARASAN COMPACT FLASH
+        CONTROLLER), linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+Subject: [PATCH v5] ata: pata_arasan_cf: Use dev_err_probe() instead dev_err() in data_xfer()
+Date:   Tue, 25 Jul 2023 11:06:25 +0800
+Message-Id: <20230725030627.1103-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TY2PR02CA0056.apcprd02.prod.outlook.com
+ (2603:1096:404:e2::20) To SG2PR06MB5288.apcprd06.prod.outlook.com
+ (2603:1096:4:1dc::9)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 24/47] drm/panfrost: dynamically allocate the
- drm-panfrost shrinker
-Content-Language: en-US
-To:     Steven Price <steven.price@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-25-zhengqi.arch@bytedance.com>
- <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|PUZPR06MB4602:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f2af69a-e668-47ef-56f7-08db8cbc2954
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DHi/BbMn1hlQ5qGDYJF7oBUkXSVt+CzxTLdN+ah6NSUIjUkXpFh+6vxew3EXafw8HSyQjl9M1M/MKShfK3aGH8WeUSiuRSHT9+a8/RPcDaxE8mog3MnikZp5AxKVg+mrhxQgt7Gf4nB38Vg656W2IWdbyIfeuRB4S06ThJ4rGN1EGQROTCYcXxlxjp96IxKInAgE+elV4q2R7eIlCGGI6EYpgc2jV/A38jqh8XJmx0bOd7XeHg0x/4sp2U8RDqWEXpn76CkmTUmrzrGfbs+u2NJCwGvh72hzIhdhe2yYm6ZLrPyIffqifzhbEpI8Kt18L528FY437dHXKNr8iAYVtX4ey2jgsDUwQpnN/ZBRpnka6SmkJ/2E21siypQuckxNeGJVrlUBx3ifApH69MrzCmrrjfmly46U0e2plSl+wEu6AilYVpRnwg7dLQWDn6WpE6KXDOaTAGEbdKTL96AmPZhVdFTtwAN7POC+iaI/ML2KjqMoimgxJ6O7b91dPep6jduWULUOyPZ6YTIT6dUUsYj4fA6HTl8UkgKYEXhf2A9G1EmYa48AaE10MZYkfskFLyrTXgn7LtJrS2bjW0ae8Z22c8qpALkg+ivgNX4y6Q194NT5K46GsAZA9DLxyAvs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(451199021)(66476007)(66556008)(66946007)(2616005)(36756003)(83380400001)(86362001)(38350700002)(38100700002)(478600001)(110136005)(186003)(6506007)(6486002)(6512007)(52116002)(107886003)(26005)(1076003)(6666004)(4744005)(2906002)(41300700001)(5660300002)(316002)(4326008)(8676002)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LnsQ/eAWcITzPU9ts+WUGeKqcpDwRkm6ycDLKL38mIMbKKdQ1OSF1YBm7VkG?=
+ =?us-ascii?Q?pnCtjtn4LdJROJdEZotqmZNIqirGEFL1TSEcREY8jrg1MlJZz9DHH5LlmZxL?=
+ =?us-ascii?Q?CCrJg/7RRZ3WyAtKKfkRPxqLRQHXdg1XP78RSdcG1sL9eUYGpy76S3vou1R4?=
+ =?us-ascii?Q?LKQydVdx3iaY+oLlu7IpGMpvgvhFh2EnHIvObC8uUxCbU6FlbtyamUTSj2D2?=
+ =?us-ascii?Q?uWo5GMZf3qEUN4YIe2K7FXq1uDYh0OWBO4DJvlslIG0oG2VOmPEQpJr92D2Q?=
+ =?us-ascii?Q?xtbuKxFcaYBl1EklJZmJ635Blw2P0UmvZCmX7Sgvo22v6FnZh5BTRWdbVm68?=
+ =?us-ascii?Q?iZMjpvqZz9hdcRFtz/loDoVKK42c28froNSakxW7pALN3Kun1sLq7dRp2bsM?=
+ =?us-ascii?Q?zc/XWmZSil2qzoQML7NYs2WU59UNG/aUuN0o2f2Pd9tc6BHa11kr/OhOw5GI?=
+ =?us-ascii?Q?hENMzJzTuEnBWSYZ/1wbCVLTxoRa9rAxCLutYxbrD+PM1KMa4iLXN2YRreIb?=
+ =?us-ascii?Q?Woz8QSBjsjL6toREqhPsDjXhjg5DPPnxfrURgy02ywxfzCg+W8RocDzOD5MG?=
+ =?us-ascii?Q?6MYtoa71exmZJ9c2XWA6C1UhxhjLt86mluHkmK8j8931TB1O6X1CPCrRCp2Q?=
+ =?us-ascii?Q?h4xbFsYB5bYHJCu2JNc3DfH4WC++9OPOVRe7omuuNsPsr6MiZLhkUb37Q8F1?=
+ =?us-ascii?Q?DYPYeXH8l4pg3FTjNmpLM1+xvUaOrNbHirtz6leD2RVhPrt6PUrQIWN7eV45?=
+ =?us-ascii?Q?fdRIbpLpnL/xDKJBBeSrSnKQ6bOFN/EYRgVQvVqbnO1sPhYHFx54XWBrI0mO?=
+ =?us-ascii?Q?H0Amc9sw8C71MKQ8yCIGTxtR57Lhf865Qzf2sfoHx6066tTOzoPDWoEtFBlf?=
+ =?us-ascii?Q?jtTP1Tmhtb/UGaobanT/K3ufB0yhjMlr3DkDaXh+pesoKqQmztnAXyWuvOwx?=
+ =?us-ascii?Q?cwEmXmgwPIuEPPNmLexsMc28lhY3/XQrN1beNhlMuwbo9YTlghe7S0L/tXnZ?=
+ =?us-ascii?Q?tx5IsJPax1MnVbHl24a99r7+YnitPINgI9TlxMgyLnRnlTcGgVMJtgiW16x3?=
+ =?us-ascii?Q?2DEULG+5Ji35fcLqH/4Lr+ca5bD4BBKy/M2lxv8XNEi42yK9V3vbcJz9py9q?=
+ =?us-ascii?Q?qyDwVkrrRoANOdJ13jKxoYv8gnenjfLYjCDXCZwZkBHgs279RLTgr2K5aPs7?=
+ =?us-ascii?Q?G9hM9tXI8pxVVXiSKE2XDFkaN0Gl/It7gzau8SoVdGFMTJHh4mNJed0vcUON?=
+ =?us-ascii?Q?+F2cS65qJpOmo/GGaKMdMeOCA9DDweo29xermQdHt6EsEcTBDY0jqAeFyxFq?=
+ =?us-ascii?Q?l0W72zsiNcVBzDgJ7NEHWkkuj7ZmPsHPL5qi/9otZ3oLsafR8bsPFrQZKZct?=
+ =?us-ascii?Q?BYYt1GRDiUeMkNOb5kA2SLStqJpbLFdqumxkzwvdIjHgwWtb1ROBQPoL6Mnt?=
+ =?us-ascii?Q?km+Bm31uaXPcAWd/277oqz6QyknXx6NCU/ZHZT/2xYpIfJwYc/4kn6HvXOut?=
+ =?us-ascii?Q?EKztlaw3BV2Pyrd7+/zEqDUt58M3zNNjGe8BmKKW6B+R+sraBKCJAv+BH3ja?=
+ =?us-ascii?Q?fn84PT6Zu5TUegngcMrtG8HEjP46fxP9ZmO/P6el?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f2af69a-e668-47ef-56f7-08db8cbc2954
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 03:06:38.0705
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: boh0fMjlP5FhQhwgl9C+ZopSFj7IZ+9bDLBM6Grze+tQ6WFrJh1EXqsZFQ96sHinuiX9gybSAQLWr1ddvWI2WA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB4602
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+It is possible for dma_request_chan() to return EPROBE_DEFER, which means
+acdev->host->dev is not ready yet.
+At this point dev_err() will have no output.
 
-On 2023/7/24 19:17, Steven Price wrote:
-> On 24/07/2023 10:43, Qi Zheng wrote:
->> In preparation for implementing lockless slab shrink, use new APIs to
->> dynamically allocate the drm-panfrost shrinker, so that it can be freed
->> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
->> read-side critical section when releasing the struct panfrost_device.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> One nit below, but otherwise:
-> 
-> Reviewed-by: Steven Price <steven.price@arm.com>
-> 
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
->>   drivers/gpu/drm/panfrost/panfrost_drv.c       |  6 +++-
->>   drivers/gpu/drm/panfrost/panfrost_gem.h       |  2 +-
->>   .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 32 ++++++++++++-------
->>   4 files changed, 27 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
->> index b0126b9fbadc..e667e5689353 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->> @@ -118,7 +118,7 @@ struct panfrost_device {
->>   
->>   	struct mutex shrinker_lock;
->>   	struct list_head shrinker_list;
->> -	struct shrinker shrinker;
->> +	struct shrinker *shrinker;
->>   
->>   	struct panfrost_devfreq pfdevfreq;
->>   };
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
->> index bbada731bbbd..f705bbdea360 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
->> @@ -598,10 +598,14 @@ static int panfrost_probe(struct platform_device *pdev)
->>   	if (err < 0)
->>   		goto err_out1;
->>   
->> -	panfrost_gem_shrinker_init(ddev);
->> +	err = panfrost_gem_shrinker_init(ddev);
->> +	if (err)
->> +		goto err_out2;
->>   
->>   	return 0;
->>   
->> +err_out2:
->> +	drm_dev_unregister(ddev);
->>   err_out1:
->>   	pm_runtime_disable(pfdev->dev);
->>   	panfrost_device_fini(pfdev);
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
->> index ad2877eeeccd..863d2ec8d4f0 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
->> @@ -81,7 +81,7 @@ panfrost_gem_mapping_get(struct panfrost_gem_object *bo,
->>   void panfrost_gem_mapping_put(struct panfrost_gem_mapping *mapping);
->>   void panfrost_gem_teardown_mappings_locked(struct panfrost_gem_object *bo);
->>   
->> -void panfrost_gem_shrinker_init(struct drm_device *dev);
->> +int panfrost_gem_shrinker_init(struct drm_device *dev);
->>   void panfrost_gem_shrinker_cleanup(struct drm_device *dev);
->>   
->>   #endif /* __PANFROST_GEM_H__ */
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->> index bf0170782f25..9a90dfb5301f 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
->> @@ -18,8 +18,7 @@
->>   static unsigned long
->>   panfrost_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
->>   {
->> -	struct panfrost_device *pfdev =
->> -		container_of(shrinker, struct panfrost_device, shrinker);
->> +	struct panfrost_device *pfdev = shrinker->private_data;
->>   	struct drm_gem_shmem_object *shmem;
->>   	unsigned long count = 0;
->>   
->> @@ -65,8 +64,7 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->>   static unsigned long
->>   panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->>   {
->> -	struct panfrost_device *pfdev =
->> -		container_of(shrinker, struct panfrost_device, shrinker);
->> +	struct panfrost_device *pfdev = shrinker->private_data;
->>   	struct drm_gem_shmem_object *shmem, *tmp;
->>   	unsigned long freed = 0;
->>   
->> @@ -97,13 +95,24 @@ panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->>    *
->>    * This function registers and sets up the panfrost shrinker.
->>    */
->> -void panfrost_gem_shrinker_init(struct drm_device *dev)
->> +int panfrost_gem_shrinker_init(struct drm_device *dev)
->>   {
->>   	struct panfrost_device *pfdev = dev->dev_private;
->> -	pfdev->shrinker.count_objects = panfrost_gem_shrinker_count;
->> -	pfdev->shrinker.scan_objects = panfrost_gem_shrinker_scan;
->> -	pfdev->shrinker.seeks = DEFAULT_SEEKS;
->> -	WARN_ON(register_shrinker(&pfdev->shrinker, "drm-panfrost"));
->> +
->> +	pfdev->shrinker = shrinker_alloc(0, "drm-panfrost");
->> +	if (!pfdev->shrinker) {
->> +		WARN_ON(1);
-> 
-> I don't think this WARN_ON is particularly useful - if there's a failed
-> memory allocation we should see output from the kernel anyway. And we're
-> changing the semantics from "continue just without a shrinker" (which
-> argueably justifies the warning) to "probe fails, device doesn't work"
-> which will be obvious to the user so I don't feel we need the additional
-> warn.
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+---
+V2 -> V5: Fixed code formatting errors.
+---
+ drivers/ata/pata_arasan_cf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Make sense. Will delete this WARN_ON() in the next version.
+diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+index 6ab294322e79..b32d47112c0a 100644
+--- a/drivers/ata/pata_arasan_cf.c
++++ b/drivers/ata/pata_arasan_cf.c
+@@ -529,7 +529,8 @@ static void data_xfer(struct work_struct *work)
+ 	/* dma_request_channel may sleep, so calling from process context */
+ 	acdev->dma_chan = dma_request_chan(acdev->host->dev, "data");
+ 	if (IS_ERR(acdev->dma_chan)) {
+-		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
++		dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
++			      "Unable to get dma_chan\n");
+ 		acdev->dma_chan = NULL;
+ 		goto chan_request_fail;
+ 	}
+-- 
+2.39.0
 
-Thanks,
-Qi
-
-> 
->> +		return -ENOMEM;
->> +	}
->> +
->> +	pfdev->shrinker->count_objects = panfrost_gem_shrinker_count;
->> +	pfdev->shrinker->scan_objects = panfrost_gem_shrinker_scan;
->> +	pfdev->shrinker->seeks = DEFAULT_SEEKS;
->> +	pfdev->shrinker->private_data = pfdev;
->> +
->> +	shrinker_register(pfdev->shrinker);
->> +
->> +	return 0;
->>   }
->>   
->>   /**
->> @@ -116,7 +125,6 @@ void panfrost_gem_shrinker_cleanup(struct drm_device *dev)
->>   {
->>   	struct panfrost_device *pfdev = dev->dev_private;
->>   
->> -	if (pfdev->shrinker.nr_deferred) {
->> -		unregister_shrinker(&pfdev->shrinker);
->> -	}
->> +	if (pfdev->shrinker)
->> +		shrinker_unregister(pfdev->shrinker);
->>   }
-> 
