@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1D2761A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9DA761A71
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjGYNrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S231553AbjGYNsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjGYNrI (ORCPT
+        with ESMTP id S231530AbjGYNsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:47:08 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7324810FA;
-        Tue, 25 Jul 2023 06:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690292825; x=1721828825;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+OP3tS0a6vPFOecpYmL8uA5ooqpSQiEgNnaksnOSZtQ=;
-  b=bb7HfaBzkEk+MyncxF9qHtjbHTowxedaHPFbP5Mrknsf7XEzcDAiGexr
-   aqavvuV+SdEdYGkafyMHSDC5l7N2OarRg2WIhNAFYEtOWOOlFTiMsn3Td
-   SNGwrCYWUJrzZMlOUvqFStHSLkNmOxiDbyW4QrY0q1nxHhmm5KLu8PQlb
-   5jvMrp8BafVNri0m03OpvI5aQlt5yxz+QUX10Pq42WjOWT/rH/huZ06D8
-   X4XJmb3SX3HhYA1j1hc5jaweHnFuFlDxJpURlmg7VKdLlZ8uLfh5VrWw6
-   faFG/oyqH3jA/v8BXy9TTSIjxcngx1zjo/pR+EP/3p87tUqEd4Co32g14
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352624098"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="352624098"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:47:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755763480"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="755763480"
-Received: from grdarcy-mobl1.ger.corp.intel.com (HELO [10.213.228.4]) ([10.213.228.4])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:47:00 -0700
-Message-ID: <9200b403-6376-96da-d84c-783a3371f73f@linux.intel.com>
-Date:   Tue, 25 Jul 2023 14:46:58 +0100
+        Tue, 25 Jul 2023 09:48:22 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21076A1;
+        Tue, 25 Jul 2023 06:48:21 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9JDl5WTszCrLy;
+        Tue, 25 Jul 2023 21:44:55 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
+ 2023 21:48:18 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+        <mark.rutland@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ftrace: Remove unused extern declarations
+Date:   Tue, 25 Jul 2023 21:48:08 +0800
+Message-ID: <20230725134808.9716-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 12/17] cgroup/drm: Introduce weight based drm cgroup
- control
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-13-tvrtko.ursulin@linux.intel.com>
- <ZLsEEYDFlJZwrJiV@slm.duckdns.org>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <ZLsEEYDFlJZwrJiV@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit 6a9c981b1e96 ("ftrace: Remove unused function ftrace_arch_read_dyn_info()")
+left ftrace_arch_read_dyn_info() extern declaration.
+And commit 1d74f2a0f64b ("ftrace: remove ftrace_ip_converted()")
+leave ftrace_ip_converted() declaration.
 
-On 21/07/2023 23:17, Tejun Heo wrote:
-> On Wed, Jul 12, 2023 at 12:46:00PM +0100, Tvrtko Ursulin wrote:
->> +DRM scheduling soft limits
->> +~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Please don't say soft limits for this. It means something different for
-> memcg, so it gets really confusing. Call it "weight based CPU time control"
-> and maybe call the triggering points as thresholds.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ include/linux/ftrace.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Yes sorry, you said that before and I forgot to reword it all when 
-re-spinning. I have now marked it as TODO in my email client so 
-hopefully next time round I don't forget.
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index ce156c7704ee..aad9cf8876b5 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -684,7 +684,6 @@ void __init
+ ftrace_set_early_filter(struct ftrace_ops *ops, char *buf, int enable);
+ 
+ /* defined in arch */
+-extern int ftrace_ip_converted(unsigned long ip);
+ extern int ftrace_dyn_arch_init(void);
+ extern void ftrace_replace_code(int enable);
+ extern int ftrace_update_ftrace_func(ftrace_func_t func);
+@@ -859,9 +858,6 @@ static inline int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_a
+ }
+ #endif
+ 
+-/* May be defined in arch */
+-extern int ftrace_arch_read_dyn_info(char *buf, int size);
+-
+ extern int skip_trace(unsigned long ip);
+ extern void ftrace_module_init(struct module *mod);
+ extern void ftrace_module_enable(struct module *mod);
+-- 
+2.34.1
 
-Regards,
-
-Tvrtko
