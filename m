@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E58CB762293
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3130576229C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjGYTnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        id S231207AbjGYTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGYTnu (ORCPT
+        with ESMTP id S229587AbjGYTrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:43:50 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1081FF5;
-        Tue, 25 Jul 2023 12:43:49 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bb775625e2so1489415ad.1;
-        Tue, 25 Jul 2023 12:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690314228; x=1690919028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qmDViLCRyHl/N/tg3JfeM78/5jvGUYwvAl/GxQs6m9g=;
-        b=PVsbjHPBcn1yrgJtZoqGaQexpIl2NOm3dGF5HDWjJFFCp6izrIlWjZxk3k9ABTg/gk
-         OTELwpMcumAZlm+K+S3Cm9ycQclgeWkWwbU33/1/lDK8gLemjU5X1Ij+GvHU8LBJuRz1
-         iaiOaG3gRLgMVwy/DbmyYpoWcKqmcUCM/N/JCZNnfQ7oLrpGJwD6TisSsZEF9C69HRCS
-         P/VVH28ofHSNitytYID8+ZVfFqLWyKTudqV0oTGIbjNsL5mj+QwoY3vos9iSG7yQwArR
-         lY8ADN8vtjltEufcZ/cqzuCUylSDWDyI75aTTj8ZBSc7H+mFxVvHouLYkTAy25qcMojh
-         pn9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690314228; x=1690919028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qmDViLCRyHl/N/tg3JfeM78/5jvGUYwvAl/GxQs6m9g=;
-        b=QRtq1R9HhY/exfVvh5FBzw/CJezNk4fuDqui2cpUI7JolGDcFk/6PhoMqThFWouFrz
-         OmR3eBTg9KAN8085doNAanDIFA1MDMn5xO0X6JMf64eFMSdmyjjlu6q519mfMo4V4ez8
-         ZGjNud1NExnVgGyY2OdxaYicUrGWzZgFyyXaV0bQaRKi6+Fg23AXlzt8gh6U0CFjuZC+
-         cDBmet0g2Y940zL9GxgrUXF/YnjTIiLwtp0RukeVZ/QvW3LBG1Q2XNcsylv4GkWoAUWX
-         YSwaYtOAEKNvQ8S7lVfX1MZhNz1eLu5nCjZA11GO7eOvt9oFhKmRfCdz3O4YWeFTUuQP
-         OLbA==
-X-Gm-Message-State: ABy/qLZERkurueVeXhoieXCExw+rMOelGz+ffCYeHS/zngVyS9NeFgcU
-        ppurRS58Flzl/tyZmj7E+bOEKHyi+94=
-X-Google-Smtp-Source: APBJJlF5A3iGfb5iscZyvIYmAxrLPczmwlUH4vwZH8eTXohwgnk+/WJefag1/fAURl88ThxR0Uht2Q==
-X-Received: by 2002:a17:902:e545:b0:1b7:f64b:379b with SMTP id n5-20020a170902e54500b001b7f64b379bmr64248plf.17.1690314228278;
-        Tue, 25 Jul 2023 12:43:48 -0700 (PDT)
-Received: from cxl-test.. ([103.181.222.211])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170902e80d00b001b87d3e845bsm11503262plg.149.2023.07.25.12.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 12:43:47 -0700 (PDT)
-From:   Raghu Halharvi <raghuhack78@gmail.com>
-To:     linux-cxl@vger.kernel.org,
-        Alison Schofield <alison.schofield@intel.com>,
-        raghuhack78@gmail.com, ira.weiny@intel.com, bwidawsk@kernel.org,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v6 0/2] Fixing check patch styling issues
-Date:   Tue, 25 Jul 2023 19:43:39 +0000
-Message-Id: <20230725194339.1694-1-raghuhack78@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 25 Jul 2023 15:47:21 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8141FF7;
+        Tue, 25 Jul 2023 12:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690314440; x=1721850440;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iYyiH/seA0PV9vabelhVPt3S47rffBj5ZGMDDUyw+Zc=;
+  b=lgQqLgIuTEXosrHhlKsc7suUSA3sgt61TiUH8+MkdYLPr1iKBAGATHD8
+   JCqK1nguofoaIz7285Y9ZtTjr7B5ec9jSUMsuVSRjGuXWgzx8shDTTbJa
+   ARAade3SCXncaNy5Ft1QpBxhIhlWfVAXb3FMWLXKCL+lmV7OvjZAPm+Ag
+   AggiUNvjsfyAskoD1uST/CIOFuTrkeByUAi26+TVaqS+5BfxbH0AFy/1J
+   afOyUeaTFlRVUzywe+GxEbAAWurTY6Nsz7nOQK0csq9Yw7TLRl61cBa7h
+   13tvhEPTPno/6fr/kK1oaDtwLAfeMbBcQvPSUz6DI/wsN2+1sO3sWDy3t
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366710901"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="366710901"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 12:47:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="839957352"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="839957352"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Jul 2023 12:47:15 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOO02-0000IH-1J;
+        Tue, 25 Jul 2023 19:47:14 +0000
+Date:   Wed, 26 Jul 2023 03:46:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+Subject: Re: [PATCH v7 08/13] coresight-tpdm: Add node to set dsb programming
+ mode
+Message-ID: <202307260312.vf3OCV58-lkp@intel.com>
+References: <1690269353-10829-9-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690269353-10829-9-git-send-email-quic_taozha@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v6 changes:
-- The v5 was approved was not committed, submitting both patches(v6)
-  addressing styling issues in cxl/mbox.c and cxl/region.c after
-  rebasing with latest source. The changes remain same except the
-  function in which redundant dev_err() was present has been renamed to
-  cxl_memdev_state_create. (Alison/Ira)
+Hi Tao,
 
-v5 changes:
-- Updated the missing reviewed tag in "cxl/mbox: Remove redundant
-  dev_err() after failed mem alloc" patch (Dave Jiang)
+kernel test robot noticed the following build warnings:
 
-v4 changes:
-- Updated the respective patches with reviewers tags for respective
-  patches(Dave Jiang)
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.5-rc3 next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-v3 changes:
-- Update the cover letter and commit message with full author
-  name(Fabio/Alison)
-- Correct the "typo error" in commit message(Fabio)
+url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Zhang/coresight-tpdm-Remove-the-unnecessary-lock/20230725-152235
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/1690269353-10829-9-git-send-email-quic_taozha%40quicinc.com
+patch subject: [PATCH v7 08/13] coresight-tpdm: Add node to set dsb programming mode
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260312.vf3OCV58-lkp@intel.com/reproduce)
 
-v2 changes:
-Thanks Alison, Ira for your comments, modified the v1 patches as
-suggested.
-Dropped the patch containing tab changes in port.c
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260312.vf3OCV58-lkp@intel.com/
 
-v1 cover letter:
-The following patches are cleanup or fixing the styling issues found
-using checkpatch
+All warnings (new ones prefixed by >>):
 
-In cxl/core/mbox.c, in case of null check failure, returning errno or
--ENOMEM in this case is good enough, removing the redundant dev_err
-message.
+>> Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:50: WARNING: Unexpected indentation.
+>> Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:50: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-In cxl/core/region.c, the else is not required after the return
-statement, cleaned it up.
+vim +50 Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
 
-Verified the build and sanity by booting the guest VM using the freshly
-built components.
-
-Raghu Halharvi (2):
-  cxl/mbox: Remove redundant dev_err() after failed mem alloc
-  cxl/region: Remove else after return statement
-
- drivers/cxl/core/mbox.c   | 4 +---
- drivers/cxl/core/region.c | 8 ++++----
- 2 files changed, 5 insertions(+), 7 deletions(-)
+  > 50	Date:		March 2023
 
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
