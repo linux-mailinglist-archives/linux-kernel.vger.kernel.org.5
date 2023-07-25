@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C363D760452
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0894760459
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjGYAwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S230272AbjGYAxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjGYAwQ (ORCPT
+        with ESMTP id S230235AbjGYAxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:52:16 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E5EA171E;
-        Mon, 24 Jul 2023 17:52:05 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxTeuzHL9kr3wJAA--.18382S3;
-        Tue, 25 Jul 2023 08:52:03 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXSOyHL9kwvM5AA--.6637S3;
-        Tue, 25 Jul 2023 08:52:03 +0800 (CST)
-Subject: Re: LoongArch: Add BPF JIT support
-To:     "Colin King (gmail)" <colin.i.king@gmail.com>
-References: <bcf97046-e336-712a-ac68-7fd194f2953e@gmail.com>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev,
-        "bpf@vger.kernel.org >> bpf" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <9ce766dd-4bd9-d4a0-6da5-a29af7d9aa28@loongson.cn>
-Date:   Tue, 25 Jul 2023 08:52:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Mon, 24 Jul 2023 20:53:04 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399FF1BCB;
+        Mon, 24 Jul 2023 17:52:48 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qO6Hz-0004UR-2T;
+        Tue, 25 Jul 2023 00:52:35 +0000
+Date:   Tue, 25 Jul 2023 01:52:27 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Ungerer <gerg@kernel.org>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v6 4/8] net: ethernet: mtk_eth_soc: increase
+ MAX_DEVS to 3
+Message-ID: <3563e5fab367e7d79a7f1296fabaa5c20f202d7a.1690246066.git.daniel@makrotopia.org>
+References: <cover.1690246066.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-In-Reply-To: <bcf97046-e336-712a-ac68-7fd194f2953e@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxXSOyHL9kwvM5AA--.6637S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7XF4kJryxWrW7AFyxZw4UZFc_yoW8JF1rpF
-        Z3ua17AryIgF17u3ZrJr45WF4UtrWfGw48Wa1UJ348uFn8Wrn2vw1Ig3yUAF97Xa15ta4S
-        qr42k3sFgFW8GabCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UU
-        UUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1690246066.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-On 07/24/2023 08:27 PM, Colin King (gmail) wrote:
-> Hi,
->
-> Static analysis with clang scan build on arch/loongarch/net/bpf_jit.h
-> has detected a potential issue with the following commit:
->
-> commit 5dc615520c4dfb358245680f1904bad61116648e
-> Author: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Date:   Wed Oct 12 16:36:20 2022 +0800
->
->     LoongArch: Add BPF JIT support
->
-> This issue is as follows:
->
-> arch/loongarch/net/bpf_jit.h:153:23: warning: Logical disjunction always
-> evaluates to true: imm_51_31 != 0 || imm_51_31 != 0x1fffff.
-> [incorrectLogicOperator]
->    if (imm_51_31 != 0 || imm_51_31 != 0x1fffff) {
+This is a preliminary patch to add MT7988 SoC support since it runs 3
+macs instead of 2.
 
-Thanks for your report.
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
->
-> The statement seems to be always true. I suspect it should it be instead:
->
->    if (imm_51_31 != 0 && imm_51_31 != 0x1fffff) {
-
-Yes, you are right. It is same with
-
-if (!(imm_51_31 == 0 || imm_51_31 == 0x1fffff)) {
-
-As the code comment says, the initial aim is to reduce one instruction
-in some corner cases, if bit[51:31] is all 0 or all 1, no need to call
-lu32id, that is to say, it should call lu32id only if bit[51:31] is not
-all 0 and not all 1. The current code always call lu32id, the result is
-right but the logic is unexpected and wrong.
-
-I will send a patch to fix it as soon as possible.
-
-Thanks,
-Tiezhu
-
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index 1c28bf3731831..297b1ba4853fa 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -1042,8 +1042,8 @@ struct mtk_soc_data {
+ 
+ #define MTK_DMA_MONITOR_TIMEOUT		msecs_to_jiffies(1000)
+ 
+-/* currently no SoC has more than 2 macs */
+-#define MTK_MAX_DEVS			2
++/* currently no SoC has more than 3 macs */
++#define MTK_MAX_DEVS	3
+ 
+ /* struct mtk_eth -	This is the main datasructure for holding the state
+  *			of the driver
+-- 
+2.41.0
