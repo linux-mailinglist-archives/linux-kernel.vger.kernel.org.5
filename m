@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A247620E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DA97620F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbjGYSDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S231514AbjGYSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjGYSDj (ORCPT
+        with ESMTP id S232241AbjGYSFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:03:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A26D1FDD
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:03:38 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b89d47ffb6so30177195ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:03:38 -0700 (PDT)
+        Tue, 25 Jul 2023 14:05:34 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A52E1FE2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:05:32 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5704970148dso69824867b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690308217; x=1690913017;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HRQYZPtdJ90/O/wdYsOCcbEwOxH1iCaDxABLg2VMAnc=;
-        b=O7H+ZLIoNcQEd+SafX694hZEyd6kL9iSaUGkuyFgwYR24O5btNklcnGPDRxAuZzppw
-         qv5UqwC+rlTIxCGA2BxWpYz+A5cAw4KDBZ6eGs2c96kObajRC+mwS/ZAVnk9NEZD5z4d
-         vrNIriah0F8xAYzNtiDgDB87bhkru80BZa6ro=
+        d=google.com; s=20221208; t=1690308331; x=1690913131;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BIo8qHauKdQX+T8FT8wbaojm6/JdQZAwM03PT/kIykI=;
+        b=7nXQcBRpxoTRBB3DVtfi1G3SLzO+8rbX0pZK3GqB/ZiRovVnhgEY5C+Gs70dPcpJKC
+         v8EbJPLKK/PtzLxWiGJ5qeO4LJqB7HN3pWAhYbANBnQSVYoMTUMzCaeCD3zEfSqoM+r2
+         fDpLY03C1R0xadVk8zh9oHGZMZqSmWV+dliNXRuRczTowFXc/oEsFJjHeqmHR0h/7zjV
+         1SaakHlCZawqmTagIefeOP2xnfIobskVh1rmXibU4Cwg3i96EQeqcAc0By/i+P6tJXi9
+         1AMdfmti0ZHyvBS0qJY6Ig052U8rUWQC7aHvZS0sxZXtvMY234BUecIw+5qK/UmUColq
+         VbWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690308217; x=1690913017;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HRQYZPtdJ90/O/wdYsOCcbEwOxH1iCaDxABLg2VMAnc=;
-        b=cqQpk9FXpbCjiXO4btqItxJUHAPIhgWJT31Cf78m1+WvleNn9WDie3mXV/JcSTpvsc
-         CNkBp1SbhcDW54PwpZna6wXkfxCJs2NP/HD0HD+vZhDifPctHQEj+LkfJKVIpZR2Ht+Q
-         hSiIO4d5BLFtLN/9pPLsb+kiFvm2nyiVU1PoRiixB6W6syd0QHi9POGiedb10DQpHpSK
-         EJm/rsfjI6d5KSNjhkEu+h6WGUmZEs5VtxFXwrG5uNLXY8ZdxnqlgDMfrpRvSBuOofP8
-         k7WHtG3ORpCZKZ08SOGlaYlRYXGdehm7Xdrtm32RlLoFJfASeqjv2W8KsJw7QXDND+MB
-         54NQ==
-X-Gm-Message-State: ABy/qLZbashlo7LZ84r7YQWckGMP1cbP+niUKOJOZA+nFrgS+LopFp3O
-        ilr6Dm7cPoinC5+un0Lfs/oEcA==
-X-Google-Smtp-Source: APBJJlEsqf6G0ev6P/b6k5o3OywK6DpeA91QLSmSatgQZy4Y3+LKHFLS10qE4bOW2mdt0NxUKIQVfA==
-X-Received: by 2002:a17:902:ab8e:b0:1b8:7d0d:5ac5 with SMTP id f14-20020a170902ab8e00b001b87d0d5ac5mr13716plr.50.1690308217621;
-        Tue, 25 Jul 2023 11:03:37 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:c363:4681:f5b8:301])
-        by smtp.gmail.com with ESMTPSA id jl14-20020a170903134e00b001b54a88e4a6sm11305254plb.51.2023.07.25.11.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 11:03:36 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH 2/2] spi: spi-qcom-qspi: Add mem_ops to avoid PIO for badly sized reads
-Date:   Tue, 25 Jul 2023 11:02:27 -0700
-Message-ID: <20230725110226.2.Id4a39804e01e4a06dae9b73fd2a5194c4c7ea453@changeid>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230725110226.1.Ia2f980fc7cd0b831e633391f0bb1272914d8f381@changeid>
-References: <20230725110226.1.Ia2f980fc7cd0b831e633391f0bb1272914d8f381@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1690308331; x=1690913131;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BIo8qHauKdQX+T8FT8wbaojm6/JdQZAwM03PT/kIykI=;
+        b=QhqWgIGM7nyWhVShJFV01zl8xjPuhlI5k2qC0KZeoXCEZImvUDE2JDoXUq7BOuy5oU
+         lvJBGgInC3d6w7+HjYKeQ38IHZq0ir8EtPKLbgxruJSfakZG17RcsMVG8AXAeOd5j0zW
+         mM6Lq9ZE89WTH6/wO3e0UFe7UIrP+jw70AnCYrCfQhnMdVKCi8yWdISHriRAJlFfyh3i
+         fKKhJTco55Z6eQUdri0kzW5gJcP9gqs3cjQFaH4EmyRGFiVp+BgSDWfz0v6p+jSn4vRt
+         22aAgHyT+gdnVzWamo2bmIkrpVS3bxY2IFRkHrEFR5mL7r9Ef3rwYxyvV2/nJro6tcts
+         /zBA==
+X-Gm-Message-State: ABy/qLb629BCHXzjP+5bxsah+xT7R8K1FiHMDhc5YBr1zoDAGJpN0STd
+        WQ1rFuqzmbAMCOCjOWPgsxnSURlCUGM=
+X-Google-Smtp-Source: APBJJlG+f5K6Guu8BWDh2M0jvEhmql8458IaH+LCw2ABsy+ZDoDj1Vv7TcavygUx+nDEGvPQs1RCmsWjSr8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:4509:0:b0:573:5797:4b9e with SMTP id
+ s9-20020a814509000000b0057357974b9emr213ywa.1.1690308331572; Tue, 25 Jul 2023
+ 11:05:31 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 11:05:29 -0700
+In-Reply-To: <ZLphxpSTL9Fpn1ye@yilunxu-OptiPlex-7050>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-2-seanjc@google.com>
+ <ZLolA2U83tP75Qdd@yzhao56-desk.sh.intel.com> <ZLphxpSTL9Fpn1ye@yilunxu-OptiPlex-7050>
+Message-ID: <ZMAO6bhan9l6ybQM@google.com>
+Subject: Re: [RFC PATCH v11 01/29] KVM: Wrap kvm_gfn_range.pte in a per-action union
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,63 +102,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the patch ("spi: spi-qcom-qspi: Fallback to PIO for xfers that
-aren't multiples of 4 bytes") we detect reads that we can't handle
-properly and fallback to PIO mode. While that's correct behavior, we
-can do better by adding "spi_controller_mem_ops" for our
-controller. Once we do this then the caller will give us a transfer
-that's a multiple of 4-bytes so we can DMA.
+On Fri, Jul 21, 2023, Xu Yilun wrote:
+> On 2023-07-21 at 14:26:11 +0800, Yan Zhao wrote:
+> > On Tue, Jul 18, 2023 at 04:44:44PM -0700, Sean Christopherson wrote:
+> > 
+> > May I know why KVM now needs to register to callback .change_pte()?
+> 
+> I can see the original purpose is to "setting a pte in the shadow page
+> table directly, instead of flushing the shadow page table entry and then
+> getting vmexit to set it"[1].
+> 
+> IIUC, KVM is expected to directly make the new pte present for new
+> pages in this callback, like for COW.
 
-Fixes: b5762d95607e ("spi: spi-qcom-qspi: Add DMA mode support")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Yes.
 
- drivers/spi/spi-qcom-qspi.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> > As also commented in kvm_mmu_notifier_change_pte(), .change_pte() must be
+> > surrounded by .invalidate_range_{start,end}().
+> > 
+> > While kvm_mmu_notifier_invalidate_range_start() has called kvm_unmap_gfn_range()
+> > to zap all leaf SPTEs, and page fault path will not install new SPTEs
+> > successfully before kvm_mmu_notifier_invalidate_range_end(),
+> > kvm_set_spte_gfn() should not be able to find any shadow present leaf entries to
+> > update PFN.
+> 
+> I also failed to figure out how the kvm_set_spte_gfn() could pass
+> several !is_shadow_present_pte(iter.old_spte) check then write the new
+> pte.
 
-diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
-index 39b4d8a8107a..b2bbcfd93637 100644
---- a/drivers/spi/spi-qcom-qspi.c
-+++ b/drivers/spi/spi-qcom-qspi.c
-@@ -659,6 +659,30 @@ static irqreturn_t qcom_qspi_irq(int irq, void *dev_id)
- 	return ret;
- }
- 
-+static int qcom_qspi_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+{
-+	/*
-+	 * If qcom_qspi_can_dma() is going to return false we don't need to
-+	 * adjust anything.
-+	 */
-+	if (op->data.nbytes <= QSPI_MAX_BYTES_FIFO)
-+		return 0;
-+
-+	/*
-+	 * When reading, the transfer needs to be a multiple of 4 bytes so
-+	 * shrink the transfer if that's not true. The caller will then do a
-+	 * second transfer to finish things up.
-+	 */
-+	if (op->data.dir == SPI_MEM_DATA_IN && (op->data.nbytes & 0x3))
-+		op->data.nbytes &= ~0x3;
-+
-+	return 0;
-+}
-+
-+static const struct spi_controller_mem_ops qcom_qspi_mem_ops = {
-+	.adjust_op_size = qcom_qspi_adjust_op_size,
-+};
-+
- static int qcom_qspi_probe(struct platform_device *pdev)
- {
- 	int ret;
-@@ -743,6 +767,7 @@ static int qcom_qspi_probe(struct platform_device *pdev)
- 	if (of_property_read_bool(pdev->dev.of_node, "iommus"))
- 		master->can_dma = qcom_qspi_can_dma;
- 	master->auto_runtime_pm = true;
-+	master->mem_ops = &qcom_qspi_mem_ops;
- 
- 	ret = devm_pm_opp_set_clkname(&pdev->dev, "core");
- 	if (ret)
--- 
-2.41.0.487.g6d72f3e995-goog
+It can't.  .change_pte() has been dead code on x86 for 10+ years at this point,
+and if my assessment from a few years back still holds true, it's dead code on
+all architectures.
 
+The only reason I haven't formally proposed dropping the hook is that I don't want
+to risk the patch backfiring, i.e. I don't want to prompt someone to care enough
+to try and fix it.
+
+commit c13fda237f08a388ba8a0849785045944bf39834
+Author: Sean Christopherson <seanjc@google.com>
+Date:   Fri Apr 2 02:56:49 2021 +0200
+
+    KVM: Assert that notifier count is elevated in .change_pte()
+    
+    In KVM's .change_pte() notification callback, replace the notifier
+    sequence bump with a WARN_ON assertion that the notifier count is
+    elevated.  An elevated count provides stricter protections than bumping
+    the sequence, and the sequence is guarnateed to be bumped before the
+    count hits zero.
+    
+    When .change_pte() was added by commit 828502d30073 ("ksm: add
+    mmu_notifier set_pte_at_notify()"), bumping the sequence was necessary
+    as .change_pte() would be invoked without any surrounding notifications.
+    
+    However, since commit 6bdb913f0a70 ("mm: wrap calls to set_pte_at_notify
+    with invalidate_range_start and invalidate_range_end"), all calls to
+    .change_pte() are guaranteed to be surrounded by start() and end(), and
+    so are guaranteed to run with an elevated notifier count.
+    
+    Note, wrapping .change_pte() with .invalidate_range_{start,end}() is a
+    bug of sorts, as invalidating the secondary MMU's (KVM's) PTE defeats
+    the purpose of .change_pte().  Every arch's kvm_set_spte_hva() assumes
+    .change_pte() is called when the relevant SPTE is present in KVM's MMU,
+    as the original goal was to accelerate Kernel Samepage Merging (KSM) by
+    updating KVM's SPTEs without requiring a VM-Exit (due to invalidating
+    the SPTE).  I.e. it means that .change_pte() is effectively dead code
+    on _all_ architectures.
+    
+    x86 and MIPS are clearcut nops if the old SPTE is not-present, and that
+    is guaranteed due to the prior invalidation.  PPC simply unmaps the SPTE,
+    which again should be a nop due to the invalidation.  arm64 is a bit
+    murky, but it's also likely a nop because kvm_pgtable_stage2_map() is
+    called without a cache pointer, which means it will map an entry if and
+    only if an existing PTE was found.
+    
+    For now, take advantage of the bug to simplify future consolidation of
+    KVMs's MMU notifier code.   Doing so will not greatly complicate fixing
+    .change_pte(), assuming it's even worth fixing.  .change_pte() has been
+    broken for 8+ years and no one has complained.  Even if there are
+    KSM+KVM users that care deeply about its performance, the benefits of
+    avoiding VM-Exits via .change_pte() need to be reevaluated to justify
+    the added complexity and testing burden.  Ripping out .change_pte()
+    entirely would be a lot easier.
