@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D09576047F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 03:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE67760483
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 03:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjGYBAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 21:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        id S231318AbjGYBAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 21:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGYBAp (ORCPT
+        with ESMTP id S231289AbjGYBAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 21:00:45 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB7F10F9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 18:00:43 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-553b2979fceso2026314a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 18:00:43 -0700 (PDT)
+        Mon, 24 Jul 2023 21:00:46 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DA410FD
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 18:00:45 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bb2ce4f9f8so1347391a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 18:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690246843; x=1690851643;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjptT1JAo6APLrBCr3T/Njj8Ut+EIbCwxhdTzUr/jGY=;
-        b=RsS/Dxo4J7mrQnCESvRMUJ4+qmObT0YYUvWIc6OBoeiaLJaKoXMvlYFI25EqtRWSBt
-         wtOVt5gCFn7knLF52RL66/YXJEI8dJVaiFzJSyf9rCfKXDFYqKvs2NIUKFpZWbvBXxA0
-         EOoPX0xKOaL4LfQTdSu4tvwqNXnJdETYOTMVbT7FCZ/WgbEKg+ZThX1PumPiGd4ptnEu
-         VOGijO1mhvegyIY+qzaWiAlxgvfxOvLrhbUk980wndp4Z/KN+PYMplBCrrraRlaGQC+u
-         A4QwPS9j/dUeKkEUdXWJ+YLpNq9aZNIKMBSEcYg9r96urm0cHsU+MQbpzeeWPukv+RMq
-         1sdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690246843; x=1690851643;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690246845; x=1690851645;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kjptT1JAo6APLrBCr3T/Njj8Ut+EIbCwxhdTzUr/jGY=;
-        b=aNHMy4Zy40mXjIcapq5gfhL4l/r/dyZ+8je4LBg1WQeqt51Vs27r4Q8X9JyATs+IvQ
-         yuszm9TyOYtc7Cd+K5tRFqik3jtYkNWAvyNA6FxJ9Wv3g2aNS4UV2QMLi0UubO4qe6/a
-         P7pKXcz+zJKkF9yvJS1o8SLLtDyzcz9cIP69Kl2ZaS8PLpCN9pUus0FUUV3ta06Mh7hl
-         5fub0gjZ69L9ZyWL598ggITrhRyrDvnp8JAAUvaMgU5FxXZlxLfzRINbk5B2W5gaBkWk
-         CKlWOI1/7tAdNYOEh1J5RVgwRimqL36de+uQz6CLSDrcjy82TIzML/+Jd3GU1+ZiXbI/
-         sqlA==
-X-Gm-Message-State: ABy/qLa0II8EJyVCyckdb30hk2fy8RDs41JxWu/SiI3zPgYvryHgcGRI
-        CfuVWG7XuG7oBOxzvupnWXNPVg==
-X-Google-Smtp-Source: APBJJlH2wjLOOW96TXK80PRQDJaUMRx9PYau8YGE4KcjOBDpRvW12RY7PzL7XRjA1UgvKTGGDzI0LQ==
-X-Received: by 2002:a05:6a20:8e1b:b0:138:3302:1471 with SMTP id y27-20020a056a208e1b00b0013833021471mr12436514pzj.6.1690246842890;
-        Mon, 24 Jul 2023 18:00:42 -0700 (PDT)
+        bh=GEp58o5jHhf4WpbbQN22nWQx0p8/zKOYMNnof7eHdFk=;
+        b=vQYUIaP3UkOWg+UUsUvtJtrQeBkFRh2XYqhD/95/TJDC5tf8+Sxd4VYFWC5Qzp/DEa
+         1+J3CECCqJYhp6+EgvglH4ZqQ0VBS168afINnhIjGsD5jZUh9tdtFonMC3JwySuSgkP0
+         kdHC0TcCRCsnjY0EOZrhB3MFX/e6Gwf7UuEsCfMXSkHKkJ7g+Ht+16r5YgJdFstm2sE/
+         vdBabJh+hBe0a/u3QHX92/XIRR3HGtSY4N82AJLpFMIZJP8KAM76Bi+b6OqGHsP5uaxx
+         YTcNykj6Tplcgg0qhI7b4Twowz7OWDbyWitEkx0TdwG0P70Er1rDwN8BW6EkJJBM23Z8
+         nz1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690246845; x=1690851645;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GEp58o5jHhf4WpbbQN22nWQx0p8/zKOYMNnof7eHdFk=;
+        b=jxFaD+NSk3K+s9Jvw4YfyghmvLKWuxrKq6g5MhA4XQVpdxcahs1I0HWh2PZM0105+7
+         RYtlK4ZlSVgqTJ8aZKcYbMdJH8HclIHOtNERhYummjn0tnK9TRyYF16++mxgduMuJK4X
+         j4OaxalOICjZWTdPYlSBkRQJKYhunVJTjhhGs0APRcMtStbKxFLvYvzJ3B9ng3d4oAN5
+         ZvzY9NyHpLfSIWxckKzStzskAolBvK8Gx9+Wqnik7mz8L3SbzwtW2HyS3AqFCkeVE+ER
+         cHJEmrIzlEwfP3Bld+4CNn/e9gOufC6PXkAceQ/G2S570BA99V3UEfLHQqLmM3g8zovF
+         2fAw==
+X-Gm-Message-State: ABy/qLat1bmzmrjM7oCCuRTRF3vtrsFcgw9zi2v8UjuOfX0JWEzwpLz8
+        M9Q7sdwbGi7NTi8TmDTHBHiK0A==
+X-Google-Smtp-Source: APBJJlGYcDIG17o3mn7rt/BZ3kSGI2riAzNxr3+T4CZvjH8BN0WgGybsiUplpUKV0LnPk51YAiQb0Q==
+X-Received: by 2002:a05:6870:a2cd:b0:1ba:9a49:d967 with SMTP id w13-20020a056870a2cd00b001ba9a49d967mr12042723oak.23.1690246845066;
+        Mon, 24 Jul 2023 18:00:45 -0700 (PDT)
 Received: from [127.0.1.1] ([2601:1c2:1800:f680:2cbf:9196:a906:e222])
-        by smtp.gmail.com with ESMTPSA id h18-20020a62b412000000b00682a75a50e3sm8576900pfn.17.2023.07.24.18.00.40
+        by smtp.gmail.com with ESMTPSA id h18-20020a62b412000000b00682a75a50e3sm8576900pfn.17.2023.07.24.18.00.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 18:00:41 -0700 (PDT)
+        Mon, 24 Jul 2023 18:00:43 -0700 (PDT)
 From:   Drew Fustini <dfustini@baylibre.com>
-Subject: [PATCH RFC 0/4] RISC-V: Add basic eMMC support for BeagleV Ahead
-Date:   Mon, 24 Jul 2023 17:59:14 -0700
-Message-Id: <20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com>
+Date:   Mon, 24 Jul 2023 17:59:15 -0700
+Subject: [PATCH RFC 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
+ TH1520 compatible
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGIev2QC/x2NQQrCMBAAv1L27EqamLZ6FfoAr+IhTVaTQ6Lsl
- iKU/t3U48AMs4IQJxK4NCswLUnSu1RoDw346MqLMIXKoJU2qtcnnGNrtULK2WNvfKDzMCgbOqj
- F5IRwYld83JvsZCbG7miRvdmFD9Mzff+7O9zGKzy27QeBonZkgwAAAA==
+Message-Id: <20230724-th1520-emmc-v1-1-cca1b2533da2@baylibre.com>
+References: <20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com>
+In-Reply-To: <20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com>
 To:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
         Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -75,78 +76,42 @@ Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         Jason Kridner <jkridner@beagleboard.org>,
         Drew Fustini <dfustini@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690246840; l=2518;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690246840; l=752;
  i=dfustini@baylibre.com; s=20230430; h=from:subject:message-id;
- bh=AUPEwpyDxsigwBWm3NiT3sK0EsmNOZWp0bCGe7BGOA0=;
- b=se8Hk4XUDD1D8YXFzAuuvFR2cNqx5kl7XVjj2BXZe6pCsgL4MebKjhHyl85LVO10JXmnkqHti
- P2KpzCT59ToBGEmvQMO0EQQ57q9wKGnwwViW3oPnYn+IIVx1IJWuCAF
+ bh=N4XyeVof9hR52mLfjwIJ/Ek5oPrydhGBm0Gy7EtJsFw=;
+ b=0OVYnsUPwsHTJB6utTUVvs+L8qB3QLAy9tLpLZXXUDTXz4CyeazHaGQ1XaIA7MYQNO7XeP0HB
+ NVJqdcnkvQpAIxMHf7GEH1Vd/Pyve0bmoxyOFWcaiQtG8jPD3agvxxh
 X-Developer-Key: i=dfustini@baylibre.com; a=ed25519;
  pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds initial support for the eMMC on the BeagleV Ahead
-board. This allows the kernel to boot with the root fs on eMMC.
-
-I tested [1] on top of v6.5-rc3 along with the prerequisite series [2]
-that adds the BeagleV Ahead dts file.
-
-I am submitting this as an RFC for other people that want to boot
-mainline Liunx from the eMMC. There several issues that need to be
-addressed in order to claim that MMC fully supported on TH1520:
-
-  - Only the MMC controller connected to the eMMC is enabled. I did
-    not attempt to configure or use the microSD card slot.
-
-  - The new th1520 compatible in the sdhci-of-dwcmshc driver turns off
-    DMA and just uses the inefficient PIO mode, because I did not yet
-    get into the correct configuration for DMA support.
-
-  - The new th1520 compatible in sdhci-of-dwcmshc turns the reset op
-    into a no-op. The vendor boot loader [3] fully configures the mmc
-    controller and the phy. The kernel does not yet know how to do that
-    so it avoids doing a reset. This is essentially a hack and not the
-    correct way to handle the situation.
-
-Fortunately, Jisheng is the original author of sdhci-of-dwcmshc so I
-am sure Jisheng will know many ways in which this can be improved.
-
-NOTE: I combined schema, dts and driver patches into this one series for
-the purposes discussing the RFC but that is probably not the correct
-structure for a real patch series.
-
-Thanks,
-Drew
-
-[1] https://gist.github.com/pdp7/23259595a7570f1f11086d286e16dfb6
-[2] https://lore.kernel.org/linux-riscv/20230722-upstream-beaglev-ahead-dts-v2-0-a470ab8fe806@baylibre.com/
-[3] https://git.beagleboard.org/beaglev-ahead/beaglev-ahead-u-boot
+Add compatible value for the T-Head TH1520 dwcmshc controller.
 
 Signed-off-by: Drew Fustini <dfustini@baylibre.com>
 ---
-Drew Fustini (4):
-      dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head TH1520 compatible
-      riscv: dts: thead: Add TH1520 mmc controller and sdhci clock
-      riscv: dts: thead: Enable BeagleV Ahead eMMC controller
-      mmc: sdhci-of-dwcmshc: Add support for T-Head TH1520
+ Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/mmc/snps,dwcmshc-sdhci.yaml           |  1 +
- arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 14 ++++++++
- arch/riscv/boot/dts/thead/th1520.dtsi              | 17 +++++++++
- drivers/mmc/host/sdhci-of-dwcmshc.c                | 42 ++++++++++++++++++++++
- 4 files changed, 74 insertions(+)
----
-base-commit: cb8c874afdc063290797ae1776a5d410fecb06cb
-change-id: 20230724-th1520-emmc-73cde98805d6
+diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+index a43eb837f8da..42804d955293 100644
+--- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+@@ -19,6 +19,7 @@ properties:
+       - rockchip,rk3568-dwcmshc
+       - rockchip,rk3588-dwcmshc
+       - snps,dwcmshc-sdhci
++      - thead,th1520-dwcmshc
+ 
+   reg:
+     maxItems: 1
 
-Best regards,
 -- 
-Drew Fustini <dfustini@baylibre.com>
+2.34.1
 
