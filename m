@@ -2,364 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089A4760D6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA29760D69
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjGYIod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        id S230207AbjGYIoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbjGYInY (ORCPT
+        with ESMTP id S233061AbjGYIn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:43:24 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD651FD7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:18 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so37145e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690274537; x=1690879337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIUqKj4hHX43DxR8MleUNzh4SoyBaoeC1WswBAkE6Wc=;
-        b=E0Mp1oyORx2q0n4oV1rubn8iDOyl5AhoUeSGwPEgFFB6t5YDjYGvnVqvaooSIGnBTa
-         LX58YDVEbMyTEdEiezr3hlIwv3xtQExpszQfR062bdA1uU1hPgrsKRpPTWBdkqoKKe8Z
-         xsfm6fggq60HnsYeG2CJ+nU4FI7KJZdphT6cGbdo4iXRxft3hTELRvEMAS1HBRsT03Oq
-         7eyu5gWKyTLdJNHQiEvjA2lve7LbDnB/qdBzejj8i7JDoOuxHndocW/7yYrtuXzOzQkE
-         gdl1+d8uDnwAPNizCnNb8jAHe/8U8Uf1rjeOoUKOnVtMCMOSRX8TjcAlikFeR/NUvgai
-         kx7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690274537; x=1690879337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mIUqKj4hHX43DxR8MleUNzh4SoyBaoeC1WswBAkE6Wc=;
-        b=MX6UHpOsmJwvFeYBrce2bTTBmZLRrR+E1YWuELszbuffkaLnXpuXPrS0gztgMCwefB
-         6wa7q2RvNJuzFim462IAyJMBr3BV9J+aIzp4buDP8FMp/m65fzk3Mjvk5FrYuzxEIvWU
-         r5riq9oRVdrtgesrkTog2V/4ZmAky3YwTR0oUZfvPJCh2GjY/pZ2+2woB5VSLK1XBL0i
-         vKzVzRoibEaSCbN2q4OeaSxXhzb3xoa7lBMlHnVdx9Ebwf/3FMwbfjRuNwtkyZBC3okq
-         CCJYpDovcPxDWIcwA4hIxc6ZBdyuHea2fU6MR1rbpES9RD3EvEDH6kOHE3ox9qzTeZms
-         7HXg==
-X-Gm-Message-State: ABy/qLak89IsdFUtS9w3Bs60web081hIuT0lAjbrZdG4cXYv9q28SmP9
-        7tgWgjiL4sCAxcleYYoP8IOYw1qLoX35iu8CdTR1JQ==
-X-Google-Smtp-Source: APBJJlEYQvQ7LGPHUHiU+muxsE6z7ZKiP7EIo3l0Qt9m3JTMw9dCByuK1JICVSPHt43vbxvk2OSnbmc9GW2N+p6i1o0=
-X-Received: by 2002:a05:600c:4d10:b0:3f1:70d1:21a6 with SMTP id
- u16-20020a05600c4d1000b003f170d121a6mr54485wmp.0.1690274536751; Tue, 25 Jul
- 2023 01:42:16 -0700 (PDT)
+        Tue, 25 Jul 2023 04:43:29 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2144.outbound.protection.outlook.com [40.92.62.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FF1212B;
+        Tue, 25 Jul 2023 01:42:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ar6g+MGm4RF4OwPIndoQuDooOOcz52PiY8DFJbGdCws1HBLO9qGUPPvGxkPcGVM0SNlXJ0hs8mNEh7SUae6V803DrBxW9OviElORNn5U/gwyGYia92sz4ibWItzILx7PwSID52w/mn2EpIVA0n+4gATNydbvNT33GZlenCe/Gi/L0MtgowYwkW+L9XCdtWqqgnpBp9zP24WSStZ+FrFsnq1FKRXsuigt4KKbBuaL2SqjZjaohf6/FhHnElhTxts/i6oRZygDWNmM3Iq7buCTnyir1gm9WtXEitzfi2Vcqphq1d5AQaqFa3/+SwBZ+LsbHm0Ww+oY0aj44kLAR+1+oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B/dApoG4wxjN+GmCz5K5Pfvm2B2FhAGa7a66D/EvpHg=;
+ b=a42TMBKoyIgV4G0ovYJGToWjokI6oHE+NdahfLiOc4kSsy2L9KvMWFT9TSB/h36qcYFepnFKvwVbOFZQH312y/1C/5HrX9SWkWgL42uNvjPkeDHp+7qiEkqm4rlK9LSG5yE8qBQsHLf1FZyCcMXfUYscj06miJ01+BpkjOpj2+77JE6d67odU8MMiyxJsOuLL36hM6SOA6W4icZ++9HELloCSgWyScf1EdVin/4zgQHhXmTa4g4oRyYpPukbI5PGMv1dqn+7XX0zMaHmONXaqT+mPpKUJotIoxo2V8hW8cn/Z0n974gNvRDKaKKW9rt7UixS63lvgYjcbUzpe1SxsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B/dApoG4wxjN+GmCz5K5Pfvm2B2FhAGa7a66D/EvpHg=;
+ b=IaKPRb2eReZSBrp++MBmmeOUJmn7SEoqYWBvU0cICK5W1HiCNgBP7Ijnu3uHbwNCiuFR4NX+BJI7A42fFBBvOQCOpdkYFXrAGaVzr7IjlE6JXAHJSg+KYL0AY1l0BkzU5LSBjY+yU4gq6h3eM0TIXQ7cOXJtXH2oqhZu2SwqoBc6dI8Bj9Yhw25kNbEKAlNjeFaRz6kp94rB/+DYRB7WxcMmmSuxGSN9tb5xCbl3vEyI8g7g9dXhgxdiwQyIc/Zy6KoQ5UnFf3/N9ThwPJG6eDFd00jAOvnSQoi0vxUwvX9W1U/ahuC+PWZRLSslUYkjreOMSKfDjb9CXrjT+52gaQ==
+Received: from SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1e3::6) by
+ SYBP282MB0634.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:19::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.31; Tue, 25 Jul 2023 08:42:21 +0000
+Received: from SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::67bc:436f:32c5:3cd9]) by SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::67bc:436f:32c5:3cd9%3]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 08:42:21 +0000
+From:   qaz6750 lzy <qaz6750@outlook.com>
+To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qaz6750 lzy <qaz6750@outlook.com>
+Subject: [PATCH V2] arm64: dts: qcom: sm8150: Fix the I2C7 interrupt
+Date:   Tue, 25 Jul 2023 16:42:07 +0800
+Message-ID: <SY7P282MB378740C6070900BEBF5D0D7CB203A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [gdxIVWp+TGE076DYqADzFU5GBzoJ4IHO]
+X-ClientProxiedBy: TYCPR01CA0103.jpnprd01.prod.outlook.com
+ (2603:1096:405:4::19) To SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:1e3::6)
+X-Microsoft-Original-Message-ID: <20230725084207.14241-1-qaz6750@outlook.com>
 MIME-Version: 1.0
-References: <20230724162834.1354164-1-rmoar@google.com> <20230724162834.1354164-10-rmoar@google.com>
-In-Reply-To: <20230724162834.1354164-10-rmoar@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 25 Jul 2023 16:42:03 +0800
-Message-ID: <CABVgOSnWXdpdUdPL498XM3=ienZK1w6PPEfyhwg3Bbdd=nTSWw@mail.gmail.com>
-Subject: Re: [PATCH v2 9/9] kunit: Add documentation of KUnit test attributes
-To:     Rae Moar <rmoar@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        linux-hardening@vger.kernel.org, jstultz@google.com,
-        tglx@linutronix.de, sboyd@kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005c3e6206014bb5f2"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY7P282MB3787:EE_|SYBP282MB0634:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a2eed19-2f35-4243-53c1-08db8ceb0fca
+X-MS-Exchange-SLBlob-MailProps: YfhX3sd/0TWbjtb71ZXpDr6mXuErGSY3k3IhA0xAW7zo6Z8Gn6R0SBEdAVjtdq/zVrrkOu98fceRkBUwwwCgxeiYWKP+qtg79YWmZ/qCOzh1msww0nqk81XbXk96ZwHu+xOEtU/2vbrnk+4IDXeCcfxazCYIaTp9HDl7VSkCwi3XT1nOUDO0IkieX0dbtzwgGxMF8o5PE4nRb9VtfDlR6AjXEt2bWOTsMU9rcZcS9UQH3RydQldPE7enuBdKf/e/vK86yLixfqbKl0COeJNwJ8c0FxHTehCMlcjehY3dKKst8NYKbJsQfx7EUN0wGEi3vdLKZ+jn/chuzyo6xzw6vzUcemGH/twA9IV1/ofzWO3TcaDLPDSnSKzH0wkY4fztSRx7V9Bjvxdj+tGGtiJ4BHzjl2JZ/gT1zyyjsTzz8f4smItFTdzobtshTL+/pVY6ImiDAFeZfNw+l6mC6kaaGIUH0XLTJi1M43qVdy7VvhxIjkd7taDoEuOUTx/XOoPle4gHc3x8umBia+ml8fYOhD8YQXkKAmY9ZsoGtGgEF3p4QwjDJ15oBgAa2JdED6t9Ja73ig7dxgx2NXzcLRcwNg9PyquiaqJn2dEraCnHovxlAvKDdXuUNiuu6dQfQUxYwhMcTkahN1mUkzvpjresLYoDBkUxXb/jge4cyddvchHFamKttBse3TLi/B646IjdHiwnO6SYY+qfh6BOqpWbXoXu0Gdzn2CvyrOEnYEqqj0R/Az2fgxuKyAgnLrCXA407jd7tbBtzBzKemNQLUHWWxrNNePBe99asHQaUQVZELs=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wlIUHXEcw0C0qUgR6P5KNJ0rGt6p6I1sTi2F1BdiqhtXisNVd6IG+9dM8TrU8pCoWGb++D8opqEV0pMPpkhHOFptWa0I/2nOb7a0oOO48GGK6/OkX9X/09Ivj8NyrPIEfNXNmvLN3RSsOguBoz1ZPc30bVW7WiAMSFQFvPNeQs9uM0xMEx5PP0kGAMWbq3dzY3TnsWlFufhNeWdlzJxNNEw1AQSX22bRNngFocRnwa3SsJ1jAR7Ogs70Y2JRZTeakJY+yysaaiJQHvNqYdIDEL6/0de9bpj20Szw3bxVdbV7FUVSoCKW+K6F1ppq9TlOueJEH/p3zW2Ep9EBbMld4Oe6YIpdFz5VIowCN5lX6YPgDYG679rnDDwVNkqIRQDxorcqJBGJG1GPAUERUp7eAOA+19k4wgTq1bqnbX233K5dLP+dIZXH9WvydI3CUssWOjBn15Oc8wPxjCURFIkssqOl3lALtSdfEPohZL+4R37xX4v8kERSsg0HiIIETGOvlMYmy/8EpN4lT6hmpdtWf8KGDCqKUyNSBeqS2NtQ98hGm2WHYSo4ixUJu2EFqBjV0i5Ea+Irj7puhUE9r2FkY4rfiiZvLUsWXadjsStW3c41MqLOz7Mmj7G70ZNLyk7X
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AC7WcqaFWs/Ltx8tGpXxLO0kuX+rWOALRnkifCPOX4BJ3k3lXpPPAa/3MhxQ?=
+ =?us-ascii?Q?j4NqxTXuhMHvSw/U4H1ZG6XR6Sr/ac61CTlQUiYm7+6iJOySPfDp+giB+NfA?=
+ =?us-ascii?Q?bMfbeIGE9O3JU2Dr0G5r4tVzGqRt69R1UUFiG/7KEqzyRzcF101pPSVr3ZGk?=
+ =?us-ascii?Q?quiyugCWLaAFaiWP+WHoTteiXSNH/onhsdeWiP319BbHKu6YKaiVqgpNFKNE?=
+ =?us-ascii?Q?HplIdxXONEn91GwH627QFJxsPUKeN+fW16fdX6bq008eCCq8BWo7KoWwHIST?=
+ =?us-ascii?Q?PkBXYVnSyC8LCQgDvXfCOi0sQdegJMK7qdpM8w4fi8zdsPCsbD4EtKplQAdj?=
+ =?us-ascii?Q?vz74VXtxnzAAePgCIU5JSbYcOf+UfO8rh6e8dc/ulU4KF034NWFzOGy7TbX5?=
+ =?us-ascii?Q?+M/EDbdBFc9oSz3QaEIG0LSq+731Gu+jppbzytRDMqf6ZdTosgVgsAJXRPpu?=
+ =?us-ascii?Q?4cJ8BPGeg4kc8t9CgBAAXW80fV+VAficaGlMDYQG1vAu/5tRPgLkNfVtYUYL?=
+ =?us-ascii?Q?G9rZy0nEDEPZPbEDEOHG6zPFvRyEEjqivvrMf4J7UeYy0uvODrTKUfGgWCif?=
+ =?us-ascii?Q?mE5S3FZCQNCf0+x32/PproYiTLd1fawwsizjIDPhkvgICoXR7iJRVKfiqqAD?=
+ =?us-ascii?Q?mnZznoPYutKRhiUlVAjqaJIDrKH220z/ev38s6cTaha3nKyht90DXfaUXAa9?=
+ =?us-ascii?Q?9G8joP6WEUKqAtUJYV1l3OhIVdKSdFjrzTniS4fNgBJuN7BZI9NUxypKMdQJ?=
+ =?us-ascii?Q?MNva44hKslizpNWSs/dOiCteDMAn/1qiPlBlGCYgzoAnn60EjBdYs1B25GCf?=
+ =?us-ascii?Q?YStZUZthEUPTBu680x0d++B+LNd9NgEOdEusgNMsZe+D9nrZW8mA+Hn3FfSq?=
+ =?us-ascii?Q?SBIugr/KJAZjy9g9fIW68gZlT0YrsigFH+NC7+bhI3VnKeg9DwwTTInLtmpC?=
+ =?us-ascii?Q?NR+qTnK60uAhKRpqLcgAGR3MCPDyYrnO54NPW4xDqf67cGU5Vlq4eF1F+iWD?=
+ =?us-ascii?Q?S/nHNSHN30hUE5StWh0JqBsQytDoSykAgVyFNARRq4u0Ti6PM1q/HZc4/erW?=
+ =?us-ascii?Q?a8mr2i2Q2j+Kejharg7LEpw01dGoGEGnoi1OLpblFXd/4TsTTD6k/MBgQ5Wj?=
+ =?us-ascii?Q?REpJn55YitBng622eGqb6d04I6BHv3WK2KLYy91ZJo86afuNbHy5JGkAr/Nv?=
+ =?us-ascii?Q?NInM6Q6HSDgbJC39vy7ykBBi1X5c85JB+eax9w=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2eed19-2f35-4243-53c1-08db8ceb0fca
+X-MS-Exchange-CrossTenant-AuthSource: SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 08:42:21.6412
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBP282MB0634
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005c3e6206014bb5f2
-Content-Type: text/plain; charset="UTF-8"
+I2C6 and I2C7 use the same interrupts, which is incorrect.
+In the downstream kernel, I2C7 has interrupts of 608 instead of 607.
 
-On Tue, 25 Jul 2023 at 00:31, Rae Moar <rmoar@google.com> wrote:
->
-> Add documentation on the use of test attributes under the section "Tips for
-> Running KUnit Tests" in the KUnit docs.
->
-> Documentation includes three sections on how to mark tests with attributes,
-> how attributes are reported, and how the user can filter tests using test
-> attributes.
->
-> Reviewed-by: David Gow <davidgow@google.com>
-> Signed-off-by: Rae Moar <rmoar@google.com>
-> ---
+Fixes: 81bee6953b58 ("arm64: dts: qcom: sm8150: add i2c nodes")
+Signed-off-by: qaz6750 lzy <qaz6750@outlook.com>
+---
+ [v2] Fixed issue of not using full name
 
-This still looks good, but an idea for an improvement (either in this
-patch or a future series) would be to add some docs for --filter and
---filter_action to run_wrapper.rst, which has a list of kunit.py
-options.
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Changes since v1:
-> - No changes.
->
-> Changes since RFC v2:
-> - Add comment on KUNIT_CASE_SLOW() to documentation.
-> - Add comment on how to expose raw kernel output.
-> - Remove an extra line at the end of file.
->
-> Changes since RFC v1:
-> - This is a new patch.
->
->  .../dev-tools/kunit/running_tips.rst          | 166 ++++++++++++++++++
->  1 file changed, 166 insertions(+)
->
-> diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-> index 8e8c493f17d1..766f9cdea0fa 100644
-> --- a/Documentation/dev-tools/kunit/running_tips.rst
-> +++ b/Documentation/dev-tools/kunit/running_tips.rst
-> @@ -262,3 +262,169 @@ other code executed during boot, e.g.
->         # Reset coverage counters before running the test.
->         $ echo 0 > /sys/kernel/debug/gcov/reset
->         $ modprobe kunit-example-test
-> +
-> +
-> +Test Attributes and Filtering
-> +=============================
-> +
-> +Test suites and cases can be marked with test attributes, such as speed of
-> +test. These attributes will later be printed in test output and can be used to
-> +filter test execution.
-> +
-> +Marking Test Attributes
-> +-----------------------
-> +
-> +Tests are marked with an attribute by including a ``kunit_attributes`` object
-> +in the test definition.
-> +
-> +Test cases can be marked using the ``KUNIT_CASE_ATTR(test_name, attributes)``
-> +macro to define the test case instead of ``KUNIT_CASE(test_name)``.
-> +
-> +.. code-block:: c
-> +
-> +       static const struct kunit_attributes example_attr = {
-> +               .speed = KUNIT_VERY_SLOW,
-> +       };
-> +
-> +       static struct kunit_case example_test_cases[] = {
-> +               KUNIT_CASE_ATTR(example_test, example_attr),
-> +       };
-> +
-> +.. note::
-> +       To mark a test case as slow, you can also use ``KUNIT_CASE_SLOW(test_name)``.
-> +       This is a helpful macro as the slow attribute is the most commonly used.
-> +
-> +Test suites can be marked with an attribute by setting the "attr" field in the
-> +suite definition.
-> +
-> +.. code-block:: c
-> +
-> +       static const struct kunit_attributes example_attr = {
-> +               .speed = KUNIT_VERY_SLOW,
-> +       };
-> +
-> +       static struct kunit_suite example_test_suite = {
-> +               ...,
-> +               .attr = example_attr,
-> +       };
-> +
-> +.. note::
-> +       Not all attributes need to be set in a ``kunit_attributes`` object. Unset
-> +       attributes will remain uninitialized and act as though the attribute is set
-> +       to 0 or NULL. Thus, if an attribute is set to 0, it is treated as unset.
-> +       These unset attributes will not be reported and may act as a default value
-> +       for filtering purposes.
-> +
-> +Reporting Attributes
-> +--------------------
-> +
-> +When a user runs tests, attributes will be present in the raw kernel output (in
-> +KTAP format). Note that attributes will be hidden by default in kunit.py output
-> +for all passing tests but the raw kernel output can be accessed using the
-> +``--raw_output`` flag. This is an example of how test attributes for test cases
-> +will be formatted in kernel output:
-> +
-> +.. code-block:: none
-> +
-> +       # example_test.speed: slow
-> +       ok 1 example_test
-> +
-> +This is an example of how test attributes for test suites will be formatted in
-> +kernel output:
-> +
-> +.. code-block:: none
-> +
-> +         KTAP version 2
-> +         # Subtest: example_suite
-> +         # module: kunit_example_test
-> +         1..3
-> +         ...
-> +       ok 1 example_suite
-> +
-> +Additionally, users can output a full attribute report of tests with their
-> +attributes, using the command line flag ``--list_tests_attr``:
-> +
-> +.. code-block:: bash
-> +
-> +       kunit.py run "example" --list_tests_attr
-> +
-> +.. note::
-> +       This report can be accessed when running KUnit manually by passing in the
-> +       module_param ``kunit.action=list_attr``.
-> +
-> +Filtering
-> +---------
-> +
-> +Users can filter tests using the ``--filter`` command line flag when running
-> +tests. As an example:
-> +
-> +.. code-block:: bash
-> +
-> +       kunit.py run --filter speed=slow
-> +
-> +
-> +You can also use the following operations on filters: "<", ">", "<=", ">=",
-> +"!=", and "=". Example:
-> +
-> +.. code-block:: bash
-> +
-> +       kunit.py run --filter "speed>slow"
-> +
-> +This example will run all tests with speeds faster than slow. Note that the
-> +characters < and > are often interpreted by the shell, so they may need to be
-> +quoted or escaped, as above.
-> +
-> +Additionally, you can use multiple filters at once. Simply separate filters
-> +using commas. Example:
-> +
-> +.. code-block:: bash
-> +
-> +       kunit.py run --filter "speed>slow, module=kunit_example_test"
-> +
-> +.. note::
-> +       You can use this filtering feature when running KUnit manually by passing
-> +       the filter as a module param: ``kunit.filter="speed>slow, speed<=normal"``.
-> +
-> +Filtered tests will not run or show up in the test output. You can use the
-> +``--filter_action=skip`` flag to skip filtered tests instead. These tests will be
-> +shown in the test output in the test but will not run. To use this feature when
-> +running KUnit manually, use the module param ``kunit.filter_action=skip``.
-> +
-> +Rules of Filtering Procedure
-> +----------------------------
-> +
-> +Since both suites and test cases can have attributes, there may be conflicts
-> +between attributes during filtering. The process of filtering follows these
-> +rules:
-> +
-> +- Filtering always operates at a per-test level.
-> +
-> +- If a test has an attribute set, then the test's value is filtered on.
-> +
-> +- Otherwise, the value falls back to the suite's value.
-> +
-> +- If neither are set, the attribute has a global "default" value, which is used.
-> +
-> +List of Current Attributes
-> +--------------------------
-> +
-> +``speed``
-> +
-> +This attribute indicates the speed of a test's execution (how slow or fast the
-> +test is).
-> +
-> +This attribute is saved as an enum with the following categories: "normal",
-> +"slow", or "very_slow". The assumed default speed for tests is "normal". This
-> +indicates that the test takes a relatively trivial amount of time (less than
-> +1 second), regardless of the machine it is running on. Any test slower than
-> +this could be marked as "slow" or "very_slow".
-> +
-> +The macro ``KUNIT_CASE_SLOW(test_name)`` can be easily used to set the speed
-> +of a test case to "slow".
-> +
-> +``module``
-> +
-> +This attribute indicates the name of the module associated with the test.
-> +
-> +This attribute is automatically saved as a string and is printed for each suite.
-> +Tests can also be filtered using this attribute.
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index 837bdb574743..560b758b0a06 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -1231,7 +1231,7 @@ i2c7: i2c@89c000 {
+ 				dma-names = "tx", "rx";
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_i2c7_default>;
+-				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				status = "disabled";
+-- 
+2.34.1
 
---0000000000005c3e6206014bb5f2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD0
-85YC/d2GHtdpoojpdUaDM/hV43X7Na19IIBNJMnQPzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjUwODQyMTdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEATZLCDr7gipq+yJEfmRS8
-/BW7h8OgoesCZpjbmDIslL+HFHk5W8BF2LtkuLR16Uw8xbN7nqY9fEYTOcyqyAU31wxshBUJO6Kz
-vDrXixrMsq5955WFJVcsixtA63l+EocnPdeIPejj3YsVQ8BAc7KxDeo1GX8Uy4aKKB7EtH0mkcrZ
-olGJf6CjYh1JLF/NW6+3MHA63qQcZHKksuofOAhlvmJj/9Vule9uidf+eq6K4CWd8zrUNJVUC6iW
-aS3R3BERKURB51tMSQI8SvL7D+wzSW9BbWyqKo2LNSmQJpF90Cds7T/zEpGiwyWHg7C8dOnBDFFC
-AOtRVbpHDcY/47xszg==
---0000000000005c3e6206014bb5f2--
