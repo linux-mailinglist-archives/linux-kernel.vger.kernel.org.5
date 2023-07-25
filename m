@@ -2,62 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32ED5760BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA014760BE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjGYHeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        id S231940AbjGYHeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbjGYHd5 (ORCPT
+        with ESMTP id S231823AbjGYHd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Jul 2023 03:33:57 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865B312D;
-        Tue, 25 Jul 2023 00:31:16 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36P7V1VG076670;
-        Tue, 25 Jul 2023 02:31:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690270261;
-        bh=sN4djLHKQJOKon9P3vbexqpa/e55Zh/aCtkLXgHJMao=;
-        h=From:To:CC:Subject:Date;
-        b=d6bGUsSBPlSEYDUuPojq01MLsi0xBEvwkigvoO79UgdRAeZmxiV554U2KyGYqxXLF
-         1CWeENaEJRIONERMxGh7jrtm49CreegUFvgtJTq/wsxYg7M+afwMkQ8CrtD++s2plj
-         LdRlwCfmUjdgURmRXJvngO+Cq2W71s6U4HsEGRkM=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36P7V1dO032520
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 02:31:01 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 02:31:01 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 02:31:01 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36P7UvdT034074;
-        Tue, 25 Jul 2023 02:30:58 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <afd@ti.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v3] arm64: dts: ti: k3-j721e: Add overlay to enable CPSW9G ports with GESI
-Date:   Tue, 25 Jul 2023 13:00:57 +0530
-Message-ID: <20230725073057.96705-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DFEE0;
+        Tue, 25 Jul 2023 00:31:20 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VoC75IF_1690270274;
+Received: from 30.240.115.26(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VoC75IF_1690270274)
+          by smtp.aliyun-inc.com;
+          Tue, 25 Jul 2023 15:31:16 +0800
+Message-ID: <78dbe98e-8702-e332-59ff-3850cff2895b@linux.alibaba.com>
+Date:   Tue, 25 Jul 2023 15:31:12 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3] perf/core: Bail out early if the request AUX area is
+ out of bound
+Content-Language: en-US
+To:     James Clark <james.clark@arm.com>,
+        alexander.shishkin@linux.intel.com, peterz@infradead.org,
+        leo.yan@linaro.org
+Cc:     mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
+        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
+ <75ddf1ce-64a2-f3a4-8a51-92e7bbb3899d@arm.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <75ddf1ce-64a2-f3a4-8a51-92e7bbb3899d@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,263 +51,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The J7 GESI EXP board for J721E Common-Proc-Board supports RGMII mode.
-Use the overlay to configure CPSW9G ports in RGMII-RXID mode.
 
-Add aliases for CPSW9G ports to enable kernel to fetch MAC addresses
-directly from U-Boot.
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
----
+On 2023/7/24 23:21, James Clark wrote:
+> 
+> 
+> On 11/07/2023 02:41, Shuai Xue wrote:
+>> When perf-record with a large AUX area, e.g 4GB, it fails with:
+>>
+>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>>     failed to mmap with 12 (Cannot allocate memory)
+>>
+>> and it reveals a WARNING with __alloc_pages():
+>>
+>> [   66.595604] ------------[ cut here ]------------
+>> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
+>> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
+>> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
+>> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
+>> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+>> [   66.681597] pc : __alloc_pages+0x1ec/0x248
+>> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
+>> [   66.690285] sp : ffff800020523980
+>> [   66.693585] pmr_save: 000000e0
+>> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
+>> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
+>> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
+>> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
+>> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
+>> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
+>> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
+>> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
+>> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
+>> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
+>> [   66.767834] Call trace:
+>> [   66.770267]  __alloc_pages+0x1ec/0x248
+>> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
+>> [   66.778259]  __kmalloc_node+0x134/0x1e8
+>> [   66.782081]  rb_alloc_aux+0xe0/0x298
+>> [   66.785643]  perf_mmap+0x440/0x660
+>> [   66.789031]  mmap_region+0x308/0x8a8
+>> [   66.792593]  do_mmap+0x3c0/0x528
+>> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
+>> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
+>> [   66.803365]  __arm64_sys_mmap+0x38/0x58
+>> [   66.807187]  invoke_syscall+0x50/0x128
+>> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
+>> [   66.815698]  do_el0_svc+0x34/0x50
+>> [   66.818999]  el0_svc+0x34/0x108
+>> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
+>> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
+>> [   66.829946] ---[ end trace 0000000000000000 ]---
+>>
+>> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
+>> maintain AUX trace pages. The allocated page for this array is physically
+>> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
+>> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
+>> WARNING.
+>>
+>> So bail out early with -EINVAL if the request AUX area is out of bound,
+>> e.g.:
+>>
+>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>>     failed to mmap with 22 (Invalid argument)
+>>
+> 
+> Hi Shuai,
 
-NOTE: This patch is based on linux-next tagged next-20230725.
+Hi, James,
 
-v2:
-https://lore.kernel.org/r/20230710075551.1109024-1-s-vadapalli@ti.com/
-Changes since v2:
-- Collect Reviewed-by tag from Ravi Gunasekaran <r-gunasekaran@ti.com>
-- Rename rgmii1_pins_default, rgmii2_pins_default, rgmii3_pins_default,
-  rgmii4_pins_default and mdio0_pins_default to:
-  rgmii1_default_pins, rgmii2_default_pins, rgmii3_default_pins,
-  rgmii4_default_pins and mdio0_default_pins respectively.
-- Rename rgmii1-pins-default, rgmii2-pins-default, rgmii3-pins-default,
-  rgmii4-pins-default and mdio0-pins-default to:
-  rgmii1-default-pins, rgmii2-default-pins, rgmii3-default-pins,
-  rgmii4-default-pins and mdio0-default-pins respectively.
-- The above changes are performed to follow the updated json-schema
-  patch at:
-  https://lore.kernel.org/all/169021456020.3622493.10284534202541859578.robh@kernel.org/ 
+> 
+> Now that I think about this, isn't the previous error "failed to mmap
+> with 12 (Cannot allocate memory)" better than "failed to mmap with 22
+> (Invalid argument)"?
 
-v1:
-https://lore.kernel.org/r/20230529094222.512675-1-s-vadapalli@ti.com/
-Changes since v1:
-- Rebase on linux-next tagged next-20230710.
+If I see a "invalid argument", I am expected to check my perf command
+first. But for "Cannot allocate memory", I will doubt that the system
+have problem but I dont have any idea about.
 
- arch/arm64/boot/dts/ti/Makefile               |   2 +
- .../dts/ti/k3-j721e-evm-gesi-exp-board.dtso   | 196 ++++++++++++++++++
- 2 files changed, 198 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j721e-evm-gesi-exp-board.dtso
+IMO, I prefer "invalid argument". But I can change back to previous error
+message if you insist.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 6dd7b6f1d6ab..01d58aa8b06e 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -46,6 +46,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j7200-evm.dtb
- k3-j721e-evm-dtbs := k3-j721e-common-proc-board.dtb k3-j721e-evm-quad-port-eth-exp.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-beagleboneai64.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
- 
- # Boards with J721s2 SoC
-@@ -58,3 +59,4 @@ dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
- 
- # Enable support for device-tree overlays
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-+DTC_FLAGS_k3-j721e-common-proc-board += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-evm-gesi-exp-board.dtso b/arch/arm64/boot/dts/ti/k3-j721e-evm-gesi-exp-board.dtso
-new file mode 100644
-index 000000000000..6a7d37575da1
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-evm-gesi-exp-board.dtso
-@@ -0,0 +1,196 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT Overlay for CPSW9G in RGMII mode using J7 GESI EXP BRD board with
-+ * J721E board.
-+ *
-+ * GESI Board Product Link: https://www.ti.com/tool/J7EXPCXEVM
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/net/ti-dp83867.h>
-+
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	aliases {
-+		ethernet1 = "/bus@100000/ethernet@c000000/ethernet-ports/port@1";
-+		ethernet2 = "/bus@100000/ethernet@c000000/ethernet-ports/port@2";
-+		ethernet3 = "/bus@100000/ethernet@c000000/ethernet-ports/port@3";
-+		ethernet4 = "/bus@100000/ethernet@c000000/ethernet-ports/port@4";
-+	};
-+};
-+
-+&cpsw0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&rgmii1_default_pins
-+		     &rgmii2_default_pins
-+		     &rgmii3_default_pins
-+		     &rgmii4_default_pins>;
-+};
-+
-+&cpsw0_port1 {
-+	status = "okay";
-+	phy-handle = <&cpsw9g_phy12>;
-+	phy-mode = "rgmii-rxid";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 1>;
-+};
-+
-+&cpsw0_port2 {
-+	status = "okay";
-+	phy-handle = <&cpsw9g_phy15>;
-+	phy-mode = "rgmii-rxid";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 2>;
-+};
-+
-+&cpsw0_port3 {
-+	status = "okay";
-+	phy-handle = <&cpsw9g_phy0>;
-+	phy-mode = "rgmii-rxid";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 3>;
-+};
-+
-+&cpsw0_port4 {
-+	status = "okay";
-+	phy-handle = <&cpsw9g_phy3>;
-+	phy-mode = "rgmii-rxid";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 4>;
-+};
-+
-+&cpsw9g_mdio {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mdio0_default_pins>;
-+	bus_freq = <1000000>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	cpsw9g_phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+		ti,min-output-impedance;
-+	};
-+	cpsw9g_phy3: ethernet-phy@3 {
-+		reg = <3>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+		ti,min-output-impedance;
-+	};
-+	cpsw9g_phy12: ethernet-phy@12 {
-+		reg = <12>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+		ti,min-output-impedance;
-+	};
-+	cpsw9g_phy15: ethernet-phy@15 {
-+		reg = <15>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+		ti,min-output-impedance;
-+	};
-+};
-+
-+&exp1 {
-+	p15-hog {
-+		/* P15 - EXP_MUX2 */
-+		gpio-hog;
-+		gpios = <13 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+		line-name = "EXP_MUX2";
-+	};
-+
-+	p16-hog {
-+		/* P16 - EXP_MUX3 */
-+		gpio-hog;
-+		gpios = <14 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+		line-name = "EXP_MUX3";
-+	};
-+};
-+
-+&main_pmx0 {
-+	mdio0_default_pins: mdio0-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x1bc, PIN_OUTPUT, 0) /* (V24) MDIO0_MDC */
-+			J721E_IOPAD(0x1b8, PIN_INPUT, 0) /* (V26) MDIO0_MDIO */
-+		>;
-+	};
-+
-+	rgmii1_default_pins: rgmii1-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x4, PIN_INPUT, 4) /* (AC23) PRG1_PRU0_GPO0.RGMII1_RD0 */
-+			J721E_IOPAD(0x8, PIN_INPUT, 4) /* (AG22) PRG1_PRU0_GPO1.RGMII1_RD1 */
-+			J721E_IOPAD(0xc, PIN_INPUT, 4) /* (AF22) PRG1_PRU0_GPO2.RGMII1_RD2 */
-+			J721E_IOPAD(0x10, PIN_INPUT, 4) /* (AJ23) PRG1_PRU0_GPO3.RGMII1_RD3 */
-+			J721E_IOPAD(0x1c, PIN_INPUT, 4) /* (AD22) PRG1_PRU0_GPO6.RGMII1_RXC */
-+			J721E_IOPAD(0x14, PIN_INPUT, 4) /* (AH23) PRG1_PRU0_GPO4.RGMII1_RX_CTL */
-+			J721E_IOPAD(0x30, PIN_OUTPUT, 4) /* (AF24) PRG1_PRU0_GPO11.RGMII1_TD0 */
-+			J721E_IOPAD(0x34, PIN_OUTPUT, 4) /* (AJ24) PRG1_PRU0_GPO12.RGMII1_TD1 */
-+			J721E_IOPAD(0x38, PIN_OUTPUT, 4) /* (AG24) PRG1_PRU0_GPO13.RGMII1_TD2 */
-+			J721E_IOPAD(0x3c, PIN_OUTPUT, 4) /* (AD24) PRG1_PRU0_GPO14.RGMII1_TD3 */
-+			J721E_IOPAD(0x44, PIN_OUTPUT, 4) /* (AE24) PRG1_PRU0_GPO16.RGMII1_TXC */
-+			J721E_IOPAD(0x40, PIN_OUTPUT, 4) /* (AC24) PRG1_PRU0_GPO15.RGMII1_TX_CTL */
-+		>;
-+	};
-+
-+	rgmii2_default_pins: rgmii2-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x58, PIN_INPUT, 4) /* (AE22) PRG1_PRU1_GPO0.RGMII2_RD0 */
-+			J721E_IOPAD(0x5c, PIN_INPUT, 4) /* (AG23) PRG1_PRU1_GPO1.RGMII2_RD1 */
-+			J721E_IOPAD(0x60, PIN_INPUT, 4) /* (AF23) PRG1_PRU1_GPO2.RGMII2_RD2 */
-+			J721E_IOPAD(0x64, PIN_INPUT, 4) /* (AD23) PRG1_PRU1_GPO3.RGMII2_RD3 */
-+			J721E_IOPAD(0x70, PIN_INPUT, 4) /* (AE23) PRG1_PRU1_GPO6.RGMII2_RXC */
-+			J721E_IOPAD(0x68, PIN_INPUT, 4) /* (AH24) PRG1_PRU1_GPO4.RGMII2_RX_CTL */
-+			J721E_IOPAD(0x84, PIN_OUTPUT, 4) /* (AJ25) PRG1_PRU1_GPO11.RGMII2_TD0 */
-+			J721E_IOPAD(0x88, PIN_OUTPUT, 4) /* (AH25) PRG1_PRU1_GPO12.RGMII2_TD1 */
-+			J721E_IOPAD(0x8c, PIN_OUTPUT, 4) /* (AG25) PRG1_PRU1_GPO13.RGMII2_TD2 */
-+			J721E_IOPAD(0x90, PIN_OUTPUT, 4) /* (AH26) PRG1_PRU1_GPO14.RGMII2_TD3 */
-+			J721E_IOPAD(0x98, PIN_OUTPUT, 4) /* (AJ26) PRG1_PRU1_GPO16.RGMII2_TXC */
-+			J721E_IOPAD(0x94, PIN_OUTPUT, 4) /* (AJ27) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
-+		>;
-+	};
-+
-+	rgmii3_default_pins: rgmii3-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0xb0, PIN_INPUT, 4) /* (AF28) PRG0_PRU0_GPO0.RGMII3_RD0 */
-+			J721E_IOPAD(0xb4, PIN_INPUT, 4) /* (AE28) PRG0_PRU0_GPO1.RGMII3_RD1 */
-+			J721E_IOPAD(0xb8, PIN_INPUT, 4) /* (AE27) PRG0_PRU0_GPO2.RGMII3_RD2 */
-+			J721E_IOPAD(0xbc, PIN_INPUT, 4) /* (AD26) PRG0_PRU0_GPO3.RGMII3_RD3 */
-+			J721E_IOPAD(0xc8, PIN_INPUT, 4) /* (AE26) PRG0_PRU0_GPO6.RGMII3_RXC */
-+			J721E_IOPAD(0xc0, PIN_INPUT, 4) /* (AD25) PRG0_PRU0_GPO4.RGMII3_RX_CTL */
-+			J721E_IOPAD(0xdc, PIN_OUTPUT, 4) /* (AJ28) PRG0_PRU0_GPO11.RGMII3_TD0 */
-+			J721E_IOPAD(0xe0, PIN_OUTPUT, 4) /* (AH27) PRG0_PRU0_GPO12.RGMII3_TD1 */
-+			J721E_IOPAD(0xe4, PIN_OUTPUT, 4) /* (AH29) PRG0_PRU0_GPO13.RGMII3_TD2 */
-+			J721E_IOPAD(0xe8, PIN_OUTPUT, 4) /* (AG28) PRG0_PRU0_GPO14.RGMII3_TD3 */
-+			J721E_IOPAD(0xf0, PIN_OUTPUT, 4) /* (AH28) PRG0_PRU0_GPO16.RGMII3_TXC */
-+			J721E_IOPAD(0xec, PIN_OUTPUT, 4) /* (AG27) PRG0_PRU0_GPO15.RGMII3_TX_CTL */
-+		>;
-+	};
-+
-+	rgmii4_default_pins: rgmii4-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x100, PIN_INPUT, 4) /* (AE29) PRG0_PRU1_GPO0.RGMII4_RD0 */
-+			J721E_IOPAD(0x104, PIN_INPUT, 4) /* (AD28) PRG0_PRU1_GPO1.RGMII4_RD1 */
-+			J721E_IOPAD(0x108, PIN_INPUT, 4) /* (AD27) PRG0_PRU1_GPO2.RGMII4_RD2 */
-+			J721E_IOPAD(0x10c, PIN_INPUT, 4) /* (AC25) PRG0_PRU1_GPO3.RGMII4_RD3 */
-+			J721E_IOPAD(0x118, PIN_INPUT, 4) /* (AC26) PRG0_PRU1_GPO6.RGMII4_RXC */
-+			J721E_IOPAD(0x110, PIN_INPUT, 4) /* (AD29) PRG0_PRU1_GPO4.RGMII4_RX_CTL */
-+			J721E_IOPAD(0x12c, PIN_OUTPUT, 4) /* (AG26) PRG0_PRU1_GPO11.RGMII4_TD0 */
-+			J721E_IOPAD(0x130, PIN_OUTPUT, 4) /* (AF27) PRG0_PRU1_GPO12.RGMII4_TD1 */
-+			J721E_IOPAD(0x134, PIN_OUTPUT, 4) /* (AF26) PRG0_PRU1_GPO13.RGMII4_TD2 */
-+			J721E_IOPAD(0x138, PIN_OUTPUT, 4) /* (AE25) PRG0_PRU1_GPO14.RGMII4_TD3 */
-+			J721E_IOPAD(0x140, PIN_OUTPUT, 4) /* (AG29) PRG0_PRU1_GPO16.RGMII4_TXC */
-+			J721E_IOPAD(0x13c, PIN_OUTPUT, 4) /* (AF29) PRG0_PRU1_GPO15.RGMII4_TX_CTL */
-+		>;
-+	};
-+};
--- 
-2.34.1
 
+> And you might want to split the doc change out if they are going to be
+> merged through separate trees.
+
+Will do that.
+
+> 
+> And one comment below:
+> 
+>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>> ---
+>> changes since v2:
+>> - remove unnecessary overflow check (per Peter)
+>>
+>> changes since v1:
+>> - drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
+>> - move sanity check into rb_alloc_aux (per Leo)
+>> - add overflow check (per James)
+>> ---
+>>  kernel/events/ring_buffer.c              | 3 +++
+>>  tools/perf/Documentation/perf-record.txt | 3 ++-
+>>  2 files changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+>> index a0433f37b024..5933ce45c68a 100644
+>> --- a/kernel/events/ring_buffer.c
+>> +++ b/kernel/events/ring_buffer.c
+>> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
+>>  		watermark = 0;
+>>  	}
+>>  
+>> +	/* Can't allocate more than MAX_ORDER */
+>> +	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
+>> +		return -EINVAL;
+>>  	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
+>>  				     node);
+>>  	if (!rb->aux_pages)
+>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>> index 680396c56bd1..5d8d3ad084ed 100644
+>> --- a/tools/perf/Documentation/perf-record.txt
+>> +++ b/tools/perf/Documentation/perf-record.txt
+>> @@ -290,7 +290,8 @@ OPTIONS
+>>  	specification with appended unit character - B/K/M/G. The
+>>  	size is rounded up to have nearest pages power of two value.
+>>  	Also, by adding a comma, the number of mmap pages for AUX
+>> -	area tracing can be specified.
+>> +	area tracing can be specified. With MAX_ORDER set as 10 on
+>> +	arm64 platform , the maximum AUX area is limited to 2GiB.
+> 
+> Minor nit: I wouldn't expect a Perf tool user to know what "MAX_ORDER"
+> is, and I don't think the limitation is Arm specific? Maybe something in
+> more relevant terms is more useful:
+> 
+>   The maximum AUX area is limited by the page size of the system. For
+>   example with 4K pages configured, the maximum is 2GiB.
+
+Agreed. Will change it.
+
+
+> 
+> Thanks
+> James
+
+Thank you for valuable comments.
+
+Best Regards,
+Shuai
+> 
+>>  
+>>  -g::
+>>  	Enables call-graph (stack chain/backtrace) recording for both
