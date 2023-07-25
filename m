@@ -2,248 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC67E760CD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC7D760CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjGYIT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        id S232100AbjGYIVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGYITz (ORCPT
+        with ESMTP id S229502AbjGYIVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:19:55 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on20609.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e83::609])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21ACE5C;
-        Tue, 25 Jul 2023 01:19:53 -0700 (PDT)
+        Tue, 25 Jul 2023 04:21:09 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABB9E5C;
+        Tue, 25 Jul 2023 01:21:08 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P7oU2n008377;
+        Tue, 25 Jul 2023 08:20:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
+ b=XAFo/DW8zESIu/fK3tmTbm1IN/LqrEcfRY0tlmL2Mm4EGqMxOkglOCoISCXXnDclkG37
+ yfXwzY/A7Ac3qWYzhM1lijLF/0jo6Mk0mmA7XRoHAT6RIF3eEEvVpIv/b8c3V01OUGgD
+ HO2ejRB704AkNnpLbnJFjuzzaAtMBYBiSrxn/ChQeAf4v95Jy3tpsr8wiMwnM+iWEcF2
+ 4rLIB370wsCGXMnjcdQ6mL8AcoiSGsja4FQ0pn9vj/LVoCov3/pd0C8z6f4HxA40p3vN
+ Z8CdyBEdKr3V7ddfYb0UIfW7bV+QL9xh/DZ5JEQgqarvyOXOxsfl4n2L5Qlvlj1pWF1f LA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s075d4j8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 08:20:39 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36P7S8A3035392;
+        Tue, 25 Jul 2023 08:20:38 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s05j4ew55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 08:20:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iFhFnCCwuPvH3YxUEjP9dUuLYmKAh5V+7M+MkXmvLWc1O2NqRzXIBwjlTQBc/b6dXJenSBbODuUYB6jCzhD7MZb3TAVZmzXbYD4CdoRbKIjOdYel/GkG3A8ZpsPOMLzGAgDGILZCsfjZcthO868681p14Lm2xVTYM7e1RHKtCXr1w3XUAwp0PyEJtuWBjZ35ANosQgOvbiFDDZQVfylTHWqCo9udZW/qD3AFzuKviGB6fXGbfB+5axoJJv6YcnnmsTp4qygZB0KbkeQYHrTOy/x4NhgHBJGszlHfA6M5+/OV6sI59SmxxQndR383M/uKGxL138eTXapt+g7RM9rlAw==
+ b=BeKm7qbCxe66qj6K7E6o8ZvTJ5Qd6D2C0YhHz2UyOGAAgS7w4/rHzFmjQCMbjXKswfhCJ4V0FT4hrDGirR6vh/iKSy1wedLRTn9Pg2SJcyhRUO3ekwxLvTlPt0N86mkYaht6PqkzbM6we6yiOfhKETOMOX4zHUpJec7SP+xScp9dFpv15qpqKZQ1AKBW6lUNu/Jkl5XReM6KDwLJsNgEzo94gfD+Cgyt2apdxnYaTdkLKimhYdtc2hNOvpSVQ3smhTukPgU/csgSj0Ts2gtFE3qFd/4Ub9t/yPrOpZLX3kQ00XhuNvOqVIMSb3f4j4E13gve3y4wezjXtHqDJS55DA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rLeQ66L9FUPzpcIluCA+bc8YmJ8ISWgNkgIAMiLE+8A=;
- b=X7Dxh04MIXx2ZY84aAgf4I94QR2tyvEI9BmiRwKzEcjj8CQvD9Z6v4Q3nZ1lnhgo2N3IqaS4iQBhKAfYgK3Uo1xoIXjsabbtePWvEUkCQtSt4uKIQVjZ3q3SbVCmYp3iUGw9Y/avlWrGPgSa2N/jeczAXKXPt0CHCg29TNF3sM8kEKdo5DMMsVkEH4F7CPKMico8MqfHKt5o+aqiR+Q5FgcYpXBJsppNA1726IAgPx13YRQz4xHiyiV4gF+tyqHiqGhnch3cL2GxnhMs8OQqeFOuPS0ruTAmHInMsZRx/fRv+6JRVWT0Maf6eZ38AOWi2/MJnZVGx8LkSob7Ti8f7Q==
+ bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
+ b=edV7fVHDXutI1Uam0IDgp58Ox+Ze3vT1mbnV8Bd10nyYqT7PuKgRX7c5TCc2gTiBgPr2+rTeyU+ur8tfnZbivbP8BwZnFNxUeN+10S49jmP27NdNobWnveh9NlY52lNVog68WfthOk6EXaJgd2/1dwUAIH6bRy0PATs2obR8nzJoCR78ivo+nzkHmozbYqSLOwXwiHRnMg0heXfA1cDkIS1D0ciAI81HrtNL0/deKIoQ5BEVGaJOcHNvK0GRtgIXiZYRunrWsZGGEUkCugxKllcIx3z6IqUcqDhtMlJZNcGY1Gt0R48kdOky4+O3T6RzF1J42kb03QuyQvZpqPOD8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rLeQ66L9FUPzpcIluCA+bc8YmJ8ISWgNkgIAMiLE+8A=;
- b=giRMFyDXYqNg742Z2bKE1nHm6Pa3lVF0jFvkBzcLO7mjot3SodRAOErHSrVMjOA0ALXdLtrEciU4ylYUuiUXs/sdJLx9IanK7TQlSO4uZOvgXnJIzjDg+TE36WtiEE+VXankDV4zA9a1EfUgkI4IghH3f726QpDpHTyWNJ8xHPFgv5TIKMOGzFH1s3Xc0ei63eGJ2SkSoJ7YFDru8U+Bd53MyRBfyazTEhQsbzTunB3YWMTrRR4a402MMzymGKjWObxT9UGC62zipFxFmBIHtMSTWME/SyVs14t3UOuoE2wMqTcN2EqYLlNb31NJLc+IhZ3xMPzwzEPgYvdzTpkoKw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BN8PR12MB2900.namprd12.prod.outlook.com (2603:10b6:408:69::18)
- by PH7PR12MB8793.namprd12.prod.outlook.com (2603:10b6:510:27a::22) with
+ bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
+ b=NVIMSGNwY+UsIpJM/UwaIF+Bqf2morwu/Io/FKo3BCNj8tX7qat2zONL7BNuD3STUIMZWR2pLTv8a4qFHK4bGiaCMjYfFsQu8wK/M/rS1gy9FaAR6Eghl8iJR2eay5N5pWMqtHwexgYsODnCe6l6rFCESws5WaIrvqtlY/JhYOs=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SN4PR10MB5558.namprd10.prod.outlook.com (2603:10b6:806:201::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 08:19:50 +0000
-Received: from BN8PR12MB2900.namprd12.prod.outlook.com
- ([fe80::b1:f0a0:1b20:1bf5]) by BN8PR12MB2900.namprd12.prod.outlook.com
- ([fe80::b1:f0a0:1b20:1bf5%5]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 08:19:50 +0000
-Message-ID: <815d102d-be0c-8e5d-ac12-1500d90628da@nvidia.com>
-Date:   Tue, 25 Jul 2023 13:49:35 +0530
+ 2023 08:20:36 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::8072:6801:b0b7:8108]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::8072:6801:b0b7:8108%7]) with mapi id 15.20.6609.031; Tue, 25 Jul 2023
+ 08:20:36 +0000
+Message-ID: <4c20d8fd-b478-5b0a-0558-3b59dead0751@oracle.com>
+Date:   Tue, 25 Jul 2023 09:20:32 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH V1] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20230608093652.1409485-1-vidyas@nvidia.com>
- <20230725075159.GB22139@thinkpad>
+Subject: Re: [PATCH v4 1/4] perf metric: Event "Compat" value supports
+ matching multiple identifiers
 Content-Language: en-US
-From:   Vidya Sagar <vidyas@nvidia.com>
-In-Reply-To: <20230725075159.GB22139@thinkpad>
+To:     Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1690100513-61165-2-git-send-email-renyu.zj@linux.alibaba.com>
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <1690100513-61165-2-git-send-email-renyu.zj@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MA0P287CA0014.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:d9::16) To BN8PR12MB2900.namprd12.prod.outlook.com
- (2603:10b6:408:69::18)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0532.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c5::14) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2900:EE_|PH7PR12MB8793:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88ec7da0-599e-43bf-8c88-08db8ce7ea0f
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SN4PR10MB5558:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4da487d2-2440-4407-29c5-08db8ce805b8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6WGLJfDqMk/hFQFk+kUWvExKTjr0xOzZqJbY8Yt8PxOsccKOvNAOJdk68dL4YeTsEeTiFkv/OemU/pRZGfIZMYY+oeFEetviGnkDwc6Jtt4bV2iC3lKJQEk04YUknb7DSkR2DOQdPvYkmnyPd62VL/vCshVUQydIJsWHLSDRMwN9nsd+cdNcr/sw4ayD9hs8ylD6fbWI1v3KFxvSaf9WC4tsuxggLOPSxISQZ0pqY2Sv8YuYfkQFs9XBt4kvFm6auywac1n/HB2zsCbX/etHGhgSpFrHmWKwQtfhF80u7UPo38pc1lDvOmyKrLYUcDs8pfeZkKyxw6W8DT1HuEB5Lth1sZfsceT13JC5iKhd6XmeBfV4IueToGQRXMP3V1c9pAai4Dcd0gr0MJCg292ISF5+ke6l0+BcRlW+DsQp+a+ZfgjpFYHTRHvSXQ7Q89jlX5sCdRdisRcWFxB9wH9zDQICNNcQ6UH/q+S8AKwnTrrJSZ7MdW9DNKVTFhV6LfsLQFT+6Gw3aYrsxaYvCoVCleMtxU8QcUBVIMy9FDNYhL8ecnJCMimtbpESwLYztqpXGTdvp0RZbV67w8A9Mmsi1Ju4iRbDkhHuexItgOH9WzRxxWVTVaKiXBanhUkwsEKFQJnLrl8KO76fI2pyrjAStQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB2900.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(451199021)(2616005)(26005)(186003)(53546011)(6506007)(66476007)(83380400001)(6916009)(66946007)(66556008)(316002)(4326008)(7416002)(41300700001)(8676002)(6512007)(8936002)(6486002)(6666004)(5660300002)(2906002)(478600001)(38100700002)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TzggqbT2GG3yY5DPpj/LGphDN1qoX1NcTU3aYgPEs9yvF6RqvFmwE5G++ycl1Q1aAPbAdLXeB/kidBSVm4YS3dQd7KCw9rC/qZuS5r62KgD8xgtrqEbijN6gEIB2xO3FFCd0h2QRbnb/SOnDxNLL5cdHcX4fBevNMfLkaMgIW79Uj5mBtUieGIL+C/p7t4EXaW3mON3TqAllGWm2D7BWrZJv/YeqLLClJ9YM10zsKIfcsUjYSTb2qWFfRvBxPorP+WSeXp7DaH8iaxG7rcvXkSVVkrSvqXRlikGdbcOdrnDHylnLuowTyaUduredY90LhJG25M/8Ohhu7yBrScKFBuWAmGudqBHovOMhpLqapjsWfvx+JihjeDWpH2yakW9qz8lx83/PhoH/40qroAv09rjcA+coLcU65DJUmUNBNahyT7bPv9W92RG/u9hwChjppLUmi2g6TWjC6fRacBQaN7QPmRmnbEgsEOXjpX+sBGAVEovaTOctFucyEIyKCgo9to1to/FQbot1ZzQSzc32jx8vREgams8RJLYkde8JFGtXYNcLlnCL0uvVGFPJ7GscuSqAw4nwYZiRP7mUd6QKy5D25zlUqtAMsamIbpOGtwSJtnsWqn3OArmVn2wnchJEChxg0zjYX/Y9oH2/BmCZUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(376002)(136003)(346002)(366004)(451199021)(31686004)(186003)(6506007)(26005)(2906002)(86362001)(31696002)(7416002)(36756003)(8936002)(8676002)(478600001)(54906003)(110136005)(6512007)(6486002)(6666004)(36916002)(38100700002)(4326008)(41300700001)(5660300002)(316002)(66556008)(66476007)(66946007)(53546011)(2616005)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?anFOeWZOSCsrM2N3NlpBeW9kSXVXVnZOQVNUSGRLTFN2Vzlvd0cwRWJkWTdY?=
- =?utf-8?B?UjdNMXgwRXhrWElQU2NTUXNmTEhtdzRkQ1lNSytFVnZOWjJOY3A5d3RTZGs5?=
- =?utf-8?B?bTVCOUFmM2d0MnZlS1dydStwaEJCT0RqUTBWeGI4dGwyRnUrUlZxZ2hrdGhQ?=
- =?utf-8?B?WTM3QlVOMGJpb0lOTXlnaFBhVDZFUHhhQjFBa1BPbnlZeW5NdjlGK0h3VVh5?=
- =?utf-8?B?ZHVsUWRGM3RiUzZJZ1BhUk9POHJBUkZBV2Z2ZWlqRHZGcDFVRXFkOFU2NVpN?=
- =?utf-8?B?eUNHS2h1TzdQVkpZVVlCK0cybDJaYk9HZVNoeUt3VktsSVUyMWkrdUJlZ0Rm?=
- =?utf-8?B?b1JFQ0ZrRTF2YnZ4ekM0RXl0bUNnOWxvWm94bUZvVGhORTgxVU94dXlLVmNI?=
- =?utf-8?B?SEhKTTEzMlg5aEVzKzcyOUNDWG03VXo4Vjk5RGI4OEJtMHRJU0F6eWxyQngv?=
- =?utf-8?B?c1FJUkVSVUlIaGpzQUpnWkp2WmxWelhrQXY1b1MvbmxaYmNOQmhYQjFtQkwy?=
- =?utf-8?B?bEZpNzl4L0VMWWRoR1E0emVqYjVvMlYrRDJlY1JWSFBGQWR0Mnh1c2crdHFM?=
- =?utf-8?B?NC9VTkpURE94VEZWZm9jMEc2Um41RWhSRlN6ZkZvQXRIaFRablVrMW1KMFNt?=
- =?utf-8?B?cEJDMFNoelZkcktKRFBCbFE2d3N5ZURWYUt0VUQ5R0dKMmVJOTVidlRLUDU2?=
- =?utf-8?B?Q0VNd1dMc3Q2QXo0TTU0cHcyZlVhS1FkU0xtaDRhR0orRUNJWDNwMTh5aUhu?=
- =?utf-8?B?MFdsM2pNTitjM3prYWRma0szTVN3L2dLMERQcHJHM054VjRRb1VlckIvcTVR?=
- =?utf-8?B?aDJpbWh3eXMxVEJac0haaDdTdFhaVjBnV1ErU0pwaVBlV0lJS0ZIcXBwVmg4?=
- =?utf-8?B?Rmd6UStFME9MOGFmcytRKzQwQ2g4c1Z5Wm1WSnZReWQ4L3NpanNUamd2d09z?=
- =?utf-8?B?MHA3MFdDY3ZJZjhtSmJ5ZGtFbUxQcFZuZk9JajRPYTRBYmFHdlJIRy9mOTY4?=
- =?utf-8?B?dFcrazNja25uelNBNWZUUXljVmViQ2NmYXlDUnhWeFZSclJDeVpYWnJIaXNF?=
- =?utf-8?B?L3hzL3ZDL1RMeXhaV0ZZOTA2bzJpcmgzeUwrdGc0SUJCRmRUYzRPdEY1ZWZT?=
- =?utf-8?B?WGV4MnRQNHVDZTlrTG9aNUdFZTFPbG13UkJyQnRRa2NTVUNzdEhNekxYTW50?=
- =?utf-8?B?NThpdEhaK3dGSktZNjhDNG0zM0RHWUtycXJhdGlkcnAzek4rOVYxb0NxUTdJ?=
- =?utf-8?B?ZnhvWmE3dG5pMHN4MFdzODVLdmp5ak9ST3ZoRXlsbEJrTHU4WTN4OVhLZ0dG?=
- =?utf-8?B?K2haVFBJSGx1eXJwNHNEVWluVmJIbnA1eWVqOEF3bzNPS0VrNHRheG84Rjlk?=
- =?utf-8?B?ZFBTdXNSbkU4eS96Um9TRkFvTjFaWTdIRDhjQ1dxT1RwY1Irc1pseXdDTHJr?=
- =?utf-8?B?dXB2Lys4UjY3cVJkR3dud2lRd3RBemM3U1g4N3JxcEhwWlZhTmhDWXFJSGRD?=
- =?utf-8?B?WXZLaWFvSkliL0RaK3pEK21ZUEkzOXpnd1BiU21LdHQrcks3ZDQ2YzNmY1NO?=
- =?utf-8?B?OEhzTE9wdldZcTcvTzBPUWt2a2tFdWVMY1d3OW9NRUJJWVFoa3EydDJ5VGJo?=
- =?utf-8?B?ODRVWWw0SjlibXhqZjR3KzBiL29pMjA2ZHVKMm1SQlFlK0NndTI5Y3VPZnBt?=
- =?utf-8?B?VkMrTGxvbGJmenJMZWlRUytHTVRQMnZWZVIvNklJb01UWkdzQnVqS1RqL1lS?=
- =?utf-8?B?T3NVMGpKbEZNVk1jc3BoZGlXWlhhTUlBUUdqTlNZc3JzYkVCeXM5Sit5OTZ0?=
- =?utf-8?B?eXA0MWVLTGxuRVpVM1JobDBRQ0JnYXFha20ybzl5SXQ1R2oybEgvcTNvcExH?=
- =?utf-8?B?WHFQVGpaQ1NDQjV1SzZpd2dMeXRyc3BmZWJranNMdWdvUk5LeGJjUHFvTHd6?=
- =?utf-8?B?RHJML3I0NmFaVjQ1aWlrcDc0Z3l2RVdqWUI0UWFUcks2aW5vRXpmZG52YTly?=
- =?utf-8?B?S2hpdkl2TFJPQVJVY0g3K3JlSDZ4UWp1QVlsUmljOWIvaThiZUVBZjJBSGlG?=
- =?utf-8?B?VFBtMU1uc09xWXBvb1NqUk9KV1g3RldEV0ZSbURFQWN3ZUFDR1BrTXFpQlRP?=
- =?utf-8?Q?YZeX3H7uSheS8s0IIRlZfYfM2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88ec7da0-599e-43bf-8c88-08db8ce7ea0f
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB2900.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkRrWjdUNmpjcTR2OE51V1NQMDUxRjRkVXROdGhqekRDVkl5ZmkrVGxWdFlE?=
+ =?utf-8?B?Z2F2V0lIWkphZ0Rud2dTT0ViS1BmYlZMOFJWVStwem1ieDFCYWhpb3RRYVc5?=
+ =?utf-8?B?bmhaTnV5REZrWnoxMHZLamp6S2RnS1h1YVIweE1jRzRVcGJZdnV5Wmc2ZzhU?=
+ =?utf-8?B?dkFRR2ZqN1dQYnVvSFVqL1lBVENSYmxpVFFpSFVzbkpWNS9QSDlYTlZYKzJF?=
+ =?utf-8?B?clBNbzNCd0IwREg3SjZHWDRSbFhMTXQ5ZE9UTlp6UjZrbzNzZzQ1NnJkTWRi?=
+ =?utf-8?B?SDRBajNpbXVneGkva3FQSG1jWmFaK0QyZnkwZHlCaVRKb2NsV0NPNkphWFVx?=
+ =?utf-8?B?L2JzQmVoK0cyOTJWTXAydVlLdjROMlVkK0gwdXhMYkVrZ05jZHdOTFV4Y2dh?=
+ =?utf-8?B?QnJFdmg0NmJKL3AvZVFjTTRyd01DR3NOM2xFQnMzNG1DL09hRTNVSTBzb1pp?=
+ =?utf-8?B?N2dnVVRSWWM1ZVVKc3h4aGlFTS9TRHFNVXdvQURCS0NvQ2Rad0wyeW1UOVQw?=
+ =?utf-8?B?ZGhUUURKeWRxc2ovY1R1QVFRNGVyS0VIMXdPZ09SaVJoWmdGcWwvVktETm5F?=
+ =?utf-8?B?T1FJZ1RmRDN3VUZMekVVckZzN0sxZTNpaEdMbi8rcXlSSkEvRk16aG9UZlB1?=
+ =?utf-8?B?TXQrU05lSEI0VURmd2dxSWNNbzRMdzQyRG1xOVdES0VPWUlXMHpua2NXN01U?=
+ =?utf-8?B?MlR0WjRiSzJxTGdMYjhPZGNaSUZwcDBHKzdxVmJBWVRrWndaeGNWSVBSWFNL?=
+ =?utf-8?B?czZUUDl3T0pkN2YyMFRoN1YreE8rNVNVeUo5NmpPQ2E1bTBRUkZZcWk4VmQ4?=
+ =?utf-8?B?UzFpcjhsY1pJcmY1RVc3VjYxTXBKUkFMc3NTTmdvZi9XZzJmd0FoTVpsNThZ?=
+ =?utf-8?B?SEhNNDdKKytRMkR2WjBFSWNPWXZVd1BhMjQycmI2MGtPSXl3V3NPc0RyWmd3?=
+ =?utf-8?B?VXJzU1hiQVYwazFGb1lOLzRBN3JtL1JmQzA5dEsrYm9Gekg4ZFN1Qml3aVZl?=
+ =?utf-8?B?WGhDODhSRTZrOEpWRVN5TWU4ZWZxa0hHYzhnSzgxdXd0L1l5MEs5Um0zUkZC?=
+ =?utf-8?B?MFY5QTh0OWZKT2l6MlRxdW1WNlNwTnJKTTZ4eUFKS0ZSTERKV3kvS3ZVSk90?=
+ =?utf-8?B?eHlXRE52Ris4dENxbWRyMy9CNlNTaVJRUnVGZGdXZ25SKzVLSno2U1ZmMzQ2?=
+ =?utf-8?B?ZjlBTGdjQXp4dEZhVTlXY29GN1JkckpXKy9xTEZzZFlZYTEvdmJaRVBBaGdK?=
+ =?utf-8?B?WkRFdjU4MU1DazRGTXc0YUdTNmlhekhDTldBQlVoSTlyVXVDZGZWUlliMncw?=
+ =?utf-8?B?YW5rWkF2djkxd0JpRDFQOE8wZHVVVXdVVzFCb0ZJa2lDYmxLYW9uYmlkeUxQ?=
+ =?utf-8?B?WHBvaEZqWEk5OHRjZjJIZ2xCWWxpazRicVRabnNzRm1xT0p5YkpBalI2c05M?=
+ =?utf-8?B?RWIxZmRSQ0NrMTN1dk13SnYra2Ewb2dZK3dqRmVHMGxrdnBZaVlpd2pVanpP?=
+ =?utf-8?B?MW5GY0lDdmFSZEc2YjNjdUJRZy82SEpIN05MWTZpVmprUE5Rdi84cTF5YzVW?=
+ =?utf-8?B?V1RndFlhS1BucU91WUlVOFJ5UnB4bVJqU0tXOHBldy9pZjVyM0JHcjBmWUFL?=
+ =?utf-8?B?RzFVMUxoOHFQazZtdVcwVXIwOWNuQXIwOHowaS9HTm9Wa3pYcWlXQVFnMHNi?=
+ =?utf-8?B?eEphNHByS0RjOEE3bWJaV2ZYalZDNEFaS0liYzg4cTdubTNuYjRMeG9OMTZy?=
+ =?utf-8?B?RGw5R0c4empDYjBQZXlFWXcyTGlhWHEwbE5mVTZqcEdhNVFkUHZlSHh6YVVJ?=
+ =?utf-8?B?UjZvNW5TZ1k3c0Y2dzJmVHdUQjVNWHEyaWZDdTBnZWF0MmNzbTY3cmlLcitl?=
+ =?utf-8?B?M3RKZnpMOXlFVzhwS3NVUjN3cGwvdkpZTERrakM5V2ZDb2NGb2tubkhvTVFv?=
+ =?utf-8?B?aWdacFc5UGVwYjJ1bGNMRkhMSkhDM2UyQ0tHdWNLVkNJK2NaY1lTVW9MMXlt?=
+ =?utf-8?B?VG1hcXlsSnRBY3JIbndYVHBDRDFDbkVibnIxbWI2TEg4MWQ2cVBaRjJ4eTBS?=
+ =?utf-8?B?U2tzRC9jcTh1VVBjc0p4K0xCaDI5VDhGd2M0QXNaOUtyU3ZtOXYwRkViRFdU?=
+ =?utf-8?Q?RtZixTAXaD4NkGLzhld2oj6NE?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?Wkl5TG44YVNaRzNMVW9lSWFlL3pFSnFVU0tDNVFQZVFrbzlWTVU1Yk81WE4z?=
+ =?utf-8?B?TDRVamIwMnF4Q1BKSURaSFBjTWhwODlOaXV2L1dDc01YZTFON1JGZElTblVt?=
+ =?utf-8?B?R3J6Yk9kUERzaUYrWk51VTE4TUV6OExHYnIwNjNvN2tMRlNILy9PUUdUQmRu?=
+ =?utf-8?B?blNXclNVc3hJSUtBTGI3WXUrVDRoUGVOOHo5VWc3UDVOZmdmckQySzBXckZZ?=
+ =?utf-8?B?SWh6RG44NmIvRllQVFNXLytPbE84L2M1TnhKNmpveW0rd0lzWk5XQ1diL2JR?=
+ =?utf-8?B?VWlSU0dEbE5vWGJzVXFFK1JLK1BtV3AzRWo1cksrMjRqd1krMmdLQTB0NXcw?=
+ =?utf-8?B?eVN1eEVEZmtRUnY5QmgxQVU4Y0cvT2hPTi9GZ2hVclFXNkxyK0xmclp2WGd3?=
+ =?utf-8?B?OWtrZ2NzbXBQQU91bkp1MTF6UGVzNlRMVnZiOGJMWEduTTVEZ1lEeDdhSFF6?=
+ =?utf-8?B?ZkpiZHFOcVQ1dXhWaXkxTlN0eFJLNjVMLy9udG5seTVXdFFyd05pbUZKR2F4?=
+ =?utf-8?B?UG5OYjNZVG5BSEVGNkpJV3A0QWFZeHhZcGZKNytuc2RNYk5JZGc0cU9GMU9z?=
+ =?utf-8?B?Rk9kenVqWGFPRjJ2bW5OeDJ0aVJWdmNuNXZHd0lKenJUV2VRanBkZlhGMnV4?=
+ =?utf-8?B?T3BPY3orZjl3TFFkNVhPY0tKT1locUk1dDVKbXdkZko1Uk1IdVRCcVFQNFly?=
+ =?utf-8?B?ai9SWlk1TEpQZjJJRHU0VkorVmJ6VWY3dEFOV1RCR3FNREIrQ0RmUXFCcVhK?=
+ =?utf-8?B?R2VwMnlrR3JmYUp3c2FYUmNYQ21RZHR4VmZVcmRWcGh2VzBnWFE1djlZOFZQ?=
+ =?utf-8?B?ZTg3clZ4dlMyY2NTdE9JYmd3YTI2OCs0UDdEY2dGUmVySHR1QmJEcTZQbkR5?=
+ =?utf-8?B?eitDZ0t4K24rOUh2RHovNlUrWDN2KzRWNVdQYXU1M1VlOXFnUzJZWWhLSlZl?=
+ =?utf-8?B?RVhDL0RwSmcvc2xGdDlqWWs4WjVtRFI1eUZIWFVGZUFLbDBnaGtYbXExOWsw?=
+ =?utf-8?B?UGgrM2xqalhIbmRwSHhWMkVVM3cxZkNBMzJrSFNlaitYbWt1T3BFR2VFTjlv?=
+ =?utf-8?B?VWtPQ2t2ZDArbEV3QjNlZUtrMFgzZXRHU21WUTdTVGVjREIzbnA2ZUw1dGc1?=
+ =?utf-8?B?Zzh1QjJUdzBGMFZtNXMyejF3WVpLTUR5WTU3eitmcXJnajN5ZVZabzZhdHNB?=
+ =?utf-8?B?S1RzbXpOZGlJZmJ3UkpXN016NzlVOTdwWFBib25mSGJxRjJudHR1bEh1OHU4?=
+ =?utf-8?B?MEtJZGZYS2ZUQTBuWDNXQWExMGxFVGFhK3pnZGhjeTczU3dDbmtVcjMwM2Jr?=
+ =?utf-8?B?Y2M1SkZJZzdaQXZDWWsvanBDTnBGSzZLeFZUMzBYVVZUMWtZLyt4Ni9lSWFh?=
+ =?utf-8?B?TmZYdG5iNmdHaHlscnRFZE0wTktpc1J2U2dZQlVGdW04RGRtb0tHZHhiVnlj?=
+ =?utf-8?B?VkpPcVpXUCtwMDJGaWF5NVpCRWV6NHVwbmVndEVqNXNIQVhHcGVoOFBKV1R2?=
+ =?utf-8?Q?xvexXg=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4da487d2-2440-4407-29c5-08db8ce805b8
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 08:19:50.0327
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 08:20:36.1372
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KeioAlDxrCBSHTG6n0IbAc+v1eByCx97RWJR7/iDubi96rEMxDPbVKpaL4RI7QLpDwalFjxv7um6mEoxWmAq8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8793
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: D3S+t5IDN+p+wcei5Zjr09HIKNc+QdLnn2oBmgzL6s8mf770enF2WIhv++RI7Ao4e9EwjTPYC9eudGcKMNymrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5558
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_04,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307250073
+X-Proofpoint-ORIG-GUID: _2Kawaw3ojXwn1tiPFbBtu6OI-kCqVL8
+X-Proofpoint-GUID: _2Kawaw3ojXwn1tiPFbBtu6OI-kCqVL8
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23/07/2023 09:21, Jing Zhang wrote:
+> The jevent "Compat" is used for uncore PMU alias or metric definitions.
+> 
+> The same PMU driver has different PMU identifiers due to different hardware
+> versions and types, but they may have some common PMU event/metric. Since a
+> Compat value can only match one identifier, when adding the same event
+> alias and metric to PMUs with different identifiers, each identifier needs
+> to be defined once, which is not streamlined enough.
+> 
+> So let "Compat" value supports matching multiple identifiers. For example,
+> the Compat value {abcde;123*} can match the PMU identifier "abcde" and the
+> the PMU identifier with the prefix "123", where "*" is a wildcard.
+> Tokens in Unit field are delimited by ';' with no spaces.
+> 
+> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+> ---
+>   tools/perf/util/metricgroup.c | 27 ++++++++++++++++++++++++++-
 
+Why only support for metrics? Why not support for regular events 
+aliases? I would have expected pmu_add_sys_aliases_iter_fn() to have 
+been updated for this.
 
-On 7/25/2023 1:21 PM, Manivannan Sadhasivam wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Thu, Jun 08, 2023 at 03:06:52PM +0530, Vidya Sagar wrote:
->> This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
->> support for 256 Byte payload")
->>
->> Consider a PCIe hierarchy with a PCIe switch and a device connected
->> downstream of the switch that has support for MPS which is the minimum
->> in the hierarchy, and root port programmed with an MPS in its DevCtl
->> register that is greater than the minimum. In this scenario, the default
->> bus configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't
->> configure the MPS settings in the hierarchy correctly resulting in the
->> device with support for minimum MPS in the hierarchy receiving the TLPs
->> of size more than that. Although this can be addresed by appending
->> "pci=pcie_bus_safe" to the kernel command line, it doesn't seem to be a
->> good idea to always have this commandline argument even for the basic
->> functionality to work.
->> Reverting commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256
->> Byte payload") avoids this requirement and ensures that the basic
->> functionality of the devices irrespective of the hierarchy and the MPS of
->> the devices in the hierarchy.
->> To reap the benefits of having support for higher MPS, optionally, one can
->> always append the kernel command line with "pci=pcie_bus_perf".
->>
->> Fixes: 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte payload")
->> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> 
-> I know that this patch is merged. But I happen to test a similar change on Qcom
-> platform during a patch review and found that the PCI core changes MPS to 128
-> when a 128byte supported device is found:
-> 
-> [    3.174290] pci 0000:01:00.0: Upstream bridge's Max Payload Size set to 128 (was 256, max 128)
-> [    3.186538] pci 0000:01:00.0: Max Payload Size set to 128 (was 128, max 128)
-> 
-> This was just randomly tested on a platform whose Root port DEVCAP was 128, but
-> it shouldn't matter. And I didn't change the default bus configuration.
-> 
-> Wondering how you ended up facing issues with it.
+On the basis that we will support regular events aliases, we need perf 
+tool self-test cases for this in tools/perf/test/pmu-events.c (I think 
+that pmu-events.c would be the most appropriate file)
 
-If the endpiont device that has support only for 128byte MPS is 
-connected directly to the root port, then, I agree that the PCIe 
-sub-system takes care of changing the MPS to the common lowest MPS, but 
-if the endpoint device is connected behind a PCIe switch, then the PCIe 
-subsystem doesn't configure the MPS properly.
+Thanks,
+John
 
--Vidya Sagar
-
-> 
-> - Mani
-> 
->> ---
->>   drivers/pci/controller/dwc/pcie-tegra194.c | 13 -------------
->>   1 file changed, 13 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
->> index 4fdadc7b045f..877d81b13334 100644
->> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
->> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
->> @@ -892,7 +892,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
->>        struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>        struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
->>        u32 val;
->> -     u16 val_16;
->>
->>        pp->bridge->ops = &tegra_pci_ops;
->>
->> @@ -900,11 +899,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
->>                pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->>                                                              PCI_CAP_ID_EXP);
->>
->> -     val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
->> -     val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
->> -     val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
->> -     dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
->> -
->>        val = dw_pcie_readl_dbi(pci, PCI_IO_BASE);
->>        val &= ~(IO_BASE_IO_DECODE | IO_BASE_IO_DECODE_BIT8);
->>        dw_pcie_writel_dbi(pci, PCI_IO_BASE, val);
->> @@ -1756,7 +1750,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->>        struct device *dev = pcie->dev;
->>        u32 val;
->>        int ret;
->> -     u16 val_16;
->>
->>        if (pcie->ep_state == EP_STATE_ENABLED)
->>                return;
->> @@ -1887,11 +1880,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->>        pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->>                                                      PCI_CAP_ID_EXP);
->>
->> -     val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
->> -     val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
->> -     val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
->> -     dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
->> -
->>        /* Clear Slot Clock Configuration bit if SRNS configuration */
->>        if (pcie->enable_srns) {
->>                val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
->> @@ -1900,7 +1888,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->>                dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA,
->>                                   val_16);
->>        }
->> -
->>        clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
->>
->>        val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
->> --
->> 2.25.1
->>
-> 
-> --
-> மணிவண்ணன் சதாசிவம்
