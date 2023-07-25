@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC0A76182E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD46761830
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbjGYMYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+        id S233451AbjGYMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjGYMYa (ORCPT
+        with ESMTP id S232649AbjGYMYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:24:30 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D44A7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:29 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-55e04a83465so3372255eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:29 -0700 (PDT)
+        Tue, 25 Jul 2023 08:24:39 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A09610FA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:37 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso8540947e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:24:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690287869; x=1690892669;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kve4jx7ReQhde16/FoVsZesS8+jqJSZYCG0fCxTXQe4=;
-        b=BUdASDm4L7I/nH/6P2GFYDldc2V0L+IaPrx6emzWG24NRr/q9OznBLL35DpATeow6L
-         KEdMaM2LBeLnVEiQlePKzhiI1ytvaE0fKbbYO62ajQXlGsgh6Z2C3J3dONoC5SXBByNN
-         APW1HMTjKoYv/Yi5UCuVoxz1rtw7l6rmdlnj+d+FhfzjKiDeWllN8LlGIFcPYmwjw4Gi
-         bC4KlmXRqgGWERrWVXMQknfyW/y8+YaBsR7oEJuanfa4S+g9UkWmN/CriluOY1A5Ej+A
-         KsO92xZhbl1NmyVTO2GmUjMec+KcoE9p6P8PNOKOuSqgrrc1e9ZpyRb1+kO/L/MJzrA0
-         nCPA==
+        d=linaro.org; s=google; t=1690287876; x=1690892676;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ks3nUOn/9qR1jrhxbqY2QCJrSfWExHFhLwuG1z7B3TE=;
+        b=oG/p44haSlMMr+HRlqE79VaQqZhwEwmSo8ZjOOxune3yqh629GMwSMWSfjhBRB6e1N
+         Ty+ROSaV6OoS+5cfAdwcbR95051XyeG62lmnXUG5w3qZ+zOQtg5qQjfL+4WJDxj78FFu
+         OFMo5tqWAXhiRMT6YtLLFlxatsASqPfnU0ENTThzCY6Wm9Ojz4JrWgVquG0QToNSLubx
+         121/JSosd5nylMRCQ8nabStMWVBxe4A8MnsaqCqMH5g+9cQJ3S9SQ71cnWg/XON5GSny
+         MIphdr8uB18GYn4a7e85ZU/DHzuPYZ/d+rNC/Xlmh/E7Z11Vls1o6jQny4kJnAcuS+/Q
+         jXqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690287869; x=1690892669;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kve4jx7ReQhde16/FoVsZesS8+jqJSZYCG0fCxTXQe4=;
-        b=aefoJYwo3AzQ+sukFxyj83ir4BzAgWl3psCZYFhjOgon+n4AsrKtzBb0Y56/jPWnMC
-         S/HXI8AfIx53LAxKNhZ2/nwtrUmWBVlwiSwkzoqXF8++Brd3ZaNqa2XAQFFk57NETB/l
-         ED1Ah6WlazZ8hiBDL1l2VyjAi5CYRANXXor73lVfy4fNyqnQZRP5rlq6tDyZCbQyKTIQ
-         Zknn0WmSTP6xspRrWAJDuphfIKmP2W3QMaLWGAR2fVCpacHVhnIZy/sQMou5RgjcxH3E
-         J2SR3wsEZYZAyjp6p4Z5cYaAJW6qI928JVMpqvovjAebk8nluP0FYNlb9krRWvPZqGRl
-         1RzA==
-X-Gm-Message-State: ABy/qLZYG3K7nwnT5ORYn0YTQyEsteSaBfOHcC8Kti7KRgXxGBV+LN5Y
-        ZAj4kI51xwA8+jhB09spBABg7KWdmqkODGMN02k=
-X-Google-Smtp-Source: APBJJlG3A+jKNwnMLaIZg8XIsbVbDClcZ+SMnUBZMBXtHKypLM9zYROjU/6cE8bwVSEDNErCj/cXYWZbNfgOAlDTArI=
-X-Received: by 2002:a4a:760b:0:b0:566:f0ee:1d9e with SMTP id
- t11-20020a4a760b000000b00566f0ee1d9emr10345927ooc.5.1690287869256; Tue, 25
- Jul 2023 05:24:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690287876; x=1690892676;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ks3nUOn/9qR1jrhxbqY2QCJrSfWExHFhLwuG1z7B3TE=;
+        b=cXvSZnh7h8RpZWRfegiyN2YYYwhp8MyBMCUlRDzKZmqTZdLqBsVfbuJ2HpY7IqXwlc
+         HGROv/ldUtU4g47ke7OY4iG+OsopbuI1J51U6HdWIUKfqOmBkAxEtiPeDA6jQmVvnRUX
+         07RWcLow735m4jgSMRjkam9DhP4iUBzBEsGoFw8h1ll9f2SjjyZbBrvkkRI/neuAdh7w
+         Zr0bxfbmUGW/pd+Difza5Q8Wk46EttxWMVmUMfR3UpSC7o4P6R/IM0+QS8b7rjuBLotr
+         ECcCjzInPMKk+paneJ3piwCYUR68scPC4Hu01R+ZHcApo+fujMUWdzHT9ZY5U5jqE2W3
+         fpjg==
+X-Gm-Message-State: ABy/qLb0oOxYjFD7t+me78I5nK5Mg5jw2x1Wcl3skLGD054O4zdSiU3n
+        i99ADVLWTbaOk4UKtNsuYeiv0g==
+X-Google-Smtp-Source: APBJJlGqYyD2TAEiCN22VeSTnnKHBifqwY0pQj3pRX2YJUU6lNpsvdxSXZzil9Y7DBLk3s87zMs/hw==
+X-Received: by 2002:ac2:5e2c:0:b0:4fb:92a9:cbe8 with SMTP id o12-20020ac25e2c000000b004fb92a9cbe8mr6559105lfg.18.1690287875901;
+        Tue, 25 Jul 2023 05:24:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id j11-20020aa7c0cb000000b00522274c3775sm3771264edp.68.2023.07.25.05.24.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 05:24:35 -0700 (PDT)
+Message-ID: <c6e8c950-9d1f-099a-b48a-2b838ed04ac7@linaro.org>
+Date:   Tue, 25 Jul 2023 14:24:32 +0200
 MIME-Version: 1.0
-References: <20230713071713.5762-1-xuewen.yan@unisoc.com> <20230725-hemmschwelle-braten-481527898001@brauner>
-In-Reply-To: <20230725-hemmschwelle-braten-481527898001@brauner>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 25 Jul 2023 20:24:18 +0800
-Message-ID: <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
-Subject: Re: [PATCH] pid: Add the judgment of whether ns is NULL in the find_pid_ns
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, jack@suse.cz,
-        keescook@chromium.org, peterz@infradead.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        di.shen@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 1/4] ASoC: codecs: Add code for bin parsing compatible
+ with aw88261
+Content-Language: en-US
+To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
+        rf@opensource.cirrus.com, shumingf@realtek.com,
+        povik+lin@cutebit.org, 13916275206@139.com,
+        herve.codina@bootlin.com, ryans.lee@analog.com,
+        ckeepax@opensource.cirrus.com,
+        ajye_huang@compal.corp-partner.google.com,
+        sebastian.reichel@collabora.com, yijiangtao@awinic.com,
+        trix@redhat.com, colin.i.king@gmail.com, liweilei@awinic.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     zhangjianming@awinic.com
+References: <20230725115649.67560-1-wangweidong.a@awinic.com>
+ <20230725115649.67560-2-wangweidong.a@awinic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725115649.67560-2-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 4:49=E2=80=AFPM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Thu, Jul 13, 2023 at 03:17:13PM +0800, Xuewen Yan wrote:
-> > There is no the judgment of whether namspace is NULL in find_pid_ns.
-> > But there is a corner case when ns is null, for example: if user
-> > call find_get_pid when current is in exiting, the following stack would
-> > set thread_id be null:
-> > release_task
-> >     __exit_signal(p);
-> >         __unhash_process(tsk, group_dead);
-> >               detach_pid(p, PIDTYPE_PID);
-> >                   __change_pid(task, type, NULL);
-> >
-> > If user call find_get_pid at now, in find_vpid function, the
->
-> I fail to see how this can happen. The code you're referencing is in
-> release_task(). If current has gone through that then current obviously
-> can't call find_vpid() on itself anymore or anything else for that
-> matter.
+On 25/07/2023 13:56, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+> 
+> Add the awinic,aw88261 property to the awinic,aw88395.yaml file
+> Add aw88395_lib.c file compatible with aw88261 bin file parsing code
+> 
+> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+> ---
+>  .../bindings/sound/awinic,aw88395.yaml        |   4 +-
+>  sound/soc/codecs/aw88395/aw88395_lib.c        | 194 ++++++++++++++++--
+>  sound/soc/codecs/aw88395/aw88395_reg.h        |   1 +
+>  3 files changed, 181 insertions(+), 18 deletions(-)
 
-This happened when user calls  find_vpid() in irq.
+Bindings are always separate patches.
 
-[72117.635162] Call trace:
-[72117.635595]  idr_find+0xc/0x24
-[72117.636103]  find_get_pid+0x40/0x68
-[72117.636812]  send_event+0x88/0x180 [demux]
-[72117.637593]  vbvop_copy_data+0x150/0x344 [demux]
-[72117.638434]  dmisr_video_parsing_mpeg12+0x29c/0x42c [demux]
-[72117.639393]  dmisr_video_parsing_switch+0x68/0xec [demux]
-[72117.640332]  dmisr_handle_video_pes+0x10c/0x26c [demux]
-[72117.641108]  tasklet_action_common+0x130/0x224
-[72117.641784]  tasklet_action+0x28/0x34
-[72117.642366]  __do_softirq+0x128/0x4dc
-[72117.642944]  irq_exit+0xf8/0xfc
-[72117.643459]  __handle_domain_irq+0xb0/0x108
-[72117.644102]  gic_handle_irq+0x6c/0x124
-[72117.644691]  el1_irq+0x108/0x200
-[72117.645217]  _raw_write_unlock_irq+0x2c/0x5c
-[72117.645870]  release_task+0x144/0x1ac   <<<<<<
-[72117.646447]  do_exit+0x524/0x94c
-[72117.646970]  __do_sys_exit_group+0x0/0x14
-[72117.647591]  do_group_exit+0x0/0xa0
-[72117.648146]  __se_sys_exit+0x0/0x20
-[72117.648704]  el0_svc_common+0xcc/0x1bc
-[72117.649292]  el0_svc_handler+0x2c/0x3c
-[72117.649881]  el0_svc+0x8/0xc
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
 
-In release_task, write_unlock_irq(&tasklist_lock) will open irq, at
-this time, if user calls find_get_pid() in irq, because
-current->thread_id is NULL,
-it will handle the NULL pointer.
+Best regards,
+Krzysztof
 
-BR
----
-xuewen
