@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91056761FC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F99761FCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjGYRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S231698AbjGYRId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGYRHl (ORCPT
+        with ESMTP id S229541AbjGYRIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:07:41 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B18FE
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c79a5565aso2640717a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
+        Tue, 25 Jul 2023 13:08:31 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2110.outbound.protection.outlook.com [40.107.237.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AC91718;
+        Tue, 25 Jul 2023 10:08:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b6GicnA7tR3iISIjbioiq4A8Uhs7hvfVAw7YNu6jz4PAH6nGsbwrGh2aeF9+W9Gywa3sIRfUsdZt0P9aw2NMhCnrG9bePi95jsyEP6UpdquQ+N5kgUjvVBrK8cw4fSYKTQtKWS0RHbzOOdHho0A9kzyedRHrZ2u+i6wtQ+ji3eCzUqaP697v+GTrGkp3Spa/TKq0hxO1+JBVCx3ZHm5gkMCzPE2wBVv6NgU0PsAuGm5sYzLdrnRf/bOKxKUCTMVGWv+3TkpPSFAL2i1RAOJS51+EHJKFMO8kF8LQFOILFRW3z1DBfFXSCY02d3piuxO1P1ExyMuNlyHCukwOEP1eHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4tO+TGPrtO0DLXfh1FUnARDvYC806dwOsH6nYjEdVAg=;
+ b=Zi/NopD3cwNqA1I5mV+lz5xKCjlhuM7jZJvK2xZFn1JnogbcYQh60g9OGQ/RS1YS2xWzBca6kfH8642xrtvoxCWgAZy4NCTV34p/rfJcQFa+yYaRyRPKbwXVM8FYkXRsw+Mo6xpHbGzY9OcRGml1Beg48Kgzn8FVyWMK0s5q/1Kd+tNtBjEMcNkoT5G8KwlnQQd7bBEfP0olCaBzof2IJy3cz1JHyk1sAhnOG6Xywa9bQVQDorfBS0xLA/2EuQnsuA+wSWv+O/bW7ukuUWuQ7Xj9091mma3pK2NLpnmM3NZ7VBB3QJe/NUfyQl6wQUwL8QIeYT7msanfyeAVH36KqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690304859; x=1690909659;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
-        b=YYBgqqNMeO+qTKuQPbqUC7IDLnv4u0Q6/fZRrhVzRrD1vQJLdYUBl9fwaXsv2osqhb
-         mUL26l3vMZXHCIiWM5kdv45k+KqE2mtH+HToDMZ/s9V1G6hRsLM1vZ/2z8h/J0aStSJZ
-         AYbrJqXwvQr21fQWicMEugqbDDiQFNg/ErYyvJvdVca4ig7YnXp+IMFCtssrcA1TXfa3
-         Hb6ImsLjF0aw8W3BUIm19fhfKWZpKyw2OoUI2AX4jWXMIjhYF0NQvfGbWrGkuBkd2qWs
-         JWoLs5i5tIz2eq33yKup8BRZY/HiSg/1fpQzARS/pO2cQVqwVWtUBJG7oV3kD44W2Ufl
-         F21g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690304859; x=1690909659;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
-        b=hZlAM7GWPeOqptruRxNQiBuV+rgEgBTi2N/Z3L/vLz5S1G+7MCrREr80qksMORcDL6
-         loKUTncBPi1KGjQuhKIZsehE4+dl+pe99NAo6csd83kvoc8DZiq0plUQ5wSnG+UZbIHz
-         4/gOUIdGivFNqPCdWdrCfoiORySzm9C+845rOP75Kz9p39oIIpXXtrq3wXZ8ztvvjYid
-         7+T8cG+pavQ5lPJ9YsLYYGTTWYqp5K+oArBgD7WWHOnTiYyrrkro3yVlgt820oUqtidf
-         vwRi8Tz8KQliC/j5HZNyp1L+kKsGS/ik9d2O2PspjUrApA7xk1vZTkJ+4qvqqkWKRjCA
-         RKNg==
-X-Gm-Message-State: ABy/qLbsAfRjh1fXKBu1PaVQESq+3LGxxfbaW9U3fxmd4JxzuH1kZV60
-        2fuYTyFZ9nNazpwB97ICIgdq3ps=
-X-Google-Smtp-Source: APBJJlF8ZssWRYSd7JTzlSp3mXs+ZIaAfSkYXZUzHMiFu7ahRQCi+Z+0gx3cYs8KCZ5sHVO59ZX5gy8=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:67d8:0:b0:55a:f882:137 with SMTP id
- b24-20020a6567d8000000b0055af8820137mr53902pgs.5.1690304859273; Tue, 25 Jul
- 2023 10:07:39 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 10:07:37 -0700
-In-Reply-To: <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
-Mime-Version: 1.0
-References: <cover.1690255889.git.yan@cloudflare.com> <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
- <87v8e8xsih.fsf@cloudflare.com> <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
-Message-ID: <ZMABWdaR5/JbBld3@google.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4tO+TGPrtO0DLXfh1FUnARDvYC806dwOsH6nYjEdVAg=;
+ b=ZweIwsg0R+z3tcf7gA4OOF5kl65ch+vP0dE15U5IVu4XXKU9CJWTEzzBm1kB+zqKUS06iumR8k+wliTif0ihHMOKKhrHAtuNgc183QCJ4Q/JVPWkw6qlpteiMBr/yJ2zOpQI7Vzpil3qqkemV4FAA6wWQcGQOU3mudIvKlQN8Cg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SJ2PR13MB6142.namprd13.prod.outlook.com (2603:10b6:a03:4f8::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Tue, 25 Jul
+ 2023 17:08:24 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 17:08:24 +0000
+Date:   Tue, 25 Jul 2023 19:08:15 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Jordan Griege <jgriege@cloudflare.com>,
-        kernel-team@cloudflare.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        George McCollister <george.mccollister@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] net: dsa: Explicitly include correct DT includes
+Message-ID: <ZMABf//vsLIOi7dx@corigine.com>
+References: <20230724211859.805481-1-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724211859.805481-1-robh@kernel.org>
+X-ClientProxiedBy: AS4P190CA0023.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d0::9) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SJ2PR13MB6142:EE_
+X-MS-Office365-Filtering-Correlation-Id: 76dd1c8b-2ad3-4890-4e0c-08db8d31c14c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9DYmqTbsp889tpMlwwDv2OTtCbOQFqnRtmtO4F/xD+1+7cYuP8K5ERgWtwh6tQh1K51Sk6RVZ7R9ZnDaQejkEPc5B1kFKp8mEGssgCF3ByEfXyTnDCLsO56w2cNl1/t04QNpAGCQDbOYQUT+MZBPrhXsXLqpWYD/rr72UBKkPyLbEsLL7tAsvRJ7CXP4huhuAtbhncveH9d51UDYE7taL5+mXKDGpy5J4Iqhtx27EpFjq+Ts+S4gQegiVa2avDH0RxRbsNEGYUZbvI4OSCdmLuMH1SsRvnApsWJXp3RRIInd4KOXRVMC6p/4ZAawOx4L2HDV3RJ0uZqcw1BvfpMy88xN0PMAl31nJThInrhgUJ4aJPUQUdMIynjVjtpwnGQdawgrTz0jOVDZX50vW6zAdctjaIU7YsMyaoDzwEP2wUPx/pZRAQkZA0zsM6LLs60eZt9Bhs8OVsQwrfXMeLc+kvwr+bnEngo3DhRRSLJe50TIfpbyycjWIXnMaQN8PzQcqn3wA8kOL63Y0pUAHUNaisRggS5zhNs1dPIjyUtYi3qMtVWhVNmJj7M7AdoRlkoqAODbrFpwJBjfJXdjDvaK7hbBfD/RHgJhjBafXdeG0Ow=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39840400004)(376002)(136003)(451199021)(36756003)(86362001)(6486002)(6666004)(66946007)(66476007)(478600001)(54906003)(6506007)(4326008)(6916009)(66556008)(5660300002)(6512007)(44832011)(2906002)(8676002)(4744005)(41300700001)(316002)(7416002)(8936002)(38100700002)(186003)(2616005)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mKTdqUGXvdWWw9XaSeqq0eYgFOZzR6rF/rw86+pgSharSa9pTBvcWkhx1/Sn?=
+ =?us-ascii?Q?lPT/lqdHkj8A61sv7jBum4DwzyOLV+Cet2aGvj5xK0q16Hj9uCaf6iRFbyux?=
+ =?us-ascii?Q?zQI+LWO0jv62qv8yvqY3NZUqRueVZV0s5AOlmIQl2yDXqBMr4RsoSMnOf6Yj?=
+ =?us-ascii?Q?s5jTem9mO99sM+dE9ho1WHSH57DPafkOWO8rlxlGRMGF2nzhZW8wlUOIudtv?=
+ =?us-ascii?Q?3bqjNDb+t6mFg+tvSEBT7/zg7n3ysbj7SdYxZ+Irn/XlfnOpU8XF9SH9vEly?=
+ =?us-ascii?Q?91o3rchGRa2slBm46lXeee9UAKF5atb17hy8v7dOYApruncdVQIKun3Fer9n?=
+ =?us-ascii?Q?Q4U237Do6V3gK3z3FxyNIaAqBhD0tyITihSnLTkEv51QLqCiaQzvRB8tBBEv?=
+ =?us-ascii?Q?4X2SnyV6f1EtofR+6GuD5DFOW1nwjl9UpdepD3Vqo92GNDS4TevTGMnQQiZJ?=
+ =?us-ascii?Q?mK+PvOlpR/uCViF42r3+zupK/z5eeKACVndl71DtlkXCpUmfnClfQnN9BVGW?=
+ =?us-ascii?Q?aWz0i+fzHLS+CwcbJR1W/Q3ykWnx5m8F/pl3qg8godBVFpNzBs/INqwso3qJ?=
+ =?us-ascii?Q?6lcpu6KkTslb3vrA/1js4TRmASOWtosUO0so6iahMfvJnmN8JRKeOXWZ3syu?=
+ =?us-ascii?Q?c/DZMEdj6ePVRPVGc87A/JgUK68qnNCog3kCoJ2NDfyr4q5kDrVi5obiQu6n?=
+ =?us-ascii?Q?IyQmgv2yHbxlbUmJ5ic0q/A+Neer4Bd+rylXXOpOW/POaHPhrQdiS16N20/J?=
+ =?us-ascii?Q?6hPbgFxgaZAD2DIrHaiPsEyhVuVD3JEttcfZJW4SWlUz30Q0Tp+jiy/E4v4K?=
+ =?us-ascii?Q?5YzBNPSGk0XWJ3uTEkiyJfNV4pDFiD0REsxJYXkBsXbdcTz/gdUakd0BAUYc?=
+ =?us-ascii?Q?HwMmrlO5AHnDEA50T/uQgITP6KAdyy+D9LEfYUIKwzqy4wwklQW7WKs2glWH?=
+ =?us-ascii?Q?MFgyWDLG4UnLO+ZLk8ujocdA6KVUpUX3HsT+Xo1gQ336hTjIPTXO7/IM5wZA?=
+ =?us-ascii?Q?uYJNBVaaX1ZJhc/B4TDNu+z8nBDP2kdRUFJxfg71oM+/ZO2AmLAx7PBRq7yb?=
+ =?us-ascii?Q?Xv1smuCljYXokMqQmKXNYOUU4uPPY7WwPuGI9tpaYGrh1x9dhvLlu4krXUYN?=
+ =?us-ascii?Q?Xqi2k6xCKFjHQI2ymaKSUNcgLdE68RlHkIH8P40by5ZIRSRrDbtGpAUElkfz?=
+ =?us-ascii?Q?WoeTfjyFr8ntFcShGP7y69VBq2eoVWb6bZOnCbVYSYx57K2E+8EGxYXUySNd?=
+ =?us-ascii?Q?UgFV7CZNN3RQ2vKCNpbhxZ/VrtIP8m2CW+NHXBHGN57q+tmP/GgTf5i59vTP?=
+ =?us-ascii?Q?6buC6QkH7/MG/REKmaYrMtE0N8po7EexurjSqK9jqB47xu0K4U8YYozyxDr1?=
+ =?us-ascii?Q?Q5ftMhl6rVhWGXeoY+oFxqa42rS3o7Q+BWSpOodBhNMQCw/sXYhACJz7AXo0?=
+ =?us-ascii?Q?NZMZRTDfMFUwHrSW9r8bjJO6XE/7uCiGoOnBeyW5QF+E+ShN4byJrUGPBU+7?=
+ =?us-ascii?Q?lXmCBCrTKHRlazMHPUVqD7fb2d0dD0jB5rBo46kw77ht8LStU75dqsEl/OEl?=
+ =?us-ascii?Q?oP9OnNxw/z+buT2R/oghmAoEQe2L8EBaJIbNY9PKeyk05XqVnouvO3kMiGW5?=
+ =?us-ascii?Q?hySRBDRTvMnHseQajeTxiK2uynE+nI8s90i6wxcc//ey1kAIXb3IzoDGu+1h?=
+ =?us-ascii?Q?L3GQNg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76dd1c8b-2ad3-4890-4e0c-08db8d31c14c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 17:08:24.0920
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JFJ314jghfEB0l00psFDLhSTQ+ffzb9Y9VM5kI8SOvfiu53zb9NOeu9HPCp4POfeMSBL2GVZ/are6iJap/JRtcJq+5DqOmhhKyG40045SFw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR13MB6142
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,103 +140,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/25, Yan Zhai wrote:
-> On Tue, Jul 25, 2023 at 4:14=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.=
-com> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
-> > > skb_do_redirect returns various of values: error code (negative), 0
-> > > (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DR=
-OP.
-> > > Such code are not handled at lwt xmit hook in function ip_finish_outp=
-ut2
-> > > and ip6_finish_output, which can cause unexpected problems. This chan=
-ge
-> > > converts the positive status code to proper error code.
-> > >
-> > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > >
-> > > ---
-> > > v3: converts also RX side return value in addition to TX values
-> > > v2: code style change suggested by Stanislav Fomichev
-> > > ---
-> > >  net/core/filter.c | 12 +++++++++++-
-> > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 06ba0e56e369..3e232ce11ca0 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_le=
-vel_proto =3D {
-> > >
-> > >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buf=
-f *skb)
-> > >  {
-> > > -     return dev_forward_skb_nomtu(dev, skb);
-> > > +     int ret =3D dev_forward_skb_nomtu(dev, skb);
-> > > +
-> > > +     if (unlikely(ret > 0))
-> > > +             return -ENETDOWN;
-> > > +
-> > > +     return 0;
-> > >  }
-> > >
-> > >  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
-> > > @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct ne=
-t_device *dev,
-> > >       if (likely(!ret)) {
-> > >               skb->dev =3D dev;
-> > >               ret =3D netif_rx(skb);
-> > > +     } else if (ret > 0) {
-> > > +             return -ENETDOWN;
-> > >       }
-> > >
-> > >       return ret;
-> > > @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_devic=
-e *dev, struct sk_buff *skb)
-> > >       ret =3D dev_queue_xmit(skb);
-> > >       dev_xmit_recursion_dec();
-> > >
-> > > +     if (unlikely(ret > 0))
-> > > +             ret =3D net_xmit_errno(ret);
-> > > +
-> > >       return ret;
-> > >  }
-> >
-> > net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to m=
-e
-> > to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
-> > consistent.
-> >
-> In fact I looked at all those errno, but found none actually covers
-> this situation completely. For the redirect ingress case, there are
-> three reasons to fail: backlog full, dev down, and MTU issue. This
-> won't be a problem for typical RX paths, since the error code is
-> usually discarded by call sites of deliver_skb. But redirect ingress
-> opens a call chain that would propagate this error to local sendmsg,
-> which may be very confusing to troubleshoot in a complex environment
-> (especially when backlog fills).
->=20
-> That said I agree ENOBUF covers the most likely reason to fail
-> (backlog). Let me change to that one in the next version if there are
-> no new suggestions.
+On Mon, Jul 24, 2023 at 03:18:58PM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-nit: also maybe wrap these rx paths into some new net_rx_errno ?
-To mirror the tx side.
-=20
-> > It looks like the Fixes tag for this should point to the change that
-> > introduced BPF for LWT:
-> >
-> > Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-> >
-> Thanks for finding the tag. I was debating if it should be LWT commit
-> or bpf_redirect commit: the error is not handled at LWT, but it seems
-> actually innocent. The actual fix is the return value from the bpf
-> redirect code. Let me incorporate both in the next one to justify
-> better.
->=20
-> --
-> Yan
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+
