@@ -2,184 +2,622 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C42CA760C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB3D760C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGYHs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S232793AbjGYHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjGYHsu (ORCPT
+        with ESMTP id S232734AbjGYHmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:48:50 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2062.outbound.protection.outlook.com [40.107.105.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3C9D3;
-        Tue, 25 Jul 2023 00:48:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eBNzNfYm8QiPoE5c+2oGo75mJgR7k37EQOC7L3oGpahVIG4e6yYBDMWW+LF9AuSo3LRCU45lh3i57Bm1U1nlSsKT75F/AE6dXU4PiVD8I6toz6KVXOBazdauipKKJam14jsCKesm8n/ecERw89ULRb20eoaxGBbpECqiRZyaKTWaKMJFvvNwMveK6xmpM1WTmx6pctq6RfloSHQcV/5UYf5ZyCMb9K+7/Erq7SMGL+b3ZIrg3w75Hm5oL+9k2UFvkElHY7i4WBCn5oadiMS+apoWMHpSH2qqcJ4kGBuiRIBKFMg5KKfbnPqpJBlQvynuaU2ScqiFQ9GQD7nmb1QybQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KPD4r70exCIxlpDF9uRwDVRGKD216pl5ZxBnd5JxlTw=;
- b=L6sbhMZDUULwHHWF4tmw848GSEK7tmDIQ1DoIt7trcJPpm1Bo0Kbww2RsGoIW5izAVp7EBGWHEoKewC0niRO1zSBq9ZVCj2vrPJGvfBnhikmD27RX/MIdoC2PEok8kTsSeLDnJqfyJ0ZcGwQ0HbgYoHHvWVd5Na9uKAWlTThbg3o2NonS3ye0hGWpRkJ9MkvHaNwDXs1Bvb9QGleHaBaXxmiD0hPoEBwDxsfysaA4BXJPIwi0ZqYes4VIG9v4tMTat38XeAG4/VpbfQePui3nqyGxLAt3gDTTu/TqAvICs3TA1tE+rcHXZa3x3sTeXu/x3gq4dLgMtV5ZSGFE3mEPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KPD4r70exCIxlpDF9uRwDVRGKD216pl5ZxBnd5JxlTw=;
- b=W4bxqKsVQhpvaemDYyLxs3MZaWSwyBUR8SR1YDu9BXwmnxAJb+vUaTXUhhPE0PwZTIvnYBtTy/W3uSZbMx5hGN9fDJ6KQRPgAOM8z8fJtqfMuSvE+VMGeYUzyxP+7dxRoJle8szH6Qyd6djFqEEsSZdfe656+cUZnSD61WfElzQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by DB9PR04MB9380.eurprd04.prod.outlook.com (2603:10a6:10:368::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 07:48:45 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 07:48:45 +0000
-From:   Wei Fang <wei.fang@nxp.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        shenwei.wang@nxp.com, xiaoning.wang@nxp.com, pabeni@redhat.com,
-        netdev@vger.kernel.org
-Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: fec: tx processing does not call XDP APIs if budget is 0
-Date:   Tue, 25 Jul 2023 15:41:48 +0800
-Message-Id: <20230725074148.2936402-1-wei.fang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG3P274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::27)
- To AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+        Tue, 25 Jul 2023 03:42:05 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E4B1BFE
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:41:58 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so170436a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690270917; x=1690875717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hlNnKfkfmozpxDxsDZG+P6gLgjSC+znp80u8cLVVMJs=;
+        b=fiA8Mw5u9ygP4hyyyMu8E+TIBkgfkCZfVTFgdPm9FW8fQpP5td5Wy2jDcDCD7KxewS
+         wa3Sn6ptLg/Em4TA98Es0TQe1/KiZh0jaF7dYyf9tuQsZIZPRNA0cNt7QGzWkJvdc5AE
+         KB7SC2LO4nWT2yjkDCqy1KeQfq4VGnP04KR0CpplzHx7kt17mrdmXUbpeoUjOLZ6FOvm
+         N+jQKgySPyGrGxb0svFPmc8WRXmUYDifXZp+1rFjyAGZE1kk22Zb1Mb4ipvGBy80Pcnk
+         uGl5KJvMqQOpb07UNl4HCmjg/ZwJcp7Pd9ruPwgvVZcztwr2jhAnVpB/Hv/WTX95nTit
+         y6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690270917; x=1690875717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hlNnKfkfmozpxDxsDZG+P6gLgjSC+znp80u8cLVVMJs=;
+        b=C4caLT6XukWrPbRGGOd9T9AiSaXXytj3dw+DJdFvgaKO9+UcBdUEI0NjKW+JTLCzLx
+         R/nokkQGWB1R831ijM+KVyrWNB9cTz5q5Ur3hXDa/Qie55LN+idEoWB8iZi+BgaB2bRN
+         +Lnlo5lPd7W2AmlS3kSeQkeNF+XDq0GmCqNVmy0t2XqqOSjB166E2o2QcUBSOSLKQNGz
+         yTudO88+aAHl4Xm2dMpLunGalXssSaaDNeDT6+VMlv/NJQjveGQJeFlMb+0XyV7Lw6nD
+         kVfVjX+KyVlEHERQWi0fk/XqEDyGGcg0wZD275QEM8PzDidwDGft2Yn8YZTx7JyEZirw
+         6YRw==
+X-Gm-Message-State: ABy/qLbfAbbmJp3++dHmMLwR9nAII1s5sFh1/ZNqt/9Ct47QH6h5prvB
+        5UIPVK3dULU4iJVUUG4AsF7sOxmXWi/IoDK+Nro=
+X-Google-Smtp-Source: APBJJlGwL+UCQeuQIgQkZT3rilWDNThMLYExkpkfEqV784R0E2ZLmBZfwKgYFpXVX3+HaNl6GeTAzg==
+X-Received: by 2002:a05:6402:1203:b0:51d:d4c3:6858 with SMTP id c3-20020a056402120300b0051dd4c36858mr10467143edw.12.1690270917413;
+        Tue, 25 Jul 2023 00:41:57 -0700 (PDT)
+Received: from linaro.org ([82.78.74.213])
+        by smtp.gmail.com with ESMTPSA id l25-20020aa7c3d9000000b0051873c201a0sm7174188edr.26.2023.07.25.00.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 00:41:56 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:41:55 +0300
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, shengjiu.wang@gmail.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] clk: imx: imx8: add audio clock mux driver
+Message-ID: <ZL98w5g7dncQtmbD@linaro.org>
+References: <1690260984-25744-1-git-send-email-shengjiu.wang@nxp.com>
+ <1690260984-25744-3-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|DB9PR04MB9380:EE_
-X-MS-Office365-Filtering-Correlation-Id: 14b8500c-67da-43de-4eb1-08db8ce392c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fK1M4R17gxzSCHQ2sSaBD3AGU/MPH0snqv+khUu+q8JtyFine6zs+kahVJmTHyDC/kXcHIlmjRs9wjRBuxsAjbIc9VGvghHV5n/tBX0ok1tt/OY1Mc4xgiKwNXEj0503+Armv2nPt9D1pDOIq2c3Hi/Ys6q1b50ysjdV2fcPBwZXTJhkLAZe+U82JecIcUe/He7ezULrVwiG1u5o+0G8JKhLTRI6GcLXuH3wa8PBE3nOz/pECgpanmK+SllOHlOQSKevr0lO1MxzqrAzSTd0vSQVygVG2/ekP0B5nkEFKjF97so4YWOBqRAHbaCv8W2svDjYGRXT6YDhBfmQlIwjshjvhpqLCEzZKIqB0L43v7QpHIehIzlA/5zqEqRbRIDH0rKuQoO2+dJ8+fQVai20wY/zsKLRzW1fKeB39rwBC7zJc4o8e+pUM2Jtj1cQolJPg/TArZ7ac/cPClSlukxGRGok+pVeDM3akuRN31+ev9vR6qKYPihCvj7pM7addsQlnsEzKx+7UpFj5EaoJsepOk2K+fYObJOIvVBIuSYYxjQD3YXBP2d8jNH8l3TX3Ks5H0eSIDfNHobc4zl3CMPfp3Qpcwq4zSeKAHWoDtsT+dM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(39860400002)(376002)(366004)(451199021)(44832011)(8936002)(8676002)(5660300002)(316002)(41300700001)(2906002)(4326008)(66946007)(66476007)(66556008)(6486002)(6512007)(26005)(186003)(52116002)(478600001)(966005)(1076003)(6506007)(86362001)(36756003)(2616005)(83380400001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?59rnqVCw1/CzgwGphhXMleUXIoBjEOmyPehvXpYb4lrU0hgarjTCYMdvKrFC?=
- =?us-ascii?Q?thW4JzIQUNLWb2gJMA0zb1bVcnIn5kqpvkldx+NSmUL1bedvUNOPPOXIQwSY?=
- =?us-ascii?Q?mv/QIw08isCyqYbYSsQ3Y38yyMJ0V/R32qazAJZXHlTHmpGVGO8EkjCs4PHT?=
- =?us-ascii?Q?YwUxVSS8brfiDu9j8KvQixmbTmZV3CWau4eTfKnrK3MZVxCWeouDQvviRCUW?=
- =?us-ascii?Q?EPkwVB9smq4b380bKRWSw8deP4/5ATTBSHlWFM6zTTmWt8Qyr+EIUUP9rwuK?=
- =?us-ascii?Q?38cIE/WTIB5zZS6eYSr5iBjPpUc503lZU9b+BoupryldwCJDeuvRuGqEf9KA?=
- =?us-ascii?Q?N3zg1p6DokxKfvnABe2ynh395N5vfpbaNq5dHDGhtj7//GiihZxLnwv3dTRl?=
- =?us-ascii?Q?Kw9IngSDHnQk/2o9Rea73rULsLug58ybumtkzRdUHyKd8CBLCwOi1X7CjjpR?=
- =?us-ascii?Q?F6pxrAIwN4nvulpDMAtrW/ouNYG/F4bEWgHmU3dW4vx9RGTHSLu0/Ymtcvp4?=
- =?us-ascii?Q?k98Td99tHwOoZt8pCQ6VD7WixBc4z17Ji4GVMVaJK9EzzwX2hQ9LUC68/fgu?=
- =?us-ascii?Q?D2hp+Sx1Sw9pk6o6Ui68bsacXjQOJamPsocnG/dUW1QaRPsZUZJbfdOkQ7vw?=
- =?us-ascii?Q?ZYbwCg9neTl3X1vi6yYor8eJSLKvprU77dSuBeBgr/8y39Py8yrJCQ7O4J/g?=
- =?us-ascii?Q?bAq/n7BldJbGlhBFRbe3u6sj+44i8MvJGwuIjDKPD0I9lDPSuY5fteuwDlH9?=
- =?us-ascii?Q?v0olWITgU/8BV8NHlGSFQmexm01rnSMui5TR1CiWPMNtApKCA/kTXlk2ale/?=
- =?us-ascii?Q?iIflFWbTEJ8PeexB6W+KDp6+Cl1RgzDhn141QKUi9lCceGbMoMDMwiknPRX1?=
- =?us-ascii?Q?08zjRkZ61B4zfaxDWxbTmUQruMmz8JrpPy001YFHtUaIwlwclx2bP/+jtzDy?=
- =?us-ascii?Q?oXzU09YDMSfAksasJFUI2FT9nZ+ay7RPRr25Q9VUWZsLMm33KY32PGGxmfJu?=
- =?us-ascii?Q?Sy7yx9gBQ72uLJzEFSv58XF/UQmzPh9fAksY7EnMpdC+Turt9eKwF//gFykl?=
- =?us-ascii?Q?e8VWjZaoD3mxkPWa3fh/xKVBLXAJ1YZKcLD3keYAZdylypk+esg3whF3GwJT?=
- =?us-ascii?Q?EKVSoAbfaXREGExT08ZCtJ/lk6XDTnnB1XHwMX6t5zNMSlOMNUVGmInSRZ4Q?=
- =?us-ascii?Q?uXco4FDbtE4otpMXDD1xdff8H/nfcISTKuRJ1YexEdj+WSlS4e36u/vUyhOK?=
- =?us-ascii?Q?HLNz+yiFSLs+UWkPQdhe7qoKwS+DkwZ/GURnc4b8qXP2hRgnFstPMEjXDlli?=
- =?us-ascii?Q?Kv/3/9GaRDzEK1PS2HEuH4cv3SLx1CxS3yEC4MgzK9QAkX31iCalKvVaOZO1?=
- =?us-ascii?Q?6UCmroLmI2sYi2ZvNXU1ODoFt/qzX0EGoiQYK055e+J3VIApO1yVmMYuvgwb?=
- =?us-ascii?Q?RJznE6GPxFeesmK8QhfUCBr5p9NsYIcWJjwRCWiUqam1ZXKOAuO3vdeT+RI0?=
- =?us-ascii?Q?RMrugkANG2cE562O4Vcf/wy6wkl1vh9BqVfIsH78al7oGM8LvzicQ5a/gKZy?=
- =?us-ascii?Q?dTsYwFwc3gjm3upSAnvxkbLyECbrrq0PFO8M1xdZ?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14b8500c-67da-43de-4eb1-08db8ce392c4
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 07:48:45.3297
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WVY1jReBZ/nycXTnxFYvJDQ+alYIXgIeHMntSySbhxSRlf+uClu6RCFRJqeLiwdTgC0tTXIAXf+DQvEKJMf/sA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9380
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690260984-25744-3-git-send-email-shengjiu.wang@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the clarification [1] in the latest napi.rst, the tx
-processing cannot call any XDP (or page pool) APIs if the "budget"
-is 0. Because NAPI is called with the budget of 0 (such as netpoll)
-indicates we may be in an IRQ context, however, we cannot use the
-page pool from IRQ context.
+On 23-07-25 12:56:24, Shengjiu Wang wrote:
+> The Audio Clock Mux (ACM) is a collection of control registers
+> and multiplexers that are used to route the audio source clocks
+> to the audio peripherals.
+> 
+> Each audio peripheral has its dedicated audio clock mux
+> (which differ based on usage) and control register.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
 
-[1] https://lore.kernel.org/all/20230720161323.2025379-1-kuba@kernel.org/
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
 
-Fixes: 20f797399035 ("net: fec: recycle pages for transmitted XDP frames")
-Signed-off-by: Wei Fang <wei.fang@nxp.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
----
- drivers/net/ethernet/freescale/fec_main.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 073d61619336..66b5cbdb43b9 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1372,7 +1372,7 @@ fec_enet_hwtstamp(struct fec_enet_private *fep, unsigned ts,
- }
- 
- static void
--fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
-+fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
- {
- 	struct	fec_enet_private *fep;
- 	struct xdp_frame *xdpf;
-@@ -1416,6 +1416,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
- 			if (!skb)
- 				goto tx_buf_done;
- 		} else {
-+			/* Tx processing cannot call any XDP (or page pool) APIs if
-+			 * the "budget" is 0. Because NAPI is called with budget of
-+			 * 0 (such as netpoll) indicates we may be in an IRQ context,
-+			 * however, we can't use the page pool from IRQ context.
-+			 */
-+			if (unlikely(!budget))
-+				break;
-+
- 			xdpf = txq->tx_buf[index].xdp;
- 			if (bdp->cbd_bufaddr)
- 				dma_unmap_single(&fep->pdev->dev,
-@@ -1508,14 +1516,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
- 		writel(0, txq->bd.reg_desc_active);
- }
- 
--static void fec_enet_tx(struct net_device *ndev)
-+static void fec_enet_tx(struct net_device *ndev, int budget)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
- 	int i;
- 
- 	/* Make sure that AVB queues are processed first. */
- 	for (i = fep->num_tx_queues - 1; i >= 0; i--)
--		fec_enet_tx_queue(ndev, i);
-+		fec_enet_tx_queue(ndev, i, budget);
- }
- 
- static void fec_enet_update_cbd(struct fec_enet_priv_rx_q *rxq,
-@@ -1858,7 +1866,7 @@ static int fec_enet_rx_napi(struct napi_struct *napi, int budget)
- 
- 	do {
- 		done += fec_enet_rx(ndev, budget - done);
--		fec_enet_tx(ndev);
-+		fec_enet_tx(ndev, budget);
- 	} while ((done < budget) && fec_enet_collect_events(fep));
- 
- 	if (done < budget) {
--- 
-2.25.1
-
+> ---
+> changes in v7:
+> - none
+> 
+> changes in v6:
+> - change : to - for kerneldoc
+> - remove .name in clk_parent_data structure
+> - change .name = "dummy" to .index = -1
+> 
+> changes in v5:
+> - update copyright
+> - use devm_of_iomap
+> - use devm_kzalloc for clk_hw_data
+> 
+> changes in v4:
+> - fix the error for module build reported by kernel test robot
+> 
+> changes in v3:
+> - change compatible string from nxp to fsl
+> 
+> changes in v2:
+> - none
+> 
+>  drivers/clk/imx/Makefile       |   3 +-
+>  drivers/clk/imx/clk-imx8-acm.c | 476 +++++++++++++++++++++++++++++++++
+>  2 files changed, 478 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/clk/imx/clk-imx8-acm.c
+> 
+> diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
+> index ae9d84ef046b..d4b8e10b1970 100644
+> --- a/drivers/clk/imx/Makefile
+> +++ b/drivers/clk/imx/Makefile
+> @@ -32,11 +32,12 @@ obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
+>  
+>  obj-$(CONFIG_CLK_IMX93) += clk-imx93.o
+>  
+> -obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
+> +obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o clk-imx-acm.o
+>  clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o \
+>  				     clk-imx8qxp-rsrc.o clk-imx8qm-rsrc.o \
+>  				     clk-imx8dxl-rsrc.o
+>  clk-imx-lpcg-scu-$(CONFIG_CLK_IMX8QXP) += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
+> +clk-imx-acm-$(CONFIG_CLK_IMX8QXP) = clk-imx8-acm.o
+>  
+>  obj-$(CONFIG_CLK_IMX8ULP) += clk-imx8ulp.o
+>  
+> diff --git a/drivers/clk/imx/clk-imx8-acm.c b/drivers/clk/imx/clk-imx8-acm.c
+> new file mode 100644
+> index 000000000000..1e82f72b75c6
+> --- /dev/null
+> +++ b/drivers/clk/imx/clk-imx8-acm.c
+> @@ -0,0 +1,476 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +//
+> +// Copyright 2023 NXP
+> +//
+> +
+> +#include <dt-bindings/clock/imx8-clock.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/slab.h>
+> +
+> +#include "clk.h"
+> +
+> +/**
+> + * struct clk_imx_acm_pm_domains - structure for multi power domain
+> + * @pd_dev: power domain device
+> + * @pd_dev_link: power domain device link
+> + * @num_domains: power domain nummber
+> + */
+> +struct clk_imx_acm_pm_domains {
+> +	struct device **pd_dev;
+> +	struct device_link **pd_dev_link;
+> +	int    num_domains;
+> +};
+> +
+> +/**
+> + * struct clk_imx8_acm_sel - for clock mux
+> + * @name: clock name
+> + * @clkid: clock id
+> + * @parents: clock parents
+> + * @num_parents: clock parents number
+> + * @reg: register offset
+> + * @shift: bit shift in register
+> + * @width: bits width
+> + */
+> +struct clk_imx8_acm_sel {
+> +	const char			*name;
+> +	int				clkid;
+> +	const struct clk_parent_data	*parents;	/* For mux */
+> +	int				num_parents;
+> +	u32				reg;
+> +	u8				shift;
+> +	u8				width;
+> +};
+> +
+> +/**
+> + * struct imx8_acm_soc_data - soc specific data
+> + * @sels: pointer to struct clk_imx8_acm_sel
+> + * @num_sels: numbers of items
+> + */
+> +struct imx8_acm_soc_data {
+> +	struct clk_imx8_acm_sel *sels;
+> +	unsigned int num_sels;
+> +};
+> +
+> +/**
+> + * struct imx8_acm_priv - private structure
+> + * @dev_pm: multi power domain
+> + * @soc_data: pointer to soc data
+> + * @reg: base address of registers
+> + * @regs: save registers for suspend
+> + */
+> +struct imx8_acm_priv {
+> +	struct clk_imx_acm_pm_domains dev_pm;
+> +	const struct imx8_acm_soc_data *soc_data;
+> +	void __iomem *reg;
+> +	u32 regs[IMX_ADMA_ACM_CLK_END];
+> +};
+> +
+> +static const struct clk_parent_data imx8qm_aud_clk_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .fw_name = "mlb_clk" },
+> +	{ .fw_name = "hdmi_rx_mclk" },
+> +	{ .fw_name = "ext_aud_mclk0" },
+> +	{ .fw_name = "ext_aud_mclk1" },
+> +	{ .fw_name = "esai0_rx_clk" },
+> +	{ .fw_name = "esai0_rx_hf_clk" },
+> +	{ .fw_name = "esai0_tx_clk" },
+> +	{ .fw_name = "esai0_tx_hf_clk" },
+> +	{ .fw_name = "esai1_rx_clk" },
+> +	{ .fw_name = "esai1_rx_hf_clk" },
+> +	{ .fw_name = "esai1_tx_clk" },
+> +	{ .fw_name = "esai1_tx_hf_clk" },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .fw_name = "spdif1_rx" },
+> +	{ .fw_name = "sai0_rx_bclk" },
+> +	{ .fw_name = "sai0_tx_bclk" },
+> +	{ .fw_name = "sai1_rx_bclk" },
+> +	{ .fw_name = "sai1_tx_bclk" },
+> +	{ .fw_name = "sai2_rx_bclk" },
+> +	{ .fw_name = "sai3_rx_bclk" },
+> +	{ .fw_name = "sai4_rx_bclk" },
+> +};
+> +
+> +static const struct clk_parent_data imx8qm_mclk_out_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .fw_name = "mlb_clk" },
+> +	{ .fw_name = "hdmi_rx_mclk" },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .fw_name = "spdif1_rx" },
+> +	{ .fw_name = "sai4_rx_bclk" },
+> +	{ .fw_name = "sai6_rx_bclk" },
+> +};
+> +
+> +static const struct clk_parent_data imx8qm_mclk_sels[] = {
+> +	{ .fw_name = "aud_pll_div_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_pll_div_clk1_lpcg_clk" },
+> +	{ .fw_name = "acm_aud_clk0_sel" },
+> +	{ .fw_name = "acm_aud_clk1_sel" },
+> +};
+> +
+> +static const struct clk_parent_data imx8qm_asrc_mux_clk_sels[] = {
+> +	{ .fw_name = "sai4_rx_bclk" },
+> +	{ .fw_name = "sai5_tx_bclk" },
+> +	{ .index = -1 },
+> +	{ .fw_name = "mlb_clk" },
+> +
+> +};
+> +
+> +static struct clk_imx8_acm_sel imx8qm_sels[] = {
+> +	{ "acm_aud_clk0_sel", IMX_ADMA_ACM_AUD_CLK0_SEL, imx8qm_aud_clk_sels, ARRAY_SIZE(imx8qm_aud_clk_sels), 0x000000, 0, 5 },
+> +	{ "acm_aud_clk1_sel", IMX_ADMA_ACM_AUD_CLK1_SEL, imx8qm_aud_clk_sels, ARRAY_SIZE(imx8qm_aud_clk_sels), 0x010000, 0, 5 },
+> +	{ "acm_mclkout0_sel", IMX_ADMA_ACM_MCLKOUT0_SEL, imx8qm_mclk_out_sels, ARRAY_SIZE(imx8qm_mclk_out_sels), 0x020000, 0, 3 },
+> +	{ "acm_mclkout1_sel", IMX_ADMA_ACM_MCLKOUT1_SEL, imx8qm_mclk_out_sels, ARRAY_SIZE(imx8qm_mclk_out_sels), 0x030000, 0, 3 },
+> +	{ "acm_asrc0_mclk_sel", IMX_ADMA_ACM_ASRC0_MUX_CLK_SEL, imx8qm_asrc_mux_clk_sels, ARRAY_SIZE(imx8qm_asrc_mux_clk_sels), 0x040000, 0, 2 },
+> +	{ "acm_esai0_mclk_sel", IMX_ADMA_ACM_ESAI0_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x060000, 0, 2 },
+> +	{ "acm_esai1_mclk_sel", IMX_ADMA_ACM_ESAI1_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x070000, 0, 2 },
+> +	{ "acm_sai0_mclk_sel", IMX_ADMA_ACM_SAI0_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x0E0000, 0, 2 },
+> +	{ "acm_sai1_mclk_sel", IMX_ADMA_ACM_SAI1_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x0F0000, 0, 2 },
+> +	{ "acm_sai2_mclk_sel", IMX_ADMA_ACM_SAI2_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x100000, 0, 2 },
+> +	{ "acm_sai3_mclk_sel", IMX_ADMA_ACM_SAI3_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x110000, 0, 2 },
+> +	{ "acm_sai4_mclk_sel", IMX_ADMA_ACM_SAI4_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x120000, 0, 2 },
+> +	{ "acm_sai5_mclk_sel", IMX_ADMA_ACM_SAI5_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x130000, 0, 2 },
+> +	{ "acm_sai6_mclk_sel", IMX_ADMA_ACM_SAI6_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x140000, 0, 2 },
+> +	{ "acm_sai7_mclk_sel", IMX_ADMA_ACM_SAI7_MCLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x150000, 0, 2 },
+> +	{ "acm_spdif0_mclk_sel", IMX_ADMA_ACM_SPDIF0_TX_CLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x1A0000, 0, 2 },
+> +	{ "acm_spdif1_mclk_sel", IMX_ADMA_ACM_SPDIF1_TX_CLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x1B0000, 0, 2 },
+> +	{ "acm_mqs_mclk_sel", IMX_ADMA_ACM_MQS_TX_CLK_SEL, imx8qm_mclk_sels, ARRAY_SIZE(imx8qm_mclk_sels), 0x1C0000, 0, 2 },
+> +};
+> +
+> +static const struct clk_parent_data imx8qxp_aud_clk_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .fw_name = "ext_aud_mclk0" },
+> +	{ .fw_name = "ext_aud_mclk1" },
+> +	{ .fw_name = "esai0_rx_clk" },
+> +	{ .fw_name = "esai0_rx_hf_clk" },
+> +	{ .fw_name = "esai0_tx_clk" },
+> +	{ .fw_name = "esai0_tx_hf_clk" },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .fw_name = "sai0_rx_bclk" },
+> +	{ .fw_name = "sai0_tx_bclk" },
+> +	{ .fw_name = "sai1_rx_bclk" },
+> +	{ .fw_name = "sai1_tx_bclk" },
+> +	{ .fw_name = "sai2_rx_bclk" },
+> +	{ .fw_name = "sai3_rx_bclk" },
+> +};
+> +
+> +static const struct clk_parent_data imx8qxp_mclk_out_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .fw_name = "sai4_rx_bclk" },
+> +};
+> +
+> +static const struct clk_parent_data imx8qxp_mclk_sels[] = {
+> +	{ .fw_name = "aud_pll_div_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_pll_div_clk1_lpcg_clk" },
+> +	{ .fw_name = "acm_aud_clk0_sel" },
+> +	{ .fw_name = "acm_aud_clk1_sel" },
+> +};
+> +
+> +static struct clk_imx8_acm_sel imx8qxp_sels[] = {
+> +	{ "acm_aud_clk0_sel", IMX_ADMA_ACM_AUD_CLK0_SEL, imx8qxp_aud_clk_sels, ARRAY_SIZE(imx8qxp_aud_clk_sels), 0x000000, 0, 5 },
+> +	{ "acm_aud_clk1_sel", IMX_ADMA_ACM_AUD_CLK1_SEL, imx8qxp_aud_clk_sels, ARRAY_SIZE(imx8qxp_aud_clk_sels), 0x010000, 0, 5 },
+> +	{ "acm_mclkout0_sel", IMX_ADMA_ACM_MCLKOUT0_SEL, imx8qxp_mclk_out_sels, ARRAY_SIZE(imx8qxp_mclk_out_sels), 0x020000, 0, 3 },
+> +	{ "acm_mclkout1_sel", IMX_ADMA_ACM_MCLKOUT1_SEL, imx8qxp_mclk_out_sels, ARRAY_SIZE(imx8qxp_mclk_out_sels), 0x030000, 0, 3 },
+> +	{ "acm_esai0_mclk_sel", IMX_ADMA_ACM_ESAI0_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x060000, 0, 2 },
+> +	{ "acm_sai0_mclk_sel", IMX_ADMA_ACM_SAI0_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x0E0000, 0, 2 },
+> +	{ "acm_sai1_mclk_sel", IMX_ADMA_ACM_SAI1_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x0F0000, 0, 2 },
+> +	{ "acm_sai2_mclk_sel", IMX_ADMA_ACM_SAI2_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x100000, 0, 2 },
+> +	{ "acm_sai3_mclk_sel", IMX_ADMA_ACM_SAI3_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x110000, 0, 2 },
+> +	{ "acm_sai4_mclk_sel", IMX_ADMA_ACM_SAI4_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x140000, 0, 2 },
+> +	{ "acm_sai5_mclk_sel", IMX_ADMA_ACM_SAI5_MCLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x150000, 0, 2 },
+> +	{ "acm_spdif0_mclk_sel", IMX_ADMA_ACM_SPDIF0_TX_CLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x1A0000, 0, 2 },
+> +	{ "acm_mqs_mclk_sel", IMX_ADMA_ACM_MQS_TX_CLK_SEL, imx8qxp_mclk_sels, ARRAY_SIZE(imx8qxp_mclk_sels), 0x1C0000, 0, 2 },
+> +};
+> +
+> +static const struct clk_parent_data imx8dxl_aud_clk_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .fw_name = "ext_aud_mclk0" },
+> +	{ .fw_name = "ext_aud_mclk1" },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .fw_name = "sai0_rx_bclk" },
+> +	{ .fw_name = "sai0_tx_bclk" },
+> +	{ .fw_name = "sai1_rx_bclk" },
+> +	{ .fw_name = "sai1_tx_bclk" },
+> +	{ .fw_name = "sai2_rx_bclk" },
+> +	{ .fw_name = "sai3_rx_bclk" },
+> +};
+> +
+> +static const struct clk_parent_data imx8dxl_mclk_out_sels[] = {
+> +	{ .fw_name = "aud_rec_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_rec_clk1_lpcg_clk" },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .fw_name = "spdif0_rx" },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +	{ .index = -1 },
+> +};
+> +
+> +static const struct clk_parent_data imx8dxl_mclk_sels[] = {
+> +	{ .fw_name = "aud_pll_div_clk0_lpcg_clk" },
+> +	{ .fw_name = "aud_pll_div_clk1_lpcg_clk" },
+> +	{ .fw_name = "acm_aud_clk0_sel" },
+> +	{ .fw_name = "acm_aud_clk1_sel" },
+> +};
+> +
+> +static struct clk_imx8_acm_sel imx8dxl_sels[] = {
+> +	{ "acm_aud_clk0_sel", IMX_ADMA_ACM_AUD_CLK0_SEL, imx8dxl_aud_clk_sels, ARRAY_SIZE(imx8dxl_aud_clk_sels), 0x000000, 0, 5 },
+> +	{ "acm_aud_clk1_sel", IMX_ADMA_ACM_AUD_CLK1_SEL, imx8dxl_aud_clk_sels, ARRAY_SIZE(imx8dxl_aud_clk_sels), 0x010000, 0, 5 },
+> +	{ "acm_mclkout0_sel", IMX_ADMA_ACM_MCLKOUT0_SEL, imx8dxl_mclk_out_sels, ARRAY_SIZE(imx8dxl_mclk_out_sels), 0x020000, 0, 3 },
+> +	{ "acm_mclkout1_sel", IMX_ADMA_ACM_MCLKOUT1_SEL, imx8dxl_mclk_out_sels, ARRAY_SIZE(imx8dxl_mclk_out_sels), 0x030000, 0, 3 },
+> +	{ "acm_sai0_mclk_sel", IMX_ADMA_ACM_SAI0_MCLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x0E0000, 0, 2 },
+> +	{ "acm_sai1_mclk_sel", IMX_ADMA_ACM_SAI1_MCLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x0F0000, 0, 2 },
+> +	{ "acm_sai2_mclk_sel", IMX_ADMA_ACM_SAI2_MCLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x100000, 0, 2 },
+> +	{ "acm_sai3_mclk_sel", IMX_ADMA_ACM_SAI3_MCLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x110000, 0, 2 },
+> +	{ "acm_spdif0_mclk_sel", IMX_ADMA_ACM_SPDIF0_TX_CLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x1A0000, 0, 2 },
+> +	{ "acm_mqs_mclk_sel", IMX_ADMA_ACM_MQS_TX_CLK_SEL, imx8dxl_mclk_sels, ARRAY_SIZE(imx8dxl_mclk_sels), 0x1C0000, 0, 2 },
+> +};
+> +
+> +/**
+> + * clk_imx_acm_attach_pm_domains: attach multi power domains
+> + * @dev: device pointer
+> + * @dev_pm: power domains for device
+> + */
+> +static int clk_imx_acm_attach_pm_domains(struct device *dev,
+> +					 struct clk_imx_acm_pm_domains *dev_pm)
+> +{
+> +	int ret;
+> +	int i;
+> +
+> +	dev_pm->num_domains = of_count_phandle_with_args(dev->of_node, "power-domains",
+> +							 "#power-domain-cells");
+> +	if (dev_pm->num_domains <= 1)
+> +		return 0;
+> +
+> +	dev_pm->pd_dev = devm_kmalloc_array(dev, dev_pm->num_domains,
+> +					    sizeof(*dev_pm->pd_dev),
+> +					    GFP_KERNEL);
+> +	if (!dev_pm->pd_dev)
+> +		return -ENOMEM;
+> +
+> +	dev_pm->pd_dev_link = devm_kmalloc_array(dev,
+> +						 dev_pm->num_domains,
+> +						 sizeof(*dev_pm->pd_dev_link),
+> +						 GFP_KERNEL);
+> +	if (!dev_pm->pd_dev_link)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < dev_pm->num_domains; i++) {
+> +		dev_pm->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+> +		if (IS_ERR(dev_pm->pd_dev[i]))
+> +			return PTR_ERR(dev_pm->pd_dev[i]);
+> +
+> +		dev_pm->pd_dev_link[i] = device_link_add(dev,
+> +							 dev_pm->pd_dev[i],
+> +							 DL_FLAG_STATELESS |
+> +							 DL_FLAG_PM_RUNTIME |
+> +							 DL_FLAG_RPM_ACTIVE);
+> +		if (IS_ERR(dev_pm->pd_dev_link[i])) {
+> +			dev_pm_domain_detach(dev_pm->pd_dev[i], false);
+> +			ret = PTR_ERR(dev_pm->pd_dev_link[i]);
+> +			goto detach_pm;
+> +		}
+> +	}
+> +	return 0;
+> +
+> +detach_pm:
+> +	while (--i >= 0) {
+> +		device_link_del(dev_pm->pd_dev_link[i]);
+> +		dev_pm_domain_detach(dev_pm->pd_dev[i], false);
+> +	}
+> +	return ret;
+> +}
+> +
+> +/**
+> + * clk_imx_acm_detach_pm_domains: detach multi power domains
+> + * @dev: deivice pointer
+> + * @dev_pm: multi power domain for device
+> + */
+> +static int clk_imx_acm_detach_pm_domains(struct device *dev,
+> +					 struct clk_imx_acm_pm_domains *dev_pm)
+> +{
+> +	int i;
+> +
+> +	if (dev_pm->num_domains <= 1)
+> +		return 0;
+> +
+> +	for (i = 0; i < dev_pm->num_domains; i++) {
+> +		device_link_del(dev_pm->pd_dev_link[i]);
+> +		dev_pm_domain_detach(dev_pm->pd_dev[i], false);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx8_acm_clk_probe(struct platform_device *pdev)
+> +{
+> +	struct clk_hw_onecell_data *clk_hw_data;
+> +	struct device *dev = &pdev->dev;
+> +	struct clk_imx8_acm_sel *sels;
+> +	struct imx8_acm_priv *priv;
+> +	struct clk_hw **hws;
+> +	void __iomem *base;
+> +	int ret;
+> +	int i;
+> +
+> +	base = devm_of_iomap(dev, dev->of_node, 0, NULL);
+> +	if (WARN_ON(IS_ERR(base)))
+> +		return PTR_ERR(base);
+> +
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->reg = base;
+> +	priv->soc_data = of_device_get_match_data(dev);
+> +	platform_set_drvdata(pdev, priv);
+> +
+> +	clk_hw_data = devm_kzalloc(&pdev->dev, struct_size(clk_hw_data, hws, IMX_ADMA_ACM_CLK_END),
+> +				   GFP_KERNEL);
+> +	if (!clk_hw_data)
+> +		return -ENOMEM;
+> +
+> +	clk_hw_data->num = IMX_ADMA_ACM_CLK_END;
+> +	hws = clk_hw_data->hws;
+> +
+> +	ret = clk_imx_acm_attach_pm_domains(&pdev->dev, &priv->dev_pm);
+> +	if (ret)
+> +		return ret;
+> +
+> +	pm_runtime_enable(&pdev->dev);
+> +	pm_runtime_get_sync(&pdev->dev);
+> +
+> +	sels = priv->soc_data->sels;
+> +	for (i = 0; i < priv->soc_data->num_sels; i++) {
+> +		hws[sels[i].clkid] = devm_clk_hw_register_mux_parent_data_table(dev,
+> +										sels[i].name, sels[i].parents,
+> +										sels[i].num_parents, 0,
+> +										base + sels[i].reg,
+> +										sels[i].shift, sels[i].width,
+> +										0, NULL, NULL);
+> +		if (IS_ERR(hws[sels[i].clkid])) {
+> +			pm_runtime_disable(&pdev->dev);
+> +			goto err_clk_register;
+> +		}
+> +	}
+> +
+> +	imx_check_clk_hws(hws, IMX_ADMA_ACM_CLK_END);
+> +
+> +	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_hw_data);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to register hws for ACM\n");
+> +		pm_runtime_disable(&pdev->dev);
+> +	}
+> +
+> +err_clk_register:
+> +
+> +	pm_runtime_put_sync(&pdev->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx8_acm_clk_remove(struct platform_device *pdev)
+> +{
+> +	struct imx8_acm_priv *priv = dev_get_drvdata(&pdev->dev);
+> +
+> +	pm_runtime_disable(&pdev->dev);
+> +
+> +	clk_imx_acm_detach_pm_domains(&pdev->dev, &priv->dev_pm);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct imx8_acm_soc_data imx8qm_acm_data = {
+> +	.sels = imx8qm_sels,
+> +	.num_sels = ARRAY_SIZE(imx8qm_sels),
+> +};
+> +
+> +static const struct imx8_acm_soc_data imx8qxp_acm_data = {
+> +	.sels = imx8qxp_sels,
+> +	.num_sels = ARRAY_SIZE(imx8qxp_sels),
+> +};
+> +
+> +static const struct imx8_acm_soc_data imx8dxl_acm_data = {
+> +	.sels = imx8dxl_sels,
+> +	.num_sels = ARRAY_SIZE(imx8dxl_sels),
+> +};
+> +
+> +static const struct of_device_id imx8_acm_match[] = {
+> +	{ .compatible = "fsl,imx8qm-acm", .data = &imx8qm_acm_data },
+> +	{ .compatible = "fsl,imx8qxp-acm", .data = &imx8qxp_acm_data },
+> +	{ .compatible = "fsl,imx8dxl-acm", .data = &imx8dxl_acm_data },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, imx8_acm_match);
+> +
+> +static int __maybe_unused imx8_acm_runtime_suspend(struct device *dev)
+> +{
+> +	struct imx8_acm_priv *priv = dev_get_drvdata(dev);
+> +	struct clk_imx8_acm_sel *sels;
+> +	int i;
+> +
+> +	sels = priv->soc_data->sels;
+> +
+> +	for (i = 0; i < priv->soc_data->num_sels; i++)
+> +		priv->regs[i] = readl_relaxed(priv->reg + sels[i].reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused imx8_acm_runtime_resume(struct device *dev)
+> +{
+> +	struct imx8_acm_priv *priv = dev_get_drvdata(dev);
+> +	struct clk_imx8_acm_sel *sels;
+> +	int i;
+> +
+> +	sels = priv->soc_data->sels;
+> +
+> +	for (i = 0; i < priv->soc_data->num_sels; i++)
+> +		writel_relaxed(priv->regs[i], priv->reg + sels[i].reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops imx8_acm_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(imx8_acm_runtime_suspend,
+> +			   imx8_acm_runtime_resume, NULL)
+> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> +				      pm_runtime_force_resume)
+> +};
+> +
+> +static struct platform_driver imx8_acm_clk_driver = {
+> +	.driver = {
+> +		.name = "imx8-acm",
+> +		.of_match_table = imx8_acm_match,
+> +		.pm = &imx8_acm_pm_ops,
+> +	},
+> +	.probe = imx8_acm_clk_probe,
+> +	.remove = imx8_acm_clk_remove,
+> +};
+> +module_platform_driver(imx8_acm_clk_driver);
+> +
+> +MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
+> +MODULE_DESCRIPTION("Freescale i.MX8 Audio Clock Mux driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.34.1
+> 
