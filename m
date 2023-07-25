@@ -2,133 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D336761E8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1E8761E8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbjGYQah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
+        id S230430AbjGYQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjGYQae (ORCPT
+        with ESMTP id S230305AbjGYQav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:30:34 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D10311A;
-        Tue, 25 Jul 2023 09:30:33 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4AA134AD;
-        Tue, 25 Jul 2023 18:29:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690302573;
-        bh=k+Peaua+jrXGhzwyW/0IjINrHEbJHZ4Qwtk++uw3Gfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tgZHHBRxf2MqyGPPVQlzvzbaj2JnS+fCE9nRHlRrVkP/aqEDhNtthBp+6Uy3Lbk4k
-         A5rHAKCo03sgqNFTozL3MI+t0v1omU9fpl+itPBoacyFqaszxJl6k/6U2gZJIW7d3b
-         wfgQAe1NiuSLQhCtRxqh9uml470w1Lkxntfqajo4=
-Date:   Tue, 25 Jul 2023 19:30:39 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Satish Nagireddy <satish.nagireddy@getcruise.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/8] media: i2c: ds90ub953: Use
- v4l2_fwnode_endpoint_parse()
-Message-ID: <20230725163039.GI31069@pendragon.ideasonboard.com>
-References: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
- <20230720-fpdlink-additions-v2-2-b91b1eca2ad3@ideasonboard.com>
+        Tue, 25 Jul 2023 12:30:51 -0400
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52217E77;
+        Tue, 25 Jul 2023 09:30:48 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 747A12800BBE0;
+        Tue, 25 Jul 2023 18:30:46 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 475EE4F0C; Tue, 25 Jul 2023 18:30:46 +0200 (CEST)
+Date:   Tue, 25 Jul 2023 18:30:46 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <20230725163046.GA23990@wunner.de>
+References: <20230725035755.2621507-1-alistair.francis@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720-fpdlink-additions-v2-2-b91b1eca2ad3@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725035755.2621507-1-alistair.francis@wdc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
-
-Thank you for the patch.
-
-On Thu, Jul 20, 2023 at 01:30:33PM +0300, Tomi Valkeinen wrote:
-> Use v4l2_fwnode_endpoint_parse() to parse the sink endpoint parameters.
+On Tue, Jul 25, 2023 at 01:57:55PM +1000, Alistair Francis wrote:
+> The PCIe 6 specification added support for the Data Object Exchange (DOE).
+> When DOE is supported the Discovery Data Object Protocol must be
+> implemented. The protocol allows a requester to obtain information about
+> the other DOE protocols supported by the device.
 > 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/media/i2c/ds90ub953.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ds90ub953.c b/drivers/media/i2c/ds90ub953.c
-> index 591b52bf71c2..ad964bd6c7eb 100644
-> --- a/drivers/media/i2c/ds90ub953.c
-> +++ b/drivers/media/i2c/ds90ub953.c
-> @@ -25,6 +25,8 @@
->  #include <media/i2c/ds90ub9xx.h>
->  #include <media/v4l2-ctrls.h>
->  #include <media/v4l2-event.h>
-> +#include <media/v4l2-fwnode.h>
-> +#include <media/v4l2-mediabus.h>
->  #include <media/v4l2-subdev.h>
->  
->  #define UB953_PAD_SINK			0
-> @@ -1111,7 +1113,9 @@ static const struct regmap_config ub953_regmap_config = {
->  static int ub953_parse_dt(struct ub953_data *priv)
->  {
->  	struct device *dev = &priv->client->dev;
-> +	struct v4l2_fwnode_endpoint vep = {};
->  	struct fwnode_handle *ep_fwnode;
-> +	unsigned char nlanes;
->  	int ret;
->  
->  	ep_fwnode = fwnode_graph_get_endpoint_by_id(dev_fwnode(dev),
-> @@ -1119,19 +1123,21 @@ static int ub953_parse_dt(struct ub953_data *priv)
->  	if (!ep_fwnode)
->  		return dev_err_probe(dev, -ENOENT, "no endpoint found\n");
->  
-> -	ret = fwnode_property_count_u32(ep_fwnode, "data-lanes");
-> +	vep.bus_type = V4L2_MBUS_CSI2_DPHY;
+> The kernel is already querying the DOE protocols supported and cacheing
+> the values. This patch exposes the values via sysfs. This will allow
+> userspace to determine which DOE protocols are supported by the PCIe
+> device.
 
-I would initialize .bus_type when declaring the variable.
+Just dumping the list of supported protocols into dmesg might be simpler,
+unless you intend to add mechanisms to actually use certain DOE mailboxes
+from user space or expose the information in lspci.  Do have plans for
+either of that or what's the motivation to use sysfs?
 
-> +	ret = v4l2_fwnode_endpoint_parse(ep_fwnode, &vep);
->  
->  	fwnode_handle_put(ep_fwnode);
->  
-> -	if (ret < 0)
-> +	if (ret)
->  		return dev_err_probe(dev, ret,
-> -				     "failed to parse property 'data-lanes'\n");
-> +				     "failed to parse sink endpoint data\n");
->  
-> -	if (ret != 1 && ret != 2 && ret != 4)
-> +	nlanes = vep.bus.mipi_csi2.num_data_lanes;
-> +	if (nlanes != 1 && nlanes != 2 && nlanes != 4)
->  		return dev_err_probe(dev, -EINVAL,
-> -				     "bad number of data-lanes: %d\n", ret);
-> +				     "bad number of data-lanes: %d\n", nlanes);
+I think I'd rather want everything in doe.c (#ifdef'ed to CONFIG_SYSFS)
+and only make dev_attr_doe_proto public.
 
-%u as nlanes is now unsigned.
+Thanks,
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->  
-> -	priv->num_data_lanes = ret;
-> +	priv->num_data_lanes = nlanes;
->  
->  	return 0;
->  }
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+Lukas
