@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B66C762705
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358927626FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbjGYWs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
+        id S231426AbjGYWlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjGYWsH (ORCPT
+        with ESMTP id S233020AbjGYWlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:48:07 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F376959E0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:44:12 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso61457105e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690324994; x=1690929794;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UeN/BDzcT6fiIqPMLxrXSox3/PDpVZxEfiyL4rSFqMI=;
-        b=FL8WmUqNhaZKbP12TYYkFJCjY6UeyaotamveIVjnM8lw3o9UNg/2xqcsjsi7FVgJm6
-         3wZUUwVUeyBZO7Rg1EPn0vN3wjJgA3HcOuxhYcy0ny2QY35bgbE31z7tnMIjMbrLIJbd
-         pMhTDfQUXaRnYrVzl+SvKv23ECDEjKNwO2zUc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690324994; x=1690929794;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UeN/BDzcT6fiIqPMLxrXSox3/PDpVZxEfiyL4rSFqMI=;
-        b=QVNh1uZo+wRtdwTzGvu5kAujyjovn16e4uRzKSdHDGJmeNuDtURXvn2Z2qjGrAaU4/
-         W428HCDqR92kgR8X/egSzuel8fpmBrJ4LA+jQ+eqIIu94Mw37MCAanzgYhdkdyuFQAgy
-         WhPy5aWP4I2C+/vUevaeWyaEdULPVJTbx+paWqXFhE9Wuwn3JC1mAbXwpRXqDrFkrBZq
-         adnn6ctZooKhWg6K/7NcnGVcCZON7SGHsuK1/uEh4opb0JHFChf0gg+HStHlay3M86cm
-         xQXF0Jdpud4pAYvU7wtVwj78JX9FZawwTPgcLMEFVYa8J72U3pe9phO8astMUgriTGu8
-         8RWg==
-X-Gm-Message-State: ABy/qLYa84ezO/nc8/kKpTtQgD02D47/W9MCh8FMXpZns++2yYLG2I36
-        4HsKDCl0WSZDCblRY6Tc1AtwaqZmRA56faD+s3SCc8cW
-X-Google-Smtp-Source: APBJJlFj46I9jVsYAnhVeugdBcMatBZlnz3DqU/0Wcwv9EQNA/YF/0xDvYYzY3EAXZYjbCQbZTg+JA==
-X-Received: by 2002:a05:6512:3452:b0:4fd:c844:6a43 with SMTP id j18-20020a056512345200b004fdc8446a43mr137028lfr.43.1690324314584;
-        Tue, 25 Jul 2023 15:31:54 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id q8-20020ac25288000000b004fcdf8b8ab4sm3034913lfm.23.2023.07.25.15.31.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 15:31:53 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso2469326e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:31:53 -0700 (PDT)
-X-Received: by 2002:a19:6903:0:b0:4f8:651f:9bbe with SMTP id
- e3-20020a196903000000b004f8651f9bbemr125999lfc.54.1690324313249; Tue, 25 Jul
- 2023 15:31:53 -0700 (PDT)
+        Tue, 25 Jul 2023 18:41:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AE66A7F;
+        Tue, 25 Jul 2023 15:35:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CEBC561924;
+        Tue, 25 Jul 2023 22:33:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1A67C433C7;
+        Tue, 25 Jul 2023 22:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690324418;
+        bh=/afpJPuPiv9orEg3GS3va/jozsy1NKzMmzbTKAx6uog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q4mzAwTQOvszvgxVSbGfFEYzy7KeSop+CExQiHaPfXvCp7fEPkmuqh1gEiUcPxeqi
+         Y/3ToTnGT0WH6IUKwpoPBCgO2Fp7PVKl2XI0PkRyfbVeSIiMbK+pFZHymBvgMSks5h
+         3NfNnFniwo0h45cADdG51MGsU3/4LaP6/SixekOvVscQo28SYyGv12iTUwq+cJdXIx
+         0rO3a9qdr2fqudpZ29ehLFo+0r2ksuziYFRAEeuv/ASouDOUOe7Jul0TWISvjst+pP
+         uWNa2x8picpAY6Pttx5AKXCM3LWXvpayHZcGHuAvzvwLIa01yeNstN5wwcmdbX/Enm
+         SH1zSlu7X3zew==
+Date:   Wed, 26 Jul 2023 00:33:35 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
+Message-ID: <20230725223335.mzgdgr7qgeyc6hj7@intel.intel>
+References: <20230705234501.4153224-1-aryan.srivastava@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20230724230329.3970-1-kirill.shutemov@linux.intel.com>
- <CAHk-=wipev18s9sErt+iNO_rzgyvGTce38fr1CYO0U_hGVGy2Q@mail.gmail.com> <6f56c604-7580-2d8b-cab0-ad656aa0728a@intel.com>
-In-Reply-To: <6f56c604-7580-2d8b-cab0-ad656aa0728a@intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 25 Jul 2023 15:31:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgwLyksuRU0hjXKdas9-RHMmKQk5YB1xFn=64Ud_Tkb4A@mail.gmail.com>
-Message-ID: <CAHk-=wgwLyksuRU0hjXKdas9-RHMmKQk5YB1xFn=64Ud_Tkb4A@mail.gmail.com>
-Subject: Re: [PATCH] x86/traps: Fix load_unaligned_zeropad() handling for
- shared TDX memory
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230705234501.4153224-1-aryan.srivastava@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 at 15:23, Dave Hansen <dave.hansen@intel.com> wrote:
->
-> Feel free to pull it directly.
+Hi Aryan,
 
-Ok, done. I edited the commit message a bit to clarify that we don't
-actually _rely_ on that fault_address thing, but other than a slight
-wording change it's all good.
+On Thu, Jul 06, 2023 at 11:45:00AM +1200, Aryan Srivastava wrote:
+> Add support for block mode read/write operations on
+> Thunderx chips.
+> 
+> When attempting r/w operations of greater then 8 bytes
+> block mode is used, instead of performing a series of
+> 8 byte reads.
+> 
+> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
 
-And for some reason 'b4' didn't pick up your Acked-by: (maybe it
-hadn't made it to the lore DB yet since I got the reply directly) so I
-added that manually.
+thanks for your patch, could you please run checkpatch.pl,
+clean it up a little (e.g. comments like /* A */) and resend it?
 
-         Linus
+Thanks,
+Andi
