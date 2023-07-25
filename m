@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85519760978
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7959476097B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjGYFkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        id S231370AbjGYFkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjGYFkd (ORCPT
+        with ESMTP id S230523AbjGYFki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:40:33 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1241F199F;
-        Mon, 24 Jul 2023 22:40:17 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P4nfHU031536;
-        Tue, 25 Jul 2023 05:40:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=COHe3LDQmKpdXE+KtpoZP+UYF9boMe2h9XYUp/wFUqQ=;
- b=nq3qhNIl7biaBeGfWRBY9mfCAJp/lKel2R4hMmwPJQDgwul1kSaJDcZY9miIOlS4cRmV
- TPf9xByVXcrcCNVZIh71WkFgBfcBa4TZ+C3MT7aSOQCdVzi3KU6MXC/J5ylIcCSYjLiZ
- RnxEXVvEjad5EKICdPb03+ZMdHuwXukEsjHIROKyq5SwYB4JbS1vXcoSbh30FiB5CPRw
- cefCodLe/0lFtd+3NVqZJyRdAFsLdO145PRtyeKluq4I9SmqRc9yXBZqG9TQFfKvdR1o
- Twjl7sdKIRffwowzua4tyHcpVcbQ6lrdq3a9oW89Lnu0wORJM4ak4R/Kpjfer8sIwmfQ sQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1y6m0yjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 05:40:07 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P5e6Wm000543
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 05:40:06 GMT
-Received: from [10.216.16.76] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 24 Jul
- 2023 22:40:00 -0700
-Message-ID: <abdd4284-948d-b03d-7b60-cca0229457dc@quicinc.com>
-Date:   Tue, 25 Jul 2023 11:09:57 +0530
+        Tue, 25 Jul 2023 01:40:38 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AD219A2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:40:34 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992f15c36fcso878044866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690263633; x=1690868433;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OfroF1JF/XJ6mPsu87A6GDB5zqWzLmB48tKx25k/bTA=;
+        b=yrI4YLBQj6H0kT0aJ0MtbeCd1lVLBgOvIhkGL/uktBODBu9jESbkvGWjzjEFqZw2Co
+         bIf9/SUWvye+uV+6HH5p3rKLCAxU8GKxlidhyGivOc64aRIAYDXDhbh51QSA/bhm16n3
+         8akc3dCcyyTfBjqtU+ZlIAuYXY1+k8YUfMQakFOrolJGiTO6CkW34FarX0i+cwoD5u4j
+         gKJpXxfxEmLVffIVTTeGUYKsvXEGAG8jdyvbY0vt3FUDCbj0tL5c5471dhmmPKNvDJwR
+         m4cODdWrYSx5MxjVUCIkUOIR2h4kuQG67nWfCvJSmLxOmbhATuprr581KHkOx3n0O5RC
+         QOZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690263633; x=1690868433;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OfroF1JF/XJ6mPsu87A6GDB5zqWzLmB48tKx25k/bTA=;
+        b=QWL6AUE00zzflCyhVPIeSwc3w2WwA6OqkMoaJzLf0ItDI10ExG3rB07DXOOaLuYx6I
+         pHL/nZkWOaDNotjD95K6017F37b+5dOfrpmiXhmITYHkmS8ZYI+px+ct2NYt/qp02Fq5
+         mpqyxjOE0FN0/Di/GsIPq+JCF/a9uSwmtgOhEFfuNrqa2o+PzhXTo1/sjLubSOuYBfcf
+         4ywCQKtVt/1LgU36dR5TMi+1xd0sfCczxMwb31HzISSwNnWRKi3evfxNr3vyV4P3B/RM
+         gF+c6uhuTN33nyROKAdvasI0RbmpM2UYRAoWCQ7dLJhpJ38WU1/WtrW5Xkb8/geV2ocC
+         YGmg==
+X-Gm-Message-State: ABy/qLbdIEz1lRUORh6YVXjdHbrBBI5JWSkg21f9SebYuiaO+hxb1oU4
+        0MKijShMvIwJYGP6g6FQnTeoTA==
+X-Google-Smtp-Source: APBJJlEW/3ztfXZS/OG3QYLoj4rG16uxGq7HMDWca0xP36s6SbxzuY4oqrIPd+ZX6loTBq0oGyJ65A==
+X-Received: by 2002:a17:907:7759:b0:992:630f:98b6 with SMTP id kx25-20020a170907775900b00992630f98b6mr11680527ejc.37.1690263633124;
+        Mon, 24 Jul 2023 22:40:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id si1-20020a170906cec100b00992d70f8078sm7729498ejb.106.2023.07.24.22.40.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 22:40:31 -0700 (PDT)
+Message-ID: <2385928f-1cc1-04f2-7a56-18eb99bf90cc@linaro.org>
+Date:   Tue, 25 Jul 2023 07:40:29 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v9 03/10] usb: dwc3: core: Access XHCI address space
- temporarily to read port info
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
+ TH1520 compatible
+Content-Language: en-US
+To:     Drew Fustini <dfustini@baylibre.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <quic_harshq@quicinc.com>,
-        <ahalaney@redhat.com>, <quic_shazhuss@quicinc.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-4-quic_kriskura@quicinc.com>
- <ZJrL5SXrSiYbvq2o@hovoldconsulting.com>
- <e225fa01-c3be-8bfc-03de-59b507c70d3b@quicinc.com>
- <ZL6bvQkBUsFErpXd@hovoldconsulting.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZL6bvQkBUsFErpXd@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>
+References: <20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com>
+ <20230724-th1520-emmc-v1-1-cca1b2533da2@baylibre.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724-th1520-emmc-v1-1-cca1b2533da2@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2BVdpLFSNGIWtpYPBLCraSCJkGIZz3Nw
-X-Proofpoint-ORIG-GUID: 2BVdpLFSNGIWtpYPBLCraSCJkGIZz3Nw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- mlxlogscore=840 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250050
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/24/2023 9:11 PM, Johan Hovold wrote:
-> [ Please remember to trim your replies. ]
+On 25/07/2023 02:59, Drew Fustini wrote:
+> Add compatible value for the T-Head TH1520 dwcmshc controller.
 > 
-> On Sun, Jul 23, 2023 at 08:29:47PM +0530, Krishna Kurapati PSSNV wrote:
->> On 6/27/2023 5:15 PM, Johan Hovold wrote:
->>> On Wed, Jun 21, 2023 at 10:06:21AM +0530, Krishna Kurapati wrote:
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->>>> +#define XHCI_EXT_PORT_MAJOR(x)	(((x) >> 24) & 0xff)
->>>> +#define XHCI_EXT_PORT_MINOR(x)	(((x) >> 16) & 0xff)
->>>> +#define XHCI_EXT_PORT_COUNT(x)	(((x) >> 8) & 0xff)
->>>
->>> Again, don't copy defines from xhci.
->>>
->>> Looks like these should be moved to the xhci-ext-caps.h header along
->>> with struct xhci_protocol_caps.
->>
->> Moving the defines would be sufficient right ? Just wanted to know if
->> there is any reason you are suggesting to move the structure as well so
->> that I can update commit text accordingly.
-> 
-> The defines are used for parsing the members of struct
-> xhci_protocol_caps and they belong together even if no driver has
-> apparently ever used the structure.
-Hi Johan,
 
-Thanks for the suggestions. Will push out v10 today.
 
-Regards,
-Krishna,
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
