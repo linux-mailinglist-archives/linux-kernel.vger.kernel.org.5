@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C930761A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B132761A04
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjGYNcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S230430AbjGYNdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjGYNcO (ORCPT
+        with ESMTP id S230234AbjGYNdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:32:14 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062811BC2;
-        Tue, 25 Jul 2023 06:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cJS9hWdS3WIM11d6kg/J2cpVY/K0AghRcBxdtWBel3E=; b=fu+uGT2qcg8H3XiKFVWP5UKtUq
-        lKTdMja9KLM/RBM3EcVilsF1p6x9bJYZyEu8mCJq15cab7zWZYLSH8YhSJkaxEU9CifjHcmYyyEZO
-        Cf53hw9g1ptZIAbpS3kVqcJxy5W6LlO+BIHvpK8CEjL57HhwzJxe5xBN1J5V/aFKGzgONGBUkldOd
-        ahHKi1y7acZIY4uAlNt/Kf784xjSInYAkfOjQ8OgNI//f0XwDKkMx9yjgysj7/lfDfPTogfHM5+tA
-        NdyAbLHorlLqctEgX4rPYQT901Yl7uMHDgFYn16OELr/frraKQpiR1ToCCuHV5//3Y8ce15wO9r5E
-        OJZUQz4Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOI7x-004A0r-0c;
-        Tue, 25 Jul 2023 13:31:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 42AC4300095;
-        Tue, 25 Jul 2023 15:31:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 265B52CCD6AC0; Tue, 25 Jul 2023 15:31:00 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 15:31:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH 1/3] sched, tracing: report task state in symbolic
- chars instead
-Message-ID: <20230725133100.GL3765278@hirez.programming.kicks-ass.net>
-References: <20230725072254.32045-1-zegao@tencent.com>
- <20230725072254.32045-2-zegao@tencent.com>
- <20230725083357.GA3765278@hirez.programming.kicks-ass.net>
- <CAD8CoPAdRUxk3FWdNX6g0V6Kdr3+sXv8fdQ9NhgKUR29-ZLaug@mail.gmail.com>
+        Tue, 25 Jul 2023 09:33:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E9A1BC3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690291953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6mJcweRxAGjMIv21AfvYfBxHuO/KykVgbwGUpkQfNek=;
+        b=b2ao0MiFX0nAiKQadMsL0JEBLn+ZzODbGAnCogvyzW8nLBz/CBfqqkHiIV/FZx+ddqvHtl
+        js2NvMURV924MwNpaoe4LR4LOcJ9Q/26PESwYaXO+rVr4vbRHJKNfC5DSme7gHwb4WR6y0
+        Lg+KvbKCDVUtFe6z0pt63DA+iX8M+D8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-584-E4UM3KXbORmslFeDIpHIiQ-1; Tue, 25 Jul 2023 09:32:32 -0400
+X-MC-Unique: E4UM3KXbORmslFeDIpHIiQ-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51e278a3a2dso4351006a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:32:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690291951; x=1690896751;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6mJcweRxAGjMIv21AfvYfBxHuO/KykVgbwGUpkQfNek=;
+        b=ErIbz35+fG0hVRlqTiDp8+Iz2YY3ADN7MMzeg5m0D9W15MRIRlXbFqlVfcSZXpH49Z
+         qYRgpEm2Ea7oKTCN+se0mNmEgltZHjeIAK6nHhITgvhwbNCvDuBGKRP9V9B/Ti0pFqK5
+         +WoAdp4wkdAPOqZOkkYzWcC44b1Bf6L3cJaUIdgcR2WyE3UkumupfIxSy2RmOWA0HohY
+         UKLp8u0B37E5rVqO/w63OlkniM91FvzAfS3WTIW33c1caYro4k8i1KII8UDMVrtHQD7n
+         WrkHatY7hYYVQf01CQcLXZEjzXQy0KJsxlxiBRLYCkcbArHI4Qqyyc8NJEyyXjt7G9jL
+         Abng==
+X-Gm-Message-State: ABy/qLYpG/rayD2oERBdDQTuMyyw5DWYhli9md+ZYpbSCJuZWpnmmNfG
+        uzBh8ruim2puW0urLd9paMogPRYMdu/H+4ZOuDBDuvkv2PaP+JSX216cJNKx09No11EJpIephuE
+        IEivyV4jYR7WrmfZ8isGfZwRq
+X-Received: by 2002:a05:6402:388:b0:522:4505:85db with SMTP id o8-20020a056402038800b00522450585dbmr2300684edv.4.1690291950954;
+        Tue, 25 Jul 2023 06:32:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGGOp+OYCUd3KakOEB29dRVn82/XzbgbOYkXcBp1EreCJwFIm+Hb+JBShYYNQQ1tDMaRTaktA==
+X-Received: by 2002:a05:6402:388:b0:522:4505:85db with SMTP id o8-20020a056402038800b00522450585dbmr2300668edv.4.1690291950688;
+        Tue, 25 Jul 2023 06:32:30 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id d19-20020a056402079300b0051ff2b6139esm1329027edy.5.2023.07.25.06.32.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 06:32:30 -0700 (PDT)
+Message-ID: <19f2c248-155b-2501-f2db-27f0f9a21332@redhat.com>
+Date:   Tue, 25 Jul 2023 15:32:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD8CoPAdRUxk3FWdNX6g0V6Kdr3+sXv8fdQ9NhgKUR29-ZLaug@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1] platform: x86: Use kfree_sensitive instead of kfree
+Content-Language: en-US, nl
+To:     Wang Ming <machel@vivo.com>, Mark Pearson <markpearson@lenovo.com>,
+        Mark Gross <markgross@kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20230717101114.18966-1-machel@vivo.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230717101114.18966-1-machel@vivo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 06:53:07PM +0800, Ze Gao wrote:
+Hi,
 
-> > > @@ -232,7 +235,7 @@ TRACE_EVENT(sched_switch,
-> > >               __array(        char,   prev_comm,      TASK_COMM_LEN   )
-> > >               __field(        pid_t,  prev_pid                        )
-> > >               __field(        int,    prev_prio                       )
-> > > -             __field(        long,   prev_state                      )
-> > > +             __field(        char,   prev_state                      )
-> > >               __array(        char,   next_comm,      TASK_COMM_LEN   )
-> > >               __field(        pid_t,  next_pid                        )
-> > >               __field(        int,    next_prio                       )
-> >
-> > This is a format change and will likely break a ton of programs :/
+On 7/17/23 12:11, Wang Ming wrote:
+> key might contain private part of the key, so better use
+> kfree_sensitive to free it.
 > 
+> Signed-off-by: Wang Ming <machel@vivo.com>
 
-> BTW, could you help to point to any possible tools/programs that would
-> break other than perf/libtraceevent, because these two are the only
-> users I run into so far.
+Thank you for your patch, I've applied this patch to my fixes
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
 
-Latencytop was the one breaking a few years ago, but there's a metric
-ton of sched_switch users out there, this is bound to generate pain.
+Note it will show up in my fixes branch once I've pushed my
+local branch there, which might take a while.
 
-Steve, you remember what the status of all this was? at the time
-breaking this was considered on par with ABI breakage and we reverted or
-something. Is this still so?
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/think-lmi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+> index 52d1ce8dfe44..79346881cadb 100644
+> --- a/drivers/platform/x86/think-lmi.c
+> +++ b/drivers/platform/x86/think-lmi.c
+> @@ -719,12 +719,12 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
+>  	/* Format: 'Password,Signature' */
+>  	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
+>  	if (!auth_str) {
+> -		kfree(passwd);
+> +		kfree_sensitive(passwd);
+>  		return -ENOMEM;
+>  	}
+>  	ret = tlmi_simple_call(LENOVO_CERT_TO_PASSWORD_GUID, auth_str);
+>  	kfree(auth_str);
+> -	kfree(passwd);
+> +	kfree_sensitive(passwd);
+>  
+>  	return ret ?: count;
+>  }
+
