@@ -2,226 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF12F76163C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCCC76164F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbjGYLh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S234869AbjGYLiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234811AbjGYLhX (ORCPT
+        with ESMTP id S234893AbjGYLh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:37:23 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02EC1BD6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:37:12 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C819C558;
-        Tue, 25 Jul 2023 13:36:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690284973;
-        bh=goKtL5TeaLpIhqAc9ccfrYvYzQ0K7drvhhiKIDV+Geo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LJedM/I6z/5D9v1PFAbSUuDMODS8kRglzHaC+CxCJBSA+IpiMJYQFl5KESBw0GiT4
-         4LQLnxm9Wen60oitFTgM/cT9iljtUYfKUzLEtZxNh1fkZxLK+69BzBf77nvmcSBkd0
-         0hqOo2G/S2VS2RStN8+Kuq3RyKAb8v3tRaJfize0=
-Date:   Tue, 25 Jul 2023 14:37:18 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/bridge: Add debugfs print for bridge chains
-Message-ID: <20230725113718.GE31069@pendragon.ideasonboard.com>
-References: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
+        Tue, 25 Jul 2023 07:37:56 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA5719F;
+        Tue, 25 Jul 2023 04:37:46 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PBbai9001827;
+        Tue, 25 Jul 2023 06:37:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690285056;
+        bh=hCN5cI/LrGBHcJJYXlfLvU7PXVWZWK/3iRG320LfKyg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=JGmaRIXNFveYfuoPXP+QmGQ6IdLEKg1BP3eDbreCrOaQYb7mGc45ciWMzVT5SR4ji
+         z9IDgB8BwdTH1xKqXBQ6bBtldQ59iNcwdlT/9KgSVx4tR2OwE8+f8gCBK5ggqR3o55
+         GhXAjYA5jjfw4DM6VUv1KpUwefawUjx8BQ4Q0PrE=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PBbawQ100341
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 25 Jul 2023 06:37:36 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
+ Jul 2023 06:37:36 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 25 Jul 2023 06:37:36 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PBbaaS000521;
+        Tue, 25 Jul 2023 06:37:36 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Udit Kumar <u-kumar1@ti.com>
+CC:     Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j721e-som-p0: Remove Duplicated wkup_i2c0 node
+Date:   Tue, 25 Jul 2023 06:37:35 -0500
+Message-ID: <169028503942.1718338.13926937743083738130.b4-ty@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230721082344.1534094-1-u-kumar1@ti.com>
+References: <20230721082344.1534094-1-u-kumar1@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+Hi Udit Kumar,
 
-Thank you for the patch.
-
-On Fri, Jul 21, 2023 at 06:01:39PM +0300, Tomi Valkeinen wrote:
-> DRM bridges are not visible to the userspace and it may not be
-> immediately clear if the chain is somehow constructed incorrectly. I
-> have had two separate instances of a bridge driver failing to do a
-> drm_bridge_attach() call, resulting in the bridge connector not being
-> part of the chain. In some situations this doesn't seem to cause issues,
-> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+On Fri, 21 Jul 2023 13:53:44 +0530, Udit Kumar wrote:
+> wkup_i2c0 and associated eeprom device node were duplicated,
+> This patch fixes the node duplication.
 > 
-> Add a debugfs file to print the bridge chains. For me, on this TI AM62
-> based platform, I get the following output:
 > 
-> encoder[39]
-> 	bridge[0] type: 0, ops: 0x0
-> 	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
-> 	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
-> 	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
 
-Names would be more readable than numbers, but I'm not sure that's
-really worth it. It can always be improved on top if desired.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
-> Changes in v2:
-> - Fixed compilation issue when !CONFIG_OF
-> - Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
-> ---
->  drivers/gpu/drm/drm_bridge.c  | 50 +++++++++++++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/drm_debugfs.c |  3 +++
->  include/drm/drm_bridge.h      |  5 +++++
->  3 files changed, 58 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> index c3d69af02e79..d3eb62d5ef3b 100644
-> --- a/drivers/gpu/drm/drm_bridge.c
-> +++ b/drivers/gpu/drm/drm_bridge.c
-> @@ -27,8 +27,10 @@
->  #include <linux/mutex.h>
->  
->  #include <drm/drm_atomic_state_helper.h>
-> +#include <drm/drm_debugfs.h>
->  #include <drm/drm_bridge.h>
->  #include <drm/drm_encoder.h>
-> +#include <drm/drm_file.h>
->  #include <drm/drm_of.h>
->  #include <drm/drm_print.h>
->  
-> @@ -1345,6 +1347,54 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
->  EXPORT_SYMBOL(of_drm_find_bridge);
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_FS
-> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
-> +{
-> +	struct drm_debugfs_entry *entry = m->private;
-> +	struct drm_device *dev = entry->dev;
-> +	struct drm_printer p = drm_seq_file_printer(m);
-> +	struct drm_mode_config *config = &dev->mode_config;
+[1/1] arm64: dts: ti: k3-j721e-som-p0: Remove Duplicated wkup_i2c0 node
+      commit: 8717c76ff38d8a6fa99cce4cccf7892288108ec8
 
-As Alexander reported, there's a crash for GPU drivers, as mode_config
-isn't initialized in that case. I would skip creating the debugfs entry
-if DRIVER_MODESET isn't set.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> +	struct drm_encoder *encoder;
-> +	unsigned int bridge_idx = 0;
-> +
-> +	list_for_each_entry(encoder, &config->encoder_list, head) {
-> +		struct drm_bridge *bridge;
-> +
-> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
-> +
-> +		bridge = drm_bridge_chain_get_first_bridge(encoder);
-> +
-> +		while (bridge) {
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Would drm_for_each_bridge_in_chain() help ?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
-> +				   bridge_idx, bridge->type, bridge->ops);
-> +
-> +#ifdef CONFIG_OF
-> +			if (bridge->of_node)
-> +				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
-> +#endif
-> +
-> +			drm_printf(&p, "\n");
-> +
-> +			bridge_idx++;
-> +			bridge = drm_bridge_get_next_bridge(bridge);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* any use in debugfs files to dump individual planes/crtc/etc? */
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Those can easily be listed from userspace, so I don't think that's
-needed.
-
-> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
-> +	{"bridge_chains", drm_bridge_chains_info, 0},
-
-Missing spaces after '{' and before '}'.
-
-> +};
-> +
-> +void drm_bridge_debugfs_init(struct drm_minor *minor)
-> +{
-> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
-> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
-> +}
-> +#endif
-> +
->  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
->  MODULE_DESCRIPTION("DRM bridge infrastructure");
->  MODULE_LICENSE("GPL and additional rights");
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index c90dbcffa0dc..3e89559d68cd 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -31,6 +31,7 @@
->  
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_auth.h>
-> +#include <drm/drm_bridge.h>
->  #include <drm/drm_client.h>
->  #include <drm/drm_debugfs.h>
->  #include <drm/drm_device.h>
-> @@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
->  
->  	drm_debugfs_add_files(minor->dev, drm_debugfs_list, DRM_DEBUGFS_ENTRIES);
->  
-> +	drm_bridge_debugfs_init(minor);
-> +
->  	if (drm_drv_uses_atomic_modeset(dev)) {
->  		drm_atomic_debugfs_init(minor);
->  	}
-> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-> index bf964cdfb330..60dbee6bd1e6 100644
-> --- a/include/drm/drm_bridge.h
-> +++ b/include/drm/drm_bridge.h
-> @@ -949,4 +949,9 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
->  }
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_FS
-
-You could drop the conditional compilation, it wouldn't hurt.
-
-> +struct drm_minor;
-> +void drm_bridge_debugfs_init(struct drm_minor *minor);
-> +#endif
-> +
->  #endif
-> 
-> ---
-> base-commit: c7a472297169156252a50d76965eb36b081186e2
-> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
-
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
 Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
-Laurent Pinchart
