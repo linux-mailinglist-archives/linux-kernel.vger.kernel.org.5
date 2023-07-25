@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A751D760511
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D3D76050D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjGYCJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S229835AbjGYCHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYCJm (ORCPT
+        with ESMTP id S229452AbjGYCHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:09:42 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F121CA1;
-        Mon, 24 Jul 2023 19:09:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R90pT2QcYz4f3k6d;
-        Tue, 25 Jul 2023 10:09:37 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgCHLuzfLr9kz4W0Og--.35121S2;
-        Tue, 25 Jul 2023 10:09:36 +0800 (CST)
-Subject: Re: [PATCH 00/10] A few fixes and cleanups to mballoc
-To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <87o7k5jm2b.fsf@doe.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <d372fa50-22b8-09ba-3229-c86492831f65@huaweicloud.com>
-Date:   Tue, 25 Jul 2023 10:09:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Mon, 24 Jul 2023 22:07:32 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2084.outbound.protection.outlook.com [40.107.20.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D82710F0;
+        Mon, 24 Jul 2023 19:07:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SaLg52xxPabDDh+dvMzhOEnM7UHH88361RK9o0G4uiVCnY3EMdOwDA664Dv3T5xJnY5TMgw9/JjKM0S7a2jOxeOTWKlD3ej3vhIQcUaU+34ZRKt2iGz/EEBFHTbTxuLh3AXyvEiP+Ap2sbX+6JCr2OyQXqqBE5Q8Vmo1Ok+TmVOX5d1N5mCm20W88aZ3cqZ348xifOzI5DtmnEJ7r9kwDB70xj22AdugJhOFkRH5D0yMKrnyucjpLreOc5Khh2DdS0FD4OyNogOem8Q8KdwJx/Lab4m1hGItq4v54swiaFTS0vIasNAww9zq2ALTUv3vPDBv3qm36eXBTc2M7cFBvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6TmTaDcemBUDKWKS7+4xZtSWSU/KeNUm2eXDJCFsIkk=;
+ b=fI/vygQ3kBwjKhu1JeNjSwh6JIpjg9mkqG/dkkmFP/B1yYCiqYMbx2R2r13J0cuC3ovKdf+3OX61A3ODofUPR3LnDOmxqUtW1lmmkIb416bqO0BhsWs0IiXCzewHJLpHQxPjAKABiEXP+VJbkP0saT9O5Dn/BkavZZcXfov1nN3oemtG3uHincWmYO37mIGHoktsl0q+X/j7T+gahNyQj5SGiGnH9D/+aUIOuOBYCx677Y6LASUEENVfEoEbf1j1N2asEl0gozk76TAa+plKyB0NcTFWci5v02aXAILjgZl9y+oU6ACeixNv2TKFkdhv2krG2wrUCNmnuHeps6Bocw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6TmTaDcemBUDKWKS7+4xZtSWSU/KeNUm2eXDJCFsIkk=;
+ b=mb+GlkRJEdnMk7Um+C2zFaRR4wKyb5Fa3w0TG6G09nBe2RpPIjBQL14ljtd6XWp7BZMKNwwW4I1l/vktop3rX2xHXvu1CfE+3NPno2DXHY7uakXxG44tWqeyXPbxdmDHv+JakUK77ogV4U2+OTjWZa0nlA1VB+D5EhcDloTdrrw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB7PR04MB5003.eurprd04.prod.outlook.com (2603:10a6:10:1a::19)
+ by DB9PR04MB9991.eurprd04.prod.outlook.com (2603:10a6:10:4c4::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Tue, 25 Jul
+ 2023 02:07:26 +0000
+Received: from DB7PR04MB5003.eurprd04.prod.outlook.com
+ ([fe80::7274:5109:64c5:b49f]) by DB7PR04MB5003.eurprd04.prod.outlook.com
+ ([fe80::7274:5109:64c5:b49f%3]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 02:07:26 +0000
+From:   carlos.song@nxp.com
+To:     festevam@gmail.com, andi.shyti@kernel.org, aisheng.dong@nxp.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de
+Cc:     carlos.song@nxp.com, xiaoning.wang@nxp.com, haibo.chen@nxp.com,
+        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] i2c: imx-lpi2c: add error message when i2c peripheral clk doesn't work
+Date:   Tue, 25 Jul 2023 10:11:08 +0800
+Message-Id: <20230725021108.1977494-1-carlos.song@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0167.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::23) To DB7PR04MB5003.eurprd04.prod.outlook.com
+ (2603:10a6:10:1a::19)
 MIME-Version: 1.0
-In-Reply-To: <87o7k5jm2b.fsf@doe.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgCHLuzfLr9kz4W0Og--.35121S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF1kAr4DCFy7Gw4xuw18Grg_yoW8Jw4rpF
-        Wxua12ka13Gw4xtr4xZ34xJFy8t3yxGFy3Wrn8Wws7ZFyrX34xCan2gr4jvr98Arn3Gw1a
-        qw4avF98Wa4vyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB7PR04MB5003:EE_|DB9PR04MB9991:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c79d4dd-41cf-4d8a-9334-08db8cb3e490
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ASMk5A2s8FPxkpdY2v5hMGYBQ8e8hOmMCk02kA8B2nYB3KnIvXE6vwQQy9YGdUp7SttO0T7hnvp606tR+h9grMIxxtdkQuBtnHk0KOfGX+QULwTwUGWiTbZy0uFNf4J37fDwVHzyMwSawFaNBfnWPYKeSLlnamHdwneebHjQ2lYXrDwYa+HK1PsHyfVsN5JS/D2t9BpZNcUAQkuRnFo+sgXhjHDIksi2AwqNJALxVcnS0NY8IDxx2GzxqMJDrHEtj8mh10/iUhyB0FhENdVhj1cOnU6TvwwCMfF0KTfWn2QnUJGkAvbZTPkVpkZH2jCFbNlUSr37lWUmVNUxs4VRm76z8KiWVpjG4EBSUPOGLnV/CX4j9s6DrH8hTpxvKK/mpxG9D3tA1FWvXZbmbjpXJZeCGpy2xzPb2B+L9T+QCo8w7xxRuWtZzK3GUXSmEUacGulAhnPtlayeMoxXXPLcOhoe0mzWPiOnIHkl4jizbdil/pWwzw8CCylkUNRNOr93u/IP84AHoOJGcuIK1Huw30s99epKbdDcI65y46BPbDSfU/BUN+Esvi2qSbwVhtZRdrFWMOrz6HTynWfrrk+uBzro5r7Coxmj//qDoU3HEpFaLKJbJm36/MellbQgN+mJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5003.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(366004)(346002)(136003)(451199021)(83380400001)(2906002)(38100700002)(38350700002)(2616005)(15650500001)(4744005)(6512007)(9686003)(41300700001)(316002)(6486002)(4326008)(66476007)(66556008)(66946007)(8936002)(52116002)(478600001)(86362001)(6666004)(8676002)(186003)(36756003)(1076003)(26005)(6506007)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JoxqCoYPbj7sAVftlQ8X8CCjSA3XONQEbEGdGiPY4ZvwWG8LBFdr4ANLt+i2?=
+ =?us-ascii?Q?JoeTZbN89/RhyJNKKNGBMHyZ8Gh1w2GOqknOFlsThqLqDoo/dH+Rmy5cBRmF?=
+ =?us-ascii?Q?lVh2ySqGTEe4K7o+U7fmOyWUFcxSuYxytI7F6IVmstnqyW2Df78pao+vpK9F?=
+ =?us-ascii?Q?S/Mp2vpgBczjfYnjTaZ0Jh8yiZpTcLDSvL7b5D0gR+DdF4hZw3VwsLOya5tB?=
+ =?us-ascii?Q?49sitIuYpVv34fq6YF3WcuRoqYNSa3+1sqKMDaPd9NH6vxes+gc1MfU3VMn7?=
+ =?us-ascii?Q?tqxBOzvf0wJ3LcjypHan6gDS9ahcFeaiZLia3/+gxe8ks3VyO30TV/DpVwVJ?=
+ =?us-ascii?Q?KPv+Bj5OPY4MPkGgeAX+GPYZB9PNq1GwSWMuhtZEW+y6Fm6UcZicXqTjB4y0?=
+ =?us-ascii?Q?oJ6a7sBZolCH52CxIZF6CIlG4XDTngQZcyb0K0uILWcTYBVrh1OAA2QSqAy2?=
+ =?us-ascii?Q?bzJ7AZBvkrQL8mNeyomJujQ0XdNZf1WwPndBKDSyVZdXkFrVJQVIHi+yhPmY?=
+ =?us-ascii?Q?904vF9ZWqI79iy7I7Lnw0trMee3972T1vCrcdyG1oh0HPegIppMFjxwteqxC?=
+ =?us-ascii?Q?O0q352ddV805r5iXeDX5eMEbhc1ZgRnQa51A84kNsayswn81owwlhGBdWyUA?=
+ =?us-ascii?Q?685fFJZJJH/9xwaXkgeerwe+eESIj1xjtRFCPGp8SmzR7mNS8AtsszqxCPpW?=
+ =?us-ascii?Q?I759nIedsmbuBM5Vsz21FxUT+CSxG6NgKcMLKyRraIg1q0CJIYXRwQfjYZJe?=
+ =?us-ascii?Q?P5G+jFSWZrQaA7j5G3KUS6U6Dpu+YVbqoNlwkn7pi422lTdu0C6WOWjKOdnz?=
+ =?us-ascii?Q?txh5Zw1+zPwxOGDJ1Y4WbNsnNZ9qhognYoyTDJBHsliQMK9W4FWNi/MXMqQG?=
+ =?us-ascii?Q?UzQyuPk61TdiWv12gdAWnBydXpg8viEiQQthtcdM2VXtrngHQrrSeMoqcfGz?=
+ =?us-ascii?Q?FiKE7kTO8zP4C6Xtr/do7VfyLAR6tw+gdwRa5CezEEqVSf8okpT7I2D7gXs+?=
+ =?us-ascii?Q?H4H9TiomI1G8JPNuhAz+CSer5k5wONwy9kWJNFsNQOwch1OGCrEvyq/B9rjI?=
+ =?us-ascii?Q?sXWGFEctQxgnSxjOav5yQyQ1eZ2nGzm+2N1I0902RuIzCTB4exp1AcNiJz5u?=
+ =?us-ascii?Q?KXrG7E+NTMDL8ZGtZbY3PZBbYpWz3zIZoU0j3P7nS0gXVq5eDPmioXoLR3dq?=
+ =?us-ascii?Q?cRd0phR+clLfBj4BCtKcaO6SwizbkjVqyfrfYKmipsTe0Uucds/liFDv/r8o?=
+ =?us-ascii?Q?kfGQYquHOzbCbKmKpiWt0MYzPN422VhOFo5HOKS7sgUZik/SjJGbmZK+bbZe?=
+ =?us-ascii?Q?m9fMZdChVI6r+hRJdEhLk5T/yvyuhhmR8NHqoJ8C8jP/1bLudfDK0Dt/r5vI?=
+ =?us-ascii?Q?pgFZpUvLpyAKY1DagHVaZ1DywSgaEZW+VaZr7y8gsksIz9AO1qH9MBDRH24H?=
+ =?us-ascii?Q?Y3UvrKw6j6ebVJtT/fKmw2Z0DryAW/eCsj8uIPgLKAlSe9q3GtDgavX1MdYC?=
+ =?us-ascii?Q?vloS1KN6AUr6chJ57H22D+tx8+y+Ps0kxKbhYCkH9pcVvO0qFdLtBrevS9Rl?=
+ =?us-ascii?Q?AwrGfpVdA2oIjDrOVg9DISbWx/GuDNAeSjhJWhdw?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c79d4dd-41cf-4d8a-9334-08db8cb3e490
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5003.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 02:07:26.8472
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TbRSks00n5VHM5EHiIhWraVXxrx1dGOs/RcRmUphHsxEvaCjvrPutg7ztjVeIDQe8EXqZK0aQwgi47JYWDVVgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9991
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Gao Pan <pandy.gao@nxp.com>
 
+Output error log when i2c peripheral clk rate is 0, then
+directly return -EINVAL.
 
-on 7/21/2023 11:55 PM, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
-> 
->> Hi all, this series contains some random fixes and cleanups to mballoc
->> which include correct grp validation, fix data overflow and so on.
->> More details can be found in respective patches.
->> Besides, 'kvm-xfstest smoke' runs successfully without error.
-> 
-> Thanks Kemeng for the cleanup series. Looks good to me with few minor
-> nits which I have commented in individual patches.
-> 
-Hi Ritesh, thanks for the review and comments. I went through all your
-suggestions and they help a lot. I will send v2 patchset to handle these.
-> Note that I couldn't cleanly apply the series on ted's dev branch
-> (Patch-05 gave some minor conflict). Maybe you might have based your
-> changes on top of linux master or something. Anyways it was just a minor
-> conflict and I don't know what is Ted's general preference here, but I
-> thought of doing an FYI - 
-Sorry for the conflict, this patchset is based on cleanup patchset [1]
-which you have noticed. As [1] still needs a lot more review, I will
-make this patchset based on current dev branch.
+Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
+Signed-off-by: Gao Pan <pandy.gao@nxp.com>
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+---
+Changes for V2:
+- adjust the Subject from "debug message" to "error message"
+---
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Thanks!
-
-[1] https://lore.kernel.org/linux-ext4/20230629144007.1263510-1-shikemeng@huaweicloud.com/T/#m66729346a76498079278df3e132a89910860f8ff
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index e93ff3b5373c..12b4f2a89343 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -214,6 +214,11 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
+ 	lpi2c_imx_set_mode(lpi2c_imx);
+ 
+ 	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
++	if (!clk_rate) {
++		dev_err(&lpi2c_imx->adapter.dev, "clk_per rate is 0\n");
++		return -EINVAL;
++	}
++
+ 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
+ 		filt = 0;
+ 	else
 -- 
-Best wishes
-Kemeng Shi
+2.34.1
 
