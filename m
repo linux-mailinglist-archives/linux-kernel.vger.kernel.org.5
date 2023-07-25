@@ -2,430 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E3A7622FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33ED77622F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbjGYUGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
+        id S231248AbjGYUFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjGYUGO (ORCPT
+        with ESMTP id S229587AbjGYUFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:06:14 -0400
-Received: from smtprelay07.ispgateway.de (smtprelay07.ispgateway.de [134.119.228.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66D3131;
-        Tue, 25 Jul 2023 13:06:11 -0700 (PDT)
-Received: from [77.64.243.219] (helo=note-book.lan)
-        by smtprelay07.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <git@apitzsch.eu>)
-        id 1qOOIL-0002Gr-Da; Tue, 25 Jul 2023 22:06:09 +0200
-From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Date:   Tue, 25 Jul 2023 22:05:11 +0200
-Subject: [PATCH v2 2/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add
- initial device tree
+        Tue, 25 Jul 2023 16:05:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BFF11A;
+        Tue, 25 Jul 2023 13:05:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C1B3E618CB;
+        Tue, 25 Jul 2023 20:05:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8F2BC433C8;
+        Tue, 25 Jul 2023 20:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690315518;
+        bh=KbZ7xcfcFhT25D3gtOxDO4GakROqumhS5uMELtEXV0Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JNwtE5fban7jWQ1PRTNc3jNaCcyJ5nHy9x4611ZvDP2YhiWx8ysF8NuyhML+TR3IR
+         hYhTTWKV6lWVCLnImgEIFoIxpuvN/yoZtxaFquorZMCYXUp+OZtbdG2iMaYtH3heW8
+         OP1nG7jVbS7+9TrDtjJ+rqdpoK+fQBsVLqdnifklI1TOaSmZaHCYC1cu5RWRMBPub+
+         Ea8gT33O6e1RS4nxTMXwxM3HXRPDJJAM4ZOlL9hPCAKtOy1GwubBQUnFKmyJvd6mU7
+         H6M8XSGVB1AsdTVOdt7TWAUOHEvkGDB6CCVrDuZoNcOI5Tbbg+2ubYvhJYbHCmky67
+         EOmVdRhu/9PIQ==
+Date:   Tue, 25 Jul 2023 15:05:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Sajid Dalvi <sdalvi@google.com>,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Xiaolei Wang <xiaolei.wang@windriver.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] Revert "PCI: dwc: Wait for link up only if link is
+ started"
+Message-ID: <20230725200515.GA663333@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230725-bq_m5-v2-2-9779c249aeb1@apitzsch.eu>
-References: <20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu>
-In-Reply-To: <20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephan Gerhold <stephan@gerhold.net>,
-        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-X-Mailer: b4 0.12.3
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230706082610.26584-1-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
-2015.
+[+cc Fabio, Xiaolei, Jon]
 
-Add a device tree with initial support for:
+On Thu, Jul 06, 2023 at 10:26:10AM +0200, Johan Hovold wrote:
+> This reverts commit da56a1bfbab55189595e588f1d984bdfb5cf5924.
+> 
+> A recent commit broke controller probe by returning an error in case the
+> link does not come up during host initialisation.
+> 
+> As explained in commit 886a9c134755 ("PCI: dwc: Move link handling into
+> common code") and as indicated by the comment "Ignore errors, the link
+> may come up later" in the code, waiting for link up and ignoring errors
+> is the intended behaviour:
+> 
+> 	 Let's standardize this to succeed as there are usecases where
+> 	 devices (and the link) appear later even without hotplug. For
+> 	 example, a reconfigured FPGA device.
+> 
+> Reverting the offending commit specifically fixes a regression on
+> Qualcomm platforms like the Lenovo ThinkPad X13s which no longer reach
+> the interconnect sync state if a slot does not have a device populated
+> (e.g. an optional modem).
+> 
+> Note that enabling asynchronous probing by default as was done for
+> Qualcomm platforms by commit c0e1eb441b1d ("PCI: qcom: Enable async
+> probe by default"), should take care of any related boot time concerns.
+> 
+> Finally, note that the intel-gw driver is the only driver currently not
+> providing a start_link callback and instead starts the link in its
+> host_init callback, and which may avoid an additional one-second timeout
+> during probe by making the link-up wait conditional. If anyone cares,
+> that can be done in a follow-up patch with a proper motivation.
+> 
+> Fixes: da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started")
+> Reported-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> Cc: Sajid Dalvi <sdalvi@google.com>
+> Cc: Ajay Agarwal <ajayagarwal@google.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-- GPIO keys
-- Hall sensor
-- SDHCI
-- WCNSS (BT/WIFI)
-- Accelerometer/Magnetometer
-- Vibrator
-- Touchscreen
-- Front flash
+da56a1bfbab5 appeared in v6.5-rc1, so we should definitely fix this
+before v6.5.
 
-Signed-off-by: André Apitzsch <git@apitzsch.eu>
----
- arch/arm64/boot/dts/qcom/Makefile                  |   1 +
- .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 336 +++++++++++++++++++++
- 2 files changed, 337 insertions(+)
+Based on the conversation here, I applied this to for-linus for v6.5.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 23fd31d4bf5a..3200bc92853f 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -39,6 +39,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-thwc-uf896.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-thwc-ufi001c.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-wingtech-wt88047.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-yiming-uz801v3.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-longcheer-l9100.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-samsung-a7.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-sony-xperia-kanuti-tulip.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-motorola-potter.dtb
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-longcheer-l9100.dts b/arch/arm64/boot/dts/qcom/msm8939-longcheer-l9100.dts
-new file mode 100644
-index 000000000000..d8e37bdb4916
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8939-longcheer-l9100.dts
-@@ -0,0 +1,336 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8939-pm8916.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
-+
-+/ {
-+	model = "BQ Aquaris M5 (Longcheer L9100)";
-+	compatible = "longcheer,l9100", "qcom,msm8939";
-+	chassis-type = "handset";
-+
-+	aliases {
-+		mmc0 = &sdhc_1; /* eMMC */
-+		mmc1 = &sdhc_2; /* SD card */
-+		serial0 = &blsp_uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0";
-+	};
-+
-+	gpio-hall-sensor {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-0 = <&gpio_hall_sensor_default>;
-+		pinctrl-names = "default";
-+
-+		label = "GPIO Hall Effect Sensor";
-+
-+		event-hall-sensor {
-+			label = "Hall Effect Sensor";
-+			gpios = <&tlmm 20 GPIO_ACTIVE_LOW>;
-+			linux,input-type = <EV_SW>;
-+			linux,code = <SW_LID>;
-+			linux,can-disable;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-0 = <&gpio_keys_default>;
-+		pinctrl-names = "default";
-+
-+		label = "GPIO Buttons";
-+
-+		button-volume-up {
-+			label = "Volume Up";
-+			gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-0 {
-+			gpios = <&tlmm 17 GPIO_ACTIVE_HIGH>;
-+			color = <LED_COLOR_ID_WHITE>;
-+			default-state = "off";
-+			function = LED_FUNCTION_KBD_BACKLIGHT;
-+
-+			pinctrl-0 = <&button_backlight_default>;
-+			pinctrl-names = "default";
-+		};
-+	};
-+
-+	reg_ts_vdd: regulator-vdd-ts {
-+		compatible = "regulator-fixed";
-+		regulator-name = "regulator-vdd-ts";
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+
-+		gpio = <&tlmm 78 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+
-+		pinctrl-0 = <&ts_vdd_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+	backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pm8916_pwm 0 100000>;
-+		brightness-levels = <0 255>;
-+		num-interpolated-steps = <255>;
-+		default-brightness-level = <128>;
-+		enable-gpios = <&tlmm 98 GPIO_ACTIVE_HIGH>;
-+
-+		pinctrl-0 = <&lcd_bl_en_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+	flash-led-controller {
-+		compatible = "ocs,ocp8110";
-+		flash-gpios = <&tlmm 8 GPIO_ACTIVE_HIGH>;
-+		enable-gpios = <&tlmm 49 GPIO_ACTIVE_HIGH>;
-+
-+		pinctrl-0 = <&camera_front_flash_default>;
-+		pinctrl-names = "default";
-+
-+		led {
-+			function = LED_FUNCTION_FLASH;
-+			color = <LED_COLOR_ID_WHITE>;
-+			flash-max-timeout-us = <250000>;
-+		};
-+	};
-+
-+	usb_id: usb-id {
-+		compatible = "linux,extcon-usb-gpio";
-+		id-gpio = <&tlmm 110 GPIO_ACTIVE_HIGH>;
-+		pinctrl-0 = <&usb_id_default &usb_id_switch_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+};
-+
-+&blsp_i2c3 {
-+	status = "okay";
-+
-+	magnetometer@d {
-+		compatible = "asahi-kasei,ak09911";
-+		reg = <0x0d>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vid-supply = <&pm8916_l6>;
-+
-+		reset-gpios = <&tlmm 68 GPIO_ACTIVE_HIGH>;
-+
-+		pinctrl-0 = <&mag_reset_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+	light-sensor@23 {
-+		compatible = "liteon,ltr559";
-+		reg = <0x23>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vddio-supply = <&pm8916_l5>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <113 IRQ_TYPE_EDGE_FALLING>;
-+
-+		pinctrl-0 = <&light_int_default>;
-+		pinctrl-names = "default";
-+	};
-+
-+	imu@68 {
-+		compatible = "bosch,bmi160";
-+		reg = <0x68>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vddio-supply = <&pm8916_l6>;
-+	};
-+};
-+
-+&blsp_i2c5 {
-+	status = "okay";
-+
-+	touchscreen@4a {
-+		compatible = "atmel,maxtouch";
-+		reg = <0x4a>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
-+
-+		reset-gpios = <&tlmm 12 GPIO_ACTIVE_LOW>;
-+
-+		vdda-supply = <&pm8916_l6>;
-+		vdd-supply = <&reg_ts_vdd>;
-+
-+		pinctrl-0 = <&ts_int_reset_default>;
-+		pinctrl-names = "default";
-+
-+		/* Keys listed from right to left */
-+		linux,keycodes = <KEY_APPSELECT KEY_HOMEPAGE KEY_BACK>;
-+	};
-+};
-+
-+&blsp_uart2 {
-+	status = "okay";
-+};
-+
-+&pm8916_mpps {
-+	pwm_out: mpp4-state {
-+		pins = "mpp4";
-+		function = "digital";
-+		power-source = <PM8916_MPP_VPH>;
-+		output-low;
-+		qcom,dtest = <1>;
-+	};
-+};
-+
-+&pm8916_pwm {
-+	pinctrl-0 = <&pwm_out>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+};
-+
-+&pm8916_resin {
-+	linux,code = <KEY_VOLUMEDOWN>;
-+	status = "okay";
-+};
-+
-+&pm8916_rpm_regulators {
-+	pm8916_l17: l17 {
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+	};
-+};
-+
-+&pm8916_vib {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	status = "okay";
-+};
-+
-+&sdhc_2 {
-+	pinctrl-0 = <&sdc2_default &sdc2_cd_default>;
-+	pinctrl-1 = <&sdc2_sleep &sdc2_cd_default>;
-+	pinctrl-names = "default", "sleep";
-+
-+	cd-gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
-+
-+	status = "okay";
-+};
-+
-+&usb {
-+	extcon = <&usb_id>, <&usb_id>;
-+	status = "okay";
-+};
-+
-+&usb_hs_phy {
-+	extcon = <&usb_id>;
-+};
-+
-+&wcnss {
-+	status = "okay";
-+};
-+
-+&wcnss_iris {
-+	compatible = "qcom,wcn3620";
-+};
-+
-+&tlmm {
-+	button_backlight_default: button-backlight-default-state {
-+		pins = "gpio17";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	camera_front_flash_default: camera-front-flash-default-state {
-+		pins = "gpio8", "gpio49";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	gpio_hall_sensor_default: gpio-hall-sensor-default-state {
-+		pins = "gpio20";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	gpio_keys_default: gpio-keys-default-state {
-+		pins = "gpio107";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
-+	lcd_bl_en_default: lcd-bl-en-default-state {
-+		pins = "gpio98";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	light_int_default: light-int-default-state {
-+		pins = "gpio113";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	mag_reset_default: mag-reset-default-state {
-+		pins = "gpio68";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	sdc2_cd_default: sdc2-cd-default-state {
-+		pins = "gpio38";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	ts_int_reset_default: ts-int-reset-default-state {
-+		pins = "gpio12", "gpio13";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	ts_vdd_default: ts-vdd-default-state {
-+		pins = "gpio78";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	usb_id_default: usb-id-default-state {
-+		pins = "gpio110";
-+		function = "gpio";
-+		drive-strength = <8>;
-+		bias-pull-up;
-+	};
-+
-+	usb_id_switch_default: usb-id-switch-default-state {
-+		pins = "gpio121";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		output-high;
-+	};
-+};
+I looked for Bjorn A's report but couldn't find it; I'd like to
+include the URL if there is one.  I did add the reports from Fabio
+Estevam, Xiaolei Wang, and Jon Hunter (Fabio and Xiaolei even included
+patches).
 
--- 
-2.41.0
+Current commit log, corrections/additions welcome:
 
+  This reverts commit da56a1bfbab55189595e588f1d984bdfb5cf5924.
+
+  Bjorn Andersson, Fabio Estevam, Xiaolei Wang, and Jon Hunter reported that
+  da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started") broke
+  controller probing by returning an error in case the link does not come up
+  during host initialisation, e.g., when the slot is empty.
+
+  As explained in commit 886a9c134755 ("PCI: dwc: Move link handling into
+  common code") and as indicated by the comment "Ignore errors, the link may
+  come up later" in the code, waiting for link up and ignoring errors is the
+  intended behaviour:
+
+    Let's standardize this to succeed as there are usecases where devices
+    (and the link) appear later even without hotplug. For example, a
+    reconfigured FPGA device.
+
+  Reverting the offending commit specifically fixes a regression on Qualcomm
+  platforms like the Lenovo ThinkPad X13s which no longer reach the
+  interconnect sync state if a slot does not have a device populated (e.g. an
+  optional modem).
+
+  Note that enabling asynchronous probing by default as was done for Qualcomm
+  platforms by commit c0e1eb441b1d ("PCI: qcom: Enable async probe by
+  default"), should take care of any related boot time concerns.
+
+  Finally, note that the intel-gw driver is the only driver currently not
+  providing a .start_link() callback and instead starts the link in its
+  .host_init() callback, which may avoid an additional one-second timeout
+  during probe by making the link-up wait conditional. If anyone cares, that
+  can be done in a follow-up patch with a proper motivation.
+
+  [bhelgaas: add Fabio Estevam, Xiaolei Wang, Jon Hunter reports]
+  Fixes: da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started")
+  Link: https://lore.kernel.org/r/20230704122635.1362156-1-festevam@gmail.com/
+  Link: https://lore.kernel.org/r/20230705010624.3912934-1-xiaolei.wang@windriver.com/
+  Link: https://lore.kernel.org/r/6ca287a1-6c7c-7b90-9022-9e73fb82b564@nvidia.com
+  Link: https://lore.kernel.org/r/20230706082610.26584-1-johan+linaro@kernel.org
+  Reported-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+  Reported-by: Fabio Estevam <festevam@gmail.com>
+  Reported-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+  Reported-by: Jon Hunter <jonathanh@nvidia.com>
+  Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+  Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+  Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+  Cc: Sajid Dalvi <sdalvi@google.com>
+  Cc: Ajay Agarwal <ajayagarwal@google.com>
+
+> ---
+>  .../pci/controller/dwc/pcie-designware-host.c | 13 ++++--------
+>  drivers/pci/controller/dwc/pcie-designware.c  | 20 +++++++------------
+>  drivers/pci/controller/dwc/pcie-designware.h  |  1 -
+>  3 files changed, 11 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index cf61733bf78d..9952057c8819 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -485,20 +485,15 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+>  	if (ret)
+>  		goto err_remove_edma;
+>  
+> -	if (dw_pcie_link_up(pci)) {
+> -		dw_pcie_print_link_status(pci);
+> -	} else {
+> +	if (!dw_pcie_link_up(pci)) {
+>  		ret = dw_pcie_start_link(pci);
+>  		if (ret)
+>  			goto err_remove_edma;
+> -
+> -		if (pci->ops && pci->ops->start_link) {
+> -			ret = dw_pcie_wait_for_link(pci);
+> -			if (ret)
+> -				goto err_stop_link;
+> -		}
+>  	}
+>  
+> +	/* Ignore errors, the link may come up later */
+> +	dw_pcie_wait_for_link(pci);
+> +
+>  	bridge->sysdata = pp;
+>  
+>  	ret = pci_host_probe(bridge);
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index df092229e97d..8e33e6e59e68 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -644,20 +644,9 @@ void dw_pcie_disable_atu(struct dw_pcie *pci, u32 dir, int index)
+>  	dw_pcie_writel_atu(pci, dir, index, PCIE_ATU_REGION_CTRL2, 0);
+>  }
+>  
+> -void dw_pcie_print_link_status(struct dw_pcie *pci)
+> -{
+> -	u32 offset, val;
+> -
+> -	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> -	val = dw_pcie_readw_dbi(pci, offset + PCI_EXP_LNKSTA);
+> -
+> -	dev_info(pci->dev, "PCIe Gen.%u x%u link up\n",
+> -		 FIELD_GET(PCI_EXP_LNKSTA_CLS, val),
+> -		 FIELD_GET(PCI_EXP_LNKSTA_NLW, val));
+> -}
+> -
+>  int dw_pcie_wait_for_link(struct dw_pcie *pci)
+>  {
+> +	u32 offset, val;
+>  	int retries;
+>  
+>  	/* Check if the link is up or not */
+> @@ -673,7 +662,12 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
+>  		return -ETIMEDOUT;
+>  	}
+>  
+> -	dw_pcie_print_link_status(pci);
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	val = dw_pcie_readw_dbi(pci, offset + PCI_EXP_LNKSTA);
+> +
+> +	dev_info(pci->dev, "PCIe Gen.%u x%u link up\n",
+> +		 FIELD_GET(PCI_EXP_LNKSTA_CLS, val),
+> +		 FIELD_GET(PCI_EXP_LNKSTA_NLW, val));
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 615660640801..79713ce075cc 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -429,7 +429,6 @@ void dw_pcie_setup(struct dw_pcie *pci);
+>  void dw_pcie_iatu_detect(struct dw_pcie *pci);
+>  int dw_pcie_edma_detect(struct dw_pcie *pci);
+>  void dw_pcie_edma_remove(struct dw_pcie *pci);
+> -void dw_pcie_print_link_status(struct dw_pcie *pci);
+>  
+>  static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
+>  {
+> -- 
+> 2.39.3
+> 
