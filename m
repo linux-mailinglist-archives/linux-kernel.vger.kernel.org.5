@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF17761116
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C5C7613D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbjGYKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
+        id S234198AbjGYLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbjGYKkK (ORCPT
+        with ESMTP id S234150AbjGYLOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:40:10 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78708194;
-        Tue, 25 Jul 2023 03:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690281609; x=1721817609;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Jyr/C0uXdLTqSt8o11IlypH7yijyNPTn5qF6VHkHyus=;
-  b=DPa+kMGng0tg+AHH8bKL35qpQlBHWUzmy3JWisZeMHLINiPdFvyRJ9XU
-   fddPuQQc4vdp5/4XmwCHRxdsaXxgdN3XLRl+Mz67yewakXaxwlULSfKx3
-   lvDUG4K+YbTyUiAMmNsbrf9yqtFmnPj540mVese/CqIZPx+Wix/3TERI7
-   Nzpx6QqhAC7gGJfX2/nN42ESGjG7SetGuQ/Wp8NqwNCeLflp3dIflB29h
-   L/PyHnBB92t0bEg6ak+iHtNs2ywpC70NTPw/XVxgcRiS1gz1HH4nMZosM
-   AWOdn15yoQP38E01Ff+0aB5DOKK0BRwi955bew9ez1AfQuMQmLeee/ZiC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="352583079"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="352583079"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 03:39:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="791330038"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="791330038"
-Received: from hegang-mobl.ccr.corp.intel.com (HELO localhost) ([10.254.212.56])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 03:39:48 -0700
-Date:   Tue, 25 Jul 2023 18:39:45 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Reima Ishii <ishiir@g.ecc.u-tokyo.ac.jp>
-Subject: Re: [PATCH 3/5] KVM: x86/mmu: Harden TDP MMU iteration against root
- w/o shadow page
-Message-ID: <20230725103945.wfa5zdupen3oo6xl@linux.intel.com>
-References: <20230722012350.2371049-1-seanjc@google.com>
- <20230722012350.2371049-4-seanjc@google.com>
+        Tue, 25 Jul 2023 07:14:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4562694;
+        Tue, 25 Jul 2023 04:13:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC410615BA;
+        Tue, 25 Jul 2023 11:13:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5559C433C7;
+        Tue, 25 Jul 2023 11:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690283584;
+        bh=hgi2A9ePVSSsRAzb3jutf8PgyVni+KLCT55bRm6PvHc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wtgvYoh62Ar5Uztv4cZkogFn0zobcVJ3T3bPwyJsdY4jkNwqGz1K62nPJgoGYxChw
+         JWf3/1IlDneks7kcxaBUovcbKcZSfHrR6s6Pu/aa2BSs/Dwz718q/bpMoJFeBpI7iM
+         ZRluQ04xOa4S3erErN0wFlMlSmhQyy1NYwUNuTK0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Daniel Borkmann <daniel@iogearbox.net>,
+        Christian Brauner <brauner@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>, linux-sctp@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 049/509] sctp: add bpf_bypass_getsockopt proto callback
+Date:   Tue, 25 Jul 2023 12:39:48 +0200
+Message-ID: <20230725104555.922099240@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230725104553.588743331@linuxfoundation.org>
+References: <20230725104553.588743331@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230722012350.2371049-4-seanjc@google.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 06:23:48PM -0700, Sean Christopherson wrote:
-> Explicitly check that tdp_iter_start() is handed a valid shadow page
-> to harden KVM against bugs where
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 
-Sorry, where? 
+[ Upstream commit 2598619e012cee5273a2821441b9a051ad931249 ]
 
-It's not about guest using an invisible GFN, it's about a KVM bug, right?
+Implement ->bpf_bypass_getsockopt proto callback and filter out
+SCTP_SOCKOPT_PEELOFF, SCTP_SOCKOPT_PEELOFF_FLAGS and SCTP_SOCKOPT_CONNECTX3
+socket options from running eBPF hook on them.
 
-> 
-> Opportunistically stop the TDP MMU iteration instead of continuing on
-> with garbage if the incoming root is bogus.  Attempting to walk a garbage
-> root is more likely to caused major problems than doing nothing.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_iter.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-> index d2eb0d4f8710..bd30ebfb2f2c 100644
-> --- a/arch/x86/kvm/mmu/tdp_iter.c
-> +++ b/arch/x86/kvm/mmu/tdp_iter.c
-> @@ -39,13 +39,14 @@ void tdp_iter_restart(struct tdp_iter *iter)
->  void tdp_iter_start(struct tdp_iter *iter, struct kvm_mmu_page *root,
->  		    int min_level, gfn_t next_last_level_gfn)
->  {
-> -	int root_level = root->role.level;
-> -
-> -	WARN_ON(root_level < 1);
-> -	WARN_ON(root_level > PT64_ROOT_MAX_LEVEL);
-> +	if (WARN_ON_ONCE(!root || (root->role.level < 1) ||
-> +			 (root->role.level > PT64_ROOT_MAX_LEVEL))) {
-> +		iter->valid = false;
-> +		return;
-> +	}
->  
+SCTP_SOCKOPT_PEELOFF and SCTP_SOCKOPT_PEELOFF_FLAGS options do fd_install(),
+and if BPF_CGROUP_RUN_PROG_GETSOCKOPT hook returns an error after success of
+the original handler sctp_getsockopt(...), userspace will receive an error
+from getsockopt syscall and will be not aware that fd was successfully
+installed into a fdtable.
 
-I saw many usages of WARN_ON_ONCE() and WARN_ON() in KVM. And just wonder,
-is there any criteria for KVM when to use which?
+As pointed by Marcelo Ricardo Leitner it seems reasonable to skip
+bpf getsockopt hook for SCTP_SOCKOPT_CONNECTX3 sockopt too.
+Because internaly, it triggers connect() and if error is masked
+then userspace will be confused.
 
-B.R.
-Yu
+This patch was born as a result of discussion around a new SCM_PIDFD interface:
+https://lore.kernel.org/all/20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com/
+
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: linux-sctp@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Suggested-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Acked-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/sctp/socket.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+index 35d3eee26ea56..4a7f811abae4e 100644
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -8039,6 +8039,22 @@ static int sctp_getsockopt(struct sock *sk, int level, int optname,
+ 	return retval;
+ }
+ 
++static bool sctp_bpf_bypass_getsockopt(int level, int optname)
++{
++	if (level == SOL_SCTP) {
++		switch (optname) {
++		case SCTP_SOCKOPT_PEELOFF:
++		case SCTP_SOCKOPT_PEELOFF_FLAGS:
++		case SCTP_SOCKOPT_CONNECTX3:
++			return true;
++		default:
++			return false;
++		}
++	}
++
++	return false;
++}
++
+ static int sctp_hash(struct sock *sk)
+ {
+ 	/* STUB */
+@@ -9407,6 +9423,7 @@ struct proto sctp_prot = {
+ 	.shutdown    =	sctp_shutdown,
+ 	.setsockopt  =	sctp_setsockopt,
+ 	.getsockopt  =	sctp_getsockopt,
++	.bpf_bypass_getsockopt	= sctp_bpf_bypass_getsockopt,
+ 	.sendmsg     =	sctp_sendmsg,
+ 	.recvmsg     =	sctp_recvmsg,
+ 	.bind        =	sctp_bind,
+@@ -9459,6 +9476,7 @@ struct proto sctpv6_prot = {
+ 	.shutdown	= sctp_shutdown,
+ 	.setsockopt	= sctp_setsockopt,
+ 	.getsockopt	= sctp_getsockopt,
++	.bpf_bypass_getsockopt	= sctp_bpf_bypass_getsockopt,
+ 	.sendmsg	= sctp_sendmsg,
+ 	.recvmsg	= sctp_recvmsg,
+ 	.bind		= sctp_bind,
+-- 
+2.39.2
+
+
+
