@@ -2,240 +2,475 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FAD7604FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C69760506
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjGYCCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S230088AbjGYCEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjGYCCC (ORCPT
+        with ESMTP id S229475AbjGYCEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:02:02 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3AF10EF;
-        Mon, 24 Jul 2023 19:02:01 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bb571ea965so1672702fac.0;
-        Mon, 24 Jul 2023 19:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690250520; x=1690855320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tTvSWbkjA+14tviFPtc6ENPHaYeKtI5EUeqn7dS9Ih4=;
-        b=R3h6tq4xVbAvAZ5BYduxZpo+1vk2oNZZrISipKxyf1bHn9EubFi9H8nV3EGv8X5HtK
-         O8LTQsceIQBS4Jy+/FbePFBYRt03Z+iK7rf00LTpvJvOxKyndwb4RBmKeaCOGp3ns2Wl
-         UhL4WHbyjjq6HbgtJX7aG/zMFm85tGdewUI/7O7au2+/viN7x7p2ieSajy0H/zr5aOo/
-         dbFNVs9/gEFOhmda+Of2ya4NtqlYNzopCk2NLXNL+e5ofc77147WAweQxcFPuClKM7o6
-         wsLJpIPytV/t+vvhqwRqo8iFjcT2jOstVtwhhDrzMuj8C3BcZxO3zecySnTgo8TRNX+Z
-         ZMnA==
+        Mon, 24 Jul 2023 22:04:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B211737
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 19:04:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690250641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vqww6ZfVz3WGuiA93vwsDp4D2TM+/LywwC6I4AB0uM=;
+        b=TN4LFpAzSAlxTExM+9G5caxcXQN/L9BP7AE814cnGyDDRu3O16o9w/138Qc3sE7AwGHFEd
+        nbU31jFfOhwa6ju5tKFMDnElR6sxhlp6rojptY/Z+26TN2s9xfkP4+3jlRFaC18iwc4eZQ
+        cg92JAps+SDJG9v/kWw57jQzwIzlyUE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-677-0frd8GPVM7iHnnASuFYlUw-1; Mon, 24 Jul 2023 22:03:59 -0400
+X-MC-Unique: 0frd8GPVM7iHnnASuFYlUw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a34a0b75eso330110966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 19:03:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690250520; x=1690855320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tTvSWbkjA+14tviFPtc6ENPHaYeKtI5EUeqn7dS9Ih4=;
-        b=eGhSGKu2KHrF/qD3xAI3kHXWH8+8anBBPxv2JVRqr4OrsI9cFaS+p1CMIcc9j48+lv
-         nsoBR3ht06PBhgwmp8gaTp6Wk8A/DIeOYByD1vyv0CDZ0OGOjhoivETMMM8NI/Nm11Ts
-         zx09fEogxAw7bnozDTa/P7byXyqJnoX1m35QCZG2GUlmDCB0+e7CBUEZ1gYJn3Sk+j3H
-         IPtbeZLmzug5grKV7nOAPYFzDC99KHBXrBjt+waKxdXY98DMM0pyIvDxA0xPbzE8MC2X
-         NaD9WcpuguZcCFAcTaQf/XYey/ce2UivXwEu0UNxwSWl5a+SUrYjn60RvWMOP2/YDc0Y
-         Ezog==
-X-Gm-Message-State: ABy/qLaIFQMYlAYwL0HZzDYJtwqNA7V/2XT3ohtwMLFqCg8VA0H2Ml6L
-        DVGhvkFYotbg6QpF/Et4aW6OM9kLfL3v5PyddjE=
-X-Google-Smtp-Source: APBJJlEl8F38eCWK9GOfrLiFbHZsO5XCzSSIcxiAMm1LjLb9etzSDppTe2qUaoD1W+Jr/6HuiAkqMQXooXzcxaSLKCc=
-X-Received: by 2002:a05:6870:d7a8:b0:1bb:831b:79e6 with SMTP id
- bd40-20020a056870d7a800b001bb831b79e6mr3509525oab.16.1690250520248; Mon, 24
- Jul 2023 19:02:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690250638; x=1690855438;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+vqww6ZfVz3WGuiA93vwsDp4D2TM+/LywwC6I4AB0uM=;
+        b=lx0XqSTAMIq4tgz6WGXnIoWcxJOy0LJ6M55xe9ceesN6x4Pl9KrL+qCEE+TR0+bIyt
+         uWtiyndvDyGk7E6WSoiTDGZlCAqI71Rijm6alVRZVTDX6QWyJq6ZAGRNh95WLNT2E4MT
+         iqmn/0COR3cbCWKQ3hWzqtkAARovzWOIC3NcMzCXT3l/axNZHEStJggJFloWGfjtqnHo
+         tqFK4VkzQRvsuzzSLBIoFd2Wy9dmEFsclbKjv+VitQX77bX89O0GN18VUVCDorU3yTOB
+         K6K/TpY4d+oAOWnwTP4f9tDlk5m4G9Wbp/g4GJkaIhMvGlsy6N6RjwvCSjIorigArj7X
+         uVIA==
+X-Gm-Message-State: ABy/qLY/pGuBsBIcWilbkcd9NhUxwF4o9useCnuXpOe8nVK4etCWAWn3
+        dS6f2QURCYWt/OC2Fq8GP1sAy/omQwUwmhOF9aQxbyxd3qeFygaWhUD/TRovYYbuLvdK+F5cZ34
+        9veb8AsvHNzWdyGGw+YWq78Y6
+X-Received: by 2002:a17:906:53d0:b0:970:1b2d:45cc with SMTP id p16-20020a17090653d000b009701b2d45ccmr11082967ejo.57.1690250638444;
+        Mon, 24 Jul 2023 19:03:58 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFaQYUuaSsOqp9M2CUlqNjePppMlkda/ZcoOm423ZgK9PVds1tLZGRiESPqcEQhQRWhcz5B5w==
+X-Received: by 2002:a17:906:53d0:b0:970:1b2d:45cc with SMTP id p16-20020a17090653d000b009701b2d45ccmr11082950ejo.57.1690250638053;
+        Mon, 24 Jul 2023 19:03:58 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id ot7-20020a170906ccc700b009929c09abdfsm7542238ejb.70.2023.07.24.19.03.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 19:03:57 -0700 (PDT)
+Message-ID: <da776218-e930-5cbf-b2ab-8e6c39b900cd@redhat.com>
+Date:   Tue, 25 Jul 2023 04:03:55 +0200
 MIME-Version: 1.0
-References: <20230719130527.8074-1-xuewen.yan@unisoc.com> <20230721221944.dthg3tf25j4qgc2z@airbuntu>
- <CAB8ipk8b8ZfwXN7KK-zFVPQ-8i37h64v-wz2ErB3AANaZ9w7aA@mail.gmail.com> <18b0d54b-f8d2-ff38-f5c8-697dc838e3ce@arm.com>
-In-Reply-To: <18b0d54b-f8d2-ff38-f5c8-697dc838e3ce@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 25 Jul 2023 10:01:49 +0800
-Message-ID: <CAB8ipk-DOAE8u5eYmfR9RaP57Y494z5CtUkCVTPQDzSxE7Rwwg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
- cpufreq_limits changed
-To:     Pierre Gondois <pierre.gondois@arm.com>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Xuewen Yan <xuewen.yan@unisoc.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, guohua.yan@unisoc.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH drm-misc-next v8 03/12] drm/nouveau: new VM_BIND uapi
+ interfaces
+Content-Language: en-US
+To:     Faith Ekstrand <faith@gfxstrand.net>, airlied@gmail.com
+Cc:     daniel@ffwll.ch, tzimmermann@suse.de, mripard@kernel.org,
+        corbet@lwn.net, christian.koenig@amd.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, matthew.brost@intel.com,
+        boris.brezillon@collabora.com, alexdeucher@gmail.com,
+        ogabbay@kernel.org, bagasdotme@gmail.com, willy@infradead.org,
+        jason@jlekstrand.net, donald.robson@imgtec.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Airlie <airlied@redhat.com>
+References: <20230720001443.2380-1-dakr@redhat.com>
+ <20230720001443.2380-4-dakr@redhat.com>
+ <CAOFGe95kS0KzSUhjWiikBcx9vRQKnqipFE+a=FPobCgEi=ysAw@mail.gmail.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <CAOFGe95kS0KzSUhjWiikBcx9vRQKnqipFE+a=FPobCgEi=ysAw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
 
-On Mon, Jul 24, 2023 at 11:33=E2=80=AFPM Pierre Gondois <pierre.gondois@arm=
-.com> wrote:
->
->
->
-> On 7/24/23 05:36, Xuewen Yan wrote:
-> > On Sat, Jul 22, 2023 at 7:02=E2=80=AFAM Qais Yousef <qyousef@layalina.i=
-o> wrote:
-> >>
-> >> On 07/19/23 21:05, Xuewen Yan wrote:
-> >>> When cpufreq's policy is single, there is a scenario that will
-> >>> cause sg_policy's next_freq to be unable to update.
-> >>>
-> >>> When the cpu's util is always max, the cpufreq will be max,
-> >>> and then if we change the policy's scaling_max_freq to be a
-> >>> lower freq, indeed, the sg_policy's next_freq need change to
-> >>> be the lower freq, however, because the cpu_is_busy, the next_freq
-> >>> would keep the max_freq.
-> >>>
-> >>> For example:
-> >>> The cpu7 is single cpu:
-> >>>
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
-> >>> [1] 4737
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
-> >>> pid 4737's current affinity mask: ff
-> >>> pid 4737's new affinity mask: 80
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> >>> 2301000
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
-> >>> 2301000
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scali=
-ng_max_freq
-> >>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
-> >>> 2171000
-> >>>
-> >>> At this time, the sg_policy's next_freq would keep 2301000.
-> >>>
-> >>> To prevent the case happen, add the judgment of the need_freq_update =
-flag.
-> >>>
-> >>> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> >>> Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
-> >>> Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
-> >>> ---
-> >>>   kernel/sched/cpufreq_schedutil.c | 3 ++-
-> >>>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_=
-schedutil.c
-> >>> index 4492608b7d7f..458d359f5991 100644
-> >>> --- a/kernel/sched/cpufreq_schedutil.c
-> >>> +++ b/kernel/sched/cpufreq_schedutil.c
-> >>> @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct updat=
-e_util_data *hook, u64 time,
-> >>>         * Except when the rq is capped by uclamp_max.
-> >>>         */
-> >>>        if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
-> >>> -         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq)=
- {
-> >>> +         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq =
-&&
-> >>> +         !sg_policy->need_freq_update) {
-> >>
-> >> What about sugov_update_single_perf()? It seems to have the same probl=
-em, no?
-> >
-> > There is no problem in sugov_update_single_perf, because the next_freq
-> > is updated by drivers, maybe the next_freq is not used when using
-> > sugov_update_single_perf..
-> >
-> > But  for the last_freq_update_time, I think there are some problems
-> > when using sugov_update_single_perf:
-> > Now, there is no judgment condition for the update of the
-> > last_freq_update_time. That means the last_freq_update_time is always
-> > updated in sugov_update_single_perf.
-> > And in sugov_should_update_freq: it would judge the
-> > freq_update_delay_ns. As a result, If we use the
-> > sugov_update_single_perf, the cpu frequency would only be periodically
-> > updated according to freq_update_delay_ns.
-> > Maybe we should judge the cpufreq_driver_adjust_perf's return value,
-> > if the freq is not updated, the last_freq_update_time also does not
-> > have to update.
-> >
-> > Just like:
-> > ---
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_sc=
-hedutil.c
-> > index 458d359f5991..10f18b054f01 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -381,6 +381,7 @@ static void sugov_update_single_perf(struct
-> > update_util_data *hook, u64 time,
-> >          struct sugov_cpu *sg_cpu =3D container_of(hook, struct
-> > sugov_cpu, update_util);
-> >          unsigned long prev_util =3D sg_cpu->util;
-> >          unsigned long max_cap;
-> > +       bool freq_updated;
-> >
-> >          /*
-> >           * Fall back to the "frequency" path if frequency invariance i=
-s not
-> > @@ -407,10 +408,11 @@ static void sugov_update_single_perf(struct
-> > update_util_data *hook, u64 time,
-> >              sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-> >                  sg_cpu->util =3D prev_util;
-> >
-> > -       cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->b=
-w_dl),
-> > +       freq_updated =3D cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> > map_util_perf(sg_cpu->bw_dl),
-> >                                     map_util_perf(sg_cpu->util), max_ca=
-p);
-> >
-> > -       sg_cpu->sg_policy->last_freq_update_time =3D time;
-> > +       if (freq_updated)
-> > +               sg_cpu->sg_policy->last_freq_update_time =3D time;
-> >   }
-> >
->
-> Hello Xuewen,
-> FWIW, the patch and explanation for sugov_update_single_perf() seem sensi=
-ble to
-> me. Just a comment about cpufreq_driver_adjust_perf() and
-> (struct cpufreq_driver)->adjust_perf(): wouldn't their prototype need to =
-be
-> updated (i.e. not return void) to do the change suggested above ?
 
-Yes, their function type should be changed from void to bool or init.
-For this patch, I just raise a question for everyone to discuss. If
-this is a problem, the official patch needs to be revised later.
+On 7/22/23 00:58, Faith Ekstrand wrote:
+> 
+> On Wed, Jul 19, 2023 at 7:15 PM Danilo Krummrich <dakr@redhat.com 
+> <mailto:dakr@redhat.com>> wrote:
+> 
+>     This commit provides the interfaces for the new UAPI motivated by the
+>     Vulkan API. It allows user mode drivers (UMDs) to:
+> 
+>     1) Initialize a GPU virtual address (VA) space via the new
+>         DRM_IOCTL_NOUVEAU_VM_INIT ioctl. UMDs can provide a kernel reserved
+>         VA area.
+> 
+>     2) Bind and unbind GPU VA space mappings via the new
+>         DRM_IOCTL_NOUVEAU_VM_BIND ioctl.
+> 
+>     3) Execute push buffers with the new DRM_IOCTL_NOUVEAU_EXEC ioctl.
+> 
+>     Both, DRM_IOCTL_NOUVEAU_VM_BIND and DRM_IOCTL_NOUVEAU_EXEC support
+>     asynchronous processing with DRM syncobjs as synchronization mechanism.
+> 
+>     The default DRM_IOCTL_NOUVEAU_VM_BIND is synchronous processing,
+>     DRM_IOCTL_NOUVEAU_EXEC supports asynchronous processing only.
+> 
+>     Co-authored-by: Dave Airlie <airlied@redhat.com
+>     <mailto:airlied@redhat.com>>
+>     Signed-off-by: Danilo Krummrich <dakr@redhat.com
+>     <mailto:dakr@redhat.com>>
+>     ---
+>       Documentation/gpu/driver-uapi.rst |   8 ++
+>       include/uapi/drm/nouveau_drm.h    | 209 ++++++++++++++++++++++++++++++
+>       2 files changed, 217 insertions(+)
+> 
+>     diff --git a/Documentation/gpu/driver-uapi.rst
+>     b/Documentation/gpu/driver-uapi.rst
+>     index 4411e6919a3d..9c7ca6e33a68 100644
+>     --- a/Documentation/gpu/driver-uapi.rst
+>     +++ b/Documentation/gpu/driver-uapi.rst
+>     @@ -6,3 +6,11 @@ drm/i915 uAPI
+>       =============
+> 
+>       .. kernel-doc:: include/uapi/drm/i915_drm.h
+>     +
+>     +drm/nouveau uAPI
+>     +================
+>     +
+>     +VM_BIND / EXEC uAPI
+>     +-------------------
+>     +
+>     +.. kernel-doc:: include/uapi/drm/nouveau_drm.h
+>     diff --git a/include/uapi/drm/nouveau_drm.h
+>     b/include/uapi/drm/nouveau_drm.h
+>     index 853a327433d3..4d3a70529637 100644
+>     --- a/include/uapi/drm/nouveau_drm.h
+>     +++ b/include/uapi/drm/nouveau_drm.h
+>     @@ -126,6 +126,209 @@ struct drm_nouveau_gem_cpu_fini {
+>              __u32 handle;
+>       };
+> 
+>     +/**
+>     + * struct drm_nouveau_sync - sync object
+>     + *
+>     + * This structure serves as synchronization mechanism for (potentially)
+>     + * asynchronous operations such as EXEC or VM_BIND.
+>     + */
+>     +struct drm_nouveau_sync {
+>     +       /**
+>     +        * @flags: the flags for a sync object
+>     +        *
+>     +        * The first 8 bits are used to determine the type of the
+>     sync object.
+>     +        */
+>     +       __u32 flags;
+>     +#define DRM_NOUVEAU_SYNC_SYNCOBJ 0x0
+>     +#define DRM_NOUVEAU_SYNC_TIMELINE_SYNCOBJ 0x1
+>     +#define DRM_NOUVEAU_SYNC_TYPE_MASK 0xf
+>     +       /**
+>     +        * @handle: the handle of the sync object
+>     +        */
+>     +       __u32 handle;
+>     +       /**
+>     +        * @timeline_value:
+>     +        *
+>     +        * The timeline point of the sync object in case the syncobj
+>     is of
+>     +        * type DRM_NOUVEAU_SYNC_TIMELINE_SYNCOBJ.
+>     +        */
+>     +       __u64 timeline_value;
+>     +};
+>     +
+>     +/**
+>     + * struct drm_nouveau_vm_init - GPU VA space init structure
+>     + *
+>     + * Used to initialize the GPU's VA space for a user client, telling
+>     the kernel
+>     + * which portion of the VA space is managed by the UMD and kernel
+>     respectively.
+> 
+> 
+> I assume this has to be called quite early. Like maybe before any BOs or 
+> channels are created? In any case, it'd be nice to have that documented.
 
-BR
-xuewen
+Exactly, doing any of those will disable the new uAPI entirely if it 
+wasn't yet initialized. I will add some documentation for this.
 
->
-> Regards,
-> Pierre
->
-> >
-> > BR
-> > Thanks!
-> >
-> > ---
-> > xuewen
-> >>
-> >> LGTM otherwise.
-> >>
-> >>
-> >> Cheers
-> >>
-> >> --
-> >> Qais Yousef
-> >>
-> >>>                next_f =3D sg_policy->next_freq;
-> >>>
-> >>>                /* Restore cached freq as next_freq has changed */
-> >>> --
-> >>> 2.25.1
-> >>>
-> >
+> 
+>     + */
+>     +struct drm_nouveau_vm_init {
+>     +       /**
+>     +        * @unmanaged_addr: start address of the kernel managed VA
+>     space region
+>     +        */
+>     +       __u64 unmanaged_addr;
+>     +       /**
+>     +        * @unmanaged_size: size of the kernel managed VA space
+>     region in bytes
+>     +        */
+>     +       __u64 unmanaged_size;
+> 
+> 
+> Over-all, I think this is the right API. My only concern is with the 
+> word "unmanaged". None of the VA space is unmanaged. Some is 
+> userspace-managed and some is kernel-managed.  I guess "unmanaged" kinda 
+> makes sense because this is coming from userspace and it's saying which 
+> bits it manages and which bits it doesn't.  Still seems clunky to me.  
+> Maybe kernel_managed? IDK, that feels weird too. Since we're already 
+> using UMD in this file, we could call it kmd_managed. IDK. 🤷🏻‍♀️
+
+kernel_managed / kmd_managed both sounds fine to me. I'm good with 
+either one.
+
+> 
+> Yeah, I know this is a total bikeshed color thing and I'm not going to 
+> block anything based on it. 😅 Just wanted to see if we can come up with 
+> anything better.  It's documented and that's the important thing.
+> 
+>     +};
+>     +
+>     +/**
+>     + * struct drm_nouveau_vm_bind_op - VM_BIND operation
+>     + *
+>     + * This structure represents a single VM_BIND operation. UMDs
+>     should pass
+>     + * an array of this structure via struct drm_nouveau_vm_bind's
+>     &op_ptr field.
+>     + */
+>     +struct drm_nouveau_vm_bind_op {
+>     +       /**
+>     +        * @op: the operation type
+>     +        */
+>     +       __u32 op;
+>     +/**
+>     + * @DRM_NOUVEAU_VM_BIND_OP_MAP:
+>     + *
+>     + * Map a GEM object to the GPU's VA space. Optionally, the
+>     + * &DRM_NOUVEAU_VM_BIND_SPARSE flag can be passed to instruct the
+>     kernel to
+>     + * create sparse mappings for the given range.
+>     + */
+>     +#define DRM_NOUVEAU_VM_BIND_OP_MAP 0x0
+>     +/**
+>     + * @DRM_NOUVEAU_VM_BIND_OP_UNMAP:
+>     + *
+>     + * Unmap an existing mapping in the GPU's VA space. If the region
+>     the mapping
+>     + * is located in is a sparse region, new sparse mappings are
+>     created where the
+>     + * unmapped (memory backed) mapping was mapped previously. To
+>     remove a sparse
+>     + * region the &DRM_NOUVEAU_VM_BIND_SPARSE must be set.
+>     + */
+>     +#define DRM_NOUVEAU_VM_BIND_OP_UNMAP 0x1
+>     +       /**
+>     +        * @flags: the flags for a &drm_nouveau_vm_bind_op
+>     +        */
+>     +       __u32 flags;
+>     +/**
+>     + * @DRM_NOUVEAU_VM_BIND_SPARSE:
+>     + *
+>     + * Indicates that an allocated VA space region should be sparse.
+>     + */
+>     +#define DRM_NOUVEAU_VM_BIND_SPARSE (1 << 8)
+>     +       /**
+>     +        * @handle: the handle of the DRM GEM object to map
+>     +        */
+>     +       __u32 handle;
+>     +       /**
+>     +        * @pad: 32 bit padding, should be 0
+>     +        */
+>     +       __u32 pad;
+>     +       /**
+>     +        * @addr:
+>     +        *
+>     +        * the address the VA space region or (memory backed)
+>     mapping should be mapped to
+>     +        */
+>     +       __u64 addr;
+>     +       /**
+>     +        * @bo_offset: the offset within the BO backing the mapping
+>     +        */
+>     +       __u64 bo_offset;
+>     +       /**
+>     +        * @range: the size of the requested mapping in bytes
+>     +        */
+>     +       __u64 range;
+>     +};
+>     +
+>     +/**
+>     + * struct drm_nouveau_vm_bind - structure for DRM_IOCTL_NOUVEAU_VM_BIND
+>     + */
+>     +struct drm_nouveau_vm_bind {
+>     +       /**
+>     +        * @op_count: the number of &drm_nouveau_vm_bind_op
+>     +        */
+>     +       __u32 op_count;
+> 
+> 
+> I've chatted a bit with Dave on IRC about this but both VM_BIND and EXEC 
+> should support `op_count == 0` and do exactly the same thing that they 
+> would do if there were real ops. In the case of vm_bind, that just means 
+> wait on the waits and then signal the signals. In particular, it should 
+> NOT just return success and do nothing. Dave has a patch for this for 
+> EXEC but IDK if VM_BIND needs any attention.  Of course, if it's not 
+> ASYNC, then quickly doing nothing after validating inputs is acceptable.
+
+What will this be used for? I guess it would not be important to be 
+executed in order with "regular" (non-noop) jobs? Because the only thing 
+this would tell you is that e.g. for VM_BIND all previous binds 
+completed, which is what we have syncobjs for.
+
+- Danilo
+
+> 
+>     +       /**
+>     +        * @flags: the flags for a &drm_nouveau_vm_bind ioctl
+>     +        */
+>     +       __u32 flags;
+>     +/**
+>     + * @DRM_NOUVEAU_VM_BIND_RUN_ASYNC:
+>     + *
+>     + * Indicates that the given VM_BIND operation should be executed
+>     asynchronously
+>     + * by the kernel.
+>     + *
+>     + * If this flag is not supplied the kernel executes the associated
+>     operations
+>     + * synchronously and doesn't accept any &drm_nouveau_sync objects.
+>     + */
+>     +#define DRM_NOUVEAU_VM_BIND_RUN_ASYNC 0x1
+>     +       /**
+>     +        * @wait_count: the number of wait &drm_nouveau_syncs
+>     +        */
+>     +       __u32 wait_count;
+>     +       /**
+>     +        * @sig_count: the number of &drm_nouveau_syncs to signal
+>     when finished
+>     +        */
+>     +       __u32 sig_count;
+>     +       /**
+>     +        * @wait_ptr: pointer to &drm_nouveau_syncs to wait for
+>     +        */
+>     +       __u64 wait_ptr;
+>     +       /**
+>     +        * @sig_ptr: pointer to &drm_nouveau_syncs to signal when
+>     finished
+>     +        */
+>     +       __u64 sig_ptr;
+>     +       /**
+>     +        * @op_ptr: pointer to the &drm_nouveau_vm_bind_ops to execute
+>     +        */
+>     +       __u64 op_ptr;
+>     +};
+>     +
+>     +/**
+>     + * struct drm_nouveau_exec_push - EXEC push operation
+>     + *
+>     + * This structure represents a single EXEC push operation. UMDs
+>     should pass an
+>     + * array of this structure via struct drm_nouveau_exec's &push_ptr
+>     field.
+>     + */
+>     +struct drm_nouveau_exec_push {
+>     +       /**
+>     +        * @va: the virtual address of the push buffer mapping
+>     +        */
+>     +       __u64 va;
+>     +       /**
+>     +        * @va_len: the length of the push buffer mapping
+>     +        */
+>     +       __u64 va_len;
+>     +};
+>     +
+>     +/**
+>     + * struct drm_nouveau_exec - structure for DRM_IOCTL_NOUVEAU_EXEC
+>     + */
+>     +struct drm_nouveau_exec {
+>     +       /**
+>     +        * @channel: the channel to execute the push buffer in
+>     +        */
+>     +       __u32 channel;
+>     +       /**
+>     +        * @push_count: the number of &drm_nouveau_exec_push ops
+>     +        */
+>     +       __u32 push_count;
+> 
+> 
+> Same comment as above. We want `push_count == 0` to behave the same as 
+> any other EXEC just without anything new. In particular, it needs to 
+> wait on all the waits as well as the previous EXECs on that channel and 
+> then signal the sigs. I know Dave has a patch for this and it's working 
+> quite well in my testing.
+> 
+> Other than that, everything looks good.  I'm still re-reading all the 
+> NVK patches but they've been working quite well in my testing this week 
+> apart from a perf issue I need to dig into. I'll give a real RB once 
+> we're sure we all agree on the semantics of _count.
+> 
+> ~Faith
+> 
+>     +       /**
+>     +        * @wait_count: the number of wait &drm_nouveau_syncs
+>     +        */
+>     +       __u32 wait_count;
+>     +       /**
+>     +        * @sig_count: the number of &drm_nouveau_syncs to signal
+>     when finished
+>     +        */
+>     +       __u32 sig_count;
+>     +       /**
+>     +        * @wait_ptr: pointer to &drm_nouveau_syncs to wait for
+>     +        */
+>     +       __u64 wait_ptr;
+>     +       /**
+>     +        * @sig_ptr: pointer to &drm_nouveau_syncs to signal when
+>     finished
+>     +        */
+>     +       __u64 sig_ptr;
+>     +       /**
+>     +        * @push_ptr: pointer to &drm_nouveau_exec_push ops
+>     +        */
+>     +       __u64 push_ptr;
+>     +};
+>     +
+>       #define DRM_NOUVEAU_GETPARAM           0x00 /* deprecated */
+>       #define DRM_NOUVEAU_SETPARAM           0x01 /* deprecated */
+>       #define DRM_NOUVEAU_CHANNEL_ALLOC      0x02 /* deprecated */
+>     @@ -136,6 +339,9 @@ struct drm_nouveau_gem_cpu_fini {
+>       #define DRM_NOUVEAU_NVIF               0x07
+>       #define DRM_NOUVEAU_SVM_INIT           0x08
+>       #define DRM_NOUVEAU_SVM_BIND           0x09
+>     +#define DRM_NOUVEAU_VM_INIT            0x10
+>     +#define DRM_NOUVEAU_VM_BIND            0x11
+>     +#define DRM_NOUVEAU_EXEC               0x12
+>       #define DRM_NOUVEAU_GEM_NEW            0x40
+>       #define DRM_NOUVEAU_GEM_PUSHBUF        0x41
+>       #define DRM_NOUVEAU_GEM_CPU_PREP       0x42
+>     @@ -197,6 +403,9 @@ struct drm_nouveau_svm_bind {
+>       #define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW
+>     (DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_FINI, struct
+>     drm_nouveau_gem_cpu_fini)
+>       #define DRM_IOCTL_NOUVEAU_GEM_INFO         
+>       DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_INFO, struct
+>     drm_nouveau_gem_info)
+> 
+>     +#define DRM_IOCTL_NOUVEAU_VM_INIT           
+>     DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_VM_INIT, struct
+>     drm_nouveau_vm_init)
+>     +#define DRM_IOCTL_NOUVEAU_VM_BIND           
+>     DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_VM_BIND, struct
+>     drm_nouveau_vm_bind)
+>     +#define DRM_IOCTL_NOUVEAU_EXEC             
+>       DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_EXEC, struct drm_nouveau_exec)
+>       #if defined(__cplusplus)
+>       }
+>       #endif
+>     -- 
+>     2.41.0
+> 
+
