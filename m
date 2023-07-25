@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6C9760DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E8C760DDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232469AbjGYJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S229445AbjGYJBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbjGYJAb (ORCPT
+        with ESMTP id S232930AbjGYJBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:00:31 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0A2BD
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:00:16 -0700 (PDT)
+        Tue, 25 Jul 2023 05:01:25 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C41199B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690275616; x=1721811616;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3pN/cixh5HH/mEXhEXj2LQ+Isx90fihL4pt1tCUTbLE=;
-  b=kqMk6XGdxqW6UGBvzMvytxI97z93omOy73uox1X53hPSEmYtqULajQhT
-   0fD5+Gniosn79JKlK7NvJDr0jQl/yd5cUiuiBoFiRJTuuw7bnq1V90uJ7
-   JNNp+v3aeFxYwiFk8/fMK1Gb3+OeofbLMVhOrkvPb1VQ04i57g7A68EQn
-   Y4t3aybyMTMvo8zVTCF57aJAVMYcB0aWFHNMwbjOVqtqh5ywovptu850B
-   OJpUS8g8Q/5Zp6Qj8Z03tJuaMjCH4snVBymuQd6dwSk4+b2qGCcpMyscg
-   IwWI3kdSj0xkPXM8iC3WaeyCDO9faCxnPvjp6XPel+11cM0mV6Ap9h8Mm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="454043053"
+  t=1690275664; x=1721811664;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tnxCFCV/aLbDw+NKc00oca3RQMIZA9zkZYTEMGwv4TU=;
+  b=dbRQA7wErfEcqOk+Gk/FzHr2pvuG8uW5uN4y08hZTLhiOX+dubbjzNDx
+   8VWODRzV8I+9++wr+XIRHDT92zmjM+RcBvu3oTHDj907XVVHzceAoEOYV
+   HmysvvCr7kzkLxJ6KIdumLQ+mla3lhO+iwaMW9xNA6ddcPMBCmWwfJ3Zl
+   iYQn3UjSfcQElEd16RZxUG+xyHEjVX2gTcYHpBcGEpq5LcZ81B+D7t8zP
+   1OoUQ5Dpbs8/UgAmDCOQwwbqbVSR0GbNqpOwxd7rsXi85AaHWPfuVITAf
+   Qk+/qrGWyPxTToLYiHtEoODjGjg1/JBKrNsKu3o9dNZbxRvCtE56GOFTX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="365121843"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="454043053"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:00:15 -0700
+   d="scan'208";a="365121843"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:00:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719973331"
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="676158587"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="719973331"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 25 Jul 2023 02:00:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qODtp-002FuM-20;
-        Tue, 25 Jul 2023 12:00:09 +0300
-Date:   Tue, 25 Jul 2023 12:00:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZL+PGXMOf18Kc5Cu@smile.fi.intel.com>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-2-glider@google.com>
- <ZLyI+0EL1VztnHLe@yury-ThinkPad>
- <ZL44FFAkG8pKS1lv@smile.fi.intel.com>
- <ZL9X0TZb/QhCbEiC@yury-ThinkPad>
+   d="scan'208";a="676158587"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 25 Jul 2023 02:00:48 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qODuR-000ATc-1Y;
+        Tue, 25 Jul 2023 09:00:47 +0000
+Date:   Tue, 25 Jul 2023 17:00:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: drivers/clocksource/timer-loongson1-pwm.c:31:1: sparse: sparse:
+ symbol 'ls1x_timer_lock' was not declared. Should it be static?
+Message-ID: <202307251657.9eVSnR8x-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZL9X0TZb/QhCbEiC@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:04:34PM -0700, Yury Norov wrote:
-> On Mon, Jul 24, 2023 at 11:36:36AM +0300, Andy Shevchenko wrote:
-> > On Sat, Jul 22, 2023 at 06:57:23PM -0700, Yury Norov wrote:
-> > > On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
+commit: e738521a11f13e40af89f66527e59306c4169782 clocksource/drivers/loongson1: Move PWM timer to clocksource framework
+date:   5 weeks ago
+config: nios2-randconfig-r093-20230723 (https://download.01.org/0day-ci/archive/20230725/202307251657.9eVSnR8x-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251657.9eVSnR8x-lkp@intel.com/reproduce)
 
-...
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307251657.9eVSnR8x-lkp@intel.com/
 
-> > > 'GENMASK(nbits - 1, 0) << offset' looks really silly.
-> > 
-> > But you followed the thread to get a clue why it's written in this form, right?
-> 
-> Yes, I did. But I don't expect everyone looking at kernel code would spend
-> time recovering discussions that explain why that happened. So, at least it
-> would be fine to drop a comment.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/clocksource/timer-loongson1-pwm.c:31:1: sparse: sparse: symbol 'ls1x_timer_lock' was not declared. Should it be static?
 
-See also below.
+vim +/ls1x_timer_lock +31 drivers/clocksource/timer-loongson1-pwm.c
 
-...
-
->           w = *map & (end < BITS_PER_LONG ? ~GENMASK(end, start) : BITMAP_LAST_WORD_MASK(start));
-
-This GENMASK() may generate worse code as compiler uses more instructions
-instead of simple approach with the above..
-
-...
-
-> bitmap_write                                   -     271    +271
-> my_bitmap_write                                -     248    +248
-> bitmap_read                                    -     229    +229
-
-my_ -- means your proposal? Do you mean you have it better in size than original one?
+    30	
+  > 31	DEFINE_RAW_SPINLOCK(ls1x_timer_lock);
+    32	
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
