@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063B87612E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B19761314
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbjGYLGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        id S234021AbjGYLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233947AbjGYLGT (ORCPT
+        with ESMTP id S234001AbjGYLHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:06:19 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A462B1FF6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:04:28 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id E4EA63200934;
-        Tue, 25 Jul 2023 07:04:26 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 25 Jul 2023 07:04:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690283066; x=1690369466; bh=xl
-        DF8mFO1wJZNZ9a4la++XDvgyFsLfdjgR2/AFsPdEE=; b=OFk/ukB4+sjE46Hgz3
-        HaBAQIfszpchX7UNJKNgXuzSY2uBIDkXctJ2wANWAhTomzZdDYv85liStiLNBKS1
-        1+jspCZ6qRdo7qmR7cgSHQsSiuXtqNcyyyUmlXL/mn3o5Ex0jKrVzvgFKyJlO6Me
-        RBdlsjdDPOAqWX84g30Wz9aJx7uBbOWzT5jQ1bRIl+8dd4l5zc/0iwgQuoYPoYRp
-        LJG+NFmYeu8ALViZ6yjttBoHzKoj519CewNZCapWS9k2oI/AqhFHKEGwQgZOzqy5
-        nUnqLZF9HlWBrff4uBkv99GahAMN/IYFitu3rfVchYspi08ufApVVmphO2dbE5AN
-        ef1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690283066; x=1690369466; bh=xlDF8mFO1wJZN
-        Z9a4la++XDvgyFsLfdjgR2/AFsPdEE=; b=UGvN+pGdtDA9rin8RAaOQoQ7U967e
-        IY+scAkc1mkI7oNjGgpgFc9D7MQQKCjoAPcW02aAGCXsPsMBziQ+uDewPD9jj5sc
-        6d+TPapwja4a/2XXLEVd72LE6fFsYsbsgiaOiT1DQVX9VfV7vAgQfY6wILA48np1
-        XOmsfJp6SiNztg7Fx9Svv4Ct4rjbZ71rRtcwnPKf6+3+k5c89o2Y6o4+q29O60aq
-        O0bUejDTzbrOavfyVXRdVW+6ckY1bkjybYz/+Q6XvzjmdLQjGOIEOSvyyOY/hzGP
-        GULx4p+eMWWWk9uaHMMXS5ZAV4kkq1aYzSdnGx6JeT/bpVX9YYEJJJgkA==
-X-ME-Sender: <xms:OKy_ZGTg2zBMrIOf1701A1UOFD0UmAlzwk1Q-wQSp6gmx3bbOeDNww>
-    <xme:OKy_ZLx-XjWp0j599S7T_-p7sA_HAlucZ8D7-tJKK1ZpQ-FgE4Xw_pxGJAYt6FqED
-    4sjo8AGWZSVP7bn-Ac>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdefgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepffegffdutddvhefffeeltefhjeejgedvleffjeeigeeuteelvdettddulefgudfg
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:OKy_ZD02yXMUZrqkTHntKgg9_hBJZvSry1nYxOoVcUHCoErEhbnGsQ>
-    <xmx:OKy_ZCBShj6x9ww6X-8wfGqLkDP_GIn_HpfngbJ_d9WSuhICZ7Ai4g>
-    <xmx:OKy_ZPh7vf5K4PVjJFpO4AIEtWAm3HFI8u4ITuZdQuWsI6ujDEj6RA>
-    <xmx:Oqy_ZIbvsqESvYtJjLVzak2nckFiM_eyEvN4AeZjRRm4LZX0uQwn4A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B91C3B60089; Tue, 25 Jul 2023 07:04:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-590-ga55e740577-fm-defalarms-20230718.001-ga55e7405
-Mime-Version: 1.0
-Message-Id: <15856411-660f-4591-92a8-0d4470fc17b9@app.fastmail.com>
-In-Reply-To: <20230725105346.1981285-1-u-kumar1@ti.com>
-References: <20230725105346.1981285-1-u-kumar1@ti.com>
-Date:   Tue, 25 Jul 2023 13:04:03 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Udit Kumar" <u-kumar1@ti.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Nishanth Menon" <nm@ti.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Bjorn Andersson" <quic_bjorande@quicinc.com>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        onrad.dybcio@linaro.org,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
-        "Peng Fan" <peng.fan@nxp.com>,
-        "John Garry" <john.garry@huawei.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] arm64: defconfig: Enable various configs for TI platforms
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        Tue, 25 Jul 2023 07:07:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2602737;
+        Tue, 25 Jul 2023 04:05:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 67D8B6166F;
+        Tue, 25 Jul 2023 11:05:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A34EC433CA;
+        Tue, 25 Jul 2023 11:05:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690283155;
+        bh=pOXvioLmt4HpMqW57Xv4XXd6GlnOcDy+UqsXfhkHrFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kbsxLGNFdM6qSh1jsLLP+MSRG3Nkflp9aMdnQyXq9KRnC7jcnHrYscu5AiJyW/CjG
+         6vidsGf1xTa3w/b9fcx6JxLPhCpsmeaqJ+tu976ejqJN7wAnGdbGlU6QuWVEG17TOW
+         rsAyVWCFCZxfnHGF9MOOEVjBTGhN1QP4VWQjCIpV24KKAqKhH3hrLvErt0bITTzA4b
+         uQMoXtGGG92ctUBFbJvXZzxBOHsP01uMxujb2oj61jq3+VhVIPsXeIC4CFrq+i23Af
+         amrQLDym688RQVV6YIHxxMOi5kxCv3SxAF6cWfPNZ/OE5H7fNQnSQkRJa31J+pQBLa
+         k4YHM0VOJB5JQ==
+Date:   Tue, 25 Jul 2023 13:05:40 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        James.Bottomley@hansenpartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        dhowells@redhat.com, fenghua.yu@intel.com, geert@linux-m68k.org,
+        glebfm@altlinux.org, gor@linux.ibm.com, hare@suse.com,
+        hpa@zytor.com, ink@jurassic.park.msu.ru, jhogan@kernel.org,
+        kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
+        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
+        namhyung@kernel.org, paul.burton@mips.com, paulus@samba.org,
+        peterz@infradead.org, ralf@linux-mips.org, rth@twiddle.net,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp
+Subject: Re: [PATCH v3 0/5] Add a new fchmodat4() syscall
+Message-ID: <ZL+shMg5LJgYlsDd@example.org>
+References: <87o8pscpny.fsf@oldenburg2.str.redhat.com>
+ <cover.1689074739.git.legion@kernel.org>
+ <87lefmbppo.fsf@oldenburg.str.redhat.com>
+ <20230711-quintessenz-auswechseln-92a4640c073d@brauner>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230711-quintessenz-auswechseln-92a4640c073d@brauner>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,16 +81,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023, at 12:53, Udit Kumar wrote:
-> This patch series enables various config options needed by TI Platform.
->
-> bloat-o-meter reports after this change
-> add/remove: 4/0 grow/shrink: 2/0 up/down: 1592/0 (1592)
-> [...]
-> Total: Before=27997071, After=27998663, chg +0.01%
+On Tue, Jul 11, 2023 at 05:14:24PM +0200, Christian Brauner wrote:
+> On Tue, Jul 11, 2023 at 02:24:51PM +0200, Florian Weimer wrote:
+> > * Alexey Gladkov:
+> > 
+> > > This patch set adds fchmodat4(), a new syscall. The actual
+> > > implementation is super simple: essentially it's just the same as
+> > > fchmodat(), but LOOKUP_FOLLOW is conditionally set based on the flags.
+> > > I've attempted to make this match "man 2 fchmodat" as closely as
+> > > possible, which says EINVAL is returned for invalid flags (as opposed to
+> > > ENOTSUPP, which is currently returned by glibc for AT_SYMLINK_NOFOLLOW).
+> > > I have a sketch of a glibc patch that I haven't even compiled yet, but
+> > > seems fairly straight-forward:
+> > >
+> > >     diff --git a/sysdeps/unix/sysv/linux/fchmodat.c b/sysdeps/unix/sysv/linux/fchmodat.c
+> > >     index 6d9cbc1ce9e0..b1beab76d56c 100644
+> > >     --- a/sysdeps/unix/sysv/linux/fchmodat.c
+> > >     +++ b/sysdeps/unix/sysv/linux/fchmodat.c
+> > >     @@ -29,12 +29,36 @@
+> > >      int
+> > >      fchmodat (int fd, const char *file, mode_t mode, int flag)
+> > >      {
+> > >     -  if (flag & ~AT_SYMLINK_NOFOLLOW)
+> > >     -    return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
+> > >     -#ifndef __NR_lchmod		/* Linux so far has no lchmod syscall.  */
+> > >     +  /* There are four paths through this code:
+> > >     +      - The flags are zero.  In this case it's fine to call fchmodat.
+> > >     +      - The flags are non-zero and glibc doesn't have access to
+> > >     +	__NR_fchmodat4.  In this case all we can do is emulate the error codes
+> > >     +	defined by the glibc interface from userspace.
+> > >     +      - The flags are non-zero, glibc has __NR_fchmodat4, and the kernel has
+> > >     +	fchmodat4.  This is the simplest case, as the fchmodat4 syscall exactly
+> > >     +	matches glibc's library interface so it can be called directly.
+> > >     +      - The flags are non-zero, glibc has __NR_fchmodat4, but the kernel does
+> > 
+> > If you define __NR_fchmodat4 on all architectures, we can use these
+> > constants directly in glibc.  We no longer depend on the UAPI
+> > definitions of those constants, to cut down the number of code variants,
+> > and to make glibc's system call profile independent of the kernel header
+> > version at build time.
+> > 
+> > Your version is based on 2.31, more recent versions have some reasonable
+> > emulation for fchmodat based on /proc/self/fd.  I even wrote a comment
+> > describing the same buggy behavior that you witnessed:
+> > 
+> > +      /* Some Linux versions with some file systems can actually
+> > +        change symbolic link permissions via /proc, but this is not
+> > +        intentional, and it gives inconsistent results (e.g., error
+> > +        return despite mode change).  The expected behavior is that
+> > +        symbolic link modes cannot be changed at all, and this check
+> > +        enforces that.  */
+> > +      if (S_ISLNK (st.st_mode))
+> > +       {
+> > +         __close_nocancel (pathfd);
+> > +         __set_errno (EOPNOTSUPP);
+> > +         return -1;
+> > +       }
+> > 
+> > I think there was some kernel discussion about that behavior before, but
+> > apparently, it hasn't led to fixes.
+> 
+> I think I've explained this somewhere else a couple of months ago but
+> just in case you weren't on that thread or don't remember and apologies
+> if you should already know.
+> 
+> A lot of filesystem will happily update the mode of a symlink. The VFS
+> doesn't do anything to prevent this from happening. This is filesystem
+> specific.
+> 
+> The EOPNOTSUPP you're seeing very likely comes from POSIX ACLs.
+> Specifically it comes from filesystems that call posix_acl_chmod(),
+> e.g., btrfs via
+> 
+>         if (!err && attr->ia_valid & ATTR_MODE)
+>                 err = posix_acl_chmod(idmap, dentry, inode->i_mode);
+> 
+> Most filesystems don't implement i_op->set_acl() for POSIX ACLs.
+> So posix_acl_chmod() will report EOPNOTSUPP. By the time
+> posix_acl_chmod() is called, most filesystems will have finished
+> updating the inode. POSIX ACLs also often aren't integrated into
+> transactions so a rollback wouldn't even be possible on some
+> filesystems.
+> 
+> Any filesystem that doesn't implement POSIX ACLs at all will obviously
+> never fail unless it blocks mode changes on symlinks. Or filesystems
+> that do have a way to rollback failures from posix_acl_chmod(), or
+> filesystems that do return an error on chmod() on symlinks such as 9p,
+> ntfs, ocfs2.
+> 
+> > 
+> > I wonder if it makes sense to add a similar error return to the system
+> > call implementation?
+> 
+> Hm, blocking symlink mode changes is pretty regression prone. And just
+> blocking it through one interface seems weird and makes things even more
+> inconsistent.
+> 
+> So two options I see:
+> (1) minimally invasive:
+>     Filesystems that do call posix_acl_chmod() on symlinks need to be
+>     changed to stop doing that.
+> (2) might hit us on the head invasive:
+>     Try and block symlink mode changes in chmod_common().
+> 
+> Thoughts?
+> 
 
-This all look good to me, I assume Nishanth or Vignesh will pick
-them up into their git tree and send them to soc@kernel.org in
-their coming pull requests.
+We have third option. We can choose not to call chmod_common and return an
+error right away:
 
-    Arnd
+diff --git a/fs/open.c b/fs/open.c
+index 39a7939f0d00..86a427a2a083 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -679,7 +679,9 @@ static int do_fchmodat(int dfd, const char __user *filename, umode_t mode, int l
+ retry:
+        error = user_path_at(dfd, filename, lookup_flags, &path);
+        if (!error) {
+-               error = chmod_common(&path, mode);
++               error = -EOPNOTSUPP;
++               if (!(flags & AT_SYMLINK_NOFOLLOW) || !S_ISLNK(path.dentry->d_inode->i_mode))
++                       error = chmod_common(&path, mode);
+                path_put(&path);
+                if (retry_estale(error, lookup_flags)) {
+                        lookup_flags |= LOOKUP_REVAL;
+
+It doesn't seem to be invasive.
+
+-- 
+Rgrds, legion
+
