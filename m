@@ -2,53 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE59762724
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0D3762727
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjGYXBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        id S231231AbjGYXBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjGYXBs (ORCPT
+        with ESMTP id S230317AbjGYXBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:01:48 -0400
+        Tue, 25 Jul 2023 19:01:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F110173F;
-        Tue, 25 Jul 2023 16:01:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5861988
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:01:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1232261926;
-        Tue, 25 Jul 2023 23:01:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CF3CC433C8;
-        Tue, 25 Jul 2023 23:01:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 633AE61938
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:01:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE28C433CB;
+        Tue, 25 Jul 2023 23:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690326078;
-        bh=iV3xUiwOHTrhFt9wUr0FeVlZv27jP66uxTykWyFKkfk=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=oNfHNHw0bDNS0a2njsIrxfLKQ9zux5Jv56T8cIiZtkJ5Qb6KlLqhmPELMf/QqxbNR
-         Kz2d4kZRb3hzZFGtz7PXq46jUHCJYsrzNJkw2n+WgWtAaQbFp25Eyk3hBmWWHAWbpM
-         B0DLqkW/Ll0J7bs1pqBeHqyfXfrcD+vL9001QmiFbv9UmV1/5HvbonctvaeOR1FKE3
-         w/i7Bs+G081vhpubG09HqfcL4F/ls1p1GEcxuVk9znz2uB9sjISm9aqY3dR127SVWq
-         d/QzhVCtu0JAG82QevopBuSIzenBItGEosW0e6Vlf4V3xDrTtTcTv8DUq7/mIpQr2m
-         tNDdrQG8NNEsA==
+        s=k20201202; t=1690326079;
+        bh=4HiJelTa8ResVo7/8HpQcSPN/CxrRNPiwChvHZoXin0=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=C+G0MsyUwc42y7QdibZEGZ6l5zc25/8SuCVj9NKvX7And9VDdO71gqlqPaejOkOhQ
+         aQqSFRdSY7XGahfvw5RKf+oE18vSfIJqmmHzv7Wj5l8M/h/5V86/T7+ijmqk4J8Qvi
+         5ZykJ/2ZhKIPxfJNRsMTay8MzYSyFj5DNMxbF1OiF6GuOUJycsfBELVe84xP6wvq+h
+         7vqIu/maFt1ww2c3BIwHzm8G4kOBgK8EJC6HYhhjOM3IUsCVMXfQ/9R6EQYvy1V03F
+         2TJgHbt8O4Ea1IDGMwKRwEboCK2phDPU9hI/+RqDA7MyoXmcl4IfdayoRgF59JcL9g
+         q+h8YWNchspkA==
 From:   Mark Brown <broonie@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725124629.150113-1-krzysztof.kozlowski@linaro.org>
-References: <20230725124629.150113-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/3] regulator: dt-bindings: dlg,da9121: add buck2
- constraints
-Message-Id: <169032607621.1636970.15088372653295681523.b4-ty@kernel.org>
-Date:   Wed, 26 Jul 2023 00:01:16 +0100
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <60938ed138c9331ba3d2891fbd3b3d6644d3fbdc.1690300012.git.geert+renesas@glider.be>
+References: <60938ed138c9331ba3d2891fbd3b3d6644d3fbdc.1690300012.git.geert+renesas@glider.be>
+Subject: Re: [PATCH] regulator: REGULATOR_QCOM_REFGEN should depend on
+ ARCH_QCOM
+Message-Id: <169032607868.1636970.13143338092275363376.b4-ty@kernel.org>
+Date:   Wed, 26 Jul 2023 00:01:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -63,10 +58,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 14:46:27 +0200, Krzysztof Kozlowski wrote:
-> Instead of describing the constraints for some devices (buck2 not
-> present), code it in allOf:if:then section to actually allow validation
-> of this requirement.
+On Tue, 25 Jul 2023 17:47:43 +0200, Geert Uytterhoeven wrote:
+> The Qualcomm MMIO-mapped reference voltage regulator is only present on
+> Qualcomm SoCs.  Hence add a dependency on ARCH_QCOM, to prevent asking
+> the user about this driver when configuring a kernel without Qualcomm
+> SoC support.
 > 
 > 
 
@@ -76,12 +72,8 @@ Applied to
 
 Thanks!
 
-[1/3] regulator: dt-bindings: dlg,da9121: add buck2 constraints
-      commit: 9b7e0645ba65e4824436a2f1817843291e744443
-[2/3] regulator: dt-bindings: dlg,da9121: allow different names
-      commit: e5481cc40d00b9f4a3250b2fd4a805e3d000b229
-[3/3] regulator: dt-bindings: active-semi,act8846: correct supplies
-      commit: 7631a0c5b093fe1bc27b4770021c4aa0d06fb3c5
+[1/1] regulator: REGULATOR_QCOM_REFGEN should depend on ARCH_QCOM
+      commit: 6b677c1ae8e4096c84fbcbe1b7fd300dab0b381b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
