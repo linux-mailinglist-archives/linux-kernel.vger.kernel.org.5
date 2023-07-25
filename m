@@ -2,404 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BA3761CF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D85F761CFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbjGYPIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S232359AbjGYPJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjGYPIb (ORCPT
+        with ESMTP id S231906AbjGYPJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:08:31 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E413D1BFA;
-        Tue, 25 Jul 2023 08:08:29 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-557790487feso3979142a12.0;
-        Tue, 25 Jul 2023 08:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690297709; x=1690902509;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A5OgM9etxUxFgb7BTFPkiqJUQluCx/GIh5RjpmFfT6A=;
-        b=XhnNnPOV0DXXFUCxWetz8MN0t2zARGKofboU+xjcjOjWOkUGvgI10wvCaeajkSJ4LT
-         by8Ma5zDt7H1NcMqW9VSK0hYkin9nbSSF/kICkaCITpwlVW6+u5cMEyVG0RP1Cb4HC3O
-         YWe4J1XXMmtM3nPQVa5IowyA/6wzV4NeUhtPNXwQutBg6lHxVQUOSuNKYlletk8Izuet
-         SuBT4d6wWnG1ditCNwZexRGRqGph+ZnC35jkoRgFwKiDLPUJYWeA7rE8vJ8FQrAEWmjy
-         9eMUkIFOmrzVB/ysTxzRv2h5JVr8Pz72+2ITsOr7iUQeEY5zGKq0gKo2xMijZ1PNoJYL
-         CjaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690297709; x=1690902509;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A5OgM9etxUxFgb7BTFPkiqJUQluCx/GIh5RjpmFfT6A=;
-        b=gUPqmCkBf14vRJWoslgNYAPvsSFnh6D30F4YQyvoMYCv8Nvo5oWA+Iq+3JlieoCeNT
-         QwH5fyZNPerhM2cvnJAU+KFEfKXr4gsRF9lAcZyb2svSDzP7oWnd8iGAo9c5EIA/rQ3l
-         QY79LTiZJXI18/FQUokZoRAV9EfIs1ZIi3DEhFETHzysdP8890I3XhupbZTHT3e01o2c
-         FFyzZMRo17VWbBrm0fgzAsXtk6TGHLaN6657/KdOZSidHap9yHHR3pLHZIDPKhApUA7R
-         OEt1d+bLcqsu+e/FQ9AIJb3f5vtH+NlzKROv/LdoBK2QqaFMjhaiQHKO64NGA8Xd85dE
-         POHw==
-X-Gm-Message-State: ABy/qLak3qpyIF3960wixRquzXTlFgApw3eBSfQ0pefmNvlNDd8qnBjz
-        PUrZ4ajLHPNC5c8LdFUl82o=
-X-Google-Smtp-Source: APBJJlGHabjNhnWubbmwT+53hTnCOqVu3bYCuzhOG9wKCddoWkB+Mj6V674Gkv1HLW72wXwR6ORe+w==
-X-Received: by 2002:a17:90a:d98f:b0:268:2f2:cc89 with SMTP id d15-20020a17090ad98f00b0026802f2cc89mr8840324pjv.4.1690297708537;
-        Tue, 25 Jul 2023 08:08:28 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:1:c61f:2003:6c97:8057])
-        by smtp.gmail.com with ESMTPSA id mr24-20020a17090b239800b00267fe43f518sm4868080pjb.23.2023.07.25.08.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:08:28 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, arnd@arndb.de,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org, nikunj@amd.com,
-        thomas.lendacky@amd.com, liam.merwick@oracle.com,
-        alexandr.lobakin@intel.com, michael.roth@amd.com,
-        tiala@microsoft.com, pasha.tatashin@soleen.com,
-        peterz@infradead.org, jpoimboe@kernel.org,
-        michael.h.kelley@microsoft.com
-Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com
-Subject: [PATCH] x86/hyperv: Rename hv_isolation_type_snp/en_snp() to isol_type_snp_paravisor/enlightened()
-Date:   Tue, 25 Jul 2023 11:08:25 -0400
-Message-Id: <20230725150825.283891-1-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 25 Jul 2023 11:09:37 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476A6128;
+        Tue, 25 Jul 2023 08:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690297776; x=1721833776;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=svwxbkWzcDLm+Jsk/Paivuy6EYxB/8JxGtdsVddH+ug=;
+  b=J4Vz+AQgPQNprJVn2He3rHfgHg8MhadzOijDTR64yHY/3W2yTxvrH+Jv
+   6tpsJIWHGDdKeYg51HS1vAKzNFGEmiy7+mglJidfhb5F0B8lN6XvJ557Z
+   sHnPDrcM7+ZL+ScX9RcTdN8RuaVSnrB7xZSSUI64xXo/NTWmyO4kEWAp0
+   okwoV57abRgzZSJa1KbDLRT3mL/n7Gl27iRx4+5O/6eS5nTXwAEynKn6R
+   9xdjzovptXl/UDpiGW7X/PJKiDJgNMXpULcMdlNNbsv1pTuqtqZNLB2p3
+   ojfEXGU37OXGQWDhIoeaLA54NSm5QX2jdB1+gcIHmtcykmRt4JnPBt86n
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="348028961"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="348028961"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 08:09:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="720088314"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="720088314"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga007.jf.intel.com with ESMTP; 25 Jul 2023 08:09:33 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 25 Jul 2023 08:09:32 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 25 Jul 2023 08:09:32 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 25 Jul 2023 08:09:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NMHqZcPJv2nNkJeEvLssklcmRr3sn9hO4JIgLPBy1XAmqnHY49D7YAxfuyjVqAG00pL8gx+c6pdcsNLDg1rVksYN4gb5ixsqr1q3nbNV94inX+AnB/ywwvOGT7zCyaP+EA1lIZOYV7L8/bAeTaucszyP+lvimZ+7Psrmjg2gwHvwNeNhNl8ylRnTaCHHWPUmNqONfE58zAgEvPQSmx16MMJCmmHJZXzglBHiEmZpi6uAx6FUfDWenY9oBTwUTekmWZlF5x237RrN+0LHPcwLFdFS28oWYsd3Li+xoznkhldYCR3a9GsuMLXyHLW/JRWX9L2QCAnnQoWJmjwHEISlxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=svwxbkWzcDLm+Jsk/Paivuy6EYxB/8JxGtdsVddH+ug=;
+ b=Xq/XJUGEzyawcU7x6mT7D+UmCUQ5hTB/6HCTE3CdzyQLllDOioblpRaa5rBZ5zPyalYjJjYVAP6mjn/Q7ouyXb1sIAacSh5BhtkbT6LJnaAkHnBaq/tt6O+jKcosv6zQM8PyeolVrpBG6/C3lTcTjICSeWIBOM/awsph2vBnkWPcd531wjcPpplWDGtFTxpA6orxK7G6x3W8rAI9iWU00yP6RPiIaky8UevNNOdIy+OoTjjZtH1VCRp2h4FIy5MdkK/ZJtj6G2CHiCl/VqrQP6xikubz+hQnkjMdwIF+wX/oyxYrEeRfsm7knWBrdkQWIvnvx3To3Y6WD0G9r63GQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com (2603:10b6:8:cb::20) by
+ SN7PR11MB6752.namprd11.prod.outlook.com (2603:10b6:806:264::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Tue, 25 Jul
+ 2023 15:09:30 +0000
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::ace1:c0df:7dd9:d94a]) by DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::ace1:c0df:7dd9:d94a%4]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 15:09:29 +0000
+From:   "Wang, Wei W" <wei.w.wang@intel.com>
+To:     "Christopherson,, Sean" <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Yu Zhang" <yu.c.zhang@linux.intel.com>,
+        "Annapurve, Vishal" <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        "Maciej Szmigiero" <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: RE: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+Thread-Topic: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl()
+ for guest-specific backing memory
+Thread-Index: AQHZudJw1MgLsjkkR0ChgAdWyO82ca/KHE2g
+Date:   Tue, 25 Jul 2023 15:09:29 +0000
+Message-ID: <DS0PR11MB637386533A4A10667BA6DF03DC03A@DS0PR11MB6373.namprd11.prod.outlook.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-13-seanjc@google.com>
+In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB6373:EE_|SN7PR11MB6752:EE_
+x-ms-office365-filtering-correlation-id: 55702571-eaf1-4cae-24c5-08db8d2124fb
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pVGFVP1VpDwzcXIHzTURjZthNh7Dnz3IVsOZesWsayGWL1ztMoq3pRcl3w2N3W9BwDeDv6yoJUE7efWHxYciv9a85kQnb1eFQhGmGd86cIxVjZ8OA7ctNyTcgVXIaYb8yK3VB/e/SpCv1mibAfa+zNNzqif1JqB0YTBpZn3Ltqbvepi+uK6lhE1W22G4Svgfj934NGTwA5cEb1mjZJwgVY/bb2Hqzgv75OVbwAs4d7F41UDWRIR7v3WDfdvyYjVDFxyJN/sq3GnlDcDlm/n8h0jydZq91v9h3vllDh427jXcee38Ojn2WghcSkaQXJ0OQ0CYD3DrADdymwrCML8x6y05xn/SPUWY1kjBxh9Woz7ONpgjAVcHVX7/7AeKml+lSxqQ/czSfjJmkpah+xzsIg8b83VZNIO8axf7cO/f0S/QEeW4y66HhT/eEX1Ydn2Xl5pZOHUsuUctrnF24emQKKbN/y4Tqy0+pqxhy01Y9TRyaAFTVn6VQz2MoxsgYYna2Lkr15gl57jZ4rmEWOI7okfIBQIqzzk6hmrioftj91hLUSHLJkYFxWbkbjXAFIU+buXaU4eBQcolHFDfjBslYXmDoziRwq5PS4rJSDagqrv0IgumGC3Dkx5t0syBfzuaXnSQaYTslir49SfjljYWlQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(396003)(346002)(136003)(39860400002)(451199021)(54906003)(53546011)(478600001)(9686003)(7696005)(55016003)(71200400001)(26005)(6506007)(86362001)(186003)(110136005)(921005)(64756008)(66476007)(66556008)(4326008)(316002)(66446008)(76116006)(7406005)(7416002)(122000001)(82960400001)(38070700005)(52536014)(8676002)(38100700002)(66946007)(5660300002)(2906002)(33656002)(41300700001)(83380400001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SkJ6T2hnbzZnd0xLZFJyR2Y4SnNjOWRtREhaUVJzL2MzdkRQVmNIQ1RKcmRP?=
+ =?utf-8?B?dDc3a1dJdWFRVVVHN2hDMnEyNE5yVFZUSWdlZHN4YXIxVW1EbDZpR055UGJU?=
+ =?utf-8?B?ZHRVZm0rQUQwK1creG05M0NBNHNUWE1BWEoxeHNtQ0cvWjlxMmxsNWo5MjVI?=
+ =?utf-8?B?VXRpeUpabnJheXF0Nkh6QjQwOEI0TXc0bWFtWmNqNUZjZTA2bXU0YWV2Rkhl?=
+ =?utf-8?B?YjRqOFZBZnE5YmwxSnVaU0hsazU1bUova053WWZPR0xUNVZtd29OeFZPOStp?=
+ =?utf-8?B?UnUxbHhONjBqT01pL0cvQzBMcDVBMkpLeVBCSjNMb0JOVCswZ0ZMNlo5dEtp?=
+ =?utf-8?B?eFZIUzBEdW1Va1dQbnVpT2w3MlBCcjRxdVVtc29BNXBFemFLaVFPT0lGcXNl?=
+ =?utf-8?B?U0NubmM0OUxDM3F3ZGpmQkhuYXpKbktNVDVhM2pTSllFKzZ0UnVudUlCRnJo?=
+ =?utf-8?B?bWlGS1FvVmttYzJGb1pNVVdtS2g1Y2lDN3pqK01GU2sySCtpbHd0VC80cTJV?=
+ =?utf-8?B?dENaekxsUU5JeTR4Z2Z0aU1KT1lpbmJpV1lyS3JYdVU0YnJucStkWGcvakJi?=
+ =?utf-8?B?RGdKdTgxVVAvczJsMjczdWRBS24vZGlESFJSeVYwRjZURk9JbXU1SUE2ZFVM?=
+ =?utf-8?B?U3JRTFdxanVGaDJPbGlkNzB6ZEZmb1kvUFRDdTFBREwyZDIzcGtpUzdPN2h3?=
+ =?utf-8?B?dlNVdEJmczVWRlN6RlJ2bWxWZTBaQmU0VFdvY1cySHBtOGFWbHFQZm5wSm80?=
+ =?utf-8?B?MDAvODFqeENmRkhyK0FPNExzNHRZMmVQSFJFRWpOWU1vbUhsbDdZV2FtdDNE?=
+ =?utf-8?B?UWs3Z1l3OEVBNXVsZ25oR0lVSVgwTXJTdUhFaXRJRmcwbnNMT3RGZVZXbVRH?=
+ =?utf-8?B?V3oxNFp0b2QzUUo0U21PU2dMamVXNElxOUZyNkxWVVBDbzQ1SzRaMWxndzMx?=
+ =?utf-8?B?dlVPdHlFa2xaUDVzb0FOYlNlUEN1Qkw5Mjh0OHNlbS92NHZDWWVKRmFJeTJq?=
+ =?utf-8?B?eEw5TWMxMXM0M2ZOQ25Xb285MHR4aGQvS0hTQ0NGeVFPQ1dvOS9LL0dFZEZv?=
+ =?utf-8?B?a2pKQXp0NFczMU1hQk1lN3BkN3ROeE5DbGhqbC9PdGl2T1FuQjFjajZ5VWVW?=
+ =?utf-8?B?UXhaam9PdUpWZjlWbnNYWHJSSHF1cmprM05XNWJlcy9rYmFBVnhsby9vZ3NV?=
+ =?utf-8?B?QlFYakdMcVRnTXhUNTVYSjYzdGtScndRUHlLc29PVDFjWlVFY2E2b0V5VkFr?=
+ =?utf-8?B?YmVIM3U4S0NIc3A4cmVIYkFYYWhjT2ZLbjh3M0dYV2ZCelp0bzNHLzJXSlRW?=
+ =?utf-8?B?VU1LTXBQL21xWVRRK3RBbFo2Ym5uOWkzMlBSMXcvN3FzL3JDektpTzZyMFV1?=
+ =?utf-8?B?TWlVTUh4VUdXN2tPdXQwK0Q2TWJWdUM3cENDYlVqaERMb3Qza25XMEFOZjQx?=
+ =?utf-8?B?OWR3a1NHUTNlbEsxajV0OGNZdVF0b2UxQjVHeUtwZTVJUkIwYkI3OXZMUVpv?=
+ =?utf-8?B?V2J3OFpNMnpPWkF6ck5pNVg4N3Y4TjhtbzdhQTl3azBzd2hiaVhvVk1uWU16?=
+ =?utf-8?B?QVJYRnVFU2djTk4xYmpxeEhnZXAyNXdheHBZQjVUQlo5NmN5VVhuVGRlZ1hq?=
+ =?utf-8?B?NXR2L1RwQjZ4SUtYaFBVVlUyZHNvQ0Fqd0dLYzI4clF6SzhpRmQ5elB4WHNH?=
+ =?utf-8?B?OUd4NkErcjdVSlRuM1dYWjdoSUZDcURaaXBRTzdCcWo1aGFpcGdlYWxBVm1S?=
+ =?utf-8?B?bkdJZVQxOTcvb1kraFhUL0d1MGcwem5ZSGRpZkI5dllUME9vNTZHQThtNUxO?=
+ =?utf-8?B?WVdPcEhaU25sb04vWGlRMjJ4YVVBQVhvbDNMM1ZobHRDTjM0dHdOU2JHOUdC?=
+ =?utf-8?B?ZUpJZFhnSnIyM0pLUmtqTmRncUwrRTFiYy8vU3NQaU9wUWZUbUNTVDA2Y1U1?=
+ =?utf-8?B?c2dmTUNlaHFrdVlVcVNUVUhmaU40S3QreFFUdlV6cXpGZjRONWFoVnhJVGdS?=
+ =?utf-8?B?RTZrU20yclduSDRMNFZyd3BrSVRRVUFLWUh6SW81cFBiV0ozdExpZE1zeTgr?=
+ =?utf-8?B?MGQwQ2VJVThSc2dOUHh0L2dYb0ZrbkVJMXFqTXhiaVRQdWUxSWREbU5POEhX?=
+ =?utf-8?Q?guUos7oB1DO0TgiD8yOPdyoxD?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55702571-eaf1-4cae-24c5-08db8d2124fb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2023 15:09:29.6715
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +CvbB+1DDP9yevWYvsQxktvLyAcvn7oEVnbPATMynuybFcPnYBU69i5trVKLywUcEcV4UdXDZqsXi2HI++TiXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6752
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <tiala@microsoft.com>
-
-Rename hv_isolation_type_snp and hv_isolation_type_en_snp()
-to make them much intuitiver.
-
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Tianyu Lan <tiala@microsoft.com>
----
-This patch is based on the patchset "x86/hyperv: Add AMD sev-snp
-enlightened guest support on hyperv" https://lore.kernel.org/lkml/
-20230718032304.136888-3-ltykernel@gmail.com/T/.
-
- arch/x86/hyperv/hv_init.c       |  6 +++---
- arch/x86/hyperv/ivm.c           | 17 +++++++++--------
- arch/x86/include/asm/mshyperv.h |  8 ++++----
- arch/x86/kernel/cpu/mshyperv.c  | 12 ++++++------
- drivers/hv/connection.c         |  2 +-
- drivers/hv/hv.c                 | 16 ++++++++--------
- drivers/hv/hv_common.c          | 10 +++++-----
- include/asm-generic/mshyperv.h  |  4 ++--
- 8 files changed, 38 insertions(+), 37 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index b004370d3b01..49054dc30604 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -52,7 +52,7 @@ static int hyperv_init_ghcb(void)
- 	void *ghcb_va;
- 	void **ghcb_base;
- 
--	if (!hv_isolation_type_snp())
-+	if (!isol_type_snp_paravisor())
- 		return 0;
- 
- 	if (!hv_ghcb_pg)
-@@ -116,7 +116,7 @@ static int hv_cpu_init(unsigned int cpu)
- 			 * is blocked to run in Confidential VM. So only decrypt assist
- 			 * page in non-root partition here.
- 			 */
--			if (*hvp && hv_isolation_type_en_snp()) {
-+			if (*hvp && isol_type_snp_enlightened()) {
- 				WARN_ON_ONCE(set_memory_decrypted((unsigned long)(*hvp), 1));
- 				memset(*hvp, 0, PAGE_SIZE);
- 			}
-@@ -453,7 +453,7 @@ void __init hyperv_init(void)
- 		goto common_free;
- 	}
- 
--	if (hv_isolation_type_snp()) {
-+	if (isol_type_snp_paravisor()) {
- 		/* Negotiate GHCB Version. */
- 		if (!hv_ghcb_negotiate_protocol())
- 			hv_ghcb_terminate(SEV_TERM_SET_GEN,
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 2eda4e69849d..2911c2525ed5 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -591,24 +591,25 @@ bool hv_is_isolation_supported(void)
- 	return hv_get_isolation_type() != HV_ISOLATION_TYPE_NONE;
- }
- 
--DEFINE_STATIC_KEY_FALSE(isolation_type_snp);
-+DEFINE_STATIC_KEY_FALSE(isol_type_snp_paravisor_flag);
- 
- /*
-- * hv_isolation_type_snp - Check system runs in the AMD SEV-SNP based
-+ * isol_type_snp_paravisor - Check system runs in the AMD SEV-SNP based
-  * isolation VM.
-  */
--bool hv_isolation_type_snp(void)
-+bool isol_type_snp_paravisor(void)
- {
--	return static_branch_unlikely(&isolation_type_snp);
-+	return static_branch_unlikely(&isol_type_snp_paravisor_flag);
- }
- 
--DEFINE_STATIC_KEY_FALSE(isolation_type_en_snp);
-+DEFINE_STATIC_KEY_FALSE(isol_type_snp_enlightened_flag);
-+
- /*
-- * hv_isolation_type_en_snp - Check system runs in the AMD SEV-SNP based
-+ * isol_type_snp_enlightened - Check system runs in the AMD SEV-SNP based
-  * isolation enlightened VM.
-  */
--bool hv_isolation_type_en_snp(void)
-+bool isol_type_snp_enlightened(void)
- {
--	return static_branch_unlikely(&isolation_type_en_snp);
-+	return static_branch_unlikely(&isol_type_snp_enlightened_flag);
- }
- 
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index c5a3c29fad01..51eb239d71dd 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -25,8 +25,8 @@
- 
- union hv_ghcb;
- 
--DECLARE_STATIC_KEY_FALSE(isolation_type_snp);
--DECLARE_STATIC_KEY_FALSE(isolation_type_en_snp);
-+DECLARE_STATIC_KEY_FALSE(isol_type_snp_paravisor_flag);
-+DECLARE_STATIC_KEY_FALSE(isol_type_snp_enlightened_flag);
- 
- typedef int (*hyperv_fill_flush_list_func)(
- 		struct hv_guest_mapping_flush_list *flush,
-@@ -46,7 +46,7 @@ extern void *hv_hypercall_pg;
- 
- extern u64 hv_current_partition_id;
- 
--extern bool hv_isolation_type_en_snp(void);
-+extern bool isol_type_snp_enlightened(void);
- 
- extern union hv_ghcb * __percpu *hv_ghcb_pg;
- 
-@@ -268,7 +268,7 @@ static inline void hv_sev_init_mem_and_cpu(void) {}
- static int hv_snp_boot_ap(int cpu, unsigned long start_ip) {}
- #endif
- 
--extern bool hv_isolation_type_snp(void);
-+extern bool isol_type_snp_paravisor(void);
- 
- static inline bool hv_is_synic_reg(unsigned int reg)
- {
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 6ff0b60d30f9..d9dcee48099c 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -66,7 +66,7 @@ u64 hv_get_non_nested_register(unsigned int reg)
- {
- 	u64 value;
- 
--	if (hv_is_synic_reg(reg) && hv_isolation_type_snp())
-+	if (hv_is_synic_reg(reg) && isol_type_snp_paravisor())
- 		hv_ghcb_msr_read(reg, &value);
- 	else
- 		rdmsrl(reg, value);
-@@ -76,7 +76,7 @@ EXPORT_SYMBOL_GPL(hv_get_non_nested_register);
- 
- void hv_set_non_nested_register(unsigned int reg, u64 value)
- {
--	if (hv_is_synic_reg(reg) && hv_isolation_type_snp()) {
-+	if (hv_is_synic_reg(reg) && isol_type_snp_paravisor()) {
- 		hv_ghcb_msr_write(reg, value);
- 
- 		/* Write proxy bit via wrmsl instruction */
-@@ -300,7 +300,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
- 	 *  Override wakeup_secondary_cpu_64 callback for SEV-SNP
- 	 *  enlightened guest.
- 	 */
--	if (hv_isolation_type_en_snp())
-+	if (isol_type_snp_enlightened())
- 		apic->wakeup_secondary_cpu_64 = hv_snp_boot_ap;
- 
- 	if (!hv_root_partition)
-@@ -421,9 +421,9 @@ static void __init ms_hyperv_init_platform(void)
- 
- 
- 		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
--			static_branch_enable(&isolation_type_en_snp);
-+			static_branch_enable(&isol_type_snp_enlightened_flag);
- 		} else if (hv_get_isolation_type() == HV_ISOLATION_TYPE_SNP) {
--			static_branch_enable(&isolation_type_snp);
-+			static_branch_enable(&isol_type_snp_paravisor_flag);
- 		}
- 	}
- 
-@@ -545,7 +545,7 @@ static void __init ms_hyperv_init_platform(void)
- 	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
- 		mark_tsc_unstable("running on Hyper-V");
- 
--	if (hv_isolation_type_en_snp())
-+	if (isol_type_snp_enlightened())
- 		hv_sev_init_mem_and_cpu();
- 
- 	hardlockup_detector_disable();
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index 02b54f85dc60..8659d18a55fe 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -484,7 +484,7 @@ void vmbus_set_event(struct vmbus_channel *channel)
- 
- 	++channel->sig_events;
- 
--	if (hv_isolation_type_snp())
-+	if (isol_type_snp_paravisor())
- 		hv_ghcb_hypercall(HVCALL_SIGNAL_EVENT, &channel->sig_event,
- 				NULL, sizeof(channel->sig_event));
- 	else
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index ec6e35a0d9bf..7651d79205da 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -64,7 +64,7 @@ int hv_post_message(union hv_connection_id connection_id,
- 	aligned_msg->payload_size = payload_size;
- 	memcpy((void *)aligned_msg->payload, payload, payload_size);
- 
--	if (hv_isolation_type_snp())
-+	if (isol_type_snp_paravisor())
- 		status = hv_ghcb_hypercall(HVCALL_POST_MESSAGE,
- 				(void *)aligned_msg, NULL,
- 				sizeof(*aligned_msg));
-@@ -109,7 +109,7 @@ int hv_synic_alloc(void)
- 		 * Synic message and event pages are allocated by paravisor.
- 		 * Skip these pages allocation here.
- 		 */
--		if (!hv_isolation_type_snp() && !hv_root_partition) {
-+		if (!isol_type_snp_paravisor() && !hv_root_partition) {
- 			hv_cpu->synic_message_page =
- 				(void *)get_zeroed_page(GFP_ATOMIC);
- 			if (hv_cpu->synic_message_page == NULL) {
-@@ -125,7 +125,7 @@ int hv_synic_alloc(void)
- 			}
- 		}
- 
--		if (hv_isolation_type_en_snp()) {
-+		if (isol_type_snp_enlightened()) {
- 			ret = set_memory_decrypted((unsigned long)
- 				hv_cpu->synic_message_page, 1);
- 			if (ret) {
-@@ -174,7 +174,7 @@ void hv_synic_free(void)
- 			= per_cpu_ptr(hv_context.cpu_context, cpu);
- 
- 		/* It's better to leak the page if the encryption fails. */
--		if (hv_isolation_type_en_snp()) {
-+		if (isol_type_snp_enlightened()) {
- 			if (hv_cpu->synic_message_page) {
- 				ret = set_memory_encrypted((unsigned long)
- 					hv_cpu->synic_message_page, 1);
-@@ -221,7 +221,7 @@ void hv_synic_enable_regs(unsigned int cpu)
- 	simp.as_uint64 = hv_get_register(HV_REGISTER_SIMP);
- 	simp.simp_enabled = 1;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (isol_type_snp_paravisor() || hv_root_partition) {
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (simp.base_simp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
-@@ -240,7 +240,7 @@ void hv_synic_enable_regs(unsigned int cpu)
- 	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
- 	siefp.siefp_enabled = 1;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (isol_type_snp_paravisor() || hv_root_partition) {
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (siefp.base_siefp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
-@@ -323,7 +323,7 @@ void hv_synic_disable_regs(unsigned int cpu)
- 	 * addresses.
- 	 */
- 	simp.simp_enabled = 0;
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (isol_type_snp_paravisor() || hv_root_partition) {
- 		iounmap(hv_cpu->synic_message_page);
- 		hv_cpu->synic_message_page = NULL;
- 	} else {
-@@ -335,7 +335,7 @@ void hv_synic_disable_regs(unsigned int cpu)
- 	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
- 	siefp.siefp_enabled = 0;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (isol_type_snp_paravisor() || hv_root_partition) {
- 		iounmap(hv_cpu->synic_event_page);
- 		hv_cpu->synic_event_page = NULL;
- 	} else {
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index 2d43ba2bc925..527e91409ef7 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -381,7 +381,7 @@ int hv_common_cpu_init(unsigned int cpu)
- 			*outputarg = (char *)(*inputarg) + HV_HYP_PAGE_SIZE;
- 		}
- 
--		if (hv_isolation_type_en_snp()) {
-+		if (isol_type_snp_enlightened()) {
- 			ret = set_memory_decrypted((unsigned long)*inputarg, pgcount);
- 			if (ret) {
- 				kfree(*inputarg);
-@@ -509,17 +509,17 @@ bool __weak hv_is_isolation_supported(void)
- }
- EXPORT_SYMBOL_GPL(hv_is_isolation_supported);
- 
--bool __weak hv_isolation_type_snp(void)
-+bool __weak isol_type_snp_paravisor(void)
- {
- 	return false;
- }
--EXPORT_SYMBOL_GPL(hv_isolation_type_snp);
-+EXPORT_SYMBOL_GPL(isol_type_snp_paravisor);
- 
--bool __weak hv_isolation_type_en_snp(void)
-+bool __weak isol_type_snp_enlightened(void)
- {
- 	return false;
- }
--EXPORT_SYMBOL_GPL(hv_isolation_type_en_snp);
-+EXPORT_SYMBOL_GPL(isol_type_snp_enlightened);
- 
- void __weak hv_setup_vmbus_handler(void (*handler)(void))
- {
-diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-index f73a044ecaa7..d60a9306c0cc 100644
---- a/include/asm-generic/mshyperv.h
-+++ b/include/asm-generic/mshyperv.h
-@@ -64,7 +64,7 @@ extern void * __percpu *hyperv_pcpu_output_arg;
- 
- extern u64 hv_do_hypercall(u64 control, void *inputaddr, void *outputaddr);
- extern u64 hv_do_fast_hypercall8(u16 control, u64 input8);
--extern bool hv_isolation_type_snp(void);
-+extern bool isol_type_snp_paravisor(void);
- 
- /* Helper functions that provide a consistent pattern for checking Hyper-V hypercall status. */
- static inline int hv_result(u64 status)
-@@ -279,7 +279,7 @@ bool hv_is_hyperv_initialized(void);
- bool hv_is_hibernation_supported(void);
- enum hv_isolation_type hv_get_isolation_type(void);
- bool hv_is_isolation_supported(void);
--bool hv_isolation_type_snp(void);
-+bool isol_type_snp_paravisor(void);
- u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size);
- void hyperv_cleanup(void);
- bool hv_query_ext_cap(u64 cap_query);
--- 
-2.25.1
-
+T24gV2VkbmVzZGF5LCBKdWx5IDE5LCAyMDIzIDc6NDUgQU0sIFNlYW4gQ2hyaXN0b3BoZXJzb24g
+d3JvdGU6DQo+ICtpbnQga3ZtX2dtZW1fZ2V0X3BmbihzdHJ1Y3Qga3ZtICprdm0sIHN0cnVjdCBr
+dm1fbWVtb3J5X3Nsb3QgKnNsb3QsDQo+ICsJCSAgICAgZ2ZuX3QgZ2ZuLCBrdm1fcGZuX3QgKnBm
+biwgaW50ICptYXhfb3JkZXIpIHsNCj4gKwlwZ29mZl90IGluZGV4ID0gZ2ZuIC0gc2xvdC0+YmFz
+ZV9nZm4gKyBzbG90LT5nbWVtLnBnb2ZmOw0KPiArCXN0cnVjdCBrdm1fZ21lbSAqZ21lbTsNCj4g
+KwlzdHJ1Y3QgZm9saW8gKmZvbGlvOw0KPiArCXN0cnVjdCBwYWdlICpwYWdlOw0KPiArCXN0cnVj
+dCBmaWxlICpmaWxlOw0KPiArDQo+ICsJZmlsZSA9IGt2bV9nbWVtX2dldF9maWxlKHNsb3QpOw0K
+PiArCWlmICghZmlsZSkNCj4gKwkJcmV0dXJuIC1FRkFVTFQ7DQo+ICsNCj4gKwlnbWVtID0gZmls
+ZS0+cHJpdmF0ZV9kYXRhOw0KPiArDQo+ICsJaWYgKFdBUk5fT05fT05DRSh4YV9sb2FkKCZnbWVt
+LT5iaW5kaW5ncywgaW5kZXgpICE9IHNsb3QpKSB7DQo+ICsJCWZwdXQoZmlsZSk7DQo+ICsJCXJl
+dHVybiAtRUlPOw0KPiArCX0NCj4gKw0KPiArCWZvbGlvID0ga3ZtX2dtZW1fZ2V0X2ZvbGlvKGZp
+bGVfaW5vZGUoZmlsZSksIGluZGV4KTsNCj4gKwlpZiAoIWZvbGlvKSB7DQo+ICsJCWZwdXQoZmls
+ZSk7DQo+ICsJCXJldHVybiAtRU5PTUVNOw0KPiArCX0NCj4gKw0KPiArCXBhZ2UgPSBmb2xpb19m
+aWxlX3BhZ2UoZm9saW8sIGluZGV4KTsNCj4gKw0KPiArCSpwZm4gPSBwYWdlX3RvX3BmbihwYWdl
+KTsNCj4gKwkqbWF4X29yZGVyID0gY29tcG91bmRfb3JkZXIoY29tcG91bmRfaGVhZChwYWdlKSk7
+DQoNCk1heWJlIGJldHRlciB0byBjaGVjayBpZiBjYWxsZXIgcHJvdmlkZWQgYSBidWZmZXIgdG8g
+Z2V0IHRoZSBtYXhfb3JkZXI6DQppZiAobWF4X29yZGVyKQ0KCSptYXhfb3JkZXIgPSBjb21wb3Vu
+ZF9vcmRlcihjb21wb3VuZF9oZWFkKHBhZ2UpKTsNCg0KVGhpcyBpcyB3aGF0IHRoZSBwcmV2aW91
+cyB2ZXJzaW9uIGRpZCAocmVzdHJpY3RlZG1lbV9nZXRfcGFnZSksDQpzbyB0aGF0IGNhbGxlcnMg
+d2hvIG9ubHkgd2FudCB0byBnZXQgYSBwZm4gZG9uJ3QgbmVlZCB0byBkZWZpbmUNCmFuIHVudXNl
+ZCAib3JkZXIiIHBhcmFtLg0K
