@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D20576166F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD0776169B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbjGYLjW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 07:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S232997AbjGYLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjGYLjP (ORCPT
+        with ESMTP id S234965AbjGYLkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:39:15 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563011BF5;
-        Tue, 25 Jul 2023 04:38:47 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qOGN1-0045DE-4s; Tue, 25 Jul 2023 13:38:27 +0200
-Received: from p5b13a085.dip0.t-ipconnect.de ([91.19.160.133] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qOGN0-000XJ6-T1; Tue, 25 Jul 2023 13:38:27 +0200
-Message-ID: <1835ec88216c9be58f9bce518575f6348158b231.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
- dma_declare_coherent_memory()
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        petr@tesarici.cz, Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 25 Jul 2023 13:38:25 +0200
-In-Reply-To: <20230725110942.GB31069@pendragon.ideasonboard.com>
-References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
-         <20230724171229.GC11977@pendragon.ideasonboard.com>
-         <31ad16fe8f1435805185ba8e889512ec181a867e.camel@physik.fu-berlin.de>
-         <20230724174331.GD11977@pendragon.ideasonboard.com>
-         <314b21abaade55ba55ccdd930f9fdf24028cadf0.camel@physik.fu-berlin.de>
-         <20230725110942.GB31069@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Tue, 25 Jul 2023 07:40:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5CD19AA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690285185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1je98xYKk91uty9V//ddQUBh34yh1GHtboW9x39SKW8=;
+        b=LFtpn69gusgSkmXEuDAgfVijDOCS+mPonv56MyyYLF9uH9YtJBOtlDZf2K0rCPyy+lkPeJ
+        IwbZh0UEzjsaX36MzqlNzZjPm9tz23TCb7Owq0TQ0ZdCFxrIX7ZJpo2jQYr42o6mElo06s
+        ihHgJ7XrXv6UlXc1yU3j/dTlljJNY50=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-344-48PiCGnxPxSkVP5K3zccCg-1; Tue, 25 Jul 2023 07:39:41 -0400
+X-MC-Unique: 48PiCGnxPxSkVP5K3zccCg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79EC58065D2;
+        Tue, 25 Jul 2023 11:39:41 +0000 (UTC)
+Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 905C24094DC0;
+        Tue, 25 Jul 2023 11:39:40 +0000 (UTC)
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     terraluna977@gmail.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com
+Subject: [RFC 0/3] acpipcihp: fix kernel crash on 2nd resume
+Date:   Tue, 25 Jul 2023 13:39:35 +0200
+Message-Id: <20230725113938.2277420-1-imammedo@redhat.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.160.133
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-07-25 at 14:09 +0300, Laurent Pinchart wrote:
-> On Tue, Jul 25, 2023 at 07:50:56AM +0200, John Paul Adrian Glaubitz wrote:
-> > On Mon, 2023-07-24 at 20:43 +0300, Laurent Pinchart wrote:
-> > > > arch/sh is being maintained again, so it's save to keep these boards. At some point, we're
-> > > > going to convert the architecture to using Device Trees which should reduce the maintenance
-> > > > burden anyways.
-> > > 
-> > > Keeping the architecture is fine for newer systems, but is anyone really
-> > > maintaining the Renesas SH board ?
-> > 
-> > I own Renesas evaluation boards, including SH7785LCR-based and
-> > SH7724-based boards.
-> 
-> Will you have time to port them to DT, or would you rather focus on
-> J-core systems ? Do those boards still boot a mainline kernel ?
-> 
-> Dropping Renesas SH board files doesn't preclude anyone from moving them
-> to DT, all the information will remain in the git history. Unless you
-> plan to move to DT in a reasonably near future, I think dropping support
-> for the CEU at least, if not the whole board files, could be a good
-> option.
 
-I'm not sure why you are trying to convince me to kill off support for SuperH
-boards. I have just stepped up maintenance of arch/sh to keep SuperH hardware
-supported in the kernel because I have been a maintainer of Debian's SuperH
-port for several years now.
+Changelog:
+  * split out debug patch into a separate one with extra printk added
+  * fixed inverte bus->self check (probably a reason why it didn't work before)
 
-There is also a small community of SuperH enthusiasts now hacking on the kernel
-which is coming together for discussion in #linux-sh on libera IRC.
 
-Thanks,
-Adrian
+1/3 debug patch
+2/3 offending patch
+3/3 potential fix
+  
+I added more files to trace, add following to kernel CLI
+   dyndbg="file drivers/pci/access.c +p; file drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p; file drivers/acpi/bus.c +p" ignore_loglevel
+
+should be applied on top of 
+   e8afd0d9fccc PCI: pciehp: Cancel bringup sequence if card is not present
+
+apply a patch one by one and run testcase + capture dmesg after each patch
+one shpould endup with 3 dmesg to ananlyse
+ 1st - old behaviour - no crash
+ 2nd - crash
+ 3rd - no crash hopefully
+
+Igor Mammedov (3):
+  acpiphp: extra debug hack
+  PCI: acpiphp: Reassign resources on bridge if necessary
+  acpipcihp: use __pci_bus_assign_resources() if bus doesn't have bridge
+
+ drivers/pci/hotplug/acpiphp_glue.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.39.3
+
