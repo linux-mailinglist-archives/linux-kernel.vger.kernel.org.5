@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F70761D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F502761D4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbjGYPMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S229778AbjGYPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjGYPMG (ORCPT
+        with ESMTP id S232763AbjGYPYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:12:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A24D1BD8;
-        Tue, 25 Jul 2023 08:12:04 -0700 (PDT)
+        Tue, 25 Jul 2023 11:24:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44371BD8;
+        Tue, 25 Jul 2023 08:24:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09A5861796;
-        Tue, 25 Jul 2023 15:12:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190B3C433C8;
-        Tue, 25 Jul 2023 15:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690297923;
-        bh=8THp3K8VuswJyA6ZQXnYnjyJbhS9jvJpXnNYRT9oTbY=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 78244617B9;
+        Tue, 25 Jul 2023 15:24:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF6FC433C8;
+        Tue, 25 Jul 2023 15:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690298655;
+        bh=+MfVjB/wjdps2ovrI3oDMNYk7WQRpUGIc0K5gkQDUIs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2kT7TXzWg5z4DsF7ST/eGZz62RXegu3XcV33Ukca4bw/tzemlkmbWOpjHfRnKfHry
-         oUmqfPBF2pZdibId+QxwSoVpWcN35WI/0szz66+xFMsS9VDRd3zjdmvplOR7Vsls5z
-         MtbVij7rryRX4PV1vtlQT2y1VzCF164N+fD0KrOY=
-Date:   Tue, 25 Jul 2023 17:12:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dingyan Li <18500469033@163.com>
-Cc:     Oliver Neukum <oneukum@suse.com>, stern@rowland.harvard.edu,
-        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] USB: add usbfs ioctl to get specific superspeedplus
- rates
-Message-ID: <2023072526-reissue-uplifting-5674@gregkh>
-References: <20230721084039.9728-1-18500469033@163.com>
- <2023072105-lethargic-saddling-ad97@gregkh>
- <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
- <2023072159-carol-underfeed-43eb@gregkh>
- <781b3f95-96e7-af83-e089-887ec7f2d255@suse.com>
- <2023072546-denture-half-5ceb@gregkh>
- <4edabcb3.7e65.1898d54679e.Coremail.18500469033@163.com>
- <ca4ad735-5605-3fd4-c903-fe5b039cf6a8@suse.com>
- <3018cd33.7ee4.1898d7e4798.Coremail.18500469033@163.com>
+        b=gPq8eVoFZT6gk5cJ4o3gDvI8uBvnJ6TORQWk/GOfQzPjuE9rZvceL+zOQYNP7fUh2
+         fNDsDS/AaOFWe1KSsuQQcW39LJyqTn240qTgogqgJNy6jkTj/jdc1o+gVHiOwqkANA
+         oDc6Eabr7/YJw5+lNZA4pDAO/S/bI4VYTouqQBJ2d209+JwGdpicCKYueCP2ykjzMK
+         zPTnnFqMHLVkXymEQNIu/9MjJCK09GEpowCDOMtrIxDAYGpqqz+hp6rwa7VoK0Ycul
+         7ZImFTWJ3mCi329bhEx2C9ALC9ntpS47htqEfnmNa3U4GjX1v9rq0JEA7QGb4e//9T
+         E44CiymAS7qMw==
+Date:   Tue, 25 Jul 2023 23:12:38 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Conor Dooley <conor@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next 07/10] dt-bindings: net: snps,dwmac: add safety
+ irq support
+Message-ID: <ZL/mZiLQFLv1rpib@xhacker>
+References: <20230723161029.1345-1-jszhang@kernel.org>
+ <20230723161029.1345-8-jszhang@kernel.org>
+ <20230724-cleat-tricolor-e455afa60b14@spud>
+ <20230724232624.GA1112850-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3018cd33.7ee4.1898d7e4798.Coremail.18500469033@163.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230724232624.GA1112850-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:40:10PM +0800, Dingyan Li wrote:
+On Mon, Jul 24, 2023 at 05:26:24PM -0600, Rob Herring wrote:
+> On Mon, Jul 24, 2023 at 06:23:13PM +0100, Conor Dooley wrote:
+> > On Mon, Jul 24, 2023 at 12:10:26AM +0800, Jisheng Zhang wrote:
+> > > The snps dwmac IP support safety features, and those Safety Feature
+> > > Correctible Error and Uncorrectible Error irqs may be separate irqs.
+> > > 
+> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > index ddf9522a5dc2..bb80ca205d26 100644
+> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > @@ -107,6 +107,8 @@ properties:
+> > >        - description: Combined signal for various interrupt events
+> > >        - description: The interrupt to manage the remote wake-up packet detection
+> > >        - description: The interrupt that occurs when Rx exits the LPI state
+> > > +      - description: The interrupt that occurs when Safety Feature Correctible Errors happen
+> > > +      - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
+> > >  
+> > >    interrupt-names:
+> > >      minItems: 1
+> > > @@ -114,6 +116,8 @@ properties:
+> > >        - const: macirq
+> > >        - enum: [eth_wake_irq, eth_lpi]
+> > >        - const: eth_lpi
+> > > +      - const: sfty_ce_irq
+> > > +      - const: sfty_ue_irq
+> > 
+> > Putting _irq in an interrupt name seems rather redundant to me although,
+> > clearly not the first time for it here.
 > 
-> At 2023-07-25 22:08:44, "Oliver Neukum" <oneukum@suse.com> wrote:
-> >On 25.07.23 15:54, Dingyan Li wrote:
-> >
-> >> If we can't "deprecate" ioctls, can we change the returned contents of existing ones?
-> >
-> >No. Absolutely not. That is totally unacceptable. It would be much
-> >worse than just removing the support.
-> >
-> >	Regards
-> >		Oliver
+> It's already inconsistent, so don't follow that pattern. Drop '_irq'.
+
+Thanks for the suggestion, will wait a bit to get more feedbacks before
+sending out v2.
 > 
-> Got it, I guess this is for backward-compatibility.
+> > 
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > 
+> > Thanks,
+> > Conor.
 > 
-> I also have another thought. USBDEVFS_CONNINFO_EX is kind of special and
-> used to retrieve contents of variable length. If you check proc_conninfo_ex(),
-> I think maybe we can append a new member to "struct usbdevfs_conninfo_ex"
-> without breaking backward-compatibility.
-
-How exactly would that work?  Remember, new kernels still need to work
-with old userspace code.
-
-> By this way, we can avoid adding a new ioctl. Or even more aggressively,
-> drop USBDEVFS_GET_SPEED and force everyone to use USBDEVFS_CONNINFO_EX
-> since it can also return device speed.
-
-We can not "force" anyone to change, that's not how the kernel works,
-sorry.
-
-greg k-h
+> 
