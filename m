@@ -2,157 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C2C761024
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6525D76102A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjGYKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        id S232611AbjGYKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbjGYKD1 (ORCPT
+        with ESMTP id S233806AbjGYKD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:03:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38056270B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:06 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso7991903e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:06 -0700 (PDT)
+        Tue, 25 Jul 2023 06:03:29 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1BB1718
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:10 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6687466137bso3043890b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:03:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690279384; x=1690884184;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eekhgAluWaFaGs01AcApU+TB0QDmBFjsMaqdtb7wo2M=;
-        b=ettR/lM0ZlPGtXVrR5af8WV5Sn5xjjiEjcig57hnVsgwCzfl1YAQ7UcdWPNNdx26J6
-         EoEJ/KykOSiyVp3V64Rj7plpZf+BNZP1U+4KzJDDrjF1DTd44e1gv69Y9PHGYPEKnzGv
-         AUdIKwD0dmCHezDRqWU965lgMHWjSop+7rAqHd5j/6ISoa2hMbZ6IVsX2jW8ZbDC3T6c
-         shutV2A55O6nCSqFuFIdZ2tu7Qmqz/6dOniqrgBxjQ4jGSkZwLcsJmYqvi6LhGZjPS7C
-         v6fpeHuJx8/IY7HplDMSsnO6rCgaeUyf6zFqe15U2m/vHi55BpGCRxdVOUG9eHD8hO83
-         KgnA==
+        d=linaro.org; s=google; t=1690279390; x=1690884190;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=omQl0KsY23ZTTqxsvNji4YWJ3tGKpnfvrjqf4UJUwos=;
+        b=C9FzHzeclNQcNPiVPE4DGrEpTPSKSXfpAFB3Pts30shmPBvzBwDAyjjloLCwhPCM8k
+         s6RraUiJTWUQQrvvj2+OB3PjaGqQn9cJDFbRn+u4CT8QtW8P/ZRpwgYLT2oRQoW+s9j9
+         TRYPmtwaBaQInazcRPhfhUmXJ6qKvfBAkssM/aH99kfTz9d8YFcWOJeOZCT+2nDRTFpb
+         S0dXfhlf+EbFs7rPlMW2xcHgJbMbwZhCypxghuKOSUxYgNKO58djPuoCyrncHEwbfK0L
+         De86mVbDD5HacAugf1hQU2DnEN9Dex3Hd6bpDPbf0pmWU/PthUlJx6ejWgZSKOzQfpIr
+         ZgXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690279384; x=1690884184;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690279390; x=1690884190;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eekhgAluWaFaGs01AcApU+TB0QDmBFjsMaqdtb7wo2M=;
-        b=M3FQ7AxN29Q2VlItOmZiD1cKmadJlEpebzzFwuTBy6dKrCaJrNLyjH86wu3uviUbr1
-         HqU7YDs+HumKYsgurfU2xSK6UOfP4urllE8rOrOLa1WRqjdGxApKDGS+CffhNb+/ewba
-         NWxX1vA+Ryo4tPCvVm7TEHBdhcg0loO/rOz9bOl+vT9q3kvAuAJgdm7nRYStWj+Qe/Fv
-         ankpZCpTDNXt4r8VJH0G/HuDE6pSzWujD8OyT3Azvcooi7Ke8PvOwOrVLfaV4nynNP3H
-         fRDUfjR5Ak6EwOtrX5Topwv5dHGMv8C7MGb1sJX4dCWROv/C5Nl14E4N5J+WJTrtkaSg
-         QpQA==
-X-Gm-Message-State: ABy/qLYu5rfyfFfp86gt9ABpXUfS6Y/wCIXaH0kiDF24bULUZ8pdr7i2
-        MOAyfGA1Jp26keV9/k7qXur9uA==
-X-Google-Smtp-Source: APBJJlEo3YetWlnTYjT06dfeYEJnxxnzXnrcm5NDhRIuIq3mSgcEFHkmT4JpwnvCBKmkGLOWIOdgSA==
-X-Received: by 2002:ac2:5931:0:b0:4fb:7d73:d097 with SMTP id v17-20020ac25931000000b004fb7d73d097mr6197340lfi.39.1690279384247;
-        Tue, 25 Jul 2023 03:03:04 -0700 (PDT)
-Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
-        by smtp.gmail.com with ESMTPSA id z3-20020ac25de3000000b004fdc0f2caafsm2695915lfq.48.2023.07.25.03.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 03:03:03 -0700 (PDT)
-Message-ID: <1717ccb1-46b3-8ac3-2c09-9558bd12cc40@linaro.org>
-Date:   Tue, 25 Jul 2023 12:03:02 +0200
+        bh=omQl0KsY23ZTTqxsvNji4YWJ3tGKpnfvrjqf4UJUwos=;
+        b=lWocAbcjehchpUkafUt8w4MbBOyQ5G2vztmb1B5eBRdQ5BDttDEotwvt2qVubqCcTd
+         qVHWUmX84gq4CKHplxSOQ/P3/NuaHJv1+x84LlC2WI0CbvytndS7EYyvcDArmXw2pZay
+         LRLcFY3/bUalq5EvqbwiJhWbpKkMpB7Fz2hiTJrPpYl2+d/EVsjMNMuRVBZMuGEFDuTs
+         vO6b63u34J+LMoZmwINpSKcI5MpxMQxpbB93MUM9pFHhAu79dE7xe+Hen7hcdNbdI6KY
+         qZjY3vy6QEXo/Xu+Drco1S2pYbQJBUAlNV7DaG/QxE3tt4ynhXzvsuQf6fW88YSXbjaA
+         mqTA==
+X-Gm-Message-State: ABy/qLaJRlP8O3tvZt8PjHbtfBDsOB7pEhUEJO0vNr8V41SLoWcRhh5T
+        iGxxkUBE3frrT08et1G2IRmg
+X-Google-Smtp-Source: APBJJlEQ/Tr6zv7e7sgeMAaofqM/o/IS22CuvDSLgWCsWUoOcXam0olW16i+FwLejoKb8plfrHxPYg==
+X-Received: by 2002:a05:6a20:1d0:b0:137:7add:b7cc with SMTP id 16-20020a056a2001d000b001377addb7ccmr9589211pzz.22.1690279389725;
+        Tue, 25 Jul 2023 03:03:09 -0700 (PDT)
+Received: from thinkpad ([117.206.117.206])
+        by smtp.gmail.com with ESMTPSA id jm24-20020a17090304d800b001b9cdf11764sm10622156plb.31.2023.07.25.03.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 03:03:09 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 15:33:02 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V1] Revert "PCI: tegra194: Enable support for 256 Byte
+ payload"
+Message-ID: <20230725100302.GD22139@thinkpad>
+References: <20230608093652.1409485-1-vidyas@nvidia.com>
+ <20230725075159.GB22139@thinkpad>
+ <815d102d-be0c-8e5d-ac12-1500d90628da@nvidia.com>
+ <20230725083030.GC22139@thinkpad>
+ <770da5a3-ea02-ce87-8515-beb246082de8@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
- <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
- <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
- <d51dee67-02f4-1256-877f-61629c04b08f@linaro.org>
- <a90461fa-8319-5b87-397f-53ba169a3d31@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <a90461fa-8319-5b87-397f-53ba169a3d31@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <770da5a3-ea02-ce87-8515-beb246082de8@nvidia.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.07.2023 11:43, Krzysztof Kozlowski wrote:
-> On 25/07/2023 10:13, Konrad Dybcio wrote:
->> On 25.07.2023 07:46, Krzysztof Kozlowski wrote:
->>> On 24/07/2023 22:52, André Apitzsch wrote:
->>>> Add a compatible for BQ Aquaris M5 (Longcheer L9100).
->>>>
->>>> Signed-off-by: André Apitzsch <git@apitzsch.eu>
->>>> ---
->>>>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>
->>>
->>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>
->>>
->>> ---
->>>
->>> This is an automated instruction, just in case, because many review tags
->>> are being ignored. If you do not know the process, here is a short
->>> explanation:
->>>
->>> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
->>> versions, under or above your Signed-off-by tag. Tag is "received", when
->>> provided in a message replied to you on the mailing list. Tools like b4
->>> can help here. However, there's no need to repost patches *only* to add
->>> the tags. The upstream maintainer will do that for acks received on the
->>> version they apply.
->>>
->>> https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
->> Krzysztof, update your bot to paste this link with s/v5.17/latest/g
+On Tue, Jul 25, 2023 at 02:51:10PM +0530, Vidya Sagar wrote:
 > 
-> Is there any difference? :) I would need to update links in all my
-> templates and re-check the links...
-Don't know, but the keyword "latest" in the link always points to the..
-latest available release
+> 
+> On 7/25/2023 2:00 PM, Manivannan Sadhasivam wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Tue, Jul 25, 2023 at 01:49:35PM +0530, Vidya Sagar wrote:
+> > > 
+> > > 
+> > > On 7/25/2023 1:21 PM, Manivannan Sadhasivam wrote:
+> > > > External email: Use caution opening links or attachments
+> > > > 
+> > > > 
+> > > > On Thu, Jun 08, 2023 at 03:06:52PM +0530, Vidya Sagar wrote:
+> > > > > This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
+> > > > > support for 256 Byte payload")
+> > > > > 
+> > > > > Consider a PCIe hierarchy with a PCIe switch and a device connected
+> > > > > downstream of the switch that has support for MPS which is the minimum
+> > > > > in the hierarchy, and root port programmed with an MPS in its DevCtl
+> > > > > register that is greater than the minimum. In this scenario, the default
+> > > > > bus configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't
+> > > > > configure the MPS settings in the hierarchy correctly resulting in the
+> > > > > device with support for minimum MPS in the hierarchy receiving the TLPs
+> > > > > of size more than that. Although this can be addresed by appending
+> > > > > "pci=pcie_bus_safe" to the kernel command line, it doesn't seem to be a
+> > > > > good idea to always have this commandline argument even for the basic
+> > > > > functionality to work.
+> > > > > Reverting commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256
+> > > > > Byte payload") avoids this requirement and ensures that the basic
+> > > > > functionality of the devices irrespective of the hierarchy and the MPS of
+> > > > > the devices in the hierarchy.
+> > > > > To reap the benefits of having support for higher MPS, optionally, one can
+> > > > > always append the kernel command line with "pci=pcie_bus_perf".
+> > > > > 
+> > > > > Fixes: 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte payload")
+> > > > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > > 
+> > > > I know that this patch is merged. But I happen to test a similar change on Qcom
+> > > > platform during a patch review and found that the PCI core changes MPS to 128
+> > > > when a 128byte supported device is found:
+> > > > 
+> > > > [    3.174290] pci 0000:01:00.0: Upstream bridge's Max Payload Size set to 128 (was 256, max 128)
+> > > > [    3.186538] pci 0000:01:00.0: Max Payload Size set to 128 (was 128, max 128)
+> > > > 
+> > > > This was just randomly tested on a platform whose Root port DEVCAP was 128, but
+> > > > it shouldn't matter. And I didn't change the default bus configuration.
+> > > > 
+> > > > Wondering how you ended up facing issues with it.
+> > > 
+> > > If the endpiont device that has support only for 128byte MPS is connected
+> > > directly to the root port, then, I agree that the PCIe sub-system takes care
+> > > of changing the MPS to the common lowest MPS, but if the endpoint device is
+> > > connected behind a PCIe switch, then the PCIe subsystem doesn't configure
+> > > the MPS properly.
+> > > 
+> > 
+> > Ah, I missed the fact that your issue only happens with a PCIe switch. But
+> > shouldn't this be fixed in the PCI core instead?
+> > 
+> > I mean, PCI core should use 128byte in your case for Root port unless it is not
+> > allowed in the spec (which I doubt).
+> well, if the RP's DevCtl is set to 256MPS by default, then, the core
+> wouldn't do it automatically unless either 'pcie_bus_safe' or
+> 'pcie_bus_perf' is passed.
+> 
 
-Konrad
+That's what I'm referring to. The default configuration shouldn't cause Root
+port to send TLPs with unsupported payload. Moreover, this is not the case for
+immediate children. So definitely the PCI core should exhibit the same behavior
+for all downstream devices. 
+
+- Mani
+
+> 
+> > 
+> > - Mani
+> > 
+> > > -Vidya Sagar
+> > > 
+> > > > 
+> > > > - Mani
+> > > > 
+> > > > > ---
+> > > > >    drivers/pci/controller/dwc/pcie-tegra194.c | 13 -------------
+> > > > >    1 file changed, 13 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > index 4fdadc7b045f..877d81b13334 100644
+> > > > > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > @@ -892,7 +892,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
+> > > > >         struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > > >         struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+> > > > >         u32 val;
+> > > > > -     u16 val_16;
+> > > > > 
+> > > > >         pp->bridge->ops = &tegra_pci_ops;
+> > > > > 
+> > > > > @@ -900,11 +899,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
+> > > > >                 pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+> > > > >                                                               PCI_CAP_ID_EXP);
+> > > > > 
+> > > > > -     val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
+> > > > > -     val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
+> > > > > -     val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
+> > > > > -     dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
+> > > > > -
+> > > > >         val = dw_pcie_readl_dbi(pci, PCI_IO_BASE);
+> > > > >         val &= ~(IO_BASE_IO_DECODE | IO_BASE_IO_DECODE_BIT8);
+> > > > >         dw_pcie_writel_dbi(pci, PCI_IO_BASE, val);
+> > > > > @@ -1756,7 +1750,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+> > > > >         struct device *dev = pcie->dev;
+> > > > >         u32 val;
+> > > > >         int ret;
+> > > > > -     u16 val_16;
+> > > > > 
+> > > > >         if (pcie->ep_state == EP_STATE_ENABLED)
+> > > > >                 return;
+> > > > > @@ -1887,11 +1880,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+> > > > >         pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+> > > > >                                                       PCI_CAP_ID_EXP);
+> > > > > 
+> > > > > -     val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
+> > > > > -     val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
+> > > > > -     val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
+> > > > > -     dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
+> > > > > -
+> > > > >         /* Clear Slot Clock Configuration bit if SRNS configuration */
+> > > > >         if (pcie->enable_srns) {
+> > > > >                 val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
+> > > > > @@ -1900,7 +1888,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+> > > > >                 dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA,
+> > > > >                                    val_16);
+> > > > >         }
+> > > > > -
+> > > > >         clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+> > > > > 
+> > > > >         val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
+> > > > > --
+> > > > > 2.25.1
+> > > > > 
+> > > > 
+> > > > --
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+> > --
+> > மணிவண்ணன் சதாசிவம்
+
+-- 
+மணிவண்ணன் சதாசிவம்
