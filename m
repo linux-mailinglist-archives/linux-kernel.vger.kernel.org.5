@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9577624EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12EB7624F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbjGYVx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S231617AbjGYV4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjGYVx0 (ORCPT
+        with ESMTP id S231318AbjGYV4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:53:26 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B8E2137
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:53:25 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-668730696a4so3470754b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:53:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322005; x=1690926805;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FKEGWqR+0CcbBPqsp+sUK+ljfwl+CRQxiq3hvwMVKVA=;
-        b=Ezfa2u2HhaeTgeNqBXH8xd9D2MI9qrfjH69Xx0NPM6zHyCWs9yXApqOJjRZsQ2UDbz
-         W5bfiOhd1Fb85DDr8JX3eRtQglvAbMRqN3GnL/Ub5AiuUZXguuhlCyAAGo+cPMdCU/+e
-         xaU/5GEExeo0ujzemcSnB48J8FP8ET8E5sJ1b8ATpaOKJqBUt4egPXvjvxAwEpMcaZku
-         tE8gf9AgqNJGWst37Eld3kg6IjbjwTyiXqocqs20vIJ977nLEJO9d84cPSSSS6vcSPyN
-         g8dBcW6QgoMaVclfJ4fQ+sO7HEAjj8N9XOl65pRVUTqID4zH0pi4V8vz3CcGj7r4WGRU
-         3eYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322005; x=1690926805;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FKEGWqR+0CcbBPqsp+sUK+ljfwl+CRQxiq3hvwMVKVA=;
-        b=EKV2tRRiG3EOyBaLkPOwJTsfBClFr9CpYEPu1fnESxSpNFg8EZpNIKNZdsk0/P9K0g
-         sZb9hZAjZXm5BVmiKGu60p9Cd1UVYinbW2RPlQGfhJd/ORjnqisI6RO7+p8/Jiv4ht+h
-         l56Fiy6y3hPdyq2I9tUq8Js3cCV7OhQ6OndL+r6aabLONizzmJjuunGZwyTXTtkHUAZI
-         vkwedEGcN9ts99LdoO21jeKP8td+uHAhYO3oaiZ1Jia2FRlf6k37pMj0h/6d+DlgWfJH
-         FHgi3SdOwHGQ1Da+GD/Gn4dWz8bUqthWzJQdyaCyUYmyYaqdmZ+rJ8PClSxwvOxAORHn
-         opBA==
-X-Gm-Message-State: ABy/qLa6eHJ6CvtEcArv4CuywIIEeffAc0nrYVIasnMYGZF9C3mJI6RG
-        RDScFnwCVVMxrTO4LuQwn0o8YQ==
-X-Google-Smtp-Source: APBJJlHquQuuWxLQmV9ZAeTnV8BBjL+QYV6S+sbeqEwRh0gcunK9cb74PhLG1/SldT8Yr7YBeJOujQ==
-X-Received: by 2002:a05:6a20:4406:b0:137:3eba:b7fb with SMTP id ce6-20020a056a20440600b001373ebab7fbmr343053pzb.2.1690322004749;
-        Tue, 25 Jul 2023 14:53:24 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:a7a4:bf67:c9d5:c1b7])
-        by smtp.gmail.com with ESMTPSA id i21-20020aa787d5000000b006829b28b393sm10097875pfo.199.2023.07.25.14.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 14:53:24 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 14:53:19 -0700
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Ziqi Chen <quic_ziqichen@quicinc.com>,
-        Can Guo <quic_cang@quicinc.com>, Arnd Bergmann <arnd@arndb.de>,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] scsi: ufs: qcom: remove unused variable
-Message-ID: <ZMBET5+0ooHfpJbS@google.com>
-References: <20230724122029.1430482-1-arnd@kernel.org>
+        Tue, 25 Jul 2023 17:56:03 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C27D1FEC;
+        Tue, 25 Jul 2023 14:56:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CKq96B4/MyF9kFDoV3FHYm1q2+qtj+9TPoZcWPoHcH8Kl45MQxfqR75pO+J22znut5yJkddnAMoZr/8RcRtaV3mAC3bYQspFX1rJj6XQwWlT7KfmJW+i8KOHu5PZHnmu9qQUy0jivYKxpRkyXibqtCwXimj4jLCItQKUIf5Au0C0eE4TVP6MCUW5njLsUOYDTjVUJpbXhQdgBL++1ca4Oj2UP11Sy6JUTNa4LS8pQs0OkDuHqLkQALBfwZW2R1k4wkWeKfxQ+oSh85XrOeQbf9Cb94GMV6ZuJVQeP/brND637zXtSvS9YnxNzYsXaiTEasd8fGEo2nhqYduEFCiDMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1hXrN1f1Vz1OSeEL8lNXKDNjQ45MdrrTgSD/OnpAYHc=;
+ b=ix5gRs9QDn6N4SSiMwsEdfXB6uuXCzrcf4Sf3L8ZW+yvwmmyoRPDQAGRRnmmQdNS+Gmy4RJ39Bept44G7Ox8654gLLtpe8qOE3l53AK9n15Qouy+U5xt9pxGFBnZM8/IOtUsHmBOJFuVKk8AZrQImuTQvje8yQm1F0a6qvGrZL46sa/Eu8mR9aFXWPSpCtgyrRJ0vjCbzaZYV2c1KE4fqG77/3euVcrrnumOuBhYJXogleE4HeuLE308R0F5BOauzPQXH+5o26QFgXLDQ6m/OWHs169yk5SiWO41JLtnH/xRq++s7HqLYv2vZq1y4Y1VMWfAnemdHwOCgErlgAlyTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1hXrN1f1Vz1OSeEL8lNXKDNjQ45MdrrTgSD/OnpAYHc=;
+ b=RBGEqCavhLd6bNraVVi+L0piUubIrKTo4XRya91I4I4ElsVL9rEHM8mSL93FwOuyMLo0ZkEOpFr+na7AkHvR3OKJEuXjx/GiuVwAC3qROiR188Al1aa3Ui2PiMTCM9RnerJExupJIjoFgiSIwMixKW1tk7I7vQZ9SrxNZ59I4JU=
+Received: from MW4PR03CA0275.namprd03.prod.outlook.com (2603:10b6:303:b5::10)
+ by BL1PR12MB5923.namprd12.prod.outlook.com (2603:10b6:208:39a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
+ 2023 21:56:00 +0000
+Received: from CO1NAM11FT003.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b5:cafe::ca) by MW4PR03CA0275.outlook.office365.com
+ (2603:10b6:303:b5::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33 via Frontend
+ Transport; Tue, 25 Jul 2023 21:55:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT003.mail.protection.outlook.com (10.13.175.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6631.29 via Frontend Transport; Tue, 25 Jul 2023 21:55:59 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
+ 2023 16:55:59 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
+ 2023 14:55:58 -0700
+Received: from XCB-AMAFTEI-L1.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
+ Transport; Tue, 25 Jul 2023 16:55:57 -0500
+From:   Alex Maftei <alex.maftei@amd.com>
+To:     <richardcochran@gmail.com>, <shuah@kernel.org>,
+        <rrameshbabu@nvidia.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     Alex Maftei <alex.maftei@amd.com>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH net-next v2 0/2] selftests/ptp: Add support for new timestamp IOCTLs
+Date:   Tue, 25 Jul 2023 22:53:32 +0100
+Message-ID: <cover.1690321709.git.alex.maftei@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724122029.1430482-1-arnd@kernel.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT003:EE_|BL1PR12MB5923:EE_
+X-MS-Office365-Filtering-Correlation-Id: 76d3b26b-9e25-483a-e944-08db8d59eea5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7KRlNkTQ5FW3LiJmV5EeBn/BCZ7p1v6p2OI0v8aFCaRjozsWPRXlJZXM4O307LWDKp3ZSVaKpGNT8TKOIhqEyDyHa8V9A2jVNHMNGAalonXWcjLK2mHKQO+mHsaXigIrbyceK/XhkPSAxH/6CxDaGgVxnym72ggtkX3XDmJLYqIegpjoVd3YhagRwjTpyjVOuchjDSYyqvxRtIENu+OBbJygdjH7OW5xJEH47x+w3xUFyvSaYQJoSqcfh1JclctRlhGlJgV0nEfvTdalp5asbPLBNhR9+/MYQVSZbyFsEyLJ+oWslv6oyFL5skqBom1V/GHvgDiHXg0/EMZY5IpDE37/7zaiqeyXs/JgTthak0GIhWmr6tCRNWn/miZlJ1pQvGu2jvzanqRq0TNj56s+SD3tN8YQ3I8btNX0VWCgLz6ZtScVkfaNs4UIU36O4S0MG81cv2bpVlbaKUoYaMmDYZPbP/zKWJCz5z5lZU68laNnTKl0KHVmUg4uCL2JaWBYPgSqIl5HDY2S1RPT1UI3ovJV3Cn5v7oq/Ou37iN23d7EY6KCHFkOaogPEgr/QxMoxegSBD7TPQ0byqB2DdpBtbPnSRNt96SnxL7Ozz/G4J6Fh0v0n0zhwidrV8apkOzsnB0drUGIbo2T3qRmupZoPtd2E9PCTJXlCupIARmE3+iGjjUSymkJ4wvvqkHvBIiaI98saRL/CL1PZ21YjJFz9gALGqQmu/hQgIKyPJqAw1pnRGCXCunLLEVKWDvHKRk9ZCODpuczJw8GdAwgdDOpCA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(39860400002)(136003)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(26005)(186003)(2906002)(336012)(4744005)(86362001)(82740400003)(8936002)(36756003)(8676002)(54906003)(110136005)(478600001)(6666004)(7696005)(36860700001)(356005)(5660300002)(81166007)(4326008)(41300700001)(40460700003)(70586007)(70206006)(44832011)(47076005)(426003)(2616005)(40480700001)(83380400001)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 21:55:59.6951
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76d3b26b-9e25-483a-e944-08db8d59eea5
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT003.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5923
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,39 +105,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 02:19:58PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A recent change removed the only user of a local variable that needs
-> to now also be removed:
-> 
-> drivers/ufs/host/ufs-qcom.c: In function 'ufs_qcom_mcq_esi_handler':
-> drivers/ufs/host/ufs-qcom.c:1652:31: error: unused variable 'host' [-Werror=unused-variable]
-> 
-> Fixes: 8f2b78652d055 ("scsi: ufs: qcom: Get queue ID from MSI index in ESI handler")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+PTP_SYS_OFFSET_EXTENDED was added in November 2018 in
+361800876f80 (" ptp: add PTP_SYS_OFFSET_EXTENDED ioctl")
+and PTP_SYS_OFFSET_PRECISE was added in February 2016 in
+719f1aa4a671 ("ptp: Add PTP_SYS_OFFSET_PRECISE for driver crosstimestamping")
 
-Thanks for the patch!
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Link: https://lore.kernel.org/llvm/64c00cd4.630a0220.6ad79.0eac@mx.google.com/
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+The PTP selftest code is lacking support for these two IOCTLS.
+This short series of patches adds support for them.
 
-> ---
->  drivers/ufs/host/ufs-qcom.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 3ee5ff905f9a6..5728e94b6527b 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1649,7 +1649,6 @@ static irqreturn_t ufs_qcom_mcq_esi_handler(int irq, void *data)
->  	struct msi_desc *desc = data;
->  	struct device *dev = msi_desc_to_dev(desc);
->  	struct ufs_hba *hba = dev_get_drvdata(dev);
-> -	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->  	u32 id = desc->msi_index;
->  	struct ufs_hw_queue *hwq = &hba->uhq[id];
->  
-> -- 
-> 2.39.2
-> 
+Changes in v2:
+- Fixed rebase issues (v1 somehow ended up with patch 1 being from the
+  first manual split of my changes and patch 2 being from rebase 2 out
+  of 3)
+- Rebased on top of net-next
+
+Alex Maftei (2):
+  selftests/ptp: Add -x option for testing PTP_SYS_OFFSET_EXTENDED
+  selftests/ptp: Add -X option for testing PTP_SYS_OFFSET_PRECISE
+
+ tools/testing/selftests/ptp/testptp.c | 73 ++++++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
