@@ -2,120 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B90760C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFA2760C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbjGYHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        id S232773AbjGYHrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjGYHq0 (ORCPT
+        with ESMTP id S231187AbjGYHro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:46:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281AF97;
-        Tue, 25 Jul 2023 00:46:25 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690271183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MwlQeCse0p+PDVAUpXy5OS86DdcWiW2W0yctq9JW4YU=;
-        b=UV5iHfgs84Vzben7Ls/EN8AacDD4keKPQa6CkpOHdqYXxXKmW4QbOtGxhQ+RWU740YNYDm
-        xoplp+6QwC/iwzLhLxxHFOsdr3Zs61Wcn6s3GQdBooOrQvRUMCIR0arURIqr8ykUoPyFuA
-        2fdPYc9hFKn+I0B6tP9P/CAbyTOSEPsiXOJss88yFxmpeVfhF5yZZnJYq3Mr3UFw1zFt5d
-        5qxL5SMeIdkjn5l6aQms8LF2buK+HKS+U8KrBMadgTrGH81vmYp7qmtXruuIuQzuzIsUza
-        xgjtAx65WpTFajlfmqHTDGEZJ5ib+Xj5yOTxfiIfw7G66ZymwCFZQPJ16qVlkA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690271183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MwlQeCse0p+PDVAUpXy5OS86DdcWiW2W0yctq9JW4YU=;
-        b=L6pYgAhSdpmx7S0bNGsgkCM3d/UYiFUS7u3Ilt+BnxOEVnP/BmE0LRZHRyAgKEOB1KWeqI
-        9EXhBYcSVw8dV+Cg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [patch 01/29] x86/cpu: Encapsulate topology information in
- cpuinfo_x86
-In-Reply-To: <20230724172843.757723854@linutronix.de>
-References: <20230724155329.474037902@linutronix.de>
- <20230724172843.757723854@linutronix.de>
-Date:   Tue, 25 Jul 2023 09:46:23 +0200
-Message-ID: <877cqotovk.ffs@tglx>
+        Tue, 25 Jul 2023 03:47:44 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF5197
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:47:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690271263; x=1721807263;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=eZZ+qyeBaohDzVVZtquWmk/rLHEfvYZiXNOgb2mMsdw=;
+  b=IZvMgfkEaoan4uvuJqvIGiTmuMRI3yPM6Iv+IMFyRsVKMxbl/CtKJulV
+   9WSdkoIzJt5Knkug5RpG0sboCbsCnXMNLHVkw8VzHaAKyhRVD+Ut+ogLy
+   GT+KhDcj0MiMolWvL6umx5ZgoOwTVx/VMbYsdvGPOL1XkR4dFPztfvFjD
+   Klf9rhytIWZQeOwILbvJZzU4+9MA810+raieXlRdnhL7Mt5a6Nss7AKGf
+   oJ6GgAX0IUNrIFrrZgyu2Kti54BHX+v02wGh71F2anqIrnJmYxXobXVp/
+   cXuwpXfzh8i4oD3c1f1gacJB5stYzdTa0lNeBHOzNcVCaQQqFxDsut5RI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347254844"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="347254844"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 00:47:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="796053861"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="796053861"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jul 2023 00:47:41 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOClg-000AR2-1H;
+        Tue, 25 Jul 2023 07:47:40 +0000
+Date:   Tue, 25 Jul 2023 15:46:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/regmap/regcache-maple.c:114:23: warning: 'upper_index'
+ is used uninitialized
+Message-ID: <202307251518.4JYwdU5r-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24 2023 at 19:43, Thomas Gleixner wrote:
-> +struct cpuinfo_topology {
-> +	u16			apicid;
-> +	u16			initial_apicid;
+Hi Mark,
 
-There was an offlist question whether these should be u32 because with
-X2APIC the APIC ID is 32bit wide.
+FYI, the error/warning still remains.
 
-The answer is yes, no, maybe. Why?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
+commit: f033c26de5a5734625d2dd1dc196745fae186f1b regmap: Add maple tree based register cache
+date:   4 months ago
+config: arc-randconfig-r001-20230725 (https://download.01.org/0day-ci/archive/20230725/202307251518.4JYwdU5r-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251518.4JYwdU5r-lkp@intel.com/reproduce)
 
-In practice there are limitations, both on the hardware side and on the
-kernel side.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307251518.4JYwdU5r-lkp@intel.com/
 
-The kernel limits the max. APIC ID to 32768 and the maximum number of
-CPUs to 8192 right now. Increasing the maximum APIC ID is possible, but
-that needs some deep thoughts as we have one array which is
-MAX_LOCAL_APIC sized and a bitmap of that size too. Even the bitmap
-would require (1 << 32)/8 = 5.36871e+08 B = 512MB of memory. With a limit
-of 32768 it's a reasonable 4KB. :)
+All warnings (new ones prefixed by >>):
 
-On the hardware side the topology information is in the APIC ID:
+   drivers/base/regmap/regcache-maple.c: In function 'regcache_maple_drop':
+>> drivers/base/regmap/regcache-maple.c:114:23: warning: 'upper_index' is used uninitialized [-Wuninitialized]
+     114 |         unsigned long upper_index, upper_last;
+         |                       ^~~~~~~~~~~
+>> drivers/base/regmap/regcache-maple.c:114:36: warning: 'upper_last' is used uninitialized [-Wuninitialized]
+     114 |         unsigned long upper_index, upper_last;
+         |                                    ^~~~~~~~~~
+   drivers/base/regmap/regcache-maple.c:113:23: warning: 'lower_index' is used uninitialized [-Wuninitialized]
+     113 |         unsigned long lower_index, lower_last;
+         |                       ^~~~~~~~~~~
+   drivers/base/regmap/regcache-maple.c:113:36: warning: 'lower_last' is used uninitialized [-Wuninitialized]
+     113 |         unsigned long lower_index, lower_last;
+         |                                    ^~~~~~~~~~
 
-      [PKGID][DIEID]...[COREID][THREADID]
 
-where everything below the PKGID is relative to the package. Right now
-the vendors have that space packed, i.e. the number of bits below PKGID
-is sized that its the next power of 2 which allows to fit the actual
-number of logical processors.
+vim +/upper_index +114 drivers/base/regmap/regcache-maple.c
 
-There have been systems where the PKGID shift was larger than that which
-caused us to do the logical package mapping because we ended up with
-package ID gaps. That was caused by incorrect information in leaf
-0xB/0x1F, i.e. the package shift enumerated was smaller than the actual
-one.
+   106	
+   107	static int regcache_maple_drop(struct regmap *map, unsigned int min,
+   108				       unsigned int max)
+   109	{
+   110		struct maple_tree *mt = map->cache;
+   111		MA_STATE(mas, mt, min, max);
+   112		unsigned long *entry, *lower, *upper;
+   113		unsigned long lower_index, lower_last;
+ > 114		unsigned long upper_index, upper_last;
+   115		int ret;
+   116	
+   117		lower = NULL;
+   118		upper = NULL;
+   119	
+   120		mas_lock(&mas);
+   121	
+   122		mas_for_each(&mas, entry, max) {
+   123			/*
+   124			 * This is safe because the regmap lock means the
+   125			 * Maple lock is redundant, but we need to take it due
+   126			 * to lockdep asserts in the maple tree code.
+   127			 */
+   128			mas_unlock(&mas);
+   129	
+   130			/* Do we need to save any of this entry? */
+   131			if (mas.index < min) {
+   132				lower_index = mas.index;
+   133				lower_last = min -1;
+   134	
+   135				lower = kmemdup(entry, ((min - mas.index) *
+   136							sizeof(unsigned long)),
+   137						GFP_KERNEL);
+   138				if (!lower) {
+   139					ret = -ENOMEM;
+   140					goto out;
+   141				}
+   142			}
+   143	
+   144			if (mas.last > max) {
+   145				upper_index = max + 1;
+   146				upper_last = mas.last;
+   147	
+   148				upper = kmemdup(&entry[max + 1],
+   149						((mas.last - max) *
+   150						 sizeof(unsigned long)),
+   151						GFP_KERNEL);
+   152				if (!upper) {
+   153					ret = -ENOMEM;
+   154					goto out;
+   155				}
+   156			}
+   157	
+   158			kfree(entry);
+   159			mas_lock(&mas);
+   160			mas_erase(&mas);
+   161	
+   162			/* Insert new nodes with the saved data */
+   163			if (lower) {
+   164				mas_set_range(&mas, lower_index, lower_last);
+   165				ret = mas_store_gfp(&mas, lower, GFP_KERNEL);
+   166				if (ret != 0)
+   167					goto out;
+   168				lower = NULL;
+   169			}
+   170	
+   171			if (upper) {
+   172				mas_set_range(&mas, upper_index, upper_last);
+   173				ret = mas_store_gfp(&mas, upper, GFP_KERNEL);
+   174				if (ret != 0)
+   175					goto out;
+   176				upper = NULL;
+   177			}
+   178		}
+   179	
+   180	out:
+   181		mas_unlock(&mas);
+   182		kfree(lower);
+   183		kfree(upper);
+   184	
+   185		return ret;
+   186	}
+   187	
 
-So with an upper limit of 8192 CPUs the limitation to 32K APIC IDs
-should be really sufficient. The largest package shift I've seen so far
-is 8, i.e. 256 logical processors per package. That means 32 packages
-max. That should be sufficient for a while, right? The HPE/UV people
-might have a word to say here though.
-
-So no, u16 is fine, but yes, we can make it u32 just for simplicity
-sake, which still does not allow you to have an APIC ID >= 32k, but
-makes it easy enough to expand that to e.g. 64K or 128K if the need ever
-arises. Let me rework that accordingly.
-
-Thanks,
-
-        tglx
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
