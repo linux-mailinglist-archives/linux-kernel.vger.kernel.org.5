@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB55761B51
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA85761B52
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjGYOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S232711AbjGYOVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbjGYOUt (ORCPT
+        with ESMTP id S230474AbjGYOUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:20:49 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0229269F;
-        Tue, 25 Jul 2023 07:19:06 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9JtW2y40ztRbF;
-        Tue, 25 Jul 2023 22:14:11 +0800 (CST)
-Received: from [10.174.179.215] (10.174.179.215) by
- canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 25 Jul 2023 22:17:24 +0800
-Subject: Re: [PATCH -next] hv: hyperv.h: Remove unused extern declaration
- vmbus_ontimer()
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230725135834.1732-1-yuehaibing@huawei.com>
- <SN6PR2101MB1693201F3C3FD2BCDD0843B3D703A@SN6PR2101MB1693.namprd21.prod.outlook.com>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <03317f44-3c5f-e221-6fb7-41b5fcfa700d@huawei.com>
-Date:   Tue, 25 Jul 2023 22:17:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 25 Jul 2023 10:20:50 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FEA2697;
+        Tue, 25 Jul 2023 07:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1690294648;
+        bh=6N3Sq6NeH6BbaiavR7O3xkbcCrkvZ1yXDKwPR9c54IU=;
+        h=From:Date:Subject:To:Cc:From;
+        b=hZ4Dq9Jty0CBm1B7i/IztsQxrb73cmHBaM0NYBp6fvT7DGdtx4mBfmmMS14ZkvrRv
+         ppxfYAfBsRvn6Ys+FkI1lEnTclH/udPHoMyCawp4j4ds11iUF4x6qMKGIwe6MQaCPy
+         S2JRsDZ8eJaxyi3f7dj4asyV+jEMrXaeyLkATuVY=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Tue, 25 Jul 2023 16:17:25 +0200
+Subject: [PATCH] mmc: core: propagate removable attribute to driver core
 MIME-Version: 1.0
-In-Reply-To: <SN6PR2101MB1693201F3C3FD2BCDD0843B3D703A@SN6PR2101MB1693.namprd21.prod.outlook.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230725-mmc-removable-v1-1-b2e0c4f18e6d@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAHTZv2QC/x3MQQqAIBBA0avIrBPMsKirRAvTsQZSQ0EC6e5Jy
+ 7f4v0LGRJhhYRUSFsoUQ0PfMTCnDgdyss0ghRzEJBX33vCEPha9X8iVcdboGa0YJbTmTujo+X/
+ r9r4fQjtuzl8AAAA=
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690294647; l=1153;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=6N3Sq6NeH6BbaiavR7O3xkbcCrkvZ1yXDKwPR9c54IU=;
+ b=ccSN6txL/80O9P0/RQTEBgYopVxGhLEMhnyOhucPYN3wxQW7b+nj4Az6lPuzFezzvZvisQThA
+ DTD/f6hfMyGC1EklsVkc0zaRopPw7Ki5/6PnPxDhwo+zFkoxk0MG8db
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/25 22:12, Michael Kelley (LINUX) wrote:
-> From: YueHaibing <yuehaibing@huawei.com> Sent: Tuesday, July 25, 2023 6:59 AM
->>
-> 
-> I'd suggest using "Drivers: hv: vmbus:" as the prefix in the commit message Subject.
-> I see that "hv: hyperv.h:" has been used a few times in the past, but my suggestion
-> is much more commonly used and would give better overall consistency.
+Userspace can use this to distinguish hotpluggable mmc devices such as
+sdcards from non-hotpluggable ones such as eMMC.
+One example is the lsblk tool from util-linux.
 
-Ok, will send v2.
-> 
->> Since commit 30fbee49b071 ("Staging: hv: vmbus: Get rid of the unused function
->> vmbus_ontimer()")
->> this is not used anymore, so can remove it.
-> 
-> Indeed, yes!
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> 
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  include/linux/hyperv.h | 3 ---
->>  1 file changed, 3 deletions(-)
->>
->> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
->> index bfbc37ce223b..3ac3974b3c78 100644
->> --- a/include/linux/hyperv.h
->> +++ b/include/linux/hyperv.h
->> @@ -1239,9 +1239,6 @@ extern int vmbus_recvpacket_raw(struct vmbus_channel
->> *channel,
->>  				     u32 *buffer_actual_len,
->>  				     u64 *requestid);
->>
->> -
->> -extern void vmbus_ontimer(unsigned long data);
->> -
->>  /* Base driver object */
->>  struct hv_driver {
->>  	const char *name;
->> --
->> 2.34.1
-> 
-> .
-> 
+Note that dev_set_removable() is not related to GENHD_FL_REMOVABLE which
+is not applicable as per the comment in drivers/mmc/core/block.c
+
+Link: https://github.com/util-linux/util-linux/issues/2379
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/mmc/core/bus.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+index 2c3074a605fc..0af96548e7da 100644
+--- a/drivers/mmc/core/bus.c
++++ b/drivers/mmc/core/bus.c
+@@ -310,6 +310,9 @@ int mmc_add_card(struct mmc_card *card)
+ 
+ 
+ 	dev_set_name(&card->dev, "%s:%04x", mmc_hostname(card->host), card->rca);
++	dev_set_removable(&card->dev,
++			  mmc_card_is_removable(card->host) ?
++			  DEVICE_REMOVABLE : DEVICE_FIXED);
+ 
+ 	switch (card->type) {
+ 	case MMC_TYPE_MMC:
+
+---
+base-commit: 0b5547c51827e053cc754db47d3ec3e6c2c451d2
+change-id: 20230725-mmc-removable-5cfdca9ed062
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
+
