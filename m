@@ -2,67 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C1C761064
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9741761066
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbjGYKPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S232871AbjGYKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbjGYKPh (ORCPT
+        with ESMTP id S232741AbjGYKP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:15:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E431310E6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:15:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D03E6160D
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:15:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93909C433CC;
-        Tue, 25 Jul 2023 10:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690280125;
-        bh=hk8s9U4aku/7NMyH7BUL+F1PpRRQQ59PN2hfITnjTVE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Uz9Uq3ekZhN/d14VXs/7apxFaWgqYSAciN9aaNWebnJzaQ/vv0RZx60oviF9aDFfO
-         FfxNlWWofAxBgmtJ2GqCG5bc/UCeU6cmwDqSG5gu+2xdAlW84SWC66T/9Ea2h7vDTl
-         zV+6GDjOMafbZ21OI8RWKkbr5LYCBY5ynlZ2aYCuG7bk1eyMFF+SLPiliYdhRRg0Ge
-         wk8fkI7FEn+Jnr81WjrdwGz6BOO+K7b5gdki13Wo6OnhE/7raVtR1MwjBHHew18MH7
-         /u6jmcyx6zKDeUvsfRwp1edvfq0rzT5JvREVEdHf3KS70mRH+LddTl//mrNuPJ390e
-         Y2mJ1cvaRRMpw==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4fb41682472so8052178e87.2;
-        Tue, 25 Jul 2023 03:15:25 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbioqWNxf3bZCu6oUgsYgmGW8DqjZMBYFRQVxo3IztU+axJBazO
-        rqEj2dKX4Rk5HxboIjOu2ZBapw2RZU0b6ys/wDY=
-X-Google-Smtp-Source: APBJJlFL5PlFPlTKZlnrORr+4EFa8QloNsr9WS714msWOKtWqsR7UdEi8SMfTyPM8k2z6Gm1c2rghgvQOYLYIbgqR7g=
-X-Received: by 2002:a05:6512:2109:b0:4fc:ab2e:8751 with SMTP id
- q9-20020a056512210900b004fcab2e8751mr7113692lfr.1.1690280123489; Tue, 25 Jul
- 2023 03:15:23 -0700 (PDT)
+        Tue, 25 Jul 2023 06:15:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 911E919AF;
+        Tue, 25 Jul 2023 03:15:43 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6ED3515BF;
+        Tue, 25 Jul 2023 03:16:26 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB49E3F67D;
+        Tue, 25 Jul 2023 03:15:40 -0700 (PDT)
+Message-ID: <56e70195-5f58-ca03-d6fd-f73e91f56298@arm.com>
+Date:   Tue, 25 Jul 2023 11:15:29 +0100
 MIME-Version: 1.0
-References: <20230724090044.2668064-1-ilia.lin@kernel.org> <20230724181105.GD11388@unreal>
- <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com>
- <20230725051917.GH11388@unreal> <CA+5LGR2oDFEjJL5j715Pi9AtmJ7LXM82a63+rcyYow-E5trXtg@mail.gmail.com>
- <20230725093826.GO11388@unreal>
-In-Reply-To: <20230725093826.GO11388@unreal>
-From:   Ilia Lin <ilia.lin@kernel.org>
-Date:   Tue, 25 Jul 2023 13:15:12 +0300
-X-Gmail-Original-Message-ID: <CA+5LGR1K-=-c8_pjyPTbT9B=SinHv8f61jzeOnjRDODffrPbsQ@mail.gmail.com>
-Message-ID: <CA+5LGR1K-=-c8_pjyPTbT9B=SinHv8f61jzeOnjRDODffrPbsQ@mail.gmail.com>
-Subject: Re: [PATCH] xfrm: kconfig: Fix XFRM_OFFLOAD dependency on XFRM
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Ilia Lin <ilia.lin@kernel.org>, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeffrey.t.kirsher@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] perf arm64: Fix read PMU cpu slots
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>
+Cc:     Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZL4G7rWXkfv-Ectq@B-Q60VQ05P-2326.local>
+ <2e392aa9-859a-75ef-eb3e-1870b1e78061@linux.alibaba.com>
+ <ZL6pxZ4RmMC2W7S+@kernel.org>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZL6pxZ4RmMC2W7S+@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,44 +61,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 12:38=E2=80=AFPM Leon Romanovsky <leon@kernel.org> =
-wrote:
->
-> On Tue, Jul 25, 2023 at 12:11:06PM +0300, Ilia Lin wrote:
-> > On Tue, Jul 25, 2023 at 8:19=E2=80=AFAM Leon Romanovsky <leon@kernel.or=
-g> wrote:
-> > >
-> > > On Tue, Jul 25, 2023 at 07:41:49AM +0300, Ilia Lin wrote:
-> > > > Hi Leon,
-> > >
-> > > You was already asked do not top-post.
-> > > https://lore.kernel.org/netdev/20230718105446.GD8808@unreal/
-> > > Please stop it.
-> > >
-> > > >
-> > > > This is exactly like I described:
-> > > > * xfrm.h is included from the net/core/sock.c unconditionally.
-> > > > * If CONFIG_XFRM_OFFLOAD is set, then the xfrm_dst_offload_ok() is
-> > > > being compiled.
-> > > > * If CONFIG_XFRM is not set, the struct dst_entry doesn't have the =
-xfrm member.
-> > > > * xfrm_dst_offload_ok() tries to access the dst->xfrm and that fail=
-s to compile.
-> > >
-> > > I asked two questions. First one was "How did you set XFRM_OFFLOAD
-> > > without XFRM?".
-> > >
-> > > Thanks
-> > >
-> > In driver Kconfig: "select XFRM_OFFLOAD"
->
-> In driver Kconfig, one should use "depends on XFRM_OFFLOAD" and not "sele=
-ct XFRM_OFFLOAD".
-> Drivers shouldn't enable XFRM_OFFLOAD directly and all upstream users are=
- safe here.
 
-Thank you for that information, but the XFRM_OFFLOAD doesn't depend on
-XFRM either.
 
->
-> Thanks
+On 24/07/2023 17:41, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jul 24, 2023 at 03:40:12PM +0800, Jing Zhang escreveu:
+>>
+>>
+>> 在 2023/7/24 下午1:06, Haixin Yu 写道:
+>>> Commit f8ad6018ce3c ("perf pmu: Remove duplication around
+>>>  EVENT_SOURCE_DEVICE_PATH") uses sysfs__read_ull to read a full
+>>> sysfs path, which will never success. Fix it by read file directly.
+>>>
+>>> Signed-off-by: Haixin Yu <yuhaixin.yhx@linux.alibaba.com>
+>>> ---
+>>>  tools/perf/arch/arm64/util/pmu.c | 7 ++++---
+>>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+>>> index 561de0cb6b95..512a8f13c4de 100644
+>>> --- a/tools/perf/arch/arm64/util/pmu.c
+>>> +++ b/tools/perf/arch/arm64/util/pmu.c
+>>> @@ -54,10 +54,11 @@ double perf_pmu__cpu_slots_per_cycle(void)
+>>>  		perf_pmu__pathname_scnprintf(path, sizeof(path),
+>>>  					     pmu->name, "caps/slots");
+>>>  		/*
+>>> -		 * The value of slots is not greater than 32 bits, but sysfs__read_int
+>>> -		 * can't read value with 0x prefix, so use sysfs__read_ull instead.
+>>> +		 * The value of slots is not greater than 32 bits, but
+>>> +		 * filename__read_int can't read value with 0x prefix,
+>>> +		 * so use filename__read_ull instead.
+>>>  		 */
+>>> -		sysfs__read_ull(path, &slots);
+>>> +		filename__read_ull(path, &slots);
+>>>  	}
+>>>  
+>>>  	return slots ? (double)slots : NAN;
+>>
+>> Yes, the function perf_pmu__pathname_scnprintf returns the complete slots file path "/sys/bus/xxxxx/caps/slots",
+>> and sysfs__read_ull will add the prefix "/sys" to the path, so the final file path becomes "/sys/sys/bus/xxxx/caps/slots"
+>> which does not exist, and the slots file cannot be successfully read, so sysfs__read_ull needs to be changed to the
+>> filename__read_ull.
+>>
+>> I tested it and it works well.
+>>
+>> Tested-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+> 
+> I've applied this to my local branch, thanks.
+> 
+> I also added the missing:
+> 
+> Fixes: f8ad6018ce3c065a ("perf pmu: Remove duplication around EVENT_SOURCE_DEVICE_PATH")
+> 
+> This is another case where a 'perf test' entry would come in handy.
+> 
+> James, please check and ack,
+> 
+> - Arnaldo
+
+Oops, looks like the system I tested that on doesn't report slots so it
+returns NAN whether it successfully reads the file or not.
+
+I can't think of a test that doesn't just repeat that function so I will
+probably say to leave it as is (and we're not currently doing any
+automated testing on any platforms that report slots either). It's quite
+visible when it breaks because the topdown metrics won't work on
+platforms where they should.
+
+Sorry for the breakage!
+
+Acked-by: James Clark <james.clark@arm.com>
