@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE34E762433
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D26762436
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjGYVMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S229743AbjGYVRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjGYVMb (ORCPT
+        with ESMTP id S229441AbjGYVRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:12:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE062116;
-        Tue, 25 Jul 2023 14:12:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C08461909;
-        Tue, 25 Jul 2023 21:12:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48769C433C9;
-        Tue, 25 Jul 2023 21:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690319545;
-        bh=+wjx3PSEq0K5+Aw7/+zFEoqif9hytq8mg416yZy/nHU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oDwGVunkHA4n7n03Gl8jk70U5ZjAYv48eGM6EMyCNpK27QgccD7LYKF9E3dH97YFT
-         cqvhh48Z9nPUtchSJ/KbUX3zg0yMj4pX5j5/0Xn/ZvzJ6HIn4FMUmu7H3wKLHN0PXK
-         zXoixoE1xRJinOW8sELWeoVoJKBphIpInvne8i+89HCy9OGrw636tFTmEixYbzEqkP
-         yLrrITncMcu6w3VjQYDrfxrpNKUJwxhHRYgfv6WcW5N3LhGttkAyegjJfYv0C61xul
-         pibX3ENru+yDIDv+zRTFwZbHQNBe0UH7lTDvydbQSgYvKj+dw/O78BZVL3tdK2a5aO
-         65imaNtu1zwLw==
-Date:   Tue, 25 Jul 2023 14:12:23 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2] page_pool: split types and declarations
- from page_pool.h
-Message-ID: <20230725141223.19c1c34c@kernel.org>
-In-Reply-To: <ZL/fVF7WetuLgB0l@hera>
-References: <20230725131258.31306-1-linyunsheng@huawei.com>
-        <ZL/fVF7WetuLgB0l@hera>
+        Tue, 25 Jul 2023 17:17:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647D719AF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690319804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jvny8tbaTavW0op4gURn9SHKDxlvKs4/aOokPMfstnw=;
+        b=HHmIa6pGGZyr+upPqEVQHcWDxQ3wS67+I5NeaIceBqcRnnz7OSs5wbt0FUaeb65gIgKa9n
+        pfbS7PmlJdEZORcBS1Apd/oU+AeZEPxgWdKHbTM/02CesOzZB/CALrE3N3x2lMWMC8yp8A
+        lJWlkUqXNpbT0no6E9wSIEn6pwo2OD4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-3T0vjqWuOVaxXKMg7O6veg-1; Tue, 25 Jul 2023 17:16:42 -0400
+X-MC-Unique: 3T0vjqWuOVaxXKMg7O6veg-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403fc19a7a7so68440181cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:16:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690319802; x=1690924602;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jvny8tbaTavW0op4gURn9SHKDxlvKs4/aOokPMfstnw=;
+        b=YG+ASpyc4o0Oah4oDpuovXmDsx+WYOwVgFgk64NoSUjGJ4cjwPzz16TWdzIHy2B71h
+         VXVZbezj6Z49GxaRdgAriYjnYPftvXfB9OsXR08upd6HB5hF/uCsy4x8hEMxu7rgyv/b
+         E47Uuw7ecO4Fb++gCkoj8jVAY6WI1ybci9Hm863VbrC8METVTwS5Z6qL0sqkoiRhWhR/
+         Oib1+UcqZyloOB0Ow5g4FVKNE7ZC9KCvoQDVtWNHXolzvR8PIlPyYXMojuPSsaNxOZfD
+         oDSvDPCUT07+d9Z7y6PAloi1h1LHmhvQ/PgfkjRXmRNA0ROxxCTCXI22IRqhoxbNLc6s
+         nV8Q==
+X-Gm-Message-State: ABy/qLZEoBX7PUwcuZF2tzG5fEz+0+NOxWaMtqX6WGjul6Aa746mgclk
+        gleuqqCMHCbPebfdM8M3zq3dwlHY+LqckbBaFJF7Oc7WcbEKFp5EJuC6rs6iJiuTylZTOIarS1g
+        tfeK21QWFs8IqjR5eLEtrcrtuK9C3JEWXdvTFly4w
+X-Received: by 2002:a05:622a:312:b0:403:b130:80b2 with SMTP id q18-20020a05622a031200b00403b13080b2mr165111qtw.12.1690319802031;
+        Tue, 25 Jul 2023 14:16:42 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEgvP1H5ebRlKKFdIcdmET28+qqy3PgXwo2zcmSFDUklwgAlWu4odpsF1vohOHF+NvfRWiMvzDBst76mujbvng=
+X-Received: by 2002:a05:622a:312:b0:403:b130:80b2 with SMTP id
+ q18-20020a05622a031200b00403b13080b2mr165094qtw.12.1690319801797; Tue, 25 Jul
+ 2023 14:16:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230703135526.930004-1-npache@redhat.com> <c8bbc891-cd52-e34a-8ca7-76314e97cbe3@arm.com>
+ <CAA1CXcBWuMgMbBTLj9eYzW4wBxbJpa3FGZsbtiibrYODZQdg6A@mail.gmail.com> <ZLQIaSMI74KpqsQQ@arm.com>
+In-Reply-To: <ZLQIaSMI74KpqsQQ@arm.com>
+From:   Nico Pache <npache@redhat.com>
+Date:   Tue, 25 Jul 2023 15:16:15 -0600
+Message-ID: <CAA1CXcDcddzEquSqsckZ3eDzQr7FhSxn1GfUiRS5KL4JRQbXjg@mail.gmail.com>
+Subject: Re: [RFC] arm64: properly define SOFT_DIRTY for arm64
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aquini@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 17:42:28 +0300 Ilias Apalodimas wrote:
-> Apologies for the very late replies, I was on long vacation with limited
-> internet access.
-> Yunsheng, since there's been a few mails and I lost track, this is instead of
-> [0] right? If so, I prefer this approach.  It looks ok on a first quick pass,
-> I'll have a closer look later.
-> 
-> [0] https://lore.kernel.org/netdev/20230714170853.866018-2-aleksander.lobakin@intel.com/
+Hi Catalin,
 
+Thanks for your reply.
 
-I prefer the more systematic approach of creating a separate types.h
-file, so I don't have to keep chasing people or cleaning up the include
-hell myself. I think it should be adopted more widely going forward,
-it's not just about the page pool.
+From my understanding only two of the PBHA bits [60:59] are being used
+for *_TABLE_<UXN|PXN>.
+
+If that's the case is it safe to assume bits [63:61] are usable
+(without considering OOT patches) and are treated similarly to the
+software bits [58:55]? or do more considerations need to be made with
+regards to using these bits?
+
+There isnt much info in the codebase about PBHA, but from some
+external research it seems the PBHA bits are intended to be used by
+future SoC hardware but are currently not exposed to allow users to
+use them for their intended purpose.
+
+If you think this is a viable solution, I will go ahead and use bit 61
+to implement a SOFTWARE_DIRTY bit. But if the goal is to inevitably
+expose these bits to the hardware and allow them to use it, then
+perhaps introducing this feature would be short lived.
+
+Thanks,
+-- Nico
+
+On Sun, Jul 16, 2023 at 9:19=E2=80=AFAM Catalin Marinas <catalin.marinas@ar=
+m.com> wrote:
+>
+> (I noticed Mark already replied in another thread along the same lines)
+>
+> On Tue, Jul 04, 2023 at 06:08:59AM -0400, Nico Pache wrote:
+> > Is it possible to add the same DBM check I'm using
+> > (!arch_has_hw_pte_young) in these pte helper functions to only clear
+> > it when DBM is not present?
+>
+> It's not possible since we don't have a way to encode a read-only +
+> dirty PTE (e.g. after ptep_set_wrprotect()). The PTE_WRITE/PTE_DBM bit
+> in the architecture only tells that the hardware is allowed to clear the
+> PTE_RDONLY bit on a write access and that's what we consider hw-dirty.
+> When a dirty/writeable PTE is made read-only, we clear PTE_WRITE, set
+> PTE_RDONLY _and_ the software PTE_DIRTY bit.
+>
+> With the permission indirection extensions (PIE, see patches from Joey),
+> PTE_RDONLY can be treated as a true !PTE_DIRTY bit but there's no
+> hardware around yet.
+>
+> So if you need software dirty, it can only be done with another software
+> PTE bit. The problem is that we are short of such bits (only one left if
+> we move PTE_PROT_NONE to a different location). The userfaultfd people
+> also want such bit.
+>
+> Personally I'd reuse the four PBHA bits but I keep hearing that they may
+> be used with some out of tree patches.
+>
+> --
+> Catalin
+>
+
