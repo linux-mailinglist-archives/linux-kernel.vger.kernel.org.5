@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBFE760E8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2635D760E8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbjGYJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
+        id S232621AbjGYJXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjGYJYQ (ORCPT
+        with ESMTP id S233205AbjGYJXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:24:16 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F185F1A3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:24:14 -0700 (PDT)
-Received: from canpemm500001.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9BN229vQzNmjC;
-        Tue, 25 Jul 2023 17:20:50 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- canpemm500001.china.huawei.com (7.192.104.163) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 25 Jul 2023 17:24:12 +0800
-From:   Xie XiuQi <xiexiuqi@huawei.com>
-To:     <akpm@linux-foundation.org>, <irogers@google.com>,
-        <acme@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <weiyongjun1@huawei.com>, <xiexiuqi@huawei.com>
-Subject: [PATCH] tools/mm: fix undefined reference to pthread_once
-Date:   Tue, 25 Jul 2023 17:21:49 +0800
-Message-ID: <20230725092149.443119-1-xiexiuqi@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 25 Jul 2023 05:23:03 -0400
+Received: from out-27.mta1.migadu.com (out-27.mta1.migadu.com [IPv6:2001:41d0:203:375::1b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B563C1AA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:22:41 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690276959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0aj+CEvUWLWW/lym+SjHnwm8OSi0vQ8fgtochDa6Vs=;
+        b=xJfsnq4tfri4+FrxQ/wgEMA3zFz0o0z0uW0gHHJCvckela5K3HUZXJd8znm8ohjnxlmbHS
+        uH4lNpUNfMnIh4HG6zSYXwQDD4QbiVOnWxcUq/Ckyge75DILepht+8WUJVUEtTuA6yQWPk
+        2nBkRdUkFluXDihkXSSSRwQEBatV+pk=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500001.china.huawei.com (7.192.104.163)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 07/47] xenbus/backend: dynamically allocate the
+ xen-backend shrinker
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-8-zhengqi.arch@bytedance.com>
+Date:   Tue, 25 Jul 2023 17:22:00 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <CD39258F-AAA8-42A7-BBA9-6528A629B315@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-8-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 97d5f2e9ee12 ("tools api fs: More thread safety for global
-filesystem variables") introduces pthread_once, so the libpthread
-should be added at link time, or we'll meet the following compile
-error when 'make -C tools/mm':
 
-  gcc -Wall -Wextra -I../lib/ -o page-types page-types.c ../lib/api/libapi.a
-  ~/linux/tools/lib/api/fs/fs.c:146: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:147: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:148: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:149: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:150: undefined reference to `pthread_once'
-  /usr/bin/ld: ../lib/api/libapi.a(libapi-in.o):~/linux/tools/lib/api/fs/fs.c:151:
-  more undefined references to `pthread_once' follow
-  collect2: error: ld returned 1 exit status
-  make: *** [Makefile:22: page-types] Error 1
 
-Fixes: 97d5f2e9ee12 ("tools api fs: More thread safety for global filesystem variables")
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
----
- tools/mm/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+> Use new APIs to dynamically allocate the xen-backend shrinker.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-diff --git a/tools/mm/Makefile b/tools/mm/Makefile
-index 6c1da51f4177..9997b2e401ae 100644
---- a/tools/mm/Makefile
-+++ b/tools/mm/Makefile
-@@ -9,7 +9,7 @@ LIB_DIR = ../lib/api
- LIBS = $(LIB_DIR)/libapi.a
- 
- CFLAGS += -Wall -Wextra -I../lib/
--LDFLAGS += $(LIBS)
-+LDFLAGS += $(LIBS) -lpthread
- 
- all: $(TARGETS)
- 
--- 
-2.25.1
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
+Thanks.
 
