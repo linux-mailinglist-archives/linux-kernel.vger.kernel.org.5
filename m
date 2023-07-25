@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2B97618BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1537618B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjGYMsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        id S229877AbjGYMsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjGYMsK (ORCPT
+        with ESMTP id S233707AbjGYMsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:48:10 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA0319BD
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:48:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690289289; x=1721825289;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=CtaLAo17SyqSmF25npVDsvpSdoJ2LEGMP9QqEPffeXI=;
-  b=JTAuRyb1ZG+vdySNSQRgA3+YmS4zLrZ0e9JPLdLTPH8ha2Q/lokJ4VKo
-   eWSxXDzqyhjStzxvUpqNW4lzMhaD2nwTO5ON+f+wRFQecLBR3GlstLD93
-   8xIG1aUQQsfhRDFNlfTB12hDBdMvJioUbbr76xEoEsIHeIP93Sh156mhl
-   cHhwavEhp79tkq1084jHyi6kLd+1JiopkpM/fQL+sXYdPAx5zMDFdgLIY
-   CiBVONQSzt7gp2BaOCS6A7POI/rOIXbxU9VzkAYil3IXIiynPq7Ofkvpo
-   6N4kDmijdyQqohvSofRrvWj5VLvcTqawdjj2FjgF7EC/QAPhwUsJZKhSn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="366590767"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="366590767"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 05:48:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="703264756"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="703264756"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 25 Jul 2023 05:48:07 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOHSQ-000AcG-2m;
-        Tue, 25 Jul 2023 12:48:06 +0000
-Date:   Tue, 25 Jul 2023 20:47:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: arch/powerpc/mm/book3s64/pgtable.c:422:6: error: no previous
- prototype for 'arch_report_meminfo'
-Message-ID: <202307252035.aAJZfroP-lkp@intel.com>
+        Tue, 25 Jul 2023 08:48:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3341BC2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:47:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4343C616CE
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:47:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7785C433C9;
+        Tue, 25 Jul 2023 12:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690289264;
+        bh=KzMqdsVdb/RNrFDTE7RYUsqrP0bpiOVqoDz4Fsk9EeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mti/hJ/AKMENtv/H3XHgNbi6EDSN4by+4kzW6H6SN/+2h8kA1Cd64a0Kse+Bkbg1C
+         EsmaEJwF6QbQXctEcBGt+loYUQ+ziNBGuDN8FjI7C4d6hlTzNdUGKRd51GIOAjmRUg
+         4k5JxXEvgHmtab3ZTh7ZjKE0JwVrh5/unVhBLbtJVjiCkjIuvkgvOBvkG7NzuzX2wE
+         tPWxvvarMe1SDHfhxa2JRJtlfriNoRhrqMvhaZGpFSt2hjcg/KNQMAm6lCZvr7xTlN
+         Rko/+vKeqoI2EKfLGbf4Q/Q7xzLDodZU/z7MS66HE+V3rwUFPpXt5OTqeYmQOiEMCY
+         NIekY8nAEtpRQ==
+Date:   Tue, 25 Jul 2023 14:47:39 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, jack@suse.cz,
+        keescook@chromium.org, peterz@infradead.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        di.shen@unisoc.com
+Subject: Re: [PATCH] pid: Add the judgment of whether ns is NULL in the
+ find_pid_ns
+Message-ID: <20230725-gespeichert-auffuhr-00ed9e57ec7f@brauner>
+References: <20230713071713.5762-1-xuewen.yan@unisoc.com>
+ <20230725-hemmschwelle-braten-481527898001@brauner>
+ <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
-commit: ef104443bffa004f631729dfc924f0b84abbd602 procfs: consolidate arch_report_meminfo declaration
-date:   10 weeks ago
-config: powerpc-maple_defconfig (https://download.01.org/0day-ci/archive/20230725/202307252035.aAJZfroP-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230725/202307252035.aAJZfroP-lkp@intel.com/reproduce)
+On Tue, Jul 25, 2023 at 08:24:18PM +0800, Xuewen Yan wrote:
+> On Tue, Jul 25, 2023 at 4:49 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Jul 13, 2023 at 03:17:13PM +0800, Xuewen Yan wrote:
+> > > There is no the judgment of whether namspace is NULL in find_pid_ns.
+> > > But there is a corner case when ns is null, for example: if user
+> > > call find_get_pid when current is in exiting, the following stack would
+> > > set thread_id be null:
+> > > release_task
+> > >     __exit_signal(p);
+> > >         __unhash_process(tsk, group_dead);
+> > >               detach_pid(p, PIDTYPE_PID);
+> > >                   __change_pid(task, type, NULL);
+> > >
+> > > If user call find_get_pid at now, in find_vpid function, the
+> >
+> > I fail to see how this can happen. The code you're referencing is in
+> > release_task(). If current has gone through that then current obviously
+> > can't call find_vpid() on itself anymore or anything else for that
+> > matter.
+> 
+> This happened when user calls  find_vpid() in irq.
+> 
+> [72117.635162] Call trace:
+> [72117.635595]  idr_find+0xc/0x24
+> [72117.636103]  find_get_pid+0x40/0x68
+> [72117.636812]  send_event+0x88/0x180 [demux]
+> [72117.637593]  vbvop_copy_data+0x150/0x344 [demux]
+> [72117.638434]  dmisr_video_parsing_mpeg12+0x29c/0x42c [demux]
+> [72117.639393]  dmisr_video_parsing_switch+0x68/0xec [demux]
+> [72117.640332]  dmisr_handle_video_pes+0x10c/0x26c [demux]
+> [72117.641108]  tasklet_action_common+0x130/0x224
+> [72117.641784]  tasklet_action+0x28/0x34
+> [72117.642366]  __do_softirq+0x128/0x4dc
+> [72117.642944]  irq_exit+0xf8/0xfc
+> [72117.643459]  __handle_domain_irq+0xb0/0x108
+> [72117.644102]  gic_handle_irq+0x6c/0x124
+> [72117.644691]  el1_irq+0x108/0x200
+> [72117.645217]  _raw_write_unlock_irq+0x2c/0x5c
+> [72117.645870]  release_task+0x144/0x1ac   <<<<<<
+> [72117.646447]  do_exit+0x524/0x94c
+> [72117.646970]  __do_sys_exit_group+0x0/0x14
+> [72117.647591]  do_group_exit+0x0/0xa0
+> [72117.648146]  __se_sys_exit+0x0/0x20
+> [72117.648704]  el0_svc_common+0xcc/0x1bc
+> [72117.649292]  el0_svc_handler+0x2c/0x3c
+> [72117.649881]  el0_svc+0x8/0xc
+> 
+> In release_task, write_unlock_irq(&tasklist_lock) will open irq, at
+> this time, if user calls find_get_pid() in irq, because
+> current->thread_id is NULL,
+> it will handle the NULL pointer.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307252035.aAJZfroP-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> arch/powerpc/mm/book3s64/pgtable.c:422:6: error: no previous prototype for 'arch_report_meminfo' [-Werror=missing-prototypes]
-     422 | void arch_report_meminfo(struct seq_file *m)
-         |      ^~~~~~~~~~~~~~~~~~~
-   arch/powerpc/mm/book3s64/pgtable.c:478:5: error: no previous prototype for 'pmd_move_must_withdraw' [-Werror=missing-prototypes]
-     478 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-         |     ^~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +/arch_report_meminfo +422 arch/powerpc/mm/book3s64/pgtable.c
-
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  421  
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13 @422  void arch_report_meminfo(struct seq_file *m)
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  423  {
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  424  	/*
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  425  	 * Hash maps the memory with one size mmu_linear_psize.
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  426  	 * So don't bother to print these on hash
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  427  	 */
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  428  	if (!radix_enabled())
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  429  		return;
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  430  	seq_printf(m, "DirectMap4k:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  431  		   atomic_long_read(&direct_pages_count[MMU_PAGE_4K]) << 2);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  432  	seq_printf(m, "DirectMap64k:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  433  		   atomic_long_read(&direct_pages_count[MMU_PAGE_64K]) << 6);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  434  	seq_printf(m, "DirectMap2M:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  435  		   atomic_long_read(&direct_pages_count[MMU_PAGE_2M]) << 11);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  436  	seq_printf(m, "DirectMap1G:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  437  		   atomic_long_read(&direct_pages_count[MMU_PAGE_1G]) << 20);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  438  }
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  439  #endif /* CONFIG_PROC_FS */
-579b9239c1f386 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2019-01-23  440  
-
-:::::: The code at line 422 was first introduced by commit
-:::::: a2dc009afa9ae8b92305be7728676562a104cb40 powerpc/mm/book3s/radix: Add mapping statistics
-
-:::::: TO: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Uhm, where is that code from? This doesn't seem to be upstream.
