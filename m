@@ -2,123 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0C8762731
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B96762734
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjGYXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
+        id S231654AbjGYXMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjGYXJw (ORCPT
+        with ESMTP id S231379AbjGYXMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:09:52 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35961E0;
-        Tue, 25 Jul 2023 16:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=tpcY/KRZk5hiP87JmAb/M+fcCqvEACvi7wT7XhSE4Vg=; b=c0MMfSLPkjphEMgyJhSFY51/jz
-        FMArs3JcyyCm6OJNQZzNH0BOKVo+3b1Z+7Dl3fYzAtQNRXH1o1f9YAmVGRkC9WX3uzjbIhkvUAZ0Q
-        aAeNt1dpyNqz4JxmzhoG1Js+6P4jpighifXpfIOUhKYs0TduKPwStyljD3pD6FGLxQ+zZXOR3n+TX
-        xbxtFeyFMj+L1Nd1OoZBntBWnYF5tG268ztEw1UYIxwRB+dPI/NHXr3ngmyA748pm88U5dBo7cett
-        d6MJad9KvaIzQvgxq3GwxCOmtTAnGZCE/sblpRjrjjlLFLHU20mQ0XWIWbZS+nI47ZHDld36FV/8r
-        oDMhcdtg==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qOR9x-003Kui-43; Tue, 25 Jul 2023 23:09:41 +0000
-Date:   Tue, 25 Jul 2023 23:09:41 +0000
-From:   "Dr. David Alan Gilbert" <linux@treblig.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        akpm@linux-foundation.org
-Cc:     Sam Ravnborg <sam@ravnborg.org>, davem@davemloft.net,
-        benh@kernel.crashing.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sparc: Use shared font data
-Message-ID: <ZMBWNZ9KI0Xs6w1A@gallifrey>
-References: <20230724235851.165871-1-linux@treblig.org>
- <20230725161040.GA832394@ravnborg.org>
- <ZL/+Bz5C2Mxx0Msw@gallifrey>
- <605d12e8a4fdcb238efc9b18fbd2637474de0049.camel@physik.fu-berlin.de>
+        Tue, 25 Jul 2023 19:12:42 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71733193
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690326760; x=1721862760;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4s9F2RMzca1SnjP8iJv+eGAM2teJG1YvpI+AnkF73n0=;
+  b=eAhiDWPCb1a5cDcwcOnG3a9L48NSFiJkhy2MCGfC5t+L0uKRQvXHABGS
+   zy9a8fCiSz2dud3euK8lMMhwvme55VDIDIDLToiuptqCGqbdnU6jIJasV
+   Z7b8OgjIHxcFKlp/KVzMjvuMaklfi8NnamlSS0dIQ8Ni3DUfAM1hHeyhc
+   W/ud3AfD/FUpMaZTfMyZG9Ujoo4/XVyU7RRnbJkVbc+Yp4N6Opujxev8J
+   pnH5Xq23xtvqOGRvvbHyUb54VV5xgQrWL48JXbOdYOQFJAuxETRMnGO1h
+   c91p9TvR3Pdt3VsQjxDkRSdeX8vHSub6YSjhtHH8ZcBu1CBcXK3RkYclU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="434119089"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="434119089"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 16:12:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="850212118"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="850212118"
+Received: from mlytkin-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.57.129])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 16:12:36 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 55635103A12; Wed, 26 Jul 2023 02:12:33 +0300 (+03)
+Date:   Wed, 26 Jul 2023 02:12:33 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, Dexuan Cui <decui@microsoft.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3 0/3] x86/tdx: Fix one more load_unaligned_zeropad()
+ issue
+Message-ID: <20230725231233.mu2yarso3tcamimu@box.shutemov.name>
+References: <20230606095622.1939-1-kirill.shutemov@linux.intel.com>
+ <BYAPR21MB168846628450D6089242D3EAD72CA@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <20230707140633.jzuucz52d7jdc763@box.shutemov.name>
+ <BYAPR21MB1688A4473FF2DF4E177036D5D732A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <20230709060904.w3czdz23453eyx2h@box.shutemov.name>
+ <BYAPR21MB16888FB226E2829E3B5C517BD737A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <20230724231927.pah3dt6gszwtsu45@box.shutemov.name>
+ <SN6PR2101MB169365BD0B7C2A6ADEC798A4D703A@SN6PR2101MB1693.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <605d12e8a4fdcb238efc9b18fbd2637474de0049.camel@physik.fu-berlin.de>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 23:08:03 up 19 days,  8:39,  1 user,  load average: 0.00, 0.01, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <SN6PR2101MB169365BD0B7C2A6ADEC798A4D703A@SN6PR2101MB1693.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* John Paul Adrian Glaubitz (glaubitz@physik.fu-berlin.de) wrote:
-> Hi Dave!
-
-Hi Adrian,
-
-> On Tue, 2023-07-25 at 16:53 +0000, Dr. David Alan Gilbert wrote:
-> > * Sam Ravnborg (sam@ravnborg.org) wrote:
-> > > On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
-> > > > From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> > > > 
-> > > > sparc has a 'btext' font used for the console which is almost identical
-> > > > to the shared font_sun8x16, so use it rather than duplicating the data.
-> > > > 
-> > > > They were actually identical until about a decade ago when
-> > > >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
-> > > >                         "broken bar" to "vertical line"")
-> > > > 
-> > > > which changed the | in the shared font to be a solid
-> > > > bar rather than a broken bar.  That's the only difference.
-> > > > 
-> > > > This was originally spotted by PMD which noticed that PPC does
-> > > > the same thing with the same data, and they also share a bunch
-> > > > of functions to manipulate the data.  The PPC code and the functions
-> > > > I'll look at another time if this patch is OK.
-> > > > 
-> > > > Tested very lightly with a boot without FS in qemu.
-> > > > 
-> > > > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-> > > 
-> > > Looks good, thanks for the fixes.
-> > > Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+On Tue, Jul 25, 2023 at 03:51:24PM +0000, Michael Kelley (LINUX) wrote:
+> From: Kirill A. Shutemov <kirill.shutemov@linux.intel.com> Sent: Monday, July 24, 2023 4:19 PM
 > > 
-> > Thanks
+> > On Thu, Jul 13, 2023 at 02:43:39PM +0000, Michael Kelley (LINUX) wrote:
+> > > From: Kirill A. Shutemov <kirill@shutemov.name> Sent: Saturday, July 8, 2023 11:09 PM
+> > > >
+> > > > On Sat, Jul 08, 2023 at 11:53:08PM +0000, Michael Kelley (LINUX) wrote:
+> > > > > From: Kirill A. Shutemov <kirill@shutemov.name> Sent: Friday, July 7, 2023 7:07 AM
+> > > > > >
+> > > > > > On Thu, Jul 06, 2023 at 04:48:32PM +0000, Michael Kelley (LINUX) wrote:
+> > > > > > > From: Kirill A. Shutemov <kirill.shutemov@linux.intel.com> Sent: Tuesday, June 6, 2023 2:56 AM
+> > > > >
+> > > > > [snip]
+> > > > >
+> > > > > >
+> > > > > > It only addresses the problem that happens on transition, but
+> > > > > > load_unaligned_zeropad() is still a problem for the shared mappings in
+> > > > > > general, after transition is complete. Like if load_unaligned_zeropad()
+> > > > > > steps from private to shared mapping and shared mapping triggers #VE,
+> > > > > > kernel should be able to handle it.
+> > > > >
+> > > > > I'm showing my ignorance of TDX architectural details, but what's the
+> > > > > situation where shared mappings in general can trigger a #VE?  How
+> > > > > do such situations get handled for references that aren't from
+> > > > > load_unaligned_zeropad()?
+> > > > >
+> > > >
+> > > > Shared mappings are under host/VMM control. It can just not map the page
+> > > > in shared-ept and trigger ept-violation #VE.
+> > >
+> > > I know you are out on vacation, but let me follow up now for further
+> > > discussion when you are back.
+> > >
+> > > Isn't the scenario you are describing a malfunctioning or malicious
+> > > host/VMM?  Would what you are describing be done as part of normal
+> > > operation?   Kernel code must have switched the page from private to
+> > > shared for some purpose.  As soon as that code (which presumably
+> > > does not have any entry in the exception table) touches the page, it
+> > > would take the #VE and the enter the die path because there's no fixup.
+> > > So is there value in having load_unaligned_zeropad() handle the #VE and
+> > > succeed where a normal reference would fail?
 > > 
-> > > Let's hope someone picks it up...
+> > #VE on shared memory is legitimately used for MMIO. But MMIO region is
+> > usually separate from the real memory in physical address space.
 > > 
-> > I was hoping Dave would, but I realise Sparc doesn't get much
-> > these days.
-> > Of course if anyone feels guilty about their own patches adding code
-> > they can take this patch to make ~340 lines of penance.
+> > But we also have DMA.
+> > 
+> > DMA pages allocated from common pool of memory and they can be next to
+> > dentry cache that kernel accesses with load_unaligned_zeropad(). DMA pages
+> > are shared, but they usually backed by memory and not cause #VE. However
+> > shared memory is under full control from VMM and VMM can remove page at
+> > any point which would make platform to deliver #VE to the guest. This is
+> > pathological scenario, but I think it still worth handling gracefully.
 > 
-> You can ask Andrew Morton to pick it up through his tree. He usually does
-> that when no one else is willing to pick a patch up.
-
-  Thanks for the suggestion, I've copied Andrew in, although
-there's obviously no rush since it's just a dedupe.
-
-Dave
-
-> Adrian
+> Yep, pages targeted by DMA have been transitioned to shared, and could
+> be scattered anywhere in the guest physical address space.  Such a page
+> could be touched by load_unaligned_zeropad().  But could you elaborate
+> more on the "pathological scenario" where the guest physical page isn't
+> backed by memory?
 > 
-> -- 
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer
-> `. `'   Physicist
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> Sure, the VMM can remove the page at any point, but why would it do
+> so?  Is doing so a legitimate part of the host/guest contract that the guest
+> must handle cleanly?  More importantly, what is the guest expected to
+> do in such a case?  I would expect that at some point such a DMA page
+> is accessed by a guest vCPU with an explicit reference that is not
+> load_unaligned_zeropad().  Then the guest would take a #VE that
+> goes down the #GP path and invokes die().
+> 
+> I don't object to make the load_unaligned_zeropad() fixup path work
+> correctly in response to a #VE, as it seems like general goodness.  I'm
+> just trying to make sure I understand the nuances of "why".  :-)
+
+We actually triggered the issue during internal testing. I wrote initial
+patch after that. But looking back on the report I don't have an answer
+why the page triggered #VE. Maybe VMM or virtual BIOS screwed up and put
+MMIO next to normal memory, I donno.
+
+> > > I'd still like to see the private <-> shared transition code mark the pages
+> > > as invalid during the transition, and avoid the possibility of #VE and
+> > > similar cases with SEV-SNP.  Such approach reduces (eliminates?)
+> > > entanglement between CoCo-specific exceptions and
+> > > load_unaligned_zeropad().  It also greatly simplifies TD Partition cases
+> > > and SEV-SNP cases where a paravisor is used.
+> > 
+> > I doesn't eliminates issue for TDX as the scenario above is not transient.
+> > It can happen after memory is converted to shared.
+> 
+> Notwithstanding, do you have any objections to the private <-> shared
+> transition code being changed so it won't be the cause of #VE, and
+> similar on SEV-SNP?
+
+I am not yet convinced it is needed. But let's see the code.
+
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+  Kiryl Shutsemau / Kirill A. Shutemov
