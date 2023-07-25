@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AF676098B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E62E760996
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjGYFmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S231589AbjGYFnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjGYFmm (ORCPT
+        with ESMTP id S231670AbjGYFmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:42:42 -0400
+        Tue, 25 Jul 2023 01:42:53 -0400
 Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AAB821BE7;
-        Mon, 24 Jul 2023 22:42:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DF301FC1;
+        Mon, 24 Jul 2023 22:42:45 -0700 (PDT)
 Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id CFB1281A1;
-        Tue, 25 Jul 2023 05:42:36 +0000 (UTC)
+        by muru.com (Postfix) with ESMTP id 841038176;
+        Tue, 25 Jul 2023 05:42:42 +0000 (UTC)
 From:   Tony Lindgren <tony@atomide.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
@@ -30,9 +30,9 @@ Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v5 2/3] serial: core: Fix serial core port id to not use port->line
-Date:   Tue, 25 Jul 2023 08:42:11 +0300
-Message-ID: <20230725054216.45696-3-tony@atomide.com>
+Subject: [PATCH v5 3/3] serial: core: Fix serial core controller port name to show controller id
+Date:   Tue, 25 Jul 2023 08:42:12 +0300
+Message-ID: <20230725054216.45696-4-tony@atomide.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725054216.45696-1-tony@atomide.com>
 References: <20230725054216.45696-1-tony@atomide.com>
@@ -47,69 +47,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The serial core port id should be serial core controller specific port
-instance, which is not always the port->line index.
+We are missing the serial core controller id for the serial core port
+name. Let's fix the issue for sane sysfs output, and to avoid issues
+addressing serial ports later on.
 
-For example, 8250 driver maps a number of legacy ports, and when a
-hardware specific device driver takes over, we typically have one
-driver instance for each port. Let's instead add port->port_id to
-keep track serial ports mapped to each serial core controller instance.
+And as we're now showing the controller id, the "ctrl" and "port" prefix
+for the DEVNAME become useless, we can just drop them. Let's standardize on
+DEVNAME:0 for controller name, where 0 is the controller id. And
+DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
 
-Currently this is only a cosmetic issue for the serial core port device
-names. The issue can be noticed looking at /sys/bus/serial-base/devices
-for example though. Let's fix the issue to avoid port addressing issues
-later on.
+This makes the sysfs output nicer, on qemu for example:
+
+$ ls /sys/bus/serial-base/devices
+00:04:0         serial8250:0    serial8250:0.2
+00:04:0.0       serial8250:0.1  serial8250:0.3
 
 Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/tty/serial/8250/8250_core.c  | 2 ++
- drivers/tty/serial/serial_base_bus.c | 2 +-
- include/linux/serial_core.h          | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -497,6 +497,7 @@ static struct uart_8250_port *serial8250_setup_port(int index)
- 
- 	up = &serial8250_ports[index];
- 	up->port.line = index;
-+	up->port.port_id = index;
- 
- 	serial8250_init_port(up);
- 	if (!base_ops)
-@@ -1040,6 +1041,7 @@ int serial8250_register_8250_port(const struct uart_8250_port *up)
- 			uart_remove_one_port(&serial8250_reg, &uart->port);
- 
- 		uart->port.ctrl_id	= up->port.ctrl_id;
-+		uart->port.port_id	= up->port.port_id;
- 		uart->port.iobase       = up->port.iobase;
- 		uart->port.membase      = up->port.membase;
- 		uart->port.irq          = up->port.irq;
+Andy, I kept your Reviewed-by although I updated the device naming and
+description, does the patch still look OK to you?
+
+---
+ drivers/tty/serial/serial_base_bus.c | 32 +++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
+
 diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
 --- a/drivers/tty/serial/serial_base_bus.c
 +++ b/drivers/tty/serial/serial_base_bus.c
-@@ -136,7 +136,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &port_dev->dev,
- 				      &ctrl_dev->dev, &serial_port_type,
- 				      serial_base_port_release,
--				      port->line);
-+				      port->port_id);
+@@ -19,6 +19,14 @@
+ 
+ static bool serial_base_initialized;
+ 
++static const struct device_type serial_ctrl_type = {
++	.name = "ctrl",
++};
++
++static const struct device_type serial_port_type = {
++	.name = "port",
++};
++
+ static int serial_base_match(struct device *dev, struct device_driver *drv)
+ {
+ 	int len = strlen(drv->name);
+@@ -48,7 +56,8 @@ static int serial_base_device_init(struct uart_port *port,
+ 				   struct device *parent_dev,
+ 				   const struct device_type *type,
+ 				   void (*release)(struct device *dev),
+-				   int id)
++				   unsigned int ctrl_id,
++				   unsigned int port_id)
+ {
+ 	device_initialize(dev);
+ 	dev->type = type;
+@@ -61,13 +70,16 @@ static int serial_base_device_init(struct uart_port *port,
+ 		return -EPROBE_DEFER;
+ 	}
+ 
+-	return dev_set_name(dev, "%s.%s.%d", type->name, dev_name(port->dev), id);
++	if (type == &serial_ctrl_type)
++		return dev_set_name(dev, "%s:%d", dev_name(port->dev), ctrl_id);
++
++	if (type == &serial_port_type)
++		return dev_set_name(dev, "%s:%d.%d", dev_name(port->dev),
++				    ctrl_id, port_id);
++
++	return -EINVAL;
+ }
+ 
+-static const struct device_type serial_ctrl_type = {
+-	.name = "ctrl",
+-};
+-
+ static void serial_base_ctrl_release(struct device *dev)
+ {
+ 	struct serial_ctrl_device *ctrl_dev = to_serial_base_ctrl_device(dev);
+@@ -96,7 +108,7 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
+ 	err = serial_base_device_init(port, &ctrl_dev->dev,
+ 				      parent, &serial_ctrl_type,
+ 				      serial_base_ctrl_release,
+-				      port->ctrl_id);
++				      port->ctrl_id, 0);
  	if (err)
  		goto err_put_device;
  
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -460,6 +460,7 @@ struct uart_port {
- 	int			(*iso7816_config)(struct uart_port *,
- 						  struct serial_iso7816 *iso7816);
- 	unsigned int		ctrl_id;		/* optional serial core controller id */
-+	unsigned int		port_id;		/* optional serial core port id */
- 	unsigned int		irq;			/* irq number */
- 	unsigned long		irqflags;		/* irq flags  */
- 	unsigned int		uartclk;		/* base uart clock */
+@@ -112,10 +124,6 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
+ 	return ERR_PTR(err);
+ }
+ 
+-static const struct device_type serial_port_type = {
+-	.name = "port",
+-};
+-
+ static void serial_base_port_release(struct device *dev)
+ {
+ 	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
+@@ -136,7 +144,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
+ 	err = serial_base_device_init(port, &port_dev->dev,
+ 				      &ctrl_dev->dev, &serial_port_type,
+ 				      serial_base_port_release,
+-				      port->port_id);
++				      port->ctrl_id, port->port_id);
+ 	if (err)
+ 		goto err_put_device;
+ 
 -- 
 2.41.0
