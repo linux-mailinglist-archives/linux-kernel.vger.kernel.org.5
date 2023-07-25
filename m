@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3479F7619A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7770776192A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbjGYNTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S232013AbjGYNCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjGYNTP (ORCPT
+        with ESMTP id S229788AbjGYNCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:19:15 -0400
-Received: from out-28.mta0.migadu.com (out-28.mta0.migadu.com [91.218.175.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1295B1FF3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:19:10 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690291149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JUddR5wiZ9cxmW/YJtgRqWXnFRr905MF2Tu61yP3IU0=;
-        b=rSKMhlIFuqqMn3IHOfN8AP7mdsm25+x6DSm5KPAxRxGD47IVz6ycLH4I4AV4ZRiRNOhVvm
-        5XftPsf+x4V36bWCTlw5rKI3vavReqP7U0tbxcNaohBHS6d4IdyAyPa0WlQknaKP8VRD4n
-        dw/7MPuxIL123WPEpdesOORx3TrJHig=
-From:   chengming.zhou@linux.dev
-To:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-Subject: [PATCH v2 4/4] blk-flush: don't need to end rq twice for non postflush
-Date:   Tue, 25 Jul 2023 21:01:02 +0800
-Message-ID: <20230725130102.3030032-5-chengming.zhou@linux.dev>
-In-Reply-To: <20230725130102.3030032-1-chengming.zhou@linux.dev>
-References: <20230725130102.3030032-1-chengming.zhou@linux.dev>
+        Tue, 25 Jul 2023 09:02:45 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405B110B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vHFIoFaUOYTxKtsOTYJhM5rII5a+WpXzT2eCn/B2n6k=; b=SwYU54Kz4a5uv9Oj9TDviSYGoF
+        GWrkAtz7jk7HbU1uIp9vw9s9+Tb190htxJLzlDQ8iRMw3cqV9YzkkVluyF+eTlPLyEqSznaa3VF5O
+        FBFTCJRcwEawjKiAzRgdA8lSrrG4qJzGf22F5Vreuk7xTR1TEr1mDuFx9CBh8tMgO1OX74Mdn+25+
+        rSBh60ZYpvWmviJEa0KdXdfqgId1rwvJzU3Ip/RLtsGCS0ZmtDSMx4eus7mEnlj088pahanY/HB4H
+        5HvWbbIbeenkuVlxuCzCSP2gm5iQYCrQvqZCAOsWE6g+MaCvN81yOyV6Fxtv0x55mSbpGg4dwyQTz
+        xrQr6bMw==;
+Received: from [189.111.93.147] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qOHgC-003dOU-Jz; Tue, 25 Jul 2023 15:02:20 +0200
+Message-ID: <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
+Date:   Tue, 25 Jul 2023 10:02:14 -0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
+ Document DRM device reset expectations)
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        =?UTF-8?Q?Timur_Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
+ <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+Content-Language: en-US
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+Hi Michel,
 
-Now we unconditionally blk_rq_init_flush() to replace rq->end_io to
-make rq return twice back to the flush state machine for post-flush.
+Em 25/07/2023 05:03, Michel Dänzer escreveu:
+> On 7/25/23 04:55, André Almeida wrote:
+>> Hi everyone,
+>>
+>> It's not clear what we should do about non-robust OpenGL apps after GPU resets, so I'll try to summarize the topic, show some options and my proposal to move forward on that.
+>>
+>> Em 27/06/2023 10:23, André Almeida escreveu:
+>>> +Robustness
+>>> +----------
+>>> +
+>>> +The only way to try to keep an application working after a reset is if it
+>>> +complies with the robustness aspects of the graphical API that it is using.
+>>> +
+>>> +Graphical APIs provide ways to applications to deal with device resets. However,
+>>> +there is no guarantee that the app will use such features correctly, and the
+>>> +UMD can implement policies to close the app if it is a repeating offender,
+>>> +likely in a broken loop. This is done to ensure that it does not keep blocking
+>>> +the user interface from being correctly displayed. This should be done even if
+>>> +the app is correct but happens to trigger some bug in the hardware/driver.
+>>> +
+>> Depending on the OpenGL version, there are different robustness API available:
+>>
+>> - OpenGL ABR extension [0]
+>> - OpenGL KHR extension [1]
+>> - OpenGL ES extension  [2]
+>>
+>> Apps written in OpenGL should use whatever version is available for them to make the app robust for GPU resets. That usually means calling GetGraphicsResetStatusARB(), checking the status, and if it encounter something different from NO_ERROR, that means that a reset has happened, the context is considered lost and should be recreated. If an app follow this, it will likely succeed recovering a reset.
+>>
+>> What should non-robustness apps do then? They certainly will not be notified if a reset happens, and thus can't recover if their context is lost. OpenGL specification does not explicitly define what should be done in such situations[3], and I believe that usually when the spec mandates to close the app, it would explicitly note it.
+>>
+>> However, in reality there are different types of device resets, causing different results. A reset can be precise enough to damage only the guilty context, and keep others alive.
+>>
+>> Given that, I believe drivers have the following options:
+>>
+>> a) Kill all non-robust apps after a reset. This may lead to lose work from innocent applications.
+>>
+>> b) Ignore all non-robust apps OpenGL calls. That means that applications would still be alive, but the user interface would be freeze. The user would need to close it manually anyway, but in some corner cases, the app could autosave some work or the user might be able to interact with it using some alternative method (command line?).
+>>
+>> c) Kill just the affected non-robust applications. To do that, the driver need to be 100% sure on the impact of its resets.
+>>
+>> RadeonSI currently implements a), as can be seen at [4], while Iris implements what I think it's c)[5].
+>>
+>> For the user experience point-of-view, c) is clearly the best option, but it's the hardest to archive. There's not much gain on having b) over a), perhaps it could be an optional env var for such corner case applications.
+> 
+> I disagree on these conclusions.
+> 
+> c) is certainly better than a), but it's not "clearly the best" in all cases. The OpenGL UMD is not a privileged/special component and is in no position to decide whether or not the process as a whole (only some thread(s) of which may use OpenGL at all) gets to continue running or not.
+> 
 
-Obviously, non post-flush requests don't need it, they don't need to
-end request twice, so they don't need to replace rq->end_io callback.
-And the same for requests with the FUA bit on hardware with FUA support.
-
-There are also some other good points:
-1. all requests on hardware with FUA support won't have post-flush, so
-   all of them don't need to end twice.
-
-2. non post-flush requests won't have RQF_FLUSH_SEQ rq_flags set, so
-   they can merge like normal requests.
-
-3. we don't account non post-flush requests in flush_data_in_flight,
-   since there is no point to defer pending flush for these requests.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- block/blk-flush.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index ed195c760617..a299dae65350 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -178,7 +178,8 @@ static void blk_end_flush(struct request *rq, struct blk_flush_queue *fq,
- 	 * normal completion and end it.
- 	 */
- 	list_del_init(&rq->queuelist);
--	blk_flush_restore_request(rq);
-+	if (rq->rq_flags & RQF_FLUSH_SEQ)
-+		blk_flush_restore_request(rq);
- 	blk_mq_end_request(rq, error);
- 
- 	blk_kick_flush(q, fq);
-@@ -461,7 +462,8 @@ bool blk_insert_flush(struct request *rq)
- 		 * Mark the request as part of a flush sequence and submit it
- 		 * for further processing to the flush state machine.
- 		 */
--		blk_rq_init_flush(rq);
-+		if (policy & REQ_FSEQ_POSTFLUSH)
-+			blk_rq_init_flush(rq);
- 		spin_lock_irq(&fq->mq_flush_lock);
- 		blk_enqueue_preflush(rq, fq);
- 		spin_unlock_irq(&fq->mq_flush_lock);
--- 
-2.41.0
-
+Thank you for the feedback. How do you think the documentation should 
+look like for this part?
