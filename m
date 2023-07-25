@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D404C760B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE83E760B24
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjGYHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
+        id S230146AbjGYHGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbjGYHFw (ORCPT
+        with ESMTP id S231395AbjGYHGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:05:52 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A451B3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:50 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3143ccb0f75so4787109f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:50 -0700 (PDT)
+        Tue, 25 Jul 2023 03:06:24 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5679512C
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:57 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66869feb7d1so3056103b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690268749; x=1690873549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BCISgvcHkLE+IYvaLKjaAqSLgVkajEMYvriq0KgJeCs=;
-        b=0HrQ3XBYZYdQcpqn/WILlevCOv0Bed+FdoMxOX6PFlSRZn2EEExBoyX+tV5PzdSsDH
-         T4bBkG2MctRNxqI0VKGmx2AP9nq8LV1LUD954cloloOgmY9bkCcOiRmci+4li2ptKFRS
-         dZ9LSG+zpvba62+Wz4a2CCjysdfTiWpkBYpfwyF37ncG6HSFKG161nZPu6x+B9JBdYuy
-         lAuGeQCLugERaSurpdpOpHj2CSCUscIjju/abM6zecQAZaQvGp4XxA1OfDB92BX5GitP
-         7iXoVDSHMaKMJH+rcxDgjQaXqs7QScLW54a7Htx0jqIzjVkOJ/ZAZRFvcWr21JUlVbkV
-         m0ug==
+        d=bytedance.com; s=google; t=1690268757; x=1690873557;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YiFtbazXCGKkSvCu29PAaqFDD+rQJcJJfLFd8Lc7dE=;
+        b=Lo8PhI9mKE9la2FEdDvKX1tKoJGeVXRVcEQOW8jg2w5CkcWv8ZCbVQoo+JCfVSl54g
+         Q5oJhDZ3TzZ7C7f224IcRM8uioFnSKcrB1Pdr3oK9+sDnWK6kd/KXRBMXqCeeYoeTpUJ
+         MuP9Gl3ESPfQLD1iIuQDEpJkLT6PhSJHM+mSwSGBK9n/umasczanNmv3dkxRML+cA/6o
+         hz/XazC11REsa+u1YQHtT5OxoXhozjrPCdMJjG/tH+b3nSxQs9R569DldPwxdVpzhK9F
+         jUFVWptCwB8EEhQSjyNw0S1XavIOqT4w97EAteNO4iJZ6461qx8mn6jPQtdMdgKKY8jf
+         aKpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690268749; x=1690873549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BCISgvcHkLE+IYvaLKjaAqSLgVkajEMYvriq0KgJeCs=;
-        b=RNn9BBHy79cb8uyJC5QT6krSuXEBXJasHFfQSfyq6N8tC4jpG+tmXLp1JOdt8cQip4
-         GBz+M9062V3vFxjmfm5Iq+90KqNhsjFTX9pTEQ+IUPcIHyqCFBjsw+pO4DvzNLH5Y/ql
-         H3jxX3TrycHQa0Nj5wrDafZzC98ePBWB0uLp6GG7gIwOM0LOOl7zqnFWXxbzjP/V+DGT
-         AKgPZdSaZb7ZshQ55zMOMrQXur73VZzkxEDVpPJXpn7Vf66zBJ9RZ0piigBM/SiWGEU+
-         N9YQFgM8lHjZ52mCbFgqfc1YBRPLq40BnKHAc3WoZib6D8hBjQQiyxL2oZ5dHQoJ3eZj
-         +j9w==
-X-Gm-Message-State: ABy/qLbqfeDyawzOIkZVl6MCmhDGNvvK2TXjo9cNV5zl3qsi1h/K0Nkp
-        Soc2OweYxLTHOtUqbe8+pItVJEcY43h86SDWbRDWQA==
-X-Google-Smtp-Source: APBJJlHW5uTkeyUukPBI67eBenwUVtqS23RaHFSnsmXqJ6eKmnPPYkuP9xkRhbcOO0uBVEGmXWnjsnoOmWsrsJiIoxg=
-X-Received: by 2002:adf:f251:0:b0:314:1249:d5d7 with SMTP id
- b17-20020adff251000000b003141249d5d7mr10276585wrp.16.1690268748838; Tue, 25
- Jul 2023 00:05:48 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690268757; x=1690873557;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3YiFtbazXCGKkSvCu29PAaqFDD+rQJcJJfLFd8Lc7dE=;
+        b=j0eK2ZH3iPVvyF9Ea8lz8uvxazzkrtH42aNvjZ0RXCCtprpUB3xUIBpDKrURCTluLJ
+         ahfrTae+/GzGpKOEpZeWs9t8d86ZSDcKoN40+CBz1Wp8zu4ZFdi9QC56GvTHTpT+50JM
+         UjAlHVS0iD/s4eQx8CWOdnlJ26DV+CLeA8O+ujbnrjgTJHKWYnVky/H3k6BAtwaTfxoP
+         QrnSJ063eRakg0vW7kG6uWY737H9cZSY9OijDRyDijyN4+8P7VdaQV6PL4lkO3dyWA/2
+         /85FZMT254+v4vezcGsVoxft7tMsGwcjflusKuA+gq6RuuMhfoaIEdyGrbLF4/4gGUQE
+         ajAQ==
+X-Gm-Message-State: ABy/qLbDzLo1OiUxf6ClpfoDF7KzyRlccegnxvqJbq6hZQTZ3G8V77iT
+        nOM4L428IjZuKbRoB7mcgsKglg==
+X-Google-Smtp-Source: APBJJlF1A/Z82CCGebQwtGRBNWpKXwCNpXTVvBfVWCdAsLP+dS3MDL1fCd2yzzWjcU83xc4D0sJCQQ==
+X-Received: by 2002:a05:6a20:9717:b0:12d:4c17:bb2d with SMTP id hr23-20020a056a20971700b0012d4c17bb2dmr9066791pzc.26.1690268756829;
+        Tue, 25 Jul 2023 00:05:56 -0700 (PDT)
+Received: from J9GPGXL7NT.bytedance.net ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id p6-20020aa78606000000b00640dbbd7830sm9165478pfn.18.2023.07.25.00.05.54
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 25 Jul 2023 00:05:56 -0700 (PDT)
+From:   Xu Lu <luxu.kernel@bytedance.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xu Lu <luxu.kernel@bytedance.com>
+Subject: [PATCH] riscv: Fix local irq restore when flags indicates irq disabled
+Date:   Tue, 25 Jul 2023 15:05:49 +0800
+Message-Id: <20230725070549.89810-1-luxu.kernel@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-References: <20230722123850.634544-1-alexghiti@rivosinc.com>
- <20230722123850.634544-3-alexghiti@rivosinc.com> <20230724-fineness-sectional-8cdd1e4bbff2@wendy>
-In-Reply-To: <20230724-fineness-sectional-8cdd1e4bbff2@wendy>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Tue, 25 Jul 2023 09:05:37 +0200
-Message-ID: <CAHVXubhVOpdZhmENkNbavAYGVZB47K9Q_4GN6RZ+rCex4uBb5g@mail.gmail.com>
-Subject: Re: [PATCH v6 2/5] riscv: Dump out kernel offset information on panic
-To:     Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Zong Li <zong.li@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+When arch_local_irq_restore() is called with flags indicating irqs
+disabled, we need to clear SR_IE bit in CSR_STATUS, whereas current
+implementation based on csr_set() function only sets SR_IE bit of
+CSR_STATUS when SR_IE bit of flags is high and does nothing when
+SR_IE bit of flags is low.
 
-On Mon, Jul 24, 2023 at 4:20=E2=80=AFPM Conor Dooley <conor.dooley@microchi=
-p.com> wrote:
->
-> Hey Alex,
->
-> On Sat, Jul 22, 2023 at 02:38:47PM +0200, Alexandre Ghiti wrote:
-> > Dump out the KASLR virtual kernel offset when panic to help debug kerne=
-l.
-> >
-> > Signed-off-by: Zong Li <zong.li@sifive.com>
->
-> Either you're missing a Co-developed-by: or the author of this patch is
-> incorrect.
+This commit supplies csr clear operation when calling irq restore
+function with flags indicating irq disabled.
 
-Ok, I thought it would work this way, Zong first did something similar
-a few years ago, so we need his name here. @Palmer Dabbelt if no other
-changes are needed, do you mind replacing the SoB with a
-Co-developed-by?
+Fixes: 6d60b6ee0c97 ("RISC-V: Device, timer, IRQs, and the SBI")
+Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+---
+ arch/riscv/include/asm/irqflags.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks,
+diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
+index 08d4d6a5b7e9..7c31fc3c3559 100644
+--- a/arch/riscv/include/asm/irqflags.h
++++ b/arch/riscv/include/asm/irqflags.h
+@@ -49,7 +49,10 @@ static inline int arch_irqs_disabled(void)
+ /* set interrupt enabled status */
+ static inline void arch_local_irq_restore(unsigned long flags)
+ {
+-	csr_set(CSR_STATUS, flags & SR_IE);
++	if (flags & SR_IE)
++		csr_set(CSR_STATUS, SR_IE);
++	else
++		csr_clear(CSR_STATUS, SR_IE);
+ }
+ 
+ #endif /* _ASM_RISCV_IRQFLAGS_H */
+-- 
+2.39.2 (Apple Git-143)
 
-Alex
-
->
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
