@@ -2,175 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B40C760F5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B56760E09
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbjGYJfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
+        id S232912AbjGYJLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbjGYJfP (ORCPT
+        with ESMTP id S232081AbjGYJLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:35:15 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E14C63582
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:33:52 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36P9AiOA2025204, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36P9AiOA2025204
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 25 Jul 2023 17:10:44 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 25 Jul 2023 17:10:55 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 25 Jul 2023 17:10:55 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Tue, 25 Jul 2023 17:10:55 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Ricky WU <ricky_wu@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] misc: rtsx: judge ASPM Mode to set PETXCFG Reg
-Thread-Topic: [PATCH] misc: rtsx: judge ASPM Mode to set PETXCFG Reg
-Thread-Index: AQHZvtWFTRjHKzyG2k2yMch6mMuURw==
-Date:   Tue, 25 Jul 2023 09:10:54 +0000
-Message-ID: <52906c6836374c8cb068225954c5543a@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.81.102]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Tue, 25 Jul 2023 05:11:22 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B553710B;
+        Tue, 25 Jul 2023 02:11:20 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b962535808so74469311fa.0;
+        Tue, 25 Jul 2023 02:11:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690276279; x=1690881079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9U3aGdRhrvkuTr58GqZ2ywXuQf8rEnTYi74G4TIbego=;
+        b=nOCzujai+yb0ylPhWsHDvcTjmXoQkZfLP2EWkGRfJmuXdSvQfgH+ax2Sj5yqfUxaQG
+         qbaIi/NO5G1ciNGIozhTufMoXJ+4Za92bLQhS1tFEq49GaX9JlwaB+j5/sBjAFsIkIIo
+         IEJLxLVWQGSiDwFVjrvOxwkxohtz/LGc+TKxJmIclNJypUs6vDRXMHvI+g5FpLkIQghw
+         DpguOUftBj9T9IFT2FEQ3jKb95TysDamYg4l1YpkmQ8GtwMhi3Oyd27ztkd85ieFWRDC
+         KNmWIzCeTsHsU34m7QkUMsU4+Pz/RN/6hRSMPPjsDjWPNS9x+DjXBui5oTvdIw5H03W/
+         /9lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690276279; x=1690881079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9U3aGdRhrvkuTr58GqZ2ywXuQf8rEnTYi74G4TIbego=;
+        b=hLJ36qct3UyzUrYFJe94/llutpOmhNzWgdNfHsUlZo9zirD7wwPh+apH9sw3/PMEsh
+         AQqHnR1xQeqnPqvz5jBGORdRv2Dh+VAPEykL/IvRkpyeVXVhmfdVzLTkLxFZauDARvZG
+         KSRHsyOPn+lReqMnBsNoY7trRqIYRpXgzVtctoX4T2ttu2YAHQ5ywPqV77DgZ60gZQob
+         Lr1mIp9FW7zGRTCJ58c9etOuUUkyECcdAw03JvEl1HBsE8VwzxHWsvFJr2pXqyH1N8dF
+         9M2AgnLnAvNvFXcEsZ5MpuwJJ+4/wr9wNfb7fpvO3bFw6Wubb0FTvcjtLrQrDw/BsxG1
+         IIEg==
+X-Gm-Message-State: ABy/qLZraGWXSPRJcN+1KE7nLoXCqzbhOFjwh5c6DBi59CJ+PFYvHnN0
+        6ud/wT25sOLSDdvPj+ziuPahFSilwvlKINV0ric=
+X-Google-Smtp-Source: APBJJlHMdlSNdNyjXJHuU/0ITcZYdkv60mYKe/AcHSk40gGM8e8N6hCUwQiB94P3MKjHtDYNfzeGTOrOaeN6WGv5vNw=
+X-Received: by 2002:a2e:9587:0:b0:2b6:e2aa:8fc2 with SMTP id
+ w7-20020a2e9587000000b002b6e2aa8fc2mr7658338ljh.46.1690276278578; Tue, 25 Jul
+ 2023 02:11:18 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230724090044.2668064-1-ilia.lin@kernel.org> <20230724181105.GD11388@unreal>
+ <CA+5LGR3ifQbn4x9ncyjJLxsFU4NRs90rVcqECJ+-UC=pP35OjA@mail.gmail.com> <20230725051917.GH11388@unreal>
+In-Reply-To: <20230725051917.GH11388@unreal>
+From:   Ilia Lin <ilia.lin@gmail.com>
+Date:   Tue, 25 Jul 2023 12:11:06 +0300
+Message-ID: <CA+5LGR2oDFEjJL5j715Pi9AtmJ7LXM82a63+rcyYow-E5trXtg@mail.gmail.com>
+Subject: Re: [PATCH] xfrm: kconfig: Fix XFRM_OFFLOAD dependency on XFRM
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Ilia Lin <ilia.lin@kernel.org>, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QVNQTSBNb2RlIGlzIEFTUE1fTU9ERV9DRkcgbmVlZCB0byBqdWRnZSB0aGUgdmFsdWUgb2YgY2xr
-cmVxXzANCnRvIHNldCBISUdIIG9yIExPVywgaWYgdGhlIEFTUE0gTW9kZSBpcyBBU1BNX01PREVf
-UkVHDQphbHdheXMgc2V0IHRvIEhJR0ggZHVyaW5nIHRoZSBpbml0aWFsaXphdGlvbi4NCg0KQ2M6
-IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNClNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxyaWNreV93
-dUByZWFsdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjcuYyAg
-fCAgMiArLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyAgfCAxOCAtLS0tLS0t
-LS0tLS0tLS0tLS0NCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMgIHwgIDMgKy0t
-DQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jICB8IDE4IC0tLS0tLS0tLS0tLS0t
-LS0tLQ0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjEuYyAgfCAxOCAtLS0tLS0tLS0t
-LS0tLS0tLS0NCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jIHwgIDUgKysrKy0N
-CiA2IGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNTggZGVsZXRpb25zKC0pDQoNCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMgYi9kcml2ZXJzL21p
-c2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCmluZGV4IGQ2NzZjZjYzYTk2Ni4uM2RhZTVlM2ExNjk3
-IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jDQorKysgYi9k
-cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCkBAIC0xOTUsNyArMTk1LDcgQEAgc3Rh
-dGljIGludCBydHM1MjI3X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCQl9
-DQogCX0NCiANCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQorCWlmIChvcHRpb24tPmZv
-cmNlX2Nsa3JlcV8wICYmIHBjci0+YXNwbV9tb2RlID09IEFTUE1fTU9ERV9DRkcpDQogCQlydHN4
-X3BjaV9hZGRfY21kKHBjciwgV1JJVEVfUkVHX0NNRCwgUEVUWENGRywNCiAJCQkJRk9SQ0VfQ0xL
-UkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCiAJZWxzZQ0KZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVh
-ZGVyL3J0czUyMjguYw0KaW5kZXggY2ZlYmFkNTFkMWQ4Li5mNGFiMDk0MzlkYTcgMTAwNjQ0DQot
-LS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI4LmMNCisrKyBiL2RyaXZlcnMvbWlz
-Yy9jYXJkcmVhZGVyL3J0czUyMjguYw0KQEAgLTQzNSwxNyArNDM1LDEwIEBAIHN0YXRpYyB2b2lk
-IHJ0czUyMjhfaW5pdF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlvcHRpb24t
-Pmx0cl9lbmFibGVkID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hlY2tfZGV2
-X2ZsYWcocGNyLCBBU1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9MMV8xX0VO
-IHwgUE1fTDFfMl9FTikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7DQotCWVs
-c2UNCi0JCW9wdGlvbi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0aWMgaW50
-IHJ0czUyMjhfZXh0cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQotCXN0cnVj
-dCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIA0KIAlydHN4X3BjaV93
-cml0ZV9yZWdpc3RlcihwY3IsIFJUUzUyMjhfQVVUT0xPQURfQ0ZHMSwNCiAJCQlDRF9SRVNVTUVf
-RU5fTUFTSywgQ0RfUkVTVU1FX0VOX01BU0spOw0KQEAgLTQ3NiwxNyArNDY5LDYgQEAgc3RhdGlj
-IGludCBydHM1MjI4X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCWVsc2UN
-CiAJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywgMHgzMCwgMHgwMCk7DQog
-DQotCS8qDQotCSAqIElmIHVfZm9yY2VfY2xrcmVxXzAgaXMgZW5hYmxlZCwgQ0xLUkVRIyBQSU4g
-d2lsbCBiZSBmb3JjZWQNCi0JICogdG8gZHJpdmUgbG93LCBhbmQgd2UgZm9yY2libHkgcmVxdWVz
-dCBjbG9jay4NCi0JICovDQotCWlmIChvcHRpb24tPmZvcmNlX2Nsa3JlcV8wKQ0KLQkJcnRzeF9w
-Y2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBQRVRYQ0ZHLA0KLQkJCQkgRk9SQ0VfQ0xLUkVRX0RFTElO
-S19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCi0JZWxzZQ0KLQkJcnRzeF9wY2lfd3JpdGVfcmVn
-aXN0ZXIocGNyLCBQRVRYQ0ZHLA0KLQkJCQkgRk9SQ0VfQ0xLUkVRX0RFTElOS19NQVNLLCBGT1JD
-RV9DTEtSRVFfSElHSCk7DQotDQogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUFdEX1NV
-U1BFTkRfRU4sIDB4RkYsIDB4RkIpOw0KIA0KIAlpZiAocGNyLT5ydGQzX2VuKSB7DQpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI0OS5jIGIvZHJpdmVycy9taXNjL2Nh
-cmRyZWFkZXIvcnRzNTI0OS5jDQppbmRleCA5MWQyNDBkZDY4ZmEuLjQ3YWI3MmE0MzI1NiAxMDA2
-NDQNCi0tLSBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNDkuYw0KKysrIGIvZHJpdmVy
-cy9taXNjL2NhcmRyZWFkZXIvcnRzNTI0OS5jDQpAQCAtMzI3LDEyICszMjcsMTEgQEAgc3RhdGlj
-IGludCBydHM1MjQ5X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQogCQl9DQog
-CX0NCiANCi0NCiAJLyoNCiAJICogSWYgdV9mb3JjZV9jbGtyZXFfMCBpcyBlbmFibGVkLCBDTEtS
-RVEjIFBJTiB3aWxsIGJlIGZvcmNlZA0KIAkgKiB0byBkcml2ZSBsb3csIGFuZCB3ZSBmb3JjaWJs
-eSByZXF1ZXN0IGNsb2NrLg0KIAkgKi8NCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQor
-CWlmIChvcHRpb24tPmZvcmNlX2Nsa3JlcV8wICYmIHBjci0+YXNwbV9tb2RlID09IEFTUE1fTU9E
-RV9DRkcpDQogCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIFBFVFhDRkcsDQogCQkJRk9S
-Q0VfQ0xLUkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfTE9XKTsNCiAJZWxzZQ0KZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAuYyBiL2RyaXZlcnMvbWlzYy9j
-YXJkcmVhZGVyL3J0czUyNjAuYw0KaW5kZXggOWI0MmIyMGEzZTVhLi43OWIxOGY2ZjczYTggMTAw
-NjQ0DQotLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjYwLmMNCisrKyBiL2RyaXZl
-cnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAuYw0KQEAgLTUxNywxNyArNTE3LDEwIEBAIHN0YXRp
-YyB2b2lkIHJ0czUyNjBfaW5pdF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlv
-cHRpb24tPmx0cl9lbmFibGVkID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hl
-Y2tfZGV2X2ZsYWcocGNyLCBBU1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9M
-MV8xX0VOIHwgUE1fTDFfMl9FTikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7
-DQotCWVsc2UNCi0JCW9wdGlvbi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0
-aWMgaW50IHJ0czUyNjBfZXh0cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQot
-CXN0cnVjdCBydHN4X2NyX29wdGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIA0KIAkvKiBT
-ZXQgbWN1X2NudCB0byA3IHRvIGVuc3VyZSBkYXRhIGNhbiBiZSBzYW1wbGVkIHByb3Blcmx5ICov
-DQogCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgMHhGQzAzLCAweDdGLCAweDA3KTsNCkBA
-IC01NDYsMTcgKzUzOSw2IEBAIHN0YXRpYyBpbnQgcnRzNTI2MF9leHRyYV9pbml0X2h3KHN0cnVj
-dCBydHN4X3BjciAqcGNyKQ0KIA0KIAlydHM1MjYwX2luaXRfaHcocGNyKTsNCiANCi0JLyoNCi0J
-ICogSWYgdV9mb3JjZV9jbGtyZXFfMCBpcyBlbmFibGVkLCBDTEtSRVEjIFBJTiB3aWxsIGJlIGZv
-cmNlZA0KLQkgKiB0byBkcml2ZSBsb3csIGFuZCB3ZSBmb3JjaWJseSByZXF1ZXN0IGNsb2NrLg0K
-LQkgKi8NCi0JaWYgKG9wdGlvbi0+Zm9yY2VfY2xrcmVxXzApDQotCQlydHN4X3BjaV93cml0ZV9y
-ZWdpc3RlcihwY3IsIFBFVFhDRkcsDQotCQkJCSBGT1JDRV9DTEtSRVFfREVMSU5LX01BU0ssIEZP
-UkNFX0NMS1JFUV9MT1cpOw0KLQllbHNlDQotCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3Is
-IFBFVFhDRkcsDQotCQkJCSBGT1JDRV9DTEtSRVFfREVMSU5LX01BU0ssIEZPUkNFX0NMS1JFUV9I
-SUdIKTsNCi0NCiAJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBwY3ItPnJlZ19wbV9jdHJs
-MywgMHgxMCwgMHgwMCk7DQogDQogCXJldHVybiAwOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlz
-Yy9jYXJkcmVhZGVyL3J0czUyNjEuYyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjEu
-Yw0KaW5kZXggYjFlNzYwMzBjYWZkLi45NGFmNmJmOGEyNWEgMTAwNjQ0DQotLS0gYS9kcml2ZXJz
-L21pc2MvY2FyZHJlYWRlci9ydHM1MjYxLmMNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVy
-L3J0czUyNjEuYw0KQEAgLTQ5OCwxNyArNDk4LDEwIEBAIHN0YXRpYyB2b2lkIHJ0czUyNjFfaW5p
-dF9mcm9tX2NmZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJCQlvcHRpb24tPmx0cl9lbmFibGVk
-ID0gZmFsc2U7DQogCQl9DQogCX0NCi0NCi0JaWYgKHJ0c3hfY2hlY2tfZGV2X2ZsYWcocGNyLCBB
-U1BNX0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCi0JCQkJfCBQTV9MMV8xX0VOIHwgUE1fTDFfMl9F
-TikpDQotCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gZmFsc2U7DQotCWVsc2UNCi0JCW9wdGlv
-bi0+Zm9yY2VfY2xrcmVxXzAgPSB0cnVlOw0KIH0NCiANCiBzdGF0aWMgaW50IHJ0czUyNjFfZXh0
-cmFfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQotCXN0cnVjdCBydHN4X2NyX29w
-dGlvbiAqb3B0aW9uID0gJnBjci0+b3B0aW9uOw0KIAl1MzIgdmFsOw0KIA0KIAlydHN4X3BjaV93
-cml0ZV9yZWdpc3RlcihwY3IsIFJUUzUyNjFfQVVUT0xPQURfQ0ZHMSwNCkBAIC01NTQsMTcgKzU0
-Nyw2IEBAIHN0YXRpYyBpbnQgcnRzNTI2MV9leHRyYV9pbml0X2h3KHN0cnVjdCBydHN4X3BjciAq
-cGNyKQ0KIAllbHNlDQogCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIFBFVFhDRkcsIDB4
-MzAsIDB4MDApOw0KIA0KLQkvKg0KLQkgKiBJZiB1X2ZvcmNlX2Nsa3JlcV8wIGlzIGVuYWJsZWQs
-IENMS1JFUSMgUElOIHdpbGwgYmUgZm9yY2VkDQotCSAqIHRvIGRyaXZlIGxvdywgYW5kIHdlIGZv
-cmNpYmx5IHJlcXVlc3QgY2xvY2suDQotCSAqLw0KLQlpZiAob3B0aW9uLT5mb3JjZV9jbGtyZXFf
-MCkNCi0JCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCi0JCQkJIEZPUkNF
-X0NMS1JFUV9ERUxJTktfTUFTSywgRk9SQ0VfQ0xLUkVRX0xPVyk7DQotCWVsc2UNCi0JCXJ0c3hf
-cGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCi0JCQkJIEZPUkNFX0NMS1JFUV9ERUxJ
-TktfTUFTSywgRk9SQ0VfQ0xLUkVRX0hJR0gpOw0KLQ0KIAlydHN4X3BjaV93cml0ZV9yZWdpc3Rl
-cihwY3IsIFBXRF9TVVNQRU5EX0VOLCAweEZGLCAweEZCKTsNCiANCiAJaWYgKHBjci0+cnRkM19l
-bikgew0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmMgYi9k
-cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jDQppbmRleCAzMmI3NzgzZTlkNGYuLmEz
-ZjRiNTJiYjE1OSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNy
-LmMNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmMNCkBAIC0xMzI2LDgg
-KzEzMjYsMTEgQEAgc3RhdGljIGludCBydHN4X3BjaV9pbml0X2h3KHN0cnVjdCBydHN4X3BjciAq
-cGNyKQ0KIAkJCXJldHVybiBlcnI7DQogCX0NCiANCi0JaWYgKHBjci0+YXNwbV9tb2RlID09IEFT
-UE1fTU9ERV9SRUcpDQorCWlmIChwY3ItPmFzcG1fbW9kZSA9PSBBU1BNX01PREVfUkVHKSB7DQog
-CQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEFTUE1fRk9SQ0VfQ1RMLCAweDMwLCAweDMw
-KTsNCisJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgUEVUWENGRywNCisJCQkJRk9SQ0Vf
-Q0xLUkVRX0RFTElOS19NQVNLLCBGT1JDRV9DTEtSRVFfSElHSCk7DQorCX0NCiANCiAJLyogTm8g
-Q0QgaW50ZXJydXB0IGlmIHByb2JpbmcgZHJpdmVyIHdpdGggY2FyZCBpbnNlcnRlZC4NCiAJICog
-U28gd2UgbmVlZCB0byBpbml0aWFsaXplIHBjci0+Y2FyZF9leGlzdCBoZXJlLg0KLS0gDQoyLjI1
-LjENCg==
+On Tue, Jul 25, 2023 at 8:19=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
+rote:
+>
+> On Tue, Jul 25, 2023 at 07:41:49AM +0300, Ilia Lin wrote:
+> > Hi Leon,
+>
+> You was already asked do not top-post.
+> https://lore.kernel.org/netdev/20230718105446.GD8808@unreal/
+> Please stop it.
+>
+> >
+> > This is exactly like I described:
+> > * xfrm.h is included from the net/core/sock.c unconditionally.
+> > * If CONFIG_XFRM_OFFLOAD is set, then the xfrm_dst_offload_ok() is
+> > being compiled.
+> > * If CONFIG_XFRM is not set, the struct dst_entry doesn't have the xfrm=
+ member.
+> > * xfrm_dst_offload_ok() tries to access the dst->xfrm and that fails to=
+ compile.
+>
+> I asked two questions. First one was "How did you set XFRM_OFFLOAD
+> without XFRM?".
+>
+> Thanks
+>
+In driver Kconfig: "select XFRM_OFFLOAD"
+>
+> >
+> >
+> > Thanks,
+> > Ilia Lin
+> >
+> > On Mon, Jul 24, 2023 at 9:11=E2=80=AFPM Leon Romanovsky <leon@kernel.or=
+g> wrote:
+> > >
+> > > On Mon, Jul 24, 2023 at 12:00:44PM +0300, Ilia Lin wrote:
+> > > > If XFRM_OFFLOAD is configured, but XFRM is not
+> > >
+> > > How did you do it?
+> > >
+> > > >, it will cause
+> > > > compilation error on include xfrm.h:
+> > > >  C 05:56:39 In file included from /src/linux/kernel_platform/msm-ke=
+rnel/net/core/sock.c:127:
+> > > >  C 05:56:39 /src/linux/kernel_platform/msm-kernel/include/net/xfrm.=
+h:1932:30: error: no member named 'xfrm' in 'struct dst_entry'
+> > > >  C 05:56:39         struct xfrm_state *x =3D dst->xfrm;
+> > > >  C 05:56:39                                ~~~  ^
+> > > >
+> > > > Making the XFRM_OFFLOAD select the XFRM.
+> > > >
+> > > > Fixes: 48e01e001da31 ("ixgbe/ixgbevf: fix XFRM_ALGO dependency")
+> > > > Reported-by: Ilia Lin <ilia.lin@kernel.org>
+> > > > Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
+> > > > ---
+> > > >  net/xfrm/Kconfig | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > >
+> > > > diff --git a/net/xfrm/Kconfig b/net/xfrm/Kconfig
+> > > > index 3adf31a83a79a..3fc2c1bcb5bbe 100644
+> > > > --- a/net/xfrm/Kconfig
+> > > > +++ b/net/xfrm/Kconfig
+> > > > @@ -10,6 +10,7 @@ config XFRM
+> > > >
+> > > >  config XFRM_OFFLOAD
+> > > >       bool
+> > > > +     select XFRM
+> > >
+> > > struct dst_entry depends on CONFIG_XFRM and not on CONFIG_XFRM_OFFLOA=
+D,
+> > > so it is unclear to me why do you need to add new "select XFRM" line.
+> > >
+> > >    26 struct dst_entry {
+> > >    27         struct net_device       *dev;
+> > >    28         struct  dst_ops         *ops;
+> > >    29         unsigned long           _metrics;
+> > >    30         unsigned long           expires;
+> > >    31 #ifdef CONFIG_XFRM
+> > >    32         struct xfrm_state       *xfrm;
+> > >    33 #else
+> > >    34         void                    *__pad1;
+> > >    35 #endif
+> > >    36         int
+> > >
+> > > Thanks
