@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03158760DF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234D7760EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjGYJEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S233076AbjGYJZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233006AbjGYJDt (ORCPT
+        with ESMTP id S232443AbjGYJZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:03:49 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B8B1BFD;
-        Tue, 25 Jul 2023 02:03:45 -0700 (PDT)
-Received: from dggpeml500019.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R99xK2tSRzLnwX;
-        Tue, 25 Jul 2023 17:01:09 +0800 (CST)
-Received: from localhost.localdomain (10.90.76.33) by
- dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 25 Jul 2023 17:03:43 +0800
-From:   Chenyuan Mi <michenyuan@huawei.com>
-To:     <jic23@kernel.org>
-CC:     <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2] tools: iio: iio_generic_buffer: Fix some integer type and  calculation
-Date:   Tue, 25 Jul 2023 09:24:07 +0000
-Message-ID: <20230725092407.62545-1-michenyuan@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 25 Jul 2023 05:25:15 -0400
+Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [IPv6:2001:41d0:203:375::22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8B61B3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:25:10 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690277108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8cgQl/NwKjlv95whhBvr3/hIEapF8k47N3p7suJb70=;
+        b=usOR6hHD6eRCxqjCTCcivuGWvHVkYPEcYN1LFGUp7w19ZF5rgZGS7F3BC9qYg1mh2K3CZg
+        P+ggLeAhjwkMLLXjRaq6w6val5oNQN/dZHMaY89bOfIaUuCQCvzNHzHVmmvDvSO+waObUp
+        Ejvejxqj/KUxQq2De9wkuBcRQhJyUA4=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.76.33]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 08/47] erofs: dynamically allocate the erofs-shrinker
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-9-zhengqi.arch@bytedance.com>
+Date:   Tue, 25 Jul 2023 17:24:24 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <0C8B4C97-C8DF-401D-83E9-A13AE69E73F0@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-9-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function size_from_channelarray(), the return value 'bytes' is defined
-as int type. However, the calcution of 'bytes' in this function is designed
-to use the unsigned int type. So it is necessary to change 'bytes' type to
-unsigned int to avoid integer overflow.
 
-The size_from_channelarray() is called in main() function, its return value
-is directly multipled by 'buf_len' and then used as the malloc() parameter.
-The 'buf_len' is completely controllable by user, thus a multiplication
-overflow may occur here. This could allocate an unexpected small area.
 
-Signed-off-by: Chenyuan Mi <michenyuan@huawei.com>
----
- tools/iio/iio_generic_buffer.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+> Use new APIs to dynamically allocate the erofs-shrinker.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index f8deae4e26a1..44bbf80f0cfd 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -51,9 +51,9 @@ enum autochan {
-  * Has the side effect of filling the channels[i].location values used
-  * in processing the buffer output.
-  **/
--static int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
-+static unsigned int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
- {
--	int bytes = 0;
-+	unsigned int bytes = 0;
- 	int i = 0;
- 
- 	while (i < num_channels) {
-@@ -348,7 +348,7 @@ int main(int argc, char **argv)
- 	ssize_t read_size;
- 	int dev_num = -1, trig_num = -1;
- 	char *buffer_access = NULL;
--	int scan_size;
-+	unsigned int scan_size;
- 	int noevents = 0;
- 	int notrigger = 0;
- 	char *dummy;
-@@ -674,7 +674,16 @@ int main(int argc, char **argv)
- 	}
- 
- 	scan_size = size_from_channelarray(channels, num_channels);
--	data = malloc(scan_size * buf_len);
-+
-+	size_t total_buf_len = scan_size * buf_len;
-+
-+	if (scan_size > 0 && total_buf_len / scan_size != buf_len) {
-+		ret = -EFAULT;
-+		perror("Integer overflow happened when calculate scan_size * buf_len");
-+		goto error;
-+	}
-+
-+	data = malloc(total_buf_len);
- 	if (!data) {
- 		ret = -ENOMEM;
- 		goto error;
--- 
-2.25.1
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
+Thanks.
 
