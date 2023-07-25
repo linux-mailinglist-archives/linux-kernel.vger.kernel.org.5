@@ -2,138 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB0E7621D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AD47621D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjGYSz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        id S230315AbjGYS6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjGYSz5 (ORCPT
+        with ESMTP id S229974AbjGYS6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:55:57 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866EF1BC2;
-        Tue, 25 Jul 2023 11:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690311356; x=1721847356;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZVyS4i+R5tCisp4JnaVX/EGHRJPoy0lk8ITVH6T/ixc=;
-  b=TJZ6OkPEpoH0nzPvXxGeAqns9AwhExUMe5QjTf40nHVfGPy3v4H/6MQn
-   0PDa1x07LdfmoggYwVpiAhWxe54ZpWpRd/HT4wl4BuPSqwO6oUM/TNfO7
-   RYK9r/IJogBjCvmCUuyQhZ6jF5lY1vju0PFqJDYxpNmBN053Ovp2pRX0P
-   maP1BOmcvOfZNcG0wgK/WoHK/aLUYiRKUmqojwZ10LrT/918z29iNOrKN
-   dVq3o44t9BMo0U2rpoKpOC9FqLvVWPM1rn8F+zUmHfnoHZ4LZj3Rd+PTr
-   Wh2so5ekA20/dtmWulLAvrZCON7j3dIAJ/z6b7DUYHghyO7lamXMwl2ur
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="434075297"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="434075297"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 11:55:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="816357216"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="816357216"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Jul 2023 11:55:53 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qONCK-0000FZ-2I;
-        Tue, 25 Jul 2023 18:55:52 +0000
-Date:   Wed, 26 Jul 2023 02:54:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in
- SVID mode
-Message-ID: <202307260241.BetLbnxd-lkp@intel.com>
-References: <20230725114030.1860571-3-Naresh.Solanki@9elements.com>
+        Tue, 25 Jul 2023 14:58:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E8B1FCF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:57:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C33A6187D
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:57:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AAA9C433C7;
+        Tue, 25 Jul 2023 18:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690311478;
+        bh=39UKxzaDXD2jZ3Vh4zHzwCJb2yUJA+Yg/Gepz3BAO8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uct9iT1jFft9F3b9nNzPj2phwHRO1F+WXwack0bwcMiwvVz3JBqzk3BLxHIs+GpU/
+         FDjLyyseH7BD66J1wRvwqFWvZtHTrwsVK9lT+zHMDuHnUuZiXmBS2KmEc86EVezaOR
+         YVF4d+RscuIhbMROeNdr5e2wD/UhXSv+vTAz5lS96nyajNJhd23WPC32HXqQGGF2xJ
+         M9wmvXl4W43GAxKvYQksXtDdFGhcpaIts0+Pz3sqckgJYsvdeWJP5Y2ndFAK+KUBwK
+         Whgi6vc7/3j55VHx8PwjVzGPqoIizYHunLP2j+rThXpZFa6m0qkV414hygS6fXU9Al
+         73/eUMmVy0kmg==
+Date:   Tue, 25 Jul 2023 19:57:54 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230725-skating-agent-b092f2257ca1@spud>
+References: <20230725170405.251011-1-xingmingzheng@iscas.ac.cn>
+ <20230725172344.GA1445373@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iHjWJzHCnP6UBqZt"
 Content-Disposition: inline
-In-Reply-To: <20230725114030.1860571-3-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725172344.GA1445373@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
 
-kernel test robot noticed the following build errors:
+--iHjWJzHCnP6UBqZt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on 55612007f16b5d7b1fb83a7b0f5bb686829db7c7]
+On Tue, Jul 25, 2023 at 10:23:44AM -0700, Nathan Chancellor wrote:
+> Hi Mingzheng,
+>=20
+> Thanks for the patch!
+>=20
+> On Wed, Jul 26, 2023 at 01:04:05AM +0800, Mingzheng Xing wrote:
+> > When compiling the kernel with the toolchain composed of GCC >=3D 12.1.=
+0 and
+> > binutils < 2.38, default ISA spec used when building binutils and GCC, =
+the
+> > following build failure will appear because the
+> > CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI is not turned on.
+> > (i.e, gcc-12.1.0 and binutils-2.36, or gcc-12.3.0 and binutils-2.37, use
+> > default ISA spec.)
+> >=20
+> >   CC      arch/riscv/kernel/vdso/vgettimeofday.o
+> >   <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h: Assembler me=
+ssages:
+> >   <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: un=
+recognized opcode `csrr a5,0xc01'
+>=20
+> The gift that keeps on giving :/
+>=20
+> > Binutils has updated the default ISA spec version, and the community has
+> > responded well to this[1][2][3], but it appears that this is not over y=
+et.
+> >=20
+> > We also need to consider the situation of binutils < 2.38 but
+> > GCC >=3D 12.1.0, since the combination between different versions of GC=
+C and
+> > binutils is not unique, which is to some extent flexible. GCC release
+> > 12.1.0 updated the default ISA spec version in GCC commit[4].
+>=20
+> I suspect this combination is not too common because binutils 2.38 came
+> out before GCC 12.1.0 but as you note, it is obviously possible. What
+> toolchain has this combination in the wild, which would be helpful for
+> documentation purposes?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/hwmon-pmbus-Add-ON_OFF_CONFIG-register-bits/20230725-194318
-base:   55612007f16b5d7b1fb83a7b0f5bb686829db7c7
-patch link:    https://lore.kernel.org/r/20230725114030.1860571-3-Naresh.Solanki%409elements.com
-patch subject: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in SVID mode
-config: x86_64-randconfig-x014-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260241.BetLbnxd-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260241.BetLbnxd-lkp@intel.com/reproduce)
+Yeah, that'd be great to know, at least the other niche stuff that we
+are working around had a clear use-case (testing LLVM in debian containers)
+whereas there's no clear user for this.
+That's doubly interesting, as this patch seems to break things for binutils
+< 2.35, and if we have to make a trade-off between those too, then it'd
+be good to be able to weigh up the options.
+Do we perhaps need the misa-spec workaround instead for this case?
+Haven't tested that though, trying to dig myself out of email backlog.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260241.BetLbnxd-lkp@intel.com/
+> > For more information, please refer to:
+> >=20
+> > commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
+> > commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang=
+ and binutils")
+> >=20
+> > [1]: https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/aE1ZeHHCYf4
+> > [2]: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.=
+org
+> > [3]: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
+> > [4]: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a6257=
+9d4a7a4a76bab51b5b52fec2cd
 
-All errors (new ones prefixed by >>):
+btw, please make these regular Link: tags (with a [N] at EOL) and drop
+the space between them and the sign off. Also, this probably needs to be
+CC: stable@vger.kernel.org too.
 
->> drivers/hwmon/pmbus/tda38640.c:118:7: error: use of undeclared identifier 'CONFIG_SENSORS_TDA38640_REGULATOR'
-           if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
-                ^
-   1 error generated.
+Cheers,
+Conor.
+
+> >=20
+> > Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+> > ---
+> >  arch/riscv/Kconfig | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 4c07b9189c86..b49cea30f6cc 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -570,11 +570,15 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+> >  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+> >  	def_bool y
+> >  	# https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed=
+44286efa8ae8717a77d94b51ac3614e2ca6dc
+> > -	depends on AS_IS_GNU && AS_VERSION >=3D 23800
+> > +	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579=
+d4a7a4a76bab51b5b52fec2cd
+> > +	depends on CC_IS_GCC && GCC_VERSION >=3D 120100 || \
+> > +		   AS_IS_GNU && AS_VERSION >=3D 23800
+>=20
+> GCC_VERSION will be 0 for clang, so you don't need the CC_IS_GCC check.
+> With that change, this should be able to stay on one line:
+>=20
+>     depends on GCC_VERSION >=3D 120100 || (AS_IS_GNU && AS_VERSION >=3D 2=
+3800)
+>=20
+> >  	help
+> >  	  Newer binutils versions default to ISA spec version 20191213 which
+> >  	  moves some instructions from the I extension to the Zicsr and Zifen=
+cei
+> >  	  extensions.
+> > +	  Similarly, GCC release 12.1.0 has changed the default ISA spec vers=
+ion to
+> > +	  20191213, so the above situation requires this option to be enabled.
+> > =20
+> >  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+> >  	def_bool y
+> > --=20
+> > 2.34.1
+> >=20
 
 
-vim +/CONFIG_SENSORS_TDA38640_REGULATOR +118 drivers/hwmon/pmbus/tda38640.c
+--iHjWJzHCnP6UBqZt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-   106	
-   107	static int tda38640_probe(struct i2c_client *client)
-   108	{
-   109		struct device *dev = &client->dev;
-   110		struct device_node *np = dev_of_node(dev);
-   111		struct tda38640_data *data;
-   112	
-   113		data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-   114		if (!data)
-   115			return -ENOMEM;
-   116		memcpy(&data->info, &tda38640_info, sizeof(tda38640_info));
-   117	
- > 118		if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
-   119		    of_property_read_u32(np, "infineon,en-pin-fixed-level", &data->en_pin_lvl))
-   120			return pmbus_do_probe(client, &data->info);
-   121	
-   122		/*
-   123		 * Apply ON_OFF_CONFIG workaround as enabling the regulator using the
-   124		 * OPERATION register doesn't work in SVID mode.
-   125		 */
-   126		data->info.read_byte_data = tda38640_read_byte_data;
-   127		data->info.write_byte_data = tda38640_write_byte_data;
-   128		/*
-   129		 * One should configure PMBUS_ON_OFF_CONFIG here, but
-   130		 * PB_ON_OFF_CONFIG_POWERUP_CONTROL, PB_ON_OFF_CONFIG_EN_PIN_REQ and
-   131		 * PB_ON_OFF_CONFIG_EN_PIN_REQ are ignored by the device.
-   132		 * Only PB_ON_OFF_CONFIG_POLARITY_HIGH has an effect.
-   133		 */
-   134	
-   135		return pmbus_do_probe(client, &data->info);
-   136	}
-   137	
+-----BEGIN PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMAbMgAKCRB4tDGHoIJi
+0rnFAQCCSRzsuugFSJC1+Pyk0F+O91cfGUp6aHSYnTOU3Z3qTQD+N/IguWiZU0eC
+JRcPr+8T4gGPM8G89HqQPI+lU0RmDg4=
+=p9T3
+-----END PGP SIGNATURE-----
+
+--iHjWJzHCnP6UBqZt--
