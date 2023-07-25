@@ -2,136 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1570760DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D419D760E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjGYJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        id S232742AbjGYJOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbjGYJHT (ORCPT
+        with ESMTP id S232216AbjGYJOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:07:19 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCB39C;
-        Tue, 25 Jul 2023 02:07:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690276038; x=1721812038;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VORLw/NLRrDo9YApffYMLtY0n8HoPyeHOUozCEI7DhQ=;
-  b=UUfiOcfP1G4x17bKdPGN/bMF2p46u/7pVNRwPLMJFNNs4WCxxXQZu3si
-   NcO2GOvnOIMZG2cH0W87JGTyrVwpnINN0CKXhGuVUhPQWt6JWW8DGtzyT
-   cdJA9IG/fvhYZYu2tiGu/RveRny/VnV44CiH9sM4qRyE4Q19EMkYJ1Tb0
-   Aoc6FsVfRXwKQYQEudLCm601ByYM2rs23/X+64xRpyoYTEg/C2mGYncC4
-   5f1v+qgRTH/Cq43MP5WVm1nvNCnkT7RDpss3ySMWB7vEICc61Bj2zSSrO
-   /3oB8uhbRC8vgYg9R+4taNUV15mmxdII94BaXoB3nPRfF6LNvgd3Dxhcs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="371272667"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="371272667"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:07:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="703206899"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="703206899"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.18.246]) ([10.93.18.246])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:07:08 -0700
-Message-ID: <9e8a98ad-1f8d-a09c-3173-71c5c3ab5ed4@intel.com>
-Date:   Tue, 25 Jul 2023 17:07:06 +0800
+        Tue, 25 Jul 2023 05:14:20 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E429710CB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:14:17 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98e39784a85so1344963066b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690276456; x=1690881256;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=90N1opdApkJ6sofZeZLN2gsjrZklninJ72RskdGs+7M=;
+        b=UPDLtLnhvE37z3PFQELXEQVb8YquW5JpuvtoFr9iv0obwYIY+gIrdJFeRZNXzVJYYp
+         l0iHf/qqttV965ifMacfBlMTrUEasWcc9uULu1gCzbdYdm2gWlQ6C3ep1USnbjP0hy/q
+         yIwpDDy41gNXW6+BJPKvEyEYtSGnsWTawtIqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690276456; x=1690881256;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=90N1opdApkJ6sofZeZLN2gsjrZklninJ72RskdGs+7M=;
+        b=LW8rRr1/net27MCb1OnrsmDMa9Gkzd+iIGz64Ss/rMpKaBNu53q69QJAd1J2xccYZZ
+         eL/6da7PmVUO08crr63QNPkXB+0rx/s/lkQtTvLWY6WCdqdD0oVgiLOTBqoiKbV2zt45
+         COiOCfvGNqEI3uN4B6I2cYX5mb/4329PuhZ/x0lCGzIxqa3X+YyWig9Uzdj4N7eq0M1s
+         PNSqkVXW0XKvSFkATX5yOw+83na0IJKque+vdmX/BkJSCWVWrjl/lSsfOufSrNPjSKkt
+         frs0Zkag7e8KogQ7KK/1u4Bqp32m4gvHhN5Zlc0+Ojb0i8r8ar8bpcjNtx2WsoQAruFV
+         BKLQ==
+X-Gm-Message-State: ABy/qLbGnzue3CgZMbELRIeXa8XiuGwf35m7wAHi3jlvddHcL582l12B
+        9SmEHgqfs4RMqGhVP8Pu+5Fhvg==
+X-Google-Smtp-Source: APBJJlE0BXPyh3d6xZ70mVilCUjvGA2mpPz33nUwaLBBcFccwg8UktLJu68ohKn6RQ3Y2pDbdKDTDA==
+X-Received: by 2002:a17:907:7744:b0:994:1805:1fad with SMTP id kx4-20020a170907774400b0099418051fadmr1555473ejc.10.1690276456161;
+        Tue, 25 Jul 2023 02:14:16 -0700 (PDT)
+Received: from cloudflare.com (79.184.214.102.ipv4.supernova.orange.pl. [79.184.214.102])
+        by smtp.gmail.com with ESMTPSA id f22-20020a1709067f9600b009920f18a5f0sm7764654ejr.185.2023.07.25.02.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 02:14:15 -0700 (PDT)
+References: <cover.1690255889.git.yan@cloudflare.com>
+ <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Jordan Griege <jgriege@cloudflare.com>,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
+Date:   Tue, 25 Jul 2023 11:08:15 +0200
+In-reply-to: <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
+Message-ID: <87v8e8xsih.fsf@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v4 09/10] KVM: x86: Make struct sev_cmd common for
- KVM_MEM_ENC_OP
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>, isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>
-References: <cover.1689893403.git.isaku.yamahata@intel.com>
- <8c0b7babbdd777a33acd4f6b0f831ae838037806.1689893403.git.isaku.yamahata@intel.com>
- <ZLqbWFnm7jyB8JuY@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZLqbWFnm7jyB8JuY@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/2023 10:51 PM, Sean Christopherson wrote:
-> On Thu, Jul 20, 2023, isaku.yamahata@intel.com wrote:
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index aa7a56a47564..32883e520b00 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -562,6 +562,39 @@ struct kvm_pmu_event_filter {
->>   /* x86-specific KVM_EXIT_HYPERCALL flags. */
->>   #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
->>   
->> +struct kvm_mem_enc_cmd {
->> +	/* sub-command id of KVM_MEM_ENC_OP. */
->> +	__u32 id;
->> +	/*
->> +	 * Auxiliary flags for sub-command.  If sub-command doesn't use it,
->> +	 * set zero.
->> +	 */
->> +	__u32 flags;
->> +	/*
->> +	 * Data for sub-command.  An immediate or a pointer to the actual
->> +	 * data in process virtual address.  If sub-command doesn't use it,
->> +	 * set zero.
->> +	 */
->> +	__u64 data;
->> +	/*
->> +	 * Supplemental error code in the case of error.
->> +	 * SEV error code from the PSP or TDX SEAMCALL status code.
->> +	 * The caller should set zero.
->> +	 */
->> +	union {
->> +		struct {
->> +			__u32 error;
->> +			/*
->> +			 * KVM_SEV_LAUNCH_START and KVM_SEV_RECEIVE_START
->> +			 * require extra data. Not included in struct
->> +			 * kvm_sev_launch_start or struct kvm_sev_receive_start.
->> +			 */
->> +			__u32 sev_fd;
->> +		};
->> +		__u64 error64;
->> +	};
->> +};
-> 
-> Eww.  Why not just use an entirely different struct for TDX?  I don't see what
-> benefit this provides other than a warm fuzzy feeling that TDX and SEV share a
-> struct.  Practically speaking, KVM will likely take on more work to forcefully
-> smush the two together than if they're separate things.
+On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
+> skb_do_redirect returns various of values: error code (negative), 0
+> (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DROP.
+> Such code are not handled at lwt xmit hook in function ip_finish_output2
+> and ip6_finish_output, which can cause unexpected problems. This change
+> converts the positive status code to proper error code.
+>
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Reported-by: Jordan Griege <jgriege@cloudflare.com>
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+>
+> ---
+> v3: converts also RX side return value in addition to TX values
+> v2: code style change suggested by Stanislav Fomichev
+> ---
+>  net/core/filter.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 06ba0e56e369..3e232ce11ca0 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+>  
+>  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -	return dev_forward_skb_nomtu(dev, skb);
+> +	int ret = dev_forward_skb_nomtu(dev, skb);
+> +
+> +	if (unlikely(ret > 0))
+> +		return -ENETDOWN;
+> +
+> +	return 0;
+>  }
+>  
+>  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+> @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+>  	if (likely(!ret)) {
+>  		skb->dev = dev;
+>  		ret = netif_rx(skb);
+> +	} else if (ret > 0) {
+> +		return -ENETDOWN;
+>  	}
+>  
+>  	return ret;
+> @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
+>  	ret = dev_queue_xmit(skb);
+>  	dev_xmit_recursion_dec();
+>  
+> +	if (unlikely(ret > 0))
+> +		ret = net_xmit_errno(ret);
+> +
+>  	return ret;
+>  }
 
-generalizing the struct of KVM_MEM_ENC_OP should be the first step. The 
-final target should be generalizing a set of commands for confidential 
-VMs (SEV-* VMs and TDs, maybe even for other arches), e.g., the commands 
-to create a confidential VM and commands to live migration a 
-confidential VM.
+net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to me
+to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
+consistent.
 
-However, there seems not small divergence between the commands to create 
-a SEV-* VM and TDX VMs. I'm not sure if it is worth investigating and 
-pursuing.
+It looks like the Fixes tag for this should point to the change that
+introduced BPF for LWT:
+
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+
