@@ -2,154 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C5C7613D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CE1761118
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbjGYLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        id S232907AbjGYKle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234150AbjGYLOB (ORCPT
+        with ESMTP id S231926AbjGYKlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:14:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4562694;
-        Tue, 25 Jul 2023 04:13:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC410615BA;
-        Tue, 25 Jul 2023 11:13:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5559C433C7;
-        Tue, 25 Jul 2023 11:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690283584;
-        bh=hgi2A9ePVSSsRAzb3jutf8PgyVni+KLCT55bRm6PvHc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wtgvYoh62Ar5Uztv4cZkogFn0zobcVJ3T3bPwyJsdY4jkNwqGz1K62nPJgoGYxChw
-         JWf3/1IlDneks7kcxaBUovcbKcZSfHrR6s6Pu/aa2BSs/Dwz718q/bpMoJFeBpI7iM
-         ZRluQ04xOa4S3erErN0wFlMlSmhQyy1NYwUNuTK0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Daniel Borkmann <daniel@iogearbox.net>,
-        Christian Brauner <brauner@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>, linux-sctp@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 049/509] sctp: add bpf_bypass_getsockopt proto callback
-Date:   Tue, 25 Jul 2023 12:39:48 +0200
-Message-ID: <20230725104555.922099240@linuxfoundation.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230725104553.588743331@linuxfoundation.org>
-References: <20230725104553.588743331@linuxfoundation.org>
-User-Agent: quilt/0.67
+        Tue, 25 Jul 2023 06:41:32 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40639194;
+        Tue, 25 Jul 2023 03:41:31 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="371294155"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="371294155"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 03:41:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="791330446"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="791330446"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Jul 2023 03:41:28 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qOFTr-005j2B-0f;
+        Tue, 25 Jul 2023 13:41:27 +0300
+Date:   Tue, 25 Jul 2023 13:41:26 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: Re: [PATCH v2] gpio: lp3943: remove unneeded platform_set_drvdata()
+ call
+Message-ID: <ZL+m1kQP5tB9+m/f@smile.fi.intel.com>
+References: <20230725102532.3989-1-aboutphysycs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725102532.3989-1-aboutphysycs@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+On Tue, Jul 25, 2023 at 01:25:32PM +0300, Andrei Coardos wrote:
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call, to access the private data of the driver.
+> Also, the private data is defined in this driver, so there is no risk of
+> it being accessed outside of this driver file.
 
-[ Upstream commit 2598619e012cee5273a2821441b9a051ad931249 ]
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
 
-Implement ->bpf_bypass_getsockopt proto callback and filter out
-SCTP_SOCKOPT_PEELOFF, SCTP_SOCKOPT_PEELOFF_FLAGS and SCTP_SOCKOPT_CONNECTX3
-socket options from running eBPF hook on them.
 
-SCTP_SOCKOPT_PEELOFF and SCTP_SOCKOPT_PEELOFF_FLAGS options do fd_install(),
-and if BPF_CGROUP_RUN_PROG_GETSOCKOPT hook returns an error after success of
-the original handler sctp_getsockopt(...), userspace will receive an error
-from getsockopt syscall and will be not aware that fd was successfully
-installed into a fdtable.
-
-As pointed by Marcelo Ricardo Leitner it seems reasonable to skip
-bpf getsockopt hook for SCTP_SOCKOPT_CONNECTX3 sockopt too.
-Because internaly, it triggers connect() and if error is masked
-then userspace will be confused.
-
-This patch was born as a result of discussion around a new SCM_PIDFD interface:
-https://lore.kernel.org/all/20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com/
-
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Cc: Xin Long <lucien.xin@gmail.com>
-Cc: linux-sctp@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Acked-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/sctp/socket.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-index 35d3eee26ea56..4a7f811abae4e 100644
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -8039,6 +8039,22 @@ static int sctp_getsockopt(struct sock *sk, int level, int optname,
- 	return retval;
- }
- 
-+static bool sctp_bpf_bypass_getsockopt(int level, int optname)
-+{
-+	if (level == SOL_SCTP) {
-+		switch (optname) {
-+		case SCTP_SOCKOPT_PEELOFF:
-+		case SCTP_SOCKOPT_PEELOFF_FLAGS:
-+		case SCTP_SOCKOPT_CONNECTX3:
-+			return true;
-+		default:
-+			return false;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- static int sctp_hash(struct sock *sk)
- {
- 	/* STUB */
-@@ -9407,6 +9423,7 @@ struct proto sctp_prot = {
- 	.shutdown    =	sctp_shutdown,
- 	.setsockopt  =	sctp_setsockopt,
- 	.getsockopt  =	sctp_getsockopt,
-+	.bpf_bypass_getsockopt	= sctp_bpf_bypass_getsockopt,
- 	.sendmsg     =	sctp_sendmsg,
- 	.recvmsg     =	sctp_recvmsg,
- 	.bind        =	sctp_bind,
-@@ -9459,6 +9476,7 @@ struct proto sctpv6_prot = {
- 	.shutdown	= sctp_shutdown,
- 	.setsockopt	= sctp_setsockopt,
- 	.getsockopt	= sctp_getsockopt,
-+	.bpf_bypass_getsockopt	= sctp_bpf_bypass_getsockopt,
- 	.sendmsg	= sctp_sendmsg,
- 	.recvmsg	= sctp_recvmsg,
- 	.bind		= sctp_bind,
 -- 
-2.39.2
-
+With Best Regards,
+Andy Shevchenko
 
 
