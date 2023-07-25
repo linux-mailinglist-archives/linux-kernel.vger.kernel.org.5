@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE57761AEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A2F761AE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjGYOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S232190AbjGYOEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjGYOEu (ORCPT
+        with ESMTP id S230104AbjGYOEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:04:50 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6B71FC9;
-        Tue, 25 Jul 2023 07:04:46 -0700 (PDT)
-X-QQ-mid: bizesmtp74t1690293876tg58cvh3
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 25 Jul 2023 22:04:35 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: 5q30pvLz2icoF9hdwL4WDQiNv7OsU3zIhDB7OiE9gltG9XA/SdVsSyopCPbgm
-        1QmH0/OUGyyBZB4lH0OA3hMZz470Vi9nNqS+jRrYZW1tdomCErw3jcZHyvJTp4wIy2rDvKT
-        0mIQs5hawthK7EGHztCSLe+qtRWutiknO51LpMCTVUwSkvvlnQC7di4eUh5+V2sq2eoru2f
-        AXgogj7H+Ir9smrqlP0cy/QF0+JjuJIoqsU7n2N6i45CTTdV5RGWqEbi+g5dCmRR51d7zrp
-        iAXIdRVPqnYgb8M5IzV7v8GGUyz0iwekLheaiRz19yj61doajcz8fXQg7SivKDjeW37Ogwr
-        ZoIiHSzvBkTWH37Dxguh0xN+ip6wPOEUsO3buBA/tDmHUaEVv97HqBUAM83HQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16957176899631373251
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v2 07/14] selftests/nolibc: defconfig: remove mrproper target
-Date:   Tue, 25 Jul 2023 22:04:31 +0800
-Message-Id: <20230725140431.36927-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230722124603.GI17311@1wt.eu>
-References: <20230722124603.GI17311@1wt.eu>
+        Tue, 25 Jul 2023 10:04:42 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372F91FC9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:04:37 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63d09d886a6so10669316d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690293876; x=1690898676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L6q2fbSEUaRmabz4YeOC1QVhb19awtdwyXc9KAJHQSg=;
+        b=NhRu+ZEBbGmHUyV23DWyyUEl6Nq9VUT++p+9QWJdkAJ01svswkr1clQ+XgDEJoKZlu
+         Weht+NskAhuvf8tGjjG2GgCJMoox5KBq9h7cac9rQqrC1vpsp28oMsNe9KY4CjN98NgM
+         2onTXCyaJs2t96h7XB5cCypHFdWg+fwb65PFB8O3ZrvuiaJHuzW2QZDMOqGry5xTxZnL
+         a0LtNC5vIK9Xsexs+3OgGgt5bslUleSsJtnl1gA4F45g2Ko2FIGEpl62me3wUqr1jORf
+         2aM4RpjbPng4AlA4q3lBQwcuniuBSVYARmbS0pCKD+STkQGtoiTn6CFXFLVdidVlar95
+         wCyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690293876; x=1690898676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L6q2fbSEUaRmabz4YeOC1QVhb19awtdwyXc9KAJHQSg=;
+        b=AjOcM7JsRX2EEeEhIs5C9VGYzYiHl0l1MRMqjz4hsnSZxJR/4jF2MM94rM4a4sclc/
+         jDqinGsf6/tMkGMcJT2iD0tVaVustojDmqXbXr5XH1jIrMJJ+83UMjmdGmYrBus0Bgun
+         PlFGzYi3mhEMRs+htPX2nbnxnvD63bw14Egj+erdmdiKMTN0eNxVPbspLThnoTJ440i/
+         WuDleei2wZc3xdZfVH4asinRQr9mPmv0b/jxTWd0LMAUH9FoRsAE+VMUvFAGe+B4hw0x
+         Db5q/nboRbY7VqckZwUA2M4b24airnlSr5J4qghQZhUpRTsMouwwT5N2wnoWtbRMIwdX
+         1m9g==
+X-Gm-Message-State: ABy/qLZFe9ie1PgG9OC7TeGQ+pSWmxkEl2vjFOPd+ZMTzJkz2dOVNMFt
+        Fv0BZS06ZtXjdF2NSmi93dmCbQ==
+X-Google-Smtp-Source: APBJJlG3KOFzO2JnzeEJGbYDiAU3LPsExxVCfBgtf0f78SLJnPjtuVXjAyD32F9FLeYCbgmlt2ReZA==
+X-Received: by 2002:a0c:9a4f:0:b0:628:8185:bd6e with SMTP id q15-20020a0c9a4f000000b006288185bd6emr2524662qvd.5.1690293876314;
+        Tue, 25 Jul 2023 07:04:36 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ad06])
+        by smtp.gmail.com with ESMTPSA id q4-20020a0cf5c4000000b00636047c276csm1368975qvm.126.2023.07.25.07.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 07:04:36 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 10:04:35 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
+Message-ID: <20230725140435.GB1146582@cmpxchg.org>
+References: <20230719174613.3062124-1-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719174613.3062124-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Jul 19, 2023 at 09:24:54PM +0800, Zhangjin Wu wrote:
-> > The O=/path/to/kernel-<ARCH> option allows to build kernel for different
-> > architectures in different output directories, in this scene, it doesn't
-> > need the mrproper operation for defconfig anymore.
-> > 
-> > If really require to clean up the source code tree, let users run the
-> > standalone mrproper target on demand.
+On Wed, Jul 19, 2023 at 05:46:13PM +0000, Yosry Ahmed wrote:
+> Currently, memcg uses rstat to maintain hierarchical stats. The rstat
+> framework keeps track of which cgroups have updates on which cpus.
 > 
-> But that's precisely what's going to make it more and more annoying
-> to run simple tests. The mrproper was there precisely because one
-> config at a time was being used, so without it we'll restart to see
-> plenty of failures as it used to be before mrproper was added. I
-> understand what you're trying to do with the O=, but then if you're
-> already passing "O=", why not also pass "defconfig" ?
-> 
-> I mean, let's make sure this makefile is only used to manipulate
-> the tests. It must not become a huge wrapper for the kernel makefile
-> otherwise it will become extremely complicated to use to run just a
-> simple test. And with this one and the last few ones, I'm starting
-> to sense that I'll have to read a README to figure how to reliably
-> run a test.
-> 
-> In my opinion, there are mainly two use cases :
->   - user, manually: commands should be short, forgiving to user
->     mistakes, and easy to remember. I.e. they're compatible with
->     upper-arrow, then enter.
-> 
->   - scripts: these are the ones already running in loops with tons
->     of variables, setting object directories with O=$arch/... and
->     taking care of their own cleanups. These ones will already be
->     user-specific and can very well accomodate one or two extra
->     lines for a make mrproper or make defconfig if needed.
-> 
-> The second ones deserve thinking and control anyway. The first ones
-> should mostly not fail for a user mistake and in the worst case waste
-> a bit of their time by rebuilding something that could have been
-> avoided. But I do want to prioritize the user here. And that's also
-> why I want the makefile to be easy to read with as few macros as
-> possible, because once it works for you, it's easy to figure what is
-> being done, and how to exploit it from your scripts. The opposite is
-> not true. Nobody reads a makefile full of macros to try to figure how
-> to run their first test or why a test that worked once now fails.
->
+> For non-hierarchical stats, as memcg moved to rstat, they are no longer
+> readily available as counters. Instead, the percpu counters for a given
+> stat need to be summed to get the non-hierarchical stat value. This
+> causes a performance regression when reading non-hierarchical stats on
+> kernels where memcg moved to using rstat. This is especially visible
+> when reading memory.stat on cgroup v1. There are also some code paths
+> internal to the kernel that read such non-hierarchical stats.
 
-Ok, let's reserve mrproper for defconfig and also for tinyconfig if we
-add standalone target for it.
+It's actually not an rstat regression. It's always been this costly.
 
-let's drop patch and the previous one.
+Quick history:
 
-Thanks,
-Zhangjin
+We used to maintain *all* stats in per-cpu counters at the local
+level. memory.stat reads would have to iterate and aggregate the
+entire subtree every time. This was obviously very costly, so we added
+batched upward propagation during stat updates to simplify reads:
 
-> Thanks,
-> Willy
+commit 42a300353577ccc17ecc627b8570a89fa1678bec
+Author: Johannes Weiner <hannes@cmpxchg.org>
+Date:   Tue May 14 15:47:12 2019 -0700
+
+    mm: memcontrol: fix recursive statistics correctness & scalabilty
+
+However, that caused a regression in the stat write path, as the
+upward propagation would bottleneck on the cachelines in the shared
+parents. The fix for *that* re-introduced the per-cpu loops in the
+local stat reads:
+
+commit 815744d75152078cde5391fc1e3c2d4424323fb6
+Author: Johannes Weiner <hannes@cmpxchg.org>
+Date:   Thu Jun 13 15:55:46 2019 -0700
+
+    mm: memcontrol: don't batch updates of local VM stats and events
+
+So I wouldn't say it's a regression from rstat. Except for that short
+period between the two commits above, the read side for local stats
+was always expensive.
+
+rstat promises a shot at finally fixing it, with less risk to the
+write path.
+
+> It is inefficient to iterate and sum counters in all cpus when the rstat
+> framework knows exactly when a percpu counter has an update. Instead,
+> maintain cpu-aggregated non-hierarchical counters for each stat. During
+> an rstat flush, keep those updated as well. When reading
+> non-hierarchical stats, we no longer need to iterate cpus, we just need
+> to read the maintainer counters, similar to hierarchical stats.
+> 
+> A caveat is that we now a stats flush before reading
+> local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
+> or memcg_events_local(), where we previously only needed a flush to
+> read hierarchical stats. Most contexts reading non-hierarchical stats
+> are already doing a flush, add a flush to the only missing context in
+> count_shadow_nodes().
+> 
+> With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+> machine with 256 cpus on cgroup v1:
+>  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+>  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+>  real	 0m0.125s
+>  user	 0m0.005s
+>  sys	 0m0.120s
+> 
+> After:
+>  real	 0m0.032s
+>  user	 0m0.005s
+>  sys	 0m0.027s
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+But I want to be clear: this isn't a regression fix. It's a new
+performance optimization for the deprecated cgroup1 code. And it comes
+at the cost of higher memory footprint for both cgroup1 AND cgroup2.
+
+If this causes a regression, we should revert it again. But let's try.
