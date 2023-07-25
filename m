@@ -2,137 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71709762554
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C712762566
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjGYWBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        id S231714AbjGYWCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbjGYWBJ (ORCPT
+        with ESMTP id S231697AbjGYWC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:01:09 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A82E1FEC;
-        Tue, 25 Jul 2023 15:01:06 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1bba254a7d4so650191fac.2;
-        Tue, 25 Jul 2023 15:01:06 -0700 (PDT)
+        Tue, 25 Jul 2023 18:02:29 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B357426AE
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:59 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-56336f5dc6cso2586600a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690322465; x=1690927265;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sNrWzLvwqEWfm83K2uRioAjV1pOkPLb6ELuVS9z3syU=;
-        b=h+XCLvqsjKeM7GRAO2yvRxh7nYDqyHfpp/xhltHZEyOy8xi3kh4p/43Kca21j94dN3
-         JU8KtiHQXU4S4xjhu+I9+HYE/8vAyKznNDmTb6vbWUeRTF/Vixp8ulGmxFFBwZmHeJhs
-         ObLpFFZoRkY1Fgfju5iYjyYTzZSZw4bYq7pa61HP8/1q5YpMXb3Cbarj9T7x0DJQIIek
-         YctXQDYeVsUTwwxLGniQE1Hkw+gQzI1j1HWuGsk+DYB/rUMNzt6MjJLoeSn+InVoITnY
-         QeiUrhezi3i79M66btXVMDqFtwBK00QXUI5qUSrxvUefTJDQcnZL6F7dmIQP3r3HuuZq
-         xULw==
+        d=google.com; s=20221208; t=1690322512; x=1690927312;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2LFI4LFbO9Za9GYdKLk7QvU7CpMUS45By27lNDC3GjA=;
+        b=uciYcUscCG6H+67Jcmkbc5V2n9+VZ93bLtIW814gvYmube9sijgHq2d2+fhAFg6N1t
+         Dw4e/msB58FhRlaEDW6If1180OsASchae1hL8RG8Jlem0+vo7hC/bEDYlzLHbT5J7xru
+         CI3Y9RFVPoG/mQEzEtMXSmWvBfZBr9P5M/FCdiUrv9f7yKBdMi1yE2lbKEebb/8QZrY3
+         Sd/n6X4t+tTakMnoxsxynC3E0aJNnw2nV7YVVD5gYjxSjF/Cxreuub5mjDYW8pyYp/4t
+         lw849iyeLf7Y7QA9iS63UcnFz3R7IDBAOt0z3hD2XdzVMNzbYny5txH8dWGWJQ7IIJKN
+         rWBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322465; x=1690927265;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sNrWzLvwqEWfm83K2uRioAjV1pOkPLb6ELuVS9z3syU=;
-        b=TZ6gmXxHOEVbXBPNmyx78mDlIr1P6hKRtMW5dOw4n/pkW9Kil7CLz/TSaCZ5PJt1jx
-         ShzaN2Z1B40gjKdjTzv2UUUvGg9kM0KCiExxzWVWrh7Ht3hsQdXz5XXMBiP/d4u8j4n6
-         cPHJvlp9hPbb4ayZAfV1JCI8euHyMgrGFlp/nXIH1ximtsfeugUi0R9bfOi0kkR4VpEe
-         LH2aTzmasBER1QjohYVL0QEdIMrR9vAphWn0QKgAEjZioSsFKo76tHQGo60Y8ls9h/CZ
-         G0q4mFC9G28juy8nsGRz9bI/5TdcTgckM/OR9gvF/Yj5KFZYAWITcB7anFDjEk9OnwqI
-         Nb0Q==
-X-Gm-Message-State: ABy/qLaNcXlUYhMnmHVQJBm0ZivwY2w4V65EvKGbSUMxdr+Qn3mwYcAo
-        GKDG7jloJQu0VZm6Gx3JHRo=
-X-Google-Smtp-Source: APBJJlFBn5vUqnknyj718FC81NIV4HcjANhJsE9UmdaArbL635it94NRx9qBhd84aRQf57NOAGh68w==
-X-Received: by 2002:a05:6870:f615:b0:1b0:5bf7:3bac with SMTP id ek21-20020a056870f61500b001b05bf73bacmr366061oab.37.1690322465502;
-        Tue, 25 Jul 2023 15:01:05 -0700 (PDT)
-Received: from grumpy-VECTOR.hsd1.tx.comcast.net ([2601:2c3:480:7390:871d:ebb3:c6e2:8ac3])
-        by smtp.gmail.com with ESMTPSA id v40-20020a4a8c6b000000b0056688eea98csm5870026ooj.27.2023.07.25.15.01.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 15:01:04 -0700 (PDT)
-From:   Jorge Lopez <jorgealtxwork@gmail.com>
-X-Google-Original-From: Jorge Lopez <jorge.lopez2@hp.com>
-To:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
-        ilpo.jarvinen@linux.intel.com
-Subject: [PATCH 5/5] hp-bioscfg: Fix memory leaks in password_elements_from_package()
-Date:   Tue, 25 Jul 2023 17:00:56 -0500
-Message-Id: <20230725220056.25560-6-jorge.lopez2@hp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230725220056.25560-1-jorge.lopez2@hp.com>
-References: <20230725220056.25560-1-jorge.lopez2@hp.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690322512; x=1690927312;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2LFI4LFbO9Za9GYdKLk7QvU7CpMUS45By27lNDC3GjA=;
+        b=FCJmrvWt7Ra9dETK2k9D1fZrO2sbK4Xx54qoKU+/wabfTNnX8VLvjOyqNyNLFg97Ta
+         hfb3/UDgaf+fvSUAuy6MhN/c0tYlMLJNQUBm74rT/EIz47qIcAxvx/5djWkWyjjU8xuC
+         JLn8Q1mi0i5vA6M4NB8JxN8XqMN58k8bnZbUu7vYEXsl6OoyIh+zBuXEAckBx8hf2HvU
+         GGWBoza5iDjDDOuBPi9xDE2q3UH3ZnE+KsTRDwgIPbSa6NY7i5ZnBElMhryg30isRGgt
+         i51JZIoenel7BLBOrDo8tAIsLuLRiKbJMFdwlupbR2VR2Om6RZySZwJW43BE0ov+jiO/
+         G6aA==
+X-Gm-Message-State: ABy/qLZaTx3HAdout/3HettMibITIHi328vY24E0X0zXxGFF4dkyCft8
+        q7vi2edMjfx+1d6If8oCBhdGKioqrx5s
+X-Google-Smtp-Source: APBJJlEPI23MF32jHIZQ2ZRj8w4W6GxwOZ6bYhBqAkYrdYYyI9q1X89KcpwA0MZlRaLNL9IvTnS+4zGIWWHr
+X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
+ (user=afranji job=sendgmr) by 2002:a63:3e82:0:b0:563:9e04:52b with SMTP id
+ l124-20020a633e82000000b005639e04052bmr2658pga.6.1690322512106; Tue, 25 Jul
+ 2023 15:01:52 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 22:00:56 +0000
+In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
+Mime-Version: 1.0
+References: <20230725220132.2310657-1-afranji@google.com>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230725220132.2310657-4-afranji@google.com>
+Subject: [PATCH v4 03/28] KVM: selftests: Store initial stack address in
+ struct kvm_vcpu
+From:   Ryan Afranji <afranji@google.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
+        sagis@google.com, erdemaktas@google.com, afranji@google.com,
+        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
+        maz@kernel.org, bgardon@google.com, jmattson@google.com,
+        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
+        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
+        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
+        borntraeger@de.ibm.com, eric.auger@redhat.com,
+        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
+        pshier@google.com, axelrasmussen@google.com,
+        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
+        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, ackerleytng@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address memory leaks in hp_populate_password_elements_from_package()
-and uninitialized variable errors.
+From: Ackerley Tng <ackerleytng@google.com>
 
-Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
+TDX guests' registers cannot be initialized directly using
+vcpu_regs_set(), hence the stack pointer needs to be initialized by
+the guest itself, running boot code beginning at the reset vector.
 
+We store the stack address as part of struct kvm_vcpu so that it can
+be accessible later to be passed to the boot code for rsp
+initialization.
+
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+Change-Id: I54e7bde72c5c21e7d8944415ac5818d9443e2b70
+Signed-off-by: Ryan Afranji <afranji@google.com>
 ---
-Based on the latest platform-drivers-x86.git/for-next
----
- .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ tools/testing/selftests/kvm/include/kvm_util_base.h | 1 +
+ tools/testing/selftests/kvm/lib/x86_64/processor.c  | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-index 52e4d346b529..5e833ea0c5e3 100644
---- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-+++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-@@ -227,7 +227,7 @@ static int hp_populate_password_elements_from_package(union acpi_object *passwor
- 	int value_len;
- 	int ret;
- 	u32 size;
--	u32 int_value;
-+	u32 int_value = 0;
- 	int elem;
- 	int reqs;
- 	int eloc;
-@@ -264,6 +264,7 @@ static int hp_populate_password_elements_from_package(union acpi_object *passwor
- 		if (expected_password_types[eloc] != password_obj[elem].type) {
- 			pr_err("Error expected type %d for elem %d, but got type %d instead\n",
- 			       expected_password_types[eloc], elem, password_obj[elem].type);
-+			kfree(str_value);
- 			return -EIO;
- 		}
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index a07ce5f5244a..12524d94a4eb 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -67,6 +67,7 @@ struct kvm_vcpu {
+ 	int fd;
+ 	struct kvm_vm *vm;
+ 	struct kvm_run *run;
++	vm_vaddr_t initial_stack_addr;
+ #ifdef __x86_64__
+ 	struct kvm_cpuid2 *cpuid;
+ #endif
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+index e3a9366d4f80..78dd918b9a92 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+@@ -607,10 +607,12 @@ struct kvm_vcpu *vm_arch_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id,
+ 	vcpu_init_cpuid(vcpu, kvm_get_supported_cpuid());
+ 	vcpu_setup(vm, vcpu);
  
-@@ -318,6 +319,8 @@ static int hp_populate_password_elements_from_package(union acpi_object *passwor
- 					sizeof(password_data->common.prerequisites[reqs]));
++	vcpu->initial_stack_addr = stack_vaddr;
++
+ 	/* Setup guest general purpose registers */
+ 	vcpu_regs_get(vcpu, &regs);
+ 	regs.rflags = regs.rflags | 0x2;
+-	regs.rsp = stack_vaddr;
++	regs.rsp = vcpu->initial_stack_addr;
+ 	regs.rip = (unsigned long) guest_code;
+ 	vcpu_regs_set(vcpu, &regs);
  
- 				kfree(str_value);
-+				str_value = NULL;
-+
- 			}
- 			break;
- 		case SECURITY_LEVEL:
-@@ -356,6 +359,8 @@ static int hp_populate_password_elements_from_package(union acpi_object *passwor
- 					str_value,
- 					sizeof(password_data->encodings[pos_values]));
- 				kfree(str_value);
-+				str_value = NULL;
-+
- 			}
- 			break;
- 		case PSWD_IS_SET:
-@@ -365,6 +370,9 @@ static int hp_populate_password_elements_from_package(union acpi_object *passwor
- 			pr_warn("Invalid element: %d found in Password attribute or data may be malformed\n", elem);
- 			break;
- 		}
-+
-+		kfree(str_value);
-+		str_value = NULL;
- 	}
- 
- exit_package:
 -- 
-2.34.1
+2.41.0.487.g6d72f3e995-goog
 
