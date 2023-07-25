@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369927620F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5017620FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbjGYSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        id S232580AbjGYSGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232629AbjGYSFw (ORCPT
+        with ESMTP id S232241AbjGYSGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:05:52 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D58B268B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:05:45 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-516500163b2so1659a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690308344; x=1690913144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3gBnT3Q9DJqSuXcP4CzN0zSoMTfKvs3KyiDNWzlI9V4=;
-        b=IR7MPLRNrwqnMA6Taco+EOZJ6KtwnxWYXAWsiIpvLEpZ8GqzUUtArAD7xEuCO+mZv3
-         aOiO+lW2JAnLZdb/Ck6lRn0BxAyt4qUSG4lQz26wvv5CawhHADRbfR8JdTkmZuqKWid3
-         tQ4sxPrTLguBe5mOxWPkRgp5C+jQLB/QhL1zPzTMaIbs+8YY+xGjT6uCSOiuP+ShH/yh
-         bghhKsbg4+YtihSsav+R2zhvOZpDN1YaMGxBsWq+BgWfdppwO7aEJnEB/IB6oySvNTZv
-         PZ+ebPFJ7IFs6PMAwkdsvH388TRo5wF31MrlTWn+ckwpC0JHlIN/H20Q8pM/lztUD7CY
-         vZjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690308344; x=1690913144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3gBnT3Q9DJqSuXcP4CzN0zSoMTfKvs3KyiDNWzlI9V4=;
-        b=B0ArDDb9yTqo20lsD+1NebKIHWNAPTv6KHOyrGNMQha/jmSoD6GuFNMml3kiApOpUm
-         F0ozh28WmSccZgxOPt/L09Kghv/ejs2Nj6FcXhPjojUFNhEkaDf+F911Le4rdhsspAH3
-         3PUPcmwvARQmbxPANRvrPqaSnCf4g7fkecX0ZKfc9jXVTAcbmPsoij/XbRdnncav4NUp
-         0f0J+GnQt5skA0NEiah4wnBxOQRNd70yZHG+4EAho0ENJYe7t4/oapOXk68AI1n7CnhD
-         4YsBfM3xXPtJjDsCY6+RlAXtbLa7J+Zv3jn7Utaur/SKS4qcPM8iCTIelqgOcfA3l5z1
-         v3dg==
-X-Gm-Message-State: ABy/qLYvj/39uejC/+mCiDusLEOOU/KXLQi0GL1V2jMBWQjAj4A/QH3E
-        QsRlaICckDFIHKH/LQJmKgdLDu98e7NKR9hJPgEoYA==
-X-Google-Smtp-Source: APBJJlFx5VS5SCJzOTClBE3oorb3CkqCx6mrIr5bXycpxVlMeBOxmxwx7XhBiLPrxEo29Ul0BYE36xYQQxmuCt7+gdA=
-X-Received: by 2002:a50:d6de:0:b0:522:4741:d992 with SMTP id
- l30-20020a50d6de000000b005224741d992mr146970edj.4.1690308343974; Tue, 25 Jul
- 2023 11:05:43 -0700 (PDT)
+        Tue, 25 Jul 2023 14:06:41 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2A21FDA;
+        Tue, 25 Jul 2023 11:06:39 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 58712f2710031aa7; Tue, 25 Jul 2023 20:06:38 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 7CC58661B14;
+        Tue, 25 Jul 2023 20:06:37 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH v1] ACPI: thermal: Drop enabled flag from struct acpi_thermal_active
+Date:   Tue, 25 Jul 2023 20:06:37 +0200
+Message-ID: <2696210.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com> <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com> <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com> <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com> <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com> <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
- <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com>
-In-Reply-To: <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com>
-From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-Date:   Tue, 25 Jul 2023 20:05:32 +0200
-Message-ID: <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
-Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdduudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdp
+ rhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 at 11:11, Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> ----
-> Michal please post your thoughts before I post this as v26.
-> ----
-[...]
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Looks ok - minor things below.
+The enabled field of struct acpi_thermal_active is only updated and never
+read, so drop it along with the related code.
 
-1. I'd change the _WPASYNC things to something better, if this can
-also work with "normal" UFFD WP.
+No intentional functional impact.
 
-2. For the address tagging part I'd prefer someone who knows how this
-is used take a look. We're ignoring the tag (but clear it on return in
-->start) - so it doesn't matter for the ioctl() itself.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
-3. BTW, One of the uses is the GetWriteWatch and I wonder how it
-behaves on HugeTLB (MEM_LARGE_PAGES allocation)? Shouldn't it return a
-list of huge pages and write *lpdwGranularity =3D HPAGE_SIZE?
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -121,7 +121,6 @@ struct acpi_thermal_active {
+ 	struct acpi_handle_list devices;
+ 	unsigned long temperature;
+ 	bool valid;
+-	bool enabled;
+ };
+ 
+ struct acpi_thermal_trips {
+@@ -1084,15 +1083,10 @@ static int acpi_thermal_resume(struct de
+ 		if (!tz->trips.active[i].valid)
+ 			break;
+ 
+-		tz->trips.active[i].enabled = true;
+ 		for (j = 0; j < tz->trips.active[i].devices.count; j++) {
+ 			result = acpi_bus_update_power(
+ 					tz->trips.active[i].devices.handles[j],
+ 					&power_state);
+-			if (result || (power_state != ACPI_STATE_D0)) {
+-				tz->trips.active[i].enabled = false;
+-				break;
+-			}
+ 		}
+ 	}
+ 
 
-4. The docs and commit messages need some rewording due to the changes
-in the API.
 
-Other than that:
 
-Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
