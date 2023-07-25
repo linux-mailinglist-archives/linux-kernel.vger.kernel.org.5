@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0A67624C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46E37624CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjGYVtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        id S231410AbjGYVtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbjGYVtU (ORCPT
+        with ESMTP id S231308AbjGYVtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:49:20 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D322129
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-666ecf9a0ceso3693191b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690321758; x=1690926558;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
-        b=WpyPx27WCr/WIbEfCSxs1Y8b4Gg4/pW0aKUoGH4ssc0OCZecu8jXj20aNS6wF3tblu
-         XmuW8qKYNhzHdxjrATt9wvXBBGzM0YrZmLmiyTq3oAuvOetPDU+3f+ZlV4hRm2orFEtE
-         6Y/7E3DwS9WBOPNuGwOQd0SCBuaLRzFC2vdQrxsADf3CZJ6+CcxSrtiN70KeKLvMagMy
-         eXf4wX/2fWzomv+wLjuS+ruBfpILqSMX2zATgJY5tevg8w5F0h1bTnw7NcR+ZInS1hoS
-         1h84VW506r3LzA6A4J8fgl+br0tUuPcuVEG5KoXcUAWT9U8qQH+ESRL+xre6zQGoA/R0
-         tqLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690321758; x=1690926558;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
-        b=aPBMZa40eL7GnKvZs++nV/FWovgli3UMnHDDoqvNNnqMy9Tiu53fUTOfLIu8+g6IeT
-         SOs6YvPvAwZeUlbnheYGnCHy8MbKnWZEBsWJ1LK9tlzkmeska1HdxQhIVEybra/Cq2N1
-         hSEKO4D4js596O6k2FgXyUGt1KdnlJEob5HSoiEN9rOVN7xl9u3vonhtvsgrZuw4krKz
-         R0BPRGXP+8nGZKOUdw5O+oi8bORYxwnLdpNaHVoBpEKqR9a1DKQSj8NSxbHPYu/0bBik
-         OuVSByn3WmNV83VyFQ6XI89uhWtQJabtYxG2OE3evw7WmmkjXXr+yRIjU65LsVxfTNiw
-         +BRQ==
-X-Gm-Message-State: ABy/qLaqgazo15YLEtRhgsJL289+IIMgqtaz0J7ql/19tFkElcXSH9wo
-        41wsYHbVZ4Cj/3hrba7+ZfvyOg==
-X-Google-Smtp-Source: APBJJlEkPBc//RP5lMftBxjIlZlZ6A6JNiLvfq/eGPDXJfguV4IQ7rGDXp7ppM4o8is0I+HWifddKw==
-X-Received: by 2002:a05:6a21:790a:b0:137:6958:d517 with SMTP id bg10-20020a056a21790a00b001376958d517mr263272pzc.24.1690321758506;
-        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:a7a4:bf67:c9d5:c1b7])
-        by smtp.gmail.com with ESMTPSA id i2-20020a63a842000000b0055fead55e81sm11269105pgp.57.2023.07.25.14.49.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 14:49:13 -0700
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] btrfs: remove unused pages_processed variable
-Message-ID: <ZMBDWbHiJVOt03u5@google.com>
-References: <20230724121934.1406807-1-arnd@kernel.org>
+        Tue, 25 Jul 2023 17:49:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE171FEB;
+        Tue, 25 Jul 2023 14:49:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE9276186A;
+        Tue, 25 Jul 2023 21:49:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E68EC433C8;
+        Tue, 25 Jul 2023 21:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690321770;
+        bh=wvQn3+vfatEE94wZppEmqQCo2ZDZzADNKAHxArXYbSU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dw0O1jwfdcV80JDUixD/4nRJSXX4YLfrhuGxPJa9nZqH9t+z6UEj7NN4pRrMW4Iv7
+         mjuaWYuta9YHhVQWIShdc/lTRNU2W4e4Bg3zoND+Wi2ZXiwdklh8jgm5Fuhxufplq2
+         W/zGiPx7WlHT40tloHpIWfkyHSeESwNBbZNSci0Lpb5oWvAYE1YNIqzAJWnil0lYrS
+         lMi/wvHtNQwuXU/2bxwaU0pmSosoSHH3FzsbFpHyAYxk1TrGv/inMpZ2dkh2wSYJLq
+         i54xcrt+bhRWI9MwqcAzwxMcvCLq2GOih2S3T0IfCQH9Sta23DWT1ea2QVFUfpmWuc
+         eJjcPF9Rcqbag==
+Date:   Tue, 25 Jul 2023 16:49:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     suijingfeng <suijingfeng@loongson.cn>
+Cc:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, dri-devel@lists.freedesktop.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH 2/6] PCI/VGA: Deal with PCI VGA compatible devices only
+Message-ID: <20230725214928.GA666846@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230724121934.1406807-1-arnd@kernel.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ee44ec4e-df97-c327-b83b-fe56eb2c120b@loongson.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 02:19:15PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sat, Jul 22, 2023 at 04:11:07PM +0800, suijingfeng wrote:
+> ...
+> In the future, we may want to expand VGAARB to deal all PCI display class
+> devices, with another patch.
 > 
-> The only user of pages_processed was removed, so it's now a local write-only
-> variable that can be eliminated as well:
+> if (pdev->class >> 16 == PCI_BASE_CLASS_DISPLAY)
 > 
-> fs/btrfs/extent_io.c:214:16: error: variable 'pages_processed' set but not used [-Werror,-Wunused-but-set-variable]
+>          // accept
 > 
-> Fixes: 9480af8687200 ("btrfs: split page locking out of __process_pages_contig")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307241541.8w52nEnt-lkp@intel.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> else
+> 
+>       // return immediately.
+> 
+> 
+> Then, we will have a more good chance to clarify the programmer interface.
 
-Thanks for the patch!
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Link: https://lore.kernel.org/llvm/64c00cd4.630a0220.6ad79.0eac@mx.google.com/
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+I would prefer not to expand vgaarb to deal with all display devices
+unless they actually need the legacy resources like [pci 0xa0000-0xbffff].
 
-> ---
->  fs/btrfs/extent_io.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c0440a0988c9a..121edea2cfe85 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -211,7 +211,6 @@ static void __process_pages_contig(struct address_space *mapping,
->  	pgoff_t start_index = start >> PAGE_SHIFT;
->  	pgoff_t end_index = end >> PAGE_SHIFT;
->  	pgoff_t index = start_index;
-> -	unsigned long pages_processed = 0;
->  	struct folio_batch fbatch;
->  	int i;
->  
-> @@ -226,7 +225,6 @@ static void __process_pages_contig(struct address_space *mapping,
->  
->  			process_one_page(fs_info, &folio->page, locked_page,
->  					 page_ops, start, end);
-> -			pages_processed += folio_nr_pages(folio);
->  		}
->  		folio_batch_release(&fbatch);
->  		cond_resched();
-> -- 
-> 2.39.2
-> 
+But maybe the consumer of these interfaces relies on vgaarb even for
+devices that don't need those resources?  If so, please mention
+examples of where they depend on vgaarb.
+
+I expect the vgaarb interfaces are used by things that need to emulate
+the option ROM to initialize the device.  If the device has a
+programming interface other than 0000 0000b, the option ROM should not
+be using the [pci 0xa0000-0xbffff] resource, so vgaarb should not be
+needed.
+
+Bjorn
