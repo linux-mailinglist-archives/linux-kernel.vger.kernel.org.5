@@ -2,156 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D200C7609F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7936B7609FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjGYGFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        id S229832AbjGYGFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjGYGFN (ORCPT
+        with ESMTP id S231933AbjGYGFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:05:13 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8544E5A;
-        Mon, 24 Jul 2023 23:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690265112; x=1721801112;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=V5D4jmotoFqDMHTLeW6gqZOf+M9CI1KtkZuy3L3YrdY=;
-  b=J40xG5ihni4To2TO7ZYMDXjCBtQyTQk9lF3Wmi9Tmg8GXr+ajTBLiepG
-   Yo6slHoV6pQzBu4lNB+K7DszGdnOhzs55kDy0JcVRJxVBOQps4MX5Zuhn
-   snb9Ue61KS2geGvMkh0DbRUC5kcnD77OQdSQoicQLp8tF/OgNBe7k2l/f
-   BGAzxH4xb2t6Xr8nyBJxAjJWpnlBSbwV+AIEgStPD2r9pnF4BRdNQvGID
-   AWLFIkIHD9ejPpxZTRmJbVtpx9WbT51jYleIWunf+ySRmM7HGVObBSEs9
-   M0UKzwBXYprDXBGHQ54jzK5Cxp1MpcySkxP4G22fS7dOGpwLn0cONjtX3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="365084059"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="365084059"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 23:05:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="839732949"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="839732949"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Jul 2023 23:05:11 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 23:05:11 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 23:05:11 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 23:05:11 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 24 Jul 2023 23:05:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nSrlRy5NryjXHBD2/12drYiP1iNFWj2BZP2DbosRmwJbWUlJnHg4MAAyEpUPmkMXjPdmaLJqOXj79HYTIryuWVIyqzDvd7URzOLNHE3TBO1rGa9vFXgE6Td1nlFHn4i7aph1qEKyxnC7SuyGg2UfaFocp9RF+wxuPFIz1qmzRg2ipiEYWNj0JmSLmM7AKIyzaSLDJquAxPlCPPlNmH/i/6KOV7fiW7uH8OIESP+RBBCcIfIOrVO/SCF4aJaYpIeE3d04O4mqhMh3tk0sJDzINLLLAXYDb2uANW2cgGLuz4bLdj+KRdN01iG0FMtXxlV8iXrSKfDnJikzD6baCNF3lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7vPczETDM2uNEuO+hU+PGi+pPMEl8av1N70VmHRV4VY=;
- b=DnZEUbYT2L+v0QrCQZ+PokDNYS05v92+v2AS846ZOeXu3ESFjZXhjUGSJw9YfFOX1DWsqRjo5ZwwMxLbwPicfqcYAuiPvPOMlj/bVhS+157QNrDD0ouEkB0yiPfyH77TeAeZLd8Kuza8s93JAt1pObcanU6IJgJj6mWxd1PIhAVE8OTwJuxm1RGbvGiI9IrzWUETNSR7lPmObaSKMI0l7KF5SisQ+u5Nu+0PK2F3Y3+HclddrzRR7wmSAny/QgEV9JpNBZyB05czEsyFUujs7/xSwk8q7Z8jFmVd9dSLUXPqSOrDxHqeeyT/sokFMLdgKIOTQciyMJZxIekj9y6zaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by PH7PR11MB5861.namprd11.prod.outlook.com (2603:10b6:510:133::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Tue, 25 Jul
- 2023 06:05:04 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::c407:a2ef:2fde:f6d1]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::c407:a2ef:2fde:f6d1%4]) with mapi id 15.20.6609.026; Tue, 25 Jul 2023
- 06:05:04 +0000
-Date:   Tue, 25 Jul 2023 14:00:52 +0800
-From:   kernel test robot <yujie.liu@intel.com>
-To:     Changbin Du <changbin.du@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>
-CC:     <oe-kbuild-all@lists.linux.dev>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hui Wang <hw.huiwang@huawei.com>,
-        Changbin Du <changbin.du@huawei.com>
-Subject: Re: [PATCH v2 2/2] perf: add new option '--workload-attr' to set
- workload sched_policy/priority/mask
-Message-ID: <202307221757.XGfZBmn4-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230717120003.2391329-3-changbin.du@huawei.com>
-X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
- To CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+        Tue, 25 Jul 2023 02:05:25 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798310F8;
+        Mon, 24 Jul 2023 23:05:23 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so77329541fa.0;
+        Mon, 24 Jul 2023 23:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690265121; x=1690869921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JDYIM0MJdY9Z0BK3/d93KgfnCK5eRHOV40ZWEqugoL4=;
+        b=EZuNtsbRID7acfxRCUGJyKiSFPzEE/kHt14Oa/lcgefXfQswerX8J7xPhJa5AN9oZc
+         ReT2LlcTdqugmHln2/oLKRTrlmIVu28ktD+37CYaKnbTVgsF52KQkqSVp5m9p9hRjKpQ
+         Nc/UxcGAiePK06aT4CYpERXrDz86VjzNptNJ+ihvX9kRic8RMfAopk/ER3E2FLqxdT1Q
+         eTvfzjNZ4NJ3mi+DSs8YJSmaNq7BMxW/zQ/EC0Vfze6L+kqXI9RKZz+iR7cO++fwcnfx
+         x4G+5zsoWw0fUf8lvNRcv5Kz+xH+GrFtpYLBbV/Muz5GjO230gB3d7WV+LoZv7QG21YJ
+         7+GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690265121; x=1690869921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JDYIM0MJdY9Z0BK3/d93KgfnCK5eRHOV40ZWEqugoL4=;
+        b=FwwPeceCZmch8vAEt92mLWqTFAy5vKn4DH80ThJFwYwX5ofNvPmg2vwgwq/R8ZRzKD
+         R7l9krlbhcS47xu1IURZPWOw2ttW0lsLKmzM+FD6y6i72rGDw2o0jauARkusLPgRagtR
+         y4C9W+izwwMViM/RBNhsZOpeFLsrzpv57ADP+H8O+dTB1j7sdomL5yWX+BCwZj4ZekRh
+         lBqTvLUgdw5OOjB6jHuV5q0Nu1ps+/e1NUC4PmM6SZ/uU1BgoJgLbIiqTjugzVycRGUC
+         Yg5avo0lTYSkqsO3LuYZdbzQ8xU6SDkBs5ZK1uh5OLtv6acBmyLds3K+HZpBpuGsVe8k
+         ylMQ==
+X-Gm-Message-State: ABy/qLYaAj58VS5dftg+7Mpngm+0u0KeLkifmuwKlQyv9akcL8ia0tzH
+        Zsni2tpYQCLHbrWjnILDmyaDwByzRC3RPjcYNj7Ul1+9tog=
+X-Google-Smtp-Source: APBJJlFI7o5x6Tk6HK4glLYba+8+mA+YNUlbd+fD5fNkkfxsNETERKxQ9cg1g7qNtPXtwmlXh6J3ShRxWfmB/363qCg=
+X-Received: by 2002:a05:651c:389:b0:2b6:98c2:6378 with SMTP id
+ e9-20020a05651c038900b002b698c26378mr569034ljp.2.1690265121011; Mon, 24 Jul
+ 2023 23:05:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|PH7PR11MB5861:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb181051-5a84-4147-2bed-08db8cd516e1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rfXdyR0pfk0UKlTXM6z/gch+9p2UnEquiN3Pnm1HIAGPnjrQFbbVfVIQckEE7pu1y7GeGW0sZgEKNY9zKKP4h+v0cgdbXadhV8P1328syrekx6L7jkiYUkoicm+QuaT1Y9Vs4uCj1W+3YkEk0UR2uPGHo29H2nSwZcyECGakJgLStN/A8EDLlD3/vL4gOKEq4fDrgk1jZaK61VGhilvdAvaM9y6LO6ZnBQpPOzBFhvAxQXoepnk3WdQ/zMnn1uwE1wVfLa+D7FYTiRbQOhLl9dbwkaQ9Q9R46mCP7WeUmSuVAzlgS4m4BLWYmi5uta5V85aYuyhBb8ZqMbbAbMojSrd0Bhj3yyMfUIyfOX+U55F8z8OHCJgv9v/refXKTmMG0qRs09jZ0tGgRwQwYqjEZps8yRoGnUvq2gsn/NVZvfxnJJPWi5mpL5AKeLaAGJqFzC6xVfs6wUwZ8czrC8gjjTPIbvcdwuAC5RM+c9O19OBECI7l2IVp3j/gAJ1MgdW3npkiQb1rr8PQKjMc6d28f1LYEKVqx0BgYbJkPKHXp8zHpSpsKyDT1ONiTu6GHE+LFTDOonsDYETIHZIR5FM+qQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(346002)(376002)(136003)(451199021)(86362001)(82960400001)(38100700002)(4326008)(316002)(66946007)(478600001)(54906003)(41300700001)(110136005)(966005)(5660300002)(8936002)(6486002)(7416002)(8676002)(6512007)(6666004)(26005)(186003)(1076003)(2906002)(6506007)(66556008)(66476007)(83380400001)(36756003)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mgqcf1h5fuWF8DjON9R8SnnR4KheNSeZIyCZUMNEb5XlFz7zrXWSr0EbLx2Y?=
- =?us-ascii?Q?LL2ch6A7tSryFhHwUn13jxjMNdduzcHol2b2CQc/zqJP/SGe8I7uku6TUhem?=
- =?us-ascii?Q?mDzQDWIgiPx4/mY0szGuLpnZqATpjudHsinWxKTM1z/60dcOkHvYlwWpB2xX?=
- =?us-ascii?Q?ILfuyB2bvliqLhLDQULpLiUJFW9vVUEEmKREUp8SliysBeJKxzE8RUbAUM2d?=
- =?us-ascii?Q?VxK9v+cYz9frIfYTUkjeCG9kEb6Mwl/nBnt6Rc6uwIZVv2BmYSWFAfWqYDxQ?=
- =?us-ascii?Q?FzQwlgoBwortdtr8WKbN2LOng8SdOmXuw+ojc0eNw/CyuVixuhkcgv93q7OI?=
- =?us-ascii?Q?FpaZ0ATjOfLems09CTIdgT0uppD8DSpfGv4j3XQoJ1MB6LRi2+xNYoYJznX5?=
- =?us-ascii?Q?3wj061fA1PNDfEgcy8vKcdii7UdUS7iLmrs4fbYIXAUgg0xUxKbKesWt8+9I?=
- =?us-ascii?Q?cf6E/lplLq9Jg7PAlKkHeA7B3OFZWy7H7PDHFrkTfN5F1P2rs8m1S+BuLK+b?=
- =?us-ascii?Q?aq7dBh8lAYWhZS5oDWbFt2YmjD0E2mVv+HUkKazmw7ZkUF/CSQ05iOUIgm21?=
- =?us-ascii?Q?wkDYemv+wS8YGLXh4SV5eHQsFnR26zxMyF5B6dBo4gOTpK7OtTcpxePQBxr1?=
- =?us-ascii?Q?9LIaAMFRUhnGCKKdkwI9DXJvj5JstNSzqyqmFOoCJaSNhjQoikFdBBMWK/fq?=
- =?us-ascii?Q?J4+HQcjmI8CM1sD5sm7C6lXP0eCmf1oXw5KgWpvmUPxpe+PnKa/kpZW29s49?=
- =?us-ascii?Q?OIznMxkvHN9j7LePcr8KCUmqNjP7EjFBVnpFXRnBJUblpUlLXN59IzKKWMJ5?=
- =?us-ascii?Q?5Lh3SjHs1u/y5HukJK3NQoY4TyBv+WeoPez17Nsv3z3W8BKd5PKk1+wm+HU8?=
- =?us-ascii?Q?cGJPu242DYjNiClUj4hKNoVZ9KM1s9sf9EQfFu/5hC4z8eBnoibo1tUCUNLy?=
- =?us-ascii?Q?l3wXpaOaeworX73Na0Ub0V7Pwq2tULKeCg/LB0urqncK03TADFGsS3cVF7QC?=
- =?us-ascii?Q?WsfnSFYymkcLUYIH4DNQnZ9UoRdVqC8YWJG3Svr8YxWjdRXsoY1AyllCHHN5?=
- =?us-ascii?Q?LO6ktRNpbwUEpv1FfGjHD32q7qTY7xhkcQ0126dmIxQbymJtRWzJ70Qasa4H?=
- =?us-ascii?Q?OBF4twibbYvIDV4ztlSin8OoqvVZIEpJv3GJPbqn+gXQFHCspZlFjziTu/rQ?=
- =?us-ascii?Q?pvX73MyvMka0dBXhnzPy+WlryEeYbF9B7JgBTz+0OQlTk3P6+IWkrSg+rOmT?=
- =?us-ascii?Q?OG/i9mmpjH2vwHv2MSiZJLJrzGzNhX9JiOYfNlt3Bx+O4PN/dlkW9EgfDYf/?=
- =?us-ascii?Q?sFjUVmCQGNDhCCinxYKJOBMwLYcF8MNdO9cXEeug39i0KGmTl34aCj+Im/Yy?=
- =?us-ascii?Q?Or+lCEa+dGrHIHEudxGKYfFqAjwNAPgS0gAR/7Jg7XJP7vcpH9MxwR4evS8l?=
- =?us-ascii?Q?I+5e6A0eLs6UXQsMu8E4qV3wQmLvbOWMMa3WqAzfVXgW4s9M36eczdUP+auf?=
- =?us-ascii?Q?cB28jXDDnxi0DQEkKGxdR6sgSUqgZsfb6ROiTT6y17rU+uUBAP5UcvbafCoN?=
- =?us-ascii?Q?77iE5rYybkaHpLb1e5sxNOZyMdXsL7tnZIzuSESj?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb181051-5a84-4147-2bed-08db8cd516e1
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 06:05:04.4217
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c2MwRYANNc1b8f5RSeX7iMvFo0if/2AGviWzbOuSBeER9zDu3mANgPjEbrJ9vmL6mHmBLSO0PSDPMxelY2Zljw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5861
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230724111206.3067352-1-howardchung@google.com>
+ <CABBYNZ+UrWFNULhn8Nu79rvS-NZ4Rt4X4y=s+-DHEwjfKuX8Gg@mail.gmail.com> <CAPHZWUejzqz5=tHPwib6gfSjcd6K90dyfw8m_3CgaLqjdYRa3A@mail.gmail.com>
+In-Reply-To: <CAPHZWUejzqz5=tHPwib6gfSjcd6K90dyfw8m_3CgaLqjdYRa3A@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Mon, 24 Jul 2023 23:05:08 -0700
+Message-ID: <CABBYNZ+BbNQr6-RbXABF0TeUUgBuoVUABqwfkfHgHkZ09vyY4Q@mail.gmail.com>
+Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
+To:     Yun-hao Chung <howardchung@google.com>
+Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        Archie Pusaka <apusaka@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -159,49 +76,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Changbin,
+Hi Yun-hao,
 
-kernel test robot noticed the following build warnings:
+On Mon, Jul 24, 2023 at 9:56=E2=80=AFPM Yun-hao Chung <howardchung@google.c=
+om> wrote:
+>
+> Thanks Paul for the review. I'll fix them in the next patch.
+>
+> Hi Luiz,
+>
+> I think the controller did reset its internal state in the link layer, so=
+ the next time we asked the controller to create a connection to the same r=
+emote, the controller didn't reply the error in the command complete event =
+but the connection was rejected by the remote. If we really want the contro=
+ller to complete the disconnect procedure on reset, the power-off procedure=
+ could be stuck for tens of seconds if the remote was not responding. A sim=
+ilar problem was found and solved in this patch [Bluetooth: hci_sync: Don't=
+ wait peer's reply when powering off].
+>
+> The other reason why we think this is better to be solved in the software=
+ layer is this is not only observed in Intel's AX211 but also MTK's MT7921 =
+and maybe more.
 
-[auto build test WARNING on acme/perf/core]
-[also build test WARNING on tip/perf/core tip/master linus/master v6.5-rc2 next-20230721]
-[cannot apply to tip/auto-latest]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Interesting, but in this case shouldn't the link-layer attempt to
+cleanup _before_ it reset the state? Because as far I recall doing a
+HCI_Reset shall cause a Disconnection even if not initiated by the
+host stack with HCI_Disconnect, also there is something really odd
+with the fact that the link-layer is generating such an error, because
+in case that happens isn't it clear the states are out of sync and it
+shall disconnect or something, I'm also curious what would happen if
+one quickly toggle power then the same problem should manifest, at
+least I don't see a difference between HCI_Reset and power off/on
+within the connection supervision timeout.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Changbin-Du/perf-cpumap-Add-__perf_cpu_map__new-and-perf_cpu_map__2_cpuset/20230718-192933
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-patch link:    https://lore.kernel.org/r/20230717120003.2391329-3-changbin.du%40huawei.com
-patch subject: [PATCH v2 2/2] perf: add new option '--workload-attr' to set workload sched_policy/priority/mask
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> Since this is a tradeoff problem, I make it a configurable parameter so t=
+hat each user can decide a good number from their perspective. If it is 0, =
+which is the default value, the behavior should remain the same.
+>
+> Do you think this sounds good to you?
+>
+> Thanks,
+> Howard
+>
+>
+>
+>
+>
+>
+> On Tue, Jul 25, 2023 at 6:31=E2=80=AFAM Luiz Augusto von Dentz <luiz.dent=
+z@gmail.com> wrote:
+>>
+>> Hi Howard,
+>>
+>> On Mon, Jul 24, 2023 at 4:12=E2=80=AFAM Howard Chung <howardchung@google=
+.com> wrote:
+>> >
+>> > For some controllers, it is known that when the HCI disconnect and HCI
+>> > Reset are too close to each other, the LMP disconnect command might no=
+t
+>> > been sent out yet and the command will be dropped by the controoler wh=
+en
+>> > it is asked to reset itself. This could happen on powering off adapter=
+.
+>> >
+>> > One possible issue is that if a connection exists, and then powering o=
+ff
+>> > and on adapter within a short time, then our host stack assumes the
+>> > conntection was disconnected but this might not be true, so if we issu=
+e
+>> > a connection to the peer, it will fail with ACL Already Connected erro=
+r.
+>>
+>> That sounds more like a bug in the controller though, the spec is
+>> quite clear that it must reset the link-layer state:
+>>
+>> BLUETOOTH CORE SPECIFICATION Version 5.3 | Vol 4, Part E
+>> page 1972
+>>
+>> ...HCI_Reset command shall reset the Link Manager, Baseband and Link Lay=
+er.
+>>
+>> So it sounds like the controller shall perform and the necessary
+>> procedures before it respond with a Command Complete.
+>>
+>> > This CL makes the host stack to wait for |HCI_EV_DISCONN_COMPLETE| whe=
+n
+>> > powering off with a configurable timeout unless the timeout is set to =
+0.
+>> >
+>> > Reviewed-by: Archie Pusaka <apusaka@google.com>
+>> > Signed-off-by: Howard Chung <howardchung@google.com>
+>> > ---
+>> > Hi upstream maintainers, this is tested with an AX211 device and Logi
+>> > K580 keyboard by the following procedures:
+>> > 1. pair the peer and stay connected.
+>> > 2. power off and on immediately
+>> > 3. observe that the btsnoop log is consistent with the configured
+>> >    timeout.
+>> >
+>> >  include/net/bluetooth/hci_core.h |  1 +
+>> >  net/bluetooth/hci_core.c         |  2 +-
+>> >  net/bluetooth/hci_sync.c         | 38 +++++++++++++++++++++++--------=
+-
+>> >  net/bluetooth/mgmt_config.c      |  6 +++++
+>> >  4 files changed, 35 insertions(+), 12 deletions(-)
+>> >
+>> > diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/=
+hci_core.h
+>> > index 8200a6689b39..ce44f9c60059 100644
+>> > --- a/include/net/bluetooth/hci_core.h
+>> > +++ b/include/net/bluetooth/hci_core.h
+>> > @@ -432,6 +432,7 @@ struct hci_dev {
+>> >         __u16           advmon_allowlist_duration;
+>> >         __u16           advmon_no_filter_duration;
+>> >         __u8            enable_advmon_interleave_scan;
+>> > +       __u16           discon_on_poweroff_timeout;
+>> >
+>> >         __u16           devid_source;
+>> >         __u16           devid_vendor;
+>> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+>> > index 0fefa6788911..769865494f45 100644
+>> > --- a/net/bluetooth/hci_core.c
+>> > +++ b/net/bluetooth/hci_core.c
+>> > @@ -2479,7 +2479,7 @@ struct hci_dev *hci_alloc_dev_priv(int sizeof_pr=
+iv)
+>> >         hdev->adv_instance_cnt =3D 0;
+>> >         hdev->cur_adv_instance =3D 0x00;
+>> >         hdev->adv_instance_timeout =3D 0;
+>> > -
+>> > +       hdev->discon_on_poweroff_timeout =3D 0;   /* Default to no tim=
+eout */
+>> >         hdev->advmon_allowlist_duration =3D 300;
+>> >         hdev->advmon_no_filter_duration =3D 500;
+>> >         hdev->enable_advmon_interleave_scan =3D 0x00;     /* Default t=
+o disable */
+>> > diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+>> > index 3348a1b0e3f7..260e9f05359c 100644
+>> > --- a/net/bluetooth/hci_sync.c
+>> > +++ b/net/bluetooth/hci_sync.c
+>> > @@ -5250,6 +5250,8 @@ static int hci_disconnect_sync(struct hci_dev *h=
+dev, struct hci_conn *conn,
+>> >                                u8 reason)
+>> >  {
+>> >         struct hci_cp_disconnect cp;
+>> > +       unsigned long timeout;
+>> > +       int err;
+>> >
+>> >         if (conn->type =3D=3D AMP_LINK)
+>> >                 return hci_disconnect_phy_link_sync(hdev, conn->handle=
+, reason);
+>> > @@ -5258,19 +5260,33 @@ static int hci_disconnect_sync(struct hci_dev =
+*hdev, struct hci_conn *conn,
+>> >         cp.handle =3D cpu_to_le16(conn->handle);
+>> >         cp.reason =3D reason;
+>> >
+>> > -       /* Wait for HCI_EV_DISCONN_COMPLETE, not HCI_EV_CMD_STATUS, wh=
+en the
+>> > -        * reason is anything but HCI_ERROR_REMOTE_POWER_OFF. This rea=
+son is
+>> > -        * used when suspending or powering off, where we don't want t=
+o wait
+>> > -        * for the peer's response.
+>> > +       /* The HCI_ERROR_REMOTE_POWER_OFF is used when suspending or p=
+owering off,
+>> > +        * so we don't want to waste time waiting for the reply of the=
+ peer.
+>> > +        * However, if the configuration specified, we'll wait some ti=
+me to give the
+>> > +        * controller chance to actually send the disconnect command.
+>> >          */
+>> > -       if (reason !=3D HCI_ERROR_REMOTE_POWER_OFF)
+>> > -               return __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNEC=
+T,
+>> > -                                               sizeof(cp), &cp,
+>> > -                                               HCI_EV_DISCONN_COMPLET=
+E,
+>> > -                                               HCI_CMD_TIMEOUT, NULL)=
+;
+>> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF && !hdev->discon_=
+on_poweroff_timeout) {
+>> > +               return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT,
+>> > +                                            sizeof(cp), &cp, HCI_CMD_=
+TIMEOUT);
+>> > +       }
+>> >
+>> > -       return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT, sizeof(c=
+p), &cp,
+>> > -                                    HCI_CMD_TIMEOUT);
+>> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+>> > +               timeout =3D msecs_to_jiffies(hdev->discon_on_poweroff_=
+timeout);
+>> > +       else
+>> > +               timeout =3D HCI_CMD_TIMEOUT;
+>> > +
+>> > +       err =3D __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
+>> > +                                      sizeof(cp), &cp,
+>> > +                                      HCI_EV_DISCONN_COMPLETE,
+>> > +                                      timeout, NULL);
+>> > +
+>> > +       /* Ignore the error in suspending or powering off case to avoi=
+d the procedure being
+>> > +        * aborted.
+>> > +        */
+>> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+>> > +               return 0;
+>> > +
+>> > +       return err;
+>> >  }
+>> >
+>> >  static int hci_le_connect_cancel_sync(struct hci_dev *hdev,
+>> > diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
+>> > index 6ef701c27da4..f3194e3642d9 100644
+>> > --- a/net/bluetooth/mgmt_config.c
+>> > +++ b/net/bluetooth/mgmt_config.c
+>> > @@ -78,6 +78,7 @@ int read_def_system_config(struct sock *sk, struct h=
+ci_dev *hdev, void *data,
+>> >                 HDEV_PARAM_U16(advmon_allowlist_duration);
+>> >                 HDEV_PARAM_U16(advmon_no_filter_duration);
+>> >                 HDEV_PARAM_U8(enable_advmon_interleave_scan);
+>> > +               HDEV_PARAM_U16(discon_on_poweroff_timeout);
+>> >         } __packed rp =3D {
+>> >                 TLV_SET_U16(0x0000, def_page_scan_type),
+>> >                 TLV_SET_U16(0x0001, def_page_scan_int),
+>> > @@ -111,6 +112,7 @@ int read_def_system_config(struct sock *sk, struct=
+ hci_dev *hdev, void *data,
+>> >                 TLV_SET_U16(0x001d, advmon_allowlist_duration),
+>> >                 TLV_SET_U16(0x001e, advmon_no_filter_duration),
+>> >                 TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
+>> > +               TLV_SET_U16(0x0020, discon_on_poweroff_timeout),
+>> >         };
+>> >
+>> >         bt_dev_dbg(hdev, "sock %p", sk);
+>> > @@ -186,6 +188,7 @@ int set_def_system_config(struct sock *sk, struct =
+hci_dev *hdev, void *data,
+>> >                 case 0x001b:
+>> >                 case 0x001d:
+>> >                 case 0x001e:
+>> > +               case 0x0020:
+>> >                         exp_type_len =3D sizeof(u16);
+>> >                         break;
+>> >                 case 0x001f:
+>> > @@ -314,6 +317,9 @@ int set_def_system_config(struct sock *sk, struct =
+hci_dev *hdev, void *data,
+>> >                 case 0x0001f:
+>> >                         hdev->enable_advmon_interleave_scan =3D TLV_GE=
+T_U8(buffer);
+>> >                         break;
+>> > +               case 0x00020:
+>> > +                       hdev->discon_on_poweroff_timeout =3D TLV_GET_L=
+E16(buffer);
+>> > +                       break;
+>> >                 default:
+>> >                         bt_dev_warn(hdev, "unsupported parameter %u", =
+type);
+>> >                         break;
+>> > --
+>> > 2.41.0.487.g6d72f3e995-goog
+>> >
+>>
+>>
+>> --
+>> Luiz Augusto von Dentz
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202307221757.XGfZBmn4-lkp@intel.com/
 
-includecheck warnings: (new ones prefixed by >>)
->> tools/perf/util/evlist.c: perf/cpumap.h is included more than once.
 
-vim +60 tools/perf/util/evlist.c
-
-    50	
-    51	#include <linux/bitops.h>
-    52	#include <linux/hash.h>
-    53	#include <linux/log2.h>
-    54	#include <linux/err.h>
-    55	#include <linux/string.h>
-    56	#include <linux/time64.h>
-    57	#include <linux/zalloc.h>
-    58	#include <perf/evlist.h>
-    59	#include <perf/evsel.h>
-  > 60	#include <perf/cpumap.h>
-    61	#include <perf/mmap.h>
-  > 62	#include <perf/cpumap.h>
-    63	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+--=20
+Luiz Augusto von Dentz
