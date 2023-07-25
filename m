@@ -2,143 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E097621FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B771762206
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjGYTFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        id S230437AbjGYTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGYTFP (ORCPT
+        with ESMTP id S229459AbjGYTK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:05:15 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6CCF7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690311914; x=1721847914;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HtX9owHiP3S1xCOUVQd5D8vbiY9IUi4q9G2cJlKBcnM=;
-  b=JyRrByk1do3OeWCZMShHJJTC6HVN4MHQdXdXPvCMBD1tj7FEtRT6fCoS
-   TimMoxTnWZEsabzgYAw5ejIvaG+VDxrUutmgRJpMWshBBVbgjP+ZdVU07
-   H+SBR2JePSBzKGrd/AMSdvwvadLBqWWUJoNQ6sOeolF6np8FuVVCzINnn
-   jPxFVlXq5AwEUabaI5ZlFWBKAZISg9a7zCInYj/zciasZviqepekwatnr
-   RNkyWU1Q1MoN/hBcvm/TuNnoNNolFvDM3wOBmTQ+sAcDq4Dyo1KIr1Esh
-   hrYH/zpDpf8bdIgDk25diO4LXSMzpdZk59x3RkzegMCpn1XP9NbUrDcF7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="365283694"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="365283694"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 12:05:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="816360595"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="816360595"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Jul 2023 12:05:12 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qONLL-0000GG-1v;
-        Tue, 25 Jul 2023 19:05:11 +0000
-Date:   Wed, 26 Jul 2023 03:04:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
-Subject: include/linux/kcsan-checks.h:220:28: warning: 'args32' may be used
- uninitialized
-Message-ID: <202307260230.9fX7alLc-lkp@intel.com>
+        Tue, 25 Jul 2023 15:10:27 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C263310C9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:10:25 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so58471835e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1690312224; x=1690917024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fX6xLIXZZAr/AQm9E+cM414TFNlRnIjeGEpoYX0+8ho=;
+        b=UVAPMfmOJz6LMxHlgBfz8yTPlXk+vlnr+l6ZZXPjl82FxQbfYNRZznBcp0AFA4VoXv
+         PbRrjgR6uWU5hH4h3VUGIbbnpxjruUiNaS913b5W1uXGIqj7YCUUscqT7W7ccQ7ZGZ3q
+         lynWWQd3ImfjpxnN6+l+LAy38z2wpS11lGnNvZ1uLoo5LFG0drtmNYhxivN5141qxpos
+         5++8sMEvMLZOxkUSvUV6PmJJHoDdiQXCBrQKoemKm9OLT9d0UM0Rt0yR15Y4zJAxWJZc
+         DN4hcNJFTN5ib+HsAwLSWl1/lcbN0xizwPnRVfdBJRsqpTUPOqmNpj5x083Z3CrrWgEA
+         8xzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690312224; x=1690917024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fX6xLIXZZAr/AQm9E+cM414TFNlRnIjeGEpoYX0+8ho=;
+        b=DyGKQuUo4MEEJbARPfa6UvUDf2yhoH89FLfmg7BcSzbdXcI/OJuV8Bzsx5pKioCT/8
+         2YkyZy2P7RqGiumfBjZJH8WpeWz5Ueo077Ehhl8rnfwabrxGdGbrWmmrs74kwkBbb5sL
+         ItI76QPtTd/3OB8avacp4MA4dGiDek1LeoNIEpv2hoznTGUn7cxYomIgYpeOqoOjVOkq
+         u6EN3aY90v3kASce7x18T9cRkcmmIpOAmNPH8i4CvGH6FOtUmd+M06Ix73v8GNxyY7fU
+         zbHYMfWuehgZDR3g7VlQBKpGfHy5wPkhERgBrgFYsEdDsOn9VSPYX9Rynk+N5uUUub9Q
+         49Vg==
+X-Gm-Message-State: ABy/qLYljRYt4aMhdGqs8dZCuXIUemvOE2E7HBglS/lA0sffistBbUhQ
+        wb7cosQ6wrMDRMugUNGxRSv0Jt4jRjW1/jDXRVc=
+X-Google-Smtp-Source: APBJJlFk7VlYyWtrQWDrsUhb/Zd3uDmUb6Ou49pg3ERUj4q3zy18zgW/gLqIjGhAuzqOgJcFRkedKA==
+X-Received: by 2002:a7b:c30e:0:b0:3f9:871:c2da with SMTP id k14-20020a7bc30e000000b003f90871c2damr9917149wmj.40.1690312224231;
+        Tue, 25 Jul 2023 12:10:24 -0700 (PDT)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id p1-20020a05600c204100b003fc17e8a1efsm16393926wmg.45.2023.07.25.12.10.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 12:10:23 -0700 (PDT)
+Message-ID: <b01a63a7-eaaa-85db-b04d-8270e82e1080@arista.com>
+Date:   Tue, 25 Jul 2023 20:10:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8.1 net-next 06/23] net/tcp: Add TCP-AO sign to outgoing
+ packets
+Content-Language: en-US
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
+References: <20230721161916.542667-1-dima@arista.com>
+ <20230721161916.542667-7-dima@arista.com> <ZMAAPBKnnrdk/c9K@corigine.com>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <ZMAAPBKnnrdk/c9K@corigine.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josef,
+Hi Simon,
 
-FYI, the error/warning still remains.
+On 7/25/23 18:02, Simon Horman wrote:
+> On Fri, Jul 21, 2023 at 05:18:57PM +0100, Dmitry Safonov wrote:
+> 
+> ...
+> 
+> Hi Dmitry,
+> 
+>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> 
+> ...
+> 
+>> @@ -619,7 +621,33 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+>>  		opts->hash_location = (__u8 *)ptr;
+>>  		ptr += 4;
+>>  	}
+>> +#ifdef CONFIG_TCP_AO
+>> +	if (unlikely(OPTION_AO & options) && tp) {
+> 
+> Smatch warns that here we check if tp is NULL,
+> but later on in the same function (existing) code
+> uses tp unconditionally.
+> 
+> That code looks like this:
+> 
+>         if (unlikely(opts->num_sack_blocks)) {
+>                 struct tcp_sack_block *sp = tp->rx_opt.dsack ?
+>                         tp->duplicate_sack : tp->selective_acks;
+> 
+> I would recommend running Smatch.
+> It points out a lot of interesting things.
+> 
+> 
+>> +		struct tcp_ao_key *rnext_key;
+>> +		struct tcp_ao_info *ao_info;
+>> +		u8 maclen;
+>>  
+>> +		if (WARN_ON_ONCE(!ao_key))
+>> +			goto out_ao;
+>> +		ao_info = rcu_dereference_check(tp->ao_info,
+>> +				lockdep_sock_is_held(&tp->inet_conn.icsk_inet.sk));
+> 
+> Checkpatch complains about indentation here.
+> 
+> Rather than point out each case in the series,
+> could I ask you to run ./scripts/checkpatch.pl --strict over the patchset?
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
-commit: 1ec49744ba83f0429c5c706708610f7821a7b6f4 btrfs: turn on -Wmaybe-uninitialized
-date:   5 months ago
-config: s390-randconfig-m041-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260230.9fX7alLc-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260230.9fX7alLc-lkp@intel.com/reproduce)
+Yeah, but then it won't fit 80 columns here. As both aren't hard
+requirements I tend to comply with 80 columns more than to indentation.
+In this particular case I'll check if it could be a helper function.
+If it won't make sense to separate it as a helper, I'll just move it to
+the same line than, breaking 80 columns limit.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260230.9fX7alLc-lkp@intel.com/
-
-Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
-http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/asm-generic/rwonce.h:27,
-                    from ./arch/s390/include/generated/asm/rwonce.h:1,
-                    from include/linux/compiler.h:247,
-                    from include/linux/kernel.h:20,
-                    from fs/btrfs/ioctl.c:6:
-   include/linux/kcsan-checks.h: In function 'btrfs_ioctl_wait_sync':
-   include/linux/kcsan-checks.h:220:28: warning: 'transid' may be used uninitialized [-Wmaybe-uninitialized]
-     220 | #define kcsan_check_access __kcsan_check_access
-         |                            ^~~~~~~~~~~~~~~~~~~~
-   include/linux/kcsan-checks.h:37:6: note: by argument 1 of type 'const volatile void *' to '__kcsan_check_access' declared here
-      37 | void __kcsan_check_access(const volatile void *ptr, size_t size, int type);
-         |      ^~~~~~~~~~~~~~~~~~~~
-   fs/btrfs/ioctl.c:3134:13: note: 'transid' declared here
-    3134 |         u64 transid;
-         |             ^~~~~~~
-   include/linux/kcsan-checks.h: In function 'btrfs_ioctl_space_info':
-   include/linux/kcsan-checks.h:220:28: warning: 'space_args' may be used uninitialized [-Wmaybe-uninitialized]
-     220 | #define kcsan_check_access __kcsan_check_access
-         |                            ^~~~~~~~~~~~~~~~~~~~
-   include/linux/kcsan-checks.h:37:6: note: by argument 1 of type 'const volatile void *' to '__kcsan_check_access' declared here
-      37 | void __kcsan_check_access(const volatile void *ptr, size_t size, int type);
-         |      ^~~~~~~~~~~~~~~~~~~~
-   fs/btrfs/ioctl.c:2973:39: note: 'space_args' declared here
-    2973 |         struct btrfs_ioctl_space_args space_args;
-         |                                       ^~~~~~~~~~
-   include/linux/kcsan-checks.h: In function 'btrfs_ioctl':
->> include/linux/kcsan-checks.h:220:28: warning: 'args32' may be used uninitialized [-Wmaybe-uninitialized]
-     220 | #define kcsan_check_access __kcsan_check_access
-         |                            ^~~~~~~~~~~~~~~~~~~~
-   include/linux/kcsan-checks.h:37:6: note: by argument 1 of type 'const volatile void *' to '__kcsan_check_access' declared here
-      37 | void __kcsan_check_access(const volatile void *ptr, size_t size, int type);
-         |      ^~~~~~~~~~~~~~~~~~~~
-   fs/btrfs/ioctl.c:4320:49: note: 'args32' declared here
-    4320 |                 struct btrfs_ioctl_send_args_32 args32;
-         |                                                 ^~~~~~
+>> @@ -1363,6 +1424,34 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>>  					       md5, sk, skb);
+>>  	}
+>>  #endif
+>> +#ifdef CONFIG_TCP_AO
+>> +	if (ao) {
+>> +		u8 *traffic_key;
+>> +		void *tkey_buf = NULL;
+>> +		u32 disn;
+>> +
+>> +		sk_gso_disable(sk);
+>> +		if (unlikely(tcb->tcp_flags & TCPHDR_SYN)) {
+>> +			if (tcb->tcp_flags & TCPHDR_ACK)
+>> +				disn = ao->risn;
+> 
+> Sparse complains that there is an endian missmatch between disn and ao->risn ?
+> 
+> Rather than point out every problem flagged by Sparse,
+> could I ask you to run it over the series?
 
 
-vim +/args32 +220 include/linux/kcsan-checks.h
+Yeah, I noticed it on netdev patchwork, running it over the patches now.
 
-dfd402a4c4baae Marco Elver 2019-11-14  214  
-19acd03d95dad1 Marco Elver 2020-04-24  215  #ifdef __SANITIZE_THREAD__
-dfd402a4c4baae Marco Elver 2019-11-14  216  /*
-19acd03d95dad1 Marco Elver 2020-04-24  217   * Only calls into the runtime when the particular compilation unit has KCSAN
-19acd03d95dad1 Marco Elver 2020-04-24  218   * instrumentation enabled. May be used in header files.
-dfd402a4c4baae Marco Elver 2019-11-14  219   */
-dfd402a4c4baae Marco Elver 2019-11-14 @220  #define kcsan_check_access __kcsan_check_access
-19acd03d95dad1 Marco Elver 2020-04-24  221  
+Thanks,
+             Dmitry
 
-:::::: The code at line 220 was first introduced by commit
-:::::: dfd402a4c4baae42398ce9180ff424d589b8bffc kcsan: Add Kernel Concurrency Sanitizer infrastructure
-
-:::::: TO: Marco Elver <elver@google.com>
-:::::: CC: Paul E. McKenney <paulmck@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
