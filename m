@@ -2,152 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22312761F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D93761F94
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbjGYQwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
+        id S232461AbjGYQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbjGYQwE (ORCPT
+        with ESMTP id S232187AbjGYQwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:52:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC22D2D69
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690303818;
+        Tue, 25 Jul 2023 12:52:05 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDC92683;
+        Tue, 25 Jul 2023 09:51:37 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4R9NMl0q8pz9sw0;
+        Tue, 25 Jul 2023 18:51:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1690303875;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ReBcQaJh4ciBZ53LwBH/iMnMAzVIg5ii3SO9ToZLyw4=;
-        b=Q+hLVlwnf1PN5jlq1YP3QJHZn+DXD2UzAHQl9OWWwBWLSqaPGZZgOa97sIbHwni17SNo73
-        28NY8B/uOHJEICovcdZ8Nu9jovTl2vWawC78+6/KlaymYvkEmno/PhxJt8jgSG1iSAeInU
-        kZNMnMEt8eiBnfa9te+DBv3gmJJcNSg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-383-_vxV8mRFPi6QzaYowyWSCw-1; Tue, 25 Jul 2023 12:50:13 -0400
-X-MC-Unique: _vxV8mRFPi6QzaYowyWSCw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fd2e59bc53so15804765e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:50:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690303812; x=1690908612;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ReBcQaJh4ciBZ53LwBH/iMnMAzVIg5ii3SO9ToZLyw4=;
-        b=UcGLQSsJdCB471AN+088dT9spvOci7/HeHQZeEh68PBNhpgvvYTG12nNhaarWRzOuz
-         8F+ffLZJ4C3y8REQbzSrbdGEoI8uK3yynWXXdWDE2W4kk6Nur6sVHvUHR+f+CjteYvuW
-         yT1MTzsCTisJoZWHzpfQFjY6w4hcbsx5egJEwRnQ3aLTJ1Q8kcXm06BSyNtVLTHYeI6J
-         D/0Vq7sd43TEZTLfom51/C8c0D33HHJg+Tx6haZOPyaEk3iAcsYfJdVC9yKU+dRJ+rqe
-         bR+UBNhs7qYIlscRZaSIZY6lz1HtuQ8LCku14WEujZhnm+SXbKIeR/6fN9OkhcGzbC3I
-         fn0Q==
-X-Gm-Message-State: ABy/qLbnEbJe6nHSaBwA7t5OCbEvSSLS3INsf57/qbvIaPl5q/ghdJUX
-        DNOXLAKTY1flgtYqO7ooBZ8SXiJISMNxyETCgAMEWOsGw6QuUqWrZe0K/zykcVvkCnezsxUnF+t
-        tQmiWOzfT2+Zao5Byu1ResuEc
-X-Received: by 2002:a1c:750f:0:b0:3fb:e4ce:cc65 with SMTP id o15-20020a1c750f000000b003fbe4cecc65mr8474616wmc.25.1690303812289;
-        Tue, 25 Jul 2023 09:50:12 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHN82DdekK0zitC8eYAyRNRTQ+aka1Hte/M4lbyqh0MgYS8XBWVNfmNZPV6nkNQ6F6sXzyn3A==
-X-Received: by 2002:a1c:750f:0:b0:3fb:e4ce:cc65 with SMTP id o15-20020a1c750f000000b003fbe4cecc65mr8474601wmc.25.1690303811924;
-        Tue, 25 Jul 2023 09:50:11 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id c17-20020a7bc851000000b003fc00212c1esm13464147wml.28.2023.07.25.09.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 09:50:11 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     dri-devel@lists.freedesktop.org, Helge Deller <deller@gmx.de>,
-        linux-fbdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
-In-Reply-To: <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
-References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
- <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
-Date:   Tue, 25 Jul 2023 18:50:10 +0200
-Message-ID: <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
+        bh=oXu7I2w2GulAbsjkAbhBaZ0d5Ez9Ymu2aocx4QCikLk=;
+        b=kSmWzfYu0h5RiTQdQhuOq6it0MoOiZSf3kDgxT/+cq1LY2gaqgps8UYFoHqeIEJZu3gl3Y
+        6NfO6pwEzKCD/FvCRHx/mqdIegvQ/xl7XBtbCWyNeZKkLoJYNVo2fbFaa337PF09aPHP6s
+        Pl0K38zR38aZQ86S1uv2GiAEqLJIYLuc9RjcsgJwCXiQ911NIuvw8DS1OGefalEOwy3G4n
+        KQ6maBX4klVBvsIqPSP4EVbp/eKJmPJVCbjW7W/CHYeRncxiKGHJavwOxVN7JsO5FrBQZc
+        nb3oLM1e0fdNJTRxem86wTiDhq20paUp4CP7Y3BaHa+ddyDai81fX7CP4bOPqg==
+Date:   Wed, 26 Jul 2023 02:50:50 +1000
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        James.Bottomley@hansenpartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        fenghua.yu@intel.com, fweimer@redhat.com, geert@linux-m68k.org,
+        glebfm@altlinux.org, gor@linux.ibm.com, hare@suse.com,
+        hpa@zytor.com, ink@jurassic.park.msu.ru, jhogan@kernel.org,
+        kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: Add fchmodat2() - or add a more general syscall?
+Message-ID: <u7lakye7ikvyu6g2ktxbzixt5hnvqtzt5s4g72j74tgg4bwlpu@7pcqd4ah5tah>
+References: <cover.1689092120.git.legion@kernel.org>
+ <cover.1689074739.git.legion@kernel.org>
+ <104971.1690300714@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sqz3gv5iaglclup7"
+Content-Disposition: inline
+In-Reply-To: <104971.1690300714@warthog.procyon.org.uk>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-> Hi Javier,
->
-> On Tue, Jul 25, 2023 at 6:07=E2=80=AFPM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
->> Geert Uytterhoeven <geert+renesas@glider.be> writes:
->> > If CONFIG_FB_CORE=3Dy but CONFIG_FB=3Dn, the frame buffer bootup logos=
- can
->> > no longer be enabled.  Fix this by making CONFIG_LOGO depend on
->> > CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
->> > logo code to depend on the presence of real frame buffer device driver=
-s.
->>
->> Indeed.
->>
->> > Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and =
-FB_CORE symbols")
->> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> > ---
->> >  drivers/video/Kconfig      | 2 +-
->> >  drivers/video/logo/Kconfig | 2 +-
->> >  2 files changed, 2 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
->> > index e5b1cc54cafa10d5..b694d7669d3200b1 100644
->> > --- a/drivers/video/Kconfig
->> > +++ b/drivers/video/Kconfig
->> > @@ -63,7 +63,7 @@ if VT
->> >       source "drivers/video/console/Kconfig"
->> >  endif
->> >
->> > -if FB || SGI_NEWPORT_CONSOLE
->> > +if FB_CORE || SGI_NEWPORT_CONSOLE
->> >       source "drivers/video/logo/Kconfig"
->> >
->> >  endif
->> > diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
->> > index 6d6f8c08792dc897..b7d94d1dd1585a84 100644
->> > --- a/drivers/video/logo/Kconfig
->> > +++ b/drivers/video/logo/Kconfig
->> > @@ -5,7 +5,7 @@
->> >
->> >  menuconfig LOGO
->> >       bool "Bootup logo"
->> > -     depends on FB || SGI_NEWPORT_CONSOLE
->> > +     depends on FB_CORE || SGI_NEWPORT_CONSOLE
->> >       help
->> >         Enable and select frame buffer bootup logos.
->>
->> Should then move this option to drivers/video/fbdev/core/Kconfig ?
->
-> No, all logo options are in their own file.
->
+--sqz3gv5iaglclup7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes. I meant to move drivers/video/logo/ to drivers/fbdev/core/logo and to
-source its Kconfig from drivers/fbdev/core/Kconfig, since it now depends
-on FB_CORE.
+On 2023-07-25, David Howells <dhowells@redhat.com> wrote:
+> Rather than adding a fchmodat2() syscall, should we add a "set_file_attrs=
+()"
+> syscall that takes a mask and allows you to set a bunch of stuff all in o=
+ne
+> go?  Basically, an interface to notify_change() in the kernel that would =
+allow
+> several stats to be set atomically.  This might be of particular interest=
+ to
+> network filesystems.
 
-But I see now that it also depends on SGI_NEWPORT_CONSOLE, so having those
-in drivers/video/logo makes sense indeed.
+Presumably looking something like statx(2) (except hopefully with
+extensible structs this time :P)? I think that could also be useful, but
+given this is a fairly straight-forward syscall addition (and it also
+would resolve the AT_EMPTY_PATH issue for chmod as well as simplify the
+glibc wrapper), I think it makes sense to take this and we can do
+set_statx(2) separately?
 
 --=20
-Best regards,
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+--sqz3gv5iaglclup7
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZL/9agAKCRAol/rSt+lE
+b9muAP9aP2TUmAAHS6rOFH9Gf6v2e1/S/NcOkGphCidcAt2ZiwEAzjtee/kbCs2+
+akroOcjwVI11LFf34VRyguX0zOzOWQ4=
+=pGFN
+-----END PGP SIGNATURE-----
+
+--sqz3gv5iaglclup7--
