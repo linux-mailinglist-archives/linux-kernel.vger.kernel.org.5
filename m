@@ -2,98 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99007761207
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395577611E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233382AbjGYK6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S231709AbjGYK5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjGYK5o (ORCPT
+        with ESMTP id S232340AbjGYK45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:57:44 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AA844BC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:54:57 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PAsQcE120221;
-        Tue, 25 Jul 2023 05:54:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690282466;
-        bh=9wmSZxLbupH3Gu+wa25/SrII2SpmiTYlcfLJ4uVTgmA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ihysFyV1CrdxHZTg2sLR+kFKfSAUvM7KpQquRN51XrxxKgETfIZr9baKljGaoNGnh
-         eI6lUG361wQdT4lHzkgLyCxyr8tv8wZiU8ACEBq71etzeMqa9YPsLMsCRnVinnTaP2
-         +zBmfqp6Q0mlxAFPkgElTO+fTXug7w47aJtgJlCs=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PAsQgn113901
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 05:54:26 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 05:54:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 05:54:26 -0500
-Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PArnka091635;
-        Tue, 25 Jul 2023 05:54:22 -0500
-From:   Udit Kumar <u-kumar1@ti.com>
-To:     <vigneshr@ti.com>, <nm@ti.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
-        <geert+renesas@glider.be>, <onrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski@linaro.org>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <peng.fan@nxp.com>, <john.garry@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH 7/7] arm64: defconfig: Enable K3 RTI Watchdog
-Date:   Tue, 25 Jul 2023 16:23:46 +0530
-Message-ID: <20230725105346.1981285-8-u-kumar1@ti.com>
+        Tue, 25 Jul 2023 06:56:57 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EF24215
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:54:29 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52227884855so3835440a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690282467; x=1690887267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9XvBEhiljLAJfGUeTgW+OPWzjRV1YWWycztsm2LeLB0=;
+        b=b9hrnVX60q2msck+zlotnWfv+WZ6UUe6Uz7mE/Vb/cIRkkFqtz4GMg/RjfBwHccixd
+         sP8lVu84VCqhiPUkkcxkpghJLxFYLbXTzdascqZgmbjJoIlkKUGWrBXZuqRT5JWzOX7E
+         p2GkntswKBF8g/zBsgJqoYy9UD4YgCkzzrQQ+BVwYQSlSI4chmPWv0DK1qNjQF7/NoFG
+         fO7OidQS8XYJ52/iGzLEb2/5/Wx0EEQb+puiE66GIAJeeVCfCia0wBOzkxZJdbi1Ei/D
+         42KBWqzoxYtCvS9eKAvj8fTaCpRgx6mUvEMSHqDpg99Imf/spk68/9eAbWyNApv1r3fF
+         bWoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690282467; x=1690887267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9XvBEhiljLAJfGUeTgW+OPWzjRV1YWWycztsm2LeLB0=;
+        b=UWelMTf+sH6SMvNelR/Me1/ubATyVDwq4P4AnTuvRduF+wm7cJvwS81hFj/P8wQVi+
+         PBm1DXftrIOYUGnihgN6MNKUEYbM++syR6kgWMn+GlWj3PPJ17dyq6fxe/ISuVSkAXYU
+         PKVMMl0Z7wjjmrkydYgJXcj8myAa1OS8cmQ+8+f2EIQFMVAEFUyv60d6YuPOZxpzPjIG
+         yyaTIdZg8s15Sr7qbRUyIhR2wnuK+jcpZmeGEn5MwqmODO1FfuQfbHGc8uqSCLDh2bs6
+         rkkLHgA4kZixb1CWM7UVP1/Ql9kKG1ksFUxBtbnHvMtTU7wca4zaa0iA1qEd4CO1CTJp
+         Xwkw==
+X-Gm-Message-State: ABy/qLZYZo277Lr2OwgjuEW1GRRKsFsWaWgiTKssyySyEKunuu6QS5YP
+        Wr6l6QlEwyrtRWNMqjHCgzIM1Q==
+X-Google-Smtp-Source: APBJJlEBd79V8FzekDC8zmB2dcU2i30PcbnQL6AH3k5NC4ZMeRGeosc90mmA7pJqtzUE02K6QQ4Mpg==
+X-Received: by 2002:a17:906:289:b0:99b:237e:6ee with SMTP id 9-20020a170906028900b0099b237e06eemr12860028ejf.30.1690282467322;
+        Tue, 25 Jul 2023 03:54:27 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id xo22-20020a170907bb9600b0098860721959sm7980597ejc.198.2023.07.25.03.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 03:54:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Saravanan Sekar <sravanhome@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Robin Gong <yibin.gong@nxp.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Pascal Paillet <p.paillet@foss.st.com>,
+        - <patches@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH 1/2] regulator: dt-bindings: add missing unevaluatedProperties for each regulator
+Date:   Tue, 25 Jul 2023 12:54:20 +0200
+Message-Id: <20230725105421.99160-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230725105346.1981285-1-u-kumar1@ti.com>
-References: <20230725105346.1981285-1-u-kumar1@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI's K3 SOC Family has RTI (Real Time Interrupt) watchdog
-timer.
+Each regulator node, which references common regulator.yaml schema,
+should disallow additional or unevaluated properties.  Otherwise
+mistakes in properties will go unnoticed.
 
-This patch enables TI RTI watchdog driver to be built as module.
+Reported-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Closes: https://git.codelinaro.org/linaro/qcomlt/kernel/-/commit/1c8aeef8a6e84520b77f0c270d99c8bf692c5933
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-RTI watchdog are supported on AM62, AM62A, AM64, AM65,
-J721E and J7200 TI SOC.
-
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 63ca68081139..dedf1bd9c29f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -690,6 +690,7 @@ CONFIG_UNIPHIER_WATCHDOG=y
- CONFIG_PM8916_WATCHDOG=m
- CONFIG_BCM2835_WDT=y
- CONFIG_BCM7038_WDT=m
-+CONFIG_K3_RTI_WATCHDOG=m
- CONFIG_MFD_ALTERA_SYSMGR=y
- CONFIG_MFD_BD9571MWV=y
- CONFIG_MFD_AXP20X_I2C=y
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ Documentation/devicetree/bindings/regulator/mps,mp5416.yaml   | 2 ++
+ Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml  | 2 ++
+ Documentation/devicetree/bindings/regulator/pfuze100.yaml     | 4 ++++
+ .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml    | 2 ++
+ .../devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml | 1 +
+ .../bindings/regulator/richtek,rt4831-regulator.yaml          | 1 +
+ .../bindings/regulator/richtek,rtmv20-regulator.yaml          | 1 +
+ .../bindings/regulator/richtek,rtq6752-regulator.yaml         | 1 +
+ .../devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml    | 2 +-
+ Documentation/devicetree/bindings/regulator/ti,tps65090.yaml  | 1 +
+ Documentation/devicetree/bindings/regulator/ti,tps6586x.yaml  | 1 +
+ Documentation/devicetree/bindings/regulator/wlf,arizona.yaml  | 2 ++
+ 12 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
+index 2e720d152890..0221397eb51e 100644
+--- a/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
++++ b/Documentation/devicetree/bindings/regulator/mps,mp5416.yaml
+@@ -29,10 +29,12 @@ properties:
+     patternProperties:
+       "^buck[1-4]$":
+         $ref: regulator.yaml#
++        unevaluatedProperties: false
+         type: object
+ 
+       "^ldo[1-4]$":
+         $ref: regulator.yaml#
++        unevaluatedProperties: false
+         type: object
+ 
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
+index f3fcfc8be72f..38475a568451 100644
+--- a/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
++++ b/Documentation/devicetree/bindings/regulator/mps,mpq7920.yaml
+@@ -39,11 +39,13 @@ properties:
+       ldortc:
+         type: object
+         $ref: regulator.yaml#
++        unevaluatedProperties: false
+ 
+     patternProperties:
+       "^ldo[1-4]$":
+         type: object
+         $ref: regulator.yaml#
++        unevaluatedProperties: false
+ 
+       "^buck[1-4]$":
+         type: object
+diff --git a/Documentation/devicetree/bindings/regulator/pfuze100.yaml b/Documentation/devicetree/bindings/regulator/pfuze100.yaml
+index e384e4953f0a..0eda44752cdd 100644
+--- a/Documentation/devicetree/bindings/regulator/pfuze100.yaml
++++ b/Documentation/devicetree/bindings/regulator/pfuze100.yaml
+@@ -68,18 +68,22 @@ properties:
+       "^sw([1-4]|[1-4][a-c]|[1-4][a-c][a-c])$":
+         $ref: regulator.yaml#
+         type: object
++        unevaluatedProperties: false
+ 
+       "^vgen[1-6]$":
+         $ref: regulator.yaml#
+         type: object
++        unevaluatedProperties: false
+ 
+       "^vldo[1-4]$":
+         $ref: regulator.yaml#
+         type: object
++        unevaluatedProperties: false
+ 
+       "^(vsnvs|vref|vrefddr|swbst|coin|v33|vccsd)$":
+         $ref: regulator.yaml#
+         type: object
++        unevaluatedProperties: false
+ 
+     additionalProperties: false
+ 
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+index 72b533c3761a..e758093365bc 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+@@ -111,6 +111,7 @@ properties:
+   bob:
+     type: object
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+     description: BOB regulator node.
+     dependencies:
+       regulator-allow-set-load: [ regulator-allowed-modes ]
+@@ -119,6 +120,7 @@ patternProperties:
+   "^(smps|ldo|lvs|bob)[0-9]+$":
+     type: object
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+     description: smps/ldo regulator nodes(s).
+     dependencies:
+       regulator-allow-set-load: [ regulator-allowed-modes ]
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+index a8ca8e0b27f8..9ea8ac0786ac 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+@@ -110,6 +110,7 @@ patternProperties:
+   "^((s|l|lvs|5vs)[0-9]*)|(boost-bypass)|(bob)$":
+     description: List of regulators and its properties
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+ 
+ additionalProperties: false
+ 
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
+index d9c23333e157..cd06e957b9db 100644
+--- a/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
+@@ -29,6 +29,7 @@ patternProperties:
+   "^DSV(LCM|P|N)$":
+     type: object
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+     description:
+       Properties for single Display Bias Voltage regulator.
+ 
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+index 446ec5127d1f..fec3d396ca50 100644
+--- a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+@@ -121,6 +121,7 @@ properties:
+     description: load switch current regulator description.
+     type: object
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+ 
+ required:
+   - compatible
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtq6752-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtq6752-regulator.yaml
+index e6e5a9a7d940..ef62c618de67 100644
+--- a/Documentation/devicetree/bindings/regulator/richtek,rtq6752-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/richtek,rtq6752-regulator.yaml
+@@ -35,6 +35,7 @@ properties:
+       "^(p|n)avdd$":
+         type: object
+         $ref: regulator.yaml#
++        unevaluatedProperties: false
+         description: |
+           regulator description for pavdd and navdd.
+ 
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
+index 7d53cfa2c288..c9586d277f41 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
+@@ -25,8 +25,8 @@ properties:
+ patternProperties:
+   "^(reg11|reg18|usb33)$":
+     type: object
+-
+     $ref: regulator.yaml#
++    unevaluatedProperties: false
+ 
+ required:
+   - compatible
+diff --git a/Documentation/devicetree/bindings/regulator/ti,tps65090.yaml b/Documentation/devicetree/bindings/regulator/ti,tps65090.yaml
+index 0ae95ac6de57..8ae8de7fe3de 100644
+--- a/Documentation/devicetree/bindings/regulator/ti,tps65090.yaml
++++ b/Documentation/devicetree/bindings/regulator/ti,tps65090.yaml
+@@ -67,6 +67,7 @@ properties:
+     patternProperties:
+       "^dcdc[1-3]|fet[1-7]|ldo[1-2]$":
+         $ref: regulator.yaml
++        unevaluatedProperties: false
+         properties:
+           ti,enable-ext-control:
+             $ref: /schemas/types.yaml#/definitions/flag
+diff --git a/Documentation/devicetree/bindings/regulator/ti,tps6586x.yaml b/Documentation/devicetree/bindings/regulator/ti,tps6586x.yaml
+index c5ea7012c653..ef093344c7bc 100644
+--- a/Documentation/devicetree/bindings/regulator/ti,tps6586x.yaml
++++ b/Documentation/devicetree/bindings/regulator/ti,tps6586x.yaml
+@@ -64,6 +64,7 @@ properties:
+     patternProperties:
+       "^sys|sm[0-2]|ldo[0-9]|ldo_rtc$":
+         $ref: regulator.yaml
++        unevaluatedProperties: false
+ 
+ allOf:
+   - $ref: /schemas/gpio/gpio.yaml
+diff --git a/Documentation/devicetree/bindings/regulator/wlf,arizona.yaml b/Documentation/devicetree/bindings/regulator/wlf,arizona.yaml
+index 011819c10988..11e378648b3f 100644
+--- a/Documentation/devicetree/bindings/regulator/wlf,arizona.yaml
++++ b/Documentation/devicetree/bindings/regulator/wlf,arizona.yaml
+@@ -29,11 +29,13 @@ properties:
+       Initial data for the LDO1 regulator.
+     $ref: regulator.yaml#
+     type: object
++    unevaluatedProperties: false
+ 
+   micvdd:
+     description:
+       Initial data for the MICVDD regulator.
+     $ref: regulator.yaml#
+     type: object
++    unevaluatedProperties: false
+ 
+ additionalProperties: true
 -- 
 2.34.1
 
