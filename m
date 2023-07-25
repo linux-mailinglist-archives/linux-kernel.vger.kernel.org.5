@@ -2,231 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3E27623AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DDA7623AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjGYUkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        id S229508AbjGYUku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjGYUkf (ORCPT
+        with ESMTP id S231265AbjGYUkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:40:35 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD74826BC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690317610; x=1721853610;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5WlIW/oTeapfPvbsKCAbvPU2GvPWsajVxolhhWz338I=;
-  b=LiZ4Rwfb+RIyUV79j6Oi5giLqMLt3zFu1BS/eqbhb4UcgXOw4IV9xXBZ
-   pKcT5dqW04QYyYejCuyMSZX4yQ+KWDGHTvLx1y745jOehiVaumEwAw7en
-   zYQWAKFPREvI5yNtqL2VH3S2B37L8pm8h7/k1x0rx9CAwv2QmVGSfC1Dm
-   MmO+Hcm/1MVcNwtbz3oYjPSXWRQy4c3AUVzsCLHUgZ/Umcmqzcs7xq/t6
-   0cb0029cxencEawgFboFf1/NTZ4aie69r4xIgDUlf46/uRa0Ykd/xTQa0
-   TEP8SinqJk1+ILAlGsjjqNj7//8/4DRCgvWHd1DtTz+Z8cp+iAT/8fvtX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="370514361"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="370514361"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 13:39:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="796272239"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="796272239"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jul 2023 13:39:16 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOOoN-0000Jz-1Q;
-        Tue, 25 Jul 2023 20:39:15 +0000
-Date:   Wed, 26 Jul 2023 04:38:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/renesas/sh_eth.c:899:37: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-Message-ID: <202307260440.vx0TwVE5-lkp@intel.com>
+        Tue, 25 Jul 2023 16:40:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8F4271B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:40:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CB6361901
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:40:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DD7FC433C7;
+        Tue, 25 Jul 2023 20:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690317611;
+        bh=ud1chLoFe+VFXLyMYNzCTP55aWLaNfDqCtujCPEbZLM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b2jkYwIFBM86tzbrzQ0/O6LPwNds5JN6XmzkIBywaeurcOuY62ju3ymuOPULiITNh
+         sfStsmtNaFhoTVG5YC3+1pWmSaXCdiSVtfE+K+WsgdP9M1CoV4mIjBFY6hFOC5mez1
+         aP/RQqhjavZl/jq799o7lhhRMx1nvWjUwgrEHdKe96FfEq0aLUYxgXtzsauzexvfOO
+         ZT0Xv/nAqxYdGELf2hTZh0E42jXbWeEaK3vWh47rJycBGCcO7DNKDN/nLd89S8sR9P
+         1dX2tmdnj+yKPKsl+4gZVkFqo6CK/oPPSUotFNM5YQxaZYxJIW9EjBgOv9NYYCYBGb
+         hkug796qVFAeQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     Simon Horman <simon.horman@corigine.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Josua Mayer <josua@solid-run.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sean Anderson <sean.anderson@seco.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] dpaa: avoid linking objects into multiple modules
+Date:   Tue, 25 Jul 2023 22:39:40 +0200
+Message-Id: <20230725204004.3366679-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
-commit: ded2ee36313c941f1a12b6f85cde295b575264ae openrisc: Add pci bus support
-date:   12 months ago
-config: openrisc-randconfig-r073-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260440.vx0TwVE5-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260440.vx0TwVE5-lkp@intel.com/reproduce)
+From: Arnd Bergmann <arnd@arndb.de>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260440.vx0TwVE5-lkp@intel.com/
+Each object file contains information about which module it gets linked
+into, so linking the same file into multiple modules now causes a warning:
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/renesas/sh_eth.c:899:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/net/ethernet/renesas/sh_eth.c:899:37: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:899:37: sparse:     got void *
-   drivers/net/ethernet/renesas/sh_eth.c:900:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/net/ethernet/renesas/sh_eth.c:900:37: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:900:37: sparse:     got void *
->> drivers/net/ethernet/renesas/sh_eth.c:907:37: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/net/ethernet/renesas/sh_eth.c:907:37: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:907:37: sparse:     got void *
-   drivers/net/ethernet/renesas/sh_eth.c:908:37: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/net/ethernet/renesas/sh_eth.c:908:37: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:908:37: sparse:     got void *
->> drivers/net/ethernet/renesas/sh_eth.c:1186:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *addr @@
-   drivers/net/ethernet/renesas/sh_eth.c:1186:31: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:1186:31: sparse:     got void *addr
->> drivers/net/ethernet/renesas/sh_eth.c:1191:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *addr @@
-   drivers/net/ethernet/renesas/sh_eth.c:1191:31: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:1191:31: sparse:     got void *addr
-   drivers/net/ethernet/renesas/sh_eth.c:1214:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *addr @@
-   drivers/net/ethernet/renesas/sh_eth.c:1214:33: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/net/ethernet/renesas/sh_eth.c:1214:33: sparse:     got void *addr
-   drivers/net/ethernet/renesas/sh_eth.c:1244:43: sparse: sparse: restricted __le32 degrades to integer
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1249:17: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1254:25: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1262:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] status @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1262:32: sparse:     expected unsigned int [usertype] status
-   drivers/net/ethernet/renesas/sh_eth.c:1262:32: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1264:40: sparse: sparse: invalid assignment: |=
-   drivers/net/ethernet/renesas/sh_eth.c:1264:40: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1264:40: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1268:49: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1285:33: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1361:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] len @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1361:29: sparse:     expected unsigned int [usertype] len
-   drivers/net/ethernet/renesas/sh_eth.c:1361:29: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1362:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1362:30: sparse:     expected unsigned int [usertype] addr
-   drivers/net/ethernet/renesas/sh_eth.c:1362:30: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1363:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] status @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1363:32: sparse:     expected unsigned int [usertype] status
-   drivers/net/ethernet/renesas/sh_eth.c:1363:32: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1377:32: sparse: sparse: invalid assignment: |=
-   drivers/net/ethernet/renesas/sh_eth.c:1377:32: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1377:32: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1385:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] status @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1385:32: sparse:     expected unsigned int [usertype] status
-   drivers/net/ethernet/renesas/sh_eth.c:1385:32: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1386:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] len @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1386:29: sparse:     expected unsigned int [usertype] len
-   drivers/net/ethernet/renesas/sh_eth.c:1386:29: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1395:24: sparse: sparse: invalid assignment: |=
-   drivers/net/ethernet/renesas/sh_eth.c:1395:24: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1395:24: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1547:40: sparse: sparse: invalid assignment: &=
-   drivers/net/ethernet/renesas/sh_eth.c:1547:40: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1547:40: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1604:35: sparse: sparse: restricted __le32 degrades to integer
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1607:31: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1608:27: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1646:36: sparse: sparse: cast to restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1677:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] len @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1677:29: sparse:     expected unsigned int [usertype] len
-   drivers/net/ethernet/renesas/sh_eth.c:1677:29: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1693:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:1693:38: sparse:     expected unsigned int [usertype] addr
-   drivers/net/ethernet/renesas/sh_eth.c:1693:38: sparse:     got restricted __le32 [usertype]
-   drivers/net/ethernet/renesas/sh_eth.c:1697:40: sparse: sparse: invalid assignment: |=
-   drivers/net/ethernet/renesas/sh_eth.c:1697:40: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1697:40: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:1700:40: sparse: sparse: invalid assignment: |=
-   drivers/net/ethernet/renesas/sh_eth.c:1700:40: sparse:    left side has type unsigned int
-   drivers/net/ethernet/renesas/sh_eth.c:1700:40: sparse:    right side has type restricted __le32
-   drivers/net/ethernet/renesas/sh_eth.c:2475:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] status @@     got restricted __le32 [usertype] @@
-   drivers/net/ethernet/renesas/sh_eth.c:2475:32: sparse:     expected unsigned int [usertype] status
-   drivers/net/ethernet/renesas/sh_eth.c:2475:32: sparse:     got restricted __le32 [usertype]
+scripts/Makefile.build:254: drivers/net/ethernet/freescale/dpaa2/Makefile: dpaa2-mac.o is added to multiple modules: fsl-dpaa2-eth fsl-dpaa2-switch
+scripts/Makefile.build:254: drivers/net/ethernet/freescale/dpaa2/Makefile: dpmac.o is added to multiple modules: fsl-dpaa2-eth fsl-dpaa2-switch
 
-vim +899 drivers/net/ethernet/renesas/sh_eth.c
+Chang the way that dpaa2 is built by moving the two common files into a
+separate module with exported symbols instead.
 
-65ac8851490ec97 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2009-05-24  888  
-e403d295817cf9f drivers/net/ethernet/renesas/sh_eth.c David S. Miller    2013-06-07  889  #define SH_GIGA_ETH_BASE	0xfee00000UL
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  890  #define GIGA_MALR(port)		(SH_GIGA_ETH_BASE + 0x800 * (port) + 0x05c8)
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  891  #define GIGA_MAHR(port)		(SH_GIGA_ETH_BASE + 0x800 * (port) + 0x05c0)
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  892  static void sh_eth_chip_reset_giga(struct net_device *ndev)
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  893  {
-0799c2d6f42db2b drivers/net/ethernet/renesas/sh_eth.c Geert Uytterhoeven 2015-01-15  894  	u32 mahr[2], malr[2];
-7927092253da598 drivers/net/ethernet/renesas/sh_eth.c Sergei Shtylyov    2016-05-08  895  	int i;
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  896  
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  897  	/* save MAHR and MALR */
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  898  	for (i = 0; i < 2; i++) {
-ae70644df780c0e drivers/net/ethernet/renesas/sh_eth.c Yoshihiro Shimoda  2011-09-27 @899  		malr[i] = ioread32((void *)GIGA_MALR(i));
-ae70644df780c0e drivers/net/ethernet/renesas/sh_eth.c Yoshihiro Shimoda  2011-09-27 @900  		mahr[i] = ioread32((void *)GIGA_MAHR(i));
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  901  	}
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  902  
-c66b2581123cd15 drivers/net/ethernet/renesas/sh_eth.c Sergei Shtylyov    2016-05-07  903  	sh_eth_chip_reset(ndev);
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  904  
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  905  	/* restore MAHR and MALR */
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  906  	for (i = 0; i < 2; i++) {
-ae70644df780c0e drivers/net/ethernet/renesas/sh_eth.c Yoshihiro Shimoda  2011-09-27 @907  		iowrite32(malr[i], (void *)GIGA_MALR(i));
-ae70644df780c0e drivers/net/ethernet/renesas/sh_eth.c Yoshihiro Shimoda  2011-09-27  908  		iowrite32(mahr[i], (void *)GIGA_MAHR(i));
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  909  	}
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  910  }
-8fcd496151b4354 drivers/net/sh_eth.c                  Yoshihiro Shimoda  2011-03-07  911  
+To avoid a link failure when the switch driver is built-in, but the dpio driver
+is a loadable module, add the same dependency in there that exists for
+the ethernet driver.
 
-:::::: The code at line 899 was first introduced by commit
-:::::: ae70644df780c0e87f1705fda932e7cb1bdb2074 net: sh_eth: use ioremap()
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: add missing module description
+---
+ drivers/net/ethernet/freescale/Makefile          |  4 +---
+ drivers/net/ethernet/freescale/dpaa2/Kconfig     |  1 +
+ drivers/net/ethernet/freescale/dpaa2/Makefile    |  9 +++++----
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c | 12 ++++++++++++
+ 4 files changed, 19 insertions(+), 7 deletions(-)
 
-:::::: TO: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
+diff --git a/drivers/net/ethernet/freescale/Makefile b/drivers/net/ethernet/freescale/Makefile
+index de7b318422330..c63e0c090f8f7 100644
+--- a/drivers/net/ethernet/freescale/Makefile
++++ b/drivers/net/ethernet/freescale/Makefile
+@@ -22,6 +22,4 @@ ucc_geth_driver-objs := ucc_geth.o ucc_geth_ethtool.o
+ obj-$(CONFIG_FSL_FMAN) += fman/
+ obj-$(CONFIG_FSL_DPAA_ETH) += dpaa/
+ 
+-obj-$(CONFIG_FSL_DPAA2_ETH) += dpaa2/
+-
+-obj-y += enetc/
++obj-y += enetc/ dpaa2/
+diff --git a/drivers/net/ethernet/freescale/dpaa2/Kconfig b/drivers/net/ethernet/freescale/dpaa2/Kconfig
+index d029b69c3f183..4e26b5a4bc5c4 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/Kconfig
++++ b/drivers/net/ethernet/freescale/dpaa2/Kconfig
+@@ -32,6 +32,7 @@ config FSL_DPAA2_PTP_CLOCK
+ 
+ config FSL_DPAA2_SWITCH
+ 	tristate "Freescale DPAA2 Ethernet Switch"
++	depends on FSL_MC_BUS && FSL_MC_DPIO
+ 	depends on BRIDGE || BRIDGE=n
+ 	depends on NET_SWITCHDEV
+ 	help
+diff --git a/drivers/net/ethernet/freescale/dpaa2/Makefile b/drivers/net/ethernet/freescale/dpaa2/Makefile
+index 1b05ba8d1cbff..c042d2c27926c 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/Makefile
++++ b/drivers/net/ethernet/freescale/dpaa2/Makefile
+@@ -3,15 +3,16 @@
+ # Makefile for the Freescale DPAA2 Ethernet controller
+ #
+ 
+-obj-$(CONFIG_FSL_DPAA2_ETH)		+= fsl-dpaa2-eth.o
++obj-$(CONFIG_FSL_DPAA2_ETH)		+= fsl-dpaa2-eth.o fsl-dpaa2-common.o
+ obj-$(CONFIG_FSL_DPAA2_PTP_CLOCK)	+= fsl-dpaa2-ptp.o
+-obj-$(CONFIG_FSL_DPAA2_SWITCH)		+= fsl-dpaa2-switch.o
++obj-$(CONFIG_FSL_DPAA2_SWITCH)		+= fsl-dpaa2-switch.o fsl-dpaa2-common.o
+ 
+-fsl-dpaa2-eth-objs	:= dpaa2-eth.o dpaa2-ethtool.o dpni.o dpaa2-mac.o dpmac.o dpaa2-eth-devlink.o dpaa2-xsk.o
++fsl-dpaa2-eth-objs	:= dpaa2-eth.o dpaa2-ethtool.o dpni.o dpaa2-eth-devlink.o dpaa2-xsk.o
+ fsl-dpaa2-eth-${CONFIG_FSL_DPAA2_ETH_DCB} += dpaa2-eth-dcb.o
+ fsl-dpaa2-eth-${CONFIG_DEBUG_FS} += dpaa2-eth-debugfs.o
+ fsl-dpaa2-ptp-objs	:= dpaa2-ptp.o dprtc.o
+-fsl-dpaa2-switch-objs	:= dpaa2-switch.o dpaa2-switch-ethtool.o dpsw.o dpaa2-switch-flower.o dpaa2-mac.o dpmac.o
++fsl-dpaa2-switch-objs	:= dpaa2-switch.o dpaa2-switch-ethtool.o dpsw.o dpaa2-switch-flower.o
++fsl-dpaa2-common-objs	+= dpaa2-mac.o dpmac.o
+ 
+ # Needed by the tracing framework
+ CFLAGS_dpaa2-eth.o := -I$(src)
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+index a69bb22c37eab..c51dbd84d199e 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+@@ -348,6 +348,7 @@ void dpaa2_mac_start(struct dpaa2_mac *mac)
+ 
+ 	phylink_start(mac->phylink);
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_start);
+ 
+ void dpaa2_mac_stop(struct dpaa2_mac *mac)
+ {
+@@ -358,6 +359,7 @@ void dpaa2_mac_stop(struct dpaa2_mac *mac)
+ 	if (mac->serdes_phy)
+ 		phy_power_off(mac->serdes_phy);
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_stop);
+ 
+ int dpaa2_mac_connect(struct dpaa2_mac *mac)
+ {
+@@ -450,6 +452,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
+ 
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_connect);
+ 
+ void dpaa2_mac_disconnect(struct dpaa2_mac *mac)
+ {
+@@ -462,6 +465,7 @@ void dpaa2_mac_disconnect(struct dpaa2_mac *mac)
+ 	of_phy_put(mac->serdes_phy);
+ 	mac->serdes_phy = NULL;
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_disconnect);
+ 
+ int dpaa2_mac_open(struct dpaa2_mac *mac)
+ {
+@@ -510,6 +514,7 @@ int dpaa2_mac_open(struct dpaa2_mac *mac)
+ 	dpmac_close(mac->mc_io, 0, dpmac_dev->mc_handle);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_open);
+ 
+ void dpaa2_mac_close(struct dpaa2_mac *mac)
+ {
+@@ -519,6 +524,7 @@ void dpaa2_mac_close(struct dpaa2_mac *mac)
+ 	if (mac->fw_node)
+ 		fwnode_handle_put(mac->fw_node);
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_close);
+ 
+ static char dpaa2_mac_ethtool_stats[][ETH_GSTRING_LEN] = {
+ 	[DPMAC_CNT_ING_ALL_FRAME]		= "[mac] rx all frames",
+@@ -557,6 +563,7 @@ int dpaa2_mac_get_sset_count(void)
+ {
+ 	return DPAA2_MAC_NUM_STATS;
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_get_sset_count);
+ 
+ void dpaa2_mac_get_strings(u8 *data)
+ {
+@@ -568,6 +575,7 @@ void dpaa2_mac_get_strings(u8 *data)
+ 		p += ETH_GSTRING_LEN;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_get_strings);
+ 
+ void dpaa2_mac_get_ethtool_stats(struct dpaa2_mac *mac, u64 *data)
+ {
+@@ -587,3 +595,7 @@ void dpaa2_mac_get_ethtool_stats(struct dpaa2_mac *mac, u64 *data)
+ 		*(data + i) = value;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(dpaa2_mac_get_ethtool_stats);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("DPAA2 Ethernet core library");
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
