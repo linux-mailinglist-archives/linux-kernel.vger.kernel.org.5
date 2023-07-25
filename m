@@ -2,169 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CDF7617ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C3D761033
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbjGYMDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
+        id S232270AbjGYKF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233089AbjGYMDp (ORCPT
+        with ESMTP id S233196AbjGYKFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:03:45 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3517CA3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:03:43 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9Fyw5dyDzrRtD;
-        Tue, 25 Jul 2023 20:02:48 +0800 (CST)
-Received: from [10.67.110.73] (10.67.110.73) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
- 2023 20:03:40 +0800
-Message-ID: <32552071-9e0f-b86b-202a-5cdf20871f59@huawei.com>
-Date:   Tue, 25 Jul 2023 20:03:40 +0800
+        Tue, 25 Jul 2023 06:05:01 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FDB1FC2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:04:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9CLN17NLz4f3kKl
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:04:28 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgAXC+ksnr9kFkPOOg--.2821S2;
+        Tue, 25 Jul 2023 18:04:28 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     willy@infradead.org, baolin.wang@linux.alibaba.com,
+        david@redhat.com, shikemeng@huaweicloud.com
+Subject: [PATCH RESEND 0/4] minor cleanups for compact lock functions in
+Date:   Wed, 26 Jul 2023 02:04:52 +0800
+Message-Id: <20230725180456.2146626-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Subject: Re: [PATCH -next v2] arm64: fix build warning for
- ARM64_MEMSTART_SHIFT
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Anshuman Khandual <anshuman.khandual@arm.com>, <will@kernel.org>,
-        <ryan.roberts@arm.com>, <joey.gouly@arm.com>, <ardb@kernel.org>,
-        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230724172751.3048501-1-chris.zjh@huawei.com>
- <ZL6UvLlyz3MyVfjr@arm.com> <4938685e-d293-4970-b964-3b9f560d45dd@arm.com>
- <9fcfe47f-9289-8eb5-ce4e-9f66648b0e89@huawei.com> <ZL+gr8b/HfpwVKdf@arm.com>
-From:   "zhangjianhua (E)" <chris.zjh@huawei.com>
-In-Reply-To: <ZL+gr8b/HfpwVKdf@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500005.china.huawei.com (7.192.104.229)
+X-CM-TRANSID: Syh0CgAXC+ksnr9kFkPOOg--.2821S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrur47JryxKw45tw1UCF1xXwb_yoWftrb_Aa
+        yxJa4Dtw15AFy5JFZ8CFs0yFykKFW8Gr1UJ3Z5Zr45Cr929F1kJanrZw4fXr1YqF9rWws8
+        Gw18Jw48uF17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IEw2IIxx
+        k0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK
+        6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI2
+        0VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        RwZDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        KHOP_HELO_FCRDNS,MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all, this series tries to remove repeact lock handle code in
+compaction. Patch 1-3 try to make compact_unlock_should_abort
+more common and can be used in both isolate_freepages_block and
+isolate_migratepages_block. Patch 4 adds a new compact lock function
+compact_unlock_irqrestore used along with existing compact_lock_irqsave
+to remove repeat code to do compact unlock.
+More details can be found in respective patches. Thanks!
 
-在 2023/7/25 18:15, Catalin Marinas 写道:
-> On Tue, Jul 25, 2023 at 04:47:46PM +0800, zhangjianhua (E) wrote:
->> 在 2023/7/25 12:22, Anshuman Khandual 写道:
->>> On 7/24/23 20:41, Catalin Marinas wrote:
->>>> On Mon, Jul 24, 2023 at 05:27:51PM +0000, Zhang Jianhua wrote:
->>>>> When building with W=1, the following warning occurs.
->>>>>
->>>>> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
->>>>>     129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
->>>>>         |                                         ^~~~~~~~~
->>>>> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
->>>>>     142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
->>>>>         |     ^~~~~~~~~~~~~~~~~~~~
->>>> Another thing that's missing here is that the warning is probably when
->>>> this file is included from asm-offests.h or some .S file.
->>>>
->>>>> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
->>>>> index 577773870b66..51bdce66885d 100644
->>>>> --- a/arch/arm64/include/asm/kernel-pgtable.h
->>>>> +++ b/arch/arm64/include/asm/kernel-pgtable.h
->>>>> @@ -125,12 +125,14 @@
->>>>>     * (64k granule), or a multiple that can be mapped using contiguous bits
->>>>>     * in the page tables: 32 * PMD_SIZE (16k granule)
->>>>>     */
->>>>> -#if defined(CONFIG_ARM64_4K_PAGES)
->>>>> +#if defined(CONFIG_ARM64_4K_PAGES) && defined(PUD_SHIFT)
->>>>>    #define ARM64_MEMSTART_SHIFT		PUD_SHIFT
->>>> That's not the correct fix since PUD_SHIFT should always be defined.
->>>> When CONFIG_PGTABLE_LEVELS == 3, pgtable-types.h includes
->>>> asm-generic/pgtable-nopud.h and this defines PUD_SHIFT. We either got
->>> Right, PUD_SHIFT is always defined irrespective of page table levels.
->>>
->>>> ARM64_MEMSTART_SHIFT defined in the wrong file or kernel-pgtable.h does
->>>> not pull the relevant headers (either directly or via an included
->>>> header). Even if kernel-pgtable.h ends up including the nopud/nopmd
->>>> headers, P*D_SHIFT is guarded by an #indef __ASSEMBLY__ in those files.
->>>>
->>>> Something like below appears to fix this, though I'm not particularly
->>>> fond of guarding the ARM64_MEMSTART_* definitions by #ifndef
->>>> __ASSEMBLY__ for no apparent reason (could add a comment though):
->>>>
->>>> -----------------------8<---------------------------
->>>> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
->>>> index 577773870b66..fcea7e87a6ca 100644
->>>> --- a/arch/arm64/include/asm/kernel-pgtable.h
->>>> +++ b/arch/arm64/include/asm/kernel-pgtable.h
->>>> @@ -118,6 +118,8 @@
->>>>    #define SWAPPER_RX_MMUFLAGS	(SWAPPER_RW_MMUFLAGS | PTE_RDONLY)
->>>>    #endif
->>>> +#ifndef __ASSEMBLY__
->>>> +
->>>>    /*
->>>>     * To make optimal use of block mappings when laying out the linear
->>>>     * mapping, round down the base of physical memory to a size that can
->>>> @@ -145,4 +147,6 @@
->>>>    #define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
->>>>    #endif
->>>> +#endif /* __ASSEMBLY__ */
->>>> +
->>>>    #endif	/* __ASM_KERNEL_PGTABLE_H */
->>>> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
->>>> index e4944d517c99..22b36f2d5d93 100644
->>>> --- a/arch/arm64/include/asm/pgtable-hwdef.h
->>>> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
->>>> @@ -6,6 +6,7 @@
->>>>    #define __ASM_PGTABLE_HWDEF_H
->>>>    #include <asm/memory.h>
->>>> +#include <asm/pgtable-types.h>
->>>>    /*
->>>>     * Number of page-table levels required to address 'va_bits' wide
->>>> diff --git a/arch/arm64/include/asm/pgtable-types.h b/arch/arm64/include/asm/pgtable-types.h
->>>> index b8f158ae2527..ae86e66fdb11 100644
->>>> --- a/arch/arm64/include/asm/pgtable-types.h
->>>> +++ b/arch/arm64/include/asm/pgtable-types.h
->>>> @@ -11,6 +11,8 @@
->>>>    #include <asm/types.h>
->>>> +#ifndef __ASSEMBLY__
->>>> +
->>>>    typedef u64 pteval_t;
->>>>    typedef u64 pmdval_t;
->>>>    typedef u64 pudval_t;
->>>> @@ -44,6 +46,8 @@ typedef struct { pteval_t pgprot; } pgprot_t;
->>>>    #define pgprot_val(x)	((x).pgprot)
->>>>    #define __pgprot(x)	((pgprot_t) { (x) } )
->>>> +#endif /* __ASSEMBLY__ */
->>>> +
->>>>    #if CONFIG_PGTABLE_LEVELS == 2
->>>>    #include <asm-generic/pgtable-nopmd.h>
->>>>    #elif CONFIG_PGTABLE_LEVELS == 3
->>>> -----------------------8<---------------------------
->>>>
->>>> To avoid guarding the ARM64_MEMSTART_* definitions, we could instead
->>>> move the P*D_SHIFT definitions in asm-generic/pgtable-nop*d.h outside
->>>> the #ifndef __ASSEMBLY__ block.
->>> OR could ARM64_MEMSTART_SHIFT and ARM64_MEMSTART_ALIGN computation blocks
->>> be moved inside arch/arm64/mm/init.c, where it is used exclusively. Seems
->>> to be solving the problem as well.
-> That's fine by me, better than adding the #ifndef __ASSEMBLY__ around
-> them.
->
->> This method can avoid the current compilation warning, but does not
->> solve the problem that PUD_SHIFT and PMD_SHIFT undefined in fact, and
->> it is contrary to XXX_SHIFT should always be defined. Maybe it would
->> be more appropriate to solve this issue directly.
-> For .c files, we can solve this by including asm/pgtable-types.h in
-> asm/pgtable-hwdef.h. This still leaves P*D_SHIFT undefined for .S files
-> since the generic nop*d.h headers guard the shifts with !__ASSEMBLY__
-> but do we really care about this? I haven't seen any other warning of
-> P*D_SHIFT not being defined. If you do want to solve these, just go and
-> change the generic headers to take the shift out of the asm guard. I
-> don't think it's worth it.
-OK, agree, I will send a new patch for Anshuman's method.
+Kemeng Shi (4):
+  mm/compaction: use "spinlock_t *" to record held lock in compact
+    [un]lock functions
+  mm/compaction: use "spinlock_t *" to record held lock in
+    isolate_migratepages_block
+  mm/compaction: use compact_unlock_should_abort in
+    isolate_migratepages_block
+  mm/compaction: add compact_unlock_irqrestore to remove repeat code
+
+ mm/compaction.c | 85 ++++++++++++++++++-------------------------------
+ 1 file changed, 31 insertions(+), 54 deletions(-)
+
+-- 
+2.30.0
+
