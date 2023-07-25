@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7608076070C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3E176070A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 06:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjGYEMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 00:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S231497AbjGYELc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 00:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjGYEL4 (ORCPT
+        with ESMTP id S231126AbjGYEL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 00:11:56 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E63B1BCB
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:11:52 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d16889b3e93so614523276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:11:52 -0700 (PDT)
+        Tue, 25 Jul 2023 00:11:27 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A114819AC
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:11:25 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666e5f0d60bso2841494b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:11:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690258311; x=1690863111;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rfSKEIdvDiXChG/0o+OpKXSikThIqoBp12joH4KG6gw=;
-        b=PoRX9G9bv/It87yTRwxcp+1MQ7my6zVHV3vuUyQqWN4vYiW6cjqpELrv+g31I9xeYY
-         s8JyLSJeI7jjz1odHqK+LCotLiaJWi4EcmLgD4qAfhiFca9yHSkM9HDyDaCFClqtdX1c
-         8SUC2Tkm9/h57Q208E+4fJ5xVL08YBIBZrgXCrst4bQ9ZJLcmrzusd2pOcNXuF7oPeIg
-         v76Ts+Sh+8NS0oal/fzapicBG+bsKTOI5amgiOFQ3GGF+9DTwzgub8ctvPDz+w/PHiWe
-         tnnjBGBOW7/byVAT9f81cbgkcI5YiUo0DCIe2+5q8sEWO1qYAuDmX/5WJEJzj3t2XS3g
-         9oXw==
+        d=linaro.org; s=google; t=1690258285; x=1690863085;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6yFVEsi6DemosywA0d4g+4gyo9sgA/NzmDnSSDwQNKs=;
+        b=lk4/cIBY23JoJcZYtO6BPJz+U6dOgzDrtI/AddYuE+I/IFHF+0VNmMiCxbdim0DI6t
+         IPJ1x4awpw4/uLI7cGwYUNC41jT+tdeCpZkWozX8Wxr0k/AFBbqb+Dnd4TsYPtKFMZ16
+         NCQCu5kfQNLXOUURvQbjffpqG1adcYt/5wo8yidETbOZphn8bOacxvQvGcVg29LSKBu7
+         D+VJ6tLOx+Vu6VoXj58jF1Qk9LDOc4BGQhbdqxdD6oW2MgqX3LcXBEMeupXYulnBkPw6
+         Fo8V35yCiev52gcpQu+MdeH+9L97/JqStRCZ9KHlmO9EYSxFLU4Je/40yoG8Su3n+wom
+         yZlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690258311; x=1690863111;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rfSKEIdvDiXChG/0o+OpKXSikThIqoBp12joH4KG6gw=;
-        b=curoiLQ7uuw6V9K3d8s36OsTHrbVkhf6poW8Uwd/nwnpXRTPQ0id8mjM8tsz9MSnY9
-         VmbhDl8GFay/EuKnlev7Xcz3OsfhM50uc0eJtYIIujgNTX4l3mzHE+ibYTitUeejvawD
-         /mTgxSCaAUqOy1LNrqQOwwlRXJ8PZlcNqPD3tF4qu2ip+f/umcOtGCsN5fSnAmL7DAK7
-         YUWFbG4o7OwAY68BOwHk2plMBLnUVekPEhgbr1tXD4xJr5pnSCeUVqKzcQvhZLu10nvu
-         hov32Wbdtd+WwzZ0jj4z9bekY1UeZlAWHQi0ckivR+Y16zVyNpIv3neN6McBZcHL+H3e
-         ppRg==
-X-Gm-Message-State: ABy/qLbV6ppyVn+r6NkvrrMCSIvO027H0Bn0xum1qr2lzPQKilonU16z
-        Q+xT/oyzJeNg/LLmvUZk/uuwyg==
-X-Google-Smtp-Source: APBJJlEyAzXnvxyVs+M9uV3cC0NGEPwn1O5Jm9w54HLMJ1fOwrkySCg7J1mN7bZqr33RcepW15GYFA==
-X-Received: by 2002:a25:2983:0:b0:d07:f1ed:51f7 with SMTP id p125-20020a252983000000b00d07f1ed51f7mr8005481ybp.43.1690258311474;
-        Mon, 24 Jul 2023 21:11:51 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id u35-20020a25f823000000b00d07a7bbe4acsm1811961ybd.19.2023.07.24.21.11.50
+        d=1e100.net; s=20221208; t=1690258285; x=1690863085;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6yFVEsi6DemosywA0d4g+4gyo9sgA/NzmDnSSDwQNKs=;
+        b=AQSX05OyQlDdcHwK3tS0H1iRugYbd2XpaUNuz0r7FsMqqPmmOmafpEuxyuhxiZEVEh
+         jIAIzBsXSLpgIvjg+cxdJ+d+chaTm/USKHlxYlI7rjhNfN8JWN0MwpphNfrIqYG2SNL7
+         fmbe6Q9zaaWVFkJvFHXRg2f437QuPZVXmFD0Yt5CETTh5vswwrxDn514VwEqsnJ89CXg
+         xq+HmdtfEWGB45qAnrOCYdLr6H8OBLhcEd5StUsMtRC3UKhG6GMpzRJ2HKrZqMOkBfdd
+         CycNAYUKBN0o13pe61be+mc7+9SUwiAIxypluurrO9UKq9bI1f9lw/8krEYVmkO3GxT6
+         Wndw==
+X-Gm-Message-State: ABy/qLbHwZXDPI1QdA5yAzY7Vp4MUaSN0eU/OEo3odKwRzU9hvOramB6
+        og4mxc9d1MvTMJh7IjqXqM8lCw==
+X-Google-Smtp-Source: APBJJlGEfGQ7zai4fBJw5iC4TD450VqmzaOjEBbpI7dsjUc7F9ZBMXlE4WEWbv4UhPyjm6nAy6pOwQ==
+X-Received: by 2002:a05:6a20:734e:b0:127:796d:b70d with SMTP id v14-20020a056a20734e00b00127796db70dmr9905031pzc.61.1690258285037;
+        Mon, 24 Jul 2023 21:11:25 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id p7-20020a170902b08700b001b3d0aff88fsm9729885plr.109.2023.07.24.21.11.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 21:11:51 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 21:10:59 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the mm-hotfixes tree
-In-Reply-To: <20230725135546.28334fe4@canb.auug.org.au>
-Message-ID: <3084e97c-3a7d-ace8-2e9c-31642fd663df@google.com>
-References: <20230725135546.28334fe4@canb.auug.org.au>
+        Mon, 24 Jul 2023 21:11:24 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 09:41:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        conor+dt@kernel.org, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
+        linux-kernel@vger.kernel.org, quic_ziqichen@quicinc.com,
+        linux-pm@vger.kernel.org, nm@ti.com, quic_bhaskarv@quicinc.com,
+        martin.petersen@oracle.com, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, quic_asutoshd@quicinc.com,
+        alim.akhtar@samsung.com, vireshk@kernel.org,
+        kyungmin.park@samsung.com, jejb@linux.ibm.com, bvanassche@acm.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        quic_cang@quicinc.com, linux-arm-msm@vger.kernel.org,
+        myungjoo.ham@samsung.com, andersson@kernel.org, sboyd@kernel.org,
+        linux-scsi@vger.kernel.org, cw00.choi@samsung.com,
+        krzysztof.kozlowski@linaro.org, avri.altman@wdc.com,
+        bmasney@redhat.com, quic_narepall@quicinc.com
+Subject: Re: [PATCH v2 02/15] dt-bindings: opp: Increase maxItems for opp-hz
+ property
+Message-ID: <20230725041122.7yu4drwekoy6w24d@vireshk-i7>
+References: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
+ <20230720054100.9940-3-manivannan.sadhasivam@linaro.org>
+ <169021390783.3607138.9583713600185509839.robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169021390783.3607138.9583713600185509839.robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023, Stephen Rothwell wrote:
-
-> Hi all,
+On 24-07-23, 09:51, Rob Herring wrote:
 > 
-> After merging the mm-hotfixes tree, today's linux-next build (htmldocs)
-> produced this warning:
+> On Thu, 20 Jul 2023 11:10:47 +0530, Manivannan Sadhasivam wrote:
+> > Current limit of 16 will be exhausted by platforms specifying the frequency
+> > for 9 clocks using opp-hz, like Qcom SDM845 SoC. For instance, specifying
+> > the frequency for 9 clocks with 64bit specifier as below would consume
+> > (9 * 2 = 18) items.
+> > 
+> > 	opp-50000000 {
+> > 		opp-hz = /bits/ 64 <50000000>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <37500000>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <0>,
+> > 			 /bits/ 64 <75000000>;
+> > 	};
+> > 
+> > So let's increase the limit to 32 which should be enough for most platforms
+> > (hopefully).
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
 > 
-> Documentation/filesystems/tmpfs.rst:116: ERROR: Malformed table.
-> Text in column margin in table line 4.
-> 
-> ===========  ==============================================================
-> huge=never   Do not allocate huge pages.  This is the default.
-> huge=always  Attempt to allocate huge page every time a new page is needed.
-> huge=within_size Only allocate huge page if it will be fully within i_size.
->              Also respect madvise(2) hints.
-> huge=advise  Only allocate huge page if requested with madvise(2).
-> ===========  ==============================================================
-> 
-> Introduced by commit
-> 
->   a0ebb5aa2de3 ("tmpfs: fix Documentation of noswap and huge mount options")
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Sorry about that, Stephen: thanks for the report.
+Applied. Thanks.
 
-Randy, you're always my goto guy for how to get these Doc things right,
-I hope you don't mind.  I just write the text as I want it to appear,
-then get caught out by unfamiliar rules.
-
-Please suggest a fixup to the fix patch if you can - thanks!
-
-Hugh
+-- 
+viresh
