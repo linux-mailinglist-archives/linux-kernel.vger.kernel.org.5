@@ -2,187 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2951760D55
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B125F760D4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjGYImS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbjGYIlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232410AbjGYIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 25 Jul 2023 04:41:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6E42117
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:39:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690274373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZTfmAZsQ/NnqLOUF4IWJ+3YxypRaxP2eX5BLrKeFJrg=;
-        b=D8wgND/j8qom2ydymPccu6DsNRC2vChzm371A1T3rszJSXffgf/m98H7wGha1nv/WL0uET
-        uPrgkWemSCLa5UBdUHxdFUX/G7xauxNrH0TMVAKdi1yXe6MvbU+lAkz34SdZE6GCStiNia
-        R+aoeI03eOnzDuCg95B7aHFAd94/5UU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-N2XQTaw6OmKqDIDN5YS_Uw-1; Tue, 25 Jul 2023 04:39:32 -0400
-X-MC-Unique: N2XQTaw6OmKqDIDN5YS_Uw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-98df34aa83aso259057866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:39:31 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231657AbjGYIk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 Jul 2023 04:40:59 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CCE2D44;
+        Tue, 25 Jul 2023 01:40:28 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbfa811667so39206065e9.1;
+        Tue, 25 Jul 2023 01:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690274426; x=1690879226;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GgtRdgA8tKSxtLzk81jR6TOCvg7DqWeabeNFPWwPwTQ=;
+        b=kHqbAzKeFsXBFmddI5JrFf6cmXRylrbxpkJKjlFeRX2k/vJnQkDi1aDHDQcE03dFxd
+         3c7NxlsHyr8Yo13TffpwIrjMEWKHhAQEDMed4CqPDCCDzwIzScxxF/Xl7OMJj9AjoA2/
+         m28jn4b+bIlXkZKDKwqxWmi3AWzifMjaYi7ard6csrhnvzJmBVyxoukNDWEyoGNKt5f2
+         /scHlSNvpVAQcAeeT3YbNTTDJTr758BiK0HYH3vbzTO0x79PwkmmcS3fgw9GI9oMOYDy
+         dNMfxxe9y+Hc3O5olybqU6X2eW7Rtjp4RMfW8gfY33VtfSUhozfn1zIW3ONv9uydIGiV
+         jdgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690274370; x=1690879170;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690274426; x=1690879226;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZTfmAZsQ/NnqLOUF4IWJ+3YxypRaxP2eX5BLrKeFJrg=;
-        b=IdqwTX/cZDfhMxe5+RAQUyE/MOIo4okRcOsZWRxit7WLkxzovITaVQEv6ZMjmzxDZu
-         Im5XGovTlr9lMkoJvqTuU33G8NO6Krzr38L8CdhLUdYjfmmJtbCP4ixCiqDiRsO6Pxcf
-         3pI7axdufCGUAEMjDjWj46OUZ0ymITRRUm8TkyMA477XWcPrhcnduCFNlkLv12AyQx1a
-         9ClgFS/iMc6Zn+0ba+u16hQxgf87vfAVumD2rn8aUhSMD5vPtiRFtA3e3VRTqmGT1nY3
-         W4iy1VWKoL0XbgXKUjB5pDV5x6ANBE20HAglkAATa9tWI+wTgrBcO0qGwKqOvXsEAhu0
-         2FjA==
-X-Gm-Message-State: ABy/qLblocmpsMoYluRzwLWeA60m9zEvch+7lxPGoclHmViOXYxr/qi/
-        WqdKbwPgXfDOaJqHb07W8hqVxQzCfpeRj1QkQ//Hac0/2KGR/UnwCr9Ojegz9jTKCbztdcr53FS
-        jxyCctGsf/m9lQXbWk/OSUdcGHCVJ8OWO
-X-Received: by 2002:a17:907:1c1b:b0:992:103c:43fa with SMTP id nc27-20020a1709071c1b00b00992103c43famr1863886ejc.30.1690274370767;
-        Tue, 25 Jul 2023 01:39:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG8G/tLCCCzWAtLMTNoroAGafDKsLbutAv++TWKrwjITCW7OC4J5vf9m86fcaxqaJymzd/Meg==
-X-Received: by 2002:a17:907:1c1b:b0:992:103c:43fa with SMTP id nc27-20020a1709071c1b00b00992103c43famr1863868ejc.30.1690274370497;
-        Tue, 25 Jul 2023 01:39:30 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id a15-20020a1709062b0f00b0098ce63e36e9sm7949608ejg.16.2023.07.25.01.39.29
+        bh=GgtRdgA8tKSxtLzk81jR6TOCvg7DqWeabeNFPWwPwTQ=;
+        b=bg58sSNJ45rxqLBV9EAiosZfZCv1MJs7kwLZCTYcaEDYHBWJGDDQlKlpWz1XjvhLOx
+         pHsy0S8j1zxphSzOD8Mp3AvkFFVtH9D/F1N/F7yTqm0RkFt1HNfQvRVcw2Zeaw6o8Z1O
+         cL8g/dLQA8RB1Dz7T1CPN6otokyet4SuMnNxK92m30IS4NVPnXb3suwrEiM6gJE5IZvp
+         nmMKt+SmwXaMudrZFe9S6a+rpoUP0Lp/7sM01tDA2s8gRPhRCFv8TnC8Ed3EuEpg77RT
+         lUA46KIdoD5MOD8/txV0xcdWadHQV4CFQ0xYRmd1Ry1RwO5kC9fXJuU/hepl3sYoEfPf
+         xGTQ==
+X-Gm-Message-State: ABy/qLaH5Egb2vDJB6Qsi0Q/7kYjVt6MEWLZyAEqFQRap52JQSTxXuyh
+        QJ+mKr+2CM3p+A0K8bOagTEwMLnfMuY=
+X-Google-Smtp-Source: APBJJlFPVvpDnmoUJfnPTabvgR2Qj3KB7XfS4GXE8gxPk3vKzl4GIedRmTQUbHdtXUzbbdzFRzkcUQ==
+X-Received: by 2002:a05:600c:22c3:b0:3f4:2a69:409 with SMTP id 3-20020a05600c22c300b003f42a690409mr1382426wmg.11.1690274426344;
+        Tue, 25 Jul 2023 01:40:26 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id w3-20020a05600c014300b003fc05b89e5bsm12308549wmm.34.2023.07.25.01.40.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 01:39:29 -0700 (PDT)
-Message-ID: <8d71e258-0bfd-a0d0-868f-a3299864de5b@redhat.com>
-Date:   Tue, 25 Jul 2023 10:39:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3] ACPI: video: Put ACPI video and its child devices to
- D0 at boot
-Content-Language: en-US, nl
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     lenb@kernel.org, linux-acpi@vger.kernel.org,
+        Tue, 25 Jul 2023 01:40:25 -0700 (PDT)
+Subject: Re: [net 0/2] rxfh with custom RSS fixes
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
+        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
+        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
+        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
         linux-kernel@vger.kernel.org
-References: <20230721152143.3108017-1-kai.heng.feng@canonical.com>
- <CAJZ5v0j=ohJ_oUpCY-F_joty9qq3Mz2Bigqa3dHaFaWP2k6ONQ@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAJZ5v0j=ohJ_oUpCY-F_joty9qq3Mz2Bigqa3dHaFaWP2k6ONQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230723150658.241597-1-jdamato@fastly.com>
+ <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
+ <20230724150815.494ae294@kernel.org>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
+Date:   Tue, 25 Jul 2023 09:40:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20230724150815.494ae294@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 24/07/2023 23:08, Jakub Kicinski wrote:
+> What's the status on your work? Are you planning to split the RSS
+> config from ethtool or am I reading too much into what you said?
 
-On 7/21/23 17:45, Rafael J. Wysocki wrote:
-> Thanks for the update!
-> 
-> On Fri, Jul 21, 2023 at 5:22 PM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
->>
->> Screen brightness can only be changed once on HP ZBook Fury 16 G10.
->>
->> Vendor identified the root cause as Linux doesn't invoke _PS0 at boot
->> for all ACPI devices:
->>
->>     Scope (\_SB.PC00.GFX0)
->>     {
->>         Scope (DD1F)
->>         {
->>             Method (_PS0, 0, Serialized)  // _PS0: Power State 0
->>             {
->>                 If (CondRefOf (\_SB.PC00.LPCB.EC0.SSBC))
->>                 {
->>                     \_SB.PC00.LPCB.EC0.SSBC ()
->>                 }
->>             }
->>             ...
->>         }
->>         ...
->>     }
->>
->> The \_SB.PC00.GFX0.DD1F is the panel device, and its _PS0 needs to be
->> executed to make the brightness control work properly.
->>
->> _PS0 doesn't get invoked for this device because _PSC is missing,
->> which violates ACPI spec 6.3, section 7.3.6. Commit 7cd8407d53ef
->> ("ACPI / PM: Do not execute _PS0 for devices without _PSC during
->> initialization") tried to workaround missing _PSC on defective
->> firmwares, but got reverted because of regression.
->>
->> So the safest approach is to use acpi_device_fix_up_power_extended() to
->> put ACPI video and its child devices to D0 to workaround the issue.
->>
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217683
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> Hans, what do you think?
+I was just thinking that when netlink dumps get added it would make
+ sense to also extend the netlink version of SRSSH (which is what
+ calls the rxfh_context ethtool_ops, via the misleadingly named
+ ethtool_set_rxfh()) to include the hash fields setting that's
+ currently done through ETHTOOL_SRXFH.  In which case I should add
+ that data to struct ethtool_rxfh_context, and include it in the
+ get/create/modify_rss_context ethtool_ops API.
+Since it only occurred to me to consider that setting when I saw
+ Joe's patches, I haven't really figured out yet how to go about
+ the implementation of that.
 
-I believe most (almost all?) child devices of the GFX0 (and other
-acpi-video) ACPI device will not have a _PS0. So wrt child-devices
-this should mostly be a no-op.
+More generally the status of my RSS work is that I've been umming
+ and ahhing about that mutex you didn't like (I still think it's
+ the Right Thing) so I've not made much progress with it.
+And I should place on record that probably once I've gotten the
+ kernel-driver API done I'll leave the netlink/uAPI stuff for
+ someone else to do as I really don't have the relevant expertise.
 
-However the GFX0 ACPI device is the ACPI companion for the PCI
-device for the GPU, so this will also execute _PS0 on the GPU,
-we do that every suspend/resume cycle so this should be fine.
+> It'd be great to push the uAPI extensions back and make them
+> netlink-only, but we can't make Joe wait if it takes a long time
+> to finish up the basic conversion :(
 
-But if we do see regressions then we may need to rework this
-to skip the _PS0 on the GPU itself.
+Yeah as I said upthread I don't think we should make Joe wait, if
+ he's got a use case that actually needs it (have you, Joe?  Or
+ is it only GRXFH you need and the investigation just led you to
+ notice SRXFH was broken?)
 
-With that caveat this looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-> 
->> ---
->> v3:
->>  - Wording change to make it clear it's a firmware issue.
->>  - Specify the device name in comment.
->>
->> v2:
->>  - Wording
->>  - Bugzilla
->>  - Add comment
->>
->>  drivers/acpi/acpi_video.c | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
->> index 62f4364e4460..1732780a672b 100644
->> --- a/drivers/acpi/acpi_video.c
->> +++ b/drivers/acpi/acpi_video.c
->> @@ -2027,6 +2027,12 @@ static int acpi_video_bus_add(struct acpi_device *device)
->>         if (error)
->>                 goto err_put_video;
->>
->> +       /*
->> +        * HP ZBook Fury 16 G10 requires ACPI video's child devices have _PS0
->> +        * evaluated to have functional panel brightness control.
->> +        */
->> +       acpi_device_fix_up_power_extended(device);
->> +
->>         pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
->>                ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
->>                video->flags.multihead ? "yes" : "no",
->> --
->> 2.34.1
->>
-> 
-
+-ed
