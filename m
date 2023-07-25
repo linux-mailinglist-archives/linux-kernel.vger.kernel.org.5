@@ -2,145 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6608B760BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B46760BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbjGYH3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        id S232178AbjGYHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjGYH2R (ORCPT
+        with ESMTP id S232045AbjGYHdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:28:17 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD5426A2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:27:14 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BDAEB6607105;
-        Tue, 25 Jul 2023 08:27:11 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690270032;
-        bh=ZYUTx+BvPIPmtEGL5Ro9byEVVDfU167QGfKJqwSxeQI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Lb/i3/B0m7SIsXo4lLqu5960BB5UABN7MZGLiNob/Y5r/1X0Yjh3nUvReqhSQPtMT
-         gav5i4Hcu5gp7/v34u6xuMsMKOlThs8HrbU2Fb5tGdGEatEmCmAtYgRBFlKQdN/5K5
-         paNueNywLBSbpvtpHRFTrjhbWsqtYJXvHtCuSQ6dI2aFp81CWCm4qaRiksEzATd8Sp
-         Vz65V5XuJ4rQmIdt1j5khhTceEaZLch97epYz92mb1Df0G3iptwpVaNzqKsKi6BuPX
-         D2AkCHK3pberBqbc+Lej2HHzs/+THn+0ov8TohJxlO4iij2RcMR6Hy93tM1X7h73in
-         8wF+VwMvJgAjA==
-Date:   Tue, 25 Jul 2023 09:27:09 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
-Message-ID: <20230725092709.51356f39@collabora.com>
-In-Reply-To: <20230722234746.205949-3-dmitry.osipenko@collabora.com>
-References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
-        <20230722234746.205949-3-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 25 Jul 2023 03:33:39 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0C23A9E;
+        Tue, 25 Jul 2023 00:30:14 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bbc06f830aso1312755ad.0;
+        Tue, 25 Jul 2023 00:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690270214; x=1690875014;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h52mdhH7AN/s//mAEPa1uGifOdnK72pNrGrnuOGcMy8=;
+        b=koPV6gHU8enmCrWa1N+TlbeRDD/5LJ+xW8Qz538P1HQqoLBVhBjLYGmiuaNYSuTrhl
+         BSu+7VlFyggxLG6T7oeE57nZJ4CuVr/qWxlnrhhrVTc0w/3H66dbqaqES1YZ3FP3NtnX
+         jd/bVKJ3C5pyz8AVKgxCSIWunx09JqW2zUeTREXAefamc/FWUy6qBqz2RjLIP9hEZ/gt
+         Xb1GNWb6bnXjIlkdgcB7njxalXW//PPO309dGTET7BWZ1biXDrGzh5c6mn0iSdexq0+t
+         aCfZYpio4HELVZ5FPZpYIeRCzxPr5JMKJAwylMvP4SF2RYd8w05uIs43jMoOPQSKDcqw
+         Y92w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690270214; x=1690875014;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h52mdhH7AN/s//mAEPa1uGifOdnK72pNrGrnuOGcMy8=;
+        b=bETz8d9frPzKg2liS5IHuf247X8/YQ1DAgsDS804cg9ivuiGX/GHoacVzQ0YA0c9V2
+         E2XPfs9sq2c7zT7fLTZV2ekfJdrzB+P0STY5NNqDnZHfVTqegte716eGHrr7/KWFymAm
+         MaLSqP6kcuMrkA6ar7kjX0VwCYVcco0sYIVeEHXH53sVD//k3SPiYlsFhPyZhxCJPOZu
+         1vqT4f45gJFXsngGhoHyne3fU02zcbg8jbg5aqN10k+iv61ukWtYWayOML5EB0ohhPFY
+         vp0a1hM0N5lFodiaeaEfW0vb2l8m1IdBS0LQ/zinq7j121CPgNfqP8rb9jUAehnWNwaC
+         IMuw==
+X-Gm-Message-State: ABy/qLYBQZvOUw4cu/j4H2lV6g/yyKfSCXhTsggWr2/yi5e9KnPBAfGy
+        nVfN0C0RrizURr2cnFfm8JU=
+X-Google-Smtp-Source: APBJJlFRd7kE2MMljHX9EPq/8meOMGyUQiqFmtR9ZtniKbCY/xVIugncO3/gT0vCe8tggvb5r5k+0Q==
+X-Received: by 2002:a17:902:e5cd:b0:1b9:e9ed:c721 with SMTP id u13-20020a170902e5cd00b001b9e9edc721mr2110877plf.19.1690270213797;
+        Tue, 25 Jul 2023 00:30:13 -0700 (PDT)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id r15-20020a638f4f000000b005633fd3518dsm9911192pgn.40.2023.07.25.00.30.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 00:30:13 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 15:30:07 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Lin Ma <linma@zju.edu.cn>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, razor@blackwall.org, idosch@nvidia.com,
+        lucien.xin@gmail.com, jiri@resnulli.us,
+        anirudh.venkataramanan@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rtnetlink: let rtnl_bridge_setlink checks
+ IFLA_BRIDGE_MODE length
+Message-ID: <ZL95/wR8EeO2yUku@Laptop-X1>
+References: <20230725055706.498774-1-linma@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725055706.498774-1-linma@zju.edu.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Jul 2023 02:47:36 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+Hi Ma Lin,
 
-> And new pages_pin_count field to struct drm_gem_shmem_object that will
-> determine whether pages are evictable by memory shrinker. The pages will
-> be evictable only when pages_pin_count=0. This patch prepares code for
-> addition of the memory shrinker that will utilize the new field.
+Please add the target branch in your subject. e.g. [PATCHv2 net]
+
+On Tue, Jul 25, 2023 at 01:57:06PM +0800, Lin Ma wrote:
+> There are totally 9 ndo_bridge_setlink handlers in the current kernel,
+> which are 1) bnxt_bridge_setlink, 2) be_ndo_bridge_setlink 3)
+> i40e_ndo_bridge_setlink 4) ice_bridge_setlink 5)
+> ixgbe_ndo_bridge_setlink 6) mlx5e_bridge_setlink 7)
+> nfp_net_bridge_setlink 8) qeth_l2_bridge_setlink 9) br_setlink.
 > 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> By investigating the code, we find that 1-7 parse and use nlattr
+> IFLA_BRIDGE_MODE but 3 and 4 forget to do the nla_len check. This can
+> lead to an out-of-attribute read and allow a malformed nlattr (e.g.,
+> length 0) to be viewed as a 2 byte integer.
+> 
+> To avoid such issues, also for other ndo_bridge_setlink handlers in the
+> future. This patch adds the nla_len check in rtnl_bridge_setlink and
+> does an early error return if length mismatches. To make it works, the
+> break is removed from the parsing for IFLA_BRIDGE_FLAGS to make sure
+> this nla_for_each_nested iterates every attribute.
+
+Since you have checked the length in rtnl_bridge_setlink(). Can we remove
+the check in the driver handlers to avoid duplicate code? You can hold on
+this update and see if others have different opinion.
+
+Thanks
+Hangbin
+
+> 
+> Fixes: b1edc14a3fbf ("ice: Implement ice_bridge_getlink and ice_bridge_setlink")
+> Fixes: 51616018dd1b ("i40e: Add support for getlink, setlink ndo ops")
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 > ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 9 +++++++++
->  include/drm/drm_gem_shmem_helper.h     | 9 +++++++++
->  2 files changed, 18 insertions(+)
+> V1 -> V2: removes the break in parsing for IFLA_BRIDGE_FLAGS suggested
+>           by Hangbin Liu <liuhangbin@gmail.com>
 > 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index 267153853e2c..42ba201dda50 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -274,15 +274,24 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->  	dma_resv_assert_held(shmem->base.resv);
+>  net/core/rtnetlink.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> index 3ad4e030846d..aef25aa5cf1d 100644
+> --- a/net/core/rtnetlink.c
+> +++ b/net/core/rtnetlink.c
+> @@ -5140,13 +5140,17 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+>  	br_spec = nlmsg_find_attr(nlh, sizeof(struct ifinfomsg), IFLA_AF_SPEC);
+>  	if (br_spec) {
+>  		nla_for_each_nested(attr, br_spec, rem) {
+> -			if (nla_type(attr) == IFLA_BRIDGE_FLAGS) {
+> +			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !have_flags) {
+>  				if (nla_len(attr) < sizeof(flags))
+>  					return -EINVAL;
 >  
->  	ret = drm_gem_shmem_get_pages(shmem);
-> +	if (!ret)
-> +		shmem->pages_pin_count++;
->  
->  	return ret;
->  }
->  
->  static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
->  {
-> +	struct drm_gem_object *obj = &shmem->base;
+>  				have_flags = true;
+>  				flags = nla_get_u16(attr);
+> -				break;
+> +			}
 > +
->  	dma_resv_assert_held(shmem->base.resv);
->  
-> +	if (drm_WARN_ON_ONCE(obj->dev, !shmem->pages_pin_count))
-> +		return;
-> +
->  	drm_gem_shmem_put_pages(shmem);
-> +
-> +	shmem->pages_pin_count--;
->  }
->  
->  /**
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index bf0c31aa8fbe..7111f5743006 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -39,6 +39,15 @@ struct drm_gem_shmem_object {
->  	 */
->  	unsigned int pages_use_count;
->  
-> +	/**
-> +	 * @pages_pin_count:
-> +	 *
-> +	 * Reference count on the pinned pages table.
-> +	 * The pages allowed to be evicted by memory shrinker
-> +	 * only when the count is zero.
-> +	 */
-> +	unsigned int pages_pin_count;
-
-Can we make it an atomic_t, so we can avoid taking the lock when the
-GEM has already been pinned. That's something I need to be able to grab
-a pin-ref in a path where the GEM resv lock is already held[1]. We could
-of course expose the locked version, but in my case, I want to enforce
-the fact the GEM has been pinned before the drm_gem_shmem_pin() call in
-the section protected by the resv lock, so catching a "refcount 0 -> 1"
-situation would be useful. Beside, using an atomic to avoid the
-lock/unlock dance when refcount > 1 might be beneficial to everyone.
-
-[1]https://gitlab.freedesktop.org/bbrezillon/linux/-/commit/4420fa0d5768ebdc35b34d58d4ae5fad9fbb93f9
-
-> +
->  	/**
->  	 * @madv: State for madvise
->  	 *
-
+> +			if (nla_type(attr) == IFLA_BRIDGE_MODE) {
+> +				if (nla_len(attr) < sizeof(u16))
+> +					return -EINVAL;
+>  			}
+>  		}
+>  	}
+> -- 
+> 2.17.1
+> 
