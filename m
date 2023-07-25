@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C2F7625B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B2B7625B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjGYWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        id S231818AbjGYWKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjGYWDO (ORCPT
+        with ESMTP id S231767AbjGYWKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:03:14 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50DB2682
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:52 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5637a108d02so2334419a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:52 -0700 (PDT)
+        Tue, 25 Jul 2023 18:10:34 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DE52D49
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:09:45 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d0fff3cf2d7so3109494276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:09:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322563; x=1690927363;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eonYMJ7IPKS2BnVFH7UlnGnXVdnLxl/AbXQ7zYQVczY=;
-        b=sYOLW6+pDsdSG22ALCCdIi5dySf8CVLA1W+cAyi3u3cvq8jwbjjzxe6YSbFnNA1Bxd
-         RUxawyt7vXeX5orDLifWeurPhXSDoK3c+M9n3QJ6VVVv5TpnySXIv/wCnUnNkN5DfO0E
-         3kbK/auVi7GmOYZxO+Hkfcn9yh5ltqeqsHqXab3sA4J5M3KUxUvKRN101EowrZbnE+DS
-         +1iLolqqwUgs4TtBLZFDoPlw0+PplU/TNvXrY9LY2kAbp5k8RG0jWRMuSIKPCT4oAlmT
-         iF8rupspZyHySXp0tucMfCdXO7Tweft1uAu0g1F1sHyWHEwIddhS2mIEsJoXgqHfjGh5
-         0UGQ==
+        d=google.com; s=20221208; t=1690322919; x=1690927719;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1NWycEa65d4tlLHM/aUQNHUmkrnQ5gy649oFMAUFu0Y=;
+        b=dkaLXO5P2GjZV3Ivpr8AVQ5wnqf+jGDLus6d6dyP8ArE5rnUAOpRGwjui3dRb3PCUX
+         e3bWR+NAZSN5SrrVNyE5yE75yEn3IlvPUCvzHTwJN5GUsiOrZ7jChwaI01ZVTnI4cAt8
+         jmjnAjkWEVrVph3PE4uht2TMudR5AdEnfhr7IwmTePO4NUD7iJac5IhceMZiFgnEDCTY
+         6f+xzQ/U1rl1cUVr7mhlAFoe14B+n2Qqq4LMb+EVJwPg+gn1ji0bCxWWSg02ARBAvbnd
+         36ACm3Z1kOHqz0G3ttgRlAkDBOtTVjCyWWWOHn/HBL6pnRKCtEH9iX8gYJZT2KhCItSH
+         ndzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322563; x=1690927363;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eonYMJ7IPKS2BnVFH7UlnGnXVdnLxl/AbXQ7zYQVczY=;
-        b=CgidHYZHbKCif6kfQ78Xw4BVAgs2W9s5u4ojSkqvXifKjnoV14ihcPHN7Fh9bhOqUp
-         6t+ZYTM2rNCmHjrVOA5v8S13Z/ueQMd5sDhfseciXCj/RKJiOKxClLzRxyfoaXO29YZz
-         UjoXj3tGwFzISfNbd2ZwdKPbElIRVRz9Ab+UMX45b2g3fnb0imRUlbsGTWe3ADNIWJjI
-         vIEOcMEC6gtdn8pfXuf0YFcsiMKQN/JWQdGN0UHWpfEjhcfQVx6AhlogoT3nB1NvMwdu
-         K0tvVreJYWRTjgLxUCCK1Q//stf5wlPg9Vj7dniT/uUvqArqtabken97KJ52fIjjcE4e
-         VPuw==
-X-Gm-Message-State: ABy/qLZj9B1/F9Ki3NYfRFwdtct4rnEwZG6B+XhuvhWHPJ/297bk+d3A
-        Uz30gjqw7SjejxeujErSNX23ovQXk9O5
-X-Google-Smtp-Source: APBJJlF8oygwUBP6YRwB1Pau6BxWwjayrEKJw0OMi3pcQ46T1Yn+FytRT+hSLKQwVwNkBRqSSE2rUHR/sKEa
-X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
- (user=afranji job=sendgmr) by 2002:a63:3855:0:b0:543:b015:600b with SMTP id
- h21-20020a633855000000b00543b015600bmr2108pgn.8.1690322562803; Tue, 25 Jul
- 2023 15:02:42 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 22:01:21 +0000
-In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
+        d=1e100.net; s=20221208; t=1690322919; x=1690927719;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1NWycEa65d4tlLHM/aUQNHUmkrnQ5gy649oFMAUFu0Y=;
+        b=FFX7jULldUuUOMlFocWmdWwivUntV8MVw9gt3MjcweQ8BrKL73BPdWcePGqNqYwrCe
+         jGskN+kO3wuKNSegQpC8Y6oNX46ooY/YGFFNulcReLB4IzJci5JDeDJhgSdRs/Od9cw+
+         HXGroo4yBG7qPPF1HOhlrWILzG/WWY+DglvVo1287A+5Pz27/D/bhfz5LkncOV0tWuwu
+         X57ekl+NPsDnGzxQcp1eO7iH5m1+Tye6OaEoTfMg39E7/qenTWvAaeliQPb1YHF4Q5yf
+         lcRzluhZYeS/F2pkVqXUG7ELkF7BL5u2Qz3QiC45646CAk8jf+5JCbDKyPBfvLlWBykL
+         2w6A==
+X-Gm-Message-State: ABy/qLZBcJb3VhFcwWBmUOdhwZSZpw7pFsvfit03DB1Nm1WN8dHFZU6W
+        Nio3wf3awaoAxbfTuNH03oo/cDv0DBzKB4KsTA==
+X-Google-Smtp-Source: APBJJlENtGndeMK75xsqbP+rObTFZUl8GefO08l5IcCtgMR26J0r2rSOjJAMnNmTOUoRnsSrpVgw4Y3QHRWFE05m4w==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:69c8:0:b0:d0c:e37:b749 with SMTP
+ id e191-20020a2569c8000000b00d0c0e37b749mr1345ybc.10.1690322919734; Tue, 25
+ Jul 2023 15:08:39 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 22:08:38 +0000
 Mime-Version: 1.0
-References: <20230725220132.2310657-1-afranji@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230725220132.2310657-29-afranji@google.com>
-Subject: [PATCH v4 28/28] KVM: selftests: TDX: Add TDX UPM selftests for
- implicit conversion
-From:   Ryan Afranji <afranji@google.com>
-To:     linux-kselftest@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
-        sagis@google.com, erdemaktas@google.com, afranji@google.com,
-        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
-        maz@kernel.org, bgardon@google.com, jmattson@google.com,
-        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
-        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
-        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
-        borntraeger@de.ibm.com, eric.auger@redhat.com,
-        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
-        pshier@google.com, axelrasmussen@google.com,
-        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
-        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, ackerleytng@google.com
-Content-Type: text/plain; charset="UTF-8"
+X-B4-Tracking: v=1; b=H4sIAOVHwGQC/x2NwQrCMBBEf6Xs2YUmGhR/RTzEzVYXNCmbGCyl/
+ 97Fy8BjHjMrVFbhCtdhBeUuVUo2cIcB6BXzk1GSMfjRH8ezD1jLNydLQsmN3xh7ReVP6YyJZ2W Kja1vmmle0D/o5GKIYbo4sE0TJvn9/273bdsB0LrmxH8AAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690322918; l=1683;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=PhUj2cXtcqtjhYpon1W91iiAfF7M/UqU4Wb0CfeBYMk=; b=hwCrKKl4MBwnYeKbpJ7VXwZ58MxHlq/hUWRmyIcm4i/2grmqWc8hNmK+AMZ6GxlAJ+aUw6C6Z
+ JLfTXt31O93DIg9K4aTcdVaMMNARadNBYo+WiR96LLszjj0XJbcnpNH
+X-Mailer: b4 0.12.3
+Message-ID: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+Subject: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
+From:   justinstitt@google.com
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
@@ -80,177 +83,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ackerley Tng <ackerleytng@google.com>
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1].
 
-This tests the use of guest memory without explicit MapGPA calls.
+A suitable replacement is `strscpy` [2].
 
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Change-Id: Ib3832af218632ff3188fa3cbfbe88f127b64f5f7
-Signed-off-by: Ryan Afranji <afranji@google.com>
+There are some hopes that someday the `strncpy` api could be ripped out
+due to the vast number of suitable replacements (strscpy, strscpy_pad,
+strtomem, strtomem_pad, strlcpy) [1].
+
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+
 ---
- .../selftests/kvm/x86_64/tdx_upm_test.c       | 86 +++++++++++++++++--
- 1 file changed, 77 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c b/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-index 748a4ed5f88b..ecdbc97b5ff8 100644
---- a/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-@@ -149,7 +149,7 @@ enum {
-  * Does vcpu_run, and also manages memory conversions if requested by the TD.
-  */
- void vcpu_run_and_manage_memory_conversions(struct kvm_vm *vm,
--					    struct kvm_vcpu *vcpu)
-+					    struct kvm_vcpu *vcpu, bool handle_conversions)
- {
- 	for (;;) {
- 		vcpu_run(vcpu);
-@@ -163,6 +163,13 @@ void vcpu_run_and_manage_memory_conversions(struct kvm_vm *vm,
- 				!(vm->arch.s_bit & vmcall_info->in_r12));
- 			vmcall_info->status_code = 0;
- 			continue;
-+		} else if (handle_conversions &&
-+			vcpu->run->exit_reason == KVM_EXIT_MEMORY_FAULT) {
-+			handle_memory_conversion(
-+				vm, vcpu->run->memory.gpa,
-+				vcpu->run->memory.size,
-+				vcpu->run->memory.flags == KVM_MEMORY_EXIT_FLAG_PRIVATE);
-+			continue;
- 		} else if (
- 			vcpu->run->exit_reason == KVM_EXIT_IO &&
- 			vcpu->run->io.port == TDX_UPM_TEST_ACCEPT_PRINT_PORT) {
-@@ -243,8 +250,53 @@ static void guest_upm_explicit(void)
- 	tdx_test_success();
- }
+
+Link: https://github.com/KSPP/linux/issues/90
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ sound/soc/intel/avs/topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+index cdb4ec500261..45d0eb2a8e71 100644
+--- a/sound/soc/intel/avs/topology.c
++++ b/sound/soc/intel/avs/topology.c
+@@ -1388,12 +1388,12 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
+ 		port = __ffs(mach->mach_params.i2s_link_mask);
  
-+static void guest_upm_implicit(void)
-+{
-+	struct tdx_upm_test_area *test_area_gva_private =
-+		(struct tdx_upm_test_area *)TDX_UPM_TEST_AREA_GVA_PRIVATE;
-+	struct tdx_upm_test_area *test_area_gva_shared =
-+		(struct tdx_upm_test_area *)TDX_UPM_TEST_AREA_GVA_SHARED;
-+
-+	/* Check: host reading private memory does not modify guest's view */
-+	fill_test_area(test_area_gva_private, PATTERN_GUEST_GENERAL);
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_PRIVATE_MEMORY_FROM_HOST);
-+
-+	TDX_UPM_TEST_ASSERT(
-+		check_test_area(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	/* Use focus area as shared */
-+	fill_focus_area(test_area_gva_shared, PATTERN_GUEST_FOCUS);
-+
-+	/* General areas should not be affected */
-+	TDX_UPM_TEST_ASSERT(
-+		check_general_areas(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_SHARED_MEMORY_FROM_HOST);
-+
-+	/* Check that guest has the same view of shared memory */
-+	TDX_UPM_TEST_ASSERT(
-+		check_focus_area(test_area_gva_shared, PATTERN_HOST_FOCUS));
-+
-+	/* Use focus area as private */
-+	fill_focus_area(test_area_gva_private, PATTERN_GUEST_FOCUS);
-+
-+	/* General areas should be unaffected by remapping */
-+	TDX_UPM_TEST_ASSERT(
-+		check_general_areas(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_PRIVATE_MEMORY_FROM_HOST_AGAIN);
-+
-+	/* Check that guest can use private memory after focus area is remapped as private */
-+	TDX_UPM_TEST_ASSERT(
-+		fill_and_check(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_success();
-+}
-+
- static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
--			 struct tdx_upm_test_area *test_area_base_hva)
-+			 struct tdx_upm_test_area *test_area_base_hva,
-+			 bool implicit)
- {
- 	vcpu_run(vcpu);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-@@ -263,7 +315,7 @@ static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
- 	TEST_ASSERT(check_test_area(test_area_base_hva, PATTERN_CONFIDENCE_CHECK),
- 		"Host should read PATTERN_CONFIDENCE_CHECK from guest's private memory.");
- 
--	vcpu_run_and_manage_memory_conversions(vm, vcpu);
-+	vcpu_run_and_manage_memory_conversions(vm, vcpu, implicit);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
- 	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, TDX_TEST_REPORT_SIZE,
- 		 TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
-@@ -280,7 +332,7 @@ static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
- 	TEST_ASSERT(check_focus_area(test_area_base_hva, PATTERN_HOST_FOCUS),
- 		    "Host should be able to use shared memory.");
- 
--	vcpu_run_and_manage_memory_conversions(vm, vcpu);
-+	vcpu_run_and_manage_memory_conversions(vm, vcpu, implicit);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
- 	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, TDX_TEST_REPORT_SIZE,
- 		 TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
-@@ -329,18 +381,20 @@ static void guest_ve_handler(struct ex_regs *regs)
- 	TDX_UPM_TEST_ASSERT(!ret);
- }
- 
--static void verify_upm_test(void)
-+static void verify_upm_test(bool implicit)
- {
- 	struct kvm_vm *vm;
- 	struct kvm_vcpu *vcpu;
- 
-+	void *guest_code;
- 	vm_vaddr_t test_area_gva_private;
- 	struct tdx_upm_test_area *test_area_base_hva;
- 	uint64_t test_area_npages;
- 
- 	vm = td_create();
- 	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
--	vcpu = td_vcpu_add(vm, 0, guest_upm_explicit);
-+	guest_code = implicit ? guest_upm_implicit : guest_upm_explicit;
-+	vcpu = td_vcpu_add(vm, 0, guest_code);
- 
- 	vm_install_exception_handler(vm, VE_VECTOR, guest_ve_handler);
- 
-@@ -379,13 +433,26 @@ static void verify_upm_test(void)
- 
- 	td_finalize(vm);
- 
--	printf("Verifying UPM functionality: explicit MapGPA\n");
-+	if (implicit)
-+		printf("Verifying UPM functionality: implicit conversion\n");
-+	else
-+		printf("Verifying UPM functionality: explicit MapGPA\n");
- 
--	run_selftest(vm, vcpu, test_area_base_hva);
-+	run_selftest(vm, vcpu, test_area_base_hva, implicit);
- 
- 	kvm_vm_free(vm);
- }
- 
-+void verify_upm_test_explicit(void)
-+{
-+	verify_upm_test(false);
-+}
-+
-+void verify_upm_test_implicit(void)
-+{
-+	verify_upm_test(true);
-+}
-+
- int main(int argc, char **argv)
- {
- 	/* Disable stdout buffering */
-@@ -397,5 +464,6 @@ int main(int argc, char **argv)
- 		return 0;
+ 		snprintf(buf, len, route->source, port);
+-		strncpy((char *)route->source, buf, len);
++		strscpy((char *)route->source, buf, len);
+ 		snprintf(buf, len, route->sink, port);
+-		strncpy((char *)route->sink, buf, len);
++		strscpy((char *)route->sink, buf, len);
+ 		if (route->control) {
+ 			snprintf(buf, len, route->control, port);
+-			strncpy((char *)route->control, buf, len);
++			strscpy((char *)route->control, buf, len);
+ 		}
  	}
  
--	run_in_new_process(&verify_upm_test);
-+	run_in_new_process(&verify_upm_test_explicit);
-+	run_in_new_process(&verify_upm_test_implicit);
- }
+
+---
+base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+change-id: 20230725-sound-soc-intel-avs-remove-deprecated-strncpy-2bc41a5a5f81
+
+Best regards,
 -- 
-2.41.0.487.g6d72f3e995-goog
+Justin Stitt <justinstitt@google.com>
 
