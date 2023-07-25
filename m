@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335077618C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B287C7618CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbjGYMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
+        id S232072AbjGYMua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjGYMtf (ORCPT
+        with ESMTP id S232317AbjGYMt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:49:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4997FC4;
-        Tue, 25 Jul 2023 05:49:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CAEDD1F8D6;
-        Tue, 25 Jul 2023 12:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690289372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zfxaBQKu9pFIm/CSy+E7ZH0ZFKwSyMdTppqUuWuzZK0=;
-        b=ZMW4KhwS4YTYl+FNV2yCV2SSG41p47it3FrxFVbR/XWhq17vatqFq2tKkAhE/HsTr8QAnG
-        CapZET8Je9swPUfnQvwTg865CY5pfsHFaGYsTC5W+8v0DA96Z6457nsq5IlLkV1GgiKFZW
-        qWG+XwT/hlObMz9POHaegXsrQWHmyKs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690289372;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zfxaBQKu9pFIm/CSy+E7ZH0ZFKwSyMdTppqUuWuzZK0=;
-        b=jmc0w2TxfUsZ/vakyCbU30JoTCHxiH82j4PTfH38/9kRlQoZOgsX8U/VmK5C/w+VJFHuDP
-        O8wUkSf6Tjc8TLCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1E0813342;
-        Tue, 25 Jul 2023 12:49:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id G63YINvEv2TbSwAAMHmgww
-        (envelope-from <colyli@suse.de>); Tue, 25 Jul 2023 12:49:31 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH][next] bcache: remove redundant assignment to variable
- cur_idx
-From:   Coly Li <colyli@suse.de>
-In-Reply-To: <20230725114637.37073-1-colin.i.king@gmail.com>
-Date:   Tue, 25 Jul 2023 20:49:19 +0800
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Bcache Linux <linux-bcache@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DFEED6F9-45FE-48BA-BE50-51B780846DE3@suse.de>
-References: <20230725114637.37073-1-colin.i.king@gmail.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-X-Mailer: Apple Mail (2.3731.600.7)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 08:49:59 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E85C1AA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:49:58 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-977e0fbd742so874666766b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1690289397; x=1690894197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Puz3ztq+s5PMQIYSFqmtMplo+slwUgkmSW9O9rbzaQ=;
+        b=hVigPGX//gTdtgmRuslLbiD1/zcY/J9BI9iISd0U4KzwumlLvSTCrKq4TVJCmKI5+Y
+         gzNDIQRzCKFPphY9vbQsCB8Y0OcWy802EvA7wpSi8njOBNCZyNsNx/TovT71NWTTal0M
+         6zJrn0OCpMUMog1LoXLLbfPPloeuSf5Cq8Uahs3w58Hu2gJWKIe3wuYNrb7kmA1Az+r8
+         7FksdF0bC/1r8yXmfBqwolspgGX32xjGunx2VBJr1MCnDU3TgC0/DZjGxFrO0qaQHvOl
+         5etfhfrRaDodt9q7a6NlRCuoNzeq16P4nKo/Z8ODRTBH31SSfxr53sAIi+ClzWSGRUMT
+         jStg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690289397; x=1690894197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3Puz3ztq+s5PMQIYSFqmtMplo+slwUgkmSW9O9rbzaQ=;
+        b=hZqjNWzoMkL8KYHut0nNJQ7Dv5CBY+Me+EVLZussicORR8/ga0ofwZSHBPeH3HGs7u
+         cyrBFLlM6M3fAQQ9ihj/1o+sarMmWfkf/32aB8YUHlJdfYn2UAf7GQ5iy8NUsZ1uElIT
+         Z3xcjifUMuu2y1PbxlTrwcgEd+A/56Iz+Quyxxmd/neWYHUZzGAxvUmkqEO1ldf/0x6N
+         zkZluMnXTL3joztj/r3RTM6uiG1A0wcXbLByAYEQxWPpFCoefNL2MXTor0Qf3QNwRxfD
+         w+d/d4toBUTZiAXFnVnW1ySqLBgOU9DfDa6jQvPacdE3CG6D+4xpwHE4vfTvSImxoz8i
+         iy2w==
+X-Gm-Message-State: ABy/qLal9Goqk/8PdQwMAQpXvs9QvRvL6L2sH8JdixWUTw8YHdLNb+D5
+        WMiSImhKMSVAPvizDUyTzf4VsQ==
+X-Google-Smtp-Source: APBJJlGLU28v87Y58xqBP2PjJL/KhzkfhRXDaTYlF8sJo7esBdIHBy1dZgN9EPWiJakxco6GyTlwTA==
+X-Received: by 2002:a17:906:2d9:b0:973:d076:67ab with SMTP id 25-20020a17090602d900b00973d07667abmr12076828ejk.42.1690289396804;
+        Tue, 25 Jul 2023 05:49:56 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id pk15-20020a170906d7af00b00997e8b6eaa1sm8133283ejb.41.2023.07.25.05.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 05:49:56 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] pmbus_core: Refactor pmbus_is_enabled function
+Date:   Tue, 25 Jul 2023 14:49:50 +0200
+Message-ID: <20230725124954.3824954-1-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
+Refactor the pmbus_is_enabled() function to return the raw status
+without any additional processing as its already done in
+_pmbus_is_enabled function.
 
-> 2023=E5=B9=B47=E6=9C=8825=E6=97=A5 19:46=EF=BC=8CColin Ian King =
-<colin.i.king@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> Variable cur_idx is being initialized with a value that is never read,
-> it is being re-assigned later in a while-loop. Remove the redundant
-> assignment. Cleans up clang scan build warning:
->=20
-> drivers/md/bcache/writeback.c:916:2: warning: Value stored to =
-'cur_idx'
-> is never read [deadcode.DeadStores]
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+---
+ drivers/hwmon/pmbus/pmbus_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks good to me. Thanks.
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+index fa06325f5a7c..42fb7286805b 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -2768,7 +2768,7 @@ static int __maybe_unused pmbus_is_enabled(struct device *dev, u8 page)
+ 	ret = _pmbus_is_enabled(dev, page);
+ 	mutex_unlock(&data->update_lock);
+ 
+-	return !!(ret & PB_OPERATION_CONTROL_ON);
++	return ret;
+ }
+ 
+ #define to_dev_attr(_dev_attr) \
 
-Reviewed-by: Coly Li <colyli@suse.de>
-
-
-Coly Li
-
-> ---
-> drivers/md/bcache/writeback.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/md/bcache/writeback.c =
-b/drivers/md/bcache/writeback.c
-> index 24c049067f61..c3e872e0a6f2 100644
-> --- a/drivers/md/bcache/writeback.c
-> +++ b/drivers/md/bcache/writeback.c
-> @@ -913,7 +913,7 @@ static int bch_dirty_init_thread(void *arg)
-> int cur_idx, prev_idx, skip_nr;
->=20
-> k =3D p =3D NULL;
-> - cur_idx =3D prev_idx =3D 0;
-> + prev_idx =3D 0;
->=20
-> bch_btree_iter_init(&c->root->keys, &iter, NULL);
-> k =3D bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
-> --=20
-> 2.39.2
->=20
+base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
+-- 
+2.41.0
 
