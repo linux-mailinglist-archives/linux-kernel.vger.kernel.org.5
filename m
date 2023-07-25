@@ -2,196 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924197622AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6F47622B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbjGYTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
+        id S230106AbjGYTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjGYTvF (ORCPT
+        with ESMTP id S229666AbjGYTyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:51:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F56F1FF7;
-        Tue, 25 Jul 2023 12:51:03 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba48b0bd2so15313795ad.3;
-        Tue, 25 Jul 2023 12:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690314663; x=1690919463;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dM6PVN/UVPsx9akBfcdMrUXeZyjQENh7tRqhuMoKNtg=;
-        b=hAb3Qm1QG+r6tIyuVNrs1EeeIUiPm8r80oQw5K4H7lWeg8XWu4UhqKUBnn+ESLSFGv
-         iEfLyh+HD0ES08w5+8Zu7RaztH01hkAC7pjqNqk4v6rvTGUPHwBqBg7dpwijLb6UX76t
-         i7VGX5PnSAcYablL/o3ZvFvxoC9gotU8oWRnAIWHnkud0xahYmAuDdiKhnQxj2l/5Mnj
-         aA18idNdYQyLdLDpndVOBsDRi0fpkxE5X34mc0W0QxbKh8K4CHBHGUjsiV6oqUjSmR0a
-         Oi2bGnCsPNrxeUCdmQFiK3BbQG18xxIOoErzLhGfqC0ZZWxcsJ1GXyI2oqm1LNVnmT8N
-         gy2Q==
+        Tue, 25 Jul 2023 15:54:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B6419BF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690314799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ehsQdgWSIS7eeNPhg1juxuHJiisqBuDA4AQKiM8tp4=;
+        b=QY9NxMNp3iTsTIV05fwM9kHD9BftD8GRCqkUga4k2qLDEEoGlETcFgDARLNB8DDfGvC7l4
+        7Jn5a4dtqZXOEGif6Zu2sfYii9C6GwA7xNa7L2GvRS1KClY2UhjkEo/tS4xtffgIS5ATkp
+        bOjimQ+lDHUxfrX+GvXsFwL6O8oXqT8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-593-RDYM-f_vOySu7mj-g7SADQ-1; Tue, 25 Jul 2023 15:53:18 -0400
+X-MC-Unique: RDYM-f_vOySu7mj-g7SADQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3158f4d72e9so2840006f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:53:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690314663; x=1690919463;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dM6PVN/UVPsx9akBfcdMrUXeZyjQENh7tRqhuMoKNtg=;
-        b=IQ1HZj1wLVnUocofr+Bxm+nsQIE8Qj/gwtVaf3yfsut4fO7gEIk8yszV20c+8305uz
-         /V4giPAMGjCQEufhCkcly2ln+K/vUwXThr07eTteLmDjVSLB5DPy+fMDxxAlGnBxj5XS
-         EaJVYsLPPUNWVLHIx7lKqMjRWJwW3wHDgSxpyCAsFz+lMbOEe+lwwyrh181C6TUN/vHK
-         qIGOdqZqGJWAXtnelX0ChaxBegH6ftHih7+cQPoJIhkF/wuHfDyXP2tW3ABdBIdUD5Or
-         lWrncMU/iRR7Fk6L4VQVbD//3a4zq4lDsXfeYe3Z5OMZ1GMDoWfEqw8qsaIscM3uEzxi
-         Uv8w==
-X-Gm-Message-State: ABy/qLb5njZHCt9i2wd6ebbrYcax1pVznitnmB8YR9UEH42+/ChtdDJ1
-        yWhBXw2ptec7KqGNn6rQPVA=
-X-Google-Smtp-Source: APBJJlGbkUe5BvV7or4sKMrmi21B5+NOUzEkmj8GDIfZZSZBwAgtngWYUPce3WJQcRB2njJdSxqM6A==
-X-Received: by 2002:a17:902:c3d5:b0:1b8:77b3:6bf6 with SMTP id j21-20020a170902c3d500b001b877b36bf6mr113591plj.33.1690314662876;
-        Tue, 25 Jul 2023 12:51:02 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:83ca:1b31:2c:d986])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902820200b001bb750189desm8409174pln.255.2023.07.25.12.51.02
+        d=1e100.net; s=20221208; t=1690314797; x=1690919597;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ehsQdgWSIS7eeNPhg1juxuHJiisqBuDA4AQKiM8tp4=;
+        b=kO8FWJIGmxfQ97nSH95qtwb/X/ltu1ef1uJVXUcfpdTl+DFYW8RUy2ebDtHVzI7yS1
+         10rXI7ADZ5UWUP9pNo7eEEG7zYrnFNfUBpvGJJw+9xY2QDl3aS8Yx4yIbTZ134GEXpeE
+         2QHicwTRWKrkdI7d8AjvXeYfBkusJg4omHFVqlOoE5teI41F41mG2767q+4m6CtxCKlF
+         SPgxNuC0OGF65Sw9kYUrvrRfHpLOMWGWm5PQzPxRSQadAtva1sujU98UdK49Z5f6Mv8C
+         Pe9QZj/pG0KyxP76VVozmjYCxqzptURCez76q/z83bviCKiqZ1YJ0RHJvcsy6n6SroGi
+         vNHg==
+X-Gm-Message-State: ABy/qLbsYOz0p//eNaIPCtgzJm8aFvgoNLEcoNXh9p5zUeZj0B/7kc5N
+        d5Xn4ATzoQQSX/piDko0b5Zw3vYqdusBCWYya936kjO+Nn/kPZLGQyLFmZ2kk+6lePbQ7rNyIlS
+        8ZCd0b+AEUYCOM9TlQby8J+fe
+X-Received: by 2002:a5d:4ccd:0:b0:313:e9dc:44d5 with SMTP id c13-20020a5d4ccd000000b00313e9dc44d5mr8756124wrt.61.1690314797299;
+        Tue, 25 Jul 2023 12:53:17 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEfpWWBSGVv7qsi/9x0G1/ru7iK4Zf2hflHhR0TYMahLeFmVnfj9mjTHzpX0KH0ux4gaM1qHQ==
+X-Received: by 2002:a5d:4ccd:0:b0:313:e9dc:44d5 with SMTP id c13-20020a5d4ccd000000b00313e9dc44d5mr8756108wrt.61.1690314796971;
+        Tue, 25 Jul 2023 12:53:16 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n15-20020a1c720f000000b003fc0505be19sm13825286wmc.37.2023.07.25.12.53.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 12:51:02 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 12:50:59 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Silvan Jegen <s.jegen@gmail.com>
-Cc:     linux-input@vger.kernel.org, Yangtao Li <frank.li@vivo.com>,
+        Tue, 25 Jul 2023 12:53:16 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] Input: tca6416-keypad - switch to using input core's
- polling features
-Message-ID: <ZMAno7jWmlBZpAO/@google.com>
-References: <20230724053024.352054-1-dmitry.torokhov@gmail.com>
- <20230724053024.352054-5-dmitry.torokhov@gmail.com>
- <2KN6Z0RZYGDKU.2GGSSC8MYU6GX@homearch.localdomain>
+Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+In-Reply-To: <c10d925b-8d37-caa0-8f66-a0206f948c69@suse.de>
+References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+ <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
+ <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
+ <c10d925b-8d37-caa0-8f66-a0206f948c69@suse.de>
+Date:   Tue, 25 Jul 2023 21:53:16 +0200
+Message-ID: <874jlrkbtf.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2KN6Z0RZYGDKU.2GGSSC8MYU6GX@homearch.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 09:43:12PM +0200, Silvan Jegen wrote:
+Thomas Zimmermann <tzimmermann@suse.de> writes:
+
 > Hi
-> 
-> Just one question below.
-> 
-> Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
-> > Instead of rolling custom polling implementation use input core
-> > facilities.
-> > 
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
-> >  drivers/input/keyboard/tca6416-keypad.c | 46 ++++++++++---------------
-> >  1 file changed, 19 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/drivers/input/keyboard/tca6416-keypad.c b/drivers/input/keyboard/tca6416-keypad.c
-> > index ff665319791e..ebc8b9561266 100644
-> > --- a/drivers/input/keyboard/tca6416-keypad.c
-> > +++ b/drivers/input/keyboard/tca6416-keypad.c
-> > @@ -24,6 +24,8 @@
-> >  #define TCA6416_INVERT         2
-> >  #define TCA6416_DIRECTION      3
-> >  
-> > +#define TCA6416_POLL_INTERVAL	100 /* msec */
-> > +
-> >  static const struct i2c_device_id tca6416_id[] = {
-> >  	{ "tca6416-keys", 16, },
-> >  	{ "tca6408-keys", 8, },
-> > @@ -43,7 +45,6 @@ struct tca6416_keypad_chip {
-> >  
-> >  	struct i2c_client *client;
-> >  	struct input_dev *input;
-> > -	struct delayed_work dwork;
-> >  	int io_size;
-> >  	int irqnum;
-> >  	u16 pinmask;
-> > @@ -85,9 +86,9 @@ static int tca6416_read_reg(struct tca6416_keypad_chip *chip, int reg, u16 *val)
-> >  	return 0;
-> >  }
-> >  
-> > -static void tca6416_keys_scan(struct tca6416_keypad_chip *chip)
-> > +static void tca6416_keys_scan(struct input_dev *input)
-> >  {
-> > -	struct input_dev *input = chip->input;
-> > +	struct tca6416_keypad_chip *chip = input_get_drvdata(input);
-> >  	u16 reg_val, val;
-> >  	int error, i, pin_index;
-> >  
-> > @@ -122,33 +123,20 @@ static void tca6416_keys_scan(struct tca6416_keypad_chip *chip)
-> >   */
-> >  static irqreturn_t tca6416_keys_isr(int irq, void *dev_id)
-> >  {
-> > -	struct tca6416_keypad_chip *chip = dev_id;
-> > -
-> > -	tca6416_keys_scan(chip);
-> > +	tca6416_keys_scan(dev_id);
-> >  
-> >  	return IRQ_HANDLED;
-> >  }
-> >  
-> > -static void tca6416_keys_work_func(struct work_struct *work)
-> > -{
-> > -	struct tca6416_keypad_chip *chip =
-> > -		container_of(work, struct tca6416_keypad_chip, dwork.work);
-> > -
-> > -	tca6416_keys_scan(chip);
-> > -	schedule_delayed_work(&chip->dwork, msecs_to_jiffies(100));
-> > -}
-> > -
-> >  static int tca6416_keys_open(struct input_dev *dev)
-> >  {
-> >  	struct tca6416_keypad_chip *chip = input_get_drvdata(dev);
-> >  
-> > -	/* Get initial device state in case it has switches */
-> > -	tca6416_keys_scan(chip);
-> > -
-> > -	if (chip->use_polling)
-> > -		schedule_delayed_work(&chip->dwork, msecs_to_jiffies(100));
-> > -	else
-> > +	if (!chip->use_polling) {
-> > +		/* Get initial device state in case it has switches */
-> > +		tca6416_keys_scan(dev);
-> >  		enable_irq(chip->client->irq);
-> > +	}
-> >  
-> >  	return 0;
-> >  }
-> > @@ -157,9 +145,7 @@ static void tca6416_keys_close(struct input_dev *dev)
-> >  {
-> >  	struct tca6416_keypad_chip *chip = input_get_drvdata(dev);
-> >  
-> > -	if (chip->use_polling)
-> > -		cancel_delayed_work_sync(&chip->dwork);
-> > -	else
-> > +	if (!chip->use_polling)
-> >  		disable_irq(chip->client->irq);
-> >  }
-> >  
-> > @@ -232,8 +218,6 @@ static int tca6416_keypad_probe(struct i2c_client *client)
-> >  	chip->pinmask = pdata->pinmask;
-> >  	chip->use_polling = pdata->use_polling;
-> >  
-> > -	INIT_DELAYED_WORK(&chip->dwork, tca6416_keys_work_func);
-> > -
-> >  	input->phys = "tca6416-keys/input0";
-> >  	input->name = client->name;
-> >  
-> > @@ -268,12 +252,20 @@ static int tca6416_keypad_probe(struct i2c_client *client)
-> >  		return error;
-> >  
-> >  	if (!chip->use_polling) {
-> 
-> Sorry for my ignorant question but it seems counterituitive that we set
-> up polling when chip->use_polling is false. Is this intended?
+>
 
-Nope, this is my brain fart. Thanks for noticing! I'll fix up the
-condition before committing...
+[...]
 
-Thanks.
+>> 
+>> Yes. I meant to move drivers/video/logo/ to drivers/fbdev/core/logo and to
+>> source its Kconfig from drivers/fbdev/core/Kconfig, since it now depends
+>> on FB_CORE.
+>
+> No, please rather leave it where it is. There's no code dependencies to 
+> the fbdev core; it merely depends on the Kconfig token.
+>
+
+Sure, fine by me. But I disagree that there's merely a Kconfig dependency.
+The include/linux/linux_logo.h header declares both fb_find_logo() and
+fb_append_extra_logo().
+
+The fb_find_logo() function is defined in drivers/video/logo.c while the
+fb_append_extra_logo() is in drivers/video/fbdev/core/fbmem.c, even though
+only arch/powerpc/platforms/cell/spu_base.c uses fb_append_extra_logo().
+
+So there's a relationship already between logo and fbdev/core, that's why
+I wondered if would make sense to also move drivers/video/logo.c to have
+both functions in there.
+
+Yes, as noted drivers/video/console/newport_con.c also uses fb_find_logo()
+but the only other user of that in drivers/video/fbdev/core/fbmem.c.
 
 -- 
-Dmitry
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
