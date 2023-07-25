@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C1C76201F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB7A76201D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbjGYR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
+        id S231720AbjGYR2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjGYR3I (ORCPT
+        with ESMTP id S231511AbjGYR2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:29:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB38A193
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 10:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690306102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AQw9Ser+M2NE25R1fRsh+0Ukg8sPQALOL3L++smDxxc=;
-        b=OHSpEy3kbd2Q2X9jS9Z3v4UrId4x/stnMIXXjWJaXY9JJBiCmg4AnowvWCj/jVNJrQddeb
-        MllVB3ES+Cc1v4E7iKI04zkqUAVSQlCTv5+0tKLegPVXwK6Nn0Il62rt9V1Z+e56GvD9mA
-        v2jLKXnvOQ9fkZM/oUL9ROAc6uyo1NM=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-582-MUm7GKFWOkie7bp6JrBFpw-1; Tue, 25 Jul 2023 13:28:15 -0400
-X-MC-Unique: MUm7GKFWOkie7bp6JrBFpw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 25 Jul 2023 13:28:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC891A8;
+        Tue, 25 Jul 2023 10:28:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5442438149A3;
-        Tue, 25 Jul 2023 17:28:15 +0000 (UTC)
-Received: from rhel-developer-toolbox-latest (unknown [10.2.16.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8266840C2063;
-        Tue, 25 Jul 2023 17:28:14 +0000 (UTC)
-Date:   Tue, 25 Jul 2023 10:28:12 -0700
-From:   Chris Leech <cleech@redhat.com>
-To:     Lin Ma <linma@zju.edu.cn>
-Cc:     njavali@marvell.com, mrangankar@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: qla4xxx: Add length check when paring nlattrs
-Message-ID: <ZMAGLLkaNMpy7jXS@rhel-developer-toolbox-latest>
-References: <20230723080053.3714534-1-linma@zju.edu.cn>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46FD5617DC;
+        Tue, 25 Jul 2023 17:28:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26615C433C8;
+        Tue, 25 Jul 2023 17:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690306129;
+        bh=ugZBXR+dGc8RsbowbvegiPdEddSvJSt6gxUH3f9NzDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zK5TeEj54h7i5n8d9dHfNieK+yZDYUVEkt5fnbU6xH2yLPrDxo3PiZYZS7toNUV1q
+         LJXqCO+ZVuNonygypBHiPU5gwtbNE9xpET6XcVvtTM1EudhVugU+NgpS4/saHP/U8i
+         3XgtfKA0KNl7rJHp54RYvl03cKqBt5kxPDuDfCLM=
+Date:   Tue, 25 Jul 2023 19:28:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update TTY layer for lists and recently
+ added files
+Message-ID: <2023072517-onward-payment-569d@gregkh>
+References: <20230721072334.59272-1-tony@atomide.com>
+ <ZLpboaXKVOOjeGJ+@smile.fi.intel.com>
+ <20230724045327.GV5194@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230723080053.3714534-1-linma@zju.edu.cn>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230724045327.GV5194@atomide.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 04:00:53PM +0800, Lin Ma wrote:
-> There are three places that qla4xxx looply parses nlattrs
-> * qla4xxx_set_chap_entry(...)
-> * qla4xxx_iface_set_param(...)
-> * qla4xxx_sysfs_ddb_set_param(...)
-> and each of them directly converts the nlattr to specific pointer of
-> structure without length checking. This could be dangerous as those
-> attributes are not validated before and a malformed nlattr (e.g., length
-> 0) could result in an OOB read that leaks heap dirty data.
+On Mon, Jul 24, 2023 at 07:53:27AM +0300, Tony Lindgren wrote:
+> * Andy Shevchenko <andriy.shevchenko@intel.com> [230721 10:19]:
+> > On Fri, Jul 21, 2023 at 10:23:32AM +0300, Tony Lindgren wrote:
+> > > Add mailing lists for linux-serial and lkml for the TTY layer. And let's
+> > > list the recently added files. This makes it easier for get_maintainer.pl
+> > > to include linux-serial for patches.
+> > 
+> > Shouldn't serial_* stuff go to the "SERIAL DRIVERS" section?
 > 
-> This patch adds the nla_len check before accessing the nlattr data and
-> error return EINVAL if the length check fails.
+> Not sure if there's some reason we have "TTY LAYER" with serial_core
+> files. If not, yeah let's move the serial files.
 
-Reviewed-by: Chris Leech <cleech@redhat.com>
+I'll take this patch, can you send a new one that removes the serial
+files from this entry as I don't think they are needed in here anymore.
 
+thanks,
+
+greg k-h
