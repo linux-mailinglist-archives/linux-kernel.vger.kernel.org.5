@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DDD761869
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460E776186D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbjGYMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
+        id S232959AbjGYMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbjGYMbS (ORCPT
+        with ESMTP id S233713AbjGYMdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:31:18 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64881992
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:31:16 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3464c774f23so25501385ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:31:16 -0700 (PDT)
+        Tue, 25 Jul 2023 08:33:14 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17149172E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:33:13 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fdea55743eso5089150e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690288276; x=1690893076;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b1FgvdgVsA8AhmFdAzoWM+AOFT1yafAZy4p4c4o2sIg=;
-        b=Hslm1yFyWvTKsfdAP5hMBFuOwahqCUrbTN4iwdv9XCYkkylsRfvUp6ebVsHfjXgL0p
-         TQ97kj6HpGjqUAhilqJzfJ+3+TPnY6Qztwra6E2QLB6d4jSlUx7js0EJQGe5HMMCLXrE
-         oeW2yNrRGqYJ1Orvmt/D+WLlitXeWDDu/cbinRusP1GE/hcUK57F2hfFUdepWSFl6mBz
-         uejroZc4TP3icqz8KG94cU2RAZXT4P1iYOSBWNakRLik5ANkYZcFGnPuWBxS/DQrDEKn
-         R2XcP8AS0+lzxQMLvC9YH0dF6TLEtavbgDMBkzgO4ndk1UhCHqF25h9CYaiF/weObPOQ
-         VTRg==
+        d=futuring-girl-com.20221208.gappssmtp.com; s=20221208; t=1690288391; x=1690893191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WKpkzF96g9NgPXhoWUx4qyrJxQAYJZi3pZkdXCYeBMY=;
+        b=4svnrkRxCvqD6vorNSJ9EaNW3eXE3a6UZ2gc6wDPppaH8KH26QSUVB5VR0+xPfNfkB
+         3uwaDda0GVEq5B74jOGO3Sgj30u3I/rpJan0+jcgEj1o0QElQte7N2suv86J3/SLewNX
+         9JDYA9sxvSUT0QGxctNzMwl1/+KGZ14n5jAm3Vywncfc+FZ9al9JCOFhnB+LJgbvEJ4p
+         76g/SCsq+F4PvA/D7gx78PCLrNyjDniUtWMBr5BAvKwHI8+AUoUgzNHyWru9hdl/q3ff
+         EQIng1U+whNHxVRd3bNHL9CtvRtJAAR1w/Gw4y/3SapsDAgOMcINyW+xnht4HjrTw8+y
+         VFUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690288276; x=1690893076;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1FgvdgVsA8AhmFdAzoWM+AOFT1yafAZy4p4c4o2sIg=;
-        b=jsWgsOgpfTiLivT0K/sx6r1jDUWhO+syo6dQS0UZbd7THoQ3BkmUa/ZbQ5Xy4ZcW4+
-         Ip6DinCPrIoK3hvH5hOw5wBXT+GMz+2bQQgflWlkM0diEh7Zam0pXAXsjQ4U3MtYB8RT
-         C1wboMEgs9ydGnvcLCwAOaK4lEShMs96/9P5VG4nVoroyH297uADunHDk0w8YVzdKJ2D
-         Q80H+iEiGZXcgtWWmxjRy8ggKXhFemj495SepIJkkYQJYOHuK+1WLbpviQF8qK64DEzD
-         nn2TdOi8neWXx3+F5LZYGCrogP4Vo52rEmxf2/pmJ3r9cnZtJe/KJRCbBtk6CeumaESu
-         nh9A==
-X-Gm-Message-State: ABy/qLZJuqQqi2jg/y7BBIe0Npw0mIY00zjfTmyKW2I6GPzvvxPh7EQG
-        a9eVrYi2fUHSJ3RAP07u6uemog==
-X-Google-Smtp-Source: APBJJlF9iUN4yUd16TkYLNfCh05utlxera1aImKMVg8l++3z5FT59pZCDICzckk8yXvh57Fw2k7W+w==
-X-Received: by 2002:a6b:730c:0:b0:786:e003:1c6a with SMTP id e12-20020a6b730c000000b00786e0031c6amr2483451ioh.21.1690288275982;
-        Tue, 25 Jul 2023 05:31:15 -0700 (PDT)
-Received: from [10.211.55.3] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.gmail.com with ESMTPSA id g10-20020a02c54a000000b0042b6ae47f0esm3600276jaj.108.2023.07.25.05.31.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 05:31:15 -0700 (PDT)
-Message-ID: <f0fb38cb-ed2f-d09d-7675-97291d1bc2cc@linaro.org>
-Date:   Tue, 25 Jul 2023 07:31:13 -0500
+        d=1e100.net; s=20221208; t=1690288391; x=1690893191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WKpkzF96g9NgPXhoWUx4qyrJxQAYJZi3pZkdXCYeBMY=;
+        b=ilFSXEiplB1PPkAS+MWqV+4OyZZxqSSoV11WhuB7C4qfKf+Q52NUSMhDKqc9J9piwe
+         RTZvRn92wKdBoVFJCqitjLlpuuSpRwj1rPQJ01Q5G9YAvhgj3pB+PAgPMd4ni/ECu6kG
+         sm0zrNbXOUImwgnExf6TUUjgUzfoSyG67zrnuJFAaKhnxU7wa1dy7gg5x+fQlwMW2644
+         lEdpQ/CcIS0sp6sc5RU5sL9iBi+PscSCdDE7qrTVbNMfDf4zinHiGbg0BRl5NgkUjGPW
+         w8DdtCzs2q5xdCtdke3D3xzYcuckulj7vtm+vl8s6sS8yDw8WGRvkZw4rZTsDpLoGEFM
+         ADug==
+X-Gm-Message-State: ABy/qLZmr3nuDpaBH3R4CAMjSX9D/6TIOq7X3GV1YQMKG7R9HsqQ1k9O
+        LJbbwjBAr8QCN7yQXifaVih6g30HrGctk6I/8hB7UgboKZghBXZGcyk=
+X-Google-Smtp-Source: APBJJlHmfFkFQER3q6Dst2bu92mvAGDw0hUkJ4O0za2LwpY5NSiE/siaSsfkrIU/FsRkfek7BbGEr5EpbXqs7WSnVUg=
+X-Received: by 2002:ac2:4f05:0:b0:4f8:5696:6bbc with SMTP id
+ k5-20020ac24f05000000b004f856966bbcmr8779702lfr.29.1690288391202; Tue, 25 Jul
+ 2023 05:33:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net] net: ipa: only reset hashed tables when supported
-To:     Greg KH <gregkh@linuxfoundation.org>, Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, dianders@chromium.org,
-        caleb.connolly@linaro.org, mka@chromium.org, evgreen@chromium.org,
-        andersson@kernel.org, quic_cpratapa@quicinc.com,
-        quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
-        quic_subashab@quicinc.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230724224106.1688869-1-elder@linaro.org>
- <2023072538-corned-falsify-d054@gregkh>
-Content-Language: en-US
-From:   Alex Elder <alex.elder@linaro.org>
-In-Reply-To: <2023072538-corned-falsify-d054@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230725104507.756981058@linuxfoundation.org>
+In-Reply-To: <20230725104507.756981058@linuxfoundation.org>
+From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date:   Tue, 25 Jul 2023 21:33:00 +0900
+Message-ID: <CAKL4bV70qiD5jFcx9ALXJdCS+OBeQnZpAwJZZsJhs6=vCmewsg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/183] 6.1.42-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 2:08 AM, Greg KH wrote:
-> You sent 2 different versions of this patch?  Which one is for what
-> tree?  Is this in Linus's tree already?  If so, what's the git id?
+Hi Greg
 
-It was a mistake.  I reached out to the netdev maintainers
-yesterday to explain and I'm sorry I didn't do the same for
-you/stable.
+On Tue, Jul 25, 2023 at 8:03=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.42 release.
+> There are 183 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.42-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-One of those patches will be brought upstream the normal
-netdev way.  Back-porting to 6.1 won't work cleanly--and
-once it's upstream I'll provide the other one if required.
+6.1.42-rc1 tested.
 
-I'm really sorry to have caused the confusion.
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-					-Alex
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
