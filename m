@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7366A7624C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270C17624C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjGYVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
+        id S230195AbjGYVtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjGYVsl (ORCPT
+        with ESMTP id S230075AbjGYVtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:48:41 -0400
+        Tue, 25 Jul 2023 17:49:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F5910D1;
-        Tue, 25 Jul 2023 14:48:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D5C1FF0;
+        Tue, 25 Jul 2023 14:49:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EB8061909;
-        Tue, 25 Jul 2023 21:48:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12FD3C433C7;
-        Tue, 25 Jul 2023 21:48:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B907616A3;
+        Tue, 25 Jul 2023 21:49:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85582C433C7;
+        Tue, 25 Jul 2023 21:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690321719;
-        bh=vXE3L5/wt5UMDFv+0O0NtUlZ1MnJHBYI0OwEVAwTDcI=;
+        s=k20201202; t=1690321739;
+        bh=giBk76Wu2CNxIKQ+bWSMybNrR4Xwdbrb7bfqe39jKGY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BlbENO1XJuck7sNEHXDVBl8iW+SuTSYhZWrzOiyYlBGRK5RoKbgfwb6fC8oewSa2F
-         gqjJUwqpIA7UN299GQUs5YP4Bf33zD0rgOSMXFEElA5fcQHfL+odcR0tYot9Kp40J6
-         fYUdgWomt4BOVHbu4Iol6Ka/33n2a005A1H0jq444zVi/8R4c9FuG6+6J4d6Vy1ucU
-         637VxSK9NzndbShaQnfLQDr2sNE8QCVCbjusyOeKjRk8mmBAb0cD7Y6lHDXuMr/X7s
-         c0C4GfeeOJ9e1L4MIYz3IAKBmg+07NlVD1sRiNs0nRXZH2mNL32GMtgiHkPQE/4snk
-         V9AkZQDZ3XO1g==
-Date:   Tue, 25 Jul 2023 23:48:36 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>
-Subject: Re: [PATCH v1 3/9] i2c: designware: Align dw_i2c_of_configure() with
- i2c_dw_acpi_configure()
-Message-ID: <20230725214836.dbussnrimoykudyw@intel.intel>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
- <20230725143023.86325-4-andriy.shevchenko@linux.intel.com>
+        b=UTmiPxbosiW2nQ1ygwQpI0u0A4jO+VTQXLpQm8gykr4mpHK3Nbw0GxqExmFvJhKuo
+         K7gyCPZSlS34qRrp6CqEERKzht3NHErcrghZVkiqAvTGB5YnBfjKD8TDu64naG0m9+
+         0WdQ5D2fH9aiZ+BTkjukoVJeYUlPba/5saeEmpjCOAsqR3mOdVd7nB1nOdM13z4RRk
+         a2zClPLVbB77kQa2iQYXWUUkva6q41jzfJKrKzmfPn06MF0U1N/ptqUc5T7KicqYLW
+         HttCu5Irc4LxKIo1jgHA2dktF2NeeoDppcsSg5e2rqsipXR6/4h6hFmSxBtDRHsxKL
+         RJcaZWEpIopkQ==
+Date:   Tue, 25 Jul 2023 22:48:54 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Jiahao <chenjiahao16@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        conor.dooley@microchip.com, guoren@kernel.org, heiko@sntech.de,
+        bjorn@rivosinc.com, alex@ghiti.fr, akpm@linux-foundation.org,
+        atishp@rivosinc.com, bhe@redhat.com, thunder.leizhen@huawei.com,
+        horms@kernel.org
+Subject: Re: [PATCH -next v8 0/2] support allocating crashkernel above 4G
+ explicitly on riscv
+Message-ID: <20230725-judiciary-auction-ef50be622175@spud>
+References: <20230725214413.2488159-1-chenjiahao16@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tppZMEkMOmCgNS1D"
 Content-Disposition: inline
-In-Reply-To: <20230725143023.86325-4-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230725214413.2488159-1-chenjiahao16@huawei.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,82 +62,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
-On Tue, Jul 25, 2023 at 05:30:17PM +0300, Andy Shevchenko wrote:
-> For the sake of consistency align dw_i2c_of_configure() with
-> i2c_dw_acpi_configure() and rename the former to i2c_dw_of_configure().
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/i2c/busses/i2c-designware-platdrv.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-> index c60e55b8398e..d35a6bbcb6fb 100644
-> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-> @@ -132,9 +132,9 @@ static int mscc_twi_set_sda_hold_time(struct dw_i2c_dev *dev)
->  	return 0;
->  }
->  
-> -static int dw_i2c_of_configure(struct platform_device *pdev)
-> +static void i2c_dw_of_do_configure(struct dw_i2c_dev *dev, struct device *device)
->  {
-> -	struct dw_i2c_dev *dev = platform_get_drvdata(pdev);
-> +	struct platform_device *pdev = to_platform_device(device);
->  
->  	switch (dev->flags & MODEL_MASK) {
->  	case MODEL_MSCC_OCELOT:
-> @@ -145,8 +145,12 @@ static int dw_i2c_of_configure(struct platform_device *pdev)
->  	default:
->  		break;
->  	}
-> +}
->  
-> -	return 0;
-> +static void i2c_dw_of_configure(struct dw_i2c_dev *dev)
-> +{
-> +	if (dev_of_node(dev->dev))
-> +		i2c_dw_of_do_configure(dev, dev->dev);
+--tppZMEkMOmCgNS1D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You could add this check above and avoid this micro-if-functions.
+Hey,
 
-	if (!dev_of_node(dev->dev))
-		return;
+Your $subject says -next, but the patch failed to apply to
+riscv/for-next. What was the base for this patchset?
 
-up to you...
+Thanks,
+Conor.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+--tppZMEkMOmCgNS1D
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Andi
+-----BEGIN PGP SIGNATURE-----
 
->  }
->  
->  static const struct of_device_id dw_i2c_of_match[] = {
-> @@ -162,10 +166,7 @@ static int bt1_i2c_request_regs(struct dw_i2c_dev *dev)
->  	return -ENODEV;
->  }
->  
-> -static inline int dw_i2c_of_configure(struct platform_device *pdev)
-> -{
-> -	return -ENODEV;
-> -}
-> +static inline void i2c_dw_of_configure(struct dw_i2c_dev *dev) { }
->  #endif
->  
->  static int txgbe_i2c_request_regs(struct dw_i2c_dev *dev)
-> @@ -311,9 +312,7 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
->  
->  	i2c_dw_adjust_bus_speed(dev);
->  
-> -	if (pdev->dev.of_node)
-> -		dw_i2c_of_configure(pdev);
-> -
-> +	i2c_dw_of_configure(dev);
->  	i2c_dw_acpi_configure(dev);
->  
->  	ret = i2c_dw_validate_speed(dev);
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMBDRgAKCRB4tDGHoIJi
+0sf8AP4uEgceSAb5yQVnixLMnccgleBSjQoafJCHM7CMGvRtRQEA9nabe9G4Ghc/
+Xbr6ZvQqp/XMXGdRmePLtK0/PKv2pQs=
+=nSay
+-----END PGP SIGNATURE-----
+
+--tppZMEkMOmCgNS1D--
