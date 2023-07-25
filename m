@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BDF761AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22CB761B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbjGYOG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S232254AbjGYOMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbjGYOG0 (ORCPT
+        with ESMTP id S230309AbjGYOMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:06:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDBB1BD6;
-        Tue, 25 Jul 2023 07:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BPtKOmxez51uKAQ5bimFSFsRk3Pz5ZRLzvPzUPZ9CYg=; b=HuT/B5bV60wd9SZEDcouz3w1w9
-        xT6Fs7fYyH374GTkEhAWHYNgH44jtsnhgFScRE8ezoNmpO7Bg2nbQKv1Yt/ojpDWkavNKwgKuRJ3V
-        oE6xhB2s8tp07ufZtaLX/VHhG1dl3GhRFHwXnAko5UWCrwzAfIzlyfa17Xd8YFa+obLLMBOqr6oTl
-        QeEckAkcMbFlKcpXXgs2BjUPHz89tLBBkReiVy7r8054DV0tIV9CF7AyvtWnzCFG37oTbz9rPBvyM
-        lUErzAHihzRxzET3obp0FMe+8Lu25W9+85lfMudlzXDTtR2IbNbgz9/VXy+UZsomBEI6gYBzazlxf
-        bAXlaUnw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qOIg9-005WxA-6B; Tue, 25 Jul 2023 14:06:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 280AD300155;
-        Tue, 25 Jul 2023 16:06:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D86242B20499D; Tue, 25 Jul 2023 16:06:20 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 16:06:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andres@anarazel.de
-Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
-Message-ID: <20230725140620.GO3765278@hirez.programming.kicks-ass.net>
-References: <20230720221858.135240-1-axboe@kernel.dk>
- <20230720221858.135240-7-axboe@kernel.dk>
- <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
- <20230721113718.GA3638458@hirez.programming.kicks-ass.net>
- <d95bfb98-8d76-f0fd-6283-efc01d0cc015@kernel.dk>
- <94b8fcc4-12b5-8d8c-3eb3-fe1e73a25456@kernel.dk>
- <20230725130015.GI3765278@hirez.programming.kicks-ass.net>
- <28a42d23-6d70-bc4c-5abc-0b3cc5d7338d@kernel.dk>
+        Tue, 25 Jul 2023 10:12:03 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC98102;
+        Tue, 25 Jul 2023 07:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690294322; x=1721830322;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PWe9GNMaoHh1LXm7vt0nJC8CylhYVvYcKyTMHoFXiSs=;
+  b=W1mg2S368EBdyh5bxVmcwX/RNIaxm/eB8spyWMfbOSikH8e9j9SRFFDV
+   gjN+yNIIJQBkQ7w9svAmppFtkUBONKzzpsuSAAK46yGWOolzpVpaiEOfQ
+   CUAHw4JT/tOWV3Hj/9zoKy9GASM2nXDf7//3l8az2hgOm3NYFKMdya9cC
+   8WtIAJRgfyqsQ/f2LjvHLosgD5iy9QULOC8949Rvq1zph/lYgbzEjfD1N
+   f7NMzqYutFXs7R/FobsBTQ7uQzlNOVHiG8H3soevnGWzIU92rf45GkStb
+   jKPF30bOeCMMnJQpSBGyMuVOnFPD03I65lBgEbyKclIAhJC3vV7HVooEJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="365195243"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="365195243"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 07:06:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="729369767"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="729369767"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 25 Jul 2023 07:06:32 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qOIgI-00CmmR-29;
+        Tue, 25 Jul 2023 17:06:30 +0300
+Date:   Tue, 25 Jul 2023 17:06:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 1/1] Documentation: core-api: Drop :export: for
+ int_log.h
+Message-ID: <ZL/W5rc043oPLfMV@smile.fi.intel.com>
+References: <20230725104956.47806-1-andriy.shevchenko@linux.intel.com>
+ <87a5vkb0ee.fsf@meer.lwn.net>
+ <b761d010-ef21-4be6-b6c3-678498b7fa71@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28a42d23-6d70-bc4c-5abc-0b3cc5d7338d@kernel.dk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <b761d010-ef21-4be6-b6c3-678498b7fa71@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 07:48:30AM -0600, Jens Axboe wrote:
+On Tue, Jul 25, 2023 at 02:46:33PM +0100, Mark Brown wrote:
+> On Tue, Jul 25, 2023 at 07:12:25AM -0600, Jonathan Corbet wrote:
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+> 
+> > > The :export: keyword makes sense only for C-files, where EXPORT_SYMBOL()
+> > > might appear. Otherwise kernel-doc may not produce anything out of this
+> > > file.
+> 
+> > So I still can't take this patch for the reasons described before.  It
+> > looks like Mark took the patch that added the problem, so perhaps he
+> > should be a recipient of this one too?  I'll add him to the CC...
+> 
+> Is this the same patch I applied yesterday or a different one?
 
-> I think I'll just have prep and prepv totally separate. It only makes
-> sense to share parts of them if one is a subset of the other. That'll
-> get rid of the odd conditionals and sectioning of it.
+Hmm...
+I do not see anything like this patch in your current ASoC for-next
+(nor in for-6.6). Did I look into wrong branch?
 
-Ah, yes. Fair enough.
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
