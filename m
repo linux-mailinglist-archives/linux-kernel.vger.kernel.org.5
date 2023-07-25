@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB417626FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AC7762715
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbjGYWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S230152AbjGYWzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbjGYWlL (ORCPT
+        with ESMTP id S231907AbjGYWzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:41:11 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AC649EC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:35:37 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso670991fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:35:37 -0700 (PDT)
+        Tue, 25 Jul 2023 18:55:03 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3900010DC;
+        Tue, 25 Jul 2023 15:54:29 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5576ad1b7e7so672491a12.1;
+        Tue, 25 Jul 2023 15:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690324439; x=1690929239;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+q0s/DwiqiE6dEjrgVx133qqoVLemgwKwO1eiag9Cds=;
-        b=IqG4Dyjra4ijXkZkkf00BQtdu7kBinSMfzCntuaqPgKTDxWokiGRCMumlOa1+jp9aE
-         eJvlHFNOnnbKSRM2YowhhSY/ANSGIhVaImnHv5tykj94vLWNZW/AQyr83e6ljfHmNQ7z
-         4hb/rXBsTKwK34a2tv7mN0ikSDJPZ3kYUue7NvdqzSNNuRbd7FZ9/G6ylkbQlXF9O+6V
-         AlvBLPmQP7QQXv0jXU51ptOYZeZwJpVunRPQwuXme65IaPxNGuWKDTuMVmtPt0lo4wcU
-         cXNXq353yLcoxsMOnQwz90h9ErI02fePZegUNWdo3NUVL6AdRzUtdeCnm8WH7f+g4y70
-         xOgg==
+        d=gmail.com; s=20221208; t=1690325607; x=1690930407;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bdMg39YRMnpZU+razuRNbGr0OFnYUgy/lH2Eq5YC068=;
+        b=McQdShKm7uojkgHTzatVRnDUG92ceS8qj+U9ZqcsLahYbXtfY9jRyAeYrcmLGMlORZ
+         8nbM0PlmsgM+XkaTTbSnyGVVfgs0NCI39BUeVM5oa1jjZG0gc6Ld5I+DgH0Q/U8nz5yQ
+         ASuZtHyF7Gqk+NuyubPRcdvRhw0/9TDafMupXiMWj0m5uPMfzGmIHXIoQm6iumYVfARA
+         vXy0koEmSq3yzhWP+hYUfKDtxyKsZy2Fsns7RYzSL9IuO3yIrb+HRmPp3FxzFiJAlUJW
+         dVD4/2JXrejvj0C7l4Wm+cq1U9bcTkaSXC4E708YIqrUJ/JkxPluONodGEF1nTuB4Ibg
+         qrjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690324439; x=1690929239;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+q0s/DwiqiE6dEjrgVx133qqoVLemgwKwO1eiag9Cds=;
-        b=Cy7FmgNEG9LNtrVymW5H4YK5JWsSbnv6HbgJkuNFIzVuhbz0XOoUYSPEkjdw+9ABq/
-         7FIRhFGPMBsbt0rYuttij2LTuGdZG37yhNkJwkGlQb3VhSLBOwnbKKYhRkzQiKOlsHHs
-         hegSyANLZgCBQDEcWILu+wsSmaMXJ5OhJeOiJ2t0mstI6mnOMNMxpyK+mYnfkR/b4ACu
-         DnpOlbXURfvSg3TFYWrnP9cJ88ycHOgk0SwmCRloaR22tsLbHf0DJ7JyruQ/5s3sv0DY
-         TF2vo321xPvnsvoOPAHlF7pbFZbvPUzNB5ynkO7LHG3XrbO73VByE6MvOqfTCbHUZVJ9
-         K/eQ==
-X-Gm-Message-State: ABy/qLZHn3FUkHCleqW9uB/i2kSPuTo6zJkIni9F3h5/b8uAv1ak7+i5
-        cZxWeSYcbcctPVZQu3GDfpxtNA==
-X-Google-Smtp-Source: APBJJlEbfcO8ew8CL0pNfInmj8EMozGYnVxCgypoVRCtT4kf4ePVJWZs2CQc/WmHBnCiwmiomv/zVQ==
-X-Received: by 2002:a2e:7213:0:b0:2b6:9f95:46d9 with SMTP id n19-20020a2e7213000000b002b69f9546d9mr73715ljc.46.1690324438898;
-        Tue, 25 Jul 2023 15:33:58 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id o7-20020a2e90c7000000b002b6c92fa161sm3669937ljg.61.2023.07.25.15.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 15:33:58 -0700 (PDT)
-Message-ID: <a7405272-6a9e-b0c4-f749-060dbe716148@linaro.org>
-Date:   Wed, 26 Jul 2023 01:33:57 +0300
+        d=1e100.net; s=20221208; t=1690325607; x=1690930407;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bdMg39YRMnpZU+razuRNbGr0OFnYUgy/lH2Eq5YC068=;
+        b=lCLu58Kr/XVF+R0zeA6MfLE+r+Jz5WEIAs254o3A3Fos0yBcLnn8RVZle2H2YJZyr5
+         nYluT+e99+IAlJrpOLzXkHw51XFNxTqwAZUWGVMRLP9zXF+kzTfh0vB7UZ+nMoi1Q50S
+         S2iXO+79vmUvHMjLnc5t0toz6iWeDGCiHjr6WN4NDlOVsAmRV4GewRq0IcRsa6LkblVI
+         w7IzXEQSayPILQzKK/OkUWQH1T4T6qJp7PFHfKHJli19G4boFmsihVe2yskBEmhJh1f1
+         kKrUKb4c6QzakWs9+USmGeR4rU3TOVCi0J72dYYMTmQ5Cey+Urh4A1ot7tgjY+T0d5cA
+         2R+g==
+X-Gm-Message-State: ABy/qLbYgDQzPEcIFk3LTpmUyJ67378gZz1SexY86NDtBpTidUhQjN8Q
+        qbJYYQx8YAVCGDHtHOlV7DKK/vXNXds=
+X-Google-Smtp-Source: APBJJlF1uQ1HTmMBZWfJCM/13TKczKsoaTeBKhlZrC38mHnED75QNfDg8decDDcGYLJxiQnkW+9quw==
+X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr454406pzk.2.1690325606910;
+        Tue, 25 Jul 2023 15:53:26 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id e15-20020aa78c4f000000b00686bef984e2sm224354pfd.80.2023.07.25.15.53.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 15:53:26 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 15:53:24 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Alex Maftei <alex.maftei@amd.com>
+Cc:     shuah@kernel.org, rrameshbabu@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/2] selftests/ptp: Add support for new
+ timestamp IOCTLs
+Message-ID: <ZMBSZDk8hNoLg8ts@hoboy.vegasvil.org>
+References: <cover.1690321709.git.alex.maftei@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Freedreno] [PATCH v1 2/5] drm/msm/dp: incorporate pm_runtime
- framework into DP driver
-Content-Language: en-GB
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     freedreno@lists.freedesktop.org, quic_sbillaka@quicinc.com,
-        quic_abhinavk@quicinc.com, airlied@gmail.com,
-        linux-arm-msm@vger.kernel.org, robdclark@gmail.com,
-        dri-devel@lists.freedesktop.org, dianders@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, daniel@ffwll.ch,
-        marijn.suijten@somainline.org, quic_jesszhan@quicinc.com,
-        swboyd@chromium.org, sean@poorly.run, linux-kernel@vger.kernel.org
-References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
- <1688773943-3887-3-git-send-email-quic_khsieh@quicinc.com>
- <oc6cohs6pbiuyirdxgepoharuzdra2hzy3kwfqjmdfcq36y367@ah3bal2jqncb>
- <0ac305d2-d0a9-cdfb-9be8-243402d865e7@quicinc.com>
- <44299d05-d411-e9c4-7b96-84efb28d47c9@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <44299d05-d411-e9c4-7b96-84efb28d47c9@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1690321709.git.alex.maftei@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,244 +73,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 01:25, Kuogee Hsieh wrote:
+On Tue, Jul 25, 2023 at 10:53:32PM +0100, Alex Maftei wrote:
+> PTP_SYS_OFFSET_EXTENDED was added in November 2018 in
+> 361800876f80 (" ptp: add PTP_SYS_OFFSET_EXTENDED ioctl")
+> and PTP_SYS_OFFSET_PRECISE was added in February 2016 in
+> 719f1aa4a671 ("ptp: Add PTP_SYS_OFFSET_PRECISE for driver crosstimestamping")
 > 
-> On 7/10/2023 9:22 AM, Kuogee Hsieh wrote:
->>
->> On 7/8/2023 7:52 PM, Bjorn Andersson wrote:
->>> On Fri, Jul 07, 2023 at 04:52:20PM -0700, Kuogee Hsieh wrote:
->>>> Incorporating pm runtime framework into DP driver so that power
->>>> and clock resource handling can be centralized allowing easier
->>>> control of these resources in preparation of registering aux bus
->>>> uring probe.
->>>>
->>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>>> ---
->>>>   drivers/gpu/drm/msm/dp/dp_aux.c     |  3 ++
->>>>   drivers/gpu/drm/msm/dp/dp_display.c | 75 
->>>> +++++++++++++++++++++++++++++--------
->>>>   2 files changed, 63 insertions(+), 15 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
->>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> index 8e3b677..c592064 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> @@ -291,6 +291,7 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
->>>> *dp_aux,
->>>>           return -EINVAL;
->>>>       }
->>>>   +    pm_runtime_get_sync(dp_aux->dev);
->>>>       mutex_lock(&aux->mutex);
->>>>       if (!aux->initted) {
->>>>           ret = -EIO;
->>>> @@ -364,6 +365,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
->>>> *dp_aux,
->>>>     exit:
->>>>       mutex_unlock(&aux->mutex);
->>>> +    pm_runtime_mark_last_busy(dp_aux->dev);
->>>> +    pm_runtime_put_autosuspend(dp_aux->dev);
->>>>         return ret;
->>>>   }
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->>>> b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> index 76f1395..2c5706a 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> @@ -309,6 +309,10 @@ static int dp_display_bind(struct device *dev, 
->>>> struct device *master,
->>>>           goto end;
->>>>       }
->>>>   +    pm_runtime_enable(dev);
->>>> +    pm_runtime_set_autosuspend_delay(dev, 1000);
->>>> +    pm_runtime_use_autosuspend(dev);
->>>> +
->>>>       return 0;
->>>>   end:
->>>>       return rc;
->>>> @@ -320,9 +324,8 @@ static void dp_display_unbind(struct device 
->>>> *dev, struct device *master,
->>>>       struct dp_display_private *dp = dev_get_dp_display_private(dev);
->>>>       struct msm_drm_private *priv = dev_get_drvdata(master);
->>>>   -    /* disable all HPD interrupts */
->>>> -    if (dp->core_initialized)
->>>> -        dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_INT_MASK, 
->>>> false);
->>>> +    pm_runtime_dont_use_autosuspend(dev);
->>>> +    pm_runtime_disable(dev);
->>>>         kthread_stop(dp->ev_tsk);
->>>>   @@ -466,10 +469,12 @@ static void dp_display_host_init(struct 
->>>> dp_display_private *dp)
->>>>           dp->dp_display.connector_type, dp->core_initialized,
->>>>           dp->phy_initialized);
->>>>   -    dp_power_init(dp->power);
->>>> -    dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
->>>> -    dp_aux_init(dp->aux);
->>>> -    dp->core_initialized = true;
->>>> +    if (!dp->core_initialized) {
->>>> +        dp_power_init(dp->power);
->>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
->>>> +        dp_aux_init(dp->aux);
->>>> +        dp->core_initialized = true;
->>> There are two cases that queries core_initialized, both of those are
->>> done to avoid accessing the DP block without it first being powered up.
->>> With the introduction of runtime PM, it seems reasonable to just power
->>> up the block in those two code paths (and remove the variable).
->>>
->>>> +    }
->>>>   }
->>>>     static void dp_display_host_deinit(struct dp_display_private *dp)
->>>> @@ -478,10 +483,12 @@ static void dp_display_host_deinit(struct 
->>>> dp_display_private *dp)
->>>>           dp->dp_display.connector_type, dp->core_initialized,
->>>>           dp->phy_initialized);
->>>>   -    dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
->>>> -    dp_aux_deinit(dp->aux);
->>>> -    dp_power_deinit(dp->power);
->>>> -    dp->core_initialized = false;
->>>> +    if (dp->core_initialized) {
->>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
->>>> +        dp_aux_deinit(dp->aux);
->>>> +        dp_power_deinit(dp->power);
->>>> +        dp->core_initialized = false;
->>>> +    }
->>>>   }
->>>>     static int dp_display_usbpd_configure_cb(struct device *dev)
->>>> @@ -1304,6 +1311,39 @@ static int dp_display_remove(struct 
->>>> platform_device *pdev)
->>>>       dp_display_deinit_sub_modules(dp);
->>>>         platform_set_drvdata(pdev, NULL);
->>>> +    pm_runtime_put_sync_suspend(&pdev->dev);
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static int dp_pm_runtime_suspend(struct device *dev)
->>>> +{
->>>> +    struct platform_device *pdev = to_platform_device(dev);
->>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
->>> platform_get_drvdata() is a wrapper for dev_get_drvdata(&pdev->dev), so
->>> there's no need to resolve the platform_device first...
->>>
->>>> +    struct dp_display_private *dp;
->>>> +
->>>> +    dp = container_of(dp_display, struct dp_display_private, 
->>>> dp_display);
->>>> +
->>>> +    dp_display_host_phy_exit(dp);
->>>> +    dp_catalog_ctrl_hpd_enable(dp->catalog);
->>>> +    dp_display_host_deinit(dp);
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static int dp_pm_runtime_resume(struct device *dev)
->>>> +{
->>>> +    struct platform_device *pdev = to_platform_device(dev);
->>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
->>>> +    struct dp_display_private *dp;
->>>> +
->>>> +    dp = container_of(dp_display, struct dp_display_private, 
->>>> dp_display);
->>>> +
->>>> +    dp_display_host_init(dp);
->>>> +    if (dp_display->is_edp) {
->>>> +        dp_catalog_ctrl_hpd_enable(dp->catalog);
->>>> +        dp_display_host_phy_init(dp);
->>>> +    }
->>>>         return 0;
->>>>   }
->>>> @@ -1409,6 +1449,7 @@ static int dp_pm_suspend(struct device *dev)
->>>>   }
->>>>     static const struct dev_pm_ops dp_pm_ops = {
->>>> +    SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, 
->>>> NULL)
->>>>       .suspend = dp_pm_suspend,
->>>>       .resume =  dp_pm_resume,
->>>>   };
->>>> @@ -1493,10 +1534,6 @@ static int dp_display_get_next_bridge(struct 
->>>> msm_dp *dp)
->>>>       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
->>>>         if (aux_bus && dp->is_edp) {
->>>> -        dp_display_host_init(dp_priv);
->>>> -        dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
->>>> -        dp_display_host_phy_init(dp_priv);
->>> I'm probably just missing it, but how do we get here with the host
->>> powered up and the phy initialized?
->>
->> if (!dp->core_initialized)  is at dp_display_host_init()
->>
->>>
->>>> -
->>>>           /*
->>>>            * The code below assumes that the panel will finish probing
->>>>            * by the time devm_of_dp_aux_populate_ep_devices() returns.
->>>> @@ -1604,6 +1641,7 @@ void dp_bridge_atomic_enable(struct drm_bridge 
->>>> *drm_bridge,
->>>>           dp_hpd_plug_handle(dp_display, 0);
->>>>         mutex_lock(&dp_display->event_mutex);
->>>> +    pm_runtime_get_sync(&dp_display->pdev->dev);
->>>>         state = dp_display->hpd_state;
->>>>       if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
->>>> @@ -1684,6 +1722,8 @@ void dp_bridge_atomic_post_disable(struct 
->>>> drm_bridge *drm_bridge,
->>>>       }
->>>>         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", dp->connector_type);
->>>> +
->>>> +    pm_runtime_put_sync(&dp_display->pdev->dev);
->>>>       mutex_unlock(&dp_display->event_mutex);
->>>>   }
->>>>   @@ -1723,6 +1763,8 @@ void dp_bridge_hpd_enable(struct drm_bridge 
->>>> *bridge)
->>>>       struct dp_display_private *dp = container_of(dp_display, 
->>>> struct dp_display_private, dp_display);
->>>>         mutex_lock(&dp->event_mutex);
->>>> +    pm_runtime_get_sync(&dp->pdev->dev);
->>>> +
->>>>       dp_catalog_ctrl_hpd_enable(dp->catalog);
->>>>         /* enable HDP interrupts */
->>>> @@ -1744,6 +1786,9 @@ void dp_bridge_hpd_disable(struct drm_bridge 
->>>> *bridge)
->>>>       dp_catalog_ctrl_hpd_disable(dp->catalog);
->>>>         dp_display->internal_hpd = false;
->>>> +
->>>> +    pm_runtime_mark_last_busy(&dp->pdev->dev);
->>>> +    pm_runtime_put_autosuspend(&dp->pdev->dev);
->>>>       mutex_unlock(&dp->event_mutex);
->>>>   }
->>> The runtime_get/put in dp_bridge_hpd_enable() and disable matches my
->>> expectations. But in the case that we have an external HPD source, where
->>> will the power be turned on?
->>>
->>> Note that you can test this on your device by routing the HPD GPIO to a
->>> display-connector instance and wiring this to the DP node. In the same
->>> way it's done here:
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sa8295p-adp.dts#n28
+> The PTP selftest code is lacking support for these two IOCTLS.
+> This short series of patches adds support for them.
 > 
-> at sc7280, gpio-47 has function 2 as dp-hot-plug pin. but it does not 
-> has function for general purpose pin.
-
-It has a 'gpio' function, so that the pin can be used as a generic GPIO 
-with a dp-connector device.
-
+> Changes in v2:
+> - Fixed rebase issues (v1 somehow ended up with patch 1 being from the
+>   first manual split of my changes and patch 2 being from rebase 2 out
+>   of 3)
+> - Rebased on top of net-next
 > 
-> Just curious,  to work with external HPD source,
+> Alex Maftei (2):
+>   selftests/ptp: Add -x option for testing PTP_SYS_OFFSET_EXTENDED
+>   selftests/ptp: Add -X option for testing PTP_SYS_OFFSET_PRECISE
 > 
-> 1) which DRM_BRIDGE_OP_xxx should be used for bridge->ops?
+>  tools/testing/selftests/ptp/testptp.c | 73 ++++++++++++++++++++++++++-
+>  1 file changed, 71 insertions(+), 2 deletions(-)
 
-There is no difference. The drm_bridge_connector will select the bridges 
-according to the needs. E.g. the dp-connector can provide 
-DRM_BRIDGE_OP_DETECT / OP_HPD (if the hpd-gpios property is configured). 
-If it does, it will be selected for detection/HPD handling. If not, the 
-main dp bridge will handle these operations.
+For the series:
 
-> 
-> 2) are both .hpd_enable and .hpd_disable  have to be populated?
-
-No, they are both optional.
-
--- 
-With best wishes
-Dmitry
-
+Acked-by: Richard Cochran <richardcochran@gmail.com>
