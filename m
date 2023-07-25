@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A1C760EDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6649C760EDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjGYJ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S233195AbjGYJ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbjGYJ0f (ORCPT
+        with ESMTP id S232315AbjGYJ0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:26:35 -0400
+        Tue, 25 Jul 2023 05:26:45 -0400
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527B92719;
-        Tue, 25 Jul 2023 02:25:34 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 0E5D740019;
-        Tue, 25 Jul 2023 09:25:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7579C2D4E;
+        Tue, 25 Jul 2023 02:25:38 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id B27334000C;
+        Tue, 25 Jul 2023 09:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690277132;
+        t=1690277134;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qb9JJd2ccR7R8C3gjckd4+51tlc3N7Nrektp0ymXFJ4=;
-        b=c5NjOUYes6dhntB5+RrrYjoonyWCtKHMZ0/HXvaURv6PJoFwfHyFRA3TUj24KR2cDehmBY
-        nXkpGgWny5B62KtQBa1YkHf2Kz1rY2988A6OyA3ql6PMeSS3BclrFd8Qcg9VXJ1F5ZxS6A
-        wbNvbyZutN+xLstAQeJAPnwCkMsnGJz3n6f4x8avIuJbnsrpmArVqBwYCPfkYRe+MpAEZw
-        o0C6R6rjRzQuaNYwoKBS72GzOH0bG4G+mZvRqLemTrp+3LsZ/5zz1RSGWGOWNSeGP0iG8+
-        vMYhE/dLf84Fra35LwzfrNQvyUKuPCE7kPdrI+iTB4UPHe1jIJ6ZxM4OaEjaGQ==
+        bh=g+R+GTumz5qYOmYomZ46g92lb+8mxRs70UbJ/9psqII=;
+        b=Arr4B1ODQraTz314IedecEdkYovPd/wZulnVFH/cw4RJpub7m84vUhtTBPgidgOZUh94dC
+        e3LMsfdkAJlltonYMX8Et032vhOKm1wJ9f6+m2UMqE3gcB7RTOMw/eYiGsNLuW6m3ocFSv
+        fVc+qy2ZtdITu9ogkfYWzc2wXplPVwi7RriAwX3SLAvBDneb6LojK+NiZ+TrpAoKVxQYuo
+        xGHxHGocO3l4XcwMU7Mg1CqD1mG09X5iylGuwo3xMZrTUY2mF/SESKU/BsCbkFX0A1hA0k
+        MJCcbYbz386gfI0zeP8vyEBGo0Gf/3h3RmBPBS84UC1PhF1EJkogCg8k4/2NGg==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -54,9 +54,9 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         alsa-devel@alsa-project.org,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 13/26] soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
-Date:   Tue, 25 Jul 2023 11:23:49 +0200
-Message-ID: <20230725092417.43706-14-herve.codina@bootlin.com>
+Subject: [PATCH 14/26] soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and stop()
+Date:   Tue, 25 Jul 2023 11:23:50 +0200
+Message-ID: <20230725092417.43706-15-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725092417.43706-1-herve.codina@bootlin.com>
 References: <20230725092417.43706-1-herve.codina@bootlin.com>
@@ -74,56 +74,318 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support runtime timeslot route changes, some operations will
-be different according the routing table used (common Rx and Tx table or
-one table for Rx and one for Tx).
-
-The is_tsa_64rxtx flag is introduced to avoid extra computation to
-determine the table format each time we need it.
-It is set once at initialization.
+In order to support runtime timeslot route changes, enable the
+channel timeslot entries at channel start() and disable them at
+channel stop().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/soc/fsl/qe/qmc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/soc/fsl/qe/qmc.c | 175 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 163 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index d02acbc1d7e1..64c3bfc16010 100644
+index 64c3bfc16010..6d1cd203abd2 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -216,6 +216,7 @@ struct qmc {
- 	u16 __iomem *int_curr;
- 	dma_addr_t int_dma_addr;
- 	size_t int_size;
-+	bool is_tsa_64rxtx;
- 	struct list_head chan_head;
- 	struct qmc_chan *chans[64];
- };
-@@ -696,7 +697,7 @@ static int qmc_chan_setup_tsa(struct qmc_chan *chan, bool enable)
- 	 * Setup one common 64 entries table or two 32 entries (one for Tx
- 	 * and one for Tx) according to assigned TS numbers.
- 	 */
--	if (info.nb_tx_ts > 32 || info.nb_rx_ts > 32)
+@@ -177,6 +177,7 @@ struct qmc_chan {
+ 	struct qmc *qmc;
+ 	void *__iomem s_param;
+ 	enum qmc_mode mode;
++	spinlock_t	ts_lock; /* Protect timeslots */
+ 	u64	tx_ts_mask_avail;
+ 	u64	tx_ts_mask;
+ 	u64	rx_ts_mask_avail;
+@@ -265,6 +266,7 @@ static inline void qmc_setbits32(void *__iomem addr, u32 set)
+ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
+ {
+ 	struct tsa_serial_info tsa_info;
++	unsigned long flags;
+ 	int ret;
+ 
+ 	/* Retrieve info from the TSA related serial */
+@@ -272,6 +274,8 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
+ 	if (ret)
+ 		return ret;
+ 
++	spin_lock_irqsave(&chan->ts_lock, flags);
++
+ 	info->mode = chan->mode;
+ 	info->rx_fs_rate = tsa_info.rx_fs_rate;
+ 	info->rx_bit_rate = tsa_info.rx_bit_rate;
+@@ -280,6 +284,8 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
+ 	info->tx_bit_rate = tsa_info.tx_bit_rate;
+ 	info->nb_rx_ts = hweight64(chan->rx_ts_mask);
+ 
++	spin_unlock_irqrestore(&chan->ts_lock, flags);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(qmc_chan_get_info);
+@@ -683,6 +689,40 @@ static int qmc_chan_setup_tsa_32tx(struct qmc_chan *chan, const struct tsa_seria
+ 	return 0;
+ }
+ 
++static int qmc_chan_setup_tsa_tx(struct qmc_chan *chan, bool enable)
++{
++	struct tsa_serial_info info;
++	int ret;
++
++	/* Retrieve info from the TSA related serial */
++	ret = tsa_serial_get_info(chan->qmc->tsa_serial, &info);
++	if (ret)
++		return ret;
++
++	/* Setup entries */
 +	if (chan->qmc->is_tsa_64rxtx)
- 		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
++		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
++
++	return qmc_chan_setup_tsa_32tx(chan, &info, enable);
++}
++
++static int qmc_chan_setup_tsa_rx(struct qmc_chan *chan, bool enable)
++{
++	struct tsa_serial_info info;
++	int ret;
++
++	/* Retrieve info from the TSA related serial */
++	ret = tsa_serial_get_info(chan->qmc->tsa_serial, &info);
++	if (ret)
++		return ret;
++
++	/* Setup entries */
++	if (chan->qmc->is_tsa_64rxtx)
++		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
++
++	return qmc_chan_setup_tsa_32rx(chan, &info, enable);
++}
++
+ static int qmc_chan_setup_tsa(struct qmc_chan *chan, bool enable)
+ {
+ 	struct tsa_serial_info info;
+@@ -719,6 +759,12 @@ static int qmc_chan_stop_rx(struct qmc_chan *chan)
  
- 	ret = qmc_chan_setup_tsa_32rx(chan, &info, enable);
-@@ -1053,6 +1054,7 @@ static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *in
- 	 * Everything was previously checked, Tx and Rx related stuffs are
- 	 * identical -> Used Rx related stuff to build the table
- 	 */
-+	qmc->is_tsa_64rxtx = true;
+ 	spin_lock_irqsave(&chan->rx_lock, flags);
  
- 	/* Invalidate all entries */
- 	for (i = 0; i < 64; i++)
-@@ -1081,6 +1083,7 @@ static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
- 	 * Use a Tx 32 entries table and a Rx 32 entries table.
- 	 * Everything was previously checked.
- 	 */
-+	qmc->is_tsa_64rxtx = false;
++	if (chan->is_rx_stopped) {
++		/* The channel is already stopped -> simply return ok */
++		ret = 0;
++		goto end;
++	}
++
+ 	/* Send STOP RECEIVE command */
+ 	ret = qmc_chan_command(chan, 0x0);
+ 	if (ret) {
+@@ -729,6 +775,15 @@ static int qmc_chan_stop_rx(struct qmc_chan *chan)
  
- 	/* Invalidate all entries */
- 	for (i = 0; i < 32; i++) {
+ 	chan->is_rx_stopped = true;
+ 
++	if (!chan->qmc->is_tsa_64rxtx || chan->is_tx_stopped) {
++		ret = qmc_chan_setup_tsa_rx(chan, false);
++		if (ret) {
++			dev_err(chan->qmc->dev, "chan %u: Disable tsa entries failed (%d)\n",
++				chan->id, ret);
++			goto end;
++		}
++	}
++
+ end:
+ 	spin_unlock_irqrestore(&chan->rx_lock, flags);
+ 	return ret;
+@@ -741,6 +796,12 @@ static int qmc_chan_stop_tx(struct qmc_chan *chan)
+ 
+ 	spin_lock_irqsave(&chan->tx_lock, flags);
+ 
++	if (chan->is_tx_stopped) {
++		/* The channel is already stopped -> simply return ok */
++		ret = 0;
++		goto end;
++	}
++
+ 	/* Send STOP TRANSMIT command */
+ 	ret = qmc_chan_command(chan, 0x1);
+ 	if (ret) {
+@@ -751,37 +812,82 @@ static int qmc_chan_stop_tx(struct qmc_chan *chan)
+ 
+ 	chan->is_tx_stopped = true;
+ 
++	if (!chan->qmc->is_tsa_64rxtx || chan->is_rx_stopped) {
++		ret = qmc_chan_setup_tsa_tx(chan, false);
++		if (ret) {
++			dev_err(chan->qmc->dev, "chan %u: Disable tsa entries failed (%d)\n",
++				chan->id, ret);
++			goto end;
++		}
++	}
++
+ end:
+ 	spin_unlock_irqrestore(&chan->tx_lock, flags);
+ 	return ret;
+ }
+ 
++static int qmc_chan_start_rx(struct qmc_chan *chan);
++
+ int qmc_chan_stop(struct qmc_chan *chan, int direction)
+ {
+-	int ret;
++	bool is_rx_rollback_needed = false;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&chan->ts_lock, flags);
+ 
+ 	if (direction & QMC_CHAN_READ) {
++		is_rx_rollback_needed = !chan->is_rx_stopped;
+ 		ret = qmc_chan_stop_rx(chan);
+ 		if (ret)
+-			return ret;
++			goto end;
+ 	}
+ 
+ 	if (direction & QMC_CHAN_WRITE) {
+ 		ret = qmc_chan_stop_tx(chan);
+-		if (ret)
+-			return ret;
++		if (ret) {
++			/* Restart rx if needed */
++			if (is_rx_rollback_needed)
++				qmc_chan_start_rx(chan);
++			goto end;
++		}
+ 	}
+ 
+-	return 0;
++end:
++	spin_unlock_irqrestore(&chan->ts_lock, flags);
++	return ret;
+ }
+ EXPORT_SYMBOL(qmc_chan_stop);
+ 
+-static void qmc_chan_start_rx(struct qmc_chan *chan)
++static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan);
++
++static int qmc_chan_start_rx(struct qmc_chan *chan)
+ {
+ 	unsigned long flags;
++	int ret;
+ 
+ 	spin_lock_irqsave(&chan->rx_lock, flags);
+ 
++	if (!chan->is_rx_stopped) {
++		/* The channel is already started -> simply return ok */
++		ret = 0;
++		goto end;
++	}
++
++	ret = qmc_chan_setup_tsa_rx(chan, true);
++	if (ret) {
++		dev_err(chan->qmc->dev, "chan %u: Enable tsa entries failed (%d)\n",
++			chan->id, ret);
++		goto end;
++	}
++
++	ret = qmc_setup_chan_trnsync(chan->qmc, chan);
++	if (ret) {
++		dev_err(chan->qmc->dev, "chan %u: setup TRNSYNC failed (%d)\n",
++			chan->id, ret);
++		goto end;
++	}
++
+ 	/* Restart the receiver */
+ 	if (chan->mode == QMC_TRANSPARENT)
+ 		qmc_write32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
+@@ -792,15 +898,38 @@ static void qmc_chan_start_rx(struct qmc_chan *chan)
+ 
+ 	chan->is_rx_stopped = false;
+ 
++end:
+ 	spin_unlock_irqrestore(&chan->rx_lock, flags);
++	return ret;
+ }
+ 
+-static void qmc_chan_start_tx(struct qmc_chan *chan)
++static int qmc_chan_start_tx(struct qmc_chan *chan)
+ {
+ 	unsigned long flags;
++	int ret;
+ 
+ 	spin_lock_irqsave(&chan->tx_lock, flags);
+ 
++	if (!chan->is_tx_stopped) {
++		/* The channel is already started -> simply return ok */
++		ret = 0;
++		goto end;
++	}
++
++	ret = qmc_chan_setup_tsa_tx(chan, true);
++	if (ret) {
++		dev_err(chan->qmc->dev, "chan %u: Enable tsa entries failed (%d)\n",
++			chan->id, ret);
++		goto end;
++	}
++
++	ret = qmc_setup_chan_trnsync(chan->qmc, chan);
++	if (ret) {
++		dev_err(chan->qmc->dev, "chan %u: setup TRNSYNC failed (%d)\n",
++			chan->id, ret);
++		goto end;
++	}
++
+ 	/*
+ 	 * Enable channel transmitter as it could be disabled if
+ 	 * qmc_chan_reset() was called.
+@@ -812,18 +941,39 @@ static void qmc_chan_start_tx(struct qmc_chan *chan)
+ 
+ 	chan->is_tx_stopped = false;
+ 
++end:
+ 	spin_unlock_irqrestore(&chan->tx_lock, flags);
++	return ret;
+ }
+ 
+ int qmc_chan_start(struct qmc_chan *chan, int direction)
+ {
+-	if (direction & QMC_CHAN_READ)
+-		qmc_chan_start_rx(chan);
++	bool is_rx_rollback_needed = false;
++	unsigned long flags;
++	int ret = 0;
+ 
+-	if (direction & QMC_CHAN_WRITE)
+-		qmc_chan_start_tx(chan);
++	spin_lock_irqsave(&chan->ts_lock, flags);
+ 
+-	return 0;
++	if (direction & QMC_CHAN_READ) {
++		is_rx_rollback_needed = chan->is_rx_stopped;
++		ret = qmc_chan_start_rx(chan);
++		if (ret)
++			goto end;
++	}
++
++	if (direction & QMC_CHAN_WRITE) {
++		ret = qmc_chan_start_tx(chan);
++		if (ret) {
++			/* Restop rx if needed */
++			if (is_rx_rollback_needed)
++				qmc_chan_stop_rx(chan);
++			goto end;
++		}
++	}
++
++end:
++	spin_unlock_irqrestore(&chan->ts_lock, flags);
++	return ret;
+ }
+ EXPORT_SYMBOL(qmc_chan_start);
+ 
+@@ -992,6 +1142,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 		}
+ 
+ 		chan->id = chan_id;
++		spin_lock_init(&chan->ts_lock);
+ 		spin_lock_init(&chan->rx_lock);
+ 		spin_lock_init(&chan->tx_lock);
+ 
 -- 
 2.41.0
 
