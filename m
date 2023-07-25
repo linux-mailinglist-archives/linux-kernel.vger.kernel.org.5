@@ -2,187 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE55761D82
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D5F761D80
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbjGYPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S231370AbjGYPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbjGYPkZ (ORCPT
+        with ESMTP id S230504AbjGYPkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:40:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975CA1FD0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:39:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690299577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hl7TlGBY8KC9fCz4U38u+w32QQOwR9hjmIKn/+TtjDc=;
-        b=Eqfenaznp7EdkrxatwpStZue6/oR7OfchzFM+38/JhlfXJWqoB37aqlmSSqpONUwwtso3U
-        ikPZ6nzjWwnV+JzhgDj9kg5dm+Dg5I3An1M9l2QKOSWN4kvJccGHvkyAcm1HH2ATFmxuQ/
-        4Tfi2/j1D8X8Bl3iD8HaNj6cY9JlykA=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-436-IDLONoxKN9KgsCQefNg4zQ-1; Tue, 25 Jul 2023 11:39:36 -0400
-X-MC-Unique: IDLONoxKN9KgsCQefNg4zQ-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403ae7d56baso71164011cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:39:36 -0700 (PDT)
+        Tue, 25 Jul 2023 11:40:15 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54961FD3;
+        Tue, 25 Jul 2023 08:40:13 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b743161832so81567451fa.1;
+        Tue, 25 Jul 2023 08:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690299612; x=1690904412;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LjgkMSzV2Aay/adVSC7zHs9NU/NVLjLkoJwzzPQaQ/4=;
+        b=ccCJ+sjeDvb3HMwrqgFU01u4q/qF/ZipO8S5hJItvxJyKvug+/7exWYLC8zDxg/qoQ
+         iPGgo1am6/GyHMLsz9CM0zVecJ0UzYLWbOs9ywiAVrHNcuHISsr9b8YvBXubfy9b7NFi
+         jPNELS2rCv8AbcWoLlBrTmY7lWObTU7ornZiFpqJU4ExbRjJilmwwgV0k5t1PdfMEDjN
+         90ghsW+rFKy1sPA97EmjGKL7RxbZXGsUTT5WS9iHm8dJWcwXUuhw/kzRv/qg3ggoLBcB
+         ke/PEtoFsxhSFPNAxY8RjL7hb3CjxK1E0QZxxNtSZaEmiXZCcAbSRZ2T8fwIl5D9l5sO
+         gOBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690299576; x=1690904376;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hl7TlGBY8KC9fCz4U38u+w32QQOwR9hjmIKn/+TtjDc=;
-        b=HG7Mx7Alx7+4VXYLJBdLpAeLx3dysGloL9aY10ZnjDRzNXpwlo1ZZryTsGBp6o3idi
-         YdImivsh0RiPjOWfQrEgi6cUVw1ErtbViKqQyi9ifevxIgYtyYJhwbSGIhMwZkHu/SfS
-         Dt2qqaqVuKOMfVTBWqSJOcE9V83c/4FQAmqvhV3r5hTlBXVwxDyvj+NbRqXiOi8mGxn2
-         QEht5V6sEQ/Gu1PN+gvOFsXYC7Fp/3C8XcydDyM0Faqo2hTvNjIo5mLcMcX7JcHPaQmo
-         9mqwxpIqRhNu/CLC+mzIm+tPuPbVjpYDBn9ZNotzOx4cB8WABTOoh3UdAwBEUy1SwOjO
-         2j6w==
-X-Gm-Message-State: ABy/qLYPan2Hrbi3zpNQjnNISJDvYilTIll/ym1LsRTUrK4Ou9qSIltX
-        CqxS5H08yP6yDVXwmK/Uwko7Ys9YOeS477UXf29drD4Dbob+Az4F4/ogc7V3rqoy0fG3aJjxicT
-        acAxgMTWPglHO9ZFtkpGySuFc
-X-Received: by 2002:a05:622a:1013:b0:402:76e3:59f6 with SMTP id d19-20020a05622a101300b0040276e359f6mr3746331qte.9.1690299576273;
-        Tue, 25 Jul 2023 08:39:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFPTRjdLNSLA8c7aE0osG3x1L3hWBx5nQgehQrRb2Vj3GyGN/3UVxsy9bokM2ED6bC9iQzVnw==
-X-Received: by 2002:a05:622a:1013:b0:402:76e3:59f6 with SMTP id d19-20020a05622a101300b0040276e359f6mr3746308qte.9.1690299576067;
-        Tue, 25 Jul 2023 08:39:36 -0700 (PDT)
-Received: from sgarzare-redhat ([193.207.153.113])
-        by smtp.gmail.com with ESMTPSA id s21-20020ac85ed5000000b00403b44bc230sm4085933qtx.95.2023.07.25.08.39.32
+        d=1e100.net; s=20221208; t=1690299612; x=1690904412;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LjgkMSzV2Aay/adVSC7zHs9NU/NVLjLkoJwzzPQaQ/4=;
+        b=j0t+VqlWxOIdf4va1aV6xX0QAJnYGWh63TVappxAxxJYvCULA13lb7n55EnQdvhTxW
+         SOhT9Mmm2mWgqdtegMx/sp26R5iSC4sEYLiCPKTeSdxwqr5wDeUUx/1wIPM+7Pj0smGU
+         bBjComK8rJqHQRXNJmpnb4hpfhs/lgZeunPZyQ7RZy0OKSF5CuONhQRdKF63UufHuJga
+         Jx9zzfCMzGJ8Nm1Ie17Wf/CfuAV8gLYVImEYgzbp2MrzqWbcIZNnHuF9zUdMDA7+VbSW
+         UwVG4E3mqO6BsZf08xZRRoufaii8QXDmpHPWd2kUuXtJx3a/7Rc2eSVxsm9UyZKaOsvg
+         TCng==
+X-Gm-Message-State: ABy/qLaZdRuwjOi+dyjHcxFMP3N0UeHIVawCDN830zaNHExkBDb4bsNR
+        DiQUecoINB4hXiTOD+Wmq4M=
+X-Google-Smtp-Source: APBJJlEcM5BfU2dJ60Esw54sf/EGMMvtXZcpewa75+2O+UEV7RHygTidmdYH5MWY3HyQOEXrq2RYdQ==
+X-Received: by 2002:a2e:94ca:0:b0:2b6:cb0d:56ae with SMTP id r10-20020a2e94ca000000b002b6cb0d56aemr8137241ljh.11.1690299611618;
+        Tue, 25 Jul 2023 08:40:11 -0700 (PDT)
+Received: from localhost.localdomain ([77.222.25.78])
+        by smtp.gmail.com with ESMTPSA id o5-20020a2e9445000000b002b9ae051ea1sm128521ljh.113.2023.07.25.08.40.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:39:35 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 17:39:30 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v2 2/4] virtio/vsock: support MSG_PEEK for
- SOCK_SEQPACKET
-Message-ID: <hwdcuy3wwlrirpgphlex6omdnrztz7hqhu4447nmqml5sjqx5x@7y45zuyto7yq>
-References: <20230719192708.1775162-1-AVKrasnov@sberdevices.ru>
- <20230719192708.1775162-3-AVKrasnov@sberdevices.ru>
+        Tue, 25 Jul 2023 08:40:11 -0700 (PDT)
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
+        brouer@redhat.com, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
+        Andrew Kanner <andrew.kanner@gmail.com>
+Subject: [PATCH v2] drivers: net: prevent tun_get_user() to exceed xdp size limits
+Date:   Tue, 25 Jul 2023 18:39:41 +0300
+Message-Id: <20230725153941.653-1-andrew.kanner@gmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230719192708.1775162-3-AVKrasnov@sberdevices.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:27:06PM +0300, Arseniy Krasnov wrote:
->This adds support of MSG_PEEK flag for SOCK_SEQPACKET type of socket.
->Difference with SOCK_STREAM is that this callback returns either length
->of the message or error.
->
->Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->---
-> net/vmw_vsock/virtio_transport_common.c | 63 +++++++++++++++++++++++--
-> 1 file changed, 60 insertions(+), 3 deletions(-)
+Syzkaller reported the following issue:
+=======================================
+Too BIG xdp->frame_sz = 131072
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
+...
+Call Trace:
+ <TASK>
+ bpf_prog_4add87e5301a4105+0x1a/0x1c
+ __bpf_prog_run include/linux/filter.h:600 [inline]
+ bpf_prog_run_xdp include/linux/filter.h:775 [inline]
+ bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
+ netif_receive_generic_xdp net/core/dev.c:4807 [inline]
+ do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
+ tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
+ tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
+ call_write_iter include/linux/fs.h:1871 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x650/0xe40 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
+("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But
+tun_get_user() still provides an execution path with do_xdp_generic()
+and exceed XDP limits for packet size.
 
->
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index 2ee40574c339..352d042b130b 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -460,6 +460,63 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
-> 	return err;
-> }
->
->+static ssize_t
->+virtio_transport_seqpacket_do_peek(struct vsock_sock *vsk,
->+				   struct msghdr *msg)
->+{
->+	struct virtio_vsock_sock *vvs = vsk->trans;
->+	struct sk_buff *skb;
->+	size_t total, len;
->+
->+	spin_lock_bh(&vvs->rx_lock);
->+
->+	if (!vvs->msg_count) {
->+		spin_unlock_bh(&vvs->rx_lock);
->+		return 0;
->+	}
->+
->+	total = 0;
->+	len = msg_data_left(msg);
->+
->+	skb_queue_walk(&vvs->rx_queue, skb) {
->+		struct virtio_vsock_hdr *hdr;
->+
->+		if (total < len) {
->+			size_t bytes;
->+			int err;
->+
->+			bytes = len - total;
->+			if (bytes > skb->len)
->+				bytes = skb->len;
->+
->+			spin_unlock_bh(&vvs->rx_lock);
->+
->+			/* sk_lock is held by caller so no one else can dequeue.
->+			 * Unlock rx_lock since memcpy_to_msg() may sleep.
->+			 */
->+			err = memcpy_to_msg(msg, skb->data, bytes);
->+			if (err)
->+				return err;
->+
->+			spin_lock_bh(&vvs->rx_lock);
->+		}
->+
->+		total += skb->len;
->+		hdr = virtio_vsock_hdr(skb);
->+
->+		if (le32_to_cpu(hdr->flags) & VIRTIO_VSOCK_SEQ_EOM) {
->+			if (le32_to_cpu(hdr->flags) & VIRTIO_VSOCK_SEQ_EOR)
->+				msg->msg_flags |= MSG_EOR;
->+
->+			break;
->+		}
->+	}
->+
->+	spin_unlock_bh(&vvs->rx_lock);
->+
->+	return total;
->+}
->+
-> static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
-> 						 struct msghdr *msg,
-> 						 int flags)
->@@ -554,9 +611,9 @@ virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
-> 				   int flags)
-> {
-> 	if (flags & MSG_PEEK)
->-		return -EOPNOTSUPP;
->-
->-	return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags);
->+		return virtio_transport_seqpacket_do_peek(vsk, msg);
->+	else
->+		return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags);
-> }
-> EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
->
->-- 
->2.25.1
->
+Using the syzkaller repro with reduced packet size it was also
+discovered that XDP_PACKET_HEADROOM is not checked in
+tun_can_build_skb(), although pad may be incremented in
+tun_build_skb().
+
+If we move the limit check from tun_can_build_skb() to tun_build_skb()
+we will make xdp to be used only in tun_build_skb(), without falling
+in tun_alloc_skb(), etc. And moreover we will drop the packet which
+can't be processed in tun_build_skb().
+
+Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
+Link: https://syzkaller.appspot.com/bug?id=5335c7c62bfff89bbb1c8f14cdabebe91909060f
+Fixes: 7df13219d757 ("tun: reserve extra headroom only when XDP is set")
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+---
+ drivers/net/tun.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index d75456adc62a..7c2b05ce0421 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1594,10 +1594,6 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
+ 	if (zerocopy)
+ 		return false;
+ 
+-	if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
+-	    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
+-		return false;
+-
+ 	return true;
+ }
+ 
+@@ -1673,6 +1669,9 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 	buflen += SKB_DATA_ALIGN(len + pad);
+ 	rcu_read_unlock();
+ 
++	if (buflen > PAGE_SIZE)
++		return ERR_PTR(-EFAULT);
++
+ 	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
+ 	if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL)))
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.39.3
 
