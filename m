@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A084C762243
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4E3762245
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjGYT3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
+        id S230502AbjGYTaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjGYT3h (ORCPT
+        with ESMTP id S230379AbjGYTaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:29:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD0FFE;
-        Tue, 25 Jul 2023 12:29:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 208806189B;
-        Tue, 25 Jul 2023 19:29:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB9B1C433C7;
-        Tue, 25 Jul 2023 19:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690313375;
-        bh=aw19mftFcyQki2PQHlA98mbcBzXuWNh8pKa925BaS+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZeJBt/MQvQ74Grt94WdQCipDu4Y762H8rFaWcX0guam6XvP9gb7DAVWuAcGzmsd0V
-         6a/UmuGzUuhFPFtYCeFClwcf9QXFCuwElYenp034uWKqzRtgXMBukj0YiWXQygjnQB
-         miFNq28w3cU6nQJkGoOqivk9djn+dUkINTwFeg5JhOpFmdjxo1gdGzogWmvhScZgj0
-         dV0uOJOgOgTym+fgA3p53XxuCIRW6PWAhcIgZtAX1VIxEyIczPm4cabTqk7LXXVY5R
-         fI2Sxshr3jHRnfcwmBEt9ZzwPyVdsYj/yphz2PgYLCGiMEDx2qgosxs3dtuBde5qv4
-         meD1oQQ28EGeg==
-Date:   Tue, 25 Jul 2023 20:29:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] regulator: dt-bindings: qcom,rpm: fix pattern for
- children
-Message-ID: <20230725-rejoicing-lying-385eb50f988b@spud>
-References: <20230725164047.368892-1-krzysztof.kozlowski@linaro.org>
+        Tue, 25 Jul 2023 15:30:13 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F0B1FFC
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1690313409;
+        bh=eksg/xSQaqbvhzxjIvfY0VWqJKo9vV4O1aJahYJV9EU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eXeG+43Pt5Ybsmy61t2JpU5U9Bbulf/sp2lq3j+akg+AtWvpxqBhpUJ23PVSw1+at
+         oJObQ7aUzj7wNJGZU/M9yv2YsVMMFxwNCJkmcHpiGWTNFNPz4UbYTSr8X7pxZfuooL
+         kP6JK1GFJF1L1jT4f0LLW5gPNf8GBFf9NIESdlCjAswZaFycQT0bYLqt3hTDuYCAHB
+         ztXFfdObz06oinFRCUFIvpx37fn7opjlH3JZTtGnaBiXlF4/vyq9r3ko5yGFs6hTtA
+         u9OToijt0yeBlshWrDePz6KdFwRcpxL6+y/AKoI/dELDqNQ/V9c8yQ85R4IPbno8zr
+         ZtfK3Jd2cw/6Q==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4R9Rv463Hcz1JZF;
+        Tue, 25 Jul 2023 15:30:08 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org
+Subject: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
+Date:   Tue, 25 Jul 2023 15:30:48 -0400
+Message-Id: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="CAZ1vCHBbimoAGq1"
-Content-Disposition: inline
-In-Reply-To: <20230725164047.368892-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow select_task_rq to consider a cpu as idle for 1ms after that cpu
+has exited the idle loop.
 
---CAZ1vCHBbimoAGq1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This speeds up the following hackbench workload on a 192 cores AMD EPYC
+9654 96-Core Processor (over 2 sockets):
 
-On Tue, Jul 25, 2023 at 06:40:47PM +0200, Krzysztof Kozlowski wrote:
-> The "or" (|) in regular expression must be within parentheses,
-> otherwise it is not really an "or" and it matches supplies:
->=20
->   qcom-apq8060-dragonboard.dtb: regulators-1: vdd_ncp-supply: [[34]] is n=
-ot of type 'object'
->=20
-> Fixes: fde0e25b71a9 ("dt-bindings: regulators: convert non-smd RPM Regula=
-tors bindings to dt-schema")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+from 49s to 34s. (30% speedup)
 
-Thanks,
-Conor.
+My working hypothesis for why this helps is: queuing more than a single
+task on the runqueue of a cpu which just exited idle rather than
+spreading work over other idle cpus helps power efficiency on systems
+with large number of cores.
 
-> ---
->  .../devicetree/bindings/regulator/qcom,rpm-regulator.yaml       | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpm-regulat=
-or.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpm-regulator.ya=
-ml
-> index 8a08698e3484..b4eb4001eb3d 100644
-> --- a/Documentation/devicetree/bindings/regulator/qcom,rpm-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpm-regulator.yaml
-> @@ -49,7 +49,7 @@ patternProperties:
->    ".*-supply$":
->      description: Input supply phandle(s) for this node
-> =20
-> -  "^((s|l|lvs)[0-9]*)|(s[1-2][a-b])|(ncp)|(mvs)|(usb-switch)|(hdmi-switc=
-h)$":
-> +  "^((s|l|lvs)[0-9]*|s[1-2][a-b]|ncp|mvs|usb-switch|hdmi-switch)$":
->      description: List of regulators and its properties
->      $ref: regulator.yaml#
->      unevaluatedProperties: false
-> --=20
-> 2.34.1
->=20
+This was developed as part of the investigation into a weird regression
+reported by AMD where adding a raw spinlock in the scheduler context
+switch accelerated hackbench.
 
---CAZ1vCHBbimoAGq1
-Content-Type: application/pgp-signature; name="signature.asc"
+It turned out that changing this raw spinlock for a loop of 10000x
+cpu_relax within do_idle() had similar benefits.
 
------BEGIN PGP SIGNATURE-----
+This patch achieve a similar effect without the busy-waiting by
+introducing a runqueue state sampling the sched_clock() when exiting
+idle, which allows select_task_rq to consider "as idle" a cpu which has
+recently exited idle.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMAimgAKCRB4tDGHoIJi
-0vatAQCvTM4CWBmZLgNfavCUCUcSLqZLax4U6upAuXalaPoBLwEA68TjEBOVHkSF
-4miI5R5DwFkJN1Kw966nLoeYFoEpUgM=
-=KMaP
------END PGP SIGNATURE-----
+This patch should be considered "food for thoughts", and I would be glad
+to hear feedback on whether it causes regressions on _other_ workloads,
+and whether it helps with the hackbench workload on large Intel system
+as well.
 
---CAZ1vCHBbimoAGq1--
+Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: x86@kernel.org
+---
+ kernel/sched/core.c  | 4 ++++
+ kernel/sched/sched.h | 3 +++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a68d1276bab0..d40e3a0a5ced 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6769,6 +6769,7 @@ void __sched schedule_idle(void)
+ 	 * TASK_RUNNING state.
+ 	 */
+ 	WARN_ON_ONCE(current->__state);
++	WRITE_ONCE(this_rq()->idle_end_time, sched_clock());
+ 	do {
+ 		__schedule(SM_NONE);
+ 	} while (need_resched());
+@@ -7300,6 +7301,9 @@ int idle_cpu(int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 
++	if (sched_clock() < READ_ONCE(rq->idle_end_time) + IDLE_CPU_DELAY_NS)
++		return 1;
++
+ 	if (rq->curr != rq->idle)
+ 		return 0;
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 81ac605b9cd5..8932e198a33a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -97,6 +97,8 @@
+ # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
+ #endif
+ 
++#define IDLE_CPU_DELAY_NS	1000000		/* 1ms */
++
+ struct rq;
+ struct cpuidle_state;
+ 
+@@ -1010,6 +1012,7 @@ struct rq {
+ 
+ 	struct task_struct __rcu	*curr;
+ 	struct task_struct	*idle;
++	u64			idle_end_time;
+ 	struct task_struct	*stop;
+ 	unsigned long		next_balance;
+ 	struct mm_struct	*prev_mm;
+-- 
+2.39.2
+
