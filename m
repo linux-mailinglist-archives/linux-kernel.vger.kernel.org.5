@@ -2,207 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0384C762329
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B71E76232F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGYUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S230181AbjGYUUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjGYUSP (ORCPT
+        with ESMTP id S229486AbjGYUUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:18:15 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3591FCF
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:18:13 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-403470df1d0so1422491cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:18:13 -0700 (PDT)
+        Tue, 25 Jul 2023 16:20:05 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4276C1BE2;
+        Tue, 25 Jul 2023 13:20:04 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-c4cb4919bb9so6560501276.3;
+        Tue, 25 Jul 2023 13:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690316292; x=1690921092;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GPWJuz8CAEYamZihAR0z0R2Kk0EYNWObLkeGgE8Dn0I=;
-        b=4NE+YvybWo/g6VcPhh2fy5ZBIK2nXfKjbHIrelje0rqNy4LW0kZXKWbe7Y2Hh0eV/+
-         +29ZM018tyUHpbJ4C4PuCBigcTNasPOzQHAnf04mtPxhxxg6kZ0gJiDnhivJEwankALK
-         Uovby1CLPABNOOd4W4KiaeQFPHLCgi3Gpiw906LZwfCzGIdW1NApq0YZi+a20oDjVXjo
-         e0L44dr1itRsFRxkSm9aFcTI6KXhxJgoxLav3p6wpGjpgrSRmF/B/8GWhfn5iB6LDyS0
-         LE5qridIH3lSWZ8zIzT48HV1vyaKIVKi+EwTw1xThMN4P53tGMwX6Z1N7miPOfUZsntY
-         M2zw==
+        d=gmail.com; s=20221208; t=1690316403; x=1690921203;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JplYEBO71eE2jWz0LBGOQOzxtjuDy5Pj6xly4aLbp8o=;
+        b=H09+KHs9AN3LWmXS6SPrW4PqJzV40N+orlppWvBqAiSUAsN3OCzQqNvk4oHI342SlA
+         g86MgYnYgIKaIukvul2s9uolMA4Wg5FCLaBwOSnqzZFhU1vZJEFJEuZM3ulsIikf1Ukl
+         H/0l1STde/VwcUpuyK/FV5lSUse9uQSTpy59ge6p+LV2HSwgkASve5UxiZUd02QC+Wko
+         3jzR54YCLrGKk8MCNKh4j1fp/3KKNd2kSBxD3KGhrO9wxZuPJ02oZ35txH8IEXqwgjI9
+         jel5IkcDismkgxJxOCokPp/T6anhKyc86mh7GkKjDu842h4l1ZmgwtEi42L2ldTHLR//
+         p3Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690316292; x=1690921092;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1690316403; x=1690921203;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GPWJuz8CAEYamZihAR0z0R2Kk0EYNWObLkeGgE8Dn0I=;
-        b=gSpCs4vqJq1dtM2R0sjFMnMm6clvYglLRI0FTYIaZUgB/2s+C9uSeK7/EZPFcw6IKI
-         owN+AEC6jVvqAK1fyutOXfNyZQH3vNTxQsKFcHudhGZSwvy5KqeGQWEJ93sXC7jmnlrf
-         runNNbLn497idpatUCNXIROpHdl2Y6MG7d8+PzLV1PCXtp59rhoQMjYktNP6cal3SdtP
-         RQcaFC9YAFDeYNFwSfV4n3oH96x9WKm31xRYiluJJm2vv6dUJaqXNE7IjPnuT7BYyAaL
-         6MODQRYd26qfE6oI7/he4ZtomoYOz4aT3/45W2ZE6+U8yB7jO6LlNZ+C0IICAl8yGNfF
-         KdwQ==
-X-Gm-Message-State: ABy/qLb9s9JuxHhhVFUHVgm2wTqHIt7TYRl39AwIpWWk4Ngg785wPBHL
-        rQUe//CMKpdfotVbH2gRBL6C5Q==
-X-Google-Smtp-Source: APBJJlEonHvE95sEnIxdcddfXK3Ru/OM8KynANl6ZnU5hjPfscflgMaIlgpWNikeCdPCdTunJvmkKw==
-X-Received: by 2002:ac8:4e85:0:b0:400:9847:59f6 with SMTP id 5-20020ac84e85000000b00400984759f6mr4023893qtp.13.1690316292303;
-        Tue, 25 Jul 2023 13:18:12 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ad06])
-        by smtp.gmail.com with ESMTPSA id d23-20020ac851d7000000b00403f4459e33sm4281077qtn.91.2023.07.25.13.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 13:18:11 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 16:18:11 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
-Message-ID: <20230725201811.GA1231514@cmpxchg.org>
-References: <20230719174613.3062124-1-yosryahmed@google.com>
- <20230725140435.GB1146582@cmpxchg.org>
- <CAJD7tkaYHvaX6SL=A6TsCQHT+rOTp-WhOiQ1XSN+ywOVN=-QBQ@mail.gmail.com>
+        bh=JplYEBO71eE2jWz0LBGOQOzxtjuDy5Pj6xly4aLbp8o=;
+        b=K55FeCrYAamylFHadIkjf7ud77esL4cwm/mSDMSGLdOWjzXh8J7aEEVPnRKOUMnD2i
+         QmwnoIwo04TMTnkMGCe06PhFiKn06wSlhiC+01v3gvMH0JIuQ04UXV2mn7ky0f9Y0ecN
+         Pdaf5BPeRK7HgJOSLxhXUqvi55J9x7B3feMzzKRCKubr10ztpCiVy9TWn4Vv/4B7fShl
+         pdwiICZAXmfjcgRDo4ARCU+3hDtOAsoXralfkbZ2v0dqKVHvENU5zW92MyUy1Mj5/E26
+         cT4zywBmWIlVaEJQLMxXhXAYm44XpKdSyW4LfA9g282RMU33Th5aSV7J7hqy16DoRWik
+         rtKw==
+X-Gm-Message-State: ABy/qLbzqMQg+D4U7keIkWeN/xK1gcpHFujhxb12TA/TO14bn3Wfij18
+        UXMMQ9wAEgunMMsN3aBLbTlCwFtah3M=
+X-Google-Smtp-Source: APBJJlHAzkLPRR+D+g6g9SGSb/9OeFtEgu+KQqwuBmcYCg21b/sad8a+CK4BWrGPiFr7fXtaQ5YBng==
+X-Received: by 2002:a25:4217:0:b0:d19:86a8:24c6 with SMTP id p23-20020a254217000000b00d1986a824c6mr51337yba.42.1690316403322;
+        Tue, 25 Jul 2023 13:20:03 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2442:6db0:3122:9f86:908c:8eb3? ([2600:1700:2442:6db0:3122:9f86:908c:8eb3])
+        by smtp.gmail.com with ESMTPSA id q16-20020a5b0350000000b00bcf788d09e3sm3042194ybp.34.2023.07.25.13.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 13:20:02 -0700 (PDT)
+Message-ID: <a825567e-ff51-fdae-0e58-eb9365ecc6b5@gmail.com>
+Date:   Tue, 25 Jul 2023 15:20:01 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [KTAP V2 PATCH] ktap_v2: add test metadata
+Content-Language: en-US
+To:     Rae Moar <rmoar@google.com>, davidgow@google.com,
+        skhan@linuxfoundation.org, keescook@chromium.org,
+        Tim.Bird@sony.com, brendanhiggins@google.com
+Cc:     corbet@lwn.net, guillaume.tucker@collabora.com,
+        dlatypov@google.com, kernelci@lists.linux.dev,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230420205734.1288498-1-rmoar@google.com>
+ <CA+GJov6w2GvD8th0t9RW=K1ntHk4dQRuYa4hoDHcmzBDK5YriA@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+In-Reply-To: <CA+GJov6w2GvD8th0t9RW=K1ntHk4dQRuYa4hoDHcmzBDK5YriA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkaYHvaX6SL=A6TsCQHT+rOTp-WhOiQ1XSN+ywOVN=-QBQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 12:24:19PM -0700, Yosry Ahmed wrote:
-> On Tue, Jul 25, 2023 at 7:04 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > We used to maintain *all* stats in per-cpu counters at the local
-> > level. memory.stat reads would have to iterate and aggregate the
-> > entire subtree every time. This was obviously very costly, so we added
-> > batched upward propagation during stat updates to simplify reads:
-> >
-> > commit 42a300353577ccc17ecc627b8570a89fa1678bec
-> > Author: Johannes Weiner <hannes@cmpxchg.org>
-> > Date:   Tue May 14 15:47:12 2019 -0700
-> >
-> >     mm: memcontrol: fix recursive statistics correctness & scalabilty
-> >
-> > However, that caused a regression in the stat write path, as the
-> > upward propagation would bottleneck on the cachelines in the shared
-> > parents. The fix for *that* re-introduced the per-cpu loops in the
-> > local stat reads:
-> >
-> > commit 815744d75152078cde5391fc1e3c2d4424323fb6
-> > Author: Johannes Weiner <hannes@cmpxchg.org>
-> > Date:   Thu Jun 13 15:55:46 2019 -0700
-> >
-> >     mm: memcontrol: don't batch updates of local VM stats and events
-> >
-> > So I wouldn't say it's a regression from rstat. Except for that short
-> > period between the two commits above, the read side for local stats
-> > was always expensive.
+On 7/20/23 16:31, Rae Moar wrote:
+> On Thu, Apr 20, 2023 at 4:57 PM Rae Moar <rmoar@google.com> wrote:
+>>
+>> Add specification for declaring test metadata to the KTAP v2 spec.
+>>
+>> The purpose of test metadata is to allow for the declaration of essential
+>> testing information in KTAP output. This information includes test
+>> names, test configuration info, test attributes, and test files.
+>>
+>> There have been similar ideas around the idea of test metadata such as test
+>> prefixes and test name lines. However, I propose this specification as an
+>> overall fix for these issues.
+>>
+>> These test metadata lines are a form of diagnostic lines with the
+>> format: "# <metadata_type>: <data>". As a type of diagnostic line, test
+>> metadata lines are compliant with KTAP v1, which will help to not
+>> interfere too much with current parsers.
+>>
+>> Specifically the "# Subtest:" line is derived from the TAP 14 spec:
+>> https://testanything.org/tap-version-14-specification.html.
+>>
+>> The proposed location for test metadata is in the test header, between the
+>> version line and the test plan line. Note including diagnostic lines in
+>> the test header is a depature from KTAP v1.
+>>
+>> This location provides two main benefits:
+>>
+>> First, metadata will be printed prior to when subtests are run. Then if a
+>> test fails, test metadata can help discern which test is causing the issue
+>> and potentially why.
+>>
+>> Second, this location ensures that the lines will not be accidentally
+>> parsed as a subtest's diagnostic lines because the lines are bordered by
+>> the version line and plan line.
+>>
+>> Here is an example of test metadata:
+>>
+>>  KTAP version 2
+>>  # Config: CONFIG_TEST=y
+>>  1..1
+>>      KTAP version 2
+>>      # Subtest: test_suite
+>>      # File: /sys/kernel/...
+>>      # Attributes: slow
+>>      # Other: example_test
+>>      1..2
+>>      ok 1 test_1
+>>      ok 2 test_2
+>>  ok 1 test_suite
 > 
-> I was comparing from an 4.15 kernel, so I assumed the major change was
-> from rstat, but that was not accurate. Thanks for the history.
+> Hi everyone!
 > 
-> However, in that 4.15 kernel the local (non-hierarchical) stats were
-> readily available without iterating percpu counters. There is a
-> regression that was introduced somewhere.
+> I have been doing some more thinking on KTAP Metadata as I have been
+> working on the KUnit Test Attributes patch set
+> (https://lore.kernel.org/all/20230719222338.259684-1-rmoar@google.com/).
+> Two additional ideas have come up in the discussion:
 > 
-> Looking at the history you described, it seems like up until
-> 815744d75152 we used to maintain "local" (aka non-hierarchical)
-> counters, so reading local stats was reading one counter, and starting
-> 815744d75152 we started having to loop percpu counters for that.
+> 1) I wonder if it would be easier to separate "ktap_attributes" into
+> individual attributes.
 > 
-> So it is not a regression of rstat, but seemingly it is a regression
-> of 815744d75152. Is my understanding incorrect?
+> The two proposed KUnit attributes currently are speed and module name.
+> I think it would be easier for parsing and reading if these attributes
+> had corresponding "ktap_speed" and "ktap_module" categories. Then, in
+> the future if there are too many attributes to print on separate lines
+> they could be grouped into a "ktap_attributes" category later.
 
-Yes, it actually goes back further. Bear with me.
+I am fine with the above.  This basically removes the special case of
+"attribute", and what we have been calling attributes are now metadata,
+just like any other metadata.
 
-For the longest time, it used to be local per-cpu counters. Every
-memory.stat read had to do nr_memcg * nr_cpu aggregation. You can
-imagine that this didn't scale in production.
-
-We added local atomics and turned the per-cpu counters into buffers:
-
-commit a983b5ebee57209c99f68c8327072f25e0e6e3da
-Author: Johannes Weiner <hannes@cmpxchg.org>
-Date:   Wed Jan 31 16:16:45 2018 -0800
-
-    mm: memcontrol: fix excessive complexity in memory.stat reporting
-
-Local counts became a simple atomic_read(), but the hierarchy counts
-would still have to aggregate nr_memcg counters.
-
-That was of course still too much read-side complexity, so we switched
-to batched upward propagation during the stat updates:
-
-commit 42a300353577ccc17ecc627b8570a89fa1678bec
-Author: Johannes Weiner <hannes@cmpxchg.org>
-Date:   Tue May 14 15:47:12 2019 -0700
-
-    mm: memcontrol: fix recursive statistics correctness & scalabilty
-
-This gave us two atomics at each level: one for local and one for
-hierarchical stats.
-
-However, that went too far the other direction: too many counters
-touched during stat updates, and we got a regression report over memcg
-cacheline contention during MM workloads. Instead of backing out
-42a300353 - since all the previous versions were terrible too - we
-dropped write-side aggregation of *only* the local counters:
-
-commit 815744d75152078cde5391fc1e3c2d4424323fb6
-Author: Johannes Weiner <hannes@cmpxchg.org>
-Date:   Thu Jun 13 15:55:46 2019 -0700
-
-    mm: memcontrol: don't batch updates of local VM stats and events
-
-In effect, this kept all the stat optimizations for cgroup2 (which
-doesn't have local counters), and reverted cgroup1 back to how it was
-for the longest time: on-demand aggregated per-cpu counters.
-
-For about a year, cgroup1 didn't have to per-cpu the local stats on
-read. But for the recursive stats, it would either still have to do
-subtree aggregation on read, or too much upward flushing on write.
-
-So if I had to blame one commit for a cgroup1 regression, it would
-probably be 815744d. But it's kind of a stretch to say that it worked
-well before that commit.
-
-For the changelog, maybe just say that there was a lot of back and
-forth between read-side aggregation and write-side aggregation. Since
-with rstat we now have efficient read-side aggregation, attempt a
-conceptual revert of 815744d.
-
-> > But I want to be clear: this isn't a regression fix. It's a new
-> > performance optimization for the deprecated cgroup1 code. And it comes
-> > at the cost of higher memory footprint for both cgroup1 AND cgroup2.
 > 
-> I still think it is, but I can easily be wrong. I am hoping that the
-> memory footprint is not a problem. There are *roughly* 80 per-memcg
-> stats/events (MEMCG_NR_STAT + NR_MEMCG_EVENTS) and 55 per-lruvec stats
-> (NR_VM_NODE_STAT_ITEMS). For each stat there is an extra 8 bytes, so
-> on a two-node machine that's  8 * (80 + 55 * 2) ~= 1.5 KiB per memcg.
+> 2) I wonder if we can shift the concept of KTAP metadata to all tests
+> rather than just suites.
 > 
-> Given that struct mem_cgroup is already large, and can easily be 100s
-> of KiBs on a large machine with many cpus, I hope there won't be a
-> noticeable regression.
+> I think it would be very valuable to have a KTAP metadata format that
+> is flexible to work for both suites and test cases. To transition this
+> to test cases, I propose we would use the same format we have been
+> discussing but just printed just before the test result line (David
+> Gow originally came up with this idea). This would look something like
+> this:
+> 
+> KTAP version 2
+> # ktap_config: CONFIG_TEST=y
+> 1..1
+>     KTAP version 2
+>     # ktap_test: test_suite
+>     # ktap_module: example
+>     1..2
+>     ok 1 test_1
+>     # ktap_test: test_2
+>     # ktap_speed: slow
+>     # test initializing   // diagnostic data
+>     ok 2 test_2
+> ok 1 test_suite
 
-Yes, the concern wasn't so much the memory consumption but the
-cachelines touched during hot paths.
+That is the way I would expect metadata to exist.  I think I had implicitly
+expected test metadata and suite metadata to be of the same format.
 
-However, that was mostly because we either had a) write-side flushing,
-which is extremely hot during MM stress, or b) read-side flushing with
-huuuge cgroup subtrees due to zombie cgroups. A small cacheline
-difference would be enormously amplified by these factors.
+It seems to me that "suite" is more a kunit concept than a KTAP concept.
+The kunit suite naturally maps into the top level KTAP test, but I don't
+think that KTAP should use the term "suite".
 
-Rstat is very good at doing selective subtree flushing on reads, so
-the big coefficients from a) and b) are no longer such a big concern.
-A slightly bigger cache footprint is probably going to be okay.
+> 
+> I don't love using the "ktap_test: test_2" line since the test name is
+> repeated. However, I like that this mirrors the same format used for a
+> suite and I currently think it is the best way to define the start of
+> the metadata header.
+> 
+> The test name line could actually be useful by providing context for
+> any test diagnostic data printed below or if the test crashes while
+> running.
+> 
+> What do people think of these ideas?
+
+Sounds good to me.
+
+-Frank
+
+> 
+> Thanks!
+> -Rae
+> 
+>>
+>> Here is a link to a version of the KUnit parser that is able to parse test
+>> metadata lines for KTAP version 2. Note this includes test metadata
+>> lines for the main level of KTAP.
+>>
+>> Link: https://kunit-review.googlesource.com/c/linux/+/5809
+>>
+>> Signed-off-by: Rae Moar <rmoar@google.com>
+>> ---
+>>
+>> Hi everyone,
+>>
+>> I would like to use this proposal similar to an RFC to gather ideas on the
+>> topic of test metadata. Let me know what you think.
+>>
+>> I am also interested in brainstorming a list of recognized metadata types.
+>> Providing recognized metadata types would be helpful in parsing and
+>> displaying test metadata in a useful way.
+>>
+>> Current ideas:
+>> - "# Subtest: <test_name>" to indicate test name (name must match
+>>   corresponding result line)
+>> - "# Attributes: <attributes list>" to indicate test attributes (list
+>>   separated by commas)
+>> - "# File: <file_path>" to indicate file used in testing
+>>
+>> Any other ideas?
+>>
+>> Note this proposal replaces two of my previous proposals: "ktap_v2: add
+>> recognized test name line" and "ktap_v2: allow prefix to KTAP lines."
+>>
+>> Thanks!
+>> -Rae
+>>
+>> Note: this patch is based on Frank's ktap_spec_version_2 branch.
+
