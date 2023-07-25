@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD5B7609AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17847609B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjGYFqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
+        id S231247AbjGYFrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjGYFqM (ORCPT
+        with ESMTP id S229685AbjGYFrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:46:12 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47101BCF;
-        Mon, 24 Jul 2023 22:45:47 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id E8E5C16EA4A;
-        Tue, 25 Jul 2023 07:45:44 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1690263945; bh=cOZeUdr74EYlNDHR9of8tJEBAX9HIYqAko8R41MuQqE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CGeSK3kRe6UuRl+DgoknKfuT4M+rnFaJFUpWpASoZqkF80f8hrsEAx1xzlYH2lPKC
-         uC4KOcCC9cH4OfeeorC7papriHKjW2yCnvw89HTt87WElQzzSx+KQU77I965kMLQkX
-         JIDWqRMoCNRfuOPQ5monhwK1ABUec/Ik8cDv8ZQ/jdi+D1TcfQ4EA+h05Ph8nWtuad
-         ntKP4jtJRBSDl2iWh7sNKFTLwm4Qt2OCD5iZNVe5VajacoDKCh1gIss+qeChdyJ/Bx
-         GVpnoSnZ0Pt4vutdHGJF5Dm+z1nxQeQSyiWnX2sFwC26X+o/KbvPwEiDW6sxSHXPV3
-         nE8Rfm+HH19AA==
-Date:   Tue, 25 Jul 2023 07:45:44 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
- dma_declare_coherent_memory()
-Message-ID: <20230725074544.4ae1d77e@meshulam.tesarici.cz>
-In-Reply-To: <20230724174331.GD11977@pendragon.ideasonboard.com>
-References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
-        <20230724171229.GC11977@pendragon.ideasonboard.com>
-        <31ad16fe8f1435805185ba8e889512ec181a867e.camel@physik.fu-berlin.de>
-        <20230724174331.GD11977@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Tue, 25 Jul 2023 01:47:19 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9F31990
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:47:03 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52229d3b8c8so2869546a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690264022; x=1690868822;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OtHOe9UdxU5Yo//nXQXaDbcIAQ2a2ywAGBNvuDNWOxc=;
+        b=RkqmbCMYlKG1SqMf6AZRdTXFW5PDxQXv2laiS4Mzw9GgCzLQyYY7ip3uERDKs93bmY
+         Th/5XSXd08Mi7H+a1S+pPajh8Cht8xDC5uoPzcPLd9R5CppLzyNHK3Uja34d9JrWS0iy
+         a0iAklOfQh5k7UZtiqpL7Ki+NI06njRYu2v+6Uv4N4XCw/zt0qQSOjqmI2crdD/Lnboc
+         oGcOhhue64IKJQbA/WPM3t66y/gLiYpKtWXz1TJv2zx7lMgvvM3oSbkhJbS1JG3o2XTa
+         VvGfzGyVKpQSMhv0iaLOnCusE87TsiE5OUVcs34P3JVc9Tv7LrmJnH2kbSwYdzNmo2n0
+         nTUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690264022; x=1690868822;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OtHOe9UdxU5Yo//nXQXaDbcIAQ2a2ywAGBNvuDNWOxc=;
+        b=H5kWhqtj3BC1o+YwHf13oqirFQ5M2DDLQ/UImjXyW4IQVMBHUuuBYpTHpnC7OLvgeo
+         gIXqnYl3ml469j+163wpKxvKrL2RRHZz45/LnebPYWHdMO/SsFhvoJtlUtawQApy97YS
+         twKpAxlN+IAG8a1uyx0gvhJimriSzHauEiVVdsNvNIGHqzglGAMycncQrznhs9YzNODB
+         jSBlJpjzvEZU8jQ74zSEgLszrCsXdVPycZOeN+RMLiavdicdcFPpAodewgPOBnQnpn9J
+         OP028DMc7kTPZ34HPHGo1sNqm7ukAWhBmd1z0V+Hm6mvzCBbCB3EfQT+VeV+2+yThIV6
+         eYlA==
+X-Gm-Message-State: ABy/qLZQAeNVx7jaR1LLBTi/wRur8zfBLQmrH7r104N9gNGeAwbPfaK5
+        OPGGh8NGe/BcM7KMRyoUHh5FzA==
+X-Google-Smtp-Source: APBJJlGW2Ft1BMDPjxoRGOBAjx7oBR6OsdhVvd1itXUbAlMhPt12HP2lasOnaGt2j9Xkmz5krUPreQ==
+X-Received: by 2002:a17:906:15b:b0:991:c842:2ca2 with SMTP id 27-20020a170906015b00b00991c8422ca2mr11113442ejh.15.1690264022216;
+        Mon, 24 Jul 2023 22:47:02 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u20-20020a170906951400b0099ba3438554sm1625375ejx.191.2023.07.24.22.46.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 22:46:56 -0700 (PDT)
+Message-ID: <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
+Date:   Tue, 25 Jul 2023 07:46:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Apitzsch?= <git@apitzsch.eu>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
+ <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 20:43:31 +0300
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
-
-> On Mon, Jul 24, 2023 at 07:29:27PM +0200, John Paul Adrian Glaubitz wrote:
-> > On Mon, 2023-07-24 at 20:12 +0300, Laurent Pinchart wrote:  
-> > > On Mon, Jul 24, 2023 at 02:07:42PM +0200, Petr Tesarik wrote:  
-> > > > From: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> > > > 
-> > > > In all these cases, the last argument to dma_declare_coherent_memory() is
-> > > > the buffer end address, but the expected value should be the size of the
-> > > > reserved region.
-> > > > 
-> > > > Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
-> > > > Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
-> > > > Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
-> > > > Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
-> > > > Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")
-> > > > Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>  
-> > > 
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > > 
-> > > But given that nobody noticed for 5 years, maybe we should drop
-> > > renesas-ceu support from those boards ? Or drop the boards completely ?  
-> > 
-> > arch/sh is being maintained again, so it's save to keep these boards. At some point, we're
-> > going to convert the architecture to using Device Trees which should reduce the maintenance
-> > burden anyways.  
+On 24/07/2023 22:52, André Apitzsch wrote:
+> Add a compatible for BQ Aquaris M5 (Longcheer L9100).
 > 
-> Keeping the architecture is fine for newer systems, but is anyone really
-> maintaining the Renesas SH board ?
+> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-FWIW I don't have any opinion here. I found these calls as a side
-effect of making an overview of DMA-capable devices (in preparation for
-moving all DMA-related members away from struct device). I don't have
-any of those boards myself.
 
-Petr T
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you do not know the process, here is a short
+explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for acks received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
+
+Best regards,
+Krzysztof
+
