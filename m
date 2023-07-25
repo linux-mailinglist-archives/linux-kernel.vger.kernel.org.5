@@ -2,142 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC165761D8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D781761D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbjGYPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
+        id S231787AbjGYPlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjGYPl6 (ORCPT
+        with ESMTP id S233290AbjGYPlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:41:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556C71FD2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690299673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ywc41/BPTk/JOAzpj2Ndsq/haHQiohuM6GBycryh5is=;
-        b=emCsZIr6jKqZ7vlyZ45ONeGyycQJM+RgbU+DjUId2IW5s96A6Yxu3yxi8wJYk/0a8xuCso
-        OiMtvCYPuRz5CVxqbVphHMnB+9/QrNPG5kusnNLuY5VbqqlV2yKNhiQfdW7tNbTFKmw3z3
-        GUjQ9julY7wuWF4A3CleEWJy+Vb6qwQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-571-58NY2JxlP1-MVUVlCLPmgA-1; Tue, 25 Jul 2023 11:41:12 -0400
-X-MC-Unique: 58NY2JxlP1-MVUVlCLPmgA-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4053a03d5b2so73824461cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:41:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690299672; x=1690904472;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 25 Jul 2023 11:41:14 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED61FCF;
+        Tue, 25 Jul 2023 08:41:13 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-444f9c0b2a4so1969247137.1;
+        Tue, 25 Jul 2023 08:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690299673; x=1690904473;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:references:cc:to:from:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ywc41/BPTk/JOAzpj2Ndsq/haHQiohuM6GBycryh5is=;
-        b=fpxTHYr2PpsnML/R/Y+jU+MV3iHAiJlUX5qUGZdCco8gDXHlB2VVfELGzFT0Rxmf3d
-         7gdZCLEbyTLghYs7VnBWLtwUpINBa1W1fnUD0Hj6Uyh1nO6Mhy0cbGX2f0PxZqe6vtWb
-         oG49IQyRTHeJL+gW+E7YRvDvK2FEBCBpKG9f9xhZv0FMtM9FsF8Q3e/uWh2SY0ImrqwW
-         V0TbpevEvaoqXxYafkvPbgRJ2KKffzbMxP6fkS+VepYdpXh5/fXdzn0lvJ0hiMGahjLV
-         SA2DffqeuVRXkzY0o0kE0U6lHAXlA41FqrQhhsxuG/PYgnGvpzaWpCiZuhWeLGQLqxO6
-         KibA==
-X-Gm-Message-State: ABy/qLYr1ik5ESd5EPjws3ozKLDv2PtDe1vT32rl1/tCj8agIOkK3O8f
-        I4ZrmFuZaru/vG4ivpb/9Z82d12JdXMouT1qxaccyuXwK7pmjn276Go057KwHMi029G9rFoo1/G
-        8DEnChNae+t6RJa2Y3YTwZlP2
-X-Received: by 2002:ac8:5f0c:0:b0:405:47aa:742f with SMTP id x12-20020ac85f0c000000b0040547aa742fmr3527173qta.32.1690299671817;
-        Tue, 25 Jul 2023 08:41:11 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHA1b4My1rtvlYJYA1W4nzseTpuRek/vvdBo/xbpSdUcXuiki19nX3FPgKAFwQK2ije6YiWNA==
-X-Received: by 2002:ac8:5f0c:0:b0:405:47aa:742f with SMTP id x12-20020ac85f0c000000b0040547aa742fmr3527157qta.32.1690299671554;
-        Tue, 25 Jul 2023 08:41:11 -0700 (PDT)
-Received: from sgarzare-redhat ([193.207.153.113])
-        by smtp.gmail.com with ESMTPSA id g1-20020ac870c1000000b00404f8e9902dsm4132859qtp.2.2023.07.25.08.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:41:11 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 17:41:05 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v2 4/4] vsock/test: MSG_PEEK test for SOCK_SEQPACKET
-Message-ID: <lkfzuvv53lyycpun27knppjhk46lyqrz4idvzj7fzer2566y5t@mtc7v33q3erg>
-References: <20230719192708.1775162-1-AVKrasnov@sberdevices.ru>
- <20230719192708.1775162-5-AVKrasnov@sberdevices.ru>
+        bh=dmkK+30yGQXibPyT5/Ct9RQIv6+C83i5MSHGoAU54A8=;
+        b=j/kPUbLAHKIy7l16YnLesrhJaJv0YE2O3MSVif2RI60DqAU8n/K3bbBju+XoKI+7hW
+         4GcYp3IOdWjh8Yvc9nf4OgHNxl3Yc+AonsWnyDCtOKoWbnT4/SQqoYdiy+z1Aupiu0ir
+         R3p/05sRxdBuj21BVljNBg/qnn2Aum5N9da+/aTn151hRTGS/jIT+j1MEBCi9yvsUbVz
+         26zj+gTsfUCQTucTujw0ILwroRb6P1tOfk/oNPFpv4gPF7z4U8qUvRMU0DBffGdAEjhO
+         dt31nJYn+FMcKsBFa3Z8Xs2YKlkWmeK30JaTycuTY7/SFQYR7hacWjl2QtAnLEIQd5wN
+         ZAjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690299673; x=1690904473;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:references:cc:to:from:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dmkK+30yGQXibPyT5/Ct9RQIv6+C83i5MSHGoAU54A8=;
+        b=L0HU2ZHu4ZRO7p5w0ghWt4s6CA66kwOsgxjjUnM1qC1PFcLqq5l6WN/txmNWbDO/Vx
+         wKhFpGX8aIyx9mwm4YjUt11oWeu4LDvVvr9rACHbwqwtYfxtarHy8RCxT1QJXyaou/gl
+         EcNfX3cYKwAArP6IMiFgrZhDtMvavHUGxF96Rv4DpCpKXaqB68lyipCCgoN6bSbUbOYo
+         nd5UyRuN+46q9Et+fNPkxMPP7BN5mx7x+4EkqmOpuXGSm3T4X25GmlUc3sjlX/9m6x6b
+         lNB57N5XAe7FatAc3P/+nYgcboqPfKJDHfNJpK/6tpdG4IhVd8uj/F86BqCOimJhCPVG
+         qm7g==
+X-Gm-Message-State: ABy/qLbWXE9wNDRPgmnosfB1n6okzjUb89UEamYZaAqjEQKCCIzcRrB0
+        G5Q/S6edkvbAUQSRIxpvSYmTuT2akUAmYjg=
+X-Google-Smtp-Source: APBJJlFiKd26kkurVXyDJLvJhwiAGgciTXIG20Ilv9aMQptI69PlmjaXbIgSZ6Cm2hi30KjOeI6Fdg==
+X-Received: by 2002:a67:fa46:0:b0:443:7a85:8fbd with SMTP id j6-20020a67fa46000000b004437a858fbdmr4680934vsq.32.1690299672839;
+        Tue, 25 Jul 2023 08:41:12 -0700 (PDT)
+Received: from [120.7.1.38] (198-84-239-141.cpe.teksavvy.com. [198.84.239.141])
+        by smtp.gmail.com with ESMTPSA id x10-20020a0c8e8a000000b0063762ab2f90sm4431033qvb.83.2023.07.25.08.41.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 08:41:12 -0700 (PDT)
+Subject: Re: [RFC 0/3] acpipcihp: fix kernel crash on 2nd resume
+From:   Woody Suwalski <terraluna977@gmail.com>
+To:     Igor Mammedov <imammedo@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
+        Woody Suwalski <terraluna977@gmail.com>
+References: <20230725113938.2277420-1-imammedo@redhat.com>
+ <88a06e12-600a-a4bd-f216-44753965ce48@gmail.com>
+Message-ID: <7bbe2e5f-411c-6936-5d4b-c128795fb5d4@gmail.com>
+Date:   Tue, 25 Jul 2023 11:41:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:91.0) Gecko/20100101 Firefox/91.0
+ SeaMonkey/2.53.16
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230719192708.1775162-5-AVKrasnov@sberdevices.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <88a06e12-600a-a4bd-f216-44753965ce48@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:27:08PM +0300, Arseniy Krasnov wrote:
->This adds MSG_PEEK test for SOCK_SEQPACKET. It works in the same way as
->SOCK_STREAM test, except it also tests MSG_TRUNC flag.
+Woody Suwalski wrote:
+> Igor Mammedov wrote:
+>> Changelog:
+>>    * split out debug patch into a separate one with extra printk added
+>>    * fixed inverte bus->self check (probably a reason why it didn't 
+>> work before)
+>>
+>>
+>> 1/3 debug patch
+>> 2/3 offending patch
+>> 3/3 potential fix
+>>    I added more files to trace, add following to kernel CLI
+>>     dyndbg="file drivers/pci/access.c +p; file 
+>> drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; 
+>> file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p; file 
+>> drivers/acpi/bus.c +p" ignore_loglevel
+>>
+>> should be applied on top of
+>>     e8afd0d9fccc PCI: pciehp: Cancel bringup sequence if card is not 
+>> present
+>>
+>> apply a patch one by one and run testcase + capture dmesg after each 
+>> patch
+>> one shpould endup with 3 dmesg to ananlyse
+>>   1st - old behaviour - no crash
+>>   2nd - crash
+>>   3rd - no crash hopefully
+>>
+>> Igor Mammedov (3):
+>>    acpiphp: extra debug hack
+>>    PCI: acpiphp: Reassign resources on bridge if necessary
+>>    acpipcihp: use __pci_bus_assign_resources() if bus doesn't have 
+>> bridge
+>>
+>>   drivers/pci/hotplug/acpiphp_glue.c | 23 ++++++++++++++++++-----
+>>   1 file changed, 18 insertions(+), 5 deletions(-)
+>>
+> Actually applying patch1 is already creating the crash (why???), hence 
+> I have added also dmesg-6.5-0.txt which shows a working condition 
+> based on git e8afd0d9fccc level (acpiphp_glue in kernel 6.4)
 >
->Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->---
-> tools/testing/vsock/vsock_test.c | 58 +++++++++++++++++++++++++++++---
-> 1 file changed, 54 insertions(+), 4 deletions(-)
+> Patch3 did not fix the issue, it seems that the culprit is somewhere 
+> else triggered by  "benign" patch1 :-(
 >
->diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->index 444a3ff0681f..2ca2cbfa9808 100644
->--- a/tools/testing/vsock/vsock_test.c
->+++ b/tools/testing/vsock/vsock_test.c
->@@ -257,14 +257,19 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
+> Also note about the trigger description in patch3: the dmesg trace on 
+> Inspiron laptop is collected after the first wake from suspend to ram. 
+> The consecutive  attempt to sleep results in a frozen system.
 >
-> #define MSG_PEEK_BUF_LEN 64
+> Thanks, Woody
 >
->-static void test_stream_msg_peek_client(const struct test_opts *opts)
->+static void __test_msg_peek_client(const struct test_opts *opts,
+I think that in patch1 there is a problem in your debug statement 
+acpi_handle_debug(...slot_name...) - it is masking the "old" issue.
+when I commented out that line in hotplug_event(), it has worked ok (as 
+was expected). I will redo the testing in ~2 hours...
 
-Let's stay with just test_msg_peek_client(), WDYT?
-
->+				   bool seqpacket)
-> {
-> 	unsigned char buf[MSG_PEEK_BUF_LEN];
-> 	ssize_t send_size;
-> 	int fd;
-> 	int i;
->
->-	fd = vsock_stream_connect(opts->peer_cid, 1234);
->+	if (seqpacket)
->+		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	else
->+		fd = vsock_stream_connect(opts->peer_cid, 1234);
->+
-> 	if (fd < 0) {
-> 		perror("connect");
-> 		exit(EXIT_FAILURE);
->@@ -290,7 +295,8 @@ static void test_stream_msg_peek_client(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->-static void test_stream_msg_peek_server(const struct test_opts *opts)
->+static void __test_msg_peek_server(const struct test_opts *opts,
-
-Same here.
-
-The rest LGTM!
-
-Also the whole series should be ready for net-next, right?
-
-Stefano
+Woody
 
