@@ -2,618 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F548760454
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C363D760452
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbjGYAwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S229910AbjGYAwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjGYAwe (ORCPT
+        with ESMTP id S230161AbjGYAwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:52:34 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E001819B3;
-        Mon, 24 Jul 2023 17:52:21 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qO6Ha-0004Tf-1a;
-        Tue, 25 Jul 2023 00:52:10 +0000
-Date:   Tue, 25 Jul 2023 01:52:02 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Ungerer <gerg@kernel.org>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v6 3/8] net: ethernet: mtk_eth_soc: add version in
- mtk_soc_data
-Message-ID: <e52fae302ca135436e5cdd26d38d87be2da63055.1690246066.git.daniel@makrotopia.org>
-References: <cover.1690246066.git.daniel@makrotopia.org>
+        Mon, 24 Jul 2023 20:52:16 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E5EA171E;
+        Mon, 24 Jul 2023 17:52:05 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxTeuzHL9kr3wJAA--.18382S3;
+        Tue, 25 Jul 2023 08:52:03 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXSOyHL9kwvM5AA--.6637S3;
+        Tue, 25 Jul 2023 08:52:03 +0800 (CST)
+Subject: Re: LoongArch: Add BPF JIT support
+To:     "Colin King (gmail)" <colin.i.king@gmail.com>
+References: <bcf97046-e336-712a-ac68-7fd194f2953e@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev,
+        "bpf@vger.kernel.org >> bpf" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <9ce766dd-4bd9-d4a0-6da5-a29af7d9aa28@loongson.cn>
+Date:   Tue, 25 Jul 2023 08:52:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1690246066.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <bcf97046-e336-712a-ac68-7fd194f2953e@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxXSOyHL9kwvM5AA--.6637S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7XF4kJryxWrW7AFyxZw4UZFc_yoW8JF1rpF
+        Z3ua17AryIgF17u3ZrJr45WF4UtrWfGw48Wa1UJ348uFn8Wrn2vw1Ig3yUAF97Xa15ta4S
+        qr42k3sFgFW8GabCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
+        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UU
+        UUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+Hi Colin,
 
-Introduce version field in mtk_soc_data data structure in order to
-make mtk_eth driver easier to maintain for chipset configuration
-codebase. Get rid of MTK_NETSYS_V2 bit in chip capabilities.
-This is a preliminary patch to introduce support for MT7988 SoC.
+On 07/24/2023 08:27 PM, Colin King (gmail) wrote:
+> Hi,
+>
+> Static analysis with clang scan build on arch/loongarch/net/bpf_jit.h
+> has detected a potential issue with the following commit:
+>
+> commit 5dc615520c4dfb358245680f1904bad61116648e
+> Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Date:   Wed Oct 12 16:36:20 2022 +0800
+>
+>     LoongArch: Add BPF JIT support
+>
+> This issue is as follows:
+>
+> arch/loongarch/net/bpf_jit.h:153:23: warning: Logical disjunction always
+> evaluates to true: imm_51_31 != 0 || imm_51_31 != 0x1fffff.
+> [incorrectLogicOperator]
+>    if (imm_51_31 != 0 || imm_51_31 != 0x1fffff) {
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 55 +++++++++++--------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 36 +++++++-----
- drivers/net/ethernet/mediatek/mtk_ppe.c       | 18 +++---
- .../net/ethernet/mediatek/mtk_ppe_offload.c   |  2 +-
- drivers/net/ethernet/mediatek/mtk_wed.c       |  4 +-
- 5 files changed, 66 insertions(+), 49 deletions(-)
+Thanks for your report.
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 18a8aca7944db..508ee40a088c8 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -659,7 +659,7 @@ static void mtk_set_queue_speed(struct mtk_eth *eth, unsigned int idx,
- 	      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_MAN, 1) |
- 	      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_EXP, 4) |
- 	      MTK_QTX_SCH_LEAKY_BUCKET_SIZE;
--	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v1(eth))
- 		val |= MTK_QTX_SCH_LEAKY_BUCKET_EN;
- 
- 	if (IS_ENABLED(CONFIG_SOC_MT7621)) {
-@@ -1037,7 +1037,7 @@ static bool mtk_rx_get_desc(struct mtk_eth *eth, struct mtk_rx_dma_v2 *rxd,
- 	rxd->rxd1 = READ_ONCE(dma_rxd->rxd1);
- 	rxd->rxd3 = READ_ONCE(dma_rxd->rxd3);
- 	rxd->rxd4 = READ_ONCE(dma_rxd->rxd4);
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		rxd->rxd5 = READ_ONCE(dma_rxd->rxd5);
- 		rxd->rxd6 = READ_ONCE(dma_rxd->rxd6);
- 	}
-@@ -1095,7 +1095,7 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
- 
- 		txd->txd3 = TX_DMA_PLEN0(MTK_QDMA_PAGE_SIZE);
- 		txd->txd4 = 0;
--		if (MTK_HAS_CAPS(soc->caps, MTK_NETSYS_V2)) {
-+		if (mtk_is_netsys_v2_or_greater(eth)) {
- 			txd->txd5 = 0;
- 			txd->txd6 = 0;
- 			txd->txd7 = 0;
-@@ -1286,7 +1286,7 @@ static void mtk_tx_set_dma_desc(struct net_device *dev, void *txd,
- 	struct mtk_mac *mac = netdev_priv(dev);
- 	struct mtk_eth *eth = mac->hw;
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		mtk_tx_set_dma_desc_v2(dev, txd, info);
- 	else
- 		mtk_tx_set_dma_desc_v1(dev, txd, info);
-@@ -1593,7 +1593,7 @@ static void mtk_update_rx_cpu_idx(struct mtk_eth *eth)
- 
- static bool mtk_page_pool_enabled(struct mtk_eth *eth)
- {
--	return MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2);
-+	return eth->soc->version == 2;
- }
- 
- static struct page_pool *mtk_create_page_pool(struct mtk_eth *eth,
-@@ -1935,7 +1935,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 			break;
- 
- 		/* find out which mac the packet come from. values start at 1 */
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		if (mtk_is_netsys_v2_or_greater(eth))
- 			mac = RX_DMA_GET_SPORT_V2(trxd.rxd5) - 1;
- 		else if (!MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628) &&
- 			 !(trxd.rxd4 & RX_DMA_SPECIAL_TAG))
-@@ -2031,7 +2031,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		skb->dev = netdev;
- 		bytes += skb->len;
- 
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+		if (mtk_is_netsys_v2_or_greater(eth)) {
- 			reason = FIELD_GET(MTK_RXD5_PPE_CPU_REASON, trxd.rxd5);
- 			hash = trxd.rxd5 & MTK_RXD5_FOE_ENTRY;
- 			if (hash != MTK_RXD5_FOE_ENTRY)
-@@ -2056,8 +2056,8 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		/* When using VLAN untagging in combination with DSA, the
- 		 * hardware treats the MTK special tag as a VLAN and untags it.
- 		 */
--		if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) &&
--		    (trxd.rxd2 & RX_DMA_VTAG) && netdev_uses_dsa(netdev)) {
-+		if (mtk_is_netsys_v1(eth) && (trxd.rxd2 & RX_DMA_VTAG) &&
-+		    netdev_uses_dsa(netdev)) {
- 			unsigned int port = RX_DMA_VPID(trxd.rxd3) & GENMASK(2, 0);
- 
- 			if (port < ARRAY_SIZE(eth->dsa_meta) &&
-@@ -2367,7 +2367,7 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
- 		txd->txd2 = next_ptr;
- 		txd->txd3 = TX_DMA_LS0 | TX_DMA_OWNER_CPU;
- 		txd->txd4 = 0;
--		if (MTK_HAS_CAPS(soc->caps, MTK_NETSYS_V2)) {
-+		if (mtk_is_netsys_v2_or_greater(eth)) {
- 			txd->txd5 = 0;
- 			txd->txd6 = 0;
- 			txd->txd7 = 0;
-@@ -2420,14 +2420,14 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
- 			      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_MAN, 1) |
- 			      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_EXP, 4) |
- 			      MTK_QTX_SCH_LEAKY_BUCKET_SIZE;
--			if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+			if (mtk_is_netsys_v1(eth))
- 				val |= MTK_QTX_SCH_LEAKY_BUCKET_EN;
- 			mtk_w32(eth, val, soc->reg_map->qdma.qtx_sch + ofs);
- 			ofs += MTK_QTX_OFFSET;
- 		}
- 		val = MTK_QDMA_TX_SCH_MAX_WFQ | (MTK_QDMA_TX_SCH_MAX_WFQ << 16);
- 		mtk_w32(eth, val, soc->reg_map->qdma.tx_sch_rate);
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		if (mtk_is_netsys_v2_or_greater(eth))
- 			mtk_w32(eth, val, soc->reg_map->qdma.tx_sch_rate + 4);
- 	} else {
- 		mtk_w32(eth, ring->phys_pdma, MT7628_TX_BASE_PTR0);
-@@ -2556,7 +2556,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 
- 		rxd->rxd3 = 0;
- 		rxd->rxd4 = 0;
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+		if (mtk_is_netsys_v2_or_greater(eth)) {
- 			rxd->rxd5 = 0;
- 			rxd->rxd6 = 0;
- 			rxd->rxd7 = 0;
-@@ -3104,7 +3104,7 @@ static int mtk_start_dma(struct mtk_eth *eth)
- 		       MTK_TX_BT_32DWORDS | MTK_NDP_CO_PRO |
- 		       MTK_RX_2B_OFFSET | MTK_TX_WB_DDONE;
- 
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		if (mtk_is_netsys_v2_or_greater(eth))
- 			val |= MTK_MUTLI_CNT | MTK_RESV_BUF |
- 			       MTK_WCOMP_EN | MTK_DMAD_WR_WDONE |
- 			       MTK_CHK_DDONE_EN | MTK_LEAKY_BUCKET_EN;
-@@ -3250,7 +3250,7 @@ static int mtk_open(struct net_device *dev)
- 	phylink_start(mac->phylink);
- 	netif_tx_start_all_queues(dev);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return 0;
- 
- 	if (mtk_uses_dsa(dev) && !eth->prog) {
-@@ -3516,7 +3516,7 @@ static void mtk_hw_reset(struct mtk_eth *eth)
- {
- 	u32 val;
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
- 		val = RSTCTRL_PPE0_V2;
- 	} else {
-@@ -3528,7 +3528,7 @@ static void mtk_hw_reset(struct mtk_eth *eth)
- 
- 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
- 			     0x3ffffff);
- }
-@@ -3554,7 +3554,7 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
- 		return;
- 	}
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
- 	else
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
-@@ -3724,7 +3724,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
- 	else
- 		mtk_hw_reset(eth);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		/* Set FE to PDMAv2 if necessary */
- 		val = mtk_r32(eth, MTK_FE_GLO_MISC);
- 		mtk_w32(eth,  val | BIT(4), MTK_FE_GLO_MISC);
-@@ -3761,7 +3761,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
- 	 */
- 	val = mtk_r32(eth, MTK_CDMQ_IG_CTRL);
- 	mtk_w32(eth, val | MTK_CDMQ_STAG_EN, MTK_CDMQ_IG_CTRL);
--	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v1(eth)) {
- 		val = mtk_r32(eth, MTK_CDMP_IG_CTRL);
- 		mtk_w32(eth, val | MTK_CDMP_STAG_EN, MTK_CDMP_IG_CTRL);
- 
-@@ -3783,7 +3783,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
- 	mtk_w32(eth, eth->soc->txrx.rx_irq_done_mask, reg_map->qdma.int_grp + 4);
- 	mtk_w32(eth, 0x21021000, MTK_FE_INT_GRP);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		/* PSE should not drop port8 and port9 packets from WDMA Tx */
- 		mtk_w32(eth, 0x00000300, PSE_DROP_CFG);
- 
-@@ -4584,7 +4584,7 @@ static int mtk_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 		if (!res) {
- 			err = -EINVAL;
-@@ -4692,9 +4692,8 @@ static int mtk_probe(struct platform_device *pdev)
- 	}
- 
- 	if (eth->soc->offload_version) {
--		u32 num_ppe;
-+		u32 num_ppe = mtk_is_netsys_v2_or_greater(eth) ? 2 : 1;
- 
--		num_ppe = MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) ? 2 : 1;
- 		num_ppe = min_t(u32, ARRAY_SIZE(eth->ppe), num_ppe);
- 		for (i = 0; i < num_ppe; i++) {
- 			u32 ppe_addr = eth->soc->reg_map->ppe_base + i * 0x400;
-@@ -4786,6 +4785,7 @@ static const struct mtk_soc_data mt2701_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7623_CLKS_BITMAP,
- 	.required_pctl = true,
-+	.version = 1,
- 	.txrx = {
- 		.txd_size = sizeof(struct mtk_tx_dma),
- 		.rxd_size = sizeof(struct mtk_rx_dma),
-@@ -4802,6 +4802,7 @@ static const struct mtk_soc_data mt7621_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7621_CLKS_BITMAP,
- 	.required_pctl = false,
-+	.version = 1,
- 	.offload_version = 1,
- 	.hash_offset = 2,
- 	.foe_entry_size = MTK_FOE_ENTRY_V1_SIZE,
-@@ -4822,6 +4823,7 @@ static const struct mtk_soc_data mt7622_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7622_CLKS_BITMAP,
- 	.required_pctl = false,
-+	.version = 1,
- 	.offload_version = 2,
- 	.hash_offset = 2,
- 	.has_accounting = true,
-@@ -4842,6 +4844,7 @@ static const struct mtk_soc_data mt7623_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7623_CLKS_BITMAP,
- 	.required_pctl = true,
-+	.version = 1,
- 	.offload_version = 1,
- 	.hash_offset = 2,
- 	.foe_entry_size = MTK_FOE_ENTRY_V1_SIZE,
-@@ -4863,6 +4866,7 @@ static const struct mtk_soc_data mt7629_data = {
- 	.required_clks = MT7629_CLKS_BITMAP,
- 	.required_pctl = false,
- 	.has_accounting = true,
-+	.version = 1,
- 	.txrx = {
- 		.txd_size = sizeof(struct mtk_tx_dma),
- 		.rxd_size = sizeof(struct mtk_rx_dma),
-@@ -4880,6 +4884,7 @@ static const struct mtk_soc_data mt7981_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7981_CLKS_BITMAP,
- 	.required_pctl = false,
-+	.version = 2,
- 	.offload_version = 2,
- 	.hash_offset = 4,
- 	.has_accounting = true,
-@@ -4901,6 +4906,7 @@ static const struct mtk_soc_data mt7986_data = {
- 	.hw_features = MTK_HW_FEATURES,
- 	.required_clks = MT7986_CLKS_BITMAP,
- 	.required_pctl = false,
-+	.version = 2,
- 	.offload_version = 2,
- 	.hash_offset = 4,
- 	.has_accounting = true,
-@@ -4921,6 +4927,7 @@ static const struct mtk_soc_data rt5350_data = {
- 	.hw_features = MTK_HW_FEATURES_MT7628,
- 	.required_clks = MT7628_CLKS_BITMAP,
- 	.required_pctl = false,
-+	.version = 1,
- 	.txrx = {
- 		.txd_size = sizeof(struct mtk_tx_dma),
- 		.rxd_size = sizeof(struct mtk_rx_dma),
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 707445f6bcb1b..1c28bf3731831 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -820,7 +820,6 @@ enum mkt_eth_capabilities {
- 	MTK_SHARED_INT_BIT,
- 	MTK_TRGMII_MT7621_CLK_BIT,
- 	MTK_QDMA_BIT,
--	MTK_NETSYS_V2_BIT,
- 	MTK_SOC_MT7628_BIT,
- 	MTK_RSTCTRL_PPE1_BIT,
- 	MTK_U3_COPHY_V2_BIT,
-@@ -855,7 +854,6 @@ enum mkt_eth_capabilities {
- #define MTK_SHARED_INT		BIT(MTK_SHARED_INT_BIT)
- #define MTK_TRGMII_MT7621_CLK	BIT(MTK_TRGMII_MT7621_CLK_BIT)
- #define MTK_QDMA		BIT(MTK_QDMA_BIT)
--#define MTK_NETSYS_V2		BIT(MTK_NETSYS_V2_BIT)
- #define MTK_SOC_MT7628		BIT(MTK_SOC_MT7628_BIT)
- #define MTK_RSTCTRL_PPE1	BIT(MTK_RSTCTRL_PPE1_BIT)
- #define MTK_U3_COPHY_V2		BIT(MTK_U3_COPHY_V2_BIT)
-@@ -934,11 +932,11 @@ enum mkt_eth_capabilities {
- #define MT7981_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | MTK_GMAC2_GEPHY | \
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_MUX_U3_GMAC2_TO_QPHY | MTK_U3_COPHY_V2 | \
--		      MTK_NETSYS_V2 | MTK_RSTCTRL_PPE1)
-+		      MTK_RSTCTRL_PPE1)
- 
- #define MT7986_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | \
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
--		      MTK_NETSYS_V2 | MTK_RSTCTRL_PPE1)
-+		      MTK_RSTCTRL_PPE1)
- 
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
-@@ -1009,6 +1007,7 @@ struct mtk_reg_map {
-  * @required_pctl		A bool value to show whether the SoC requires
-  *				the extra setup for those pins used by GMAC.
-  * @hash_offset			Flow table hash offset.
-+ * @version			SoC version.
-  * @foe_entry_size		Foe table entry size.
-  * @has_accounting		Bool indicating support for accounting of
-  *				offloaded flows.
-@@ -1027,6 +1026,7 @@ struct mtk_soc_data {
- 	bool		required_pctl;
- 	u8		offload_version;
- 	u8		hash_offset;
-+	u8		version;
- 	u16		foe_entry_size;
- 	netdev_features_t hw_features;
- 	bool		has_accounting;
-@@ -1182,6 +1182,16 @@ struct mtk_mac {
- /* the struct describing the SoC. these are declared in the soc_xyz.c files */
- extern const struct of_device_id of_mtk_match[];
- 
-+static inline bool mtk_is_netsys_v1(struct mtk_eth *eth)
-+{
-+	return eth->soc->version == 1;
-+}
-+
-+static inline bool mtk_is_netsys_v2_or_greater(struct mtk_eth *eth)
-+{
-+	return eth->soc->version > 1;
-+}
-+
- static inline struct mtk_foe_entry *
- mtk_foe_get_entry(struct mtk_ppe *ppe, u16 hash)
- {
-@@ -1192,7 +1202,7 @@ mtk_foe_get_entry(struct mtk_ppe *ppe, u16 hash)
- 
- static inline u32 mtk_get_ib1_ts_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB1_BIND_TIMESTAMP_V2;
- 
- 	return MTK_FOE_IB1_BIND_TIMESTAMP;
-@@ -1200,7 +1210,7 @@ static inline u32 mtk_get_ib1_ts_mask(struct mtk_eth *eth)
- 
- static inline u32 mtk_get_ib1_ppoe_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB1_BIND_PPPOE_V2;
- 
- 	return MTK_FOE_IB1_BIND_PPPOE;
-@@ -1208,7 +1218,7 @@ static inline u32 mtk_get_ib1_ppoe_mask(struct mtk_eth *eth)
- 
- static inline u32 mtk_get_ib1_vlan_tag_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB1_BIND_VLAN_TAG_V2;
- 
- 	return MTK_FOE_IB1_BIND_VLAN_TAG;
-@@ -1216,7 +1226,7 @@ static inline u32 mtk_get_ib1_vlan_tag_mask(struct mtk_eth *eth)
- 
- static inline u32 mtk_get_ib1_vlan_layer_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB1_BIND_VLAN_LAYER_V2;
- 
- 	return MTK_FOE_IB1_BIND_VLAN_LAYER;
-@@ -1224,7 +1234,7 @@ static inline u32 mtk_get_ib1_vlan_layer_mask(struct mtk_eth *eth)
- 
- static inline u32 mtk_prep_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return FIELD_PREP(MTK_FOE_IB1_BIND_VLAN_LAYER_V2, val);
- 
- 	return FIELD_PREP(MTK_FOE_IB1_BIND_VLAN_LAYER, val);
-@@ -1232,7 +1242,7 @@ static inline u32 mtk_prep_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
- 
- static inline u32 mtk_get_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return FIELD_GET(MTK_FOE_IB1_BIND_VLAN_LAYER_V2, val);
- 
- 	return FIELD_GET(MTK_FOE_IB1_BIND_VLAN_LAYER, val);
-@@ -1240,7 +1250,7 @@ static inline u32 mtk_get_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
- 
- static inline u32 mtk_get_ib1_pkt_type_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB1_PACKET_TYPE_V2;
- 
- 	return MTK_FOE_IB1_PACKET_TYPE;
-@@ -1248,7 +1258,7 @@ static inline u32 mtk_get_ib1_pkt_type_mask(struct mtk_eth *eth)
- 
- static inline u32 mtk_get_ib1_pkt_type(struct mtk_eth *eth, u32 val)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return FIELD_GET(MTK_FOE_IB1_PACKET_TYPE_V2, val);
- 
- 	return FIELD_GET(MTK_FOE_IB1_PACKET_TYPE, val);
-@@ -1256,7 +1266,7 @@ static inline u32 mtk_get_ib1_pkt_type(struct mtk_eth *eth, u32 val)
- 
- static inline u32 mtk_get_ib2_multicast_mask(struct mtk_eth *eth)
- {
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		return MTK_FOE_IB2_MULTICAST_V2;
- 
- 	return MTK_FOE_IB2_MULTICAST;
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
-index 9129821f3ab8f..2f0e682449ef6 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
-@@ -208,7 +208,7 @@ int mtk_foe_entry_prepare(struct mtk_eth *eth, struct mtk_foe_entry *entry,
- 
- 	memset(entry, 0, sizeof(*entry));
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		val = FIELD_PREP(MTK_FOE_IB1_STATE, MTK_FOE_STATE_BIND) |
- 		      FIELD_PREP(MTK_FOE_IB1_PACKET_TYPE_V2, type) |
- 		      FIELD_PREP(MTK_FOE_IB1_UDP, l4proto == IPPROTO_UDP) |
-@@ -272,7 +272,7 @@ int mtk_foe_entry_set_pse_port(struct mtk_eth *eth,
- 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
- 	u32 val = *ib2;
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		val &= ~MTK_FOE_IB2_DEST_PORT_V2;
- 		val |= FIELD_PREP(MTK_FOE_IB2_DEST_PORT_V2, port);
- 	} else {
-@@ -423,7 +423,7 @@ int mtk_foe_entry_set_wdma(struct mtk_eth *eth, struct mtk_foe_entry *entry,
- 	struct mtk_foe_mac_info *l2 = mtk_foe_entry_l2(eth, entry);
- 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		*ib2 &= ~MTK_FOE_IB2_PORT_MG_V2;
- 		*ib2 |=  FIELD_PREP(MTK_FOE_IB2_RX_IDX, txq) |
- 			 MTK_FOE_IB2_WDMA_WINFO_V2;
-@@ -447,7 +447,7 @@ int mtk_foe_entry_set_queue(struct mtk_eth *eth, struct mtk_foe_entry *entry,
- {
- 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		*ib2 &= ~MTK_FOE_IB2_QID_V2;
- 		*ib2 |= FIELD_PREP(MTK_FOE_IB2_QID_V2, queue);
- 		*ib2 |= MTK_FOE_IB2_PSE_QOS_V2;
-@@ -603,7 +603,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *ppe, struct mtk_foe_entry *entry,
- 	struct mtk_foe_entry *hwe;
- 	u32 val;
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(eth)) {
- 		entry->ib1 &= ~MTK_FOE_IB1_BIND_TIMESTAMP_V2;
- 		entry->ib1 |= FIELD_PREP(MTK_FOE_IB1_BIND_TIMESTAMP_V2,
- 					 timestamp);
-@@ -619,7 +619,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *ppe, struct mtk_foe_entry *entry,
- 	hwe->ib1 = entry->ib1;
- 
- 	if (ppe->accounting) {
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		if (mtk_is_netsys_v2_or_greater(eth))
- 			val = MTK_FOE_IB2_MIB_CNT_V2;
- 		else
- 			val = MTK_FOE_IB2_MIB_CNT;
-@@ -979,7 +979,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
- 			 MTK_PPE_SCAN_MODE_KEEPALIVE_AGE) |
- 	      FIELD_PREP(MTK_PPE_TB_CFG_ENTRY_NUM,
- 			 MTK_PPE_ENTRIES_SHIFT);
--	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(ppe->eth))
- 		val |= MTK_PPE_TB_CFG_INFO_SEL;
- 	ppe_w32(ppe, MTK_PPE_TB_CFG, val);
- 
-@@ -995,7 +995,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
- 	      MTK_PPE_FLOW_CFG_IP4_NAPT |
- 	      MTK_PPE_FLOW_CFG_IP4_DSLITE |
- 	      MTK_PPE_FLOW_CFG_IP4_NAT_FRAG;
--	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2))
-+	if (mtk_is_netsys_v2_or_greater(ppe->eth))
- 		val |= MTK_PPE_MD_TOAP_BYP_CRSN0 |
- 		       MTK_PPE_MD_TOAP_BYP_CRSN1 |
- 		       MTK_PPE_MD_TOAP_BYP_CRSN2 |
-@@ -1037,7 +1037,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
- 
- 	ppe_w32(ppe, MTK_PPE_DEFAULT_CPU_PORT, 0);
- 
--	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2)) {
-+	if (mtk_is_netsys_v2_or_greater(ppe->eth)) {
- 		ppe_w32(ppe, MTK_PPE_DEFAULT_CPU_PORT1, 0xcb777);
- 		ppe_w32(ppe, MTK_PPE_SBW_CTRL, 0x7f);
- 	}
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-index 02eebff02d457..a70a5417c1734 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-@@ -193,7 +193,7 @@ mtk_flow_set_output_device(struct mtk_eth *eth, struct mtk_foe_entry *foe,
- 	if (mtk_flow_get_wdma_info(dev, dest_mac, &info) == 0) {
- 		mtk_foe_entry_set_wdma(eth, foe, info.wdma_idx, info.queue,
- 				       info.bss, info.wcid);
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
-+		if (mtk_is_netsys_v2_or_greater(eth)) {
- 			switch (info.wdma_idx) {
- 			case 0:
- 				pse_port = 8;
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed.c b/drivers/net/ethernet/mediatek/mtk_wed.c
-index 985cff910f30c..5f062ecb402cc 100644
---- a/drivers/net/ethernet/mediatek/mtk_wed.c
-+++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -1091,7 +1091,7 @@ mtk_wed_rx_reset(struct mtk_wed_device *dev)
- 	} else {
- 		struct mtk_eth *eth = dev->hw->eth;
- 
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		if (mtk_is_netsys_v2_or_greater(eth))
- 			wed_set(dev, MTK_WED_RESET_IDX,
- 				MTK_WED_RESET_IDX_RX_V2);
- 		else
-@@ -1907,7 +1907,7 @@ void mtk_wed_add_hw(struct device_node *np, struct mtk_eth *eth,
- 	hw->wdma = wdma;
- 	hw->index = index;
- 	hw->irq = irq;
--	hw->version = MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) ? 2 : 1;
-+	hw->version = mtk_is_netsys_v1(eth) ? 1 : 2;
- 
- 	if (hw->version == 1) {
- 		hw->mirror = syscon_regmap_lookup_by_phandle(eth_np,
--- 
-2.41.0
+>
+>
+> The statement seems to be always true. I suspect it should it be instead:
+>
+>    if (imm_51_31 != 0 && imm_51_31 != 0x1fffff) {
+
+Yes, you are right. It is same with
+
+if (!(imm_51_31 == 0 || imm_51_31 == 0x1fffff)) {
+
+As the code comment says, the initial aim is to reduce one instruction
+in some corner cases, if bit[51:31] is all 0 or all 1, no need to call
+lu32id, that is to say, it should call lu32id only if bit[51:31] is not
+all 0 and not all 1. The current code always call lu32id, the result is
+right but the logic is unexpected and wrong.
+
+I will send a patch to fix it as soon as possible.
+
+Thanks,
+Tiezhu
+
