@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577F9761C49
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF710761C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjGYOwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
+        id S231176AbjGYOzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGYOww (ORCPT
+        with ESMTP id S230080AbjGYOzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:52:52 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFD0E78;
-        Tue, 25 Jul 2023 07:52:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bbc7b2133fso1296205ad.1;
-        Tue, 25 Jul 2023 07:52:51 -0700 (PDT)
+        Tue, 25 Jul 2023 10:55:45 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B69E63
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:55:44 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-77dcff76e35so68386139f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690296771; x=1690901571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g7jwpwv6DwxSGl4WJ9F4giH5nvpoG0Ao/sihqhBU6r4=;
-        b=UFrpIIhVmFswA5Vy3iZEBJPAym7h6CwLfcXnqnM/XQf+znrHoIlNgYbeqWnIaWdLbr
-         HYk2Rjrd1ntigP8ybgaSfCopOxdidy2GtCuXrCCtQewRqPW8/kalDykFIUCb0Jb7yH5O
-         OF7lPlW+TQWHETQoC0X6rqgdyFoXPT6Ffmxs+UqoW5Mg9wgJDTVVnJMH77ISJsWo/Dgc
-         lXUQtt4MDkd2SIK+RRJGLyqjYvjPYVehDCDwA1vt5GhNt00q8FIr66TqOmoyCyDxsF1J
-         f7gcxoN2wp+az6l/UradG47ZWJgzeul3mmrgPkc048nBqva/g2tLM3TOuaRco4tjjCUr
-         C1bg==
+        d=linuxfoundation.org; s=google; t=1690296944; x=1690901744;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=poOkid89WcEeHCeXFL1hv/OL8I2gj/LJb9FhxsPb1Uc=;
+        b=NSF2vx4e/ZSu2tp/7tSxXs5FJM3Tl8H6R1YIzJ7aBmw6h4/+vbz5PWM98hGij52c5Y
+         kuTAbUlGUpHR+Nh1+P6LXJAgh7D8O/nebeUfhlIDpK4RSpwt0916C2FBAU7NlWFPNsHo
+         6yWELUwa7YfShDcTtpukTkAj+QMRm9rIgrxlg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690296771; x=1690901571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g7jwpwv6DwxSGl4WJ9F4giH5nvpoG0Ao/sihqhBU6r4=;
-        b=GbjPWXRsz/sMSykR+bYo0QeR7RHuoE3xjTbviElSmVbNGSr0x4pO/YpijwK9HExua8
-         Xe/JT4K8WgVL96DGtv9zUB8GUGl+K9AjOyBmRh8TRUvpJYRarSb5fr9GFXN4bO/tK5WN
-         notQEtMKLvS2UylaKudwxTJp1zLMiXpJTxjsh+NTn05Lg+rvNXTYwy7cZhxhrMYkiytS
-         rCaAzuzN0c7wsuLaVCyLpBgx7mdY5sTLWuBZPB888lKERjBspYD4ZPV6SUNc84OVQiSq
-         Kvh7CM9cWJnMuvYJK5qdXVunoP5Wj83CKCTE9Q3oSo42+UvwnWTtSbCo0rW4NTCJXhyt
-         xaWQ==
-X-Gm-Message-State: ABy/qLbJK24GZO+Wj5avpFRGXffFI4CXrBwTNJjzIyhFDBj7KIF1tN4P
-        VLp1XHrilOBX8I3JQb6yzmg=
-X-Google-Smtp-Source: APBJJlEJrkeVee0GzjDW0IDaByHvy4fir4/nKLCNC+JnQRY/65NPXZITIey/j4C740laBqhsd5Mt3Q==
-X-Received: by 2002:a17:902:dacc:b0:1bb:a922:4a1a with SMTP id q12-20020a170902dacc00b001bba9224a1amr4726005plx.6.1690296770810;
-        Tue, 25 Jul 2023 07:52:50 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n8-20020a17090ac68800b00268320ab9f2sm1631383pjt.6.2023.07.25.07.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 07:52:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 25 Jul 2023 07:52:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] pmbus_core: Refactor pmbus_is_enabled function
-Message-ID: <484dae92-0141-4d65-bb8b-5f54171c03aa@roeck-us.net>
-References: <20230725125428.3966803-1-Naresh.Solanki@9elements.com>
+        d=1e100.net; s=20221208; t=1690296944; x=1690901744;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=poOkid89WcEeHCeXFL1hv/OL8I2gj/LJb9FhxsPb1Uc=;
+        b=i358jLXU2AMOceeznPcJhBBojLU4FpuPBd17/72Vm68OfVj7VhFgV8tSy1k9aA0kLy
+         kY1aKI7wWzlgWbqb3E6bjgfyM53Hz6gioIWDI0ra9TWePZAn+dWBLjb4Tp5dLv6XvYR0
+         n3mVJbOofNwhi0/j+hVjBm8ECWWKLqFcYJbYRQLs8X73F2O0T5LAW+lF+/mD+3LOZEv8
+         dmjYkJbd/S1huEOQX/PnpOWg3Lulp5lk+eazSJJkGm8BZB+kiwpip/j/8A74VKEpLZ7a
+         gJ308bel91Ebqkf4N466Yg7qz/K5rSFryFwnGVEc11T27v8PJWgt0nXPg/PTohRAru6z
+         XoNA==
+X-Gm-Message-State: ABy/qLY3RKTykFcTXvSr1kAn6qwhHo+K0JOKuTAweqHPo0Og/zvPout8
+        2MIYgUx25qOp+Kcu2MRVNhwmtA==
+X-Google-Smtp-Source: APBJJlHfdriZne2soE8HHVdEwEkNGZ9Ol4beSAt414g1akSKUSfQrIDfA6XTzFn0bxLh0NQ0xm3Xng==
+X-Received: by 2002:a92:c9c3:0:b0:341:c98a:529 with SMTP id k3-20020a92c9c3000000b00341c98a0529mr9987176ilq.0.1690296943844;
+        Tue, 25 Jul 2023 07:55:43 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id p18-20020a92da52000000b00348e9aa50c8sm33229ilq.60.2023.07.25.07.55.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 07:55:43 -0700 (PDT)
+Message-ID: <c36c25ad-4c09-cef2-76a1-1eb8fe7ee927@linuxfoundation.org>
+Date:   Tue, 25 Jul 2023 08:55:43 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725125428.3966803-1-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 00/19] selftests/resctrl: Fixes and cleanups
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230717131507.32420-1-ilpo.jarvinen@linux.intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230717131507.32420-1-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 02:54:25PM +0200, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+On 7/17/23 07:14, Ilpo Järvinen wrote:
+> Here is a series with some fixes and cleanups to resctrl selftests.
 > 
-> Refactor the pmbus_is_enabled() function to return the raw status
-> without any additional processing as its already done in
-> _pmbus_is_enabled function.
+> v5:
+> - Improve changelogs
+> - Close fd_lm only in cat_val()
+> - Improve unmount error handling
 > 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 
-Applied. I rephrased the commit message so don't be surprised that
-it looks different.
+Applied to linux-kselftest next for Linux 6.6-rc1
 
-Thanks,
-Guenter
+thanks,
+-- Shuah
 
-> ---
->  drivers/hwmon/pmbus/pmbus_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> 
-> base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
-> 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index fa06325f5a7c..42fb7286805b 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2768,7 +2768,7 @@ static int __maybe_unused pmbus_is_enabled(struct device *dev, u8 page)
->  	ret = _pmbus_is_enabled(dev, page);
->  	mutex_unlock(&data->update_lock);
->  
-> -	return !!(ret & PB_OPERATION_CONTROL_ON);
-> +	return ret;
->  }
->  
->  #define to_dev_attr(_dev_attr) \
