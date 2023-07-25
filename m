@@ -2,221 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953DB76220B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E771D76220F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjGYTMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
+        id S231654AbjGYTMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjGYTL7 (ORCPT
+        with ESMTP id S229459AbjGYTMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:11:59 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EF010C9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:11:57 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so59461695e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:11:57 -0700 (PDT)
+        Tue, 25 Jul 2023 15:12:17 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC711BD5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:12:15 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8bd586086so47014235ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1690312316; x=1690917116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dFu1/8H+5Qp3bz+p6T54wT9cdMriRmcHOC+NLv3kA60=;
-        b=Q7NuD/Z7Z5o/nIglXDXm/AxtNVI9wsGFchH1b8OgRvubZZpE5uKoe0du/SdBha1cSq
-         pXKYmtWM5+cTQLkX1gtXpMm9bkaAZTpZhGrNhWADyNQX3M4ybHlJNg54bQtSV9+iTJmh
-         VvQ7d8WpWBe/MHgbeDuXQfuQqNchcVAzXHOP/WMhoeGdAFbC8ATYT7/6ty6eN7gY03Sy
-         qkEuWl1em/xD1LO3IMSNtB7dm5nlbulk+tVbfBOtvMWA6TXDRLdiSNDHMVsQijOaEKkA
-         x8NpNmgz7kfcZaoRDe3DCKIWlIrs5IdtP8Q7ceWpyP58h16OylJni20zcAk6+Cbm/ySX
-         Lvjg==
+        d=broadcom.com; s=google; t=1690312335; x=1690917135;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oa1JtnJLXu5f/dUFLfkHAypj4irrUDNQPHh7/EHavv4=;
+        b=ULk6FzyBfTf+oj0OWHI8lgnSQXhJs2+CPyXbf5GRnrTgwnzkEnWAjIG1KuMkHsoGQ8
+         Cbp5oyTlznX0HNwQVpALEkRXjtWkMrq6X0umwdoVB5LFll/DJdIvIgZt1Djo6OBtTlzc
+         hCeOmBMKK12enoKd+3jGHYpBMUY7D9NkDfI+c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690312316; x=1690917116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dFu1/8H+5Qp3bz+p6T54wT9cdMriRmcHOC+NLv3kA60=;
-        b=VfvehrxiJCGHFIatH6RFr4ym6hL3LXj+7UACDVD/bIbjQjjIitT1TkW47VNyr9rsUI
-         ibtMBULV/z+Ysdn15HgfqjHYiMeEOmTihCEcLJ+nl7HZXEU2zBtIEcqWV2pZZuDiaqfG
-         YHhWZ1hQBAi3kLLcWLs2Kn/yAUL5WiqnbeB4brt9fPo4B/OUpfDSX2z4cN1AfHwOIoYh
-         UBrI5s/Rs/ZBv/1f4T+nr/8zECEfjbZmpKYGtYoMqwvePlvgJgtpC3fTOcveNQpq8Zcw
-         mI9gbJQ8EUlvEwOyIAfKzJdZChtt31sOgw9Hq3EFT3GoV39RQNeYShePUCyAgh7qJJjS
-         8Jsg==
-X-Gm-Message-State: ABy/qLYqba48Umo+4VKsj8NCX1Jub4I7A4yym5ojqmyoe+ONz4eWJPv5
-        xpi4hXcFUNPvLGSvJRvcbGxt71LEmOjitc4aHI2aug==
-X-Google-Smtp-Source: APBJJlHh27x7jB7//c/mirSsWzhC8Cbxha+deBktaFaWSI4ITVoOappyPOSm7V2z628RLf6gW3UVGeBf1KiyXoSmfYc=
-X-Received: by 2002:a05:600c:364d:b0:3f9:b244:c294 with SMTP id
- y13-20020a05600c364d00b003f9b244c294mr11216290wmq.35.1690312316411; Tue, 25
- Jul 2023 12:11:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690312335; x=1690917135;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oa1JtnJLXu5f/dUFLfkHAypj4irrUDNQPHh7/EHavv4=;
+        b=aRQMAvzcDs/3Dcpmt3tRESXUdiODEurhYl5DgQb4OV+NgyEN69z65r2tyFJCzeSck/
+         yaOmnNC6wwyiTC/T6fVwp9DMsPhR2j8H6Kex/PD8WqExVIkdjIApLJwFbrOCz7OVxIfa
+         Md3pxudotVEqKO+RTQw2JGraJptCwrmTHf3d55CAtHgX159rvxTk1bvwBHE/cdZi/pAw
+         ukUytgtTTLTCQNngrPYxF/pNROvE9thJ/28EO7CY9k4JeA4QJNB8Ct3HiPB62p5VMBjv
+         u+x90wcT3bQKFNn2+fEwTfligZ2ukUyTR43eXuTNgISiht/meZzPBYUYUijwDjLzf8ka
+         f8OQ==
+X-Gm-Message-State: ABy/qLaIHsak3HfKf96A1pGpzdNUmLS5xor+XkhnoooJ0AeSA0UN15Xi
+        0KyNZ/V8NOYIVL31yWJvxYH2VQ==
+X-Google-Smtp-Source: APBJJlEe8QzXJdFnIvfaJQxA2sOEe75dbi7jpRbxCtJvbGG20FoXDEC7ZVXqb4unxrlmXHvndW2H5w==
+X-Received: by 2002:a17:902:9682:b0:1b8:4f93:b210 with SMTP id n2-20020a170902968200b001b84f93b210mr78134plp.45.1690312335108;
+        Tue, 25 Jul 2023 12:12:15 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s21-20020a170902989500b001b03842ab78sm11453513plp.89.2023.07.25.12.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 12:12:13 -0700 (PDT)
+Message-ID: <65afff8f-fd02-1344-56b5-f9e3deda1d47@broadcom.com>
+Date:   Tue, 25 Jul 2023 12:12:11 -0700
 MIME-Version: 1.0
-References: <006901d9be8c$f4439930$dccacb90$@telus.net> <CAJZ5v0hqPb1+tzGiOCSKr=4QcjnRKT5Gd8FcNbD_Gz5CnAw8tw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hqPb1+tzGiOCSKr=4QcjnRKT5Gd8FcNbD_Gz5CnAw8tw@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Tue, 25 Jul 2023 12:11:47 -0700
-Message-ID: <CAAYoRsUu-5u73cSASua133EE3+zTRbTgq-kEn2L52e4=n6X46g@mail.gmail.com>
-Subject: Re: [PATCH] x86/aperfmperf: Make stale CPU frequency response within limits.
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-pm@vger.kernel.org,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        yang.jie@linux.intel.com, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Doug Smythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 0/4] Implement a PSCI SYSTEM_RESET2 reboot-mode driver
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, kernel@quicinc.com,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Prasad Sodagudi <quic_psodagud@quicinc.com>
+References: <20230724223057.1208122-1-quic_eberman@quicinc.com>
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+In-Reply-To: <20230724223057.1208122-1-quic_eberman@quicinc.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004f9866060154825b"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+--0000000000004f9866060154825b
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 25, 2023 at 11:31=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
-rg> wrote:
-> On Tue, Jul 25, 2023 at 2:14=E2=80=AFAM Doug Smythies <dsmythies@telus.ne=
-t> wrote:
-> >
-> > Currently, when the CPU frequency is stale the nominal clock frequency
-> > is returned by calls to arch_freq_get_on_cpu(). Some users are
-> > confused by the high reported frequency when their system is idle
-> > and/or it is above a reduced maximum they set.
-> >
-> > This patch will return the policy minimum as the stale frequency reply
-> > from arch_freq_get_on_cpu().
-> >
-> > Reported-by: Yang Jie <yang.jie@linux.intel.com>
-> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D217597
-> > Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> > ---
-> >  arch/x86/kernel/cpu/aperfmperf.c | 13 +++++--------
-> >  drivers/cpufreq/cpufreq.c        | 18 ++++++++++++++++++
-> >  include/linux/cpufreq.h          |  5 +++++
-> >  3 files changed, 28 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/cpu/aperfmperf.c b/arch/x86/kernel/cpu/ape=
-rfmperf.c
-> > index fdbb5f07448f..44cc96864d94 100644
-> > --- a/arch/x86/kernel/cpu/aperfmperf.c
-> > +++ b/arch/x86/kernel/cpu/aperfmperf.c
-> > @@ -418,9 +418,10 @@ unsigned int arch_freq_get_on_cpu(int cpu)
-> >         unsigned long last;
-> >         u64 acnt, mcnt;
-> >
-> > -       if (!cpu_feature_enabled(X86_FEATURE_APERFMPERF))
-> > -               goto fallback;
-> > -
-> > +       if (!cpu_feature_enabled(X86_FEATURE_APERFMPERF)){
-> > +               freq =3D cpufreq_quick_get(cpu);
-> > +               return freq ? freq : cpufreq_quick_get_min(cpu);
-> > +       }
-> >         do {
-> >                 seq =3D raw_read_seqcount_begin(&s->seq);
-> >                 last =3D s->last_update;
-> > @@ -433,13 +434,9 @@ unsigned int arch_freq_get_on_cpu(int cpu)
-> >          * which covers idle and NOHZ full CPUs.
-> >          */
-> >         if (!mcnt || (jiffies - last) > MAX_SAMPLE_AGE)
-> > -               goto fallback;
-> > +               return cpufreq_quick_get_min(cpu);
-> >
-> >         return div64_u64((cpu_khz * acnt), mcnt);
-> > -
-> > -fallback:
-> > -       freq =3D cpufreq_quick_get(cpu);
-> > -       return freq ? freq : cpu_khz;
->
-> It looks to me like modifying cpufreq_quick_get) to return policy->min
-> if policy->cur is 0 would work in a similar way, wouldn't it?
+Hello,
 
-For the configuration of intel_cpufreq driver (intel_pstate in
-passive mode), schedutil governor, HWP enabled, for
-a stale frequency  policy->cur is not 0 and will always
-be whatever the min value was when the driver was initialized,
-regardless of what has been set since.
+On 7/24/23 15:30, Elliot Berman wrote:
+> PSCI implements a restart notifier for architectural defined resets.
+> The SYSTEM_RESET2 call allows vendor firmware to define additional reset
+> types which could be mapped to the reboot reason.
+> 
+> Implement a driver to wire the reboot-mode framework to make vendor
+> SYSTEM_RESET2 calls on reboot.
+> 
+> This is a continuation from https://lore.kernel.org/all/4a679542-b48d-7e11-f33a-63535a5c68cb@quicinc.com/
 
-The patch I submitted deals with that situation also.
+Would appreciate being CC'd on a the non-RFC postings of this patch. 
+FWIW, my use case is better described with this earlier submission:
 
-A complete list of driver/governor/HWP stale frequency
-replies can be found on the bugzilla report at:
+https://lore.kernel.org/lkml/20220122035421.4086618-1-f.fainelli@gmail.com/T/#m74e4243c1af3a8d896e19b573b58f562fa09961d
 
-https://bugzilla.kernel.org/attachment.cgi?id=3D304694
+It would be neat if I could leverage your driver in order to implement 
+this custom "reboot powercycle" implementation. Towards that goal, we 
+would likely need to specify the desired reboot "sub" operation 
+alongside its PSCI SYSTEM_RESET2 reboot type argument?
 
-There might be push back on some of the performance
-governor stale frequency replies. I could not figure out
-a performance governor dependant reply.
+Thanks!
+-- 
+Florian
 
-Also there are other callers to cpufreq_quick_get
-and I was not sure I could mess with the function
-response for them. For example
-drivers/devfreq/tegra30-devfreq.c
-and drivers/thermal/cpufreq_cooling.c
-and drivers/powercap/dtpm_cpu.c
 
->
-> >  }
-> >
-> >  static int __init bp_init_aperfmperf(void)
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 50bbc969ffe5..a0b24f61a5b0 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -1796,6 +1796,24 @@ unsigned int cpufreq_quick_get_max(unsigned int =
-cpu)
-> >  }
-> >  EXPORT_SYMBOL(cpufreq_quick_get_max);
-> >
-> > +/**
-> > + * cpufreq_quick_get_min - return the min frequency for a given CPU
-> > + * @cpu: CPU number
-> > + */
-> > +unsigned int cpufreq_quick_get_min(unsigned int cpu)
-> > +{
-> > +       struct cpufreq_policy *policy =3D cpufreq_cpu_get(cpu);
-> > +       unsigned int ret_freq =3D 0;
-> > +
-> > +       if (policy) {
-> > +               ret_freq =3D policy->min;
-> > +               cpufreq_cpu_put(policy);
-> > +       }
-> > +
-> > +       return ret_freq;
-> > +}
-> > +EXPORT_SYMBOL(cpufreq_quick_get_min);
-> > +
-> >  /**
-> >   * cpufreq_get_hw_max_freq - get the max hardware frequency of the CPU
-> >   * @cpu: CPU number
-> > diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> > index 172ff51c1b2a..c74dcb5f9263 100644
-> > --- a/include/linux/cpufreq.h
-> > +++ b/include/linux/cpufreq.h
-> > @@ -220,6 +220,7 @@ static inline bool policy_is_shared(struct cpufreq_=
-policy *policy)
-> >  unsigned int cpufreq_get(unsigned int cpu);
-> >  unsigned int cpufreq_quick_get(unsigned int cpu);
-> >  unsigned int cpufreq_quick_get_max(unsigned int cpu);
-> > +unsigned int cpufreq_quick_get_min(unsigned int cpu);
-> >  unsigned int cpufreq_get_hw_max_freq(unsigned int cpu);
-> >  void disable_cpufreq(void);
-> >
-> > @@ -250,6 +251,10 @@ static inline unsigned int cpufreq_quick_get_max(u=
-nsigned int cpu)
-> >  {
-> >         return 0;
-> >  }
-> > +static inline unsigned int cpufreq_quick_get_min(unsigned int cpu)
-> > +{
-> > +       return 0;
-> > +}
-> >  static inline unsigned int cpufreq_get_hw_max_freq(unsigned int cpu)
-> >  {
-> >         return 0;
-> > --
-> > 2.25.1
-> >
-> >
+--0000000000004f9866060154825b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEz1PYcnQsSlImKD
+zh34C6fxsZfkrdFhA0PJkwpD6V4fMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDcyNTE5MTIxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCPwOyABgNvCheWmE3sTyI6fUWO0igIjFSM
+j0KOgUuD42x8jlO9Rbh2ocb/b7N6Vs7H6SAaTbUrTCAdCCAzzFxqY2H6f3uAHU8IanjQujI8kvsd
+iOUnNP81Tr5iofg6VmI84T1kX2X5cTwePxsDIPfr/6ZSLLOcyFEkzLynz95mG5C0RPZd7yFSFRE9
+zQfRFmNSriFGi+CbFLIENJjOg97qBaF3hqlDJ4+/iReuEvdzR7/r9yD93n9l1DG8mQoKXyV8lGI7
+oPRJXPXyRP3NqaX4iqg5JZersQ/H6ctrIuWMkxcAamyiiSmbAEBr4VYYszbsPTMmaFnqt0KgfLlL
+qMig
+--0000000000004f9866060154825b--
