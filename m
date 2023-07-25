@@ -2,171 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8A3761B03
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96066761AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjGYOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        id S232279AbjGYOIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbjGYOIs (ORCPT
+        with ESMTP id S230154AbjGYOIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:08:48 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF82D1FD7;
-        Tue, 25 Jul 2023 07:08:46 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PDXDMu010531;
-        Tue, 25 Jul 2023 16:08:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=aKox1fifr/MD7CscnSNaYClzgh1MKEowYV/1CFbHY8Q=;
- b=4sFWeFLREgJioc9H+rODp72hj3AVdLAeXn//m7QoqBPjLcHM3h6ErPmn4WA399Y/aITY
- Es+zEl+7c1OuNWP/mY/sYFUWBgIrS0ZnwoA5voqLfap1MOnNtJ/zdQsJH70zP6mKb4It
- up4nrSg6m/QvGFbwtP1STGuEVZLJ00BGoK2EjvjlEjCcZJFyhQQwWBxUeAAPCbeV4q3h
- 6aBJcowFMNfbDdrNiVfgGpJZ6jk6/MU4C0knjVH4EQXo3oCJXoEvofraY3JZmoYetI5I
- ZcYWT0tL9hA+ODD+fHxyfM0nlDUmDa3FOMio5gfyLhC4I0CiM1Tbi4NIEhA6R3rIQpjx iw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2bkbhv00-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 16:08:01 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B9F8E100048;
-        Tue, 25 Jul 2023 16:07:56 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5ACB4241EF6;
-        Tue, 25 Jul 2023 16:07:56 +0200 (CEST)
-Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 25 Jul
- 2023 16:07:54 +0200
-Message-ID: <1faa5511-a341-9c17-5e2a-974f8139d1d6@foss.st.com>
-Date:   Tue, 25 Jul 2023 16:07:49 +0200
+        Tue, 25 Jul 2023 10:08:35 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F076F102;
+        Tue, 25 Jul 2023 07:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690294115; x=1721830115;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9y/LiJLrXSm1fXP3reG+FrB4JdZTCsireB5Ygj7UXtE=;
+  b=ak3C7n/YDDwKImoDEit3M56Mp9/0LeVjlcYdeVm8ClcnU2BobEBP4bMZ
+   wArXewJP3nkq/qA9TgSDpuuooGNbgFQmigut9U4FB4yCfa0/w6tfwJ1nm
+   22RkXAS0fCABWyW9ZA7f7mXAIK3f26CqSlBdNZLnMN0FMOKBy0/R+Q7zO
+   7f9PyizlJvvOt4p8KdY07edUuzU8qUTfdFU/EBKdLCfl3RJEsA+U28aEX
+   t95BaKj0JAWUqJgzb4WS6zXbs2dJ9DjGTwqbUyownCDI6uEzCbm+Iju+1
+   CXLe2t7Rsto7lMCeMHl6BZeRwbveEWZm4RmjeBNFiR71cGhoFLbpT/j3h
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="431536742"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="431536742"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 07:08:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="796156912"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="796156912"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.37.150])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 07:08:19 -0700
+Message-ID: <1bd2e89c-8316-18fe-6584-c517da6585c4@intel.com>
+Date:   Tue, 25 Jul 2023 17:08:16 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 07/10] arm64: dts: st: add RIFSC as a domain controller
- for STM32MP25x boards
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] perf machine: Include data symbols in the kernel
+ map
 Content-Language: en-US
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <vkoul@kernel.org>, <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>
-CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
- <20230705172759.1610753-8-gatien.chevallier@foss.st.com>
- <61d93738-4ffd-411d-d32c-912c14eea56d@foss.st.com>
- <997780a9-1cbc-46a2-2743-7fd493682278@foss.st.com>
-In-Reply-To: <997780a9-1cbc-46a2-2743-7fd493682278@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.201.21.121]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <20230725001929.368041-1-namhyung@kernel.org>
+ <20230725001929.368041-2-namhyung@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230725001929.368041-2-namhyung@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-On 7/6/23 11:30, Gatien CHEVALLIER wrote:
-> Hi Alex,
+On 25/07/23 03:19, Namhyung Kim wrote:
+> When perf record -d is used, it needs data mmaps to symbolize global data.
+> But it missed to collect kernel data maps so it cannot symbolize them.
+> Instead of having a separate map, just increase the kernel map size to
+> include the data section.
 > 
-> On 7/6/23 11:25, Alexandre TORGUE wrote:
->> Hi Gatien
->>
->> On 7/5/23 19:27, Gatien Chevallier wrote:
->>> RIFSC is a firewall controller. Change its compatible so that is matches
->>> the documentation and reference RIFSC as a feature-domain-controller.
->>>
->>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->>> ---
->>>   arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 ++++-
->>>   1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi 
->>> b/arch/arm64/boot/dts/st/stm32mp251.dtsi
->>> index 5268a4321841..62101084cab8 100644
->>> --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
->>> +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
->>> @@ -106,17 +106,20 @@ soc@0 {
->>>           ranges = <0x0 0x0 0x0 0x80000000>;
->>>           rifsc: rifsc-bus@42080000 {
->>> -            compatible = "simple-bus";
->>> +            compatible = "st,stm32mp25-rifsc";
->>
->> You could keep "simple-bus" compatible (in second position). In case 
->> of the RIFSC is not probed, the platform will be able to boot. If you 
->> agree you can use the same for ETZPC.
->>
->> Cheers
->> Alex
+> Probably we can have a separate kernel map for data, but the current
+> code assumes a single kernel map.  So it'd require more changes in other
+> places and looks error-prone.  I decided not to go that way for now.
 > 
-> Sure, good point.
+> Also it seems the kernel module size already includes the data section.
 > 
-> I'll change that in V2
+> For example, my system has the following.
 > 
-> Best regards,
-> Gatien
+>   $ grep -e _stext -e _etext -e _edata /proc/kallsyms
+>   ffffffff99800000 T _stext
+>   ffffffff9a601ac8 T _etext
+>   ffffffff9b446a00 D _edata
+> 
+> Size of the text section is (0x9a601ac8 - 0x99800000 = 0xe01ac8) and
+> size including data section is (0x9b446a00 - 0x99800000 = 0x1c46a00).
+> 
+> Before:
+>   $ perf record -d true
+> 
+>   $ perf report -D | grep MMAP | head -1
+>   0 0 0x460 [0x60]: PERF_RECORD_MMAP -1/0: [0xffffffff99800000(0xe01ac8) @ 0xffffffff99800000]: x [kernel.kallsyms]_text
+>                                                                ^^^^^^^^
+>                                                                  here
+> After:
+>   $ perf report -D | grep MMAP | head -1
+>   0 0 0x460 [0x60]: PERF_RECORD_MMAP -1/0: [0xffffffff99800000(0x1c46a00) @ 0xffffffff99800000]: x [kernel.kallsyms]_text
+>                                                                ^^^^^^^^^
+> 
+> Instead of just replacing it to _edata, try _edata first and then fall
+> back to _etext just in case.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Actually, it would be a bad idea to keep "simple-bus" as a compatible.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Practical example:
-1) Firewall controller forbids a device probe by marking the device's
-node as populated (OF_POPULATED flag).
-2) The simple-bus, which is simple, populates all the devices
-from the device tree data, overriding what the firewall bus has done.
-3)=>Forbidden device's driver will be probed.
+> ---
+>  tools/perf/util/machine.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 4e62843d51b7..11de3ca8d4fa 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -1216,7 +1216,9 @@ static int machine__get_running_kernel_start(struct machine *machine,
+>  
+>  	*start = addr;
+>  
+> -	err = kallsyms__get_function_start(filename, "_etext", &addr);
+> +	err = kallsyms__get_symbol_start(filename, "_edata", &addr);
+> +	if (err)
+> +		err = kallsyms__get_function_start(filename, "_etext", &addr);
+>  	if (!err)
+>  		*end = addr;
+>  
 
-I think it's best to keep one compatible. If someone wants these drivers
-as external modules, then it'll be best to handle this differently.
-I'll resubmit with a single compatible for V2, please do not
-hesitate to comment on the V2 if you're not okay with this.
-
-Best regards,
-Gatien
-
->>
->>>               reg = <0x42080000 0x1000>;
->>>               #address-cells = <1>;
->>>               #size-cells = <1>;
->>>               ranges;
->>> +            feature-domain-controller;
->>> +            #feature-domain-cells = <1>;
->>>               usart2: serial@400e0000 {
->>>                   compatible = "st,stm32h7-uart";
->>>                   reg = <0x400e0000 0x400>;
->>>                   interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
->>>                   clocks = <&ck_flexgen_08>;
->>> +                feature-domains = <&rifsc 32>;
->>>                   status = "disabled";
->>>               };
->>>           };
->>
