@@ -2,59 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 818A5761A5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1D2761A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjGYNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:46:56 -0400
+        id S231450AbjGYNrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:47:10 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjGYNqw (ORCPT
+        with ESMTP id S229905AbjGYNrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:46:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6D81FF7;
-        Tue, 25 Jul 2023 06:46:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 837006171E;
-        Tue, 25 Jul 2023 13:46:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C76EC433C7;
-        Tue, 25 Jul 2023 13:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690292798;
-        bh=JZqrPn+/DHRI6pWh4me2MAQvwy7w4laz7lhHcxIHSxA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z2gILGbcAHKPc+dC4tnYImKJ8Lz6VQz6UgiEbMc2w+TJIzDMlkPw8kkC7EiZd7Q0B
-         wSjleOQqtX3QaxF1h1zqruU/AmEW6FGOtR0GlWzOVrStTevaYkxa9L54+ZlNo2k0KF
-         bSOqTF2M7wgBcoxCWLMNJkrapbSqbOc2KVI+ZZSzeBqVaTwQ0li+mP4VgWBWpkgTcw
-         JpS0rtVsjdNM11gXgUxMho0Qbs6wGzV+7TUPE3fadPTOhTofY0/ipoEcWTSBaxA8bj
-         Vf85uFdzOGyVZ08wyPOT1ge0v6F5uUwQQBuATHRD4QCRdE+A0oHjmSK9n7FUyjLDFc
-         R45KWZoFXkrDg==
-Date:   Tue, 25 Jul 2023 14:46:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2 1/1] Documentation: core-api: Drop :export: for
- int_log.h
-Message-ID: <b761d010-ef21-4be6-b6c3-678498b7fa71@sirena.org.uk>
-References: <20230725104956.47806-1-andriy.shevchenko@linux.intel.com>
- <87a5vkb0ee.fsf@meer.lwn.net>
+        Tue, 25 Jul 2023 09:47:08 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7324810FA;
+        Tue, 25 Jul 2023 06:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690292825; x=1721828825;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+OP3tS0a6vPFOecpYmL8uA5ooqpSQiEgNnaksnOSZtQ=;
+  b=bb7HfaBzkEk+MyncxF9qHtjbHTowxedaHPFbP5Mrknsf7XEzcDAiGexr
+   aqavvuV+SdEdYGkafyMHSDC5l7N2OarRg2WIhNAFYEtOWOOlFTiMsn3Td
+   SNGwrCYWUJrzZMlOUvqFStHSLkNmOxiDbyW4QrY0q1nxHhmm5KLu8PQlb
+   5jvMrp8BafVNri0m03OpvI5aQlt5yxz+QUX10Pq42WjOWT/rH/huZ06D8
+   X4XJmb3SX3HhYA1j1hc5jaweHnFuFlDxJpURlmg7VKdLlZ8uLfh5VrWw6
+   faFG/oyqH3jA/v8BXy9TTSIjxcngx1zjo/pR+EP/3p87tUqEd4Co32g14
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352624098"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="352624098"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:47:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755763480"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="755763480"
+Received: from grdarcy-mobl1.ger.corp.intel.com (HELO [10.213.228.4]) ([10.213.228.4])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:47:00 -0700
+Message-ID: <9200b403-6376-96da-d84c-783a3371f73f@linux.intel.com>
+Date:   Tue, 25 Jul 2023 14:46:58 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sx+tKS4ZQ5MXdS0r"
-Content-Disposition: inline
-In-Reply-To: <87a5vkb0ee.fsf@meer.lwn.net>
-X-Cookie: Happiness is the greatest good.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 12/17] cgroup/drm: Introduce weight based drm cgroup
+ control
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-13-tvrtko.ursulin@linux.intel.com>
+ <ZLsEEYDFlJZwrJiV@slm.duckdns.org>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <ZLsEEYDFlJZwrJiV@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,36 +81,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---sx+tKS4ZQ5MXdS0r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 21/07/2023 23:17, Tejun Heo wrote:
+> On Wed, Jul 12, 2023 at 12:46:00PM +0100, Tvrtko Ursulin wrote:
+>> +DRM scheduling soft limits
+>> +~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Please don't say soft limits for this. It means something different for
+> memcg, so it gets really confusing. Call it "weight based CPU time control"
+> and maybe call the triggering points as thresholds.
 
-On Tue, Jul 25, 2023 at 07:12:25AM -0600, Jonathan Corbet wrote:
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+Yes sorry, you said that before and I forgot to reword it all when 
+re-spinning. I have now marked it as TODO in my email client so 
+hopefully next time round I don't forget.
 
-> > The :export: keyword makes sense only for C-files, where EXPORT_SYMBOL()
-> > might appear. Otherwise kernel-doc may not produce anything out of this
-> > file.
+Regards,
 
-> So I still can't take this patch for the reasons described before.  It
-> looks like Mark took the patch that added the problem, so perhaps he
-> should be a recipient of this one too?  I'll add him to the CC...
-
-Is this the same patch I applied yesterday or a different one?
-
---sx+tKS4ZQ5MXdS0r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS/0jUACgkQJNaLcl1U
-h9AVuQf/eS2VDsEqbQkWzEHHEkArGf8F18F0Qgg37XCfM2YZnAuFeYTHC7GheM44
-6cOWRRWa/PeOO4ywBCddgHokVy54IgzKeRoTP4au9slwbskxrrdfd3cjy2FMzQe0
-iUJmMSeky1zuvf+tZeNKTcrrV7bYF0chIpD8HhLcq9qsdiz+I8sxCuYmsu+U50L7
-pUJeVlVB+LZ8CmhTpc8MYYMUcavdGoCbW3/0GDB2onqn/MsJQQBGYAOdRbGGl3Wc
-t6HD3Fo6QCF5PA3wm0+rgI1qtAT8hVhKukGEdS2A6xnUqN3hmftjbFX1kS9pmSZa
-J2bDUU7+2DwkR91t1L8bANya5PrSbg==
-=d9c9
------END PGP SIGNATURE-----
-
---sx+tKS4ZQ5MXdS0r--
+Tvrtko
