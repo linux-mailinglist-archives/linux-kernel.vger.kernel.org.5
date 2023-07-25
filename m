@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF93D762560
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696FB762552
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjGYWCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S229798AbjGYWBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjGYWCP (ORCPT
+        with ESMTP id S230469AbjGYWBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:02:15 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29ED2135
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:49 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5635233876bso3129978a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:49 -0700 (PDT)
+        Tue, 25 Jul 2023 18:01:04 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0022E0;
+        Tue, 25 Jul 2023 15:01:03 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-5634d8d1db0so3836682eaf.0;
+        Tue, 25 Jul 2023 15:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322509; x=1690927309;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZbjAqcZWDEPBu4Z5VgM6o5j9i98p8IgHL/vVs/X78Tk=;
-        b=UIgE/7MBAcFLmyRerXAOoLDeD7A/VMjQ+Or6J5okuNTdygnqisvlbhUFjqiNcH5mfU
-         dIHeqek9tz4JhUXSrf9sDuA8gHgtKL2UH9T2AgDGGXmfPlx7dUnLgLvfPTZfrrzebC+e
-         kvX/aJiHWNuIKUssqf1mgMt7q1aeZ6uErcbRzFdnFH1pk1LtE+iadkzY48WgqkalCemE
-         N40BE9CE5oukPh6gJmrGtYEOXBLyo0vSOsraaJmIO3kw3bNizXCIMURK1jcE25RGFrOj
-         ndhcLgVqujW0LLlszEKxT7OCXpvK6mZRmcaYBNgv6pNBJcI+2Wae/LKBXlZBNNZMoCYk
-         a1ug==
+        d=gmail.com; s=20221208; t=1690322463; x=1690927263;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QX7T2RPgbuYmgoQOJwoEsgAUtn61DiADmPjBuL7fWDc=;
+        b=hFVnEW+UvIkZfF9U6GFwGnUmRFoV5LNdQd7RH61zvA4z8nURZU4gp3EszcF63CMdI0
+         FygbNn7LHdbZ5MBZFW+YcdR8ndLv98WAgRJPj673nOrK1e3iTpgW/2Jn/507ZlaOw32w
+         JfRENeqIqwMfPFTa8U7Goo/9WIYxrHYSrxAVHJfl5lbHD6ewUthSxKNXst56HxOA9abw
+         6day8S0+bW6+KdGQWYYxRAHIouf8XH4zqWBvJeza0DYEvIjEi0+D18UXxWSSooW26wOe
+         cuPpHWDHnKhrJD5Ce/OayN1cuxnAnoCYArLZtPB36035XIKy/9RD4eg5F2Sj3H4Nt0rE
+         0r/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322509; x=1690927309;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZbjAqcZWDEPBu4Z5VgM6o5j9i98p8IgHL/vVs/X78Tk=;
-        b=PXLxRzOJVVDryutJGPI/fAx6lpZe5SirtK7Vlef7lbA1ypapVbannbJvMBVU1Y7teB
-         vErtG5CiURgECqMlwdUtMNIAWtjBodj8ejRehv28a6W4G19B3L5AkZN7dZNckVg+429a
-         MClF3wfdCKxKcKrIJYAerbYPdisKNs9wRXguJqWOzvJcQKtvtGuiuXA9OCk/pL9z1UoK
-         QLqiz3vFmqEh0GSLoW7gT4+MdmNBmoZZ50o4VpOtmgeR9fLgCntSgqzbgtbx3i83R6oi
-         rIYf22S6rHsEeZ0rRbDFP1+eGzlBCmEZN+UACOmbuSHCe/9FlkZDNybbBsz96G/PMBbs
-         xGzg==
-X-Gm-Message-State: ABy/qLbGBpd85O1O4+R8MvzAy6pn7qZ6BVbXdfi++Z43kdYCLbGYpNJ8
-        e4ZmcRkVdJ+ZF2JqkMbk6Etrc5COQwVK
-X-Google-Smtp-Source: APBJJlGvIFzyScaDHCvh1cO3MTYc7Lpg8/vEd/IveZYdr5gfm1CGYT3vx+XfuEJnvqmR1TZ+hHqPb0UhI5gJ
-X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
- (user=afranji job=sendgmr) by 2002:a63:6f86:0:b0:55a:12cf:3660 with SMTP id
- k128-20020a636f86000000b0055a12cf3660mr2074pgc.1.1690322508626; Tue, 25 Jul
- 2023 15:01:48 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 22:00:54 +0000
-In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
-Mime-Version: 1.0
-References: <20230725220132.2310657-1-afranji@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230725220132.2310657-2-afranji@google.com>
-Subject: [PATCH v4 01/28] KVM: selftests: Add function to allow one-to-one GVA
- to GPA mappings
-From:   Ryan Afranji <afranji@google.com>
-To:     linux-kselftest@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
-        sagis@google.com, erdemaktas@google.com, afranji@google.com,
-        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
-        maz@kernel.org, bgardon@google.com, jmattson@google.com,
-        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
-        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
-        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
-        borntraeger@de.ibm.com, eric.auger@redhat.com,
-        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
-        pshier@google.com, axelrasmussen@google.com,
-        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
-        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, ackerleytng@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1690322463; x=1690927263;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QX7T2RPgbuYmgoQOJwoEsgAUtn61DiADmPjBuL7fWDc=;
+        b=J0cXrQGfn0wrsIofuIb3mo85XbFRTOTsZqwAMJYoLEzJR4/VLrxxgnEvAar+6CiaER
+         iFpTDSm20XBt0nSOSavJL1G/1qMG/EvsU+zrqjTQVrCtLBVAmoXA7LD/ZUUb+x2JDHVL
+         hpZ+XsCIgCRl2XO05rpcKWq1vb36F7UlIbN3CnW4H5/raCdTGHkNmc5sAOYJ32ALAKMb
+         le6VmQsNNguZ6UjcXxqH3KjE+eHzqUBew8eSjapTHIyxxEde7mmEkTrxnfYyOwdhkVxP
+         QpT3a3/s7unehDHJ/U6o7ezaUaVhaW74LGFQ1DApJmHb+jxvWoxVuNTDATr9q2BOyHh5
+         jtMQ==
+X-Gm-Message-State: ABy/qLYW0HapcZrSYZ2pT9dybN0Kp0fig8bx0T3stUq18As55sie4gF2
+        RY3u/Mx55htzDCpp/eYdHys=
+X-Google-Smtp-Source: APBJJlHYOTWAkHaNlbdB4sQSR8mFdK35EDIebnNZ3A0a3Pih3TclyM3kSYF439JcIVzJh2yxtFrfww==
+X-Received: by 2002:a4a:3107:0:b0:566:fcc8:5b6e with SMTP id k7-20020a4a3107000000b00566fcc85b6emr79987ooa.6.1690322463049;
+        Tue, 25 Jul 2023 15:01:03 -0700 (PDT)
+Received: from grumpy-VECTOR.hsd1.tx.comcast.net ([2601:2c3:480:7390:871d:ebb3:c6e2:8ac3])
+        by smtp.gmail.com with ESMTPSA id v40-20020a4a8c6b000000b0056688eea98csm5870026ooj.27.2023.07.25.15.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 15:01:02 -0700 (PDT)
+From:   Jorge Lopez <jorgealtxwork@gmail.com>
+X-Google-Original-From: Jorge Lopez <jorge.lopez2@hp.com>
+To:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
+        ilpo.jarvinen@linux.intel.com
+Subject: [PATCH 3/5] hp-bioscfg: Fix memory leaks in integer_elements_from_package
+Date:   Tue, 25 Jul 2023 17:00:54 -0500
+Message-Id: <20230725220056.25560-4-jorge.lopez2@hp.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230725220056.25560-1-jorge.lopez2@hp.com>
+References: <20230725220056.25560-1-jorge.lopez2@hp.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,133 +73,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ackerley Tng <ackerleytng@google.com>
+Address memory leaks in hp_populate_integer_elements_from_package()
+and uninitialized variable errors.
 
-One-to-one GVA to GPA mappings can be used in the guest to set up boot
-sequences during which paging is enabled, hence requiring a transition
-from using physical to virtual addresses in consecutive instructions.
+Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
 
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Change-Id: I5a15e241b3ce9014e17a794478bbfa65b9d8e0a1
-Signed-off-by: Ryan Afranji <afranji@google.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h     |  3 +
- tools/testing/selftests/kvm/lib/kvm_util.c    | 81 ++++++++++++++++++-
- 2 files changed, 83 insertions(+), 1 deletion(-)
+Based on the latest platform-drivers-x86.git/for-next
+---
+ drivers/platform/x86/hp/hp-bioscfg/int-attributes.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index af26c5687d86..a07ce5f5244a 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -513,6 +513,9 @@ vm_vaddr_t vm_vaddr_unused_gap(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_mi
- vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min);
- vm_vaddr_t __vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
- 			    enum kvm_mem_region_type type);
-+vm_vaddr_t vm_vaddr_alloc_shared(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min);
-+vm_vaddr_t vm_vaddr_alloc_1to1(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
-+			       uint32_t data_memslot);
- vm_vaddr_t vm_vaddr_alloc_pages(struct kvm_vm *vm, int nr_pages);
- vm_vaddr_t __vm_vaddr_alloc_page(struct kvm_vm *vm,
- 				 enum kvm_mem_region_type type);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 518990ca408d..5bbcddcd6796 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1371,6 +1371,58 @@ vm_vaddr_t __vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
- 	return vaddr_start;
- }
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/int-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/int-attributes.c
+index 7364c5ef9ef8..97f88e0ef0cc 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/int-attributes.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/int-attributes.c
+@@ -143,7 +143,7 @@ static int hp_populate_integer_elements_from_package(union acpi_object *integer_
+ 	char *str_value = NULL;
+ 	int value_len;
+ 	int ret;
+-	u32 int_value;
++	u32 int_value = 0;
+ 	int elem;
+ 	int reqs;
+ 	int eloc;
+@@ -179,6 +179,7 @@ static int hp_populate_integer_elements_from_package(union acpi_object *integer_
+ 		if (expected_integer_types[eloc] != integer_obj[elem].type) {
+ 			pr_err("Error expected type %d for elem %d, but got type %d instead\n",
+ 			       expected_integer_types[eloc], elem, integer_obj[elem].type);
++			kfree(str_value);
+ 			return -EIO;
+ 		}
+ 		/* Assign appropriate element value to corresponding field*/
+@@ -239,6 +240,7 @@ static int hp_populate_integer_elements_from_package(union acpi_object *integer_
+ 					str_value,
+ 					sizeof(integer_data->common.prerequisites[reqs]));
+ 				kfree(str_value);
++				str_value = NULL;
+ 			}
+ 			break;
  
-+/*
-+ * VM Virtual Address Allocate Shared/Encrypted
-+ *
-+ * Input Args:
-+ *   vm - Virtual Machine
-+ *   sz - Size in bytes
-+ *   vaddr_min - Minimum starting virtual address
-+ *   paddr_min - Minimum starting physical address
-+ *   data_memslot - memslot number to allocate in
-+ *   encrypt - Whether the region should be handled as encrypted
-+ *
-+ * Output Args: None
-+ *
-+ * Return:
-+ *   Starting guest virtual address
-+ *
-+ * Allocates at least sz bytes within the virtual address space of the vm
-+ * given by vm.  The allocated bytes are mapped to a virtual address >=
-+ * the address given by vaddr_min.  Note that each allocation uses a
-+ * a unique set of pages, with the minimum real allocation being at least
-+ * a page.
-+ */
-+static vm_vaddr_t
-+_vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
-+		vm_paddr_t paddr_min, uint32_t data_memslot, bool encrypt)
-+{
-+	uint64_t pages = (sz >> vm->page_shift) + ((sz % vm->page_size) != 0);
+@@ -258,6 +260,9 @@ static int hp_populate_integer_elements_from_package(union acpi_object *integer_
+ 			pr_warn("Invalid element: %d found in Integer attribute or data may be malformed\n", elem);
+ 			break;
+ 		}
 +
-+	virt_pgd_alloc(vm);
-+	vm_paddr_t paddr = _vm_phy_pages_alloc(vm, pages,
-+					       paddr_min,
-+					       data_memslot, encrypt);
-+
-+	/*
-+	 * Find an unused range of virtual page addresses of at least
-+	 * pages in length.
-+	 */
-+	vm_vaddr_t vaddr_start = vm_vaddr_unused_gap(vm, sz, vaddr_min);
-+
-+	/* Map the virtual pages. */
-+	for (vm_vaddr_t vaddr = vaddr_start; pages > 0;
-+		pages--, vaddr += vm->page_size, paddr += vm->page_size) {
-+
-+		virt_pg_map(vm, vaddr, paddr);
-+
-+		sparsebit_set(vm->vpages_mapped,
-+			vaddr >> vm->page_shift);
-+	}
-+
-+	return vaddr_start;
-+}
-+
- /*
-  * VM Virtual Address Allocate
-  *
-@@ -1392,7 +1444,34 @@ vm_vaddr_t __vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
-  */
- vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min)
- {
--	return __vm_vaddr_alloc(vm, sz, vaddr_min, MEM_REGION_TEST_DATA);
-+	return _vm_vaddr_alloc(vm, sz, vaddr_min,
-+			       KVM_UTIL_MIN_PFN * vm->page_size, 0,
-+			       vm->protected);
-+}
-+
-+vm_vaddr_t vm_vaddr_alloc_shared(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min)
-+{
-+	return _vm_vaddr_alloc(vm, sz, vaddr_min,
-+			       KVM_UTIL_MIN_PFN * vm->page_size, 0, false);
-+}
-+
-+/**
-+ * Allocate memory in @vm of size @sz in memslot with id @data_memslot,
-+ * beginning with the desired address of @vaddr_min.
-+ *
-+ * If there isn't enough memory at @vaddr_min, find the next possible address
-+ * that can meet the requested size in the given memslot.
-+ *
-+ * Return the address where the memory is allocated.
-+ */
-+vm_vaddr_t vm_vaddr_alloc_1to1(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
-+			       uint32_t data_memslot)
-+{
-+	vm_vaddr_t gva = _vm_vaddr_alloc(vm, sz, vaddr_min, (vm_paddr_t) vaddr_min,
-+					 data_memslot, vm->protected);
-+	ASSERT_EQ(gva, addr_gva2gpa(vm, gva));
-+
-+	return gva;
- }
- 
- /*
++		kfree(str_value);
++		str_value = NULL;
+ 	}
+ exit_integer_package:
+ 	kfree(str_value);
 -- 
-2.41.0.487.g6d72f3e995-goog
+2.34.1
 
