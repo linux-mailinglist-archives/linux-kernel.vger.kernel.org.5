@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3298761B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D67761B4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbjGYOUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
+        id S232642AbjGYOU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjGYOUh (ORCPT
+        with ESMTP id S232190AbjGYOUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:20:37 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98FA2680
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:16:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6687466137bso3225697b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690294573; x=1690899373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFxuOTNi48idsZt2cpb80HlTb2Zev1a6Crwl3aXBH/I=;
-        b=Vnvg+6kraoEV4R961SF/K60SkLscD6ltMXTv8foeY0JKks11+5r4lBp5ADRIJyrOGa
-         d6n2xSvOx7v42sVgmO2CyW1JxwyEDLIUYxFU/u6LAykPSzMllz9OSI3L//5uBQazyOYr
-         vCe6fhoGyES7upDBUZVVRCwUOzjt3V787cVK3tYVRXaVKTHb5X9DBhE+fA7x2cTnxfc2
-         4zscfVQYnRGlBpSkRDrLDAgcweyQv4q18QGI9NHE9wJAnCnUm5VKiGGfIW/ELbLw51GG
-         7zeRqRVYAQH19p4/3qTj+45e5XJS7pmB1NAopg+dGGPRH6LKSDZC2fUpsPpBulDZDDas
-         mwZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690294573; x=1690899373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oFxuOTNi48idsZt2cpb80HlTb2Zev1a6Crwl3aXBH/I=;
-        b=LNAEH71F9qhUO7i1s5+Zaica7Lztx4gyzENv+wr+nbENN1a2UbEETGtYIU2J1l24+k
-         mGzpCr0qDlFnd6j5M+nIEJZQT+Wox0b92uFJO4izXCHZ2AV9maXWmTWDQTz30pc68+eb
-         VSpqheKT9PAOWq4zuMDYC9QX2WbpofUO/7MdPVRDvwUdhvxd7xkFbpuvtQU0ai+WdT5x
-         qgUxYVVBNQDrbSGTES+dgpvkiCk6/qKBXBvtVc0o6Joxe3ZcCOvdJpmd7gUIgz8LjqLC
-         6JsY3C00jm7fQt1YuLCFDAyJVSmccsp4a4sQO9ZVh5nANjXCpKY6YGWqQf9FrBqeENFo
-         Lm6w==
-X-Gm-Message-State: ABy/qLYE6DbzFh9bCxWJx/qfTUkne7ZoE775+zVfb5T2fW7C4zLkWelL
-        21WnQ7yAug/Rp1LDAC13ufFPqWXKLlqeJ93zh0Y=
-X-Google-Smtp-Source: APBJJlHnwscllbyiMqyKzSni+zvMpZ7xsDOd2enSsYZDaaLi+YxRoadU3GPJJ4wXqwVYidJ2mvJSKQ==
-X-Received: by 2002:a05:6a20:841a:b0:135:4858:681 with SMTP id c26-20020a056a20841a00b0013548580681mr12732107pzd.9.1690294573391;
-        Tue, 25 Jul 2023 07:16:13 -0700 (PDT)
-Received: from linux.. (static.111.40.78.5.clients.your-server.de. [5.78.40.111])
-        by smtp.gmail.com with ESMTPSA id l24-20020a62be18000000b0064f7c56d8b7sm9601482pff.219.2023.07.25.07.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 07:16:12 -0700 (PDT)
-From:   Binglei Wang <l3b2w1@gmail.com>
-X-Google-Original-From: Binglei Wang
-To:     hch@lst.de
-Cc:     m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        l3b2w1@gmail.com
-Subject: [PATCH v2] cma: check for memory region overlapping
-Date:   Tue, 25 Jul 2023 22:16:02 +0800
-Message-Id: <20230725141602.7759-1-l3b2w1@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 25 Jul 2023 10:20:48 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFD12698;
+        Tue, 25 Jul 2023 07:19:02 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PE6isf029962;
+        Tue, 25 Jul 2023 14:16:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=d5F1KO0SVqTGkQNnrUVyswalXVag4bmTZdMD2hG6dnw=;
+ b=IV0xItgVNLtfQIB31kXD5MheV8vVU1++ojsYNg+0Lf1scTnzXbXazDxL1fM0WsvM2IID
+ NG0xIhvtU0RedE6xvfh+VjKRcqbfcYvjay7Lx+hRF3aqboEJ3lNj20DymVc0JgWjgwGz
+ jRqW64bmrBpCUMdFCHnaBajNRlh7z8DISGAb6L7IDLdlZpj7b1kWHDehTnZ06fYdd7Sa
+ cfWAm3Is3Ll71Obg8z9zvR41QBoySIMZ9JuNDg8iPSplp4XVvJB+5jsX8Qx3d1pSC29l
+ Gsa1fAsnj1QkSsqTHARlI6TUPMwm7bWiwUKdIlEijAa9WKx7CRWME4J1mF9tUWxTuSKX xQ== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s20jtmyn7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 14:16:40 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36PDsuK3002381;
+        Tue, 25 Jul 2023 14:16:39 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0txjve38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 14:16:39 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36PEGcIJ23790264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 14:16:38 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44A7C5805A;
+        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 350EF58056;
+        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
+Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 25 Jul 2023 14:16:38 +0000 (GMT)
+Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
+        id 858C07401EE; Tue, 25 Jul 2023 09:16:37 -0500 (CDT)
+From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Lakshmi Yadlapati <lakshmiy@us.ibm.com>
+Subject: [PATCH 0/1] ARM: dts: aspeed: Rainier: Remove TPM device
+Date:   Tue, 25 Jul 2023 09:16:05 -0500
+Message-Id: <20230725141606.1641080-1-lakshmiy@us.ibm.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Dp_NfcHyUeSW42wsQzgJHHAi-ysMaANq
+X-Proofpoint-GUID: Dp_NfcHyUeSW42wsQzgJHHAi-ysMaANq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=380 clxscore=1011
+ priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307250124
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: l3b2w1 <l3b2w1@gmail.com>
+TPM is not supported in Rainier, remove the TPM device.
 
-Add a overlapping check in the program flow of paring dts.
-Check if cma area overlaps with memblock-reserved areas
-(kenrel code area for example)before calling 
-early_init_fdt_scan_reserved_mem.
+Lakshmi Yadlapati (1):
+  ARM: dts: aspeed: Rainier: Remove TPM device
 
-Signed-off-by: l3b2w1 <l3b2w1@gmail.com>
----
+ arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dts | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Notes:
-    v2: delete the logic code for handling return EBUSY.
-    
-    v1: return EBUSY when detect overlapping and handle the return case.
-
- kernel/dma/contiguous.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index 6ea80ae42..20ebbcefd 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -410,6 +410,11 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
- 		return -EBUSY;
- 	}
- 
-+	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
-+		pr_info("Reserved memory: overlap with other memblock reserved region\n",
-+		return -EBUSY;
-+	}
-+
- 	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
- 	    of_get_flat_dt_prop(node, "no-map", NULL))
- 		return -EINVAL;
 -- 
-2.39.0
+2.37.2
 
