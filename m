@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A807A7613A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C196D7613F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbjGYLMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        id S234237AbjGYLPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234167AbjGYLMJ (ORCPT
+        with ESMTP id S234238AbjGYLPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:12:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3951FC6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:11:29 -0700 (PDT)
+        Tue, 25 Jul 2023 07:15:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB28E1BF5;
+        Tue, 25 Jul 2023 04:14:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03F4761681
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:11:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FC9BC433C7;
-        Tue, 25 Jul 2023 11:11:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC42561692;
+        Tue, 25 Jul 2023 11:14:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 049E1C433C7;
+        Tue, 25 Jul 2023 11:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690283488;
-        bh=0c00IIl4jNKUbzeZGk38M6Ww7nU9z5KnWG+sqFdmzd4=;
+        s=k20201202; t=1690283654;
+        bh=kZj42ScISmz4li2JKwWSsvJeodC1GyqO823+DqOgMQA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G90AbqXTzqV9gJ3g/IByNaPfrY5CDlbuwQB9NYOZWZiw6+JqHfW7Yh0Nk273J06Bj
-         fxNJBNd9viw1HaQLebeVpCoVDQVGcDRmFCPKWg/uWf0IameHekRvCoGmjbrUjasRc+
-         kY2oGbfGC3TV7HQu4t5jQjm0pvmqGxQP/0dbq/55JOftneAxUyFJTLlf8TahpLC9PB
-         1VTWON3+Hv2GZIEU8mmu91Q0h61Rpf7b19DbJxv3zsYjNkf1u0W3XmqJur1ONn9D6M
-         b0oNBkGHmfElfSk/eJ+hgscqNhMmuxq5A5zm1gr/MiCN6KrAa+iggtg7EHKGf9RHRd
-         xDQY4GgO1e/pg==
-Date:   Tue, 25 Jul 2023 12:11:23 +0100
+        b=d5pB4XYyX/A8pr8IKx/l1JTHeGyCZ2SsK+MNAA9OCo/+yt8nQFOIhMhkTmboBCRIa
+         Xp3ihxmefa6W674THia7xXWtAM4Yu9bl2wwIPl/yRUdSuPeS2PaiCf2/9Akd1BvwnO
+         cBstWGkYYCUsI/kBZzFxICr5JZiR7a1ULiUjF506GGI3bbeMGQheJcr1ksxZQ1bkDF
+         7Z1QGX91AdC1rjoDmqEqPlRMxXWYaMMeKB0JO7l7zw9fPVenA03NcMAyeaZgYCv3d/
+         qicSz1l6Hjc9RPBvMhCH/EEIJn7dl2AEvM6ZwemBYHzAES6yfKS5ai4M4KeehoFAD9
+         edIEpusA7+FWA==
+Date:   Tue, 25 Jul 2023 12:14:07 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     sunran001@208suo.com
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: fix application of sizeof to
- pointer
-Message-ID: <39df7dfb-b4ef-4775-b756-9bf8eb20731e@sirena.org.uk>
-References: <20230720073836.3285-1-xujianghui@cdjrlc.com>
- <74739aaaa05f52084757b526bc8348c8@208suo.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Saravanan Sekar <sravanhome@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Robin Gong <yibin.gong@nxp.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Pascal Paillet <p.paillet@foss.st.com>,
+        - <patches@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: add missing
+ unevaluatedProperties for each regulator
+Message-ID: <246eea6e-dd34-426f-9fc7-427d808fe8f0@sirena.org.uk>
+References: <20230725105421.99160-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+IPDrYl3L8ucP/um"
+        protocol="application/pgp-signature"; boundary="pU6qgD5QqpPaeXtO"
 Content-Disposition: inline
-In-Reply-To: <74739aaaa05f52084757b526bc8348c8@208suo.com>
-X-Cookie: Bones: "The man's DEAD, Jim!"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230725105421.99160-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: BARBARA STANWYCK makes me nervous!!
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,30 +75,34 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+IPDrYl3L8ucP/um
+--pU6qgD5QqpPaeXtO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 20, 2023 at 04:43:57PM +0800, sunran001@208suo.com wrote:
-> The coccinelle check report:
-> ./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR: application of
-> sizeof to pointer
+On Tue, Jul 25, 2023 at 12:54:20PM +0200, Krzysztof Kozlowski wrote:
+> Each regulator node, which references common regulator.yaml schema,
+> should disallow additional or unevaluated properties.  Otherwise
+> mistakes in properties will go unnoticed.
 
 This doesn't apply against current code, please check and resend.
 
---+IPDrYl3L8ucP/um
+>  Documentation/devicetree/bindings/regulator/ti,tps65090.yaml  | 1 +
+
+This doesn't seem to be upstream.
+
+--pU6qgD5QqpPaeXtO
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS/rdsACgkQJNaLcl1U
-h9BqfAf/c6lCoyIpyVjweqxzgRXJYLCVnq3RkbPAJ3ccrrlou1q5m7QCyvHAegPk
-iJmM5DQBdCY+NJPIB8qFf+ixn2gO2x70sbcalETQ6P4Y8hCBf9x+NNsGDsbMz4QE
-R43xj9Ld+T3l+ynuws/M326ZkuwyLU5WfNS9npZARJfVhzz/tioF44GIsXJ/0l7L
-3FRpDW0xdaK4T1M8j6QGSBkUuwLAop/DnWr0DNa0U67t9WVlaVLZDRXPV3bC8FZj
-phZqVUT4h475SYiUrjvTZqtSyPHcg7Dmav+MkeaqyZxGgqdXqyVoq/Y2ABVKyOIV
-EtwPtOJnMd5/32DAbSlS17A8tv5cEA==
-=BTjl
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS/rn4ACgkQJNaLcl1U
+h9Aqggf/aDeIQ1IKzvUqzKpJJNCra6EytL7wUkPxFef7t8RGjNvn50RLK+/3lwv6
+iQvyVaumklG1HDAgEHWjfQd6nOOzvoRxmX057o9Tq7cTt57Btvvo6/Oqd8qmMKgK
+j0+UTFnUtRp2K2IJ7BB5Apv8aOSvp0yRjqXuZ+U4Eb75NrjHKzpNB2Izroh/Jipt
+M8DeS5IYFX/hDBqWt/DJ7IbwoP7HWkTqcR/7uNjnamhgK13y3Snq2TN1R2GuG+YO
+CxwwBz4b+xImipL+7fNZRKWE0vz1L5VtyVwwcSfCYwDBNDnObJVmeL2nDM0ndPXD
+r1+ge6uWiU507QcyrTs0YVStltnPEQ==
+=jUXK
 -----END PGP SIGNATURE-----
 
---+IPDrYl3L8ucP/um--
+--pU6qgD5QqpPaeXtO--
