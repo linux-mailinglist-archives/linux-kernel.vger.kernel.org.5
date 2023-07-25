@@ -2,296 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD01B761BF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A85761BED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjGYOjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S233184AbjGYOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbjGYOjN (ORCPT
+        with ESMTP id S233102AbjGYOjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:39:13 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4AE5;
-        Tue, 25 Jul 2023 07:39:12 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PEVvq0016619;
-        Tue, 25 Jul 2023 14:39:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=3h/xT2+Vvmx/tydrzHFa4WmOsC3gRyuAqSFbFf4JnEk=;
- b=NkY2baIiQaFyFMB+oHM7bM9tAnp+w0jrEx++gkZcbOoBjY0X10Yp5GH/vjg4F/eOs8Pg
- L2no+igvRk6APO2kKC4RG43YfQIQRtw+deuYf+QVFllFKuF6+bTtAOlFKtFTcw+qvWFU
- Jbh+miOP40zT6hZ8l7OJEIv5nlTKR0AHAoZZSkLGsftpT/QKuWDu9cSKA1QB4633jApW
- Oc5vbzuNEOXObHGdIQs2O/OULVZl2+gXQYRUEqsvPhO4Qu5AMPmJYDYCeZo5xaagf261
- wCf35ivil5vxFYo3SgI79fSVPNo8LSc9JSze3eHz7vYntA7tlN8Khq09kJjEXhYGUsaj Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2g7wrjvd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 14:39:10 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36PEWCra018837;
-        Tue, 25 Jul 2023 14:39:08 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2g7wrjpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 14:39:08 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36PEKrKQ002132;
-        Tue, 25 Jul 2023 14:39:05 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0unjcb5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 14:39:04 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36PEd2cX18153994
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jul 2023 14:39:02 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BD602004D;
-        Tue, 25 Jul 2023 14:39:02 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBEC42004F;
-        Tue, 25 Jul 2023 14:39:01 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.155.200.166])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Jul 2023 14:39:01 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v4 6/6] KVM: s390: selftests: Add selftest for single-stepping
+        Tue, 25 Jul 2023 10:39:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC9FE5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690295906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GlLyTOX+0T4BQUjuuprKNGe/wk35wQO5DAolXb81K+Q=;
+        b=bwyYVHtUN7L1F6LHQ4lZkzIj1KK6b35FZqmPTgrPjMxIF9dr3tSKA7oH0rCEHzcwDZj4z3
+        yS8GLVI6qBURr8bB36tozRE2V7vFm5a0WVLINNxPKLjoC49aUtKfLvjNpuGuOE764JOTk1
+        ekVj01xOj9dy6JhrJ6gFxs2ecYM9+Lc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-684-auVce64ANqu_7lRPRoLZvA-1; Tue, 25 Jul 2023 10:37:24 -0400
+X-MC-Unique: auVce64ANqu_7lRPRoLZvA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-997d069a914so380932566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690295843; x=1690900643;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlLyTOX+0T4BQUjuuprKNGe/wk35wQO5DAolXb81K+Q=;
+        b=KtZEELKTkL1CuBMnw8KD5q4LJEsQe7oAhQuoDfCFCLebi+s6ruWxGnmDzvbN9DU7sU
+         KBmcOiElH2RmEfp9G2sexE2wqsNfNthG1L/W0ilqwcguPYamg3TnLnvaP8/RHja1NMIA
+         kYM9AHBsYWKn6fTImbhDtDM90lxP+WvWFSJpQR7fgSqz4H7FrRhnIGRB2URJENGKny8F
+         iiw8VWVYP462X0MnMbc1SR0xeSr/sMJ8896Ua5068YBRD/WJnVsW4xomPIflTeGtENoE
+         mlp83/fA+d73F+lPH6u7tAtotZXU1nYcY5ALvzLmS3on37OuBTylVUyJ6C5tI1JY4CUe
+         +gZQ==
+X-Gm-Message-State: ABy/qLb9X5nm7Y9dtYbdF37pkWMnPfFpMvbVeW2xWdsBHwH9i1n81qMP
+        cJbVAOB5GU4dVQdg5yh5qgiXB8igw2zJz/Jq2XoLpRBcdl9hwpKbgfEx+tDcFO1aMutmuLpEV42
+        jHXqTBIdbXgNcnugxqFsYK3aL
+X-Received: by 2002:a17:906:3059:b0:994:673:8afa with SMTP id d25-20020a170906305900b0099406738afamr12186712ejd.28.1690295843572;
+        Tue, 25 Jul 2023 07:37:23 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHGJIAXNFgHb9mK33McQ2AcRw5kTac2VE6oPd4LHiNpSDEBlQj+eKP35q0/qcpTTPNQ1A5OeQ==
+X-Received: by 2002:a17:906:3059:b0:994:673:8afa with SMTP id d25-20020a170906305900b0099406738afamr12186701ejd.28.1690295843297;
+        Tue, 25 Jul 2023 07:37:23 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id qx26-20020a170906fcda00b00982cfe1fe5dsm8320354ejb.65.2023.07.25.07.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 07:37:22 -0700 (PDT)
+Message-ID: <8ceb0052-f402-0217-2889-f9ef48a5f11f@redhat.com>
 Date:   Tue, 25 Jul 2023 16:37:21 +0200
-Message-ID: <20230725143857.228626-7-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230725143857.228626-1-iii@linux.ibm.com>
-References: <20230725143857.228626-1-iii@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: WCyFOdLvph-LkTyWccHEaWY2JebZpZ8n
-X-Proofpoint-GUID: hQ2Pb4SsV0WpKpm7WnCXiMh0YUDof2Qh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- suspectscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307250128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] platform/x86: msi-laptop: Fix rfkill out-of-sync on MSI
+ Wind U100
+Content-Language: en-US, nl
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Mark Gross <markgross@kernel.org>
+Cc:     Matthew Garrett <matthew.garrett@nebula.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230721145423.161057-1-maxtram95@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230721145423.161057-1-maxtram95@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test different variations of single-stepping into interrupts:
+Hi,
 
-- SVC and PGM interrupts;
-- Interrupts generated by ISKE;
-- Interrupts generated by instructions emulated by KVM;
-- Interrupts generated by instructions emulated by userspace.
+On 7/21/23 16:54, Maxim Mikityanskiy wrote:
+> Only the HW rfkill state is toggled on laptops with quirks->ec_read_only
+> (so far only MSI Wind U90/U100). There are, however, a few issues with
+> the implementation:
+> 
+> 1. The initial HW state is always unblocked, regardless of the actual
+>    state on boot, because msi_init_rfkill only sets the SW state,
+>    regardless of ec_read_only.
+> 
+> 2. The initial SW state corresponds to the actual state on boot, but it
+>    can't be changed afterwards, because set_device_state returns
+>    -EOPNOTSUPP. It confuses the userspace, making Wi-Fi and/or Bluetooth
+>    unusable if it was blocked on boot, and breaking the airplane mode if
+>    the rfkill was unblocked on boot.
+> 
+> Address the above issues by properly initializing the HW state on
+> ec_read_only laptops and by allowing the userspace to toggle the SW
+> state. Don't set the SW state ourselves and let the userspace fully
+> control it. Toggling the SW state is a no-op, however, it allows the
+> userspace to properly toggle the airplane mode. The actual SW radio
+> disablement is handled by the corresponding rtl818x_pci and btusb
+> drivers that have their own rfkills.
+> 
+> Tested on MSI Wind U100 Plus, BIOS ver 1.0G, EC ver 130.
+> 
+> Fixes: 0816392b97d4 ("msi-laptop: merge quirk tables to one")
+> Fixes: 0de6575ad0a8 ("msi-laptop: Add MSI Wind U90/U100 support")
+> Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../testing/selftests/kvm/s390x/debug_test.c  | 160 ++++++++++++++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/s390x/debug_test.c
+Thank you for your patch, I've applied this patch to my fixes
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index c692cc86e7da..f3306eaa7031 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -166,6 +166,7 @@ TEST_GEN_PROGS_s390x += s390x/resets
- TEST_GEN_PROGS_s390x += s390x/sync_regs_test
- TEST_GEN_PROGS_s390x += s390x/tprot
- TEST_GEN_PROGS_s390x += s390x/cmma_test
-+TEST_GEN_PROGS_s390x += s390x/debug_test
- TEST_GEN_PROGS_s390x += demand_paging_test
- TEST_GEN_PROGS_s390x += dirty_log_test
- TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
-diff --git a/tools/testing/selftests/kvm/s390x/debug_test.c b/tools/testing/selftests/kvm/s390x/debug_test.c
-new file mode 100644
-index 000000000000..a8fa9fe93b3c
---- /dev/null
-+++ b/tools/testing/selftests/kvm/s390x/debug_test.c
-@@ -0,0 +1,160 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Test KVM debugging features. */
-+#include "kvm_util.h"
-+#include "test_util.h"
-+
-+#include <linux/kvm.h>
-+
-+#define __LC_SVC_NEW_PSW 0x1c0
-+#define __LC_PGM_NEW_PSW 0x1d0
-+#define ICPT_INSTRUCTION 0x04
-+#define IPA0_DIAG 0x8300
-+#define PGM_SPECIFICATION 0x06
-+
-+/* Common code for testing single-stepping interruptions. */
-+extern char int_handler[];
-+asm("int_handler:\n"
-+    "j .\n");
-+
-+static struct kvm_vm *test_step_int_1(struct kvm_vcpu **vcpu, void *guest_code,
-+				      size_t new_psw_off, uint64_t *new_psw)
-+{
-+	struct kvm_guest_debug debug = {};
-+	struct kvm_regs regs;
-+	struct kvm_vm *vm;
-+	char *lowcore;
-+
-+	vm = vm_create_with_one_vcpu(vcpu, guest_code);
-+	lowcore = addr_gpa2hva(vm, 0);
-+	new_psw[0] = (*vcpu)->run->psw_mask;
-+	new_psw[1] = (uint64_t)int_handler;
-+	memcpy(lowcore + new_psw_off, new_psw, 16);
-+	vcpu_regs_get(*vcpu, &regs);
-+	regs.gprs[2] = -1;
-+	vcpu_regs_set(*vcpu, &regs);
-+	debug.control = KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_SINGLESTEP;
-+	vcpu_guest_debug_set(*vcpu, &debug);
-+	vcpu_run(*vcpu);
-+
-+	return vm;
-+}
-+
-+static void test_step_int(void *guest_code, size_t new_psw_off)
-+{
-+	struct kvm_vcpu *vcpu;
-+	uint64_t new_psw[2];
-+	struct kvm_vm *vm;
-+
-+	vm = test_step_int_1(&vcpu, guest_code, new_psw_off, new_psw);
-+	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_DEBUG);
-+	ASSERT_EQ(vcpu->run->psw_mask, new_psw[0]);
-+	ASSERT_EQ(vcpu->run->psw_addr, new_psw[1]);
-+	kvm_vm_free(vm);
-+}
-+
-+/* Test single-stepping "boring" program interruptions. */
-+extern char test_step_pgm_guest_code[];
-+asm("test_step_pgm_guest_code:\n"
-+    ".insn rr,0x1d00,%r1,%r0 /* dr %r1,%r0 */\n"
-+    "j .\n");
-+
-+static void test_step_pgm(void)
-+{
-+	test_step_int(test_step_pgm_guest_code, __LC_PGM_NEW_PSW);
-+}
-+
-+/*
-+ * Test single-stepping program interruptions caused by DIAG.
-+ * Userspace emulation must not interfere with single-stepping.
-+ */
-+extern char test_step_pgm_diag_guest_code[];
-+asm("test_step_pgm_diag_guest_code:\n"
-+    "diag %r0,%r0,0\n"
-+    "j .\n");
-+
-+static void test_step_pgm_diag(void)
-+{
-+	struct kvm_s390_irq irq = {
-+		.type = KVM_S390_PROGRAM_INT,
-+		.u.pgm.code = PGM_SPECIFICATION,
-+	};
-+	struct kvm_vcpu *vcpu;
-+	uint64_t new_psw[2];
-+	struct kvm_vm *vm;
-+
-+	vm = test_step_int_1(&vcpu, test_step_pgm_diag_guest_code,
-+			     __LC_PGM_NEW_PSW, new_psw);
-+	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_S390_SIEIC);
-+	ASSERT_EQ(vcpu->run->s390_sieic.icptcode, ICPT_INSTRUCTION);
-+	ASSERT_EQ(vcpu->run->s390_sieic.ipa & 0xff00, IPA0_DIAG);
-+	vcpu_ioctl(vcpu, KVM_S390_IRQ, &irq);
-+	vcpu_run(vcpu);
-+	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_DEBUG);
-+	ASSERT_EQ(vcpu->run->psw_mask, new_psw[0]);
-+	ASSERT_EQ(vcpu->run->psw_addr, new_psw[1]);
-+	kvm_vm_free(vm);
-+}
-+
-+/*
-+ * Test single-stepping program interruptions caused by ISKE.
-+ * CPUSTAT_KSS handling must not interfere with single-stepping.
-+ */
-+extern char test_step_pgm_iske_guest_code[];
-+asm("test_step_pgm_iske_guest_code:\n"
-+    "iske %r2,%r2\n"
-+    "j .\n");
-+
-+static void test_step_pgm_iske(void)
-+{
-+	test_step_int(test_step_pgm_iske_guest_code, __LC_PGM_NEW_PSW);
-+}
-+
-+/*
-+ * Test single-stepping program interruptions caused by LCTL.
-+ * KVM emulation must not interfere with single-stepping.
-+ */
-+extern char test_step_pgm_lctl_guest_code[];
-+asm("test_step_pgm_lctl_guest_code:\n"
-+    "lctl %c0,%c0,1\n"
-+    "j .\n");
-+
-+static void test_step_pgm_lctl(void)
-+{
-+	test_step_int(test_step_pgm_lctl_guest_code, __LC_PGM_NEW_PSW);
-+}
-+
-+/* Test single-stepping supervisor-call interruptions. */
-+extern char test_step_svc_guest_code[];
-+asm("test_step_svc_guest_code:\n"
-+    "svc 0\n"
-+    "j .\n");
-+
-+static void test_step_svc(void)
-+{
-+	test_step_int(test_step_svc_guest_code, __LC_SVC_NEW_PSW);
-+}
-+
-+/* Run all tests above. */
-+static struct testdef {
-+	const char *name;
-+	void (*test)(void);
-+} testlist[] = {
-+	{ "single-step pgm", test_step_pgm },
-+	{ "single-step pgm caused by diag", test_step_pgm_diag },
-+	{ "single-step pgm caused by iske", test_step_pgm_iske },
-+	{ "single-step pgm caused by lctl", test_step_pgm_lctl },
-+	{ "single-step svc", test_step_svc },
-+};
-+
-+int main(int argc, char *argv[])
-+{
-+	int idx;
-+
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(testlist));
-+	for (idx = 0; idx < ARRAY_SIZE(testlist); idx++) {
-+		testlist[idx].test();
-+		ksft_test_result_pass("%s\n", testlist[idx].name);
-+	}
-+	ksft_finished();
-+}
--- 
-2.41.0
+Note it will show up in my fixes branch once I've pushed my
+local branch there, which might take a while.
+
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/msi-laptop.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/msi-laptop.c b/drivers/platform/x86/msi-laptop.c
+> index 6b18ec543ac3..f4c6c36e05a5 100644
+> --- a/drivers/platform/x86/msi-laptop.c
+> +++ b/drivers/platform/x86/msi-laptop.c
+> @@ -208,7 +208,7 @@ static ssize_t set_device_state(const char *buf, size_t count, u8 mask)
+>  		return -EINVAL;
+>  
+>  	if (quirks->ec_read_only)
+> -		return -EOPNOTSUPP;
+> +		return 0;
+>  
+>  	/* read current device state */
+>  	result = ec_read(MSI_STANDARD_EC_COMMAND_ADDRESS, &rdata);
+> @@ -838,15 +838,15 @@ static bool msi_laptop_i8042_filter(unsigned char data, unsigned char str,
+>  static void msi_init_rfkill(struct work_struct *ignored)
+>  {
+>  	if (rfk_wlan) {
+> -		rfkill_set_sw_state(rfk_wlan, !wlan_s);
+> +		msi_rfkill_set_state(rfk_wlan, !wlan_s);
+>  		rfkill_wlan_set(NULL, !wlan_s);
+>  	}
+>  	if (rfk_bluetooth) {
+> -		rfkill_set_sw_state(rfk_bluetooth, !bluetooth_s);
+> +		msi_rfkill_set_state(rfk_bluetooth, !bluetooth_s);
+>  		rfkill_bluetooth_set(NULL, !bluetooth_s);
+>  	}
+>  	if (rfk_threeg) {
+> -		rfkill_set_sw_state(rfk_threeg, !threeg_s);
+> +		msi_rfkill_set_state(rfk_threeg, !threeg_s);
+>  		rfkill_threeg_set(NULL, !threeg_s);
+>  	}
+>  }
 
