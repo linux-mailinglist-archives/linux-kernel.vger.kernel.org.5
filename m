@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481C97619E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF47619E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjGYNZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
+        id S230317AbjGYN0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjGYNZy (ORCPT
+        with ESMTP id S230310AbjGYN0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:25:54 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559419AF;
-        Tue, 25 Jul 2023 06:25:44 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="398633744"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="398633744"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 06:25:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="839864648"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="839864648"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jul 2023 06:25:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qOI2l-00BM3E-1h;
-        Tue, 25 Jul 2023 16:25:39 +0300
-Date:   Tue, 25 Jul 2023 16:25:39 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com,
-        brgl@bgdev.pl, linus.walleij@linaro.org,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: Re: [PATCH] gpio: mt7621: remove unnecessary call to
- platfrom_set_drvdata()
-Message-ID: <ZL/NUySYJnOrc5Qs@smile.fi.intel.com>
-References: <20230721130838.26616-1-aboutphysycs@gmail.com>
- <ZLqf6P22HC0Dd4G5@smile.fi.intel.com>
+        Tue, 25 Jul 2023 09:26:31 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8847C1FEB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=k3oAO5/lSXvef5qwdiBo4tcyHvCrV2VuBVST9ldPc/g=; b=epnf2dS4tENxjP84BeYNBhJM1D
+        wAKxf6t2IzRjlgstBxjqmEQnyiLWMjnSFmFr32o0MFan6q3QeSwyr/ah2Xvi+Frs6d0/tjTKVTbKL
+        jHK5/EXORACQQXSz0oMGQiqn3Fda1m47DLmArZVuJkUrjPmctXBBQs89V2dX8iAXf4LZDfz2whcBG
+        fVPnuEIeYgjG+nThO4Ejya2Iv/zD8Vomzo+CeCzyx7lVJXSYSghm3/H/byNziiVxxJsjRXLAk6m6K
+        DZnEQhJLxZfqwcjJxOPU8mouctQ4aIEfiD4YVr6l6Men+OBSYbJ32Bdw3/bt/TgKx2imbSLUIs1zo
+        DLKIcUfw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOI37-0049rV-2U;
+        Tue, 25 Jul 2023 13:26:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFEDC300155;
+        Tue, 25 Jul 2023 15:25:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AD5DE2B20499C; Tue, 25 Jul 2023 15:25:59 +0200 (CEST)
+Date:   Tue, 25 Jul 2023 15:25:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ruan Jinjie <ruanjinjie@huawei.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] sched/fair: Use struct_size()
+Message-ID: <20230725132559.GK3765278@hirez.programming.kicks-ass.net>
+References: <20230725195020.3469132-1-ruanjinjie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLqf6P22HC0Dd4G5@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725195020.3469132-1-ruanjinjie@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 06:10:32PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 21, 2023 at 04:08:38PM +0300, Andrei Coardos wrote:
-> > This function call was found to be unnecessary as there is no equivalent
-> > platform_get_drvdata() call to access the private data of the driver.
-
-Not true.
-
-> > Also, the private data is defined in this driver, so there is no risk of
-> > it being accessed outside of this driver file.
+On Tue, Jul 25, 2023 at 07:50:20PM +0000, Ruan Jinjie wrote:
+> Use struct_size() instead of hand-writing it, when allocating a structure
+> with a flex array.
 > 
-> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+> This is less verbose.
 
-I have to withdraw this, the patch is wrong.
-NAK.
+As per all the other times, no. It is also less clear. I never can
+remember what that thing does and the code it replaces is utterly
+trivial.
 
-Sorry for the confusion (I have looked for the wrong pattern).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> ---
+>  kernel/sched/fair.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index f8b71ea5948b..cc041a48100f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -2889,9 +2889,8 @@ static void task_numa_group(struct task_struct *p, int cpupid, int flags,
+>  	int i;
+>  
+>  	if (unlikely(!deref_curr_numa_group(p))) {
+> -		unsigned int size = sizeof(struct numa_group) +
+> -				    NR_NUMA_HINT_FAULT_STATS *
+> -				    nr_node_ids * sizeof(unsigned long);
+> +		unsigned int size = struct_size(grp, faults,
+> +		                                NR_NUMA_HINT_FAULT_STATS * nr_node_ids);
+>  
+>  		grp = kzalloc(size, GFP_KERNEL | __GFP_NOWARN);
+>  		if (!grp)
+> -- 
+> 2.34.1
+> 
