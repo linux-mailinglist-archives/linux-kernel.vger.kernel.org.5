@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D787609C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9BE7609CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjGYFv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        id S231853AbjGYFww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbjGYFvz (ORCPT
+        with ESMTP id S231812AbjGYFwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:51:55 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46AFB6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:51:54 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso51160355e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:51:54 -0700 (PDT)
+        Tue, 25 Jul 2023 01:52:31 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7591BD9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:52:29 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-992dcae74e0so850808266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:52:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690264313; x=1690869113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LDa0fqzt30Ptcdn+Rp2moDt3uwTqaLbOBTSNBvQHsow=;
-        b=Fm732xFUENH32uKlXGBO66pTUcan0hi8UvbXIOsmsajrmKgF65+VKuAsgwl0h2rEvm
-         8bVGJCXxJ7Lo3CDTY397Y4mxix0VJtW/pkEXHkkLKO800NxhaPqfFFKex6vpdJLCOa4w
-         CmI8aGs1OSFpz1ZKdyfS0I94dx6bSwxKd8BBKpUZIt+arN+GsWHCduZZv9YOaAYpEwDJ
-         Kpqga4FAeLkxMrOnhuZRX4J7HcS3KeKVchXAMmblYLn9CvHnXCAxAdBbWFocNGUcqeMO
-         Tu3SmXJtzR2hdcpIZzcJs/EIeI/+pl0EtvFzM5PA5rL69dp57n8daVKEcMuVDnfOpImi
-         zo/Q==
+        d=linaro.org; s=google; t=1690264348; x=1690869148;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j8mvJAA5aywRfr61U/BuIUTr3XfxmNfpzqbATuVCpcc=;
+        b=CmVz7PqEqlEumznmTCYxtu3dR6b/y5yAJ1WR2Js7J2naksoGQ7q4mFrjD3ohlcMQIG
+         7UAnAEDTk4X/N5EujcxFVa6KOrnIaRadciAqEE7prvaWD4swmEtsbwh84N6kvnph1uHY
+         XkvJaGDgdUJhqakeBEAuHyoj99VYsjb6bVLlN6OToykUTutBdgUWr4xsFZBqGfmH7koe
+         R4+sGGoXKIsTQ9Mt0SnMt86bu0a/C/2EXWtYX3tQCHYCNY3bvgf0gB6S27m0r/kxWVA/
+         DLsRpu6oHBlfOPNSS+5WevWw9ywx46brYXHlZ5esi3IaJD5vVe+GG7uflCEw3FMmAlMk
+         wxSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690264313; x=1690869113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LDa0fqzt30Ptcdn+Rp2moDt3uwTqaLbOBTSNBvQHsow=;
-        b=gUCfTyITQMQ60xE1mOU8cSFY8l7ci7Xe/XGaiBOaW1j+9GpIWLttwonYwVkNrlyH7X
-         wQj+ZqIIuugcMvV/hKknThMKFvxU2OIULhOKcjOpP09w4Pr7gi7VsNszMYLEo50XB0mr
-         loR4Q+WWd7sK6RuxkfL7ph7OMs2U56PnFVcreicPooAUd5NsBLCSDJ8xlVvO6eMwfzIZ
-         S7dZmQZGMASBoz4JI5HyfcVhWdpFzDK7x4/Jasj5nOU9NK3de16P3pVD5CLC2EXlB727
-         I1OIycLo9e1nvfOt98KCicQT7QUo6li0nRbcNitc5K4shE0+cuoYB90vcDOza7TKbK46
-         PG8Q==
-X-Gm-Message-State: ABy/qLatLqiow/SHY2NUc1MyXbP1Z9w78Qr0pVkGnshrUqIqvKOQl1/N
-        HCaclKvD63U4UZ64sGJswbbyvw==
-X-Google-Smtp-Source: APBJJlFxsS3y+cMdX48jiFbTMmksWQoLUG07CWaL93WGXpO5sZmPQJoOQhas8KWkVrn1RtL/72a08g==
-X-Received: by 2002:a05:600c:152:b0:3fb:e200:b2b3 with SMTP id w18-20020a05600c015200b003fbe200b2b3mr9548144wmm.37.1690264313064;
-        Mon, 24 Jul 2023 22:51:53 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id w9-20020adfd4c9000000b0031423a8f4f7sm15243623wrk.56.2023.07.24.22.51.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 22:51:52 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 08:51:50 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
-        airlied@gmail.com, daniel@ffwll.ch, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, andrzej.hajda@intel.com,
-        intel-gfx@lists.freedesktop.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, mripard@kernel.org
-Subject: Re: [Intel-gfx] [PATCH v2] drm/i915/tv: avoid possible division by
- zero
-Message-ID: <5d096bcf-c394-4dad-b307-3d7e33ab6e6f@kadam.mountain>
-References: <ZL62X3/CnsJcWWU4@ashyti-mobl2.lan>
- <352f7c10-3592-4a18-abdc-ab554a992d10@nfschina.com>
+        d=1e100.net; s=20221208; t=1690264348; x=1690869148;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j8mvJAA5aywRfr61U/BuIUTr3XfxmNfpzqbATuVCpcc=;
+        b=YNIwR6IyPkXsOb8AarBmZgZMjQgsaJKWkyQGYbQROxtv4Gv+W/Sdg2S2YhC634U9nq
+         bMC/V3fb4oBhuahAcLrpxTqjDdfugANohpK3MFlT1kBdEqDm4GUez3f1dFKAZAQ8L7HQ
+         0JJaJPxCmoYKMDivhXkeDQV85Zb9e2xhEpQCvW7Wsdp07qy+LoOQSGfLbTdrShvvZDY6
+         Kv+G6qlRjOoF+bhxa5abOqjiufUJGMaefDgX3VatiMoyj9fQeegzaZ93b3A7erzOVtu1
+         SP6TD9uH0uzY6q0T0Si80HSoHShMQBGLXqstRL+BEtFg7/T1p0zOImrsezgTRCFkdCm/
+         4+ig==
+X-Gm-Message-State: ABy/qLaE6BlmVRe01VitSPNPmShAz881qUgmou52OEQxQyhMf9H6u1M5
+        EYjXn9c1aHCFC/jE2nJBMonrKA==
+X-Google-Smtp-Source: APBJJlF0n8EjpzdM+NYj5kuq58LpPKGXEqU+0sJ9QpGZ3jPjgq+zRv8KvrtT7en0yZt7r2N0o/nEOg==
+X-Received: by 2002:a17:906:e:b0:991:d5ad:f1a7 with SMTP id 14-20020a170906000e00b00991d5adf1a7mr11652519eja.51.1690264347885;
+        Mon, 24 Jul 2023 22:52:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id s5-20020a170906168500b00991e2b5a27dsm7585537ejd.37.2023.07.24.22.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 22:52:20 -0700 (PDT)
+Message-ID: <5dd56c31-7ca3-dd39-0623-e4fd18ac6f68@linaro.org>
+Date:   Tue, 25 Jul 2023 07:52:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <352f7c10-3592-4a18-abdc-ab554a992d10@nfschina.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new
+ SPMI vibrator
+Content-Language: en-US
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org,
+        dmitry.baryshkov@linaro.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
+        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com
+References: <20230725054138.129497-1-quic_fenglinw@quicinc.com>
+ <20230725054138.129497-2-quic_fenglinw@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725054138.129497-2-quic_fenglinw@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,39 +84,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reason why the first five attempts had bugs is because we are
-trying to write it in the most complicated way possible, shifting by
-logical not what?
+On 25/07/2023 07:41, Fenglin Wu wrote:
+> Currently, all vibrator control register addresses are hard coded,
+> including the base address and the offset, it's not flexible to support
+> new SPMI vibrator module which is usually included in different PMICs
+> with different base address. Refactor this by introducing the HW type
+> terminology and contain the register offsets/masks/shifts in reg_filed
+> data structures corresponding to each vibrator type, and the base address
+> value defined in 'reg' property will be added for SPMI vibrators.
+> 
+> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> ---
+>  drivers/input/misc/pm8xxx-vibrator.c | 130 ++++++++++++++++-----------
+>  1 file changed, 77 insertions(+), 53 deletions(-)
+> 
+> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
+> index 04cb87efd799..77bb0018d4e1 100644
+> --- a/drivers/input/misc/pm8xxx-vibrator.c
+> +++ b/drivers/input/misc/pm8xxx-vibrator.c
+> @@ -12,36 +12,36 @@
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+>  
+> +#define SSBI_VIB_DRV_EN_MANUAL_MASK	0xfc
+> +#define SSBI_VIB_DRV_LEVEL_MASK		0xf8
+> +#define SSBI_VIB_DRV_SHIFT		3
+> +#define SPMI_VIB_DRV_LEVEL_MASK		0xff
+> +#define SPMI_VIB_DRV_SHIFT		0
+> +
+>  #define VIB_MAX_LEVEL_mV	(3100)
+>  #define VIB_MIN_LEVEL_mV	(1200)
+>  #define VIB_MAX_LEVELS		(VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV)
+>  
+>  #define MAX_FF_SPEED		0xff
+>  
+> -struct pm8xxx_regs {
+> -	unsigned int enable_addr;
+> -	unsigned int enable_mask;
+> +enum pm8xxx_vib_type {
+> +	SSBI_VIB,
+> +	SPMI_VIB_GEN1,
+> +};
+>  
+> -	unsigned int drv_addr;
+> -	unsigned int drv_mask;
+> -	unsigned int drv_shift;
+> -	unsigned int drv_en_manual_mask;
+> +enum {
+> +	VIB_DRV_REG,
+> +	VIB_EN_REG,
+> +	VIB_MAX_REG,
+>  };
+>  
+> -static const struct pm8xxx_regs pm8058_regs = {
+> -	.drv_addr = 0x4A,
+> -	.drv_mask = 0xf8,
+> -	.drv_shift = 3,
+> -	.drv_en_manual_mask = 0xfc,
+> +static struct reg_field ssbi_vib_regs[VIB_MAX_REG] = {
 
-regards,
-dan carpenter
+Change from const to non-const is wrong. How do you support multiple
+devices? No, this is way too fragile now.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_tv.c b/drivers/gpu/drm/i915/display/intel_tv.c
-index 36b479b46b60..6997b6cb1df2 100644
---- a/drivers/gpu/drm/i915/display/intel_tv.c
-+++ b/drivers/gpu/drm/i915/display/intel_tv.c
-@@ -988,7 +988,13 @@ intel_tv_mode_to_mode(struct drm_display_mode *mode,
- 		      const struct tv_mode *tv_mode,
- 		      int clock)
- {
--	mode->clock = clock / (tv_mode->oversample >> !tv_mode->progressive);
-+	int div = tv_mode->oversample;
-+
-+	if (!tv_mode->progressive)
-+		div >>= 1;
-+	if (div == 0)
-+		div = 1;
-+	mode->clock = clock / div;
- 
- 	/*
- 	 * tv_mode horizontal timings:
-@@ -1135,6 +1141,8 @@ intel_tv_get_config(struct intel_encoder *encoder,
- 		break;
- 	default:
- 		tv_mode.oversample = 1;
-+		WARN_ON_ONCE(!tv_mode.progressive);
-+		tv_mode.progressive = true;
- 		break;
- 	}
- 
+...
+
+>  
+>  	/*
+>  	 * pmic vibrator supports voltage ranges from 1.2 to 3.1V, so
+> @@ -168,38 +166,65 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
+>  {
+>  	struct pm8xxx_vib *vib;
+>  	struct input_dev *input_dev;
+> -	int error;
+> +	struct device *dev = &pdev->dev;
+> +	struct regmap *regmap;
+> +	struct reg_field *regs;
+> +	int error, i;
+>  	unsigned int val;
+> -	const struct pm8xxx_regs *regs;
+> +	u32 reg_base;
+>  
+> -	vib = devm_kzalloc(&pdev->dev, sizeof(*vib), GFP_KERNEL);
+> +	vib = devm_kzalloc(dev, sizeof(*vib), GFP_KERNEL);
+
+Not really related. Split cleanup from new features.
+
+>  	if (!vib)
+>  		return -ENOMEM;
+>  
+> -	vib->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> -	if (!vib->regmap)
+> +	regmap = dev_get_regmap(dev->parent, NULL);
+> +	if (!regmap)
+>  		return -ENODEV;
+>  
+> -	input_dev = devm_input_allocate_device(&pdev->dev);
+> +	input_dev = devm_input_allocate_device(dev);
+>  	if (!input_dev)
+>  		return -ENOMEM;
+>  
+>  	INIT_WORK(&vib->work, pm8xxx_work_handler);
+>  	vib->vib_input_dev = input_dev;
+>  
+> -	regs = of_device_get_match_data(&pdev->dev);
+> +	vib->hw_type = (enum pm8xxx_vib_type)of_device_get_match_data(dev);
+>  
+> -	/* operate in manual mode */
+> -	error = regmap_read(vib->regmap, regs->drv_addr, &val);
+> +	regs = ssbi_vib_regs;
+> +	if (vib->hw_type != SSBI_VIB) {
+> +		error = fwnode_property_read_u32(dev->fwnode, "reg", &reg_base);
+> +		if (error < 0) {
+> +			dev_err(dev, "Failed to read reg address, rc=%d\n", error);
+> +			return error;
+> +		}
+> +
+> +		if (vib->hw_type == SPMI_VIB_GEN1)
+> +			regs = spmi_vib_gen1_regs;
+> +
+> +		for (i = 0; i < VIB_MAX_REG; i++)
+> +			if (regs[i].reg != 0)
+> +				regs[i].reg += reg_base;
+> +	}
+> +
+> +	error = devm_regmap_field_bulk_alloc(dev, regmap, vib->r_fields, regs, VIB_MAX_REG);
+>  	if (error < 0)
+> +	{
+
+That's not a Linux coding style.
+
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
+
+> +		dev_err(dev, "Failed to allocate regmap failed, rc=%d\n", error);
+
+No need to print errors on allocation failures.
+
+>  		return error;
+> +	}
+>  
+> -	val &= regs->drv_en_manual_mask;
+> -	error = regmap_write(vib->regmap, regs->drv_addr, val);
+> +	error = regmap_field_read(vib->r_fields[VIB_DRV_REG], &val);
+>  	if (error < 0)
+>  		return error;
+
+
+Best regards,
+Krzysztof
 
