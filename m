@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFB47610EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED667610F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbjGYKdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
+        id S233658AbjGYKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbjGYKdh (ORCPT
+        with ESMTP id S233488AbjGYKd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:33:37 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAD512E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690281216; x=1721817216;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ZEPSwQu940UNHDbngEHnM7Am5JyrRVpayKrmBmTFnm8=;
-  b=kILk/OstO9Ird3WW6tcbbNgZb1/SYDPDWKSERMCeZXY0QIZRar1m79mQ
-   BXl/qcaWT4ksAXQfZhRPR8KRLPaMgh45ZUSff/iD+NHNhwoI3yxvKgYNt
-   CQihka9jMY1IjOb7P1omBY2G1qctzDMBO2+kYxNnj/SNgbfQaD0ZGmIMn
-   fBiZ1Yu0DeGOL0jXUquqeoOkuJd8TFH4HwgBYXGfSepw4tULen9RsR3a/
-   KKBmTBmzAUIrC3mm0e2LzRx7zh37oGjFg760/6TE4sk9BLvu9icJ1Xs4z
-   cinlAeCThat6rQTFYpnV8XOthYl9znfGWPXyBsmkpakLcOCn39lz8Sh2V
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="352581858"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="352581858"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 03:33:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="791328008"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="791328008"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 25 Jul 2023 03:33:34 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOFMD-000AXa-1a;
-        Tue, 25 Jul 2023 10:33:33 +0000
-Date:   Tue, 25 Jul 2023 18:33:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: arch/powerpc/platforms/cell/spu_base.c:229: warning: expecting
- prototype for Given an array of @nr_slbs SLB entries, @slbs, return non().
- Prototype was for __slb_present() instead
-Message-ID: <202307251857.yclzmxrO-lkp@intel.com>
+        Tue, 25 Jul 2023 06:33:56 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEBD10CC;
+        Tue, 25 Jul 2023 03:33:53 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d10354858e8so2186530276.2;
+        Tue, 25 Jul 2023 03:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690281233; x=1690886033;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jBf0AFzrkBKK62xa2+Pk3Zqv2kq6MRjCO1z0Xr7zjbs=;
+        b=VTyjbD6uQSqHq1w83I0uPKS8J/aZEY3vIpSwTGuJjdhJNYnrtgKi+v81MBUbQExYxI
+         aK+CiLYBsEH1LLI/0ZCpRYADgB24Q10fuvrgLQQc6B042pz29SyAjk6Ck0KFpoP9Piaw
+         oL/dY453TYsSx5yINPWqhGaUtFYeNNFd621M9WPKUKL7q8bZ9UAoOSG7lEbEtYIC7b7h
+         u0NPbWC81O/CBwJqyaE39PkZeTITabZCwOYG95MeSPU9r8843p6hWoRxQjAFU7J6pfwk
+         ozWaOvqKMC0aUI2SE7XOp7gx8V2lRWwgPcOOASBFqhorBYcbUr4fGoC1fzO8WM474sKx
+         owGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690281233; x=1690886033;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jBf0AFzrkBKK62xa2+Pk3Zqv2kq6MRjCO1z0Xr7zjbs=;
+        b=IxUS9k9YO6yTB5ASgQu0+AbfvFhfmyNEkstKP6btoZI2acW0PJhlL2WKRrW9cxuWSj
+         MN3Obz1MvkGiruI0WHkaQWFCXgM/qcG/SVctAEoXlLv/qaSki3Ehh8EvDH2w3qcfh8ig
+         krgQUXlQtC4r5LOcerOaIN+b3VPv9+1AGjeN9HrkJTDltZFxtJ8XZgMjM5F8zbrR44ZB
+         11vzR/l2zVHWZMSKmRGmN27hc+9ae77boSAd+bYJhuI5D2soB4ZltJ3QUz1xHEi2kzeL
+         BU9NYO0ffG3O+JbMR0rVcV1mGebgjhOoT6bajAg1gDg0IKRIf1WLgrLYVgN3TKYfEzAd
+         S7Sg==
+X-Gm-Message-State: ABy/qLbABvWT+gCpaVZHCGUpUAKxLabCKsLvNW1pW5mTlamc8YaztLIG
+        SdDGKNKBbc863RO4ZBwe2pw4tc1nEC3uKgdn2co=
+X-Google-Smtp-Source: APBJJlEtHSmrzSE407F1F+wP6SW3uI04+fKfwmuoPdla8VrlolU4zp6lKRWpDsPyTkMfV9Y+yokd7Cs0KXaV7I8/jok=
+X-Received: by 2002:a25:9101:0:b0:cad:347e:2c8f with SMTP id
+ v1-20020a259101000000b00cad347e2c8fmr9071132ybl.39.1690281232968; Tue, 25 Jul
+ 2023 03:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230724131741.954624-1-james.clark@arm.com> <CANiq72nJP+i10CZysua0QU=V=Cn=jdnLuV8KOqm6_NNFdg9S3w@mail.gmail.com>
+ <6c99392f-6189-1835-3090-d5c7f95edaf9@arm.com>
+In-Reply-To: <6c99392f-6189-1835-3090-d5c7f95edaf9@arm.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 25 Jul 2023 12:33:41 +0200
+Message-ID: <CANiq72nPxb8p5YCTohGg5e3c4gPTYsfh8fB182D_SwO-rQm9pg@mail.gmail.com>
+Subject: Re: [PATCH] scripts/kallsyms: Fix build failure by setting errno
+ before calling getline()
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Nicolas Schier <n.schier@avm.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0b5547c51827e053cc754db47d3ec3e6c2c451d2
-commit: da5311a4b852eaf2c0feac8b28884a8d8a801dfc powerpc/spufs: remove unneeded if-checks
-date:   2 months ago
-config: powerpc-cell_defconfig (https://download.01.org/0day-ci/archive/20230725/202307251857.yclzmxrO-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251857.yclzmxrO-lkp@intel.com/reproduce)
+On Tue, Jul 25, 2023 at 10:55=E2=80=AFAM James Clark <james.clark@arm.com> =
+wrote:
+>
+> But I just checked now and it's just bear [1] that causes the issue.
+> Maybe it sets errno before forking and that persists in the child
+> processes? Not 100% sure how it works. I did debug scripts/kallsyms and
+> errno was already set on the first line of main(), so it's not some
+> other library call in kallsyms that is setting it but not being checked.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307251857.yclzmxrO-lkp@intel.com/
+I think this is https://github.com/rizsotto/Bear/issues/469: bear
+preloads a library which was setting it to non-zero.
 
-All warnings (new ones prefixed by >>):
+Now, even if bear was breaking a guarantee C programs have (`errno`
+for the initial thread at program startup is meant to be 0 according
+to the C standard), it is still a good idea to set `errno` to zero
+here in case something else happens to change `errno` within
+`kallsyms` in the future.
 
-   arch/powerpc/platforms/cell/spu_base.c:229: warning: Function parameter or member 'slbs' not described in '__slb_present'
-   arch/powerpc/platforms/cell/spu_base.c:229: warning: Function parameter or member 'nr_slbs' not described in '__slb_present'
-   arch/powerpc/platforms/cell/spu_base.c:229: warning: Function parameter or member 'new_addr' not described in '__slb_present'
->> arch/powerpc/platforms/cell/spu_base.c:229: warning: expecting prototype for Given an array of @nr_slbs SLB entries, @slbs, return non(). Prototype was for __slb_present() instead
->> arch/powerpc/platforms/cell/spu_base.c:241: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Setup the SPU kernel SLBs, in preparation for a context save/restore. We
+With the repro and the `bear` link issue added:
 
+    Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-vim +229 arch/powerpc/platforms/cell/spu_base.c
-
-58bd403c3c79dd Jeremy Kerr      2007-12-05  222  
-684bd614015188 Jeremy Kerr      2007-12-05  223  /**
-684bd614015188 Jeremy Kerr      2007-12-05  224   * Given an array of @nr_slbs SLB entries, @slbs, return non-zero if the
-684bd614015188 Jeremy Kerr      2007-12-05  225   * address @new_addr is present.
-684bd614015188 Jeremy Kerr      2007-12-05  226   */
-73d16a6e0e5199 Ian Munsie       2014-10-08  227  static inline int __slb_present(struct copro_slb *slbs, int nr_slbs,
-684bd614015188 Jeremy Kerr      2007-12-05  228  		void *new_addr)
-684bd614015188 Jeremy Kerr      2007-12-05 @229  {
-684bd614015188 Jeremy Kerr      2007-12-05  230  	unsigned long ea = (unsigned long)new_addr;
-684bd614015188 Jeremy Kerr      2007-12-05  231  	int i;
-684bd614015188 Jeremy Kerr      2007-12-05  232  
-684bd614015188 Jeremy Kerr      2007-12-05  233  	for (i = 0; i < nr_slbs; i++)
-684bd614015188 Jeremy Kerr      2007-12-05  234  		if (!((slbs[i].esid ^ ea) & ESID_MASK))
-684bd614015188 Jeremy Kerr      2007-12-05  235  			return 1;
-684bd614015188 Jeremy Kerr      2007-12-05  236  
-684bd614015188 Jeremy Kerr      2007-12-05  237  	return 0;
-684bd614015188 Jeremy Kerr      2007-12-05  238  }
-684bd614015188 Jeremy Kerr      2007-12-05  239  
-58bd403c3c79dd Jeremy Kerr      2007-12-05  240  /**
-58bd403c3c79dd Jeremy Kerr      2007-12-05 @241   * Setup the SPU kernel SLBs, in preparation for a context save/restore. We
-58bd403c3c79dd Jeremy Kerr      2007-12-05  242   * need to map both the context save area, and the save/restore code.
-684bd614015188 Jeremy Kerr      2007-12-05  243   *
-027dfac694fc27 Michael Ellerman 2016-06-01  244   * Because the lscsa and code may cross segment boundaries, we check to see
-684bd614015188 Jeremy Kerr      2007-12-05  245   * if mappings are required for the start and end of each range. We currently
-684bd614015188 Jeremy Kerr      2007-12-05  246   * assume that the mappings are smaller that one segment - if not, something
-684bd614015188 Jeremy Kerr      2007-12-05  247   * is seriously wrong.
-58bd403c3c79dd Jeremy Kerr      2007-12-05  248   */
-684bd614015188 Jeremy Kerr      2007-12-05  249  void spu_setup_kernel_slbs(struct spu *spu, struct spu_lscsa *lscsa,
-684bd614015188 Jeremy Kerr      2007-12-05  250  		void *code, int code_size)
-58bd403c3c79dd Jeremy Kerr      2007-12-05  251  {
-73d16a6e0e5199 Ian Munsie       2014-10-08  252  	struct copro_slb slbs[4];
-684bd614015188 Jeremy Kerr      2007-12-05  253  	int i, nr_slbs = 0;
-684bd614015188 Jeremy Kerr      2007-12-05  254  	/* start and end addresses of both mappings */
-684bd614015188 Jeremy Kerr      2007-12-05  255  	void *addrs[] = {
-684bd614015188 Jeremy Kerr      2007-12-05  256  		lscsa, (void *)lscsa + sizeof(*lscsa) - 1,
-684bd614015188 Jeremy Kerr      2007-12-05  257  		code, code + code_size - 1
-684bd614015188 Jeremy Kerr      2007-12-05  258  	};
-684bd614015188 Jeremy Kerr      2007-12-05  259  
-684bd614015188 Jeremy Kerr      2007-12-05  260  	/* check the set of addresses, and create a new entry in the slbs array
-684bd614015188 Jeremy Kerr      2007-12-05  261  	 * if there isn't already a SLB for that address */
-684bd614015188 Jeremy Kerr      2007-12-05  262  	for (i = 0; i < ARRAY_SIZE(addrs); i++) {
-684bd614015188 Jeremy Kerr      2007-12-05  263  		if (__slb_present(slbs, nr_slbs, addrs[i]))
-684bd614015188 Jeremy Kerr      2007-12-05  264  			continue;
-58bd403c3c79dd Jeremy Kerr      2007-12-05  265  
-684bd614015188 Jeremy Kerr      2007-12-05  266  		__spu_kernel_slb(addrs[i], &slbs[nr_slbs]);
-684bd614015188 Jeremy Kerr      2007-12-05  267  		nr_slbs++;
-684bd614015188 Jeremy Kerr      2007-12-05  268  	}
-58bd403c3c79dd Jeremy Kerr      2007-12-05  269  
-c92a1acb675058 Arnd Bergmann    2008-02-28  270  	spin_lock_irq(&spu->register_lock);
-684bd614015188 Jeremy Kerr      2007-12-05  271  	/* Add the set of SLBs */
-684bd614015188 Jeremy Kerr      2007-12-05  272  	for (i = 0; i < nr_slbs; i++)
-684bd614015188 Jeremy Kerr      2007-12-05  273  		spu_load_slb(spu, i, &slbs[i]);
-c92a1acb675058 Arnd Bergmann    2008-02-28  274  	spin_unlock_irq(&spu->register_lock);
-58bd403c3c79dd Jeremy Kerr      2007-12-05  275  }
-58bd403c3c79dd Jeremy Kerr      2007-12-05  276  EXPORT_SYMBOL_GPL(spu_setup_kernel_slbs);
-58bd403c3c79dd Jeremy Kerr      2007-12-05  277  
-
-:::::: The code at line 229 was first introduced by commit
-:::::: 684bd614015188561197342fd336292e9e2ce196 [POWERPC] cell: handle SPE kernel mappings that cross segment boundaries
-
-:::::: TO: Jeremy Kerr <jk@ozlabs.org>
-:::::: CC: Arnd Bergmann <arnd@arndb.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Miguel
