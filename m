@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD7476096B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EDB76096C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 07:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjGYFjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 01:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S231818AbjGYFjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 01:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjGYFjN (ORCPT
+        with ESMTP id S230100AbjGYFjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 01:39:13 -0400
+        Tue, 25 Jul 2023 01:39:14 -0400
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EAD19AA;
-        Mon, 24 Jul 2023 22:39:07 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36P5d0EP049687;
-        Tue, 25 Jul 2023 00:39:00 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312011BD3;
+        Mon, 24 Jul 2023 22:39:08 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36P5d3Od049700;
+        Tue, 25 Jul 2023 00:39:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690263540;
-        bh=jZlQiYTPLncZVPCLbXblHrnam61fWbVQFvJtNlBgO2g=;
-        h=From:To:CC:Subject:Date;
-        b=ocFhN0tn90Euur7VXTGpC3nCRZuRlPxmaRTy937kFrYcxJ2211idX+TZwWaAorlch
-         cqdmnky5kO/OpNaoUX9dGwGzGP24nPj0x5ZLtxgnvPlFSpd25d5JACHUgh0AL9qZdg
-         3L19+M7Muw7c+7FJJeDItSSLNGdA99OTzOlfD73o=
+        s=ti-com-17Q1; t=1690263543;
+        bh=UMFtptzY6+rXg55b5S+EeQ1L1IsRBMWP719LxrE4Y1E=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=di/5HYIZQpARDluJgZzFPsxVfpqd/5G6AYtryAGDuWUnLdiaWUG0ubpny0BJ+GwFN
+         T9Dts2fzoRurLjO76TqzW//guYAxVhVhNzPGqJ9G2oPdCnv7Z0r9CIx8ScrMVnSgyW
+         L3iP3IU+tThOxNUmjCNMJBijyOjQdRSn9g491b2A=
 Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36P5d0jf017584
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36P5d39E052867
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 00:39:00 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE100.ent.ti.com
+        Tue, 25 Jul 2023 00:39:03 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE100.ent.ti.com
  (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 00:38:59 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 00:39:03 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 00:38:59 -0500
+ Frontend Transport; Tue, 25 Jul 2023 00:39:03 -0500
 Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36P5cu75064880;
-        Tue, 25 Jul 2023 00:38:57 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36P5cu76064880;
+        Tue, 25 Jul 2023 00:39:00 -0500
 From:   Udit Kumar <u-kumar1@ti.com>
 To:     <vigneshr@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
         <robh+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH 0/2] arm64: dts: ti: k3-j784s4: Add UFS support
-Date:   Tue, 25 Jul 2023 11:08:41 +0530
-Message-ID: <20230725053843.1721028-1-u-kumar1@ti.com>
+CC:     Udit Kumar <u-kumar1@ti.com>, Chai Wenle <Wenle.Chai@windriver.com>
+Subject: [PATCH 1/2] arm64: dts: ti: k3-j784s4-main: Add DT node for UFS
+Date:   Tue, 25 Jul 2023 11:08:42 +0530
+Message-ID: <20230725053843.1721028-2-u-kumar1@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230725053843.1721028-1-u-kumar1@ti.com>
+References: <20230725053843.1721028-1-u-kumar1@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -64,26 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds UFS support for J784S4 SOC,
-UFS is kept disabled at SOC level, and enabled in EVM where
-UFS flash is present.
+This patch adds UFS support present in J784S4 SOC.
 
-This patch is tested by enabling below configs on top of defconfig
-CONFIG_SCSI_UFS_BSG=y
-CONFIG_SCSI_UFS_CDNS_PLATFORM=y
-CONFIG_SCSI_UFS_TI_J721E=y
+UFS is documentend in J784S4 TRM[1]
+Section 12.3.7 'Universal Flash Storage (UFS) Interface'
 
-Test logs
-https://gist.github.com/uditkumarti/ab188e4b433058ae86734cd46eff7d94
+[1] http://www.ti.com/lit/zip/spruj52
 
-Udit Kumar (2):
-  arm64: dts: ti: k3-j784s4-main: Add DT node for UFS
-  arm64: dts: ti: k3-j784s4-evm: Add Support for UFS peripheral
-
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  4 ++++
+Cc: Chai Wenle <Wenle.Chai@windriver.com>
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+---
  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 24 ++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
+ 1 file changed, 24 insertions(+)
 
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+index 11f163e5cadf..f1db1ca5d6b1 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+@@ -1370,6 +1370,30 @@ main_spi7: spi@2170000 {
+ 		status = "disabled";
+ 	};
+ 
++	ufs_wrapper: ufs-wrapper@4e80000 {
++		compatible = "ti,j721e-ufs";
++		reg = <0x0 0x4e80000 0x0 0x100>;
++		power-domains = <&k3_pds 387 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 387 3>;
++		assigned-clocks = <&k3_clks 387 3>;
++		assigned-clock-parents = <&k3_clks 387 6>;
++		ranges;
++		#address-cells = <2>;
++		#size-cells = <2>;
++		status = "disabled";
++
++		ufs@4e84000 {
++			compatible = "cdns,ufshc-m31-16nm", "jedec,ufs-2.0";
++			reg = <0x0 0x4e84000 0x0 0x10000>;
++			interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
++			freq-table-hz = <250000000 250000000>, <19200000 19200000>,
++					<19200000 19200000>;
++			clocks = <&k3_clks 387 1>, <&k3_clks 387 3>, <&k3_clks 387 3>;
++			clock-names = "core_clk", "phy_clk", "ref_clk";
++			dma-coherent;
++		};
++	};
++
+ 	main_r5fss0: r5fss@5c00000 {
+ 		compatible = "ti,j721s2-r5fss";
+ 		ti,cluster-mode = <1>;
 -- 
 2.34.1
 
