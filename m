@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB40D761E24
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36912761E1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbjGYQMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        id S230417AbjGYQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjGYQMF (ORCPT
+        with ESMTP id S229502AbjGYQLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:12:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAFC1BD5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690301440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G/zZPwexsp4seUyrA2hhadzoNaw+twMBRSn/pl5a3MA=;
-        b=YV/xwEhKroc3s2kIAX8hIbK9VfugSDMjV6bfaPnnBmJJYh+aDTGMIoecaKoiuogOF98ei5
-        8WFiTbXlrw7MIFOjXIF6I975KVRUHyHE6zZ4GCl2jTM5ucMTnLKHW9RhDtjeWPT8YvSzAl
-        +GB5YKU46sJlS4DqYqN4DzTFFFYozHg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-643-m3013xXfOhOnk-HZgCSlEQ-1; Tue, 25 Jul 2023 12:10:36 -0400
-X-MC-Unique: m3013xXfOhOnk-HZgCSlEQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 828B8104458F;
-        Tue, 25 Jul 2023 16:10:34 +0000 (UTC)
-Received: from oldenburg3.str.redhat.com (unknown [10.39.194.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 87CF610E5E;
-        Tue, 25 Jul 2023 16:10:23 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        James.Bottomley@HansenPartnership.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
-        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
-        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
-        fenghua.yu@intel.com, geert@linux-m68k.org, glebfm@altlinux.org,
-        gor@linux.ibm.com, hare@suse.com, hpa@zytor.com,
-        ink@jurassic.park.msu.ru, jhogan@kernel.org, kim.phillips@arm.com,
-        ldv@altlinux.org, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
-        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
-        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
-        namhyung@kernel.org, paulus@samba.org, peterz@infradead.org,
-        ralf@linux-mips.org, sparclinux@vger.kernel.org, stefan@agner.ch,
-        tglx@linutronix.de, tony.luck@intel.com, tycho@tycho.ws,
-        will@kernel.org, x86@kernel.org, ysato@users.sourceforge.jp,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
-Subject: Re: Add fchmodat2() - or add a more general syscall?
-References: <cover.1689092120.git.legion@kernel.org>
-        <cover.1689074739.git.legion@kernel.org>
-        <104971.1690300714@warthog.procyon.org.uk>
-Date:   Tue, 25 Jul 2023 18:10:22 +0200
-In-Reply-To: <104971.1690300714@warthog.procyon.org.uk> (David Howells's
-        message of "Tue, 25 Jul 2023 16:58:34 +0100")
-Message-ID: <87fs5c3rbl.fsf@oldenburg3.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 25 Jul 2023 12:11:47 -0400
+Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9320497
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=rsa1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=Cw0rSgWDkapwKrtV1yb4DAXkoD6Qi6nW+7bK2LlKxI8=;
+        b=LMuii0YUL0u0Nz6ZDEctnWCfXXVz2diSZuExElJK8e80DmVxgQ2oRlDtxJ+BX+lqC8FQj6DC4b14j
+         RkQMAtexvHYe56elwXmC6IzLpevK/TArH0WUT8L2M1SUCjKdAt7nhJgf6hG1CYTt7BL0yhYyZlbUO2
+         2KHvdET1w7UEJ0BaU4Vm8hQBwMWfJPW6kWw9bs9pYhFihQeiVsMqwcfdWL7Gbqe5deuNoxOEfnG9mO
+         2EKIzP7MJdi1BV1KSk9JFvihu3TeUhmOu5QTZcNQUXeoaEJhsxr224Or+EwMbU7f/7xV/9nNlpeFup
+         aecFEqNGyZtwdoObVZqVQ1ivVfBjEMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=ed1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=Cw0rSgWDkapwKrtV1yb4DAXkoD6Qi6nW+7bK2LlKxI8=;
+        b=6udjONwzC4RS6UCDRwuB0jT3P0S272OHqJSZGbjhVLdf+Grie/fQntnVOmdERgC/I33l0gCQh2m4L
+         bYY5YZUBw==
+X-HalOne-ID: cc724f5c-2b05-11ee-a82b-55333ba73462
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+        by mailrelay5 (Halon) with ESMTPSA
+        id cc724f5c-2b05-11ee-a82b-55333ba73462;
+        Tue, 25 Jul 2023 16:10:42 +0000 (UTC)
+Date:   Tue, 25 Jul 2023 18:10:40 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     linux@treblig.org
+Cc:     davem@davemloft.net, benh@kernel.crashing.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sparc: Use shared font data
+Message-ID: <20230725161040.GA832394@ravnborg.org>
+References: <20230724235851.165871-1-linux@treblig.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724235851.165871-1-linux@treblig.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* David Howells:
+On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
+> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> 
+> sparc has a 'btext' font used for the console which is almost identical
+> to the shared font_sun8x16, so use it rather than duplicating the data.
+> 
+> They were actually identical until about a decade ago when
+>    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+>                         "broken bar" to "vertical line"")
+> 
+> which changed the | in the shared font to be a solid
+> bar rather than a broken bar.  That's the only difference.
+> 
+> This was originally spotted by PMD which noticed that PPC does
+> the same thing with the same data, and they also share a bunch
+> of functions to manipulate the data.  The PPC code and the functions
+> I'll look at another time if this patch is OK.
+> 
+> Tested very lightly with a boot without FS in qemu.
+> 
+> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 
-> Rather than adding a fchmodat2() syscall, should we add a "set_file_attrs()"
-> syscall that takes a mask and allows you to set a bunch of stuff all in one
-> go?  Basically, an interface to notify_change() in the kernel that would allow
-> several stats to be set atomically.  This might be of particular interest to
-> network filesystems.
+Looks good, thanks for the fixes.
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-Do you mean atomically as in compare-and-swap (update only if old values
-match), or just a way to update multiple file attributes with a single
-system call?
+Let's hope someone picks it up...
 
-Thanks,
-Florian
-
+	Sam
