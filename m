@@ -2,96 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 427D4761A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4743761A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjGYNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        id S231303AbjGYNmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbjGYNmE (ORCPT
+        with ESMTP id S231276AbjGYNm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:42:04 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560831BF5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:42:02 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d23473ed5so890856d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1690292521; x=1690897321;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5RfSsjXK4ByZNd7tHTQgk6HXFLb12v4XnTPRHADBsMs=;
-        b=dU/0Xlzj1ZXwEvgiKBrYAiIHXkPLbRvJbmgtblGLQUHSq3/0n9Zobl0S9fVn2w6lx3
-         HlG4zVW3A0BDLKIYbok//z+6IjCLYmwydmTOtS6zCHXtD1LheaImuevrdL7Y/U4nuQsF
-         xcC0lxTWhN0nRt45ESdyVJ7p1Bhh+YY23LyiXodGZf8Uq1wnoEGXPTTxiRDbqUSVP5Jp
-         b3MuBIuKgyOWyV9xLM0PKuBVvRxGBdS2svng3bfCa2Gl6iL17isNWjZeIX2VYzDoCWvT
-         4TWGdgFxbu9HgTqlOf493afmjYfPIRaLuo+jsHhIIgHo47prFQrDSpDyfOImI2lGUfDU
-         VJkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690292521; x=1690897321;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5RfSsjXK4ByZNd7tHTQgk6HXFLb12v4XnTPRHADBsMs=;
-        b=D32JYdcjsZ1LfEK7CGlAKCmq86/WZrZju8LsmAxSWbza0oCwjXJeyZ4KS4RYALwY4X
-         jpgXUaafDO/2rpprEEuQ49N4tpM8Cadsk7fYFiRDQnZ9ox3HazjoKqJZ8LRkDFOpVFe1
-         gJRmPBa+yldjFLaNkJVezZbrHSO2YGMhRHcjm1IltBL11WWyGGiO7XZmByGP2W+0S7E+
-         ZczAyGTPYD0iEyOJ+RAfd9UgWwA/IyMXaRHo7uRGTno+FrYZNSlevZL23meSM2nwKnTG
-         v7yPtG9eWK4SqbdPHfwrW1HI4Z/4x/GGSRAeZL8cisxV3WsOoTVtT1hSxsEDkxTsB8w3
-         d18A==
-X-Gm-Message-State: ABy/qLbml6i8nmiBwK6tfmgM48+c40TnV+eyWtWHSyCQk1ihs+b3Me4n
-        QucvxMkq3pezqEC5TKw6JwEy8A==
-X-Google-Smtp-Source: APBJJlG8uNdfNlbx0qebAFCgxbApqWAwrST3D3eG8x3M5HnkyY1GsnSGX+ds5MbujsDUIQwmSs76MQ==
-X-Received: by 2002:a05:6214:4509:b0:630:1732:7090 with SMTP id oo9-20020a056214450900b0063017327090mr2880389qvb.55.1690292521199;
-        Tue, 25 Jul 2023 06:42:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id x17-20020a0cb211000000b00635ef3a34ebsm4394045qvd.48.2023.07.25.06.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 06:42:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qOIIa-000Rca-00;
-        Tue, 25 Jul 2023 10:42:00 -0300
-Date:   Tue, 25 Jul 2023 10:41:59 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dawei Li <set_pte_at@outlook.com>
-Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Change vmid alloc strategy from
- bitmap to ida
-Message-ID: <ZL/RJwoJkB3muoTC@ziepe.ca>
-References: <TYCP286MB2323E0C525FF9F94E3B07C7ACA35A@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+        Tue, 25 Jul 2023 09:42:29 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2045.outbound.protection.outlook.com [40.107.96.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C401BF9;
+        Tue, 25 Jul 2023 06:42:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eRoI4/8VunNQhvRDqeFGG+nav21zmlRcfEPyYfrhQC/4Rs4/Z5fpj5mkKNPFDQr4AX4jq+5zwLC+hIKosNdf/bK9LtRI5fiWej0rs9AXZgtR0Sct3GPX9TOgJXmeHZJB+e0Kzct6U84PlQ3ovtwaNhNjyQz+C77pSEGAyTGn0CnnaaD+szv42ML40kZj7g/eHRgdCYm6ua7qmhSkskdHi2JYl2AhBZAofOUkFBB10DyQ0kLsNzoW/F6t2/ekxtRQLybPIfocW2HvvjV2TfsBa4xQkLXwJ5VzlHKTk0cVgWTrg9rDGpHrB1RGa9vjRGBHrWkHR61gZU9g/CVJ3aPSvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VyyDarhn0EZOYCN+tIdqU4Xq964oX7IdVcVrjs3dUuI=;
+ b=fsPkjnTvJpDo/M0Np4AfXQZjitWz4+NIMkiOtrtI2N9Q05xSSsXcjHR2rC+tKXp68JInKEkrfu0xH9w/cYnHkW9fytl5tiB8GgJ+/avcJ62ssPWfx+3CYc8kyKuD8dh7kd2RcuBNKcH4Ots6cUCZHdPO55z8lFtZdGtVXnHqG6kGxaXAeGpWtMcTInIqMV4XvPdrmpygzo9UnCe1h0GsYMvGw+T7WmsF1QVo2W8M3mahWVb6ji697zh3ECKGLPA1xrb0chglFWCmQkC+rpBMjxucsuM1nBRVXuaBy5W8WtnwXY9PvinhXs5RQ3oQXpEmLScAmnz699/za9gSLyhvzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VyyDarhn0EZOYCN+tIdqU4Xq964oX7IdVcVrjs3dUuI=;
+ b=TBcCSAbkEQ136vesp9E+6H0MFq/p2crCSeoyb8wlDmayJg35Em+Qbt1ASu0r0HrtKVIcjp0NUr1iLQYm8j4m9ImgrROC6QIZzKp6LGJIAehI7bsPsk9pbp7Ux1PsrTZC052lK2MEEzR988u3/RvExkfsNyrFr2dEVAYlXSOkiLIeEBVF0zJ617cXOXygrWX1IfK1rDaTucyjaS5Omjv697IKE4BNZBc0p2YTR7NM4VrfLUlHrsWaKY2FgQxH6C/40ClmfAykZ23ZnZ3ObFJHLywAGyYLLBRkw17rETJa74hd0oS8mV0qRo9b8b6sqmVtokicK/KSAhqA634y1W+d7g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by PH8PR12MB7327.namprd12.prod.outlook.com (2603:10b6:510:215::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
+ 2023 13:42:19 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::c833:9a5c:258e:3351]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::c833:9a5c:258e:3351%4]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 13:42:18 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     akpm@linux-foundation.org
+Cc:     jgg@ziepe.ca, npiggin@gmail.com, catalin.marinas@arm.com,
+        jhubbard@nvidia.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, nicolinc@nvidia.com, robin.murphy@arm.com,
+        seanjc@google.com, will@kernel.org, zhi.wang.linux@gmail.com,
+        mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        rtummala@nvidia.com, kevin.tian@intel.com, iommu@lists.linux.dev,
+        x86@kernel.org, fbarrat@linux.ibm.com, ajd@linux.ibm.com,
+        chaitanya.kumar.borah@intel.com, tvrtko.ursulin@linux.intel.com,
+        intel-gfx@lists.freedesktop.org,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH v4 0/5] Invalidate secondary IOMMU TLB on permission upgrade
+Date:   Tue, 25 Jul 2023 23:42:02 +1000
+Message-Id: <cover.1eca029b8603ef4eebe5b41eae51facfc5920c41.1690292440.git-series.apopple@nvidia.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SY5P282CA0145.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:205::9) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYCP286MB2323E0C525FF9F94E3B07C7ACA35A@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|PH8PR12MB7327:EE_
+X-MS-Office365-Filtering-Correlation-Id: bfa33fd3-bddb-42b6-9968-08db8d14f707
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4yr+8pL7Xtf5U4AuATof+mgWpUUvzYMXQGSqJZrzSWVIlmaR0/qH64As4e2lh6E4lLn187KReFEn/Ti4Li+tK60gCHD5hCHdPA0ea3JE2Ha9fuVMGJ+s9CHi8V24em2E2TXKUsNdEVBkgujSE2f7GdtQIOhJ8dYkaVfUfT6o14ix24KflNRBQ4QyNdzmf3SO/vUds+3JB/fPgOQSWvbtXn0/Lhg0s8w6EHlXKKNVsC9r1IBnsT8mwUZKQ0MoH23omylcFXX/5XLpDBav2Orj6ESXHx6l0cwWSfHC3E1oBP7FYkT2WnbXXtYZ4JSxBNYucykqEecHDoNGtWCgwDFaDP9bhZ8EpfQNjZizF6s4W3tKIWsSgFygznK/ryUvWu4LXzTkgdt52cWSCnN/j2E/3xpU7CcZH1YwyyGvBekYbGpDelRJ1S9pJKSjQhzIcdeRfz4tYP/WjMF7Ffen3k02HyK1TFZyy4F7+0iJrEEx+YJq95IOnDYEWS/O6J2w2F6k0NW0dAQjQl4sE9TxiMMGC6SOmQWgqKI13ZLcz9CgoDuBSXzgYnVnC3tNneCvjy0PsPum126h9OIAvQLqPTlNprldufP5bkXMtxh0EKDVOUzFC6e4dv/FMIdhShnhrAZ9P95zQdeHqi6IPvfmUABe+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(451199021)(6512007)(966005)(66899021)(186003)(2616005)(26005)(6506007)(107886003)(316002)(41300700001)(66556008)(36756003)(6486002)(66476007)(7416002)(5660300002)(66946007)(38100700002)(2906002)(4326008)(6916009)(8676002)(8936002)(83380400001)(478600001)(86362001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZGPd82TY9cWOGJ98hYIVe4gAbqdlGukOP9KCiGTIw1S+6tM+W8keTK+FpWOz?=
+ =?us-ascii?Q?fPGux4+NfdvCbXPM5pkgIA+XMkvcGRnktKN80qUmhc6oHjbzU7yb1l8Pxi+n?=
+ =?us-ascii?Q?zdaMsPrj88DaYXZA6maOjfa8FrvCGNbYXeYGT7UVb3KUOPveZaEbBZ61Sx7Z?=
+ =?us-ascii?Q?BQqFwpLH15NCdrccPcIvAXOn9ZPJ/DrJxgsMtj427NhrpWgYw5PZxvpJWuGg?=
+ =?us-ascii?Q?/eOXdGO1FianH3BeanGIJeidxS8M+M7RJAPBoklsjqHo0LXwdbC61fzWzx3D?=
+ =?us-ascii?Q?pu1YDpraf8bvzG8fZRvfzJUHmwPxCl+OUkkglnACtUFA+oN+qkbg5lStTKL0?=
+ =?us-ascii?Q?vFUHrJpNnMMdIplylTtcNLXnZ0bhkDF7u+ALuCWUZ2GsbYI1AQY9H71RHf2p?=
+ =?us-ascii?Q?5SiytSVUVIRwWl/yhpALJfEnM6ZNI3CAsOc2dpUnL6Wmr/5Fnv3idXlg6JUx?=
+ =?us-ascii?Q?ilEOYPgsKxQA7bwUQDWV7C8TW2rg6v3bWZoA1Xlj/RqLPF4cK9+b1K3tTXEh?=
+ =?us-ascii?Q?uW/n6hXc8031SSLkWSJb/XiIp6XQYyoiMohqHLYfKNn+ZmJymIZXkra3JhNA?=
+ =?us-ascii?Q?FBDELM7ohADrqyNL9nqaG9ROwxNUQtDQPtjd0/kw0LOlK28G/4XzqqpbMaZu?=
+ =?us-ascii?Q?IBjbrB0d+wLED/CDlJx82pgETpAa04kk6BxP6aZeOQ+uGdZ3xxkM5X6lSUVl?=
+ =?us-ascii?Q?mvMsk987752MaMfZODKlMTeEbSpXqY8YsIEpGG+B7mPU/lNLFsFQW7U+FkGo?=
+ =?us-ascii?Q?vkyNqdTRZ//e/QVt0z45H75C54bXmdwbp9HBI5zIYX/MqvsmI8VDViq6NIpz?=
+ =?us-ascii?Q?A9MSzs2jWT+DxhSNP13nR57CqZ9jqWEV6y9EA30IQRRHjyCrQszSiKLw0dX6?=
+ =?us-ascii?Q?rHXt7wkJCpDnfFk+MjEYVG/jE79kL/f3PjKqVtlFzWpeMU/Ies4Wuvm9fOx9?=
+ =?us-ascii?Q?uAXEBtRupQ+aQKl+MOmUnYtccv93OorolhEuxx8a6I7ShbvjWpZ+HO4OQwv/?=
+ =?us-ascii?Q?QZZYu1haqRiXWs+tW2elsiVmGptLqfK5qbWBNZ2CwLpao1sD3wkK8MaEnaRl?=
+ =?us-ascii?Q?N4mXMPVF0SezoFL/WjOSZgvASU8Xym6XGgw3AgKoCNrrLsjpy3SlBjK46Xl3?=
+ =?us-ascii?Q?XUS0wJ0c+7OdFFzRoQH3LUbpmV9rEg6WTpE20jLAGbH38qjCe7jwA/0BYBM8?=
+ =?us-ascii?Q?5vc9Rc/o69oXhid5c3FiRLPQEfMw+dwS7SbIrt+2Rp0S/SEYfmiroelqmgy+?=
+ =?us-ascii?Q?HsZy3ZMuJv1E/dgxEgQQtBUTdRLsRiw3quJvdA4Q0ajkM0kndIQht//xsu/1?=
+ =?us-ascii?Q?JS5AGZYaF+Ks7j5UZLfYqzu+SzlAEgyauyS0Rmjuw3lf8tK22J+kfvdCzu5n?=
+ =?us-ascii?Q?uc+hqrxdaqluFpqfjJky4VtpkrzCptp45r9w5736ZNmOUzyuDaHfzlEqtaGU?=
+ =?us-ascii?Q?UyO5p0ikwzTKSx6S+OHiHR8ToztkQO7KuiX1K1llG/AGlHrxez++3fsLvnV+?=
+ =?us-ascii?Q?KMVjaYv4YkTRuhrEugeCVLkFKyp1ZxMohm2iCchwQoj6coY4kIgLDbGZKHNC?=
+ =?us-ascii?Q?b5yxzwYa1MgdmtU8nujGztwKH9Et/GKC+kIgJI6a?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfa33fd3-bddb-42b6-9968-08db8d14f707
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 13:42:18.7391
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0Dh2Il8UKoz1k5InVFSyoYVHRUBMdJnFLOzvAjWKBh+o2JYBMaPiwIHje4Q4wTRdr8Ru/EPgtFwpzHPHbVR6jQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7327
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 12:16:21AM +0800, Dawei Li wrote:
-> For current implementation of vmid allocation of arm smmu-v3, a per-smmu
-> devide bitmap of 64K bits(8K bytes) is allocated on behalf of possible VMID
-> range, which is two pages for some architectures. Besides that, its memory
-> consumption is 'static', despite of how many VMIDs are allocated actually.
+The main change is to move secondary TLB invalidation mmu notifier
+callbacks into the architecture specific TLB flushing functions. This
+makes secondary TLB invalidation mostly match CPU invalidation while
+still allowing efficient range based invalidations based on the
+existing TLB batching code.
 
-Is there an actual problem here? Allocating a single 8k page at early
-boot doesn't seem like a burden? Are there alot of smmu instances?
+Changes for v4:
 
-> So an IDA based implementation is introduced to address this issue, which
-> is capable of self-expanding on the actual need of VMID allocation.
+ - Fixed a NULL pointer dereference when registering the first
+   notifier with mmu_interval_notifier_insert() instead of
+   mmu_notifier_register() - Thanks Dan and Chaitanya for the bug
+   reports.
 
-However, I agree IDA is just generally better and generally drivers
-shouldn't be open coding it
+ - Collected Acked/Reviewed tags.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+ - Don't call the notifier from radix__local_flush_tlb_page() on
+   PowerPC.
 
-Jason
+Changes for v3:
+
+ - On x86 call the invalidation when adding pending TLB invalidates
+   rather than when flushing the batch. This is because the mm is
+   required. It also matches what happens on ARM64. Fixes a bug
+   reported by SeongJae Park (thanks!)
+
+Changes for v2:
+
+ - Rebased on linux-next commit 906fa30154ef ("mm/rmap: correct stale
+   comment of rmap_walk_anon and rmap_walk_file") to fix a minor
+   integration conflict with "arm64: support batched/deferred tlb
+   shootdown during page reclamation/migration". This series will need
+   to be applied after the conflicting patch.
+
+ - Reordered the function rename until the end of the series as many
+   places that were getting renamed ended up being removed anyway.
+
+ - Fixed a couple of build issues which broke bisection.
+
+ - Added a minor patch to fix up a stale/incorrect comment.
+
+==========
+Background
+==========
+
+The arm64 architecture specifies TLB permission bits may be cached and
+therefore the TLB must be invalidated during permission upgrades. For
+the CPU this currently occurs in the architecture specific
+ptep_set_access_flags() routine.
+
+Secondary TLBs such as implemented by the SMMU IOMMU match the CPU
+architecture specification and may also cache permission bits and
+require the same TLB invalidations. This may be achieved in one of two
+ways.
+
+Some SMMU implementations implement broadcast TLB maintenance
+(BTM). This snoops CPU TLB invalidates and will invalidate any
+secondary TLB at the same time as the CPU. However implementations are
+not required to implement BTM.
+
+Implementations without BTM rely on mmu notifier callbacks to send
+explicit TLB invalidation commands to invalidate SMMU TLB. Therefore
+either generic kernel code or architecture specific code needs to call
+the mmu notifier on permission upgrade.
+
+Currently that doesn't happen so devices will fault indefinitely when
+writing to a PTE that was previously read-only as nothing invalidates
+the SMMU TLB.
+
+========
+Solution
+========
+
+To fix this the series first renames the .invalidate_range() callback
+to .arch_invalidate_secondary_tlbs() as suggested by Jason and Sean to
+make it clear this callback is only used for secondary TLBs. That was
+made possible thanks to Sean's series [1] to remove KVM's incorrect
+usage.
+
+Based on feedback from Jason [2] the proposed solution to the bug is
+to move the calls to mmu_notifier_arch_invalidate_secondary_tlbs()
+closer to the architecture specific TLB invalidation code. This
+ensures the secondary TLB won't miss invalidations, including the
+existing invalidation in the ARM64 code to deal with permission
+upgrade.
+
+Currently only ARM64, PowerPC and x86 have IOMMU with secondary TLBs
+requiring SW invalidation so the notifier is only called for those
+architectures. It is also not called for invalidation of kernel
+mappings as no secondary IOMMU implementations can access those and
+hence it is not required.
+
+[1] - https://lore.kernel.org/all/20230602011518.787006-1-seanjc@google.com/
+[2] - https://lore.kernel.org/linux-mm/ZJMR5bw8l+BbzdJ7@ziepe.ca/
+
+Alistair Popple (5):
+  arm64/smmu: Use TLBI ASID when invalidating entire range
+  mmu_notifiers: Fixup comment in mmu_interval_read_begin()
+  mmu_notifiers: Call invalidate_range() when invalidating TLBs
+  mmu_notifiers: Don't invalidate secondary TLBs as part of mmu_notifier_invalidate_range_end()
+  mmu_notifiers: Rename invalidate_range notifier
+
+ arch/arm64/include/asm/tlbflush.h               |   5 +-
+ arch/powerpc/include/asm/book3s/64/tlbflush.h   |   1 +-
+ arch/powerpc/mm/book3s64/radix_hugetlbpage.c    |   1 +-
+ arch/powerpc/mm/book3s64/radix_tlb.c            |   4 +-
+ arch/x86/include/asm/tlbflush.h                 |   2 +-
+ arch/x86/mm/tlb.c                               |   2 +-
+ drivers/iommu/amd/iommu_v2.c                    |  10 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c |  29 +++--
+ drivers/iommu/intel/svm.c                       |   8 +-
+ drivers/misc/ocxl/link.c                        |   8 +-
+ include/asm-generic/tlb.h                       |   1 +-
+ include/linux/mmu_notifier.h                    | 104 ++++-------------
+ kernel/events/uprobes.c                         |   2 +-
+ mm/huge_memory.c                                |  29 +----
+ mm/hugetlb.c                                    |   8 +-
+ mm/memory.c                                     |   8 +-
+ mm/migrate_device.c                             |   9 +-
+ mm/mmu_notifier.c                               |  50 +++-----
+ mm/rmap.c                                       |  40 +-------
+ 19 files changed, 110 insertions(+), 211 deletions(-)
+
+base-commit: 906fa30154ef42f93d28d7322860e76c6ae392ac
+-- 
+git-series 0.9.1
