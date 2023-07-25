@@ -2,228 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC7D760CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD12760CD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbjGYIVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        id S232127AbjGYIVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGYIVJ (ORCPT
+        with ESMTP id S232199AbjGYIV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:21:09 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABB9E5C;
-        Tue, 25 Jul 2023 01:21:08 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P7oU2n008377;
-        Tue, 25 Jul 2023 08:20:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
- b=XAFo/DW8zESIu/fK3tmTbm1IN/LqrEcfRY0tlmL2Mm4EGqMxOkglOCoISCXXnDclkG37
- yfXwzY/A7Ac3qWYzhM1lijLF/0jo6Mk0mmA7XRoHAT6RIF3eEEvVpIv/b8c3V01OUGgD
- HO2ejRB704AkNnpLbnJFjuzzaAtMBYBiSrxn/ChQeAf4v95Jy3tpsr8wiMwnM+iWEcF2
- 4rLIB370wsCGXMnjcdQ6mL8AcoiSGsja4FQ0pn9vj/LVoCov3/pd0C8z6f4HxA40p3vN
- Z8CdyBEdKr3V7ddfYb0UIfW7bV+QL9xh/DZ5JEQgqarvyOXOxsfl4n2L5Qlvlj1pWF1f LA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s075d4j8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jul 2023 08:20:39 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36P7S8A3035392;
-        Tue, 25 Jul 2023 08:20:38 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s05j4ew55-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jul 2023 08:20:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BeKm7qbCxe66qj6K7E6o8ZvTJ5Qd6D2C0YhHz2UyOGAAgS7w4/rHzFmjQCMbjXKswfhCJ4V0FT4hrDGirR6vh/iKSy1wedLRTn9Pg2SJcyhRUO3ekwxLvTlPt0N86mkYaht6PqkzbM6we6yiOfhKETOMOX4zHUpJec7SP+xScp9dFpv15qpqKZQ1AKBW6lUNu/Jkl5XReM6KDwLJsNgEzo94gfD+Cgyt2apdxnYaTdkLKimhYdtc2hNOvpSVQ3smhTukPgU/csgSj0Ts2gtFE3qFd/4Ub9t/yPrOpZLX3kQ00XhuNvOqVIMSb3f4j4E13gve3y4wezjXtHqDJS55DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
- b=edV7fVHDXutI1Uam0IDgp58Ox+Ze3vT1mbnV8Bd10nyYqT7PuKgRX7c5TCc2gTiBgPr2+rTeyU+ur8tfnZbivbP8BwZnFNxUeN+10S49jmP27NdNobWnveh9NlY52lNVog68WfthOk6EXaJgd2/1dwUAIH6bRy0PATs2obR8nzJoCR78ivo+nzkHmozbYqSLOwXwiHRnMg0heXfA1cDkIS1D0ciAI81HrtNL0/deKIoQ5BEVGaJOcHNvK0GRtgIXiZYRunrWsZGGEUkCugxKllcIx3z6IqUcqDhtMlJZNcGY1Gt0R48kdOky4+O3T6RzF1J42kb03QuyQvZpqPOD8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RK/W3Sl5LYf11baQrHp8hJUc6Cnbe001ciLL/q8oKW8=;
- b=NVIMSGNwY+UsIpJM/UwaIF+Bqf2morwu/Io/FKo3BCNj8tX7qat2zONL7BNuD3STUIMZWR2pLTv8a4qFHK4bGiaCMjYfFsQu8wK/M/rS1gy9FaAR6Eghl8iJR2eay5N5pWMqtHwexgYsODnCe6l6rFCESws5WaIrvqtlY/JhYOs=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SN4PR10MB5558.namprd10.prod.outlook.com (2603:10b6:806:201::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
- 2023 08:20:36 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::8072:6801:b0b7:8108]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::8072:6801:b0b7:8108%7]) with mapi id 15.20.6609.031; Tue, 25 Jul 2023
- 08:20:36 +0000
-Message-ID: <4c20d8fd-b478-5b0a-0558-3b59dead0751@oracle.com>
-Date:   Tue, 25 Jul 2023 09:20:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 1/4] perf metric: Event "Compat" value supports
- matching multiple identifiers
-Content-Language: en-US
-To:     Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1690100513-61165-2-git-send-email-renyu.zj@linux.alibaba.com>
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <1690100513-61165-2-git-send-email-renyu.zj@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0532.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:2c5::14) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Tue, 25 Jul 2023 04:21:27 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DECE5C;
+        Tue, 25 Jul 2023 01:21:22 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R993K3LX6z4f41Vk;
+        Tue, 25 Jul 2023 16:21:17 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgCHeuj6hb9kTMLIOg--.4402S2;
+        Tue, 25 Jul 2023 16:21:16 +0800 (CST)
+Subject: Re: [PATCH v5 5/8] ext4: call ext4_mb_mark_group_bb in
+ ext4_mb_clear_bb
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <87edkzjiil.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <bb0c8088-3e06-c808-7944-39b95cca9a1f@huaweicloud.com>
+Date:   Tue, 25 Jul 2023 16:21:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SN4PR10MB5558:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4da487d2-2440-4407-29c5-08db8ce805b8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TzggqbT2GG3yY5DPpj/LGphDN1qoX1NcTU3aYgPEs9yvF6RqvFmwE5G++ycl1Q1aAPbAdLXeB/kidBSVm4YS3dQd7KCw9rC/qZuS5r62KgD8xgtrqEbijN6gEIB2xO3FFCd0h2QRbnb/SOnDxNLL5cdHcX4fBevNMfLkaMgIW79Uj5mBtUieGIL+C/p7t4EXaW3mON3TqAllGWm2D7BWrZJv/YeqLLClJ9YM10zsKIfcsUjYSTb2qWFfRvBxPorP+WSeXp7DaH8iaxG7rcvXkSVVkrSvqXRlikGdbcOdrnDHylnLuowTyaUduredY90LhJG25M/8Ohhu7yBrScKFBuWAmGudqBHovOMhpLqapjsWfvx+JihjeDWpH2yakW9qz8lx83/PhoH/40qroAv09rjcA+coLcU65DJUmUNBNahyT7bPv9W92RG/u9hwChjppLUmi2g6TWjC6fRacBQaN7QPmRmnbEgsEOXjpX+sBGAVEovaTOctFucyEIyKCgo9to1to/FQbot1ZzQSzc32jx8vREgams8RJLYkde8JFGtXYNcLlnCL0uvVGFPJ7GscuSqAw4nwYZiRP7mUd6QKy5D25zlUqtAMsamIbpOGtwSJtnsWqn3OArmVn2wnchJEChxg0zjYX/Y9oH2/BmCZUQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(376002)(136003)(346002)(366004)(451199021)(31686004)(186003)(6506007)(26005)(2906002)(86362001)(31696002)(7416002)(36756003)(8936002)(8676002)(478600001)(54906003)(110136005)(6512007)(6486002)(6666004)(36916002)(38100700002)(4326008)(41300700001)(5660300002)(316002)(66556008)(66476007)(66946007)(53546011)(2616005)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkRrWjdUNmpjcTR2OE51V1NQMDUxRjRkVXROdGhqekRDVkl5ZmkrVGxWdFlE?=
- =?utf-8?B?Z2F2V0lIWkphZ0Rud2dTT0ViS1BmYlZMOFJWVStwem1ieDFCYWhpb3RRYVc5?=
- =?utf-8?B?bmhaTnV5REZrWnoxMHZLamp6S2RnS1h1YVIweE1jRzRVcGJZdnV5Wmc2ZzhU?=
- =?utf-8?B?dkFRR2ZqN1dQYnVvSFVqL1lBVENSYmxpVFFpSFVzbkpWNS9QSDlYTlZYKzJF?=
- =?utf-8?B?clBNbzNCd0IwREg3SjZHWDRSbFhMTXQ5ZE9UTlp6UjZrbzNzZzQ1NnJkTWRi?=
- =?utf-8?B?SDRBajNpbXVneGkva3FQSG1jWmFaK0QyZnkwZHlCaVRKb2NsV0NPNkphWFVx?=
- =?utf-8?B?L2JzQmVoK0cyOTJWTXAydVlLdjROMlVkK0gwdXhMYkVrZ05jZHdOTFV4Y2dh?=
- =?utf-8?B?QnJFdmg0NmJKL3AvZVFjTTRyd01DR3NOM2xFQnMzNG1DL09hRTNVSTBzb1pp?=
- =?utf-8?B?N2dnVVRSWWM1ZVVKc3h4aGlFTS9TRHFNVXdvQURCS0NvQ2Rad0wyeW1UOVQw?=
- =?utf-8?B?ZGhUUURKeWRxc2ovY1R1QVFRNGVyS0VIMXdPZ09SaVJoWmdGcWwvVktETm5F?=
- =?utf-8?B?T1FJZ1RmRDN3VUZMekVVckZzN0sxZTNpaEdMbi8rcXlSSkEvRk16aG9UZlB1?=
- =?utf-8?B?TXQrU05lSEI0VURmd2dxSWNNbzRMdzQyRG1xOVdES0VPWUlXMHpua2NXN01U?=
- =?utf-8?B?MlR0WjRiSzJxTGdMYjhPZGNaSUZwcDBHKzdxVmJBWVRrWndaeGNWSVBSWFNL?=
- =?utf-8?B?czZUUDl3T0pkN2YyMFRoN1YreE8rNVNVeUo5NmpPQ2E1bTBRUkZZcWk4VmQ4?=
- =?utf-8?B?UzFpcjhsY1pJcmY1RVc3VjYxTXBKUkFMc3NTTmdvZi9XZzJmd0FoTVpsNThZ?=
- =?utf-8?B?SEhNNDdKKytRMkR2WjBFSWNPWXZVd1BhMjQycmI2MGtPSXl3V3NPc0RyWmd3?=
- =?utf-8?B?VXJzU1hiQVYwazFGb1lOLzRBN3JtL1JmQzA5dEsrYm9Gekg4ZFN1Qml3aVZl?=
- =?utf-8?B?WGhDODhSRTZrOEpWRVN5TWU4ZWZxa0hHYzhnSzgxdXd0L1l5MEs5Um0zUkZC?=
- =?utf-8?B?MFY5QTh0OWZKT2l6MlRxdW1WNlNwTnJKTTZ4eUFKS0ZSTERKV3kvS3ZVSk90?=
- =?utf-8?B?eHlXRE52Ris4dENxbWRyMy9CNlNTaVJRUnVGZGdXZ25SKzVLSno2U1ZmMzQ2?=
- =?utf-8?B?ZjlBTGdjQXp4dEZhVTlXY29GN1JkckpXKy9xTEZzZFlZYTEvdmJaRVBBaGdK?=
- =?utf-8?B?WkRFdjU4MU1DazRGTXc0YUdTNmlhekhDTldBQlVoSTlyVXVDZGZWUlliMncw?=
- =?utf-8?B?YW5rWkF2djkxd0JpRDFQOE8wZHVVVXdVVzFCb0ZJa2lDYmxLYW9uYmlkeUxQ?=
- =?utf-8?B?WHBvaEZqWEk5OHRjZjJIZ2xCWWxpazRicVRabnNzRm1xT0p5YkpBalI2c05M?=
- =?utf-8?B?RWIxZmRSQ0NrMTN1dk13SnYra2Ewb2dZK3dqRmVHMGxrdnBZaVlpd2pVanpP?=
- =?utf-8?B?MW5GY0lDdmFSZEc2YjNjdUJRZy82SEpIN05MWTZpVmprUE5Rdi84cTF5YzVW?=
- =?utf-8?B?V1RndFlhS1BucU91WUlVOFJ5UnB4bVJqU0tXOHBldy9pZjVyM0JHcjBmWUFL?=
- =?utf-8?B?RzFVMUxoOHFQazZtdVcwVXIwOWNuQXIwOHowaS9HTm9Wa3pYcWlXQVFnMHNi?=
- =?utf-8?B?eEphNHByS0RjOEE3bWJaV2ZYalZDNEFaS0liYzg4cTdubTNuYjRMeG9OMTZy?=
- =?utf-8?B?RGw5R0c4empDYjBQZXlFWXcyTGlhWHEwbE5mVTZqcEdhNVFkUHZlSHh6YVVJ?=
- =?utf-8?B?UjZvNW5TZ1k3c0Y2dzJmVHdUQjVNWHEyaWZDdTBnZWF0MmNzbTY3cmlLcitl?=
- =?utf-8?B?M3RKZnpMOXlFVzhwS3NVUjN3cGwvdkpZTERrakM5V2ZDb2NGb2tubkhvTVFv?=
- =?utf-8?B?aWdacFc5UGVwYjJ1bGNMRkhMSkhDM2UyQ0tHdWNLVkNJK2NaY1lTVW9MMXlt?=
- =?utf-8?B?VG1hcXlsSnRBY3JIbndYVHBDRDFDbkVibnIxbWI2TEg4MWQ2cVBaRjJ4eTBS?=
- =?utf-8?B?U2tzRC9jcTh1VVBjc0p4K0xCaDI5VDhGd2M0QXNaOUtyU3ZtOXYwRkViRFdU?=
- =?utf-8?Q?RtZixTAXaD4NkGLzhld2oj6NE?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?Wkl5TG44YVNaRzNMVW9lSWFlL3pFSnFVU0tDNVFQZVFrbzlWTVU1Yk81WE4z?=
- =?utf-8?B?TDRVamIwMnF4Q1BKSURaSFBjTWhwODlOaXV2L1dDc01YZTFON1JGZElTblVt?=
- =?utf-8?B?R3J6Yk9kUERzaUYrWk51VTE4TUV6OExHYnIwNjNvN2tMRlNILy9PUUdUQmRu?=
- =?utf-8?B?blNXclNVc3hJSUtBTGI3WXUrVDRoUGVOOHo5VWc3UDVOZmdmckQySzBXckZZ?=
- =?utf-8?B?SWh6RG44NmIvRllQVFNXLytPbE84L2M1TnhKNmpveW0rd0lzWk5XQ1diL2JR?=
- =?utf-8?B?VWlSU0dEbE5vWGJzVXFFK1JLK1BtV3AzRWo1cksrMjRqd1krMmdLQTB0NXcw?=
- =?utf-8?B?eVN1eEVEZmtRUnY5QmgxQVU4Y0cvT2hPTi9GZ2hVclFXNkxyK0xmclp2WGd3?=
- =?utf-8?B?OWtrZ2NzbXBQQU91bkp1MTF6UGVzNlRMVnZiOGJMWEduTTVEZ1lEeDdhSFF6?=
- =?utf-8?B?ZkpiZHFOcVQ1dXhWaXkxTlN0eFJLNjVMLy9udG5seTVXdFFyd05pbUZKR2F4?=
- =?utf-8?B?UG5OYjNZVG5BSEVGNkpJV3A0QWFZeHhZcGZKNytuc2RNYk5JZGc0cU9GMU9z?=
- =?utf-8?B?Rk9kenVqWGFPRjJ2bW5OeDJ0aVJWdmNuNXZHd0lKenJUV2VRanBkZlhGMnV4?=
- =?utf-8?B?T3BPY3orZjl3TFFkNVhPY0tKT1locUk1dDVKbXdkZko1Uk1IdVRCcVFQNFly?=
- =?utf-8?B?ai9SWlk1TEpQZjJJRHU0VkorVmJ6VWY3dEFOV1RCR3FNREIrQ0RmUXFCcVhK?=
- =?utf-8?B?R2VwMnlrR3JmYUp3c2FYUmNYQ21RZHR4VmZVcmRWcGh2VzBnWFE1djlZOFZQ?=
- =?utf-8?B?ZTg3clZ4dlMyY2NTdE9JYmd3YTI2OCs0UDdEY2dGUmVySHR1QmJEcTZQbkR5?=
- =?utf-8?B?eitDZ0t4K24rOUh2RHovNlUrWDN2KzRWNVdQYXU1M1VlOXFnUzJZWWhLSlZl?=
- =?utf-8?B?RVhDL0RwSmcvc2xGdDlqWWs4WjVtRFI1eUZIWFVGZUFLbDBnaGtYbXExOWsw?=
- =?utf-8?B?UGgrM2xqalhIbmRwSHhWMkVVM3cxZkNBMzJrSFNlaitYbWt1T3BFR2VFTjlv?=
- =?utf-8?B?VWtPQ2t2ZDArbEV3QjNlZUtrMFgzZXRHU21WUTdTVGVjREIzbnA2ZUw1dGc1?=
- =?utf-8?B?Zzh1QjJUdzBGMFZtNXMyejF3WVpLTUR5WTU3eitmcXJnajN5ZVZabzZhdHNB?=
- =?utf-8?B?S1RzbXpOZGlJZmJ3UkpXN016NzlVOTdwWFBib25mSGJxRjJudHR1bEh1OHU4?=
- =?utf-8?B?MEtJZGZYS2ZUQTBuWDNXQWExMGxFVGFhK3pnZGhjeTczU3dDbmtVcjMwM2Jr?=
- =?utf-8?B?Y2M1SkZJZzdaQXZDWWsvanBDTnBGSzZLeFZUMzBYVVZUMWtZLyt4Ni9lSWFh?=
- =?utf-8?B?TmZYdG5iNmdHaHlscnRFZE0wTktpc1J2U2dZQlVGdW04RGRtb0tHZHhiVnlj?=
- =?utf-8?B?VkpPcVpXUCtwMDJGaWF5NVpCRWV6NHVwbmVndEVqNXNIQVhHcGVoOFBKV1R2?=
- =?utf-8?Q?xvexXg=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4da487d2-2440-4407-29c5-08db8ce805b8
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 08:20:36.1372
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D3S+t5IDN+p+wcei5Zjr09HIKNc+QdLnn2oBmgzL6s8mf770enF2WIhv++RI7Ao4e9EwjTPYC9eudGcKMNymrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5558
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_04,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307250073
-X-Proofpoint-ORIG-GUID: _2Kawaw3ojXwn1tiPFbBtu6OI-kCqVL8
-X-Proofpoint-GUID: _2Kawaw3ojXwn1tiPFbBtu6OI-kCqVL8
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87edkzjiil.fsf@doe.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgCHeuj6hb9kTMLIOg--.4402S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3ZFyxWF4xCw1UKw45Kw1DGFg_yoW8Gr1Duo
+        WrAF42yF4xZryjyay8Ca98X3y7C34DGFWxZr1rZF45uF4jya4a9w4xCw4fXFW3Jw1Ikr9r
+        KryxXFWF9FW0kF95n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYU7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+        CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+        AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/07/2023 09:21, Jing Zhang wrote:
-> The jevent "Compat" is used for uncore PMU alias or metric definitions.
-> 
-> The same PMU driver has different PMU identifiers due to different hardware
-> versions and types, but they may have some common PMU event/metric. Since a
-> Compat value can only match one identifier, when adding the same event
-> alias and metric to PMUs with different identifiers, each identifier needs
-> to be defined once, which is not streamlined enough.
-> 
-> So let "Compat" value supports matching multiple identifiers. For example,
-> the Compat value {abcde;123*} can match the PMU identifier "abcde" and the
-> the PMU identifier with the prefix "123", where "*" is a wildcard.
-> Tokens in Unit field are delimited by ';' with no spaces.
-> 
-> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
-> ---
->   tools/perf/util/metricgroup.c | 27 ++++++++++++++++++++++++++-
 
-Why only support for metrics? Why not support for regular events 
-aliases? I would have expected pmu_add_sys_aliases_iter_fn() to have 
-been updated for this.
 
-On the basis that we will support regular events aliases, we need perf 
-tool self-test cases for this in tools/perf/test/pmu-events.c (I think 
-that pmu-events.c would be the most appropriate file)
+on 7/23/2023 1:37 PM, Ritesh Harjani wrote:
+> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+> 
+>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+>>
+>>> call ext4_mb_mark_group_bb in ext4_mb_clear_bb to remove repeat code
+>>> to update block bitmap and group descriptor on disk.
+>>>
+>>> Note: ext4_mb_clear_bb will update buddy and bitmap in two critical
+>>> sections instead of update in the same critical section.
+>>>
+>>> Original lock behavior introduced in commit 7a2fcbf7f8573 ("ext4: don't
+>>> use blocks freed but not yet committed in buddy cache init") to avoid
+>>> race betwwen ext4_mb_free_blocks and ext4_mb_init_cache:
+>>> ext4_mb_load_buddy_gfp
+>>> ext4_lock_group
+>>> mb_clear_bits(bitmap_bh, ...)
+>>> mb_free_blocks/ext4_mb_free_metadata
+>>> ext4_unlock_group
+>>> ext4_mb_unload_buddy
+>>>
+>>> New lock behavior in this patch:
+>>> ext4_mb_load_buddy_gfp
+>>> ext4_lock_group
+>>> mb_clear_bits(bitmap_bh, ...)
+>>> ext4_unlock_group
+>>>
+>>> /* no ext4_mb_init_cache for the same group will be called as
+>>> ext4_mb_load_buddy_gfp will ensure buddy page is update-to-date */
+>>>
+>>> ext4_lock_group
+>>> mb_free_blocks/ext4_mb_free_metadata
+>>> ext4_unlock_group
+>>> ext4_mb_unload_buddy
+>>>
+>>> As buddy page for group is always update-to-date between
+>>> ext4_mb_load_buddy_gfp and ext4_mb_unload_buddy. Then no
+>>> ext4_mb_init_cache will be called for the same group concurrentlly when
+>>> we update bitmap and buddy page betwwen buddy load and unload.
+>>
+>> More information will definitely help.
+>>
+>> In ext4_mb_init_cache(), within a lock_group(), we first initialize
+>> a incore bitmap from on disk block bitmap, pa and from
+>> ext4_mb_generate_from_freelist() (this function basically requires
+>> ext4_mb_free_metadata() to be called)
+>> Then we go and initialize incore buddy within a page which utilize bitmap
+>> block data (from previous step) for generating buddy info.
+>> So this clearly means we need incore bitmap and mb_free_metadata() to be updated
+>> together within the same group lock.
+> 
+> Here I meant on-disk bitmap in bitmap_bh. Anyhow I don't think this is really
+> required though.
+> 
+> 
+>>
+>> Now you said that ext4_mb_init_cache() can't be called together between
+>> ext4_mb_load_buddy_gfp() and unload_buddy() because buddy page is uptodate?? 
+>> Can you give more details please? 
+> 
+> Ok. So even if the page is uptodate, ext4_mb_init_cache() can still get
+> called when you have a resize and the extended group belongs to the same
+> page (for bs < ps). But we don't touch the bitmap and buddy info for the
+> groups which are already initialized.
+> And as you said we can't be working on bitmap or buddy info unless we
+> have called ext4_mb_load_buddy_gfp() which takes care of the bitmap and
+> buddy initialization for this group and it will clear the
+> EXT4_GROUP_INFO_NEED_INIT_BIT in grp->bb_state so that
+> ext4_mb_init_cache() called due to resize doesn't re-initialize it.
+> 
+Yes, my point is that only first ext4_mb_load_buddy_gfp of a group will
+do real buddy initialization which will generate buddy from on-disk bitmap
+and data from ext4_mb_free_metadata. Any code after ext4_mb_load_buddy_gfp
+has no race with buddy initialization. As ext4_mb_free_metadata is called
+after ext4_mb_load_buddy_gfp, there is no race with buddy initialization.
 
-Thanks,
-John
+> But one concern that I still have is - till now we update the bitmap and
+> buddy info atomically within the same group lock. This patch is changing
+> this behavior. So you might wanna explain that this race will never happen
+> and why?
+> 
+> 
+> ext4_mb_clear_bb()              xxxxxxxx()
+> 
+>     ext4_mb_load_buddy_gfp()    ext4_mb_load_buddy_gfp() // this can happen in parallel for initialized groups
+>     ext4_lock_group()           ext4_lock_group()   // will wait
+>     update block bitmap
+>     ext4_unlock_group()
+>                                 ext4_lock_group() // succeed. 
+>                                 looks into bitmap and buddy info and found discripancy.
+>                                 mark group corrupt or something?
+>                                 ext4_unlock_group()    
+> 
+>     ext4_lock_group()
+>     update buddy info
+>     ext4_unlock_group()
+>     ext4_mb_unlock_buddy()      ext4_mb_unlock_buddy()
+> 
+> 
+> ...On more reading, I don't find a dependency between the two. 
+> I see mb_free_blocks (poor naming I know...) which is responsible for
+> freeing buddy info does not have any return value. So it won't return an
+> error ever. Other thing to note is, ext4_mb_release_inode_pa() does
+> check for bits set in bitmap and based on that call mb_free_blocks(),
+> but I think we don't have a problem there since we take a group lock and
+> we first update the bitmap. 
+> 
+> So I haven't found any dependency due to which we need to update bitmap
+> and buddy info atomically. Hence IMO, we can separate it out from a common
+> lock> Feel free to add/update more details if you thnk anything is missed.
+After this patchset, here is all paths to cooperate update of on-disk bitmap
+and buddy bitmap in seperate lock (search all functions calling
+ext4_mb_load_buddy or ext4_mb_load_buddy_gfp to find potential code path to
+update both on-disk bitmap and buddy bitmap):
+code to free blocks:
+ext4_group_add_blocks (lock is separated in this patchset)
+  lock
+  clear on-disk bitmap
+  unlock
+
+  lock
+  clear buddy bitmap
+  unlock
+
+ext4_mb_clear_bb (lock is separated in this patchset)
+  lock
+  clear on-disk bitmap
+  unlock
+
+  lock
+  clear buddy bitmap
+  unlock
+
+code to alloc blocks:
+ext4_mb_new_blocks (lock was separated before)
+  lock
+  search and set buddy bitmap
+  unlock
+
+  ext4_mb_mark_diskspace_used
+    lock
+    set on-disk bitmap
+    unlock
+
+We always clear on-disk bitmap first, and then clear buddy bitmap during
+free while we do allocation on reverse order, i.e. seach and set buddy
+bitmap first, and then set on-disk bitmap.
+With this order, we know that bits are cleared in both on-dism bitmap
+and buddy bitmap when it's seen from allocation.
+
+> I didn't put why journal commit cannot run between the two, because I
+> think we are still in the middle of a txn.
+> (i.e. we still haven't call ext4_journal_stop())
+> 
+Yes, this is also explained in [1].
+
+> I am putting above information here.. so that if someone else reviews
+> the code, then can find this discussion for reference.
+> 
+> However please note that the subject of the commit is not very
+> informative. I think this patch should have been split into two - 
+> 
+> 1. ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb() 
+> ... In this commit message you should explain why this can be seperated.
+> This way a reviewer would know that this requires a closer review to
+> make sure that locking is handled correctly and/or there is no race.
+> 
+> 2. ext4: Make use of ext4_mb_mark_group_bb() in ext4_mb_clear_bb()
+> This commit message then just becomes make use of the new function that
+> you created.
+> 
+Sure, I will split this patch in next version and add details discussed to
+commit.
+
+[1] https://lore.kernel.org/linux-ext4/bb19c6f8-d31f-f686-17f9-3fd2bb1db3dd@huaweicloud.com/
+
+-- 
+Best wishes
+Kemeng Shi
+
+> -ritesh
+> >>
+>> What about if the resize gets called on the last group which is within the
+>> same page on which we are operating. Also consider blocksize < pagesize.
+>> That means we can have even more blocks within the same page.
+>> So ext4_mb_init_cache() can still get called right while between load_buddy and unload_buddy?
+>>
+>> Maybe I need to take a closer look at it.
+>>
+>> -ritesh
+>>
+>>
+>>>
+>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>> ---
+>>>  fs/ext4/mballoc.c | 90 ++++++++++++-----------------------------------
+>>>  1 file changed, 23 insertions(+), 67 deletions(-)
+>>>
+>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>> index 34fd12aeaf8d..57cc304b724e 100644
+>>> --- a/fs/ext4/mballoc.c
+>>> +++ b/fs/ext4/mballoc.c
+>>> @@ -6325,19 +6325,21 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  			       ext4_fsblk_t block, unsigned long count,
+>>>  			       int flags)
+>>>  {
+>>> -	struct buffer_head *bitmap_bh = NULL;
+>>> +	struct ext4_mark_context mc = {
+>>> +		.handle = handle,
+>>> +		.sb = inode->i_sb,
+>>> +		.state = 0,
+>>> +	};
+>>>  	struct super_block *sb = inode->i_sb;
+>>> -	struct ext4_group_desc *gdp;
+>>>  	struct ext4_group_info *grp;
+>>>  	unsigned int overflow;
+>>>  	ext4_grpblk_t bit;
+>>> -	struct buffer_head *gd_bh;
+>>>  	ext4_group_t block_group;
+>>>  	struct ext4_sb_info *sbi;
+>>>  	struct ext4_buddy e4b;
+>>>  	unsigned int count_clusters;
+>>>  	int err = 0;
+>>> -	int ret;
+>>> +	int mark_flags = 0;
+>>>  
+>>>  	sbi = EXT4_SB(sb);
+>>>  
+>>> @@ -6369,18 +6371,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  		/* The range changed so it's no longer validated */
+>>>  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
+>>>  	}
+>>> -	count_clusters = EXT4_NUM_B2C(sbi, count);
+>>> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
+>>> -	if (IS_ERR(bitmap_bh)) {
+>>> -		err = PTR_ERR(bitmap_bh);
+>>> -		bitmap_bh = NULL;
+>>> -		goto error_return;
+>>> -	}
+>>> -	gdp = ext4_get_group_desc(sb, block_group, &gd_bh);
+>>> -	if (!gdp) {
+>>> -		err = -EIO;
+>>> -		goto error_return;
+>>> -	}
+>>>  
+>>>  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
+>>>  	    !ext4_inode_block_valid(inode, block, count)) {
+>>> @@ -6390,28 +6380,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  		goto error_return;
+>>>  	}
+>>>  
+>>> -	BUFFER_TRACE(bitmap_bh, "getting write access");
+>>> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
+>>> -					    EXT4_JTR_NONE);
+>>> -	if (err)
+>>> -		goto error_return;
+>>> -
+>>> -	/*
+>>> -	 * We are about to modify some metadata.  Call the journal APIs
+>>> -	 * to unshare ->b_data if a currently-committing transaction is
+>>> -	 * using it
+>>> -	 */
+>>> -	BUFFER_TRACE(gd_bh, "get_write_access");
+>>> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
+>>> -	if (err)
+>>> -		goto error_return;
+>>> -#ifdef AGGRESSIVE_CHECK
+>>> -	{
+>>> -		int i;
+>>> -		for (i = 0; i < count_clusters; i++)
+>>> -			BUG_ON(!mb_test_bit(bit + i, bitmap_bh->b_data));
+>>> -	}
+>>> -#endif
+>>> +	count_clusters = EXT4_NUM_B2C(sbi, count);
+>>>  	trace_ext4_mballoc_free(sb, inode, block_group, bit, count_clusters);
+>>>  
+>>>  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
+>>> @@ -6420,6 +6389,22 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  	if (err)
+>>>  		goto error_return;
+>>>  
+>>> +#ifdef AGGRESSIVE_CHECK
+>>> +	mark_flags |= EXT4_MB_BITMAP_MARKED_CHECK;
+>>> +#endif
+>>> +	err = ext4_mb_mark_group_bb(&mc, block_group, bit, count_clusters,
+>>> +				    mark_flags);
+>>> +
+>>> +
+>>> +	if (err && mc.changed == 0) {
+>>> +		ext4_mb_unload_buddy(&e4b);
+>>> +		goto error_return;
+>>> +	}
+>>> +
+>>> +#ifdef AGGRESSIVE_CHECK
+>>> +	BUG_ON(mc.changed != count_clusters);
+>>> +#endif
+>>> +
+>>>  	/*
+>>>  	 * We need to make sure we don't reuse the freed block until after the
+>>>  	 * transaction is committed. We make an exception if the inode is to be
+>>> @@ -6442,13 +6427,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  		new_entry->efd_tid = handle->h_transaction->t_tid;
+>>>  
+>>>  		ext4_lock_group(sb, block_group);
+>>> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>>>  		ext4_mb_free_metadata(handle, &e4b, new_entry);
+>>>  	} else {
+>>> -		/* need to update group_info->bb_free and bitmap
+>>> -		 * with group lock held. generate_buddy look at
+>>> -		 * them with group lock_held
+>>> -		 */
+>>>  		if (test_opt(sb, DISCARD)) {
+>>>  			err = ext4_issue_discard(sb, block_group, bit,
+>>>  						 count_clusters, NULL);
+>>> @@ -6461,23 +6441,11 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+>>>  
+>>>  		ext4_lock_group(sb, block_group);
+>>> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>>>  		mb_free_blocks(inode, &e4b, bit, count_clusters);
+>>>  	}
+>>>  
+>>> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+>>> -	ext4_free_group_clusters_set(sb, gdp, ret);
+>>> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+>>> -	ext4_group_desc_csum_set(sb, block_group, gdp);
+>>>  	ext4_unlock_group(sb, block_group);
+>>>  
+>>> -	if (sbi->s_log_groups_per_flex) {
+>>> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
+>>> -		atomic64_add(count_clusters,
+>>> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
+>>> -						  flex_group)->free_clusters);
+>>> -	}
+>>> -
+>>>  	/*
+>>>  	 * on a bigalloc file system, defer the s_freeclusters_counter
+>>>  	 * update to the caller (ext4_remove_space and friends) so they
+>>> @@ -6492,26 +6460,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>>  
+>>>  	ext4_mb_unload_buddy(&e4b);
+>>>  
+>>> -	/* We dirtied the bitmap block */
+>>> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
+>>> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+>>> -
+>>> -	/* And the group descriptor block */
+>>> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
+>>> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
+>>> -	if (!err)
+>>> -		err = ret;
+>>> -
+>>>  	if (overflow && !err) {
+>>>  		block += count;
+>>>  		count = overflow;
+>>> -		put_bh(bitmap_bh);
+>>>  		/* The range changed so it's no longer validated */
+>>>  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
+>>>  		goto do_more;
+>>>  	}
+>>>  error_return:
+>>> -	brelse(bitmap_bh);
+>>>  	ext4_std_error(sb, err);
+>>>  	return;
+>>>  }
+>>> -- 
+>>> 2.30.0
+> 
 
