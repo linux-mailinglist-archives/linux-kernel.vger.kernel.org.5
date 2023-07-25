@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F28760FF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05BE760FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbjGYJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S233468AbjGYJ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbjGYJ5t (ORCPT
+        with ESMTP id S233492AbjGYJ5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:57:49 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8531E19B0;
-        Tue, 25 Jul 2023 02:57:47 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P8K6bc000957;
-        Tue, 25 Jul 2023 09:57:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=ScsO8gFEUdeQmbh7UjCwmM/ydj1dSKOBKKvQp49SZyY=;
- b=pXNqJG7GJccCjA5gL2i7TqdEujtfB/u3VVg5X4UM89IoqkidjgR+wl2OutEGoHMnLj/P
- CYVM30MyKgfEZtFakjPsHM2fvc9ppGr/FS1h2utOiazIL5TFNI07gaWagb2ghZvyATJV
- kiCMGIE4y6BMEYMCpfjI7+utdLyxCaX9D4cHYGJSQL0eR0YHTPSp9bqMte9IOqCtcsvi
- V1CPnJc4qcRhVCa3EXD84+UZ7B/9tp5E0uxr2zh39m/RfcK93bNIDp+niQXo9MydrdAb
- 7yRyxXRXj1vJ8F9O7Pdc1OnslDeCWREU1uCkcaJ6Fe4JwwvZiL8XluJGJ+qPC2t65bIW bw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1v6u9xt4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 09:57:42 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P9vfeI014998
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 09:57:41 GMT
-Received: from fenglinw2-gv.ap.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 25 Jul 2023 02:57:40 -0700
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-Date:   Tue, 25 Jul 2023 17:57:21 +0800
-Subject: [PATCH v2 3/3] leds: flash: leds-qcom-flash: put child node if
- registration failed
+        Tue, 25 Jul 2023 05:57:32 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18710E7
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:57:31 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-98e011f45ffso785117366b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690279049; x=1690883849;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wC6uOAAWWshiU7HM0RaHJ6XLqbUAShyDQVdsD3q4R3A=;
+        b=mVZGMZlCiF1F6HADarxCSEJ1MaLMUtXiR3oM2qyw2oGwaGxxU7SwWx4LwS3BmlM3Bv
+         ytMZ4w23uqOjuxcrrQM47eHvV4QXgFGAUoc4enoBm7nt7QMgcNB7tCVduRauDCN3uLc4
+         M1D1RGNM+k21uF4lgcSf+0UCq/47yuxXI4ZbBv6LV1BPjRyUNfXu3Jv42aN2OEu34Mqs
+         KKZGZ3LMkUO/0/+E+mCG3x4EhYaQbg4gVzjbjTtvd3KudbzY3uPdSyt7ApuWzO599Hfx
+         scuMwYTBeVjHFfoJjHW1KVup4wWNXJ6A5LhlwkD3YcbnPra2xfDdtONBPUCGBrZITYK6
+         uxXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690279049; x=1690883849;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wC6uOAAWWshiU7HM0RaHJ6XLqbUAShyDQVdsD3q4R3A=;
+        b=KoiVRbrsj5phslPoMcgr34adhRZ9lnijrrm3IgOt5eyb1ZMFHwnPBXrSgPVqbA2jtu
+         zV3so/FriRFW6XOO8uJJdJnOOaX9DJZJRhhr8diZS9/34tqWg3TcXYvao5ywjQCL0ZLo
+         wICMEpQoK963oM1Mt72VG48Mfn87U65WFpdDgjEjUNyicxYZARCbqIWBKRa2b9DikE6m
+         cNswXJzcFq6/YaV6apC3JmJgitUb8rE6M3NPd8w8wE4t6HEwBoBDEvj+lmmW6k7C9Zov
+         D5FOBLFedmvDnkoT2WzEDyR61sB94KLYL4Dx5Rlr9PYLjhapK0Gtqvb6LV+WORYBNzlB
+         OtMQ==
+X-Gm-Message-State: ABy/qLZO8eU88PWOY/Tk71tglhUZN6DAAhycWHZbiFlxOV1HcSnBqZnL
+        WFWh13jHQ3UTQkcn5apzpRyv+g==
+X-Google-Smtp-Source: APBJJlEPuZg32/18BhFO9sCz6xyx84ncx78sRSeoQ4NSWs2kTf61C9KzuN6EfDO1IbzjsJhDu7dLpg==
+X-Received: by 2002:a17:907:75cc:b0:99b:4890:812d with SMTP id jl12-20020a17090775cc00b0099b4890812dmr11202687ejc.16.1690279049518;
+        Tue, 25 Jul 2023 02:57:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id lv19-20020a170906bc9300b00989257be620sm7853476ejb.200.2023.07.25.02.57.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 02:57:28 -0700 (PDT)
+Message-ID: <6f899f68-a44e-ef50-4236-007a73eb0431@linaro.org>
+Date:   Tue, 25 Jul 2023 11:57:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: Add Nuvoton ma35d1 rtc
+Content-Language: en-US
+To:     Jacky Huang <ychuang570808@gmail.com>, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
+        Jacky Huang <ychuang3@nuvoton.com>
+References: <20230725094030.32877-1-ychuang570808@gmail.com>
+ <20230725094030.32877-2-ychuang570808@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725094030.32877-2-ychuang570808@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230725-leds-qcom-flash-driver-tiny-fixes-v2-3-0f5cbce5fed0@quicinc.com>
-References: <20230725-leds-qcom-flash-driver-tiny-fixes-v2-0-0f5cbce5fed0@quicinc.com>
-In-Reply-To: <20230725-leds-qcom-flash-driver-tiny-fixes-v2-0-0f5cbce5fed0@quicinc.com>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee@kernel.org>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690279054; l=744;
- i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=vYKLErViyJpx6PQYnTAwpfzAwvI97fsyFd3BM/iAYkw=;
- b=Y88jIIdAoUUJ0ZlWpBM+lZjvUCEeJMwkPGcYzedHMJDyyDpqocRrp5MIk85ouM0+nhCBrtTxy
- pgJhKCuZzFHBxUgSBspI0AWJkn14DS2ZJ7n9gIOmiKO1EBHMBiTG8/v
-X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
- pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: p9PX_iIs_jAeh6ofeuITWzg3dVKc4kpZ
-X-Proofpoint-GUID: p9PX_iIs_jAeh6ofeuITWzg3dVKc4kpZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_05,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 mlxlogscore=698 lowpriorityscore=0 impostorscore=0
- mlxscore=0 spamscore=0 adultscore=0 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250086
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put the child node if register flash LED device failed.
+On 25/07/2023 11:40, Jacky Huang wrote:
+> From: Jacky Huang <ychuang3@nuvoton.com>
+> 
+> Add documentation describing the Nuvoton ma35d1 rtc controller.
+> 
+> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+> ---
+>  .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 48 +++++++++++++++++++
 
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
----
- drivers/leds/flash/leds-qcom-flash.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/drivers/leds/flash/leds-qcom-flash.c b/drivers/leds/flash/leds-qcom-flash.c
-index 29cf09479422..a73d3ea5c97a 100644
---- a/drivers/leds/flash/leds-qcom-flash.c
-+++ b/drivers/leds/flash/leds-qcom-flash.c
-@@ -749,6 +749,7 @@ static int qcom_flash_led_probe(struct platform_device *pdev)
- 	return 0;
- 
- release:
-+	fwnode_handle_put(child);
- 	while (flash_data->v4l2_flash[flash_data->leds_count] && flash_data->leds_count)
- 		v4l2_flash_release(flash_data->v4l2_flash[flash_data->leds_count--]);
- 	return rc;
-
--- 
-2.25.1
+Best regards,
+Krzysztof
 
