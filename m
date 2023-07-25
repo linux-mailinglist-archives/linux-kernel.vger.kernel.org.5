@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C63761FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A3761FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjGYROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        id S231285AbjGYRPb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 13:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjGYROI (ORCPT
+        with ESMTP id S229689AbjGYRP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:14:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0FD1BE;
-        Tue, 25 Jul 2023 10:14:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30F0D6181E;
-        Tue, 25 Jul 2023 17:14:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 450E4C433C8;
-        Tue, 25 Jul 2023 17:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690305246;
-        bh=f5oiwP4sqXIe3tfN9l/gfp7nkZmncAoyMafjK+B8OaE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ocvybNMJ4UQC6VVtbH2qJszlBUMXGQvLiXPlv2EGFkkmN34dqvczYPUxwUqabw09O
-         PgMi4gsOA2Ab2Xra+T9d5DZecyW0t/Lr71VF4cxXjBfMoCvNAzIkHvUz9xBI4TEDcg
-         PyPom0h9anV/4WXAxzO9cV0hlxHZWIOJuLRKyQ7xP05wug2yleS12KyxSec0vfF86G
-         G5XYtKieoFJSutexpz+CvXOxVbD16HFAWXOBgAJQdFi6/FI2UnajsRiTfwmQSZF9SY
-         nek+3W2Gonm8n+nO8+4fiCMw3MUgwb998sBcI8YllrDslsvY8HZMl0anlA2sP7yYhV
-         nDKSV87heBQEQ==
-Date:   Tue, 25 Jul 2023 10:14:05 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, jgg@ziepe.ca, markzhang@nvidia.com,
-        michaelgur@nvidia.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, yuancan@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
- IFLA_BOND_ARP_IP_TARGET parsing
-Message-ID: <20230725101405.4cd51059@kernel.org>
-In-Reply-To: <20230725052557.GI11388@unreal>
-References: <20230723074504.3706691-1-linma@zju.edu.cn>
-        <20230724174707.GB11388@unreal>
-        <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
-        <20230725052557.GI11388@unreal>
+        Tue, 25 Jul 2023 13:15:29 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B9611F;
+        Tue, 25 Jul 2023 10:15:19 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qOLcw-001mdv-ED; Tue, 25 Jul 2023 19:15:14 +0200
+Received: from p5086d382.dip0.t-ipconnect.de ([80.134.211.130] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qOLcw-001NaV-6S; Tue, 25 Jul 2023 19:15:14 +0200
+Message-ID: <605d12e8a4fdcb238efc9b18fbd2637474de0049.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH v2] sparc: Use shared font data
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     "Dr. David Alan Gilbert" <linux@treblig.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     davem@davemloft.net, benh@kernel.crashing.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 25 Jul 2023 19:15:08 +0200
+In-Reply-To: <ZL/+Bz5C2Mxx0Msw@gallifrey>
+References: <20230724235851.165871-1-linux@treblig.org>
+         <20230725161040.GA832394@ravnborg.org> <ZL/+Bz5C2Mxx0Msw@gallifrey>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 80.134.211.130
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 08:25:57 +0300 Leon Romanovsky wrote:
-> > Yeah I have seen that. Just as Jakub said, empty netlink attributes are valid 
-> > (they are viewed as flag). The point is that different attribute has different
-> > length requirement. For this specific code, the RDMA_NLDEV_ATTR_STAT_HWCOUNTERS
-> > attribute is a nested one whose inner attributes should be NLA_U32. But as you
-> > can see in variable nldev_policy, the description does not use nested policy to
-> > enfore that, which results in the bug discussed in my commit message.
-> > 
-> >  [RDMA_NLDEV_ATTR_STAT_HWCOUNTERS]       = { .type = NLA_NESTED },
-> > 
-> > The elegant fix could be add the nested policy description to nldev_policy while
-> > this is toublesome as no existing nla_attr has been given to this nested nlattr.
-> > Hence, add the length check is the simplest solution and you can see such nla_len
-> > check code all over the kernel.  
-> 
-> Right, and this is what bothers me.
-> 
-> I would more than happy to change nla_for_each_nested() to be something
-> like nla_for_each_nested_type(...., sizeof(u32)), which will skip empty
-> lines, for code which can't have them.
+Hi Dave!
 
-In general the idea of auto-skipping stuff kernel doesn't recognize
-is a bit old school. Better direction would be extending the policy
-validation to cover use cases for such loops.
+On Tue, 2023-07-25 at 16:53 +0000, Dr. David Alan Gilbert wrote:
+> * Sam Ravnborg (sam@ravnborg.org) wrote:
+> > On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
+> > > From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> > > 
+> > > sparc has a 'btext' font used for the console which is almost identical
+> > > to the shared font_sun8x16, so use it rather than duplicating the data.
+> > > 
+> > > They were actually identical until about a decade ago when
+> > >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> > >                         "broken bar" to "vertical line"")
+> > > 
+> > > which changed the | in the shared font to be a solid
+> > > bar rather than a broken bar.  That's the only difference.
+> > > 
+> > > This was originally spotted by PMD which noticed that PPC does
+> > > the same thing with the same data, and they also share a bunch
+> > > of functions to manipulate the data.  The PPC code and the functions
+> > > I'll look at another time if this patch is OK.
+> > > 
+> > > Tested very lightly with a boot without FS in qemu.
+> > > 
+> > > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> > 
+> > Looks good, thanks for the fixes.
+> > Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> 
+> Thanks
+> 
+> > Let's hope someone picks it up...
+> 
+> I was hoping Dave would, but I realise Sparc doesn't get much
+> these days.
+> Of course if anyone feels guilty about their own patches adding code
+> they can take this patch to make ~340 lines of penance.
+
+You can ask Andrew Morton to pick it up through his tree. He usually does
+that when no one else is willing to pick a patch up.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
