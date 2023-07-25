@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3491761A7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A3E761A7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjGYNtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
+        id S230460AbjGYNtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbjGYNtE (ORCPT
+        with ESMTP id S231705AbjGYNtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:49:04 -0400
+        Tue, 25 Jul 2023 09:49:05 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F241FF7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:48:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0915C1FD2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 06:49:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A84C6170C
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:48:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E522C433C9;
-        Tue, 25 Jul 2023 13:48:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF27A61731
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:48:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BA9C433C7;
+        Tue, 25 Jul 2023 13:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690292936;
-        bh=rn5AmJ5E/u7lh73YUSkNYYV834iPfRhN7MTY5kuEYCE=;
+        s=k20201202; t=1690292939;
+        bh=KR4z8QRNi4pU35qpz87mdf60pT5ISebScYvNacq6P6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E5EJ5sFExzL+l6ZHXgg7hLHU7rqWQA/ZT1COpzpppHrOGcDkiH6orSN/Rm9g/Rspz
-         X+mTZwvX7S10EtizGzoOqonpuVw12/qXHokPsgiyabe1j0THXHLqdkkUguxVBaUbPJ
-         9gzfJh2FG3ThHGVj/PGS+eB3U2V9/vnIICo2dpFUBZ/q8MnRtu2pGNNoIoia+2+eqS
-         OG8ETn9mz2HduZMTeoiRW54UED6y2Ewu8T8bcZ7tvmT3cCkaxBv6JfJ9A2CScDc6xS
-         ZFv0SlajI3hptFRrcSxspED7h8hLREWIa28NpE4guqJF91O+vmUmPyjibDxPS0GEoo
-         QdjeVM1AmT3yw==
+        b=vE7vE6PJe7HILM6w/tgBd1IsUX2Xx7oEqB4YQ8IKOIcVIOTIhmuACww1CQj9PNcMq
+         RLjheYQNOGg1H3Yl+pt8m2rAI5PZf5kNaYJqkO3ASg39hbLfYuUzURuNqnWtS9ytBj
+         5Lc0azinLfILioCypLzIoq4Uhb8bR7KUqT2fRlntK1JsD/DjXBP/FetJeESNZ/DrXP
+         a8vObFOA/vJ/Cv/yTPblLMCwpNHHtIkjnVVHbT/Yz0zk9mXs/cSBHXCm6MniKCTt1d
+         bXWWw0ZNhxwjr7pXYJos2EDdgVyyIDyPmZGX5rYCEJK9MQELoxIBkGtgYv+rE5w/PL
+         WyPb1SztVEhyA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -40,9 +40,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 4/5] [RESEND] x86: purgatory: include header for warn() declaration
-Date:   Tue, 25 Jul 2023 15:48:36 +0200
-Message-Id: <20230725134837.1534228-5-arnd@kernel.org>
+Subject: [PATCH 5/5] [RESEND] x86: alternative: add __alt_reloc_selftest prototype
+Date:   Tue, 25 Jul 2023 15:48:37 +0200
+Message-Id: <20230725134837.1534228-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230725134837.1534228-1-arnd@kernel.org>
 References: <20230725134837.1534228-1-arnd@kernel.org>
@@ -60,59 +60,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The purgatory code has uses parts of the decompressor and provides
-its own warn() function, but has to include the corresponding
-header file to avoid a -Wmissing-prototypes warning.
+The newly introduced selftest function causes a warning when -Wmissing-prototypes
+is enabled:
 
-It turns out that this the function prototype actually differs
-from the declaration, so change it to get a constant pointer
-in the declaration and the other definition as well.
+arch/x86/kernel/alternative.c:1461:32: error: no previous prototype for '__alt_reloc_selftest' [-Werror=missing-prototypes]
 
+Since it's only used locally, add the prototype directly in front of it.
+
+Fixes: 270a69c4485d ("x86/alternative: Support relocations in alternatives")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/boot/compressed/error.c | 2 +-
- arch/x86/boot/compressed/error.h | 2 +-
- arch/x86/purgatory/purgatory.c   | 1 +
- 3 files changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/alternative.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/boot/compressed/error.c b/arch/x86/boot/compressed/error.c
-index 5313c5cb2b802..19a8251de506a 100644
---- a/arch/x86/boot/compressed/error.c
-+++ b/arch/x86/boot/compressed/error.c
-@@ -7,7 +7,7 @@
- #include "misc.h"
- #include "error.h"
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 2dcf3a06af090..934c23f24a3f8 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1531,6 +1531,7 @@ static noinline void __init int3_selftest(void)
  
--void warn(char *m)
-+void warn(const char *m)
+ static __initdata int __alt_reloc_selftest_addr;
+ 
++extern void __init __alt_reloc_selftest(void *arg);
+ __visible noinline void __init __alt_reloc_selftest(void *arg)
  {
- 	error_putstr("\n\n");
- 	error_putstr(m);
-diff --git a/arch/x86/boot/compressed/error.h b/arch/x86/boot/compressed/error.h
-index 86fe33b937154..31f9e080d61a8 100644
---- a/arch/x86/boot/compressed/error.h
-+++ b/arch/x86/boot/compressed/error.h
-@@ -4,7 +4,7 @@
- 
- #include <linux/compiler.h>
- 
--void warn(char *m);
-+void warn(const char *m);
- void error(char *m) __noreturn;
- void panic(const char *fmt, ...) __noreturn __cold;
- 
-diff --git a/arch/x86/purgatory/purgatory.c b/arch/x86/purgatory/purgatory.c
-index 7558139920f8c..aea47e7939637 100644
---- a/arch/x86/purgatory/purgatory.c
-+++ b/arch/x86/purgatory/purgatory.c
-@@ -14,6 +14,7 @@
- #include <crypto/sha2.h>
- #include <asm/purgatory.h>
- 
-+#include "../boot/compressed/error.h"
- #include "../boot/string.h"
- 
- u8 purgatory_sha256_digest[SHA256_DIGEST_SIZE] __section(".kexec-purgatory");
+ 	WARN_ON(arg != &__alt_reloc_selftest_addr);
 -- 
 2.39.2
 
