@@ -2,196 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BF6760B42
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8F0760B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjGYHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
+        id S232281AbjGYHQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 03:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGYHO5 (ORCPT
+        with ESMTP id S229545AbjGYHQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:14:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4000810CC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:14:53 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0534C6606FD7;
-        Tue, 25 Jul 2023 08:14:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690269291;
-        bh=2Up7Q4ggLqZwRNdv/plAaqb8BMBgbL4oTYcjSdMQnow=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GLcosbsF9805iCbE8eMvWlBaeBQxI53nor3WoWEKfZ5Hj/OXrrl3yEPPnLRW+TpRz
-         iKuHpSPyTIWyXIT29oO+7L7G+HITZzPd4GlWnb38HINfGIiom/lq3+h9ArzmviwEKp
-         WbXCLx+qEhV5lJie++W+SiYk79wKqF3enWPkKVXfXpkajuostTzGKwBGQ2bOnV3sKw
-         BWOYiHqmLRPWxmky2VY5WkUB3em82QbGqEQD5rASxpWTChzgkqoQL72TsEvfif2TWq
-         5lPoW74N+x6kXkS6Qp1yk9zEYkaG60R5mPY5EfQv8zb7R5eCfTbNAoVM1tb9i+za3d
-         tdd/dDLnHluxA==
-Date:   Tue, 25 Jul 2023 09:14:48 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v14 01/12] drm/shmem-helper: Factor out pages
- alloc/release from drm_gem_shmem_get/put_pages()
-Message-ID: <20230725091448.7ac0c4aa@collabora.com>
-In-Reply-To: <20230722234746.205949-2-dmitry.osipenko@collabora.com>
-References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
-        <20230722234746.205949-2-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 25 Jul 2023 03:16:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4642AF2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690269330;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KWk1QNmGdF3nvk5gdxdbBJcvckgMM8MpVQ7sj6/rxuY=;
+        b=fhW7WltycetBR52UPZFfNFNQ8cOcOLHMQJ1xNpvxjpb4UF2hIfqZhN/xwbBbh2/nCE/r1n
+        eUUUP1RL7Txyr80AnzuZE+qqsYA+Iw3+eMdhKbaNV6mh4dMS+C8inXXvA2xAeVVGdFFi+8
+        XYl1hAX0RYm8sS7mLRU8vGqLRRWfdh0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-260-hOREJ9HJN2exAADOdQK6QA-1; Tue, 25 Jul 2023 03:15:29 -0400
+X-MC-Unique: hOREJ9HJN2exAADOdQK6QA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3175c93e7c3so64277f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 00:15:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690269328; x=1690874128;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=KWk1QNmGdF3nvk5gdxdbBJcvckgMM8MpVQ7sj6/rxuY=;
+        b=JMk6gZ8qRsFbtg+DR4eDCrx7qZxNndxXBR7cNfojk4VMmer/K4883Q4Ndmr1xKLB2q
+         tmcP4tWNogC30BWx0x+m3dME+vAfqP3kpgUikUIhoedNn9nOy9E+NtUYF8X/lw59j+Mg
+         vSwhh7h6+h4Jxgy/OhgGnI1VOpwnvXGLIykROdcRrBQuMUWwu1lsnvbcU33nFlT1SXGp
+         JIMHXUj83NPA6P9YzVQKoAOvdtKt1hYYLHlK5dLJjOS7O3ruk33///FMdpayzLV3fiY7
+         8QWowrnPFL7fP7a14NwDpO3ZWQlefOdLPgBb7eJwhkim+RfIrQ2skXj+D8giWCqOUteF
+         45Fg==
+X-Gm-Message-State: ABy/qLYJGKspnyRURRd4I3fy1YNdl+SMh+XdSVQR2SbwYunXI9lKHPgo
+        x1TtzS1r8SgKNbTwPQj144SOLrrhMXzSNwzB08awZAq8IVq70eUwnoC0VOCR4/4YCm0e2osMO1Q
+        gw2/58wODu626OX5yAhPGgM7C
+X-Received: by 2002:a5d:5948:0:b0:317:5f08:329f with SMTP id e8-20020a5d5948000000b003175f08329fmr3375768wri.1.1690269328068;
+        Tue, 25 Jul 2023 00:15:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG3FJsaKirPS9RCkbt4lNXMtrL1cLC0EIjPJ2Gg0I27op4L4ECGqs0qtSHRxpN+luxQd1WZbA==
+X-Received: by 2002:a5d:5948:0:b0:317:5f08:329f with SMTP id e8-20020a5d5948000000b003175f08329fmr3375746wri.1.1690269327693;
+        Tue, 25 Jul 2023 00:15:27 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-225-81.dyn.eolo.it. [146.241.225.81])
+        by smtp.gmail.com with ESMTPSA id t7-20020a5d6a47000000b00313f7b077fesm15305129wrw.59.2023.07.25.00.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 00:15:27 -0700 (PDT)
+Message-ID: <17b4e630c63657249a7268943f8806004de4cdca.camel@redhat.com>
+Subject: Re: [PATCH v2 1/1] net: gro: fix misuse of CB in udp socket lookup
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org,
+        willemdebruijn.kernel@gmail.com, dsahern@kernel.org,
+        tom@herbertland.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gal@nvidia.com
+Date:   Tue, 25 Jul 2023 09:15:25 +0200
+In-Reply-To: <20230720162624.GA16428@debian>
+References: <20230720161322.GA16323@debian> <20230720162624.GA16428@debian>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Jul 2023 02:47:35 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+Hi Richard,
 
-> Factor out pages allocation from drm_gem_shmem_get_pages() into
-> drm_gem_shmem_acquire_pages() function and similar for the put_pages()
-> in a preparation for addition of shrinker support to drm-shmem.
-> 
-> Once shrinker will be added, the pages_use_count>0 will no longer determine
-> whether pages are pinned because pages could be swapped out by the shrinker
-> and then pages_use_count will be greater than 0 in this case. We will add
-> new pages_pin_count in a later patch.
-> 
-> The new common drm_gem_shmem_acquire/release_pages() will be used by
-> shrinker code for performing the page swapping.
-> 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+On Thu, 2023-07-20 at 18:26 +0200, Richard Gobert wrote:
+> This patch fixes a misuse of IP{6}CB(skb) in GRO, while calling to
+> `udp6_lib_lookup2` when handling udp tunnels. `udp6_lib_lookup2` fetch th=
+e
+> device from CB. The fix changes it to fetch the device from `skb->dev`.
+> l3mdev case requires special attention since it has a master and a slave
+> device.
+>=20
+> Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
+> Reported-by: Gal Pressman <gal@nvidia.com>
+> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
 > ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 65 ++++++++++++++++++++------
->  1 file changed, 52 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index a783d2245599..267153853e2c 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -165,21 +165,26 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  include/net/udp.h      |  2 ++
+>  net/ipv4/udp.c         | 28 ++++++++++++++++++++++++++--
+>  net/ipv4/udp_offload.c |  7 +++++--
+>  net/ipv6/udp.c         | 29 +++++++++++++++++++++++++++--
+>  net/ipv6/udp_offload.c |  7 +++++--
+>  5 files changed, 65 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index 4d13424f8f72..48af1479882f 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -299,6 +299,7 @@ int udp_lib_getsockopt(struct sock *sk, int level, in=
+t optname,
+>  int udp_lib_setsockopt(struct sock *sk, int level, int optname,
+>  		       sockptr_t optval, unsigned int optlen,
+>  		       int (*push_pending_frames)(struct sock *));
+> +void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
+>  struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport=
+,
+>  			     __be32 daddr, __be16 dport, int dif);
+>  struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 spo=
+rt,
+> @@ -310,6 +311,7 @@ struct sock *udp6_lib_lookup(struct net *net,
+>  			     const struct in6_addr *saddr, __be16 sport,
+>  			     const struct in6_addr *daddr, __be16 dport,
+>  			     int dif);
+> +void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
+>  struct sock *__udp6_lib_lookup(struct net *net,
+>  			       const struct in6_addr *saddr, __be16 sport,
+>  			       const struct in6_addr *daddr, __be16 dport,
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 8c3ebd95f5b9..85eb9977db2c 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -550,15 +550,39 @@ static inline struct sock *__udp4_lib_lookup_skb(st=
+ruct sk_buff *skb,
+>  				 inet_sdif(skb), udptable, skb);
 >  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_free);
->  
-> -static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-> +static int
-> +drm_gem_shmem_acquire_pages(struct drm_gem_shmem_object *shmem)
->  {
->  	struct drm_gem_object *obj = &shmem->base;
->  	struct page **pages;
->  
->  	dma_resv_assert_held(shmem->base.resv);
+> =20
+> +/* This function is the alternative to 'inet_iif' and 'inet_sdif'
+> + * functions in case we can not rely on fields of IPCB.
+> + *
+> + * The caller must verify skb_valid_dst(skb) is false and skb->dev is in=
+itialized.
+> + * The caller must hold the RCU read lock.
+> + */
+> +inline void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *=
+sdif)
 
-Not directly related to this patch, but can we start using _locked
-suffixes for any function that's expecting the dma-resv lock to be held?
+I think you misread David Ahern's suggestion on v1. The idea would be
+to move this function (and udp6_get_iif_sdif) in an header file, as
+'static inline'[1]. Additionally there is nothing specific about UDP
+here so I would rename them inet{,6}_gro_iif_sdif and place them in
+include/net/gro.h.
 
->  
-> -	if (shmem->pages_use_count++ > 0)
-> -		return 0;
-> +	if (shmem->madv < 0) {
-> +		drm_WARN_ON(obj->dev, shmem->pages);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	if (drm_WARN_ON(obj->dev, !shmem->pages_use_count))
-> +		return -EINVAL;
->  
->  	pages = drm_gem_get_pages(obj);
->  	if (IS_ERR(pages)) {
->  		drm_dbg_kms(obj->dev, "Failed to get pages (%ld)\n",
->  			    PTR_ERR(pages));
-> -		shmem->pages_use_count = 0;
->  		return PTR_ERR(pages);
->  	}
->  
-> @@ -198,6 +203,48 @@ static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
->  	return 0;
->  }
->  
-> +static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-> +{
-> +	int err;
-> +
-> +	dma_resv_assert_held(shmem->base.resv);
-> +
-> +	if (shmem->madv < 0)
-> +		return -ENOMEM;
-> +
-> +	if (shmem->pages_use_count++ > 0)
-> +		return 0;
-> +
-> +	err = drm_gem_shmem_acquire_pages(shmem);
-> +	if (err)
-> +		goto err_zero_use;
-> +
-> +	return 0;
-> +
-> +err_zero_use:
-> +	shmem->pages_use_count = 0;
-> +
-> +	return err;
-> +}
-> +
-> +static void
-> +drm_gem_shmem_release_pages(struct drm_gem_shmem_object *shmem)
-> +{
-> +	struct drm_gem_object *obj = &shmem->base;
-> +
-> +	dma_resv_assert_held(shmem->base.resv);
-> +
-> +#ifdef CONFIG_X86
-> +	if (shmem->map_wc)
-> +		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
-> +#endif
-> +
-> +	drm_gem_put_pages(obj, shmem->pages,
-> +			  shmem->pages_mark_dirty_on_put,
-> +			  shmem->pages_mark_accessed_on_put);
-> +	shmem->pages = NULL;
-> +}
-> +
->  /*
->   * drm_gem_shmem_put_pages - Decrease use count on the backing pages for a shmem GEM object
->   * @shmem: shmem GEM object
-> @@ -216,15 +263,7 @@ void drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem)
->  	if (--shmem->pages_use_count > 0)
->  		return;
->  
-> -#ifdef CONFIG_X86
-> -	if (shmem->map_wc)
-> -		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
-> -#endif
-> -
-> -	drm_gem_put_pages(obj, shmem->pages,
-> -			  shmem->pages_mark_dirty_on_put,
-> -			  shmem->pages_mark_accessed_on_put);
-> -	shmem->pages = NULL;
-> +	drm_gem_shmem_release_pages(shmem);
->  }
->  EXPORT_SYMBOL(drm_gem_shmem_put_pages);
->  
+Otherwise LGTM.
+
+Thanks,
+
+Paolo
+
+[1] the usage of the "inline" keyword is basically allowed only in
+header files
 
