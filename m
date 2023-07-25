@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59101762196
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6857621AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjGYSjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
+        id S232164AbjGYSlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjGYSja (ORCPT
+        with ESMTP id S231825AbjGYSlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:39:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCD9A3;
-        Tue, 25 Jul 2023 11:39:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 25 Jul 2023 14:41:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAEC2683
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690310408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ss2tzNf07FPnrLqdDtf+Er94L4qFrw/j0drlGJAUJI=;
+        b=NVswkJDubFN6sFQtBvjLxl3pJs2FaXqBPjuSfZNv9D51HvLiTJyapg5/y/eLObQceA+2sO
+        MtAmIsP7VVHoEAhyfZunqSJY9tsUWsWydqztaaLJ5x1YFq5EEXgZMCU3u6nc/sRu+zkvEA
+        SRmES+yPihlMnaEaWNrAW74T1JrKWl0=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-194-8oo2ft68MBSY5EtXE1nj0w-1; Tue, 25 Jul 2023 14:40:05 -0400
+X-MC-Unique: 8oo2ft68MBSY5EtXE1nj0w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03AB06181E;
-        Tue, 25 Jul 2023 18:39:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B83C433C7;
-        Tue, 25 Jul 2023 18:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690310368;
-        bh=3rExnCDOFyq/kHOV6hRNpRACHWdns6zbXSMexvXr6WU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NlD7DfZdeBR/OmQJQtWTpJ0sYKTrJAi0OXKk8XM40ddHF2Xn2GGnUtphMzPP8S6P3
-         o1nVG1Gu7ka2cDz2Y2x2NftHFZVrMXw+/zHZUqdJmVStsomv3e2ENbdfDgpdQPsUeF
-         icn/DfG4IJluteYaFQJWjWGHeKTmBUSD9F9ywxU+exCeKQK0VawRFT0Qi3Jf8/jANf
-         /BihxJkXqjxbuGKoxLSzM5CliQDy+cBO9XO5B0gnsCqMqTUpNdvL1KUqHQxVce59ro
-         nvJymTnRQ+v6MmOqICys8/jzdwGRAzMYZnyJukUxQ0pRjinbF0s/8GShp9tjcmqbKk
-         gFGUUfEXrz1IA==
-Date:   Tue, 25 Jul 2023 21:39:24 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, jgg@ziepe.ca, markzhang@nvidia.com,
-        michaelgur@nvidia.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, yuancan@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
- IFLA_BOND_ARP_IP_TARGET parsing
-Message-ID: <20230725183924.GS11388@unreal>
-References: <20230723074504.3706691-1-linma@zju.edu.cn>
- <20230724174707.GB11388@unreal>
- <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
- <20230725052557.GI11388@unreal>
- <20230725101405.4cd51059@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 844A21C3408F;
+        Tue, 25 Jul 2023 18:40:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BBCD4094DC1;
+        Tue, 25 Jul 2023 18:39:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <87fs5c3rbl.fsf@oldenburg3.str.redhat.com>
+References: <87fs5c3rbl.fsf@oldenburg3.str.redhat.com> <cover.1689092120.git.legion@kernel.org> <cover.1689074739.git.legion@kernel.org> <104971.1690300714@warthog.procyon.org.uk>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     dhowells@redhat.com, Alexey Gladkov <legion@kernel.org>,
+        James.Bottomley@HansenPartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        fenghua.yu@intel.com, geert@linux-m68k.org, glebfm@altlinux.org,
+        gor@linux.ibm.com, hare@suse.com, hpa@zytor.com,
+        ink@jurassic.park.msu.ru, jhogan@kernel.org, kim.phillips@arm.com,
+        ldv@altlinux.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
+        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
+        namhyung@kernel.org, paulus@samba.org, peterz@infradead.org,
+        ralf@linux-mips.org, sparclinux@vger.kernel.org, stefan@agner.ch,
+        tglx@linutronix.de, tony.luck@intel.com, tycho@tycho.ws,
+        will@kernel.org, x86@kernel.org, ysato@users.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: Add fchmodat2() - or add a more general syscall?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725101405.4cd51059@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <107289.1690310391.1@warthog.procyon.org.uk>
+Date:   Tue, 25 Jul 2023 19:39:51 +0100
+Message-ID: <107290.1690310391@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:14:05AM -0700, Jakub Kicinski wrote:
-> On Tue, 25 Jul 2023 08:25:57 +0300 Leon Romanovsky wrote:
-> > > Yeah I have seen that. Just as Jakub said, empty netlink attributes are valid 
-> > > (they are viewed as flag). The point is that different attribute has different
-> > > length requirement. For this specific code, the RDMA_NLDEV_ATTR_STAT_HWCOUNTERS
-> > > attribute is a nested one whose inner attributes should be NLA_U32. But as you
-> > > can see in variable nldev_policy, the description does not use nested policy to
-> > > enfore that, which results in the bug discussed in my commit message.
-> > > 
-> > >  [RDMA_NLDEV_ATTR_STAT_HWCOUNTERS]       = { .type = NLA_NESTED },
-> > > 
-> > > The elegant fix could be add the nested policy description to nldev_policy while
-> > > this is toublesome as no existing nla_attr has been given to this nested nlattr.
-> > > Hence, add the length check is the simplest solution and you can see such nla_len
-> > > check code all over the kernel.  
-> > 
-> > Right, and this is what bothers me.
-> > 
-> > I would more than happy to change nla_for_each_nested() to be something
-> > like nla_for_each_nested_type(...., sizeof(u32)), which will skip empty
-> > lines, for code which can't have them.
+Florian Weimer <fweimer@redhat.com> wrote:
+
+> > Rather than adding a fchmodat2() syscall, should we add a
+> > "set_file_attrs()" syscall that takes a mask and allows you to set a bunch
+> > of stuff all in one go?  Basically, an interface to notify_change() in the
+> > kernel that would allow several stats to be set atomically.  This might be
+> > of particular interest to network filesystems.
 > 
-> In general the idea of auto-skipping stuff kernel doesn't recognize
-> is a bit old school. Better direction would be extending the policy
-> validation to cover use cases for such loops.
+> Do you mean atomically as in compare-and-swap (update only if old values
+> match), or just a way to update multiple file attributes with a single
+> system call?
 
-I'm all in for any solution which will help for average developer to write
-netlink code without mistakes.
+I was thinking more in terms of the latter.  AFAIK, there aren't any network
+filesystems support a CAS interface on file attributes like that.  To be able
+to do a CAS operation, we'd need to pass in the old values as well as the new.
 
-Thanks
+Another thing we could look at is doing "create_and_set_attrs()", possibly
+allowing it to take a list of xattrs also.
+
+David
+
