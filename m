@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE54762489
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E4776248D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjGYVdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        id S231183AbjGYVeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjGYVc6 (ORCPT
+        with ESMTP id S230256AbjGYVef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:32:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C8BA3;
-        Tue, 25 Jul 2023 14:32:57 -0700 (PDT)
+        Tue, 25 Jul 2023 17:34:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F6A1BE2;
+        Tue, 25 Jul 2023 14:34:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20D4E61901;
-        Tue, 25 Jul 2023 21:32:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5255BC433C8;
-        Tue, 25 Jul 2023 21:32:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B11496189B;
+        Tue, 25 Jul 2023 21:34:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 227A3C433C8;
+        Tue, 25 Jul 2023 21:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690320776;
-        bh=6koY50l11od8QxZowt9EtG4lqhEmlEzPITDh/N0Q/8Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AlJa1Lh2MxGgjfDu1nB2BimBZ64+gnm6HyY2ap07l0vUlfiPD5c8AGRCJQIhiEn/a
-         cDLa9C+KoMEOxFPWdElsWKsAa3CV79IvL6N59m31WQCdzCCt4qYXFbq5Et9PiYTfFm
-         at80aIsmg+eSVFQjrFgx1IA+i0KSPu22JJGKBxB7Yh9jYZisPgLZyF42OCvM4oKYOH
-         0vES2jrNODH0oDDU+lfrYLIF4koOrB9/6bo4n1ktThdQ2GsCTTbBzLca6hHYrv3Ui/
-         rmWvJK8PkXMvyoNqUosYM+TYQNUb70w90HVlyFqWI81Abe0KjbNwwrXCS3oxYkErG9
-         +qHfvfhBYBulg==
-Date:   Tue, 25 Jul 2023 16:32:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     suijingfeng <suijingfeng@loongson.cn>
-Cc:     Sui Jingfeng <sui.jingfeng@linux.dev>,
-        David Airlie <airlied@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 0/9] PCI/VGA: Improve the default VGA device selection
-Message-ID: <20230725213254.GA666777@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cb6fd14-4661-4285-ac5f-c8f6ea1f4208@loongson.cn>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        s=k20201202; t=1690320874;
+        bh=dDuaO03brdw1iYzOwL3PX2dry5UVxc9RYnnURakU5Us=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=JtVRaXE7PqdvStJEybRTcd/XozYJyPHyA1LZr1Dd6wjTsNMMRU1/n3Yb1inQtalMG
+         ASZAsvll8VhyMqx0m/ef0OGb945xr3FA7aORsBVPfHxp25ejPuiLB7g11lrmsVFlYj
+         8S7NmEaxOAu7deWnrpSGODWS/DGZ6JzgkLmUKy+nPZAlrKJLyymJ6BbnTHcQNcU8iz
+         oLLRP9nn6rId3AuC6Dd2mT5iLYeQ8QW+SXuLYynzVj0VucXGZVtewOIi2LQxJAAYn1
+         HgsfO308aoTZCy/ZBjGmyPydVjZ13ha6rH6oXofexvGtU9juloBstYj75+XnT174Mp
+         s84sIzqrPzlhA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F33A1C4166D;
+        Tue, 25 Jul 2023 21:34:33 +0000 (UTC)
+Subject: Re: [GIT PULL] nfsd fixes for 6.5-rc
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZMAt+QaAHn0XIGDt@tissot.1015granger.net>
+References: <ZMAt+QaAHn0XIGDt@tissot.1015granger.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZMAt+QaAHn0XIGDt@tissot.1015granger.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.5-2
+X-PR-Tracked-Commit-Id: f75546f58a70da5cfdcec5a45ffc377885ccbee8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+Message-Id: <169032087398.13532.9018732702267049465.pr-tracker-bot@kernel.org>
+Date:   Tue, 25 Jul 2023 21:34:33 +0000
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,15 +63,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 08:47:48PM +0800, suijingfeng wrote:
-> On 2023/7/20 03:32, Bjorn Helgaas wrote:
-> > "drm/loongson: Add an implement for ..." also solves a problem, but it
-> > lacks a commit log, so I don't know what the problem is.
-> 
-> I have already telling you one yeas ago.
+The pull request you sent on Tue, 25 Jul 2023 16:18:01 -0400:
 
-The patch itself must be self-contained, including a commit log that
-justifies the change.  You may have told me a year ago, but that
-doesn't help somebody looking at these changes next year.
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.5-2
 
-Bjorn
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
