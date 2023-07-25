@@ -2,281 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFE9762328
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208E976232C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjGYUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S229862AbjGYUTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGYUSO (ORCPT
+        with ESMTP id S230391AbjGYUTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:18:14 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6331BC8;
-        Tue, 25 Jul 2023 13:18:12 -0700 (PDT)
-Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PGMFuO014689;
-        Tue, 25 Jul 2023 20:17:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pps0720; bh=DP0Tc00iLRrKt+oMzNbUswBBgoyBxS4KVUAQ2PBclnQ=;
- b=A3bUTl4t6FZOMwnZNaid6iZlB1s2xiqIRmbcxELAdUPuYNbR+iA2Tp2KdFF3sWsTpgfm
- HCt+OKhAsAQ+ERDMb+IIPkVg97RM8x3Zff1ODXCGtqSazIUVxReRFIEHikQ6llqDxTCR
- 06KdJBKlKhuGhw7cp5zHOGIPGrCpATYfYr8nXbCs2cdVrx1/izIYWu58S3PrZw1JJSpl
- HeODdmWoqHJJluL+TDTr5b80gTfexR1EYiWBN9G12MUF9BA/crNJ8lVJJVF7N1CyAuy6
- J9n37vwZ908PWeJCfR4gnOeCnv2E5AlAAlFvk2Na87Kgw8USy3HERZ2fhBFTXfGrJf60 lA== 
-Received: from p1lg14879.it.hpe.com (p1lg14879.it.hpe.com [16.230.97.200])
-        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3s2huv9j3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 20:17:38 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 91C0AD2C4;
-        Tue, 25 Jul 2023 20:17:37 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id 21F70808DAF;
-        Tue, 25 Jul 2023 20:17:35 +0000 (UTC)
-Date:   Tue, 25 Jul 2023 15:17:33 -0500
-From:   Dimitri Sivanich <sivanich@hpe.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [patch 00/29] x86/cpu: Rework the topology evaluation
-Message-ID: <20230725201614.GB97682@hpe.com>
-References: <20230724155329.474037902@linutronix.de>
+        Tue, 25 Jul 2023 16:19:03 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ED830D3;
+        Tue, 25 Jul 2023 13:18:37 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PJIXkJ020074;
+        Tue, 25 Jul 2023 20:18:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2023-03-30;
+ bh=BEZueGPUh7qfxUGRAJZpV4AWjftaNZmHO6TayE4PNAU=;
+ b=ZVO2zcYdPKWGRnR+toc7Jrmmj/DjsYqwve6105Nwm+Yy5dVHwzBKrW1VorI1BUtfCoxa
+ GXYrpWPoer43/+cfQdmxoE3YLGw22b7fHv05/eSLcOrUgfaonVi50R8Z0TuWXtlj1PeV
+ mzmeOijsm1LydTGrnVw8DBb5fQQjOLszQ3EzYnc8fcfId3lL1JmaMT081ot+Xl3F9p+k
+ ahgVABlmHc1YEK7aW5gx4XWyZ0Ktzr75ScIqqw0Suppaflka49vLsYzrP1XJRe2QgeY7
+ Sf6CF4x3AWAX6FOvQ+oSyq06PdZOcbzNdgvszql5iFLZmoiedcbzM+NVegdHL/DVdrPo TA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s05hdx08s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 20:18:33 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36PJlYpt030466;
+        Tue, 25 Jul 2023 20:18:32 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s05jbj9ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Jul 2023 20:18:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kUxbTDeTHdaB1b8lO6h6Qmk5T8NDA3JTVudtCuREyTNeMRL6n6tzz62VxRjLVLwBETLJ3w3KAfoY8Tiqv2rnIutiGjkZBECH8qQpyiaDfy5wBPqKKsd3hyFNVBEntORgHXoyW/H81S8cRbPfcpsbCivtMBSyFKs/mWMiM5D9Kb8w3Lfx0H0F1LydUXct3Jf27mROwEjz843pLS/CiA3IubPV4UXFQppCYnb2Seu66p1EkxYIPj3rJ4K5IRV7XM88MWV3ut45XM8DoR8o3/qYZyERBTIkiIQmypZzH7S2+y1ASg4moAUYZSOcR91WXvm/QIhqIEHVRTNM8Kauo5x6fA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BEZueGPUh7qfxUGRAJZpV4AWjftaNZmHO6TayE4PNAU=;
+ b=mMBhOccPPBeac/NitfUmExJId2w4mqfo03KnhGDDKJRO00ladgwSXl9q8IyMoYyR9o9r9Mi8FqyFRKzDqFAvZqDHM1Az1OPrznEhgTj3apelQPYW5UyhdKIKN9giw0i0JgMQ6ozk+w92Nffh5vXLygTYZWf6kWtkBIg3j/rt+uAAsk2TlyuHjyOUDDNXCqlCJC0UCKm21rd9l4e+YP6aAulWeL1C94vssUk0j+FKL2mRN5FOLaHt+SzdUEuAHFz72AuIO91HT3zogAKszDdGkLdxhGYzEdNLmpoLkwlgUSTu/smF756dZOEAhZW6XH7X84L+30Ne7ZY7FGqF5MrHYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BEZueGPUh7qfxUGRAJZpV4AWjftaNZmHO6TayE4PNAU=;
+ b=njYVC/R9V9IWLWULCdxk9OlaSUjHO0OgSurVSX33hdsw1g7ZFSgcUcB+JJkqqPoOXNGOYDWC8YdrBdUSIFotdD9+B4NKyB+8e0j/aCuUNJZWHB2tg0Tn4E/bDiZCTKgKjjoq1Y8rp246zP0inR8Yk4ff0Yu99je6SdepxBMf0gc=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by SN7PR10MB7074.namprd10.prod.outlook.com (2603:10b6:806:34c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Tue, 25 Jul
+ 2023 20:18:08 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e%6]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 20:18:08 +0000
+Date:   Tue, 25 Jul 2023 16:18:01 -0400
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] nfsd fixes for 6.5-rc
+Message-ID: <ZMAt+QaAHn0XIGDt@tissot.1015granger.net>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724155329.474037902@linutronix.de>
-X-Proofpoint-GUID: IvxVjTX67_BAM-JLmyIMHjGZs-SYHHOa
-X-Proofpoint-ORIG-GUID: IvxVjTX67_BAM-JLmyIMHjGZs-SYHHOa
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-ClientProxiedBy: LO4P123CA0626.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:294::11) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-X-HPE-SCL: -1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SN7PR10MB7074:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2556ee6-c6f3-444b-d5db-08db8d4c42c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y/O9NLNoTxBgFtZKvvaGmn92+nliJ4EJVeatJYXfUrqjUmt/N51mBlx4lS8HKwiz/M6DTK1I4pn37QDs4wZPcx0XUBA7o8YJveDvBTLr1hhtzNprAcU1KcXgMvEWQpX5iJchBts4uaaxppcdf/d9v+5uzLQJzQFnd8JMQHgG+lvhd1lPlSe5t9Lme5f83i3yG7hjyvITztUvfDgn9dfKVRyJyOKcF9E8wqRZTFz2YBhrQzgVWLRd9TvMgn/GNudwNBKb8074HK8DBDXl1oixrznF0APPt+wTIDfDlE+C8dO/+b+EfvPME0d5gnZHyzlOBQ8I8VEvUuo355mFpnaNBFWisBhXzeP13+0XxZ0spxwWqG5DSLYqqApP7mYFxkeUrJ9WMLy2uEzIDjidtXKlaXr9wvxfYLBwgYJx1KlhbTAvC2JhPAmlAvbnlZgoyGEuE6rQAD5M93BUzujfplC+5ulMmAjwaXY1CmYiB36qgaIT/gG4j5hZKisKHlpclf8X2a7SPq/AbVXCz22wK91fW0z4VM5+WQuVujtYsdS3knmqEVLIuLCexZTVQmYDCGPR7JlNuOVvLQclXEvsGe+5VM05zsHOpgsUYmejo4y1fbQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(39860400002)(396003)(366004)(346002)(451199021)(5660300002)(44832011)(4744005)(8936002)(8676002)(41300700001)(316002)(2906002)(66476007)(66556008)(66946007)(6666004)(6506007)(38100700002)(26005)(83380400001)(9686003)(966005)(86362001)(6512007)(4326008)(6916009)(6486002)(478600001)(186003)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NiAfoCqE3J16D2MOGkOxZwPVSZgeonksmBBV58UOdE5jxgU/nvwPcoJgHMXx?=
+ =?us-ascii?Q?2bs9eBCRKckIaS0d+Kfuy4XxjwLJY1HqWply5iWjPVackN/4BVM6ANXnTP7k?=
+ =?us-ascii?Q?Ooi8w8W0olprriBtSijb1D2iKtV4YU9Rdgh07kNdnjmW/jCpCbQ6wWZnEPSX?=
+ =?us-ascii?Q?pQgu5rW+9tE2CrZDgUAsyWYlf05ECh6ltYPQq+FrDiK+H7nshipSyBAREcoN?=
+ =?us-ascii?Q?8JOKwea0pgpIrBNRlrvfgBLZmzMVcgycboBWPsioelLFb1rXBGl1uuYEq5t8?=
+ =?us-ascii?Q?ytBfURW9ax76mP2eI5fvn92G6v2oySbWNRyp1w8tfCaBbdFcDU8XYjTX2Pc2?=
+ =?us-ascii?Q?I1Yk5SJMJiHot0eqa4VfsDlWCdSrVrcG9Ray2Mo7NXZBb99dTgntV/tJoBQc?=
+ =?us-ascii?Q?BMvVHhoDJVNPYpR2E6QEVt9EITM6buHxfuA8AS8ZkbkdKs5wVyd1Ba9/BdA+?=
+ =?us-ascii?Q?HZm04ojPzRNRm3BlEtXh1iBUxyChc2PUcoqYee67r5K6ej71KEhIejHXkAAk?=
+ =?us-ascii?Q?4YXGt4nr5pjNUiMA3y1fxETIEuCWsbP+aVm6ouDS/RkqUw/g1NeFAujoGMWO?=
+ =?us-ascii?Q?J62Gj03P0OKmlLWeOVMgl5nxVpmVQfQfB7vM4wSHgJyYBVZemRdSJ2XxZTrJ?=
+ =?us-ascii?Q?3tmlZcHQhcXHdZOJoQ09lh4T2U5sLbP1fCAee4bx+edqhPgdTa+WuhVeAFwe?=
+ =?us-ascii?Q?JR4D+ry29z1KjCTdsaaqpNQAURGAe1yUZzTEVOQ4g+UmWPGddpFEiYiaOD/V?=
+ =?us-ascii?Q?Pdse2m9PMLR4pOu6MQthpUJzLAOU1lw5oNTBAEQ++lRdC6Jz9qCVmrgWBHlh?=
+ =?us-ascii?Q?klkrC74KZI8T01xMGYiSQXPoytG+neEAas5mQ9W0dCAIYAeldznqzFqvi04I?=
+ =?us-ascii?Q?nUpxJbgqeSTrHzy0lu3ZFwWzGWtZYSB/p58p4IB5p3ozGzpCKFs43E9R6JY+?=
+ =?us-ascii?Q?83INLiJhCO+RJazKJr4W/MR2TaKjXeWh93GbQLypMTRUig0+vjexZean/Bjr?=
+ =?us-ascii?Q?Hb5IfEtd657CRa6ygYqxkcolFClhrJKI4ntPqgukEc4CEiW5wD9mVbn/hA+3?=
+ =?us-ascii?Q?j19TYUV5ihjAIGs8fCYHs1MPe0WRc57m0L/Mkmbj3CaPiK4yQSJ8klqDdr2/?=
+ =?us-ascii?Q?Nw3Za8OG0b5jVN5qLYaV7qK5z7c8zzr+7EGcywacPOXVWzaScgw8gRSE+sXN?=
+ =?us-ascii?Q?UmQAYBH+1P6gFoZRjiH7X6D/v8GoUeDZ3SNJ8eKZYq6KMcUSspgCiIvXptiX?=
+ =?us-ascii?Q?sC7eUsc5lFj32tAFcvEvcpcBmOoXTbhw9nw0LFCcmMKUCZ1R75eKOeLl2ILi?=
+ =?us-ascii?Q?4ZHtjF2ahGafLMp43Igur5Fo9KvzUotgL1dvB04WtjSTep/kkphZb9uJUYEk?=
+ =?us-ascii?Q?Ah/mRBa/Tm8ikzWeEIpXgqeOlqhCPDQvZN3olp0VehDSyeuyOYxG454NVdqB?=
+ =?us-ascii?Q?VKUEhLxHxpCY9hVk/i53M4d8vKwhdXxYjmHXOQYbwC80oLHgeaZxCQUZscgc?=
+ =?us-ascii?Q?zzvnYWfchy8hpR+MDcTGQWtoq+0A188iKAiE8/z5P9nHXNwLPRvbkY8YsEVi?=
+ =?us-ascii?Q?CHgfTZZAQMlMcT/GbMjzRRPosuo2WMlsVTsr/gxM?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: X5FI17MyTBfaApAzr8rvHICp/rGoG5DfsoHbaFLYqTA26+8xIJdVuxwBAGW7FHA2zTh+HbCrvW4ap7gMUtJdT5zSETH7xhlWCcfqybgMYXS//8vLNzPlouZwRo2O7hOIQotTwMXQYwGy3tdsfA1M/8Xa1Tl/7OSSDjbMYkztfY/nlIEIgn4cvp9owpuqx1TzDDow9huAxso52AN+xTunHh4wjYKVMMZJfrsjnU6MJIPyr6Ax4S6JbR3oprUlJeD29sJc0AcXo7M1u8O3PvYLOPyJ9sd3zBetVhPS+YPyVqDxmyG/Xn0H8HKzvwuL6m1eSqCTASgZpfWwcJB5QQuM7qbaeSjQQrDV1HHPapiSUsRVJVmv049D9aw9lwRYxOI9LqE9g2wCDPcc5VQMNCjqjZ53zi/Qz/tnOWSRNeASQFad+X7oJ6xt3TlfBZvv9SGlEtmZupStvGQCIeCsrbuqs9kLGXmdGrUaXuK2Dg3vmUgwZuOKI3CU74wS7XuM02PhlqOQkVvEu4cfzFoI3YuwV0NsZBuIaJUjOfXxECg0EJNbNC57NnTT/70uE71ug4xsPen3tTTUqK49piHip1ovRVec/4gmOlqi6BnXWB3/lOuxejQ966nIysOwQIMexdm8AWb6QHpgWQ+7xEOMN5Ys7ALTLWGai6Wb9iEld0iXb35wgInWOZRxOEj/E1yVw6AdQ2negtR6mSG0dTSeOjbDbWik3DuLRMPSR8FgI9clAOnuSl/PE1pWsl4lgt0FWVYIo8C5iruGYRcffJd+ooMsscL6yaVNukr10sEWebQST+D93jtd9y2K4MOfDVQHfzZGIoGZDWfORoFbSD5x9uwbOsnQgpJe1fyrK4jCYA8u0Aw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2556ee6-c6f3-444b-d5db-08db8d4c42c0
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 20:18:08.1793
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IgkUbUV2GwAbHRZyzXlCPHIxRUUn9L0pfmumbWE3cybXW6kZCa4Bk8OP0tLDPdk/+MnowWzQGYR+McjRjdA7aA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB7074
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-25_11,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 adultscore=0 mlxscore=0 clxscore=1011
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250172
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=696 spamscore=0
+ adultscore=0 suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250173
+X-Proofpoint-ORIG-GUID: AV4VkWGhjLE9RgbIUi1yiqC2hyy5soJy
+X-Proofpoint-GUID: AV4VkWGhjLE9RgbIUi1yiqC2hyy5soJy
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have successfully booted a 32-socket, 3840 cpu HPE Sapphire Rapids system
-with your patchset applied, as found in:
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v1
+Hello Linus-
 
-# cat /sys/kernel/debug/x86/topo/cpus/3839
-initial_apicid: ff7
-apicid: ff7
-pkg_id: 31
-die_id: 31
-cu_id: 255
-core_id: 59
-logical_pkg_id: 31
-logical_die_id: 31
-llc_id: 3968
-l2c_id: 4086
-amd_node_id: 0
-amd_nodes_per_pkg: 0
-max_cores: 60
-max_die_per_pkg: 1
-smp_num_siblings: 2
+The following changes since commit d7dbed457c2ef83709a2a2723a2d58de43623449:
 
+  nfsd: Fix creation time serialization order (2023-06-27 12:10:47 -0400)
 
-We were also able to boot a 60-socket, 2160 cpu HPE SuperDome Flex (SkyLake)
-with the patchset.
+are available in the Git repository at:
 
-# cat /sys/kernel/debug/x86/topo/cpus/2159
-initial_apicid: ef7
-apicid: ef7
-pkg_id: 59
-die_id: 59
-cu_id: 255
-core_id: 27
-logical_pkg_id: 59
-logical_die_id: 59
-llc_id: 3776
-l2c_id: 3830
-amd_node_id: 0
-amd_nodes_per_pkg: 0
-max_cores: 18
-max_die_per_pkg: 1
-smp_num_siblings: 2
+  https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.5-2
 
+for you to fetch changes up to f75546f58a70da5cfdcec5a45ffc377885ccbee8:
 
-On Mon, Jul 24, 2023 at 07:43:50PM +0200, Thomas Gleixner wrote:
-> Hi!
-> 
-> A recent commit to the CPUID leaf 0xb/0x1f parser made me look deeper at
-> the way how topology is evaluated. That "fix" is just yet another cure the
-> sypmtom hack which completely ignores the underlying disaster.
-> 
-> The way how topology evaluation works is to overwrite the relevant
-> variables as often as possible. E.g. smp_num_siblings gets overwritten a
-> gazillion times, which is wrong to begin with. The boot CPU writes it 3
-> times, each AP two times.
-> 
-> What's worse is that this just works by chance on hybrid systems due to the
-> fact that the existing ones all seem to boot on a P-Core which has
-> SMT. Would it boot on a E-Core which has no SMT, then parts of the early
-> topology evaluation including the primary thread mask which is required for
-> parallel CPU bringup would be completely wrong. Overwriting it later on
-> with the correct value does not help at all.
-> 
-> What's wrong today with hybrid already is the number of cores per package.
-> On an ADL with 8 P-Cores and 8 E-cores the resulting number of cores per
-> package is evaluated to be 12. Which is not further surprising because the
-> CPUID 0xb/0x1f parser looks at the number of logical processors at core
-> level and divides them by the number of SMP siblings.
-> 
->    24 / 2 = 12
-> 
-> Just that this CPU has obviously 16 cores not 12.
-> 
-> It's is even clearly documented in the SDM that this is wrong.
-> 
->  "Bits 15-00: The number of logical processors across all instances of this
->   domain within the next higher- scoped domain relative to this current
->   logical processor. (For example, in a processor socket/package comprising
->   "M" dies of "N" cores each, where each core has "L" processors, the
->   "die" domain subleaf value of this field would be M*N*L. In an asymmetric
->   topology this would be the summation of the value across the lower domain
->   level instances to create each upper domain level instance.) This number
->   reflects configuration as shipped by Intel. Note, software must not use
->   this field to enumerate processor topology.
-> 
->   Software must not use the value of EBX[15:0] to enumerate processor topology
->   of the system. The value is only intended for display and diagnostic purposes.
->   The actual number of logical processors available to BIOS/OS/Applications
->   may be different from the value of EBX[15:0], depending on software and
->   platform hardware configurations."
-> 
-> This "_NOT_ to use for topology evaluation" sentence existed even before
-> hybrid came along and got ignored. The code worked by chance, but with
-> hybrid all bets are off. The code completely falls apart once CPUID leaf
-> 0x1f enumerates any topology level between CORE and DIE, but that's not a
-> suprise.
-> 
-> The proper thing to do is to actually evaluate the full topology including
-> the non-present (hotpluggable) CPUs based on the APICIDs which are provided
-> by the firmware and a proper topology domain level parser. This can exactly
-> tell the number of physical packages, logical packages etc. _before_ even
-> booting a single AP. All of that can be evaluated upfront.
-> 
-> Aside of that there are too many places which do their own topology
-> evaluation, but there is absolutely no central point which can actually
-> provide all of that information in a consistent way. This needs to change.
-> 
-> This series implements another piece towards this: sane CPUID evaluation,
-> which is done at _one_ place in a proper well defined order instead of
-> having it sprinkled all over the CPUID evaluation code.
-> 
-> At the end of this series this is pretty much bug compatible with the
-> current CPUID evaluation code in respect to the cores per package
-> evaluation, but it gets rid of overwriting things like smp_num_siblings,
-> which is now written once, but is still not capable to work correctly on a
-> hybrid machine which boots from a non SMT core. These things can only be
-> fixed up in the next step(s).
-> 
-> When I tried to go further with this I ran into yet another pile of
-> historical layers of duct tape and haywire with a gazillion of random
-> variables sprinkled all over the place. That's still work in progress.  It
-> actually works, but the last step which switches over is not yet in a shape
-> that can be easily reviewed. Stay tuned.
-> 
-> The series is based on the APIC cleanup series:
-> 
->   https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de
-> 
-> and also available on top of that from git:
-> 
->  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v1
-> 
-> Thanks,
-> 
-> 	tglx
-> ---
->  arch/x86/kernel/cpu/topology.c              |  168 --------------------
->  b/Documentation/arch/x86/topology.rst       |   12 -
->  b/arch/x86/events/amd/core.c                |    2 
->  b/arch/x86/events/amd/uncore.c              |    2 
->  b/arch/x86/events/intel/uncore.c            |    2 
->  b/arch/x86/include/asm/apic.h               |    1 
->  b/arch/x86/include/asm/cacheinfo.h          |    3 
->  b/arch/x86/include/asm/cpuid.h              |   32 +++
->  b/arch/x86/include/asm/processor.h          |   58 ++++--
->  b/arch/x86/include/asm/smp.h                |    2 
->  b/arch/x86/include/asm/topology.h           |   51 +++++-
->  b/arch/x86/include/asm/x86_init.h           |    2 
->  b/arch/x86/kernel/amd_nb.c                  |    8 
->  b/arch/x86/kernel/apic/apic_flat_64.c       |    7 
->  b/arch/x86/kernel/apic/apic_noop.c          |    3 
->  b/arch/x86/kernel/apic/apic_numachip.c      |   11 -
->  b/arch/x86/kernel/apic/bigsmp_32.c          |    6 
->  b/arch/x86/kernel/apic/local.h              |    1 
->  b/arch/x86/kernel/apic/probe_32.c           |    6 
->  b/arch/x86/kernel/apic/x2apic_cluster.c     |    1 
->  b/arch/x86/kernel/apic/x2apic_phys.c        |    6 
->  b/arch/x86/kernel/apic/x2apic_uv_x.c        |   63 +------
->  b/arch/x86/kernel/cpu/Makefile              |    5 
->  b/arch/x86/kernel/cpu/amd.c                 |  156 ------------------
->  b/arch/x86/kernel/cpu/cacheinfo.c           |   51 ++----
->  b/arch/x86/kernel/cpu/centaur.c             |    4 
->  b/arch/x86/kernel/cpu/common.c              |  108 +-----------
->  b/arch/x86/kernel/cpu/cpu.h                 |   14 +
->  b/arch/x86/kernel/cpu/debugfs.c             |   98 +++++++++++
->  b/arch/x86/kernel/cpu/hygon.c               |  133 ---------------
->  b/arch/x86/kernel/cpu/intel.c               |   38 ----
->  b/arch/x86/kernel/cpu/mce/amd.c             |    4 
->  b/arch/x86/kernel/cpu/mce/apei.c            |    4 
->  b/arch/x86/kernel/cpu/mce/core.c            |    4 
->  b/arch/x86/kernel/cpu/mce/inject.c          |    7 
->  b/arch/x86/kernel/cpu/proc.c                |    8 
->  b/arch/x86/kernel/cpu/topology.h            |   51 ++++++
->  b/arch/x86/kernel/cpu/topology_amd.c        |  179 +++++++++++++++++++++
->  b/arch/x86/kernel/cpu/topology_common.c     |  233 ++++++++++++++++++++++++++++
->  b/arch/x86/kernel/cpu/topology_ext.c        |  136 ++++++++++++++++
->  b/arch/x86/kernel/cpu/zhaoxin.c             |   18 --
->  b/arch/x86/kernel/smpboot.c                 |   64 ++++---
->  b/arch/x86/kernel/vsmp_64.c                 |   13 -
->  b/arch/x86/mm/amdtopology.c                 |   35 +---
->  b/arch/x86/xen/apic.c                       |    8 
->  b/drivers/edac/amd64_edac.c                 |    4 
->  b/drivers/edac/mce_amd.c                    |    4 
->  b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 
->  b/drivers/hwmon/fam15h_power.c              |    7 
->  b/drivers/scsi/lpfc/lpfc_init.c             |    8 
->  b/drivers/virt/acrn/hsm.c                   |    2 
->  51 files changed, 964 insertions(+), 881 deletions(-)
-> 
-> 
-> 
+  nfsd: Remove incorrect check in nfsd4_validate_stateid (2023-07-18 11:34:09 -0400)
+
+----------------------------------------------------------------
+nfsd-6.5 fixes:
+- Fix TEST_STATEID response
+
+----------------------------------------------------------------
+Trond Myklebust (1):
+      nfsd: Remove incorrect check in nfsd4_validate_stateid
+
+ fs/nfsd/nfs4state.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+-- 
+Chuck Lever
