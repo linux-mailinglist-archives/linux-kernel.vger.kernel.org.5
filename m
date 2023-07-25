@@ -2,158 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 040FE761DD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4A5761DAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjGYP5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
+        id S232490AbjGYPwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjGYP5R (ORCPT
+        with ESMTP id S232397AbjGYPwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:57:17 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAB12109;
-        Tue, 25 Jul 2023 08:57:04 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 1FFB912001D;
-        Tue, 25 Jul 2023 18:57:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1FFB912001D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690300621;
-        bh=qRRLuDnRuBKRCx1jBfu7VwVe6z3jQqq3ZtmI3beDyTo=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=BDDFU9xeEgJRrgJnCbrHOFTvPXKJJ5hHg00/m8gtoGuULQPLD0TiVXzyXm7eAmzKB
-         KYNsM8GJwqD4J3dIqDmJNbUuAHhOcM0Z8IKvgwfqa/VpbOgOjeYogs1QHwcmd+N44U
-         o6xDWNDJMaQrb9xfDQEjFpLD6RSfYDnRPEOvRAi5HNGzsdhjUDwcknRj81lorwdLvB
-         zd4u0S5wgyr9Vh0vFYgE2ivq0CWLqVzXzD5rYJy2bNtprH/KdRs/N8PHso/FJM35V7
-         nkm5+PIvH47eyHAyKAyKNq0H64JaQldbh9NsqrxK18e0nZn+uqUQ4gAutjlrLdQsxW
-         wNbfNOmyz2nOw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 25 Jul 2023 18:57:00 +0300 (MSK)
-Received: from [192.168.0.104] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 25 Jul 2023 18:56:58 +0300
-Message-ID: <bd49fd49-a6c8-cbe7-abd8-e8e990d9ee05@sberdevices.ru>
-Date:   Tue, 25 Jul 2023 18:51:25 +0300
+        Tue, 25 Jul 2023 11:52:15 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BDC1FE6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:52:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:2d50:2ea4:d4e1:2af3])
+        by laurent.telenet-ops.be with bizsmtp
+        id RTsB2A0092TBYXr01TsBc4; Tue, 25 Jul 2023 17:52:12 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qOKKM-002Vj4-Ib;
+        Tue, 25 Jul 2023 17:52:11 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qOKKZ-009cbZ-Mo;
+        Tue, 25 Jul 2023 17:52:11 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+Date:   Tue, 25 Jul 2023 17:52:06 +0200
+Message-Id: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v2 4/4] vsock/test: MSG_PEEK test for SOCK_SEQPACKET
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230719192708.1775162-1-AVKrasnov@sberdevices.ru>
- <20230719192708.1775162-5-AVKrasnov@sberdevices.ru>
- <lkfzuvv53lyycpun27knppjhk46lyqrz4idvzj7fzer2566y5t@mtc7v33q3erg>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <lkfzuvv53lyycpun27knppjhk46lyqrz4idvzj7fzer2566y5t@mtc7v33q3erg>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If CONFIG_FB_CORE=y but CONFIG_FB=n, the frame buffer bootup logos can
+no longer be enabled.  Fix this by making CONFIG_LOGO depend on
+CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
+logo code to depend on the presence of real frame buffer device drivers.
 
+Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/video/Kconfig      | 2 +-
+ drivers/video/logo/Kconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On 25.07.2023 18:41, Stefano Garzarella wrote:
-> On Wed, Jul 19, 2023 at 10:27:08PM +0300, Arseniy Krasnov wrote:
->> This adds MSG_PEEK test for SOCK_SEQPACKET. It works in the same way as
->> SOCK_STREAM test, except it also tests MSG_TRUNC flag.
->>
->> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->> ---
->> tools/testing/vsock/vsock_test.c | 58 +++++++++++++++++++++++++++++---
->> 1 file changed, 54 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->> index 444a3ff0681f..2ca2cbfa9808 100644
->> --- a/tools/testing/vsock/vsock_test.c
->> +++ b/tools/testing/vsock/vsock_test.c
->> @@ -257,14 +257,19 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
->>
->> #define MSG_PEEK_BUF_LEN 64
->>
->> -static void test_stream_msg_peek_client(const struct test_opts *opts)
->> +static void __test_msg_peek_client(const struct test_opts *opts,
-> 
-> Let's stay with just test_msg_peek_client(), WDYT?
-> 
->> +                   bool seqpacket)
->> {
->>     unsigned char buf[MSG_PEEK_BUF_LEN];
->>     ssize_t send_size;
->>     int fd;
->>     int i;
->>
->> -    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    if (seqpacket)
->> +        fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->> +    else
->> +        fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +
->>     if (fd < 0) {
->>         perror("connect");
->>         exit(EXIT_FAILURE);
->> @@ -290,7 +295,8 @@ static void test_stream_msg_peek_client(const struct test_opts *opts)
->>     close(fd);
->> }
->>
->> -static void test_stream_msg_peek_server(const struct test_opts *opts)
->> +static void __test_msg_peek_server(const struct test_opts *opts,
-> 
-> Same here.
-> 
-> The rest LGTM!
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index e5b1cc54cafa10d5..b694d7669d3200b1 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -63,7 +63,7 @@ if VT
+ 	source "drivers/video/console/Kconfig"
+ endif
+ 
+-if FB || SGI_NEWPORT_CONSOLE
++if FB_CORE || SGI_NEWPORT_CONSOLE
+ 	source "drivers/video/logo/Kconfig"
+ 
+ endif
+diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
+index 6d6f8c08792dc897..b7d94d1dd1585a84 100644
+--- a/drivers/video/logo/Kconfig
++++ b/drivers/video/logo/Kconfig
+@@ -5,7 +5,7 @@
+ 
+ menuconfig LOGO
+ 	bool "Bootup logo"
+-	depends on FB || SGI_NEWPORT_CONSOLE
++	depends on FB_CORE || SGI_NEWPORT_CONSOLE
+ 	help
+ 	  Enable and select frame buffer bootup logos.
+ 
+-- 
+2.34.1
 
-Ok! I'll update.
-
-> 
-> Also the whole series should be ready for net-next, right?
-
-Yes, I'll fix these two things and resend this as 'net-next'
-
-Thanks, Arseniy
-
-> 
-> Stefano
-> 
