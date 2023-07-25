@@ -2,300 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4203760529
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6395476052A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjGYCVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
+        id S230191AbjGYCWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYCVj (ORCPT
+        with ESMTP id S229452AbjGYCW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:21:39 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B232CD;
-        Mon, 24 Jul 2023 19:21:38 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b9ede6195cso4302367a34.3;
-        Mon, 24 Jul 2023 19:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690251697; x=1690856497;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pTHbFq1+FFxNZgfCTCOGl7TBf00vI13bg8s8rIJm8N0=;
-        b=FmR4eal4jbWnp3sxXDLx0IEXrT1EWCeJT1ock7PDfFHYcXbzYCMktgiTISmcJzueif
-         M+rycqWDLNlqAq3vhMffM+CvOyuLkPVsQlmKQOABxjgIl55WFLH1eHVEw0CTmwePZJ6o
-         8AFhDURbWIcNTojA9UDL17kqV69Eh01wo41WoEScGUeE9ozuEm4OwbBWgQWMxpbExpdF
-         je74sXvA2dMcIjBuZZzFfRB6fKJ6wVbvpCNIwmtBPT/d9uqBguQTDGcvUt5qWA/4LcuD
-         u+5kOUN+F4xZDWZOdoOHp4XYAAS08otxN9ziCDuxSK6dmsf6sXfEXNzP3Ea2hVZQ4VKI
-         m/jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690251697; x=1690856497;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pTHbFq1+FFxNZgfCTCOGl7TBf00vI13bg8s8rIJm8N0=;
-        b=L/qmHCBiocegx98e1ZIvH2yrrwKt58bVKrWwICNZZifQKrivXRR1BEmlgGVhxNdaCR
-         VxOoIiYG97V3rH2FZ81k52PosUUt1gA05SMtmGdwgwupjeHRQMAC2589m11IZTzhTbTL
-         cADPS93tDw9loLZSyg1/OPNv2Kv11FBkO5EFhP485/1rVGM+0w9kTW88jV1Z8Iu2vXLA
-         j6U6hazaEY3LjdDIeELpNNspRrhgyNXzrc1wwjEmW3UtAHMG51dkBbMg2TMZabdyqhj7
-         fInyJzx4I/4B5IsW4RI2BYWAo+5yMPYjS9e2U2jgkLhwL7baa7wM7tX8kDxyFeJFUj1e
-         ZzfQ==
-X-Gm-Message-State: ABy/qLYUASRLCZbsmaw3PKI3oYdEDvvqN6vH8MpHuI0L6TqfALZ7BWep
-        neY/VkYKdhKKSe4xAE4hqRNGlpdx8wxIoBgc4PM=
-X-Google-Smtp-Source: APBJJlHx9ZwpnyWynIe1aSrmaYRNzUterxAIaVawsAYWwIlLV0jsQM8ZxgYvlKEr7d5ExiPhguYrMpNVZKDu56Olp8Q=
-X-Received: by 2002:a05:6870:2192:b0:1ba:617f:5f26 with SMTP id
- l18-20020a056870219200b001ba617f5f26mr13202632oae.51.1690251697445; Mon, 24
- Jul 2023 19:21:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230719130527.8074-1-xuewen.yan@unisoc.com> <20230721221944.dthg3tf25j4qgc2z@airbuntu>
- <CAB8ipk8b8ZfwXN7KK-zFVPQ-8i37h64v-wz2ErB3AANaZ9w7aA@mail.gmail.com> <20230724155328.7odez6dcoafksr3i@airbuntu>
-In-Reply-To: <20230724155328.7odez6dcoafksr3i@airbuntu>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 25 Jul 2023 10:21:26 +0800
-Message-ID: <CAB8ipk-VuD2oMDaV6B6i-eoKE+JZ0FpsUZAdT0R5S3to07JkFw@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
- cpufreq_limits changed
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, guohua.yan@unisoc.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 22:22:29 -0400
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF068CD;
+        Mon, 24 Jul 2023 19:22:25 -0700 (PDT)
+Received: from localhost.localdomain (unknown [39.174.92.167])
+        by mail-app3 (Coremail) with SMTP id cC_KCgA3HbzAMb9kOIKkCw--.4468S4;
+        Tue, 25 Jul 2023 10:21:53 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, razor@blackwall.org, idosch@nvidia.com,
+        lucien.xin@gmail.com, liuhangbin@gmail.com,
+        edwin.peer@broadcom.com, jiri@resnulli.us,
+        md.fahad.iqbal.polash@intel.com, anirudh.venkataramanan@intel.com,
+        jeffrey.t.kirsher@intel.com, neerav.parikh@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v1] rtnetlink: let rtnl_bridge_setlink checks IFLA_BRIDGE_MODE length
+Date:   Tue, 25 Jul 2023 10:21:51 +0800
+Message-Id: <20230725022151.417450-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgA3HbzAMb9kOIKkCw--.4468S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4rAw15KF4Dtr45WrWkXrb_yoW8XF4xpa
+        4rKa4xJF1DXr97Za17AFyrX3s7ZFZIgrW5Wr42ywn2yF9YqFyUCr98CFn0vry3AFsIqa43
+        tr17Gr1avr1DGFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQvt
+        AUUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 11:53=E2=80=AFPM Qais Yousef <qyousef@layalina.io> =
-wrote:
->
-> On 07/24/23 11:36, Xuewen Yan wrote:
-> > On Sat, Jul 22, 2023 at 7:02=E2=80=AFAM Qais Yousef <qyousef@layalina.i=
-o> wrote:
-> > >
-> > > On 07/19/23 21:05, Xuewen Yan wrote:
-> > > > When cpufreq's policy is single, there is a scenario that will
-> > > > cause sg_policy's next_freq to be unable to update.
-> > > >
-> > > > When the cpu's util is always max, the cpufreq will be max,
-> > > > and then if we change the policy's scaling_max_freq to be a
-> > > > lower freq, indeed, the sg_policy's next_freq need change to
-> > > > be the lower freq, however, because the cpu_is_busy, the next_freq
-> > > > would keep the max_freq.
-> > > >
-> > > > For example:
-> > > > The cpu7 is single cpu:
-> > > >
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done=
-&
-> > > > [1] 4737
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
-> > > > pid 4737's current affinity mask: ff
-> > > > pid 4737's new affinity mask: 80
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_fr=
-eq
-> > > > 2301000
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_fr=
-eq
-> > > > 2301000
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > sca=
-ling_max_freq
-> > > > unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_fr=
-eq
-> > > > 2171000
-> > > >
-> > > > At this time, the sg_policy's next_freq would keep 2301000.
-> > > >
-> > > > To prevent the case happen, add the judgment of the need_freq_updat=
-e flag.
-> > > >
-> > > > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > > Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > > Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
-> > > > ---
-> > > >  kernel/sched/cpufreq_schedutil.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufre=
-q_schedutil.c
-> > > > index 4492608b7d7f..458d359f5991 100644
-> > > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > > @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct upd=
-ate_util_data *hook, u64 time,
-> > > >        * Except when the rq is capped by uclamp_max.
-> > > >        */
-> > > >       if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
-> > > > -         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_fre=
-q) {
-> > > > +         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_fre=
-q &&
-> > > > +         !sg_policy->need_freq_update) {
-> > >
-> > > What about sugov_update_single_perf()? It seems to have the same prob=
-lem, no?
-> >
-> > There is no problem in sugov_update_single_perf, because the next_freq
-> > is updated by drivers, maybe the next_freq is not used when using
-> > sugov_update_single_perf..
->
-> Ah I see; we just use prev_util but the request will go through and the d=
-river
-> should observe the new limit regardless of what util value we pass to it.=
- Got
-> ya.
->
-> >
-> > But  for the last_freq_update_time, I think there are some problems
-> > when using sugov_update_single_perf:
-> > Now, there is no judgment condition for the update of the
-> > last_freq_update_time. That means the last_freq_update_time is always
-> > updated in sugov_update_single_perf.
-> > And in sugov_should_update_freq: it would judge the
-> > freq_update_delay_ns. As a result, If we use the
-> > sugov_update_single_perf, the cpu frequency would only be periodically
-> > updated according to freq_update_delay_ns.
-> > Maybe we should judge the cpufreq_driver_adjust_perf's return value,
-> > if the freq is not updated, the last_freq_update_time also does not
-> > have to update.
-> >
-> > Just like:
-> > ---
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_sc=
-hedutil.c
-> > index 458d359f5991..10f18b054f01 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -381,6 +381,7 @@ static void sugov_update_single_perf(struct
-> > update_util_data *hook, u64 time,
-> >         struct sugov_cpu *sg_cpu =3D container_of(hook, struct
-> > sugov_cpu, update_util);
-> >         unsigned long prev_util =3D sg_cpu->util;
-> >         unsigned long max_cap;
-> > +       bool freq_updated;
-> >
-> >         /*
-> >          * Fall back to the "frequency" path if frequency invariance is=
- not
-> > @@ -407,10 +408,11 @@ static void sugov_update_single_perf(struct
-> > update_util_data *hook, u64 time,
-> >             sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-> >                 sg_cpu->util =3D prev_util;
-> >
-> > -       cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->b=
-w_dl),
-> > +       freq_updated =3D cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> > map_util_perf(sg_cpu->bw_dl),
-> >                                    map_util_perf(sg_cpu->util), max_cap=
-);
-> >
-> > -       sg_cpu->sg_policy->last_freq_update_time =3D time;
-> > +       if (freq_updated)
-> > +               sg_cpu->sg_policy->last_freq_update_time =3D time;
-> >  }
->
-> Sound reasonable in principle, but it could lead to overhead; for example=
- when
-> the system is busy and maxed out, the last_freq_update_time will never be
-> updated and will end up continuously calling to the driver to change freq=
-uency
-> without any rate limit AFAICS. Which might not be an acceptable overhead,
-> I don't know. Logically this is wasted cycles preventing the tasks from d=
-oing
-> useful work. I think we need to look at such corner cases and treat them
-> appropriately to not call the driver if we go with this approach.
+There are totally 9 ndo_bridge_setlink handlers in the current kernel,
+which are 1) bnxt_bridge_setlink, 2) be_ndo_bridge_setlink 3)
+i40e_ndo_bridge_setlink 4) ice_bridge_setlink 5)
+ixgbe_ndo_bridge_setlink 6) mlx5e_bridge_setlink 7)
+nfp_net_bridge_setlink 8) qeth_l2_bridge_setlink 9) br_setlink.
 
-Hi Qais,
+By investigating the code, we find that 1-7 parse and use nlattr
+IFLA_BRIDGE_MODE but 3 and 4 forget to do the nla_len check. This can
+lead to an out-of-attribute read and allow a malformed nlattr (e.g.,
+length 0) to be viewed as a 2 byte integer.
 
-I can understand what you mean, but I don't think this is a problem.
-For the driver, the calculation of whether to update the frequency may
-not be the main time-consuming, but the main time-consuming may be the
-frequency conversion time of the hardware. If the hardware does not
-need frequency conversion, the operation of calculating the frequency
-takes a very short time.
-If the operation of calling the driver frequently is unacceptable, can
-prev_util be used?
+To avoid such issues, also for other ndo_bridge_setlink handlers in the
+future. This patch adds the nla_len check in rtnl_bridge_setlink and
+does an early error return if length mismatches.
 
+Fixes: b1edc14a3fbf ("ice: Implement ice_bridge_getlink and ice_bridge_setlink")
+Fixes: 51616018dd1b ("i40e: Add support for getlink, setlink ndo ops")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
 ---
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedu=
-til.c
-index 4492608b7d7f..3febfd032eee 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -379,7 +379,9 @@ static void sugov_update_single_perf(struct
-update_util_data *hook, u64 time,
- {
-        struct sugov_cpu *sg_cpu =3D container_of(hook, struct
-sugov_cpu, update_util);
-        unsigned long prev_util =3D sg_cpu->util;
-+       unsigned long prev_bw_dl =3D sg_cpu->bw_dl;
-        unsigned long max_cap;
-+       bool freq_updated;
+ net/core/rtnetlink.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-        /*
-         * Fall back to the "frequency" path if frequency invariance is not
-@@ -406,10 +408,14 @@ static void sugov_update_single_perf(struct
-update_util_data *hook, u64 time,
-            sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-                sg_cpu->util =3D prev_util;
-
--       cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl=
-),
-+       if (prev_util =3D=3D sg_cpu->util && prev_bw_dl =3D=3D sg_cpu->bw_d=
-l)
-+               return;
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 3ad4e030846d..1e51291007ea 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -5148,6 +5148,11 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 				flags = nla_get_u16(attr);
+ 				break;
+ 			}
 +
-+       freq_updated =3D cpufreq_driver_adjust_perf(sg_cpu->cpu,
-map_util_perf(sg_cpu->bw_dl),
-                                   map_util_perf(sg_cpu->util), max_cap);
++			if (nla_type(attr) == IFLA_BRIDGE_MODE) {
++				if (nla_len(attr) < sizeof(u16))
++					return -EINVAL;
++			}
+ 		}
+ 	}
+ 
+-- 
+2.17.1
 
--       sg_cpu->sg_policy->last_freq_update_time =3D time;
-+       if (freq_updated)
-+               sg_cpu->sg_policy->last_freq_update_time =3D time;
- }
-
- static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 t=
-ime)
-
-
-BR
----
-xuewen
->
->
-> Cheers
->
-> --
-> Qais Yousef
->
-> >
-> >
-> > BR
-> > Thanks!
-> >
-> > ---
-> > xuewen
-> > >
-> > > LGTM otherwise.
-> > >
-> > >
-> > > Cheers
-> > >
-> > > --
-> > > Qais Yousef
-> > >
-> > > >               next_f =3D sg_policy->next_freq;
-> > > >
-> > > >               /* Restore cached freq as next_freq has changed */
-> > > > --
-> > > > 2.25.1
-> > > >
