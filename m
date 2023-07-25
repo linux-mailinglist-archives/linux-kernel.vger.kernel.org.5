@@ -2,151 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186A8762711
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCD37626F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjGYWy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
+        id S230523AbjGYWi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjGYWyJ (ORCPT
+        with ESMTP id S233237AbjGYWhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:54:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1924FF2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=LQbCFZHRhXpQFpBcLrTq8sSHp6lzZ8N0vEiSZRwCtWg=; b=d6Abi48RFQ6TTsu5Wat08CADbb
-        xRVUILLQrFfSvlVZ6nRYU2utJzSVbKnNSLlqmMlM/PlHDTGxBlnPjTpMLb/0EntlmilAn8Wsjgz+E
-        ieBjon1q9Iqhrgm4F0NN3QLzanxK/uClVUMUXDZw8rAxPUMIJjYpLHwlG552V/20e6GkjZuKbAE3F
-        zfy4dAvz34giYp/VCCxLR6Ur19O6y8Bjo7E1A662oZCp2txFY3VFxWmrBfoQgn8q+d04aHTPcdmeH
-        jgDRbhK0SaoayRAezxLc+6566hEGNgHmCLQQpPS9cE0wxDgx8Ic0VnN7n2O9/Iu89RktXGfGtud41
-        jqP7DAUQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qOQWT-005vcd-4B; Tue, 25 Jul 2023 22:28:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8D82F30049D;
-        Wed, 26 Jul 2023 00:28:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 785A9280F0301; Wed, 26 Jul 2023 00:28:51 +0200 (CEST)
-Date:   Wed, 26 Jul 2023 00:28:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Re: Stopping the tick on a fully loaded system
-Message-ID: <20230725222851.GC3784071@hirez.programming.kicks-ass.net>
-References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
- <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
- <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
- <ZL2Z8InSLmI5GU9L@localhost.localdomain>
- <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
- <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
- <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
+        Tue, 25 Jul 2023 18:37:55 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4191F55BA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:30:33 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d0e009433c4so3434199276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690324161; x=1690928961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KR9Rsw7mOBovSF23sZH22jr/PNQU7PsjHK4/ezfBy1A=;
+        b=vctBl8iNibEMT6RyK1mIMkzlSYEoOHled58OOFPA53jFJwOkeQ1vr/6bXyqbSUsFAF
+         rGQaLfX9x1Td7IYxqBP+5kTi6Uh1jRalUAxPnvmE75juxDlqyYrToK9XrfMxSBDjvpAm
+         GAmhcy2h9o3BCqvGTo5QB37O844WWjY+mcjH8bviG1li2UjDxEV576kiIQpE99JNfeVb
+         Tlh42BzUVIW6+VHghz4J1P0GJS+NoHkHX1MF6JEsvaZUSoJ0YlChN0+60ACpg/xpAvhC
+         9mWjGQtMFL5O4i/UQp7cI/ioCMv21B2ouDX1Y4GGYESFcim6L6h+U1bSxyHae3gX+jrb
+         GD+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690324161; x=1690928961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KR9Rsw7mOBovSF23sZH22jr/PNQU7PsjHK4/ezfBy1A=;
+        b=g3Pt/CWswLHmMUQY6DD4ksoodBPsGOU7MS0C3qh0Nzy9ZmAtw60D92MbsHO9dXK6Mp
+         3HsVRMBaXpNymTCmw99deuk+Tezi9SWhmCn+fNcebhzcaTagWyuo2y0Bbs1Os07fAueK
+         0j+AbVPXZjc2G0tbK5t4kMwubGEGSwn+I3fwoJo2U/HmnrxHQgVu8mCgDwC+OIinVa17
+         I3MEFKhVmMW/s01AYgG0H5LoVY2IbqwI2vmZmZqtygnxw+Ei5AkJo4/402PpN2m5O6ww
+         PsZHmjOPLKej184lK13UGTtHhe/6//u4QGyPyD9lLXkvBGyJdxzHAHrXQx+1bYoKnbFa
+         tWzQ==
+X-Gm-Message-State: ABy/qLZH+rK8Rj/AIj9Vna2Dzc3NeubxTHXq5rQTtGKW5wolsjtPHZkz
+        ArBZxyoluT23xhmNXfhI3jidNLy3UaX80VdGHabckA==
+X-Google-Smtp-Source: APBJJlEdPf+ZZiDTPLEUsJhdKbzvKrqvNO39weDJ1KxGr3Wx0WJe0Kyn7gPmdNao8H0M7sd5pakWAY3jt3Aq+y/oxew=
+X-Received: by 2002:a25:d08b:0:b0:d0f:972b:637 with SMTP id
+ h133-20020a25d08b000000b00d0f972b0637mr310497ybg.20.1690324160747; Tue, 25
+ Jul 2023 15:29:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230725-fs-orangefs-remove-deprecated-strncpy-v1-1-f15f635cf820@google.com>
+ <202307251452.66CB968@keescook>
+In-Reply-To: <202307251452.66CB968@keescook>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 25 Jul 2023 15:29:10 -0700
+Message-ID: <CAFhGd8qRyq=Fz++1SHxhLkj5Z6UkE97a-UobuUq2hfEwE=K=0w@mail.gmail.com>
+Subject: Re: [PATCH] orangefs: replace strncpy with strscpy
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 04:27:56PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Jul 25, 2023 at 3:07 PM Anna-Maria Behnsen
-
-> >                         100% load               50% load                25% load
-> >                         (top: ~2% idle)         (top: ~49% idle)        (top: ~74% idle;
-> >                                                                         33 CPUs are completely idle)
-> >                         ---------------         ----------------        ----------------------------
-> > Idle Total              1658703 100%            3150522 100%            2377035 100%
-> > x >= 4ms                2504    0.15%           2       0.00%           53      0.00%
-> > 4ms> x >= 2ms           390     0.02%           0       0.00%           4563    0.19%
-> > 2ms > x >= 1ms          62      0.00%           1       0.00%           54      0.00%
-> > 1ms > x >= 500us        67      0.00%           6       0.00%           2       0.00%
-> > 500us > x >= 250us      93      0.01%           39      0.00%           11      0.00%
-> > 250us > x >=100us       280     0.02%           1145    0.04%           633     0.03%
-> > 100us > x >= 50us       942     0.06%           30722   0.98%           13347   0.56%
-> > 50us > x >= 25us        26728   1.61%           310932  9.87%           106083  4.46%
-> > 25us > x >= 10us        825920  49.79%          2320683 73.66%          1722505 72.46%
-> > 10us > x > 5us          795197  47.94%          442991  14.06%          506008  21.29%
-> > 5us > x                 6520    0.39%           43994   1.40%           23645   0.99%
+On Tue, Jul 25, 2023 at 3:01=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Tue, Jul 25, 2023 at 09:30:30PM +0000, justinstitt@google.com wrote:
+> > This patch aims to eliminate `strncpy` usage across the orangefs
+> > tree.
+> >
+> > `strncpy` is deprecated for use on NUL-terminated destination strings
+> > [1].
+> >
+> > A suitable replacement is `strscpy` [2].
+> >
+> > Using the `strscpy` api over `strncpy` has a slight wrinkle in the use
+> > cases presented within orangefs. There is frequent usage of `...LEN - 1=
+`
+> > which is no longer required since `strscpy` will guarantee
+> > NUL-termination on its `dest` argument. As per `strscpy`s implementatio=
+n
+> > in `linux/lib/string.c`
+> >
+> > |       /* Hit buffer length without finding a NUL; force NUL-terminati=
+on. */
+> > |       if (res)
+> > |               dest[res-1] =3D '\0';
+> >
+> > There are some hopes that someday the `strncpy` api could be ripped out
+> > due to the vast number of suitable replacements (strscpy, strscpy_pad,
+> > strtomem, strtomem_pad, strlcpy) [1].
+> >
+> > [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-=
+nul-terminated-strings
+> > [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> >
+> > ---
 > >
 > >
-> > 99% of the tick stops only have an idle period shorter than 50us (50us is
-> > 1,25% of a tick length).
-> 
-> Well, this just means that the governor predicts overly long idle
-> durations quite often under this workload.
-> 
-> The governor's decision on whether or not to stop the tick is based on
-> its idle duration prediction.  If it overshoots, that's how it goes.
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> >  fs/orangefs/dcache.c |  4 ++--
+> >  fs/orangefs/namei.c  | 30 +++++++++++++++---------------
+> >  fs/orangefs/super.c  | 14 +++++++-------
+> >  3 files changed, 24 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/fs/orangefs/dcache.c b/fs/orangefs/dcache.c
+> > index 8bbe9486e3a6..96ed9900f7a9 100644
+> > --- a/fs/orangefs/dcache.c
+> > +++ b/fs/orangefs/dcache.c
+> > @@ -33,9 +33,9 @@ static int orangefs_revalidate_lookup(struct dentry *=
+dentry)
+> >
+> >       new_op->upcall.req.lookup.sym_follow =3D ORANGEFS_LOOKUP_LINK_NO_=
+FOLLOW;
+> >       new_op->upcall.req.lookup.parent_refn =3D parent->refn;
+> > -     strncpy(new_op->upcall.req.lookup.d_name,
+> > +     strscpy(new_op->upcall.req.lookup.d_name,
+> >               dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > +             ORANGEFS_NAME_MAX);
+>
+> Looking where new_op comes from, I see that it was already zero-filled,
+> so this isn't also fixing a latent bug. (But I wanted to double-check.)
+>
+> >
+> >       gossip_debug(GOSSIP_DCACHE_DEBUG,
+> >                    "%s:%s:%d interrupt flag [%d]\n",
+> > diff --git a/fs/orangefs/namei.c b/fs/orangefs/namei.c
+> > index 77518e248cf7..503d07769bb4 100644
+> > --- a/fs/orangefs/namei.c
+> > +++ b/fs/orangefs/namei.c
+> > @@ -41,8 +41,8 @@ static int orangefs_create(struct mnt_idmap *idmap,
+> >       fill_default_sys_attrs(new_op->upcall.req.create.attributes,
+> >                              ORANGEFS_TYPE_METAFILE, mode);
+> >
+> > -     strncpy(new_op->upcall.req.create.d_name,
+> > -             dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
+> > +     strscpy(new_op->upcall.req.create.d_name,
+> > +             dentry->d_name.name, ORANGEFS_NAME_MAX);
+> >
+> >       ret =3D service_operation(new_op, __func__, get_interruptible_fla=
+g(dir));
+> >
+> > @@ -137,8 +137,8 @@ static struct dentry *orangefs_lookup(struct inode =
+*dir, struct dentry *dentry,
+> >                    &parent->refn.khandle);
+> >       new_op->upcall.req.lookup.parent_refn =3D parent->refn;
+> >
+> > -     strncpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > +     strscpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
+> > +             ORANGEFS_NAME_MAX);
+> >
+> >       gossip_debug(GOSSIP_NAME_DEBUG,
+> >                    "%s: doing lookup on %s under %pU,%d\n",
+> > @@ -192,8 +192,8 @@ static int orangefs_unlink(struct inode *dir, struc=
+t dentry *dentry)
+> >               return -ENOMEM;
+> >
+> >       new_op->upcall.req.remove.parent_refn =3D parent->refn;
+> > -     strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > +     strscpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
+> > +             ORANGEFS_NAME_MAX);
+> >
+> >       ret =3D service_operation(new_op, "orangefs_unlink",
+> >                               get_interruptible_flag(inode));
+> > @@ -247,10 +247,10 @@ static int orangefs_symlink(struct mnt_idmap *idm=
+ap,
+> >                              ORANGEFS_TYPE_SYMLINK,
+> >                              mode);
+> >
+> > -     strncpy(new_op->upcall.req.sym.entry_name,
+> > +     strscpy(new_op->upcall.req.sym.entry_name,
+> >               dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > -     strncpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX=
+ - 1);
+> > +             ORANGEFS_NAME_MAX);
+> > +     strscpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX=
+);
+> >
+> >       ret =3D service_operation(new_op, __func__, get_interruptible_fla=
+g(dir));
+> >
+> > @@ -324,8 +324,8 @@ static int orangefs_mkdir(struct mnt_idmap *idmap, =
+struct inode *dir,
+> >       fill_default_sys_attrs(new_op->upcall.req.mkdir.attributes,
+> >                             ORANGEFS_TYPE_DIRECTORY, mode);
+> >
+> > -     strncpy(new_op->upcall.req.mkdir.d_name,
+> > -             dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
+> > +     strscpy(new_op->upcall.req.mkdir.d_name,
+> > +             dentry->d_name.name, ORANGEFS_NAME_MAX);
+> >
+> >       ret =3D service_operation(new_op, __func__, get_interruptible_fla=
+g(dir));
+> >
+> > @@ -405,12 +405,12 @@ static int orangefs_rename(struct mnt_idmap *idma=
+p,
+> >       new_op->upcall.req.rename.old_parent_refn =3D ORANGEFS_I(old_dir)=
+->refn;
+> >       new_op->upcall.req.rename.new_parent_refn =3D ORANGEFS_I(new_dir)=
+->refn;
+> >
+> > -     strncpy(new_op->upcall.req.rename.d_old_name,
+> > +     strscpy(new_op->upcall.req.rename.d_old_name,
+> >               old_dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > -     strncpy(new_op->upcall.req.rename.d_new_name,
+> > +             ORANGEFS_NAME_MAX);
+> > +     strscpy(new_op->upcall.req.rename.d_new_name,
+> >               new_dentry->d_name.name,
+> > -             ORANGEFS_NAME_MAX - 1);
+> > +             ORANGEFS_NAME_MAX);
+> >
+> >       ret =3D service_operation(new_op,
+> >                               "orangefs_rename",
+> > diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+> > index 5254256a224d..b4af98b5a216 100644
+> > --- a/fs/orangefs/super.c
+> > +++ b/fs/orangefs/super.c
+> > @@ -253,7 +253,7 @@ int orangefs_remount(struct orangefs_sb_info_s *ora=
+ngefs_sb)
+> >       new_op =3D op_alloc(ORANGEFS_VFS_OP_FS_MOUNT);
+> >       if (!new_op)
+> >               return -ENOMEM;
+> > -     strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> > +     strscpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> >               orangefs_sb->devname,
+> >               ORANGEFS_MAX_SERVER_ADDR_LEN);
+>
+> Was this a bug? (I think unreachable, both are
+> ORANGEFS_MAX_SERVER_ADDR_LEN long, but devname would already be
+> NUL-terminated.)
+>
+> Also, I wonder if all of these could be converted to:
+>
+>         strscpy(dest, source, sizeof(dest))
+>
 
-This is abysmal; IIRC TEO tracks a density function in C state buckets
-and if it finds it's more likely to be shorter than 'predicted' by the
-timer it should pick something shallower.
+I wonder if this idiom is a bit awkward in this context due to `dest`
+being quite a long series of struct accesses.
+For reference:
+| strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+|                 orangefs_sb->devname,
+|                 sizeof(new_op->upcall.req.fs_mount.orangefs_config_server=
+));
 
-Given we have this density function, picking something that's <1% likely
-is insane. In fact, it seems to suggest the whole pick-alternative thing
-is utterly broken.
+The resolution would be creating a temp variable for the purposes of
+avoiding this long pattern. But that would mean it should probably be
+done for all instances like this.
 
-> > This is also the reason for my opinion, that the return of
-> > tick_nohz_next_event() is completely irrelevant in a (fully) loaded case:
-> 
-> It is an upper bound and in a fully loaded case it may be way off.
-
-But given we have our density function, we should be able to do much
-better.
+Is it worth it? Or is the long-winded sizeof(dest) OK?
 
 
-Oooh,... I think I see the problem. Our bins are strictly the available
-C-state, but if you run this on a Zen3 that has ACPI-idle, then you end
-up with something that only has 3 C states, like:
+> Which (I think) would be a no-op change, and seems like a more robust
+> code style.
 
-$ for i in state*/residency ; do echo -n "${i}: "; cat $i; done
-state0/residency: 0
-state1/residency: 2
-state2/residency: 36
+>
+> >
+> > @@ -400,8 +400,8 @@ static int orangefs_unmount(int id, __s32 fs_id, co=
+nst char *devname)
+> >               return -ENOMEM;
+> >       op->upcall.req.fs_umount.id =3D id;
+> >       op->upcall.req.fs_umount.fs_id =3D fs_id;
+> > -     strncpy(op->upcall.req.fs_umount.orangefs_config_server,
+> > -         devname, ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> > +     strscpy(op->upcall.req.fs_umount.orangefs_config_server,
+> > +         devname, ORANGEFS_MAX_SERVER_ADDR_LEN);
+> >       r =3D service_operation(op, "orangefs_fs_umount", 0);
+> >       /* Not much to do about an error here. */
+> >       if (r)
+> > @@ -494,9 +494,9 @@ struct dentry *orangefs_mount(struct file_system_ty=
+pe *fst,
+> >       if (!new_op)
+> >               return ERR_PTR(-ENOMEM);
+> >
+> > -     strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> > +     strscpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> >               devname,
+> > -             ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> > +             ORANGEFS_MAX_SERVER_ADDR_LEN);
+> >
+> >       gossip_debug(GOSSIP_SUPER_DEBUG,
+> >                    "Attempting ORANGEFS Mount via host %s\n",
+> > @@ -543,9 +543,9 @@ struct dentry *orangefs_mount(struct file_system_ty=
+pe *fst,
+> >        * on successful mount, store the devname and data
+> >        * used
+> >        */
+> > -     strncpy(ORANGEFS_SB(sb)->devname,
+> > +     strscpy(ORANGEFS_SB(sb)->devname,
+> >               devname,
+> > -             ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> > +             ORANGEFS_MAX_SERVER_ADDR_LEN);
+> >
+> >       /* mount_pending must be cleared */
+> >       ORANGEFS_SB(sb)->mount_pending =3D 0;
+> >
+> > ---
+> > base-commit: 0b5547c51827e053cc754db47d3ec3e6c2c451d2
+> > change-id: 20230725-fs-orangefs-remove-deprecated-strncpy-ae0d40124620
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
+>
+> --
+> Kees Cook
 
-Which means we only have buckets: (0,0] (0,2000], (2000,36000] or somesuch. All
-of them very much smaller than TICK_NSEC.
-
-That means we don't track nearly enough data to reliably tell anything
-about disabling the tick or not. We should have at least one bucket
-beyond TICK_NSEC for this.
-
-Hmm.. it is getting very late, but how about I get the cpuidle framework
-to pad the drv states with a few 'disabled' C states so that we have at
-least enough data to cross the TICK_NSEC boundary and say something
-usable about things.
-
-Because as things stand, it's very likely we determine @stop_tick purely
-based on what tick_nohz_get_sleep_length() tells us, not on what we've
-learnt from recent history.
 
 
-(FWIW intel_idle seems to not have an entry for Tigerlake !?! -- my poor
-laptop, it feels neglected)
+--=20
+Justin
