@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792BC761890
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3CA761899
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbjGYMm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S233244AbjGYMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjGYMm0 (ORCPT
+        with ESMTP id S229780AbjGYMpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:42:26 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518A9B0;
-        Tue, 25 Jul 2023 05:42:25 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D301D5AA;
-        Tue, 25 Jul 2023 14:41:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690288885;
-        bh=SqM2HUkiO7n7nmt9WNDtTCUEd9QDVHxh+GOS5VByUsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Km+AoXR4QtahlTTZReqYIDRyocpPBIGkOoWVaWZrEWz/ugSb5/k89sxMd/zk6DmM/
-         XPkk2fq0szLBB3lwt/JJjRiqtiU2X+Fj8E7LkWBcGP6BA+Wk1ugbcAEC1ZkkpvqCCh
-         0zYgE7To7ssdQbR66UcW9s3Jqc0reFpaHBL/N3Cc=
-Date:   Tue, 25 Jul 2023 15:42:30 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        petr@tesarici.cz, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
- dma_declare_coherent_memory()
-Message-ID: <20230725124230.GG31069@pendragon.ideasonboard.com>
-References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
- <20230724171229.GC11977@pendragon.ideasonboard.com>
- <31ad16fe8f1435805185ba8e889512ec181a867e.camel@physik.fu-berlin.de>
- <20230724174331.GD11977@pendragon.ideasonboard.com>
- <314b21abaade55ba55ccdd930f9fdf24028cadf0.camel@physik.fu-berlin.de>
- <20230725110942.GB31069@pendragon.ideasonboard.com>
- <1835ec88216c9be58f9bce518575f6348158b231.camel@physik.fu-berlin.de>
+        Tue, 25 Jul 2023 08:45:01 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97298B0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:44:59 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98e39784a85so1388103766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1690289098; x=1690893898;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DVe5kbgnFh2Y4eGHfjCzHKbLu04TQkYMB7dsKJm3Umo=;
+        b=GpcyljcjU7Qr5dRNNYfizZwrwBd4cnjkvyHTuvC/QsN3XiYBpHJim9y0Fwhwc12FfD
+         aXUdwC4S44xNeyqhfcrwKMKZn14++9A7dS881Sg+Nm6Rp55TRzJuABW3jgcxoetQ82KS
+         rdPHpg0b0w+Cu7zrIR6V80QMY49a17Up7GMpMri0hlbFbJ/e85dQN/8v9LUhnjzptMP2
+         I1rLEsN8NAbBHL6D2Z4ZsHzrPphtmuQjq1BmY4zHbzxWwUm57J72SMevDz7P6ChP9tkh
+         1bWV1k8SOuFyF7PNNO2I0iyrpY/3VczpraJ9h6dwsNUtCnP2hQGAMKzOgSjG1qKB+O+3
+         SQ1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690289098; x=1690893898;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DVe5kbgnFh2Y4eGHfjCzHKbLu04TQkYMB7dsKJm3Umo=;
+        b=M9c5BKxEXP5h+nPypwEhogbesW0fLp+uTRb3Rb4u39HdZSgZgDH1stlBJi8TO2hXG0
+         N+54A5Agn3OI5+g3Cp1sWEREGAu9GrwfaZWBG72ojMFWEgcR3kA1GzREwcyn1E9mCK04
+         cYqUcgx/WnVaz/iS/5zSqwSA54jClS6ksprDcizroOr5D/OfpE3Fv9BxQzjtChLDnJpd
+         z6jJvy2ofIDVPk2+H3/zA/YKr2S0H8/hnHj29WvnI8b7s+2Y3TAFmxjbpElUotDs9CtR
+         qiaGhIYJP4azonCj7VHnA9TwG/cwhI/Qpogux2ZhSujTIhpbZkTW8JtEgx+yBlPpTIAV
+         MrtA==
+X-Gm-Message-State: ABy/qLZQhPNoytuXBzqnu4jzvvS9R5k2DjJRgCiGz1mkNdFqmRtvsa1O
+        gaETQXhL7424tZlDT6b2WSpslA==
+X-Google-Smtp-Source: APBJJlGRSB+oOdzfbHk1XswFZQ6sXyZlhMpraB1keFiipvJqv7JZBaK38TlZAFpu/NEWGgF+T3sqfA==
+X-Received: by 2002:a17:906:5dd8:b0:99b:4d3d:c9b7 with SMTP id p24-20020a1709065dd800b0099b4d3dc9b7mr2464164ejv.31.1690289098120;
+        Tue, 25 Jul 2023 05:44:58 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id qp7-20020a170907206700b00992b66e54e9sm8134209ejb.214.2023.07.25.05.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 05:44:57 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 14:44:56 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>, maz@kernel.org,
+        oliver.upton@linux.dev, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Subject: Re: [PATCH v6 06/13] KVM: arm64: selftests: Split get-reg-list test
+ code
+Message-ID: <20230725-f5cf47c63abd8673d22b4936@orel>
+References: <cover.1690273969.git.haibo1.xu@intel.com>
+ <1f25f27d1316bc91e1e31cd3d50a1d20f696759a.1690273969.git.haibo1.xu@intel.com>
+ <CAJve8okJ-HYpsOrqH4Zvn7OBtwXWa4JumC+ZsMfHKB-deVYd2A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1835ec88216c9be58f9bce518575f6348158b231.camel@physik.fu-berlin.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8okJ-HYpsOrqH4Zvn7OBtwXWa4JumC+ZsMfHKB-deVYd2A@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,42 +96,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 01:38:25PM +0200, John Paul Adrian Glaubitz wrote:
-> On Tue, 2023-07-25 at 14:09 +0300, Laurent Pinchart wrote:
-> > On Tue, Jul 25, 2023 at 07:50:56AM +0200, John Paul Adrian Glaubitz wrote:
-> > > On Mon, 2023-07-24 at 20:43 +0300, Laurent Pinchart wrote:
-> > > > > arch/sh is being maintained again, so it's save to keep these boards. At some point, we're
-> > > > > going to convert the architecture to using Device Trees which should reduce the maintenance
-> > > > > burden anyways.
-> > > > 
-> > > > Keeping the architecture is fine for newer systems, but is anyone really
-> > > > maintaining the Renesas SH board ?
-> > > 
-> > > I own Renesas evaluation boards, including SH7785LCR-based and
-> > > SH7724-based boards.
-> > 
-> > Will you have time to port them to DT, or would you rather focus on
-> > J-core systems ? Do those boards still boot a mainline kernel ?
-> > 
-> > Dropping Renesas SH board files doesn't preclude anyone from moving them
-> > to DT, all the information will remain in the git history. Unless you
-> > plan to move to DT in a reasonably near future, I think dropping support
-> > for the CEU at least, if not the whole board files, could be a good
-> > option.
+On Tue, Jul 25, 2023 at 04:50:36PM +0800, Haibo Xu wrote:
+> On Tue, Jul 25, 2023 at 4:37 PM Haibo Xu <haibo1.xu@intel.com> wrote:
+> >
+> > From: Andrew Jones <ajones@ventanamicro.com>
+> >
+> > Split the arch-neutral test code out of aarch64/get-reg-list.c into
+> > get-reg-list.c. To do this we invent a new make variable
+> > $(SPLIT_TESTS) which expects common parts to be in the KVM selftests
+> > root and the counterparts to have the same name, but be in
+> > $(ARCH_DIR).
+> >
+> > There's still some work to be done to de-aarch64 the common
+> > get-reg-list.c, but we leave that to the next patch to avoid
+> > modifying too much code while moving it.
+> >
+> > Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > ---
+> >  tools/testing/selftests/kvm/Makefile          |  12 +-
+> >  .../selftests/kvm/aarch64/get-reg-list.c      | 367 +----------------
+> >  tools/testing/selftests/kvm/get-reg-list.c    | 377 ++++++++++++++++++
+> >  3 files changed, 398 insertions(+), 358 deletions(-)
+> >  create mode 100644 tools/testing/selftests/kvm/get-reg-list.c
+> >
+> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > index c692cc86e7da..95f180e711d5 100644
+> > --- a/tools/testing/selftests/kvm/Makefile
+> > +++ b/tools/testing/selftests/kvm/Makefile
+> > @@ -140,7 +140,6 @@ TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
+> >  TEST_GEN_PROGS_aarch64 += aarch64/aarch32_id_regs
+> >  TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
+> >  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
+> > -TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list
+> >  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
+> >  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
+> >  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
+> > @@ -152,6 +151,7 @@ TEST_GEN_PROGS_aarch64 += access_tracking_perf_test
+> >  TEST_GEN_PROGS_aarch64 += demand_paging_test
+> >  TEST_GEN_PROGS_aarch64 += dirty_log_test
+> >  TEST_GEN_PROGS_aarch64 += dirty_log_perf_test
+> > +TEST_GEN_PROGS_aarch64 += get-reg-list
+> >  TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+> >  TEST_GEN_PROGS_aarch64 += kvm_page_table_test
+> >  TEST_GEN_PROGS_aarch64 += memslot_modification_stress_test
+> > @@ -181,6 +181,8 @@ TEST_GEN_PROGS_riscv += kvm_page_table_test
+> >  TEST_GEN_PROGS_riscv += set_memory_region_test
+> >  TEST_GEN_PROGS_riscv += kvm_binary_stats_test
+> >
+> > +SPLIT_TESTS += get-reg-list
+> > +
+> >  TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
+> >  TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
+> >  TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
+> > @@ -228,11 +230,14 @@ LIBKVM_C_OBJ := $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_C))
+> >  LIBKVM_S_OBJ := $(patsubst %.S, $(OUTPUT)/%.o, $(LIBKVM_S))
+> >  LIBKVM_STRING_OBJ := $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_STRING))
+> >  LIBKVM_OBJS = $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ) $(LIBKVM_STRING_OBJ)
+> > +SPLIT_TESTS_TARGETS := $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
+> > +SPLIT_TESTS_OBJS := $(patsubst %, $(ARCH_DIR)/%.o, $(SPLIT_TESTS))
+> >
+> >  TEST_GEN_OBJ = $(patsubst %, %.o, $(TEST_GEN_PROGS))
+> >  TEST_GEN_OBJ += $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
+> >  TEST_DEP_FILES = $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
+> >  TEST_DEP_FILES += $(patsubst %.o, %.d, $(LIBKVM_OBJS))
+> > +TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
+> >  -include $(TEST_DEP_FILES)
+> >
+> >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> > @@ -240,7 +245,10 @@ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+> >         $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+> >
+> > -EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) cscope.*
+> > +$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
+> > +       $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
+> > +
+> > +EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLIT_TESTS_OBJS) cscope.*
+> >
+> >  x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
+> >  $(LIBKVM_C_OBJ): $(OUTPUT)/%.o: %.c
 > 
-> I'm not sure why you are trying to convince me to kill off support for SuperH
-> boards. I have just stepped up maintenance of arch/sh to keep SuperH hardware
-> supported in the kernel because I have been a maintainer of Debian's SuperH
-> port for several years now.
+> Hi @Andrew Jones,
+> 
+> After rebasing to v6.5-rc3, some changes are needed to the SPLIT_TESTS
+> target, or the make would fail.
+> Please help have a look.
+>
 
-If you're willing to maintain the SuperH support, that's nice :-) I'm
-not concerned about the arch side, but I'd like to drop the non-DT
-support in corresponding drivers in DRM and V4L2.
+I took a look and then remembered why I hate looking at Makefiles... I
+guess it's fine, but it's a pity we need to repeat the $(CC) line.
 
-> There is also a small community of SuperH enthusiasts now hacking on the kernel
-> which is coming together for discussion in #linux-sh on libera IRC.
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+drew
