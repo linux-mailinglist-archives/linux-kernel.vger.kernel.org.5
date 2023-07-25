@@ -2,228 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED1B760FD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E53760FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbjGYJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
+        id S233462AbjGYJ4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbjGYJ4d (ORCPT
+        with ESMTP id S231776AbjGYJ4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:56:33 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45BBDE56;
-        Tue, 25 Jul 2023 02:56:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E139C15BF;
-        Tue, 25 Jul 2023 02:57:13 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C98763F67D;
-        Tue, 25 Jul 2023 02:56:28 -0700 (PDT)
-Message-ID: <71064fb4-3745-c877-bf81-7542d815c289@arm.com>
-Date:   Tue, 25 Jul 2023 10:56:27 +0100
+        Tue, 25 Jul 2023 05:56:48 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F95199E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2680edb9767so399438a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690279003; x=1690883803;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
+        b=kzP9jxhdW7EUIP2JpY6nQ4V3KB8KzHZHwXd+bJOEeLU9gCN3lvtKTIOyV+D6pg6POw
+         Q2+Agk0fHs6Wf0nJIf8rf8T9VZNFr/hsapg2zga11FSk7AOs0JkWfaLjemq0FDeG0Uw5
+         HhEk2mitTuKDolaaQqjf+O9IL+c+U5F1pPsQI+4eucs75jhsRhGM9fqq3uQDPTEvroq0
+         /U4/CVAvtL3Xk0W286vaVtW9MXQ1p85A5kNQw+kxMFfLtXWo8Tn1go6QyxS1jqmnrw9a
+         uFzHc2WhcIqVkW0xdKzdkJ+42hQ6tNSe2IXCsgIEyfURXIjl60ODrk022w8+JVfo8hQI
+         ne/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690279003; x=1690883803;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
+        b=QUbLNAd1NFMX9MHwke1V+3zzCMz3FvLWrak5o2+x5QKjhT43GjK961gGhmIu3cWqvv
+         jzYtH8MRxWoGyiI0xf4gjHnvjfYUyJ6TeQ7yvTinbw9o6YfB53r/Y9evMoDjMvQgbD8T
+         A86huYilrpfrFu85UoTrB3thJCL7ZOwdHIRfklFJvdR8br2cw+dTWkXiTLAm/bucOK/t
+         3YBQKxC91A/Skq7moWJ/pBaFMus8GPmcDGk5pCi3SG5WAhjpRdOqp0SczVva0clISuHR
+         DcCw4RNLvIt4T5J2G40L5Tq53We/Rfj4p5lwrKN37XBrscUtp7J6aM5PbcQqClR6uWAn
+         RXLw==
+X-Gm-Message-State: ABy/qLYogwak090Wfm2NoZTTYBXmlUchT8Ix0alwFzxFaIAtJntc3tZ7
+        xmJeUB2chrEEP3aBoNFycjWpWQ==
+X-Google-Smtp-Source: APBJJlE4g3zxacKAsn4H4YysRKAp71VN9gqUpsqodFXfAXxBRsoAel6FjePiWo+WkUy1agkNvA6LJQ==
+X-Received: by 2002:a17:90a:74cf:b0:268:196f:9656 with SMTP id p15-20020a17090a74cf00b00268196f9656mr4627258pjl.1.1690279003192;
+        Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001b39ffff838sm10605398plx.25.2023.07.25.02.56.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 02:56:42 -0700 (PDT)
+Message-ID: <c1a1952f-0c3e-2fa1-fdf9-8b3b8a592b23@bytedance.com>
+Date:   Tue, 25 Jul 2023 17:56:29 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v3] perf/core: Bail out early if the request AUX area is
- out of bound
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
+ allocating shrinker
 Content-Language: en-US
-To:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        leo.yan@linaro.org
-Cc:     mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
-        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
- <75ddf1ce-64a2-f3a4-8a51-92e7bbb3899d@arm.com>
- <78dbe98e-8702-e332-59ff-3850cff2895b@linux.alibaba.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <78dbe98e-8702-e332-59ff-3850cff2895b@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-4-zhengqi.arch@bytedance.com>
+ <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Muchun,
 
+On 2023/7/25 17:02, Muchun Song wrote:
+> 
+> 
+> On 2023/7/24 17:43, Qi Zheng wrote:
+>> Currently, the shrinker instances can be divided into the following three
+>> types:
+>>
+>> a) global shrinker instance statically defined in the kernel, such as
+>>     workingset_shadow_shrinker.
+>>
+>> b) global shrinker instance statically defined in the kernel modules, 
+>> such
+>>     as mmu_shrinker in x86.
+>>
+>> c) shrinker instance embedded in other structures.
+>>
+>> For case a, the memory of shrinker instance is never freed. For case b,
+>> the memory of shrinker instance will be freed after synchronize_rcu() 
+>> when
+>> the module is unloaded. For case c, the memory of shrinker instance will
+>> be freed along with the structure it is embedded in.
+>>
+>> In preparation for implementing lockless slab shrink, we need to
+>> dynamically allocate those shrinker instances in case c, then the memory
+>> can be dynamically freed alone by calling kfree_rcu().
+>>
+>> So this commit adds the following new APIs for dynamically allocating
+>> shrinker, and add a private_data field to struct shrinker to record and
+>> get the original embedded structure.
+>>
+>> 1. shrinker_alloc()
+>>
+>> Used to allocate shrinker instance itself and related memory, it will
+>> return a pointer to the shrinker instance on success and NULL on failure.
+>>
+>> 2. shrinker_free_non_registered()
+>>
+>> Used to destroy the non-registered shrinker instance.
+> 
+> At least I don't like this name. I know you want to tell others
+> this function only should be called when shrinker has not been
+> registed but allocated. Maybe shrinker_free() is more simple.
+> And and a comment to tell the users when to use it.
 
-On 25/07/2023 08:31, Shuai Xue wrote:
-> 
-> 
-> On 2023/7/24 23:21, James Clark wrote:
->>
->>
->> On 11/07/2023 02:41, Shuai Xue wrote:
->>> When perf-record with a large AUX area, e.g 4GB, it fails with:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 12 (Cannot allocate memory)
->>>
->>> and it reveals a WARNING with __alloc_pages():
->>>
->>> [   66.595604] ------------[ cut here ]------------
->>> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
->>> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
->>> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
->>> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
->>> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
->>> [   66.681597] pc : __alloc_pages+0x1ec/0x248
->>> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
->>> [   66.690285] sp : ffff800020523980
->>> [   66.693585] pmr_save: 000000e0
->>> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
->>> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
->>> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
->>> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
->>> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
->>> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
->>> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
->>> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
->>> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
->>> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
->>> [   66.767834] Call trace:
->>> [   66.770267]  __alloc_pages+0x1ec/0x248
->>> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
->>> [   66.778259]  __kmalloc_node+0x134/0x1e8
->>> [   66.782081]  rb_alloc_aux+0xe0/0x298
->>> [   66.785643]  perf_mmap+0x440/0x660
->>> [   66.789031]  mmap_region+0x308/0x8a8
->>> [   66.792593]  do_mmap+0x3c0/0x528
->>> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
->>> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
->>> [   66.803365]  __arm64_sys_mmap+0x38/0x58
->>> [   66.807187]  invoke_syscall+0x50/0x128
->>> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
->>> [   66.815698]  do_el0_svc+0x34/0x50
->>> [   66.818999]  el0_svc+0x34/0x108
->>> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
->>> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
->>> [   66.829946] ---[ end trace 0000000000000000 ]---
->>>
->>> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
->>> maintain AUX trace pages. The allocated page for this array is physically
->>> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
->>> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
->>> WARNING.
->>>
->>> So bail out early with -EINVAL if the request AUX area is out of bound,
->>> e.g.:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 22 (Invalid argument)
->>>
->>
->> Hi Shuai,
-> 
-> Hi, James,
-> 
->>
->> Now that I think about this, isn't the previous error "failed to mmap
->> with 12 (Cannot allocate memory)" better than "failed to mmap with 22
->> (Invalid argument)"?
-> 
-> If I see a "invalid argument", I am expected to check my perf command
-> first. But for "Cannot allocate memory", I will doubt that the system
-> have problem but I dont have any idea about.
-> 
-> IMO, I prefer "invalid argument". But I can change back to previous error
-> message if you insist.
-> 
-> 
+OK, if no one else objects, I will change it to shrinker_free() in
+the next version.
 
-Maybe, but if a tool is currently doing something like an increasing
-loop to check for the max possible aux buffer size and checking for "12
-(Cannot allocate memory)" then you could consider this change a
-userspace breaking one.
+> 
+>>
+>> 3. shrinker_register()
+>>
+>> Used to register the shrinker instance, which is same as the current
+>> register_shrinker_prepared().
+>>
+>> 4. shrinker_unregister()
+>>
+>> Used to unregister and free the shrinker instance.
+>>
+>> In order to simplify shrinker-related APIs and make shrinker more
+>> independent of other kernel mechanisms, subsequent submissions will use
+>> the above API to convert all shrinkers (including case a and b) to
+>> dynamically allocated, and then remove all existing APIs.
+>>
+>> This will also have another advantage mentioned by Dave Chinner:
+>>
+>> ```
+>> The other advantage of this is that it will break all the existing
+>> out of tree code and third party modules using the old API and will
+>> no longer work with a kernel using lockless slab shrinkers. They
+>> need to break (both at the source and binary levels) to stop bad
+>> things from happening due to using uncoverted shrinkers in the new
+>> setup.
+>> ```
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/shrinker.h |   6 +++
+>>   mm/shrinker.c            | 113 +++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 119 insertions(+)
+>>
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index 961cb84e51f5..296f5e163861 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -70,6 +70,8 @@ struct shrinker {
+>>       int seeks;    /* seeks to recreate an obj */
+>>       unsigned flags;
+>> +    void *private_data;
+>> +
+>>       /* These are for internal use */
+>>       struct list_head list;
+>>   #ifdef CONFIG_MEMCG
+>> @@ -98,6 +100,10 @@ struct shrinker {
+>>   unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup 
+>> *memcg,
+>>                 int priority);
+>> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
+>> ...);
+>> +void shrinker_free_non_registered(struct shrinker *shrinker);
+>> +void shrinker_register(struct shrinker *shrinker);
+>> +void shrinker_unregister(struct shrinker *shrinker);
+>>   extern int __printf(2, 3) prealloc_shrinker(struct shrinker *shrinker,
+>>                           const char *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index 0a32ef42f2a7..d820e4cc5806 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -548,6 +548,119 @@ unsigned long shrink_slab(gfp_t gfp_mask, int 
+>> nid, struct mem_cgroup *memcg,
+>>       return freed;
+>>   }
+>> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
+>> ...)
+>> +{
+>> +    struct shrinker *shrinker;
+>> +    unsigned int size;
+>> +    va_list __maybe_unused ap;
+>> +    int err;
+>> +
+>> +    shrinker = kzalloc(sizeof(struct shrinker), GFP_KERNEL);
+>> +    if (!shrinker)
+>> +        return NULL;
+>> +
+>> +#ifdef CONFIG_SHRINKER_DEBUG
+>> +    va_start(ap, fmt);
+>> +    shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
+>> +    va_end(ap);
+>> +    if (!shrinker->name)
+>> +        goto err_name;
+>> +#endif
+> 
+> So why not introduce another helper to handle this and declare it
+> as a void function when !CONFIG_SHRINKER_DEBUG? Something like the
+> following:
+> 
+> #ifdef CONFIG_SHRINKER_DEBUG
+> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
+> char *fmt,
+>                                         va_list vargs)
+> 
+> {
+>      shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, vargs);
+>      return shrinker->name ? 0 : -ENOMEM;
+> }
+> #else
+> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
+> char *fmt,
+>                                         va_list vargs)
+> {
+>      return 0;
+> }
+> #endif
 
-The script would probably just be checking for any error, but you never
-know.
+Will do in the next version.
 
-I agree the error codes are quite non specific and don't really help
-with showing the cause of the problem. But I can't see how the memory
-one isn't more specific to the aux buffer size in this case.
+> 
+>> +    shrinker->flags = flags;
+>> +
+>> +    if (flags & SHRINKER_MEMCG_AWARE) {
+>> +        err = prealloc_memcg_shrinker(shrinker);
+>> +        if (err == -ENOSYS)
+>> +            shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
+>> +        else if (err == 0)
+>> +            goto done;
+>> +        else
+>> +            goto err_flags;
+>> +    }
+>> +
+>> +    /*
+>> +     * The nr_deferred is available on per memcg level for memcg aware
+>> +     * shrinkers, so only allocate nr_deferred in the following cases:
+>> +     *  - non memcg aware shrinkers
+>> +     *  - !CONFIG_MEMCG
+>> +     *  - memcg is disabled by kernel command line
+>> +     */
+>> +    size = sizeof(*shrinker->nr_deferred);
+>> +    if (flags & SHRINKER_NUMA_AWARE)
+>> +        size *= nr_node_ids;
+>> +
+>> +    shrinker->nr_deferred = kzalloc(size, GFP_KERNEL);
+>> +    if (!shrinker->nr_deferred)
+>> +        goto err_flags;
+>> +
+>> +done:
+>> +    return shrinker;
+>> +
+>> +err_flags:
+>> +#ifdef CONFIG_SHRINKER_DEBUG
+>> +    kfree_const(shrinker->name);
+>> +    shrinker->name = NULL;
+> 
+> This could be shrinker_debugfs_name_free()
 
-I searched for other errors returned after checking get_order() and I
-found both -EINVAL and -ENOMEM, so if there is no consensus maybe it's
-best to stick to the existing return value.
+Will do.
 
-James
+> 
+>> +err_name:
+>> +#endif
+>> +    kfree(shrinker);
+>> +    return NULL;
+>> +}
+>> +EXPORT_SYMBOL(shrinker_alloc);
+>> +
+>> +void shrinker_free_non_registered(struct shrinker *shrinker)
+>> +{
+>> +#ifdef CONFIG_SHRINKER_DEBUG
+>> +    kfree_const(shrinker->name);
+>> +    shrinker->name = NULL;
+> 
+> This could be shrinker_debugfs_name_free()
+> 
+>> +#endif
+>> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+>> +        down_write(&shrinker_rwsem);
+>> +        unregister_memcg_shrinker(shrinker);
+>> +        up_write(&shrinker_rwsem);
+>> +    }
+>> +
+>> +    kfree(shrinker->nr_deferred);
+>> +    shrinker->nr_deferred = NULL;
+>> +
+>> +    kfree(shrinker);
+>> +}
+>> +EXPORT_SYMBOL(shrinker_free_non_registered);
+>> +
+>> +void shrinker_register(struct shrinker *shrinker)
+>> +{
+>> +    down_write(&shrinker_rwsem);
+>> +    list_add_tail(&shrinker->list, &shrinker_list);
+>> +    shrinker->flags |= SHRINKER_REGISTERED;
+>> +    shrinker_debugfs_add(shrinker);
+>> +    up_write(&shrinker_rwsem);
+>> +}
+>> +EXPORT_SYMBOL(shrinker_register);
+>> +
+>> +void shrinker_unregister(struct shrinker *shrinker)
+> 
+> You have made all shrinkers to be dynamically allocated, so
+> we should prevent users from allocating shrinkers statically and
+> use this function to unregister it. It is better to add a
+> flag like SHRINKER_ALLOCATED which is set in shrinker_alloc(),
+> and check whether it is set in shrinker_unregister(), if not
+> maybe a warning should be added to tell the users what happened.
 
->> And you might want to split the doc change out if they are going to be
->> merged through separate trees.
+Make sense, will do.
+
 > 
-> Will do that.
+>> +{
+>> +    struct dentry *debugfs_entry;
+>> +    int debugfs_id;
+>> +
+>> +    if (!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))
+>> +        return;
+>> +
+>> +    down_write(&shrinker_rwsem);
+>> +    list_del(&shrinker->list);
+>> +    shrinker->flags &= ~SHRINKER_REGISTERED;
+>> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>> +        unregister_memcg_shrinker(shrinker);
+>> +    debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
 > 
->>
->> And one comment below:
->>
->>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>> ---
->>> changes since v2:
->>> - remove unnecessary overflow check (per Peter)
->>>
->>> changes since v1:
->>> - drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
->>> - move sanity check into rb_alloc_aux (per Leo)
->>> - add overflow check (per James)
->>> ---
->>>  kernel/events/ring_buffer.c              | 3 +++
->>>  tools/perf/Documentation/perf-record.txt | 3 ++-
->>>  2 files changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
->>> index a0433f37b024..5933ce45c68a 100644
->>> --- a/kernel/events/ring_buffer.c
->>> +++ b/kernel/events/ring_buffer.c
->>> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>>  		watermark = 0;
->>>  	}
->>>  
->>> +	/* Can't allocate more than MAX_ORDER */
->>> +	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
->>> +		return -EINVAL;
->>>  	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
->>>  				     node);
->>>  	if (!rb->aux_pages)
->>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
->>> index 680396c56bd1..5d8d3ad084ed 100644
->>> --- a/tools/perf/Documentation/perf-record.txt
->>> +++ b/tools/perf/Documentation/perf-record.txt
->>> @@ -290,7 +290,8 @@ OPTIONS
->>>  	specification with appended unit character - B/K/M/G. The
->>>  	size is rounded up to have nearest pages power of two value.
->>>  	Also, by adding a comma, the number of mmap pages for AUX
->>> -	area tracing can be specified.
->>> +	area tracing can be specified. With MAX_ORDER set as 10 on
->>> +	arm64 platform , the maximum AUX area is limited to 2GiB.
->>
->> Minor nit: I wouldn't expect a Perf tool user to know what "MAX_ORDER"
->> is, and I don't think the limitation is Arm specific? Maybe something in
->> more relevant terms is more useful:
->>
->>   The maximum AUX area is limited by the page size of the system. For
->>   example with 4K pages configured, the maximum is 2GiB.
+> In the internal of this function, you also could use
+> shrinker_debugfs_name_free().
+
+Yeah, will do.
+
+Thanks,
+Qi
+
 > 
-> Agreed. Will change it.
+> Thanks.
 > 
+>> +    up_write(&shrinker_rwsem);
+>> +
+>> +    shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+>> +
+>> +    kfree(shrinker->nr_deferred);
+>> +    shrinker->nr_deferred = NULL;
+>> +
+>> +    kfree(shrinker);
+>> +}
+>> +EXPORT_SYMBOL(shrinker_unregister);
+>> +
+>>   /*
+>>    * Add a shrinker callback to be called from the vm.
+>>    */
 > 
->>
->> Thanks
->> James
-> 
-> Thank you for valuable comments.
-> 
-> Best Regards,
-> Shuai
->>
->>>  
->>>  -g::
->>>  	Enables call-graph (stack chain/backtrace) recording for both
