@@ -2,156 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78656761D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DF2761D76
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbjGYPgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S230208AbjGYPhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjGYPgN (ORCPT
+        with ESMTP id S229824AbjGYPhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:36:13 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D151BF8
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:36:12 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58419550c3aso19125577b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690299371; x=1690904171;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zJL188spEdf8jlBHFLQkEZlti0TXRFH+U5cu91h9YR8=;
-        b=SQwtCbchLJBC6JVt0au7UKzD6DauTBO7Ht/6fLayaAtmMn1ddu11cTpSkwaJcaV44a
-         NWDLUE0AHkMJ4OT/Wo7KKa/YKEmgrg0sjWJQN5tC7BKxnoeKzmpoqnaHQej2Uu5AZKaU
-         MvfCkMQ/9S4mtrQujLRuCkTF6VGlYXZv0SHwd9+lehD/ByMW+ku5ouyZWo63QG79Jti3
-         dL/iU2UqJCVbtC1Tx31JmqLDfUvOX+276nwpWwK0qsvBNUuQKVklM8KpdqkZ/6XnBUk1
-         1RvPq2UqE4epZmu8AYwV6Qsx5xkIVtSB41MiB+RgQ3vXNb1HvKO7/DjgvM5UJNPUqDWt
-         qGtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690299371; x=1690904171;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zJL188spEdf8jlBHFLQkEZlti0TXRFH+U5cu91h9YR8=;
-        b=O5DDkxRmG3EROENdX2ZPXT2kUQ8xJvVxJGUYc4gcXoL6UJWtZq78BXWfo0Zl4HVjWo
-         nNmeE2R8vYmORToSMK4J/8OpEdLgldn3ud4o2EKG5rZ5ABYqqb8oTZTRYQiEvEXBr7lK
-         0SbOb7SmoPcpA5a/NqiGYGYYgAR1RS0HgUb2i3bMNZABdK+25x7sRrQJObtlN4RKnDla
-         XwXSHdSucoht+KjZJBWELpTpNzpCIEoF55JmcgvNsROoaIpGKfzLlcLIUctxllgKsfqU
-         vhALW1YaYh8vNrCgCyaaL8QvUXOGUPwR9IaE++m16zhhd6OEWMvJkZkiv+PgqQNkyD5+
-         yZYA==
-X-Gm-Message-State: ABy/qLYbpWYVpCasHHC08lJi7GC5trB6dm8ULe16fThkwahvtpKljt+Z
-        c3HTNjtfFEzfPQwfYTLDPucY1N4CRqk=
-X-Google-Smtp-Source: APBJJlFhPr4toDReLY5Gy5S9qrHXSfoNM086H5vUdRAYxVSKWKJsBx2ZDiNmzQUckTY/qbAOmAb98eQVxVA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:af21:0:b0:56c:e585:8b17 with SMTP id
- n33-20020a81af21000000b0056ce5858b17mr89738ywh.5.1690299371207; Tue, 25 Jul
- 2023 08:36:11 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 08:36:09 -0700
-In-Reply-To: <9e8a98ad-1f8d-a09c-3173-71c5c3ab5ed4@intel.com>
-Mime-Version: 1.0
-References: <cover.1689893403.git.isaku.yamahata@intel.com>
- <8c0b7babbdd777a33acd4f6b0f831ae838037806.1689893403.git.isaku.yamahata@intel.com>
- <ZLqbWFnm7jyB8JuY@google.com> <9e8a98ad-1f8d-a09c-3173-71c5c3ab5ed4@intel.com>
-Message-ID: <ZL/r6Vca8WkFVaic@google.com>
-Subject: Re: [RFC PATCH v4 09/10] KVM: x86: Make struct sev_cmd common for KVM_MEM_ENC_OP
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 11:37:01 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99AF2BB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:36:59 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 36PFajrR006568;
+        Tue, 25 Jul 2023 17:36:45 +0200
+Date:   Tue, 25 Jul 2023 17:36:45 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Hugo Villeneuve <hugo@hugovil.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] auxdisplay: hd44780: move cursor home after clear
+ display command
+Message-ID: <ZL/sDSDYXWFDGbcX@1wt.eu>
+References: <20230722180925.1408885-1-hugo@hugovil.com>
+ <CAMuHMdVTDrTowx2-MgYaaNASKLZw=ra5z7pL5WtemDgZ3HS5sQ@mail.gmail.com>
+ <20230725111354.160f32cfba0b53923ac2aae6@hugovil.com>
+ <CAMuHMdXe7MWpOjeUXjSsdOx0LXmzYCbvDCtt5yEup+1iGe4O=w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXe7MWpOjeUXjSsdOx0LXmzYCbvDCtt5yEup+1iGe4O=w@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023, Xiaoyao Li wrote:
-> On 7/21/2023 10:51 PM, Sean Christopherson wrote:
-> > On Thu, Jul 20, 2023, isaku.yamahata@intel.com wrote:
-> > > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> > > index aa7a56a47564..32883e520b00 100644
-> > > --- a/arch/x86/include/uapi/asm/kvm.h
-> > > +++ b/arch/x86/include/uapi/asm/kvm.h
-> > > @@ -562,6 +562,39 @@ struct kvm_pmu_event_filter {
-> > >   /* x86-specific KVM_EXIT_HYPERCALL flags. */
-> > >   #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
-> > > +struct kvm_mem_enc_cmd {
-> > > +	/* sub-command id of KVM_MEM_ENC_OP. */
-> > > +	__u32 id;
-> > > +	/*
-> > > +	 * Auxiliary flags for sub-command.  If sub-command doesn't use it,
-> > > +	 * set zero.
-> > > +	 */
-> > > +	__u32 flags;
-> > > +	/*
-> > > +	 * Data for sub-command.  An immediate or a pointer to the actual
-> > > +	 * data in process virtual address.  If sub-command doesn't use it,
-> > > +	 * set zero.
-> > > +	 */
-> > > +	__u64 data;
-> > > +	/*
-> > > +	 * Supplemental error code in the case of error.
-> > > +	 * SEV error code from the PSP or TDX SEAMCALL status code.
-> > > +	 * The caller should set zero.
-> > > +	 */
-> > > +	union {
-> > > +		struct {
-> > > +			__u32 error;
-> > > +			/*
-> > > +			 * KVM_SEV_LAUNCH_START and KVM_SEV_RECEIVE_START
-> > > +			 * require extra data. Not included in struct
-> > > +			 * kvm_sev_launch_start or struct kvm_sev_receive_start.
-> > > +			 */
-> > > +			__u32 sev_fd;
-> > > +		};
-> > > +		__u64 error64;
-> > > +	};
-> > > +};
-> > 
-> > Eww.  Why not just use an entirely different struct for TDX?  I don't see what
-> > benefit this provides other than a warm fuzzy feeling that TDX and SEV share a
-> > struct.  Practically speaking, KVM will likely take on more work to forcefully
-> > smush the two together than if they're separate things.
+Hi Geert,
+
+On Tue, Jul 25, 2023 at 05:21:36PM +0200, Geert Uytterhoeven wrote:
+> Hi Hugo,
 > 
-> generalizing the struct of KVM_MEM_ENC_OP should be the first step.
+> On Tue, Jul 25, 2023 at 5:13 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > On Mon, 24 Jul 2023 18:08:00 +0200
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Sat, Jul 22, 2023 at 8:18 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > >
+> > > > The DISPLAY_CLEAR command on the NewHaven NHD-0220DZW-AG5 display
+> > > > does NOT change the DDRAM address to 00h (home position) like the
+> > > > standard Hitachi HD44780 controller. As a consequence, the starting
+> > > > position of the initial string LCD_INIT_TEXT is not guaranteed to be
+> > > > at 0,0 depending on where the cursor was before the DISPLAY_CLEAR
+> > > > command.
+> > > >
+> > > > Extract of DISPLAY_CLEAR command from datasheets of:
+> > > >
+> > > >     Hitachi HD44780:
+> > > >         ... It then sets DDRAM address 0 into the address counter...
+> > > >
+> > > >     NewHaven NHD-0220DZW-AG5 datasheet:
+> > > >         ... This instruction does not change the DDRAM Address
+> > > >
+> > > > Move the cursor home after sending DISPLAY_CLEAR command to support
+> > > > non-standard LCDs.
+> > > >
+> > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > >
+> > > Thanks for your patch!
+> > >
+> > > > --- a/drivers/auxdisplay/hd44780_common.c
+> > > > +++ b/drivers/auxdisplay/hd44780_common.c
+> > > > @@ -82,7 +82,15 @@ int hd44780_common_clear_display(struct charlcd *lcd)
+> > > >         hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
+> > > >         /* datasheet says to wait 1,64 milliseconds */
+> > > >         long_sleep(2);
+> > > > -       return 0;
+> > > > +
+> > > > +       /*
+> > > > +        * The Hitachi HD44780 controller (and compatible ones) reset the DDRAM
+> > > > +        * address when executing the DISPLAY_CLEAR command, thus the
+> > > > +        * following call is not required. However, other controllers do not
+> > > > +        * (e.g. NewHaven NHD-0220DZW-AG5), thus move the cursor to home
+> > > > +        * unconditionally to support both.
+> > > > +        */
+> > > > +       return hd44780_common_home(lcd);
+> > >
+> > > Sorry, I haven't tested your patch yet, as my HD44780 display is
+> > > currently not connected to any system.
+> > >
+> > > Your patch LGTM, so
+> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > >
+> > > Note that hd44780_common_home() calls hd44780_common_gotoxy().
+> > > According to the documentation, both HD44780U and NHD-0220DZW-AG5
+> > > support the Return Home command (0x02), so that could be a good
+> > > alternative.
+> >
+> > Hi Geert,
+> > If this is desired, I think maybe it would be best to do it in a
+> > separate patch. Maybe there is a good reason why hd44780_common_home()
+> 
+> Sure, a separate patch would be fine.
+> 
+> > calls hd44780_common_gotoxy() instead of using Return Home command?
+> 
+> Looks like the Linux driver has always used goto 0/0 instead of Return Home.
+> Perhaps not all displays support that command? I know mine does.
+> 
+> Willy: do you remember?
 
-It's not just the one structure though.  The "data" field is a pointer to yet
-another layer of commands, and SEV has a rather big pile of those.  Making
-kvm_mem_enc_cmd common is just putting lipstick on a pig since the vast majority
-of the structures associated with the ioctl() would still be vendor specific.
+Indeed, this vaguely reminds me something. I've been using an old 2x40
+salvaged from a fax in the late 80s, originally all reverse-engineered
+under DOS. When I implemented Linux support for it 10 years later, I
+ported my working code there and we started to adapt to other said
+compatible models and fixed certain things that were specific to my
+model or that were incorrect in my initial analysis. But I remember that
+we broke several times the support for mine while trying to match the
+available specs more closely.
 
-  struct kvm_sev_launch_start
-  struct kvm_sev_launch_update_data
-  struct kvm_sev_launch_secret
-  struct kvm_sev_launch_measure
-  struct kvm_sev_guest_status
-  struct kvm_sev_dbg
-  struct kvm_sev_attestation_report
-  struct kvm_sev_send_start
-  struct kvm_sev_send_update_data
-  struct kvm_sev_receive_start
-  struct kvm_sev_receive_update_data
+Several times we had something related to the initialization, where it
+wouldn't always initialize well. But maybe that's because we were calling
+what became hd44780_common_home() while during the init code it's possible
+that we need at least one call to gotoxy(), I don't really know.
 
-FWIW, I really dislike KVM's uAPI for KVM_MEM_ENC_OP.  The above structures are
-all basically copied verbatim from PSP firmware structures, i.e. the commands and
-their payloads are tightly coupled to "hardware" and essentially have no abstraction
-whatsoever.   But that ship has already sailed, and practically speaking trying to
-provide a layer of abstraction might not of worked very well anyways.
+One thing I'm having in mind is that this LCD supported horizontal
+scrolling to show the off-screen columns. I'm wondering if the gotoxy()
+and home() did the same thing regarding this. Maybe gotoxy() scrolled
+back to 0,0 while home() just moved the cursor to the visible home
+without scrolling back, in which case it could make a difference.
 
-In other words, unless there's an obvious and easy way path to convergence, I
-recommend you don't spend much time/effort on trying to share code with TDX.
+I would suggest that we just stick to the specs and see if anyone reports
+any trouble. There are so many compatible devices nowadays that possibly
+implement only a subset of the original controller that we should really
+stick to what is clearly understood by everyone and not rely on some old
+conclusions about vague observations made by me 25 years ago!
+
+Thanks,
+Willy
