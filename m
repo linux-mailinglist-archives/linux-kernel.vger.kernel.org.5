@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B1E760FA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D25760FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjGYJqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S232839AbjGYJsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbjGYJqe (ORCPT
+        with ESMTP id S232295AbjGYJso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:46:34 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724A711B;
-        Tue, 25 Jul 2023 02:46:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so3393289f8f.1;
-        Tue, 25 Jul 2023 02:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690278389; x=1690883189;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x1dn5lNZqmwY15rBpdBpJTcWOK1VivmrD2jmZ3IZxi4=;
-        b=Z51pyJ5/nycopIH5zIHEHDVQYAq2V7diulALk4BHl55COuR7x6J3JGUbbWKheci3xm
-         r/E9pwlUU3X/vKswxR1612lmt3jgGeAkK5G3sswsGwgGUMJoExBpw1iiunb4qPGV4vWn
-         L8RnuaU143TlsB1OPR9NN5V9HtbJxVHwiKOWB5i44PKcRKpD6v1PC6diyvYqiL7ca+TR
-         Zpr0I0PtBzXF/d2NnxjUBkIk1/0PFNiGZjKufaiWoBca0thMIkaE4qZyYY2/m1WD7pL/
-         lXdLZAjx6nf4QnTgNRz0gfeHhbMp/JaSAjCzIvQ46qXSJalSw54O7cCoKzTlinyTMB1Z
-         9RGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690278389; x=1690883189;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x1dn5lNZqmwY15rBpdBpJTcWOK1VivmrD2jmZ3IZxi4=;
-        b=NW3n+SIdNP9xThCogwNDqBcy9AeTZr5+n95xDntktA0aqbxePNwqyFf0+gmQC1Mr7u
-         zFSkEpllE8q9ATGha5wgoW08e8j+CC19thMmXzDXjq6zVCK2ZPJvCYfVoq7VdIl3C9jv
-         hSWzKgcU7A9VTjfelsVxwejc14jfBzAWEsVhECqfXBZ3iJgjLasHM+31OKYJqc1Dvjdf
-         yayK9uxX3GkKVwXJxQhscGFGJm6l13VcEfB0tSH/wbZ3Wtvl1vN1st+PC2Nk+VACuxHu
-         //LSfDx0Gn60cPxoDcnuZw5TNZOY0FFpMLdOEaooUuwy6jWpsWvMOTfy8lozq4siTrrw
-         TYRw==
-X-Gm-Message-State: ABy/qLaguNYFuCjDKGd4WhS8xe8GFYKwO/VB/WQApipeTvmm9FKG4IIx
-        3M0+srKdRQzOlvPntBudjF8TGnxCkpTAqw==
-X-Google-Smtp-Source: APBJJlEssHXAU9u+CHEEFVKJsaYPTIj+RSJJ0AdcGXaasOWgN4UXMrXvvemxECzYlMn5VGYiBrXiIQ==
-X-Received: by 2002:adf:f8c7:0:b0:311:360e:ea3a with SMTP id f7-20020adff8c7000000b00311360eea3amr1706865wrq.34.1690278388631;
-        Tue, 25 Jul 2023 02:46:28 -0700 (PDT)
-Received: from [192.168.1.107] (ccx116.neoplus.adsl.tpnet.pl. [83.30.147.116])
-        by smtp.gmail.com with ESMTPSA id q17-20020adff511000000b0031272fced4dsm15728148wro.52.2023.07.25.02.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 02:46:28 -0700 (PDT)
-Message-ID: <6008bc09-7746-546f-2c00-9b9812854ff7@gmail.com>
-Date:   Tue, 25 Jul 2023 11:46:26 +0200
+        Tue, 25 Jul 2023 05:48:44 -0400
+Received: from rs227.mailgun.us (rs227.mailgun.us [209.61.151.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627EF1A3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:48:42 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
+ s=mx; t=1690278521; x=1690285721; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Subject: Cc: To: To: From: From: Sender: Sender;
+ bh=a7euifVUehZsKlaZIpC9d5sGc1HeYiQSbpWf0EJ7QP8=;
+ b=aMwyHjc1Ie3XzN3jSnYF0T6fY+zfs44bBdIaPzPeija+U4Ejh8SuJD9bgUd4Orwl45uUqrhiwTCXAerA/Kqe3rKEc6Z8XghNoEPbAPc3SBPf8T6kSAoTIDcZDShYvrQ0bV8MUCw2Xo/xxhioZSuaEtrcYBKGwBPrWtxX8ylAyAPqyy0G9L9eV7u/+LLNn4FvezaY7Y30ze/rGeRu3YBzTgfCGHDY/OMEtzEyPo2WyaXaefBAHMHDyI8cAeU+oNe7LhSFKDAIYixlHkbqszOsFhrgqAAaopRed09nfdW5MdFUGHx97yWTASh8A4WyITgsuOqr7PsbZx+VToUlYipfIA==
+X-Mailgun-Sending-Ip: 209.61.151.227
+X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
+Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 292765024a19 with SMTP id
+ 64bf9a7995a6293efb65da65 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 Jul 2023 09:48:41 GMT
+Sender: james@equiv.tech
+From:   James Seo <james@equiv.tech>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     James Seo <james@equiv.tech>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: (hp-wmi-sensors) Initialize pevents in hp_wmi_sensors_init()
+Date:   Tue, 25 Jul 2023 02:48:17 -0700
+Message-Id: <20230725094817.588640-1-james@equiv.tech>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] arm64: dts: qcom: msm8976: Split lpass region
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230723160827.22660-1-a39.skl@gmail.com>
- <20230723160827.22660-7-a39.skl@gmail.com>
- <fda13f70-1062-c3dc-b3ed-c7f1ad9a07db@linaro.org>
-From:   Adam Skladowski <a39.skl@gmail.com>
-In-Reply-To: <fda13f70-1062-c3dc-b3ed-c7f1ad9a07db@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following warning is given by the Smatch static checker:
 
-On 25.07.2023 10:44, Konrad Dybcio wrote:
-> On 23.07.2023 18:08, Adam Skladowski wrote:
->> Some devices like Sony Loire uses Broadcom module over sdc3 however others
->> utilize qcom WCNSS, split shared region based on downstream pil-tz loader.
->>
->> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
->> ---
-> Looks like 0x1800000 is the generic configuration:
->
-> https://git.codelinaro.org/clo/la/kernel/msm-3.10/-/blob/LA.BR.1.3.7.c26-05300-8976.0/arch/arm/boot/dts/qcom/msm8976.dtsi#L93-98
->
-> Konrad
+  drivers/hwmon/hp-wmi-sensors.c:1937 hp_wmi_sensors_init()
+  error: uninitialized symbol 'pevents'.
 
-Yes, indeed however as you probably noticed this region isn't called lpass rather reloc.
+If there are no instances of the HPBIOS_PlatformEvents WMI object
+available, init_platform_events() never initializes this pointer,
+which may then be passed to hp_wmi_debugfs_init() uninitialized.
 
-Downstream sometimes tends to define pools of memory where loader will do its own job.
+The impact should be limited because hp_wmi_debugfs_init() uses this
+pointer only if the count of HPBIOS_PlatformEvents instances is _not_
+zero, while conversely, it will be uninitialized only if the count of
+such instances _is_ zero. However, passing it uninitialized still
+constitutes a bug.
 
-If you read later wcnss/lpass both point to same shared memory which im not sure without reworks will work with mainline.
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/linux-hwmon/f72c129b-8c57-406a-bf41-bd889b65ea0f@moroto.mountain/
+Signed-off-by: James Seo <james@equiv.tech>
+---
+ drivers/hwmon/hp-wmi-sensors.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On top it's not really that it will even hurt Loire at the end, if you browse around internet you can easily find gists
-from Pavel which have logs of pil-tz loading of lpass:
+diff --git a/drivers/hwmon/hp-wmi-sensors.c b/drivers/hwmon/hp-wmi-sensors.c
+index 3a99cc5f44b2..17ae62f88bbf 100644
+--- a/drivers/hwmon/hp-wmi-sensors.c
++++ b/drivers/hwmon/hp-wmi-sensors.c
+@@ -1913,7 +1913,7 @@ static bool add_event_handler(struct hp_wmi_sensors *state)
+ static int hp_wmi_sensors_init(struct hp_wmi_sensors *state)
+ {
+ 	struct hp_wmi_info *connected[HP_WMI_MAX_INSTANCES];
+-	struct hp_wmi_platform_events *pevents;
++	struct hp_wmi_platform_events *pevents = NULL;
+ 	struct device *dev = &state->wdev->dev;
+ 	struct hp_wmi_info *info;
+ 	struct device *hwdev;
 
-https://gist.github.com/bartcubbins/c2ff215f39fe2b3ed5d3f8444bcec83b#file-gistfile1-txt-L1289
-
-As you can see even on loire where region is bigger it only loads first 0x1000000.
-Do we really need to complicate things just for everyone else for sake of not ending with one platform having to adjust
-or even not(it probably wouldn't even make a difference for loader as it will fit anyway)
-
-On the ending note i apologize if this msg gets broken formatting first time using thunderbird
-and after redesign im unable to find most options mentioned in guide.
-.
+base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
+-- 
+2.39.2
 
