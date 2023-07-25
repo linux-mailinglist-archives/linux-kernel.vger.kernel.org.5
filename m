@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A682760D6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5CC760D70
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjGYIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        id S232151AbjGYIot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233133AbjGYIno (ORCPT
+        with ESMTP id S233153AbjGYInr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:43:44 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959E2698
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:45 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so37225e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:45 -0700 (PDT)
+        Tue, 25 Jul 2023 04:43:47 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBA8269F
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:51 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so58645e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690274564; x=1690879364;
+        d=google.com; s=20221208; t=1690274569; x=1690879369;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8ShliZBU8zymWTLVZFDBVA/Zji2uMSYCnpP+U0ErrnU=;
-        b=fwYOwggCStkrSkoDKbA5+0zqQpS3cJr+FBcnGdEq2TIyYiPeTkksp+L7mEAxKRxfbX
-         LdG/WRUTxkJKc7upFwb2ZQDj0WW8ieTG3VUPhS7KadIE5+iJ4AGJKjYrDR29B/xDaRZv
-         PKxEMjanIdYI4hcCuy6s0p+CB7VYzPEjkIN3XnIStAER63hULGbNGcYheN6D+DbA2H53
-         kdz1zVnldDPwLa8lb5wCcIIO8xFx2NlVeKYVIVp4rmiFaiFKT3bUCPrNkhqW5VoKggtM
-         XMe7/O+A7R9S5l7+xiCGibP3tKkJKqJHPx+29b7BIDMwWXC8WtcIu9cVwVMWpynZAddp
-         DIQw==
+        bh=q6W2/KgQmyiP4df6cQqG8CAv4Rt7ZnpaxS6qNpcJIoQ=;
+        b=JexKy8bW1yS5U4CXMEaXdzQcLF8AC5mdyhVNTdtRyqHZaLFCinERWX2oY4+hKtgqSR
+         F8lQher2KSdy4ueGfBc6ks6vNZh7g/rXsnmbBXr3aijzYGoJBRo0RaVmWx9MHws87vuz
+         S65Ctr6IdLrQ552ez6H3rZdeGAxJQEY/66vpQhNUQcc/77TVpoKKsOI9VlANaz8iPh7m
+         V2izvjBok5gRtDfP4NSE4/l3cUnmsbPAl6fCD+LcM4qkhcqBVfTh1KigXEqNTshljORC
+         JmBQBBIoGVTMO+zE+oL4yI598/f1D3DRQWGf+r0AmaVBQJuEfv5Dd86CysnKn7BTXgnh
+         FCiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690274564; x=1690879364;
+        d=1e100.net; s=20221208; t=1690274569; x=1690879369;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8ShliZBU8zymWTLVZFDBVA/Zji2uMSYCnpP+U0ErrnU=;
-        b=FN+l08UyZz3N5M+Dm4gyASpFhGe9eI+tsnPyJEus7DMdP3UlF5SGkRoopELW1g8VJ8
-         YvNXfA+Gv6ZzHBzqijfXeuwYsMVoJqtC00P2M++bmUbguKhu01+byIGRrECeS//CUWiE
-         JlNHIFeePM+3DfOiukoQdCvOuwmm+nq1AekdK2zvtLp8aWpjl4BkFV3XgjrYWczs3GqA
-         jXc4LUb4MVOH3nibuSFpJMqYds105zhzNOGIOpZKJ3clNuZpcWurNt6IMxeZcD6ZAMTq
-         Zu1mQIyHEcVMaL6nJ44N81TPD5R0/ZyHdhajT9yCNobBAxPhoAEUzR6H9zs/jgIYunKY
-         sVoQ==
-X-Gm-Message-State: ABy/qLav4vYUyAEP24QAFzXJHL8I8xbOQwNwgre+e3k9EkmUk9vjGcWY
-        nI1GqqQguvy2ejFJQSC6DAxebfcoYzkGwyspUEmbgA==
-X-Google-Smtp-Source: APBJJlFWi3uSj4qBxNiNlxstKaMd84At700nIYnvwJMh6xXo0PwfmpiCAkUkqZMrFfm7wtQ/VM7WudEiaFj6pxWnk2w=
-X-Received: by 2002:a05:600c:1d21:b0:3fd:e15:41e3 with SMTP id
- l33-20020a05600c1d2100b003fd0e1541e3mr52820wms.2.1690274563692; Tue, 25 Jul
- 2023 01:42:43 -0700 (PDT)
+        bh=q6W2/KgQmyiP4df6cQqG8CAv4Rt7ZnpaxS6qNpcJIoQ=;
+        b=A7ty4eokslkSbmbY0Lmc+AjOOJI+uB1RRUdSDf9DLWELFg7EB6iKdoorX+3eCjfZcr
+         D/rKDfuV+CxMFXdIZUXWrd624Y1LJJjXGfQGDB+QrFnmqQDwujYBkxcpOr7YhQXAatsc
+         SPwTl5ncu8zqgis5OBeesSYGIM5tScC90nUrqyphHfPQfosWCHHy73YXNWWQJeXPL7xz
+         CRdBwgBwlvJUvT4EeMlmxwPKVCNKHkGXTpJ15vIkRg1RHBpQTCH3EkBv4xkuwPBYsMbp
+         +s+fJxAG+gEW5FdO2VImhqpZIVsfuwRJjqeEhTl+cA9Mp26HY0XzQ3PjynA/p1QfFjCV
+         z7Bw==
+X-Gm-Message-State: ABy/qLagPw9kuJgY1YmAy7b7YKzaDjR/EUrRPpnbWW/WFzvedcyxneu+
+        6GXQ+A6Dh9iOdjjP91zuRG+ZyYoePjA27GAfzOxS2A==
+X-Google-Smtp-Source: APBJJlFqVyjYNgKMjQJuIt2opgmQvOpaRtg6cUU0hzKNtoRZzvXWh+ZlcFOOlwb0OGV0GX+Tiuny5Vv28eb5Kn9ksQQ=
+X-Received: by 2002:a05:600c:5111:b0:3f1:73b8:b5fe with SMTP id
+ o17-20020a05600c511100b003f173b8b5femr34645wms.3.1690274569559; Tue, 25 Jul
+ 2023 01:42:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724162834.1354164-1-rmoar@google.com> <20230724162834.1354164-7-rmoar@google.com>
-In-Reply-To: <20230724162834.1354164-7-rmoar@google.com>
+References: <20230724162834.1354164-1-rmoar@google.com> <20230724162834.1354164-9-rmoar@google.com>
+In-Reply-To: <20230724162834.1354164-9-rmoar@google.com>
 From:   David Gow <davidgow@google.com>
-Date:   Tue, 25 Jul 2023 16:42:30 +0800
-Message-ID: <CABVgOSkQRSCX1yKeSnpdoWxbNu36oU7Ex1aPZRbbS4LQO8093A@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] kunit: memcpy: Mark tests as slow using test attributes
+Date:   Tue, 25 Jul 2023 16:42:35 +0800
+Message-ID: <CABVgOSm2iRBNpZ2_CJ=4LbdQ=Pcp=aWRFBGBW-rQF6o6hCciLA@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] kunit: add tests for filtering attributes
 To:     Rae Moar <rmoar@google.com>
 Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
         linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
@@ -60,7 +60,7 @@ Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
         linux-hardening@vger.kernel.org, jstultz@google.com,
         tglx@linutronix.de, sboyd@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000f5c4fb06014bb6ce"
+        boundary="0000000000004fc47f06014bb794"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -72,88 +72,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000f5c4fb06014bb6ce
+--0000000000004fc47f06014bb794
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 25 Jul 2023 at 00:30, Rae Moar <rmoar@google.com> wrote:
+On Tue, 25 Jul 2023 at 00:31, Rae Moar <rmoar@google.com> wrote:
 >
-> Mark slow memcpy KUnit tests using test attributes.
+> Add four tests to executor_test.c to test behavior of filtering attributes.
 >
-> Tests marked as slow are as follows: memcpy_large_test, memmove_test,
-> memmove_large_test, and memmove_overlap_test. These tests were the slowest
-> of the memcpy tests and relatively slower to most other KUnit tests. Most
-> of these tests are already skipped when CONFIG_MEMCPY_SLOW_KUNIT_TEST is
-> not enabled.
+> - parse_filter_attr_test - to test the parsing of inputted filters
 >
-> These tests can now be filtered using the KUnit test attribute filtering
-> feature. Example: --filter "speed>slow". This will run only the tests that
-> have speeds faster than slow. The slow attribute will also be outputted in
-> KTAP.
+> - filter_attr_test - to test the filtering procedure on attributes
 >
-> Note: This patch is intended to replace the use of
-> CONFIG_MEMCPY_SLOW_KUNIT_TEST and to potentially deprecate this feature.
-> This patch does not remove the config option but does add a note to the
-> config definition commenting on this future shift.
+> - filter_attr_empty_test - to test the behavior when all tests are filtered
+>   out
 >
-> Acked-by: Kees Cook <keescook@chromium.org>
+> - filter_attr_skip_test - to test the configurable filter_action=skip
+>   option
+>
 > Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
 
+Glad to see some tests for the parser-y bits.
+
 Reviewed-by: David Gow <davidgow@google.com>
 
-Thanks,
+Cheers,
 -- David
+
 
 >
 > Changes since v1:
 > - No changes.
 > Changes since RFC v2:
-> - No changes.
+> - Change fake suite and test case names.
+> - Add a few ASSERT statements.
 > Changes since RFC v1:
-> - Added note under CONFIG_MEMCPY_SLOW_KUNIT_TEST.
+> - This is a new patch.
 >
->  lib/Kconfig.debug  | 3 +++
->  lib/memcpy_kunit.c | 8 ++++----
->  2 files changed, 7 insertions(+), 4 deletions(-)
+>  lib/kunit/executor_test.c | 116 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
 >
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 550cb967b668..1b3894e861f2 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2701,6 +2701,9 @@ config MEMCPY_SLOW_KUNIT_TEST
->           and bit ranges. These can be very slow, so they are split out
->           as a separate config, in case they need to be disabled.
+> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> index d7ab069324b5..01280cb8d451 100644
+> --- a/lib/kunit/executor_test.c
+> +++ b/lib/kunit/executor_test.c
+> @@ -7,6 +7,7 @@
+>   */
 >
-> +         Note this config option will be replaced by the use of KUnit test
-> +         attributes.
+>  #include <kunit/test.h>
+> +#include <kunit/attributes.h>
+>
+>  static void kfree_at_end(struct kunit *test, const void *to_free);
+>  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
+> @@ -108,11 +109,126 @@ static void filter_suites_to_empty_test(struct kunit *test)
+>                                 "should be empty to indicate no match");
+>  }
+>
+> +static void parse_filter_attr_test(struct kunit *test)
+> +{
+> +       int j, filter_count;
+> +       struct kunit_attr_filter *parsed_filters;
+> +       char *filters = "speed>slow, module!=example";
+> +       int err = 0;
 > +
->  config IS_SIGNED_TYPE_KUNIT_TEST
->         tristate "Test is_signed_type() macro" if !KUNIT_ALL_TESTS
->         depends on KUNIT
-> diff --git a/lib/memcpy_kunit.c b/lib/memcpy_kunit.c
-> index 887926f04731..440aee705ccc 100644
-> --- a/lib/memcpy_kunit.c
-> +++ b/lib/memcpy_kunit.c
-> @@ -551,10 +551,10 @@ static void strtomem_test(struct kunit *test)
->  static struct kunit_case memcpy_test_cases[] = {
->         KUNIT_CASE(memset_test),
->         KUNIT_CASE(memcpy_test),
-> -       KUNIT_CASE(memcpy_large_test),
-> -       KUNIT_CASE(memmove_test),
-> -       KUNIT_CASE(memmove_large_test),
-> -       KUNIT_CASE(memmove_overlap_test),
-> +       KUNIT_CASE_SLOW(memcpy_large_test),
-> +       KUNIT_CASE_SLOW(memmove_test),
-> +       KUNIT_CASE_SLOW(memmove_large_test),
-> +       KUNIT_CASE_SLOW(memmove_overlap_test),
->         KUNIT_CASE(strtomem_test),
+> +       filter_count = kunit_get_filter_count(filters);
+> +       KUNIT_EXPECT_EQ(test, filter_count, 2);
+> +
+> +       parsed_filters = kunit_kcalloc(test, filter_count + 1, sizeof(*parsed_filters),
+> +                       GFP_KERNEL);
+> +       for (j = 0; j < filter_count; j++) {
+> +               parsed_filters[j] = kunit_next_attr_filter(&filters, &err);
+> +               KUNIT_ASSERT_EQ_MSG(test, err, 0, "failed to parse filter '%s'", filters[j]);
+> +       }
+> +
+> +       KUNIT_EXPECT_STREQ(test, kunit_attr_filter_name(parsed_filters[0]), "speed");
+> +       KUNIT_EXPECT_STREQ(test, parsed_filters[0].input, ">slow");
+> +
+> +       KUNIT_EXPECT_STREQ(test, kunit_attr_filter_name(parsed_filters[1]), "module");
+> +       KUNIT_EXPECT_STREQ(test, parsed_filters[1].input, "!=example");
+> +}
+> +
+> +static struct kunit_case dummy_attr_test_cases[] = {
+> +       /* .run_case is not important, just needs to be non-NULL */
+> +       { .name = "slow", .run_case = dummy_test, .module_name = "dummy",
+> +         .attr.speed = KUNIT_SPEED_SLOW },
+> +       { .name = "normal", .run_case = dummy_test, .module_name = "dummy" },
+> +       {},
+> +};
+> +
+> +static void filter_attr_test(struct kunit *test)
+> +{
+> +       struct kunit_suite *subsuite[3] = {NULL, NULL};
+> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
+> +       struct suite_set got;
+> +       int err = 0;
+> +
+> +       subsuite[0] = alloc_fake_suite(test, "normal_suite", dummy_attr_test_cases);
+> +       subsuite[1] = alloc_fake_suite(test, "slow_suite", dummy_attr_test_cases);
+> +       subsuite[1]->attr.speed = KUNIT_SPEED_SLOW; // Set suite attribute
+> +
+> +       /*
+> +        * Want: normal_suite(slow, normal), slow_suite(slow, normal),
+> +        *              NULL -> normal_suite(normal), NULL
+> +        *
+> +        * The normal test in slow_suite is filtered out because the speed
+> +        * attribute is unset and thus, the filtering is based on the parent attribute
+> +        * of slow.
+> +        */
+> +       got = kunit_filter_suites(&suite_set, NULL, "speed>slow", NULL, &err);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+> +       KUNIT_ASSERT_EQ(test, err, 0);
+> +       kfree_at_end(test, got.start);
+> +
+> +       /* Validate we just have normal_suite */
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
+> +       KUNIT_EXPECT_STREQ(test, got.start[0]->name, "normal_suite");
+> +       KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
+> +
+> +       /* Now validate we just have normal test case */
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]->test_cases);
+> +       KUNIT_EXPECT_STREQ(test, got.start[0]->test_cases[0].name, "normal");
+> +       KUNIT_EXPECT_FALSE(test, got.start[0]->test_cases[1].name);
+> +}
+> +
+> +static void filter_attr_empty_test(struct kunit *test)
+> +{
+> +       struct kunit_suite *subsuite[3] = {NULL, NULL};
+> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
+> +       struct suite_set got;
+> +       int err = 0;
+> +
+> +       subsuite[0] = alloc_fake_suite(test, "suite1", dummy_attr_test_cases);
+> +       subsuite[1] = alloc_fake_suite(test, "suite2", dummy_attr_test_cases);
+> +
+> +       got = kunit_filter_suites(&suite_set, NULL, "module!=dummy", NULL, &err);
+> +       KUNIT_ASSERT_EQ(test, err, 0);
+> +       kfree_at_end(test, got.start); /* just in case */
+> +
+> +       KUNIT_EXPECT_PTR_EQ_MSG(test, got.start, got.end,
+> +                               "should be empty to indicate no match");
+> +}
+> +
+> +static void filter_attr_skip_test(struct kunit *test)
+> +{
+> +       struct kunit_suite *subsuite[2] = {NULL};
+> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[1]};
+> +       struct suite_set got;
+> +       int err = 0;
+> +
+> +       subsuite[0] = alloc_fake_suite(test, "suite", dummy_attr_test_cases);
+> +
+> +       /* Want: suite(slow, normal), NULL -> suite(slow with SKIP, normal), NULL */
+> +       got = kunit_filter_suites(&suite_set, NULL, "speed>slow", "skip", &err);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+> +       KUNIT_ASSERT_EQ(test, err, 0);
+> +       kfree_at_end(test, got.start);
+> +
+> +       /* Validate we have both the slow and normal test */
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]->test_cases);
+> +       KUNIT_ASSERT_EQ(test, kunit_suite_num_test_cases(got.start[0]), 2);
+> +       KUNIT_EXPECT_STREQ(test, got.start[0]->test_cases[0].name, "slow");
+> +       KUNIT_EXPECT_STREQ(test, got.start[0]->test_cases[1].name, "normal");
+> +
+> +       /* Now ensure slow is skipped and normal is not */
+> +       KUNIT_EXPECT_EQ(test, got.start[0]->test_cases[0].status, KUNIT_SKIPPED);
+> +       KUNIT_EXPECT_FALSE(test, got.start[0]->test_cases[1].status);
+> +}
+> +
+>  static struct kunit_case executor_test_cases[] = {
+>         KUNIT_CASE(parse_filter_test),
+>         KUNIT_CASE(filter_suites_test),
+>         KUNIT_CASE(filter_suites_test_glob_test),
+>         KUNIT_CASE(filter_suites_to_empty_test),
+> +       KUNIT_CASE(parse_filter_attr_test),
+> +       KUNIT_CASE(filter_attr_test),
+> +       KUNIT_CASE(filter_attr_empty_test),
+> +       KUNIT_CASE(filter_attr_skip_test),
 >         {}
 >  };
+>
 > --
 > 2.41.0.487.g6d72f3e995-goog
 >
 
---000000000000f5c4fb06014bb6ce
+--0000000000004fc47f06014bb794
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -220,14 +322,14 @@ jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
 jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
 FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD5
-9NX+J0SBxf7njXT7fCfO4ac4Tb4MsEC6/WwfSlkxJDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjUwODQyNDRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAM
+cSsNUwGwfGuutWEXqPOXNK9BCNuXTnWlxpodF4NN/TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjUwODQyNDlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAIpRgNPRKmTViOZniB5FP
-QG0IDSSoDbKaw5kze0ExU6QTcn2lJIAmVrPGT6ezUtxbWx0NjIrQDngS5XbCJ75/s2+gJQTdSEMS
-Uo4/SLSmZiLL3Cu4F9lyOxFIYwARLx+dC3kajmU8WJ/vONvk6N2KsLW1F5zqxaxVDLn1SUz2Z/A2
-9vQIWdQJt7E5touPB8fwa4iRbwQXO54jIbadOmjFxEUZMbqeBqPPIFSlMsRikF4bTodcusvl3tzI
-9iHEHeRTBQzLiTd6bJVNeZhilklKIRsjwnrxr8bHbxJDTW1off4pXiyqfUWS5R52NXoE8lgrIxOl
-BzeT4LBXlEOF8UtojQ==
---000000000000f5c4fb06014bb6ce--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAFfwf2edLxQ31qbL/hbQs
+HcG/TYjNsFVo6eoWD2zoF1RiJNyzJJ/A+8Vedm8IJ0RdPnby7OSArVg041MTugiau0apgoVC1EVr
+OAy4xYyMtOzDS5MBHUW8y21O4UT+YO5kkTDhDHPgAyM9nfQ6Ljk28CYoF9u2AeBkJCOg4dZJierF
+NRgIevSPt0hOa2rHnZhrY2I5hpYj5xZyfnMO5JpyzFbgXHcZ1kd1uLhxA9qA6q8uofzaCeoXmt8q
+0dtChRiKXDMtiC3t1+jSMGqpk3d3CHfgXyMlKI+FdEC4nnOJBumo9nFrvW5lfeodwc+s1WxFkFxN
+Q7R22hC0wIBix6XUWw==
+--0000000000004fc47f06014bb794--
