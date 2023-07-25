@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0D3762727
+	by mail.lfdr.de (Postfix) with ESMTP id 587DD762726
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbjGYXBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S231472AbjGYXB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjGYXBt (ORCPT
+        with ESMTP id S230398AbjGYXBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:01:49 -0400
+        Tue, 25 Jul 2023 19:01:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5861988
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:01:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010CF1737;
+        Tue, 25 Jul 2023 16:01:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 633AE61938
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:01:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE28C433CB;
-        Tue, 25 Jul 2023 23:01:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CCEF6192D;
+        Tue, 25 Jul 2023 23:01:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 531F2C433C8;
+        Tue, 25 Jul 2023 23:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690326079;
-        bh=4HiJelTa8ResVo7/8HpQcSPN/CxrRNPiwChvHZoXin0=;
+        s=k20201202; t=1690326082;
+        bh=wOUzfezAhBuQ9O9A0eCypYAtr74aYdAOMGNyaZrRDYE=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=C+G0MsyUwc42y7QdibZEGZ6l5zc25/8SuCVj9NKvX7And9VDdO71gqlqPaejOkOhQ
-         aQqSFRdSY7XGahfvw5RKf+oE18vSfIJqmmHzv7Wj5l8M/h/5V86/T7+ijmqk4J8Qvi
-         5ZykJ/2ZhKIPxfJNRsMTay8MzYSyFj5DNMxbF1OiF6GuOUJycsfBELVe84xP6wvq+h
-         7vqIu/maFt1ww2c3BIwHzm8G4kOBgK8EJC6HYhhjOM3IUsCVMXfQ/9R6EQYvy1V03F
-         2TJgHbt8O4Ea1IDGMwKRwEboCK2phDPU9hI/+RqDA7MyoXmcl4IfdayoRgF59JcL9g
-         q+h8YWNchspkA==
+        b=OvU51YhW7xFdnFxGM5Ga4LE7OXb+RvJaDcRcBFI2zZdNRobaQ2bxtt+xj4hi8KqGx
+         L0uI5pKLOwtvDM81+HNkMVCntlFG0Wu4/8FwBJE26glO8x2smTOh7fWDhRh31kE2gC
+         t3WklBJPr2YQlKHfp73dGh5eRrlZcBqxe59cTTbOzWYhWdJ7adDuP7NWBnfbYcQhCJ
+         RpEJvKXnKZUiIIxmsULAnvBsVMCCwd00qBvP5tYUIK2v3a1KnSC20+4NdoILGROuc8
+         nlQPHCACYh9R6AIbnOFJ/WZ41zjyHXDYtujjmlM6iPxMN1XAyi+zLofUneCZqTbQrJ
+         QWYTqo9IQX/Mw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <60938ed138c9331ba3d2891fbd3b3d6644d3fbdc.1690300012.git.geert+renesas@glider.be>
-References: <60938ed138c9331ba3d2891fbd3b3d6644d3fbdc.1690300012.git.geert+renesas@glider.be>
-Subject: Re: [PATCH] regulator: REGULATOR_QCOM_REFGEN should depend on
- ARCH_QCOM
-Message-Id: <169032607868.1636970.13143338092275363376.b4-ty@kernel.org>
-Date:   Wed, 26 Jul 2023 00:01:18 +0100
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     stable@vger.kernel.org
+In-Reply-To: <20230725164047.368892-1-krzysztof.kozlowski@linaro.org>
+References: <20230725164047.368892-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] regulator: dt-bindings: qcom,rpm: fix pattern for
+ children
+Message-Id: <169032608005.1636970.13530519930947403367.b4-ty@kernel.org>
+Date:   Wed, 26 Jul 2023 00:01:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,11 +66,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 17:47:43 +0200, Geert Uytterhoeven wrote:
-> The Qualcomm MMIO-mapped reference voltage regulator is only present on
-> Qualcomm SoCs.  Hence add a dependency on ARCH_QCOM, to prevent asking
-> the user about this driver when configuring a kernel without Qualcomm
-> SoC support.
+On Tue, 25 Jul 2023 18:40:47 +0200, Krzysztof Kozlowski wrote:
+> The "or" (|) in regular expression must be within parentheses,
+> otherwise it is not really an "or" and it matches supplies:
+> 
+>   qcom-apq8060-dragonboard.dtb: regulators-1: vdd_ncp-supply: [[34]] is not of type 'object'
 > 
 > 
 
@@ -72,8 +80,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: REGULATOR_QCOM_REFGEN should depend on ARCH_QCOM
-      commit: 6b677c1ae8e4096c84fbcbe1b7fd300dab0b381b
+[1/1] regulator: dt-bindings: qcom,rpm: fix pattern for children
+      commit: 75d9bf03e2fa38242b35e941ce7c7cdabe479961
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
