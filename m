@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4068C7623F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797347623ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjGYUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
+        id S230324AbjGYUuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbjGYUuh (ORCPT
+        with ESMTP id S229683AbjGYUuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:50:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D258CB6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690318197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s/yfCfAbJiZTz8QCwyXpeKRXITW91oWR1I5Gnu5NNWQ=;
-        b=WB9g5+bzv2e/vnwGLgfIryYnN+Rpr6CKiZWVDKiqV8nxHhqvGY/Dz1mgRWIZjGMwBOJCA9
-        SjukeM4kXRDpyUXjRZVvDF2j5S80cH9+YSL5uAhhyvX7rbBmNhVsUX1u3FfnJ8D9xoIAfT
-        x6LJczgK2CQesc+w0tALkucgMZ8DT7Q=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-175-whry9tybMvSga9lzapOpjg-1; Tue, 25 Jul 2023 16:49:53 -0400
-X-MC-Unique: whry9tybMvSga9lzapOpjg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 25 Jul 2023 16:50:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C78B10F6;
+        Tue, 25 Jul 2023 13:50:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9DAAD1C03DAA;
-        Tue, 25 Jul 2023 20:49:52 +0000 (UTC)
-Received: from [10.22.18.12] (unknown [10.22.18.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD61B40C206F;
-        Tue, 25 Jul 2023 20:49:51 +0000 (UTC)
-Message-ID: <4553b9cd-2450-31f4-2c04-6a9b93499190@redhat.com>
-Date:   Tue, 25 Jul 2023 16:49:51 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A17436190B;
+        Tue, 25 Jul 2023 20:50:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2942EC433C8;
+        Tue, 25 Jul 2023 20:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690318202;
+        bh=OxHy1M+w3k5feey0r7EI3cqLr0BlVNtReBhSOwd11qk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=cgnLAJk3fYihilvzDBpn4mTbVuTl8dlTjQFjLuVU6jHODXYR1vuKl4dDRTLQvHa6l
+         mQh8a0kZOJJl26BMt3nN7Hr+whILmI3NyN59lEa0Ap/9enm7IJvI5qdKXeaULvcSfx
+         ueRfE5oDiHmXRdAmWVupels1Qw/Vf3q2CsqMTM/hLymvrjwyi8D2rGTCG/2UmHaI3I
+         AtqynrXwfRUgezbUCIhFiHei4j07zRojGzbkGXQ1vRzkwkPk7jPcbOBIMff9ZUYblz
+         PQ4T2bRHjkOz18HmGO7mK0eP0AgsEAgN0lyFXXOqBPLnxeqnfuwO9RY6aQZK34LcA1
+         yiORDThMi5umQ==
+Received: (nullmailer pid 3767420 invoked by uid 1000);
+        Tue, 25 Jul 2023 20:49:59 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH-cgroup v5 0/5] cgroup/cpuset: Support remote partitions
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-References: <20230713172601.3285847-1-longman@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230713172601.3285847-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Anjelique Melendez <quic_amelende@quicinc.com>
+Cc:     linux-pwm@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, luca.weiss@fairphone.com,
+        konrad.dybcio@linaro.org, agross@kernel.org,
+        thierry.reding@gmail.com, pavel@ucw.cz, conor+dt@kernel.org,
+        andersson@kernel.org, u.kleine-koenig@pengutronix.de,
+        quic_subbaram@quicinc.com, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org,
+        lee@kernel.org, krzysztof.kozlowski+dt@linaro.org
+In-Reply-To: <20230725193423.25047-2-quic_amelende@quicinc.com>
+References: <20230725193423.25047-1-quic_amelende@quicinc.com>
+ <20230725193423.25047-2-quic_amelende@quicinc.com>
+Message-Id: <169031819898.3767391.330263271365632827.robh@kernel.org>
+Subject: Re: [PATCH v2 1/7] dt-bindings: soc: qcom: Add qcom-pbs bindings
+Date:   Tue, 25 Jul 2023 14:49:59 -0600
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,76 +65,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/13/23 13:25, Waiman Long wrote:
->   v5:
->    - [v4] https://lore.kernel.org/lkml/20230627143508.1576882-1-longman@redhat.com/
->    - Drop the first 4 patches as they had been merged.
->    - Make cpuset.cpus.exclusive invariant once it is manually set. This
->      also means the cpuset.cpus.exclusive may not show the effective value
->      that is actually being used.
->    - Update the documentation and test accordingly.
->
->   v4:
->    - [v3] https://lore.kernel.org/lkml/20230627005529.1564984-1-longman@redhat.com/
->    - Fix compilation problem reported by kernel test robot.
->
-> This patch series introduces a new cpuset control file
-> "cpuset.cpus.exclusive" which must be a subset of "cpuset.cpus"
-> and the parent's "cpuset.cpus.exclusive". This control file lists
-> the exclusive CPUs to be distributed down the hierarchy. Any one
-> of the exclusive CPUs can only be distributed to at most one child
-> cpuset. Unlike "cpuset.cpus", invalid input to "cpuset.cpus.exclusive"
-> will be rejected with an error. This new control file has no effect on
-> the behavior of the cpuset until it turns into a partition root. At that
-> point, its effective CPUs will be set to its exclusive CPUs unless some
-> of them are offline.
->
-> This patch series also introduces a new category of cpuset partition
-> called remote partitions. The existing partition category where the
-> partition roots have to be clustered around the root cgroup in a
-> hierarchical way is now referred to as local partitions.
->
-> A remote partition can be formed far from the root cgroup
-> with no partition root parent. While local partitions can be
-> created without touching "cpuset.cpus.exclusive" as it can be set
-> automatically if a cpuset becomes a local partition root. Properly set
-> "cpuset.cpus.exclusive" values down the hierarchy are required to create
-> a remote partition.
->
-> Both scheduling and isolated partitions can be formed in a remote
-> partition. A local partition can be created under a remote partition.
-> A remote partition, however, cannot be formed under a local partition
-> for now.
->
-> Modern container orchestration tools like Kubernetes use the cgroup
-> hierarchy to manage different containers. And it is relying on other
-> middleware like systemd to help managing it. If a container needs to
-> use isolated CPUs, it is hard to get those with the local partitions
-> as it will require the administrative parent cgroup to be a partition
-> root too which tool like systemd may not be ready to manage.
->
-> With this patch series, we allow the creation of remote partition
-> far from the root. The container management tool can manage the
-> "cpuset.cpus.exclusive" file without impacting the other cpuset
-> files that are managed by other middlewares. Of course, invalid
-> "cpuset.cpus.exclusive" values will be rejected.
->
-> Waiman Long (5):
->    cgroup/cpuset: Add cpuset.cpus.exclusive for v2
->    cgroup/cpuset: Introduce remote partition
->    cgroup/cpuset: Check partition conflict with housekeeping setup
->    cgroup/cpuset: Documentation update for partition
->    cgroup/cpuset: Extend test_cpuset_prs.sh to test remote partition
->
->   Documentation/admin-guide/cgroup-v2.rst       |  114 +-
->   kernel/cgroup/cpuset.c                        | 1242 ++++++++++++-----
->   .../selftests/cgroup/test_cpuset_prs.sh       |  419 ++++--
->   3 files changed, 1291 insertions(+), 484 deletions(-)
->
-Tejun,
+On Tue, 25 Jul 2023 12:34:17 -0700, Anjelique Melendez wrote:
+> Add binding for the Qualcomm Programmable Boot Sequencer device.
+> 
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> ---
+>  .../bindings/soc/qcom/qcom-pbs.yaml           | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-pbs.yaml
+> 
 
-Do you have any further suggested change that you would like to see?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Cheers,
-Longman
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/soc/qcom/qcom-pbs.example.dts:18.16-26.11: Warning (unit_address_vs_reg): /example-0/pmic@0: node has a unit name, but no reg or ranges property
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230725193423.25047-2-quic_amelende@quicinc.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
