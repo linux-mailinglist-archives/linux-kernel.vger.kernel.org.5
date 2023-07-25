@@ -2,59 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0338761FA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9C7761FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjGYQyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        id S232502AbjGYQyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjGYQx6 (ORCPT
+        with ESMTP id S232470AbjGYQyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:53:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6F526B9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:53:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA87061821
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:53:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B8FC433C8;
-        Tue, 25 Jul 2023 16:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690304009;
-        bh=IxAEg/zFNLeaSOZ2+I4D9yyaJpFMEaswtXPaBzxnKgk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SxH+OGq4T9EJ5mb76lXK+oW2BxdhHd7R3WW97C3AISLcrhGM+/cY0HhzoDLq99fnR
-         pqWDGfjsnv8PloQmggBJAcbzdordfUmLHnkgmXKBBfRAP/elOmTlMf17KHF5uCZlSk
-         YN7ACW+2ggKI5Cvv4kxqEMhIqelM6jJYzC0EaBxvdZly6Xd52r1ZqFeBTiC+l351ao
-         9Tbt+epizrET4rBKIrKL29eZed29GvBaq2ZXiJyrxO7RpTDFpkzd+ztPU+zJksn2lE
-         baNiQvt2HO1/JIJ9gLCDCMDZarJRm6gFWd0/JCCPwT8oDbt+6LDYn5kY0mLce97t88
-         rrm+EMRUjvb1A==
-Date:   Tue, 25 Jul 2023 09:53:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, richardcochran@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] i40e: Add length check for IFLA_AF_SPEC parsing
-Message-ID: <20230725095327.385616f1@kernel.org>
-In-Reply-To: <20230725054046.GK11388@unreal>
-References: <20230723075042.3709043-1-linma@zju.edu.cn>
-        <20230724174435.GA11388@unreal>
-        <20230724142155.13c83625@kernel.org>
-        <20230725054046.GK11388@unreal>
+        Tue, 25 Jul 2023 12:54:02 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF056270E;
+        Tue, 25 Jul 2023 09:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=m7fAhDuATOTXbBw+03CG8AVOeMC/rQ7dwdJI39b0ePg=; b=iaoymfNpP7Rxl+UOcYficA+N+s
+        l76BWfP+K8D3cEK0NFqByra2UfIii9iAU9yi3DGpbWt/GbeQmPBJmxzdHEyqX9FCRzAjCVP35nrlE
+        9V2dk3mhEr99hLFMuufsq+v8jNeeZhgpPBMgPcSewFpvMrieO6tCdEPV0yiszELJRZTH86jEWJYSY
+        Y8KM344otcBhjcMqabyWxdLInoIyoiaYVf82/kmGEi1cGt1r3BEqZWi+hmR3/DRBjAs8xvJJzAeTQ
+        mnhTz29x7G6U1tN9Ngal6GfWLFrIT2dZDRWnpawLTM4ZUTYoRXJnsyyXpWErzGE/e8fPQhEdTcd51
+        5uFuAOMg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qOLHr-003GkY-DG; Tue, 25 Jul 2023 16:53:27 +0000
+Date:   Tue, 25 Jul 2023 16:53:27 +0000
+From:   "Dr. David Alan Gilbert" <linux@treblig.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     davem@davemloft.net, benh@kernel.crashing.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sparc: Use shared font data
+Message-ID: <ZL/+Bz5C2Mxx0Msw@gallifrey>
+References: <20230724235851.165871-1-linux@treblig.org>
+ <20230725161040.GA832394@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20230725161040.GA832394@ravnborg.org>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 16:51:09 up 19 days,  2:22,  1 user,  load average: 0.04, 0.03, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,11 +57,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 08:40:46 +0300 Leon Romanovsky wrote:
-> > Empty attributes are valid, we can't do that.  
+* Sam Ravnborg (sam@ravnborg.org) wrote:
+> On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
+> > From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> > 
+> > sparc has a 'btext' font used for the console which is almost identical
+> > to the shared font_sun8x16, so use it rather than duplicating the data.
+> > 
+> > They were actually identical until about a decade ago when
+> >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> >                         "broken bar" to "vertical line"")
+> > 
+> > which changed the | in the shared font to be a solid
+> > bar rather than a broken bar.  That's the only difference.
+> > 
+> > This was originally spotted by PMD which noticed that PPC does
+> > the same thing with the same data, and they also share a bunch
+> > of functions to manipulate the data.  The PPC code and the functions
+> > I'll look at another time if this patch is OK.
+> > 
+> > Tested very lightly with a boot without FS in qemu.
+> > 
+> > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 > 
-> Maybe Lin can add special version of nla_for_each_nested() which will
-> skip these empty NLAs, for code which don't allow empty attributes.
+> Looks good, thanks for the fixes.
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-It's way too arbitrary. Empty attrs are 100% legit, they are called
-NLA_FLAG in policy parlance. They are basically a boolean.
+Thanks
+
+> Let's hope someone picks it up...
+
+I was hoping Dave would, but I realise Sparc doesn't get much
+these days.
+Of course if anyone feels guilty about their own patches adding code
+they can take this patch to make ~340 lines of penance.
+
+Dave
+
+> 	Sam
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
