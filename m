@@ -2,107 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9A7760DA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C31760DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjGYIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        id S231213AbjGYIx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbjGYIwq (ORCPT
+        with ESMTP id S231789AbjGYIwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:52:46 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4352E131;
+        Tue, 25 Jul 2023 04:52:45 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C728127;
         Tue, 25 Jul 2023 01:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690275051; x=1721811051;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HE2TjNN/Y7d6kR/2PBUoTBaoZfVqmELRWlVsIEsmyM0=;
-  b=gHKqogG20HYe//0lQY7u5udKoJGvbV+T0m/Yjt5I74mrkZMZ+dwpuR1k
-   7ORg64BIOuQHzzDlDR1OTQkrHWDP4riJ5O3R7zWb6gWOjo6z8sMOmmKgJ
-   yRKYi31gPuORNxde6y6Psj6oRCBaJNkWR1PKmge0BlIC3vqGorHOm0Thb
-   xKPLcBdO8wahvXpffLlClOZoz2xLX90jJmdndg9tyKX3kXScXytALuozv
-   EmYq75mB5vuEAFb3PBNAT3P/YontdNlTEosgEGHfy1/Jrtd1Onb/c2nrv
-   SWUhd1tBu1yFShwcBMjBWHUUyEqB6Qi2Ui/uNgz6in8N5LMfCMB5sW0bT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="352559195"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="352559195"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 01:50:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="796074092"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="796074092"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jul 2023 01:50:48 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qODkl-000ATG-10;
-        Tue, 25 Jul 2023 08:50:47 +0000
-Date:   Tue, 25 Jul 2023 16:49:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mike Tipton <quic_mdtipton@quicinc.com>, djakov@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, quic_okukatla@quicinc.com,
-        quic_viveka@quicinc.com, Mike Tipton <quic_mdtipton@quicinc.com>
-Subject: Re: [PATCH 2/3] interconnect: Reintroduce icc_get()
-Message-ID: <202307251608.svPOM4UC-lkp@intel.com>
-References: <20230725012859.18474-3-quic_mdtipton@quicinc.com>
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b7441bfa9eso66814571fa.0;
+        Tue, 25 Jul 2023 01:50:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690275048; x=1690879848;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/9E3/WWnB3oqCCKicWHSv17L65rJSzN/sd8dp6vx1FQ=;
+        b=YLNBowiTU69Ja/HCaBea3FPTx+ls86SNtFC7ONC0KOg1J7cu8IZFnZLwwk4n2zDxjI
+         XcekrqM13pSQl1pAaXQNtLR6GwEWBCVKYp+eWbbv63yKHgnMaptHCzfDRz9bt6v7u/9M
+         gDLGiBuH3dKnyH5ENURz+/XYHBCcShB5X7tICrtdjKdBrGStkjmgtVg05s7GKhG4rPwh
+         CZTU62ahmVHuQRO2FlyKtsdFUKXxwTy4ZHKMsgmx3hHO8ezOMuRNWqyTNBtA19xQvwKS
+         sDWM93WmkQ7KG7S045C7WLtYgGtDJ0fb0ixTPKfHbyOsrhBClBQgrBqntgbAZeC3Z8oK
+         oImQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690275048; x=1690879848;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/9E3/WWnB3oqCCKicWHSv17L65rJSzN/sd8dp6vx1FQ=;
+        b=RMt7w1H2nRBzx2KWiVopWU5wkZoPIpzMYlHGwo+C1Rl5wKAtby4VR2CyhNr0gnQqff
+         vOcrNPSmvIRHzYfHQMtoWJ/lXjc14XB+ZWh8Bd0mDD5VTJniqz7CXWS/sTbE/mbX4btc
+         Lz841/8RgK/97amTXeY86YvT9F1LYYDkjC1L2Xlc+bqKJ41cTOn7flB3sPdW9n8U/aZb
+         2eYCELH1FUXBRC6tFGYbyo2dysckw1Ya2jWWC+/+9xtx8A7TYzKPtGZ/3T9rAVgO+Tjt
+         aGHxGz7W5FWg9Xt37KTvfRbKuMGcvFEvqrtnDpW71VF3prtJQaiScFnh5xD2DftOCLUy
+         jStQ==
+X-Gm-Message-State: ABy/qLaRz4M/wlZj4O4w7O4dJdQgkrkz6i6kAFYuGZcTNF+OLnyUFDT9
+        kEqzdJ2jH6I0nKMcexo0DhnxhRC/er+pdYekaus=
+X-Google-Smtp-Source: APBJJlGBlJjhXA317NVJI8YZATKyklEw0tkXtLszo383gTFM/xNrJUX6GWwD9HJEgK2Q2+0j7hQmt2LxipqVhYinjTg=
+X-Received: by 2002:a2e:8e31:0:b0:2b6:a0c8:fde3 with SMTP id
+ r17-20020a2e8e31000000b002b6a0c8fde3mr748982ljk.6.1690275048115; Tue, 25 Jul
+ 2023 01:50:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725012859.18474-3-quic_mdtipton@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1690273969.git.haibo1.xu@intel.com> <1f25f27d1316bc91e1e31cd3d50a1d20f696759a.1690273969.git.haibo1.xu@intel.com>
+In-Reply-To: <1f25f27d1316bc91e1e31cd3d50a1d20f696759a.1690273969.git.haibo1.xu@intel.com>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Tue, 25 Jul 2023 16:50:36 +0800
+Message-ID: <CAJve8okJ-HYpsOrqH4Zvn7OBtwXWa4JumC+ZsMfHKB-deVYd2A@mail.gmail.com>
+Subject: Re: [PATCH v6 06/13] KVM: arm64: selftests: Split get-reg-list test code
+To:     Haibo Xu <haibo1.xu@intel.com>
+Cc:     ajones@ventanamicro.com, maz@kernel.org, oliver.upton@linux.dev,
+        seanjc@google.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+On Tue, Jul 25, 2023 at 4:37=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrot=
+e:
+>
+> From: Andrew Jones <ajones@ventanamicro.com>
+>
+> Split the arch-neutral test code out of aarch64/get-reg-list.c into
+> get-reg-list.c. To do this we invent a new make variable
+> $(SPLIT_TESTS) which expects common parts to be in the KVM selftests
+> root and the counterparts to have the same name, but be in
+> $(ARCH_DIR).
+>
+> There's still some work to be done to de-aarch64 the common
+> get-reg-list.c, but we leave that to the next patch to avoid
+> modifying too much code while moving it.
+>
+> Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |  12 +-
+>  .../selftests/kvm/aarch64/get-reg-list.c      | 367 +----------------
+>  tools/testing/selftests/kvm/get-reg-list.c    | 377 ++++++++++++++++++
+>  3 files changed, 398 insertions(+), 358 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/get-reg-list.c
+>
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftes=
+ts/kvm/Makefile
+> index c692cc86e7da..95f180e711d5 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -140,7 +140,6 @@ TEST_GEN_PROGS_EXTENDED_x86_64 +=3D x86_64/nx_huge_pa=
+ges_test
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/aarch32_id_regs
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/arch_timer
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/debug-exceptions
+> -TEST_GEN_PROGS_aarch64 +=3D aarch64/get-reg-list
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/hypercalls
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/page_fault_test
+>  TEST_GEN_PROGS_aarch64 +=3D aarch64/psci_test
+> @@ -152,6 +151,7 @@ TEST_GEN_PROGS_aarch64 +=3D access_tracking_perf_test
+>  TEST_GEN_PROGS_aarch64 +=3D demand_paging_test
+>  TEST_GEN_PROGS_aarch64 +=3D dirty_log_test
+>  TEST_GEN_PROGS_aarch64 +=3D dirty_log_perf_test
+> +TEST_GEN_PROGS_aarch64 +=3D get-reg-list
+>  TEST_GEN_PROGS_aarch64 +=3D kvm_create_max_vcpus
+>  TEST_GEN_PROGS_aarch64 +=3D kvm_page_table_test
+>  TEST_GEN_PROGS_aarch64 +=3D memslot_modification_stress_test
+> @@ -181,6 +181,8 @@ TEST_GEN_PROGS_riscv +=3D kvm_page_table_test
+>  TEST_GEN_PROGS_riscv +=3D set_memory_region_test
+>  TEST_GEN_PROGS_riscv +=3D kvm_binary_stats_test
+>
+> +SPLIT_TESTS +=3D get-reg-list
+> +
+>  TEST_PROGS +=3D $(TEST_PROGS_$(ARCH_DIR))
+>  TEST_GEN_PROGS +=3D $(TEST_GEN_PROGS_$(ARCH_DIR))
+>  TEST_GEN_PROGS_EXTENDED +=3D $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
+> @@ -228,11 +230,14 @@ LIBKVM_C_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o, $(=
+LIBKVM_C))
+>  LIBKVM_S_OBJ :=3D $(patsubst %.S, $(OUTPUT)/%.o, $(LIBKVM_S))
+>  LIBKVM_STRING_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_STRING))
+>  LIBKVM_OBJS =3D $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ) $(LIBKVM_STRING_OBJ)
+> +SPLIT_TESTS_TARGETS :=3D $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
+> +SPLIT_TESTS_OBJS :=3D $(patsubst %, $(ARCH_DIR)/%.o, $(SPLIT_TESTS))
+>
+>  TEST_GEN_OBJ =3D $(patsubst %, %.o, $(TEST_GEN_PROGS))
+>  TEST_GEN_OBJ +=3D $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
+>  TEST_DEP_FILES =3D $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
+>  TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(LIBKVM_OBJS))
+> +TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
+>  -include $(TEST_DEP_FILES)
+>
+>  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> @@ -240,7 +245,10 @@ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+>  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+>         $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+>
+> -EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) cscope=
+.*
+> +$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
+> +       $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS=
+) -o $@
+> +
+> +EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLI=
+T_TESTS_OBJS) cscope.*
+>
+>  x :=3D $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
+>  $(LIBKVM_C_OBJ): $(OUTPUT)/%.o: %.c
 
-kernel test robot noticed the following build errors:
+Hi @Andrew Jones,
 
-[auto build test ERROR on driver-core/driver-core-testing]
-[also build test ERROR on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.5-rc3 next-20230725]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+After rebasing to v6.5-rc3, some changes are needed to the SPLIT_TESTS
+target, or the make would fail.
+Please help have a look.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Tipton/debugfs-Add-write-support-to-debugfs_create_str/20230725-093242
-base:   driver-core/driver-core-testing
-patch link:    https://lore.kernel.org/r/20230725012859.18474-3-quic_mdtipton%40quicinc.com
-patch subject: [PATCH 2/3] interconnect: Reintroduce icc_get()
-config: arm-integrator_defconfig (https://download.01.org/0day-ci/archive/20230725/202307251608.svPOM4UC-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251608.svPOM4UC-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307251608.svPOM4UC-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from drivers/opp/opp.h:15,
-                    from drivers/opp/core.c:23:
->> include/linux/interconnect.h:63:18: warning: no previous prototype for 'icc_get' [-Wmissing-prototypes]
-      63 | struct icc_path *icc_get(struct device *dev, const char *src, const char *dst)
-         |                  ^~~~~~~
---
-   arm-linux-gnueabi-ld: drivers/opp/cpu.o: in function `icc_get':
->> cpu.c:(.text+0x2c8): multiple definition of `icc_get'; drivers/opp/core.o:core.c:(.text+0x2260): first defined here
-   arm-linux-gnueabi-ld: drivers/opp/of.o: in function `icc_get':
-   of.c:(.text+0x1b20): multiple definition of `icc_get'; drivers/opp/core.o:core.c:(.text+0x2260): first defined here
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Haibo
