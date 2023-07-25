@@ -2,111 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CA8760655
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF23760658
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjGYDHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
+        id S229612AbjGYDIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 23:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbjGYDGp (ORCPT
+        with ESMTP id S229562AbjGYDIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:06:45 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2099.outbound.protection.outlook.com [40.107.117.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E9F1BC0;
-        Mon, 24 Jul 2023 20:06:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FHw4lEI8i3SFQwVfdHy36Ct6dWyDWZxJ6eUzdyShgfa2JJKCD0H6R1hns1LhfimXLI3q8UtqlP5sznzKvJtUcENrAXNaCoEqIz3BB9HE+wfExYhUOujo/d98/JQYagCnx0EEtWuefZccNIU6YQKzwm9GGaZwdqam1BaD2V1VKL+ie+wIuQqZVZTX02fa9ZKO79roaJvPw6/daFWS0Qs8ZA140oaR64/SxEEFC/1jjS95Qu4ascHkkjSt8SSezpoClN8CxOsyuXwRMiKc+2YAYGcrs19tuQ9UrHh2l1E+eSuc+w303TVjeFKQaTzTa/xXmkGOu58hqZSbZJo7edyeYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JnjHj/K3ARr9yYIpaJTnsi1Gvp0PwUDHuiEUCJ3kUx4=;
- b=Kxbe2fleGQzmxb9AAVX7rIpE8UgCnZ17+le7VQTuNUBnh5aeLOUvxG+NTKYjvMEWtkjAfzUNSF2lkrt0XSFSijwOPGbxysvq52o5FDwO9FQ+INiVyMC9mB0rIDijBa7/noJB3cMe3qXNKFSlgIkNNrjY4H1B26JSuqnK2m8sVUvVmzt0UVxMuh5lhhz4YtXP8MF8wD+K29Q+4wzjFpxElTA562mVC3e0sOKfWY+6XGziFOttS06nZkngW6FZhInLw/cvGsP3C/7KV2lCWV4P/bFDtiRuqDTsLXDVGWyBZVv+AmzB1HYvFfLotE39VJncWPPfuTVur5RGRIpanK9CEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JnjHj/K3ARr9yYIpaJTnsi1Gvp0PwUDHuiEUCJ3kUx4=;
- b=l7xHZq8BhAblh4mQxmPXGShon/bgWD4gV9gF11RSbpmmEmecLS8KijUCIajkALlXNygHRLlAtAfRk/OTGaqY3xvpfLYyjyn/CXp4r3JkSjlBNVKbeUCVXHaithZ5lHTDWWxc9+njwtOPUD3HEYAM8+b0c5fUKLXdF2fBoN0s0/wBS/lfXVrzsD/5GlE/3g/E6+6dvmerzsz8E2btmAAOqCYTTg+ZY0lXOZwCKp78Bb2EW3r31PxJKVZMKgRekkaqY8cukoF/RTVOGxb6QuUZCqseqX+vlObkzxs+2+BvoNPYR6tQCMOsQRlKH4ltZbGQ3kqxAuTkOyjBlffn1o2J/w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- PUZPR06MB4602.apcprd06.prod.outlook.com (2603:1096:301:a6::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.33; Tue, 25 Jul 2023 03:06:38 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::75ed:803d:aa0a:703f]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::75ed:803d:aa0a:703f%7]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
- 03:06:38 +0000
-From:   Minjie Du <duminjie@vivo.com>
-To:     Viresh Kumar <vireshk@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-ide@vger.kernel.org (open list:LIBATA PATA ARASAN COMPACT FLASH
-        CONTROLLER), linux-kernel@vger.kernel.org (open list)
-Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v5] ata: pata_arasan_cf: Use dev_err_probe() instead dev_err() in data_xfer()
-Date:   Tue, 25 Jul 2023 11:06:25 +0800
-Message-Id: <20230725030627.1103-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TY2PR02CA0056.apcprd02.prod.outlook.com
- (2603:1096:404:e2::20) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
+        Mon, 24 Jul 2023 23:08:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A98E76
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690254475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VsrFcx7CKuChRWMATh1+NSjWHNvI5lnlCZ+wKzBTyhE=;
+        b=BnKozPRiTrK8Bllwqg+dlerJSSnRz5wyizWdq7HCGuZl3SeFyu/JCB2JyPSZ1k0lzptyNy
+        eKT5mrnA09nPz8m9C2ylh92q9D8hEPcOmU8U58iM5ExtJQ4AwsywZrWFt600KB+h/xIRVt
+        Ub9zrgdmpr5r8Do7IuRy3sB4hWVCYkg=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-404-bX7Z1jCTMnKAhbXTfRkn2A-1; Mon, 24 Jul 2023 23:07:53 -0400
+X-MC-Unique: bX7Z1jCTMnKAhbXTfRkn2A-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6f0527454so41146301fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 20:07:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690254472; x=1690859272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VsrFcx7CKuChRWMATh1+NSjWHNvI5lnlCZ+wKzBTyhE=;
+        b=ewjN2B5Gv8Xs1oHxVsKboYkE8d6az9Y+gnprvrL7Qr1Lv+ji7C/y5pkZfOzP4EAhHU
+         ZXraXRxoglYofr+7h1HZS3JZGlMUsb+Em8hc5l9iFnwmynQc6i3Kcd0bo8ODVcgcTJem
+         Sb70AzSbhEqCmZmVwxyDQTMbvflUSDx+S78qgw5HUnyOqzppxGybuKWoCo0KXbSbAbfe
+         0g1ZmZGJu2r9DfE7UNujz26cvD4CmFCXP08OGv9LT6rHzYVuV2hm7LW6wEDKw6hWIFnD
+         yuCOJxma1tYZ84l7WjKU36NYl8NOuCI34Z1azOKKn2lgKPBwd9Gw5rLm6u67l0GcIQkO
+         3PdQ==
+X-Gm-Message-State: ABy/qLYW902/n+iawYmMImO6Q6fiOP/53kvkA0pj8tdyWz6cjt+kISvj
+        cWuuoVEVGrSP4okEI5UqSscvPOvWalFaPM45SGMTgCSugCBmzPtjYEzIgf+K2iUrTyKMHovfEdv
+        uqNKyBMTJDqXypruXY07L+pFu8yASrPCuAfFkYqQS
+X-Received: by 2002:a2e:92d0:0:b0:2b4:65bf:d7b with SMTP id k16-20020a2e92d0000000b002b465bf0d7bmr6750639ljh.2.1690254471983;
+        Mon, 24 Jul 2023 20:07:51 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFldEasInu8/EU/4WmFQMOs6DD/Y7YsaR0vjQ1PPmGDpzLFjM8Ou0Nzwjk+3kPaljEexhz/8vzlaUYQeVLu7N4=
+X-Received: by 2002:a2e:92d0:0:b0:2b4:65bf:d7b with SMTP id
+ k16-20020a2e92d0000000b002b465bf0d7bmr6750625ljh.2.1690254471671; Mon, 24 Jul
+ 2023 20:07:51 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|PUZPR06MB4602:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f2af69a-e668-47ef-56f7-08db8cbc2954
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DHi/BbMn1hlQ5qGDYJF7oBUkXSVt+CzxTLdN+ah6NSUIjUkXpFh+6vxew3EXafw8HSyQjl9M1M/MKShfK3aGH8WeUSiuRSHT9+a8/RPcDaxE8mog3MnikZp5AxKVg+mrhxQgt7Gf4nB38Vg656W2IWdbyIfeuRB4S06ThJ4rGN1EGQROTCYcXxlxjp96IxKInAgE+elV4q2R7eIlCGGI6EYpgc2jV/A38jqh8XJmx0bOd7XeHg0x/4sp2U8RDqWEXpn76CkmTUmrzrGfbs+u2NJCwGvh72hzIhdhe2yYm6ZLrPyIffqifzhbEpI8Kt18L528FY437dHXKNr8iAYVtX4ey2jgsDUwQpnN/ZBRpnka6SmkJ/2E21siypQuckxNeGJVrlUBx3ifApH69MrzCmrrjfmly46U0e2plSl+wEu6AilYVpRnwg7dLQWDn6WpE6KXDOaTAGEbdKTL96AmPZhVdFTtwAN7POC+iaI/ML2KjqMoimgxJ6O7b91dPep6jduWULUOyPZ6YTIT6dUUsYj4fA6HTl8UkgKYEXhf2A9G1EmYa48AaE10MZYkfskFLyrTXgn7LtJrS2bjW0ae8Z22c8qpALkg+ivgNX4y6Q194NT5K46GsAZA9DLxyAvs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(451199021)(66476007)(66556008)(66946007)(2616005)(36756003)(83380400001)(86362001)(38350700002)(38100700002)(478600001)(110136005)(186003)(6506007)(6486002)(6512007)(52116002)(107886003)(26005)(1076003)(6666004)(4744005)(2906002)(41300700001)(5660300002)(316002)(4326008)(8676002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LnsQ/eAWcITzPU9ts+WUGeKqcpDwRkm6ycDLKL38mIMbKKdQ1OSF1YBm7VkG?=
- =?us-ascii?Q?pnCtjtn4LdJROJdEZotqmZNIqirGEFL1TSEcREY8jrg1MlJZz9DHH5LlmZxL?=
- =?us-ascii?Q?CCrJg/7RRZ3WyAtKKfkRPxqLRQHXdg1XP78RSdcG1sL9eUYGpy76S3vou1R4?=
- =?us-ascii?Q?LKQydVdx3iaY+oLlu7IpGMpvgvhFh2EnHIvObC8uUxCbU6FlbtyamUTSj2D2?=
- =?us-ascii?Q?uWo5GMZf3qEUN4YIe2K7FXq1uDYh0OWBO4DJvlslIG0oG2VOmPEQpJr92D2Q?=
- =?us-ascii?Q?xtbuKxFcaYBl1EklJZmJ635Blw2P0UmvZCmX7Sgvo22v6FnZh5BTRWdbVm68?=
- =?us-ascii?Q?iZMjpvqZz9hdcRFtz/loDoVKK42c28froNSakxW7pALN3Kun1sLq7dRp2bsM?=
- =?us-ascii?Q?zc/XWmZSil2qzoQML7NYs2WU59UNG/aUuN0o2f2Pd9tc6BHa11kr/OhOw5GI?=
- =?us-ascii?Q?hENMzJzTuEnBWSYZ/1wbCVLTxoRa9rAxCLutYxbrD+PM1KMa4iLXN2YRreIb?=
- =?us-ascii?Q?Woz8QSBjsjL6toREqhPsDjXhjg5DPPnxfrURgy02ywxfzCg+W8RocDzOD5MG?=
- =?us-ascii?Q?6MYtoa71exmZJ9c2XWA6C1UhxhjLt86mluHkmK8j8931TB1O6X1CPCrRCp2Q?=
- =?us-ascii?Q?h4xbFsYB5bYHJCu2JNc3DfH4WC++9OPOVRe7omuuNsPsr6MiZLhkUb37Q8F1?=
- =?us-ascii?Q?DYPYeXH8l4pg3FTjNmpLM1+xvUaOrNbHirtz6leD2RVhPrt6PUrQIWN7eV45?=
- =?us-ascii?Q?fdRIbpLpnL/xDKJBBeSrSnKQ6bOFN/EYRgVQvVqbnO1sPhYHFx54XWBrI0mO?=
- =?us-ascii?Q?H0Amc9sw8C71MKQ8yCIGTxtR57Lhf865Qzf2sfoHx6066tTOzoPDWoEtFBlf?=
- =?us-ascii?Q?jtTP1Tmhtb/UGaobanT/K3ufB0yhjMlr3DkDaXh+pesoKqQmztnAXyWuvOwx?=
- =?us-ascii?Q?cwEmXmgwPIuEPPNmLexsMc28lhY3/XQrN1beNhlMuwbo9YTlghe7S0L/tXnZ?=
- =?us-ascii?Q?tx5IsJPax1MnVbHl24a99r7+YnitPINgI9TlxMgyLnRnlTcGgVMJtgiW16x3?=
- =?us-ascii?Q?2DEULG+5Ji35fcLqH/4Lr+ca5bD4BBKy/M2lxv8XNEi42yK9V3vbcJz9py9q?=
- =?us-ascii?Q?qyDwVkrrRoANOdJ13jKxoYv8gnenjfLYjCDXCZwZkBHgs279RLTgr2K5aPs7?=
- =?us-ascii?Q?G9hM9tXI8pxVVXiSKE2XDFkaN0Gl/It7gzau8SoVdGFMTJHh4mNJed0vcUON?=
- =?us-ascii?Q?+F2cS65qJpOmo/GGaKMdMeOCA9DDweo29xermQdHt6EsEcTBDY0jqAeFyxFq?=
- =?us-ascii?Q?l0W72zsiNcVBzDgJ7NEHWkkuj7ZmPsHPL5qi/9otZ3oLsafR8bsPFrQZKZct?=
- =?us-ascii?Q?BYYt1GRDiUeMkNOb5kA2SLStqJpbLFdqumxkzwvdIjHgwWtb1ROBQPoL6Mnt?=
- =?us-ascii?Q?km+Bm31uaXPcAWd/277oqz6QyknXx6NCU/ZHZT/2xYpIfJwYc/4kn6HvXOut?=
- =?us-ascii?Q?EKztlaw3BV2Pyrd7+/zEqDUt58M3zNNjGe8BmKKW6B+R+sraBKCJAv+BH3ja?=
- =?us-ascii?Q?fn84PT6Zu5TUegngcMrtG8HEjP46fxP9ZmO/P6el?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f2af69a-e668-47ef-56f7-08db8cbc2954
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 03:06:38.0705
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: boh0fMjlP5FhQhwgl9C+ZopSFj7IZ+9bDLBM6Grze+tQ6WFrJh1EXqsZFQ96sHinuiX9gybSAQLWr1ddvWI2WA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB4602
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+References: <20230720083839.481487-1-jasowang@redhat.com> <20230720083839.481487-3-jasowang@redhat.com>
+ <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com> <20230720170001-mutt-send-email-mst@kernel.org>
+ <263a5ad7-1189-3be3-70de-c38a685bebe0@redhat.com> <20230721104445-mutt-send-email-mst@kernel.org>
+ <6278a4aa-8901-b0e3-342f-5753a4bf32af@redhat.com> <20230721110925-mutt-send-email-mst@kernel.org>
+ <e3490755-35ac-89b4-b0fa-b63720a9a5c9@redhat.com> <CACGkMEv1B9xFE7-LrLQC3FbH6CxTZC+toHXoLHFvJWn6wgobrA@mail.gmail.com>
+ <20230724025720-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230724025720-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 25 Jul 2023 11:07:40 +0800
+Message-ID: <CACGkMEs7zTXk77h-v_ORhvbtQ4FgehY6w6xCfFeVTeCnzChYkw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
+ command waiting loop
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,31 +86,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible for dma_request_chan() to return EPROBE_DEFER, which means
-acdev->host->dev is not ready yet.
-At this point dev_err() will have no output.
+On Mon, Jul 24, 2023 at 3:17=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Mon, Jul 24, 2023 at 02:52:05PM +0800, Jason Wang wrote:
+> > On Sat, Jul 22, 2023 at 4:18=E2=80=AFAM Maxime Coquelin
+> > <maxime.coquelin@redhat.com> wrote:
+> > >
+> > >
+> > >
+> > > On 7/21/23 17:10, Michael S. Tsirkin wrote:
+> > > > On Fri, Jul 21, 2023 at 04:58:04PM +0200, Maxime Coquelin wrote:
+> > > >>
+> > > >>
+> > > >> On 7/21/23 16:45, Michael S. Tsirkin wrote:
+> > > >>> On Fri, Jul 21, 2023 at 04:37:00PM +0200, Maxime Coquelin wrote:
+> > > >>>>
+> > > >>>>
+> > > >>>> On 7/20/23 23:02, Michael S. Tsirkin wrote:
+> > > >>>>> On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nelson wrote:
+> > > >>>>>> On 7/20/23 1:38 AM, Jason Wang wrote:
+> > > >>>>>>>
+> > > >>>>>>> Adding cond_resched() to the command waiting loop for a bette=
+r
+> > > >>>>>>> co-operation with the scheduler. This allows to give CPU a br=
+eath to
+> > > >>>>>>> run other task(workqueue) instead of busy looping when preemp=
+tion is
+> > > >>>>>>> not allowed on a device whose CVQ might be slow.
+> > > >>>>>>>
+> > > >>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > >>>>>>
+> > > >>>>>> This still leaves hung processes, but at least it doesn't pin =
+the CPU any
+> > > >>>>>> more.  Thanks.
+> > > >>>>>> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+> > > >>>>>>
+> > > >>>>>
+> > > >>>>> I'd like to see a full solution
+> > > >>>>> 1- block until interrupt
+> >
+> > I remember in previous versions, you worried about the extra MSI
+> > vector. (Maybe I was wrong).
+> >
+> > > >>>>
+> > > >>>> Would it make sense to also have a timeout?
+> > > >>>> And when timeout expires, set FAILED bit in device status?
+> > > >>>
+> > > >>> virtio spec does not set any limits on the timing of vq
+> > > >>> processing.
+> > > >>
+> > > >> Indeed, but I thought the driver could decide it is too long for i=
+t.
+> > > >>
+> > > >> The issue is we keep waiting with rtnl locked, it can quickly make=
+ the
+> > > >> system unusable.
+> > > >
+> > > > if this is a problem we should find a way not to keep rtnl
+> > > > locked indefinitely.
+> >
+> > Any ideas on this direction? Simply dropping rtnl during the busy loop
+> > will result in a lot of races. This seems to require non-trivial
+> > changes in the networking core.
+> >
+> > >
+> > >  From the tests I have done, I think it is. With OVS, a reconfigurati=
+on
+> > > is performed when the VDUSE device is added, and when a MLX5 device i=
+s
+> > > in the same bridge, it ends up doing an ioctl() that tries to take th=
+e
+> > > rtnl lock. In this configuration, it is not possible to kill OVS beca=
+use
+> > > it is stuck trying to acquire rtnl lock for mlx5 that is held by virt=
+io-
+> > > net.
+> >
+> > Yeah, basically, any RTNL users would be blocked forever.
+> >
+> > And the infinite loop has other side effects like it blocks the freezer=
+ to work.
+> >
+> > To summarize, there are three issues
+> >
+> > 1) busy polling
+> > 2) breaks freezer
+> > 3) hold RTNL during the loop
+> >
+> > Solving 3 may help somehow for 2 e.g some pm routine e.g wireguard or
+> > even virtnet_restore() itself may try to hold the lock.
+>
+> Yep. So my feeling currently is, the only real fix is to actually
+> queue up the work in software.
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
-V2 -> V5: Fixed code formatting errors.
----
- drivers/ata/pata_arasan_cf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Do you mean something like:
 
-diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
-index 6ab294322e79..b32d47112c0a 100644
---- a/drivers/ata/pata_arasan_cf.c
-+++ b/drivers/ata/pata_arasan_cf.c
-@@ -529,7 +529,8 @@ static void data_xfer(struct work_struct *work)
- 	/* dma_request_channel may sleep, so calling from process context */
- 	acdev->dma_chan = dma_request_chan(acdev->host->dev, "data");
- 	if (IS_ERR(acdev->dma_chan)) {
--		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
-+		dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
-+			      "Unable to get dma_chan\n");
- 		acdev->dma_chan = NULL;
- 		goto chan_request_fail;
- 	}
--- 
-2.39.0
+rtnl_lock();
+queue up the work
+rtnl_unlock();
+return success;
+
+?
+
+> It's mostly trivial to limit
+> memory consumption, vid's is the
+> only one where it would make sense to have more than
+> 1 command of a given type outstanding.
+
+And rx mode so this implies we will fail any command if the previous
+work is not finished.
+
+> have a tree
+> or a bitmap with vids to add/remove?
+
+Probably.
+
+Thanks
+
+>
+>
+>
+> > >
+> > > >
+> > > >>>>> 2- still handle surprise removal correctly by waking in that ca=
+se
+> >
+> > This is basically what version 1 did?
+> >
+> > https://lore.kernel.org/lkml/6026e801-6fda-fee9-a69b-d06a80368621@redha=
+t.com/t/
+> >
+> > Thanks
+>
+> Yes - except the timeout part.
+>
+>
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>>> ---
+> > > >>>>>>>      drivers/net/virtio_net.c | 4 +++-
+> > > >>>>>>>      1 file changed, 3 insertions(+), 1 deletion(-)
+> > > >>>>>>>
+> > > >>>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_ne=
+t.c
+> > > >>>>>>> index 9f3b1d6ac33d..e7533f29b219 100644
+> > > >>>>>>> --- a/drivers/net/virtio_net.c
+> > > >>>>>>> +++ b/drivers/net/virtio_net.c
+> > > >>>>>>> @@ -2314,8 +2314,10 @@ static bool virtnet_send_command(struc=
+t virtnet_info *vi, u8 class, u8 cmd,
+> > > >>>>>>>              * into the hypervisor, so the request should be =
+handled immediately.
+> > > >>>>>>>              */
+> > > >>>>>>>             while (!virtqueue_get_buf(vi->cvq, &tmp) &&
+> > > >>>>>>> -              !virtqueue_is_broken(vi->cvq))
+> > > >>>>>>> +              !virtqueue_is_broken(vi->cvq)) {
+> > > >>>>>>> +               cond_resched();
+> > > >>>>>>>                     cpu_relax();
+> > > >>>>>>> +       }
+> > > >>>>>>>
+> > > >>>>>>>             return vi->ctrl->status =3D=3D VIRTIO_NET_OK;
+> > > >>>>>>>      }
+> > > >>>>>>> --
+> > > >>>>>>> 2.39.3
+> > > >>>>>>>
+> > > >>>>>>> _______________________________________________
+> > > >>>>>>> Virtualization mailing list
+> > > >>>>>>> Virtualization@lists.linux-foundation.org
+> > > >>>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualiza=
+tion
+> > > >>>>>
+> > > >>>
+> > > >
+> > >
+>
 
