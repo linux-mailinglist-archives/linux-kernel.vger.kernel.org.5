@@ -2,315 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 241E4762799
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317847627A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjGYX7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S230312AbjGZAFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 20:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbjGYX72 (ORCPT
+        with ESMTP id S229437AbjGZAFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:59:28 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA12699
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:59:27 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-991ef0b464cso88802566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:59:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690329566; x=1690934366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vlDFCbYvw8+n0N6jVAX7ngSqANPPqW4eXfqdUh/sjfw=;
-        b=FJ412rOSqb0L37WBl+VL/Oua/IEQ+YpZ3fQ7ebzjGPNIDMrugFlT/1kUCbQ/bgzUVk
-         +HUGZbfOU4PazOr4Ul5Mo/N/nypAXwm0Jpt2x26Ys3EXhcpW+EP90mHKGJLxO4qgpkOO
-         OfISWL3ucSqPXbq+nGFn0weDdJQ9itnt0srJab6EJ1pWABY32gbUt06SzS5Ck2VKKSz5
-         jVenSU0Q9xT+FHSycOX6rUHkbhLGlqPo0Ejb0dMuGmDJuo2Jl2CcVUgxajo5qNozXZ6v
-         bu50pa0uFfeIAMr0CQC6ymLXjq7PDL73z/jGARssnFwKC7Ec5sOI6tM1aexQ6EWtH91k
-         es3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690329566; x=1690934366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vlDFCbYvw8+n0N6jVAX7ngSqANPPqW4eXfqdUh/sjfw=;
-        b=XnwICBrWcMf0YpQmAXoYeQ1Y6FfRWwMormVd3l1eGDxrYtZPWF6l1xZ97BwEtlTpe1
-         G5B2KsP3TN5ILYHMnXZQSoxhoum9TLq8sB7pNKHGpSKsJM/wB/1DOyrucm16wiVuU63p
-         B/dLQLNWrCZG7Wltjnpi1rJlBTN19UE3qi4Dfr8Ot1QknPU1aZWS0mthgrVk9htkfeyi
-         wutN7vgt/8K5sH6MkAdNI5t7/3Z3I4IBDBhJhSyGerPoNOnGvouvKW2kMctVV7vTh1vn
-         vln4H2TiU/4jRSgDUl8qBr2OF5t2kQ3l2zZZFPihNfmL1JDP4vbf6wwrSugbLGUT5yW6
-         qyQg==
-X-Gm-Message-State: ABy/qLaEGgMSgFEJNfO3vb8/FDi3HTRvCwx1S9EsS7fLxP29f3SHiga1
-        I0CN2Rx8CLA+BT+prSTrV3tHKxFX0/FStCcNs2gV8Q==
-X-Google-Smtp-Source: APBJJlGL6ftOJlrynXNOm5r10q0LtWbQ6bB4CCthLDl5wcxolLjhPScdjE6PKHct7wPJnZtM/BMKSpWr2byAhnpiY98=
-X-Received: by 2002:a17:907:25c3:b0:98e:3dac:6260 with SMTP id
- ae3-20020a17090725c300b0098e3dac6260mr3676336ejc.13.1690329565457; Tue, 25
- Jul 2023 16:59:25 -0700 (PDT)
+        Tue, 25 Jul 2023 20:05:00 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2314EC0;
+        Tue, 25 Jul 2023 17:04:59 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PM7lGP009295;
+        Tue, 25 Jul 2023 22:26:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=TUYdk0tGn0rT6cwH7OYwEQe2YWIDAFojAsfoHnC2xLk=;
+ b=cb54RGp3vszgL6IjmCjbCNe/fgI/FCMWSNw4NWWAb7lV/LT5ochgKirDEKMc/M5EWMBA
+ Z/s/WwYYAWA8rtxXbxkSe9T4GOUudwBY826TG8hDqotdqppC6fInvN6p0lZziiP0N8+n
+ NwHcJ2BR94WSPqcchjJtvRvIhG3uahUd8S0cMwOz53/mQUzwF9was5loWKcsONeCCJUr
+ Bo2dD9okDp/o9d8/y3vK+CThQhwmTDPe/zZbZeG7V5DXMpVFxyhzXQPR3pBx2CyFsmg3
+ bN8hZHKZMoEfJbZ2t2Pb1VZ0XerVIIeIz7PxlSQbkqxJ9GmVDKrlQezabnKYLZtvM+OF VA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s29j5hyvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 22:26:14 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36PMPxL2008752
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 22:25:59 GMT
+Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 15:25:58 -0700
+Message-ID: <44299d05-d411-e9c4-7b96-84efb28d47c9@quicinc.com>
+Date:   Tue, 25 Jul 2023 15:25:48 -0700
 MIME-Version: 1.0
-References: <20230719174613.3062124-1-yosryahmed@google.com>
-In-Reply-To: <20230719174613.3062124-1-yosryahmed@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 25 Jul 2023 16:58:48 -0700
-Message-ID: <CAJD7tkaGWqX1azMfVo_RnteNHmSfkOMhoSKbns5jeSf+Ju6g=A@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Freedreno] [PATCH v1 2/5] drm/msm/dp: incorporate pm_runtime
+ framework into DP driver
+Content-Language: en-US
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     <freedreno@lists.freedesktop.org>, <quic_sbillaka@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <airlied@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <robdclark@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <agross@kernel.org>, <daniel@ffwll.ch>,
+        <marijn.suijten@somainline.org>, <dmitry.baryshkov@linaro.org>,
+        <quic_jesszhan@quicinc.com>, <swboyd@chromium.org>,
+        <sean@poorly.run>, <linux-kernel@vger.kernel.org>
+References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
+ <1688773943-3887-3-git-send-email-quic_khsieh@quicinc.com>
+ <oc6cohs6pbiuyirdxgepoharuzdra2hzy3kwfqjmdfcq36y367@ah3bal2jqncb>
+ <0ac305d2-d0a9-cdfb-9be8-243402d865e7@quicinc.com>
+In-Reply-To: <0ac305d2-d0a9-cdfb-9be8-243402d865e7@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 8yhWP5PXIHKZCpJn6_0JK8Gvk_Ii-8RA
+X-Proofpoint-GUID: 8yhWP5PXIHKZCpJn6_0JK8Gvk_Ii-8RA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_12,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250192
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:46=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> Currently, memcg uses rstat to maintain hierarchical stats. The rstat
-> framework keeps track of which cgroups have updates on which cpus.
->
-> For non-hierarchical stats, as memcg moved to rstat, they are no longer
-> readily available as counters. Instead, the percpu counters for a given
-> stat need to be summed to get the non-hierarchical stat value. This
-> causes a performance regression when reading non-hierarchical stats on
-> kernels where memcg moved to using rstat. This is especially visible
-> when reading memory.stat on cgroup v1. There are also some code paths
-> internal to the kernel that read such non-hierarchical stats.
->
-> It is inefficient to iterate and sum counters in all cpus when the rstat
-> framework knows exactly when a percpu counter has an update. Instead,
-> maintain cpu-aggregated non-hierarchical counters for each stat. During
-> an rstat flush, keep those updated as well. When reading
-> non-hierarchical stats, we no longer need to iterate cpus, we just need
-> to read the maintainer counters, similar to hierarchical stats.
->
-> A caveat is that we now a stats flush before reading
-> local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
-> or memcg_events_local(), where we previously only needed a flush to
-> read hierarchical stats. Most contexts reading non-hierarchical stats
-> are already doing a flush, add a flush to the only missing context in
-> count_shadow_nodes().
->
-> With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
-> machine with 256 cpus on cgroup v1:
->  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
->  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
->  real    0m0.125s
->  user    0m0.005s
->  sys     0m0.120s
->
-> After:
->  real    0m0.032s
->  user    0m0.005s
->  sys     0m0.027s
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  include/linux/memcontrol.h |  7 ++++---
->  mm/memcontrol.c            | 32 +++++++++++++++++++-------------
->  mm/workingset.c            |  1 +
->  3 files changed, 24 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 5818af8eca5a..a9f2861a57a5 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -112,6 +112,9 @@ struct lruvec_stats {
->         /* Aggregated (CPU and subtree) state */
->         long state[NR_VM_NODE_STAT_ITEMS];
->
-> +       /* Non-hierarchical (CPU aggregated) state */
-> +       long state_local[NR_VM_NODE_STAT_ITEMS];
-> +
->         /* Pending child counts during tree propagation */
->         long state_pending[NR_VM_NODE_STAT_ITEMS];
->  };
-> @@ -1020,14 +1023,12 @@ static inline unsigned long lruvec_page_state_loc=
-al(struct lruvec *lruvec,
->  {
->         struct mem_cgroup_per_node *pn;
->         long x =3D 0;
-> -       int cpu;
->
->         if (mem_cgroup_disabled())
->                 return node_page_state(lruvec_pgdat(lruvec), idx);
->
->         pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
-> +       x =3D READ_ONCE(pn->lruvec_stats.state_local[idx]);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x =3D 0;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e8ca4bdcb03c..90a22637818e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -742,6 +742,10 @@ struct memcg_vmstats {
->         long                    state[MEMCG_NR_STAT];
->         unsigned long           events[NR_MEMCG_EVENTS];
->
-> +       /* Non-hierarchical (CPU aggregated) page state & events */
-> +       long                    state_local[MEMCG_NR_STAT];
-> +       unsigned long           events_local[NR_MEMCG_EVENTS];
-> +
->         /* Pending child counts during tree propagation */
->         long                    state_pending[MEMCG_NR_STAT];
->         unsigned long           events_pending[NR_MEMCG_EVENTS];
-> @@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int=
- idx, int val)
->  /* idx can be of type enum memcg_stat_item or node_stat_item. */
->  static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, in=
-t idx)
->  {
-> -       long x =3D 0;
-> -       int cpu;
-> +       long x =3D READ_ONCE(memcg->vmstats->state_local[idx]);
->
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(memcg->vmstats_percpu->state[idx], cpu);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x =3D 0;
-> @@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup=
- *memcg, int event)
->
->  static unsigned long memcg_events_local(struct mem_cgroup *memcg, int ev=
-ent)
->  {
-> -       long x =3D 0;
-> -       int cpu;
->         int index =3D memcg_events_index(event);
->
->         if (index < 0)
->                 return 0;
->
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(memcg->vmstats_percpu->events[index], cpu)=
-;
-> -       return x;
-> +       return READ_ONCE(memcg->vmstats->events_local[index]);
->  }
->
->  static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
-> @@ -5526,7 +5523,7 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
->         struct mem_cgroup *parent =3D parent_mem_cgroup(memcg);
->         struct memcg_vmstats_percpu *statc;
-> -       long delta, v;
-> +       long delta, delta_cpu, v;
->         int i, nid;
->
->         statc =3D per_cpu_ptr(memcg->vmstats_percpu, cpu);
-> @@ -5542,9 +5539,11 @@ static void mem_cgroup_css_rstat_flush(struct cgro=
-up_subsys_state *css, int cpu)
->                         memcg->vmstats->state_pending[i] =3D 0;
->
->                 /* Add CPU changes on this level since the last flush */
-> +               delta_cpu =3D 0;
->                 v =3D READ_ONCE(statc->state[i]);
->                 if (v !=3D statc->state_prev[i]) {
-> -                       delta +=3D v - statc->state_prev[i];
-> +                       delta_cpu =3D v - statc->state_prev[i];
-> +                       delta +=3D delta_cpu;
->                         statc->state_prev[i] =3D v;
->                 }
->
-> @@ -5553,6 +5552,7 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->
->                 /* Aggregate counts on this level and propagate upwards *=
-/
->                 memcg->vmstats->state[i] +=3D delta;
-> +               memcg->vmstats->state_local[i] +=3D delta_cpu;
 
-I ran this through more testing. There is a subtle problem here. If
-delta =3D=3D 0 and delta_cpu !=3D 0, we will skip the update to the local
-stats. This happens in the very unlikely case where the delta on the
-flushed cpu is equal in value but of opposite sign to the delta coming
-from the children. IOW if (statc->state[i] - statc->state_prev[i]) =3D=3D
--memcg->vmstats->state_pending[i].
+On 7/10/2023 9:22 AM, Kuogee Hsieh wrote:
+>
+> On 7/8/2023 7:52 PM, Bjorn Andersson wrote:
+>> On Fri, Jul 07, 2023 at 04:52:20PM -0700, Kuogee Hsieh wrote:
+>>> Incorporating pm runtime framework into DP driver so that power
+>>> and clock resource handling can be centralized allowing easier
+>>> control of these resources in preparation of registering aux bus
+>>> uring probe.
+>>>
+>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>> ---
+>>>   drivers/gpu/drm/msm/dp/dp_aux.c     |  3 ++
+>>>   drivers/gpu/drm/msm/dp/dp_display.c | 75 
+>>> +++++++++++++++++++++++++++++--------
+>>>   2 files changed, 63 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> index 8e3b677..c592064 100644
+>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> @@ -291,6 +291,7 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+>>> *dp_aux,
+>>>           return -EINVAL;
+>>>       }
+>>>   +    pm_runtime_get_sync(dp_aux->dev);
+>>>       mutex_lock(&aux->mutex);
+>>>       if (!aux->initted) {
+>>>           ret = -EIO;
+>>> @@ -364,6 +365,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+>>> *dp_aux,
+>>>     exit:
+>>>       mutex_unlock(&aux->mutex);
+>>> +    pm_runtime_mark_last_busy(dp_aux->dev);
+>>> +    pm_runtime_put_autosuspend(dp_aux->dev);
+>>>         return ret;
+>>>   }
+>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>>> index 76f1395..2c5706a 100644
+>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>> @@ -309,6 +309,10 @@ static int dp_display_bind(struct device *dev, 
+>>> struct device *master,
+>>>           goto end;
+>>>       }
+>>>   +    pm_runtime_enable(dev);
+>>> +    pm_runtime_set_autosuspend_delay(dev, 1000);
+>>> +    pm_runtime_use_autosuspend(dev);
+>>> +
+>>>       return 0;
+>>>   end:
+>>>       return rc;
+>>> @@ -320,9 +324,8 @@ static void dp_display_unbind(struct device 
+>>> *dev, struct device *master,
+>>>       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>>       struct msm_drm_private *priv = dev_get_drvdata(master);
+>>>   -    /* disable all HPD interrupts */
+>>> -    if (dp->core_initialized)
+>>> -        dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_INT_MASK, 
+>>> false);
+>>> +    pm_runtime_dont_use_autosuspend(dev);
+>>> +    pm_runtime_disable(dev);
+>>>         kthread_stop(dp->ev_tsk);
+>>>   @@ -466,10 +469,12 @@ static void dp_display_host_init(struct 
+>>> dp_display_private *dp)
+>>>           dp->dp_display.connector_type, dp->core_initialized,
+>>>           dp->phy_initialized);
+>>>   -    dp_power_init(dp->power);
+>>> -    dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>>> -    dp_aux_init(dp->aux);
+>>> -    dp->core_initialized = true;
+>>> +    if (!dp->core_initialized) {
+>>> +        dp_power_init(dp->power);
+>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>>> +        dp_aux_init(dp->aux);
+>>> +        dp->core_initialized = true;
+>> There are two cases that queries core_initialized, both of those are
+>> done to avoid accessing the DP block without it first being powered up.
+>> With the introduction of runtime PM, it seems reasonable to just power
+>> up the block in those two code paths (and remove the variable).
+>>
+>>> +    }
+>>>   }
+>>>     static void dp_display_host_deinit(struct dp_display_private *dp)
+>>> @@ -478,10 +483,12 @@ static void dp_display_host_deinit(struct 
+>>> dp_display_private *dp)
+>>>           dp->dp_display.connector_type, dp->core_initialized,
+>>>           dp->phy_initialized);
+>>>   -    dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>>> -    dp_aux_deinit(dp->aux);
+>>> -    dp_power_deinit(dp->power);
+>>> -    dp->core_initialized = false;
+>>> +    if (dp->core_initialized) {
+>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>>> +        dp_aux_deinit(dp->aux);
+>>> +        dp_power_deinit(dp->power);
+>>> +        dp->core_initialized = false;
+>>> +    }
+>>>   }
+>>>     static int dp_display_usbpd_configure_cb(struct device *dev)
+>>> @@ -1304,6 +1311,39 @@ static int dp_display_remove(struct 
+>>> platform_device *pdev)
+>>>       dp_display_deinit_sub_modules(dp);
+>>>         platform_set_drvdata(pdev, NULL);
+>>> +    pm_runtime_put_sync_suspend(&pdev->dev);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int dp_pm_runtime_suspend(struct device *dev)
+>>> +{
+>>> +    struct platform_device *pdev = to_platform_device(dev);
+>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>> platform_get_drvdata() is a wrapper for dev_get_drvdata(&pdev->dev), so
+>> there's no need to resolve the platform_device first...
+>>
+>>> +    struct dp_display_private *dp;
+>>> +
+>>> +    dp = container_of(dp_display, struct dp_display_private, 
+>>> dp_display);
+>>> +
+>>> +    dp_display_host_phy_exit(dp);
+>>> +    dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>> +    dp_display_host_deinit(dp);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int dp_pm_runtime_resume(struct device *dev)
+>>> +{
+>>> +    struct platform_device *pdev = to_platform_device(dev);
+>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>> +    struct dp_display_private *dp;
+>>> +
+>>> +    dp = container_of(dp_display, struct dp_display_private, 
+>>> dp_display);
+>>> +
+>>> +    dp_display_host_init(dp);
+>>> +    if (dp_display->is_edp) {
+>>> +        dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>> +        dp_display_host_phy_init(dp);
+>>> +    }
+>>>         return 0;
+>>>   }
+>>> @@ -1409,6 +1449,7 @@ static int dp_pm_suspend(struct device *dev)
+>>>   }
+>>>     static const struct dev_pm_ops dp_pm_ops = {
+>>> +    SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, 
+>>> NULL)
+>>>       .suspend = dp_pm_suspend,
+>>>       .resume =  dp_pm_resume,
+>>>   };
+>>> @@ -1493,10 +1534,6 @@ static int dp_display_get_next_bridge(struct 
+>>> msm_dp *dp)
+>>>       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>>         if (aux_bus && dp->is_edp) {
+>>> -        dp_display_host_init(dp_priv);
+>>> -        dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
+>>> -        dp_display_host_phy_init(dp_priv);
+>> I'm probably just missing it, but how do we get here with the host
+>> powered up and the phy initialized?
+>
+> if (!dp->core_initialized)  is at dp_display_host_init()
+>
+>>
+>>> -
+>>>           /*
+>>>            * The code below assumes that the panel will finish probing
+>>>            * by the time devm_of_dp_aux_populate_ep_devices() returns.
+>>> @@ -1604,6 +1641,7 @@ void dp_bridge_atomic_enable(struct drm_bridge 
+>>> *drm_bridge,
+>>>           dp_hpd_plug_handle(dp_display, 0);
+>>>         mutex_lock(&dp_display->event_mutex);
+>>> +    pm_runtime_get_sync(&dp_display->pdev->dev);
+>>>         state = dp_display->hpd_state;
+>>>       if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
+>>> @@ -1684,6 +1722,8 @@ void dp_bridge_atomic_post_disable(struct 
+>>> drm_bridge *drm_bridge,
+>>>       }
+>>>         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", dp->connector_type);
+>>> +
+>>> +    pm_runtime_put_sync(&dp_display->pdev->dev);
+>>>       mutex_unlock(&dp_display->event_mutex);
+>>>   }
+>>>   @@ -1723,6 +1763,8 @@ void dp_bridge_hpd_enable(struct drm_bridge 
+>>> *bridge)
+>>>       struct dp_display_private *dp = container_of(dp_display, 
+>>> struct dp_display_private, dp_display);
+>>>         mutex_lock(&dp->event_mutex);
+>>> +    pm_runtime_get_sync(&dp->pdev->dev);
+>>> +
+>>>       dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>>         /* enable HDP interrupts */
+>>> @@ -1744,6 +1786,9 @@ void dp_bridge_hpd_disable(struct drm_bridge 
+>>> *bridge)
+>>>       dp_catalog_ctrl_hpd_disable(dp->catalog);
+>>>         dp_display->internal_hpd = false;
+>>> +
+>>> +    pm_runtime_mark_last_busy(&dp->pdev->dev);
+>>> +    pm_runtime_put_autosuspend(&dp->pdev->dev);
+>>>       mutex_unlock(&dp->event_mutex);
+>>>   }
+>> The runtime_get/put in dp_bridge_hpd_enable() and disable matches my
+>> expectations. But in the case that we have an external HPD source, where
+>> will the power be turned on?
+>>
+>> Note that you can test this on your device by routing the HPD GPIO to a
+>> display-connector instance and wiring this to the DP node. In the same
+>> way it's done here:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sa8295p-adp.dts#n28 
+>>
 
-Very unlikely but I happened to stumble upon it. Will fix this for v2.
+at sc7280, gpio-47 has function 2 as dp-hot-plug pin. but it does not 
+has function for general purpose pin.
 
+Just curious,  to work with external HPD source,
 
->                 if (parent)
->                         parent->vmstats->state_pending[i] +=3D delta;
->         }
-> @@ -5562,9 +5562,11 @@ static void mem_cgroup_css_rstat_flush(struct cgro=
-up_subsys_state *css, int cpu)
->                 if (delta)
->                         memcg->vmstats->events_pending[i] =3D 0;
->
-> +               delta_cpu =3D 0;
->                 v =3D READ_ONCE(statc->events[i]);
->                 if (v !=3D statc->events_prev[i]) {
-> -                       delta +=3D v - statc->events_prev[i];
-> +                       delta_cpu =3D v - statc->events_prev[i];
-> +                       delta +=3D delta_cpu;
->                         statc->events_prev[i] =3D v;
->                 }
->
-> @@ -5572,6 +5574,7 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->                         continue;
->
->                 memcg->vmstats->events[i] +=3D delta;
-> +               memcg->vmstats->events_local[i] +=3D delta_cpu;
->                 if (parent)
->                         parent->vmstats->events_pending[i] +=3D delta;
->         }
-> @@ -5591,9 +5594,11 @@ static void mem_cgroup_css_rstat_flush(struct cgro=
-up_subsys_state *css, int cpu)
->                         if (delta)
->                                 pn->lruvec_stats.state_pending[i] =3D 0;
->
-> +                       delta_cpu =3D 0;
->                         v =3D READ_ONCE(lstatc->state[i]);
->                         if (v !=3D lstatc->state_prev[i]) {
-> -                               delta +=3D v - lstatc->state_prev[i];
-> +                               delta_cpu =3D v - lstatc->state_prev[i];
-> +                               delta +=3D delta_cpu;
->                                 lstatc->state_prev[i] =3D v;
->                         }
->
-> @@ -5601,6 +5606,7 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->                                 continue;
->
->                         pn->lruvec_stats.state[i] +=3D delta;
-> +                       pn->lruvec_stats.state_local[i] +=3D delta_cpu;
->                         if (ppn)
->                                 ppn->lruvec_stats.state_pending[i] +=3D d=
-elta;
->                 }
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index 4686ae363000..da58a26d0d4d 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrink=
-er *shrinker,
->                 struct lruvec *lruvec;
->                 int i;
->
-> +               mem_cgroup_flush_stats();
->                 lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid=
-));
->                 for (pages =3D 0, i =3D 0; i < NR_LRU_LISTS; i++)
->                         pages +=3D lruvec_page_state_local(lruvec,
-> --
-> 2.41.0.255.g8b1d071c50-goog
->
+1) which DRM_BRIDGE_OP_xxx should be used for bridge->ops?
+
+2) are both .hpd_enable and .hpd_disable  have to be populated?
+
+>>
+>> Regards,
+>> Bjorn
+>>
+>>>   --
+>>> 2.7.4
+>>>
