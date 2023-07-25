@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A4676254B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCF076254C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbjGYWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S231656AbjGYWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjGYWA7 (ORCPT
+        with ESMTP id S231157AbjGYWBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:00:59 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC30DE0;
-        Tue, 25 Jul 2023 15:00:58 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b9e478e122so5536861a34.1;
-        Tue, 25 Jul 2023 15:00:58 -0700 (PDT)
+        Tue, 25 Jul 2023 18:01:01 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA97BC;
+        Tue, 25 Jul 2023 15:01:00 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-565db4666d7so3761602eaf.0;
+        Tue, 25 Jul 2023 15:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690322458; x=1690927258;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XxN5Cc7Zc72irm/qgq/pZDW5Q0BP09uehHsPOp/dI4Y=;
-        b=Wk7Z50ipI0jvX7dwPWATsewRqjTx7b9TNpWXfSxGVv2VCvJA9Fhj93WGGmCFJbbMWT
-         svx3lYre22SYZ0yqwThUw3+YVKkamXkJR3a4EuP49CkIfsPfHjhJsq9gjt5uZhcGCpyk
-         xecVB05BBJy3CPdL3nyRra1qnenwvmK6h5zZV/b1yYSz2z7TPJjp622LFtyqXSrmL+/Y
-         Gvk2uB+T27BMo4Qblt4BEqSqKZ9IMoxz1gha2T/keuOSd46L56MT73taX97uvj3LFdBj
-         /F9GnugZQIozksen6U4lHVUPe+08LWTx1IwBx+x8pdllRwtr5X620mc81f/x9HGqy9DL
-         1c8Q==
+        d=gmail.com; s=20221208; t=1690322459; x=1690927259;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lUZnk3BJHa8i4G+I5FHI1a5ZCFbsEeNLgSVmJzgYbxk=;
+        b=XVK1FzTn/TccXCjpTjt4Pf6a69wnwkxxmHdsFbn42YM2M4vBpG1M4prm2pxLW7iMwb
+         uZQbixtobzfmh9gLPJ+pgLfuyfWnGX2TiVWggmdqsfsxE/zrHdbRUbvWB3USqA3bEtMI
+         PjPLe32eJNSaKLmxx4YIeiF2PLzzAHnp7WVo/wPq34UgfQvRjJ34u9jeGQgz1s2qmIvF
+         g9c55G8A1MynG6olwvA77cUcjqSdyAgtw/DVD81YZGnjmZgw9wySkd5jHjom/NPTD9CB
+         w2KU9o+XcURSi03JKAtuk1kts/CReVvTu6TU2tIFkYWvpDhaKbMAKw5EdrM9yFDW4cSL
+         fjhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322458; x=1690927258;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XxN5Cc7Zc72irm/qgq/pZDW5Q0BP09uehHsPOp/dI4Y=;
-        b=TACE8w4w5Cy1pGnSFtw3VSgdM5BIFviRxEaIWmvrhSFF1km9ddGn+ASsHxA/+TYXh/
-         SFJkyBsmmad6pETh1yNMtLnusqo+FBLDTWawk/CRzrT5rADHbyei4sM00IODjez5KPA4
-         UIg56o6FV9oUirsp3usUJC26dSt1+TyFRTBzaGlNzNbTi+cbVjtWqPgNAQM6oo+ljh5q
-         7EkY3Vuo0sxODw3clL5Mab13fawGaFqEle/Qa2q840u9IV+sDQC2+irSq22gm/Lu3lNh
-         RkgVgb+DunGpEb1qcGJW7ntXizZUQP5hsOO5NtnWqJL5JXVJgArhiGKPIaISqqwWAnVt
-         Df1g==
-X-Gm-Message-State: ABy/qLbL8SmHMiNT6TE2jVWQsPMqtyw+tvU2RPZFIZXxQEfGynp+bkj9
-        5j5W0+G2xqGcu5+5bn4hRJ0=
-X-Google-Smtp-Source: APBJJlGhLgoGB+6MrON/H7WEp+vL3vdnSgIQQgTRSBWuhtndGLU3upZAWkb5SJnppSJbhOYPSvsiXg==
-X-Received: by 2002:a05:6870:d183:b0:1b0:7661:dd18 with SMTP id a3-20020a056870d18300b001b07661dd18mr457536oac.23.1690322457836;
-        Tue, 25 Jul 2023 15:00:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690322459; x=1690927259;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lUZnk3BJHa8i4G+I5FHI1a5ZCFbsEeNLgSVmJzgYbxk=;
+        b=UqzTTOJ+IWgBLKsd6Bhm25yfFxoI3b9eAw+7HgWnmaYY/1SMI95fhAwoWSRZutG1Wr
+         v9bvUGsz8DIjAv2IGo3b84NKHt+nGBwXw6C0gXa2ZSBETUmFGT7/6dkls1ioQq2xLt9L
+         cnvKcmcQ5MNAXEPZ4pm8PmMKJdvGSrOoNuHYngOKaaMNUns8wviGb9JTCuOu9KGgBbqP
+         jAyJ06Z3GlwL69TMe+RikjyJKzfZHZhaVZYCqiVVBK2TICltF80TH1e8uDLyuwxpPJRX
+         Q3CsJFE/rVm7t6krd8NNXE6PnGfu3suqNw7znyoTk+V2Zcz6fdtltghWFbJrb+tEZZab
+         Xihg==
+X-Gm-Message-State: ABy/qLaBvn0FsSAA/W6zK3BtZhMT4xYge6df/VozL5nhuayi7ZuAzqIP
+        g52g3PYGAKe/ZlCC3tNdS3M=
+X-Google-Smtp-Source: APBJJlFHbPlurwcX03fBvkaEqCG30OPkMJnrFKVl1kvNbFWF5Iu6L7x7GY8nuxej+cWPcjRmow0TZQ==
+X-Received: by 2002:a4a:3c17:0:b0:565:bbc0:2e36 with SMTP id d23-20020a4a3c17000000b00565bbc02e36mr98675ooa.3.1690322459704;
+        Tue, 25 Jul 2023 15:00:59 -0700 (PDT)
 Received: from grumpy-VECTOR.hsd1.tx.comcast.net ([2601:2c3:480:7390:871d:ebb3:c6e2:8ac3])
-        by smtp.gmail.com with ESMTPSA id v40-20020a4a8c6b000000b0056688eea98csm5870026ooj.27.2023.07.25.15.00.56
+        by smtp.gmail.com with ESMTPSA id v40-20020a4a8c6b000000b0056688eea98csm5870026ooj.27.2023.07.25.15.00.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 15:00:57 -0700 (PDT)
+        Tue, 25 Jul 2023 15:00:59 -0700 (PDT)
 From:   Jorge Lopez <jorgealtxwork@gmail.com>
 X-Google-Original-From: Jorge Lopez <jorge.lopez2@hp.com>
 To:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
         linux-kernel@vger.kernel.org, thomas@t-8ch.de,
         ilpo.jarvinen@linux.intel.com
-Subject: [PATCH 0/5]  hp-bioscfg: Address memory leaks and uninitialized variable errors
-Date:   Tue, 25 Jul 2023 17:00:51 -0500
-Message-Id: <20230725220056.25560-1-jorge.lopez2@hp.com>
+Subject: [PATCH 1/5] hp-bioscfg: Fix memory leaks in string_elements_from_package()
+Date:   Tue, 25 Jul 2023 17:00:52 -0500
+Message-Id: <20230725220056.25560-2-jorge.lopez2@hp.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230725220056.25560-1-jorge.lopez2@hp.com>
+References: <20230725220056.25560-1-jorge.lopez2@hp.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,41 +73,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Submit individual patches to address memory leaks and uninitialized 
-variable errors for each source file listed below.
+Address memory leaks in hp_populate_string_elements_from_package()
+and uninitialized variable errors.
 
-- hp_populate_string_elements_from_package()
-drivers/platform/x86/hp/hp-bioscfg/string-attributes.c
+Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
 
-- hp_populate_ordered_list_elements_from_package()
-drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+---
+Based on the latest platform-drivers-x86.git/for-next
+---
+ drivers/platform/x86/hp/hp-bioscfg/string-attributes.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-- hp_populate_integer_elements_from_package()
-drivers/platform/x86/hp/hp-bioscfg/int-attributes.c
-
-- hp_populate_enumeration_elements_from_package()
-drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c
-
-- hp_populate_password_elements_from_package()
-drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-
-Changes were tested with a HP EliteBook x360 1030 G3
-
-
-Jorge Lopez (5):
-  hp-bioscfg: Fix memory leaks in string_elements_from_package()
-  hp-bioscfg: Fix memory leaks in ordered_list_elements_from_package
-  hp-bioscfg: Fix memory leaks in integer_elements_from_package
-  hp-bioscfg: Fix memory leaks in enumeration_elements_from_package()
-  hp-bioscfg: Fix memory leaks in password_elements_from_package()
-
- drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c   |  8 +++++++-
- drivers/platform/x86/hp/hp-bioscfg/int-attributes.c    |  7 ++++++-
- .../platform/x86/hp/hp-bioscfg/order-list-attributes.c | 10 ++++++++--
- .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10 +++++++++-
- drivers/platform/x86/hp/hp-bioscfg/string-attributes.c |  5 ++++-
- 5 files changed, 34 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/string-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/string-attributes.c
+index 1b62e372fb9e..e0ecdfca4def 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/string-attributes.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/string-attributes.c
+@@ -133,7 +133,7 @@ static int hp_populate_string_elements_from_package(union acpi_object *string_ob
+ 	char *str_value = NULL;
+ 	int value_len;
+ 	int ret = 0;
+-	u32 int_value;
++	u32 int_value = 0;
+ 	int elem;
+ 	int reqs;
+ 	int eloc;
+@@ -171,6 +171,7 @@ static int hp_populate_string_elements_from_package(union acpi_object *string_ob
+ 		if (expected_string_types[eloc] != string_obj[elem].type) {
+ 			pr_err("Error expected type %d for elem %d, but got type %d instead\n",
+ 			       expected_string_types[eloc], elem, string_obj[elem].type);
++			kfree(str_value);
+ 			return -EIO;
+ 		}
+ 
+@@ -232,6 +233,7 @@ static int hp_populate_string_elements_from_package(union acpi_object *string_ob
+ 					str_value,
+ 					sizeof(string_data->common.prerequisites[reqs]));
+ 				kfree(str_value);
++				str_value = NULL;
+ 			}
+ 			break;
+ 
+@@ -250,6 +252,7 @@ static int hp_populate_string_elements_from_package(union acpi_object *string_ob
+ 		}
+ 
+ 		kfree(str_value);
++		str_value = NULL;
+ 	}
+ 
+ exit_string_package:
 -- 
 2.34.1
 
