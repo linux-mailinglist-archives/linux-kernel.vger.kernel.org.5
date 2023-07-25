@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BB4761A9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25641761853
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjGYNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S231848AbjGYM2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbjGYNxh (ORCPT
+        with ESMTP id S229661AbjGYM2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:53:37 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6E2A1;
-        Tue, 25 Jul 2023 06:53:36 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PDaePY007871;
-        Tue, 25 Jul 2023 13:53:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=wLhNYbd6Zd+GGabhnUQinZ43yjFdh0s+zYY7HZXUS/g=;
- b=FYSPcI/jc+OAvaxxr7FXroHcgtYYqehoUdpww9EVoqV0jIYpYuQjNr4TXgLSmoA50cX3
- OQT03rd+2lYLlWzVMjJRAwFPHyOhxXRgDRBJCjuGuPgjsoa5LK5fUYNQzegosn8+op65
- uMpnm1JZChJQH2HnGDNGi5qd8ygJ70o3JddbecdR7rUm33Q2lFXEDcuSHnlhzalcoZaE
- mLybouT1/DOOMpXpmwGQsjUPQupSqlwf+aWm3bohMbTard5cmspY5+PezWNvzSwd3fKG
- NVbaqzrgocaN4TrkZSflGP/Unkohr4CzYtAi0G1GUPPSzxUIu6gmHsiPoxHKtO/QUVOO +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s20jtmck8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 13:53:36 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36PDagQl008042;
-        Tue, 25 Jul 2023 13:53:35 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s20jtmcjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 13:53:35 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36PCj8sn016607;
-        Tue, 25 Jul 2023 13:53:34 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0v513u6f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 13:53:34 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36PDrVEC20775652
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Jul 2023 13:53:31 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 782E820049;
-        Tue, 25 Jul 2023 13:53:31 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F0A820040;
-        Tue, 25 Jul 2023 13:53:31 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Jul 2023 13:53:31 +0000 (GMT)
-Date:   Tue, 25 Jul 2023 14:25:01 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-Subject: Re: [PATCH v3 4/6] KVM: s390: interrupt: Fix single-stepping
- userspace-emulated instructions
-Message-ID: <20230725142501.36073387@p-imbrenda>
-In-Reply-To: <20230724094716.91510-5-iii@linux.ibm.com>
-References: <20230724094716.91510-1-iii@linux.ibm.com>
-        <20230724094716.91510-5-iii@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 25 Jul 2023 08:28:12 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99978A7;
+        Tue, 25 Jul 2023 05:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690288088; x=1721824088;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Zu6o05zhMgF/5xWegXDEuIottLQva+nlIKEi6LdQR3k=;
+  b=jkzHyNi+1l6CH5wsrJVwhM1qYEqlxVUqtUYdbFoBr5UmS5aDPaGezCez
+   /YbKSW60tnRaXy62ssOBREYzV2iX1o7m+D583dJIx5jTFT3ETMTOUht9X
+   2cG4ZjU5z0HTenmhCgYWBqsFmEt1X+o695UBJD5GPGpAxu0XHLRO+mxcX
+   FgLB1YStff3oZPVU/1L5DWJSvhrI5AezALoy2/k92JhzUQA+CDpd6EKBQ
+   7OfWDWHZ7/3ZgSSoLwqgl7h/bqW96C7ZWgChoiAYt7VDV7e9uQyOQ9g9i
+   MYETJPq35TyMcyVjtbT8gG9EaOXtxVUZKzK/wqzTyiD+Jr/YXokCf4HTE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347312521"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="347312521"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 05:28:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="676221438"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="676221438"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 25 Jul 2023 05:28:02 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOH8z-000Abc-29;
+        Tue, 25 Jul 2023 12:28:01 +0000
+Date:   Tue, 25 Jul 2023 20:27:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+Subject: Re: [PATCH v7 09/13] coresight-tpdm: Add nodes for dsb edge control
+Message-ID: <202307252010.fbqRILwZ-lkp@intel.com>
+References: <1690269353-10829-10-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DonmjFEagg8Csm1voCQIh97jh6BJ4qkd
-X-Proofpoint-GUID: MMLt008fTRtlGKOeY3cmi0qj5nd-Yaoa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 spamscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307250119
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690269353-10829-10-git-send-email-quic_taozha@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,77 +81,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 11:44:10 +0200
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+Hi Tao,
 
-> Single-stepping a userspace-emulated instruction that generates an
-> interrupt causes GDB to land on the instruction following it instead of
-> the respective interrupt handler.
-> 
-> The reason is that after arranging a KVM_EXIT_S390_SIEIC exit,
-> kvm_handle_sie_intercept() calls kvm_s390_handle_per_ifetch_icpt(),
-> which sets KVM_GUESTDBG_EXIT_PENDING. This bit, however, is not
-> processed immediately, but rather persists until the next ioctl(),
-> causing a spurious single-step exit.
-> 
-> Fix by clearing this bit in ioctl().
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.5-rc3 next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> ---
->  arch/s390/kvm/kvm-s390.c | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 0c6333b108ba..e6511608280c 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -5383,6 +5383,7 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->  {
->  	struct kvm_vcpu *vcpu = filp->private_data;
->  	void __user *argp = (void __user *)arg;
-> +	int rc;
->  
->  	switch (ioctl) {
->  	case KVM_S390_IRQ: {
-> @@ -5390,7 +5391,8 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->  
->  		if (copy_from_user(&s390irq, argp, sizeof(s390irq)))
->  			return -EFAULT;
-> -		return kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		rc = kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		break;
->  	}
->  	case KVM_S390_INTERRUPT: {
->  		struct kvm_s390_interrupt s390int;
-> @@ -5400,10 +5402,25 @@ long kvm_arch_vcpu_async_ioctl(struct file *filp,
->  			return -EFAULT;
->  		if (s390int_to_s390irq(&s390int, &s390irq))
->  			return -EINVAL;
-> -		return kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		rc = kvm_s390_inject_vcpu(vcpu, &s390irq);
-> +		break;
->  	}
-> +	default:
-> +		rc = -ENOIOCTLCMD;
-> +		break;
->  	}
-> -	return -ENOIOCTLCMD;
-> +
-> +	/*
-> +	 * To simplify single stepping of userspace-emulated instructions,
-> +	 * KVM_EXIT_S390_SIEIC exit sets KVM_GUESTDBG_EXIT_PENDING (see
-> +	 * should_handle_per_ifetch()). However, if userspace emulation injects
-> +	 * an interrupt, it needs to be cleared, so that KVM_EXIT_DEBUG happens
-> +	 * after (and not before) the interrupt delivery.
-> +	 */
-> +	if (!rc)
-> +		vcpu->guest_debug &= ~KVM_GUESTDBG_EXIT_PENDING;
-> +
-> +	return rc;
->  }
->  
->  static int kvm_s390_handle_pv_vcpu_dump(struct kvm_vcpu *vcpu,
+url:    https://github.com/intel-lab-lkp/linux/commits/Tao-Zhang/coresight-tpdm-Remove-the-unnecessary-lock/20230725-152235
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/1690269353-10829-10-git-send-email-quic_taozha%40quicinc.com
+patch subject: [PATCH v7 09/13] coresight-tpdm: Add nodes for dsb edge control
+config: arm-randconfig-r003-20230725 (https://download.01.org/0day-ci/archive/20230725/202307252010.fbqRILwZ-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307252010.fbqRILwZ-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307252010.fbqRILwZ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/hwtracing/coresight/coresight-tpdm.c: In function 'dsb_edge_ctrl_val_store':
+>> drivers/hwtracing/coresight/coresight-tpdm.c:383:28: warning: variable 'mask' set but not used [-Wunused-but-set-variable]
+     383 |         unsigned long val, mask, edge_ctrl;
+         |                            ^~~~
+   drivers/hwtracing/coresight/coresight-tpdm.c: In function 'dsb_edge_ctrl_mask_store':
+>> drivers/hwtracing/coresight/coresight-tpdm.c:449:9: warning: this 'else' clause does not guard... [-Wmisleading-indentation]
+     449 |         else
+         |         ^~~~
+   drivers/hwtracing/coresight/coresight-tpdm.c:451:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'else'
+     451 |                 drvdata->dsb->edge_ctrl_mask[reg] = set;
+         |                 ^~~~~~~
+
+
+vim +/mask +383 drivers/hwtracing/coresight/coresight-tpdm.c
+
+   368	
+   369	/*
+   370	 * This function is used to control the edge detection according
+   371	 * to the index number that has been set.
+   372	 * "edge_ctrl" should be one of the following values.
+   373	 * 0 - Rising edge detection
+   374	 * 1 - Falling edge detection
+   375	 * 2 - Rising and falling edge detection (toggle detection)
+   376	 */
+   377	static ssize_t dsb_edge_ctrl_val_store(struct device *dev,
+   378						struct device_attribute *attr,
+   379						const char *buf,
+   380						size_t size)
+   381	{
+   382		struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+ > 383		unsigned long val, mask, edge_ctrl;
+   384		int reg;
+   385	
+   386		if ((kstrtoul(buf, 0, &edge_ctrl)) || (edge_ctrl > 0x2))
+   387			return -EINVAL;
+   388	
+   389		spin_lock(&drvdata->spinlock);
+   390		/*
+   391		 * There are 2 bit per DSB Edge Control line.
+   392		 * Thus we have 16 lines in a 32bit word.
+   393		 */
+   394		reg = EDCR_TO_WORD_IDX(drvdata->dsb->edge_ctrl_idx);
+   395		mask = EDCR_TO_WORD_MASK(drvdata->dsb->edge_ctrl_idx);
+   396		val = drvdata->dsb->edge_ctrl[reg];
+   397		val &= ~EDCR_TO_WORD_MASK(drvdata->dsb->edge_ctrl_idx);
+   398		val |= EDCR_TO_WORD_VAL(edge_ctrl, drvdata->dsb->edge_ctrl_idx);
+   399		drvdata->dsb->edge_ctrl[reg] = val;
+   400		spin_unlock(&drvdata->spinlock);
+   401	
+   402		return size;
+   403	}
+   404	static DEVICE_ATTR_RW(dsb_edge_ctrl_val);
+   405	
+   406	static ssize_t dsb_edge_ctrl_mask_show(struct device *dev,
+   407						    struct device_attribute *attr,
+   408						    char *buf)
+   409	{
+   410		struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+   411		ssize_t size = 0;
+   412		unsigned long bytes;
+   413		int i;
+   414	
+   415		spin_lock(&drvdata->spinlock);
+   416		for (i = 0; i < TPDM_DSB_MAX_EDCMR; i++) {
+   417			bytes = sysfs_emit_at(buf, size,
+   418					  "Val:0x%x\n", drvdata->dsb->edge_ctrl_mask[i]);
+   419			if (bytes <= 0)
+   420				break;
+   421			size += bytes;
+   422		}
+   423		spin_unlock(&drvdata->spinlock);
+   424		return size;
+   425	}
+   426	
+   427	static ssize_t dsb_edge_ctrl_mask_store(struct device *dev,
+   428						     struct device_attribute *attr,
+   429						     const char *buf,
+   430						     size_t size)
+   431	{
+   432		struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+   433		unsigned long val;
+   434		u32 set;
+   435		int reg;
+   436	
+   437		if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+   438			return -EINVAL;
+   439	
+   440		spin_lock(&drvdata->spinlock);
+   441		/*
+   442		 * There is 1 bit per DSB Edge Control Mark line.
+   443		 * Thus we have 32 lines in a 32bit word.
+   444		 */
+   445		reg = EDCMR_TO_WORD_IDX(drvdata->dsb->edge_ctrl_idx);
+   446		set = drvdata->dsb->edge_ctrl_mask[reg];
+   447		if (val)
+   448			set |= BIT(EDCMR_TO_WORD_SHIFT(drvdata->dsb->edge_ctrl_idx));
+ > 449		else
+   450			set &= ~BIT(EDCMR_TO_WORD_SHIFT(drvdata->dsb->edge_ctrl_idx));
+   451			drvdata->dsb->edge_ctrl_mask[reg] = set;
+   452		spin_unlock(&drvdata->spinlock);
+   453	
+   454		return size;
+   455	}
+   456	static DEVICE_ATTR_RW(dsb_edge_ctrl_mask);
+   457	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
