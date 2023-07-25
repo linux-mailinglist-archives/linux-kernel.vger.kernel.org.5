@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5BE761C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80CD761C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbjGYOvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
+        id S231368AbjGYOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjGYOvu (ORCPT
+        with ESMTP id S229562AbjGYOwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:51:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0078E63;
-        Tue, 25 Jul 2023 07:51:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DBA061766;
-        Tue, 25 Jul 2023 14:51:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C61BC433C7;
-        Tue, 25 Jul 2023 14:51:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690296708;
-        bh=gjyDXLkC4mnr8WezzRutIPic9c0en4BSR1Ldx+j+02Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u0qb33yuiUzrausHRexOwq+TFO8CmYojNgkzOBxERBhM1YVmCyNveQLHk672twPah
-         yJJSiaTozBmiUYOj8dEUrtcOvl0RUhDPpnH3J7NWPOGdffIoaSCcEDiYaCKpEKogc0
-         HZ6/j2k4q2opv+6zkOg3xnVdcmkBuZ+K+OIEDbXl/EdxGDWHXTjurQ/BKdqhz4AaGq
-         ruE23o7N68hk4u9p4nmmOI/sqmuDN790BbmMVTn+G8MymIeD62W9db3vPpIpOs/8mh
-         NR/Vfw0UQ1UBnOq8O0waQX92wl4PfJs6NkLWWDinDN4JAKqbBXUo9IsOGorVnKDvOI
-         t3/y3AaG6PqFg==
-Date:   Tue, 25 Jul 2023 15:51:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2 1/1] Documentation: core-api: Drop :export: for
- int_log.h
-Message-ID: <4f6c9be9-22bd-472e-a20a-cd361b46e005@sirena.org.uk>
-References: <20230725104956.47806-1-andriy.shevchenko@linux.intel.com>
- <87a5vkb0ee.fsf@meer.lwn.net>
- <b761d010-ef21-4be6-b6c3-678498b7fa71@sirena.org.uk>
- <ZL/W5rc043oPLfMV@smile.fi.intel.com>
- <29369f0b-732d-4d20-9afa-0918dba0f512@sirena.org.uk>
- <ZL/e9oguxJ8+nht/@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YzYDg1fKvwmUW5cZ"
-Content-Disposition: inline
-In-Reply-To: <ZL/e9oguxJ8+nht/@smile.fi.intel.com>
-X-Cookie: Happiness is the greatest good.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 10:52:10 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C57E78
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:52:09 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c0f35579901so6375884276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690296728; x=1690901528;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EuswUUvQmlUzTdyahqM81yDJAxq5BDNLAyifzL2kDmw=;
+        b=7enRUTFU36NlUV9k9d1LrREoh+PMOSydJcFHqM8HdWaoNOed7TBfam0E/XN0ZlxYSk
+         4tmDx90iMpGViFu3k2dOrI7kt7F7JiNgFrj+RNcyVDf3Hv/YxtEm1OJRcfvvElOt2kaw
+         iOdJL6cbiLfFdZ8bLmX7zwAJWQ32b/+TP5oyS2n6J7mUwa1huLnwQFScSv9ia0JQqMeM
+         Ej8edqyM+Iqq9l++k1hKMa5Jh1/+2nDihG0RaQTghkMXCxPOhaXtTbDwOhdErn3xQG3G
+         D3kyvvd9WhJz06j/rAEQPPwC3N4y/gBNo2O6x5esGTdPgmI6FxAQoJU7HFp3Ju74s6HW
+         p3Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690296728; x=1690901528;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EuswUUvQmlUzTdyahqM81yDJAxq5BDNLAyifzL2kDmw=;
+        b=KaDthRaJ/bz5xKKZ3pH5vYg+Gh4ejwyCbTSkG8rvVFcCRrJF+qGFG7gvG9aYpSx1Yq
+         eg4NgyHyW5HKfrJa2GmX1vr0oRZPUE8CT1gf9IZ8l516vtMnvo2aRMu8Jn5+g5bz+viz
+         ++ASc2PsQ8vjA+F7rBnEX9TGUZ26JFWpEfqtQs2X2K2CTTpqzuHzrP7eEQ0HQCAD3zXo
+         cKqzSDfJR88RzF1HP6vxtBizCRW8OeS2feK+3ttONA4VfbthYNhyGQlhP3sfW3CIkdZY
+         028dpNvaIVMT7+MADw/U/gnFtzakX9C9Aw6Gb0T46NJKHt/ILc982SqCUVVv3W1q3QAz
+         uRcA==
+X-Gm-Message-State: ABy/qLarN3teCNzlHSM9Ku24fitT6O6KyqMFEMC1ErJ6OLzbx6bMuUhw
+        VHr+Yjwu610d1QdNHylO7gAEu9/vzdE=
+X-Google-Smtp-Source: APBJJlHwdGIL3JCt/pfGQUNXJV+D65iPFoi1/mWhFsnklNLdam+UscJ1tOBOQQ3YxFKj5jbkaGWuXjffR6s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:521:b0:d11:3c58:2068 with SMTP id
+ y1-20020a056902052100b00d113c582068mr30906ybs.2.1690296728331; Tue, 25 Jul
+ 2023 07:52:08 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 07:52:06 -0700
+In-Reply-To: <20230725100844.3416164-1-foxywang@tencent.com>
+Mime-Version: 1.0
+References: <20230725100844.3416164-1-foxywang@tencent.com>
+Message-ID: <ZL/hlrWFzrtcdcmH@google.com>
+Subject: Re: [PATCH] kvm: vmx: fix a trivial comment in vmx_vcpu_after_set_cpuid()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yi Wang <up2wing@gmail.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanpengli@tencent.com, Yi Wang <foxywang@tencent.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 25, 2023, Yi Wang wrote:
+> The commit b6247686b7571 ("KVM: VMX: Drop caching of KVM's desired
+> sec exec controls for vmcs01") renamed vmx_compute_secondary_exec_control()
+> to vmx_secondary_exec_control(), but forgot to modify the comment.
+> 
+> Signed-off-by: Yi Wang <foxywang@tencent.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0ecf4be2c6af..26d62990fea7 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7722,7 +7722,7 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  
+> -	/* xsaves_enabled is recomputed in vmx_compute_secondary_exec_control(). */
+> +	/* xsaves_enabled is recomputed in vmx_secondary_exec_control(). */
+>  	vcpu->arch.xsaves_enabled = false;
 
---YzYDg1fKvwmUW5cZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have an in-progress patch[*] that reworks this code and wipes out the stale
+comment as a side effect.  Thank you though!
 
-On Tue, Jul 25, 2023 at 05:40:54PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 25, 2023 at 03:27:58PM +0100, Mark Brown wrote:
-
-> > There was some random patch you just sent me the message ID for in the
-> > replies to something from Stephen which I'm fairly sure I queued,
-> > perhaps it was a different thing or git thought it was a noop when it
-> > was applied?
-
-> The first version is here [1].
-> Then it was a discussion about Linux Next build issues [2].
-
-> In the discussion I mentioned:
-
->   The 20230713165320.14199-1-andriy.shevchenko@linux.intel.com had been sent.
-
-> which is exactly what [1] is.
-
-> I have no idea how it can be a noop, but the patch is missing as far
-> as I can tell.
-
-> This thread is v2 of what was in [1].
-
-> [1]: https://lore.kernel.org/linux-doc/20230713165320.14199-1-andriy.shevchenko@linux.intel.com/
-> [2]: https://lore.kernel.org/linux-next/20230713121627.17990c86@canb.auug.org.au/T/#u
-
-So there's two versions of the patch and for some reason v1 was
-mentioned yesterday but there's also a v2 version?
-
---YzYDg1fKvwmUW5cZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS/4X8ACgkQJNaLcl1U
-h9DFYgf/ZWPoClzNGrEuYRm2z7PxLQL7AKn9qAWXogSRQy+PBYInm06vbBRKoCJY
-RX7v9RRq4PkNaH/Ua+qMWcPT3+qEbvGbb15WOuL00UZrfDEfjcvOoqwA0HL9MgXY
-eA8Vk1TRXzZv8kmNLRhyM0NFLOyJ9LYDE4uEpVGFGjr2uqAG2yRJKFu8bPAPR5PW
-ki+N/fagypQooKQH8+bJbE6HDqkV6evdtzPZ2/kmgLOEvxzrYpLDqqMm2/phlaob
-k9vd2otgohUK3lXgRshyFPA4Ueo6aGYK6DZJlNWcZ/n3bxUiUtaTfUQDxXNmlcNQ
-8EE1jyqp4P+kVKS/I59GCLox7oX8gA==
-=FUnX
------END PGP SIGNATURE-----
-
---YzYDg1fKvwmUW5cZ--
+[*] https://lore.kernel.org/all/20230217231022.816138-4-seanjc@google.com
