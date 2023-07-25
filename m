@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E263676187A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A6776187B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbjGYMhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S233085AbjGYMhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232494AbjGYMhl (ORCPT
+        with ESMTP id S232494AbjGYMhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:37:41 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7285C11A;
-        Tue, 25 Jul 2023 05:37:39 -0700 (PDT)
-X-QQ-mid: bizesmtp62t1690288646t6jdi2ss
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 25 Jul 2023 20:37:25 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: CR3LFp2JE4n/UXq5fwdJeBv7RRG370WMr4PjV0XGpJjDqWqFCTyP4Cv4tFGF3
-        JQugoL6zG57Kn80OYBiAKbaMhyThfdKA6QevgJNq6ggmGgWdy8+03a/MJEmCF31zEptp8hr
-        w9YBWEGim1io4MLiGWNB4iTuccAXqiHnhRwxpOvhHHqQU+LREhp50SOzfmWdqY4MXZZKocc
-        gRtG82CpwEtnTPTrIm0DFj0bgyfWBSi8EM3YsHXwrgEQ1kt+EB2x672er+0j6uudhOdWhNi
-        ujp4LSoVCdOhkmXBhD8qKp0RWZWiVaSDM1kUnYZpTsdaYGfQY9lHyamzpSNaJt9BVNCSA05
-        Iq8uJ81hjmpopzlo3LGZHuFUxClK65AP3P3q1h5W0LxbmDhP7VYD2gJpzbyJIDcsMoHIPjI
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 15160778282208324326
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v2 02/14] selftests/nolibc: add macros to enhance maintainability
-Date:   Tue, 25 Jul 2023 20:37:25 +0800
-Message-Id: <20230725123725.35508-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230722122009.GE17311@1wt.eu>
-References: <20230722122009.GE17311@1wt.eu>
+        Tue, 25 Jul 2023 08:37:46 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EDD97
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:37:45 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-992b66e5affso917707966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690288663; x=1690893463;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=APtGQc3fKP6CePKt+WyyWdo+NMha8U8IFSfN0Ytp6fU=;
+        b=rfOeQdJq/fkO3knjEi7hj6+btTSJsEe96Ql9Ht4w0A31ZtOiFgUFQmJPPLA/VU2u3J
+         ojSrx8BIMALu8MmDs9dz1sF2HizywkRDJXlbyllpDtKwJRNiTTp6SGtkUtbaMsJ8hzcH
+         1a4dBhAY03v1L6REQbaLRzs693MDnC5rSbycUD0Ytdy8aWAdTpkCH8YBLJaa8r5m6UZw
+         wxeP22eVdbgFNM+3zFQ1Kd2PFB5owpD80+KxX8hEcBJRNVVZ+bJhXI5BEhbuQgMJSpKo
+         0cOKUA+eyOZFK9m17uf7LkgGAofD150kDfD0Ss5m3NpSxL30TzXaFtCr3k0tFBV7A9Fb
+         9zmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690288663; x=1690893463;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=APtGQc3fKP6CePKt+WyyWdo+NMha8U8IFSfN0Ytp6fU=;
+        b=U33A/51aVixtRjAjLlImSft1XVWsOaCa1YClRzTov5rt3ilvck5OOqFkLsrt8Uv5NV
+         96dqAWGzRbHfKYuqysgrCENq8OJ5fapudkyjZwqNJ5XEdqial5p9e9xu7cFRcxrvtPOP
+         mp/CxWwQYBywcl0KKPVsq5U2IpAeaDM7jrj1LrG4sRJ/SE5BjveoZQomSIgbq8w3V1Kr
+         9a7pTIyfSse85zZDr4RdE26F1g6vgvziZhtOFRhSHbmQK7IB4QGi6QVm2w7kELXlJGyL
+         nCPFC3BgCTiOYav//0gva9ZuPO6RMygQDycIMmu7Z/IELw3lsqgrUvUOqG+4ra4MK2Uj
+         Ufug==
+X-Gm-Message-State: ABy/qLZyz/p7e9GMpjswE732Usq8GALzvSthrUX6XgiRXGDvJIR/D7+x
+        EMz844nGcEvJNxAbBCjZ/KMwSg==
+X-Google-Smtp-Source: APBJJlESaLhEGVp/bf18e8ykwtg72P9QZ7d8UdyLKLX/krBh/k10sr95jDfGgLl4C7VimtyCU1JePg==
+X-Received: by 2002:a17:906:1046:b0:991:cd1f:e67a with SMTP id j6-20020a170906104600b00991cd1fe67amr13784335ejj.29.1690288663684;
+        Tue, 25 Jul 2023 05:37:43 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id qx26-20020a170906fcda00b00982cfe1fe5dsm8187480ejb.65.2023.07.25.05.37.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 05:37:43 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        pascal Paillet <p.paillet@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/2] dt-bindings: mfd: st,stpmic1: Add missing unevaluatedProperties for each regulator
+Date:   Tue, 25 Jul 2023 14:37:39 +0200
+Message-Id: <20230725123740.149559-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+Each regulator node, which references common regulator.yaml schema,
+should disallow additional or unevaluated properties.  Otherwise
+mistakes in properties will go unnoticed.  unevaluatedProperties:false
+requires listing existing properties (present in example and in other
+regulators of this device).
 
-> On Wed, Jul 19, 2023 at 09:19:10PM +0800, Zhangjin Wu wrote:
-> > The kernel targets share the same kernel make operations, the same
-> > .config file, the same kernel image, add MAKE_KERNEL, KERNEL_CONFIG and
-> > KERNEL_IMAGE for them.
-> > 
-> > Many targets share the same logging related settings, let's add common
-> > variables RUN_OUT, LOG_OUT and REPORT_RUN_OUT for them.
-> > 
-> > The qemu run/rerun targets share the same qemu system run command, add
-> > QEMU_SYSTEM_RUN for them.
-> > 
-> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > ---
-> >  tools/testing/selftests/nolibc/Makefile | 41 ++++++++++++++++---------
-> >  1 file changed, 27 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> > index 0cd17de2062c..8c531518bb9f 100644
-> > --- a/tools/testing/selftests/nolibc/Makefile
-> > +++ b/tools/testing/selftests/nolibc/Makefile
-> > @@ -166,45 +166,58 @@ endif
-> >  libc-test: nolibc-test.c
-> >  	$(QUIET_CC)$(CC) -o $@ $<
-> >  
-> > +# common macros for logging
-> > +RUN_OUT = $(CURDIR)/run.out
-> > +LOG_OUT = > "$(RUN_OUT)"
-> > +REPORT_RUN_OUT = $(REPORT) "$(RUN_OUT)"
-> > +
-> >  # local libc-test
-> >  run-libc-test: libc-test
-> > -	$(Q)./libc-test > "$(CURDIR)/run.out" || :
-> > -	$(Q)$(REPORT) $(CURDIR)/run.out
-> > +	$(Q)./libc-test $(LOG_OUT) || :
-> > +	$(Q)$(REPORT_RUN_OUT)
-> 
-> Sorry but I don't find that this improves maintainability, quite the
-> opposite in fact. One reason is that you never visually expect that
-> some shell indirection delimiters are hidden in a macro that seems
-> to only convey a name. Sure there are valid use cases for this, but
-> I think that here it's just adding too much abstraction and it makes
-> it quite hard to unfold all of this mentally.
->
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/mfd/st,stpmic1.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Ok, will reserve less ones as possible as we can.
+diff --git a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+index 97c61097f9e2..1a1ced489ef7 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+@@ -189,6 +189,16 @@ properties:
+ 
+       "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])$":
+         $ref: ../regulator/regulator.yaml
++        unevaluatedProperties: false
++
++        properties:
++          interrupts:
++            maxItems: 1
++
++          st,mask-reset:
++            description: mask reset for this regulator, the regulator configuration
++              is maintained during pmic reset.
++            $ref: /schemas/types.yaml#/definitions/flag
+ 
+       "^ldo[1-2,5-6]$":
+         type: object
+-- 
+2.34.1
 
-- RUN_OUT is required for architecture specific output
-- REPORT_RUN_OUT is not necessary, will remove it
-
-> Please try to keep the number of macros to the minimum that needs to
-> be replaced or forced by the user. Here I'm not seeing a compelling
-> reason for a user to want to force LOG_OUT to something else. Also
-> makefile macros are generally a pain to debug, which is another
-> reason for not putting too many of them.
->
-> I noticed that your next patch changes LOG_OUT to tee, it could have
-> done it everywhere and wouldn't affect readability as much.
->
-
-I have forgetten to pick an old patch to silence the running log like
-this:
-
-    ifeq ($(QUIET_RUN),1)
-    LOG_OUT = > "$(RUN_OUT)"
-    else
-    LOG_OUT = | tee "$(RUN_OUT)"
-    endif
-
-Without QUIET_RUN, we can silence the running log with:
-
-    $ make run LOG_OUT="> /dev/null"
-
-It is not meaningful like QUIET_RUN, seems the QUIET_RUN is not
-necessary for we have 'grep status' now, so, let's remove this RUN_OUT
-too.
-
-Thanks,
-Zhangjin
-
-> Thanks,
-> Willy
