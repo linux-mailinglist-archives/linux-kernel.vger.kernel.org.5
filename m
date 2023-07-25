@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9A2760CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE36760CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbjGYIZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        id S232550AbjGYI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGYIZz (ORCPT
+        with ESMTP id S232509AbjGYI1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:25:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F414110C3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:25:53 -0700 (PDT)
+        Tue, 25 Jul 2023 04:27:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711D110F4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:26:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 93202612CA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:25:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E56CAC433C8;
-        Tue, 25 Jul 2023 08:25:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DE6A614BF
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:26:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 197F5C433C8;
+        Tue, 25 Jul 2023 08:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690273553;
-        bh=Iof1axqYShcjdJEBrXSEXTcXQvW68qKtfXewR3ze5aA=;
+        s=k20201202; t=1690273604;
+        bh=OGBpT5Jt+TmmkL82pizZ3aBV1IMH5vp0zj/wyWC2G3U=;
         h=From:To:Cc:Subject:Date:From;
-        b=aS2106RDUiv81n+nUOxmB6E8asyvO3h2LfYIoo7EHM0nGqZY7t7bc6uphDFcDVTsN
-         3ozU3RWeD45SzJ3ke/lR0Pj28cinVYLbCrjZx8/CmQh37yCzN31p8jyyQIdwhY4tCH
-         CRUHfotD0ZPiF0ZyXrPiTM2L6AxzyrZHHkdTGEjTXWt2/p1AYuccHwqrGZQoqPMspq
-         x7UbkJW6zhk+XKNRr9pu335KO4u/MX4/JXAnAJ1DPv5cJqLrqoDATkO4z18ruSTO/S
-         vk/vNTKUb1ntADS8pxj6oyysRQglKIG1LeIuFctluGuJBCxJMXDJYo94RH2wDTfFP7
-         M5zAVOA6vg+sw==
+        b=rQOJ8VWAnuPVoKpTs12J5i9WSPPfURp6VB/BAT8Z5Y04R6DDCQXM4KTVL2zuqZ2iv
+         3hwMtLJpNHDxSZsgVBPLMFvucAziXEvfUsHyUFv76S/D6bSf20jCuf3efJEQ6Kj5xc
+         E9cxNIn3W2nP+pCm93lWslxX1QQ01bMiA7CRpimPTQvnSQCsJAFszDHONjZPhol4CD
+         1E8wLD3zcfy55HgOSg0CbjrW0p5Yhon8gs8AY/1FJSaiwhMfpmz148qwYTozzb6xRO
+         jd2ttx5rGdHoiv9j6XRKGjafC8mT0Upwh336792vH8sDO4N+XL0z6OxAUFamSmME2f
+         FRXYVQKrX8FXQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rong Tao <rongtao@cestc.cn>,
-        Petr Mladek <pmladek@suse.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Alexey Kardashevskiy <aik@amd.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] samples/hw_breakpoint: fix building without module unloading
-Date:   Tue, 25 Jul 2023 10:25:36 +0200
-Message-Id: <20230725082546.941346-1-arnd@kernel.org>
+Subject: [PATCH] x86: Fix amd_check_microcode() declaration
+Date:   Tue, 25 Jul 2023 10:26:13 +0200
+Message-Id: <20230725082638.956675-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,39 +60,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-__symbol_put() is really meant as an internal helper and is not available
-when module unloading is disabled, unlike the previously used symbol_put():
+The newly added amd_check_microcode() function has two conflicting definitions
+if CONFIG_CPU_SUP_AMD is enabled and CONFIG_MICROCODE_AMD is disabled. Since
+the header with the stub definition is not included in cpu/amd.c, this only
+causes a -Wmissing-prototype warning with W=1
 
-samples/hw_breakpoint/data_breakpoint.c: In function 'hw_break_module_exit':
-samples/hw_breakpoint/data_breakpoint.c:73:9: error: implicit declaration of function '__symbol_put'; did you mean '__symbol_get'? [-Werror=implicit-function-declaration]
+arch/x86/kernel/cpu/amd.c:1289:6: error: no previous prototype for 'amd_check_microcode' [-Werror=missing-prototypes]
 
-The hw_break_module_exit() function is not actually used when module
-unloading is disabled, but it still causes the build failure for an
-undefined identifier. Enclose this one call in an appropriate #ifdef to
-clarify what the requirement is. Leaving out the entire exit function
-would also work but feels less clar in this case.
+Adding the missing #include shows the other problem:
 
-Fixes: 910e230d5f1bb ("samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'")
-Fixes: d8a84d33a4954 ("samples/hw_breakpoint: drop use of kallsyms_lookup_name()")
+arch/x86/kernel/cpu/amd.c:1290:6: error: redefinition of 'amd_check_microcode'
+arch/x86/include/asm/microcode_amd.h:58:20: note: previous definition of 'amd_check_microcode' with type 'void(void)'
+
+Change the stub function to use the matching #ifdef check for the amd cpu
+support instead of the microcode and include the header to avoid both and
+make it behave consistently.
+
+Fixes: 522b1d69219d8 ("x86/cpu/amd: Add a Zenbleed fix")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- samples/hw_breakpoint/data_breakpoint.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/include/asm/microcode_amd.h | 7 ++++++-
+ arch/x86/kernel/cpu/amd.c            | 1 +
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
-index 9debd128b2ab8..b99322f188e59 100644
---- a/samples/hw_breakpoint/data_breakpoint.c
-+++ b/samples/hw_breakpoint/data_breakpoint.c
-@@ -70,7 +70,9 @@ static int __init hw_break_module_init(void)
- static void __exit hw_break_module_exit(void)
- {
- 	unregister_wide_hw_breakpoint(sample_hbp);
-+#ifdef CONFIG_MODULE_UNLOAD
- 	__symbol_put(ksym_name);
+diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
+index 9675c621c1ca4..6a860d40b0411 100644
+--- a/arch/x86/include/asm/microcode_amd.h
++++ b/arch/x86/include/asm/microcode_amd.h
+@@ -48,13 +48,18 @@ extern void __init load_ucode_amd_bsp(unsigned int family);
+ extern void load_ucode_amd_ap(unsigned int family);
+ extern int __init save_microcode_in_initrd_amd(unsigned int family);
+ void reload_ucode_amd(unsigned int cpu);
+-extern void amd_check_microcode(void);
+ #else
+ static inline void __init load_ucode_amd_bsp(unsigned int family) {}
+ static inline void load_ucode_amd_ap(unsigned int family) {}
+ static inline int __init
+ save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
+ static inline void reload_ucode_amd(unsigned int cpu) {}
 +#endif
- 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
- }
- 
++
++#ifdef CONFIG_CPU_SUP_AMD
++extern void amd_check_microcode(void);
++#else
+ static inline void amd_check_microcode(void) {}
+ #endif
++
+ #endif /* _ASM_X86_MICROCODE_AMD_H */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 26ad7ca423e7c..24596e3c106b7 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -15,6 +15,7 @@
+ #include <asm/cpu.h>
+ #include <asm/spec-ctrl.h>
+ #include <asm/smp.h>
++#include <asm/microcode_amd.h>
+ #include <asm/numa.h>
+ #include <asm/pci-direct.h>
+ #include <asm/delay.h>
 -- 
 2.39.2
 
