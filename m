@@ -2,131 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9741761066
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED83761065
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbjGYKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S232446AbjGYKP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232741AbjGYKP4 (ORCPT
+        with ESMTP id S232654AbjGYKPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:15:56 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 911E919AF;
-        Tue, 25 Jul 2023 03:15:43 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6ED3515BF;
-        Tue, 25 Jul 2023 03:16:26 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB49E3F67D;
-        Tue, 25 Jul 2023 03:15:40 -0700 (PDT)
-Message-ID: <56e70195-5f58-ca03-d6fd-f73e91f56298@arm.com>
-Date:   Tue, 25 Jul 2023 11:15:29 +0100
+        Tue, 25 Jul 2023 06:15:55 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0B11728
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:15:42 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 6E99616E7EB;
+        Tue, 25 Jul 2023 12:15:39 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1690280139; bh=VkSwamAp/4PDPv7DdYCrtZQ5vmXGPZLbqsG5fwWzuZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p6x10Yht8ow48zlrALbeY2e4IicnzbpwZLWp9qIt+gAjalRXgUE2EMKYQe93s+Wty
+         OLQJ4s9WLrmhjHqzKlJ7BdXR8lmGJakv1WIWZnAdt1QImnmnur6uRrtJgOsCEG5Ixv
+         67kEzE64ng+hilOryKzXuKOYKRIbGyu1DL460HDayizReh1NBVmXoLBjniDiVU4q06
+         viKPt1HvhkjWx5A4k4rrkHEHVZ/ZdSlqSr+uxtHIAugwjbfRiDl1/50VIcpf2q5O7D
+         O214xNUZNaHf2zYwx9C0Z+UUERZLxpGkZmMy5l/nFQSJ1qxuK2oPOpB976q6Jvhg1p
+         05ofrg+vXWnXA==
+Date:   Tue, 25 Jul 2023 12:15:38 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Li Huafei <lihuafei1@huawei.com>,
+        Liao Chang <liaochang1@huawei.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alyssa Ross <hi@alyssa.is>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Li Zhengyu <lizhengyu3@huawei.com>,
+        linux-riscv@lists.infradead.org (open list:RISC-V ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Torsten Duwe <duwe@lst.de>, Torsten Duwe <duwe@suse.de>
+Subject: Re: [PATCH v1 1/3] riscv/kexec: handle R_RISCV_CALL_PLT relocation
+ type
+Message-ID: <20230725121538.2bb4b64f@meshulam.tesarici.cz>
+In-Reply-To: <652f652d571458522a615040f68a885f10b45ca7.1690274483.git.petr.tesarik.ext@huawei.com>
+References: <cover.1690274483.git.petr.tesarik.ext@huawei.com>
+        <652f652d571458522a615040f68a885f10b45ca7.1690274483.git.petr.tesarik.ext@huawei.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] perf arm64: Fix read PMU cpu slots
-Content-Language: en-US
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc:     Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZL4G7rWXkfv-Ectq@B-Q60VQ05P-2326.local>
- <2e392aa9-859a-75ef-eb3e-1870b1e78061@linux.alibaba.com>
- <ZL6pxZ4RmMC2W7S+@kernel.org>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <ZL6pxZ4RmMC2W7S+@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++Cc Torsten (somehow missed from the original Cc list).
 
+Petr T
 
-On 24/07/2023 17:41, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jul 24, 2023 at 03:40:12PM +0800, Jing Zhang escreveu:
->>
->>
->> 在 2023/7/24 下午1:06, Haixin Yu 写道:
->>> Commit f8ad6018ce3c ("perf pmu: Remove duplication around
->>>  EVENT_SOURCE_DEVICE_PATH") uses sysfs__read_ull to read a full
->>> sysfs path, which will never success. Fix it by read file directly.
->>>
->>> Signed-off-by: Haixin Yu <yuhaixin.yhx@linux.alibaba.com>
->>> ---
->>>  tools/perf/arch/arm64/util/pmu.c | 7 ++++---
->>>  1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
->>> index 561de0cb6b95..512a8f13c4de 100644
->>> --- a/tools/perf/arch/arm64/util/pmu.c
->>> +++ b/tools/perf/arch/arm64/util/pmu.c
->>> @@ -54,10 +54,11 @@ double perf_pmu__cpu_slots_per_cycle(void)
->>>  		perf_pmu__pathname_scnprintf(path, sizeof(path),
->>>  					     pmu->name, "caps/slots");
->>>  		/*
->>> -		 * The value of slots is not greater than 32 bits, but sysfs__read_int
->>> -		 * can't read value with 0x prefix, so use sysfs__read_ull instead.
->>> +		 * The value of slots is not greater than 32 bits, but
->>> +		 * filename__read_int can't read value with 0x prefix,
->>> +		 * so use filename__read_ull instead.
->>>  		 */
->>> -		sysfs__read_ull(path, &slots);
->>> +		filename__read_ull(path, &slots);
->>>  	}
->>>  
->>>  	return slots ? (double)slots : NAN;
->>
->> Yes, the function perf_pmu__pathname_scnprintf returns the complete slots file path "/sys/bus/xxxxx/caps/slots",
->> and sysfs__read_ull will add the prefix "/sys" to the path, so the final file path becomes "/sys/sys/bus/xxxx/caps/slots"
->> which does not exist, and the slots file cannot be successfully read, so sysfs__read_ull needs to be changed to the
->> filename__read_ull.
->>
->> I tested it and it works well.
->>
->> Tested-by: Jing Zhang <renyu.zj@linux.alibaba.com>
-> 
-> I've applied this to my local branch, thanks.
-> 
-> I also added the missing:
-> 
-> Fixes: f8ad6018ce3c065a ("perf pmu: Remove duplication around EVENT_SOURCE_DEVICE_PATH")
-> 
-> This is another case where a 'perf test' entry would come in handy.
-> 
-> James, please check and ack,
-> 
-> - Arnaldo
+On Tue, 25 Jul 2023 10:44:25 +0200
+Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
 
-Oops, looks like the system I tested that on doesn't report slots so it
-returns NAN whether it successfully reads the file or not.
+> From: Torsten Duwe <duwe@suse.de>
+> 
+> R_RISCV_CALL has been deprecated and replaced by R_RISCV_CALL_PLT. See Enum
+> 18-19 in Table 3. Relocation types here:
+> 
+> https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc
+> 
+> It was deprecated in ("Deprecated R_RISCV_CALL, prefer R_RISCV_CALL_PLT"):
+> 
+> https://github.com/riscv-non-isa/riscv-elf-psabi-doc/commit/a0dced85018d7a0ec17023c9389cbd70b1dbc1b0
+> 
+> Recent tools (at least GNU binutils-2.40) already use R_RISCV_CALL_PLT.
+> Kernels built with such binutils fail kexec_load_file(2) with:
+> 
+>  kexec_image: Unknown rela relocation: 19
+>  kexec_image: Error loading purgatory ret=-8
+> 
+> The binary code at the call site remains the same, so tell
+> arch_kexec_apply_relocations_add() to handle _PLT alike.
+> 
+> Fixes: 838b3e28488f ("RISC-V: Load purgatory in kexec_file")
+> Signed-off-by: Torsten Duwe <duwe@suse.de>
+> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> Cc: Li Zhengyu <lizhengyu3@huawei.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/riscv/kernel/elf_kexec.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
+> index 5372b708fae2..38390d3bdcac 100644
+> --- a/arch/riscv/kernel/elf_kexec.c
+> +++ b/arch/riscv/kernel/elf_kexec.c
+> @@ -425,6 +425,7 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+>  		 * sym, instead of searching the whole relsec.
+>  		 */
+>  		case R_RISCV_PCREL_HI20:
+> +		case R_RISCV_CALL_PLT:
+>  		case R_RISCV_CALL:
+>  			*(u64 *)loc = CLEAN_IMM(UITYPE, *(u64 *)loc) |
+>  				 ENCODE_UJTYPE_IMM(val - addr);
 
-I can't think of a test that doesn't just repeat that function so I will
-probably say to leave it as is (and we're not currently doing any
-automated testing on any platforms that report slots either). It's quite
-visible when it breaks because the topdown metrics won't work on
-platforms where they should.
-
-Sorry for the breakage!
-
-Acked-by: James Clark <james.clark@arm.com>
