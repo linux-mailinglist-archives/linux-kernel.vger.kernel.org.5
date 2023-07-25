@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05566761B5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD14761B57
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbjGYOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        id S232707AbjGYOVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbjGYOWF (ORCPT
+        with ESMTP id S232599AbjGYOU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:22:05 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DC52682
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:21:38 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-314172bac25so4308305f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690294890; x=1690899690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+UwYYe6ucZvdBvqF8iQhg0hDnshi1xav4hUdpbdxiqw=;
-        b=WbIR7n/yzc9VAozw8Sk+VSB2504MVtOdu1vnFMj5noYjek5szstVImCB0Qp6a7sqFz
-         Gz1gOgq/xvFNwR6NQej4DgG6nd0XEbv7N3vBqNr4x74ijnVGuP6dp2xAnyb09iyks1TD
-         U3hriTLler5E7fm9b3s9X5Pv4EUZBMV+gFxGRvGwNfHZyV9OSzwvCZH1U0E6XOZvuUqY
-         p07D4iEfPMttDvKhK+zGj8L1eAcWLj/Q3iN5wQ36akJ38bS8XiId2FJF9QSZk+K+/BxR
-         fR8/8EV1BgMPvCEA5uZCfxHxHjuyY1xOUxXk1NtodoYq/XT1SGJTBfJWvqEg23Om2VK+
-         P3Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690294890; x=1690899690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+UwYYe6ucZvdBvqF8iQhg0hDnshi1xav4hUdpbdxiqw=;
-        b=ZeqqFJS+TJj92dg50qWlKyImV+JTzxRFCFI8QWhwYvBUlj7V9zXGp77Uxyeib1my9r
-         bUtiX6h0GxbwT7Y3/4LtRzk3mboJi/K3hrFn92c3Rv2FJnGp0yTtOMHP6aMsX3Hhm8vd
-         xG09a8IjAv7J2JjlYmzOr9larJK/szW07QTrEvsjwWcTRZfSpv4NxzpoUZJTWcD3UNaH
-         AvGwcw6xBbczBkWDEaeSA5YCl61vpHqA00iWR/hpULpxb+NVddpnAZGYRbUIu7/wMsnv
-         +yqRWAQ6+L9mxuF7KU9O8wi9X23z7e2/foFB2vCz32rsAYHoCT32UzHlvy0+4gDRZwW1
-         czcQ==
-X-Gm-Message-State: ABy/qLaj4aH4gHfIoTWPP8xmIIl+x9/JtCmMjyEuSgPTt+bwMdgPf4cA
-        qQRTX6ycyZGM2lez80S1JK2/LQ==
-X-Google-Smtp-Source: APBJJlHTPdf8WSeLzfqvdw+Iv3zNCwUMRolvKBj5Y5BArZHknPJjzTL9f7IYaGzso0TGmRYunEA55Q==
-X-Received: by 2002:a5d:45c1:0:b0:313:ee5b:d4bc with SMTP id b1-20020a5d45c1000000b00313ee5bd4bcmr9304252wrs.5.1690294889769;
-        Tue, 25 Jul 2023 07:21:29 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id x10-20020adff0ca000000b00314367cf43asm16503568wro.106.2023.07.25.07.21.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 07:21:29 -0700 (PDT)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Song Shuai <songshuaishuai@tinylab.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v6 3/3] Documentation: riscv: Update boot image header since EFI stub is supported
-Date:   Tue, 25 Jul 2023 16:19:25 +0200
-Message-Id: <20230725141926.823153-3-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230725141926.823153-1-alexghiti@rivosinc.com>
-References: <20230725141926.823153-1-alexghiti@rivosinc.com>
+        Tue, 25 Jul 2023 10:20:57 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8901FEF;
+        Tue, 25 Jul 2023 07:20:29 -0700 (PDT)
+X-QQ-mid: bizesmtp67t1690294818typdvcig
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 25 Jul 2023 22:20:17 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: rZJGTgY0+YMrG+DMayZFHWr3g2fYbpAptcGKdz0egT1ykSckqxUfDj7OQ6IRC
+        umcKcFKk2oSR6PmRpl5Gd0Gk43QZ0LZIpZONyq753h+NYoqYNQHUAMAD+CVcgSzGJBVJawt
+        tf9K/LFH4zuq6vU6Ciz+ScDdptaygQpWGqQce3cQqkZA9q91SWJW+vbOJAgucsPSs9uhNu+
+        nSXF8xvfU+nj0e5HN96//GvtYNIdRuEhB3Y9LLDjCvHrvTRz+K8MhLvvbgK0LycE7H2Ye8t
+        l6T4kHHhIG7lDiDE67E9OwZEfdVJvKnnO387F0xmiBxM0DJXPjDNx+1UL2BHdAN91KzH898
+        JayfiLnehO2ke3rjwBYvuBKFRkR43xloig2pynOfzP9NOSMcq7YO291jkvgZQ5grXTvP5/b
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 8411398485758775704
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v2 08/14] selftests/nolibc: string the core targets
+Date:   Tue, 25 Jul 2023 22:20:17 +0800
+Message-Id: <20230725142017.37103-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230722125758.GJ17311@1wt.eu>
+References: <20230722125758.GJ17311@1wt.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The EFI stub is supported on RISC-V so update the documentation that
-explains how the boot image header was reused to support it.
+> On Wed, Jul 19, 2023 at 09:26:01PM +0800, Zhangjin Wu wrote:
+> > To avoid run targets one by one manually and boringly, let's string them
+> > with IMAGE and .config, the MAKE command will trigger the dependencies
+> > for us.
+> > 
+> > Note, to allow do menuconfig before extconfig manually, only trigger
+> > defconfig while the .config is not there, it means only trigger
+> > defconfig for the first run or after a mrproper.
+> > 
+> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> > ---
+> >  tools/testing/selftests/nolibc/Makefile | 18 +++++++++++++-----
+> >  1 file changed, 13 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> > index 83cb4b017bef..541f3565e584 100644
+> > --- a/tools/testing/selftests/nolibc/Makefile
+> > +++ b/tools/testing/selftests/nolibc/Makefile
+> (...)
+> > -extconfig:
+> > +extconfig: $(KERNEL_CONFIG)
+> >  	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(objtree)" -m "$(KERNEL_CONFIG)" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
+> >  	$(Q)$(MAKE_KERNEL) KCONFIG_ALLCONFIG="$(KERNEL_CONFIG)" allnoconfig
+> >  
+> > -kernel: initramfs
+> > +kernel: extconfig
+> > +	$(Q)$(MAKE) --no-print-directory initramfs
+> 
+> There seems to be something wrong here. From what I'm seeing, now if I
+> run "make kernel" it will run extconfig and possibly change the config
+> I just edited.
+>
 
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
----
+Yeah, extconfig will run for every 'make kernel', it is ok for us to
+let kernel depends on $(KERNEL_CONFIG), but this requires users to run
+extconfig explictly, the solution may be:
 
-- Changes in v5:
-  * Rebase on top of docs-next
+- move extconfig operations to defconfig target and future tinyconfig target (it looks cleaner ...)
 
- Documentation/riscv/boot-image-header.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+    - but it is not convenient to trigger additional changes introduced by
+      extconfig, not necessary, but really helpful, something like 'menuconfig'
 
-diff --git a/Documentation/riscv/boot-image-header.rst b/Documentation/riscv/boot-image-header.rst
-index a4a45310c4c4..df2ffc173e80 100644
---- a/Documentation/riscv/boot-image-header.rst
-+++ b/Documentation/riscv/boot-image-header.rst
-@@ -28,11 +28,11 @@ header in future.
- Notes
- =====
- 
--- This header can also be reused to support EFI stub for RISC-V in future. EFI
--  specification needs PE/COFF image header in the beginning of the kernel image
--  in order to load it as an EFI application. In order to support EFI stub,
--  code0 should be replaced with "MZ" magic string and res3(at offset 0x3c) should
--  point to the rest of the PE/COFF header.
-+- This header is also reused to support EFI stub for RISC-V. EFI specification
-+  needs PE/COFF image header in the beginning of the kernel image in order to
-+  load it as an EFI application. In order to support EFI stub, code0 is replaced
-+  with "MZ" magic string and res3(at offset 0x3c) points to the rest of the
-+  PE/COFF header.
- 
- - version field indicate header version number
- 
--- 
-2.39.2
+- let users run extconfig manually after a defconfig or tinyconfig (it is a little complex)
 
+    - this make users hard to learn what to do, should give up this method
+
+- run extconfig for every 'make kernel' as it currently do
+
+    - this may change something after a menuconfig, but it only trigger minimal
+      required options, the 'hurt' should be minimal, but of course, it may confuse sometimes ;-(
+
+As a summary, let's remove 'extconfig' and move its operations to the defconfig
+and the future tinyconfig targets? 'extconfig' should be a 'default' config
+action, let users apply additional ones manually from the top-level 'make
+menuconfig', what's your idea?
+
+> Or am I missing something ? I must confess all of this is becoming more
+> and more obscure :-(
+
+Yeah ... let's find a better solution ;-)
+
+Best regards,
+Zhangjin
+
+> 
+> Willy
