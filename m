@@ -2,178 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CF4761E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFE3761E05
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjGYQFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S230469AbjGYQFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjGYQFX (ORCPT
+        with ESMTP id S231205AbjGYQFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:05:23 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C9D2129
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:21 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5221ee899a0so4539981a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:21 -0700 (PDT)
+        Tue, 25 Jul 2023 12:05:51 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048FD211B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:47 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5634dbfb8b1so2611938a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690301120; x=1690905920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gH0UOML51M3rzwv+c9agQ57fZhEB1eqJ8k22Sw4zh88=;
-        b=fvwGsJ4deZaSdRS0WEEc/DU17C9RupWojGXZqRKAIegkk3FEDs/vKLpa1le3heKqJg
-         D0SdBtn155BDQcrjvLU1hniWPy0xji9H7b3z1e3YeKjxSrPN2B1MNE1prqJ6NuWjWhNj
-         YbKgKEFnwxKwnlkdd+4HiQ9r2jbWFM94vNVvk=
+        d=google.com; s=20221208; t=1690301146; x=1690905946;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kjapE+rCKmy4P5VPPxVo+ODABt8kwoerpZYMWCIKvUE=;
+        b=LwsxLZ6AuVYhmtLCQOubxgsSk2SGUoAfIe0hne7HeGjZV0XGh64QIkV2zlXzbAnLeG
+         kT3m8OHeyQw9nrZ1taSu34Tv5G12H9xzbEEIA3CgHW/JXKh7h4Wu1sIEnODxWRkuraGO
+         1LyLFhJyUUIY0BuwYyRoMQ1YSyw7HqVNd68xzOUIE0OEl0CyZ3Fn6yKRY363qzKFgXAi
+         LfGtgsQ/jm32boUoK3P8HSJtRgdhL1KOXmwlWvMMgJXossJ9wbHkRKUgp2q0ig5l0Zq7
+         xmSB/JJc7Da1ato/gj2rSnD24hB3uBp4wkp8S7/TR/gCn8xgTrdUM+RyJ9Z9uRGBE4dM
+         47Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690301120; x=1690905920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gH0UOML51M3rzwv+c9agQ57fZhEB1eqJ8k22Sw4zh88=;
-        b=RjcmFqhOnDk51diNeN5vzk2BqTPZbIKQ0RSFUb0hWxU0AtCFvWWcVQC3GdTuWJGvSX
-         CUVRDW9XHfQZRlRX6/6RCE1ITSYkzHpuyHlg1PoS4zO3Owqzulq6KOCJE+zNePk+E8+R
-         VO/2OgX7N4WOna0AwUGwK45qd9QLXqFH6VWD1YCvTNYNN4v8WRDEfJV11QgJclI/JA8t
-         XvRryTjk6oxD1j5iIApga+WU98pXnG4d/xiTryWuyx9/lPYnmH37v/5qVj+KHusG+8lh
-         ZIP+XhNQPVFi4G5TtMIqBKAcHQqdOaal5LVDjUlgrtLGxRW/1lpNNUw5Zv0VTUj7Ijnd
-         byLA==
-X-Gm-Message-State: ABy/qLZdwft635wGgUb2tD8Aa8bnc9PCnZj1LgtXyewE4RvMe2fHS8dL
-        I8MOs8oNQTfv7W4vdgfylJloaLXk5ozY98kSjuPxRw==
-X-Google-Smtp-Source: APBJJlEWZ7FthedJ/K8TlghQ+twETLA0S14CEzVsK8NOJaM+n2EP98O8bZPM+8WHddigaspFbbCuGd95A37WDSbWNNk=
-X-Received: by 2002:a17:906:105d:b0:991:eb77:74e with SMTP id
- j29-20020a170906105d00b00991eb77074emr11339234ejj.76.1690301120091; Tue, 25
- Jul 2023 09:05:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1690255889.git.yan@cloudflare.com> <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
- <87v8e8xsih.fsf@cloudflare.com>
-In-Reply-To: <87v8e8xsih.fsf@cloudflare.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Tue, 25 Jul 2023 11:05:09 -0500
-Message-ID: <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Jordan Griege <jgriege@cloudflare.com>,
-        kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690301146; x=1690905946;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kjapE+rCKmy4P5VPPxVo+ODABt8kwoerpZYMWCIKvUE=;
+        b=gATE6F8vwM3kttwx4+rJvqbnQxIXmixmfQlbOQwMzJ2Y0p4BN/Pbw/tTyCU1eG4R73
+         c+gYT803sdqg7NJOkbUcXmLtEl+bytdv0nM5oUPiNnRPu34S1Xg/We2TNOvChiJi5eXT
+         Ju/CF+cBaIeAcU3OaN2p2trPiil8E1nYEDIvd1VOkTpuvh0MkN/KpPBLEsV4J88wxewj
+         MQubTN+t1LR5D0oQazP45ZNl/72WY+4qNQdVSS4RyybyMTbsdO4EHFoC/UAsI+omoqGb
+         z0TmyRyI4UwTBweBQ3cdtqqfPWol6KY/iTPiot4ZAlD86DTmIYBUpL2zefczT/JI6goZ
+         JosA==
+X-Gm-Message-State: ABy/qLaiwHa/S3gJPj9uLf27yI9JZGrwRMmbiwsDfEiDfXmgyDpW6Mfs
+        ZSe09u8n2LyrHDCoSaDGhdSkutWQ7Dw=
+X-Google-Smtp-Source: APBJJlHGaS5DZDQ6cJZl3UVRA7dtu3lyMT6BLjhuEPtr88IwuNDtXc+LBb78syThVbNsaXb6qjo4AYxA5zg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:c409:b0:1b5:2871:cd1 with SMTP id
+ k9-20020a170902c40900b001b528710cd1mr55353plk.0.1690301146436; Tue, 25 Jul
+ 2023 09:05:46 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 09:05:44 -0700
+In-Reply-To: <6086d09d-f218-d962-18dc-7b1a0390f258@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+ <20230719144131.29052-3-binbin.wu@linux.intel.com> <20230720235352.GH25699@ls.amr.corp.intel.com>
+ <e84129b1-603b-a6c4-ade5-8cf529929675@linux.intel.com> <ZLqeUXerpNlri7Px@google.com>
+ <6086d09d-f218-d962-18dc-7b1a0390f258@linux.intel.com>
+Message-ID: <ZL/y2CKoJ/bTOR0M@google.com>
+Subject: Re: [PATCH v10 2/9] KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to
+ check CR3's legality
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        chao.gao@intel.com, kai.huang@intel.com, David.Laight@aculab.com,
+        robert.hu@linux.intel.com, guang.zeng@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 4:14=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.co=
-m> wrote:
->
-> On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
-> > skb_do_redirect returns various of values: error code (negative), 0
-> > (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DROP=
-.
-> > Such code are not handled at lwt xmit hook in function ip_finish_output=
-2
-> > and ip6_finish_output, which can cause unexpected problems. This change
-> > converts the positive status code to proper error code.
-> >
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> >
-> > ---
-> > v3: converts also RX side return value in addition to TX values
-> > v2: code style change suggested by Stanislav Fomichev
-> > ---
-> >  net/core/filter.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 06ba0e56e369..3e232ce11ca0 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_leve=
-l_proto =3D {
-> >
-> >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff =
-*skb)
-> >  {
-> > -     return dev_forward_skb_nomtu(dev, skb);
-> > +     int ret =3D dev_forward_skb_nomtu(dev, skb);
-> > +
-> > +     if (unlikely(ret > 0))
-> > +             return -ENETDOWN;
-> > +
-> > +     return 0;
-> >  }
-> >
-> >  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
-> > @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct net_=
-device *dev,
-> >       if (likely(!ret)) {
-> >               skb->dev =3D dev;
-> >               ret =3D netif_rx(skb);
-> > +     } else if (ret > 0) {
-> > +             return -ENETDOWN;
-> >       }
-> >
-> >       return ret;
-> > @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_device =
-*dev, struct sk_buff *skb)
-> >       ret =3D dev_queue_xmit(skb);
-> >       dev_xmit_recursion_dec();
-> >
-> > +     if (unlikely(ret > 0))
-> > +             ret =3D net_xmit_errno(ret);
-> > +
-> >       return ret;
-> >  }
->
-> net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to me
-> to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
-> consistent.
->
-In fact I looked at all those errno, but found none actually covers
-this situation completely. For the redirect ingress case, there are
-three reasons to fail: backlog full, dev down, and MTU issue. This
-won't be a problem for typical RX paths, since the error code is
-usually discarded by call sites of deliver_skb. But redirect ingress
-opens a call chain that would propagate this error to local sendmsg,
-which may be very confusing to troubleshoot in a complex environment
-(especially when backlog fills).
+On Mon, Jul 24, 2023, Binbin Wu wrote:
+> 
+> 
+> On 7/21/2023 11:03 PM, Sean Christopherson wrote:
+> > On Fri, Jul 21, 2023, Binbin Wu wrote:
+> > > 
+> > > On 7/21/2023 7:53 AM, Isaku Yamahata wrote:
+> > > > On Wed, Jul 19, 2023 at 10:41:24PM +0800,
+> > > > Binbin Wu <binbin.wu@linux.intel.com> wrote:
+> > > > 
+> > > > > Add and use kvm_vcpu_is_legal_cr3() to check CR3's legality to provide
+> > > > > a clear distinction b/t CR3 and GPA checks. So that kvm_vcpu_is_legal_cr3()
+> > > > > can be adjusted according to new feature(s).
+> > > > > 
+> > > > > No functional change intended.
+> > > > > 
+> > > > > Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+> > > > > ---
+> > > > >    arch/x86/kvm/cpuid.h      | 5 +++++
+> > > > >    arch/x86/kvm/svm/nested.c | 4 ++--
+> > > > >    arch/x86/kvm/vmx/nested.c | 4 ++--
+> > > > >    arch/x86/kvm/x86.c        | 4 ++--
+> > > > >    4 files changed, 11 insertions(+), 6 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> > > > > index f61a2106ba90..8b26d946f3e3 100644
+> > > > > --- a/arch/x86/kvm/cpuid.h
+> > > > > +++ b/arch/x86/kvm/cpuid.h
+> > > > > @@ -283,4 +283,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
+> > > > >    	return vcpu->arch.governed_features.enabled & kvm_governed_feature_bit(x86_feature);
+> > > > >    }
+> > > > > +static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
+> > > > > +{
+> > > > > +	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
+> > > > > +}
+> > > > > +
+> > > > The remaining user of kvm_vcpu_is_illegal_gpa() is one left.  Can we remove it
+> > > > by replacing !kvm_vcpu_is_legal_gpa()?
+> > > There are still two callsites of kvm_vcpu_is_illegal_gpa() left (basing on
+> > > Linux 6.5-rc2), in handle_ept_violation() and nested_vmx_check_eptp().
+> > > But they could be replaced by !kvm_vcpu_is_legal_gpa() and then remove
+> > > kvm_vcpu_is_illegal_gpa().
+> > > I am neutral to this.
+> > I'm largely neutral on this as well, though I do like the idea of having only
+> > "legal" APIs.  I think it makes sense to throw together a patch, we can always
+> > ignore the patch if end we up deciding to keep kvm_vcpu_is_illegal_gpa().
+> OK. Thanks for the advice.
+> Should I send a seperate patch or add a patch to remove
+> kvm_vcpu_is_illegal_gpa() in next version?
 
-That said I agree ENOBUF covers the most likely reason to fail
-(backlog). Let me change to that one in the next version if there are
-no new suggestions.
-
-> It looks like the Fixes tag for this should point to the change that
-> introduced BPF for LWT:
->
-> Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
->
-Thanks for finding the tag. I was debating if it should be LWT commit
-or bpf_redirect commit: the error is not handled at LWT, but it seems
-actually innocent. The actual fix is the return value from the bpf
-redirect code. Let me incorporate both in the next one to justify
-better.
-
---
-Yan
+Add a patch in the next version, eliminating kvm_vcpu_is_illegal_gpa() without
+the context of this series probably isn't worth the churn.
