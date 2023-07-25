@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B6A761741
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BC1761756
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbjGYLqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S232545AbjGYLrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbjGYLqU (ORCPT
+        with ESMTP id S232381AbjGYLrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:46:20 -0400
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060C7F2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 04:46:14 -0700 (PDT)
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0C0CC20231;
-        Tue, 25 Jul 2023 13:46:09 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 13:46:06 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: display: msm: sm6125-mdss: drop unneeded
- status from examples
-Message-ID: <5w2hvzmwzqm4ffopzewveaviebq2ig7awimeo6ipcehx5a43ae@mlwffkf2ctn5>
-References: <20230725101610.75122-1-krzysztof.kozlowski@linaro.org>
+        Tue, 25 Jul 2023 07:47:10 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6771FC1;
+        Tue, 25 Jul 2023 04:47:05 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so44468895e9.3;
+        Tue, 25 Jul 2023 04:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690285599; x=1690890399;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfoDAczWkqWWRUwBF5o54v6xQbgWHpFklc1bB+kH+ig=;
+        b=M0Ve7MGyX24qswOj3GfyU9Htshcip2MOt4w4zOUXEohr21RuozFXHQ7gkv9ifGpE3s
+         Kl+m28jykJ7WwKpr0pkNvrXrz9joS+B6KTta++wysbMd3B6Kte4bjKjXt9K5QaTyobDB
+         DkMW9yrJjOiJu4pLe/GHemMnflRx6uQExH3QjFhFHJtXktHF2Xu3H9kjNOFqnASCg4wH
+         ecH47TSLWyeV9TKkPXxp+i75LNnkiCthrEf8l+bzW47qLzPgpQbA9kUHaO5LhU0GhwBt
+         cvGJx08E2KoKKeBkDZJ+ulO2XXtZZGc2i7F9Y9EPc6LjN02+6t0Kwm7oj08lHXCyB0Wu
+         dPOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690285599; x=1690890399;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tfoDAczWkqWWRUwBF5o54v6xQbgWHpFklc1bB+kH+ig=;
+        b=MKaTKyz/s/zgH8WqUg5xIBM3xyio7nGtCDFYp6fFflzOFI1qaqUx/0vyQMfdtK+hTs
+         Q5SsxQH5nAKe9hXS9cfV/dant/et/EofYBrDXtrqhdmLM/Q3c6I5T6hd1g7zTiYpDK4/
+         QxnC+yI/SOE/lhWrIBEjz5x3tZWNPdrrfoxqo2OFDPPrPHL+uY4ahaGxk97j4/viZ2rm
+         qIRMiZ1GMZZo1XExqb+cdPZz5OgsyBV7KikYkbLL0yJ48fsTG3aNg4wuF5EZOWUXlBiy
+         RHo445f7+HShdtKH3iK9jFYzPq2UUmMAye53HgeV2/ukrBCzmSxMUgeDyzCMPAeOuJgu
+         zaZQ==
+X-Gm-Message-State: ABy/qLa1/86uV3roocM7YJ/oSw8iLEc6YrsbbQfl77/HEjwmfbW0MeuM
+        kAq7qQoLubg3qfi9D5dE2fU=
+X-Google-Smtp-Source: APBJJlH7l55syqPc/q9I+CLF3O9P+Qe3fTUMB1ZRoQ6ggjwmtVAeLs5yjY7DNOYNoN0/a7K5z0uHMA==
+X-Received: by 2002:a05:600c:364d:b0:3fb:e189:3532 with SMTP id y13-20020a05600c364d00b003fbe1893532mr8955649wmq.20.1690285598933;
+        Tue, 25 Jul 2023 04:46:38 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003fbb5142c4bsm15861526wmm.18.2023.07.25.04.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 04:46:38 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] bcache: remove redundant assignment to variable cur_idx
+Date:   Tue, 25 Jul 2023 12:46:37 +0100
+Message-Id: <20230725114637.37073-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725101610.75122-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-25 12:16:10, Krzysztof Kozlowski wrote:
-> Example DTS should not have 'status' property.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml   | 6 ------
+Variable cur_idx is being initialized with a value that is never read,
+it is being re-assigned later in a while-loop. Remove the redundant
+assignment. Cleans up clang scan build warning:
 
-This is not needed: it has already been corrected in v3 and v4 of the
-respective series (among other changes) and the patches were only picked
-to a preliminary (draft) pull to get an overview of the outstanding work
-for this subsystem.  That branch happens to be included in regular -next
-releases though.
+drivers/md/bcache/writeback.c:916:2: warning: Value stored to 'cur_idx'
+is never read [deadcode.DeadStores]
 
-6.6 drm/msm display pull: https://gitlab.freedesktop.org/drm/msm/-/merge_requests/69
-v3: https://lore.kernel.org/linux-arm-msm/20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org/
-v4: https://lore.kernel.org/linux-arm-msm/20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org/
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/md/bcache/writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Marijn
+diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+index 24c049067f61..c3e872e0a6f2 100644
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -913,7 +913,7 @@ static int bch_dirty_init_thread(void *arg)
+ 	int cur_idx, prev_idx, skip_nr;
+ 
+ 	k = p = NULL;
+-	cur_idx = prev_idx = 0;
++	prev_idx = 0;
+ 
+ 	bch_btree_iter_init(&c->root->keys, &iter, NULL);
+ 	k = bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
+-- 
+2.39.2
 
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-> index 2525482424cb..479c82e6a0d8 100644
-> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-> @@ -95,8 +95,6 @@ examples:
->          #size-cells = <1>;
->          ranges;
->  
-> -        status = "disabled";
-> -
->          display-controller@5e01000 {
->              compatible = "qcom,sm6125-dpu";
->              reg = <0x05e01000 0x83208>,
-> @@ -170,8 +168,6 @@ examples:
->              #address-cells = <1>;
->              #size-cells = <0>;
->  
-> -            status = "disabled";
-> -
->              ports {
->                  #address-cells = <1>;
->                  #size-cells = <0>;
-> @@ -210,8 +206,6 @@ examples:
->  
->              required-opps = <&rpmpd_opp_svs>;
->              power-domains = <&rpmpd SM6125_VDDMX>;
-> -
-> -            status = "disabled";
->          };
->      };
->  ...
-> -- 
-> 2.34.1
-> 
