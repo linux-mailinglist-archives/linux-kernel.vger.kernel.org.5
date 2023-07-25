@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABDC760617
+	by mail.lfdr.de (Postfix) with ESMTP id C4C1C760618
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjGYC6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        id S231405AbjGYC6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbjGYC6D (ORCPT
+        with ESMTP id S230041AbjGYC6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:58:03 -0400
+        Mon, 24 Jul 2023 22:58:04 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B6AE66;
-        Mon, 24 Jul 2023 19:58:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5783F1;
+        Mon, 24 Jul 2023 19:58:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
         Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=45bHUFKTD/380fgU5lYTQ/UsscSGYyfLmPiWaWhqXAM=; b=mUaCnpfd8eJWZ2XRSGrN+QnqS4
-        hKjl9Pqrx99tX2t18F/qI9F+x00Yw+cukt+JIclzANGI9a+QAmoSG751eoBQ0SY/uIYQ0pMOMZWPA
-        JxKQCkeikB2Fk5GSQi7N5auLbhIPV+kNupQHVF2N5nGwH+kAjbsyRdRmCwvpw+rHKVXgXNGB9NOdD
-        L/YKEkQ+OtO+fp+WVa/s/prmzOCxEuVBTmk47UFeYj2arrGDg9e3zuB5qGe/FuGQKe3MOFUJcA9kE
-        AsC+rfyuu/4c6jhkLC5V/n5lGGUxPrHyZU8t+QEthWot9rNXcEeOvtA2z20rFAONoAiO9LBw3MAV9
-        P5QB8rsw==;
+        bh=bscdJezkW977NS2usn50EadsF7pWATnyCd2yjIB1NM8=; b=Yx7q9pjEcU59tWFBgVNSVbmLcC
+        vmofQzSyukuhzwubEhtOsjx1o/DHwC3Pqyjxhb09Cihbp3ZZoHTUNmKdNN09JXaICzFzKdWMebzBc
+        Ly6Pk9CLE+KafGmp7jaynS5DogDTWlT5MdkRiAsobLFvqfQV7NhZqS3xRU1U0DRGraI2I5sNQekPI
+        4QJMzIWwIVumJGvpnnF86FB9LGaNFS09ejqvs2wM7gwE8PbZbX8tmb4LO2kMj182K2QSlM62DDfr6
+        OAwKq3RTC9DFkmCs4xns6olYo2Sx1dBWceGDHTzmo7TvH60PpK4DiRlzOHXl/EsKQ+1fmg5K9v/uX
+        RbBkvowQ==;
 Received: from [2601:1c2:980:9ec0::2764]
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qO8FB-005yV0-0u;
-        Tue, 25 Jul 2023 02:57:49 +0000
-Message-ID: <e1d01143-0b25-05fa-5bc9-557d233c45f6@infradead.org>
-Date:   Mon, 24 Jul 2023 19:57:45 -0700
+        id 1qO8FH-005yWd-11;
+        Tue, 25 Jul 2023 02:57:55 +0000
+Message-ID: <e4cc043b-76b9-5cc6-2fc7-e6a5722037ce@infradead.org>
+Date:   Mon, 24 Jul 2023 19:57:54 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4 18/32] sound: usb: Introduce QC USB SND offloading
- support
+Subject: Re: [PATCH v4 03/32] xhci: sideband: add initial api to register a
+ sideband entity
 Content-Language: en-US
 To:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, robh+dt@kernel.org,
@@ -49,11 +49,12 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
         quic_jackp@quicinc.com, pierre-louis.bossart@linux.intel.com,
-        oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp
+        oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
 References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-19-quic_wcheng@quicinc.com>
+ <20230725023416.11205-4-quic_wcheng@quicinc.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230725023416.11205-19-quic_wcheng@quicinc.com>
+In-Reply-To: <20230725023416.11205-4-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,32 +69,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/24/23 19:34, Wesley Cheng wrote:
-> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-> index 059242f15d75..44b0fa92b6cc 100644
-> --- a/sound/usb/Kconfig
-> +++ b/sound/usb/Kconfig
-> @@ -165,6 +165,21 @@ config SND_BCD2000
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called snd-bcd2000.
+On 7/24/23 19:33, Wesley Cheng wrote:
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index c170672f847e..d9dc92bea525 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -104,6 +104,15 @@ config USB_XHCI_RZV2M
+>  	  Say 'Y' to enable the support for the xHCI host controller
+>  	  found in Renesas RZ/V2M SoC.
 >  
-> +config QC_USB_AUDIO_OFFLOAD
-> +	tristate "Qualcomm Audio Offload driver"
-> +	depends on QCOM_QMI_HELPERS
-> +	select SND_PCM
+> +config USB_XHCI_SIDEBAND
+> +	bool "xHCI support for sideband"
 > +	help
-> +	  Say Y here to enable the Qualcomm USB audio offloading feature
+> +	  Say 'Y' to enable the support for the xHCI sideband capability.
+> +	  provide a mechanism for a sideband datapath for payload associated
 
-	                                                         feature.
+	  Provide
 
-> +
-> +	  This module sets up the required QMI stream enable/disable
-> +	  responses to requests generated by the audio DSP.  It passes the
-> +	  USB transfer resource references, so that the audio DSP can issue
-> +	  USB transfers to the host controller.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called qc-audio-offload.
+> +	  with audio class endpoints. This allows for an audio DSP to use
+> +	  xHCI USB endpoints directly, allowing CPU to sleep while playing
+> +	  audio
+
+	  audio.
+
 
 -- 
 ~Randy
