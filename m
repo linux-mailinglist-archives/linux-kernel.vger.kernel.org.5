@@ -2,308 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E64F760B88
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9503C760B53
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 09:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjGYHUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 03:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S232302AbjGYHQj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 Jul 2023 03:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbjGYHTR (ORCPT
+        with ESMTP id S230224AbjGYHQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 03:19:17 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863CE10C7;
-        Tue, 25 Jul 2023 00:17:42 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P3wqrl013133;
-        Tue, 25 Jul 2023 07:17:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=qq3mgwldR84fvFPQ8IH8tR83mymgCTDsHByFJkWFnHU=;
- b=DtAYICfvGZVCGu7+2YoGpp8y6YD683tCOcj5gK77v12/3Fm5x8FqS+GEn5XVrAiPQTcN
- /PFudfpKgLjVyjDrlJCXjbg1G8f/wm7rzv9WA5bwmuU87npKpxNM6s7CAQTyNHPxwqmk
- YJr2SllLzUcfcrjNdDjE/pHPntQrlt9Tt78SGpLvu/oWstF/HoCi9Uh3xImffRMwn0Km
- OJGQxga8PQQv48g4Pcgp4TF+ZOxmjfeo3LLZRWBo184WzHgmCrryANy74NGu1YtmBFSV
- oNjet4WuCRmaoaZJAcJpW5uJRDMJx4cnOJRzXlIBMjrLpEx1tIBMGEO1IM9oMtZys1+N Sw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1vh8hhc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 07:17:21 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P7HK5I005496
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 07:17:20 GMT
-Received: from taozha-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 25 Jul 2023 00:17:15 -0700
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
-Subject: [PATCH v7 13/13] coresight-tpdm: Add nodes for dsb msr support
-Date:   Tue, 25 Jul 2023 15:15:53 +0800
-Message-ID: <1690269353-10829-14-git-send-email-quic_taozha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
-References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
+        Tue, 25 Jul 2023 03:16:35 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFF312D;
+        Tue, 25 Jul 2023 00:16:32 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-583f036d50bso23921037b3.3;
+        Tue, 25 Jul 2023 00:16:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690269391; x=1690874191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cJjDsseCku7rw4c3XWBJPjjfZ2OLqB4Q28CEWAPlCas=;
+        b=hVQgl7DJn5GMlVxdjbl2+VQHv/xf18JajW1kmjJZJSajwKgmpvI4WnQFNuFrN6Kut4
+         GT5Et9fFsFo12XxQqaujQ4J+n8o3+fD9UH64LXzwqYAjKJXXULdTqQ8B4kOMVZo3YVDI
+         q5IT8zU1iLniV5tVgsao0GvWUOM58b+tcfTurz/v4/l+EJ6TZ7puiGmuvJ3eK3Kw8XLX
+         yTtuhIpuWw6/E45ha48s1YccW9z0uuxUs95lQMKV98Y3OHCMiLVP32qsMngUQj5lmyl3
+         nTThflP9pjqEwbHY3bKdonTWOW9i+KkfCdWzb3hRhj2Vnkzrj59bDYrBWumdJ4HmycNt
+         zu2g==
+X-Gm-Message-State: ABy/qLao/3eJ40JY7/2WDUcsy767G4pg3s4vipoIUxV0DGufrxZSA9sh
+        sZuL08BUJbvdndkxbBFyyya1Ez6mYXzdcYuw
+X-Google-Smtp-Source: APBJJlGGkYf3TOwXUHFzKgPD8ivkikovqfooPElc9ajMbqNe2UaqmvOSsqb2a9wDw8jy7t1AOf/MZg==
+X-Received: by 2002:a0d:d646:0:b0:577:1909:ee16 with SMTP id y67-20020a0dd646000000b005771909ee16mr12409284ywd.30.1690269391390;
+        Tue, 25 Jul 2023 00:16:31 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id k67-20020a0dfa46000000b005619cfb1b88sm3383079ywf.52.2023.07.25.00.16.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 00:16:29 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so5822765276.3;
+        Tue, 25 Jul 2023 00:16:29 -0700 (PDT)
+X-Received: by 2002:a25:10c5:0:b0:c91:717e:7658 with SMTP id
+ 188-20020a2510c5000000b00c91717e7658mr10654915ybq.2.1690269388936; Tue, 25
+ Jul 2023 00:16:28 -0700 (PDT)
 MIME-Version: 1.0
+References: <cover.1689074739.git.legion@kernel.org> <cover.1689092120.git.legion@kernel.org>
+ <a677d521f048e4ca439e7080a5328f21eb8e960e.1689092120.git.legion@kernel.org>
+In-Reply-To: <a677d521f048e4ca439e7080a5328f21eb8e960e.1689092120.git.legion@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 Jul 2023 09:16:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXzYxo83AXfWWVyp2fL3fcEUNgbG5aSZuA62FwO2i3jDg@mail.gmail.com>
+Message-ID: <CAMuHMdXzYxo83AXfWWVyp2fL3fcEUNgbG5aSZuA62FwO2i3jDg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] arch: Register fchmodat2, usually as syscall 452
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, Palmer Dabbelt <palmer@sifive.com>,
+        James.Bottomley@hansenpartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        dhowells@redhat.com, fenghua.yu@intel.com, fweimer@redhat.com,
+        glebfm@altlinux.org, gor@linux.ibm.com, hare@suse.com,
+        hpa@zytor.com, ink@jurassic.park.msu.ru, jhogan@kernel.org,
+        kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ezmSUYqMWB9opMVd-BLAiF6PUoKXpf-o
-X-Proofpoint-GUID: ezmSUYqMWB9opMVd-BLAiF6PUoKXpf-o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- impostorscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250064
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the nodes for DSB subunit MSR(mux select register) support.
-The TPDM MSR (mux select register) interface is an optional
-interface and associated bank of registers per TPDM subunit.
-The intent of mux select registers is to control muxing structures
-driving the TPDM’s’ various subunit interfaces.
+On Tue, Jul 11, 2023 at 6:25 PM Alexey Gladkov <legion@kernel.org> wrote:
+> From: Palmer Dabbelt <palmer@sifive.com>
+>
+> This registers the new fchmodat2 syscall in most places as nuber 452,
+> with alpha being the exception where it's 562.  I found all these sites
+> by grepping for fspick, which I assume has found me everything.
+>
+> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+> Signed-off-by: Alexey Gladkov <legion@kernel.org>
 
-Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
----
- .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 19 ++++-
- drivers/hwtracing/coresight/coresight-tpdm.c       | 98 ++++++++++++++++++++++
- drivers/hwtracing/coresight/coresight-tpdm.h       |  7 ++
- 3 files changed, 123 insertions(+), 1 deletion(-)
+>  arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-index 74a0126..ee41a14 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-@@ -185,4 +185,21 @@ Description:
- 
- 		Accepts only one of the 2 values -  0 or 1.
- 		0 : Set the DSB pattern type to value.
--		1 : Set the DSB pattern type to toggle.
-\ No newline at end of file
-+		1 : Set the DSB pattern type to toggle.
-+
-+What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_msr_idx
-+Date:		March 2023
-+KernelVersion	6.5
-+Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-+Description:
-+		Read/Write the index number of MSR(mux select register) on DSB
-+		TPDM. This index number should not be greater than the number
-+		of MSR supported by this DSB TPDM.
-+
-+What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_msr
-+Date:		March 2023
-+KernelVersion	6.5
-+Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-+Description:
-+		(Write) Set the MSR(mux select register) of DSB tpdm. Read
-+		the MSR(mux select register) of DSB tpdm.
-\ No newline at end of file
-diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-index f9e5a1d..be7776b 100644
---- a/drivers/hwtracing/coresight/coresight-tpdm.c
-+++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-@@ -90,6 +90,18 @@ static void set_dsb_tier(struct tpdm_drvdata *drvdata, u32 *val)
- 
- }
- 
-+static void set_dsb_msr(struct tpdm_drvdata *drvdata)
-+{
-+	int i;
-+
-+	if (drvdata->dsb->msr_num == 0)
-+		return;
-+
-+	for (i = 0; i < drvdata->dsb->msr_num; i++)
-+		writel_relaxed(drvdata->dsb->msr[i],
-+			   drvdata->base + TPDM_DSB_MSR(i));
-+}
-+
- static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
- {
- 	u32 val, i;
-@@ -116,6 +128,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
- 	set_dsb_tier(drvdata, &val);
- 	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
- 
-+	set_dsb_msr(drvdata);
-+
- 	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
- 	/* Set the test accurate mode */
- 	set_dsb_test_mode(drvdata, &val);
-@@ -234,6 +248,14 @@ static int tpdm_datasets_setup(struct tpdm_drvdata *drvdata)
- 			if (!drvdata->dsb)
- 				return -ENOMEM;
- 		}
-+		if (!of_property_read_u32(drvdata->dev->of_node,
-+			   "qcom,dsb_msr_num", &drvdata->dsb->msr_num)) {
-+			drvdata->dsb->msr = devm_kzalloc(drvdata->dev,
-+				   (drvdata->dsb->msr_num * sizeof(*drvdata->dsb->msr)),
-+				   GFP_KERNEL);
-+			if (!drvdata->dsb->msr)
-+				return -ENOMEM;
-+		}
- 	}
- 
- 	return 0;
-@@ -830,6 +852,80 @@ static ssize_t dsb_trig_ts_store(struct device *dev,
- }
- static DEVICE_ATTR_RW(dsb_trig_ts);
- 
-+static ssize_t dsb_msr_idx_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	return sysfs_emit(buf, "%u\n",
-+			(unsigned int)drvdata->dsb->msr_idx);
-+
-+}
-+
-+static ssize_t dsb_msr_idx_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf,
-+				  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index;
-+
-+	if (kstrtoul(buf, 0, &index))
-+		return -EINVAL;
-+	if (index >= drvdata->dsb->msr_num)
-+		return -EPERM;
-+
-+	spin_lock(&drvdata->spinlock);
-+	drvdata->dsb->msr_idx = index;
-+	spin_unlock(&drvdata->spinlock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(dsb_msr_idx);
-+
-+static ssize_t dsb_msr_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned int i;
-+	unsigned long bytes;
-+	ssize_t size = 0;
-+
-+	if (drvdata->dsb->msr_num == 0)
-+		return -EINVAL;
-+
-+	spin_lock(&drvdata->spinlock);
-+	for (i = 0; i < drvdata->dsb->msr_num; i++) {
-+		bytes = sysfs_emit_at(buf, size,
-+				  "0x%x\n", drvdata->dsb->msr[i]);
-+		if (bytes <= 0)
-+			break;
-+		size += bytes;
-+	}
-+	spin_unlock(&drvdata->spinlock);
-+
-+	return size;
-+}
-+
-+static ssize_t dsb_msr_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf,
-+				  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 0, &val))
-+		return -EINVAL;
-+
-+	spin_lock(&drvdata->spinlock);
-+	drvdata->dsb->msr[drvdata->dsb->msr_idx] = val;
-+	spin_unlock(&drvdata->spinlock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(dsb_msr);
-+
- static struct attribute *tpdm_dsb_attrs[] = {
- 	&dev_attr_dsb_mode.attr,
- 	&dev_attr_dsb_edge_ctrl_idx.attr,
-@@ -845,6 +941,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
- 	&dev_attr_dsb_trig_patt_mask.attr,
- 	&dev_attr_dsb_trig_ts.attr,
- 	&dev_attr_dsb_trig_type.attr,
-+	&dev_attr_dsb_msr_idx.attr,
-+	&dev_attr_dsb_msr.attr,
- 	NULL,
- };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
-index 7c52cf4..7b70db3 100644
---- a/drivers/hwtracing/coresight/coresight-tpdm.h
-+++ b/drivers/hwtracing/coresight/coresight-tpdm.h
-@@ -18,6 +18,7 @@
- #define TPDM_DSB_XPMR(n)	(0x7E8 + (n * 4))
- #define TPDM_DSB_EDCR(n)	(0x808 + (n * 4))
- #define TPDM_DSB_EDCMR(n)	(0x848 + (n * 4))
-+#define TPDM_DSB_MSR(n)		(0x980 + (n * 4))
- 
- /* Enable bit for DSB subunit */
- #define TPDM_DSB_CR_ENA		BIT(0)
-@@ -100,6 +101,9 @@
-  * @patt_mask:          Save value for pattern mask
-  * @trig_patt:          Save value for trigger pattern
-  * @trig_patt_mask:     Save value for trigger pattern mask
-+ * @msr_num             Number of MSR supported by DSB TPDM
-+ * @msr_idx             Index number of the MSR
-+ * @msr                 Save value for MSR
-  * @patt_ts:            Enable/Disable pattern timestamp
-  * @patt_type:          Set pattern type
-  * @trig_ts:            Enable/Disable trigger timestamp.
-@@ -116,6 +120,9 @@ struct dsb_dataset {
- 	u32				patt_mask[TPDM_DSB_MAX_PATT];
- 	u32				trig_patt[TPDM_DSB_MAX_PATT];
- 	u32				trig_patt_mask[TPDM_DSB_MAX_PATT];
-+	u32				msr_num;
-+	u32				msr_idx;
-+	u32				*msr;
- 	bool			patt_ts;
- 	bool			patt_type;
- 	bool			trig_ts;
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
