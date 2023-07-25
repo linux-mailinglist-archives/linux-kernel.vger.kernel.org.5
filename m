@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6395476052A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CCF76052E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjGYCWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S229703AbjGYC0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYCW3 (ORCPT
+        with ESMTP id S229452AbjGYC0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:22:29 -0400
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF068CD;
-        Mon, 24 Jul 2023 19:22:25 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.174.92.167])
-        by mail-app3 (Coremail) with SMTP id cC_KCgA3HbzAMb9kOIKkCw--.4468S4;
-        Tue, 25 Jul 2023 10:21:53 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, razor@blackwall.org, idosch@nvidia.com,
-        lucien.xin@gmail.com, liuhangbin@gmail.com,
-        edwin.peer@broadcom.com, jiri@resnulli.us,
-        md.fahad.iqbal.polash@intel.com, anirudh.venkataramanan@intel.com,
-        jeffrey.t.kirsher@intel.com, neerav.parikh@intel.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v1] rtnetlink: let rtnl_bridge_setlink checks IFLA_BRIDGE_MODE length
-Date:   Tue, 25 Jul 2023 10:21:51 +0800
-Message-Id: <20230725022151.417450-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgA3HbzAMb9kOIKkCw--.4468S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4rAw15KF4Dtr45WrWkXrb_yoW8XF4xpa
-        4rKa4xJF1DXr97Za17AFyrX3s7ZFZIgrW5Wr42ywn2yF9YqFyUCr98CFn0vry3AFsIqa43
-        tr17Gr1avr1DGFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQvt
-        AUUUUU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 22:26:16 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD29FCD;
+        Mon, 24 Jul 2023 19:26:14 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7680e3910dfso538196685a.0;
+        Mon, 24 Jul 2023 19:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690251974; x=1690856774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TehF5S5/JfahrMU4aaOoZH7A4B9KyduEfvtKt7cNHIo=;
+        b=rJ10GbD3//nGpTe9w3MNfRM2UQWvQqKclUq7RGKrUV/jxmFCkXYLAlKtselijB6wVl
+         KOeFJiIhmLykBWETdLEk109D5kQThrifuqVKQA20WJ4+mFmHzHRykrUvZwaLRnRgdzgm
+         L5HfwE7a9VDK8IEZ6KKlMS/Wg1jzam2Sdiz/7bLsy0dHpVjBLuNq9tAfjmvB6QeKw1lR
+         v2nOLdPx0HOFsKBZ38lS9jWjkKb/DkslUREn5GWZjqRvxQHi59j6ygfAPbrSieut0sN2
+         vINrY83GzT9lKejL/NBqQ3mpDpnuqcDlp/9aCrzaGaPbzUD4ULTRv23C8PIErJsLzN4D
+         /ySA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690251974; x=1690856774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TehF5S5/JfahrMU4aaOoZH7A4B9KyduEfvtKt7cNHIo=;
+        b=TD5mB3vPhMHQkucaVWkLgj2KuAAB/E/uDmSmMPUdg2qHpilZ5yvBoA0YA4Ixc9aLqA
+         hJaxVl4jRk5vuXhLSSm7bzzPDZXW67mH3MXb75F9w5ekY+L8rfXaDFPvupQv6j6BIHjl
+         U9feDRDx0HsTjQsnZoBc/PFrYTA/Z5ktptG/GWNu0Uw9PCWIDQwcpSEQj8llrnE546YY
+         ebi5ipVROhE7mok2CsZO+2B/eA9pVsSrS/YUP52NxX0u+VKHnMdOFF1sqc5xzS7ESEAo
+         17Kwl1I0TZiaNldzz+flDlB3NCicyqqZ7uYKagpK5fYI78VJhQMyNSFhW7qspPPYn2iF
+         bwgg==
+X-Gm-Message-State: ABy/qLb7D9G6yVhnoNmC5EDJo/yPvmvm0RfNqUtTexgO4couH+0Zg7d0
+        wPqAgjuva9+SV6uTZfEBBsxkRdEPe4sgMXTfbF0=
+X-Google-Smtp-Source: APBJJlFYxvvv2jrRLg6RQxmXWtetuQy0EACAabJAoi6cVXPJLtqX+cuOh8ickvhv/01nB4+siEnWeCINZfEW2UvYBd0=
+X-Received: by 2002:a05:620a:4549:b0:765:22d4:b267 with SMTP id
+ u9-20020a05620a454900b0076522d4b267mr2234791qkp.52.1690251973593; Mon, 24 Jul
+ 2023 19:26:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230311180630.4011201-1-zyytlz.wz@163.com> <20230710114253.GA132195@google.com>
+ <20230710091545.5df553fc@kernel.org> <20230712115633.GB10768@google.com>
+ <CAJedcCzRVSW7_R5WN0v3KdUQGdLEA88T3V2YUKmQO+A+uCQU8Q@mail.gmail.com>
+ <a116e972-dfcf-6923-1ad3-a40870e02f6a@omp.ru> <CAJedcCz1ynutATi9qev1t3-moXti_19ZJSzgC2t-5q4JAYG3dw@mail.gmail.com>
+ <CAJedcCydqmVBrNq_RCDF2gRds39XqWORFi32MV+9LGa5p28dPQ@mail.gmail.com>
+ <20230717130408.GC1082701@google.com> <20230724092055.GB11203@google.com>
+In-Reply-To: <20230724092055.GB11203@google.com>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Tue, 25 Jul 2023 10:26:00 +0800
+Message-ID: <CAJedcCzrLMVGKmTR-21Uk2EVRhX5fRmEZ95btg_XOpsN33UU6A@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: ravb: Fix possible UAF bug in ravb_remove
+To:     Lee Jones <lee@kernel.org>
+Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Zheng Wang <zyytlz.wz@163.com>, davem@davemloft.net,
+        linyunsheng@huawei.com, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        1395428693sheep@gmail.com, alex000young@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are totally 9 ndo_bridge_setlink handlers in the current kernel,
-which are 1) bnxt_bridge_setlink, 2) be_ndo_bridge_setlink 3)
-i40e_ndo_bridge_setlink 4) ice_bridge_setlink 5)
-ixgbe_ndo_bridge_setlink 6) mlx5e_bridge_setlink 7)
-nfp_net_bridge_setlink 8) qeth_l2_bridge_setlink 9) br_setlink.
+Lee Jones <lee@kernel.org> =E4=BA=8E2023=E5=B9=B47=E6=9C=8824=E6=97=A5=E5=
+=91=A8=E4=B8=80 17:21=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, 17 Jul 2023, Lee Jones wrote:
+>
+> > On Sun, 16 Jul 2023, Zheng Hacker wrote:
+> > > Zheng Hacker <hackerzheng666@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=
+=8816=E6=97=A5=E5=91=A8=E6=97=A5 10:11=E5=86=99=E9=81=93=EF=BC=9A
+> > > >
+> > > > Hello,
+> > > >
+> > > > This bug is found by static analysis. I'm sorry that my friends app=
+ly
+> > > > for a CVE number before we really fix it. We made a list about the
+> > > > bugs we have submitted and wouldn't disclose them before the fix. B=
+ut
+> > > > we had a inconsistent situation last month. And we applied it by
+> > > > mistake foe we thought we had fixed it. And so sorry about my late
+> > > > reply, I'll see the patch right now.
+> > > >
+> > > > Best regards,
+> > > > Zheng Wang
+> > > >
+> > > > Sergey Shtylyov <s.shtylyov@omp.ru> =E4=BA=8E2023=E5=B9=B47=E6=9C=
+=8816=E6=97=A5=E5=91=A8=E6=97=A5 04:48=E5=86=99=E9=81=93=EF=BC=9A
+> > > > >
+> > > > > On 7/15/23 7:07 PM, Zheng Hacker wrote:
+> > > > >
+> > > > > > Sorry for my late reply. I'll see what I can do later.
+> > > > >
+> > > > >    That's good to hear!
+> > > > >    Because I'm now only able to look at it during weekends...
+> > > > >
+> > > > > > Lee Jones <lee@kernel.org> =E4=BA=8E2023=E5=B9=B47=E6=9C=8812=
+=E6=97=A5=E5=91=A8=E4=B8=89 19:56=E5=86=99=E9=81=93=EF=BC=9A
+> > > > > >>
+> > > > > >> On Mon, 10 Jul 2023, Jakub Kicinski wrote:
+> > > > > >>
+> > > > > >>> On Mon, 10 Jul 2023 12:42:53 +0100 Lee Jones wrote:
+> > > > > >>>> For better or worse, it looks like this issue was assigned a=
+ CVE.
+> > > > > >>>
+> > > > > >>> Ugh, what a joke.
+> > > > > >>
+> > > > > >> I think that's putting it politely. :)
+> > >
+> > > After reviewing the code, I think it's better to put the code in
+> > > ravb_remove. For the ravb_remove is bound with the device and
+> > > ravb_close is bound with the file. We may not call ravb_close if
+> > > there's no file opened.
+> >
+> > When you do submit this, would you be kind enough to Cc me please?
+>
+> Could I trouble you for an update on this please?
+>
+> Have you submitted v4 yet?
 
-By investigating the code, we find that 1-7 parse and use nlattr
-IFLA_BRIDGE_MODE but 3 and 4 forget to do the nla_len check. This can
-lead to an out-of-attribute read and allow a malformed nlattr (e.g.,
-length 0) to be viewed as a 2 byte integer.
+Sorry, will do right now.
 
-To avoid such issues, also for other ndo_bridge_setlink handlers in the
-future. This patch adds the nla_len check in rtnl_bridge_setlink and
-does an early error return if length mismatches.
-
-Fixes: b1edc14a3fbf ("ice: Implement ice_bridge_getlink and ice_bridge_setlink")
-Fixes: 51616018dd1b ("i40e: Add support for getlink, setlink ndo ops")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- net/core/rtnetlink.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 3ad4e030846d..1e51291007ea 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -5148,6 +5148,11 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 				flags = nla_get_u16(attr);
- 				break;
- 			}
-+
-+			if (nla_type(attr) == IFLA_BRIDGE_MODE) {
-+				if (nla_len(attr) < sizeof(u16))
-+					return -EINVAL;
-+			}
- 		}
- 	}
- 
--- 
-2.17.1
-
+Best regards,
+Zheng
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
