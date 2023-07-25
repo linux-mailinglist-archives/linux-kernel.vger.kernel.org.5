@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4707618EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0105D7618F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbjGYMyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S233308AbjGYMyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjGYMyT (ORCPT
+        with ESMTP id S232625AbjGYMyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:54:19 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9210D13D;
-        Tue, 25 Jul 2023 05:54:16 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2224F5AA;
-        Tue, 25 Jul 2023 14:53:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690289596;
-        bh=sHVHC32Eq+o4pz/bcsB3AZfAlK7INmtSF+Efqz7jrE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ITdjyrV69ebKHddVL2xbV8gnlcGzkjtfcOHuIASMPR8HZc8sk9bUI787SAPOzibvY
-         K2gw+/CLFeCfmBYl+GthQWxLV/YckQ4wiS1jjTyaPsuDCev3/w33/Zdo7aSqFrAWEu
-         zWnpDr1fy0/W+2yQ9VJ7CbSQ5axtHSKAqodYbZOg=
-Date:   Tue, 25 Jul 2023 15:54:22 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, dan.scally@ideasonboard.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/4] dt-bindings: arm: Add Polyhex DEBIX SOM A based
- boards
-Message-ID: <20230725125422.GD21640@pendragon.ideasonboard.com>
-References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
- <20230717165127.2882535-3-m.felsch@pengutronix.de>
+        Tue, 25 Jul 2023 08:54:38 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C9D19AA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:54:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fb7dc16ff0so8296552e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:54:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1690289672; x=1690894472;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Puz3ztq+s5PMQIYSFqmtMplo+slwUgkmSW9O9rbzaQ=;
+        b=eOX71mI8ivbPxd47f1eV4r7XwztgvsB/VUt6UiU2TRTzqzn/nnNc5dYBCQ7YDwpwcw
+         4HBgy5/tA3pr37dG8a8OX60bkNrHIpBqrsLUJw4zccm3bqKV2Lw5vm4RGbwODH7N6Her
+         yiQtddh86DliiC3qSQhIR9Y1vNaY5Gt5CLb1vHwHV9UgJ9kjuPH05HuPeM57qIhIGKAq
+         zs6T3wIBWTz3h8E8FwJ6FFDuoTE9KEJ0yZQQZFzZBrKjF656WagqNBNREbD7l8OcgZj0
+         jibS2zS5edmrdiyj3AmKMHjH7JmAAn9J894UFTXdqgXFhPnzh3Fk9sKgZqOyodCVziQL
+         W9jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690289672; x=1690894472;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3Puz3ztq+s5PMQIYSFqmtMplo+slwUgkmSW9O9rbzaQ=;
+        b=fNNvHWtKrGCoVCJnf3/B5im8KVoT+j5aEKMj6xDVd4oLFgc5s//ZQv76+31AVMQsrf
+         KmNkEPPmkrqRgEcHKBo7yq8oVexpGck65gaYRPxNxTHsMJFuWoo2ZC/h8q0C8YimeztE
+         wQ9dkLM+eXunlNg1NNlrhOv2YlEQ6vpYXQ6u3kiZARipaiiWweX72SPuJ+Ctbkbn0WNJ
+         yhHyhoC9MF1IkdkWXqXk0l+T5/DB8z+QU7kOp3FcXA0MC3TaraZlaJiN4EJm9ENm+5DD
+         NujfKH8+WQXyZNX28ZCXIXU/mheZRLumVKIHd4tGztYMuorgL2kGDNhh4Vs+EoDXwsDH
+         khNA==
+X-Gm-Message-State: ABy/qLYPaiofDN2lVJCxGp9mZDAbeAdiQegfZlSqK+c7zJK0YJE/WhGd
+        dQ88nGwismJ02wS24AbaX36hnA==
+X-Google-Smtp-Source: APBJJlHZSFk1xstmzkc7CIM9TH+3PcYrQLyXquXF3/qVEGqAj4CIMfMvldYlGO/C3XlsJKxIowWyAQ==
+X-Received: by 2002:ac2:4d96:0:b0:4fb:7532:35aa with SMTP id g22-20020ac24d96000000b004fb753235aamr7085307lfe.28.1690289671914;
+        Tue, 25 Jul 2023 05:54:31 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id u11-20020a056402064b00b0051dfa2e30b2sm7516682edx.9.2023.07.25.05.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 05:54:31 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] pmbus_core: Refactor pmbus_is_enabled function
+Date:   Tue, 25 Jul 2023 14:54:25 +0200
+Message-ID: <20230725125428.3966803-1-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230717165127.2882535-3-m.felsch@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Thank you for the patch.
+Refactor the pmbus_is_enabled() function to return the raw status
+without any additional processing as its already done in
+_pmbus_is_enabled function.
 
-On Mon, Jul 17, 2023 at 06:51:26PM +0200, Marco Felsch wrote:
-> Add devicetree bindings for i.MX8MP based DEBIX SOM A and SOM A I/O
-> baseboard:
->   - https://debix.io/hardware/debix-som-a.html
->   - https://debix.io/hardware/debix-som-a-io-board.html
-> 
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+---
+ drivers/hwmon/pmbus/pmbus_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+index fa06325f5a7c..42fb7286805b 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -2768,7 +2768,7 @@ static int __maybe_unused pmbus_is_enabled(struct device *dev, u8 page)
+ 	ret = _pmbus_is_enabled(dev, page);
+ 	mutex_unlock(&data->update_lock);
+ 
+-	return !!(ret & PB_OPERATION_CONTROL_ON);
++	return ret;
+ }
+ 
+ #define to_dev_attr(_dev_attr) \
 
-> ---
-> Changelog:
-> 
-> v2:
-> - drop to generic polyhex,imx8mp-debix binding
-> 
->  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index b29974e3c30b3..a810749f352de 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -1060,6 +1060,13 @@ properties:
->              deprecated: true
->            - const: fsl,imx8mp
->  
-> +      - description: Polyhex DEBIX i.MX8MP SOM A based boards
-> +        items:
-> +          - enum:
-> +              - polyhex,imx8mp-debix-som-a-bmb-08   # Polyhex Debix SOM A on SOM A I/O board
-> +          - const: polyhex,imx8mp-debix-som-a       # Polyhex Debix SOM A
-> +          - const: fsl,imx8mp
-> +
->        - description: Toradex Boards with Verdin iMX8M Plus Modules
->          items:
->            - enum:
-
+base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
 -- 
-Regards,
+2.41.0
 
-Laurent Pinchart
