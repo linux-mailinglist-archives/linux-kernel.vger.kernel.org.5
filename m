@@ -2,193 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F747621F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D0B7621FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjGYTCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
+        id S231433AbjGYTCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGYTCS (ORCPT
+        with ESMTP id S230128AbjGYTCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:02:18 -0400
-Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021026.outbound.protection.outlook.com [52.101.62.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C366D121;
-        Tue, 25 Jul 2023 12:02:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VPWnA40nqfwSCIBf3EpHAVAxs4CcFIUT4/sS3MOgJkUDf9GIVX5vphY8W1ayA9D5P7WRHs91qM+3nMJ+qdVH5Ql5G8OEfn6nGTdwraQeUIpxhdMf/9nxGGxevGo+ke+IRoy0WL0Rkr0HaarcL1Kz/kjBgAAqib+/P3CjAPnj48mim5g1Pq+pOQXDl6VXRPkR9IuiuSHkfinRBgSGBPusZWQ3JGjnfwLMa8mcr8xv3CCpcupbhScU9oJn8HRGZvV2RiGv66GWQo+WhZ+RrxzVJL97BYCjVkwIDoKav1jGyNBTe8Vx1MzH99AbmLOqE3T4rU3QcFmjq+nJ0ZwkIqxetA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sftyt76KOmFZPcSMea8jiZ88u+09UDBK2DkDz9iF6x4=;
- b=dVqR8qIOGgovdz8DwXkzRVhzNv2PHF7L133U/vd0fSADiAZIp9nEahkD5/f0rpIN60BmBz20OQHmbv2U95jLriUH6ygNLhYUKb6M9B0zxPLf9x5aUJBs6UVkFIwn996PHOF7e1jNn4fmcJbl1EeWdw+xR4elX6J2JN3Ry9jLZ1coqkuFN4r5N1NzCVU+fmeyO2gUuTC48QISPoEUwVa9oRLdB5mh08OB3lfjV1eN5higP6uH9e9eRj3NPzz2dPnSaw3F1jyr+CENXeik/sB2A3dYfBvsE8tTHiqBgGlKYglTQvCXUJ2Biym4x8PqrlXVIZsddJHNSc4l4zsIwvzMzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sftyt76KOmFZPcSMea8jiZ88u+09UDBK2DkDz9iF6x4=;
- b=iDJJIIuMD7vgAC8wQVWwc+w9DzCg683djDIR9dowB7TO+IQSxNeU72V1xrB8q3lojz4lev7BUBoH+vxCHMfn5Xjz2fSFIFUZUh004SkaJ7ZeLLueo6YRTT06b010dxGCzctc8xy6dunrIuAVwJeOyBygiaEICUIED6bglcYBo3k=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by SJ0PR21MB2072.namprd21.prod.outlook.com (2603:10b6:a03:397::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.4; Tue, 25 Jul
- 2023 19:02:10 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b%7]) with mapi id 15.20.6652.002; Tue, 25 Jul 2023
- 19:02:10 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "brouer@redhat.com" <brouer@redhat.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: RE: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Topic: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Index: AQHZvAZSl8pOb40fXE2pDlV9gZuDN6/IzCkAgABE5NCAADEEcIABidWAgAANWGA=
-Date:   Tue, 25 Jul 2023 19:02:10 +0000
-Message-ID: <PH7PR21MB3116F5612AA8303512EEBA4CCA03A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1689966321-17337-1-git-send-email-haiyangz@microsoft.com>
- <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
- <PH7PR21MB3116F8A97F3626AB04915B96CA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <PH7PR21MB311675E57B81B49577ADE98FCA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <729b360c-4d79-1025-f5be-384b17f132d3@redhat.com>
-In-Reply-To: <729b360c-4d79-1025-f5be-384b17f132d3@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=60666082-2b7c-425c-aa9e-f9d880f18a60;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-25T18:48:48Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|SJ0PR21MB2072:EE_
-x-ms-office365-filtering-correlation-id: bdd4ce79-0d46-4e3c-4c44-08db8d41a648
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tnr2e71rw9y+LKwDORVZVTWdpig3R2o3BrUdXePNurngvucccGkjXBs3BuysT2xxkFAeU++uSx08br58ct41u9Q12j4+dJPGeGQL1izkoH9JpcoIFP4WDCp0Tl457NKLrUxC83OTNUrMovQ0aS4Xrw4QoAzFY/aw4k28ZpKU3qEKIl+iwN1hgaixm3rokulJfeCebsDAHYkz7MgbU7JRuTrUsNU4U2if3QoOOBNAoBGDqXFSSOUDnS0VGIHab5o+qg6Jd98l6SZ6TRbbznTHWZt8pyZT0zrmiwvdsjrC7kxu5h4qoHBTnVpJ90C65OJqasdYef/H1Mf1ILVI/2qo/g9UIjcF28heavlSjHF1GOfb1OJ2WxwAGU6qbWaSe9pf/ZoE61XB5pg2gAr55PL/VFnE+9WcBzzhR7jK9DmfPIreLPI3rVrsqwC/mSD6zjeNSOVLmMooF7Ppq8k+xTGqYrC5blfPPI9oq6C+wvtSNVXkyGqZh1KMYcD/MDfP6UgUlWvJHPtkgzphXtVu9J//zbo+p30CWEuLfEXRN6JpvQg8TtiDJE0+7kurOTOs7OQu1MQsnzZ72LdGRzzVq7hdhCHrd7rVIQcwrcIFedl6eeizGFSsnpkX5+nz8O8Q2Rnwt8yPxDzM8gUhXOyd18BhZUCC+PS6Hl3QS/qq21QIZ20=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(366004)(376002)(39860400002)(346002)(451199021)(38070700005)(83380400001)(82950400001)(38100700002)(122000001)(82960400001)(9686003)(2906002)(33656002)(186003)(6506007)(26005)(8990500004)(86362001)(52536014)(478600001)(5660300002)(10290500003)(55016003)(71200400001)(7416002)(7696005)(41300700001)(110136005)(4326008)(64756008)(66556008)(66476007)(54906003)(8936002)(66446008)(316002)(76116006)(66946007)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZEdjOWhSWEVjS0FMNnhva0VBaEU5ZHd6TnVyTzY0SVdxa1RFay9OREI5aXNt?=
- =?utf-8?B?K0NUdUdUQWtsTVl1WWlOYW92WlRyeHI3UWNaVWtON0YxcWNUWFJiWDlDaXk2?=
- =?utf-8?B?YndQRHRLVHJwKzBDc0ZFalc1MTFrZ2NXS1U5akd6ZmpZOTUxSWljMnBXNWhS?=
- =?utf-8?B?bkRYajNIcXRITVJLVGRUaWtFOFFSQ3dSRHVOemxPUmZORGdVb2xGRFQrSU14?=
- =?utf-8?B?RVhEeitNWFpXSEFodEh2d1YrT05mRWFaVHV1SzFkY3NZTWlrUWZyall2SWJO?=
- =?utf-8?B?RjRPeUcveEpmWnJYZW9GN3B0ZHhBSjhMQVZNVGxmNUZMdkNwMFdiSEdZanhV?=
- =?utf-8?B?RnE1QlRNamIyeldOdldheDF3N2RjTHI5RDduOXFGNGZKNDY2ekxTNnZ4NU1R?=
- =?utf-8?B?cThUWldFcms2a250WU01SGt6WEFOTHV1aFN0ZGR0dkZodytzOEE4ZjFWdXFz?=
- =?utf-8?B?VFJFNTVGMmFTTUFPcmoySENmOWFjd1VmWWI0S2VXWms4SjlWY1NHaHM3cnBv?=
- =?utf-8?B?Y1VEUldIREhiM2thZzVLQTR5Z25UK09MRnZXUWQra0F5dWd6Mnl3ZVJxZ2Nr?=
- =?utf-8?B?MS94RVZjNXRFdkk2UWVPMlA2RHEybW8yTHZ0T2s1bEthMldnM1R4anNWR0I4?=
- =?utf-8?B?VStXVGhpT0RnVzY0THBSTCtCRXhFZGwzK3l6YUcxeDFxdHlOa0hrMHAyRERr?=
- =?utf-8?B?SHNjSVdHM1o3dnMwbXh0NUk0eDd6ZGgzQmlzeUZlNDRVZTQ5dS9IYkRDZE5V?=
- =?utf-8?B?TjFwYkhObGtYVUtsaThiNHREKzZVcTlhcGdIdTZIRmg4UjdNakdqY09UaHpZ?=
- =?utf-8?B?bTZ0cHFqek5kSFF3T0FDOHBGTlRyRjZ0Y0ZVbmRJMzduSy9Vdjg3bWp5dWNr?=
- =?utf-8?B?WFBuVE1IZmdzSHpWRGp3c1B1KzdQSUNtVGtXa3IvcXk0ZUVEWlViNk9SWlRR?=
- =?utf-8?B?TDFiUWtlK1gvQkRUcGMzODAydWdqYkVnR1dnZ3ZxamhjdDJNc3UvbERBcjFM?=
- =?utf-8?B?UTduUFU4OTBRd3lCcWRlSktqTk8vUGY1R2ZHUGF6U2xjQll2SWptb0VlTUVV?=
- =?utf-8?B?alRGT2x1V3VueU9VV2pPUHF5UE9Qc0I3cFBLV2RSaUM5NTZCdlN5b0hSWHJk?=
- =?utf-8?B?YndYVHBkN2RLMXlkRDdtQjVFdUJXZ1pDc3pnQWVrQm5GSW04YStJRFJUMXMv?=
- =?utf-8?B?aFFqOXNVc2RPQlB6K2FVbEMxZktaS0YweFZMZktFcUJLdGFMN3RYd1Juek83?=
- =?utf-8?B?cHBoSTl5QzRZYmhXa2lKQzJMRXlQZW9uWnBnZGpadjZEbGl0UkRZZ2ViNnl6?=
- =?utf-8?B?NHNBdGpDbFJOcjZuR29LbVVMRVlqYWVGM0RQbDlWWjNTcWJpbXFQMm01dDhO?=
- =?utf-8?B?ZjRYcEVZbjVrSlJQaFkzbVF3WDF0ZlRsdkNpUjlIazB2M2h2MDRldTI4ZzRE?=
- =?utf-8?B?bkFXcExuZlQ1Z0ZvL3dER01Oa29LQXNTVlcxRGp5MjcxeXhKVzBYb1RTWUJH?=
- =?utf-8?B?dWF2dFhuVDlxRE9qVThCK2k3SWlQOElUckdsWGIyRXEwZ2RFNUFmK1dGTXho?=
- =?utf-8?B?WWRGQnowZzNZWXphUEN4VlphbVBzWGUyOHRVamlrRzk1QjVVZW1FVHlQZkFh?=
- =?utf-8?B?YXpiN3pyY2VJa29pMmlYeGFvczZxZ0xtdVpuMXZrNDJrNkh6Zmk4Qnd5MHJW?=
- =?utf-8?B?SjNhcERUMVlwMlVhMUtvQVZGaEhrd1J1eDY5aXZVeDV5V1VPTzRHN1ZkY216?=
- =?utf-8?B?b05YbU1lZ2dTUFFjL0RyR3hNNEs4aUNyVXhRc0FLT2RqblNvd3dIbmpxTlVD?=
- =?utf-8?B?ZXFaeDgwb3phT3cyQzVWQXczdDUxbVFCWDdzVUVPUjJ3VU1lWXRIZDhGMjd1?=
- =?utf-8?B?YWFjZm5EdmlndFFZR05Zanh4dU90bXlybDhHYWRrR0t6TTc1UXcyZkFVQ0lx?=
- =?utf-8?B?SUNGNU1CNWhmK2tPZjNBT0owNWZOQXp3TExYdEJjbGN1cVl4Nm1jVlpOTGNB?=
- =?utf-8?B?Q2FuQ0xYVU9qZ1ZOVE1jUDgycGc1c1dRV1Urc1JjbndCUWZuWmhVc1VNbk9t?=
- =?utf-8?B?SzVlTUZqMWpJUkhqYzI3UkFOdmxjNHFNTVUxZytYY1J1SmZ4SlhVSmFvbW1Z?=
- =?utf-8?Q?H4Hp/0dqXq9sRxn0JTwDqjnXb?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 25 Jul 2023 15:02:52 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02F7E2;
+        Tue, 25 Jul 2023 12:02:50 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso8981780e87.2;
+        Tue, 25 Jul 2023 12:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690311769; x=1690916569;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tZ+zD+lQYJ687dfJcdLlEcIu144gHbrt/w0O5zbvv0A=;
+        b=ZA5VcxPPnk7kJuJwRUaOvZlRsaiG8QXNU7+YEXiO6hsAbqBje6zfkQu3llko9X32CU
+         fP1ZBsxIIA8RI+S67mscbpbMl8KA3ZaposAHxotJj+jq8OgpzNfQD8Wc1R+/3IiZ39U9
+         tpUOVoSunv+wN0+P4jFyDNUHSzBRDh5ma7yU+UhwnAiSwKZ9h7JVu1eqFUz8gDs5aA9i
+         Ee2VXgVqbXNaivMcNJzx0ETB0MlFrYHg7uHBTmsmp4NLBy3t375WeFk2zfbZYfBCSq6C
+         E7FrjU4i8r2e8S2bv5vh/LdOpdJHiwqHsOp93881dVu119cCHNvmkgdAD8Lope5c4yem
+         TnJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690311769; x=1690916569;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tZ+zD+lQYJ687dfJcdLlEcIu144gHbrt/w0O5zbvv0A=;
+        b=B6VJiTl0RID9x3vhHJm7GcmaSqnlqfIfyLm+GihBcMWjrlDCKvTxDKYYuansiYRRBQ
+         aNse4n9ixJV/UXn3WkM1ZGu0MGWbePcK/5ZB73gn6tMAM5F9e5bKgIksZ5jVTAiRTy/z
+         mpVefKJdb8PJubKA70OP3vSmMJZ8pqiaYUamtR6qbPGNivOYBCSxSK+OYbTBdHAmxiA+
+         RqMS4ehdJ2Z/4q6X0Qpb/LWhqzYClQSXtWWSYBO9EgXM/qPTzgB5KpF1Hca9qbqWkwk3
+         OaMw2bjONCbrZfb93WnLpBqv8gX5RYT4QSuw7i/J3kr4r8A5rqKGMEbOXcuwl0yMC9Hz
+         n8Bw==
+X-Gm-Message-State: ABy/qLZqCJ3Bh5GaLGTfQmH+O/nU1PvUl+WfLLIAhSTMNX8KUFFDdZyi
+        CM+lErWaa50O+zp4WkyqsjKxpNEDLucRZ7AOTIcG+wFqeTs=
+X-Google-Smtp-Source: APBJJlG6hnVqkiDDWIHNBLR/pQ9FWQuIA/Op8Bj3+yz4OUxxhiG06uxsNvPMCwtXiLTF/Tz/4Bf0R+O6Ac/Mem6cFlc=
+X-Received: by 2002:a2e:9914:0:b0:2b9:45ad:88b1 with SMTP id
+ v20-20020a2e9914000000b002b945ad88b1mr9094733lji.2.1690311768905; Tue, 25 Jul
+ 2023 12:02:48 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdd4ce79-0d46-4e3c-4c44-08db8d41a648
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2023 19:02:10.4963
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PgtB1DF3j6rGIVm4byXNjHBPZh5/YKotF6A4tF7KKL8OMl2erXvPKhZoKYd+5BHFZfxrHfc5HyJlkoJuHifejQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB2072
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230724111206.3067352-1-howardchung@google.com>
+ <CABBYNZ+UrWFNULhn8Nu79rvS-NZ4Rt4X4y=s+-DHEwjfKuX8Gg@mail.gmail.com>
+ <CAPHZWUejzqz5=tHPwib6gfSjcd6K90dyfw8m_3CgaLqjdYRa3A@mail.gmail.com>
+ <CABBYNZ+BbNQr6-RbXABF0TeUUgBuoVUABqwfkfHgHkZ09vyY4Q@mail.gmail.com> <CAPHZWUfh2kPDA+_wtEisw85NwHwDik0A60Dc7zKwVur+SeqTOQ@mail.gmail.com>
+In-Reply-To: <CAPHZWUfh2kPDA+_wtEisw85NwHwDik0A60Dc7zKwVur+SeqTOQ@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Tue, 25 Jul 2023 12:02:36 -0700
+Message-ID: <CABBYNZ+StoKG2EMFgyJqAeiJPzWeizSWdg69pvV1NLNoWfSXsw@mail.gmail.com>
+Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
+To:     Yun-hao Chung <howardchung@google.com>
+Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        Archie Pusaka <apusaka@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmVzcGVyIERhbmdhYXJk
-IEJyb3VlciA8amJyb3VlckByZWRoYXQuY29tPg0KPiBTZW50OiBUdWVzZGF5LCBKdWx5IDI1LCAy
-MDIzIDI6MDEgUE0NCj4gPj4NCj4gPj4gT3VyIGRyaXZlciBpcyB1c2luZyBOVU1BIDAgYnkgZGVm
-YXVsdCwgc28gSSBpbXBsaWNpdGx5IGFzc2lnbiBOVU1BIG5vZGUgaWQNCj4gPj4gdG8gemVybyBk
-dXJpbmcgcG9vbCBpbml0Lg0KPiA+Pg0KPiA+PiBBbmQsIGlmIHRoZSBJUlEvQ1BVIGFmZmluaXR5
-IGlzIGNoYW5nZWQsIHRoZSBwYWdlX3Bvb2xfbmlkX2NoYW5nZWQoKQ0KPiA+PiB3aWxsIHVwZGF0
-ZSB0aGUgbmlkIGZvciB0aGUgcG9vbC4gRG9lcyB0aGlzIHNvdW5kIGdvb2Q/DQo+ID4+DQo+ID4N
-Cj4gPiBBbHNvLCBzaW5jZSBvdXIgZHJpdmVyIGlzIGdldHRpbmcgdGhlIGRlZmF1bHQgbm9kZSBm
-cm9tIGhlcmU6DQo+ID4gCWdjLT5udW1hX25vZGUgPSBkZXZfdG9fbm9kZSgmcGRldi0+ZGV2KTsN
-Cj4gPiBJIHdpbGwgdXBkYXRlIHRoaXMgcGF0Y2ggdG8gc2V0IHRoZSBkZWZhdWx0IG5vZGUgYXMg
-YWJvdmUsIGluc3RlYWQgb2YgaW1wbGljaXRseQ0KPiA+IGFzc2lnbmluZyBpdCB0byAwLg0KPiA+
-DQo+IA0KPiBJbiB0aGF0IGNhc2UsIEkgYWdyZWUgdGhhdCBpdCBtYWtlIHNlbnNlIHRvIHVzZSBk
-ZXZfdG9fbm9kZSgmcGRldi0+ZGV2KSwNCj4gbGlrZToNCj4gCXBwcm0ubmlkID0gZGV2X3RvX25v
-ZGUoJnBkZXYtPmRldik7DQo+IA0KPiBEcml2ZXIgbXVzdCBoYXZlIGEgcmVhc29uIGZvciBhc3Np
-Z25pbmcgZ2MtPm51bWFfbm9kZSBmb3IgdGhpcyBoYXJkd2FyZSwNCj4gd2hpY2ggaXMgb2theS4g
-VGhhdCBpcyB3aHkgcGFnZV9wb29sIEFQSSBhbGxvd3MgZHJpdmVyIHRvIGNvbnRyb2wgdGhpcy4N
-Cj4gDQo+IEJ1dCB0aGVuIEkgZG9uJ3QgdGhpbmsgeW91IHNob3VsZCBjYWxsIHBhZ2VfcG9vbF9u
-aWRfY2hhbmdlZCgpIGxpa2UNCj4gDQo+IAlwYWdlX3Bvb2xfbmlkX2NoYW5nZWQocnhxLT5wYWdl
-X3Bvb2wsIG51bWFfbWVtX2lkKCkpOw0KPiANCj4gQmVjYXVzZSB0aGVuIHlvdSB3aWxsIChhdCBm
-aXJzdCBwYWNrZXQgcHJvY2Vzc2luZyBldmVudCkgcmV2ZXJ0IHRoZQ0KPiBkZXZfdG9fbm9kZSgp
-IHNldHRpbmcgdG8gdXNlIG51bWFfbWVtX2lkKCkgb2YgcHJvY2Vzc2luZy9ydW5uaW5nIENQVS4N
-Cj4gKEluIGVmZmVjdCB0aGlzIHdpbGwgYmUgdGhlIHNhbWUgYXMgc2V0dGluZyBOVU1BX05PX05P
-REUpLg0KPiANCj4gSSBrbm93LCBtbHg1IGRvIGNhbGwgcGFnZV9wb29sX25pZF9jaGFuZ2VkKCks
-IGJ1dCB0aGV5IHNob3dlZCBiZW5jaG1hcmsNCj4gbnVtYmVycyB0aGF0IHRoaXMgd2FzIHByZWZl
-cnJlZCBhY3Rpb24sIGV2ZW4td2hlbiBzeXNhZG0gaGFkDQo+ICJtaXNjb25maWd1cmVkIiB0aGUg
-ZGVmYXVsdCBzbXBfYWZmaW5pdHkgUlgtcHJvY2Vzc2luZyB0byBoYXBwZW4gb24gYQ0KPiByZW1v
-dGUgTlVNQSBub2RlLiAgQUZBSUsgbWx4NSBrZWVwcyB0aGUgZGVzY3JpcHRvciByaW5ncyBvbiB0
-aGUNCj4gb3JpZ2luYWxseSBjb25maWd1cmVkIE5VTUEgbm9kZSB0aGF0IGNvcnJlc3BvbmRzIHRv
-IHRoZSBOSUMgUENJZSBzbG90Lg0KDQpJbiBtYW5hX2dkX3NldHVwX2lycXMoKSwgd2Ugc2V0IHRo
-ZSBkZWZhdWx0IElSUS9DUFUgYWZmaW5pdHkgdG8gZ2MtPm51bWFfbm9kZSANCnRvbywgc28gaXQg
-d29uJ3QgcmV2ZXJ0IHRoZSBuaWQgaW5pdGlhbCBzZXR0aW5nLiANCg0KQ3VycmVudGx5LCB0aGUg
-QXp1cmUgaHlwZXJ2aXNvciBhbHdheXMgaW5kaWNhdGVzIG51bWEgMCBhcyBkZWZhdWx0LiAoSW4g
-DQp0aGUgZnV0dXJlLCBpdCB3aWxsIHN0YXJ0IHRvIHByb3ZpZGUgdGhlIGFjY3VyYXRlIGRlZmF1
-bHQgZGV2IG5vZGUuKSBXaGVuIGEgDQp1c2VyIG1hbnVhbGx5IGNoYW5nZXMgdGhlIElSUS9DUFUg
-YWZmaW5pdHkgZm9yIHBlcmYgdHVuaW5nLCB3ZSB3YW50IHRvIA0KYWxsb3cgcGFnZV9wb29sX25p
-ZF9jaGFuZ2VkKCkgdG8gdXBkYXRlIHRoZSBwb29sLiBJcyB0aGlzIE9LPw0KDQpUaGFua3MsDQot
-IEhhaXlhbmcNCg0K
+Hi Yun-hao,
+
+On Tue, Jul 25, 2023 at 12:33=E2=80=AFAM Yun-hao Chung <howardchung@google.=
+com> wrote:
+>
+> On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Luiz Augusto von Dentz
+> <luiz.dentz@gmail.com> wrote:
+> >
+> > Hi Yun-hao,
+> >
+> > On Mon, Jul 24, 2023 at 9:56=E2=80=AFPM Yun-hao Chung <howardchung@goog=
+le.com> wrote:
+> > >
+> > > Thanks Paul for the review. I'll fix them in the next patch.
+> > >
+> > > Hi Luiz,
+> > >
+> > > I think the controller did reset its internal state in the link layer=
+, so the next time we asked the controller to create a connection to the sa=
+me remote, the controller didn't reply the error in the command complete ev=
+ent but the connection was rejected by the remote. If we really want the co=
+ntroller to complete the disconnect procedure on reset, the power-off proce=
+dure could be stuck for tens of seconds if the remote was not responding. A=
+ similar problem was found and solved in this patch [Bluetooth: hci_sync: D=
+on't wait peer's reply when powering off].
+> > >
+> > > The other reason why we think this is better to be solved in the soft=
+ware layer is this is not only observed in Intel's AX211 but also MTK's MT7=
+921 and maybe more.
+> >
+> > Interesting, but in this case shouldn't the link-layer attempt to
+> > cleanup _before_ it reset the state? Because as far I recall doing a
+> > HCI_Reset shall cause a Disconnection even if not initiated by the
+> > host stack with HCI_Disconnect, also there is something really odd
+> > with the fact that the link-layer is generating such an error, because
+> > in case that happens isn't it clear the states are out of sync and it
+> > shall disconnect or something, I'm also curious what would happen if
+> > one quickly toggle power then the same problem should manifest, at
+> > least I don't see a difference between HCI_Reset and power off/on
+> > within the connection supervision timeout.
+>
+> Do you think it's better to do this instead: Set HCI Supervision
+> timeout with a configurable or just a small value and then it's more
+> safe to wait for disconnect complete because the result should be
+> returned within the supervision timeout.
+> In this way, we don't need the controller to do a graceful
+> disconnection on HCI_Reset and the controller state won't be
+> out-of-sync.
+
+I think it is worth trying at least, not sure if we won't get into the
+same situation as to wait for the command to complete though, anyway
+the default of supervision timeout is something like 20 seconds which
+is way too long compared to our command timeout.
+
+> >
+> > > Since this is a tradeoff problem, I make it a configurable parameter =
+so that each user can decide a good number from their perspective. If it is=
+ 0, which is the default value, the behavior should remain the same.
+> > >
+> > > Do you think this sounds good to you?
+> > >
+> > > Thanks,
+> > > Howard
+> > >
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > On Tue, Jul 25, 2023 at 6:31=E2=80=AFAM Luiz Augusto von Dentz <luiz.=
+dentz@gmail.com> wrote:
+> > >>
+> > >> Hi Howard,
+> > >>
+> > >> On Mon, Jul 24, 2023 at 4:12=E2=80=AFAM Howard Chung <howardchung@go=
+ogle.com> wrote:
+> > >> >
+> > >> > For some controllers, it is known that when the HCI disconnect and=
+ HCI
+> > >> > Reset are too close to each other, the LMP disconnect command migh=
+t not
+> > >> > been sent out yet and the command will be dropped by the controole=
+r when
+> > >> > it is asked to reset itself. This could happen on powering off ada=
+pter.
+> > >> >
+> > >> > One possible issue is that if a connection exists, and then poweri=
+ng off
+> > >> > and on adapter within a short time, then our host stack assumes th=
+e
+> > >> > conntection was disconnected but this might not be true, so if we =
+issue
+> > >> > a connection to the peer, it will fail with ACL Already Connected =
+error.
+> > >>
+> > >> That sounds more like a bug in the controller though, the spec is
+> > >> quite clear that it must reset the link-layer state:
+> > >>
+> > >> BLUETOOTH CORE SPECIFICATION Version 5.3 | Vol 4, Part E
+> > >> page 1972
+> > >>
+> > >> ...HCI_Reset command shall reset the Link Manager, Baseband and Link=
+ Layer.
+> > >>
+> > >> So it sounds like the controller shall perform and the necessary
+> > >> procedures before it respond with a Command Complete.
+> > >>
+> > >> > This CL makes the host stack to wait for |HCI_EV_DISCONN_COMPLETE|=
+ when
+> > >> > powering off with a configurable timeout unless the timeout is set=
+ to 0.
+> > >> >
+> > >> > Reviewed-by: Archie Pusaka <apusaka@google.com>
+> > >> > Signed-off-by: Howard Chung <howardchung@google.com>
+> > >> > ---
+> > >> > Hi upstream maintainers, this is tested with an AX211 device and L=
+ogi
+> > >> > K580 keyboard by the following procedures:
+> > >> > 1. pair the peer and stay connected.
+> > >> > 2. power off and on immediately
+> > >> > 3. observe that the btsnoop log is consistent with the configured
+> > >> >    timeout.
+> > >> >
+> > >> >  include/net/bluetooth/hci_core.h |  1 +
+> > >> >  net/bluetooth/hci_core.c         |  2 +-
+> > >> >  net/bluetooth/hci_sync.c         | 38 +++++++++++++++++++++++----=
+-----
+> > >> >  net/bluetooth/mgmt_config.c      |  6 +++++
+> > >> >  4 files changed, 35 insertions(+), 12 deletions(-)
+> > >> >
+> > >> > diff --git a/include/net/bluetooth/hci_core.h b/include/net/blueto=
+oth/hci_core.h
+> > >> > index 8200a6689b39..ce44f9c60059 100644
+> > >> > --- a/include/net/bluetooth/hci_core.h
+> > >> > +++ b/include/net/bluetooth/hci_core.h
+> > >> > @@ -432,6 +432,7 @@ struct hci_dev {
+> > >> >         __u16           advmon_allowlist_duration;
+> > >> >         __u16           advmon_no_filter_duration;
+> > >> >         __u8            enable_advmon_interleave_scan;
+> > >> > +       __u16           discon_on_poweroff_timeout;
+> > >> >
+> > >> >         __u16           devid_source;
+> > >> >         __u16           devid_vendor;
+> > >> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> > >> > index 0fefa6788911..769865494f45 100644
+> > >> > --- a/net/bluetooth/hci_core.c
+> > >> > +++ b/net/bluetooth/hci_core.c
+> > >> > @@ -2479,7 +2479,7 @@ struct hci_dev *hci_alloc_dev_priv(int sizeo=
+f_priv)
+> > >> >         hdev->adv_instance_cnt =3D 0;
+> > >> >         hdev->cur_adv_instance =3D 0x00;
+> > >> >         hdev->adv_instance_timeout =3D 0;
+> > >> > -
+> > >> > +       hdev->discon_on_poweroff_timeout =3D 0;   /* Default to no=
+ timeout */
+> > >> >         hdev->advmon_allowlist_duration =3D 300;
+> > >> >         hdev->advmon_no_filter_duration =3D 500;
+> > >> >         hdev->enable_advmon_interleave_scan =3D 0x00;     /* Defau=
+lt to disable */
+> > >> > diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> > >> > index 3348a1b0e3f7..260e9f05359c 100644
+> > >> > --- a/net/bluetooth/hci_sync.c
+> > >> > +++ b/net/bluetooth/hci_sync.c
+> > >> > @@ -5250,6 +5250,8 @@ static int hci_disconnect_sync(struct hci_de=
+v *hdev, struct hci_conn *conn,
+> > >> >                                u8 reason)
+> > >> >  {
+> > >> >         struct hci_cp_disconnect cp;
+> > >> > +       unsigned long timeout;
+> > >> > +       int err;
+> > >> >
+> > >> >         if (conn->type =3D=3D AMP_LINK)
+> > >> >                 return hci_disconnect_phy_link_sync(hdev, conn->ha=
+ndle, reason);
+> > >> > @@ -5258,19 +5260,33 @@ static int hci_disconnect_sync(struct hci_=
+dev *hdev, struct hci_conn *conn,
+> > >> >         cp.handle =3D cpu_to_le16(conn->handle);
+> > >> >         cp.reason =3D reason;
+> > >> >
+> > >> > -       /* Wait for HCI_EV_DISCONN_COMPLETE, not HCI_EV_CMD_STATUS=
+, when the
+> > >> > -        * reason is anything but HCI_ERROR_REMOTE_POWER_OFF. This=
+ reason is
+> > >> > -        * used when suspending or powering off, where we don't wa=
+nt to wait
+> > >> > -        * for the peer's response.
+> > >> > +       /* The HCI_ERROR_REMOTE_POWER_OFF is used when suspending =
+or powering off,
+> > >> > +        * so we don't want to waste time waiting for the reply of=
+ the peer.
+> > >> > +        * However, if the configuration specified, we'll wait som=
+e time to give the
+> > >> > +        * controller chance to actually send the disconnect comma=
+nd.
+> > >> >          */
+> > >> > -       if (reason !=3D HCI_ERROR_REMOTE_POWER_OFF)
+> > >> > -               return __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCO=
+NNECT,
+> > >> > -                                               sizeof(cp), &cp,
+> > >> > -                                               HCI_EV_DISCONN_COM=
+PLETE,
+> > >> > -                                               HCI_CMD_TIMEOUT, N=
+ULL);
+> > >> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF && !hdev->dis=
+con_on_poweroff_timeout) {
+> > >> > +               return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNE=
+CT,
+> > >> > +                                            sizeof(cp), &cp, HCI_=
+CMD_TIMEOUT);
+> > >> > +       }
+> > >> >
+> > >> > -       return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT, size=
+of(cp), &cp,
+> > >> > -                                    HCI_CMD_TIMEOUT);
+> > >> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+> > >> > +               timeout =3D msecs_to_jiffies(hdev->discon_on_power=
+off_timeout);
+> > >> > +       else
+> > >> > +               timeout =3D HCI_CMD_TIMEOUT;
+> > >> > +
+> > >> > +       err =3D __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
+> > >> > +                                      sizeof(cp), &cp,
+> > >> > +                                      HCI_EV_DISCONN_COMPLETE,
+> > >> > +                                      timeout, NULL);
+> > >> > +
+> > >> > +       /* Ignore the error in suspending or powering off case to =
+avoid the procedure being
+> > >> > +        * aborted.
+> > >> > +        */
+> > >> > +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+> > >> > +               return 0;
+> > >> > +
+> > >> > +       return err;
+> > >> >  }
+> > >> >
+> > >> >  static int hci_le_connect_cancel_sync(struct hci_dev *hdev,
+> > >> > diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_conf=
+ig.c
+> > >> > index 6ef701c27da4..f3194e3642d9 100644
+> > >> > --- a/net/bluetooth/mgmt_config.c
+> > >> > +++ b/net/bluetooth/mgmt_config.c
+> > >> > @@ -78,6 +78,7 @@ int read_def_system_config(struct sock *sk, stru=
+ct hci_dev *hdev, void *data,
+> > >> >                 HDEV_PARAM_U16(advmon_allowlist_duration);
+> > >> >                 HDEV_PARAM_U16(advmon_no_filter_duration);
+> > >> >                 HDEV_PARAM_U8(enable_advmon_interleave_scan);
+> > >> > +               HDEV_PARAM_U16(discon_on_poweroff_timeout);
+> > >> >         } __packed rp =3D {
+> > >> >                 TLV_SET_U16(0x0000, def_page_scan_type),
+> > >> >                 TLV_SET_U16(0x0001, def_page_scan_int),
+> > >> > @@ -111,6 +112,7 @@ int read_def_system_config(struct sock *sk, st=
+ruct hci_dev *hdev, void *data,
+> > >> >                 TLV_SET_U16(0x001d, advmon_allowlist_duration),
+> > >> >                 TLV_SET_U16(0x001e, advmon_no_filter_duration),
+> > >> >                 TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
+> > >> > +               TLV_SET_U16(0x0020, discon_on_poweroff_timeout),
+> > >> >         };
+> > >> >
+> > >> >         bt_dev_dbg(hdev, "sock %p", sk);
+> > >> > @@ -186,6 +188,7 @@ int set_def_system_config(struct sock *sk, str=
+uct hci_dev *hdev, void *data,
+> > >> >                 case 0x001b:
+> > >> >                 case 0x001d:
+> > >> >                 case 0x001e:
+> > >> > +               case 0x0020:
+> > >> >                         exp_type_len =3D sizeof(u16);
+> > >> >                         break;
+> > >> >                 case 0x001f:
+> > >> > @@ -314,6 +317,9 @@ int set_def_system_config(struct sock *sk, str=
+uct hci_dev *hdev, void *data,
+> > >> >                 case 0x0001f:
+> > >> >                         hdev->enable_advmon_interleave_scan =3D TL=
+V_GET_U8(buffer);
+> > >> >                         break;
+> > >> > +               case 0x00020:
+> > >> > +                       hdev->discon_on_poweroff_timeout =3D TLV_G=
+ET_LE16(buffer);
+> > >> > +                       break;
+> > >> >                 default:
+> > >> >                         bt_dev_warn(hdev, "unsupported parameter %=
+u", type);
+> > >> >                         break;
+> > >> > --
+> > >> > 2.41.0.487.g6d72f3e995-goog
+> > >> >
+> > >>
+> > >>
+> > >> --
+> > >> Luiz Augusto von Dentz
+> >
+> >
+> >
+> > --
+> > Luiz Augusto von Dentz
+
+
+
+--=20
+Luiz Augusto von Dentz
