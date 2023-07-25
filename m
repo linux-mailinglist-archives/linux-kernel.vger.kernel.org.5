@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2515A76272F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0C8762731
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjGYXGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
+        id S231552AbjGYXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjGYXGX (ORCPT
+        with ESMTP id S229740AbjGYXJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:06:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F5D9C;
-        Tue, 25 Jul 2023 16:06:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C928861932;
-        Tue, 25 Jul 2023 23:06:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05956C433C8;
-        Tue, 25 Jul 2023 23:06:19 +0000 (UTC)
-Date:   Tue, 25 Jul 2023 19:06:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
-        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
-        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
-        vsirnapalli@vmware.com
-Subject: Re: [PATCH v5 02/10] eventfs: Implement tracefs_inode_cache
-Message-ID: <20230725190617.14c85997@rorschach.local.home>
-In-Reply-To: <1690054625-31939-3-git-send-email-akaher@vmware.com>
-References: <1690054625-31939-1-git-send-email-akaher@vmware.com>
-        <1690054625-31939-3-git-send-email-akaher@vmware.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 25 Jul 2023 19:09:52 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35961E0;
+        Tue, 25 Jul 2023 16:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=tpcY/KRZk5hiP87JmAb/M+fcCqvEACvi7wT7XhSE4Vg=; b=c0MMfSLPkjphEMgyJhSFY51/jz
+        FMArs3JcyyCm6OJNQZzNH0BOKVo+3b1Z+7Dl3fYzAtQNRXH1o1f9YAmVGRkC9WX3uzjbIhkvUAZ0Q
+        aAeNt1dpyNqz4JxmzhoG1Js+6P4jpighifXpfIOUhKYs0TduKPwStyljD3pD6FGLxQ+zZXOR3n+TX
+        xbxtFeyFMj+L1Nd1OoZBntBWnYF5tG268ztEw1UYIxwRB+dPI/NHXr3ngmyA748pm88U5dBo7cett
+        d6MJad9KvaIzQvgxq3GwxCOmtTAnGZCE/sblpRjrjjlLFLHU20mQ0XWIWbZS+nI47ZHDld36FV/8r
+        oDMhcdtg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qOR9x-003Kui-43; Tue, 25 Jul 2023 23:09:41 +0000
+Date:   Tue, 25 Jul 2023 23:09:41 +0000
+From:   "Dr. David Alan Gilbert" <linux@treblig.org>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        akpm@linux-foundation.org
+Cc:     Sam Ravnborg <sam@ravnborg.org>, davem@davemloft.net,
+        benh@kernel.crashing.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sparc: Use shared font data
+Message-ID: <ZMBWNZ9KI0Xs6w1A@gallifrey>
+References: <20230724235851.165871-1-linux@treblig.org>
+ <20230725161040.GA832394@ravnborg.org>
+ <ZL/+Bz5C2Mxx0Msw@gallifrey>
+ <605d12e8a4fdcb238efc9b18fbd2637474de0049.camel@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <605d12e8a4fdcb238efc9b18fbd2637474de0049.camel@physik.fu-berlin.de>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 23:08:03 up 19 days,  8:39,  1 user,  load average: 0.00, 0.01, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* John Paul Adrian Glaubitz (glaubitz@physik.fu-berlin.de) wrote:
+> Hi Dave!
 
-Some more nits.
+Hi Adrian,
 
-On Sun, 23 Jul 2023 01:06:57 +0530
-Ajay Kaher <akaher@vmware.com> wrote:
-
-> Create a kmem cache of tracefs_inodes. To be more efficient, as there are
-> lots of tracefs inodes, create its own cache. This also allows to see how
-> many tracefs inodes have been created.
+> On Tue, 2023-07-25 at 16:53 +0000, Dr. David Alan Gilbert wrote:
+> > * Sam Ravnborg (sam@ravnborg.org) wrote:
+> > > On Tue, Jul 25, 2023 at 12:58:51AM +0100, linux@treblig.org wrote:
+> > > > From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> > > > 
+> > > > sparc has a 'btext' font used for the console which is almost identical
+> > > > to the shared font_sun8x16, so use it rather than duplicating the data.
+> > > > 
+> > > > They were actually identical until about a decade ago when
+> > > >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> > > >                         "broken bar" to "vertical line"")
+> > > > 
+> > > > which changed the | in the shared font to be a solid
+> > > > bar rather than a broken bar.  That's the only difference.
+> > > > 
+> > > > This was originally spotted by PMD which noticed that PPC does
+> > > > the same thing with the same data, and they also share a bunch
+> > > > of functions to manipulate the data.  The PPC code and the functions
+> > > > I'll look at another time if this patch is OK.
+> > > > 
+> > > > Tested very lightly with a boot without FS in qemu.
+> > > > 
+> > > > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> > > 
+> > > Looks good, thanks for the fixes.
+> > > Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> > 
+> > Thanks
+> > 
+> > > Let's hope someone picks it up...
+> > 
+> > I was hoping Dave would, but I realise Sparc doesn't get much
+> > these days.
+> > Of course if anyone feels guilty about their own patches adding code
+> > they can take this patch to make ~340 lines of penance.
 > 
-> Add helper functions:
-> tracefs_alloc_inode()
-> tracefs_free_inode()
-> get_tracefs()
+> You can ask Andrew Morton to pick it up through his tree. He usually does
+> that when no one else is willing to pick a patch up.
+
+  Thanks for the suggestion, I've copied Andrew in, although
+there's obviously no rush since it's just a dedupe.
+
+Dave
+
+> Adrian
 > 
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Tested-by: Ching-lin Yu <chinglinyu@google.com>
-> ---
->  fs/tracefs/inode.c    | 39 +++++++++++++++++++++++++++++++++++++++
->  fs/tracefs/internal.h | 19 +++++++++++++++++++
->  2 files changed, 58 insertions(+)
->  create mode 100644 fs/tracefs/internal.h
-> 
-> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-> index 57ac8aa4a724..2508944cc4d8 100644
-> --- a/fs/tracefs/inode.c
-> +++ b/fs/tracefs/inode.c
-> @@ -21,13 +21,33 @@
->  #include <linux/parser.h>
->  #include <linux/magic.h>
->  #include <linux/slab.h>
-> +#include "internal.h"
->  
->  #define TRACEFS_DEFAULT_MODE	0700
-> +static struct kmem_cache *tracefs_inode_cachep __ro_after_init;
->  
->  static struct vfsmount *tracefs_mount;
->  static int tracefs_mount_count;
->  static bool tracefs_registered;
->  
-> +static struct inode *tracefs_alloc_inode(struct super_block *sb)
-> +{
-> +	struct tracefs_inode *ti;
-> +
-> +	ti = kmem_cache_alloc(tracefs_inode_cachep, GFP_KERNEL);
-> +	if (!ti)
-> +		return NULL;
-> +
-> +	ti->flags = 0;
-> +
-> +	return &ti->vfs_inode;
-> +}
-> +
-> +static void tracefs_free_inode(struct inode *inode)
-> +{
-> +	kmem_cache_free(tracefs_inode_cachep, get_tracefs(inode));
-> +}
-> +
->  static ssize_t default_read_file(struct file *file, char __user *buf,
->  				 size_t count, loff_t *ppos)
->  {
-> @@ -346,6 +366,9 @@ static int tracefs_show_options(struct seq_file *m, struct dentry *root)
->  }
->  
->  static const struct super_operations tracefs_super_operations = {
-> +	.alloc_inode    = tracefs_alloc_inode,
-> +	.free_inode     = tracefs_free_inode,
-> +	.drop_inode     = generic_delete_inode,
->  	.statfs		= simple_statfs,
->  	.remount_fs	= tracefs_remount,
->  	.show_options	= tracefs_show_options,
-> @@ -628,10 +651,26 @@ bool tracefs_initialized(void)
->  	return tracefs_registered;
->  }
->  
-> +static void init_once(void *foo)
-> +{
-> +	struct tracefs_inode *ti = (struct tracefs_inode *) foo;
-> +
-> +	inode_init_once(&ti->vfs_inode);
-> +}
-> +
->  static int __init tracefs_init(void)
->  {
->  	int retval;
->  
-> +	tracefs_inode_cachep = kmem_cache_create("tracefs_inode_cache",
-> +						 sizeof(struct tracefs_inode),
-> +						 0, (SLAB_RECLAIM_ACCOUNT|
-> +						     SLAB_MEM_SPREAD|
-> +						     SLAB_ACCOUNT),
-> +						 init_once);
-> +	if (!tracefs_inode_cachep)
-> +		return -ENOMEM;
-> +
->  	retval = sysfs_create_mount_point(kernel_kobj, "tracing");
->  	if (retval)
->  		return -EINVAL;
-> diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-> new file mode 100644
-> index 000000000000..49b5e8949e1c
-> --- /dev/null
-> +++ b/fs/tracefs/internal.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _TRACEFS_INTERNAL_H
-> +#define _TRACEFS_INTERNAL_H
-> +
-> +enum {
-> +	TRACEFS_EVENT_INODE     = BIT(1),
-> +};
-
-Let's not introduce the enum until it is used.
-
--- Steve
-
-> +
-> +struct tracefs_inode {
-> +	unsigned long           flags;
-> +	void                    *private;
-> +	struct inode            vfs_inode;
-> +};
-> +
-> +static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
-> +{
-> +	return container_of(inode, struct tracefs_inode, vfs_inode);
-> +}
-> +#endif /* _TRACEFS_INTERNAL_H */
-
+> -- 
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer
+> `. `'   Physicist
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
