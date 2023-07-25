@@ -2,331 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43A4762588
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C02762556
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 00:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjGYWDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 18:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S230364AbjGYWB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 18:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjGYWCy (ORCPT
+        with ESMTP id S231231AbjGYWBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 18:02:54 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD542D68
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:25 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c79a5564cso2574007a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:02:25 -0700 (PDT)
+        Tue, 25 Jul 2023 18:01:09 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C1F193
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:05 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666eec46206so5637230b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 15:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690322524; x=1690927324;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aE9RwmKCgL9c46YOClXa+30MDuO7TC9exkJBbLFwsuI=;
-        b=3qUEDlz5mmXPaIRYfpFd/+ItRBoTtVy9NXnO2NJ7i2aN1JXNWRrPp6E6KeylN072i4
-         DFTozOytFxRlF0varJQcrOua/7W9dfxmbyWUBFi+pDbUykptOkV79t/cC+oz88JWgG5/
-         UEYySmmE4FRLHW+eDRqEV/vQxgzF2afVBGqoI+endhn62hL7T3hcWNZ3PoVhnLD8OKNn
-         hCNKOSsHYjxWgHBoU29PiXVUGApQ2WF7JoNaZshEbx30r5kGtg0vSiaxgvDTFQj4E00z
-         6R/CHPp1AvUanj5kNxjDTxwXJ/qoQ1rNa8iVrxaZQZstIqNTh1Xzf4xtZRDLvY3hW96V
-         RPJw==
+        d=chromium.org; s=google; t=1690322465; x=1690927265;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=liGWvqWnDRgOaTAYcljNITrXDUsLk+VqOHA8i1WX0MI=;
+        b=fptIQziz249yws4wQxtlHmwFLS3ipqMsTFtgSHUE8k2JMFX7Hlv4ytnt4Gt/P6FqoA
+         KxD13+yKML4dkbD7RYYn7SUERSCve/CsQElS7I3pwmgMaAa4Zv/MDbME3d54EqhXoQpO
+         WCzoxdL4iCL7VAMZ054gk60vvnqCV8kKIxIB0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690322524; x=1690927324;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aE9RwmKCgL9c46YOClXa+30MDuO7TC9exkJBbLFwsuI=;
-        b=fSu8eSDYV2JkFkkoWXZ2I+S239/iUmBaTiqru/XU8emacWu/1xxvV996462z8LrP1A
-         7dnb3M9S1PJ0e8o02ew8Qd3iflzFYYBGYJIDZDRDVIf/0liOYpYpzn8XfigR1awtNoOB
-         VltLjWMF0B/6X+WCi3kPo/vScJv0B36mBcgYbXBvFHikRZXmpaVkkU1Zo3vaDompRuI7
-         gAwoPSUMUkVhypIw1ubaz4kXHB9fqDIQVsIhLLaPcgOzMbVzgW6+AGvI3NtI2mb/kJNs
-         tVpdHy2cTZA3O4HnD73fPMbHSiljNDJVO580PRdQeRPmycjKP12uz+OJcye8zklNV724
-         b0Sg==
-X-Gm-Message-State: ABy/qLZo/U4UrCW8hh108cSgTo6ZtB5DjW1Q1isVihoGEqdfzkRzvweo
-        +EnPkyQi8fihiVnFbcC27PjlXMMBQIKQ
-X-Google-Smtp-Source: APBJJlEFWmwDPhkA68gUjCd6V5BUg42wkYkyYry5aZyJDuPHQ9pl1MWoyD4MM5B3zywYqR3yLQe5al5/3pzu
-X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
- (user=afranji job=sendgmr) by 2002:a63:7e1a:0:b0:55a:e746:31ef with SMTP id
- z26-20020a637e1a000000b0055ae74631efmr2402pgc.1.1690322524316; Tue, 25 Jul
- 2023 15:02:04 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 22:01:02 +0000
-In-Reply-To: <20230725220132.2310657-1-afranji@google.com>
-Mime-Version: 1.0
-References: <20230725220132.2310657-1-afranji@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230725220132.2310657-10-afranji@google.com>
-Subject: [PATCH v4 09/28] KVM: selftests: TDX: Add report_fatal_error test
-From:   Ryan Afranji <afranji@google.com>
-To:     linux-kselftest@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, isaku.yamahata@intel.com,
-        sagis@google.com, erdemaktas@google.com, afranji@google.com,
-        runanwang@google.com, shuah@kernel.org, drjones@redhat.com,
-        maz@kernel.org, bgardon@google.com, jmattson@google.com,
-        dmatlack@google.com, peterx@redhat.com, oupton@google.com,
-        ricarkol@google.com, yang.zhong@intel.com, wei.w.wang@intel.com,
-        xiaoyao.li@intel.com, pgonda@google.com, eesposit@redhat.com,
-        borntraeger@de.ibm.com, eric.auger@redhat.com,
-        wangyanan55@huawei.com, aaronlewis@google.com, vkuznets@redhat.com,
-        pshier@google.com, axelrasmussen@google.com,
-        zhenzhong.duan@intel.com, maciej.szmigiero@oracle.com,
-        like.xu@linux.intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, ackerleytng@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690322465; x=1690927265;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=liGWvqWnDRgOaTAYcljNITrXDUsLk+VqOHA8i1WX0MI=;
+        b=A0v95fILVgdrgzlmeE2hh9nyWgCn8h0mygA/Zd/jCHQwPQZQsVnpWPZ7XFyz9yNuaJ
+         1KSb6HMW+USH/JxyAy5KHBm3b0bcATwib2iS9+ncr60ulHkrivZBhwmOeL5no5em4EqA
+         /Q+z+f9jtv44rTrk9kbKHDbpSZCCevcXIBT7d/OUdl8BEF0gcDzXcIh0ArXuDauXd+BT
+         nXpVBX2MUO4cqQrlejpdZ9r+d6M8MRMbUSb8d4QXlxyJpc5F2o8RC14keWES7gIxKsCj
+         cnNNa8T9mcFfyoaYfqmbg7B9G5KGat03umxavKS28P3S+BmrClAmRBr6bDOWnK0WyLNo
+         9XXA==
+X-Gm-Message-State: ABy/qLb0hx2rA0XZEJOyS//nz9wg6wl9ApHifHQSoB2P/lv7Xmw3VCTi
+        AZmRoOinzH46kKrJfZY4nuBpmQ==
+X-Google-Smtp-Source: APBJJlF8TJAXD7x1ETTtTqla+Yi7T7owE1AJqAjxLmm1xKWzTnBtsfSQgd1bPmG/QM8tgffjuznCLA==
+X-Received: by 2002:a05:6a20:6a04:b0:134:d4d3:f09a with SMTP id p4-20020a056a206a0400b00134d4d3f09amr375002pzk.58.1690322465223;
+        Tue, 25 Jul 2023 15:01:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m22-20020aa79016000000b00676bf2d5ab3sm10053480pfo.61.2023.07.25.15.01.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 15:01:04 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 15:01:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     justinstitt@google.com
+Cc:     Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] orangefs: replace strncpy with strscpy
+Message-ID: <202307251452.66CB968@keescook>
+References: <20230725-fs-orangefs-remove-deprecated-strncpy-v1-1-f15f635cf820@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725-fs-orangefs-remove-deprecated-strncpy-v1-1-f15f635cf820@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Shahar <sagis@google.com>
+On Tue, Jul 25, 2023 at 09:30:30PM +0000, justinstitt@google.com wrote:
+> This patch aims to eliminate `strncpy` usage across the orangefs
+> tree.
+> 
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1].
+> 
+> A suitable replacement is `strscpy` [2].
+> 
+> Using the `strscpy` api over `strncpy` has a slight wrinkle in the use
+> cases presented within orangefs. There is frequent usage of `...LEN - 1`
+> which is no longer required since `strscpy` will guarantee
+> NUL-termination on its `dest` argument. As per `strscpy`s implementation
+> in `linux/lib/string.c`
+> 
+> |       /* Hit buffer length without finding a NUL; force NUL-termination. */
+> |       if (res)
+> |               dest[res-1] = '\0';
+> 
+> There are some hopes that someday the `strncpy` api could be ripped out
+> due to the vast number of suitable replacements (strscpy, strscpy_pad,
+> strtomem, strtomem_pad, strlcpy) [1].
+> 
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> ---
+> 
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  fs/orangefs/dcache.c |  4 ++--
+>  fs/orangefs/namei.c  | 30 +++++++++++++++---------------
+>  fs/orangefs/super.c  | 14 +++++++-------
+>  3 files changed, 24 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/orangefs/dcache.c b/fs/orangefs/dcache.c
+> index 8bbe9486e3a6..96ed9900f7a9 100644
+> --- a/fs/orangefs/dcache.c
+> +++ b/fs/orangefs/dcache.c
+> @@ -33,9 +33,9 @@ static int orangefs_revalidate_lookup(struct dentry *dentry)
+>  
+>  	new_op->upcall.req.lookup.sym_follow = ORANGEFS_LOOKUP_LINK_NO_FOLLOW;
+>  	new_op->upcall.req.lookup.parent_refn = parent->refn;
+> -	strncpy(new_op->upcall.req.lookup.d_name,
+> +	strscpy(new_op->upcall.req.lookup.d_name,
+>  		dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> +		ORANGEFS_NAME_MAX);
 
-The test checks report_fatal_error functionality.
+Looking where new_op comes from, I see that it was already zero-filled,
+so this isn't also fixing a latent bug. (But I wanted to double-check.)
 
-Signed-off-by: Sagi Shahar <sagis@google.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Change-Id: I1bf45c42ac23aa81bb7d52f05273786d5832e377
-Signed-off-by: Ryan Afranji <afranji@google.com>
----
- .../selftests/kvm/include/x86_64/tdx/tdx.h    |  6 ++-
- .../kvm/include/x86_64/tdx/tdx_util.h         |  1 +
- .../kvm/include/x86_64/tdx/test_util.h        | 19 ++++++++
- .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 39 ++++++++++++++++
- .../selftests/kvm/lib/x86_64/tdx/tdx_util.c   | 12 +++++
- .../selftests/kvm/lib/x86_64/tdx/test_util.c  | 10 +++++
- .../selftests/kvm/x86_64/tdx_vm_tests.c       | 45 +++++++++++++++++++
- 7 files changed, 131 insertions(+), 1 deletion(-)
+>  
+>  	gossip_debug(GOSSIP_DCACHE_DEBUG,
+>  		     "%s:%s:%d interrupt flag [%d]\n",
+> diff --git a/fs/orangefs/namei.c b/fs/orangefs/namei.c
+> index 77518e248cf7..503d07769bb4 100644
+> --- a/fs/orangefs/namei.c
+> +++ b/fs/orangefs/namei.c
+> @@ -41,8 +41,8 @@ static int orangefs_create(struct mnt_idmap *idmap,
+>  	fill_default_sys_attrs(new_op->upcall.req.create.attributes,
+>  			       ORANGEFS_TYPE_METAFILE, mode);
+>  
+> -	strncpy(new_op->upcall.req.create.d_name,
+> -		dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
+> +	strscpy(new_op->upcall.req.create.d_name,
+> +		dentry->d_name.name, ORANGEFS_NAME_MAX);
+>  
+>  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
+>  
+> @@ -137,8 +137,8 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
+>  		     &parent->refn.khandle);
+>  	new_op->upcall.req.lookup.parent_refn = parent->refn;
+>  
+> -	strncpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> +	strscpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
+> +		ORANGEFS_NAME_MAX);
+>  
+>  	gossip_debug(GOSSIP_NAME_DEBUG,
+>  		     "%s: doing lookup on %s under %pU,%d\n",
+> @@ -192,8 +192,8 @@ static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
+>  		return -ENOMEM;
+>  
+>  	new_op->upcall.req.remove.parent_refn = parent->refn;
+> -	strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> +	strscpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
+> +		ORANGEFS_NAME_MAX);
+>  
+>  	ret = service_operation(new_op, "orangefs_unlink",
+>  				get_interruptible_flag(inode));
+> @@ -247,10 +247,10 @@ static int orangefs_symlink(struct mnt_idmap *idmap,
+>  			       ORANGEFS_TYPE_SYMLINK,
+>  			       mode);
+>  
+> -	strncpy(new_op->upcall.req.sym.entry_name,
+> +	strscpy(new_op->upcall.req.sym.entry_name,
+>  		dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> -	strncpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX - 1);
+> +		ORANGEFS_NAME_MAX);
+> +	strscpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX);
+>  
+>  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
+>  
+> @@ -324,8 +324,8 @@ static int orangefs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+>  	fill_default_sys_attrs(new_op->upcall.req.mkdir.attributes,
+>  			      ORANGEFS_TYPE_DIRECTORY, mode);
+>  
+> -	strncpy(new_op->upcall.req.mkdir.d_name,
+> -		dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
+> +	strscpy(new_op->upcall.req.mkdir.d_name,
+> +		dentry->d_name.name, ORANGEFS_NAME_MAX);
+>  
+>  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
+>  
+> @@ -405,12 +405,12 @@ static int orangefs_rename(struct mnt_idmap *idmap,
+>  	new_op->upcall.req.rename.old_parent_refn = ORANGEFS_I(old_dir)->refn;
+>  	new_op->upcall.req.rename.new_parent_refn = ORANGEFS_I(new_dir)->refn;
+>  
+> -	strncpy(new_op->upcall.req.rename.d_old_name,
+> +	strscpy(new_op->upcall.req.rename.d_old_name,
+>  		old_dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> -	strncpy(new_op->upcall.req.rename.d_new_name,
+> +		ORANGEFS_NAME_MAX);
+> +	strscpy(new_op->upcall.req.rename.d_new_name,
+>  		new_dentry->d_name.name,
+> -		ORANGEFS_NAME_MAX - 1);
+> +		ORANGEFS_NAME_MAX);
+>  
+>  	ret = service_operation(new_op,
+>  				"orangefs_rename",
+> diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+> index 5254256a224d..b4af98b5a216 100644
+> --- a/fs/orangefs/super.c
+> +++ b/fs/orangefs/super.c
+> @@ -253,7 +253,7 @@ int orangefs_remount(struct orangefs_sb_info_s *orangefs_sb)
+>  	new_op = op_alloc(ORANGEFS_VFS_OP_FS_MOUNT);
+>  	if (!new_op)
+>  		return -ENOMEM;
+> -	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> +	strscpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+>  		orangefs_sb->devname,
+>  		ORANGEFS_MAX_SERVER_ADDR_LEN);
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-index a7161efe4ee2..1340c1070002 100644
---- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-@@ -3,10 +3,14 @@
- #define SELFTEST_TDX_TDX_H
- 
- #include <stdint.h>
-+#include "kvm_util_base.h"
- 
--#define TDG_VP_VMCALL_INSTRUCTION_IO 30
-+#define TDG_VP_VMCALL_REPORT_FATAL_ERROR 0x10003
- 
-+#define TDG_VP_VMCALL_INSTRUCTION_IO 30
-+void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu);
- uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
- 				      uint64_t write, uint64_t *data);
-+void tdg_vp_vmcall_report_fatal_error(uint64_t error_code, uint64_t data_gpa);
- 
- #endif // SELFTEST_TDX_TDX_H
-diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-index 274b245f200b..32dd6b8fda46 100644
---- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-@@ -12,5 +12,6 @@ struct kvm_vm *td_create(void);
- void td_initialize(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
- 		   uint64_t attributes);
- void td_finalize(struct kvm_vm *vm);
-+void td_vcpu_run(struct kvm_vcpu *vcpu);
- 
- #endif // SELFTESTS_TDX_KVM_UTIL_H
-diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-index b570b6d978ff..6d69921136bd 100644
---- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-@@ -49,4 +49,23 @@ bool is_tdx_enabled(void);
-  */
- void tdx_test_success(void);
- 
-+/**
-+ * Report an error with @error_code to userspace.
-+ *
-+ * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-+ * is not expected to continue beyond this point.
-+ */
-+void tdx_test_fatal(uint64_t error_code);
-+
-+/**
-+ * Report an error with @error_code to userspace.
-+ *
-+ * @data_gpa may point to an optional shared guest memory holding the error
-+ * string.
-+ *
-+ * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-+ * is not expected to continue beyond this point.
-+ */
-+void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa);
-+
- #endif // SELFTEST_TDX_TEST_UTIL_H
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-index c2414523487a..b854c3aa34ff 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-@@ -1,8 +1,31 @@
- // SPDX-License-Identifier: GPL-2.0-only
- 
-+#include <string.h>
-+
- #include "tdx/tdcall.h"
- #include "tdx/tdx.h"
- 
-+void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_tdx_vmcall *vmcall_info = &vcpu->run->tdx.u.vmcall;
-+	uint64_t vmcall_subfunction = vmcall_info->subfunction;
-+
-+	switch (vmcall_subfunction) {
-+	case TDG_VP_VMCALL_REPORT_FATAL_ERROR:
-+		vcpu->run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
-+		vcpu->run->system_event.ndata = 3;
-+		vcpu->run->system_event.data[0] =
-+			TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-+		vcpu->run->system_event.data[1] = vmcall_info->in_r12;
-+		vcpu->run->system_event.data[2] = vmcall_info->in_r13;
-+		vmcall_info->status_code = 0;
-+		break;
-+	default:
-+		TEST_FAIL("TD VMCALL subfunction %lu is unsupported.\n",
-+			  vmcall_subfunction);
-+	}
-+}
-+
- uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
- 				      uint64_t write, uint64_t *data)
- {
-@@ -25,3 +48,19 @@ uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
- 
- 	return ret;
- }
-+
-+void tdg_vp_vmcall_report_fatal_error(uint64_t error_code, uint64_t data_gpa)
-+{
-+	struct tdx_hypercall_args args;
-+
-+	memset(&args, 0, sizeof(struct tdx_hypercall_args));
-+
-+	if (data_gpa)
-+		error_code |= 0x8000000000000000;
-+
-+	args.r11 = TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-+	args.r12 = error_code;
-+	args.r13 = data_gpa;
-+
-+	__tdx_hypercall(&args, 0);
-+}
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-index 4ebb8ddb2a93..c8591480b412 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-@@ -10,6 +10,7 @@
- 
- #include "kvm_util.h"
- #include "test_util.h"
-+#include "tdx/tdx.h"
- #include "tdx/td_boot.h"
- #include "kvm_util_base.h"
- #include "processor.h"
-@@ -526,3 +527,14 @@ void td_finalize(struct kvm_vm *vm)
- 
- 	tdx_td_finalizemr(vm);
- }
-+
-+void td_vcpu_run(struct kvm_vcpu *vcpu)
-+{
-+	vcpu_run(vcpu);
-+
-+	/* Handle TD VMCALLs that require userspace handling. */
-+	if (vcpu->run->exit_reason == KVM_EXIT_TDX &&
-+	    vcpu->run->tdx.type == KVM_EXIT_TDX_VMCALL) {
-+		handle_userspace_tdg_vp_vmcall_exit(vcpu);
-+	}
-+}
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-index f63d90898a6a..0419c3c54341 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-@@ -32,3 +32,13 @@ void tdx_test_success(void)
- 				     TDX_TEST_SUCCESS_SIZE,
- 				     TDG_VP_VMCALL_INSTRUCTION_IO_WRITE, &code);
- }
-+
-+void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa)
-+{
-+	tdg_vp_vmcall_report_fatal_error(error_code, data_gpa);
-+}
-+
-+void tdx_test_fatal(uint64_t error_code)
-+{
-+	tdx_test_fatal_with_data(error_code, 0);
-+}
-diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-index a18d1c9d6026..7741c6f585c0 100644
---- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-+++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-@@ -2,6 +2,7 @@
- 
- #include <signal.h>
- #include "kvm_util_base.h"
-+#include "tdx/tdx.h"
- #include "tdx/tdx_util.h"
- #include "tdx/test_util.h"
- #include "test_util.h"
-@@ -30,6 +31,49 @@ void verify_td_lifecycle(void)
- 	printf("\t ... PASSED\n");
- }
- 
-+void guest_code_report_fatal_error(void)
-+{
-+	uint64_t err;
-+
-+	/*
-+	 * Note: err should follow the GHCI spec definition:
-+	 * bits 31:0 should be set to 0.
-+	 * bits 62:32 are used for TD-specific extended error code.
-+	 * bit 63 is used to mark additional information in shared memory.
-+	 */
-+	err = 0x0BAAAAAD00000000;
-+	if (err)
-+		tdx_test_fatal(err);
-+
-+	tdx_test_success();
-+}
-+void verify_report_fatal_error(void)
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_vcpu *vcpu;
-+
-+	vm = td_create();
-+	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-+	vcpu = td_vcpu_add(vm, 0, guest_code_report_fatal_error);
-+	td_finalize(vm);
-+
-+	printf("Verifying report_fatal_error:\n");
-+
-+	td_vcpu_run(vcpu);
-+
-+	ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
-+	ASSERT_EQ(vcpu->run->system_event.ndata, 3);
-+	ASSERT_EQ(vcpu->run->system_event.data[0], TDG_VP_VMCALL_REPORT_FATAL_ERROR);
-+	ASSERT_EQ(vcpu->run->system_event.data[1], 0x0BAAAAAD00000000);
-+	ASSERT_EQ(vcpu->run->system_event.data[2], 0);
-+
-+	vcpu_run(vcpu);
-+	TDX_TEST_ASSERT_SUCCESS(vcpu);
-+
-+	kvm_vm_free(vm);
-+	printf("\t ... PASSED\n");
-+}
-+
- int main(int argc, char **argv)
- {
- 	setbuf(stdout, NULL);
-@@ -40,6 +84,7 @@ int main(int argc, char **argv)
- 	}
- 
- 	run_in_new_process(&verify_td_lifecycle);
-+	run_in_new_process(&verify_report_fatal_error);
- 
- 	return 0;
- }
+Was this a bug? (I think unreachable, both are
+ORANGEFS_MAX_SERVER_ADDR_LEN long, but devname would already be
+NUL-terminated.)
+
+Also, I wonder if all of these could be converted to:
+
+	strscpy(dest, source, sizeof(dest))
+
+Which (I think) would be a no-op change, and seems like a more robust
+code style.
+
+>  
+> @@ -400,8 +400,8 @@ static int orangefs_unmount(int id, __s32 fs_id, const char *devname)
+>  		return -ENOMEM;
+>  	op->upcall.req.fs_umount.id = id;
+>  	op->upcall.req.fs_umount.fs_id = fs_id;
+> -	strncpy(op->upcall.req.fs_umount.orangefs_config_server,
+> -	    devname, ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> +	strscpy(op->upcall.req.fs_umount.orangefs_config_server,
+> +	    devname, ORANGEFS_MAX_SERVER_ADDR_LEN);
+>  	r = service_operation(op, "orangefs_fs_umount", 0);
+>  	/* Not much to do about an error here. */
+>  	if (r)
+> @@ -494,9 +494,9 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
+>  	if (!new_op)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+> +	strscpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+>  		devname,
+> -		ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> +		ORANGEFS_MAX_SERVER_ADDR_LEN);
+>  
+>  	gossip_debug(GOSSIP_SUPER_DEBUG,
+>  		     "Attempting ORANGEFS Mount via host %s\n",
+> @@ -543,9 +543,9 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
+>  	 * on successful mount, store the devname and data
+>  	 * used
+>  	 */
+> -	strncpy(ORANGEFS_SB(sb)->devname,
+> +	strscpy(ORANGEFS_SB(sb)->devname,
+>  		devname,
+> -		ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
+> +		ORANGEFS_MAX_SERVER_ADDR_LEN);
+>  
+>  	/* mount_pending must be cleared */
+>  	ORANGEFS_SB(sb)->mount_pending = 0;
+> 
+> ---
+> base-commit: 0b5547c51827e053cc754db47d3ec3e6c2c451d2
+> change-id: 20230725-fs-orangefs-remove-deprecated-strncpy-ae0d40124620
+> 
+> Best regards,
+> -- 
+> Justin Stitt <justinstitt@google.com>
+> 
+
 -- 
-2.41.0.487.g6d72f3e995-goog
-
+Kees Cook
