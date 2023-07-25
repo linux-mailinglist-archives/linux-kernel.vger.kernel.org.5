@@ -2,56 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0520D76185B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D55D761865
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjGYM2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
+        id S232775AbjGYMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjGYM2v (ORCPT
+        with ESMTP id S232708AbjGYMbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:28:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF240A7;
-        Tue, 25 Jul 2023 05:28:48 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 12:28:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690288125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oT7zrKgEkSdMtqdKcld0uEilXTEtuvjV3fRfLJNLrvg=;
-        b=B817jbKEvbwKUnn5Uwmc+HfTSDcbxTBWXxXFahWHVrg60/Ay5zaicnIKIcKEnIKEOVHiqd
-        5avdaPbEJ4MBlZZNZPMeYLOvpawys/sbr8GTkynLCqdOVG2Z3OXiQOFJ//jrKDm2YgYKl8
-        vDo/bUSPreks3Xn1J3hD9ndtrJekaXhejjd4N4TlYASiD3guN8F5vjr57TpTjSvAMTp5r/
-        jMgk20Dgli2BL3DAsAIxdz5+0D/Bt0Go1DECk/sBIJSdJe0TCXJguNsO+ofmx7ZYaf44n3
-        ma5al1T9xTouYBYvwpBsle5zLOSk+/oqlKYlmixC9c9YpRM6LGccghvhflWFsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690288125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oT7zrKgEkSdMtqdKcld0uEilXTEtuvjV3fRfLJNLrvg=;
-        b=dYzEa9JZyXy1N1NST23hvDSefJ3dFJ4A1NUAoDT4t+pAmZnDrtS+/VFfHT0mIlf9cUdqro
-        phmwtBS2gM28tvCg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] Revert "sched/fair: Move unused stub functions to header"
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Tue, 25 Jul 2023 08:31:11 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F06172E;
+        Tue, 25 Jul 2023 05:31:06 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso35553075e9.0;
+        Tue, 25 Jul 2023 05:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690288264; x=1690893064;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GcyVN5jjkcBHnJbRI3N7PWgbLb9r9f1m41jxH2AGzLA=;
+        b=ZeSrLNXuDLsbT27CUFFw52MHcHBHFpDVlB92ncPMCkPHcmnXgyyJMtGfKRTqSuHzpJ
+         15xkK04hkvzI9az6CB4BwQu+/i7w1Uud72UHIPmrpAhYHWAHtRHtXNNipwknwmAnb9hh
+         whtJ7wasmRsPapogG63I/SRSv6u0GPI4+rN8W1OWJlqZ9rgtYfsy3B90vuesjg4W7rP2
+         5bfG2MR6EtdxlMALJ3F9UjNgrr1sy2xS/aoi9slulnguMrKVWjYvpQyTwinP5cKvzzZa
+         q722Qp+W0h0vLozV9djT+6/aKQroGOKHwd1KxKG8mbozTH/LioDtCrfCOcUpkeSXghqs
+         pqrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690288264; x=1690893064;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GcyVN5jjkcBHnJbRI3N7PWgbLb9r9f1m41jxH2AGzLA=;
+        b=KuoeETLiwfFfyMO4LGXTsv80dut8UTc1CsSCBZsXcbaEmvZwpsU7lafH44QEy+lgGE
+         q28xee9iG5KJNSpITchlPu8MCtKeeiNbPvnAd/puSnk/dePNMJI/ngKUMJgnm3hPbmJG
+         QDtHYIK0AvR05kZ6LmOAoEFPwptRvrAPymCc4+ETIVhcfkfBLybCxjzzPzJuVZCDVI3q
+         X8bR4MGAvnzxLmurQb6KjSJBNlskS3MAg5PEa4Z0lRGiNtKoiRsaFjYGqdpMyVrM6xj7
+         hB9OC0J7avrdpxJqqvijqJ1UZwPhwcu8K7umHfKSkRxZfE6TAQ3uEvaBIckzgsQeg7Ko
+         oa6w==
+X-Gm-Message-State: ABy/qLZvFOOIObb1zgGKV6+Pqp97M4endjqd3Yla8/XFA6CBEBWbpdzu
+        i+fCEn1D5vIUumSOyJyIIFuwlxh+Vj1x8g==
+X-Google-Smtp-Source: APBJJlECt/mC+pfnaNTqb5YCyiY2f6/0UB1ZNr0K4AYa36nGt4+AdALli2+v6j+KgCiqVFoW6ThVXg==
+X-Received: by 2002:a05:600c:5012:b0:3fc:757:833 with SMTP id n18-20020a05600c501200b003fc07570833mr1826781wmr.7.1690288264314;
+        Tue, 25 Jul 2023 05:31:04 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id e15-20020a5d4e8f000000b0031432f1528csm16415321wru.45.2023.07.25.05.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 05:31:03 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+        Andrei Coardos <aboutphysycs@gmail.com>,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: [PATCH v2] gpio: mlxbf2: remove unneeded platform_set_drvdata() call
+Date:   Tue, 25 Jul 2023 15:30:45 +0300
+Message-Id: <20230725123045.6367-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <169028812500.28540.5616011722424800278.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,86 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver.
+Also, the private data is defined in this driver, so there is no risk of
+it being accessed outside of this driver file.
 
-Commit-ID:     7c1541e5f8330b0b94cafc5c68cf27ff358a1663
-Gitweb:        https://git.kernel.org/tip/7c1541e5f8330b0b94cafc5c68cf27ff358a1663
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 24 Jul 2023 21:30:54 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 24 Jul 2023 21:42:42 +02:00
-
-Revert "sched/fair: Move unused stub functions to header"
-
-Revert commit 7aa55f2a5902 ("sched/fair: Move unused stub functions to
-header"), for while it has the right Changelog, the actual patch
-content a revert of the previous 4 patches:
-
-  f7df852ad6db ("sched: Make task_vruntime_update() prototype visible")
-  c0bdfd72fbfb ("sched/fair: Hide unused init_cfs_bandwidth() stub")
-  378be384e01f ("sched: Add schedule_user() declaration")
-  d55ebae3f312 ("sched: Hide unused sched_update_scaling()")
-
-So in effect this is a revert of a revert and re-applies those
-patches.
-
-Fixes: 7aa55f2a5902 ("sched/fair: Move unused stub functions to header")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 ---
- kernel/sched/fair.c  | 6 +++---
- kernel/sched/sched.h | 2 ++
- 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b3e25be..695f8e5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -684,7 +684,7 @@ struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
- /**************************************************************
-  * Scheduling class statistics methods:
-  */
+Changelog V1->V2:
+* https://lore.kernel.org/linux-gpio/20230720134845.23727-1-aboutphysycs@gmail.com
+* fixed subject line: adjusted colons where needed
+
+ drivers/gpio/gpio-mlxbf2.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/gpio/gpio-mlxbf2.c b/drivers/gpio/gpio-mlxbf2.c
+index 6abe01bc39c3..cf91b6e74d88 100644
+--- a/drivers/gpio/gpio-mlxbf2.c
++++ b/drivers/gpio/gpio-mlxbf2.c
+@@ -420,8 +420,6 @@ mlxbf2_gpio_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	platform_set_drvdata(pdev, gs);
 -
-+#ifdef CONFIG_SMP
- int sched_update_scaling(void)
- {
- 	unsigned int factor = get_update_sysctl_factor();
-@@ -702,6 +702,7 @@ int sched_update_scaling(void)
- 	return 0;
- }
- #endif
-+#endif
- 
- /*
-  * delta /= w
-@@ -6186,9 +6187,8 @@ static inline int throttled_lb_pair(struct task_group *tg,
- 	return 0;
- }
- 
--void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
--
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
- static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq) {}
- #endif
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e93e006..44b540a 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1245,6 +1245,7 @@ static inline raw_spinlock_t *__rq_lockp(struct rq *rq)
- 
- bool cfs_prio_less(const struct task_struct *a, const struct task_struct *b,
- 			bool fi);
-+void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
- 
- /*
-  * Helpers to check if the CPU's core cookie matches with the task's cookie
-@@ -2398,6 +2399,7 @@ static inline struct cpuidle_state *idle_get_state(struct rq *rq)
- #endif
- 
- extern void schedule_idle(void);
-+asmlinkage void schedule_user(void);
- 
- extern void sysrq_sched_debug_show(void);
- extern void sched_init_granularity(void);
+ 	ret = devm_gpiochip_add_data(dev, &gs->gc, gs);
+ 	if (ret) {
+ 		dev_err(dev, "Failed adding memory mapped gpiochip\n");
+-- 
+2.34.1
+
