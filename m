@@ -2,233 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE46760FBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B696F760FCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbjGYJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
+        id S232622AbjGYJyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbjGYJvv (ORCPT
+        with ESMTP id S230092AbjGYJyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:51:51 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787611B8;
-        Tue, 25 Jul 2023 02:51:46 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9922d6f003cso910117866b.0;
-        Tue, 25 Jul 2023 02:51:46 -0700 (PDT)
+        Tue, 25 Jul 2023 05:54:49 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD03E76
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:54:47 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so41755e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690278886; x=1690883686;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PNeMaBhHSZ1gfnugzD5VQo+LdOQ3/hrrDvpJFqcc2j0=;
+        b=AcUFZgDM49sGwOJCh3gv+uUe+gPoy/WZjwhXNWplkjGtLW1Spu1fZheaLauoZtYAhT
+         jgP7Z+SGPnhcEU3lnhDcOtJFdykJVj9wrzsQBJTkyWq8KauMUD8xsQ9mOHTFYG2ffYa7
+         EN3Io4PJYuTnUMognswm0unc/IJESsp8dhVzaLhr93YRrx3ipJ7FI+aKl7vrhEjtRkKZ
+         umnPFsf1Xlr2S5d5YZYLLeBssCKlZGvMWLhyKVOEJ7qb3DOZQhBOh17yAmWr6HMJ3qpT
+         nuagwK0meyHbCaVYBTBQUGRoEPcigxf9cP5ybIJucRLhgPoCt3Yo8Asg1jgGPOeBdXDN
+         mcBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690278705; x=1690883505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9iSEd/zlhQUpki7xyVHvNMs7mBkWGGLATKxWLhRRQxE=;
-        b=OVhAdKVwzkni8PcT6iIyfK0K5CP6RIhNj6AQ2udIpgDhZ75ZPz9RYfkGIC7hV5nHIO
-         qVsKeU9smVVcGE+rQA0QR3yof3F8dZXRfUdEmFl/niR44EiKfM5Si06peM8j25fzsaVj
-         4s+W9PzCZWfuY8CCsiD4aZqdmZzUdxEfRNgBdrFO+StD0+ngHqoEazrMX4n2h+fB0Set
-         5umiDAF+6Tz4hJU573Cc/IayONS/HcWCs3mgKGr31v0eT/UQYR/5a9cEi6qSG7ycs5IY
-         BtWOq6BGAidktbY9VPmQ0zqpT5UujtphDaCRnXMMC5UemCZpUWooP8OJ57ZKm2ynkBcc
-         QcnA==
-X-Gm-Message-State: ABy/qLa+75qKMCiTckHEHMbrgZYypzuTVKgZS4K4OjQhPSV51Fr4skHg
-        ubm6/2u++byM5746HvTFZ3U=
-X-Google-Smtp-Source: APBJJlHQf1kTga4kg6x0/K5B/uVhbsmb0HNitIU9KTi8Yt7DDaCg5T3fj+Q1haDLh8Lilguvx8s60A==
-X-Received: by 2002:a17:906:300e:b0:993:eef2:5d5f with SMTP id 14-20020a170906300e00b00993eef25d5fmr12739535ejz.27.1690278704489;
-        Tue, 25 Jul 2023 02:51:44 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-015.fbsv.net. [2a03:2880:31ff:f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id k20-20020a1709065fd400b009934b1eb577sm8077781ejv.77.2023.07.25.02.51.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 02:51:43 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 02:51:42 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, leit@meta.com
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <ZL+bLoZxIdqmh5m5@gmail.com>
-References: <20230724142237.358769-1-leitao@debian.org>
- <20230724142237.358769-3-leitao@debian.org>
- <64bf01fc80d67_3b637629452@willemb.c.googlers.com.notmuch>
+        d=1e100.net; s=20221208; t=1690278886; x=1690883686;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PNeMaBhHSZ1gfnugzD5VQo+LdOQ3/hrrDvpJFqcc2j0=;
+        b=RGpRD/JZT0oM7NuHak2HfU375sM3uQnl6ZxRWpBhO2A/KRWybyDq+nmFlqHt/jtw/+
+         gzLoG+XHMaicbOWJK3YVNHKsoDwLR9mpVJ6lg4dV8XMSc0UNYbkikdjyusupCMvMwpqj
+         YtsF/07yllffuvdUkV0o0DVXvTjGu0VyAY4hL5ogz6ZkKhRnEFio5BlLGV0QE7QbfSCB
+         vi67u1gkDFjQAbXpHC1OPu4ycdsuUUs2ghU0cXFn0bFiMnlS/y+aW9zqUR05mcRtfuVP
+         JIGgkjXDtOV+x/U4K8mzMtoPMBgWrMcqYzEvrWviHUvF7heghZ08JUoommSxsOojj3SK
+         /xkw==
+X-Gm-Message-State: ABy/qLbMDL03op/FBkhQJCAS+ifdRmPNSXWJutkgYSx3vAHbtMvsiRsG
+        rIKbErEI9rtqR87y9cFxoDfrUSHn5RatbZoCwFBucQ==
+X-Google-Smtp-Source: APBJJlF7npgU9ya3lKw2WBkyEVJmOGQMtu1wRFbay3tO3HFmNk0FIQUhiYAhgNcZAL376gzjBwQnv76jvjk9XgtvK5w=
+X-Received: by 2002:a05:600c:1d21:b0:3fd:e15:41e3 with SMTP id
+ l33-20020a05600c1d2100b003fd0e1541e3mr58179wms.2.1690278886240; Tue, 25 Jul
+ 2023 02:54:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64bf01fc80d67_3b637629452@willemb.c.googlers.com.notmuch>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220708203052.236290-1-maira.canal@usp.br> <20220708203052.236290-10-maira.canal@usp.br>
+ <7yc3fkagtlr4i7qnkulwvfzqjs7v64ddugcc3cxt6g5oawvqoa@ax67ukkrr7jt> <j4twjg4rd74qq6wjr7nrtrtkh6cdxehuw5lmeavu7z5q5lhtih@nofkcrdnwty7>
+In-Reply-To: <j4twjg4rd74qq6wjr7nrtrtkh6cdxehuw5lmeavu7z5q5lhtih@nofkcrdnwty7>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 25 Jul 2023 17:54:32 +0800
+Message-ID: <CABVgOSmtZVfuLNBXymVfeuv_997TanhR3R_=Sk0sJL359jhw7Q@mail.gmail.com>
+Subject: Re: [PATCH v5 9/9] drm: selftest: convert drm_mm selftest to KUnit
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>,
+        Daniel Latypov <dlatypov@google.com>,
+        brendanhiggins@google.com, Isabella Basso <isabbasso@riseup.net>,
+        magalilemes00@gmail.com, tales.aparecida@gmail.com,
+        mwen@igalia.com, andrealmeid@riseup.net, siqueirajordao@riseup.net,
+        Trevor Woerner <twoerner@gmail.com>,
+        leandro.ribeiro@collabora.com, n@nfraprado.net,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        michal.winiarski@intel.com,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Arthur Grillo <arthur.grillo@usp.br>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000009c5d0906014cb820"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:58:04PM -0400, Willem de Bruijn wrote:
-> Breno Leitao wrote:
-> > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
-> > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
-> > where a sockptr_t is either userspace or kernel space, and handled as
-> > such.
-> > 
-> > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
-> > 
-> > Differently from the getsockopt(2), the optlen field is not a userspace
-> > pointers. In getsockopt(2), userspace provides optlen pointer, which is
-> > overwritten by the kernel.  In this implementation, userspace passes a
-> > u32, and the new value is returned in cqe->res. I.e., optlen is not a
-> > pointer.
-> > 
-> > Important to say that userspace needs to keep the pointer alive until
-> > the CQE is completed.
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  include/uapi/linux/io_uring.h |  7 ++++++
-> >  io_uring/uring_cmd.c          | 43 +++++++++++++++++++++++++++++++++++
-> >  2 files changed, 50 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> > index 9fc7195f25df..8152151080db 100644
-> > --- a/include/uapi/linux/io_uring.h
-> > +++ b/include/uapi/linux/io_uring.h
-> > @@ -43,6 +43,10 @@ struct io_uring_sqe {
-> >  	union {
-> >  		__u64	addr;	/* pointer to buffer or iovecs */
-> >  		__u64	splice_off_in;
-> > +		struct {
-> > +			__u32	level;
-> > +			__u32	optname;
-> > +		};
-> >  	};
-> >  	__u32	len;		/* buffer size or number of iovecs */
-> >  	union {
-> > @@ -79,6 +83,7 @@ struct io_uring_sqe {
-> >  	union {
-> >  		__s32	splice_fd_in;
-> >  		__u32	file_index;
-> > +		__u32	optlen;
-> >  		struct {
-> >  			__u16	addr_len;
-> >  			__u16	__pad3[1];
-> > @@ -89,6 +94,7 @@ struct io_uring_sqe {
-> >  			__u64	addr3;
-> >  			__u64	__pad2[1];
-> >  		};
-> > +		__u64	optval;
-> >  		/*
-> >  		 * If the ring is initialized with IORING_SETUP_SQE128, then
-> >  		 * this field is used for 80 bytes of arbitrary command data
-> > @@ -729,6 +735,7 @@ struct io_uring_recvmsg_out {
-> >  enum {
-> >  	SOCKET_URING_OP_SIOCINQ		= 0,
-> >  	SOCKET_URING_OP_SIOCOUTQ,
-> > +	SOCKET_URING_OP_GETSOCKOPT,
-> >  };
-> >  
-> >  #ifdef __cplusplus
-> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > index 8e7a03c1b20e..16c857cbf3b0 100644
-> > --- a/io_uring/uring_cmd.c
-> > +++ b/io_uring/uring_cmd.c
-> > @@ -166,6 +166,47 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
-> >  }
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
-> >  
-> > +static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> > +					  struct io_uring_cmd *cmd)
-> > +{
-> > +	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-> > +	int optname = READ_ONCE(cmd->sqe->optname);
-> > +	int optlen = READ_ONCE(cmd->sqe->optlen);
-> > +	int level = READ_ONCE(cmd->sqe->level);
-> > +	void *koptval;
-> > +	int err;
-> > +
-> > +	err = security_socket_getsockopt(sock, level, optname);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	koptval = kmalloc(optlen, GFP_KERNEL);
-> > +	if (!koptval)
-> > +		return -ENOMEM;
-> 
-> This will try to kmalloc any length that userspace passes?
+--0000000000009c5d0906014cb820
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Yes, this value is coming directly from userspace.
+On Tue, 25 Jul 2023 at 16:38, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> Hi,
+>
+> On Thu, Apr 27, 2023 at 03:14:39PM +0200, Maxime Ripard wrote:
+> > Hi,
+> >
+> > On Fri, Jul 08, 2022 at 05:30:52PM -0300, Ma=C3=ADra Canal wrote:
+> > > From: Arthur Grillo <arthur.grillo@usp.br>
+> > >
+> > > Considering the current adoption of the KUnit framework, convert the
+> > > DRM mm selftest to the KUnit API.
+> > >
+> > > Signed-off-by: Arthur Grillo <arthur.grillo@usp.br>
+> > > Tested-by: David Gow <davidgow@google.com>
+> > > Acked-by: Daniel Latypov <dlatypov@google.com>
+> > > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> > > Signed-off-by: Ma=C3=ADra Canal <maira.canal@usp.br>
+> >
+> > I'm very late to the party, but I'd like to discuss that patch some mor=
+e.
+> >
+> > Two tests (drm_test_mm_reserve, drm_test_mm_insert) in it take a super
+> > long time to run (about 30s each on my machine).
+> >
+> > If we run all the DRM tests and VC4 tests, each of those two are longer
+> > to run than all the ~300 tests combined. About 100 times longer.
+> >
+> > I don't think that running for so long is reasonable, and for multiple
+> > reasons:
+> >
+> >   - While I don't know drm_mm well, it doesn't look like any of those
+> >     tests do something that really should take this long. I'm especiall=
+y
+> >     skeptical about the fact that we test each operation 8192 times by
+> >     default.
+> >
+> >   - It makes using kunit more tedious than it should be. Like I said, o=
+n
+> >     a very capable machine, running the all the DRM and VC4 tests takes
+> >     about 50s with those two tests, ~0.4s without.
+> >
+> >   - The corollary is that it will get in the way of people that really
+> >     want to use kunit will just remove those tests before doing so,
+> >     defeating the original intent.
+> >
+> >
+> > I understand that it came from selftests initially, but I think we
+> > should rewrite the tests entirely to have smaller, faster tests. It's
+> > not clear to me why those tests are as complicated as they are though.
+> >
+> > Also, going forward we should probably put disencourage tests running
+> > that long. Could Kunit timeout/warn after a while if a test is taking
+> > more than X seconds to run?
+>
+> I'd still like to address this. We spend ~90% of the DRM kunit tests
+> execution time executing those two tests, which doesn't seem like a
+> reasonable thing to do.
 
-> That is unnecessary ..
-> > +
-> > +	err = copy_from_user(koptval, optval, optlen);
-> > +	if (err)
-> > +		goto fail;
-> > +
-> > +	err = -EOPNOTSUPP;
-> > +	if (level == SOL_SOCKET) {
-> > +		err = sk_getsockopt(sock->sk, level, optname,
-> > +				    KERNEL_SOCKPTR(koptval),
-> > +				    KERNEL_SOCKPTR(&optlen));
-> 
-> .. sk_getsockopt defines a union of acceptable fields, which
-> are all fairly small.
+FWIW, KUnit is going to add a "speed" attribute for tests, so that
+it's easy to skip tests which are slow:
+https://lore.kernel.org/linux-kselftest/20230724162834.1354164-3-rmoar@goog=
+le.com/T/#u
 
-Right, and they are all I need for SOL_SOCKET level for now.
+This would allow the slow tests to be marked using KUNIT_CASE_SLOW(),
+and then be run via kunit.py --filter "speed>slow".
 
-> I notice that BPF added BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN to
-> work around the issue of pre-allocating for the worst case.
+It obviously doesn't make the tests themselves any faster, but could
+at least make it possible to run only the fast tests during
+development, and the full, slower set before sending the patches out
+(or in CI), for example.
 
-I am having a hard time how to understand how
-BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN gets the MAX_OPTLEN. Reading this
-function, it seems it is conditionally get_user().
+-- David
 
+--0000000000009c5d0906014cb820
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-	#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)
-	({
-		int __ret = 0;
-		if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))
-			get_user(__ret, optlen);
-		__ret;
-	})
-
-That said, how is BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN being used to
-workaroundthe pre-allocating for the worst case?
-
-> But that also needs to deal woth other getsockopt levels.
-
-Right, and we also have a similar kmalloc() on the setsockopt path
-(SOCKET_URING_OP_SETSOCKOPT).
-
-What about if I pass the userspace sockptr (USER_SOCKPTR) to the
-{g,s}etsockopt callback directly, instead of kmalloc() in io_uring(), as
-I was doing int the RFC[1]? It avoids any extra kmalloc at all.
-
-Something as:
-
-	static inline int io_uring_cmd_getsockopt(struct socket *sock,
-						  struct io_uring_cmd *cmd)
-	{
-		void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-		int optlen = READ_ONCE(cmd->sqe->optlen);
-		int optname = READ_ONCE(cmd->sqe->optname);
-		int level = READ_ONCE(cmd->sqe->level);
-		int err;
-
-		err = security_socket_getsockopt(sock, level, optname);
-		if (err)
-			return err;
-
-		if (level == SOL_SOCKET) {
-			err = sk_getsockopt(sock->sk, level, optname,
-					    USER_SOCKPTR(optval),
-					    KERNEL_SOCKPTR(&optlen));
-			if (err < 0)
-				return err;
-			return optlen;
-		}
-
-		return -EOPNOTSUPP;
-
-Thanks for the review!
-
-[1] Link: https://lore.kernel.org/all/20230719102737.2513246-3-leitao@debian.org/
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCv
+WNcnqYw8mk/1/r4z/9bB9r5ypURbSqohGBeEaG7mkDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjUwOTU0NDZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAIrrKb7qMlI/RWtwySS0i
+W1hsXLeuwi+cGCQ1befajbKgmGuQM4BUZMp7P8lU/OL/8oYvtHlZJFGr422kSF2HZQtNK8Rt/Nvr
+xuCkkvlHsvHbb5/9H50Dk01D6WOCHX5UPfeVNozn+nXLWttkQwR8/kH8RAUuVFOs0PIIVE/D8uhq
+xn7bombKgOET7G+5WKhHzTYi8oH3rp69UoAXWpa7HlK8CR0SrnhbaaN5DzaHldj/3iqyziUBpft5
+A1lXx+ovX/9+yvderiqUhLifd/jd+LJe7b3oRPQDPU5dYWBinBEkYuV55RzLNpDpKW3JMiQ0GhwQ
+IDpHpcWjp/mMBO3WMQ==
+--0000000000009c5d0906014cb820--
