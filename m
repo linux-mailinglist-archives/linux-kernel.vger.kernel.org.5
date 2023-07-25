@@ -2,87 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CB1760FD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED1B760FD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbjGYJ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S233338AbjGYJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbjGYJ4J (ORCPT
+        with ESMTP id S231690AbjGYJ4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:56:09 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DFDE56;
-        Tue, 25 Jul 2023 02:56:08 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P89NFk011752;
-        Tue, 25 Jul 2023 09:56:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=oxANqKL3T6h0PO+T/varJLfD1W31Y6md6sTVyawLt0c=;
- b=hIlZNY1UEgblcNX5hiQZTsLsTmfDjhETS64aUjtOxoenZcRN5FpPJZXz8UZoz8PGEsfq
- c5Xxws/r8JRXtEOVUtr0gAi4/gAdcHmXvyPfDgfoWs/qcJL/5LjBC9pGxwdKAahgsdsQ
- z22TK/ReFNIlgRa7Saa8HoSQZ9SpbWxRnd+2KGDQgd5HfegkUQy3fqBzuc+LSbE6oIiF
- PC8svfzfjsJhQruR4W/0VPT2kNaEp+xy3Hnjaw6EGOsEfQKSgD6sdNyl9u0Oi+j32aK9
- DfuHH3rXeogeKZFrmCW4sITde3vKvErUzhKyimxYB+sPf0Tmx2fos2rd0eUCPcdHEN8f OQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s29xmgaa5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 09:56:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P9u3De028457
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 09:56:03 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
- 2023 02:55:58 -0700
-Message-ID: <eb723e27-de44-ed19-b331-41441c5cc755@quicinc.com>
-Date:   Tue, 25 Jul 2023 15:25:55 +0530
+        Tue, 25 Jul 2023 05:56:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45BBDE56;
+        Tue, 25 Jul 2023 02:56:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E139C15BF;
+        Tue, 25 Jul 2023 02:57:13 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C98763F67D;
+        Tue, 25 Jul 2023 02:56:28 -0700 (PDT)
+Message-ID: <71064fb4-3745-c877-bf81-7542d815c289@arm.com>
+Date:   Tue, 25 Jul 2023 10:56:27 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH V5 0/3] Introduce the read-modify-write API to collect
-To:     Elliot Berman <quic_eberman@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Mukesh Ojha" <quic_mojha@quicinc.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_anusha@quicinc.com>, <quic_saahtoma@quicinc.com>
-References: <20230720070408.1093698-1-quic_kathirav@quicinc.com>
- <cc1fec2c-1356-2716-86cf-5b76c18ec1dd@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3] perf/core: Bail out early if the request AUX area is
+ out of bound
 Content-Language: en-US
-From:   Kathiravan T <quic_kathirav@quicinc.com>
-In-Reply-To: <cc1fec2c-1356-2716-86cf-5b76c18ec1dd@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CYYs4OKS_Uwbelfl__4nPIsMvAtEufbt
-X-Proofpoint-GUID: CYYs4OKS_Uwbelfl__4nPIsMvAtEufbt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_05,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- mlxlogscore=823 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 suspectscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250086
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Shuai Xue <xueshuai@linux.alibaba.com>,
+        alexander.shishkin@linux.intel.com, peterz@infradead.org,
+        leo.yan@linaro.org
+Cc:     mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
+        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
+ <75ddf1ce-64a2-f3a4-8a51-92e7bbb3899d@arm.com>
+ <78dbe98e-8702-e332-59ff-3850cff2895b@linux.alibaba.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <78dbe98e-8702-e332-59ff-3850cff2895b@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -90,63 +54,176 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/25/2023 12:35 AM, Elliot Berman wrote:
->
->
-> On 7/20/2023 12:04 AM, Kathiravan T wrote:
->> On IPQ platforms, to collect the crashdump, we need to just modify the
->> DLOAD bit in the TCSR register. Current infrastructure, overwrites the
->> entire regiter value when enabling the crashdump feature, which leads to
->> crashdump not gets collected. This series introduce the
->> qcom_scm_io_update_field API to achieve the same.
->>
->
-> I don't think you describe patch 2 in the subject line or cover 
-> letter. As best I can tell, Patches 2 and 3 are independent. They're 
-> similar only in that they both depend on patch 1.
 
+On 25/07/2023 08:31, Shuai Xue wrote:
+> 
+> 
+> On 2023/7/24 23:21, James Clark wrote:
+>>
+>>
+>> On 11/07/2023 02:41, Shuai Xue wrote:
+>>> When perf-record with a large AUX area, e.g 4GB, it fails with:
+>>>
+>>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>>>     failed to mmap with 12 (Cannot allocate memory)
+>>>
+>>> and it reveals a WARNING with __alloc_pages():
+>>>
+>>> [   66.595604] ------------[ cut here ]------------
+>>> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
+>>> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
+>>> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
+>>> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
+>>> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+>>> [   66.681597] pc : __alloc_pages+0x1ec/0x248
+>>> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
+>>> [   66.690285] sp : ffff800020523980
+>>> [   66.693585] pmr_save: 000000e0
+>>> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
+>>> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
+>>> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
+>>> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
+>>> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
+>>> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
+>>> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
+>>> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
+>>> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
+>>> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
+>>> [   66.767834] Call trace:
+>>> [   66.770267]  __alloc_pages+0x1ec/0x248
+>>> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
+>>> [   66.778259]  __kmalloc_node+0x134/0x1e8
+>>> [   66.782081]  rb_alloc_aux+0xe0/0x298
+>>> [   66.785643]  perf_mmap+0x440/0x660
+>>> [   66.789031]  mmap_region+0x308/0x8a8
+>>> [   66.792593]  do_mmap+0x3c0/0x528
+>>> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
+>>> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
+>>> [   66.803365]  __arm64_sys_mmap+0x38/0x58
+>>> [   66.807187]  invoke_syscall+0x50/0x128
+>>> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
+>>> [   66.815698]  do_el0_svc+0x34/0x50
+>>> [   66.818999]  el0_svc+0x34/0x108
+>>> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
+>>> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
+>>> [   66.829946] ---[ end trace 0000000000000000 ]---
+>>>
+>>> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
+>>> maintain AUX trace pages. The allocated page for this array is physically
+>>> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
+>>> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
+>>> WARNING.
+>>>
+>>> So bail out early with -EINVAL if the request AUX area is out of bound,
+>>> e.g.:
+>>>
+>>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
+>>>     failed to mmap with 22 (Invalid argument)
+>>>
+>>
+>> Hi Shuai,
+> 
+> Hi, James,
+> 
+>>
+>> Now that I think about this, isn't the previous error "failed to mmap
+>> with 12 (Cannot allocate memory)" better than "failed to mmap with 22
+>> (Invalid argument)"?
+> 
+> If I see a "invalid argument", I am expected to check my perf command
+> first. But for "Cannot allocate memory", I will doubt that the system
+> have problem but I dont have any idea about.
+> 
+> IMO, I prefer "invalid argument". But I can change back to previous error
+> message if you insist.
+> 
+> 
 
-Yeah. I missed that part. I'm thinking of dropping the 2nd patch and 
-send only the patch 1 and patch 3 in the next spin. Once the patch 1 and 
-the another pinctrl patch which Bjorn's is referring [1] (Hopefully, If 
-I am not wrong) is landed in linux-next, I can send out the patch 2 
-separately. Do let me know if this okay.
+Maybe, but if a tool is currently doing something like an increasing
+loop to check for the max possible aux buffer size and checking for "12
+(Cannot allocate memory)" then you could consider this change a
+userspace breaking one.
 
-[1] 
-https://lore.kernel.org/linux-arm-msm/2d790f7e-b373-f0ee-d978-fb78bc4f1ed1@quicinc.com/
+The script would probably just be checking for any error, but you never
+know.
 
+I agree the error codes are quite non specific and don't really help
+with showing the cause of the problem. But I can't see how the memory
+one isn't more specific to the aux buffer size in this case.
 
->
->> Intially this approach is posted by Poovendhan[1], later Mukesh
->> integrated this patch in his minidump support series[2]. Based on the
->> current feedback on the minidump series, seems it will take sometime to
->> get into a good shape, in the meantime these patches doesn't have any
->> dependency with the minidump series. As discussed with the Mukesh[3],
->> posting these 3 patches to enable the crashdump on IPQ chipsets.
+I searched for other errors returned after checking get_order() and I
+found both -EINVAL and -ENOMEM, so if there is no consensus maybe it's
+best to stick to the existing return value.
+
+James
+
+>> And you might want to split the doc change out if they are going to be
+>> merged through separate trees.
+> 
+> Will do that.
+> 
 >>
->> Since the current version of minidump series is V4, I'm posting this as
->> a V5. Please let me know if this should be V1.
+>> And one comment below:
 >>
->> [1]
->> https://lore.kernel.org/linux-arm-msm/20230113160012.14893-4-quic_poovendh@quicinc.com/ 
+>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>> ---
+>>> changes since v2:
+>>> - remove unnecessary overflow check (per Peter)
+>>>
+>>> changes since v1:
+>>> - drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
+>>> - move sanity check into rb_alloc_aux (per Leo)
+>>> - add overflow check (per James)
+>>> ---
+>>>  kernel/events/ring_buffer.c              | 3 +++
+>>>  tools/perf/Documentation/perf-record.txt | 3 ++-
+>>>  2 files changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+>>> index a0433f37b024..5933ce45c68a 100644
+>>> --- a/kernel/events/ring_buffer.c
+>>> +++ b/kernel/events/ring_buffer.c
+>>> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
+>>>  		watermark = 0;
+>>>  	}
+>>>  
+>>> +	/* Can't allocate more than MAX_ORDER */
+>>> +	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
+>>> +		return -EINVAL;
+>>>  	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
+>>>  				     node);
+>>>  	if (!rb->aux_pages)
+>>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>>> index 680396c56bd1..5d8d3ad084ed 100644
+>>> --- a/tools/perf/Documentation/perf-record.txt
+>>> +++ b/tools/perf/Documentation/perf-record.txt
+>>> @@ -290,7 +290,8 @@ OPTIONS
+>>>  	specification with appended unit character - B/K/M/G. The
+>>>  	size is rounded up to have nearest pages power of two value.
+>>>  	Also, by adding a comma, the number of mmap pages for AUX
+>>> -	area tracing can be specified.
+>>> +	area tracing can be specified. With MAX_ORDER set as 10 on
+>>> +	arm64 platform , the maximum AUX area is limited to 2GiB.
 >>
+>> Minor nit: I wouldn't expect a Perf tool user to know what "MAX_ORDER"
+>> is, and I don't think the limitation is Arm specific? Maybe something in
+>> more relevant terms is more useful:
 >>
->> [2]
->> https://lore.kernel.org/linux-arm-msm/1676990381-18184-3-git-send-email-quic_mojha@quicinc.com/ 
+>>   The maximum AUX area is limited by the page size of the system. For
+>>   example with 4K pages configured, the maximum is 2GiB.
+> 
+> Agreed. Will change it.
+> 
+> 
 >>
+>> Thanks
+>> James
+> 
+> Thank you for valuable comments.
+> 
+> Best Regards,
+> Shuai
 >>
->> [3]
->> https://lore.kernel.org/linux-arm-msm/d77f5601-2b08-a7c7-1400-7ab68b8add3a@quicinc.com/ 
->>
->>
->>
->> Mukesh Ojha (3):
->>    firmware: qcom_scm: provide a read-modify-write function
->>    pinctrl: qcom: Use qcom_scm_io_update_field()
->>    firmware: scm: Modify only the download bits in TCSR register
->>
->>   drivers/firmware/qcom_scm.c            | 26 ++++++++++++++++++++++++--
->>   drivers/pinctrl/qcom/pinctrl-msm.c     | 12 +++++-------
->>   include/linux/firmware/qcom/qcom_scm.h |  2 ++
->>   3 files changed, 31 insertions(+), 9 deletions(-)
->>
+>>>  
+>>>  -g::
+>>>  	Enables call-graph (stack chain/backtrace) recording for both
