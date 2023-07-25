@@ -2,260 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5D5762105
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C0A762109
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjGYSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S232651AbjGYSIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbjGYSHj (ORCPT
+        with ESMTP id S232246AbjGYSIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:07:39 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E172122;
-        Tue, 25 Jul 2023 11:07:35 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99b78fda9a8so654021966b.1;
-        Tue, 25 Jul 2023 11:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690308454; x=1690913254;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6P6nInJaW7G7gJCJpOM64PYpwfKrcIGKm7+sHoKzLBM=;
-        b=o0hUV0twM1c86PgBwH8TT3CNnElIybifN4P2oZW9MOLAwQ/UltCSOKmcmQ5aJ2PKyU
-         Us5KD3EBFY1du0cMSlHXPHdiHHYknP1TCPx6lz6HP+qayRY1IBEzVcaJJOywrOxDVw84
-         2LY76BTywpkUcda9EPxH1+r9Aafm4eEM2xNPnFzjBNmSuKWcB1ta1hdTlIEkXal+mfVa
-         zWPXv2MMRhKzC7Z2gt7WzOAYeJljVR2VQBdD4CmmHpgp8l/7+Ugq/KC0zbx6jurRWCl3
-         OW9aaxtveSNSHWrBxmDEAhoJTHQ9Xgv4xajJxqXT4gAzWqH6+uPMrZtPh294HGUzNGvC
-         YzNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690308454; x=1690913254;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6P6nInJaW7G7gJCJpOM64PYpwfKrcIGKm7+sHoKzLBM=;
-        b=PR6Jf8I+zaiNUAtLSDCTG0gTlTKXCjHXud5apu885mwrYyU8U0Ek5O+V/KUSd0tYoY
-         LfMbPrfZwMNWDsd8otSeC/3dBsLSikF3wlhZ0RjuIrAJtC/x2DsWsTVCQddu2LH/zy3H
-         jGVgbigFDQd2jkjQwR6a0I3Rh4XdhWcAhgCTMb8/Dxv6sqj5xM64AmRnx29XroOxLuCw
-         FiX6RjT/wnZVdnwCF5RVBLPvJH2cPigN26gPgtYFOWCmLleo/XVW2q5mEk+Xiij/SNaP
-         UpcjDp9NfTy6l+lHlBH6ljNFW0MM2qK9hJyNNGcx6lYIXeMbsUeDrZdYV2VK+uTeWDCT
-         nbnA==
-X-Gm-Message-State: ABy/qLZzYeWDE0TX9oTFlPV4UbGQHzRVe+B1+Cct4hfRrDIAAa12Rloi
-        cEj9a0FJuDezVK4uUAb0L9A=
-X-Google-Smtp-Source: APBJJlExLR8jaPuaX780epX99381rLSkyjeh8Ha8M3N5UIXQ14qEb8M3XahPikZ6LkwvahSVlMiqEA==
-X-Received: by 2002:a17:906:31d4:b0:993:e2ba:55a2 with SMTP id f20-20020a17090631d400b00993e2ba55a2mr12119913ejf.19.1690308453541;
-        Tue, 25 Jul 2023 11:07:33 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z6-20020a170906814600b00993cc1242d4sm8473747ejw.151.2023.07.25.11.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 11:07:32 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id B9C0427C005A;
-        Tue, 25 Jul 2023 14:07:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 25 Jul 2023 14:07:30 -0400
-X-ME-Sender: <xms:Yg_AZG5hVtAL4Mgvrlx0MSLxw1en2Nwk10x5zOixwODm9ECNBUNZlg>
-    <xme:Yg_AZP5rrs0HoQXaQm5OHlWZWPz2qKoUeW7fZBgRhVgKMdwuUN8r9SWyj8X9ZK36Y
-    J5J4qHkacEVDjS-YQ>
-X-ME-Received: <xmr:Yg_AZFeH0hESD9YUCvD3ER5B9-AYO0IGXVWh5VLbM8EajuhJgriO5byNuPHUwg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdduudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnheptdegheelveffudejffegvdelgffhhfelkeeiieefgeevteejvdegveeu
-    ffeihefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Yg_AZDI2Uzd1M5m0QGTnCjYb63WwShmsoY3JIZLMCSRSSIUq6fl3ng>
-    <xmx:Yg_AZKLDet_ROuO94cl0a2SFyXb_d8eL6VWtuQ8eVSlxyiL1dExFUg>
-    <xmx:Yg_AZEx0R8nH4wZs3hX6WlvGVZgJBajXs4-6r3N4UMzAa04JUaglzA>
-    <xmx:Yg_AZMCa_TlnAd6VIMX1Fu_QsLhoVvcNLP8ZeAD6hYo7nziJIlN62w>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 25 Jul 2023 14:07:29 -0400 (EDT)
-Date:   Tue, 25 Jul 2023 11:07:04 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] rust: kunit: add KUnit case and suite macros
-Message-ID: <ZMAPSHyswu1Kgd1U@boqun-archlinux>
-References: <20230720-rustbind-v1-0-c80db349e3b5@google.com>
- <20230720-rustbind-v1-1-c80db349e3b5@google.com>
+        Tue, 25 Jul 2023 14:08:19 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1689510EF;
+        Tue, 25 Jul 2023 11:08:16 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 260e2a2dd3194a53; Tue, 25 Jul 2023 20:08:15 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 0296E661B14;
+        Tue, 25 Jul 2023 20:08:15 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: [PATCH v3 6/8] ACPI: thermal: Use trip point table to register thermal zones
+Date:   Tue, 25 Jul 2023 20:08:14 +0200
+Message-ID: <5700190.DvuYhMxLoT@kreacher>
+In-Reply-To: <3177785.5fSG56mABF@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher> <3177785.5fSG56mABF@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230720-rustbind-v1-1-c80db349e3b5@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedriedtgdduudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehinhhtvghlrdgtohhmpdhr
+ tghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:38:52PM +0800, David Gow wrote:
-> From: José Expósito <jose.exposito89@gmail.com>
+On Tuesday, July 25, 2023 2:20:57 PM CEST Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Add a couple of Rust macros to allow to develop KUnit tests without
-> relying on generated C code:
+> Make the ACPI thermal driver use thermal_zone_device_register_with_trips()
+> to register its thermal zones.
 > 
->  - The `kunit_unsafe_test_suite!` Rust macro is similar to the
->    `kunit_test_suite` C macro.
->  - The `kunit_case!` Rust macro is similar to the `KUNIT_CASE` C macro.
->    It can be used with parameters to generate a test case or without
->    parameters to be used as delimiter in `kunit_test_suite!`.
+> For this purpose, make it create a trip point table and pass it to
+> thermal_zone_device_register_with_trips() as an argument and use the
+> struct thermal_trip_ref introduced previously to connect the generic
+> thermal trip structures to the internal data structures representing
+> trip points in the driver.
 > 
-> While these macros can be used on their own, a future patch will
-> introduce another macro to create KUnit tests using a user-space like
-> syntax.
-> 
-> Co-developed-by: David Gow <davidgow@google.com>
-> Signed-off-by: David Gow <davidgow@google.com>
-> Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  rust/kernel/kunit.rs | 92 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  rust/kernel/lib.rs   |  1 +
->  2 files changed, 93 insertions(+)
 > 
-> diff --git a/rust/kernel/kunit.rs b/rust/kernel/kunit.rs
-> index 722655b2d62d..4cffc71e463b 100644
-> --- a/rust/kernel/kunit.rs
-> +++ b/rust/kernel/kunit.rs
-> @@ -161,3 +161,95 @@ macro_rules! kunit_assert_eq {
->          $crate::kunit_assert!($name, $file, $diff, $left == $right);
->      }};
->  }
-> +
-> +/// Represents an individual test case.
-> +///
-> +/// The test case should have the signature
-> +/// `unsafe extern "C" fn test_case(test: *mut crate::bindings::kunit)`.
-> +///
-> +/// The `kunit_unsafe_test_suite!` macro expects a NULL-terminated list of test cases. This macro
-> +/// can be invoked without parameters to generate the delimiter.
-> +#[macro_export]
-> +macro_rules! kunit_case {
-
-kunit_case doesn't need to be a macro, right? We can define it as a
-const fn. Maybe one `kunit_case_null` and one `kunit_case`. Macros
-should be avoided whenever possible.
-
-Thoughts?
-
-Regards,
-Boqun
-
-> +    () => {
-> +        $crate::bindings::kunit_case {
-> +            run_case: None,
-> +            name: core::ptr::null_mut(),
-> +            generate_params: None,
-> +            status: $crate::bindings::kunit_status_KUNIT_SUCCESS,
-> +            log: core::ptr::null_mut(),
-> +        }
-> +    };
-> +    ($name:ident, $run_case:ident) => {
-> +        $crate::bindings::kunit_case {
-> +            run_case: Some($run_case),
-> +            name: $crate::c_str!(core::stringify!($name)).as_char_ptr(),
-> +            generate_params: None,
-> +            status: $crate::bindings::kunit_status_KUNIT_SUCCESS,
-> +            log: core::ptr::null_mut(),
-> +        }
-> +    };
-> +}
-> +
-> +/// Registers a KUnit test suite.
-> +///
-> +/// # Safety
-> +///
-> +/// `test_cases` must be a NULL terminated array of test cases.
-> +///
-> +/// # Examples
-> +///
-> +/// ```ignore
-> +/// unsafe extern "C" fn test_fn(_test: *mut crate::bindings::kunit) {
-> +///     let actual = 1 + 1;
-> +///     let expected = 2;
-> +///     assert_eq!(actual, expected);
-> +/// }
-> +///
-> +/// static mut KUNIT_TEST_CASE: crate::bindings::kunit_case = crate::kunit_case!(name, test_fn);
-> +/// static mut KUNIT_NULL_CASE: crate::bindings::kunit_case = crate::kunit_case!();
-> +/// static mut KUNIT_TEST_CASES: &mut[crate::bindings::kunit_case] = unsafe {
-> +///     &mut[KUNIT_TEST_CASE, KUNIT_NULL_CASE]
-> +/// };
-> +/// crate::kunit_unsafe_test_suite!(suite_name, KUNIT_TEST_CASES);
-> +/// ```
-> +#[macro_export]
-> +macro_rules! kunit_unsafe_test_suite {
-> +    ($name:ident, $test_cases:ident) => {
-> +        const _: () = {
-> +            static KUNIT_TEST_SUITE_NAME: [i8; 256] = {
-> +                let name_u8 = core::stringify!($name).as_bytes();
-> +                let mut ret = [0; 256];
-> +
-> +                let mut i = 0;
-> +                while i < name_u8.len() {
-> +                    ret[i] = name_u8[i] as i8;
-> +                    i += 1;
-> +                }
-> +
-> +                ret
-> +            };
-> +
-> +            // SAFETY: `test_cases` is valid as it should be static.
-> +            static mut KUNIT_TEST_SUITE: core::cell::UnsafeCell<$crate::bindings::kunit_suite> =
-> +                core::cell::UnsafeCell::new($crate::bindings::kunit_suite {
-> +                    name: KUNIT_TEST_SUITE_NAME,
-> +                    test_cases: unsafe { $test_cases.as_mut_ptr() },
-> +                    suite_init: None,
-> +                    suite_exit: None,
-> +                    init: None,
-> +                    exit: None,
-> +                    status_comment: [0; 256usize],
-> +                    debugfs: core::ptr::null_mut(),
-> +                    log: core::ptr::null_mut(),
-> +                    suite_init_err: 0,
-> +                });
-> +
-> +            // SAFETY: `KUNIT_TEST_SUITE` is static.
-> +            #[used]
-> +            #[link_section = ".kunit_test_suites"]
-> +            static mut KUNIT_TEST_SUITE_ENTRY: *const $crate::bindings::kunit_suite =
-> +                unsafe { KUNIT_TEST_SUITE.get() };
-> +        };
-> +    };
-> +}
-> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-> index 3642cadc34b1..ec81fd28d71a 100644
-> --- a/rust/kernel/lib.rs
-> +++ b/rust/kernel/lib.rs
-> @@ -18,6 +18,7 @@
->  #![feature(new_uninit)]
->  #![feature(receiver_trait)]
->  #![feature(unsize)]
-> +#![feature(const_mut_refs)]
+> v2 -> v3:
+>    * Fix error code path memory leak in acpi_thermal_register_thermal_zone().
+>    * Notice that the critical and hot trips never change after initialization,
+>      so don't add struct thermal_trip_ref to any of them.
+> 
+> v1 -> v2:
+>    * Use thermal_zone_device_lock()/thermal_zone_device_unlock() in
+>      acpi_thermal_check_fn() explicitly and call __thermal_zone_device_update()
+>      from there without unlocking the thermal zone.
+>    * Export __thermal_zone_device_update() to modules (so it can be called by
+>      the ACPI thermal code).
+> 
+> ---
+>  drivers/acpi/thermal.c         |  106 ++++++++++++++++++++++++++++++++++++++---
+>  drivers/thermal/thermal_core.c |    1 
+>  include/linux/thermal.h        |    2 
+>  3 files changed, 102 insertions(+), 7 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/thermal.c
+> +++ linux-pm/drivers/acpi/thermal.c
+> @@ -107,6 +107,7 @@ struct acpi_thermal_hot {
+>  };
 >  
->  // Ensure conditional compilation based on the kernel configuration works;
->  // otherwise we may silently break things like initcall handling.
+>  struct acpi_thermal_passive {
+> +	struct thermal_trip_ref trip_ref;
+>  	struct acpi_handle_list devices;
+>  	unsigned long temperature;
+>  	unsigned long tc1;
+> @@ -116,6 +117,7 @@ struct acpi_thermal_passive {
+>  };
+>  
+>  struct acpi_thermal_active {
+> +	struct thermal_trip_ref trip_ref;
+>  	struct acpi_handle_list devices;
+>  	unsigned long temperature;
+>  	bool valid;
+> @@ -137,6 +139,7 @@ struct acpi_thermal {
+>  	unsigned long polling_frequency;
+>  	volatile u8 zombie;
+>  	struct acpi_thermal_trips trips;
+> +	struct thermal_trip *trip_table;
+>  	struct acpi_handle_list devices;
+>  	struct thermal_zone_device *thermal_zone;
+>  	int kelvin_offset;	/* in millidegrees */
+> @@ -190,6 +193,14 @@ static int acpi_thermal_get_polling_freq
+>  	return 0;
+>  }
+>  
+> +static void acpi_thermal_trip_update_temp(struct acpi_thermal *tz,
+> +					  struct thermal_trip *trip,
+> +					  long temperature)
+> +{
+> +	trip->temperature = deci_kelvin_to_millicelsius_with_offset(temperature,
+> +								    tz->kelvin_offset);
+> +}
+> +
+>  static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+>  {
+>  	acpi_status status;
+> @@ -756,6 +767,7 @@ static void acpi_thermal_zone_sysfs_remo
+>  
+>  static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+>  {
+> +	struct thermal_trip *trip;
+>  	int passive_delay = 0;
+>  	int trip_count = 0;
+>  	int result;
+> @@ -776,12 +788,54 @@ static int acpi_thermal_register_thermal
+>  	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++)
+>  		trip_count++;
+>  
+> -	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
+> -							tz, &acpi_thermal_zone_ops,
+> -							NULL, passive_delay,
+> -							tz->polling_frequency * 100);
+> -	if (IS_ERR(tz->thermal_zone))
+> -		return -ENODEV;
+> +	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
+> +	if (!trip)
+> +		return -ENOMEM;
+> +
+> +	tz->trip_table = trip;
+> +
+> +	if (tz->trips.critical.valid) {
+> +		trip->type = THERMAL_TRIP_CRITICAL;
+> +		acpi_thermal_trip_update_temp(tz, trip,
+> +					      tz->trips.critical.temperature);
+> +		trip++;
+> +	}
+> +
+> +	if (tz->trips.hot.valid) {
+> +		trip->type = THERMAL_TRIP_HOT;
+> +		acpi_thermal_trip_update_temp(tz, trip,
+> +					      tz->trips.hot.temperature);
+> +		trip++;
+> +	}
+> +
+> +	if (tz->trips.passive.valid) {
+> +		trip->type = THERMAL_TRIP_PASSIVE;
+> +		acpi_thermal_trip_update_temp(tz, trip,
+> +					      tz->trips.passive.temperature);
+> +		trip->driver_ref = &tz->trips.passive.trip_ref;
+> +		trip++;
+> +	}
+> +
+> +	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++) {
+> +		trip->type = THERMAL_TRIP_ACTIVE;
+> +		acpi_thermal_trip_update_temp(tz, trip,
+> +					      tz->trips.active[i].temperature);
+> +		trip->driver_ref = &tz->trips.active[i].trip_ref;
+> +		trip++;
+> +	}
+> +
+> +	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
+> +								   tz->trip_table,
+> +								   trip_count,
+> +								   0, tz,
+> +								   &acpi_thermal_zone_ops,
+> +								   NULL,
+> +								   passive_delay,
+> +								   tz->polling_frequency * 100);
+> +	if (IS_ERR(tz->thermal_zone)) {
+> +		result = PTR_ERR(tz->thermal_zone);
+> +		goto free_trip_table;
+> +	}
+>  
+>  	result = acpi_thermal_zone_sysfs_add(tz);
+>  	if (result)
+> @@ -809,6 +863,8 @@ remove_links:
+>  	acpi_thermal_zone_sysfs_remove(tz);
+>  unregister_tzd:
+>  	thermal_zone_device_unregister(tz->thermal_zone);
+> +free_trip_table:
+> +	kfree(tz->trip_table);
+>  
+>  	return result;
+>  }
+> @@ -817,6 +873,7 @@ static void acpi_thermal_unregister_ther
+>  {
+>  	acpi_thermal_zone_sysfs_remove(tz);
+>  	thermal_zone_device_unregister(tz->thermal_zone);
+> +	kfree(tz->trip_table);
+>  	tz->thermal_zone = NULL;
+>  	acpi_bus_detach_private_data(tz->device->handle);
+>  }
+> @@ -950,6 +1007,9 @@ static void acpi_thermal_check_fn(struct
+>  {
+>  	struct acpi_thermal *tz = container_of(work, struct acpi_thermal,
+>  					       thermal_check_work);
+> +	struct thermal_trip *trip;
+> +	long temperature;
+> +	int i;
+>  
+>  	/*
+>  	 * In general, it is not sufficient to check the pending bit, because
+> @@ -964,7 +1024,39 @@ static void acpi_thermal_check_fn(struct
+>  
+>  	mutex_lock(&tz->thermal_check_lock);
+>  
+> -	thermal_zone_device_update(tz->thermal_zone, THERMAL_EVENT_UNSPECIFIED);
+> +	thermal_zone_device_lock(tz->thermal_zone);
+> +
+> +	trip = tz->trips.passive.trip_ref.trip;
+> +	if (trip) {
+> +		/*
+> +		 * This means that the passive trip was valid initially, so
+> +		 * update its temperature in case it has changed or the trip
+> +		 * has become invalid.
+> +		 */
+> +		temperature = tz->trips.passive.valid ?
+> +				tz->trips.passive.temperature :
+> +				THERMAL_TEMP_INVALID;
+> +		acpi_thermal_trip_update_temp(tz, trip, temperature);
+
+This is a mistake, because THERMAL_TEMP_INVALID should not be passed to
+acpi_thermal_trip_update_temp() (and same below).
+
+I'll send an update of this patch in a moment.
+
+> +	}
+> +
+> +	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
+> +		trip = tz->trips.active[i].trip_ref.trip;
+> +		if (trip) {
+> +			/*
+> +			 * This means that the active trip #i was valid
+> +			 * initially, so update its temperature in case it has
+> +			 * changed or the trip has become invalid.
+> +			 */
+> +			temperature = tz->trips.active[i].valid ?
+> +					tz->trips.active[i].temperature :
+> +					THERMAL_TEMP_INVALID;
+> +			acpi_thermal_trip_update_temp(tz, trip, temperature);
+> +		}
+> +	}
+> +
+> +	__thermal_zone_device_update(tz->thermal_zone, THERMAL_EVENT_UNSPECIFIED);
+> +
+> +	thermal_zone_device_unlock(tz->thermal_zone);
+>  
+>  	refcount_inc(&tz->thermal_check_count);
+>  
+> Index: linux-pm/drivers/thermal/thermal_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> +++ linux-pm/drivers/thermal/thermal_core.c
+> @@ -429,6 +429,7 @@ void __thermal_zone_device_update(struct
+>  
+>  	monitor_thermal_zone(tz);
+>  }
+> +EXPORT_SYMBOL_GPL(__thermal_zone_device_update);
+>  
+>  static int thermal_zone_device_set_mode(struct thermal_zone_device *tz,
+>  					enum thermal_device_mode mode)
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -334,6 +334,8 @@ int thermal_zone_bind_cooling_device(str
+>  				     unsigned int);
+>  int thermal_zone_unbind_cooling_device(struct thermal_zone_device *, int,
+>  				       struct thermal_cooling_device *);
+> +void __thermal_zone_device_update(struct thermal_zone_device *,
+> +				  enum thermal_notify_event);
+>  void thermal_zone_device_update(struct thermal_zone_device *,
+>  				enum thermal_notify_event);
+>  void thermal_zone_device_lock(struct thermal_zone_device *tz);
 > 
-> -- 
-> 2.41.0.255.g8b1d071c50-goog
-> 
+
+
+
+
