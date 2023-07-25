@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DE1761DD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A2E761DE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbjGYP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
+        id S232986AbjGYP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjGYP6e (ORCPT
+        with ESMTP id S232709AbjGYP7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:58:34 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A36CBC;
-        Tue, 25 Jul 2023 08:58:33 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso84008941fa.1;
-        Tue, 25 Jul 2023 08:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690300712; x=1690905512;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KDPHVmrZzrWaxB7S22eSEgowz0/oT2a8WviPoFNE1Bs=;
-        b=Vt0UW/4QXA8r+1Q75QsqTUSZBKefz0fG7HAOqNNwbgocQnJEA7MD9ASaGd7oBshNuN
-         yCj4d3f0PFRaGjcRKxH3bpQJeZnt94cPJ7lh1YlfmejOHe4eNTEoBysxpw5JJR2fluyr
-         zTGxXYCmWgXYCO5K5SjPolAOy7oRNOGkJIK5OiUj4/mnKFF/0P7DaohTNEh/Vd2n79iF
-         GDzkLYY+c5m6k6PaI6OYK9PzmVgQhN8mF8I9BLwfpVzYZAF/ruGnghtJiWr5qHTRAinU
-         c+ALgRQ/JSN6oeqGXZWBfWyXI2VTjm25tLWoNoe0lcsl+SedIq/4BX9+MNT2+WVgCXzS
-         XZ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690300712; x=1690905512;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KDPHVmrZzrWaxB7S22eSEgowz0/oT2a8WviPoFNE1Bs=;
-        b=VbXJidGUJoGEwWL/c/BSPTulw6v1ZgYrAr/E16iz9PQI7Hn0TGxuLYOTZ5TjK3P4+r
-         2YRc7BjR6uvRBd8hRqTI26MCihGxNBG72fOSBoBeDokSeV44TytGsXovymKXqH2RonI6
-         gIYsYe4AoSPJ/rGng0qhCzwWNj7gOxSO7aTc82rrm1YGXty6yNTr6fcDbvCeW6kbNUMT
-         LA7bDlzyQfzp31uFzJ0lJRagAn5WR6PuIh3ovM35xVQPA8V8uGl35JpBBsqUocn0qxeo
-         acBk7S1bQEGPw9ajGn0kbesIpTnSXwxMHsp+OOj+duvuCCOcjDMxQCz+oTRZmlYkfnBk
-         BHVw==
-X-Gm-Message-State: ABy/qLZenI/+WHmFfwIbQr2eXUUDTVbG0SSd0fPO9aM9QIAQsdL4WDSR
-        hNp1HHSGKblBsV6dUjPhtxk=
-X-Google-Smtp-Source: APBJJlHErb0hv3zP6dPtwLIEAfOCGmfbWI9JzmdQiVQQd1Mri6bGtnJO7G6Hs6TC2SrbPuI3QVWh0g==
-X-Received: by 2002:a2e:8e85:0:b0:2b9:4413:864e with SMTP id z5-20020a2e8e85000000b002b94413864emr9655654ljk.53.1690300711655;
-        Tue, 25 Jul 2023 08:58:31 -0700 (PDT)
-Received: from akanner-r14. ([77.222.25.78])
-        by smtp.gmail.com with ESMTPSA id x20-20020a2e7c14000000b002b47a15a2eesm3584084ljc.45.2023.07.25.08.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:58:31 -0700 (PDT)
-Message-ID: <64bff127.2e0a0220.a28fb.62fc@mx.google.com>
-X-Google-Original-Message-ID: <ZL/xIm8NS8mBOlWv@akanner-r14.>
-Date:   Tue, 25 Jul 2023 18:58:26 +0300
-From:   Andrew Kanner <andrew.kanner@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
-        brouer@redhat.com, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] drivers: net: prevent tun_get_user() to exceed xdp
- size limits
-References: <20230725153941.653-1-andrew.kanner@gmail.com>
+        Tue, 25 Jul 2023 11:59:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D787E2102
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690300730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DCrVdTZAI+0vQC3PoQE4vcBJ0YMLagHeZdYmArSL1lk=;
+        b=QKT72DRSwkLcbJB9yVCS7I1H7/WNm51KmmsAEd7xwoIDMGiuj5nL3LvXT4gkuJg8OgOSG1
+        ZhOBJDBt699aHtG9htIueFTQNa+1KS1vX29a9ISfr3XdDSEQ7d3+t/7kG+XUgl3CUjoT5K
+        bqI5gwuvOK3S7KB3tq63sGsBExnTd/s=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-410-WI-G73yFMfKYvUZh17UjEQ-1; Tue, 25 Jul 2023 11:58:46 -0400
+X-MC-Unique: WI-G73yFMfKYvUZh17UjEQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD0281C16600;
+        Tue, 25 Jul 2023 15:58:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D7BA0201EC58;
+        Tue, 25 Jul 2023 15:58:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <cover.1689092120.git.legion@kernel.org>
+References: <cover.1689092120.git.legion@kernel.org> <cover.1689074739.git.legion@kernel.org>
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     dhowells@redhat.com, James.Bottomley@HansenPartnership.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        axboe@kernel.dk, benh@kernel.crashing.org, borntraeger@de.ibm.com,
+        bp@alien8.de, catalin.marinas@arm.com, christian@brauner.io,
+        dalias@libc.org, davem@davemloft.net, deepa.kernel@gmail.com,
+        deller@gmx.de, fenghua.yu@intel.com, fweimer@redhat.com,
+        geert@linux-m68k.org, glebfm@altlinux.org, gor@linux.ibm.com,
+        hare@suse.com, hpa@zytor.com, ink@jurassic.park.msu.ru,
+        jhogan@kernel.org, kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Add fchmodat2() - or add a more general syscall?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725153941.653-1-andrew.kanner@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <104970.1690300714.1@warthog.procyon.org.uk>
+Date:   Tue, 25 Jul 2023 16:58:34 +0100
+Message-ID: <104971.1690300714@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please, drop it and see [PATCH v3] with the changelog.
-git notes were dropped in v2 eventually, sorry.
+Rather than adding a fchmodat2() syscall, should we add a "set_file_attrs()"
+syscall that takes a mask and allows you to set a bunch of stuff all in one
+go?  Basically, an interface to notify_change() in the kernel that would allow
+several stats to be set atomically.  This might be of particular interest to
+network filesystems.
 
--- 
-Andrew Kanner
+David
+
