@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057EF76182B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8786A761A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbjGYMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
+        id S231434AbjGYNpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjGYMXW (ORCPT
+        with ESMTP id S231424AbjGYNpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:23:22 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321AEE7E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:23:21 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9GPY1KxlzrRvc;
-        Tue, 25 Jul 2023 20:22:25 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 25 Jul 2023 09:45:39 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F782129;
+        Tue, 25 Jul 2023 06:45:12 -0700 (PDT)
+Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9J970C40zCrLk;
+        Tue, 25 Jul 2023 21:41:47 +0800 (CST)
+Received: from huawei.com (10.67.174.205) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
- 2023 20:23:17 +0800
-From:   Zhang Jianhua <chris.zjh@huawei.com>
-To:     <catalin.marinas@arm.com>, <ill@kernel.org>,
-        <mark.rutland@arm.com>, <ryan.roberts@arm.com>,
-        <joey.gouly@arm.com>, <ardb@kernel.org>,
-        <anshuman.khandual@arm.com>, <bhe@redhat.com>,
-        <thunder.leizhen@huawei.com>, <broonie@kernel.org>
-CC:     <chris.zjh@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v3] arm64: fix build warning for ARM64_MEMSTART_SHIFT
-Date:   Tue, 25 Jul 2023 20:24:04 +0000
-Message-ID: <20230725202404.3470111-1-chris.zjh@huawei.com>
+ 2023 21:45:09 +0800
+From:   Chen Jiahao <chenjiahao16@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <conor.dooley@microchip.com>, <guoren@kernel.org>,
+        <heiko@sntech.de>, <bjorn@rivosinc.com>, <alex@ghiti.fr>,
+        <akpm@linux-foundation.org>, <atishp@rivosinc.com>,
+        <bhe@redhat.com>, <thunder.leizhen@huawei.com>, <horms@kernel.org>
+CC:     <chenjiahao16@huawei.com>
+Subject: [PATCH -next v8 0/2] support allocating crashkernel above 4G explicitly on riscv
+Date:   Tue, 25 Jul 2023 21:44:10 +0000
+Message-ID: <20230725214413.2488159-1-chenjiahao16@huawei.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.205]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
         RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -51,109 +52,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1, the following warning occurs.
+On riscv, the current crash kernel allocation logic is trying to
+allocate within 32bit addressible memory region by default, if
+failed, try to allocate without 4G restriction.
 
-arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
-  129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
-      |                                         ^~~~~~~~~
-arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
-  142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
-      |     ^~~~~~~~~~~~~~~~~~~~
+In need of saving DMA zone memory while allocating a relatively large
+crash kernel region, allocating the reserved memory top down in
+high memory, without overlapping the DMA zone, is a mature solution.
+Hence this patchset introduces the parameter option crashkernel=X,[high,low].
 
-The reason is that PUD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS == 3
-and CONFIG_VA_BITS == 39. Now move the macro ARM64_MEMSTART_SHIFT and
-ARM64_MEMSTART_ALIGN to arch/arm64/mm/init.c where it is used to avoid
-this issue, and also there is no other place to call these two macro.
+One can reserve the crash kernel from high memory above DMA zone range
+by explicitly passing "crashkernel=X,high"; or reserve a memory range
+below 4G with "crashkernel=X,low". Besides, there are few rules need
+to take notice:
+1. "crashkernel=X,[high,low]" will be ignored if "crashkernel=size"
+   is specified.
+2. "crashkernel=X,low" is valid only when "crashkernel=X,high" is passed
+   and there is enough memory to be allocated under 4G.
+3. When allocating crashkernel above 4G and no "crashkernel=X,low" is
+   specified, a 128M low memory will be allocated automatically for
+   swiotlb bounce buffer.
+See Documentation/admin-guide/kernel-parameters.txt for more information.
 
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
----
-v3:
-	Move the defination of macro ARM64_MEMSTART_SHIFT and ARM64_MEMSTART_ALIGN
-	from arch/arm64/include/asm/kernel-pgtable.h to arch/arm64/mm/init.c
+To verify loading the crashkernel, adapted kexec-tools is attached below:
+https://github.com/chenjh005/kexec-tools/tree/build-test-riscv-v2
 
-v2:
-	Add define judgement of PUD_SHIFT/CONT_PMD_SHIFT/CONT_PMD_SHIFT
-	before use them, instead of define PUD_SHIFT only.
----
----
- arch/arm64/include/asm/kernel-pgtable.h | 27 -------------------------
- arch/arm64/mm/init.c                    | 27 +++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 27 deletions(-)
+Following test cases have been performed as expected:
+1) crashkernel=256M                          //low=256M
+2) crashkernel=1G                            //low=1G
+3) crashkernel=4G                            //high=4G, low=128M(default)
+4) crashkernel=4G crashkernel=256M,high      //high=4G, low=128M(default), high is ignored
+5) crashkernel=4G crashkernel=256M,low       //high=4G, low=128M(default), low is ignored
+6) crashkernel=4G,high                       //high=4G, low=128M(default)
+7) crashkernel=256M,low                      //low=0M, invalid
+8) crashkernel=4G,high crashkernel=256M,low  //high=4G, low=256M
+9) crashkernel=4G,high crashkernel=4G,low    //high=0M, low=0M, invalid
+10) crashkernel=512M@0xd0000000              //low=512M
+11) crashkernel=1G,high crashkernel=0M,low   //high=1G, low=0M
 
-diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-index 577773870b66..85d26143faa5 100644
---- a/arch/arm64/include/asm/kernel-pgtable.h
-+++ b/arch/arm64/include/asm/kernel-pgtable.h
-@@ -118,31 +118,4 @@
- #define SWAPPER_RX_MMUFLAGS	(SWAPPER_RW_MMUFLAGS | PTE_RDONLY)
- #endif
- 
--/*
-- * To make optimal use of block mappings when laying out the linear
-- * mapping, round down the base of physical memory to a size that can
-- * be mapped efficiently, i.e., either PUD_SIZE (4k granule) or PMD_SIZE
-- * (64k granule), or a multiple that can be mapped using contiguous bits
-- * in the page tables: 32 * PMD_SIZE (16k granule)
-- */
--#if defined(CONFIG_ARM64_4K_PAGES)
--#define ARM64_MEMSTART_SHIFT		PUD_SHIFT
--#elif defined(CONFIG_ARM64_16K_PAGES)
--#define ARM64_MEMSTART_SHIFT		CONT_PMD_SHIFT
--#else
--#define ARM64_MEMSTART_SHIFT		PMD_SHIFT
--#endif
--
--/*
-- * sparsemem vmemmap imposes an additional requirement on the alignment of
-- * memstart_addr, due to the fact that the base of the vmemmap region
-- * has a direct correspondence, and needs to appear sufficiently aligned
-- * in the virtual address space.
-- */
--#if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
--#define ARM64_MEMSTART_ALIGN	(1UL << SECTION_SIZE_BITS)
--#else
--#define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
--#endif
--
- #endif	/* __ASM_KERNEL_PGTABLE_H */
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index d31c3a9290c5..4fcb88a445ef 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -73,6 +73,33 @@ phys_addr_t __ro_after_init arm64_dma_phys_limit;
- 
- #define DEFAULT_CRASH_KERNEL_LOW_SIZE	(128UL << 20)
- 
-+/*
-+ * To make optimal use of block mappings when laying out the linear
-+ * mapping, round down the base of physical memory to a size that can
-+ * be mapped efficiently, i.e., either PUD_SIZE (4k granule) or PMD_SIZE
-+ * (64k granule), or a multiple that can be mapped using contiguous bits
-+ * in the page tables: 32 * PMD_SIZE (16k granule)
-+ */
-+#if defined(CONFIG_ARM64_4K_PAGES)
-+#define ARM64_MEMSTART_SHIFT		PUD_SHIFT
-+#elif defined(CONFIG_ARM64_16K_PAGES)
-+#define ARM64_MEMSTART_SHIFT		CONT_PMD_SHIFT
-+#else
-+#define ARM64_MEMSTART_SHIFT		PMD_SHIFT
-+#endif
-+
-+/*
-+ * sparsemem vmemmap imposes an additional requirement on the alignment of
-+ * memstart_addr, due to the fact that the base of the vmemmap region
-+ * has a direct correspondence, and needs to appear sufficiently aligned
-+ * in the virtual address space.
-+ */
-+#if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
-+#define ARM64_MEMSTART_ALIGN	(1UL << SECTION_SIZE_BITS)
-+#else
-+#define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
-+#endif
-+
- static int __init reserve_crashkernel_low(unsigned long long low_size)
- {
- 	unsigned long long low_base;
+Changes since [v8]:
+1. Rebase to newest mainline head, not modifying any code logic.
+
+Changes since [v7]:
+1. Minor refactor: move crash_low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE
+   into the !high branch when the first allocation fails. Not changing
+   the result but further align with Arm64 logic, refer to Baoquan's
+   comment.
+2. Add test case "crashkernel=1G,high crashkernel=0M,low", the result
+   also matches our expectation.
+
+Changes since [v6]:
+1. Introduce the "high" flag to mark whether "crashkernel=X,high"
+   is passed. Fix the retrying logic between "crashkernel=X,high"
+   case and others when the first allocation attempt fails.
+
+Changes since [v5]:
+1. Update the crashkernel allocation logic when crashkernel=X,high
+   is specified. In this case, region above 4G will directly get
+   reserved as crashkernel, rather than trying lower 32bit allocation
+   first.
+
+Changes since [v4]:
+1. Update some imprecise code comments for cmdline parsing.
+
+Changes since [v3]:
+1. Update to print warning and return explicitly on failure when
+   crashkernel=size@offset is specified. Not changing the result
+   in this case but making the logic more straightforward.
+2. Some minor cleanup.
+
+Changes since [v2]:
+1. Update the allocation logic to ensure the high crashkernel
+   region is reserved strictly above dma32_phys_limit.
+2. Clean up some minor format problems.
+
+Chen Jiahao (2):
+  riscv: kdump: Implement crashkernel=X,[high,low]
+  docs: kdump: Update the crashkernel description for riscv
+
+ .../admin-guide/kernel-parameters.txt         | 15 +--
+ arch/riscv/kernel/setup.c                     |  5 +
+ arch/riscv/mm/init.c                          | 93 +++++++++++++++++--
+ 3 files changed, 99 insertions(+), 14 deletions(-)
+
 -- 
 2.34.1
 
