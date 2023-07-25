@@ -2,246 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3164761D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687BE761D56
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjGYPXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S231826AbjGYP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbjGYPX0 (ORCPT
+        with ESMTP id S230480AbjGYP0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:23:26 -0400
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F331BF8;
-        Tue, 25 Jul 2023 08:23:16 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-98377c5d53eso903252266b.0;
-        Tue, 25 Jul 2023 08:23:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690298595; x=1690903395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SeFJod4z1e6v+MZcwp0xRr3/xc+96eNeLZWd9BPm8GM=;
-        b=Y48ro5mOAnRZdYCzPUJUcOfSZHvNDTZ5bzKZzDPFsQscddX7UdYataaXvlwHv5Xk6K
-         /mCUMnNLKJnmeycAZl+JubmoNkiXsripZf8kE0Uykps6I21OP8MD74vd0BQb04btmR11
-         eEIiVBFh7m2pzlxpYTfOGo8gqLBTt6voeVKJa9mE0yzPwEmIVJWp43GjYDMhUNq7mBE/
-         eMrjxL8nTnM2oWTBhG3S6qxlmsBSm7m91J1MxAzt+ixtcn5bhHOUbM7MzgMDNY75pU7r
-         iFyuv6AGIYsUIWfayLTceYanZFidbyuSd7vXROr7OvafTi8FHs+busJV3/jzbZ/tAkUz
-         iF7Q==
-X-Gm-Message-State: ABy/qLYNBHpSl6PB4ilvbEzrfpA6f6h9zaZjuYxBbI+3dozxciu/8xwb
-        Id/5f5hBDfe2Z6r+Y+Q9ALykXIVp1t4=
-X-Google-Smtp-Source: APBJJlHpEcy/PxED+lupa2reCZ6KWMtcu5BAYXx0P8DdQJU4mBuEdGV8s4+IXF1rqWS4XfWtRwlsew==
-X-Received: by 2002:a17:906:1c5:b0:988:fb2f:274e with SMTP id 5-20020a17090601c500b00988fb2f274emr12250726ejj.27.1690298594980;
-        Tue, 25 Jul 2023 08:23:14 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d6-20020a1709067f0600b009925cbafeaasm8331926ejr.100.2023.07.25.08.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 08:23:14 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 08:23:12 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, leit@meta.com
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <ZL/o4M2segCBZSm/@gmail.com>
-References: <20230724142237.358769-1-leitao@debian.org>
- <20230724142237.358769-3-leitao@debian.org>
- <64bf01fc80d67_3b637629452@willemb.c.googlers.com.notmuch>
- <ZL+bLoZxIdqmh5m5@gmail.com>
- <64bfd4a27a1fe_3dc9bb2944e@willemb.c.googlers.com.notmuch>
+        Tue, 25 Jul 2023 11:26:09 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E196187;
+        Tue, 25 Jul 2023 08:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690298768; x=1721834768;
+  h=message-id:date:from:subject:to:references:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=lCGG2S39gl0Cejc5VbTJun4sCFJTSS7W7m28Q2fJoeE=;
+  b=kPPS3g4R/KQ4PYYFpuloOtuQzbx4IXlxybd3CQ8Wdume78JDHeMNGmDr
+   ID7Mt6HgGvbqJupbgapSlP+d2r5TgFd/biS7gDHtg9AIrHeGQGralxfDe
+   LhfbpYq8u2Ms/QTBtxUBJx/tXQYvl06jHJ7+QM8et1TExGiu3YBTgeGXt
+   yhpXr44m3q370h5sC4nNtgfkh7NCTun0iXnLPdgUj10rsL3+IB3qtf/dr
+   7BnoU/dpul0F09vbkPftj9isxGUkno6IFEUxiECT30iLddQQTzATFlfMl
+   HTbyhrAvfo1R7QpizaChsfvku+4Jx1F9CJK7Q6tRB32O76L76SIvZKch9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352660356"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="352660356"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 08:26:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="761247964"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="761247964"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP; 25 Jul 2023 08:26:06 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 25 Jul 2023 08:26:05 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 25 Jul 2023 08:26:05 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 25 Jul 2023 08:26:05 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 25 Jul 2023 08:26:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a0FlFGAh4nEtXsOyDKKKm8p1CEcaSuRHLO1XXlUayGw8fnwarQTK6kjEwodKzKlJzTt+gQYIOpboUJhPk8uaGtdl506e+OKQ1jqymXCNjC+yDNvx+szCh7gjfNAROB9yu9V3Tcrk4kSl55vTK+G8u+0sZHuOE6Lul/U9AA/GUbcSLjzUS6WRtEHiIihLcrxsOTP1x6hYUT39qP3f7PUO9IMp1CVZux5VE0tuWBsNZpMpcs7BonBQJk6u2P8FOUbQJkjWJXdxZooQO/CY/vcuZ4bcH+jVWz87c+o0IMSWgOqTs8fVmBmIUtvL7HBrXptu6ttj1F0y6k76gG94rhzdLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AMh//1ic1f6ovLfn2XGY8tN3WeA56c/kJq4yVGlAnfA=;
+ b=GJbrOR/HGEhNXi24iMYJt+CXbVyxz9PsHs8dS41odVafYBq3OIl79V5vvwWUCr8HtUx3J9CNoahGJMG9GqKnZxbzMfndgI99aCH4nxTVDc/yhbTApoTAOr325SOroyW0GrLI2hWCVQFH1vLLFRbTvydIM9SYSy04Jj/yJLoYJ3oJN/ZfBMnf2LcFAAfpajrbM5QNZ6VPpov6jYXlgrb8ldE4WQC0G2cXVyZy9Ez9lDZeHf3nuG4dB9zaCjVnnVZoHWdsJ9i9UF011+URwCwl8itje045M8DjpmkYc7Sl2A0nTZurhexxL5lv5/b3WLFr2oU7ua7wUEqy1fUTZb9PXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by CH3PR11MB7769.namprd11.prod.outlook.com (2603:10b6:610:123::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Tue, 25 Jul
+ 2023 15:26:03 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::116c:1030:6e1a:be28]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::116c:1030:6e1a:be28%5]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 15:26:03 +0000
+Message-ID: <586c5547-1606-45b1-53c8-c322d7954c8b@intel.com>
+Date:   Tue, 25 Jul 2023 08:26:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Subject: Re: [PATCH v5 04/19] selftests/resctrl: Close perf value read fd on
+ errors
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20230717131507.32420-1-ilpo.jarvinen@linux.intel.com>
+ <20230717131507.32420-5-ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US
+In-Reply-To: <20230717131507.32420-5-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0159.namprd04.prod.outlook.com
+ (2603:10b6:303:85::14) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64bfd4a27a1fe_3dc9bb2944e@willemb.c.googlers.com.notmuch>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH3PR11MB7769:EE_
+X-MS-Office365-Filtering-Correlation-Id: 647de627-77da-4432-dcff-08db8d2374bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nECTj2ImpwFGZu+31IfP+PK2Wr39xB6comKPqfXONfp0/AfYsFnmGs/1Tu+TH9ehL5F3vgZeZIQnQy2GrDXeXza9pkPzYNK8pppGUvVE1ybetLo4txB+itvxoSm9QEHvz+aapQl041Lizib55n970iGmtL+WiqlpCGg2v+vbnnbsc3Y3RyETj8TSUsbaCK9j0ZGsZKfdtVDm1atdY31vSAXSvopXPe/7k1L2I6VKFjkyFxdc0+3UvDikTrlBCevyFHRGsfwPwV+txyxoroN1LFKNQuNeCc8cIf/lSboH+axZE6ycCyDJrVadmfC++NitmPGGvfemlAvUey91dbS6e5I0AUc47pNZ3bH5Xtk4aIUIpdovrhEkFE6NAlpTKPH3K7XO/TKGgqVYm/DP0ip8RIyXv8I+wt06c7RcJ2gNj6I39OHuKmcvcrQn8ksK9Tirst4p9KagX8HlVOMkgWdWodw7HYlPeILeHn2F5LUvn1/5nI4U6GqSnq6l7H3EKqiUIHvRmvsje9dNQ+O4YPsK5Ug80T+w+x0wl3MDeTjnUEB3pILHK8XkIRYiEzffbmVEBOi9h7N3z8nqa/XNACUsJfZp95qqILRzUUdO19dLhIUoM6VyMNeURwaNH5nBEDYOwNYM4r3YWABggvCRSo6Y/A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(376002)(39860400002)(136003)(346002)(366004)(451199021)(6512007)(82960400001)(31696002)(5660300002)(6506007)(83380400001)(2616005)(66574015)(186003)(38100700002)(41300700001)(53546011)(26005)(8676002)(8936002)(44832011)(36756003)(6486002)(2906002)(66476007)(66556008)(86362001)(316002)(66946007)(110136005)(478600001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWpmSWdrcnFsTjhnd2xoTmo5cVJJRGN2L0Q1c29mdHQveFZFVk1xWWxNdzFk?=
+ =?utf-8?B?bnZDMkdVT3JQNGRYM1k1bnpBUE1yTDdtQ3FOdWlrRXVFa2RhaS84WXFMdC9L?=
+ =?utf-8?B?VlFyMkRqMktVYnN2QW00OGg1OGpkR2hTN0RiUDkzQ21GMW4xS1RreGtpNUVG?=
+ =?utf-8?B?SkluUXU5WlJYcXVFaTd4c3llR2IwNHJQQ29kY1ZIdCt1ek5qTjYzVHc2RzVq?=
+ =?utf-8?B?N0tKekpmL2xrc2Q4UW91VzlseGZNUTBSSDJQYVg5cGNibUl6cnRiVzd0eTZh?=
+ =?utf-8?B?aE5EYlhTWVBEbU1iMnphaTJTOEh5VFpXYmNwUEJTcXBpbCtZMUwySTlkdGtv?=
+ =?utf-8?B?MlhTUlhyaDNzMlpuQzJhMWZhUXJmdmhhUHp3bklwVENnYmNSTzM0YXpzWEJ1?=
+ =?utf-8?B?UjQwRUdHVGtTUWJjN3lOc1RpeUxrWmoxRCt1Rmw3elIwVFRxNjlCWVhtVDVp?=
+ =?utf-8?B?ZU1LTUdPNjYzU0Y0Q2RJMzdUTmVFRzc2UEhXTWx6N3FwWkZRKzBIVlR1QTM4?=
+ =?utf-8?B?T3hSOWhjSUtsUm90ZjJib2JmT3FiWkhGRE5LcUtuZDE2WGViK054aU0xbTUy?=
+ =?utf-8?B?OXlIV2E2R3YrK09EOW5zS1g0U2dUT3pJRkFBVHVsRjdhcG0wUGdjemVTQmpi?=
+ =?utf-8?B?TzRaTGxpd2NPUGlldWJXOHpsOTh4UDZBQmtDb0ZXY3VDQktKMDNWemUrRFlW?=
+ =?utf-8?B?dCtTR2tEQWNQRnlDSVZubmV6N09yaHpVOHFEdlVOMHZJaXNkWGN5NUJ1UC9q?=
+ =?utf-8?B?OFNRSWVrbDcwVC9teVBSb2ZDc25hb3FvejR2c1l3dzBqSzVIeXV2dXFsR1B6?=
+ =?utf-8?B?dmlrMHVFUEdWSlNvN3RyYzNTcDRNMVExSmtoUFEvOVNJbUN4b3NlaUxxOXF6?=
+ =?utf-8?B?cTJpSEZBNXZ6VlBRSS8vMWlWcmplSEVmdFVVdWcvN2E2SlRzT0xCVkp2UmZ0?=
+ =?utf-8?B?M1NEVjA2c2RVZkxqeGN3MTFCQWttVnRHYUhvcFU0elYzUnM5UHVEQlJ5TzVB?=
+ =?utf-8?B?aEdRQmxtckNiSmFta1AzWVZhNjVFbWY4cTJwekVyZDVZZ25WTlVoMnM1Q3Mx?=
+ =?utf-8?B?M0tIT3dva1BxTFRPcXVsSjQ4bkVyck1yZUJJT0JqZzBXSmJYbTU3ZUM3MmQw?=
+ =?utf-8?B?VzlSTGN5TndJRmFHbmUxdjBGNnlWTDgwS1VrS3NCVWFtRG1jLzFsemFxa2J6?=
+ =?utf-8?B?R3lkakxjcEFsWk1MR29PSW5CTzdXNHEzUG9YOHo5MFNxSUg4UG85d05DcDMy?=
+ =?utf-8?B?RUg3bVNhdDNPY09mb2phcWZ2VG1TM2NzQmxFVFRodm9tdkdEOWZ4UE5RdUhi?=
+ =?utf-8?B?c2J5ZjJWVS9tdnhKMXZ1enpIaStQRkNNL2ZHek9vZWVIcWNmZDlBNEhTd1RM?=
+ =?utf-8?B?V1ZQbFhjeEhTNkw2NW1IMFpxT092aVdsc2cwWCsvbTF6MXI0WU1yVXBmZHQv?=
+ =?utf-8?B?anhJb1djNDFwcFBRQmk2QkJBaTBVaUp6UGJpZDNlT2xLR2N6bGhYcDZPQXRO?=
+ =?utf-8?B?VEFYOFdycFFLQkdDNTZ1dERDc0dDVFJZY21pZGhXcEpxeW84M0RvdVN0YUNL?=
+ =?utf-8?B?aHJiR1VYMkxLT2NZbDlhTkpjVXdIakJKdjFFZm1TWnYzTCtwMGE5TGt4aDJT?=
+ =?utf-8?B?a3RrODBUV1QzZHozR2ZRYTdONzBLSGNoQlN6WlVUemdIQVk5bGpuV3NTOXRu?=
+ =?utf-8?B?VEpVc3FPZjYrOGs1dlZGYytheDF0bk9vZWFhUjJZV1BJcHZrd2x4aHoyYkdG?=
+ =?utf-8?B?TERRelBFZExMZUxhZ2MrTGgxekxHVHFTNndJMHl2dWxGdnJ3NEFoNlhGWnZv?=
+ =?utf-8?B?VEZrK2VVQisyK3hOZmdrRG04Q3pmTlhzNXZ5dW1zNGt6K29ISnJPbG5hb3pl?=
+ =?utf-8?B?dXg1YURIaDYrMkdITmhXU05qRzFzVXI1SFl5d01OU2VZWHRQcTcyUTdyL1VD?=
+ =?utf-8?B?anlxTndlMlFCeFhRdm5xS2FlbnMxN2o4a3hUVmJoRjduV2lwTlJ6WEQrQmgw?=
+ =?utf-8?B?Z0xLY2VNN1lDZ05VR2txakVtc2s3eHMxVWZGMGVNUzFGVDI4Zm8zMkZXTzI3?=
+ =?utf-8?B?dTVQbWthdlZ1ZWVvNjZQUVJybHp5OWUxdXpwNnM5SU5jY0ZWYW11cS9ESk9E?=
+ =?utf-8?B?Zm8xNHIxbjNoZUhmT0xWd2xRUyt3emdPa012ZElkU2tMMERHZVMrRVQ3RmVB?=
+ =?utf-8?B?a1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 647de627-77da-4432-dcff-08db8d2374bd
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 15:26:03.0280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WmoG/0cZjLrppUSmkXhQCBa+SvhzVyCgGPDZpiwRxvFHm5wD0EoxaQfsKXLjkSWLBwPNR+N6lVkZy4Lf2oDwssDm89tRL3Q1E8vJ80ySUfk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7769
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 09:56:50AM -0400, Willem de Bruijn wrote:
-> Breno Leitao wrote:
-> > On Mon, Jul 24, 2023 at 06:58:04PM -0400, Willem de Bruijn wrote:
-> > > Breno Leitao wrote:
-> > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
-> > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
-> > > > where a sockptr_t is either userspace or kernel space, and handled as
-> > > > such.
-> > > > 
-> > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
-> > > > 
-> > > > Differently from the getsockopt(2), the optlen field is not a userspace
-> > > > pointers. In getsockopt(2), userspace provides optlen pointer, which is
-> > > > overwritten by the kernel.  In this implementation, userspace passes a
-> > > > u32, and the new value is returned in cqe->res. I.e., optlen is not a
-> > > > pointer.
-> > > > 
-> > > > Important to say that userspace needs to keep the pointer alive until
-> > > > the CQE is completed.
-> > > > 
-> > > > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > > > ---
-> > > >  include/uapi/linux/io_uring.h |  7 ++++++
-> > > >  io_uring/uring_cmd.c          | 43 +++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 50 insertions(+)
-> > > > 
-> > > > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> > > > index 9fc7195f25df..8152151080db 100644
-> > > > --- a/include/uapi/linux/io_uring.h
-> > > > +++ b/include/uapi/linux/io_uring.h
-> > > > @@ -43,6 +43,10 @@ struct io_uring_sqe {
-> > > >  	union {
-> > > >  		__u64	addr;	/* pointer to buffer or iovecs */
-> > > >  		__u64	splice_off_in;
-> > > > +		struct {
-> > > > +			__u32	level;
-> > > > +			__u32	optname;
-> > > > +		};
-> > > >  	};
-> > > >  	__u32	len;		/* buffer size or number of iovecs */
-> > > >  	union {
-> > > > @@ -79,6 +83,7 @@ struct io_uring_sqe {
-> > > >  	union {
-> > > >  		__s32	splice_fd_in;
-> > > >  		__u32	file_index;
-> > > > +		__u32	optlen;
-> > > >  		struct {
-> > > >  			__u16	addr_len;
-> > > >  			__u16	__pad3[1];
-> > > > @@ -89,6 +94,7 @@ struct io_uring_sqe {
-> > > >  			__u64	addr3;
-> > > >  			__u64	__pad2[1];
-> > > >  		};
-> > > > +		__u64	optval;
-> > > >  		/*
-> > > >  		 * If the ring is initialized with IORING_SETUP_SQE128, then
-> > > >  		 * this field is used for 80 bytes of arbitrary command data
-> > > > @@ -729,6 +735,7 @@ struct io_uring_recvmsg_out {
-> > > >  enum {
-> > > >  	SOCKET_URING_OP_SIOCINQ		= 0,
-> > > >  	SOCKET_URING_OP_SIOCOUTQ,
-> > > > +	SOCKET_URING_OP_GETSOCKOPT,
-> > > >  };
-> > > >  
-> > > >  #ifdef __cplusplus
-> > > > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > > > index 8e7a03c1b20e..16c857cbf3b0 100644
-> > > > --- a/io_uring/uring_cmd.c
-> > > > +++ b/io_uring/uring_cmd.c
-> > > > @@ -166,6 +166,47 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
-> > > >  
-> > > > +static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> > > > +					  struct io_uring_cmd *cmd)
-> > > > +{
-> > > > +	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-> > > > +	int optname = READ_ONCE(cmd->sqe->optname);
-> > > > +	int optlen = READ_ONCE(cmd->sqe->optlen);
-> > > > +	int level = READ_ONCE(cmd->sqe->level);
-> > > > +	void *koptval;
-> > > > +	int err;
-> > > > +
-> > > > +	err = security_socket_getsockopt(sock, level, optname);
-> > > > +	if (err)
-> > > > +		return err;
-> > > > +
-> > > > +	koptval = kmalloc(optlen, GFP_KERNEL);
-> > > > +	if (!koptval)
-> > > > +		return -ENOMEM;
-> > > 
-> > > This will try to kmalloc any length that userspace passes?
-> > 
-> > Yes, this value is coming directly from userspace.
-> > 
-> > > That is unnecessary ..
-> > > > +
-> > > > +	err = copy_from_user(koptval, optval, optlen);
-> > > > +	if (err)
-> > > > +		goto fail;
-> > > > +
-> > > > +	err = -EOPNOTSUPP;
-> > > > +	if (level == SOL_SOCKET) {
-> > > > +		err = sk_getsockopt(sock->sk, level, optname,
-> > > > +				    KERNEL_SOCKPTR(koptval),
-> > > > +				    KERNEL_SOCKPTR(&optlen));
-> > > 
-> > > .. sk_getsockopt defines a union of acceptable fields, which
-> > > are all fairly small.
-> > 
-> > Right, and they are all I need for SOL_SOCKET level for now.
-> > 
-> > > I notice that BPF added BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN to
-> > > work around the issue of pre-allocating for the worst case.
-> > 
-> > I am having a hard time how to understand how
-> > BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN gets the MAX_OPTLEN. Reading this
-> > function, it seems it is conditionally get_user().
-> > 
-> > 
-> > 	#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)
-> > 	({
-> > 		int __ret = 0;
-> > 		if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))
-> > 			get_user(__ret, optlen);
-> > 		__ret;
-> > 	})
-> > 
-> > That said, how is BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN being used to
-> > workaroundthe pre-allocating for the worst case?
-> > 
-> > > But that also needs to deal woth other getsockopt levels.
-> > 
-> > Right, and we also have a similar kmalloc() on the setsockopt path
-> > (SOCKET_URING_OP_SETSOCKOPT).
-> > 
-> > What about if I pass the userspace sockptr (USER_SOCKPTR) to the
-> > {g,s}etsockopt callback directly, instead of kmalloc() in io_uring(), as
-> > I was doing int the RFC[1]? It avoids any extra kmalloc at all.
-> 
-> That looks like a great solution to me.
-> 
-> Avoids the whole problem of kmalloc based on untrusted user input.
-> 
-> > Something as:
-> > 
-> > 	static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> > 						  struct io_uring_cmd *cmd)
-> > 	{
-> > 		void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-> > 		int optlen = READ_ONCE(cmd->sqe->optlen);
-> > 		int optname = READ_ONCE(cmd->sqe->optname);
-> > 		int level = READ_ONCE(cmd->sqe->level);
-> > 		int err;
-> > 
-> > 		err = security_socket_getsockopt(sock, level, optname);
-> > 		if (err)
-> > 			return err;
-> > 
-> > 		if (level == SOL_SOCKET) {
-> > 			err = sk_getsockopt(sock->sk, level, optname,
-> > 					    USER_SOCKPTR(optval),
-> > 					    KERNEL_SOCKPTR(&optlen));
-> > 			if (err < 0)
-> > 				return err;
-> > 			return optlen;
-> > 		}
-> 
-> Do you have a plan to extend this to other levels?
-> 
-> No need to implement immediately, but it would be good to know
-> whether it is feasible to extend the current solution when the
-> need (inevitably) shows up.
+Hi Ilpo,
 
-Yes, I plan to extend getsockopt() to all levels, but it means we need
-to convert proto_ops->setsockopt to uset sockptr_t instead of
-userpointers. This might require some intrusive changes, but totally
-doable.
+On 7/17/2023 6:14 AM, Ilpo Järvinen wrote:
+> Perf event fd (fd_lm) is not closed when run_fill_buf() returns error.
+> 
+> Close fd_lm only in cat_val() to make it easier to track it is always
+> closed.
+> 
+> Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  tools/testing/selftests/resctrl/cache.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
+> index 8a4fe8693be6..289b619116fe 100644
+> --- a/tools/testing/selftests/resctrl/cache.c
+> +++ b/tools/testing/selftests/resctrl/cache.c
+> @@ -87,21 +87,19 @@ static int reset_enable_llc_perf(pid_t pid, int cpu_no)
+>  static int get_llc_perf(unsigned long *llc_perf_miss)
+>  {
+>  	__u64 total_misses;
+> +	int ret;
+>  
+>  	/* Stop counters after one span to get miss rate */
+>  
+>  	ioctl(fd_lm, PERF_EVENT_IOC_DISABLE, 0);
+>  
+> -	if (read(fd_lm, &rf_cqm, sizeof(struct read_format)) == -1) {
+> +	ret = read(fd_lm, &rf_cqm, sizeof(struct read_format));
+> +	if (ret == -1) {
+>  		perror("Could not get llc misses through perf");
+> -
+>  		return -1;
+>  	}
+
+Above changes seem to be remnant of previous version that are
+not needed.
+
+Reinette
+
