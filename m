@@ -2,192 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 358E876235E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6A9762363
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjGYUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S230408AbjGYUgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGYUfV (ORCPT
+        with ESMTP id S229495AbjGYUgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:35:21 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6FF1BF6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6689430d803so3664484b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690317317; x=1690922117;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0BDxns+Fl9sLUnEwh5F99rLcyZenrQanFjB5BbbgHQ=;
-        b=YqW5/jm+a8OyrQDhYK1sB6+6m/Xjx25ofn8j4eA7xNR1oZ9C6r2T2ECfatMBPXYFe/
-         2QrdGpgjXMIhH/Lowm1Bo+gzFbhLA08yfqkno0PiGvnFM7aWFHmZ+11ush0vrziUOcfH
-         uVXhPcVa2Lvf6OaPbIapl6MwKxWcds0/swLP8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690317317; x=1690922117;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z0BDxns+Fl9sLUnEwh5F99rLcyZenrQanFjB5BbbgHQ=;
-        b=Q+lOphKha8JHp5/RQsux2sngVDWN52Qn6oMc28MU3j38AXUP6glsWlwTRsYYOHL8eH
-         L0B6kaQkrOhrSyxxlHlzPCsV4KIxL3gde+3WiepuIfrYA5+jJ8Z6rxuAm/tCj6ahfwpA
-         ZHcrJj9bqq4AT6FQx5ga72nsqOdF3W0NAHqET401AtuP1iU6ULae49+YPRmfZHM8iQo4
-         M0bMpD91S3btN+2ZwUzqoUXgtAowbCkklvATm7XJiEKD4tpD/F4mfhdBrD8w+QqYHoLq
-         GqU56PAvBtoq8Kfjyq4CZxUWv6hpIkK+/REWLhdFwMD5axVPNg/FGHHnuHwYxi9rz0+I
-         4a3g==
-X-Gm-Message-State: ABy/qLY1a1Qj7NByFKA23jK5R85973Gb8DfBKddN/4YnR9g/ugWIR1mB
-        VTv/pJlyPNwa1FF/GAn+h/unKw==
-X-Google-Smtp-Source: APBJJlFku5InCFMw043n+/fR7Px9bK0sggZQ7nAq+I345tWEpuYGDhsjWrhsH1kHgFyhWvYqj+Di5Q==
-X-Received: by 2002:a17:903:1c7:b0:1b7:f611:a66b with SMTP id e7-20020a17090301c700b001b7f611a66bmr245907plh.31.1690317317218;
-        Tue, 25 Jul 2023 13:35:17 -0700 (PDT)
-Received: from [10.69.71.77] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id iz11-20020a170902ef8b00b001bbbc655ca1sm2038646plb.219.2023.07.25.13.35.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 13:35:13 -0700 (PDT)
-Message-ID: <d2d45566-b96c-5505-1f7e-92c6f33c08dd@broadcom.com>
-Date:   Tue, 25 Jul 2023 13:35:12 -0700
+        Tue, 25 Jul 2023 16:36:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4287910F7;
+        Tue, 25 Jul 2023 13:36:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C7DF1618E6;
+        Tue, 25 Jul 2023 20:36:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E588C433C7;
+        Tue, 25 Jul 2023 20:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690317365;
+        bh=1WJsY6Fxk5xmArM3laXI1PCdA9a886qjCfbmt+ZVyyU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=VqyStHAFMnUrprjRv35DS+uFXeG+gFpuZOWQdNng/kOiXg70JjB4ON3htuYfUOH3A
+         yqF0dbOi7V+HNHoN1gwYpimZ9mAIs+PWwIFDVPTzweN12pfyBDzoJH01exIKVJRQWd
+         UALFhYuZwor7CTdpigNZkXpDOiEUAwnHrit7dNsD3clAq7tUW7+kPb8pNaKm9WIOBR
+         KKrx++EqECbVYkb8BRN/3+ZUf/YCOjxjoDPapbqqSqYGCXXA/RN5ct5jj8Hi5tmgUd
+         K/KokBnm4R2mmbmu7Fz+dGv0dhItGmT1tZYmHGvhSK14ftvA8wuvcF6+a88ZTOdXIR
+         LL+xvxFwOSX1Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
+Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
+        swboyd@chromium.org, quic_vtanuku@quicinc.com,
+        dan.carpenter@linaro.org
+In-Reply-To: <1690285689-30233-1-git-send-email-quic_vnivarth@quicinc.com>
+References: <1690285689-30233-1-git-send-email-quic_vnivarth@quicinc.com>
+Subject: Re: [PATCH 0/4] spi: spi-qcom-qspi: Follow-up patches to DMA mode
+ support
+Message-Id: <169031736194.1617289.5213259488916570827.b4-ty@kernel.org>
+Date:   Tue, 25 Jul 2023 21:36:01 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH net] bcmasp: BCMASP should depend on ARCH_BRCMSTB
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Simon Horman <simon.horman@corigine.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1e8b998aa8dcc6e38323e295ee2430b48245cc79.1690299794.git.geert+renesas@glider.be>
-From:   Justin Chen <justin.chen@broadcom.com>
-In-Reply-To: <1e8b998aa8dcc6e38323e295ee2430b48245cc79.1690299794.git.geert+renesas@glider.be>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004519ad060155ab81"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004519ad060155ab81
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-
-On 7/25/23 8:46 AM, Geert Uytterhoeven wrote:
-> The Broadcom ASP 2.0 Ethernet controller is only present on Broadcom STB
-> SoCs.  Hence add a dependency on ARCH_BRCMSTB, to prevent asking the
-> user about this driver when configuring a kernel without Broadcom
-> ARM-based set-top box chipset support.
+On Tue, 25 Jul 2023 17:18:05 +0530, Vijaya Krishna Nivarthi wrote:
+> This patch series adds 4 follow-up changes to DMA mode support.
+> 1. Handles write failure in some cases by averting a race condition
+> 2. Handles static checker warning
+> 3. Adds a memory barrier to avoid a possible data out of sync case
+> 4. Book keeping change
 > 
-> Fixes: 490cb412007de593 ("net: bcmasp: Add support for ASP2.0 Ethernet controller")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Acked-by: Justin Chen <justin.chen@broadcom.com>
-
-> ---
->   drivers/net/ethernet/broadcom/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
+> Vijaya Krishna Nivarthi (4):
+>   spi: spi-qcom-qspi: Ignore disabled interrupts' status in isr
+>   spi: spi-qcom-qspi: Use GFP_ATOMIC flag while allocating for
+>     descriptor
+>   spi: spi-qcom-qspi: Call dma_wmb() after setting up descriptors
+>   spi: spi-qcom-qspi: Add DMA_CHAIN_DONE to ALL_IRQS
 > 
-> diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
-> index d4166141145d631c..75ca3ddda1f5e09f 100644
-> --- a/drivers/net/ethernet/broadcom/Kconfig
-> +++ b/drivers/net/ethernet/broadcom/Kconfig
-> @@ -257,6 +257,7 @@ config BNXT_HWMON
->   
->   config BCMASP
->   	tristate "Broadcom ASP 2.0 Ethernet support"
-> +	depends on ARCH_BRCMSTB || COMPILE_TEST
->   	default ARCH_BRCMSTB
->   	depends on OF
->   	select MII
+> [...]
 
---0000000000004519ad060155ab81
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Applied to
 
-MIIQagYJKoZIhvcNAQcCoIIQWzCCEFcCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3BMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBUkwggQxoAMCAQICDCPwEotc2kAt96Z1EDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjM5NTBaFw0yNTA5MTAxMjM5NTBaMIGM
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFDASBgNVBAMTC0p1c3RpbiBDaGVuMScwJQYJKoZIhvcNAQkB
-FhhqdXN0aW4uY2hlbkBicm9hZGNvbS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-AQDKX7oyRqaeT81UCy+OTzAUHJeHABD6GDVZu7IJxt8GWSGx+ebFexFz/gnRO/sgwnPzzrC2DwM1
-kaDgYe+pI1lMzUZvAB5DfS1qXKNGoeeNv7FoNFlv3iD4bvOykX/K/voKtjS3QNs0EDnwkvETUWWu
-yiXtMiGENBBJcbGirKuFTT3U/2iPoSL5OeMSEqKLdkNTT9O79KN+Rf7Zi4Duz0LUqqpz9hZl4zGc
-NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
-4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
-BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
-NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
-A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
-aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
-cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
-MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
-DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
-dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
-xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
-sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
-VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
-ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
-bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
-YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGcQJ9VXQfniMDTN6D8xnucnYK33wvuQoudE
-80SVVMlNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcyNTIw
-MzUxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
-AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
-BgkqhkiG9w0BAQEFAASCAQAfYe7xSqQaHSduot98NlT/FEQnMBHRXsigjCjXTqbFU+MBs3OPIZsp
-fh3YZJBZGAEWfzNTsEfxHQV3JLaJanDuDC6Zy8Clna2pE7orlpQ5YeMCF6og9Mzbpkh4Sj+h2ICs
-MwQG90VgdyLkpJjDsfFBgdHQRZyy9ovU+Utppycc5W6j4Z1BrsksPo+LpEmGbCBwkPi1ENa6cHQi
-4heBwIrlCAiTqVf2Jlh+1Y7aLOy5V4ttVRc2XZH8gmyNwSiccVZCaL9CMARLhJPVspKC+/XPwOpF
-2LVcOqsCXiE75MZjRXSEJINai4hWQ0KlhI1G7+UTCfWO2yZNCwB3cXcmu6Ht
---0000000000004519ad060155ab81--
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/4] spi: spi-qcom-qspi: Ignore disabled interrupts' status in isr
+      commit: 17aaf9ea07b656016316dc37716e987742b3e296
+[2/4] spi: spi-qcom-qspi: Use GFP_ATOMIC flag while allocating for descriptor
+      commit: f7ba36d399c4558f36886adff9400be591b245f6
+[3/4] spi: spi-qcom-qspi: Call dma_wmb() after setting up descriptors
+      commit: cfb81f2243b25a0d79accc6510ad66c5c5ad99ba
+[4/4] spi: spi-qcom-qspi: Add DMA_CHAIN_DONE to ALL_IRQS
+      commit: 916a4edf3daed845b1e5d6cf0578a7e43c6f520e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
