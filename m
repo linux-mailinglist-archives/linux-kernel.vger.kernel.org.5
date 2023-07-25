@@ -2,107 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F23FA761DB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D94761DB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjGYPx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S232699AbjGYPyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbjGYPxX (ORCPT
+        with ESMTP id S232389AbjGYPya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:53:23 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF37C211F
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:53:21 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58378ae25bfso69450627b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:53:21 -0700 (PDT)
+        Tue, 25 Jul 2023 11:54:30 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F94211C;
+        Tue, 25 Jul 2023 08:54:29 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so9215311fa.2;
+        Tue, 25 Jul 2023 08:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690300401; x=1690905201;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Scueap2IZpdX9UCxn1uYzjWNK2BxMuQi6j4Q/ANLPdI=;
-        b=gGWLslz3j9CuQ5hanKDPJnXuxJ+NhdMEVZm6GQOlauPYsyeglUfFrXgOCxLUZyN9Wd
-         YtKYPrJmHXRPvugJw2Fn8YCh6MnDV8jzdWP9AWOIsIyAlX8YDdD5kCIfwVSkhF8mjUT9
-         5MLvRFN8zQoCcChukIaoUq5H2EtGkty9mSKihqM2Yh6ClolGDPFwNy5DhUBFhB/RscPJ
-         /tvXepVSOMBMO6G9GdJ/M2Z3LrfsMHObbqOH0nElV2uTHe6eN/bjICPiyEz6OfQ7SUM/
-         jIY5/gQ6hb1g9e9O1hhy1PmvFatJulxXYvyQdcjdbWlgm5b3YwT2PnWn1fLz7PJL7/Mr
-         aqUA==
+        d=gmail.com; s=20221208; t=1690300467; x=1690905267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+2ueYrBi52W2OkGXaF73xpgZBQIsvgeSihX41z0L7xE=;
+        b=L+StV56SO8Hq4MRlBfv5ewD58CUtuNhf3SladD8jctRRcL8zbKOJsdIzyNKM0XJ804
+         jLH3O4VhCEmWK1u6tUPh5jf0YG5dMHLu9yHparAuZpXH7rsAT9ZVHUMHcYtHDZzASR7b
+         3i3BXSwCf4JHyFWVVa5ojk+GqQLWDg4r1e1sxOQ1Tn++Guxd10G9SGo4Xr0rv+jmzODJ
+         WVegOTzRbBVIglLKAn1sVUe7mfWQE0B9vb0drVotj5vI5YJeJz4hy+Qy7bpDfsXJd/ZN
+         KrjAhhPwLx0XzQ/eK8ueSW9CGP3K9LXg87Hg2jeC3yiKtAJuuqB1/NxOePbT6bwnYdf8
+         cGYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690300401; x=1690905201;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Scueap2IZpdX9UCxn1uYzjWNK2BxMuQi6j4Q/ANLPdI=;
-        b=YRs3g6QQ79Qjx2wf2HOUvhCSibYw5GZDduy+kRny/qpPZyk8nbSRgFAlL21VNFGRrQ
-         APaY0adfpB2JITnZN162MrD6O6nviMMJiFZpd+m6hN0FAYTUE51qH9YcKCwERhoYWAtB
-         dddgWRPXsv0TKcZMx58b6ogmF18iGkAowUtKceY/EdHZ3dvKyc1oPSCzCEtnNDmTFIIU
-         0kjBH6STSALnW4vjJM/N2w2hsgKpAGpwQEyWDa1QUmghbDMRVpEKO4zNlz8x1Atyg+Vb
-         mtHYgkb4xJ/VbHeTsFO5RbMGADEtBfaIOAPGbTnb6Bd7XTktUFc5xz+aQksa/60GJyY1
-         O/7g==
-X-Gm-Message-State: ABy/qLb/v8whHDKLMy+78GnvldPNB/v+FB9kNioOOdD8IVODVRsj1zHw
-        TuZVAh1XXHN2X+GJqBNHrVnf6HSqZxs=
-X-Google-Smtp-Source: APBJJlGu8xDz4xF7wXNqoN3D0fucjT9BY/aT/Rr+ORbZIfzNXsJr16w4uu3GLJN8e8roFrKS/P9sxV8fvvc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:3402:0:b0:d1a:4d0e:c11c with SMTP id
- b2-20020a253402000000b00d1a4d0ec11cmr6834yba.11.1690300401143; Tue, 25 Jul
- 2023 08:53:21 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 08:53:19 -0700
-In-Reply-To: <20230725113628.z7vzxk5g6zdqlftg@linux.intel.com>
-Mime-Version: 1.0
-References: <20230722012350.2371049-1-seanjc@google.com> <20230722012350.2371049-6-seanjc@google.com>
- <20230725113628.z7vzxk5g6zdqlftg@linux.intel.com>
-Message-ID: <ZL/v7xDEllr5rU6W@google.com>
-Subject: Re: [PATCH 5/5] KVM: x86/mmu: Use dummy root, backed by zero page,
- for !visible guest roots
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Reima Ishii <ishiir@g.ecc.u-tokyo.ac.jp>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690300467; x=1690905267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+2ueYrBi52W2OkGXaF73xpgZBQIsvgeSihX41z0L7xE=;
+        b=U5tOeiApvtXPUNKyUKPMiW91jq1up57L2acjNAVzaFrJoKFQGC+Pfm27VAw1PWyTGz
+         cDYk9vzPWGSCXhx4tFA0KUHZ9fxJThlPqcfGQ0zVF+/91P7tMuGX5whAmm81HY14AUcM
+         q6glbYwj+FuY/BHD9uymKB2sKF0wRBBjC+gwWTy/x40bavNhb5AEM+5+4XmHuiUUoAEV
+         9V37ykm/vMGMU+2eKK60GkswBVS4KRnwauP+ff05cWlI1FWAhb3rLrNCLxg7pSPr3nk1
+         DhJVN6J3S/MamI9grH6/9A0G7T+BDJRWrN/yM85BY+XiiDAuAit8EEKyeEdOxcuQv0AR
+         6ZoQ==
+X-Gm-Message-State: ABy/qLa8bsOrQsgQ5h/9by74AkAl0nk++htX3e+qFq6GLu1wgYc868VA
+        ufW5funMwA1yf49SFuDba40=
+X-Google-Smtp-Source: APBJJlGFsUL2NLGBfql/tuKTnFjUD7SzrJRbhKHlGxQWMzvZUxuoklAu4R38OUCt1alorXvn+snuBQ==
+X-Received: by 2002:a2e:99d9:0:b0:2b5:80e0:f18e with SMTP id l25-20020a2e99d9000000b002b580e0f18emr8957085ljj.3.1690300467033;
+        Tue, 25 Jul 2023 08:54:27 -0700 (PDT)
+Received: from localhost.localdomain ([77.222.25.78])
+        by smtp.gmail.com with ESMTPSA id a24-20020a2e8618000000b002b96a3a87d5sm3510747lji.98.2023.07.25.08.54.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 08:54:26 -0700 (PDT)
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
+        brouer@redhat.com, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
+        Andrew Kanner <andrew.kanner@gmail.com>
+Subject: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp size limits
+Date:   Tue, 25 Jul 2023 18:54:04 +0300
+Message-Id: <20230725155403.796-1-andrew.kanner@gmail.com>
+X-Mailer: git-send-email 2.39.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023, Yu Zhang wrote:
-> > diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> > index 122bfc0124d3..e9d4d7b66111 100644
-> > --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> > +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> > @@ -646,6 +646,17 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >  	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
-> >  		goto out_gpte_changed;
-> >  
-> > +	/*
-> > +	 * Load a new root and retry the faulting instruction in the extremely
-> > +	 * unlikely scenario that the guest root gfn became visible between
-> > +	 * loading a dummy root and handling the resulting page fault, e.g. if
-> > +	 * userspace create a memslot in the interim.
-> > +	 */
-> > +	if (unlikely(kvm_mmu_is_dummy_root(vcpu->arch.mmu->root.hpa))) {
-> > +		kvm_mmu_unload(vcpu);
-> 
-> Do we really need a kvm_mmu_unload()? Could we just set
-> vcpu->arch.mmu->root.hpa to INVALID_PAGE here?
+Syzkaller reported the following issue:
+=======================================
+Too BIG xdp->frame_sz = 131072
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
+...
+Call Trace:
+ <TASK>
+ bpf_prog_4add87e5301a4105+0x1a/0x1c
+ __bpf_prog_run include/linux/filter.h:600 [inline]
+ bpf_prog_run_xdp include/linux/filter.h:775 [inline]
+ bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
+ netif_receive_generic_xdp net/core/dev.c:4807 [inline]
+ do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
+ tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
+ tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
+ call_write_iter include/linux/fs.h:1871 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x650/0xe40 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Oof, yeah.  Not only is a full unload overkill, if this code were hit it would
-lead to deadlock because kvm_mmu_free_roots() expects to be called *without*
-mmu_lock held.
+xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
+("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But
+tun_get_user() still provides an execution path with do_xdp_generic()
+and exceed XDP limits for packet size.
 
-Hmm, but I don't love the idea of open coding a free/reset of the current root.
-I'm leaning toward
+Using the syzkaller repro with reduced packet size it was also
+discovered that XDP_PACKET_HEADROOM is not checked in
+tun_can_build_skb(), although pad may be incremented in
+tun_build_skb().
 
-		kvm_make_request(KVM_REQ_MMU_FREE_OBSOLETE_ROOTS, vcpu);
+If we move the limit check from tun_can_build_skb() to tun_build_skb()
+we will make xdp to be used only in tun_build_skb(), without falling
+in tun_alloc_skb(), etc. And moreover we will drop the packet which
+can't be processed in tun_build_skb().
 
-since it's conceptually similar to KVM unloading roots when a memslot is deleted
-or moved, just reversed.  That would obviously tie this code to KVM's handling of
-the dummy root just as much as manually invalidating root.hpa (probably more so),
-but that might actually be a good thing because then the rule for the dummy root
-is that it's always considered obsolete (when checked), and that could be
-explicitly documented in is_obsolete_root().
+Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
+Link: https://syzkaller.appspot.com/bug?id=5335c7c62bfff89bbb1c8f14cdabebe91909060f
+Fixes: 7df13219d757 ("tun: reserve extra headroom only when XDP is set")
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+---
+
+Notes:
+    V2 -> V3:
+    * attach the forgotten changelog
+    V1 -> V2:
+    * merged 2 patches in 1, fixing both issues: WARN_ON_ONCE with
+      syzkaller repro and missing XDP_PACKET_HEADROOM in pad
+    * changed the title and description of the execution path, suggested
+      by Jason Wang <jasowang@redhat.com>
+    * move the limit check from tun_can_build_skb() to tun_build_skb() to
+      remove duplication and locking issue, and also drop the packet in
+      case of a failed check - noted by Jason Wang <jasowang@redhat.com>
+
+ drivers/net/tun.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index d75456adc62a..7c2b05ce0421 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1594,10 +1594,6 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
+ 	if (zerocopy)
+ 		return false;
+ 
+-	if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
+-	    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
+-		return false;
+-
+ 	return true;
+ }
+ 
+@@ -1673,6 +1669,9 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 	buflen += SKB_DATA_ALIGN(len + pad);
+ 	rcu_read_unlock();
+ 
++	if (buflen > PAGE_SIZE)
++		return ERR_PTR(-EFAULT);
++
+ 	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
+ 	if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL)))
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.39.3
+
