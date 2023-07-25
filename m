@@ -2,478 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A0D762791
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430E4762793
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjGYXxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        id S230459AbjGYXzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjGYXxt (ORCPT
+        with ESMTP id S229661AbjGYXzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:53:49 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D7A1FF7;
-        Tue, 25 Jul 2023 16:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690329228; x=1721865228;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=D2R3sQ1bebxVtxIC1loLzPtue1Gs8Qug2hJr7byrk9s=;
-  b=gts9Wwlk1d7s18BnBk+c2ue+gX8+ohHYzELH+yMyT47XaR3V1sSyOd7U
-   Jm1YlXEa0lLDS9LdGrYOpB0JjugU1PncPHtcIkFcA9rixOS7c0QMYUpr4
-   h5VemHzQiTni/nl7a8m7CKq+BnNk5rGKVxslCu8/mCXNI3fF9OERgsbp+
-   PUJRzcMTQESxNUQTUrYmcJ1gBypK4AK2QzS8HXDwendBlOXPIpB7OLu/q
-   RIXquZTYimuSNXhErbSZUyjgxKdI3+ygWNv1GcyYPImu71DMVYO46hdRx
-   PmehEtwnHTpsWAvcpep/7wrcvU4x7RRgHBYPJcMm0uY3sV80T+v++v5mN
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="237768584"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jul 2023 16:53:47 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 25 Jul 2023 16:53:47 -0700
-Received: from hat-linux.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Tue, 25 Jul 2023 16:53:46 -0700
-From:   <Tristram.Ha@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tristram Ha <Tristram.Ha@microchip.com>
-Subject: [PATCH v6 net-next] net: phy: smsc: add WoL support to LAN8740/LAN8742 PHYs
-Date:   Tue, 25 Jul 2023 16:54:30 -0700
-Message-ID: <1690329270-2873-1-git-send-email-Tristram.Ha@microchip.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 25 Jul 2023 19:55:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641E0E7;
+        Tue, 25 Jul 2023 16:55:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 028A660F8A;
+        Tue, 25 Jul 2023 23:55:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C2CC433C7;
+        Tue, 25 Jul 2023 23:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690329315;
+        bh=LaWGO6FB51BoI4x0QvDk+gLLZfsA9FHjkVjMztqhaeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KzOGvR8VoaUt/GJ6o7tu6QMZ8nY3rZDbM55d7kFUMQ7ypch0td9RTh9EM4aKuPgYq
+         4eCKXJggIQEN4Vum1R+hpD8KvcaFG8iLkW8SMpFwv+/Pd3goEmQkaJ0CdhWF5KRpVI
+         cz0m0BxdOjqv5LkaI41z5k+NmK4jshwHXedo4XzCxOtzmbNOzL+smiEj6gMIgMkJgt
+         AznnAqJGeKIzWBsMXogcU+qSE9aSf4hGgsoSkhTABaWytqBNsVHooyRjhBI1kGoLGM
+         48S+6P+7zYCY+RzMZDzGp1sFQlpOeUzDwhcB23sY3Dezp70I80Y3MD2r5nGocxV/W+
+         LlRlgJ0EyEU+A==
+Date:   Wed, 26 Jul 2023 01:55:11 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     carlos.song@nxp.com
+Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, xiaoning.wang@nxp.com,
+        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] i2c: imx-lpi2c: directly return ISR when detect a
+ NACK
+Message-ID: <20230725235511.lt62ubfw7geu5cfu@intel.intel>
+References: <20230724105546.1964059-1-carlos.song@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724105546.1964059-1-carlos.song@nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tristram Ha <Tristram.Ha@microchip.com>
+Hi Carlos,
 
-Microchip LAN8740/LAN8742 PHYs support basic unicast, broadcast, and
-Magic Packet WoL.  They have one pattern filter matching up to 128 bytes
-of frame data, which can be used to implement ARP or multicast WoL.
+On Mon, Jul 24, 2023 at 06:55:44PM +0800, carlos.song@nxp.com wrote:
+> From: Gao Pan <pandy.gao@nxp.com>
+> 
+> A NACK flag in ISR means i2c bus error. In such codition,
+> there is no need to do read/write operation. It's better
+> to return ISR directly and then stop i2c transfer.
+> 
+> Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
+> Signed-off-by: Gao Pan <pandy.gao@nxp.com>
+> Signed-off-by: Carlos Song <carlos.song@nxp.com>
+> ---
+>  drivers/i2c/busses/i2c-imx-lpi2c.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+> index c3287c887c6f..158de0b7f030 100644
+> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
+> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+> @@ -514,15 +514,14 @@ static irqreturn_t lpi2c_imx_isr(int irq, void *dev_id)
+>  	temp = readl(lpi2c_imx->base + LPI2C_MSR);
+>  	temp &= enabled;
+>  
+> -	if (temp & MSR_RDF)
+> +	if (temp & MSR_NDF) {
+> +		complete(&lpi2c_imx->complete);
+> +		return IRQ_HANDLED;
 
-ARP WoL matches any ARP frame with broadcast address.
+you can actually remove the return here
 
-Multicast WoL matches any multicast frame.
+	if (temp & MSR_NDF)
+		complete();
+	else if (temp & MSR_RDF)
+		exfifo();
+	else if (temp & MSR_TDF)
+		txfifo();
 
-Signed-off-by: Tristram Ha <Tristram.Ha@microchip.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
----
-v6
-- Remove unused headers and WAKE_PHY check.
+	return IRQ_HANDLED;
 
-v5
-- Resend for patch submission.
 
-v4
-- Reduce variable use for calling the function to enable WoL.
-- Provide a general description of how the pattern data are prepared.
+BTW, the logic here is changing, as well and it's not described
+in the commit log. This patch is not only stopping when a nack is
+received (MSR_NDF), but it's also making mutually exclusive
+read/write (which I guess are MSR_RDF and MSR_TDF).
 
-v3
-- Do not try to get IPv4 and IPv6 address from the driver
-- As a result only generic ARP and multicast support are provided
+Is this what you want? If so, can you please describe it in the
+commit log or add a comment describing that the three states are
+all mutually exclusive.
 
-v2
-- use in_dev_put() only when IP support is enabled
+Thanks,
+Andi
 
-v1
-- use in_dev_get() to retrieve IP address to avoid compiler warning
-- use ipv6_get_lladdr() to retrieve IPv6 address
-- use that function only when IPv6 support is enabled
-- export that function in addrconf.c
-- program the MAC address in a loop
-- always set datalen in lan874x_chk_wol_pattern()
-- add spaces around "<<"
-- select CRC16 in Kconfig as crc16() is used in driver
 
- drivers/net/phy/Kconfig |   1 +
- drivers/net/phy/smsc.c  | 252 +++++++++++++++++++++++++++++++++++++++-
- include/linux/smscphy.h |  34 ++++++
- 3 files changed, 285 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 87b823858717..67aaeb75301f 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -350,6 +350,7 @@ config ROCKCHIP_PHY
- 
- config SMSC_PHY
- 	tristate "SMSC PHYs"
-+	select CRC16
- 	help
- 	  Currently supports the LAN83C185, LAN8187 and LAN8700 PHYs
- 
-diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
-index 692930750215..c88edb19d2e7 100644
---- a/drivers/net/phy/smsc.c
-+++ b/drivers/net/phy/smsc.c
-@@ -20,6 +20,8 @@
- #include <linux/of.h>
- #include <linux/phy.h>
- #include <linux/netdevice.h>
-+#include <linux/crc16.h>
-+#include <linux/etherdevice.h>
- #include <linux/smscphy.h>
- 
- /* Vendor-specific PHY Definitions */
-@@ -51,6 +53,7 @@ struct smsc_phy_priv {
- 	unsigned int edpd_enable:1;
- 	unsigned int edpd_mode_set_by_user:1;
- 	unsigned int edpd_max_wait_ms;
-+	bool wol_arp;
- };
- 
- static int smsc_phy_ack_interrupt(struct phy_device *phydev)
-@@ -258,6 +261,243 @@ int lan87xx_read_status(struct phy_device *phydev)
- }
- EXPORT_SYMBOL_GPL(lan87xx_read_status);
- 
-+static int lan874x_phy_config_init(struct phy_device *phydev)
-+{
-+	u16 val;
-+	int rc;
-+
-+	/* Setup LED2/nINT/nPME pin to function as nPME.  May need user option
-+	 * to use LED1/nINT/nPME.
-+	 */
-+	val = MII_LAN874X_PHY_PME2_SET;
-+
-+	/* The bits MII_LAN874X_PHY_WOL_PFDA_FR, MII_LAN874X_PHY_WOL_WUFR,
-+	 * MII_LAN874X_PHY_WOL_MPR, and MII_LAN874X_PHY_WOL_BCAST_FR need to
-+	 * be cleared to de-assert PME signal after a WoL event happens, but
-+	 * using PME auto clear gets around that.
-+	 */
-+	val |= MII_LAN874X_PHY_PME_SELF_CLEAR;
-+	rc = phy_write_mmd(phydev, MDIO_MMD_PCS, MII_LAN874X_PHY_MMD_WOL_WUCSR,
-+			   val);
-+	if (rc < 0)
-+		return rc;
-+
-+	/* set nPME self clear delay time */
-+	rc = phy_write_mmd(phydev, MDIO_MMD_PCS, MII_LAN874X_PHY_MMD_MCFGR,
-+			   MII_LAN874X_PHY_PME_SELF_CLEAR_DELAY);
-+	if (rc < 0)
-+		return rc;
-+
-+	return smsc_phy_config_init(phydev);
-+}
-+
-+static void lan874x_get_wol(struct phy_device *phydev,
-+			    struct ethtool_wolinfo *wol)
-+{
-+	struct smsc_phy_priv *priv = phydev->priv;
-+	int rc;
-+
-+	wol->supported = (WAKE_UCAST | WAKE_BCAST | WAKE_MAGIC |
-+			  WAKE_ARP | WAKE_MCAST);
-+	wol->wolopts = 0;
-+
-+	rc = phy_read_mmd(phydev, MDIO_MMD_PCS, MII_LAN874X_PHY_MMD_WOL_WUCSR);
-+	if (rc < 0)
-+		return;
-+
-+	if (rc & MII_LAN874X_PHY_WOL_PFDAEN)
-+		wol->wolopts |= WAKE_UCAST;
-+
-+	if (rc & MII_LAN874X_PHY_WOL_BCSTEN)
-+		wol->wolopts |= WAKE_BCAST;
-+
-+	if (rc & MII_LAN874X_PHY_WOL_MPEN)
-+		wol->wolopts |= WAKE_MAGIC;
-+
-+	if (rc & MII_LAN874X_PHY_WOL_WUEN) {
-+		if (priv->wol_arp)
-+			wol->wolopts |= WAKE_ARP;
-+		else
-+			wol->wolopts |= WAKE_MCAST;
-+	}
-+}
-+
-+static u16 smsc_crc16(const u8 *buffer, size_t len)
-+{
-+	return bitrev16(crc16(0xFFFF, buffer, len));
-+}
-+
-+static int lan874x_chk_wol_pattern(const u8 pattern[], const u16 *mask,
-+				   u8 len, u8 *data, u8 *datalen)
-+{
-+	size_t i, j, k;
-+	int ret = 0;
-+	u16 bits;
-+
-+	/* Pattern filtering can match up to 128 bytes of frame data.  There
-+	 * are 8 registers to program the 16-bit masks, where each bit means
-+	 * the byte will be compared.  The frame data will then go through a
-+	 * CRC16 calculation for hardware comparison.  This helper function
-+	 * makes sure only relevant frame data are included in this
-+	 * calculation.  It provides a warning when the masks and expected
-+	 * data size do not match.
-+	 */
-+	i = 0;
-+	k = 0;
-+	while (len > 0) {
-+		bits = *mask;
-+		for (j = 0; j < 16; j++, i++, len--) {
-+			/* No more pattern. */
-+			if (!len) {
-+				/* The rest of bitmap is not empty. */
-+				if (bits)
-+					ret = i + 1;
-+				break;
-+			}
-+			if (bits & 1)
-+				data[k++] = pattern[i];
-+			bits >>= 1;
-+		}
-+		mask++;
-+	}
-+	*datalen = k;
-+	return ret;
-+}
-+
-+static int lan874x_set_wol_pattern(struct phy_device *phydev, u16 val,
-+				   const u8 data[], u8 datalen,
-+				   const u16 *mask, u8 masklen)
-+{
-+	u16 crc, reg;
-+	int rc;
-+
-+	/* Starting pattern offset is set before calling this function. */
-+	val |= MII_LAN874X_PHY_WOL_FILTER_EN;
-+	rc = phy_write_mmd(phydev, MDIO_MMD_PCS,
-+			   MII_LAN874X_PHY_MMD_WOL_WUF_CFGA, val);
-+	if (rc < 0)
-+		return rc;
-+
-+	crc = smsc_crc16(data, datalen);
-+	rc = phy_write_mmd(phydev, MDIO_MMD_PCS,
-+			   MII_LAN874X_PHY_MMD_WOL_WUF_CFGB, crc);
-+	if (rc < 0)
-+		return rc;
-+
-+	masklen = (masklen + 15) & ~0xf;
-+	reg = MII_LAN874X_PHY_MMD_WOL_WUF_MASK7;
-+	while (masklen >= 16) {
-+		rc = phy_write_mmd(phydev, MDIO_MMD_PCS, reg, *mask);
-+		if (rc < 0)
-+			return rc;
-+		reg--;
-+		mask++;
-+		masklen -= 16;
-+	}
-+
-+	/* Clear out the rest of mask registers. */
-+	while (reg != MII_LAN874X_PHY_MMD_WOL_WUF_MASK0) {
-+		phy_write_mmd(phydev, MDIO_MMD_PCS, reg, 0);
-+		reg--;
-+	}
-+	return rc;
-+}
-+
-+static int lan874x_set_wol(struct phy_device *phydev,
-+			   struct ethtool_wolinfo *wol)
-+{
-+	struct net_device *ndev = phydev->attached_dev;
-+	struct smsc_phy_priv *priv = phydev->priv;
-+	u16 val, val_wucsr;
-+	u8 data[128];
-+	u8 datalen;
-+	int rc;
-+
-+	/* lan874x has only one WoL filter pattern */
-+	if ((wol->wolopts & (WAKE_ARP | WAKE_MCAST)) ==
-+	    (WAKE_ARP | WAKE_MCAST)) {
-+		phydev_info(phydev,
-+			    "lan874x WoL supports one of ARP|MCAST at a time\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	rc = phy_read_mmd(phydev, MDIO_MMD_PCS, MII_LAN874X_PHY_MMD_WOL_WUCSR);
-+	if (rc < 0)
-+		return rc;
-+
-+	val_wucsr = rc;
-+
-+	if (wol->wolopts & WAKE_UCAST)
-+		val_wucsr |= MII_LAN874X_PHY_WOL_PFDAEN;
-+	else
-+		val_wucsr &= ~MII_LAN874X_PHY_WOL_PFDAEN;
-+
-+	if (wol->wolopts & WAKE_BCAST)
-+		val_wucsr |= MII_LAN874X_PHY_WOL_BCSTEN;
-+	else
-+		val_wucsr &= ~MII_LAN874X_PHY_WOL_BCSTEN;
-+
-+	if (wol->wolopts & WAKE_MAGIC)
-+		val_wucsr |= MII_LAN874X_PHY_WOL_MPEN;
-+	else
-+		val_wucsr &= ~MII_LAN874X_PHY_WOL_MPEN;
-+
-+	/* Need to use pattern matching */
-+	if (wol->wolopts & (WAKE_ARP | WAKE_MCAST))
-+		val_wucsr |= MII_LAN874X_PHY_WOL_WUEN;
-+	else
-+		val_wucsr &= ~MII_LAN874X_PHY_WOL_WUEN;
-+
-+	if (wol->wolopts & WAKE_ARP) {
-+		const u8 pattern[2] = { 0x08, 0x06 };
-+		const u16 mask[1] = { 0x0003 };
-+
-+		rc = lan874x_chk_wol_pattern(pattern, mask, 2, data,
-+					     &datalen);
-+		if (rc)
-+			phydev_dbg(phydev, "pattern not valid at %d\n", rc);
-+
-+		/* Need to match broadcast destination address and provided
-+		 * data pattern at offset 12.
-+		 */
-+		val = 12 | MII_LAN874X_PHY_WOL_FILTER_BCSTEN;
-+		rc = lan874x_set_wol_pattern(phydev, val, data, datalen, mask,
-+					     2);
-+		if (rc < 0)
-+			return rc;
-+		priv->wol_arp = true;
-+	}
-+
-+	if (wol->wolopts & WAKE_MCAST) {
-+		/* Need to match multicast destination address. */
-+		val = MII_LAN874X_PHY_WOL_FILTER_MCASTTEN;
-+		rc = lan874x_set_wol_pattern(phydev, val, data, 0, NULL, 0);
-+		if (rc < 0)
-+			return rc;
-+		priv->wol_arp = false;
-+	}
-+
-+	if (wol->wolopts & (WAKE_MAGIC | WAKE_UCAST)) {
-+		const u8 *mac = (const u8 *)ndev->dev_addr;
-+		int i, reg;
-+
-+		reg = MII_LAN874X_PHY_MMD_WOL_RX_ADDRC;
-+		for (i = 0; i < 6; i += 2, reg--) {
-+			rc = phy_write_mmd(phydev, MDIO_MMD_PCS, reg,
-+					   ((mac[i + 1] << 8) | mac[i]));
-+			if (rc < 0)
-+				return rc;
-+		}
-+	}
-+
-+	rc = phy_write_mmd(phydev, MDIO_MMD_PCS, MII_LAN874X_PHY_MMD_WOL_WUCSR,
-+			   val_wucsr);
-+	if (rc < 0)
-+		return rc;
-+
-+	return 0;
-+}
-+
- static int smsc_get_sset_count(struct phy_device *phydev)
- {
- 	return ARRAY_SIZE(smsc_hw_stats);
-@@ -533,7 +773,7 @@ static struct phy_driver smsc_phy_driver[] = {
- 
- 	/* basic functions */
- 	.read_status	= lan87xx_read_status,
--	.config_init	= smsc_phy_config_init,
-+	.config_init	= lan874x_phy_config_init,
- 	.soft_reset	= smsc_phy_reset,
- 
- 	/* IRQ related */
-@@ -548,6 +788,10 @@ static struct phy_driver smsc_phy_driver[] = {
- 	.get_tunable	= smsc_phy_get_tunable,
- 	.set_tunable	= smsc_phy_set_tunable,
- 
-+	/* WoL */
-+	.set_wol	= lan874x_set_wol,
-+	.get_wol	= lan874x_get_wol,
-+
- 	.suspend	= genphy_suspend,
- 	.resume		= genphy_resume,
- }, {
-@@ -566,7 +810,7 @@ static struct phy_driver smsc_phy_driver[] = {
- 
- 	/* basic functions */
- 	.read_status	= lan87xx_read_status,
--	.config_init	= smsc_phy_config_init,
-+	.config_init	= lan874x_phy_config_init,
- 	.soft_reset	= smsc_phy_reset,
- 
- 	/* IRQ related */
-@@ -581,6 +825,10 @@ static struct phy_driver smsc_phy_driver[] = {
- 	.get_tunable	= smsc_phy_get_tunable,
- 	.set_tunable	= smsc_phy_set_tunable,
- 
-+	/* WoL */
-+	.set_wol	= lan874x_set_wol,
-+	.get_wol	= lan874x_get_wol,
-+
- 	.suspend	= genphy_suspend,
- 	.resume		= genphy_resume,
- } };
-diff --git a/include/linux/smscphy.h b/include/linux/smscphy.h
-index e1c88627755a..1a6a851d2cf8 100644
---- a/include/linux/smscphy.h
-+++ b/include/linux/smscphy.h
-@@ -38,4 +38,38 @@ int smsc_phy_set_tunable(struct phy_device *phydev,
- 			 struct ethtool_tunable *tuna, const void *data);
- int smsc_phy_probe(struct phy_device *phydev);
- 
-+#define MII_LAN874X_PHY_MMD_WOL_WUCSR		0x8010
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_CFGA	0x8011
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_CFGB	0x8012
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK0	0x8021
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK1	0x8022
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK2	0x8023
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK3	0x8024
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK4	0x8025
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK5	0x8026
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK6	0x8027
-+#define MII_LAN874X_PHY_MMD_WOL_WUF_MASK7	0x8028
-+#define MII_LAN874X_PHY_MMD_WOL_RX_ADDRA	0x8061
-+#define MII_LAN874X_PHY_MMD_WOL_RX_ADDRB	0x8062
-+#define MII_LAN874X_PHY_MMD_WOL_RX_ADDRC	0x8063
-+#define MII_LAN874X_PHY_MMD_MCFGR		0x8064
-+
-+#define MII_LAN874X_PHY_PME1_SET		(2 << 13)
-+#define MII_LAN874X_PHY_PME2_SET		(2 << 11)
-+#define MII_LAN874X_PHY_PME_SELF_CLEAR		BIT(9)
-+#define MII_LAN874X_PHY_WOL_PFDA_FR		BIT(7)
-+#define MII_LAN874X_PHY_WOL_WUFR		BIT(6)
-+#define MII_LAN874X_PHY_WOL_MPR			BIT(5)
-+#define MII_LAN874X_PHY_WOL_BCAST_FR		BIT(4)
-+#define MII_LAN874X_PHY_WOL_PFDAEN		BIT(3)
-+#define MII_LAN874X_PHY_WOL_WUEN		BIT(2)
-+#define MII_LAN874X_PHY_WOL_MPEN		BIT(1)
-+#define MII_LAN874X_PHY_WOL_BCSTEN		BIT(0)
-+
-+#define MII_LAN874X_PHY_WOL_FILTER_EN		BIT(15)
-+#define MII_LAN874X_PHY_WOL_FILTER_MCASTTEN	BIT(9)
-+#define MII_LAN874X_PHY_WOL_FILTER_BCSTEN	BIT(8)
-+
-+#define MII_LAN874X_PHY_PME_SELF_CLEAR_DELAY	0x1000 /* 81 milliseconds */
-+
- #endif /* __LINUX_SMSCPHY_H__ */
--- 
-2.17.1
-
+> +	} else if (temp & MSR_RDF)
+>  		lpi2c_imx_read_rxfifo(lpi2c_imx);
+> -
+> -	if (temp & MSR_TDF)
+> +	else if (temp & MSR_TDF)
+>  		lpi2c_imx_write_txfifo(lpi2c_imx);
+>  
+> -	if (temp & MSR_NDF)
+> -		complete(&lpi2c_imx->complete);
+> -
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
