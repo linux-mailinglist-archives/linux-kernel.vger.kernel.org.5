@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BC5762770
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B87762779
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbjGYXfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S231389AbjGYXlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbjGYXft (ORCPT
+        with ESMTP id S229548AbjGYXlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:35:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72926212D
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:35:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=i9stS88GRQ0XDqPN1RVCHpzzs7K8vA+FiBHULCzsBkk=; b=bNv7VRyRJsYNSKD6vFBBIoh7hj
-        HPEqg8htiMNqwpX4rrsralVF5b7GXhkBv9dxYPOPxVMUhoZbuurzPT558oUL/pfJkjaYNoLlXAj/o
-        u0IWEr6r0wUpU/a0ic5Uf2TFMbbpz3ZH5iukFaqpTfsjtJQHSipZ7We/uRqQVD+R9S+IAlLqvI+qJ
-        kWXWxsC00k3f8HAnDaGFEOtotvXrtzoPvILcq9BmVmRzVH63Hcub+2Q74rOwLgoitn2WMjX6ImMdq
-        /brkDo6+fwWTKctSRqRDtA5amsfQvingLoWpSPW9akMXgD+PoEp4Pd4qUthkO9zk2pU3LrhlxH24e
-        keegQM9Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qORZ3-008j7s-1Q;
-        Tue, 25 Jul 2023 23:35:37 +0000
-Date:   Tue, 25 Jul 2023 16:35:37 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Rong Tao <rongtao@cestc.cn>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] samples/hw_breakpoint: fix building without module
- unloading
-Message-ID: <ZMBcSeEcvsXVd6Ij@bombadil.infradead.org>
-References: <20230725082546.941346-1-arnd@kernel.org>
- <ZL-YKHxMfTIg16Hl@alley>
+        Tue, 25 Jul 2023 19:41:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5759012E;
+        Tue, 25 Jul 2023 16:41:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0426616C1;
+        Tue, 25 Jul 2023 23:41:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D8A6C433C8;
+        Tue, 25 Jul 2023 23:41:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690328466;
+        bh=sp25dJ6Y/KLI8MJmxJb9iKJpN51ML9wRrtiUXLyP2Ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bmzZKVNizAdrfrpWp6sIWXbqX7bRAuU8H3UFp7g4Ht0WGdLPoXLNU7gR5UK9iYYDA
+         cLYQf7qBnPJRxujlsHAPVhh18hhuboumHmWxKcPzwAcM3PM4ZwZWSdq37bRnASVayN
+         RBSl8WEN/Fcdn0wqPohzgo81Nonke3IvOPejYBCo1M5WvizQe2iGrB0mxi0Gi7ZJ1Z
+         3gNU1ccPFL4bqSirn9ZStTBQyLal28n1QpjRgy7Kn1tFC5I8K1adN3fvoqMq8uRRi+
+         zE0ZTECJ49u9ioiYikjozGCJ1MIMToMqHGMWgz898mUAoytlhjmdiG9zi3ZkthNwRE
+         SKHOyNGrz+I0A==
+Date:   Wed, 26 Jul 2023 01:41:02 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     carlos.song@nxp.com
+Cc:     u.kleine-koenig@pengutronix.de, aisheng.dong@nxp.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, xiaoning.wang@nxp.com, haibo.chen@nxp.com,
+        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] i2c: imx-lpi2c: return -EINVAL when i2c peripheral
+ clk doesn't work
+Message-ID: <20230725234102.louqs6gvlhfehjur@intel.intel>
+References: <20230725083117.2745327-1-carlos.song@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZL-YKHxMfTIg16Hl@alley>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725083117.2745327-1-carlos.song@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:38:48AM +0200, Petr Mladek wrote:
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+Hi Carlos,
 
-Thanks, patch applied and pushed!
+> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
+> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+> @@ -209,6 +209,9 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
+>  	lpi2c_imx_set_mode(lpi2c_imx);
+>  
+>  	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
+> +	if (!clk_rate)
+> +		return -EINVAL;
+> +
 
-> But even better solution would be to define symbol_put_name() as
-> a noop in both situations and use it.
+this is a very unlikely to happen and generally not really
+appreciated.
 
-Patch welcomed!
+If you got so far it's basically impossible that clk_rate is '0'.
+Uwe asked you in v2 if you actually had such case.
 
-  Luis
+I don't have a strong opinion, thoug... I would drop this patch
+unless Dong is OK with it and I can accept it with his ack.
+
+Andi
+
+>  	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
+>  		filt = 0;
+>  	else
+> -- 
+> 2.34.1
+> 
