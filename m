@@ -2,129 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D64A9762746
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D2276274A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjGYX0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S231396AbjGYX03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjGYXZ6 (ORCPT
+        with ESMTP id S230211AbjGYX02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:25:58 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E7C1988
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:25:57 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b9ed206018so41545ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690327557; x=1690932357;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XUAymOqyJF+KJzhkhKRHjkAaSaauZTSc0FF9IG/sL8s=;
-        b=K/zocu5kXUyK0/jI3vAvSSXNAJ68vZAWBxXmVZ2imIvEsi7Fx8cNGPhTKJBVNOQsX8
-         ma9NJSi0ZrEZvF0QVbb4UIDpZkW5pNU+rFWNr6Bh2kyJOZ6UJAV3MKm8wcBBdYPLUTMy
-         yP9hRlwTYRBW1/WwDkjU/ZbOaXUCJEMm/Ph6C+SU71Py5ANKvVSnT9otHCbQGvdCGW11
-         mjw4K6e0DWr1yCUtqbg97DsKQaI3JFD8WvxKI+gvu3TmjjpqfMVxMmDlsBa3ZvbFTL6D
-         1uORd5FDtYbAmNw1hMAK4lO3WW9TVrDa5yF08G7o/Sbal6jTBu2knXTksXpMMYHw6y+d
-         IJFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690327557; x=1690932357;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XUAymOqyJF+KJzhkhKRHjkAaSaauZTSc0FF9IG/sL8s=;
-        b=bjs3sHnMcsLV5aBgTuG5hVBolRGecK4Y30x0zjvI4f9MYFF2xjADi8GvmrN1n4zfrm
-         sNDxXfv71R24qJCvcg6bR0YXB+1vqM0pDjf2pLboiYjdC8gNSmDiS+RlNi4Ck9/mI37Y
-         MqDFpiRSs6bv5Ys0Nj1f2nAG4XNieIr+gylEAmLR+Ubev1NHsuU0gT9W0wcysxx2Sc+e
-         9dxK9iEJ73O48T2fPaug1NSwwqpvhwxf7ghgJERK7KVdhsBoHqvfBU1S9Q5cewxLawx+
-         bFbH2zjKHyr4XECi0ECTRYp/XyenkWxRpPTstv9IUfb+j1ArGsnPPw3SE7COdYez0B9C
-         3ElA==
-X-Gm-Message-State: ABy/qLbrhpIbMznLStXX1RpMo4zOF93L8wlWAoY0LN9AsAFaPLQN2GY1
-        1mpFdg5zcn8s2LKgBfdLN3r/og==
-X-Google-Smtp-Source: APBJJlFq1uMDAKy4VsXXWIgKNW3YHd+x947A6mDx0IlNuq/VCClpH++XD+l+geMp8QQyqsWsJ2FRHQ==
-X-Received: by 2002:a17:902:d48c:b0:1bb:9675:8c1a with SMTP id c12-20020a170902d48c00b001bb96758c1amr300090plg.24.1690327556899;
-        Tue, 25 Jul 2023 16:25:56 -0700 (PDT)
-Received: from [2620:0:1008:15:ecb7:d63b:6ebb:ac11] ([2620:0:1008:15:ecb7:d63b:6ebb:ac11])
-        by smtp.gmail.com with ESMTPSA id w13-20020aa7858d000000b00686236718d8sm10117911pfn.41.2023.07.25.16.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 16:25:56 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 16:25:55 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Julian Pidancet <julian.pidancet@oracle.com>
-cc:     Christoph Lameter <cl@linux.com>,
-        "Lameter, Christopher" <cl@os.amperecomputing.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v2] mm/slub: disable slab merging in the default
- configuration
-In-Reply-To: <CU5AB77A9U99.1G4IRUW6DZPJP@imme>
-Message-ID: <b9e451a6-087d-4fb6-521b-bb8962da1f5c@google.com>
-References: <20230629221910.359711-1-julian.pidancet@oracle.com> <38083ed2-333b-e245-44e4-2f355e4f9249@google.com> <CTSGWINSM18Q.3HQ1DN27GNA1R@imme> <8813897d-4a52-37a0-fe44-a9157716be9b@google.com> <17349901-df3a-494e-fa71-2584d92526b5@google.com>
- <3bcfa538-4474-09b7-1812-b4260b09256a@google.com> <7b6b07b3-d8a1-b24f-1df2-bf6080bc5516@google.com> <CU5AB77A9U99.1G4IRUW6DZPJP@imme>
+        Tue, 25 Jul 2023 19:26:28 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AB6173F;
+        Tue, 25 Jul 2023 16:26:21 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PMTQ9K024879;
+        Tue, 25 Jul 2023 23:26:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=VuEIIAxM2lQ9Q0t00KUCTYqHXSeeGPOis37f2lzmaMI=;
+ b=Xpi1/Jt5L5pF0BtwtNLYfQf6aua5aIbXSRpqiZKggeFSJ/Q2Q8LALWZhXIXaPPTA73yy
+ D0PKVe+vgMT1UKqESR/W0NosaoUJsM/aT+++ZikrY+eAXcjZF9tQq0V4Dx+LTCPW51CU
+ XqDIkns5VN49Td40XbPMEp0VUOjn6eKF8hcD563XR4fhDABUNebLnP0iv86vRz5+8/nI
+ kioR21qCE2PgNJvFPgRNykvDhbtBIh7TOgQmSpWvPhMJ6Kd17JN/El3zzN68z395aTth
+ DsMSzNFsI8PRIFiqTiH4D6nLCUhLLt9q7okQj6bAuoD333tZFxCtdXMvgjWdxK9wEZQo Bg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2mxrgb4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 23:26:11 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36PNQ9HQ025700
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 23:26:09 GMT
+Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 16:26:09 -0700
+Message-ID: <d52f78f4-f36c-b905-edbc-1795fd7ba96f@quicinc.com>
+Date:   Tue, 25 Jul 2023 16:26:08 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Freedreno] [PATCH v1 2/5] drm/msm/dp: incorporate pm_runtime
+ framework into DP driver
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     <freedreno@lists.freedesktop.org>, <quic_sbillaka@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <airlied@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <robdclark@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <agross@kernel.org>, <daniel@ffwll.ch>,
+        <marijn.suijten@somainline.org>, <quic_jesszhan@quicinc.com>,
+        <swboyd@chromium.org>, <sean@poorly.run>,
+        <linux-kernel@vger.kernel.org>
+References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
+ <1688773943-3887-3-git-send-email-quic_khsieh@quicinc.com>
+ <oc6cohs6pbiuyirdxgepoharuzdra2hzy3kwfqjmdfcq36y367@ah3bal2jqncb>
+ <0ac305d2-d0a9-cdfb-9be8-243402d865e7@quicinc.com>
+ <44299d05-d411-e9c4-7b96-84efb28d47c9@quicinc.com>
+ <a7405272-6a9e-b0c4-f749-060dbe716148@linaro.org>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <a7405272-6a9e-b0c4-f749-060dbe716148@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: f-VUN0nMHfNKiVyr7h5JPWyGlW0WXX5Q
+X-Proofpoint-ORIG-GUID: f-VUN0nMHfNKiVyr7h5JPWyGlW0WXX5Q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_12,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 mlxscore=0 bulkscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250198
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023, Julian Pidancet wrote:
 
-> Hi David,
-> 
-> Many thanks for running all these tests. The amount of attention you've
-> given this change is simply amazing. I wish I could have been able to
-> assist you by doing more tests, but I've been lacking the necessary
-> resources to do so.
-> 
-> I'm as surprised as you are regarding the skylake regression. 20% is
-> quite a large number, but perhaps it's less worrying than it looks given
-> that benchmarks are usually very different from real-world workloads?
-> 
+On 7/25/2023 3:33 PM, Dmitry Baryshkov wrote:
+> On 26/07/2023 01:25, Kuogee Hsieh wrote:
+>>
+>> On 7/10/2023 9:22 AM, Kuogee Hsieh wrote:
+>>>
+>>> On 7/8/2023 7:52 PM, Bjorn Andersson wrote:
+>>>> On Fri, Jul 07, 2023 at 04:52:20PM -0700, Kuogee Hsieh wrote:
+>>>>> Incorporating pm runtime framework into DP driver so that power
+>>>>> and clock resource handling can be centralized allowing easier
+>>>>> control of these resources in preparation of registering aux bus
+>>>>> uring probe.
+>>>>>
+>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>>> ---
+>>>>>   drivers/gpu/drm/msm/dp/dp_aux.c     |  3 ++
+>>>>>   drivers/gpu/drm/msm/dp/dp_display.c | 75 
+>>>>> +++++++++++++++++++++++++++++--------
+>>>>>   2 files changed, 63 insertions(+), 15 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+>>>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> index 8e3b677..c592064 100644
+>>>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> @@ -291,6 +291,7 @@ static ssize_t dp_aux_transfer(struct 
+>>>>> drm_dp_aux *dp_aux,
+>>>>>           return -EINVAL;
+>>>>>       }
+>>>>>   +    pm_runtime_get_sync(dp_aux->dev);
+>>>>>       mutex_lock(&aux->mutex);
+>>>>>       if (!aux->initted) {
+>>>>>           ret = -EIO;
+>>>>> @@ -364,6 +365,8 @@ static ssize_t dp_aux_transfer(struct 
+>>>>> drm_dp_aux *dp_aux,
+>>>>>     exit:
+>>>>>       mutex_unlock(&aux->mutex);
+>>>>> +    pm_runtime_mark_last_busy(dp_aux->dev);
+>>>>> +    pm_runtime_put_autosuspend(dp_aux->dev);
+>>>>>         return ret;
+>>>>>   }
+>>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>>>>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> index 76f1395..2c5706a 100644
+>>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> @@ -309,6 +309,10 @@ static int dp_display_bind(struct device 
+>>>>> *dev, struct device *master,
+>>>>>           goto end;
+>>>>>       }
+>>>>>   +    pm_runtime_enable(dev);
+>>>>> +    pm_runtime_set_autosuspend_delay(dev, 1000);
+>>>>> +    pm_runtime_use_autosuspend(dev);
+>>>>> +
+>>>>>       return 0;
+>>>>>   end:
+>>>>>       return rc;
+>>>>> @@ -320,9 +324,8 @@ static void dp_display_unbind(struct device 
+>>>>> *dev, struct device *master,
+>>>>>       struct dp_display_private *dp = 
+>>>>> dev_get_dp_display_private(dev);
+>>>>>       struct msm_drm_private *priv = dev_get_drvdata(master);
+>>>>>   -    /* disable all HPD interrupts */
+>>>>> -    if (dp->core_initialized)
+>>>>> -        dp_catalog_hpd_config_intr(dp->catalog, 
+>>>>> DP_DP_HPD_INT_MASK, false);
+>>>>> +    pm_runtime_dont_use_autosuspend(dev);
+>>>>> +    pm_runtime_disable(dev);
+>>>>>         kthread_stop(dp->ev_tsk);
+>>>>>   @@ -466,10 +469,12 @@ static void dp_display_host_init(struct 
+>>>>> dp_display_private *dp)
+>>>>>           dp->dp_display.connector_type, dp->core_initialized,
+>>>>>           dp->phy_initialized);
+>>>>>   -    dp_power_init(dp->power);
+>>>>> -    dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>>>>> -    dp_aux_init(dp->aux);
+>>>>> -    dp->core_initialized = true;
+>>>>> +    if (!dp->core_initialized) {
+>>>>> +        dp_power_init(dp->power);
+>>>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>>>>> +        dp_aux_init(dp->aux);
+>>>>> +        dp->core_initialized = true;
+>>>> There are two cases that queries core_initialized, both of those are
+>>>> done to avoid accessing the DP block without it first being powered 
+>>>> up.
+>>>> With the introduction of runtime PM, it seems reasonable to just power
+>>>> up the block in those two code paths (and remove the variable).
+>>>>
+>>>>> +    }
+>>>>>   }
+>>>>>     static void dp_display_host_deinit(struct dp_display_private *dp)
+>>>>> @@ -478,10 +483,12 @@ static void dp_display_host_deinit(struct 
+>>>>> dp_display_private *dp)
+>>>>>           dp->dp_display.connector_type, dp->core_initialized,
+>>>>>           dp->phy_initialized);
+>>>>>   -    dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>>>>> -    dp_aux_deinit(dp->aux);
+>>>>> -    dp_power_deinit(dp->power);
+>>>>> -    dp->core_initialized = false;
+>>>>> +    if (dp->core_initialized) {
+>>>>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>>>>> +        dp_aux_deinit(dp->aux);
+>>>>> +        dp_power_deinit(dp->power);
+>>>>> +        dp->core_initialized = false;
+>>>>> +    }
+>>>>>   }
+>>>>>     static int dp_display_usbpd_configure_cb(struct device *dev)
+>>>>> @@ -1304,6 +1311,39 @@ static int dp_display_remove(struct 
+>>>>> platform_device *pdev)
+>>>>>       dp_display_deinit_sub_modules(dp);
+>>>>>         platform_set_drvdata(pdev, NULL);
+>>>>> +    pm_runtime_put_sync_suspend(&pdev->dev);
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static int dp_pm_runtime_suspend(struct device *dev)
+>>>>> +{
+>>>>> +    struct platform_device *pdev = to_platform_device(dev);
+>>>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>>> platform_get_drvdata() is a wrapper for 
+>>>> dev_get_drvdata(&pdev->dev), so
+>>>> there's no need to resolve the platform_device first...
+>>>>
+>>>>> +    struct dp_display_private *dp;
+>>>>> +
+>>>>> +    dp = container_of(dp_display, struct dp_display_private, 
+>>>>> dp_display);
+>>>>> +
+>>>>> +    dp_display_host_phy_exit(dp);
+>>>>> +    dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>>>> +    dp_display_host_deinit(dp);
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static int dp_pm_runtime_resume(struct device *dev)
+>>>>> +{
+>>>>> +    struct platform_device *pdev = to_platform_device(dev);
+>>>>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>>>> +    struct dp_display_private *dp;
+>>>>> +
+>>>>> +    dp = container_of(dp_display, struct dp_display_private, 
+>>>>> dp_display);
+>>>>> +
+>>>>> +    dp_display_host_init(dp);
+>>>>> +    if (dp_display->is_edp) {
+>>>>> +        dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>>>> +        dp_display_host_phy_init(dp);
+>>>>> +    }
+>>>>>         return 0;
+>>>>>   }
+>>>>> @@ -1409,6 +1449,7 @@ static int dp_pm_suspend(struct device *dev)
+>>>>>   }
+>>>>>     static const struct dev_pm_ops dp_pm_ops = {
+>>>>> +    SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, 
+>>>>> dp_pm_runtime_resume, NULL)
+>>>>>       .suspend = dp_pm_suspend,
+>>>>>       .resume =  dp_pm_resume,
+>>>>>   };
+>>>>> @@ -1493,10 +1534,6 @@ static int 
+>>>>> dp_display_get_next_bridge(struct msm_dp *dp)
+>>>>>       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>>>>         if (aux_bus && dp->is_edp) {
+>>>>> -        dp_display_host_init(dp_priv);
+>>>>> -        dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
+>>>>> -        dp_display_host_phy_init(dp_priv);
+>>>> I'm probably just missing it, but how do we get here with the host
+>>>> powered up and the phy initialized?
+>>>
+>>> if (!dp->core_initialized)  is at dp_display_host_init()
+>>>
+>>>>
+>>>>> -
+>>>>>           /*
+>>>>>            * The code below assumes that the panel will finish 
+>>>>> probing
+>>>>>            * by the time devm_of_dp_aux_populate_ep_devices() 
+>>>>> returns.
+>>>>> @@ -1604,6 +1641,7 @@ void dp_bridge_atomic_enable(struct 
+>>>>> drm_bridge *drm_bridge,
+>>>>>           dp_hpd_plug_handle(dp_display, 0);
+>>>>>         mutex_lock(&dp_display->event_mutex);
+>>>>> + pm_runtime_get_sync(&dp_display->pdev->dev);
+>>>>>         state = dp_display->hpd_state;
+>>>>>       if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
+>>>>> @@ -1684,6 +1722,8 @@ void dp_bridge_atomic_post_disable(struct 
+>>>>> drm_bridge *drm_bridge,
+>>>>>       }
+>>>>>         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", 
+>>>>> dp->connector_type);
+>>>>> +
+>>>>> + pm_runtime_put_sync(&dp_display->pdev->dev);
+>>>>>       mutex_unlock(&dp_display->event_mutex);
+>>>>>   }
+>>>>>   @@ -1723,6 +1763,8 @@ void dp_bridge_hpd_enable(struct 
+>>>>> drm_bridge *bridge)
+>>>>>       struct dp_display_private *dp = container_of(dp_display, 
+>>>>> struct dp_display_private, dp_display);
+>>>>>         mutex_lock(&dp->event_mutex);
+>>>>> +    pm_runtime_get_sync(&dp->pdev->dev);
+>>>>> +
+>>>>>       dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>>>>         /* enable HDP interrupts */
+>>>>> @@ -1744,6 +1786,9 @@ void dp_bridge_hpd_disable(struct drm_bridge 
+>>>>> *bridge)
+>>>>>       dp_catalog_ctrl_hpd_disable(dp->catalog);
+>>>>>         dp_display->internal_hpd = false;
+>>>>> +
+>>>>> +    pm_runtime_mark_last_busy(&dp->pdev->dev);
+>>>>> +    pm_runtime_put_autosuspend(&dp->pdev->dev);
+>>>>>       mutex_unlock(&dp->event_mutex);
+>>>>>   }
+>>>> The runtime_get/put in dp_bridge_hpd_enable() and disable matches my
+>>>> expectations. But in the case that we have an external HPD source, 
+>>>> where
+>>>> will the power be turned on?
+>>>>
+>>>> Note that you can test this on your device by routing the HPD GPIO 
+>>>> to a
+>>>> display-connector instance and wiring this to the DP node. In the same
+>>>> way it's done here:
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sa8295p-adp.dts#n28 
+>>>>
+>>
+>> at sc7280, gpio-47 has function 2 as dp-hot-plug pin. but it does not 
+>> has function for general purpose pin.
+>
+> It has a 'gpio' function, so that the pin can be used as a generic 
+> GPIO with a dp-connector device.
+function 0 is for PBL_DEBUG2,  which function # should I use?
+>
+>>
+>> Just curious,  to work with external HPD source,
+>>
+>> 1) which DRM_BRIDGE_OP_xxx should be used for bridge->ops?
+>
+> There is no difference. The drm_bridge_connector will select the 
+> bridges according to the needs. E.g. the dp-connector can provide 
+> DRM_BRIDGE_OP_DETECT / OP_HPD (if the hpd-gpios property is 
+> configured). If it does, it will be selected for detection/HPD 
+> handling. If not, the main dp bridge will handle these operations.
 
-I'm not an expert on context_switch1_per_thread_ops so I can't infere 
-which workloads would be most affected by such a regression other than to 
-point out that -18% is quite substantial.
+can you please point me out where  "hpd-gpios" info get parsed and 
+during polling where the gpio status get read from?
 
-I'm still hoping to run some benchmarks with 64KB page sizes as Christoph 
-suggested, I should be able to do this with arm64.
+Thanks,
 
-It's ceratinly good news that the overall memory footprint doesn't change 
-much with this change.
-
-> As Kees Cook was suggesting in his own reply, have you given a thought
-> about including this change in -next and see if there are regressions
-> showing up in CI performance tests results?
-> 
-
-I assume that anything we can run with CI performance tests can also be 
-run without merging into -next?
-
-The performance degradation is substantial for a microbenchmark, I'd like 
-to complete the picture on other benchmarks and do a complete analysis 
-with 64KB page sizes since I think the concern Christoph mentions could be 
-quite real.  We just don't have the data yet to make an informed 
-assessment of it.  Certainly would welcome any help that others would like 
-to provide for running benchmarks with this change as well :P
-
-Once we have a complete picture, we might also want to discuss what we are 
-hoping to achieve with such a change.  I was very supportive of it prior 
-to the -18% benchmark result.  But if most users are simply using whatever 
-their distro defaults to and other users may already be opting into this 
-either by the kernel command line or .config, it's hard to determine 
-exactly the set of users that would be affected by this change.  Suddenly 
-causing a -18% regression overnight for this would be surprising for them.
+>
+>>
+>> 2) are both .hpd_enable and .hpd_disable  have to be populated?
+>
+> No, they are both optional.
+>
