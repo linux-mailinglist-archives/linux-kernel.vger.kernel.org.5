@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3797F7605FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D907605F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjGYCsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S231312AbjGYCpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjGYCs2 (ORCPT
+        with ESMTP id S230459AbjGYCo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:48:28 -0400
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCBEB1FD3;
-        Mon, 24 Jul 2023 19:47:56 -0700 (PDT)
+        Mon, 24 Jul 2023 22:44:58 -0400
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6254019AF;
+        Mon, 24 Jul 2023 19:44:30 -0700 (PDT)
 Received: from localhost.localdomain (unknown [125.119.240.231])
         by mail-app2 (Coremail) with SMTP id by_KCgDHuMCaNr9k_HqCCg--.1652S4;
         Tue, 25 Jul 2023 10:42:35 +0800 (CST)
@@ -47,9 +47,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWfXr1UKr4kAw1xKr1rWFg_yoW8Zr1fpF
         JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
         XdbUUUUUU==
 X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
