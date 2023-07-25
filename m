@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D057761BB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DDC761BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjGYOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
+        id S232888AbjGYOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjGYOaP (ORCPT
+        with ESMTP id S232098AbjGYOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:30:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D27102;
-        Tue, 25 Jul 2023 07:30:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D68236177D;
-        Tue, 25 Jul 2023 14:30:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8007DC433C7;
-        Tue, 25 Jul 2023 14:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690295413;
-        bh=KtnE5dhLNoiRTXkG83CVq0c4MoLSC/g14BIHi5712yA=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=UFJqsqrdVYDzkb111b+WY8IfFVpYAbcpMIXP5Kx/w7E13GQo1REYEFa9w6dTRqI12
-         ePMUDHni89hp/ApW1oE+zmavdGt04xnpRDcs4PyfrwhgQa3wXCStkrdHwNM6hshfoL
-         TeSDdy2ECDI6SYO8M+XXD6FC4AKmUeqFfwBy1TCiX9e5RPXgkIW57z+1QbNJ7aDzPc
-         RaXTv2xBBy/JxJD5+D67fcffKnow1ZFEG/cJRFBqns0VektMi5dttUQqTjyqvTuzEN
-         Uk0mN4vwAEcAX7zS7Xg2bJytNCmpF6t0+s3mREeGfInj+8GEB2eF59RpvSieGrRmNC
-         6BSYmU6DfDxww==
-Content-Type: text/plain; charset="utf-8"
+        Tue, 25 Jul 2023 10:30:24 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5BDE9;
+        Tue, 25 Jul 2023 07:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690295423; x=1721831423;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BdjNY87k9c70DGi9vp4hzc7IlKm+wC98ibqbhI3AI64=;
+  b=k9s+0x4gWSzxv5sLCgfZmHnlZ7oBCYSSXQ9S7rX35T2cNBvnTopiXDf4
+   1LFTB2WUFzCZHQj1jRFlVqDrippv9fzfnu7Rin1q7SKzqVPupLmWT1NJn
+   nQkzLFBu/e5IUQBj20FUVe48hUIm/S2qdoV2Y8oPrSwtz4cVUhO5CQAvn
+   aMAVca8GkgsuF5Ee8oBiN97fVIbYblHWDYzKT8hsWh4M9TflDAOIK3YIn
+   TrOEpx8mHxZvBM1o3ojzr1z72Hm9PFVJ8QNq4EnzyMVBxnBmEV23elkMO
+   Hpk8VVnxhNVkojXOJJQl1fCXknZuDNlCtcKuoV5VEUH5nAkio8KmYZm9u
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="357742858"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="357742858"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 07:30:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="869491422"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Jul 2023 07:30:17 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8D39B176; Tue, 25 Jul 2023 17:30:24 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: [PATCH v1 0/9] i2c: designware: code consolidation & cleanups
+Date:   Tue, 25 Jul 2023 17:30:14 +0300
+Message-Id: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v6] wifi: ath5k: remove phydir check from
- ath5k_debug_init_device()
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230714081619.2032-1-duminjie@vivo.com>
-References: <20230714081619.2032-1-duminjie@vivo.com>
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-wireless@vger.kernel.org (open list:ATHEROS ATH5K WIRELESS DRIVER),
-        linux-kernel@vger.kernel.org (open list),
-        opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169029540951.3210124.15107643923652179216.kvalo@kernel.org>
-Date:   Tue, 25 Jul 2023 14:30:11 +0000 (UTC)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minjie Du <duminjie@vivo.com> wrote:
+Mainly this is about firmware parsing and configuring code
+consolidation. Besides that some cleanups here and there.
 
-> 'phydir' returned from debugfs_create_dir() is checked against NULL.
-> As the debugfs API returns an error pointer,
-> the returned value can never be NULL.
-> 
-> Therefore, as the documentation suggests that the check is unnecessary
-> and other debugfs calls have no operation in error cases,
-> it is advisable to completely eliminate the check.
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Andy Shevchenko (9):
+  i2c: designware: Move has_acpi_companion() to common code
+  i2c: designware: Change i2c_dw_acpi_configure() prototype
+  i2c: designware: Align dw_i2c_of_configure() with
+    i2c_dw_acpi_configure()
+  i2c: designware: Propagate firmware node
+  i2c: designware: Always provide ID tables
+  i2c: designware: Consolidate firmware parsing and configure code
+  i2c: desingware: Unify firmware type checks
+  i2c: designware: Get rid of redundant 'else'
+  i2c: designware: Fix spelling and other issues in the comments
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-f7eb8315b22a wifi: ath5k: remove phydir check from ath5k_debug_init_device()
+ drivers/i2c/busses/i2c-designware-amdpsp.c  |  10 +-
+ drivers/i2c/busses/i2c-designware-common.c  |  84 +++++++++++---
+ drivers/i2c/busses/i2c-designware-core.h    |  25 ++---
+ drivers/i2c/busses/i2c-designware-master.c  |  15 ++-
+ drivers/i2c/busses/i2c-designware-pcidrv.c  |  13 +--
+ drivers/i2c/busses/i2c-designware-platdrv.c | 117 ++++++--------------
+ drivers/i2c/busses/i2c-designware-slave.c   |   6 +-
+ 7 files changed, 131 insertions(+), 139 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230714081619.2032-1-duminjie@vivo.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.40.0.1.gaa8946217a0b
 
