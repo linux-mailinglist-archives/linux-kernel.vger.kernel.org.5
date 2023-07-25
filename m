@@ -2,91 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0088761DF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339A2761DFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGYQDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
+        id S230119AbjGYQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjGYQDl (ORCPT
+        with ESMTP id S230104AbjGYQEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:03:41 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F00E77;
-        Tue, 25 Jul 2023 09:03:40 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PBT4fa008504;
-        Tue, 25 Jul 2023 16:03:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Kp0a7lNAXCXaM8NaCeuOTfXgKtq0h3njcXHRACkc6RA=;
- b=pVeOUDSNgLJjyyxwjIZh/WhGaMLec4TRU8/x/Whd5Ua08QMVlZ8amakEE4KsX4KqUusS
- eQhWd9Hz6++7ew8S7MDwaMvGwceV52GeNDNDDjkpPKctB7jROXmM64XBse22V7Y36PVz
- QZk0/s8yok98T+ISn1xkORO/8fhekpSU3x+PNjsZXUQQtBFjda7abKNFqcZT25E/1Tua
- hcqy7lGUewx1CwqxGfWgsFkQdEfCwkxK14Oc/blRFNJ0nbYtgriyzHj+hI//Vl0Y8EXw
- Z0jqF6A+2coI6/+0pvXIc+PfcM/n3UlMIrk3AHCD5t3qkE+cTl21OE+DCehQpc0WWwmv mA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s29j5ha4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 16:03:35 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36PG3X9c012883
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 16:03:33 GMT
-Received: from [10.110.68.194] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
- 2023 09:03:32 -0700
-Message-ID: <1276e614-0c2a-f8a6-d7a0-1fa228eea476@quicinc.com>
-Date:   Tue, 25 Jul 2023 09:03:26 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] accel/qaic: remove redundant assignment to pointer
- pexec
-Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230725114037.36806-1-colin.i.king@gmail.com>
-From:   Carl Vanderlip <quic_carlv@quicinc.com>
-In-Reply-To: <20230725114037.36806-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: yn6pno17VELBkxADUY_tmokJEazIHOMG
-X-Proofpoint-GUID: yn6pno17VELBkxADUY_tmokJEazIHOMG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- adultscore=0 malwarescore=0 mlxlogscore=692 phishscore=0 clxscore=1011
- mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250140
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 25 Jul 2023 12:04:14 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00957211E
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:04:01 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583c49018c6so43734967b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 09:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690301041; x=1690905841;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JzfMU5Qs8JliFSPK4e1C5em4CWxZCGfzp6e2iymS9Yg=;
+        b=dW59zwmrsLAamcGnirE6A1LfKT51T61DtWDAOhx4/cSvK3sOAiDmr+BlK4XiPthtzP
+         CN9MlQi3HhBVcH71uuUqq+M14CfwGnGPEE/BpfevOBdEFKHG7J0iaICViLaRAky8BhEp
+         HFcQ65KDccgqhPQn/ChYInnlcEfq7qr0Ma/Jgkr7SmWI+05vO/bEbUCWl8Rn7I2emovI
+         UeVOyMZohBruEuz8fBipp3NgVzf/qbnB/hnqT0XX1CDCZ3KOl7DJQE2yXx50QpLL6+Az
+         IlluRAj7yyIarMAgzXmFlQrKZdiqjqFyPfBBVM/tbJmItA4hkVu10uPsnU/tUYfyPMpN
+         N63Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690301041; x=1690905841;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JzfMU5Qs8JliFSPK4e1C5em4CWxZCGfzp6e2iymS9Yg=;
+        b=C3KmMidnrOXpWwyj+i4niM0g/yX5F/89QVq/aa+riykQYcrI5xogwqu4skzWLaYZ3t
+         11s+2ayfgGi4go5ZFZaJ2SQxDiI2cHvWnSw6nRy8ll4OSclNiCWQCf4gSpghgPne6h1q
+         +McYltmfrWqDTBFzJN9c1QQkrsGuPGoPcn+bgejl4k0Hjk9jFvAwGxfzughuje623NGO
+         1CyvWEWUm4iZlgSzBNOjpkD+uc7/jRl2WWT562klEfWOtWyckt1LMudRpjtQtQ53y7iN
+         kbg/P/Kr6HBInUkS8JIQ0M6Q4AV4cl0+eNLBd0vZJsBB6Cw2r2NMqDm8ae2MDfOe3lv2
+         UrZA==
+X-Gm-Message-State: ABy/qLaWoDUwRhgnvY4rr6o79ggvHaX/wmLRX8sibbTXlZ+ysRC9BCK5
+        14cV9n56whHNUdicOPpA+q3CXnq8QXw=
+X-Google-Smtp-Source: APBJJlH1niyzp4cjBeRls9BsaNe03YLK4iKuUQJEO3t7N9JW3OW9U+d5kcfXqA22KUPE/pwVy1vkIiRVphQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:46d4:0:b0:cf9:3564:33cc with SMTP id
+ t203-20020a2546d4000000b00cf9356433ccmr81585yba.13.1690301041144; Tue, 25 Jul
+ 2023 09:04:01 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 09:03:59 -0700
+In-Reply-To: <DS0PR11MB637386533A4A10667BA6DF03DC03A@DS0PR11MB6373.namprd11.prod.outlook.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
+ <DS0PR11MB637386533A4A10667BA6DF03DC03A@DS0PR11MB6373.namprd11.prod.outlook.com>
+Message-ID: <ZL/yb4wL4Nhf9snZ@google.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wei W Wang <wei.w.wang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/25/2023 4:40 AM, Colin Ian King wrote:
-> Pointer pexec is being assigned a value however it is never read. The
-> assignment is redundant and can be removed.
+On Tue, Jul 25, 2023, Wei W Wang wrote:
+> On Wednesday, July 19, 2023 7:45 AM, Sean Christopherson wrote:
+> > +int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+> > +		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order) {
+> > +	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
+> > +	struct kvm_gmem *gmem;
+> > +	struct folio *folio;
+> > +	struct page *page;
+> > +	struct file *file;
+> > +
+> > +	file = kvm_gmem_get_file(slot);
+> > +	if (!file)
+> > +		return -EFAULT;
+> > +
+> > +	gmem = file->private_data;
+> > +
+> > +	if (WARN_ON_ONCE(xa_load(&gmem->bindings, index) != slot)) {
+> > +		fput(file);
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	folio = kvm_gmem_get_folio(file_inode(file), index);
+> > +	if (!folio) {
+> > +		fput(file);
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	page = folio_file_page(folio, index);
+> > +
+> > +	*pfn = page_to_pfn(page);
+> > +	*max_order = compound_order(compound_head(page));
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Maybe better to check if caller provided a buffer to get the max_order:
+> if (max_order)
+> 	*max_order = compound_order(compound_head(page));
+> 
+> This is what the previous version did (restrictedmem_get_page),
+> so that callers who only want to get a pfn don't need to define
+> an unused "order" param.
 
-Reviewed-by: Carl Vanderlip <quic_carlv@quicinc.com>
+My preference would be to require @max_order.  I can kinda sorta see why a generic
+implementation (restrictedmem) would make the param optional, but with gmem being
+KVM-internal I think it makes sense to require the param.  Even if pKVM doesn't
+_currently_ need/want the order of the backing allocation, presumably that's because
+hugepage support is still on the TODO list, not because pKVM fundamentally doesn't
+need to know the order of the backing allocation.
