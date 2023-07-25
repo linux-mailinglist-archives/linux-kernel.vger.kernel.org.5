@@ -2,133 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBDC7621B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2D07621AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjGYSlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        id S232141AbjGYSlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGYSli (ORCPT
+        with ESMTP id S229567AbjGYSl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:41:38 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC0A19A1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:41:36 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-992b66e5affso973917966b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690310495; x=1690915295;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0I788wohjQE8SsbGgdpMx1YFIP2lgTgr+yd7Aw2Cjck=;
-        b=b0pM0eFQWipjwvBA5rAEgQYT74RBhMdHIMtBF/Ievwknq0XgMDXN5xsJePKnz7vJNI
-         rWPjk7fCOjEK52+9n3BtpCD0y9zCtP5LcUMruKr7o5/i77pHqJckQ8rbiUmKU/aOB4ir
-         KhSAd3LCiSuGUyEDMSNTGxU3ky7ZrdH/yX9Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690310495; x=1690915295;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0I788wohjQE8SsbGgdpMx1YFIP2lgTgr+yd7Aw2Cjck=;
-        b=bKpyIoauB29mxaU622itu1o99NNGzz9swvC4s9fTB7KPZwFMcCzM0Qy72v4X60DAnb
-         i+VCer8BbryQ3iQJTxnX/l5sL8Z4MLZwdtcebCuKk+j2cU0EWayYNzi9XNRmugyDTO8U
-         OdLBtmCMkqqgFBEhEKvq1ZTolZpNGHbDqJBGvlJ0pH6qUWSb4cHA5tNyKDdBV/pB0Tyd
-         qPfP7yGawkzQOpZd7j29cV1y62QuK+Y/2BDIrzdWamKy6XHj1Ta2Am5p6iFM6iUdl5yZ
-         Qs7PoXRLDcTIw1NXOJruWUnEQlCJNAIP125jEvsBA44HJ2jHvX1rDK0psyWoaJXigesU
-         7YOg==
-X-Gm-Message-State: ABy/qLasoLHoG99kwONdzfku3umWyT9q/en9KaUfbn6K8CyePMDVDcJc
-        gHW3dXNBslbD5eeFLx8zbcBmrqXqzRny5Q9fsc946hlQ
-X-Google-Smtp-Source: APBJJlH2lXeIBK7SWdbSFSuGp3F3D5Ril9Xj5Fw6UTrYA7ytZvvOcdThZrbDKHpQaKWiN6ZxsM42ig==
-X-Received: by 2002:a17:906:8a5b:b0:987:6372:c31f with SMTP id gx27-20020a1709068a5b00b009876372c31fmr13432465ejc.37.1690310494822;
-        Tue, 25 Jul 2023 11:41:34 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id hb12-20020a170906b88c00b00992e94bcfabsm8486641ejb.167.2023.07.25.11.41.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 11:41:34 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5222bc91838so3934575a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:41:34 -0700 (PDT)
-X-Received: by 2002:aa7:d282:0:b0:522:29b2:e048 with SMTP id
- w2-20020aa7d282000000b0052229b2e048mr7180205edq.13.1690310493829; Tue, 25 Jul
- 2023 11:41:33 -0700 (PDT)
+        Tue, 25 Jul 2023 14:41:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C822119A1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:41:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5021621C0A;
+        Tue, 25 Jul 2023 18:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690310484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=szFmNSH9AHpy5nRMogZQI3LiZRrngSuHJFUGza4yt0c=;
+        b=YIPjhxIQ2QLAx5O1c+9JA6EGq7OGACGqAzCkD+3l9F4wT/Szlb1sh7UjWzQy39EbZoNiP0
+        VFsfmdwKh9jIj/iU7jBnxDkuDvDk9d/0G7Yw1lRp2gPEbXVt2mhvHWHrR2spWwMLtm7DPL
+        hOCa+biIX53zXioLLTWSMn2MFo24cig=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690310484;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=szFmNSH9AHpy5nRMogZQI3LiZRrngSuHJFUGza4yt0c=;
+        b=fIcdSpEAasBvBUskGgdoPaFodZLpJ4ft5desLbyPwS2wPPaTbVva1ifuQ1OkrXmZh6PQTS
+        xIAmaoT2wQ9FvUDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2653913487;
+        Tue, 25 Jul 2023 18:41:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Dd0UCFQXwGSTegAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 25 Jul 2023 18:41:24 +0000
+Message-ID: <afbc2058-f25e-200a-8b6f-c0db8d0d735f@suse.de>
+Date:   Tue, 25 Jul 2023 20:41:23 +0200
 MIME-Version: 1.0
-References: <CAHk-=wiu-dX+CGUnhsk3KfPbP1h-1kCmVoTV6FEETQmafGWdLQ@mail.gmail.com>
- <9adfd67b-4327-9233-8e87-3fd5f3f7280b@cybernetics.com>
-In-Reply-To: <9adfd67b-4327-9233-8e87-3fd5f3f7280b@cybernetics.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 25 Jul 2023 11:41:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whXgrO8dEYAQX6E8ffZXhzJ_+VPZyx1TcYpdRhQHD=L0A@mail.gmail.com>
-Message-ID: <CAHk-=whXgrO8dEYAQX6E8ffZXhzJ_+VPZyx1TcYpdRhQHD=L0A@mail.gmail.com>
-Subject: Re: SCSI: fix parsing of /proc/scsci/scsi file
-To:     Tony Battersby <tonyb@cybernetics.com>
-Cc:     Martin K Petersen <martin.petersen@oracle.com>,
-        James Bottomley <jejb@linux.ibm.com>, Willy Tarreau <w@1wt.eu>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000008ba2fe0601541426"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 -next] drm/fb-helper: Remove unused inline function
+ drm_fb_helper_defio_init()
+Content-Language: en-US
+To:     YueHaibing <yuehaibing@huawei.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        airlied@gmail.com, daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230725021317.8080-1-yuehaibing@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230725021317.8080-1-yuehaibing@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------TpZnqdr0oiezQ0awiOlH0Zo6"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008ba2fe0601541426
-Content-Type: text/plain; charset="UTF-8"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------TpZnqdr0oiezQ0awiOlH0Zo6
+Content-Type: multipart/mixed; boundary="------------hLpWRsStu0ywfVnKBVaBFam9";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: YueHaibing <yuehaibing@huawei.com>, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Message-ID: <afbc2058-f25e-200a-8b6f-c0db8d0d735f@suse.de>
+Subject: Re: [PATCH v2 -next] drm/fb-helper: Remove unused inline function
+ drm_fb_helper_defio_init()
+References: <20230725021317.8080-1-yuehaibing@huawei.com>
+In-Reply-To: <20230725021317.8080-1-yuehaibing@huawei.com>
 
-On Tue, 25 Jul 2023 at 11:27, Tony Battersby <tonyb@cybernetics.com> wrote:
->
-> Something that I just thought of: the old parser could also skip over
-> NUL characters used as separators within the buffer that aren't at the
-> end of the buffer, as in: "host\0id\0channel\0lun".  If you want to
-> continue to allow that unlikely usage, then my patch comparing p to the
-> end pointer would work better.
-
-Yeah, that would probably be better still. Ack on that.
-
-That said, I just realized that *all* of this is completely
-unnecessarily complicated. We allow up to a PAGE_SIZE, but you cannot
-actually fill even *remotely* that much without using insane
-zero-padding, and at that point you're not doing something useful,
-you're trying to actively break something.
-
-So the simple fix is to just limit the size of the buffer to slightly
-less than PAGE_SIZE, and just pad more than one NUL character at the
-end. Technically we're skipping four characters, and then we have the
-last "real" NUL terminator, so 5 would be sufficient, but let's make
-it easy for the compiler to just generate one single 64-bit store (or
-two 32-bit ones) and clear 8 bytes.
-
-IOW, we could do something *this* simple instead.
-
-But I'm ok with your "track the end" version too.
-
-             Linus
-
---0000000000008ba2fe0601541426
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
+--------------hLpWRsStu0ywfVnKBVaBFam9
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: base64
-Content-ID: <f_lkin7m3i0>
-X-Attachment-Id: f_lkin7m3i0
 
-IGRyaXZlcnMvc2NzaS9zY3NpX3Byb2MuYyB8IDcgKystLS0tLQogMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kv
-c2NzaV9wcm9jLmMgYi9kcml2ZXJzL3Njc2kvc2NzaV9wcm9jLmMKaW5kZXggNGE2ZWIxNzQxYmUw
-Li5kYTY2ZDkyNjAyMzIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9zY3NpX3Byb2MuYworKysg
-Yi9kcml2ZXJzL3Njc2kvc2NzaV9wcm9jLmMKQEAgLTQwOSw3ICs0MDksNyBAQCBzdGF0aWMgc3Np
-emVfdCBwcm9jX3Njc2lfd3JpdGUoc3RydWN0IGZpbGUgKmZpbGUsIGNvbnN0IGNoYXIgX191c2Vy
-ICpidWYsCiAJY2hhciAqYnVmZmVyLCAqcDsKIAlpbnQgZXJyOwogCi0JaWYgKCFidWYgfHwgbGVu
-Z3RoID4gUEFHRV9TSVpFKQorCWlmICghYnVmIHx8IGxlbmd0aCA+IFBBR0VfU0laRS04KQogCQly
-ZXR1cm4gLUVJTlZBTDsKIAogCWJ1ZmZlciA9IChjaGFyICopX19nZXRfZnJlZV9wYWdlKEdGUF9L
-RVJORUwpOwpAQCAtNDIxLDEwICs0MjEsNyBAQCBzdGF0aWMgc3NpemVfdCBwcm9jX3Njc2lfd3Jp
-dGUoc3RydWN0IGZpbGUgKmZpbGUsIGNvbnN0IGNoYXIgX191c2VyICpidWYsCiAJCWdvdG8gb3V0
-OwogCiAJZXJyID0gLUVJTlZBTDsKLQlpZiAobGVuZ3RoIDwgUEFHRV9TSVpFKQotCQlidWZmZXJb
-bGVuZ3RoXSA9ICdcMCc7Ci0JZWxzZSBpZiAoYnVmZmVyW1BBR0VfU0laRS0xXSkKLQkJZ290byBv
-dXQ7CisJbWVtc2V0KGJ1ZmZlciArIGxlbmd0aCwgMCwgOCk7CiAKIAkvKgogCSAqIFVzYWdlOiBl
-Y2hvICJzY3NpIGFkZC1zaW5nbGUtZGV2aWNlIDAgMSAyIDMiID4vcHJvYy9zY3NpL3Njc2kK
---0000000000008ba2fe0601541426--
+SGkNCg0KQW0gMjUuMDcuMjMgdW0gMDQ6MTMgc2NocmllYiBZdWVIYWliaW5nOg0KPiBTaW5j
+ZSBjb21taXQgOGU4NmRlZTAyMjUzICgiZHJtL2ZiLWhlbHBlcjogUmVtb3ZlIGRybV9mYl9o
+ZWxwZXJfZGVmaW9faW5pdCgpIGFuZCB1cGRhdGUgZG9jcyIpDQo+IHRoaXMgaW5saW5lIGhl
+bHBlciBub3QgdXNlZCBhbnltb3JlLg0KPiANCj4gRml4ZXM6IDhlODZkZWUwMjI1MyAoImRy
+bS9mYi1oZWxwZXI6IFJlbW92ZSBkcm1fZmJfaGVscGVyX2RlZmlvX2luaXQoKSBhbmQgdXBk
+YXRlIGRvY3MiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBZdWVIYWliaW5nIDx5dWVoYWliaW5nQGh1
+YXdlaS5jb20+DQo+IFJldmlld2VkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1h
+bm5Ac3VzZS5kZT4NCj4gLS0tDQo+IHYyOiBBZGQgRml4ZXMgdGFnDQoNCk1lcmdlZCBpbnRv
+IGRybS1taXNjLWZpeGVzLiBUaGFuayB5b3UgZm9yIHlvdXIgcGF0Y2guDQoNCkJlc3QgcmVn
+YXJkcw0KVGhvbWFzDQoNCj4gLS0tDQo+ICAgaW5jbHVkZS9kcm0vZHJtX2ZiX2hlbHBlci5o
+IHwgNSAtLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA1IGRlbGV0aW9ucygtKQ0KPiANCj4g
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2RybV9mYl9oZWxwZXIuaCBiL2luY2x1ZGUvZHJt
+L2RybV9mYl9oZWxwZXIuaA0KPiBpbmRleCA0ODYzYjBmODI5OWUuLjM3NTczN2ZkNmMzNiAx
+MDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX2ZiX2hlbHBlci5oDQo+ICsrKyBiL2lu
+Y2x1ZGUvZHJtL2RybV9mYl9oZWxwZXIuaA0KPiBAQCAtMzY4LDExICszNjgsNiBAQCBzdGF0
+aWMgaW5saW5lIHZvaWQgZHJtX2ZiX2hlbHBlcl9kZWZlcnJlZF9pbyhzdHJ1Y3QgZmJfaW5m
+byAqaW5mbywNCj4gICB7DQo+ICAgfQ0KPiAgIA0KPiAtc3RhdGljIGlubGluZSBpbnQgZHJt
+X2ZiX2hlbHBlcl9kZWZpb19pbml0KHN0cnVjdCBkcm1fZmJfaGVscGVyICpmYl9oZWxwZXIp
+DQo+IC17DQo+IC0JcmV0dXJuIC1FTk9ERVY7DQo+IC19DQo+IC0NCj4gICBzdGF0aWMgaW5s
+aW5lIHZvaWQgZHJtX2ZiX2hlbHBlcl9zZXRfc3VzcGVuZChzdHJ1Y3QgZHJtX2ZiX2hlbHBl
+ciAqZmJfaGVscGVyLA0KPiAgIAkJCQkJICAgICBib29sIHN1c3BlbmQpDQo+ICAgew0KDQot
+LSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNF
+IFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0Niwg
+OTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMs
+IEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJu
+YmVyZykNCg==
+
+--------------hLpWRsStu0ywfVnKBVaBFam9--
+
+--------------TpZnqdr0oiezQ0awiOlH0Zo6
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTAF1MFAwAAAAAACgkQlh/E3EQov+Aj
+Ew/+LN+Rg8hgslzyVoJj/E4V4gbG7uRyHKVW/rCwic1RtBqCmuwDsFrXWSmtLAtKGgyfvV/kJDOR
+NeaTOQ7xxYTtul46jSbTe5Nmd/irzOUZO93QGlWQWSC5T4hOY1FMTLgz9fB2odmfzUD5pzYpbfv4
+AiJZPXErKBccOr5QRFpCydsJeApzz84py0VzuV0uBtaEV2jzHl2G5bhmKQRezkF/paNJONTKIyUq
+gM6FtVtu3wRuygWISUL8NMDtA6gChPPDrP+WIWFwiUrn5yM1PgJIwfhcz0cLZBrSqrF91F7vltyI
+HYG6VG5NZcNnrXYUHvoclEeZHjSfeY1hR3RoUnfvb+ySlZpwzDhwb/y5a3VzYIYN5a7SDY8dhxm4
+NUyJJ1vqXaMJ5/Ffy809U2+MumxyJ8TFE7V8OhFtrpm6ZhCvJfgu2xOmZJdbLC4skT8mS6JImc2s
+TZ44vAZ+QRe3+rz6dc2t3gxxOW18u17XdL/KOV50S2novHj5nEvKK1p5pBAUY7ebqIr8DIeQBBz9
+6dUz4NijUOJiOiK5h3JgJ5L6Ikz0bgy+9TlBD5UEJgw7ndBSDTnAnATPnciGkIWkL+AYqaaiftPV
+7q3Xd2sPgC82sIQUNz1XID1YZbNvas2lUprSozjVOeqD/DhaSx/xic8cLvwId5HWL55y5afrQ6S8
+c4c=
+=1kzK
+-----END PGP SIGNATURE-----
+
+--------------TpZnqdr0oiezQ0awiOlH0Zo6--
