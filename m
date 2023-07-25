@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B327761029
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19551761030
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbjGYKED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S231911AbjGYKFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbjGYKD3 (ORCPT
+        with ESMTP id S232310AbjGYKEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:03:29 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE2A271B;
-        Tue, 25 Jul 2023 03:03:08 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3144bf65ce9so4197033f8f.3;
-        Tue, 25 Jul 2023 03:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690279387; x=1690884187;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e495hPVSSfsBudphKr6esdXlU/XthcZYmt9+fcJRM4U=;
-        b=sTY/fduZIMTMRloop5bzm5cPr8tIcvfTYGuNFIfmUmg6q+lyKMtZ98wxsi2G+aBe/v
-         SFtRPktXotZTp//Y4UDXKp/5xJIMy3rnKNxQKXB0+NyMkN23RMxsH28TGxfrJ8BGhxUK
-         qHNjv3e3HRekuAy+Eeu1SyXAEcbnDnMXHeqNxv5SiFxDJXRbgaZuWcAnCrxziJ5C+uYb
-         1ry2oxlQ/PIR/28h/jFMFkKoE7Iis2WwpVrHqO5hmukA8HeZQDA5Dm7rl3kcY/R7/EmG
-         OKxtz4MLLUa9h/nx6RpuRx7bCVQp7aXthiOfx7hGcVWVboYEcFPNy7vFuE53aO/2+lc2
-         vT9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690279387; x=1690884187;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e495hPVSSfsBudphKr6esdXlU/XthcZYmt9+fcJRM4U=;
-        b=Vq1mn55q6yOTAPWg801dFWKyMyWmXytta0iB7cda4GWJi4bAspyynzxDhK6UzJ5ZcY
-         GWIT/BK7ifKMaZ9b1vzTkn3sUMhPwomW0/bwAC1vL/8QtnBWrE+tvEfGwsOkavRau+XI
-         NZNtdKv9ocpz5q7dt0pc3YyeyyO8+KWyDdt8NMwIBVFQf5nSz2lBiMOhcicwGN2BMVwX
-         VpvIYFRPpxcNIOztlL8k9+PB9g6OStCK5AiUNT7jdzvG1/LHnPsUTGwnwkKNCsXVVb48
-         tnEz84QCBQjP/Z+SJqjwJVKiav9LuDRBF3o5+YfWxOA0ciN7Yzo2qb8XKo16XZQHhWBo
-         /eRQ==
-X-Gm-Message-State: ABy/qLZukXddgESCDPSIGURNx7bhURvYjJkqDCsVuoP6zOf2ngRaPktA
-        O+s8BaI/iV06AKCzf3XtjP0=
-X-Google-Smtp-Source: APBJJlHwOSqGMpMZWoR++iwvf5SMZvA1SjBkVklrwFyXMgWeIzARRW0DL+VeKsGY5CIZ/yKgJjuYYg==
-X-Received: by 2002:a05:6000:1151:b0:314:10d8:b491 with SMTP id d17-20020a056000115100b0031410d8b491mr8568115wrx.67.1690279387120;
-        Tue, 25 Jul 2023 03:03:07 -0700 (PDT)
-Received: from [192.168.1.107] (ccx116.neoplus.adsl.tpnet.pl. [83.30.147.116])
-        by smtp.gmail.com with ESMTPSA id w16-20020adfec50000000b003143867d2ebsm15879054wrn.63.2023.07.25.03.03.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 03:03:06 -0700 (PDT)
-Message-ID: <80ce1710-38e3-2c6e-73b9-6b18c38b3ff3@gmail.com>
-Date:   Tue, 25 Jul 2023 12:03:04 +0200
+        Tue, 25 Jul 2023 06:04:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158C3582;
+        Tue, 25 Jul 2023 03:04:19 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P88XSC009383;
+        Tue, 25 Jul 2023 10:04:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4wxBb0aHeVVz4pmYcNzT5o3PmpfCFsXkoGMU7c6SCKg=;
+ b=MkoTlorwYQqYxrN+bH4gZri0I+pDbzHrvAg0jhxBeKFMVBVL/RdNdyoxWpURhBgoQdCB
+ UbZW5QJZhYcUYo0IuU6LNQQiau5PMvKOJpyJ3LLTZKj9veZ46xxMtkd2s2IacWOTDYCd
+ RIjcSMH1rByGqVCgefoD/3Jtcv/XmabFUps1tpJ08RmC4WdE/uKtQn8FwyB8oJJouYsR
+ ivtNY6WyUy3QwAXYMJkzWONdNu1WUkbqYtNaxMonTG23D+ye4f8ptxXKOcr+HYFQfM0e
+ p2BxSfX3D3Cvgq2Cxl/zRc62JexwJqjjulnh7MhV3o5rSfOAoIEnpusOPDXU4ZxRf9FB PQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s29xmgb36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 10:04:08 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36PA47bD031178
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 10:04:07 GMT
+Received: from [10.216.12.191] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 03:04:01 -0700
+Message-ID: <27d9bd35-b69c-5596-8e1a-c42ec2b01f75@quicinc.com>
+Date:   Tue, 25 Jul 2023 15:33:57 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/7] clk: qcom: hfpll: Add MSM8976 PLL data
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 2/4] power: reset: reboot-mode: Wire reboot_mode enum
+ to magic
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Sebastian Reichel" <sre@kernel.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230723160827.22660-1-a39.skl@gmail.com>
- <20230723160827.22660-6-a39.skl@gmail.com>
- <411da19f-10f3-6dc1-a708-cdf06be9c4d8@linaro.org>
-From:   Adam Skladowski <a39.skl@gmail.com>
-In-Reply-To: <411da19f-10f3-6dc1-a708-cdf06be9c4d8@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        "Satya Durga Srinivasu Prabhala" <quic_satyap@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Prasad Sodagudi <quic_psodagud@quicinc.com>
+References: <20230724223057.1208122-1-quic_eberman@quicinc.com>
+ <20230724223057.1208122-3-quic_eberman@quicinc.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20230724223057.1208122-3-quic_eberman@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: V1EUNcEWf5x7A1jIFLgk8KKf7-TfcMfc
+X-Proofpoint-GUID: V1EUNcEWf5x7A1jIFLgk8KKf7-TfcMfc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_05,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 suspectscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250086
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,53 +92,87 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 25.07.2023 10:02, Konrad Dybcio wrote:
-> On 23.07.2023 18:08, Adam Skladowski wrote:
->> Add PLL configuration for MSM8976 SoC, this SoC offers 3 HFPLL.
->> Small cluster offers two presets for 652-902Mhz range and 902Mhz-1.47Ghz.
->> For simplicity only add second range as smaller frequencies can be obtained
->> via apcs divider or safe parent this also saves us
->> a hassle of reconfiguring VCO bit and config_val.
->> A72 and CCI cluster only use single frequency range with their
->> outputs/post_dividers/vco_bits being static.
->>
->> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
->> ---
-> [...]
->
->> +static const struct hfpll_data msm8976_a72 = {
->> +	.mode_reg = 0x00,
->> +	.l_reg = 0x04,
->> +	.m_reg = 0x08,
->> +	.n_reg = 0x0c,
->> +	.user_reg = 0x10,
->> +	.config_reg = 0x14,
->> +	.config_val = 0x4e0405d,
->> +	.status_reg = 0x1c,
->> +	.lock_bit = 16,
->> +
->> +	.l_val = 0x3e,
->> +	.user_val = 0x100109,
->> +	.min_rate = 940800000UL,
->> +	.max_rate = 1843200000UL,
-> 2016000000?
 
-We are using msm kernel as base not SODP ports.
+On 7/25/2023 4:00 AM, Elliot Berman wrote:
+> Allow the reboot mode type to be wired to magic.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> ---
+>   drivers/power/reset/reboot-mode.c | 30 ++++++++++++++++++++++++++----
+>   1 file changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/power/reset/reboot-mode.c b/drivers/power/reset/reboot-mode.c
+> index a646aefa041b..4ea97ccbaf51 100644
+> --- a/drivers/power/reset/reboot-mode.c
+> +++ b/drivers/power/reset/reboot-mode.c
+> @@ -22,12 +22,8 @@ struct mode_info {
+>   static bool get_reboot_mode_magic(struct reboot_mode_driver *reboot,
+>   					  const char *cmd, unsigned int *magic)
+>   {
+> -	const char *normal = "normal";
+>   	struct mode_info *info;
+>   
+> -	if (!cmd)
+> -		cmd = normal;
+> -
+>   	list_for_each_entry(info, &reboot->head, list) {
+>   		if (!strcmp(info->mode, cmd)) {
+>   			*magic = info->magic;
+> @@ -45,6 +41,32 @@ static int reboot_mode_notify(struct notifier_block *this,
+>   	unsigned int magic;
+>   
+>   	reboot = container_of(this, struct reboot_mode_driver, reboot_notifier);
+> +
+> +	if (!cmd) {
+> +		switch (mode) {
 
-https://android.googlesource.com/kernel/msm/+/android-lego-6.0.1_r0.2/drivers/clk/qcom/clock-cpu-8976.c
-https://android.googlesource.com/kernel/msm.git/+/android-msm-lego-3.10-marshmallow-dr/arch/arm/boot/dts/qcom/msm8976.dtsi#349
+IIUC, mode will be filled up with reboot_mode during restart
+notifier and not reboot notifiers ?
 
-> [...]
->>  static const struct of_device_id qcom_hfpll_match_table[] = {
->>  	{ .compatible = "qcom,hfpll", &hdata },
->> +	{ .compatible = "qcom,msm8976-hfpll-a53", &msm8976_a53 },
->> +	{ .compatible = "qcom,msm8976-hfpll-a72", &msm8976_a72 },
->> +	{ .compatible = "qcom,msm8976-hfpll-cci", &msm8976_cci },
-> .data = is missing
->
-> Konrad
+> +		case REBOOT_COLD:
+> +			cmd = "cold";
+> +			break;
+> +		case REBOOT_WARM:
+> +			cmd = "warm";
+> +			break;
+> +		case REBOOT_HARD:
+> +			cmd = "hard";
+> +			break;
+> +		case REBOOT_SOFT:
+> +			cmd = "soft";
+> +			break;
+> +		case REBOOT_GPIO:
+> +			cmd = "gpio";
 
-Seems like i took "inspiration" from also not great code, albeit it does work somehow when printing inside init, will fix in v3 
+These strings are already there kernel/reboot.c
+Can it be reused ?
 
-Thanks Angelo/Konrad
+#define REBOOT_COLD_STR         "cold"
+#define REBOOT_WARM_STR         "warm"
+#define REBOOT_HARD_STR         "hard"
+#define REBOOT_SOFT_STR         "soft"
+#define REBOOT_GPIO_STR         "gpio"
+#define REBOOT_UNDEFINED_STR    "undefined"
 
+
+> +			break;
+> +		}
+> +		if (get_reboot_mode_magic(reboot, cmd, &magic)) {
+
+Is info->mode is going to filled up with mode-cold, mode-warm and so
+on from DT to compare against cmd?
+
+What if , cmd is not among the one above switch, NULL pointer during
+strcmp ?
+
+-Mukesh
+
+> +			reboot->write(reboot, magic);
+> +			return NOTIFY_DONE;
+> +		}
+> +		cmd = "normal";
+> +	}
+> +
+>   	if (get_reboot_mode_magic(reboot, cmd, &magic))
+>   		reboot->write(reboot, magic);
+>   
