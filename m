@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BCB76039D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BC17603A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjGYAMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
+        id S229999AbjGYANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjGYAMK (ORCPT
+        with ESMTP id S229789AbjGYANC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:12:10 -0400
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 407AF171E
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:12:07 -0700 (PDT)
+        Mon, 24 Jul 2023 20:13:02 -0400
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3329D115;
+        Mon, 24 Jul 2023 17:12:57 -0700 (PDT)
 Received: from linma$zju.edu.cn ( [10.162.208.50] ) by
- ajax-webmail-mail-app2 (Coremail) ; Tue, 25 Jul 2023 08:11:58 +0800
+ ajax-webmail-mail-app2 (Coremail) ; Tue, 25 Jul 2023 08:12:42 +0800
  (GMT+08:00)
 X-Originating-IP: [10.162.208.50]
-Date:   Tue, 25 Jul 2023 08:11:58 +0800 (GMT+08:00)
+Date:   Tue, 25 Jul 2023 08:12:42 +0800 (GMT+08:00)
 X-CM-HeaderCharset: UTF-8
 From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     jgg@ziepe.ca, markzhang@nvidia.com, michaelgur@nvidia.com,
-        ohartoov@nvidia.com, chenzhongjin@huawei.com, yuancan@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
- IFLA_BOND_ARP_IP_TARGET parsing
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        ast@kernel.org, martin.lau@kernel.org, yhs@fb.com,
+        andrii@kernel.org, void@manifault.com, houtao1@huawei.com,
+        laoar.shao@gmail.com, inwardvessel@gmail.com, kuniyu@amazon.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v1] bpf: Add length check for
+ SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
 X-Priority: 3
 X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
  Copyright (c) 2002-2023 www.mailtech.cn
  mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230724174707.GB11388@unreal>
-References: <20230723074504.3706691-1-linma@zju.edu.cn>
- <20230724174707.GB11388@unreal>
+In-Reply-To: <20230724151507.6b725396@kernel.org>
+References: <20230723075452.3711158-1-linma@zju.edu.cn>
+ <20230724151507.6b725396@kernel.org>
 Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Message-ID: <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
+Message-ID: <4e56edca.e264e.1898a641853.Coremail.linma@zju.edu.cn>
 X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgCnzn1OE79kV1OACg--.41726W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIHEmS91fkV-gABsL
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+X-CM-TRANSID: by_KCgBXX4t6E79kW1WACg--.28456W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwMHEmS91fkWAgAAs0
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWUJw
         CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
         daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,28 +57,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gTGVvbiwKCj4gCj4gT24gU3VuLCBKdWwgMjMsIDIwMjMgYXQgMDM6NDU6MDRQTSArMDgw
-MCwgTGluIE1hIHdyb3RlOgo+ID4gVGhlIG5sYV9mb3JfZWFjaF9uZXN0ZWQgcGFyc2luZyBpbiBm
-dW5jdGlvbgo+ID4gbmxkZXZfc3RhdF9zZXRfY291bnRlcl9keW5hbWljX2RvaXQoKSBkb2VzIG5v
-dCBjaGVjayB0aGUgbGVuZ3RoIG9mIHRoZQo+ID4gYXR0cmlidXRlLiBUaGlzIGNhbiBsZWFkIHRv
-IGFuIG91dC1vZi1hdHRyaWJ1dGUgcmVhZCBhbmQgYWxsb3cgYQo+ID4gbWFsZm9ybWVkIG5sYXR0
-ciAoZS5nLiwgbGVuZ3RoIDApIHRvIGJlIHZpZXdlZCBhcyBhIDQgYnl0ZSBpbnRlZ2VyLgo+IAo+
-IDEuIFN1YmplY3Qgb2YgdGhpcyBwYXRjaCBkb2Vzbid0IHJlYWxseSBtYXRjaCB0aGUgY2hhbmdl
-LgoKTXkgYmFkLCBhIHN0dXBpZCBtaXN0YWtlLiBJIHdpbGwgZml4IHRoYXQgYW5kIHByZXBhcmUg
-YW5vdGhlciBwYXRjaC4KCj4gMi4gU2VlIG15IGNvbW1lbnQgb24geW91ciBpNDBlIHBhdGNoLgo+
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25ldGRldi8yMDIzMDcyNDE3NDQzNS5HQTExMzg4QHVu
-cmVhbC8KPiAKClllYWggSSBoYXZlIHNlZW4gdGhhdC4gSnVzdCBhcyBKYWt1YiBzYWlkLCBlbXB0
-eSBuZXRsaW5rIGF0dHJpYnV0ZXMgYXJlIHZhbGlkIAoodGhleSBhcmUgdmlld2VkIGFzIGZsYWcp
-LiBUaGUgcG9pbnQgaXMgdGhhdCBkaWZmZXJlbnQgYXR0cmlidXRlIGhhcyBkaWZmZXJlbnQKbGVu
-Z3RoIHJlcXVpcmVtZW50LiBGb3IgdGhpcyBzcGVjaWZpYyBjb2RlLCB0aGUgUkRNQV9OTERFVl9B
-VFRSX1NUQVRfSFdDT1VOVEVSUwphdHRyaWJ1dGUgaXMgYSBuZXN0ZWQgb25lIHdob3NlIGlubmVy
-IGF0dHJpYnV0ZXMgc2hvdWxkIGJlIE5MQV9VMzIuIEJ1dCBhcyB5b3UKY2FuIHNlZSBpbiB2YXJp
-YWJsZSBubGRldl9wb2xpY3ksIHRoZSBkZXNjcmlwdGlvbiBkb2VzIG5vdCB1c2UgbmVzdGVkIHBv
-bGljeSB0bwplbmZvcmUgdGhhdCwgd2hpY2ggcmVzdWx0cyBpbiB0aGUgYnVnIGRpc2N1c3NlZCBp
-biBteSBjb21taXQgbWVzc2FnZS4KCiBbUkRNQV9OTERFVl9BVFRSX1NUQVRfSFdDT1VOVEVSU10g
-ICAgICAgPSB7IC50eXBlID0gTkxBX05FU1RFRCB9LAoKVGhlIGVsZWdhbnQgZml4IGNvdWxkIGJl
-IGFkZCB0aGUgbmVzdGVkIHBvbGljeSBkZXNjcmlwdGlvbiB0byBubGRldl9wb2xpY3kgd2hpbGUK
-dGhpcyBpcyB0b3VibGVzb21lIGFzIG5vIGV4aXN0aW5nIG5sYV9hdHRyIGhhcyBiZWVuIGdpdmVu
-IHRvIHRoaXMgbmVzdGVkIG5sYXR0ci4KSGVuY2UsIGFkZCB0aGUgbGVuZ3RoIGNoZWNrIGlzIHRo
-ZSBzaW1wbGVzdCBzb2x1dGlvbiBhbmQgeW91IGNhbiBzZWUgc3VjaCBubGFfbGVuCmNoZWNrIGNv
-ZGUgYWxsIG92ZXIgdGhlIGtlcm5lbC4KCj4gVGhhbmtzCgpSZWdhcmRzCkxpbg==
+SGkgSmFrdWIsCgo+IAo+IFlvdSBjYW4gbW92ZSB0aGlzIGNoZWNrIGVhcmxpZXIsIHdoZW4gdGhl
+IGF0dHJpYnV0ZXMgYXJlIGdldHRpbmcKPiBjb3VudGVkLiBUaGF0IHdheSB3ZSBjYW4gYXZvaWQg
+dGhlIGFsbG9jL2ZyZWUgb24gZXJyb3IuCgpHb29kIHBvaW50LCB3aWxsIGZpeCB0aGF0IGFuZCBw
+cmVwYXJlIGFub3RoZXIgcGF0Y2gKClRoYW5rcwpMaW4=
