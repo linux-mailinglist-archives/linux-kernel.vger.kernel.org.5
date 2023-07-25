@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6A9762363
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFD27623A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 22:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjGYUgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 16:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S231578AbjGYUiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 16:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGYUgH (ORCPT
+        with ESMTP id S229873AbjGYUh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 16:36:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4287910F7;
-        Tue, 25 Jul 2023 13:36:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C7DF1618E6;
-        Tue, 25 Jul 2023 20:36:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E588C433C7;
-        Tue, 25 Jul 2023 20:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690317365;
-        bh=1WJsY6Fxk5xmArM3laXI1PCdA9a886qjCfbmt+ZVyyU=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=VqyStHAFMnUrprjRv35DS+uFXeG+gFpuZOWQdNng/kOiXg70JjB4ON3htuYfUOH3A
-         yqF0dbOi7V+HNHoN1gwYpimZ9mAIs+PWwIFDVPTzweN12pfyBDzoJH01exIKVJRQWd
-         UALFhYuZwor7CTdpigNZkXpDOiEUAwnHrit7dNsD3clAq7tUW7+kPb8pNaKm9WIOBR
-         KKrx++EqECbVYkb8BRN/3+ZUf/YCOjxjoDPapbqqSqYGCXXA/RN5ct5jj8Hi5tmgUd
-         K/KokBnm4R2mmbmu7Fz+dGv0dhItGmT1tZYmHGvhSK14ftvA8wuvcF6+a88ZTOdXIR
-         LL+xvxFwOSX1Q==
-From:   Mark Brown <broonie@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
-        swboyd@chromium.org, quic_vtanuku@quicinc.com,
-        dan.carpenter@linaro.org
-In-Reply-To: <1690285689-30233-1-git-send-email-quic_vnivarth@quicinc.com>
-References: <1690285689-30233-1-git-send-email-quic_vnivarth@quicinc.com>
-Subject: Re: [PATCH 0/4] spi: spi-qcom-qspi: Follow-up patches to DMA mode
- support
-Message-Id: <169031736194.1617289.5213259488916570827.b4-ty@kernel.org>
-Date:   Tue, 25 Jul 2023 21:36:01 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 16:37:58 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FC1BE4;
+        Tue, 25 Jul 2023 13:37:30 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id ACF5F5C00F2;
+        Tue, 25 Jul 2023 16:37:28 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 25 Jul 2023 16:37:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690317448; x=1690403848; bh=tU
+        enbxuC5I1n+MGN9iC/9qo7/L6cRKUPK2gsdMgfmGw=; b=fUEfQhmeApsH9S+6d8
+        dYCpcvq8XcHWxwayJ0kqkX98H0Zrh192T3eC1AgofzGoeyFYLIMTQjjomWFFGH8d
+        WEFHRz2Qsk5f0pNrllJbEFWYMPAd1xVxoIMz6iw/+6RaB8HVb6eoA9F3CPl6Hc8u
+        MFDnIqBKICtznrqd34WKsUWbjprS//1HrCc8ZbXd1ZF4hdL3A/cnWy4/Ais+JJFr
+        Tf3B24U/KIg2nlnsfMEEvbDCPkeyQUb3AbwfKqHneedUCtVPEiq9F6YIn+l7qSV/
+        clqj/uyg0VymFXIiX1Cg/fO7KXvWC3i5+JiyxzNpFuA2kD+ypP3YtdUUdU86BPHD
+        3zvA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690317448; x=1690403848; bh=tUenbxuC5I1n+
+        MGN9iC/9qo7/L6cRKUPK2gsdMgfmGw=; b=Yj2eA52T+f6RmDpoylZMRUKC49eAT
+        qp57mr5n4hyjAGu0NHElHMvyEaBmedsdszebCSN47BuQST3DhJEilKciT9g6P0DO
+        RKjyS9awY8sWwUJmcWI2XRF6M6MziA8k4mwsXa7Kgnr/nouxJCEiYSZWaK2bBeI7
+        Om082OLg70b/GiTeMLWs3yfM2MESjyL1U6LhXZDla8EHPdnQiA8mFeURA6fsKXfK
+        /GuIlO76msupya8Ql3+j4uj0dajz8DBRsnkNV4Gg2XSthYNiVVZsTP1VIb0OzdVZ
+        KnoPX4ZFCaxhRc1EH/JF4mZKfDFnrK4Nlc+kyX0amloNqvPdZjTibdXSQ==
+X-ME-Sender: <xms:iDLAZM9jlh-_2HEHcbS4mRTbbmV7kPLQxQDq-CruLOgM8MKATkkjSA>
+    <xme:iDLAZEuVfl1FcwsNTCbApVhVife_-LDQbJiyZKJAFHOQ6_xZV7oD8F22Vfc9gDAZx
+    UzMfjQ6jvO0A9q5hZc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedtgddugeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:iDLAZCBLiytdthl5PM9WNDsivrcXlpjNPhcnuKl1Kn_SZA94j8AL8A>
+    <xmx:iDLAZMcoMfYrbCPhi9ppQARGQgtIYe9lT4XfX-aW2Xiu-SD0nyXeWQ>
+    <xmx:iDLAZBPrSGNq_sXGdp7Kv5wmgrlulBO_ptFX0OiFL0yICBK-8DZavw>
+    <xmx:iDLAZHvJ7u8686wpz0zedDpJYSTV8ckcM4jXj811Vp71k33Lu9OlCg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F280AB60089; Tue, 25 Jul 2023 16:37:27 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <990b6871-169b-4d03-b202-f19294730f8c@app.fastmail.com>
+In-Reply-To: <ZMAqPdO2XcIXOCFs@corigine.com>
+References: <20230725064403.581634-1-arnd@kernel.org>
+ <ZMAqPdO2XcIXOCFs@corigine.com>
+Date:   Tue, 25 Jul 2023 22:37:07 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Simon Horman" <simon.horman@corigine.com>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "Ioana Ciornei" <ioana.ciornei@nxp.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Robert-Ionut Alexa" <robert-ionut.alexa@nxp.com>,
+        "Russell King" <rmk+kernel@armlinux.org.uk>,
+        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
+        "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
+        "Sean Anderson" <sean.anderson@seco.com>,
+        "Josua Mayer" <josua@solid-run.com>,
+        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dpaa: avoid linking objects into multiple modules
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 17:18:05 +0530, Vijaya Krishna Nivarthi wrote:
-> This patch series adds 4 follow-up changes to DMA mode support.
-> 1. Handles write failure in some cases by averting a race condition
-> 2. Handles static checker warning
-> 3. Adds a memory barrier to avoid a possible data out of sync case
-> 4. Book keeping change
-> 
-> Vijaya Krishna Nivarthi (4):
->   spi: spi-qcom-qspi: Ignore disabled interrupts' status in isr
->   spi: spi-qcom-qspi: Use GFP_ATOMIC flag while allocating for
->     descriptor
->   spi: spi-qcom-qspi: Call dma_wmb() after setting up descriptors
->   spi: spi-qcom-qspi: Add DMA_CHAIN_DONE to ALL_IRQS
-> 
-> [...]
+On Tue, Jul 25, 2023, at 22:02, Simon Horman wrote:
+> On Tue, Jul 25, 2023 at 08:43:40AM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> Each object file contains information about which module it gets linked
+>> into, so linking the same file into multiple modules now causes a warning:
+>> 
+>> scripts/Makefile.build:254: drivers/net/ethernet/freescale/dpaa2/Makefile: dpaa2-mac.o is added to multiple modules: fsl-dpaa2-eth fsl-dpaa2-switch
+>> scripts/Makefile.build:254: drivers/net/ethernet/freescale/dpaa2/Makefile: dpmac.o is added to multiple modules: fsl-dpaa2-eth fsl-dpaa2-switch
+>> 
+>> Chang the way that dpaa2 is built by moving the two common files into a
+>> separate module with exported symbols instead.
+>> 
+>> To avoid a link failure when the switch driver is built-in, but the dpio driver
+>> is a loadable module, add the same dependency in there that exists for
+>> the ethernet driver.
+>> 
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Hi Arnd,
+>
+> overall this looks good to me.
+> One thing that I noticed, and I'm not sure if we care,
+> is that an x86_64 allmodconfig now reports:
+>
+> WARNING: modpost: missing MODULE_DESCRIPTION() in 
+> drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.o
 
-Applied to
+My mistake, I had disabled the warning in modpost.c as it was
+generating too much output while I tried to address some
+other warnings, so I missed the regression I introduced.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+I'll send a v2, adding
 
-Thanks!
+MODULE_DESCRIPTION("DPAA2 Ethernet core library");
 
-[1/4] spi: spi-qcom-qspi: Ignore disabled interrupts' status in isr
-      commit: 17aaf9ea07b656016316dc37716e987742b3e296
-[2/4] spi: spi-qcom-qspi: Use GFP_ATOMIC flag while allocating for descriptor
-      commit: f7ba36d399c4558f36886adff9400be591b245f6
-[3/4] spi: spi-qcom-qspi: Call dma_wmb() after setting up descriptors
-      commit: cfb81f2243b25a0d79accc6510ad66c5c5ad99ba
-[4/4] spi: spi-qcom-qspi: Add DMA_CHAIN_DONE to ALL_IRQS
-      commit: 916a4edf3daed845b1e5d6cf0578a7e43c6f520e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+      Arnd
