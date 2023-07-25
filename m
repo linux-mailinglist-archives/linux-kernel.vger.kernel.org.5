@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EADF8761960
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48148761974
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 15:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjGYNIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 09:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S233391AbjGYNKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 09:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjGYNIU (ORCPT
+        with ESMTP id S232628AbjGYNKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:08:20 -0400
+        Tue, 25 Jul 2023 09:10:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4471BFB;
-        Tue, 25 Jul 2023 06:08:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8EE1FEB;
+        Tue, 25 Jul 2023 06:10:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 660456171B;
-        Tue, 25 Jul 2023 13:08:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCABC433C7;
-        Tue, 25 Jul 2023 13:08:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 94F256170C;
+        Tue, 25 Jul 2023 13:10:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D5FAC433C7;
+        Tue, 25 Jul 2023 13:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690290489;
-        bh=4q4I7n0aaIqbGyfbXcBN1ws5DJhAn2FpdXMN86OAmmc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WVUB9FCdJv1EMYTjUcxHcXJYUouo2s3qYFsvmIep8uiGmG2mT3CXbh0wUYGDciXXv
-         MF7/M9RtWwsx+Zc1tQ9E0IiUT652kY6j/OTrvPuENz8Y17YLnseAJIsBoYVgDVXfbD
-         qCbHC3CGIAAy+u+1AxB/qu0V1Z6bkU7+qjC3IVe5w+16XyOMHQ0bbAdTTtfjEWuWFz
-         A/AFGHYV7Ykg0IA0a1y4Mp8XYLIm6VFTn+i4aiST/3ybj/IATPEAAQbZtdECTWlO8R
-         QBredBFWRj3SkU924kA5VrT065PclWUG/Z5DcQ5D4h3Jwsi2r76ZzNkZdNMIxGFGgy
-         r+7WzUMcQf5dw==
-Date:   Tue, 25 Jul 2023 22:08:05 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Ruan Jinjie <ruanjinjie@huawei.com>
-Cc:     <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] kernel: kprobes: Use struct_size()
-Message-Id: <20230725220805.af340161a7c620a33750fda2@kernel.org>
-In-Reply-To: <20230725195424.3469242-1-ruanjinjie@huawei.com>
-References: <20230725195424.3469242-1-ruanjinjie@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        s=k20201202; t=1690290609;
+        bh=kYvQojgLLojniCbFIoFeMLpW0eX9KsKVV5P8NVvO6ew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SK+lo+5UzxBUqzEY8EqmRQBIQgCMWZnrx3gERo09M9o9URM7O48Gbru8Ul1+aLEUv
+         dNZcG4yl0TiQy2vv54PBxwpfAYig2kRuA9f6jq0QbbOCF19QIQ+j6RDl+8wgSVhIfT
+         qz32fB2+oYATYyGkg1wJC7IkQQ0V4oue9KfXmq+7mkD7FXAGL+5ihuYwg+z3Hbfz0a
+         RtcjttrBO24GrVzckHFE+EdWLuAopSwca1THVRuOiOn8ZT04hlWEvcB8XbeAof4xth
+         KXkICYU8KMz/OgBtEco3U748Q+3n6t/cqi4yJsk+JzLmzQZNRNDxJk11F0LqkMqedQ
+         GHbsDqGp8hrdA==
+Received: (nullmailer pid 2911495 invoked by uid 1000);
+        Tue, 25 Jul 2023 13:10:06 -0000
+Date:   Tue, 25 Jul 2023 07:10:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+Message-ID: <20230725131006.GA2879331-robh@kernel.org>
+References: <20230725114030.1860571-1-Naresh.Solanki@9elements.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725114030.1860571-1-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,54 +62,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 19:54:24 +0000
-Ruan Jinjie <ruanjinjie@huawei.com> wrote:
-
-> Use struct_size() instead of hand-writing it, when allocating a structure
-> with a flex array.
+On Tue, Jul 25, 2023 at 01:40:26PM +0200, Naresh Solanki wrote:
+> From: Patrick Rudolph <patrick.rudolph@9elements.com>
 > 
-> This is less verbose.
+> The TDA38640 has a bug in SVID mode and to enable a workaround
+> remove the TDA38640 from trivial-devices and add a complete schema.
 > 
-
-Looks goo to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks!
-
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> The schema adds the custom property 'infineon,en-pin-fixed-level' to
+> signal a fixed level on the ENABLE pin and to enable the workaround.
+> When the ENABLE pin is left floating it's internally pulled low.
+> 
+> If not specified the driver will continue to use the PMBUS_OPERATION
+> register to enable the regulator. When specified the driver will use
+> the PMBUS_ON_OFF_CONFIG register to enable the regulator.
+> 
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 > ---
->  kernel/kprobes.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>  .../hwmon/pmbus/infineon,tda38640.yaml        | 50 +++++++++++++++++++
+>  .../devicetree/bindings/trivial-devices.yaml  |  2 -
+>  2 files changed, 50 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
 > 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 1fc6095d502d..1d749a917b59 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2220,8 +2220,7 @@ int register_kretprobe(struct kretprobe *rp)
->  		return -ENOMEM;
->  
->  	for (i = 0; i < rp->maxactive; i++) {
-> -		inst = kzalloc(sizeof(struct kretprobe_instance) +
-> -			       rp->data_size, GFP_KERNEL);
-> +		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
->  		if (inst == NULL) {
->  			rethook_free(rp->rh);
->  			rp->rh = NULL;
-> @@ -2244,8 +2243,7 @@ int register_kretprobe(struct kretprobe *rp)
->  
->  	rp->rph->rp = rp;
->  	for (i = 0; i < rp->maxactive; i++) {
-> -		inst = kzalloc(sizeof(struct kretprobe_instance) +
-> -			       rp->data_size, GFP_KERNEL);
-> +		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
->  		if (inst == NULL) {
->  			refcount_set(&rp->rph->ref, i);
->  			free_rp_inst(rp);
+> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+> new file mode 100644
+> index 000000000000..520112e4e271
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/pmbus/infineon,tda38640.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Infineon TDA38640 Synchronous Buck Regulator with SVID and I2C
+> +
+> +description: |
+> +  The Infineon TDA38640 is a 40A Single-voltage Synchronous Buck
+> +  Regulator with SVID and I2C designed for Industrial use.
+> +
+> +  Datasheet: https://www.infineon.com/dgdl/Infineon-TDA38640-0000-DataSheet-v02_04-EN.pdf?fileId=8ac78c8c80027ecd018042f2337f00c9
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - infineon,tda38640
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  infineon,en-pin-fixed-level:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Fixed level of the ENABLE pin. When specified the PMBUS_ON_OFF_CONFIG
+> +      register is used to enable the regulator instead of the PMBUS_OPERATION
+> +      register to workaround a bug of the tda38640 when operating in SVID-mode.
+> +      If the ENABLE pin is left floating the internal pull-down causes a low
+> +      level on the pin.
+
+Neither this nor the commit message answers how do I decide if I set 
+this property or not? How you work-around it is not that relevant to the 
+binding.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        tda38640@40 {
+> +            compatible = "infineon,tda38640";
+> +            reg = <0x40>;
+> +        };
+> +    };
+> +
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> index 6e24c4d25ec3..2b1fbb2a672b 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -151,8 +151,6 @@ properties:
+>            - infineon,slb9645tt
+>              # Infineon SLB9673 I2C TPM 2.0
+>            - infineon,slb9673
+> -            # Infineon TDA38640 Voltage Regulator
+> -          - infineon,tda38640
+>              # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
+>            - infineon,tlv493d-a1b6
+>              # Infineon Multi-phase Digital VR Controller xdpe11280
+> 
+> base-commit: 55612007f16b5d7b1fb83a7b0f5bb686829db7c7
 > -- 
-> 2.34.1
+> 2.41.0
 > 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
