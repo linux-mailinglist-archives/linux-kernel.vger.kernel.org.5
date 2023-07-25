@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02A276211C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A8076211F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 20:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjGYSOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 14:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S232429AbjGYSPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 14:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbjGYSOH (ORCPT
+        with ESMTP id S229840AbjGYSPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 14:14:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D95E9;
-        Tue, 25 Jul 2023 11:14:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E744461826;
-        Tue, 25 Jul 2023 18:14:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83D9C433C8;
-        Tue, 25 Jul 2023 18:14:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690308845;
-        bh=WmpVtUDAaFLbImnOsO4tYnjeeSG53usXX5FWGAehNd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8ezkXSL801Ko1HRqyb2qFQK+UcKw2H641PFM/9vIeVLmyMou0D106OI4NFQEZ1p4
-         /DyaNKE7Pu9FX4QwH+vN2thu5DgN8Ve3dcfVdsTAbbAcF8cFvgNG7tcVZYGbcD1t9G
-         6Smtu8orEyPEEtHy2IvTwqzpX2nDqTPRbppjr56cFMvBvmC6cJvl95eXVzMmkijGJS
-         WBfCddw8V6I5gL/NKfbrUHm+EWR1cWx4UiKo3hzuTBTAsTxqIxIlzMRart3cB6u0qw
-         XGW6A39OoBneYneYBP2svNPamPUHWn2T3O5Mf58gx+eYVfHx5ZjnVUbNdVkwrWDLYd
-         lh/xvOv3VWQ3w==
-Date:   Tue, 25 Jul 2023 19:13:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Alexey Romanov <avromanov@sberdevices.ru>
-Cc:     narmstrong@baylibre.com, neil.armstrong@linaro.org,
-        olivia@selenic.com, herbert@gondor.apana.org.au,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-crypto@vger.kernel.org,
-        kernel@sberdevices.ru
-Subject: Re: [PATCH v1 2/3] dt-bindings: rng: meson: add meson-rng-s4
- compatible
-Message-ID: <20230725-transport-pension-533b598260d0@spud>
-References: <20230725141252.98848-1-avromanov@sberdevices.ru>
- <20230725141252.98848-3-avromanov@sberdevices.ru>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ns9HxazCpuYhnvR0"
-Content-Disposition: inline
-In-Reply-To: <20230725141252.98848-3-avromanov@sberdevices.ru>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 14:15:12 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4BC1BF8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:15:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d05883d850fso5698911276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 11:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690308910; x=1690913710;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAZmELeq2ZhkyDgChb+RthHmv+q1lpfrw6foSOn/8ZY=;
+        b=rldnnWH7w/HourUe/RcpHwlb69EnTTdPK/pDOa8OZfeDJ35pA6WgI3FFvgz7Wjl7x6
+         98M310YVHhmfsVHJyCvBvyNc55l3cU8cn0/4gGT0AfkBYx9Uwj+M/TkJ/eJKoiYntE36
+         Xj8BoGO0yZu8Q5LvMFeprTGpzBWUO4Lzfx2Wb0cSQj5fYvwYd/+vhSArQPxwdvsH9q6W
+         PPWnYjEsWI2CzoXQWQC16CG4zFTZm4P/pBUKSRJOKCAhm8mqCiQIm7W8/bXxHKYWj9z4
+         UjcWrpsMKdV9ZNjmW86cd2ztYi8qdoEAwtj4AbVpQokSZjJk5JZDjGBobeDfhd0+Kd1K
+         4UVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690308910; x=1690913710;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAZmELeq2ZhkyDgChb+RthHmv+q1lpfrw6foSOn/8ZY=;
+        b=SXi3dn9G/fG/oFt/shNYIV1JkIv9cR/dSOMFt0kKySlfyUjcBz3I0ij6xyBgXlIg6s
+         c1uVMpaegWGK7K+huQjlfvUzL219tjSCHDXHFiEhUxL8Kzy56B8IA4Tf0pjUEsnCnZkp
+         GMMhVFeBo+vKFP7YjmzfCoSqJ7VCzJ+dGT+Ca9TckkWd7FjBLD5PEENkfTfk5bEVBM/u
+         4vwQ/ks0ceXT9/1ez4AUlLLHg1xPAq2wfYEhXLZBTdPWYm6rEuzQ5VMjBl9mM1DfRuKe
+         fq8HL4rvj7Mrm9zhmR5LVzTFow1vWwT5J5hzDeqDl7S68DKmnHFmBMiisbMwi6PV30aN
+         L6/Q==
+X-Gm-Message-State: ABy/qLZ/HKFq/jJRVPh8kz1BsvHO+8K7KrMyfJNDNeBb17QwP/VraI1t
+        k1PlCwaeY+Ck3+87De7BGWIwZr2z23s=
+X-Google-Smtp-Source: APBJJlFXrTcGU/9dXVrt8CbSBDCqA64SFKTYxJj7G92zNc7tdKvKFYWLRqCNhBTcCsblpCzONauc19v8DpM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8d83:0:b0:d15:d6da:7e97 with SMTP id
+ o3-20020a258d83000000b00d15d6da7e97mr24208ybl.3.1690308910326; Tue, 25 Jul
+ 2023 11:15:10 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 11:15:08 -0700
+In-Reply-To: <c90d244a6b372322028d0e5b42d60fb1a23476da.camel@intel.com>
+Mime-Version: 1.0
+References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-20-seanjc@google.com>
+ <c90d244a6b372322028d0e5b42d60fb1a23476da.camel@intel.com>
+Message-ID: <ZMARLNcPwovmOZvg@google.com>
+Subject: Re: [PATCH v4 19/19] KVM: VMX: Skip VMCLEAR logic during emergency
+ reboots if CR4.VMXE=0
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chao Gao <chao.gao@intel.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 25, 2023, Kai Huang wrote:
+> On Fri, 2023-07-21 at 13:18 -0700, Sean Christopherson wrote:
+> > Bail from vmx_emergency_disable() without processing the list of loaded
+> > VMCSes if CR4.VMXE=0, i.e. if the CPU can't be post-VMXON.  It should be
+> > impossible for the list to have entries if VMX is already disabled, and
+> > even if that invariant doesn't hold, VMCLEAR will #UD anyways, i.e.
+> > processing the list is pointless even if it somehow isn't empty.
+> > 
+> > Assuming no existing KVM bugs, this should be a glorified nop.  The
+> > primary motivation for the change is to avoid having code that looks like
+> > it does VMCLEAR, but then skips VMXON, which is nonsensical.
+> > 
+> > Suggested-by: Kai Huang <kai.huang@intel.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 12 ++++++++++--
+> >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 5d21931842a5..0ef5ede9cb7c 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -773,12 +773,20 @@ static void vmx_emergency_disable(void)
+> >  
+> >  	kvm_rebooting = true;
+> >  
+> > +	/*
+> > +	 * Note, CR4.VMXE can be _cleared_ in NMI context, but it can only be
+> > +	 * set in task context.  If this races with VMX is disabled by an NMI,
+> > +	 * VMCLEAR and VMXOFF may #UD, but KVM will eat those faults due to
+> > +	 * kvm_rebooting set.
+> > +	 */
+> 
+> I am not quite following this comment.  IIUC this code path is only called from
+> NMI context in case of emergency VMX disable.
 
---ns9HxazCpuYhnvR0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The CPU that initiates the emergency reboot can invoke the callback from process
+context, only responding CPUs are guaranteed to be handled via NMI shootdown.
+E.g. `reboot -f` will reach this point synchronously.
 
-On Tue, Jul 25, 2023 at 05:12:51PM +0300, Alexey Romanov wrote:
-> Now the driver has a separate algo for S4 SoC.
->=20
-> Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
-> ---
->  Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml=
- b/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> index 457a6e43d810..6f51506c0f65 100644
-> --- a/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> +++ b/Documentation/devicetree/bindings/rng/amlogic,meson-rng.yaml
-> @@ -14,6 +14,7 @@ properties:
->    compatible:
->      enum:
->        - amlogic,meson-rng
-> +      - amlogic,meson-rng-s4
+> How can it race with "VMX is disabled by an NMI"?
 
-Usually, the "s4" would come before the peripheral's name, as s4 is the
-name of the SoC.
-
-> =20
->    reg:
->      maxItems: 1
-> --=20
-> 2.38.1
->=20
-
---ns9HxazCpuYhnvR0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMAQ5wAKCRB4tDGHoIJi
-0jQbAQD8az1AUWrNfWLQKH1A3YTesxjJXWzaUqgk5/77Cs01kAD/V9hsEIFEGFh3
-KyJSju0f1Motr7Y45NVuek+l3js+DgI=
-=LMAU
------END PGP SIGNATURE-----
-
---ns9HxazCpuYhnvR0--
+Somewhat theoretically, a different CPU could panic() and do a shootdown of the
+CPU that is handling `reboot -f`.
