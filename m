@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4A5761DAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3C1761DB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 17:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbjGYPwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 11:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        id S232499AbjGYPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 11:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbjGYPwP (ORCPT
+        with ESMTP id S231206AbjGYPxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 11:52:15 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BDC1FE6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 08:52:13 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:2d50:2ea4:d4e1:2af3])
-        by laurent.telenet-ops.be with bizsmtp
-        id RTsB2A0092TBYXr01TsBc4; Tue, 25 Jul 2023 17:52:12 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qOKKM-002Vj4-Ib;
-        Tue, 25 Jul 2023 17:52:11 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qOKKZ-009cbZ-Mo;
-        Tue, 25 Jul 2023 17:52:11 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
-Date:   Tue, 25 Jul 2023 17:52:06 +0200
-Message-Id: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+        Tue, 25 Jul 2023 11:53:06 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3075691;
+        Tue, 25 Jul 2023 08:53:05 -0700 (PDT)
+Received: from eugen-station.. (unknown [82.76.24.202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DD2386606F9F;
+        Tue, 25 Jul 2023 16:53:02 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690300383;
+        bh=oTwjKmbIzP/ICl+gGyGP/1DH20byUoeqWEtx/veTs3o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JbyBladbKjcskcYcNNABx1wJ/caoCgyx6Ixz11oqpXplKT3bjW0LG8kuPflsO/Zif
+         renQs/CYIAVyKv7FcLymQrorKZxhcfIkkfx0njUNVb7la5dGVo5aPfPufXc2yHMnfx
+         EXFgdsmcXTtePOR1ckYdS4t7Yhx8rKW99t/WYqbKmfVnhIKCvIhk1O1aCZ9kwnZlpZ
+         rk8O5CW2Cspxzdr7jaEh1AfhMmA+UnY+6J3x+m2EZjvL14jcXV/sNyt+qeP4RFAWlt
+         AEZ8UVITATGZDICbwaB/RkA4wvFERFsogJ1ew6WGVnnP1s8jtfAeOrfqFAmgZ1+Vnb
+         1fTcUIui7rA+w==
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+To:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     david.wu@rock-chips.com, heiko@sntech.de,
+        krzysztof.kozlowski+dt@linaro.org, kernel@collabora.com,
+        Eugen Hristev <eugen.hristev@collabora.com>
+Subject: [PATCH] dt-bindings: net: rockchip-dwmac: fix {tx|rx}-delay defaults in schema
+Date:   Tue, 25 Jul 2023 18:52:54 +0300
+Message-Id: <20230725155254.664361-1-eugen.hristev@collabora.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_FB_CORE=y but CONFIG_FB=n, the frame buffer bootup logos can
-no longer be enabled.  Fix this by making CONFIG_LOGO depend on
-CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
-logo code to depend on the presence of real frame buffer device drivers.
+The defaults are specified in the description instead of being specified
+in the schema.
+Fix it by adding the default value in the `default` field.
 
-Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: b331b8ef86f0 ("dt-bindings: net: convert rockchip-dwmac to json-schema")
+Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
 ---
- drivers/video/Kconfig      | 2 +-
- drivers/video/logo/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/net/rockchip-dwmac.yaml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
-index e5b1cc54cafa10d5..b694d7669d3200b1 100644
---- a/drivers/video/Kconfig
-+++ b/drivers/video/Kconfig
-@@ -63,7 +63,7 @@ if VT
- 	source "drivers/video/console/Kconfig"
- endif
+diff --git a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+index bb943c96c196..6d08260ad828 100644
+--- a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+@@ -92,12 +92,14 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/phandle
  
--if FB || SGI_NEWPORT_CONSOLE
-+if FB_CORE || SGI_NEWPORT_CONSOLE
- 	source "drivers/video/logo/Kconfig"
+   tx_delay:
+-    description: Delay value for TXD timing. Range value is 0~0x7F, 0x30 as default.
++    description: Delay value for TXD timing. Range value is 0~0x7F.
+     $ref: /schemas/types.yaml#/definitions/uint32
++    default: 0x30
  
- endif
-diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
-index 6d6f8c08792dc897..b7d94d1dd1585a84 100644
---- a/drivers/video/logo/Kconfig
-+++ b/drivers/video/logo/Kconfig
-@@ -5,7 +5,7 @@
+   rx_delay:
+-    description: Delay value for RXD timing. Range value is 0~0x7F, 0x10 as default.
++    description: Delay value for RXD timing. Range value is 0~0x7F.
+     $ref: /schemas/types.yaml#/definitions/uint32
++    default: 0x10
  
- menuconfig LOGO
- 	bool "Bootup logo"
--	depends on FB || SGI_NEWPORT_CONSOLE
-+	depends on FB_CORE || SGI_NEWPORT_CONSOLE
- 	help
- 	  Enable and select frame buffer bootup logos.
- 
+   phy-supply:
+     description: PHY regulator
 -- 
 2.34.1
 
