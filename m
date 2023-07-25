@@ -2,104 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5D876240D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62092762413
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjGYVAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
+        id S231466AbjGYVCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjGYVAA (ORCPT
+        with ESMTP id S229931AbjGYVCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:00:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C84F1BC3;
-        Tue, 25 Jul 2023 13:59:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BEA2618E8;
-        Tue, 25 Jul 2023 20:59:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37684C433C8;
-        Tue, 25 Jul 2023 20:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690318797;
-        bh=YU0pkJ3KyW8TbBxYB6lwKUSa3sLNGB7MlyMIuPOKFlM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Ka/nj/+taMK5OcYk3J849CMQvxscIG9oBJz93rvlhlGJL9fTiWLvodAT4S5vZ0Gq8
-         fNlntMfIJg6j6epRcJP6uSbc1psVZnI+4iW25l0NK257wDyNwAOGVaSyCY/YE5O3+C
-         O7Zcx+vuy9LVfotYLeeg/Gb6gZIOrVqGBbwKlQZtFggqnJQC2W8Lo3msrV3nvUSn9H
-         iX7VszdshA+Qs5rHJRxnhQ/EbPo/Q9g7Xe5w9BXFyvkCdPDq/VfmS+npVxZ8uX+9rB
-         sTbPulJdkDcrM3tUEFnMSHal1d+8q/iHH5VUgD9/UjTt998orvbmtpZrdIxkg6uA8Q
-         oo+Vt9OLXoQNA==
-Date:   Tue, 25 Jul 2023 15:59:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Shuai Xue <xueshuai@linux.alibaba.com>, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, yangyicong@huawei.com, will@kernel.org,
-        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
-Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
- driver support
-Message-ID: <20230725205955.GA665326@bhelgaas>
+        Tue, 25 Jul 2023 17:02:47 -0400
+Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78514F5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:02:45 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id OPAzqClnw1d2aOPAzqO6Qd; Tue, 25 Jul 2023 23:02:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1690318962;
+        bh=nkQ74CLtd9z0A/xmDW80xpHVujKaMTsHCLvN52AI+kQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=BI/3ze1WDYB6B3HbHDeTVuGDMKPe8SLnC8Mslv6Y3Whh9NOpDtu8WXaHi7h2Nbm24
+         h2MfFIhTpsqT7js9r1Awwjc2mihbKmyHlCn+0Hb5irpP4HAu6ALL5VZr1+niNRvpWT
+         1jYhUxBhR0ow2JkN8XaX0WoVucKu6avcRFBA//X1BKmps6NHDRyDEedraTOaa88vmI
+         /cwjOJAUKipjsmDXgpgr54jKiaD9Bbv8QZuOwHkcLV3eCnow8CDQczL8pUfrDGnDwe
+         /3k/0SIS3YfujCiSiJy+oBlU+mctzK8dmzYGItw+bK7+5TK7fVsHHAGBcm0i7wyWgd
+         b/GO9GGkg7lwQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 25 Jul 2023 23:02:42 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
+Date:   Tue, 25 Jul 2023 23:02:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724101807.000012bf@Huawei.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Add Silicom Platform Driver
+Content-Language: fr
+To:     Henry Shi <henryshi2018@gmail.com>, hbshi69@hotmail.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        hdegoede@redhat.com, markgross@kernel.org, jdelvare@suse.com,
+        linux@roeck-us.net, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+Cc:     hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+References: <20230718160104.2716-1-henryshi2018@gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230718160104.2716-1-henryshi2018@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:18:07AM +0100, Jonathan Cameron wrote:
-> On Mon, 24 Jul 2023 10:34:08 +0800
-> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
-> > On 2023/7/10 20:04, Shuai Xue wrote:
-> > > On 2023/6/16 16:39, Shuai Xue wrote:  
-> > >> On 2023/6/6 15:49, Shuai Xue wrote:  
-
-> > >>> This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
-> > >>> for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
-> > >>> Core controller IP which provides statistics feature.
-
-> ...
-> Really a question for Bjorn I think, but here is my 2 cents...
+Le 18/07/2023 à 18:01, Henry Shi a écrit :
+> The Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products is a
+> software solution designed to facilitate the efficient management
+> and control of devices through the integration of various Linux
+> frameworks. This platform driver provides seamless support for
+> device management via the Linux LED framework, GPIO framework,
+> Hardware Monitoring (HWMON), and device attributes. The Silicom
+> platform driver's compatibility with these Linux frameworks allows
+> applications to access and control Cordoba family devices using
+> existing software that is compatible with these frameworks. This
+> compatibility simplifies the development process, reduces
+> dependencies on proprietary solutions, and promotes
+> interoperability with other Linux-based systems and software.
 > 
-> The problem here is that we need to do that fundamental redesign of the
-> way the PCI ports drivers work.  I'm not sure there is a path to merging
-> this until that is done.  The bigger problem is that I'm not sure anyone
-> is actively looking at that yet.  I'd like to look at this (as I have
-> the same problem for some other drivers), but it is behind various
-> other things on my todo list.
-> 
-> Bjorn might be persuaded on a temporary solution, but that would come
-> with some maintenance problems, particularly when we try to do it
-> 'right' in the future.  Maybe adding another service driver would be
-> a stop gap as long as we know we won't keep doing so for ever. Not sure.
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> ---
 
-I think the question here is around the for_each_pci_dev() in
-__dwc_pcie_pmu_probe()?  I don't *like* that because of the
-assumptions it breaks (autoload doesn't work, hotplug doesn't work),
-but:
+[...]
 
-  - There are several other drivers that also do this,
-  - I don't have a better suggest for any of them,
-  - It's not a drivers/pci thing, so not really up to me anyway,
+> +static int __init silicom_mc_leds_register(struct device *dev,
+> +					   const struct led_classdev_mc *mc_leds)
+> +{
+> +	struct led_classdev_mc *led;
+> +	int i, err;
+> +
+> +	for (i = 0; mc_leds[i].led_cdev.name; i++) {
+> +		/* allocate and copy data from the init constansts */
+> +		led = devm_kzalloc(dev, sizeof(struct led_classdev_mc), GFP_KERNEL);
 
-so I don't have any problem with this being merged as-is, as long as
-you can live with the limitations.
+sizeof(*led) is shorter.
+Mostly a matter of taste.
 
-I don't think this series does anything to work around those
-limitations, i.e., it doesn't make up fake device IDs for module
-loading or fake events for hotplug, so it seems like we could improve
-the implementation later if we ever have a way to do it.
+Maybe even devm_kmemdup()?
 
-Bjorn
+> +		if (IS_ERR_OR_NULL(led)) {
+
+if (!led)
+is enough.
+
+> +			dev_err(dev, "Failed to alloc led_classdev_mc[%d]: %ld\n", i, PTR_ERR(led));
+
+This kind of message is useless and should be removed (checkpatch should 
+warn about it)
+
+> +			return -ENOMEM;
+> +		}
+> +		memcpy(led, &mc_leds[i], sizeof(*led));
+> +
+> +		led->subled_info = devm_kzalloc(dev, led->num_colors * sizeof(struct mc_subled),
+> +						GFP_KERNEL);
+
+Maybe even devm_kmemdup()?
+
+> +		if (IS_ERR_OR_NULL(led->subled_info)) {
+
+if (!led->subled_info)
+is enough.
+
+> +			dev_err(dev, "Failed to alloc subled_info[%d]: %ld\n",
+> +				i, PTR_ERR(led->subled_info));
+
+This kind of message is useless and should be removed (checkpatch should 
+warn about it)
+
+> +			return -ENOMEM;
+> +		}
+> +		memcpy(led->subled_info, mc_leds[i].subled_info,
+> +			led->num_colors * sizeof(struct mc_subled));
+> +
+> +		err = devm_led_classdev_multicolor_register(dev, led);
+> +		if (err) {
+> +			dev_err(dev, "Failed to register[%d]: %d\n", i, err);
+> +			return err;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+[...]
+
