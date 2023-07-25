@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F0D760588
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08497605EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjGYCgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S231262AbjGYCo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjGYCfu (ORCPT
+        with ESMTP id S229479AbjGYCo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:35:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336F91BD4;
-        Mon, 24 Jul 2023 19:35:20 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P1tIB3003077;
-        Tue, 25 Jul 2023 02:34:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=dnYSmfL3h/+R7898mdwbAx6Ipy9eFL3xPFJqCEmEdUY=;
- b=fE93RbtTWQTpSHFriuwGJKEemJjBUjRKxVOVTQdNeFElhcGg37lNiVNbtNYCKJgy67O9
- Glbv8SMXxFGM/hkWfGVBY6NTofgcQRBYF0Jb5g+SldzXTwWfXtVUM9/X0ZwrhC7/PkV1
- ZqVJe10nXXP2mcsCyMxWmdctIvblLEPo7GjV9k8g5jhdg9EK3PLjh2YPyqdrb9MmMsXJ
- 0M0myOFHuCc/BfsC4RfPd/uLNQFHr+HTZLJgAVN8HfEdfFrRzjRplOiMKgXdoFpx7XOX
- 84zwYkxQBnsrn5TiQZKl7PpswoX0K+MZ01Ap25CC0vhe1lEVmivlGADplZFST2M12CIw YQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1s1jsn6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 02:34:53 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P2YqRC013260
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 02:34:52 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 19:34:51 -0700
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <pierre-louis.bossart@linux.intel.com>,
-        <oneukum@suse.com>, <albertccwang@google.com>,
-        <o-takashi@sakamocchi.jp>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v4 32/32] sound: soc: soc-usb: Rediscover USB SND devices on USB port add
-Date:   Mon, 24 Jul 2023 19:34:16 -0700
-Message-ID: <20230725023416.11205-33-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230725023416.11205-1-quic_wcheng@quicinc.com>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
+        Mon, 24 Jul 2023 22:44:56 -0400
+Received: from out-11.mta1.migadu.com (out-11.mta1.migadu.com [IPv6:2001:41d0:203:375::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC58137
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 19:44:28 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690252555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0+VnVPZa4UeOCG7Yrfiew8gKr6k3ViuPV5Oe7aKEwA0=;
+        b=OouSnERnVUq8t87+qMJi+ElF1O+pkB5HJ/XjlEV4XPIdaL5qKz/r9JLMMUeUfOnb3ZMOdj
+        khOpzTQ2idnb6S4y6b+9cHD3wy9I4UTOUPXGpsseW4bB+Gm8jsDjdu3ImL8BlNp++kk+K8
+        DDellGRauVWKhKhaf7FrGB51gwHD7wU=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: psHjVqeFNP9WDrU1q4LD2YPKXzDVf7zm
-X-Proofpoint-ORIG-GUID: psHjVqeFNP9WDrU1q4LD2YPKXzDVf7zm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_18,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307250021
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 01/47] mm: vmscan: move shrinker-related code into a
+ separate file
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-2-zhengqi.arch@bytedance.com>
+Date:   Tue, 25 Jul 2023 10:35:01 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <97E80C37-8872-4C5A-A027-A0B35F39152A@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-2-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the USB backend device has not been initialized/probed, USB SND
-device connections can still occur.  When the USB backend is eventually
-made available, previous USB SND device connections are not communicated to
-the USB backend.  Call snd_usb_rediscover_devices() to generate the connect
-callbacks for all USB SND devices connected.  This will allow for the USB
-backend to be updated with the current set of devices available.
 
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- sound/soc/soc-usb.c | 2 ++
- sound/usb/card.h    | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-index 84dc6d0b2eab..a9413e3d18df 100644
---- a/sound/soc/soc-usb.c
-+++ b/sound/soc/soc-usb.c
-@@ -111,6 +111,8 @@ struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
- 	list_add_tail(&usb->list, &usb_ctx_list);
- 	mutex_unlock(&ctx_mutex);
- 
-+	snd_usb_rediscover_devices();
-+
- 	return usb;
- }
- EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index dfd241334e3d..6a14b74b47da 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -236,6 +236,7 @@ static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
- {
- 	return NULL;
- }
--void snd_usb_rediscover_devices(void) { }
-+
-+static void snd_usb_rediscover_devices(void) { }
- #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
- #endif /* __USBAUDIO_CARD_H */
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> =
+wrote:
+>=20
+> The mm/vmscan.c file is too large, so separate the shrinker-related
+> code from it into a separate file. No functional changes.
+>=20
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+> include/linux/shrinker.h |   3 +
+> mm/Makefile              |   4 +-
+> mm/shrinker.c            | 707 +++++++++++++++++++++++++++++++++++++++
+> mm/vmscan.c              | 701 --------------------------------------
+> 4 files changed, 712 insertions(+), 703 deletions(-)
+> create mode 100644 mm/shrinker.c
+>=20
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index 224293b2dd06..961cb84e51f5 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -96,6 +96,9 @@ struct shrinker {
+>  */
+> #define SHRINKER_NONSLAB (1 << 3)
+>=20
+> +unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup =
+*memcg,
+> +			   int priority);
+
+A good cleanup, vmscan.c is so huge.
+
+I'd like to introduce a new header in mm/ directory and contains those
+declarations of functions (like this and other debug function in
+shrinker_debug.c) since they are used internally across mm.
+
+Thanks.
+
