@@ -2,123 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5CC760A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48603760A51
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjGYGZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S232143AbjGYG0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjGYGZ1 (ORCPT
+        with ESMTP id S229889AbjGYG0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:25:27 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF12319B0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 23:25:15 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-440ad406bc8so1313181137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 23:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690266315; x=1690871115;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oEUYA8z3zr7f9Yzq/3gIgIrlPEAwowWK06gnE/zw7M0=;
-        b=i7EKm2oYOzfgf70PdZ5PGua72PfIJcNqQ/14LQ/t6WvuZ/RiPPwFdkK63u0swQVFlP
-         H0pjPdnOka7zmPj/acw+gWe9LXo/rvZNUDlSka/Rfi7+5ZWTjC3ZemvkNyIfERKBm5Er
-         h5anUVpJSJfeCAi4UR3vCwElFwdOMkbnp6tyv9bGfZocLR61D+pG0mavMCrNxTGSzJQF
-         Ox8sOXH/DGXs9RUGmhXLShHWv9TvueyjPMDNXFx7dHLu6HjFxwUTIdQbeY71keZo6I7A
-         7gyjMzsN2OhA9hHqUIakB9jkwpOnjeOQM1qb9fob00qIIqPTbccECGHt/BexdumTucvS
-         yrKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690266315; x=1690871115;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oEUYA8z3zr7f9Yzq/3gIgIrlPEAwowWK06gnE/zw7M0=;
-        b=kF5mXJUmGJSUNfkHB0O2Gjf4BMlU8h8AnLXVfVw5pY81nYVBxs2oKqL1djIFjYyuyH
-         WctC1fL/qQ3PSraBwnk6yRRKDXUO44eMOiTHmJNv3OooAgZNVI1QDtuENKXta0ckIguz
-         XYL2e8lLG3oHWoFG7X4CYEmi2tYARtf7Fya4uJwh7PTxkiaFIGOND04PiSdt4kPx6rz+
-         2tjRzob7VSjdwMsD9m4UJpmg8cLO+ma237v6zU2L7aCZoQoAmLkJOgTgeJFHlmYLRQVO
-         eaN/+VIkFw8ZEUhBtgPDd2k7Om36iihsoiXAE0h26zpobJ+XangyKha5GIoFs3IU4E+5
-         gnzA==
-X-Gm-Message-State: ABy/qLYCYKKDyd2rcQ/kTTzkPE7h8/4tjXgVtbPgFOHcxzEzfWIj1r/o
-        obWjR+VrrqDy742OEgwLbSiYjx6pwnMMQKDMzTs=
-X-Google-Smtp-Source: APBJJlHJX/cbANhDpAwmzq/zB7fKISef8BsNSx7J2O7kTpMFv7YZqNJyI4jgDUIifS+KHaEBaapX/DMRnPc4DiDDEOo=
-X-Received: by 2002:a67:ec94:0:b0:446:eb8e:8940 with SMTP id
- h20-20020a67ec94000000b00446eb8e8940mr2881382vsp.16.1690266314724; Mon, 24
- Jul 2023 23:25:14 -0700 (PDT)
+        Tue, 25 Jul 2023 02:26:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7982CF;
+        Mon, 24 Jul 2023 23:26:47 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P4poQT004251;
+        Tue, 25 Jul 2023 06:26:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=8RcjJCCsQwRpsPqjhjQqQfhBDHGif3SbicAU1EnQ+KY=;
+ b=oPJ1YB34WWql6kgGSsTR6ckev+vhINjLujGrFdB1TWV6edezVz8/HZLDBf2P4Guq9yWE
+ GzMHtwpWzo/9XW98nqQUkw6O1kXHIVfmhIqb/39X+5Vb57/Jtw1R9eVic8L1SvqiTw14
+ MLdSjh7cqqsT7VTGkEhz53i1x/MTZ0h7IyxRyRe+qhTEgMVCtVM9zXn/e6v5eIyn7JMp
+ 3DWYjNueSIoTTbt+xZ5gWf2hi3GFzWwaPdeUrACh54g0OtbZ34pwZGEbvxFVfjeYbSAp
+ ZIWHoQ4FtL01aaUzo3Tn/X8H+3q3GL7ujacRoS+5lUREJQyXwM5hj/irTxG4LlQh/xsC eA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1y6m11s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 06:26:43 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P6Qg5G032391
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 06:26:42 GMT
+Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 24 Jul
+ 2023 23:26:38 -0700
+Message-ID: <3aaccc94-59b3-31d3-eac7-f8926f8c88ff@quicinc.com>
+Date:   Tue, 25 Jul 2023 14:26:36 +0800
 MIME-Version: 1.0
-References: <20230724132736.124106-1-luxu.kernel@bytedance.com>
- <e75d0e92-1e6e-43c2-1935-00f22df5579d@codethink.co.uk> <20230724-anatomist-evade-ef89a12a491a@wendy>
-In-Reply-To: <20230724-anatomist-evade-ef89a12a491a@wendy>
-From:   Xu Lu <luxujoy@gmail.com>
-Date:   Tue, 25 Jul 2023 14:25:03 +0800
-Message-ID: <CAEuiHnxkc3uO0==bo1R19SiS7DmuOQ5DMc2wjLbPxFhY4urYOA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Fix local irq restore when flags indicates irq disabled
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Ben Dooks <ben.dooks@codethink.co.uk>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        luxu.kernel@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/3] dt-bindings: input: qcom,pm8xxx-vib: add new SPMI
+ vibrator module
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
+References: <20230725054138.129497-1-quic_fenglinw@quicinc.com>
+ <20230725054138.129497-3-quic_fenglinw@quicinc.com>
+ <b2ad4863-a38b-7fb6-65b1-ea336c4fc876@linaro.org>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <b2ad4863-a38b-7fb6-65b1-ea336c4fc876@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0oBRzHngtBu9p4ihuaZRfygs2w4tfkos
+X-Proofpoint-ORIG-GUID: 0oBRzHngtBu9p4ihuaZRfygs2w4tfkos
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_02,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ mlxlogscore=999 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250057
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:03=E2=80=AFPM Conor Dooley
-<conor.dooley@microchip.com> wrote:
->
-> On Mon, Jul 24, 2023 at 02:42:50PM +0100, Ben Dooks wrote:
-> > On 24/07/2023 14:27, luxu.kernel wrote:
-> > > When arch_local_irq_restore() is called with flags indicating irqs
-> > > disabled, we need to clear SR_IE bit in CSR_STATUS, whereas current
-> > > implementation based on csr_set() function only sets SR_IE bit of
-> > > CSR_STATUS when SR_IE bit of flags is high and does nothing when
-> > > SR_IE bit of flags is low.
-> > >
-> > > This commit supplies csr clear operation when calling irq restore
-> > > function with flags indicating irq disabled.
-> > >
-> > > Signed-off-by: luxu.kernel <luxu.kernel@bytedance.com>
-> >
-> > real-names are required for signoff
->
-> And the From: address needs to match the signof, here the From: address
-> is a gmail one.
->
-> > > ---
-> > >   arch/riscv/include/asm/irqflags.h | 5 ++++-
-> > >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/a=
-sm/irqflags.h
-> > > index 08d4d6a5b7e9..7c31fc3c3559 100644
-> > > --- a/arch/riscv/include/asm/irqflags.h
-> > > +++ b/arch/riscv/include/asm/irqflags.h
-> > > @@ -49,7 +49,10 @@ static inline int arch_irqs_disabled(void)
-> > >   /* set interrupt enabled status */
-> > >   static inline void arch_local_irq_restore(unsigned long flags)
-> > >   {
-> > > -   csr_set(CSR_STATUS, flags & SR_IE);
-> > > +   if (flags & SR_IE)
-> > > +           csr_set(CSR_STATUS, SR_IE);
-> > > +   else
-> > > +           csr_clear(CSR_STATUS, SR_IE);
-> > >   }
-> > >   #endif /* _ASM_RISCV_IRQFLAGS_H */
-> >
-> > I think this is correct, I wonder how long this has been going on
-> > without anyone noticing?
->
-> Code has been like this since 6d60b6ee0c97 ("RISC-V: Device, timer,
-> IRQs, and the SBI"), committed on Tue Sep 26 15:26:47 2017 -0700.
 
-Thanks for your reply. I will resend the patch with real name and
-correct mailbox.
+
+On 7/25/2023 1:53 PM, Krzysztof Kozlowski wrote:
+> On 25/07/2023 07:41, Fenglin Wu wrote:
+>> Add compatible string 'qcom,spmi-vib-gen2' for vibrator module inside
+>> PMI632, PMI7250B, PM7325B, PM7550BA. Also, add 'qcom,spmi-vib-gen1'
+>> string for the SPMI vibrator inside PM8916 to maintain the completeness
+>> of the hardware version history for SPMI vibrators.
+>>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+>>   .../bindings/input/qcom,pm8xxx-vib.yaml        | 18 ++++++++++++++----
+>>   1 file changed, 14 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> index c8832cd0d7da..ab778714ad29 100644
+>> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> @@ -11,10 +11,20 @@ maintainers:
+>>   
+>>   properties:
+>>     compatible:
+>> -    enum:
+>> -      - qcom,pm8058-vib
+>> -      - qcom,pm8916-vib
+>> -      - qcom,pm8921-vib
+>> +    oneOf:
+>> +      - enum:
+>> +          - qcom,pm8058-vib
+>> +          - qcom,pm8916-vib
+>> +          - qcom,pm8921-vib
+>> +          - qcom,spmi-vib-gen1
+>> +          - qcom,spmi-vib-gen2
+> 
+> Generic compatibles should not be alone. Drop both lines.
+
+Sure. I will remove 'qcom,spmi-vib-gen2'.
+Should I also keep 'qcom,spmi-vib-gen1' as generic compatible and move 
+'qcom,pm8916-vib' as its fallback as following?
+
+   compatible:
+     oneOf:
+       - enum:
+           - qcom,pm8058-vib
+           - qcom,pm8921-vib
+       - items:
+           - enum:
+               - qcom,pm8916-vib
+           - const: qcom,spmi-vib-gen1
+       - items:
+           - enum:
+               - qcom,pmi632-vib
+               - qcom,pm7250b-vib
+               - qcom,pm7325b-vib
+               - qcom,pm7550b-vib
+           - const: qcom,spmi-vib-gen2
+
+I saw 'qcom,pm8916-vib' has been used in multiple DTS files and updating 
+it as a fallback will result updating those DTS files as well.
+Or please help to suggest if there is any way to keep 'qcom,pm8916-vib' 
+and 'qcom,spmi-vib-gen1' compatible without updating existing DTS nodes.
+
+Thanks
+
+> 
+>> +      - items:
+>> +          - enum:
+>> +              - qcom,pmi632-vib
+>> +              - qcom,pm7250b-vib
+>> +              - qcom,pm7325b-vib
+>> +              - qcom,pm7550b-vib
+>> +          - const: qcom,spmi-vib-gen2
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
