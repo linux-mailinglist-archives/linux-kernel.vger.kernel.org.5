@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2241B7624D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F167624D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 23:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbjGYVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 17:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S230474AbjGYVvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 17:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjGYVvm (ORCPT
+        with ESMTP id S229461AbjGYVvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:51:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2592127
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690321854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Melm6/J1BB5km5pizgjvl9Yb8xIN/1Veuqiikhv3KRo=;
-        b=EmZ4uDqezYqZCmUJozcqVQZCLAZnNsK3LRMK0hRDqVcN5AcZwp4IuYT6t3A+K4V+7nypSs
-        hk47kl4z+PEgwq7+rqkqy77H4I+0vb+/aAKUxQmPvacc323UbdBqX643FmYMeg6LVCqGbZ
-        Fe/1BLwffgyCl46fmC7JlcmhviU3iSQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-580-yIYbU35XMj6JLXS5iV6YoQ-1; Tue, 25 Jul 2023 17:50:53 -0400
-X-MC-Unique: yIYbU35XMj6JLXS5iV6YoQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7683cdabcb7so810045985a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 14:50:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690321852; x=1690926652;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Melm6/J1BB5km5pizgjvl9Yb8xIN/1Veuqiikhv3KRo=;
-        b=bG5drsXA9gNhoH0aqnD3ILE5/DwD+1We8OkYieFFRsJVuDI230nQmFXTkH9KHnvYEY
-         j3OelOW2H/KQpw2D6TsPHFT6jIyQj+qSmmQWPiFBoK4Z0tGxhaAuSlkeR9D3b5QbaSjI
-         0CENd7j4nbuX+r2VVSoQFCG0ccFC58fGyjS+52iaFhmOMslQ+9ySUkXRbdmfUtpdK1sv
-         VZUXnOfjWN+fr43CUjrasVfJlAlYzZ9Pq3PwEsZWaMlXE3bSeeJbsDn6ZQtdv6mmmYpi
-         gtmi1s600+Nvlip0u0G87TwiGRaXsPlpoK4WwfbFVBKd82xJdWvEk/xaDVxKbHPh5c+L
-         yvoA==
-X-Gm-Message-State: ABy/qLaL14MY7yzL2DCKFRGOp6y4iroAHwLYd8ZZYbgugtSUjbxwBZgi
-        Z9QwqYPUAFBnGka0qaRusXZSGsvaPpwgUAqsKA+3iNHnvFgKm1rCV7Vp3LqlTYywm0smBjcE3cj
-        EmGN3mK+azgvUnHtb5X5Y8YTj
-X-Received: by 2002:a37:9387:0:b0:768:75c:a323 with SMTP id v129-20020a379387000000b00768075ca323mr189186qkd.30.1690321852561;
-        Tue, 25 Jul 2023 14:50:52 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGuBc9mQtcoAYsLLrcNS6U1ILe3WgtPfau5n+XH3C2PfNIkwun1XLJekdm58rMjVAJD2sduAg==
-X-Received: by 2002:a37:9387:0:b0:768:75c:a323 with SMTP id v129-20020a379387000000b00768075ca323mr189174qkd.30.1690321852320;
-        Tue, 25 Jul 2023 14:50:52 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::17])
-        by smtp.gmail.com with ESMTPSA id q29-20020a05620a039d00b00767177a5bebsm3909301qkm.56.2023.07.25.14.50.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 14:50:51 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 16:50:49 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Cc:     quic_nitirawa@quicinc.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1] arm64: dts: qcom: sa8775p-ride: Remove min and max
- voltages for L8A
-Message-ID: <a3l7356miuuapf5dakgfchdjmxjp62ynvle4ta3hejd3tjvzd4@e2t2zm6jh7hb>
-References: <20230725100007.14775-1-quic_narepall@quicinc.com>
+        Tue, 25 Jul 2023 17:51:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF0C1FEC;
+        Tue, 25 Jul 2023 14:51:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4171E6191D;
+        Tue, 25 Jul 2023 21:51:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74192C433C7;
+        Tue, 25 Jul 2023 21:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690321863;
+        bh=cwjUnEpKd3inLxZNqE7zRhpjdwyHJ4S8/pVBZkwz308=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=N0KmrS+Trg21R+yMce2RP23J9qPMmSNIHzReUW1Q/AhJC+dk9d0P8sfBK020Wzhnr
+         /fhY2gBE/ptvVz/faQJIWeYKcS4bDVHhD4kshaSfK/czF6/6xsuq7qwxIYk4FqfsgC
+         mi+mPvsISS/+tGs/jJHtxGJ4rtDT0wg516ZGy0b0jwtS1OG3zMU9eOcIpiD7RubsGu
+         5CRyNL29fFg/6x74F0N8eaVJ1dAS1vKFWnNS1PqvLF0m2tn3zp14gYNEfSpr0JY96D
+         FrNbLLTuuamFv/H6uyANqzO+o0sOagUImBc2XeZotshXqsGdVhT0X3VftOhdmU2Ypq
+         +CnTLmQV38LXg==
+Date:   Tue, 25 Jul 2023 16:51:01 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     suijingfeng <suijingfeng@loongson.cn>
+Cc:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH 4/6] PCI/VGA: Move the new_state assignment out the loop
+Message-ID: <20230725215101.GA667452@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725100007.14775-1-quic_narepall@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6c8ca3a6-5898-ccba-cd01-9622215ddd10@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 03:30:07PM +0530, Naveen Kumar Goud Arepalli wrote:
-> L8A is the supply for UFS VCC, UFS specification allows different VCC
-> configurations for UFS devices.
-> -UFS 2.x devices: 2.70V - 3.60V
-> -UFS 3.x devices: 2.40V - 2.70V
+On Mon, Jul 24, 2023 at 09:02:14PM +0800, suijingfeng wrote:
+> PING, please !
+
+Don't worry, these are not forgotten.  Your other series seems more
+important, so that's what I've been paying attention to.
+
+> On 2023/7/11 21:43, Sui Jingfeng wrote:
+> > From: Sui Jingfeng <suijingfeng@loongson.cn>
+> > 
+> > In the vga_arbiter_notify_clients() function, the value of the 'new_state'
+> > variable will be 'false' on systems that have more than one PCI VGA card.
+> > Its value will be 'true' on systems that have one or no PCI VGA compatible
+> > card. In other words, its value is not relevant to the iteration, so move
+> > the assignment () out of the loop.
+> > 
+> > For a system with multiple video cards, this patch saves the redundant
+> > assignment.
+> > 
+> > Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> > ---
+> >   drivers/pci/vgaarb.c | 16 +++++++---------
+> >   1 file changed, 7 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+> > index 668139f7c247..4c448c758bab 100644
+> > --- a/drivers/pci/vgaarb.c
+> > +++ b/drivers/pci/vgaarb.c
+> > @@ -1468,22 +1468,20 @@ static void vga_arbiter_notify_clients(void)
+> >   {
+> >   	struct vga_device *vgadev;
+> >   	unsigned long flags;
+> > -	uint32_t new_decodes;
+> > -	bool new_state;
+> > +	bool state;
+> >   	if (!vga_arbiter_used)
+> >   		return;
+> > +	state = (vga_count > 1) ? false : true;
+> > +
+> >   	spin_lock_irqsave(&vga_lock, flags);
+> >   	list_for_each_entry(vgadev, &vga_list, list) {
+> > -		if (vga_count > 1)
+> > -			new_state = false;
+> > -		else
+> > -			new_state = true;
+> >   		if (vgadev->set_decode) {
+> > -			new_decodes = vgadev->set_decode(vgadev->pdev,
+> > -							 new_state);
+> > -			vga_update_device_decodes(vgadev, new_decodes);
+> > +			unsigned int decodes;
+> > +
+> > +			decodes = vgadev->set_decode(vgadev->pdev, state);
+> > +			vga_update_device_decodes(vgadev, decodes);
+> >   		}
+> >   	}
+> >   	spin_unlock_irqrestore(&vga_lock, flags);
 > 
-> As sa8775p-ride supports both ufs 2.x and ufs 3.x devices, remove min/max
-> voltages for L8A regulator. Initial voltage of L8A will be set to 2.504v
-> or 2.952v during PON depending on the UFS device type. On sa8775, UFS is
-> the only client in Linux for L8A and this regulator will be voted only
-> for enabling/disabling.
-> 
-> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-> index ed76680410b4..6f3891a09e59 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-> +++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-> @@ -98,8 +98,6 @@
->  
->  		vreg_l8a: ldo8 {
->  			regulator-name = "vreg_l8a";
-> -			regulator-min-microvolt = <2504000>;
-> -			regulator-max-microvolt = <3300000>;
->  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->  			regulator-allow-set-load;
->  			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-> -- 
-> 2.17.1
-> 
-
-Reviewing with very little expertise in the area....
-A few questions below that would help me understand this a bit better.
-
-Does it make sense to *not* set the range of the regulator at all?:
-
-    1. A board dts knows its UFS device
-    2. Is UFS backwards compatible with respect to UFS2/UFS3?
-       I don't know how the version is determined, but if it's a
-       "start at UFS2, go to UFS3" should it be scaled as that goes?
-
-Relying on the bootloader to set up the device before the kernel starts
-seems like a direction that should be actively avoided instead of
-depended on in my opinion.
-
-Thanks,
-Andrew
-
