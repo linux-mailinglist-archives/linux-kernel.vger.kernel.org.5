@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA75760DCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6C9760DCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbjGYJBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S232469AbjGYJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 05:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbjGYJBC (ORCPT
+        with ESMTP id S232500AbjGYJAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:01:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB614173D
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690275607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=10mn6aaFkPn0YdbwxtxpcKgA3YVJpkmRIrntoqjJVBU=;
-        b=LkmgIj/FtCdgmkwQ48vRnOw9E9gLRfNt1nYr6M1/yHFBF/BeO1wYfFkPPD2bv0zXuHmqc6
-        M+X7w6QfzoYUkT9ZCv0UUdMtZFPiOOTRGXX+OGZgeqDGb/xAv/pKkS4p36JCYcObQfDpCC
-        HTVKZrvRyvijDEyqNpV2JdVW2VhsrMw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-451-TZdUSMPZNzWwOdNOBncfjA-1; Tue, 25 Jul 2023 05:00:04 -0400
-X-MC-Unique: TZdUSMPZNzWwOdNOBncfjA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a356c74e0so362246366b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:00:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690275603; x=1690880403;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=10mn6aaFkPn0YdbwxtxpcKgA3YVJpkmRIrntoqjJVBU=;
-        b=JLCaUFsiYPiKrYcXiCk4sY4vqJU5O5Y8im15nNbEvNskSi9f/lfAIgXXqWN0cJ2cad
-         VBzN0Rw649gQVD+0YKVvGkWCBsBC9VD3l+nvfkr9wlTcMIUK3UsFTRrWT58khKc6To5O
-         Nn6ZhR9Kf3rLdTerlCajImI1Ol7pwLcy+KbqViKSh7Fzb0DBWADb5akkUqMW3BNHGLKA
-         qqGJydvzeJt7GkzukZ8doriD2hDCSJwuJ54yVMFoN/gURBG8zCSZzLpFg6Sfjw24YOEA
-         OViXXU8MPHct/TsEKwmHBFe+GTG8cXtpn91yFsHwvcjdCYmLnX49kEU0cf/pYnROo2ww
-         bJgw==
-X-Gm-Message-State: ABy/qLbKuZ07nmP910tif0EAKa4KaTtPii4otPKzKJ3nSe5wGqgUcpwn
-        yLxWe2dTBrbi8mshzpSCcjmfEQHEKMMXvHNVA/HPm0mol9wQT2L+CVkkfgtQ+4TdArhacToxkm7
-        T/JnD9uN6LGIGmUGJCV9J6NJvXfW6eOPR
-X-Received: by 2002:a17:906:2d6:b0:992:d337:6e3e with SMTP id 22-20020a17090602d600b00992d3376e3emr11466732ejk.66.1690275603509;
-        Tue, 25 Jul 2023 02:00:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGGRHa9OiYuLHkVAuKWwNap43VGDDNMYXat3TofzdFkTyTvlG7SdRfm1oxv0Yahopi3C2MBNw==
-X-Received: by 2002:a17:906:2d6:b0:992:d337:6e3e with SMTP id 22-20020a17090602d600b00992d3376e3emr11466719ejk.66.1690275603183;
-        Tue, 25 Jul 2023 02:00:03 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id dk14-20020a170906f0ce00b009930308425csm7931335ejb.31.2023.07.25.02.00.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 02:00:02 -0700 (PDT)
-Message-ID: <e0c859de-ff1a-5975-081d-cdb9e4fbcb3b@redhat.com>
-Date:   Tue, 25 Jul 2023 11:00:01 +0200
+        Tue, 25 Jul 2023 05:00:31 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0A2BD
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 02:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690275616; x=1721811616;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3pN/cixh5HH/mEXhEXj2LQ+Isx90fihL4pt1tCUTbLE=;
+  b=kqMk6XGdxqW6UGBvzMvytxI97z93omOy73uox1X53hPSEmYtqULajQhT
+   0fD5+Gniosn79JKlK7NvJDr0jQl/yd5cUiuiBoFiRJTuuw7bnq1V90uJ7
+   JNNp+v3aeFxYwiFk8/fMK1Gb3+OeofbLMVhOrkvPb1VQ04i57g7A68EQn
+   Y4t3aybyMTMvo8zVTCF57aJAVMYcB0aWFHNMwbjOVqtqh5ywovptu850B
+   OJpUS8g8Q/5Zp6Qj8Z03tJuaMjCH4snVBymuQd6dwSk4+b2qGCcpMyscg
+   IwWI3kdSj0xkPXM8iC3WaeyCDO9faCxnPvjp6XPel+11cM0mV6Ap9h8Mm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="454043053"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="454043053"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:00:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719973331"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="719973331"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 25 Jul 2023 02:00:11 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qODtp-002FuM-20;
+        Tue, 25 Jul 2023 12:00:09 +0300
+Date:   Tue, 25 Jul 2023 12:00:09 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
+        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZL+PGXMOf18Kc5Cu@smile.fi.intel.com>
+References: <20230720173956.3674987-1-glider@google.com>
+ <20230720173956.3674987-2-glider@google.com>
+ <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+ <ZL44FFAkG8pKS1lv@smile.fi.intel.com>
+ <ZL9X0TZb/QhCbEiC@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] vboxsf: Use flexible arrays for trailing string member
-Content-Language: en-US, nl
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20230720151458.never.673-kees@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230720151458.never.673-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL9X0TZb/QhCbEiC@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees, Larry,
+On Mon, Jul 24, 2023 at 10:04:34PM -0700, Yury Norov wrote:
+> On Mon, Jul 24, 2023 at 11:36:36AM +0300, Andy Shevchenko wrote:
+> > On Sat, Jul 22, 2023 at 06:57:23PM -0700, Yury Norov wrote:
+> > > On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
 
-On 7/20/23 17:15, Kees Cook wrote:
-> The declaration of struct shfl_string used trailing fake flexible arrays
-> for the string member. This was tripping FORTIFY_SOURCE since commit
-> df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3"). Replace the
-> utf8 and utf16 members with actual flexible arrays, drop the unused ucs2
-> member, and retriain a 2 byte padding to keep the structure size the same.
+...
+
+> > > 'GENMASK(nbits - 1, 0) << offset' looks really silly.
+> > 
+> > But you followed the thread to get a clue why it's written in this form, right?
 > 
-> Reported-by: Larry Finger <Larry.Finger@lwfinger.net>
-> Closes: https://lore.kernel.org/lkml/ab3a70e9-60ed-0f13-e3d4-8866eaccc8c1@lwfinger.net/
-> Tested-by: Larry Finger <Larry.Finger@lwfinger.net>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Yes, I did. But I don't expect everyone looking at kernel code would spend
+> time recovering discussions that explain why that happened. So, at least it
+> would be fine to drop a comment.
 
-Kees, Larry thank you for fixing this while I was on vacation.
+See also below.
 
-The patch looks good to me:
+...
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>           w = *map & (end < BITS_PER_LONG ? ~GENMASK(end, start) : BITMAP_LAST_WORD_MASK(start));
 
-Kees, I'm the vboxsf maintainer and it would be easiest for
-me if you can include this in a future 6.5 fixes pull-request
-to Linus if that is possible ?
+This GENMASK() may generate worse code as compiler uses more instructions
+instead of simple approach with the above..
 
-Regards,
+...
 
-Hans
+> bitmap_write                                   -     271    +271
+> my_bitmap_write                                -     248    +248
+> bitmap_read                                    -     229    +229
 
+my_ -- means your proposal? Do you mean you have it better in size than original one?
 
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> ---
->  fs/vboxsf/shfl_hostintf.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/vboxsf/shfl_hostintf.h b/fs/vboxsf/shfl_hostintf.h
-> index aca829062c12..069a019c9247 100644
-> --- a/fs/vboxsf/shfl_hostintf.h
-> +++ b/fs/vboxsf/shfl_hostintf.h
-> @@ -68,9 +68,9 @@ struct shfl_string {
->  
->  	/** UTF-8 or UTF-16 string. Nul terminated. */
->  	union {
-> -		u8 utf8[2];
-> -		u16 utf16[1];
-> -		u16 ucs2[1]; /* misnomer, use utf16. */
-> +		u8 legacy_padding[2];
-> +		DECLARE_FLEX_ARRAY(u8, utf8);
-> +		DECLARE_FLEX_ARRAY(u16, utf16);
->  	} string;
->  };
->  VMMDEV_ASSERT_SIZE(shfl_string, 6);
 
