@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BA8761F84
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638B2761F7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjGYQuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        id S231165AbjGYQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbjGYQur (ORCPT
+        with ESMTP id S229558AbjGYQuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:50:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0AB268B;
-        Tue, 25 Jul 2023 09:50:03 -0700 (PDT)
+        Tue, 25 Jul 2023 12:50:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B17359F;
+        Tue, 25 Jul 2023 09:49:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02EDB61804;
-        Tue, 25 Jul 2023 16:49:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42710C433C9;
-        Tue, 25 Jul 2023 16:49:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DDC6A617F3;
+        Tue, 25 Jul 2023 16:49:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E77FBC433C8;
+        Tue, 25 Jul 2023 16:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690303767;
-        bh=wljKIvIhCAvwUWXLNlEVuBqrMB/ZTYdEiw5PLP21L/U=;
+        s=k20201202; t=1690303774;
+        bh=L4VvWc/XpiKpMxRX4WTAwtabVH7J0IT0oNOuEjjs92A=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ozm3sP55zIQu83KNRdafniy85etyRac6KCEQaLPPixxVJe/WX7isfuj82y8iQJk2A
-         0+EVS0F/i2i8GBP9vXAD8iVFIfn4OiDzV55X/84qZulOSuZ1/YwIQGEeIX7OzwBve+
-         vuDbnGOZ1l6x5CLtyXXGCGMP3tqtKJPhQR7HdlHY3A9SrDT5v/CPZHiNxdoVgHlir3
-         c7EyjNpQgeaNdjV9OhILjgCkh13iL/E5+DooJ+azc01KOiEM2COo3Rk3dF1J8eDeUV
-         YEPX6Nisw7sBilygqtewjBOuyDwfiKqlhUa9MLkU6gzsIhygDi2fazWIV8G+fiGkSD
-         Ov/pxCrrh5OIQ==
+        b=tl8a1jwSsPzW+8j4I2mT6JhlGUVLWHQEBBw+t4rtlyfhcVkvo95n0oiVHGQJmkYHk
+         b8LjUZEGM0qlPVHPxbk+c7DJpPtCfbcWAbKTgihj+KvBcC/a9Bw4Yu0MbT7EZGW8ER
+         76zq6mgEZ7vzJLIY5xS3OVo1GdU5eS/TbJNje/rWablIwmnAiqO+QlK8iqrsbjUVaP
+         fVZ1nCCfvimonAU++LMLp3eVtMKJ1TZKu/arY+m0eE3iIHVOLI4HyTH2NqYJJ7dZZd
+         DVAAlmiiNqHr2jy/tz6n1YPA+k5+EmtkAd74L4tmD+rNU2/glLSbZPIHMKRPBFABDo
+         CjKFCrt/EBN8w==
 From:   Mark Brown <broonie@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1689062414-3654-1-git-send-email-quic_rohiagar@quicinc.com>
-References: <1689062414-3654-1-git-send-email-quic_rohiagar@quicinc.com>
-Subject: Re: [PATCH v3 0/3] Add regulators support for PMX75
-Message-Id: <169030376498.1478387.14075297959200519808.b4-ty@kernel.org>
-Date:   Tue, 25 Jul 2023 17:49:24 +0100
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Minjie Du <duminjie@vivo.com>
+Cc:     opensource.kernel@vivo.com
+In-Reply-To: <20230725035038.1702-1-duminjie@vivo.com>
+References: <20230725035038.1702-1-duminjie@vivo.com>
+Subject: Re: [PATCH v2] spi: fsl-dspi: Use dev_err_probe() in
+ dspi_request_dma()
+Message-Id: <169030377267.1485233.13435532825497669475.b4-ty@kernel.org>
+Date:   Tue, 25 Jul 2023 17:49:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,29 +59,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 13:30:11 +0530, Rohit Agarwal wrote:
-> Changes in v3:
->  - Created a separate patch for updating the entry in pmx65 bindings.
->  - Changed the subject of patches [1/3] and [2/3] according to the convention.
+On Tue, 25 Jul 2023 11:50:37 +0800, Minjie Du wrote:
+> It is possible for dma_request_chan() to return EPROBE_DEFER, which means
+> dev is not ready yet.
+> At this point dev_err() will have no output.
 > 
-> Changes in v2:
->  - Addressed Krzysztof to update the if:then: in bindings patch.
->  - Breaking the original series [1] into smaller series.
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/3] regulator: dt-bindings: qcom,rpmh: Update PMX65 entry
-      commit: 4fdef8553df58953f572f1cb46d357c735c683a9
-[2/3] regulator: dt-bindings: qcom,rpmh: Add PMX75 compatible
-      commit: 0ef3d931632e3fce51ed5510935238937d644c97
-[3/3] regulator: qcom-rpmh: Add regulators support for PMX75
-      commit: 0b294ed669ead34a348d17d06b6d4d58712b14e2
+[1/1] spi: fsl-dspi: Use dev_err_probe() in dspi_request_dma()
+      commit: 908e5a3d4e6f60fa2d3912be7087e745639c4404
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
