@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A7476208C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E898762095
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 19:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjGYRtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 13:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        id S230103AbjGYRvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 13:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbjGYRtl (ORCPT
+        with ESMTP id S229778AbjGYRvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:49:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346D31FEF;
-        Tue, 25 Jul 2023 10:49:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB8206184A;
-        Tue, 25 Jul 2023 17:49:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6AB4C433CA;
-        Tue, 25 Jul 2023 17:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690307375;
-        bh=WJL53er2hn/3EEx4DOJfAbOjXZnKjKBtRagFrtg05jg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=CPO6RMRPaMRtVah/1RA1wO5FXxmP2DhlHptZXjtjeJZn524snzFNmGkI4PM2ckIo6
-         7FXzBD4qXePRo3PzLIkOFhZGyDj+4aolBAs7lhubS+/sugRBmEv5uwY2APQucc4EIz
-         1nGGt64bGnlel2IpehCbvoOPhAXT8wnt5XPyu8AhkROpI7dA7thAncucJtelJljMnw
-         atiZpLOBvBZ0F/r5WTJZfurX5L65y1q7LeSvDTjmcEUXR6SWW06bn+O1CXh/QQgkcV
-         FpqLMVfkRM4VMT0UlbHKmPRIUz4d0EWFPpNeyuIHEERTM60aZDTVat5SY/xyjqL5hf
-         qQXqITOBkCDlA==
-Received: (nullmailer pid 3497939 invoked by uid 1000);
-        Tue, 25 Jul 2023 17:49:25 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 25 Jul 2023 13:51:37 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80005E2;
+        Tue, 25 Jul 2023 10:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=yNyoNVRI5+OCod59EicTdcPDoMu4zFqhfsWIGBVcAYg=; b=vkRAHPvlC1MAJG2qnz3G/UvB5y
+        O9rFGsc7O5vUdb46RoWwHvf7PtGdD7zY2dN1k+nI8Q+HRfdZI9IAuDDLl6TK+R+m8uu4HY8ZRRtkc
+        SZ//OGAADklx9x6UmAHweHZzAOulObMwM+Zw4WaHCIcHFzaznp0HplOG8a9kOQzrvSFI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qOMBp-002IJZ-4m; Tue, 25 Jul 2023 19:51:17 +0200
+Date:   Tue, 25 Jul 2023 19:51:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
+Cc:     "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/5] dt-bindings: net: Add HPE GXP UMAC
+Message-ID: <4c19532d-a909-4ca6-a0a7-d4cd9cc828b0@lunn.ch>
+References: <20230721212044.59666-1-nick.hawkins@hpe.com>
+ <20230721212044.59666-4-nick.hawkins@hpe.com>
+ <57d882ed-82e5-4584-8126-ca2007064126@lunn.ch>
+ <DM4PR84MB192785EC6F2B8A76FF9E5E3F8803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc:     kuba@kernel.org, lee@kernel.org, andi.shyti@kernel.org,
-        alsa-devel@alsa-project.org, linux-i2c@vger.kernel.org,
-        richardcochran@gmail.com, linux-mmc@vger.kernel.org,
-        arnaud.pouliquen@foss.st.com, olivier.moysan@foss.st.com,
-        vkoul@kernel.org, linux-serial@vger.kernel.org, robh+dt@kernel.org,
-        alexandre.torgue@foss.st.com, krzysztof.kozlowski+dt@linaro.org,
-        ulf.hansson@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hugues.fruchet@foss.st.com,
-        mchehab@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-phy@lists.infradead.org, pabeni@redhat.com,
-        devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com,
-        linux-crypto@vger.kernel.org, jic23@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>, arnd@kernel.org,
-        linux-usb@vger.kernel.org, catalin.marinas@arm.com,
-        linux-iio@vger.kernel.org, davem@davemloft.net,
-        Oleksii_Moisieiev@epam.com, will@kernel.org,
-        dmaengine@vger.kernel.org, netdev@vger.kernel.org,
-        fabrice.gasnier@foss.st.com, linux-spi@vger.kernel.org,
-        conor+dt@kernel.org, herbert@gondor.apana.org.au
-In-Reply-To: <20230725164104.273965-4-gatien.chevallier@foss.st.com>
-References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
- <20230725164104.273965-4-gatien.chevallier@foss.st.com>
-Message-Id: <169030736534.3497905.9507005013968358402.robh@kernel.org>
-Subject: Re: [PATCH v2 03/11] dt-bindings: bus: document ETZPC
-Date:   Tue, 25 Jul 2023 11:49:25 -0600
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM4PR84MB192785EC6F2B8A76FF9E5E3F8803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 25 Jul 2023 18:40:56 +0200, Gatien Chevallier wrote:
-> Document ETZPC (Extended TrustZone protection controller). ETZPC is a
-> firewall controller.
+On Tue, Jul 25, 2023 at 01:44:30PM +0000, Hawkins, Nick wrote:
+> Hi Andrew,
 > 
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> ---
+> Thank you for the feedback.
 > 
-> Changes in V2:
-> 	- Corrected errors highlighted by Rob's robot
-> 	- No longer define the maxItems for the "feature-domains"
-> 	  property
-> 	- Fix example (node name, status)
-> 	- Declare "feature-domain-names" as an optional
-> 	  property for child nodes
-> 	- Fix description of "feature-domains" property
-> 	- Reorder the properties so it matches RIFSC
-> 	- Add missing "feature-domain-controller" property
+> > > +examples:
+> > > +  - |
+> > > +    ethernet@4000 {
+> > > +      compatible = "hpe,gxp-umac";
+> > > +      reg = <0x4000 0x80>;
+> > > +      interrupts = <22>;
+> > > +      mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
 > 
->  .../bindings/bus/st,stm32-etzpc.yaml          | 96 +++++++++++++++++++
->  1 file changed, 96 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+> > Do both ports get the sane MAC address?
 > 
+> No they do not. The first one will get the MAC address, the second
+> will be an external phy we are managing via the MDIO path.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Then please put the mac-address property in the correct place, inside
+port@0.
 
-yamllint warnings/errors:
+> > > +      ethernet-ports {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        port@0 {
+> > > +          reg = <0>;
+> > > +          phy-handle = <&eth_phy0>;
+> > > +        };
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/bus/st,stm32-etzpc.example.dtb: serial@4c001000: Unevaluated properties are not allowed ('feature-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/serial/st,stm32-uart.yaml#
+> > > +      mdio {
+> 
+> > This seems to be wrong. You have a standalone MDIO bus driver, not
+> > part of the MAC address space?
+> 
+> I based this from other yaml examples I found. Is there a better way to
+> represent it?
 
-doc reference errors (make refcheckdocs):
+The validator when given examples does not validate phy-handle
+actually points to a known node. So you can just leave the mdio bus
+out all together.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230725164104.273965-4-gatien.chevallier@foss.st.com
+> mdio0: mdio@4080 {
+> 	compatible = "hpe,gxp-umac-mdio";
+> 	reg = <0x4080 0x10>;
+> 	#address-cells = <1>;
+> 	#size-cells = <0>;
+> 	ext_phy0: ethernt-phy@0 {
+> 		compatible = "marvell,88e1415","ethernet-phy-ieee802.3-c22";
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+which is wrong. Please read the binding document for PHYs.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+      Andrew
