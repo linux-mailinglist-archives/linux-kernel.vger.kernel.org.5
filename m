@@ -2,97 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 407337617EC
+	by mail.lfdr.de (Postfix) with ESMTP id 86CDF7617ED
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbjGYMDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        id S233230AbjGYMDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjGYMDo (ORCPT
+        with ESMTP id S233089AbjGYMDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:03:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7E710D4
+        Tue, 25 Jul 2023 08:03:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3517CA3
         for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rj19k1Vm+sor8RHKIaaTyN5cpuhdwmNlFlHX6MThlJU=; b=NJaEqarAmxWfb7fTD3TOMqIgEJ
-        HVBm/Mvv13s8gZSzbr85BbBjs4K4jyWqnnCi/JeSubb+peZ+MSJnAdEImZLfdM+uCgidjtlFlwSVi
-        7ONWGFrMyLqP5eTsDVQmT2DJYTiSuu3B+dSxNLpYT8gra/cmu0k5idT2RegbvgIJwqKx6sMUQEDlG
-        2SCK8Ky8egGiWGscZ2JGKw9+b1wM4dWmr/XBO/z/snxvS9zcUgeaw10lnVFBygvsr2KISOBHqymCS
-        Ff+WMjn5qb/zucydLLzhJZRkU8FQYJhaXKayB0sbb4OtMZvCYTCz1TIU8zi9E6N6jJlJ70wrrEsgT
-        lMEurEPw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOGlN-0047ZH-11;
-        Tue, 25 Jul 2023 12:03:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C2AD8300155;
-        Tue, 25 Jul 2023 14:03:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A9F352612ABE5; Tue, 25 Jul 2023 14:03:36 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 14:03:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcuwait: Add might_sleep() annotations
-Message-ID: <20230725120336.GG3765278@hirez.programming.kicks-ass.net>
-References: <20230724160337.20851-1-dave@stgolabs.net>
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9Fyw5dyDzrRtD;
+        Tue, 25 Jul 2023 20:02:48 +0800 (CST)
+Received: from [10.67.110.73] (10.67.110.73) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 25 Jul
+ 2023 20:03:40 +0800
+Message-ID: <32552071-9e0f-b86b-202a-5cdf20871f59@huawei.com>
+Date:   Tue, 25 Jul 2023 20:03:40 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724160337.20851-1-dave@stgolabs.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [PATCH -next v2] arm64: fix build warning for
+ ARM64_MEMSTART_SHIFT
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     Anshuman Khandual <anshuman.khandual@arm.com>, <will@kernel.org>,
+        <ryan.roberts@arm.com>, <joey.gouly@arm.com>, <ardb@kernel.org>,
+        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230724172751.3048501-1-chris.zjh@huawei.com>
+ <ZL6UvLlyz3MyVfjr@arm.com> <4938685e-d293-4970-b964-3b9f560d45dd@arm.com>
+ <9fcfe47f-9289-8eb5-ce4e-9f66648b0e89@huawei.com> <ZL+gr8b/HfpwVKdf@arm.com>
+From:   "zhangjianhua (E)" <chris.zjh@huawei.com>
+In-Reply-To: <ZL+gr8b/HfpwVKdf@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 09:03:36AM -0700, Davidlohr Bueso wrote:
-> ... as with regular waitqueues.
 
-No immediate objection, but please, tell us more. What made you get up
-this fine morning and write this patch?
-
-> Signed-off-by: Davidlohr Bueso <dave@stgolabs.net>
-> ---
->  include/linux/rcuwait.h | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rcuwait.h b/include/linux/rcuwait.h
-> index 27343424225c..c0fcac903d03 100644
-> --- a/include/linux/rcuwait.h
-> +++ b/include/linux/rcuwait.h
-> @@ -74,7 +74,10 @@ extern void finish_rcuwait(struct rcuwait *w);
->  })
->  
->  #define rcuwait_wait_event(w, condition, state)				\
-> -	___rcuwait_wait_event(w, condition, state, 0, schedule())
-> +do {									\
-> +	might_sleep();							\
-> +	___rcuwait_wait_event(w, condition, state, 0, schedule());	\
-> +} while (0)
->  
->  #define __rcuwait_wait_event_timeout(w, condition, state, timeout)	\
->  	___rcuwait_wait_event(w, ___wait_cond_timeout(condition),	\
-> @@ -84,6 +87,7 @@ extern void finish_rcuwait(struct rcuwait *w);
->  #define rcuwait_wait_event_timeout(w, condition, state, timeout)	\
->  ({									\
->  	long __ret = timeout;						\
-> +	might_sleep();							\
->  	if (!___wait_cond_timeout(condition))				\
->  		__ret = __rcuwait_wait_event_timeout(w, condition,	\
->  						     state, timeout);	\
-> -- 
-> 2.41.0
-> 
+在 2023/7/25 18:15, Catalin Marinas 写道:
+> On Tue, Jul 25, 2023 at 04:47:46PM +0800, zhangjianhua (E) wrote:
+>> 在 2023/7/25 12:22, Anshuman Khandual 写道:
+>>> On 7/24/23 20:41, Catalin Marinas wrote:
+>>>> On Mon, Jul 24, 2023 at 05:27:51PM +0000, Zhang Jianhua wrote:
+>>>>> When building with W=1, the following warning occurs.
+>>>>>
+>>>>> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
+>>>>>     129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
+>>>>>         |                                         ^~~~~~~~~
+>>>>> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
+>>>>>     142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
+>>>>>         |     ^~~~~~~~~~~~~~~~~~~~
+>>>> Another thing that's missing here is that the warning is probably when
+>>>> this file is included from asm-offests.h or some .S file.
+>>>>
+>>>>> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
+>>>>> index 577773870b66..51bdce66885d 100644
+>>>>> --- a/arch/arm64/include/asm/kernel-pgtable.h
+>>>>> +++ b/arch/arm64/include/asm/kernel-pgtable.h
+>>>>> @@ -125,12 +125,14 @@
+>>>>>     * (64k granule), or a multiple that can be mapped using contiguous bits
+>>>>>     * in the page tables: 32 * PMD_SIZE (16k granule)
+>>>>>     */
+>>>>> -#if defined(CONFIG_ARM64_4K_PAGES)
+>>>>> +#if defined(CONFIG_ARM64_4K_PAGES) && defined(PUD_SHIFT)
+>>>>>    #define ARM64_MEMSTART_SHIFT		PUD_SHIFT
+>>>> That's not the correct fix since PUD_SHIFT should always be defined.
+>>>> When CONFIG_PGTABLE_LEVELS == 3, pgtable-types.h includes
+>>>> asm-generic/pgtable-nopud.h and this defines PUD_SHIFT. We either got
+>>> Right, PUD_SHIFT is always defined irrespective of page table levels.
+>>>
+>>>> ARM64_MEMSTART_SHIFT defined in the wrong file or kernel-pgtable.h does
+>>>> not pull the relevant headers (either directly or via an included
+>>>> header). Even if kernel-pgtable.h ends up including the nopud/nopmd
+>>>> headers, P*D_SHIFT is guarded by an #indef __ASSEMBLY__ in those files.
+>>>>
+>>>> Something like below appears to fix this, though I'm not particularly
+>>>> fond of guarding the ARM64_MEMSTART_* definitions by #ifndef
+>>>> __ASSEMBLY__ for no apparent reason (could add a comment though):
+>>>>
+>>>> -----------------------8<---------------------------
+>>>> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
+>>>> index 577773870b66..fcea7e87a6ca 100644
+>>>> --- a/arch/arm64/include/asm/kernel-pgtable.h
+>>>> +++ b/arch/arm64/include/asm/kernel-pgtable.h
+>>>> @@ -118,6 +118,8 @@
+>>>>    #define SWAPPER_RX_MMUFLAGS	(SWAPPER_RW_MMUFLAGS | PTE_RDONLY)
+>>>>    #endif
+>>>> +#ifndef __ASSEMBLY__
+>>>> +
+>>>>    /*
+>>>>     * To make optimal use of block mappings when laying out the linear
+>>>>     * mapping, round down the base of physical memory to a size that can
+>>>> @@ -145,4 +147,6 @@
+>>>>    #define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
+>>>>    #endif
+>>>> +#endif /* __ASSEMBLY__ */
+>>>> +
+>>>>    #endif	/* __ASM_KERNEL_PGTABLE_H */
+>>>> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> index e4944d517c99..22b36f2d5d93 100644
+>>>> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> @@ -6,6 +6,7 @@
+>>>>    #define __ASM_PGTABLE_HWDEF_H
+>>>>    #include <asm/memory.h>
+>>>> +#include <asm/pgtable-types.h>
+>>>>    /*
+>>>>     * Number of page-table levels required to address 'va_bits' wide
+>>>> diff --git a/arch/arm64/include/asm/pgtable-types.h b/arch/arm64/include/asm/pgtable-types.h
+>>>> index b8f158ae2527..ae86e66fdb11 100644
+>>>> --- a/arch/arm64/include/asm/pgtable-types.h
+>>>> +++ b/arch/arm64/include/asm/pgtable-types.h
+>>>> @@ -11,6 +11,8 @@
+>>>>    #include <asm/types.h>
+>>>> +#ifndef __ASSEMBLY__
+>>>> +
+>>>>    typedef u64 pteval_t;
+>>>>    typedef u64 pmdval_t;
+>>>>    typedef u64 pudval_t;
+>>>> @@ -44,6 +46,8 @@ typedef struct { pteval_t pgprot; } pgprot_t;
+>>>>    #define pgprot_val(x)	((x).pgprot)
+>>>>    #define __pgprot(x)	((pgprot_t) { (x) } )
+>>>> +#endif /* __ASSEMBLY__ */
+>>>> +
+>>>>    #if CONFIG_PGTABLE_LEVELS == 2
+>>>>    #include <asm-generic/pgtable-nopmd.h>
+>>>>    #elif CONFIG_PGTABLE_LEVELS == 3
+>>>> -----------------------8<---------------------------
+>>>>
+>>>> To avoid guarding the ARM64_MEMSTART_* definitions, we could instead
+>>>> move the P*D_SHIFT definitions in asm-generic/pgtable-nop*d.h outside
+>>>> the #ifndef __ASSEMBLY__ block.
+>>> OR could ARM64_MEMSTART_SHIFT and ARM64_MEMSTART_ALIGN computation blocks
+>>> be moved inside arch/arm64/mm/init.c, where it is used exclusively. Seems
+>>> to be solving the problem as well.
+> That's fine by me, better than adding the #ifndef __ASSEMBLY__ around
+> them.
+>
+>> This method can avoid the current compilation warning, but does not
+>> solve the problem that PUD_SHIFT and PMD_SHIFT undefined in fact, and
+>> it is contrary to XXX_SHIFT should always be defined. Maybe it would
+>> be more appropriate to solve this issue directly.
+> For .c files, we can solve this by including asm/pgtable-types.h in
+> asm/pgtable-hwdef.h. This still leaves P*D_SHIFT undefined for .S files
+> since the generic nop*d.h headers guard the shifts with !__ASSEMBLY__
+> but do we really care about this? I haven't seen any other warning of
+> P*D_SHIFT not being defined. If you do want to solve these, just go and
+> change the generic headers to take the shift out of the asm guard. I
+> don't think it's worth it.
+OK, agree, I will send a new patch for Anshuman's method.
