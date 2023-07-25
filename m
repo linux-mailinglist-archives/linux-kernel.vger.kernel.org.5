@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 697DE7606CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0C97606D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 05:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbjGYDmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 23:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
+        id S230144AbjGYDmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 23:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjGYDmD (ORCPT
+        with ESMTP id S229497AbjGYDmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 23:42:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABEA1725;
-        Mon, 24 Jul 2023 20:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PD7F/GgFgl7LQTbflpAkcaqyjD+rYME0tJ2KPALznEw=; b=nRmFKamUBZ7Wz3GXaHnzbrWX0A
-        +unM0RpFYz6QzvMCfR9sAExj/gdu8M5xnf1ZPxmCGnZ/HuN7wpuQM2O3jMzWP53eSEIHiucbfMsNC
-        CiX91bsCCqo1yDr7COJj76rTSMXMO85zp3ktDEKqS3OmMZz3GoBgFWJ7onJKs48av4kVbaVjQHFag
-        wNwYzKVOWvqA7I/w0NLY9+F2Z/nOwLjWY5Eyi3AqyEM7YTJcAf9WTFdkuIOQTPYtu/XNgtZPNxNyN
-        xnr1mdgRlWQPSjunWEcX6/CxUozad0U/TKB9fZNRhrYFEEvMl3nk343se7hU1MYnr4GJL03bc1BJH
-        BRCY38YA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qO8vu-00568t-TI; Tue, 25 Jul 2023 03:41:58 +0000
-Date:   Tue, 25 Jul 2023 04:41:58 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Daniel Dao <dqminh@cloudflare.com>, linux-fsdevel@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, djwong@kernel.org
-Subject: Re: Kernel NULL pointer deref and data corruptions with xfs on 6.1
-Message-ID: <ZL9EhledFQbN9djT@casper.infradead.org>
-References: <CA+wXwBRGab3UqbLqsr8xG=ZL2u9bgyDNNea4RGfTDjqB=J3geQ@mail.gmail.com>
- <CA+wXwBR6S3StBwJJmo8Fu6KdPW5Q382N7FwnmfckBJo4e6ZD_A@mail.gmail.com>
- <ZL7w9dEH8BSXRzyu@dread.disaster.area>
+        Mon, 24 Jul 2023 23:42:06 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729091725;
+        Mon, 24 Jul 2023 20:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1690256521;
+        bh=fqZhhu1PD0i+4g0TKatkfYBNa6Ta8n6gN3J4CmEr6Ls=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=C+5P9aFTM3Wjbzg0OpyrP37MMtgmILxrNCL0SBekDUGnLmL2hbYoY/Whcme+sowb+
+         jj0g8pEh3Ja+StlLshqWdLwAovENk3HP9UoEWOZg5dYPNwU82WAsrEYjqFeIQeIe/Q
+         aWyqJDMnour5OZE732UMTJFRgFodBjF+n6U9w/9phMH2/C6BChsF7G9XJJtu0dFlj8
+         hjM9emqPQqJJDDkxyaLgOk1nc8xDUCmEqzoXxwIw86tbWobOCe5SbyOHqATQBKlgxl
+         aXy3n1WqIiGtc2/Z2uFQC5qdhp/sG1INDLRVaLZ5lkrlMPTpl+l8bbtjUNgJ1GbqDQ
+         jqtHWF6biKMbg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R92s426wJz4wxy;
+        Tue, 25 Jul 2023 13:42:00 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
+Cc:     ajd@linux.ibm.com, catalin.marinas@arm.com, fbarrat@linux.ibm.com,
+        iommu@lists.linux.dev, jgg@ziepe.ca, jhubbard@nvidia.com,
+        kevin.tian@intel.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        nicolinc@nvidia.com, npiggin@gmail.com, robin.murphy@arm.com,
+        seanjc@google.com, will@kernel.org, x86@kernel.org,
+        zhi.wang.linux@gmail.com, Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH v2 3/5] mmu_notifiers: Call invalidate_range() when
+ invalidating TLBs
+In-Reply-To: <8f293bb51a423afa71ddc3ba46e9f323ee9ffbc7.1689768831.git-series.apopple@nvidia.com>
+References: <cover.de78568883814904b78add6317c263bf5bc20234.1689768831.git-series.apopple@nvidia.com>
+ <8f293bb51a423afa71ddc3ba46e9f323ee9ffbc7.1689768831.git-series.apopple@nvidia.com>
+Date:   Tue, 25 Jul 2023 13:41:59 +1000
+Message-ID: <87y1j4y7w8.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZL7w9dEH8BSXRzyu@dread.disaster.area>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 07:45:25AM +1000, Dave Chinner wrote:
-> On Mon, Jul 24, 2023 at 12:23:31PM +0100, Daniel Dao wrote:
-> > Hi again,
-> > 
-> > We had another example of xarray corruption involving xfs and zsmalloc. We are
-> > running zram as swap. We have 2 tasks deadlock waiting for page to be released
+Alistair Popple <apopple@nvidia.com> writes:
+> The invalidate_range() is going to become an architecture specific mmu
+> notifier used to keep the TLB of secondary MMUs such as an IOMMU in
+> sync with the CPU page tables. Currently it is called from separate
+> code paths to the main CPU TLB invalidations. This can lead to a
+> secondary TLB not getting invalidated when required and makes it hard
+> to reason about when exactly the secondary TLB is invalidated.
+>
+> To fix this move the notifier call to the architecture specific TLB
+> maintenance functions for architectures that have secondary MMUs
+> requiring explicit software invalidations.
+>
+> This fixes a SMMU bug on ARM64. On ARM64 PTE permission upgrades
+> require a TLB invalidation. This invalidation is done by the
+> architecutre specific ptep_set_access_flags() which calls
+  ^
+  architecture
+  
+> flush_tlb_page() if required. However this doesn't call the notifier
+> resulting in infinite faults being generated by devices using the SMMU
+> if it has previously cached a read-only PTE in it's TLB.
+>
+> Moving the invalidations into the TLB invalidation functions ensures
+> all invalidations happen at the same time as the CPU invalidation. The
+> architecture specific flush_tlb_all() routines do not call the
+> notifier as none of the IOMMUs require this.
+>
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
 > 
-> Do your problems on 6.1 go away if you stop using zram as swap?
+...
 
-I think zram is the victim here, not the culprit.  I think what's
-going on is that -- somehow -- there are stale pointers in the xarray.
-zram allocates these pages (I suspect most of the memory in this machine
-is allocated to zram or page cache) and then we blow up when finding
-a folio in the page cache which has a ->mapping that is actually a
-movable_ops structure.
+> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+> index 0bd4866..9724b26 100644
+> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
+> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+> @@ -752,6 +752,8 @@ void radix__local_flush_tlb_page(struct vm_area_struct *vma, unsigned long vmadd
+>  		return radix__local_flush_hugetlb_page(vma, vmaddr);
+>  #endif
+>  	radix__local_flush_tlb_page_psize(vma->vm_mm, vmaddr, mmu_virtual_psize);
+> +	mmu_notifier_invalidate_range(vma->vm_mm, vmaddr,
+> +						vmaddr + mmu_virtual_psize);
+>  }
+>  EXPORT_SYMBOL(radix__local_flush_tlb_page);
 
-But how do we get stale pointers in the xarray?  I've been worrying at
-that problem for months.  At some point, the refcount must go down to
-zero:
+I think we can skip calling the notifier there? It's explicitly a local flush.
 
-static inline void folio_put(struct folio *folio)
-{
-        if (folio_put_testzero(folio))
-                __folio_put(folio);
-}
-
-(assume we're talking about a large folio; everything seems to point
-that way):
-
-__folio_put_large:
-        if (!folio_test_hugetlb(folio))
-                __page_cache_release(folio);
-        destroy_large_folio(folio);
-
-destroy_large_folio:
-	free_transhuge_page()
-free_transhuge_page:
-        free_compound_page(page);
-free_compound_page:
-        free_the_page(page, compound_order(page));
-free_the_page:
-                __free_pages_ok(page, order, FPI_NONE);
-__free_pages_ok:
-        if (!free_pages_prepare(page, order, fpi_flags))
-free_pages_prepare:
-       if (PageMappingFlags(page))
-                page->mapping = NULL;
-(doesn't trigger; PageMappingFlags are false for page cache)
-        if (is_check_pages_enabled()) {
-                if (free_page_is_bad(page))
-free_page_is_bad:
-        if (likely(page_expected_state(page, PAGE_FLAGS_CHECK_AT_FREE)))
-                return false;
-
-        /* Something has gone sideways, find it */
-        free_page_is_bad_report(page);
-page_expected_state:
-        if (unlikely((unsigned long)page->mapping | ...
-                return false;
-
-free_page_is_bad_report:
-        bad_page(page,
-                 page_bad_reason(page, PAGE_FLAGS_CHECK_AT_FREE));
-page_bad_reason:
-        if (unlikely(page->mapping != NULL))
-                bad_reason = "non-NULL mapping";
-
-So (assuming that Daniel has check_pages_enabled set and isn't ignoring
-important parts of dmesg, which seem like reasonable assumptions), the
-last put of a folio must be after the folio has had its ->mapping cleared
-
-But we remove the folio from the page cache in page_cache_delete(),
-right before we set the mapping to NULL.  And again in
-delete_from_page_cache_batch() (in the other order; I don't think that's
-relevant?)
-
-So where do we set folio->mapping to NULL without removing folio from
-the XArray?  I'm beginning to suspect it's a mishandled failure in
-split_huge_page(), so I'll re-review that code path tomorrow.
+cheers
