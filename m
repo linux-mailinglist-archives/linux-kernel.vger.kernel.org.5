@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4619761E85
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D336761E8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 18:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbjGYQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 12:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S230478AbjGYQah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 12:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjGYQ3Q (ORCPT
+        with ESMTP id S229603AbjGYQae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 12:29:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F41F1723;
-        Tue, 25 Jul 2023 09:29:08 -0700 (PDT)
+        Tue, 25 Jul 2023 12:30:34 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D10311A;
+        Tue, 25 Jul 2023 09:30:33 -0700 (PDT)
 Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E3D714AD;
-        Tue, 25 Jul 2023 18:28:07 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4AA134AD;
+        Tue, 25 Jul 2023 18:29:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690302488;
-        bh=568xO1KfCfd9modMgC890lLavj5lknuL1KF7VDmcX0M=;
+        s=mail; t=1690302573;
+        bh=k+Peaua+jrXGhzwyW/0IjINrHEbJHZ4Qwtk++uw3Gfc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KcWWLnEVztr+rLBDgndSy4xPgWEpy4jxmFI4S5KfAAS7uXkBipNJsiIoZwUs3WPkU
-         9WkjuZmM6IJWDziGDBy6ufYYD/68/BvPtraeF0Lcois7S+2KzEhZya9cFzS0mhCK9B
-         Qvffz2n34rYvCCVi7Pswg1rLmpC0qZGXU3q6dgC0=
-Date:   Tue, 25 Jul 2023 19:29:13 +0300
+        b=tgZHHBRxf2MqyGPPVQlzvzbaj2JnS+fCE9nRHlRrVkP/aqEDhNtthBp+6Uy3Lbk4k
+         A5rHAKCo03sgqNFTozL3MI+t0v1omU9fpl+itPBoacyFqaszxJl6k/6U2gZJIW7d3b
+         wfgQAe1NiuSLQhCtRxqh9uml470w1Lkxntfqajo4=
+Date:   Tue, 25 Jul 2023 19:30:39 +0300
 From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -36,19 +36,19 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Satish Nagireddy <satish.nagireddy@getcruise.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/8] media: i2c: ds90ub960: Configure CSI-2 continuous
- clock
-Message-ID: <20230725162913.GH31069@pendragon.ideasonboard.com>
+Subject: Re: [PATCH v2 2/8] media: i2c: ds90ub953: Use
+ v4l2_fwnode_endpoint_parse()
+Message-ID: <20230725163039.GI31069@pendragon.ideasonboard.com>
 References: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
- <20230720-fpdlink-additions-v2-1-b91b1eca2ad3@ideasonboard.com>
+ <20230720-fpdlink-additions-v2-2-b91b1eca2ad3@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720-fpdlink-additions-v2-1-b91b1eca2ad3@ideasonboard.com>
+In-Reply-To: <20230720-fpdlink-additions-v2-2-b91b1eca2ad3@ideasonboard.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,58 +59,74 @@ Hi Tomi,
 
 Thank you for the patch.
 
-On Thu, Jul 20, 2023 at 01:30:32PM +0300, Tomi Valkeinen wrote:
-> Use 'clock-noncontinuous' from DT to configure the
-> continuous/non-continuous clock setting for the TX ports.
+On Thu, Jul 20, 2023 at 01:30:33PM +0300, Tomi Valkeinen wrote:
+> Use v4l2_fwnode_endpoint_parse() to parse the sink endpoint parameters.
 > 
 > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/i2c/ds90ub953.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ds90ub953.c b/drivers/media/i2c/ds90ub953.c
+> index 591b52bf71c2..ad964bd6c7eb 100644
+> --- a/drivers/media/i2c/ds90ub953.c
+> +++ b/drivers/media/i2c/ds90ub953.c
+> @@ -25,6 +25,8 @@
+>  #include <media/i2c/ds90ub9xx.h>
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-mediabus.h>
+>  #include <media/v4l2-subdev.h>
+>  
+>  #define UB953_PAD_SINK			0
+> @@ -1111,7 +1113,9 @@ static const struct regmap_config ub953_regmap_config = {
+>  static int ub953_parse_dt(struct ub953_data *priv)
+>  {
+>  	struct device *dev = &priv->client->dev;
+> +	struct v4l2_fwnode_endpoint vep = {};
+>  	struct fwnode_handle *ep_fwnode;
+> +	unsigned char nlanes;
+>  	int ret;
+>  
+>  	ep_fwnode = fwnode_graph_get_endpoint_by_id(dev_fwnode(dev),
+> @@ -1119,19 +1123,21 @@ static int ub953_parse_dt(struct ub953_data *priv)
+>  	if (!ep_fwnode)
+>  		return dev_err_probe(dev, -ENOENT, "no endpoint found\n");
+>  
+> -	ret = fwnode_property_count_u32(ep_fwnode, "data-lanes");
+> +	vep.bus_type = V4L2_MBUS_CSI2_DPHY;
+
+I would initialize .bus_type when declaring the variable.
+
+> +	ret = v4l2_fwnode_endpoint_parse(ep_fwnode, &vep);
+>  
+>  	fwnode_handle_put(ep_fwnode);
+>  
+> -	if (ret < 0)
+> +	if (ret)
+>  		return dev_err_probe(dev, ret,
+> -				     "failed to parse property 'data-lanes'\n");
+> +				     "failed to parse sink endpoint data\n");
+>  
+> -	if (ret != 1 && ret != 2 && ret != 4)
+> +	nlanes = vep.bus.mipi_csi2.num_data_lanes;
+> +	if (nlanes != 1 && nlanes != 2 && nlanes != 4)
+>  		return dev_err_probe(dev, -EINVAL,
+> -				     "bad number of data-lanes: %d\n", ret);
+> +				     "bad number of data-lanes: %d\n", nlanes);
+
+%u as nlanes is now unsigned.
 
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> ---
->  drivers/media/i2c/ds90ub960.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-> index b9a1ef63629b..a83091f47140 100644
-> --- a/drivers/media/i2c/ds90ub960.c
-> +++ b/drivers/media/i2c/ds90ub960.c
-> @@ -149,6 +149,7 @@
 >  
->  #define UB960_TR_CSI_CTL			0x33
->  #define UB960_TR_CSI_CTL_CSI_CAL_EN		BIT(6)
-> +#define UB960_TR_CSI_CTL_CSI_CONTS_CLOCK	BIT(1)
->  #define UB960_TR_CSI_CTL_CSI_ENABLE		BIT(0)
+> -	priv->num_data_lanes = ret;
+> +	priv->num_data_lanes = nlanes;
 >  
->  #define UB960_TR_CSI_CTL2			0x34
-> @@ -485,6 +486,7 @@ struct ub960_txport {
->  	u8                      nport;	/* TX port number, and index in priv->txport[] */
->  
->  	u32 num_data_lanes;
-> +	bool non_continous_clk;
->  };
->  
->  struct ub960_data {
-> @@ -1133,6 +1135,9 @@ static int ub960_parse_dt_txport(struct ub960_data *priv,
->  		goto err_free_txport;
->  	}
->  
-> +	txport->non_continous_clk = vep.bus.mipi_csi2.flags &
-> +				    V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK;
-> +
->  	txport->num_data_lanes = vep.bus.mipi_csi2.num_data_lanes;
->  
->  	if (vep.nr_of_link_frequencies != 1) {
-> @@ -1744,6 +1749,9 @@ static void ub960_init_tx_port(struct ub960_data *priv,
->  
->  	csi_ctl |= (4 - txport->num_data_lanes) << 4;
->  
-> +	if (!txport->non_continous_clk)
-> +		csi_ctl |= UB960_TR_CSI_CTL_CSI_CONTS_CLOCK;
-> +
->  	ub960_txport_write(priv, nport, UB960_TR_CSI_CTL, csi_ctl);
+>  	return 0;
 >  }
->  
+> 
 
 -- 
 Regards,
