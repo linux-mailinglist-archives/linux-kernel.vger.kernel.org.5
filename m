@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D3C761103
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C02D761106
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjGYKhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        id S233714AbjGYKhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjGYKhI (ORCPT
+        with ESMTP id S233723AbjGYKh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:37:08 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D01188;
-        Tue, 25 Jul 2023 03:37:04 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36PAautL128618;
-        Tue, 25 Jul 2023 05:36:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690281416;
-        bh=Gx3pkO743ZYy70rdXZr1aUnKtpWrxfRjEon4KIhVveE=;
-        h=From:To:CC:Subject:Date;
-        b=ts2X9QlawMADm+QctN7ScpVIZKMip1VfN7Y7wHnTYqoM5FAY+v0GzxhTKkTRfFAwO
-         yIOaXhQLLDKzcly/mBUfmnpea4bNMQxb6p0PwhSjhi6whaE/1ueJZcjKmXT/oS8+3c
-         Ecrer+vherJsVO7haulg1Ku5uWV0CYEbT+3tYGMc=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36PAauaO104450
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 Jul 2023 05:36:56 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 25
- Jul 2023 05:36:55 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 25 Jul 2023 05:36:55 -0500
-Received: from uda0500640.dal.design.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36PAaqiN113828;
-        Tue, 25 Jul 2023 05:36:52 -0500
-From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <rogerq@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <srk@ti.com>, <r-gunasekaran@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-am62a7-sk: Enable dual role support for Type-C port
-Date:   Tue, 25 Jul 2023 16:06:51 +0530
-Message-ID: <20230725103651.1612-1-r-gunasekaran@ti.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 25 Jul 2023 06:37:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A4210E3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:37:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D808C2233B;
+        Tue, 25 Jul 2023 10:37:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690281440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3I1WKvqsunGpCu04gF1CzawY3Z1Ke8IscFjJf/ki7zs=;
+        b=Anmy3eLgFHbKBj2cjMNNdQbkHBEvMJcRnucHgh4tsabGpnMaq1ZeAH2r3zxZXgnqObU9wG
+        2KRrapITI96kHiufdxBnQfcn/Ukvib4qaMIyIshLQ0KUEI/05637FsFZH1SZsCiQ5eHMQS
+        3OhgFJA8HBZYVWnYvfenh8YTG3pb6W8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690281440;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3I1WKvqsunGpCu04gF1CzawY3Z1Ke8IscFjJf/ki7zs=;
+        b=Q7mJIHYEFRyDNOXBZljgdkx0YOncHEupc9cS+pA92vzRmqozTWVVNoKbjOgEH1s3G0IiS1
+        NGLaY1Gofub74vBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F7EF13342;
+        Tue, 25 Jul 2023 10:37:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id D7/LHeClv2SGAQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 10:37:20 +0000
+Date:   Tue, 25 Jul 2023 12:37:20 +0200
+Message-ID: <87ila8tgyn.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
+In-Reply-To: <1bb7858d-fab0-f3c2-b786-a93f3789b400@linux.intel.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+        <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
+        <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
+        <1bb7858d-fab0-f3c2-b786-a93f3789b400@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB0 is interfaced with a Type-C DRP connector and is managed via a
-USB PD controller. Add support for the Type-C port with dual data
-and power sink role.
+On Tue, 25 Jul 2023 12:29:07 +0200,
+Maarten Lankhorst wrote:
+> 
+> Hey,
+> 
+> On 2023-07-24 13:32, Pierre-Louis Bossart wrote:
+> > 
+> > 
+> > On 7/19/23 18:41, Maarten Lankhorst wrote:
+> >> This was only used to allow modprobing i915, by converting to the
+> >> -EPROBE_DEFER mechanism, it can be completely removed, and is in
+> >> fact counterproductive since -EPROBE_DEFER otherwise won't be
+> >> handled correctly.
+> > 
+> > I personally remember only that the request_module("i915") was the main
+> > motivation for the use of the workqueue, but when it comes to the
+> > HDaudio codec management we don't even know what we don't know.
+> > 
+> > I am a bit worried that the snd-hda-intel driver keeps the workqueue for
+> > HDaudio codec initialization, and this patch removes the workqueue
+> > completely for SOF. That doesn't seem right. Either both drivers need a
+> > workqueue or none need a workqueue.
+> > 
+> > Maybe what we need is to move the i915/xe initialization out of the
+> > workqueue, and see in a second pass if that workqueue can be safely
+> > removed from the SOF driver?
+> > 
+> As I mentioned in some of the other sound driver conversions. I
+> believe it's possible to completely kill off most workqueues.
+> 
+> However, I don´t have the hardware or knowledge to test it. I saw
+> that the SOF had the non-workqueue path already, so it felt less risky
+> to simply convert it to always use that path.
+> 
+> avs/skylake drivers should be easy to convert too. This is why I left
+> the comment: "Removing the workqueue would simplify init even further,
+> but is left as exercise for the reviewer."
+> 
+> HDA-intel has this retry-probe logic used on AMD's,
+> which makes me more hesitant to convert it.
 
-Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
----
-Changes since v1:
-* Added space between node name and ":"
-* Changed the node name from "tps6598x" to "usb-power-controller"
+Yes, HDA-Intel requires either a workqueue or async firmware-loader
+callback because there is some codec module-autoload mechanism that
+may happen during the probe phase.  It's not only on AMD, but it's
+required in general for all codecs.
 
-v1: https://lore.kernel.org/all/20230724115133.2226-1-r-gunasekaran@ti.com/
 
-arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 33 +++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-index d2cca6182738..cff283c75f8e 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-@@ -226,6 +226,24 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_i2c0_pins_default>;
- 	clock-frequency = <400000>;
-+
-+	typec_pd0: usb-power-controller@3f {
-+		compatible = "ti,tps6598x";
-+		reg = <0x3f>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			self-powered;
-+			data-role = "dual";
-+			power-role = "sink";
-+			port {
-+				usb_con_hs: endpoint {
-+					remote-endpoint = <&usb0_hs_ep>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &main_i2c1 {
-@@ -290,6 +308,21 @@
- 	status = "reserved";
- };
- 
-+&usbss0 {
-+	status = "okay";
-+	ti,vbus-divider;
-+};
-+
-+&usb0 {
-+	usb-role-switch;
-+
-+	port {
-+		usb0_hs_ep: endpoint {
-+			remote-endpoint = <&usb_con_hs>;
-+		};
-+	};
-+};
-+
- &usbss1 {
- 	status = "okay";
- };
-
-base-commit: 1e25dd7772483f477f79986d956028e9f47f990a
--- 
-2.17.1
-
+Takashi
