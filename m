@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78776108B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6283E761073
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 12:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbjGYKWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 06:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S232849AbjGYKRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 06:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjGYKWT (ORCPT
+        with ESMTP id S229449AbjGYKRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 06:22:19 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9183910E2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:22:17 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9923833737eso781490766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 03:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690280536; x=1690885336;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zWadWjqF45OYKb04rK5xzE1AeT6F9pvOBw28ewY8qRw=;
-        b=CQiqWpke4LmeiynkUU0LU4wU+J5FlhcsxT3Js4zHwRI/SiW2kSi8fbWeP8Zuc4XdWd
-         B2ENsZ7qPQojA9+xYW+5DNO+4OL1FsHFEOfM3CtYhFj7dLmESzp5eL2x4cdJMs/vs5Bn
-         8ABaHje1rWZ8sX5Mpe9IjWUqw/H3tTrWnTle3qYiQFZ6oA6ayHc8lrWlEte53fBrFjrW
-         IcZYrlf2HseSwTZn7rT4igpkk2hKMSRG77sW6LU1yp/btgD6tbiE6UE4vVlk9tTk9qRL
-         YE6RVWu/giPc3uvJJzSzdOqY7mu6hP8EigzRYKBeDo0RnG1dkuBsiJd4InbMBVDO+C+G
-         lCqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690280536; x=1690885336;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zWadWjqF45OYKb04rK5xzE1AeT6F9pvOBw28ewY8qRw=;
-        b=R8GTr+VgGPciRNmvrJ3PIMZuXRTFSC1NUWAOoCdVGBjNywT9m5A7l+tOdb4mnGbSA1
-         q+btzb+TNkL44Omo+fuIj0wMiqrQ5EwvluKCM/wmpET60G9feigLAaOJM8j434lmzXZj
-         xqdmJ3/vR+FEumVkuL0Pq5J7gJ8Dt+cXuf4UhViDgg+PsHYKkJmiMMZOGqd38K8LqMLq
-         Y4exbo0YYQIFwYZlH0oBUhPZDNeMUNgd14tgzUOye4Kwj2/1n8wBM1r+GWCGra8+RxTV
-         rj12eM4Vb9iD5cotXDlLYQj3DKfau6aMESO8MNDrzieZ73iMNMUuZEREQxHbxZjhXmy5
-         XWlw==
-X-Gm-Message-State: ABy/qLbwZeM30jjAMNjelp1fgxWugxEuMC3mK5m1Keu+EnkqLadmRF0Y
-        IBL5X0h6Ytk0Hvi/ckDHdk6e9Q==
-X-Google-Smtp-Source: APBJJlGGVArmfyzfCFxzdLxo1G3ncs6vyd50LiUpQOe+HyUBxHObEZr0PgpxaPwhnG1avvlYapxTDQ==
-X-Received: by 2002:a17:906:30c3:b0:993:f996:52cf with SMTP id b3-20020a17090630c300b00993f99652cfmr12726557ejb.28.1690280536032;
-        Tue, 25 Jul 2023 03:22:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id jp7-20020a170906f74700b009937dbabbd5sm7952129ejb.220.2023.07.25.03.22.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 03:22:15 -0700 (PDT)
-Message-ID: <c54c8973-7cff-dad5-51ef-41523cf2f2b5@linaro.org>
-Date:   Tue, 25 Jul 2023 12:22:12 +0200
+        Tue, 25 Jul 2023 06:17:37 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2087.outbound.protection.outlook.com [40.107.8.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2F310C9;
+        Tue, 25 Jul 2023 03:17:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NqJDhAH4+gTHeJ9UyB/SEQWnkK/6L/aAGhIvDvhbNbaEDTJNl+eYtrnaHT/rJ2rB9Gm0ZUSzI/BjTTrghXIvkov97v0WtvzE7fGDOjULY0HSb0kFNCjbPxLLZH22nWofrYFPqGmt7MScB6IFEhKdW46AMrMiyG12xtW6sR4sHmXTyTF2klq2nlsxJwprvUm5mhib3gA1Hz0l2NonTNm/1buTVdgvdHTvnrmm+Le0Sc8lYzGpPL/D/xCqERWcPCn6B+diSFQeTIGurm0hTkNekUE3AW4luxH+FkBRvCCzUH5lEeSG2qLIEbXjfi59YZlSWkLnffXrCVAXmHIVDWdqKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ho9sAejhyzUIuZ8GfOLIQlIiC9pakn7jKZjO3YFKMR0=;
+ b=Wc3OO13uRpUC2MaMe4GB/RbeatLjH/Ub6pdzuNOqEb1gJybuqHNfYdPRi6aOKOkMOUo+2ku0ECk5Ns6t1A9yqMiwn70kdxLGuo94W9o1qzp5PFLfc7RhU1WrPqAsy/BTLnsM7pAZnVo8h06zgJY56VPFO95odjUaK7UcHDUyDlF9vFd9ri3f4nposG/ly+tgr+J00fDMGlpKiuRsNAIcrtwsW1T47yWBEbmk0QygyQiMGnqegyN3yokPA0T44urdPvTFtLUPsfOfR60J0dZDWchbDfl1N9y2UCQX1ye1wdVbC24zQZz0hcZCrRmMeQMyNQoJsijubhthL1PZNEvZ2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ho9sAejhyzUIuZ8GfOLIQlIiC9pakn7jKZjO3YFKMR0=;
+ b=Bo8B/wd+11y6VEbpY1OUW552Ms2lXYktvU8CXQ40bxbaOhoa8SFEYKABuigFcnz+dVAIcO5LP+Y+uAD/OKdhyIcNOeHETNUlaCcLo+w5as4BIWCWlVR6pYp1d961U/AO2+7o9ipc0epZ9M1797vK5HkH1zffMQa2OtSAOJZ4pm4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM9PR04MB7667.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
+ 2023 10:17:31 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97%6]) with mapi id 15.20.6609.032; Tue, 25 Jul 2023
+ 10:17:31 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        shawnguo@kernel.org, maz@kernel.org
+Cc:     linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] dt-bindings: interrupt-controller: fsl,intmux: Add power-domains property
+Date:   Tue, 25 Jul 2023 18:22:15 +0800
+Message-Id: <20230725102215.109895-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0025.apcprd02.prod.outlook.com
+ (2603:1096:3:18::13) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: usb: add missing unevaluatedProperties on
- USB connector
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jagan Sridharan <badhri@google.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        Gene Chen <gene_chen@richtek.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230723071105.40157-1-krzysztof.kozlowski@linaro.org>
- <20230724162638.GA3784203-robh@kernel.org>
- <60e7e772-bf0a-264d-abac-4ed72766a2d0@linaro.org>
- <CAL_JsqLwZR_VQEAuhLLqN4BF8Yvh=3vkQe=tFHaKWzJzMMP+qw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAL_JsqLwZR_VQEAuhLLqN4BF8Yvh=3vkQe=tFHaKWzJzMMP+qw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM9PR04MB7667:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1622861d-a5ff-4197-3961-08db8cf85b38
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zs00E50j3VGB0Vr835XlRzYXsZ4u9tAGdfxX+FnP7P21Buy4EXxS293O8fxehP629aO2r53WgTPnMPWKHvAyfe12ryeucIo71O9VYyDgUu7odp4XRIDmiApB+gTPEbvFHNpf4NY4Sp28OvQjVk8GC8BRLJ0WeVKnspOYX+ubIzT1wWm+odUSxgezhn8r7iJwup5ryJStvZONddLYBfxbsF9Q6U4acA/FHSB+KY7CLMO6uNvtRCXdtf3MtMS4eCcDVGlc+MvTkcxo6S1gd/3lbWl2xBNppRuUfnuy6qVb6UDd2a1YjTeAwkcbY9wwRgN7tu/WdBzi20qA5jwnpc+P+46GfxZ7CklPr7B1TtxDUQkL59ZPos7KYn0+arT1bQKfLRwKYj78WtMTIcoWbxOqvRzw8jwYdEcWICa97Y/2I5OQkfa0mt1Mjv8BY0Uz5STOo+8M/SMZdF89WhEuw9rfYzE+l3/Nlc9YuG7glFE5vhQ7ATncQ+5VkTZOw/ywpcKORc2Zi2HiSywCT+vyy1tabeKDR9qL+bmvCbO9GX7EMcaQM/MjYOCbL9Af+VOtlNIZH527zViyYEFh8w+KA6SFOvw+4vMXFaMIvFcCQ2pceDTGz0OzquPbJelC6kzGbeTQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(366004)(346002)(396003)(376002)(451199021)(86362001)(4744005)(2906002)(83380400001)(186003)(6506007)(1076003)(26005)(6666004)(38350700002)(6512007)(38100700002)(6486002)(52116002)(478600001)(4326008)(316002)(66946007)(66556008)(8936002)(66476007)(2616005)(8676002)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?W/z/uHS+CJgkF9fmtvVuyrjAobqI6W3P+ScgDGLpAjs+rKf27EK/heLoIBMp?=
+ =?us-ascii?Q?VJVluBCGZDhJEC/pWsoFzE/GPqgzjqs/sMneiNhz+22Icoz5DKayWl9w50ap?=
+ =?us-ascii?Q?rhAqgeHpMgAKalKVoXNwumca+DG5ecMEEmkXUzq//syJMeSyTMp1vWo65rs7?=
+ =?us-ascii?Q?wTZaesuBjiZZP4yAWUfkKbE5L18oxVik7x5+kMoA/W9R2g0tFDSE4RnWjeoZ?=
+ =?us-ascii?Q?BIWlearc07s7+ybfXQujULYNDeHTvWl6KgFtt62inGji6jTFiyxs+GafN5lM?=
+ =?us-ascii?Q?yoMCz+rtgxed80DbXlDNuX5tC8hzyS01dacQN6bhF081IuiM/EFydXSyGy3y?=
+ =?us-ascii?Q?/E0SmNNmL3FNFCR5k67xxTsIPMRU/We7zz+5pWawUytmbhe9NF2iOlhpR6au?=
+ =?us-ascii?Q?3I+bztyq2GvU2SUlZz2AfiVGvKdqaAu1Wke38izERavpi439rYbh36pTXaC1?=
+ =?us-ascii?Q?+9A4wclms3QBn+sKXXP9hBMTamrDN4JBnsY+Au5aoKb04KJSXfiN7d903ybM?=
+ =?us-ascii?Q?5NuJ8PufiHAcl31sJj6Yt+RuO8HnebaF7lk8AnqYOqeh1Z1y0xwEFZs6xz9C?=
+ =?us-ascii?Q?shCAwkGrHh6mC0bGxf5m+RomKaU//H91TjROpmV/5J9XNbq38r17DLCmL8Gy?=
+ =?us-ascii?Q?dCBYamsNFgjYfYDPVJO1aDT3UBXq2ukMYuxQtE1lPaD9nYmxl3bDTrB7Igv1?=
+ =?us-ascii?Q?b8xM4VrdJOtaLJO44OeFI+iu3Rg+5MMC166E41TTq95f6KffE4OQ+IfPN0vy?=
+ =?us-ascii?Q?7p7YA79PMZcdXTuz+DrLbJ9QwB21ZzYludGXo7Sr7S2ehFsIuOX8+c3WzAUl?=
+ =?us-ascii?Q?sv8yV2dgy4MKnbGqxbNM8Czg1Nm+mp/FfNjgXWm2d+XXJ6OMIAtaUTtynlSt?=
+ =?us-ascii?Q?mjOpZnk4kWmEpCvdVvBo/hqpJmKr1WpjeDE1eiSVsP3kTVEBjWLyaj4JqXZZ?=
+ =?us-ascii?Q?SSp6rAD7E+qOhObxry8wmS9mAzicCITxQ8Qj0+3HPmhk+8nXuvaJYZ9FjQCK?=
+ =?us-ascii?Q?JcNichmWxOtIyRJ6iq8lmJmRim28wcc3tQNLtBUbCSLktGQ+J8iSmnn0gzPo?=
+ =?us-ascii?Q?TbwGHDgEbHKlepOauInWCQhvaSfrqKoJvXigUDK1HWnAviDCgBOwqBOp6gsm?=
+ =?us-ascii?Q?RbcEBKtS+gtOwZPWPrU38YBhkdPBHfgZCaBzu6rw4ec51aryCQyKTSUB66Kt?=
+ =?us-ascii?Q?cu4UGDZwbzXsacrM6OlugYdhq5yytDBFjUxNg/c8tZZruNtKRSql4YkVX0IM?=
+ =?us-ascii?Q?dxaD7od+h5DT+17Ybh5ApU+ME1JMiIsZFBwrYzKLAVzp7ideNZW+67ukmUT4?=
+ =?us-ascii?Q?DObakGy0DPhvSmbE5Um3Wvuva+ZiAQmq6lrwBtwm0tYVhM671pbdLmjtUqK+?=
+ =?us-ascii?Q?Ae2wsZsV+K6oLSOLqlbS7nyytUEIs2qC3rQ1f4b0qbzan1t5sbZvvlZ4rPBh?=
+ =?us-ascii?Q?8FIbmSzrL2GE6BWqNJfPo4sRr5Nh5yZY5LBmhz+YgDioaZW+2kBA6ivoa7M5?=
+ =?us-ascii?Q?d8+X8m01gkmdad07koaAVNOMrGrasTYEFq4I3SrzfjtWiOK0Nw3kFkJTRCzR?=
+ =?us-ascii?Q?Yu/24i88QQRk+hxebdYlfUfsEUvgsM4ytdJTgUkA?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1622861d-a5ff-4197-3961-08db8cf85b38
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 10:17:31.7029
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N4XQ3ptsEa9CTtiDkk6LR/oHN9V6/ufCLrUrkrt/cMZnm0d2cseVAQ5wUGtEJvAqgVAmZVwe1IkTOy/Qj9enWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7667
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 23:02, Rob Herring wrote:
->>       compatible = "usb-a-connector";
->>       phy-supply = <&exp_usb3_vbus>;
->>    };
->> };
->>
->> I would assume that phy-supply should be a property of the phy.
-> 
-> Indeed. We already have vbus-supply which this looks like it is. I'm
-> pretty sure I've seen Vbus in phy bindings too which I've pushed back
-> on as to whether Vbus really went to the phy or was there because the
-> phy driver just wants to control Vbus.
-> 
-> The marvell platforms aren't in great shape schema wise, so maybe
-> don't worry about it now.
+From: Peng Fan <peng.fan@nxp.com>
 
-OK, I will send a v2.
+On some i.MX SoCs, intmux may have a power-domain dependency to be on
+before accessing. So add it in dt-binding doc.
 
-Best regards,
-Krzysztof
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ .../devicetree/bindings/interrupt-controller/fsl,intmux.yaml   | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
+index 985bfa4f6fda..78baa0a571cf 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
+@@ -37,6 +37,9 @@ properties:
+   clock-names:
+     const: ipg
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+-- 
+2.37.1
 
