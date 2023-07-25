@@ -2,74 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2729F76036E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD21A760373
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 02:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbjGYAA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 20:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S229675AbjGYAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 20:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGYAAy (ORCPT
+        with ESMTP id S229452AbjGYABZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 20:00:54 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB3D171E;
-        Mon, 24 Jul 2023 17:00:53 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a3790a0a48so3683440b6e.1;
-        Mon, 24 Jul 2023 17:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690243252; x=1690848052;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/WOzXYCn1+7xPbIOwobza0NrL0Zs8lbOw99BO/5o3zM=;
-        b=KVq0Tw3a2zJLCFcVcNC2Z4bBSnqV70bHamHgXDIgDthhxomKgjuObTS1Gw4IpuReKn
-         lIwFDxCv3QNCIxoM4JaAOzzPILbYsVpczodgEdqzH29iyK01iP5rxckgGA8h7uuRbw+9
-         M2Cocrec8sXG6ZF6oTT1GpYQpLW5t+UPdfzyC7nVsvq+0t02MLKtOAHuLBtETVsRWvOb
-         H0gNAYOqwG+ZTiZesNV0KVxbEcVFqKwHO4M1mmeRvZpKbAgzaXziGZaqB4AEuNp+A2Nk
-         pV357GxoWNtJf35LDWlT6eczEEtbZrL5NsijpUJPrbyCWk3KX9ifWPZjjBsgCRn6j0EJ
-         /niA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690243252; x=1690848052;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/WOzXYCn1+7xPbIOwobza0NrL0Zs8lbOw99BO/5o3zM=;
-        b=W/uwMoEALzazkOKFdS0SdMn82mVvuNt/QQULZ/ftyZDlwVignm8VMWYrUoJJfeKOwl
-         O3ZW78Q6j69Q2R8+jPVbIouf7iuqO5/o9KvR0EaNqXPCZj+nd6ukoT5eOeK/nLBZI/T9
-         KIIh3CeJI0p4wefKGoEw3FiHFfdQVtj34ajBB7C8l7fmouGAPdJqY++PWPdxl+Q9a/Vj
-         NLA7wfzo9mXQHELYv1uqimKlrlS7Omio9CSx+NcKb3yrMHyYxY+ORoXrQgCGbjBYlBrF
-         P1C5+IllPF3pzC8VjEpG3b7yhP8LwpT17/pLubRIzBel9vQdtdP5Hw4uhskhm2+0jea5
-         UPVw==
-X-Gm-Message-State: ABy/qLYcucqkokwpOjBdLExVhMiH0ccWFYZOtw+MPiZDFRP+JD04B2VM
-        NXSfaV3tcNLBlTclGTlqD3Y=
-X-Google-Smtp-Source: APBJJlG6H3RZJ9aETzUQ7uF2B6MJ9YNE/LiDWvnOpOP9zP/cT/QTvEaNVN533DBtJXAlzzDKP+h4oQ==
-X-Received: by 2002:a05:6808:10c7:b0:3a1:eccc:26da with SMTP id s7-20020a05680810c700b003a1eccc26damr15126212ois.25.1690243252376;
-        Mon, 24 Jul 2023 17:00:52 -0700 (PDT)
-Received: from [192.168.0.104] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id bb11-20020a170902bc8b00b001b03b7f8adfsm9481776plb.246.2023.07.24.17.00.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 17:00:52 -0700 (PDT)
-Message-ID: <42bc8e02-5ee0-f1c8-610e-e16391e54ee2@gmail.com>
-Date:   Tue, 25 Jul 2023 07:00:21 +0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Verot <verot.wrongdoer713@simplelogin.com>
-Cc:     Linux Input Devices <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Kernel 6.4.4 breaks Elan Touchpad 1206
+        Mon, 24 Jul 2023 20:01:25 -0400
+X-Greylist: delayed 144961 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 17:01:17 PDT
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8AF3173D;
+        Mon, 24 Jul 2023 17:01:17 -0700 (PDT)
+Received: from linma$zju.edu.cn ( [10.162.208.50] ) by
+ ajax-webmail-mail-app2 (Coremail) ; Tue, 25 Jul 2023 08:00:48 +0800
+ (GMT+08:00)
+X-Originating-IP: [10.162.208.50]
+Date:   Tue, 25 Jul 2023 08:00:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     "Leon Romanovsky" <leon@kernel.org>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, richardcochran@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re:  [PATCH v1] i40e: Add length check for IFLA_AF_SPEC parsing
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
+ Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20230724142155.13c83625@kernel.org>
+References: <20230723075042.3709043-1-linma@zju.edu.cn>
+ <20230724174435.GA11388@unreal> <20230724142155.13c83625@kernel.org>
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+MIME-Version: 1.0
+Message-ID: <2c84a81c.e2620.1898a5930be.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgDn74uwEL9k+TCACg--.39599W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIGEmS91fkARAARs1
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,36 +57,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> Description:
-> When booting into Linux 6.4.4, system no longer recognizes touchpad input (confirmed with xinput). On the lts release, 6.1.39, the input is still recognized.
-> 
-> Additional info:
-> * package version(s): Linux 6.4.4, 6.1.39
-> * Device: ELAN1206:00 04F3:30F1 Touchpad
-> 
-> Steps to reproduce:
-> - Install 6.4.4 with Elan Touchpad 1206
-> - Reboot
-> 
-> The issue might be related to bisected commit id: 7b63a88bb62ba2ddf5fcd956be85fe46624628b9
-> This is the only recent commit related to Elantech drivers I've noticed that may have broken the input.
-
-See Bugzilla for the full thread:
-
-To the reporter (Verot): Can you attach dmesg and lspci output?
-
-Anyway, I'm adding this regression to be tracked by regzbot:
-
-#regzbot introduced: 7b63a88bb62ba2 https://bugzilla.kernel.org/show_bug.cgi?id=217701
-#regzbot title: OOB protocol access fix breaks Elan Touchpad 1206
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217701
-
--- 
-An old man doll... just what I always wanted! - Clara
+SGVsbG8gSmFrdWIsCgo+IE9uIE1vbiwgMjQgSnVsIDIwMjMgMjA6NDQ6MzUgKzAzMDAgTGVvbiBS
+b21hbm92c2t5IHdyb3RlOgo+ID4gPiBAQCAtMTMxODYsNiArMTMxODYsOSBAQCBzdGF0aWMgaW50
+IGk0MGVfbmRvX2JyaWRnZV9zZXRsaW5rKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsCj4gPiA+ICAJ
+CWlmIChubGFfdHlwZShhdHRyKSAhPSBJRkxBX0JSSURHRV9NT0RFKQo+ID4gPiAgCQkJY29udGlu
+dWU7Cj4gPiA+ICAKPiA+ID4gKwkJaWYgKG5sYV9sZW4oYXR0cikgPCBzaXplb2YobW9kZSkpCj4g
+PiA+ICsJCQlyZXR1cm4gLUVJTlZBTDsKPiA+ID4gKyAgCj4gPiAKPiA+IEkgc2VlIHRoYXQgeW91
+IGFkZGVkIHRoaXMgaHVuayB0byBhbGwgdXNlcnMgb2YgbmxhX2Zvcl9lYWNoX25lc3RlZCgpLCBp
+dAo+ID4gd2lsbCBiZSBncmVhdCB0byBtYWtlIHRoYXQgaXRlcmF0b3IgdG8gc2tpcCBzdWNoIGVt
+cHR5IGF0dHJpYnV0ZXMuCj4gPiAKPiA+IEhvd2V2ZXIsIGkgZG9uJ3Qga25vdyBuZXR0bGluayBn
+b29kIGVub3VnaCB0byBzYXkgaWYgeW91ciBjaGFuZ2UgaXMKPiA+IHZhbGlkIGluIGZpcnN0IHBs
+YWNlLgo+IAo+IEVtcHR5IGF0dHJpYnV0ZXMgYXJlIHZhbGlkLCB3ZSBjYW4ndCBkbyB0aGF0Lgo+
+IAo+IEJ1dCB0aGVyZSdzIGEgbG9vcCBpbiBydG5sX2JyaWRnZV9zZXRsaW5rKCkgd2hpY2ggY2hl
+Y2tzIHRoZSBhdHRyaWJ1dGVzLgoKQ29vbCwgSSB3aWxsIGNoZWNrIHRoaXMgb3V0IGFuZCBwcmVw
+YXJlIGFub3RoZXIgcGF0Y2guCgo+IFdlIGNhbiBhZGQgdGhlIGNoZWNrIHRoZXJlIGluc3RlYWQg
+b2YgYWxsIHVzZXJzLCBhcyBMZW9uIHBvaW50cyBvdXQuCj4gKFBsZWFzZSBqdXN0IGRvdWJsZSBj
+aGVjayB0aGF0IGFsbCBuZG9fYnJpZGdlX3NldGxpbmsgaW1wbGVtZW50YXRpb24KPiBleHBlY3Qg
+dGhpcyB2YWx1ZSB0byBiZSBhIHUxNiwgdGhleSBzaG91bGQvKQoKT2theSwgSSB3aWxsIGZpbmlz
+aCB0aGF0IEFTQVAKCj4gLS0gCj4gcHctYm90OiBjcgoKUmVnYXJkcwpMaW4=
