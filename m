@@ -2,148 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77219760CBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD24760CC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbjGYINq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S232333AbjGYIPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjGYINl (ORCPT
+        with ESMTP id S232399AbjGYIPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:13:41 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406A0E7B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:13:37 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b702319893so75608631fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690272815; x=1690877615;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q8qQJfqleHyTVYj+DdtZsW2KQVXLqomuen2i+z7VsGg=;
-        b=ZCZ4vomJ8+twCGyqhTsGA3oU7Z0Pf/KQvpl1WPk2cFLZZTl+NeRPZP9J6aQXUkHBaV
-         ezZjjSWC3wux2kmTztMLgCahP0P+pUZYnOu8IkMh7R7zVkzHvEsXoLcLLLwOGdWT+MoJ
-         sbIJdydCKdUzLWY17SPECIV0+EHRIp4eiRMaQu0bGcy5MQQ/Z1CGbiCcPKuxxoAD0TcQ
-         JYzSZ3AeDwEtgfFj3HVjvcWrgelVBRrobjiEdECow23GZruHemE2CH5tmlWLAEg/0bVH
-         rDe/aQzOGLXoTVMW5QkNmW7WJdb6YNsy3xbJnq4AQDP1fJq+4H/SFOT5yl2brncLXH6/
-         i3CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690272815; x=1690877615;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q8qQJfqleHyTVYj+DdtZsW2KQVXLqomuen2i+z7VsGg=;
-        b=M3u5b2loGgPIEtkzYsB/Osvuv6bSuOIObaQMQ91raa6/qMBv4ZKNP38QGsK1gHS7na
-         aI6kVsDbePpGRhfObjzbhinIJgT+4qqpHkexAuU7dzrj+V0+ZG3vnKbUSQz0jHJtGcMz
-         tDjKx1KyP9k8fSBLD98ReeuMamEkn9oGC1UGj6Cs5SIM35D9kGLUGPtu5DKf5oef0m7D
-         734mXehKcWOsnWGR/z7C0pw/9jIvmL9wYfHXCtkOdzvv263PqPBMxiB+ZIVCgyo7KZs8
-         UxgmO8NfRHgRZoinx7A8B3wp2GZnmoMYxSiwKRwBgYOU+mxe+rOKzZVaHV/zB3V1DAze
-         UYlQ==
-X-Gm-Message-State: ABy/qLaUFQgpMUEaBcm95T12kY/TvAKPARrm/F5JcyMPODpfwra4lCpG
-        TkR6tcqwcsbE3ho55VS9dpfvDjRo6/EEJerHlqDVQg==
-X-Google-Smtp-Source: APBJJlEvagh857dv79ZWfGAK/SU5Ha9j5wtuSqKWthy3MSJD3KbxdFkqQVQltkgOeZt4tWbTxIj2mw==
-X-Received: by 2002:a2e:92ce:0:b0:2b6:e283:32cb with SMTP id k14-20020a2e92ce000000b002b6e28332cbmr7583248ljh.23.1690272815495;
-        Tue, 25 Jul 2023 01:13:35 -0700 (PDT)
-Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c248900b003fbb618f7adsm12516110wms.15.2023.07.25.01.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 01:13:35 -0700 (PDT)
-Message-ID: <d51dee67-02f4-1256-877f-61629c04b08f@linaro.org>
-Date:   Tue, 25 Jul 2023 10:13:33 +0200
+        Tue, 25 Jul 2023 04:15:17 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9E8E7B;
+        Tue, 25 Jul 2023 01:15:16 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P88xAK009682;
+        Tue, 25 Jul 2023 08:15:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=PCz3mEeQgque/FOOfchegotNtCY9cjznSwkh8xlUE6w=;
+ b=VEUputmX7WLBs0Z5vbz8qjRSVucxS/15nHFR9d103lbpDrdozJy2+nvXx5j+DSTMqwUq
+ 8HPsYpbr6RJ3I5Fc37RvB4r+99HyvmkR/Jn4q0EziultKVKSByBfJlNKulCMTmzB9uKj
+ 4AFu5euWC/yz8THaETSA/Gyu/PzoW3AMX4eGQGz1ExNQsE6FxjwF7X62tUXobLPyo1/P
+ 1/KMWJyDlbRddwC5R8X9yy7jDQqcNFbIWV9YcMGe6qpBKYk2ntw4G5idhv3rO7233NrT
+ TH30Glbx1o0KOlb96wM/6KTym/B/PVszgVfhhvpfZTkhUQcOBnkXkZo3FMWscO4ksNtU EA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1s1jt6b1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 08:15:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P8F2ct005670
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jul 2023 08:15:02 GMT
+Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 01:14:59 -0700
+Message-ID: <a3a401fe-dbc6-03dd-ce6f-13abf30ef984@quicinc.com>
+Date:   Tue, 25 Jul 2023 13:44:55 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH 1/2] dt-bindings: power: qcom,rpmhpd: Add Generic RPMh PD
+ indexes
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
- <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
- <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Pavan Kondeti <quic_pkondeti@quicinc.com>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
+ <e77c39fe-b7cf-49b3-9260-ecf4872e8fdf@quicinc.com>
+ <7517b2ca-7d7f-dc0c-7f60-a6281b37ab40@quicinc.com>
+ <a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: c6-FyxMlGSQV51UxzQhwKxX-VDQo3ZmI
+X-Proofpoint-ORIG-GUID: c6-FyxMlGSQV51UxzQhwKxX-VDQo3ZmI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_04,2023-07-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ mlxlogscore=899 phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250072
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.07.2023 07:46, Krzysztof Kozlowski wrote:
-> On 24/07/2023 22:52, André Apitzsch wrote:
->> Add a compatible for BQ Aquaris M5 (Longcheer L9100).
->>
->> Signed-off-by: André Apitzsch <git@apitzsch.eu>
->> ---
->>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
->>  1 file changed, 1 insertion(+)
-> 
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> 
-> ---
-> 
-> This is an automated instruction, just in case, because many review tags
-> are being ignored. If you do not know the process, here is a short
-> explanation:
-> 
-> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-> versions, under or above your Signed-off-by tag. Tag is "received", when
-> provided in a message replied to you on the mailing list. Tools like b4
-> can help here. However, there's no need to repost patches *only* to add
-> the tags. The upstream maintainer will do that for acks received on the
-> version they apply.
-> 
-> https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
-Krzysztof, update your bot to paste this link with s/v5.17/latest/g
 
-Konrad
+On 7/22/2023 8:35 AM, Bjorn Andersson wrote:
+> On Fri, Jul 21, 2023 at 06:47:42PM +0530, Rohit Agarwal wrote:
+>> On 7/21/2023 11:14 AM, Pavan Kondeti wrote:
+>>> On Wed, Jul 19, 2023 at 10:52:41AM +0530, Rohit Agarwal wrote:
+>>>> diff --git a/include/dt-bindings/power/qcom,rpmhpd.h b/include/dt-bindings/power/qcom,rpmhpd.h
+> [..]
+>>>> +
+>>>> +#endif
+>>>> -- 
+>>> I see the PD performance levels (RPMH_REGULATOR_LEVEL_xxx) are still
+>>> coming from qcom-rpmpd.h. Which means Socs with RPMh also need to
+>>> include the older header for these definitions along with this newly
+>>> created header. something to improve for the clarity sake?
+>> Agreed. I think we can move these to the new header so that the new SoC with
+>> RPMH can completely
+>> move to rpmhpd.h.
+> Sounds very reasonable, please do that in a follow up patch.
+> I'm picking this as is.
+I have a doubt related to this about sending the patches.
+
+Since I will be moving the regulators level into the same rpmhpd.h 
+header, we
+would need to update all the qcom soc dtsi file changes as well. Also 
+there is a
+remaining dt-bindings patch that update the older rpmhpd bindings to 
+these new
+ones basically the cleanup is remaining.
+Shall I create a unified series updating all these in one and tagging 
+all the the
+related maintainers in the CC
+OR
+should I create separate series where the dt changes are updated first 
+then the
+followup cleanup dt-bindings series?
+
+Thanks,
+Rohit.
+> Thanks,
+> Bjorn
