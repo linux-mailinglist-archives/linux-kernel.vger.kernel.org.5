@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D3A762756
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0511762752
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 01:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbjGYX3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 19:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S231809AbjGYX3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 19:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231886AbjGYX3n (ORCPT
+        with ESMTP id S231646AbjGYX3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:29:43 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019491FE2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:29:34 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-77a62a84855so261093439f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690327773; x=1690932573;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ynoALsv1aca8y8xpjhuiunc/CTMUKjN2qeAE0MoxzWk=;
-        b=T1/qgW80ZW0ruvAexTl3SwPC/VD8efNMinccPq8SOmll1PeYaL7nJcC+rT2y/ICCI/
-         Zm7HzPisHr2CWscQ8DNq4ATfmZQ4copg8Byy3hFGTtKvq0+ing3UNCdbIzc4z9yskHeM
-         i6XYgDFBYacc8aSIAdToK+pj+H/fS21Ias0jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690327773; x=1690932573;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ynoALsv1aca8y8xpjhuiunc/CTMUKjN2qeAE0MoxzWk=;
-        b=BmhENbGzzU2H1WTFNohYWsDAnjGcgw7mxMbuoCk1FE9kS7HBzjveNVMdbsyMznwrPM
-         mHvGuButh43zvqOT/UY9UUD79WqtRHcEVyxyafzeqv/cLCiM2BILkmuxj1KjqhpIO2hj
-         UrymULVR/8OUkMavZqM2JT4Zoc1SYsK9Dy+rAlrR4OW4AiYn7/IUZanyLYhr/jQxQstq
-         y9ntZJ5LIJUYmLWmy21QQR6DnYd1UhNRYIi23FE5yRsMxLHb/XvCzJDAvRF8kgGQKdGy
-         k4wpSH/zLd+hLlcVYLZFfwovpo836amUy/i3gPzjdmikQyvBoqiDbLseW+xoC9iAhUFw
-         Gxjw==
-X-Gm-Message-State: ABy/qLarL7LrvOv8dy1yAp7oZiZR9SEn9KBPSpsK9f76m6kwYQ+gRNfJ
-        buR0T71MffvyxPhQnN5zfDABtEKRMPjOon+GHYs=
-X-Google-Smtp-Source: APBJJlFOYFaGXIDd2DLLQ0HZ+PPI+wBB+NlGxhegixuv5PbL5oqsOrir68iUsUdxnVKRboGwsYrdZA==
-X-Received: by 2002:a5e:8a4c:0:b0:787:34d:ee9e with SMTP id o12-20020a5e8a4c000000b00787034dee9emr356394iom.7.1690327773744;
-        Tue, 25 Jul 2023 16:29:33 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id m18-20020a02c892000000b0041d859c5721sm3932053jao.64.2023.07.25.16.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 16:29:32 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     rcu@vger.kernel.org, paulmck@kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 5/5] Revert "checkpatch: Error out if deprecated RCU API used"
-Date:   Tue, 25 Jul 2023 23:29:10 +0000
-Message-ID: <20230725232913.2981357-6-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230725232913.2981357-1-joel@joelfernandes.org>
-References: <20230725232913.2981357-1-joel@joelfernandes.org>
+        Tue, 25 Jul 2023 19:29:31 -0400
+Received: from out-35.mta1.migadu.com (out-35.mta1.migadu.com [95.215.58.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84221BE2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 16:29:29 -0700 (PDT)
+Message-ID: <d5bce711-cef0-2929-2126-50105b6d807e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690327768;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vOEjSRPghqZUXU6a9KIFU0/2bAuZPx1SXHj+MlsTBQk=;
+        b=GJ9xevCEq1sj4q4o69h/sQv1iIDXDIAysRTshJHIo4iErGxicFq8ZauC/jMaNJ6wA6Q8Uo
+        wpa1DKrj/9QkQiuc1N67YRt7AyxByTMojBAGQQj8QPMHvkiZV6fXq6xfxY7Z4Cd3LjuyVl
+        +8TNH+5uypaT3rame/2Q5+oBXwZuwiM=
+Date:   Tue, 25 Jul 2023 16:29:21 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] btf: Remove unnecessary header file inclusions
+Content-Language: en-US
+To:     George Guo <guodongtai@kylinos.cn>
+References: <20230721075007.4100863-1-guodongtai@kylinos.cn>
+Cc:     masahiroy@kernel.org, nathan@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230721075007.4100863-1-guodongtai@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check for single-argument kfree_rcu() is no longer needed as all
-users have been converted.
+On 7/21/23 12:50 AM, George Guo wrote:
+> Remove unnecessary header file inclusions in btf.c
+> 
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> ---
+>   kernel/bpf/btf.c | 16 ----------------
+>   1 file changed, 16 deletions(-)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 817204d53372..e5ea729ba6b8 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1,20 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /* Copyright (c) 2018 Facebook */
+>   
+> -#include <uapi/linux/btf.h>
+> -#include <uapi/linux/bpf.h>
+> -#include <uapi/linux/bpf_perf_event.h>
+> -#include <uapi/linux/types.h>
+> -#include <linux/seq_file.h>
+> -#include <linux/compiler.h>
+> -#include <linux/ctype.h>
+> -#include <linux/errno.h>
+> -#include <linux/slab.h>
+>   #include <linux/anon_inodes.h>
+> -#include <linux/file.h>
+> -#include <linux/uaccess.h>
+> -#include <linux/kernel.h>
+> -#include <linux/idr.h>
+>   #include <linux/sort.h>
+>   #include <linux/bpf_verifier.h>
+>   #include <linux/btf.h>
+> @@ -22,9 +9,6 @@
+>   #include <linux/bpf_lsm.h>
+>   #include <linux/skmsg.h>
+>   #include <linux/perf_event.h>
+> -#include <linux/bsearch.h>
+> -#include <linux/kobject.h>
+> -#include <linux/sysfs.h>
 
-This reverts commit 1eacac3255495be7502d406e2ba5444fb5c3607c.
+What is the reason that needs this change and only to this file? There are other 
+files that can do this kind of removal. Are you planning to make all the changes 
+also?
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- scripts/checkpatch.pl | 9 ---------
- 1 file changed, 9 deletions(-)
+afaict, they are here because this file is using something defined in them. Now 
+it is depending on other header files implicitly including the removed headers.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a9841148cde2..528f619520eb 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6422,15 +6422,6 @@ sub process {
- 			}
- 		}
- 
--# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
--		if ($line =~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
--			if ($line =~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
--				ERROR("DEPRECATED_API",
--				      "Single-argument k[v]free_rcu() API is deprecated, please pass rcu_head object or call k[v]free_rcu_mightsleep()." . $herecurr);
--			}
--		}
--
--
- # check for unnecessary "Out of Memory" messages
- 		if ($line =~ /^\+.*\b$logFunctions\s*\(/ &&
- 		    $prevline =~ /^[ \+]\s*if\s*\(\s*(\!\s*|NULL\s*==\s*)?($Lval)(\s*==\s*NULL\s*)?\s*\)/ &&
--- 
-2.41.0.487.g6d72f3e995-goog
+>   
+>   #include <net/netfilter/nf_bpf_link.h>
+>   
 
