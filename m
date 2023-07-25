@@ -2,41 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89C1761AEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BDF761AEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 16:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbjGYOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 10:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S232027AbjGYOG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 10:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjGYOGM (ORCPT
+        with ESMTP id S232014AbjGYOG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 10:06:12 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89944106
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 07:06:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACE6B15BF;
-        Tue, 25 Jul 2023 07:06:54 -0700 (PDT)
-Received: from e127643.arm.com (unknown [10.57.2.54])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C53FD3F6C4;
-        Tue, 25 Jul 2023 07:06:09 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org
-Cc:     James Clark <james.clark@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] coresight: Fix all W=1 build warnings
-Date:   Tue, 25 Jul 2023 15:06:04 +0100
-Message-Id: <20230725140604.1350406-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 25 Jul 2023 10:06:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDBB1BD6;
+        Tue, 25 Jul 2023 07:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BPtKOmxez51uKAQ5bimFSFsRk3Pz5ZRLzvPzUPZ9CYg=; b=HuT/B5bV60wd9SZEDcouz3w1w9
+        xT6Fs7fYyH374GTkEhAWHYNgH44jtsnhgFScRE8ezoNmpO7Bg2nbQKv1Yt/ojpDWkavNKwgKuRJ3V
+        oE6xhB2s8tp07ufZtaLX/VHhG1dl3GhRFHwXnAko5UWCrwzAfIzlyfa17Xd8YFa+obLLMBOqr6oTl
+        QeEckAkcMbFlKcpXXgs2BjUPHz89tLBBkReiVy7r8054DV0tIV9CF7AyvtWnzCFG37oTbz9rPBvyM
+        lUErzAHihzRxzET3obp0FMe+8Lu25W9+85lfMudlzXDTtR2IbNbgz9/VXy+UZsomBEI6gYBzazlxf
+        bAXlaUnw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qOIg9-005WxA-6B; Tue, 25 Jul 2023 14:06:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 280AD300155;
+        Tue, 25 Jul 2023 16:06:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D86242B20499D; Tue, 25 Jul 2023 16:06:20 +0200 (CEST)
+Date:   Tue, 25 Jul 2023 16:06:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andres@anarazel.de
+Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
+Message-ID: <20230725140620.GO3765278@hirez.programming.kicks-ass.net>
+References: <20230720221858.135240-1-axboe@kernel.dk>
+ <20230720221858.135240-7-axboe@kernel.dk>
+ <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
+ <20230721113718.GA3638458@hirez.programming.kicks-ass.net>
+ <d95bfb98-8d76-f0fd-6283-efc01d0cc015@kernel.dk>
+ <94b8fcc4-12b5-8d8c-3eb3-fe1e73a25456@kernel.dk>
+ <20230725130015.GI3765278@hirez.programming.kicks-ass.net>
+ <28a42d23-6d70-bc4c-5abc-0b3cc5d7338d@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28a42d23-6d70-bc4c-5abc-0b3cc5d7338d@kernel.dk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,54 +65,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot looks for new warnings in a W=1 build, so fix all
-the existing warnings to make it easier to spot new ones when building
-locally.
+On Tue, Jul 25, 2023 at 07:48:30AM -0600, Jens Axboe wrote:
 
-The fixes are for undocumented function arguments and an incorrect doc
-style.
+> I think I'll just have prep and prepv totally separate. It only makes
+> sense to share parts of them if one is a subset of the other. That'll
+> get rid of the odd conditionals and sectioning of it.
 
-Signed-off-by: James Clark <james.clark@arm.com>
----
- drivers/hwtracing/coresight/coresight-cti-core.c  | 2 +-
- drivers/hwtracing/coresight/coresight-etm4x-cfg.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-index 7023ff70cc28..3999d0a2cb60 100644
---- a/drivers/hwtracing/coresight/coresight-cti-core.c
-+++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-@@ -22,7 +22,7 @@
- #include "coresight-priv.h"
- #include "coresight-cti.h"
- 
--/**
-+/*
-  * CTI devices can be associated with a PE, or be connected to CoreSight
-  * hardware. We have a list of all CTIs irrespective of CPU bound or
-  * otherwise.
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-cfg.c b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-index d2ea903231b2..c302072b293a 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-@@ -40,7 +40,7 @@
-  * Invalid offsets will result in fail code return and feature load failure.
-  *
-  * @drvdata:	driver data to map into.
-- * @reg:	register to map.
-+ * @reg_csdev:	register to map.
-  * @offset:	device offset for the register
-  */
- static int etm4_cfg_map_reg_offset(struct etmv4_drvdata *drvdata,
-@@ -132,7 +132,7 @@ static int etm4_cfg_map_reg_offset(struct etmv4_drvdata *drvdata,
-  * etm4_cfg_load_feature - load a feature into a device instance.
-  *
-  * @csdev:	An ETMv4 CoreSight device.
-- * @feat:	The feature to be loaded.
-+ * @feat_csdev:	The feature to be loaded.
-  *
-  * The function will load a feature instance into the device, checking that
-  * the register definitions are valid for the device.
--- 
-2.34.1
-
+Ah, yes. Fair enough.
