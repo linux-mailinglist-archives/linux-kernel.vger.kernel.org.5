@@ -2,231 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54728760E3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 11:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45722760CFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjGYJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 05:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S232166AbjGYI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjGYJSm (ORCPT
+        with ESMTP id S232808AbjGYI1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:18:42 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A5E10E7;
-        Tue, 25 Jul 2023 02:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690276715; x=1721812715;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LKtaiWNgDWK8U+v+CSkjSmMLNgc+6CwnEmQrVA3o6hk=;
-  b=X9Tnq3Mqr7hSM1pYrZe4MDh+iteuG93bMGwcd0dwbhDzbXB6dKtQ8wwC
-   GFbgh8yfuPPUl9X/8hxurecx98oDSAzdDcC/KMxqjQYGQD23nQWVa22fa
-   vjuCsCxuKaj/BUvZqtoY/Az8MPYTRLV0mLlzpii4mKt7fQzjFHY7n79qC
-   NQBTuMNMtkNAwpdFo/5SHcyuop6C8zpMhxbizzhP+rgntiwBZw+bX32HP
-   //4vyJ6W+lDNn2o2oYofPa/6X7A4jlCSkSWImL32c5I7gzLQRRM/yrSss
-   3pfiCKNMynqbCYbxMTiDCHrKZOGl04ZqJhAG4Z9K87KF6Ss7wjzmND6xK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="454048830"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="454048830"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:18:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719980312"
-X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="719980312"
-Received: from mongola-mobl.ger.corp.intel.com (HELO [10.249.37.129]) ([10.249.37.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 02:18:28 -0700
-Message-ID: <eb1c679b-f50b-1f20-c7c8-da3f4857bec1@linux.intel.com>
-Date:   Tue, 25 Jul 2023 10:27:00 +0200
+        Tue, 25 Jul 2023 04:27:55 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4070A10F8;
+        Tue, 25 Jul 2023 01:27:33 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 90D1C83D4;
+        Tue, 25 Jul 2023 16:27:31 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 16:27:31 +0800
+Received: from [192.168.125.84] (183.27.99.135) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 16:27:30 +0800
+Message-ID: <62ddb368-d714-8986-9904-2e44edfb069c@starfivetech.com>
+Date:   Tue, 25 Jul 2023 16:27:29 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 08/32] ASoC: qcom: qdsp6: Introduce USB AFE port to
- q6dsp
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v1 1/5] ASoC: dt-bindings: Add StarFive JH7110 dummy
+ PWM-DAC transmitter
+From:   Hal Feng <hal.feng@starfivetech.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        "Walker Chen" <walker.chen@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230626110909.38718-1-hal.feng@starfivetech.com>
+ <20230626110909.38718-2-hal.feng@starfivetech.com>
+ <006ddacd-0496-70d1-3310-99b16706de84@linaro.org>
+ <0312262c-28c0-9445-c6f7-2079a57db8c7@starfivetech.com>
+ <c0244a98-4c91-93d8-a3e4-5210d0b3f205@linaro.org>
+ <d046796e-34a0-56e5-a740-6a1fcf41d216@starfivetech.com>
 Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
-        quic_jackp@quicinc.com, oneukum@suse.com, albertccwang@google.com,
-        o-takashi@sakamocchi.jp
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-9-quic_wcheng@quicinc.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230725023416.11205-9-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <d046796e-34a0-56e5-a740-6a1fcf41d216@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [183.27.99.135]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 10 Jul 2023 11:22:50 +0800, Hal Feng wrote:
+> On Sat, 1 Jul 2023 10:17:51 +0200, Krzysztof Kozlowski wrote:
+>> On 30/06/2023 03:57, Hal Feng wrote:
+>>> On Mon, 26 Jun 2023 17:34:56 +0200, Krzysztof Kozlowski wrote:
+>>>> On 26/06/2023 13:09, Hal Feng wrote:
+>>>>> Add bindings for StarFive JH7110 dummy PWM-DAC transmitter.
+>>>>
+>>>> ...
+>>>>
+>>>>> +required:
+>>>>> +  - compatible
+>>>>> +  - "#sound-dai-cells"
+>>>>> +
+>>>>> +additionalProperties: false
+>>>>> +
+>>>>> +examples:
+>>>>> +  - |
+>>>>> +    pwmdac-dit {
+>>>>> +        compatible = "starfive,jh7110-pwmdac-dit";
+>>>>> +        #sound-dai-cells = <0>;
+>>>>
+>>>> BTW, I don't see any resources here. Neither in the driver. I think you
+>>>> just added this for driver, not for a real hardware.
+>>> 
+>>> Yes, this is a dummy PWM-DAC transmitter as described in the title. The
+>>> StarFive JH7110 PWM-DAC module doesn't need a hardware codec, but a
+>>> dummy codec is needed for the driver.
+>> 
+>> Bindings are no for drivers, therefore with such reasoning the answer
+>> is: drop entire binding. If you think otherwise, please give me some
+>> more details about the hardware.
+> 
+> I agreed. I will drop this binding and the compatible in patch 2. Thanks.
 
-> +static const struct snd_soc_dai_ops q6usb_ops = {
-> +	.prepare	= q6afe_dai_prepare,
-> +	.hw_params	= q6usb_hw_params,
-> +	.shutdown	= q6afe_dai_shutdown,
+Hi, Krzysztof,
 
-it's a bit odd to see a .shutdown without a .startup?
+Could I use the dummy spdif codec [1][2] which is already upstream? The dummy
+spdif codec is really compatible with the one which JH7110 PWM-DAC needed.
+They are mostly similar.
 
-Is this intentional and should a comment be added?
+[1] Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
+[2] sound/soc/codecs/spdif_transmitter.c
 
+In that way, patch 1 & 2 can be dropped and patch 5 will be modified as follows.
 
-> +/* device token of actual end USB aduio device */
++	pwmdac_dit: pwmdac-dit {
++		compatible = "linux,spdif-dit";
++		#sound-dai-cells = <0>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "StarFive-PWMDAC-Sound-Card";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		simple-audio-card,dai-link@0 {
++			reg = <0>;
++			format = "left_j";
++			bitclock-master = <&sndcpu0>;
++			frame-master = <&sndcpu0>;
++
++			sndcpu0: cpu {
++				sound-dai = <&pwmdac>;
++			};
++
++			codec {
++				sound-dai = <&pwmdac_dit>;
++			};
++		};
++	};
 
-audio
-
-> +	u32                  dev_token;
-> +/* endianness of this interface */
-> +	u32                   endian;
-> +/* service interval */
-> +	u32                  service_interval;
-> +} __packed;
-> +
-> +/**
-> + * struct afe_param_id_usb_audio_dev_params
-> + * @cfg_minor_version: Minor version used for tracking USB audio device
-> + * configuration.
-> + * Supported values:
-> + *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-> + * @dev_token: device token of actual end USB aduio device
-
-audio. please run a spell-checker.
-
-
-> +	svc_int.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
-> +	ret = q6afe_port_set_param_v2(port, &svc_int,
-> +				      AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
-> +				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
-> +	if (ret) {
-> +		dev_err(port->afe->dev, "%s: AFE device param cmd svc_interval failed %d\n",
-> +			__func__, ret);
-> +		ret = -EINVAL;
-
-why do you override the return value?
-
-> +		goto exit;
-
-not necessary, this is a jump to the next line. Looks like copy-paste ...
-
-> +	}
-> +exit:
-> +	return ret;
-> +}
-> +
-> +/**
-> + * q6afe_usb_port_prepare() - Prepare usb afe port.
-> + *
-> + * @port: Instance of afe port
-> + * @cfg: USB configuration for the afe port
-> + *
-> + */
-> +void q6afe_usb_port_prepare(struct q6afe_port *port,
-> +			     struct q6afe_usb_cfg *cfg)
-> +{
-> +	union afe_port_config *pcfg = &port->port_cfg;
-> +
-> +	pcfg->usb_cfg.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	pcfg->usb_cfg.sample_rate = cfg->sample_rate;
-> +	pcfg->usb_cfg.num_channels = cfg->num_channels;
-> +	pcfg->usb_cfg.bit_width = cfg->bit_width;
-> +
-> +	afe_port_send_usb_dev_param(port, cfg);
-> +}
-> +EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
-> +
->  /**
->   * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
->   *
-> @@ -1611,7 +1791,10 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
->  		break;
->  	case AFE_PORT_ID_WSA_CODEC_DMA_RX_0 ... AFE_PORT_ID_RX_CODEC_DMA_RX_7:
->  		cfg_type = AFE_PARAM_ID_CODEC_DMA_CONFIG;
-> -	break;
-> +		break;
-> +	case AFE_PORT_ID_USB_RX:
-> +		cfg_type = AFE_PARAM_ID_USB_AUDIO_CONFIG;
-> +		break;
->  	default:
->  		dev_err(dev, "Invalid port id 0x%x\n", port_id);
->  		return ERR_PTR(-EINVAL);
-> diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-> index 30fd77e2f458..e098a3e15135 100644
-> --- a/sound/soc/qcom/qdsp6/q6afe.h
-> +++ b/sound/soc/qcom/qdsp6/q6afe.h
-> @@ -5,7 +5,7 @@
->  
->  #include <dt-bindings/sound/qcom,q6afe.h>
->  
-> -#define AFE_PORT_MAX		129
-> +#define AFE_PORT_MAX		130
->  
->  #define MSM_AFE_PORT_TYPE_RX 0
->  #define MSM_AFE_PORT_TYPE_TX 1
-> @@ -205,6 +205,47 @@ struct q6afe_cdc_dma_cfg {
->  	u16	active_channels_mask;
->  };
->  
-> +/**
-> + * struct q6afe_usb_cfg
-> + * @cfg_minor_version: Minor version used for tracking USB audio device
-> + * configuration.
-> + * Supported values:
-> + *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-> + * @sample_rate: Sampling rate of the port
-> + *    Supported values:
-> + *      AFE_PORT_SAMPLE_RATE_8K
-> + *      AFE_PORT_SAMPLE_RATE_11025
-> + *      AFE_PORT_SAMPLE_RATE_12K
-> + *      AFE_PORT_SAMPLE_RATE_16K
-> + *      AFE_PORT_SAMPLE_RATE_22050
-> + *      AFE_PORT_SAMPLE_RATE_24K
-> + *      AFE_PORT_SAMPLE_RATE_32K
-> + *      AFE_PORT_SAMPLE_RATE_44P1K
-> + *      AFE_PORT_SAMPLE_RATE_48K
-> + *      AFE_PORT_SAMPLE_RATE_96K
-> + *      AFE_PORT_SAMPLE_RATE_192K
-> + * @bit_width: Bit width of the sample.
-> + *    Supported values: 16, 24
-> + * @num_channels: Number of channels
-> + *    Supported values: 1, 2
-> + * @data_format: Data format supported by the USB
-> + *    Supported values: 0
-> + * @reserved: this field must be 0
-> + * @dev_token: device token of actual end USB audio device
-> + * @endian: endianness of this interface
-> + * @service_interval: service interval
-> + **/
-> +struct q6afe_usb_cfg {
-> +	u32	cfg_minor_version;
-> +	u32     sample_rate;
-> +	u16	bit_width;
-> +	u16	num_channels;
-> +	u16	data_format;
-> +	u16	reserved;
-> +	u32	dev_token;
-> +	u32	endian;
-> +	u32	service_interval;
-> +};
-
-this definition looks exactly the same as
-struct afe_param_id_usb_cfg
-??
-
-
+Best regards,
+Hal
