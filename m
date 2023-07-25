@@ -2,366 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08127609F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCAF7609F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 08:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjGYGCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 02:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        id S229499AbjGYGD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 02:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjGYGB5 (ORCPT
+        with ESMTP id S231931AbjGYGDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 02:01:57 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1587AE69;
-        Mon, 24 Jul 2023 23:01:55 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 390395C0125;
-        Tue, 25 Jul 2023 02:01:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 25 Jul 2023 02:01:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1690264915; x=1690351315; bh=u25UZIhU9Z
-        hcvPRhhElxeTtk0KNrK1z5pbqbM0fo0/A=; b=XONI4PHD5lQk4/QiWn5NBq6Ffs
-        yIvnQH1hyYH3KMgZYFa04sKWnTROiYaKVAposDcbX16KgjRpp59u+W0TvtfkoKOz
-        RXUr1oUzEKBr1ISERtJrLYYbm2zbc+CQivmUAqdp59cr64eRVGNZ5CTnbs6qw3ne
-        m+jO+zHmxE6U22tDMIQSkcfToIIn40wwuxjNOVFU07mnrT6paKFvznOsgkySWPJk
-        GT+Uqo9aATLj0bJ9DmjmIxZxQIFKwmWVFAYUrIG9BSOPrnI8KKN3YvSpfWn+CxjQ
-        MCEXyjrwjrTjEsTngrVXXSA/ZVhEGs1nSyMjYnW4Se4UhjpwC7Q2Vo7F1CFA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690264915; x=1690351315; bh=u25UZIhU9Zhcv
-        PRhhElxeTtk0KNrK1z5pbqbM0fo0/A=; b=AeM0MhpYHj6ZmTVX0NcuhXbJiu3Xh
-        i1tg9l/0IQPuzakC/M5rQjl+Vdngwp+lb7R8Eo4LdZsBmIpPUlGT7vhk7KEven6N
-        q5Qn83R0cre7qZfpwF2hkeswTWCTyAkWlDIGo5WjP1in9p4/x0QkubjskbhI1I4E
-        +TsL4pCkahOVxtX2t6nDazFuuyqhqkPP43zirdI+QBJse7oZaSc+ka2Of3xBbu7Y
-        zVzljKpYDxJE5z9Uu1nt9B8aEYECEdead+WRUdZWt7UpadSBhrrvFkSURmEJ2NKW
-        elaGhWEZixSTYislD3XK6P0QR+Roje48ENY0XXbx8Sgr4Bk2crChJk8Sw==
-X-ME-Sender: <xms:UmW_ZCuh8OQu_JZPTOMlQmAAOC7jByDsd-dIZxZUxpBz0R1GM6iaTA>
-    <xme:UmW_ZHdd29BTTENwbO8Ia9uTwX1zQlHAipXXDDhDyTCxv3GqNIE3QGjNx4rNz8nXN
-    Z5vH-M6IMiA4xMECrI>
-X-ME-Received: <xmr:UmW_ZNwNdFZ1PkuzdTBd8K5DDjt3lZrKMx5uEE5Scm7FZAC57LZz_9f_90y9NH9mrkEMGX5OQFj4lQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheelgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghes
-    fhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepvdeuteekleeuudfgueethe
-    dtuddthfdtleffgefhieehfeeigedvtdeuveetiedunecuffhomhgrihhnpehkvghrnhgv
-    lhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:UmW_ZNP6kOcUZltycQ2mTcfNpmZPHE5OgEvj6C3dB5PCnafIpPEXeg>
-    <xmx:UmW_ZC8i3EpX2xVEeciq94zGGA9XnOd7EkOc3-yRq6qV4nvnUssSeg>
-    <xmx:UmW_ZFVkq2xCbZWn6VP-OcFTB3AAOutvMThGrDhyy7v0jeijM9iiLQ>
-    <xmx:U2W_ZGbWm9ee_x0Ts6ajd2F3o_xpMfmapFJWUI-lHuyGiAc12lr0iw>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 25 Jul 2023 02:01:51 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, chenhuacai@kernel.org,
-        philmd@linaro.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] MIPS: Loongson64: Fix more __iomem attributes
-Date:   Tue, 25 Jul 2023 14:01:44 +0800
-Message-Id: <20230725060144.1501195-1-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 25 Jul 2023 02:03:23 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC75A10E7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 23:03:21 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so7273471a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 23:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690265000; x=1690869800;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gKw/y6xbJLHLrKoOqib8wE6g0TwzZr90wRZOEpTA+QM=;
+        b=dNI26837h7Z5m0NpSRAEvJuTHCMrt52ddpJT/KP/SmM9gS2AlifEtXu8hfCiII80+6
+         MOzZ2S8PMgpT/gp6fSkvkiiyWvp/Ob0Qr8Sb0f9Bt38bWZc+Sd1mnZnpeTVYnaEzm153
+         3oJpljLbO/50dSg3zUfiZJVDMRAtYvknwId3JkXsAqFs94btqf1LvEkUAt9GDAMX7cr1
+         GQshODgEtvdIe7IcWgTl9i1pC6HQzSDG4HkBINIVJtlDnWsZJ0vJ91IEeahD0ZKolSHz
+         oWVc3FZ6WQ9MCIilIDA9k5BVW1NJTPM/VyoK+fLAFMPVWIKVcEynBMqshK5ILAUNtHeF
+         ih6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690265000; x=1690869800;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKw/y6xbJLHLrKoOqib8wE6g0TwzZr90wRZOEpTA+QM=;
+        b=LlHiN4W4YidySiuxPVoVjUbr7XY1oHGwcvrzca6cFO20VCtQZXB4R3bTuL0OdbhCUe
+         6PMLpg1ZTxmXpVSsMJrvjPyfNf0RQusXm3JUasezQQvsoHbPLDqjWyPgXsXNNgkM35E+
+         qQWbU7A3bfuf0GhtCqa4CNeV7Ctm0mYeZ4Dg/khuZ1Br1YT8h63RJFfyy+/JyLE+hduL
+         bTY4XIJ9LdI6EQykg3SXe1ZM3crl7JLRVLuyonRwdZkzhbODbb57c6HooOuLk/YxLk8o
+         NU9NRFo5in0mC8gMD4quWmJit3JJOJqMUs4NRMPTs/KcfAHA5qS7SK5nSuQutqZvbsaJ
+         b2HA==
+X-Gm-Message-State: ABy/qLZ1oK66dPw7u29U1HE3v2dypKQ38njX5cONF0ZBnJKzabK5Fzui
+        H8T+iZi+/ZQiB5SCQ1+STSpOOg==
+X-Google-Smtp-Source: APBJJlEP7l6qFTgow+ggwKiOot4c+RCyryVYPqohvTQF/Ys7TpoCWLWFPrROZM2D/IBUsQ0xpJczzw==
+X-Received: by 2002:a17:907:a070:b0:993:da91:6e0c with SMTP id ia16-20020a170907a07000b00993da916e0cmr11275219ejc.3.1690265000364;
+        Mon, 24 Jul 2023 23:03:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709065f8600b0098ec690e6d7sm7723489eju.73.2023.07.24.23.01.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 23:02:14 -0700 (PDT)
+Message-ID: <db7ffc4b-54c5-6f54-51ae-03479576f2b8@linaro.org>
+Date:   Tue, 25 Jul 2023 08:01:45 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/3] dt-bindings: arm: convert nested if-else construct
+ to allOf
+Content-Language: en-US
+To:     Nikunj Kela <quic_nkela@quicinc.com>, sudeep.holla@arm.com
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230724164419.16092-1-quic_nkela@quicinc.com>
+ <20230724164419.16092-2-quic_nkela@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724164419.16092-2-quic_nkela@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some __iomem type casting being missed in previous patch.
-Fix them here.
+On 24/07/2023 18:44, Nikunj Kela wrote:
+> Nested if-else construct is not scalable therefore, convert
+> it to allOf:if-else.
+> 
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> ---
+>  .../bindings/firmware/arm,scmi.yaml           | 55 +++++++++----------
+>  1 file changed, 27 insertions(+), 28 deletions(-)
+> 
 
-Fixes: 5bd3990723bd ("MIPS: Loongson64: Prefix ipi register address pointers with __iomem")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307020639.QCZOKp8B-lkp@intel.com/
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
-v2: Drop invalid attribute for play_dead pointers
----
- arch/mips/loongson64/smp.c | 160 ++++++++++++++++++-------------------
- 1 file changed, 80 insertions(+), 80 deletions(-)
 
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index cdecd7af11a6..e015a26a40f7 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -187,181 +187,181 @@ static void csr_ipi_probe(void)
- 
- static void ipi_set0_regs_init(void)
- {
--	ipi_set0_regs[0] = (void *)
-+	ipi_set0_regs[0] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + SET0);
--	ipi_set0_regs[1] = (void *)
-+	ipi_set0_regs[1] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + SET0);
--	ipi_set0_regs[2] = (void *)
-+	ipi_set0_regs[2] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + SET0);
--	ipi_set0_regs[3] = (void *)
-+	ipi_set0_regs[3] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + SET0);
--	ipi_set0_regs[4] = (void *)
-+	ipi_set0_regs[4] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + SET0);
--	ipi_set0_regs[5] = (void *)
-+	ipi_set0_regs[5] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + SET0);
--	ipi_set0_regs[6] = (void *)
-+	ipi_set0_regs[6] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + SET0);
--	ipi_set0_regs[7] = (void *)
-+	ipi_set0_regs[7] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + SET0);
--	ipi_set0_regs[8] = (void *)
-+	ipi_set0_regs[8] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + SET0);
--	ipi_set0_regs[9] = (void *)
-+	ipi_set0_regs[9] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + SET0);
--	ipi_set0_regs[10] = (void *)
-+	ipi_set0_regs[10] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + SET0);
--	ipi_set0_regs[11] = (void *)
-+	ipi_set0_regs[11] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + SET0);
--	ipi_set0_regs[12] = (void *)
-+	ipi_set0_regs[12] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + SET0);
--	ipi_set0_regs[13] = (void *)
-+	ipi_set0_regs[13] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + SET0);
--	ipi_set0_regs[14] = (void *)
-+	ipi_set0_regs[14] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + SET0);
--	ipi_set0_regs[15] = (void *)
-+	ipi_set0_regs[15] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + SET0);
- }
- 
- static void ipi_clear0_regs_init(void)
- {
--	ipi_clear0_regs[0] = (void *)
-+	ipi_clear0_regs[0] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + CLEAR0);
--	ipi_clear0_regs[1] = (void *)
-+	ipi_clear0_regs[1] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + CLEAR0);
--	ipi_clear0_regs[2] = (void *)
-+	ipi_clear0_regs[2] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + CLEAR0);
--	ipi_clear0_regs[3] = (void *)
-+	ipi_clear0_regs[3] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + CLEAR0);
--	ipi_clear0_regs[4] = (void *)
-+	ipi_clear0_regs[4] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + CLEAR0);
--	ipi_clear0_regs[5] = (void *)
-+	ipi_clear0_regs[5] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + CLEAR0);
--	ipi_clear0_regs[6] = (void *)
-+	ipi_clear0_regs[6] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + CLEAR0);
--	ipi_clear0_regs[7] = (void *)
-+	ipi_clear0_regs[7] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + CLEAR0);
--	ipi_clear0_regs[8] = (void *)
-+	ipi_clear0_regs[8] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + CLEAR0);
--	ipi_clear0_regs[9] = (void *)
-+	ipi_clear0_regs[9] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + CLEAR0);
--	ipi_clear0_regs[10] = (void *)
-+	ipi_clear0_regs[10] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + CLEAR0);
--	ipi_clear0_regs[11] = (void *)
-+	ipi_clear0_regs[11] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + CLEAR0);
--	ipi_clear0_regs[12] = (void *)
-+	ipi_clear0_regs[12] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + CLEAR0);
--	ipi_clear0_regs[13] = (void *)
-+	ipi_clear0_regs[13] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + CLEAR0);
--	ipi_clear0_regs[14] = (void *)
-+	ipi_clear0_regs[14] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + CLEAR0);
--	ipi_clear0_regs[15] = (void *)
-+	ipi_clear0_regs[15] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + CLEAR0);
- }
- 
- static void ipi_status0_regs_init(void)
- {
--	ipi_status0_regs[0] = (void *)
-+	ipi_status0_regs[0] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + STATUS0);
--	ipi_status0_regs[1] = (void *)
-+	ipi_status0_regs[1] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + STATUS0);
--	ipi_status0_regs[2] = (void *)
-+	ipi_status0_regs[2] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + STATUS0);
--	ipi_status0_regs[3] = (void *)
-+	ipi_status0_regs[3] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + STATUS0);
--	ipi_status0_regs[4] = (void *)
-+	ipi_status0_regs[4] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + STATUS0);
--	ipi_status0_regs[5] = (void *)
-+	ipi_status0_regs[5] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + STATUS0);
--	ipi_status0_regs[6] = (void *)
-+	ipi_status0_regs[6] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + STATUS0);
--	ipi_status0_regs[7] = (void *)
-+	ipi_status0_regs[7] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + STATUS0);
--	ipi_status0_regs[8] = (void *)
-+	ipi_status0_regs[8] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + STATUS0);
--	ipi_status0_regs[9] = (void *)
-+	ipi_status0_regs[9] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + STATUS0);
--	ipi_status0_regs[10] = (void *)
-+	ipi_status0_regs[10] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + STATUS0);
--	ipi_status0_regs[11] = (void *)
-+	ipi_status0_regs[11] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + STATUS0);
--	ipi_status0_regs[12] = (void *)
-+	ipi_status0_regs[12] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + STATUS0);
--	ipi_status0_regs[13] = (void *)
-+	ipi_status0_regs[13] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + STATUS0);
--	ipi_status0_regs[14] = (void *)
-+	ipi_status0_regs[14] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + STATUS0);
--	ipi_status0_regs[15] = (void *)
-+	ipi_status0_regs[15] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + STATUS0);
- }
- 
- static void ipi_en0_regs_init(void)
- {
--	ipi_en0_regs[0] = (void *)
-+	ipi_en0_regs[0] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + EN0);
--	ipi_en0_regs[1] = (void *)
-+	ipi_en0_regs[1] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + EN0);
--	ipi_en0_regs[2] = (void *)
-+	ipi_en0_regs[2] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + EN0);
--	ipi_en0_regs[3] = (void *)
-+	ipi_en0_regs[3] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + EN0);
--	ipi_en0_regs[4] = (void *)
-+	ipi_en0_regs[4] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + EN0);
--	ipi_en0_regs[5] = (void *)
-+	ipi_en0_regs[5] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + EN0);
--	ipi_en0_regs[6] = (void *)
-+	ipi_en0_regs[6] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + EN0);
--	ipi_en0_regs[7] = (void *)
-+	ipi_en0_regs[7] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + EN0);
--	ipi_en0_regs[8] = (void *)
-+	ipi_en0_regs[8] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + EN0);
--	ipi_en0_regs[9] = (void *)
-+	ipi_en0_regs[9] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + EN0);
--	ipi_en0_regs[10] = (void *)
-+	ipi_en0_regs[10] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + EN0);
--	ipi_en0_regs[11] = (void *)
-+	ipi_en0_regs[11] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + EN0);
--	ipi_en0_regs[12] = (void *)
-+	ipi_en0_regs[12] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + EN0);
--	ipi_en0_regs[13] = (void *)
-+	ipi_en0_regs[13] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + EN0);
--	ipi_en0_regs[14] = (void *)
-+	ipi_en0_regs[14] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + EN0);
--	ipi_en0_regs[15] = (void *)
-+	ipi_en0_regs[15] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + EN0);
- }
- 
- static void ipi_mailbox_buf_init(void)
- {
--	ipi_mailbox_buf[0] = (void *)
-+	ipi_mailbox_buf[0] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + BUF);
--	ipi_mailbox_buf[1] = (void *)
-+	ipi_mailbox_buf[1] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + BUF);
--	ipi_mailbox_buf[2] = (void *)
-+	ipi_mailbox_buf[2] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + BUF);
--	ipi_mailbox_buf[3] = (void *)
-+	ipi_mailbox_buf[3] = (void __iomem *)
- 		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + BUF);
--	ipi_mailbox_buf[4] = (void *)
-+	ipi_mailbox_buf[4] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + BUF);
--	ipi_mailbox_buf[5] = (void *)
-+	ipi_mailbox_buf[5] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + BUF);
--	ipi_mailbox_buf[6] = (void *)
-+	ipi_mailbox_buf[6] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + BUF);
--	ipi_mailbox_buf[7] = (void *)
-+	ipi_mailbox_buf[7] = (void __iomem *)
- 		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + BUF);
--	ipi_mailbox_buf[8] = (void *)
-+	ipi_mailbox_buf[8] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + BUF);
--	ipi_mailbox_buf[9] = (void *)
-+	ipi_mailbox_buf[9] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + BUF);
--	ipi_mailbox_buf[10] = (void *)
-+	ipi_mailbox_buf[10] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + BUF);
--	ipi_mailbox_buf[11] = (void *)
-+	ipi_mailbox_buf[11] = (void __iomem *)
- 		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + BUF);
--	ipi_mailbox_buf[12] = (void *)
-+	ipi_mailbox_buf[12] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + BUF);
--	ipi_mailbox_buf[13] = (void *)
-+	ipi_mailbox_buf[13] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + BUF);
--	ipi_mailbox_buf[14] = (void *)
-+	ipi_mailbox_buf[14] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + BUF);
--	ipi_mailbox_buf[15] = (void *)
-+	ipi_mailbox_buf[15] = (void __iomem *)
- 		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + BUF);
- }
- 
--- 
-2.39.2
+Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
