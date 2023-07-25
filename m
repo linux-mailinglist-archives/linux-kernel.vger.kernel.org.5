@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3CB7605AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32ED76057C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 04:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjGYChT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 22:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S230317AbjGYCgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 22:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjGYCgI (ORCPT
+        with ESMTP id S230396AbjGYCfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:36:08 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1568A1FF1;
-        Mon, 24 Jul 2023 19:35:24 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P2OtSZ027134;
-        Tue, 25 Jul 2023 02:34:40 GMT
+        Mon, 24 Jul 2023 22:35:20 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FB21999;
+        Mon, 24 Jul 2023 19:35:08 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36P2McYn010627;
+        Tue, 25 Jul 2023 02:34:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=NQp/QO5QXQF2G8sF8KUb7joRvWQVdLEz2onjgSlGkAY=;
- b=hlIdqQedjqtDD160lQ7qgWItbtETiwka9J+Yg4sNRjUCzFwh1qCBkehN3U5h0+jzA0DB
- SjTPGv4VvUY/swk8mjzPyjs0bi2SgqXzapGySef26kjiUriD+4YyP87Ix1DfhWQzQO0x
- TpEv8i379BRTZY8WRP1M4THFy7zUWfIzcma0PcletghaWtLTCUyWUGtmzqp9QyQILi3i
- XP4Fq4nH8SSGJWB2JV6a/14iRQh2bXZm6u7EJMSJ5nwxQABu1JvL2bxyRjjH8dfqif7C
- w25PjLXJ6MDMNCTA52sL2dtqMWtb6ipS68bBGAZrYaaBjSookBlMBQ1gy0RBmU+8D9p9 8g== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1pfh9yny-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=gUJb9HeB5zlA0fqkHLSGTxvRzCdQ5UPJR7W6sUUQ3PY=;
+ b=V1y7jFx66Feactv9uIUw6xxWl6qktgXxCrBcGXZe6eCGTJT1H7I9foa/a8+g6CPzzMaX
+ iha7TnA0l3jlrNeRZVQ1dWWv1M4ovmrmI2VBrxf79CC29EaMtB3gHsN/NXdiAAkDPBge
+ VVvw5xFJFp+IeO1zxpJG1bkxn87IkvdXoQ78N4IJkdclaWVtkQKdWFN/LwDvGGRYI9hR
+ r8L499BEo0GpTuxDBwYnMCDutOZetxfo7pxUK/+5uvtpFfPqlKgokAbjjoI1QAHr943j
+ COTPs2g/r44gulqias0amL8RO/039PM3iKl2fd88k32gtOI00Rissyz/JPzCRblKGeLK 5g== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1qa3suau-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 02:34:40 +0000
+        Tue, 25 Jul 2023 02:34:31 +0000
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P2YTJt014837
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36P2YUfr012391
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jul 2023 02:34:29 GMT
+        Tue, 25 Jul 2023 02:34:30 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 19:34:28 -0700
+ 15.2.1118.30; Mon, 24 Jul 2023 19:34:29 -0700
 From:   Wesley Cheng <quic_wcheng@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -52,11 +53,15 @@ CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <quic_jackp@quicinc.com>, <pierre-louis.bossart@linux.intel.com>,
         <oneukum@suse.com>, <albertccwang@google.com>,
-        <o-takashi@sakamocchi.jp>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v4 00/32] Introduce QC USB SND audio offloading support
-Date:   Mon, 24 Jul 2023 19:33:44 -0700
-Message-ID: <20230725023416.11205-1-quic_wcheng@quicinc.com>
+        <o-takashi@sakamocchi.jp>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v4 01/32] xhci: add support to allocate several interrupters
+Date:   Mon, 24 Jul 2023 19:33:45 -0700
+Message-ID: <20230725023416.11205-2-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230725023416.11205-1-quic_wcheng@quicinc.com>
+References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
@@ -64,321 +69,598 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: YpSjPidAy9tuboumpthVYTPGwOMZpb74
-X-Proofpoint-GUID: YpSjPidAy9tuboumpthVYTPGwOMZpb74
+X-Proofpoint-ORIG-GUID: LwpikAG-ifQKMI5ish-l33HjriXUeuA-
+X-Proofpoint-GUID: LwpikAG-ifQKMI5ish-l33HjriXUeuA-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-24_18,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 impostorscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307250021
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 clxscore=1011 mlxlogscore=699
+ priorityscore=1501 mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250020
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several Qualcomm based chipsets can support USB audio offloading to a
-dedicated audio DSP, which can take over issuing transfers to the USB
-host controller.  The intention is to reduce the load on the main
-processors in the SoC, and allow them to be placed into lower power modes.
-There are several parts to this design:
-  1. Adding ASoC binding layer
-  2. Create a USB backend for Q6DSP
-  3. Introduce XHCI interrupter support
-  4. Create vendor ops for the USB SND driver
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-      USB                          |            ASoC
---------------------------------------------------------------------
-                                   |  _________________________
-                                   | |sm8250 platform card     |
-                                   | |_________________________|
-                                   |         |           |
-                                   |      ___V____   ____V____
-                                   |     |Q6USB   | |Q6AFE    |  
-                                   |     |"codec" | |"cpu"    |
-                                   |     |________| |_________|
-                                   |         ^  ^        ^
-                                   |         |  |________|
-                                   |      ___V____    |
-                                   |     |SOC-USB |   |
-   ________       ________               |        |   |
-  |USB SND |<--->|QC offld|<------------>|________|   |
-  |(card.c)|     |        |<----------                |
-  |________|     |________|___     | |                |
-      ^               ^       |    | |    ____________V_________
-      |               |       |    | |   |APR/GLINK             |
-   __ V_______________V_____  |    | |   |______________________|
-  |USB SND (endpoint.c)     | |    | |              ^
-  |_________________________| |    | |              |
-              ^               |    | |   ___________V___________
-              |               |    | |->|audio DSP              |
-   ___________V_____________  |    |    |_______________________|
-  |XHCI HCD                 |<-    |
-  |_________________________|      |
+Modify the XHCI drivers to accommodate for handling multiple event rings in
+case there are multiple interrupters.  Add the required APIs so clients are
+able to allocate/request for an interrupter ring, and pass this information
+back to the client driver.  This allows for users to handle the resource
+accordingly, such as passing the event ring base address to an audio DSP.
+There is no actual support for multiple MSI/MSI-X vectors.
 
+Factoring out XHCI interrupter APIs and structures done by Wesley Cheng, in
+order to allow for USB class drivers to utilze them.
 
-Adding ASoC binding layer:
-soc-usb: Intention is to treat a USB port similar to a headphone jack.
-The port is always present on the device, but cable/pin status can be
-enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
-communicate with USB SND.
-
-Create a USB backend for Q6DSP:
-q6usb: Basic backend driver that will be responsible for maintaining the
-resources needed to initiate a playback stream using the Q6DSP.  Will
-be the entity that checks to make sure the connected USB audio device
-supports the requested PCM format.  If it does not, the PCM open call will
-fail, and userpsace ALSA can take action accordingly.
-
-Introduce XHCI interrupter support:
-XHCI HCD supports multiple interrupters, which allows for events to be routed
-to different event rings.  This is determined by "Interrupter Target" field
-specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
-
-Events in the offloading case will be routed to an event ring that is assigned
-to the audio DSP.
-
-Create vendor ops for the USB SND driver:
-qc_audio_offload: This particular driver has several components associated
-with it:
-- QMI stream request handler
-- XHCI interrupter and resource management
-- audio DSP memory management
-
-When the audio DSP wants to enable a playback stream, the request is first
-received by the ASoC platform sound card.  Depending on the selected route,
-ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
-will send an AFE port start command (with enabling the USB playback path), and
-the audio DSP will handle the request accordingly.
-
-Part of the AFE USB port start handling will have an exchange of control
-messages using the QMI protocol.  The qc_audio_offload driver will populate the
-buffer information:
-- Event ring base address
-- EP transfer ring base address
-
-and pass it along to the audio DSP.  All endpoint management will now be handed
-over to the DSP, and the main processor is not involved in transfers.
-
-Overall, implementing this feature will still expose separate sound card and PCM
-devices for both the platorm card and USB audio device:
- 0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
-                      SM8250-MTP-WCD9380-WSA8810-VA-DMIC
- 1 [Audio          ]: USB-Audio - USB Audio
-                      Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-
-This is to ensure that userspace ALSA entities can decide which route to take
-when executing the audio playback.  In the above, if card#1 is selected, then
-USB audio data will take the legacy path over the USB PCM drivers, etc...
-
-This feature was validated using:
-- tinymix: set/enable the multimedia path to route to USB backend
-- tinyplay: issue playback on platform card
-
-Changelog
---------------------------------------------
-Changes in v4:
-- Rebased to xhci/for-usb-next
-- Addressed some dt-bindings comments
-
-XHCI:
-- Pulled in latest changes from Mathias' feature_interrupters branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
-
-- Fixed commit text and signage for the XHCI sideband/interrupter related changes
-- Added some logic to address the FIXME tags mentioned throughout the commits, such
-as handling multi segment rings and building the SGT, locking concerns, and ep
-cleanup operations.
-- Removed some fixme tags for conditions that may not be needed/addressed.
-- Repurposed the new endpoint stop sync API to be utilized in other places.
-- Fixed potential compile issue if XHCI sideband config is not defined.
-
-ASoC:
-- Added sound jack control into the Q6USB driver.  Allows for userpsace to know when
-an offload capable device is connected.
-
-USB SND:
-- Avoided exporting _snd_pcm_hw_param_set based on Takashi's recommendation.
-- Split USB QMI packet header definitions into a separate commit.  This is used to
-properly allow the QMI interface driver to parse and route QMI packets accordingly
-- Added a "depends on" entry when enabling QC audio offload to avoid compile time
-issues.
-
-Changes in v3:
-- Changed prefix from RFC to PATCH
-- Rebased entire series to usb-next
-- Updated copyright years
-
-XHCI:
-- Rebased changes on top of XHCI changes merged into usb-next, and only added
-changes that were still under discussion.
-- Added change to read in the "num-hc-interrupters" device property.
-
-ASoC:
-- qusb6 USB backend
-  - Incorporated suggestions to fetch iommu information with existing APIs
-  - Added two new sound kcontrols to fetch offload status and offload device
-    selection.
-    - offload status - will return the card and pcm device in use
-        tinymix -D 0 get 1 --> 1, 0 (offload in progress on card#1 pcm#0)
-
-    - device selection - set the card and pcm device to enable offload on. Ex.:
-        tinymix -D 0 set 1 2 0  --> sets offload on card#2 pcm#0
-                                    (this should be the USB card)
-
-USB SND:
-- Fixed up some locking related concerns for registering platform ops.
-   - Moved callbacks under the register_mutex, so that 
-- Modified APIs to properly pass more information about the USB SND device, so
-that the Q6USB backend can build a device list/map, in order to monitor offload
-status and device selection.
-
-Changes in v2:
-
-XHCI:
-- Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
-in his tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
-
-Adjustments made to Mathias' changes:
-  - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
-    Moved dependent structures to this file as well. (so clients can parse out
-    information from "struct xhci_interrupter")
-  - Added some basic locking when requesting interrupters.
-  - Fixed up some sanity checks.
-  - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
-    issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
-
-- Clean up pending events in the XHCI secondary interrupter.  While testing USB
-bus suspend, it was seen that on bus resume, the xHCI HC would run into a command
-timeout.
-- Added offloading APIs to xHCI to fetch transfer and event ring information.
-
-ASoC:
-- Modified soc-usb to allow for multiple USB port additions.  For this to work,
-the USB offload driver has to have a reference to the USB backend by adding
-a "usb-soc-be" DT entry to the device saved into XHCI sysdev.
-- Created separate dt-bindings for defining USB_RX port.
-- Increased APR timeout to accommodate the situation where the AFE port start
-command could be delayed due to having to issue a USB bus resume while
-handling the QMI stream start command.
-
-USB SND:
-- Added a platform ops during usb_audio_suspend().  This allows for the USB
-offload driver to halt the audio stream when system enters PM suspend.  This
-ensures the audio DSP is not issuing transfers on the USB bus.
-- Do not override platform ops if they are already populated.
-- Introduce a shared status variable between the USB offload and USB SND layers,
-to ensure that only one path is active at a time.  If the USB bus is occupied,
-then userspace is notified that the path is busy.
-
-Mathias Nyman (3):
-  xhci: add support to allocate several interrupters
-  xhci: add helper to stop endpoint and wait for completion
-  xhci: sideband: add initial api to register a sideband entity
-
-Wesley Cheng (29):
-  usb: host: xhci-mem: Cleanup pending secondary event ring events
-  usb: host: xhci-mem: Allow for interrupter clients to choose specific
-    index
-  ASoC: Add SOC USB APIs for adding an USB backend
-  ASoC: dt-bindings: qcom,q6dsp-lpass-ports: Add USB_RX port
-  ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
-  ASoC: qdsp6: q6afe: Increase APR timeout
-  ASoC: qcom: Add USB backend ASoC driver for Q6
-  sound: usb: card: Introduce USB SND platform op callbacks
-  sound: usb: Export USB SND APIs for modules
-  dt-bindings: usb: dwc3: Add snps,num-hc-interrupters definition
-  usb: dwc3: Add DT parameter to specify maximum number of interrupters
-  usb: host: xhci-plat: Set XHCI max interrupters if property is present
-  sound: usb: pcm: Export fixed rate check USB SND API
-  sound: usb: qcom: Add USB QMI definitions
-  sound: usb: Introduce QC USB SND offloading support
-  sound: usb: card: Check for support for requested audio format
-  sound: soc: soc-usb: Add PCM format check API for USB backend
-  sound: soc: qcom: qusb6: Ensure PCM format is supported by USB audio
-    device
-  sound: usb: Prevent starting of audio stream if in use
-  ASoC: dt-bindings: Add Q6USB backend bindings
-  ASoC: dt-bindings: Update example for enabling USB offload on SM8250
-  ASoC: qcom: qdsp6: q6afe: Split USB AFE dev_token param into separate
-    API
-  sound: Pass USB SND card and PCM information to SOC USB
-  sound: soc: qdsp6: Add SND kcontrol to select offload device
-  sound: soc: qdsp6: Add SND kcontrol for fetching offload status
-  sound: soc: qcom: q6usb: Add headphone jack for offload connection
-    status
-  sound: usb: qc_audio_offload: Use card and PCM index from QMI request
-  sound: usb: card: Allow for rediscovery of connected USB SND devices
-  sound: soc: soc-usb: Rediscover USB SND devices on USB port add
-
- .../bindings/sound/qcom,q6usb-dais.yaml       |   49 +
- .../bindings/sound/qcom,sm8250.yaml           |   15 +
- .../devicetree/bindings/usb/snps,dwc3.yaml    |   13 +
- arch/arm64/boot/dts/qcom/sm8350.dtsi.rej      |   14 +
- arch/arm64/configs/defconfig.rej              |   24 +
- drivers/usb/dwc3/core.c                       |   12 +
- drivers/usb/dwc3/core.h                       |    2 +
- drivers/usb/dwc3/host.c                       |    5 +-
- drivers/usb/host/Kconfig                      |    9 +
- drivers/usb/host/Makefile                     |    4 +
- drivers/usb/host/xhci-debugfs.c               |    2 +-
- drivers/usb/host/xhci-hub.c                   |   29 +-
- drivers/usb/host/xhci-mem.c                   |  167 +-
- drivers/usb/host/xhci-plat.c                  |    2 +
- drivers/usb/host/xhci-ring.c                  |    2 +-
- drivers/usb/host/xhci-sideband.c              |  195 ++
- drivers/usb/host/xhci.c                       |  109 +-
- drivers/usb/host/xhci.h                       |  102 +-
- .../sound/qcom,q6dsp-lpass-ports.h            |    1 +
- include/linux/usb/xhci-intr.h                 |   86 +
- include/linux/usb/xhci-sideband.h             |   90 +
- include/sound/q6usboffload.h                  |   20 +
- include/sound/soc-usb.h                       |   39 +
- sound/core/oss/pcm_oss.c                      |    4 +-
- sound/soc/Makefile                            |    2 +-
- sound/soc/qcom/Kconfig                        |    4 +
- sound/soc/qcom/qdsp6/Makefile                 |    1 +
- sound/soc/qcom/qdsp6/q6afe-dai.c              |   50 +
- sound/soc/qcom/qdsp6/q6afe.c                  |  208 +-
- sound/soc/qcom/qdsp6/q6afe.h                  |   47 +-
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c      |   23 +
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h      |    1 +
- sound/soc/qcom/qdsp6/q6routing.c              |    9 +
- sound/soc/qcom/qdsp6/q6usb.c                  |  458 +++++
- sound/soc/soc-usb.c                           |  197 ++
- sound/usb/Kconfig                             |   15 +
- sound/usb/Makefile                            |    2 +-
- sound/usb/card.c                              |   85 +
- sound/usb/card.h                              |   32 +
- sound/usb/endpoint.c                          |    2 +
- sound/usb/helper.c                            |    1 +
- sound/usb/pcm.c                               |   29 +-
- sound/usb/pcm.h                               |   12 +
- sound/usb/qcom/Makefile                       |    2 +
- sound/usb/qcom/qc_audio_offload.c             | 1820 +++++++++++++++++
- sound/usb/qcom/usb_audio_qmi_v01.c            |  892 ++++++++
- sound/usb/qcom/usb_audio_qmi_v01.h            |  162 ++
- 47 files changed, 4870 insertions(+), 179 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi.rej | 14 ++++
+ arch/arm64/configs/defconfig.rej         | 24 ++++++
+ drivers/usb/host/xhci-debugfs.c          |  2 +-
+ drivers/usb/host/xhci-mem.c              | 93 ++++++++++++++++++++++--
+ drivers/usb/host/xhci-ring.c             |  2 +-
+ drivers/usb/host/xhci.c                  | 49 ++++++++-----
+ drivers/usb/host/xhci.h                  | 77 +-------------------
+ include/linux/usb/xhci-intr.h            | 86 ++++++++++++++++++++++
+ 8 files changed, 245 insertions(+), 102 deletions(-)
  create mode 100644 arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
  create mode 100644 arch/arm64/configs/defconfig.rej
- create mode 100644 drivers/usb/host/xhci-sideband.c
  create mode 100644 include/linux/usb/xhci-intr.h
- create mode 100644 include/linux/usb/xhci-sideband.h
- create mode 100644 include/sound/q6usboffload.h
- create mode 100644 include/sound/soc-usb.h
- create mode 100644 sound/soc/qcom/qdsp6/q6usb.c
- create mode 100644 sound/soc/soc-usb.c
- create mode 100644 sound/usb/qcom/Makefile
- create mode 100644 sound/usb/qcom/qc_audio_offload.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
 
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej b/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
+new file mode 100644
+index 000000000000..e96ef1120160
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
+@@ -0,0 +1,14 @@
++--- arch/arm64/boot/dts/qcom/sm8350.dtsi
+++++ arch/arm64/boot/dts/qcom/sm8350.dtsi
++@@ -2254,9 +2254,9 @@
++ 				iommus = <&apps_smmu 0x0 0x0>;
++ 				snps,dis_u2_susphy_quirk;
++ 				snps,dis_enblslpm_quirk;
++-				phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
+++				phys = <&usb_1_hsphy>, <&usb_1_qmpphy>;
++ 				phy-names = "usb2-phy", "usb3-phy";
++-
+++				dr_mode = "host";
++ 				ports {
++ 					#address-cells = <1>;
++ 					#size-cells = <0>;
+diff --git a/arch/arm64/configs/defconfig.rej b/arch/arm64/configs/defconfig.rej
+new file mode 100644
+index 000000000000..c98a9b0e8290
+--- /dev/null
++++ b/arch/arm64/configs/defconfig.rej
+@@ -0,0 +1,24 @@
++--- arch/arm64/configs/defconfig
+++++ arch/arm64/configs/defconfig
++@@ -241,7 +210,7 @@ CONFIG_BLK_DEV_NBD=m
++ CONFIG_VIRTIO_BLK=y
++ CONFIG_BLK_DEV_NVME=m
++ CONFIG_QCOM_COINCELL=m
++-CONFIG_QCOM_FASTRPC=m
+++CONFIG_QCOM_FASTRPC=y
++ CONFIG_SRAM=y
++ CONFIG_PCI_ENDPOINT_TEST=m
++ CONFIG_EEPROM_AT24=m
++@@ -1254,10 +1204,10 @@ CONFIG_PHY_MVEBU_CP110_COMPHY=y
++ CONFIG_PHY_MTK_TPHY=y
++ CONFIG_PHY_QCOM_EDP=m
++ CONFIG_PHY_QCOM_PCIE2=m
++-CONFIG_PHY_QCOM_QMP=m
+++CONFIG_PHY_QCOM_QMP=y
++ CONFIG_PHY_QCOM_QUSB2=m
++ CONFIG_PHY_QCOM_USB_HS=m
++-CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2=m
+++CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2=y
++ CONFIG_PHY_QCOM_USB_HS_28NM=m
++ CONFIG_PHY_QCOM_USB_SS=m
++ CONFIG_PHY_R8A779F0_ETHERNET_SERDES=y
+diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
+index 99baa60ef50f..15a8402ee8a1 100644
+--- a/drivers/usb/host/xhci-debugfs.c
++++ b/drivers/usb/host/xhci-debugfs.c
+@@ -693,7 +693,7 @@ void xhci_debugfs_init(struct xhci_hcd *xhci)
+ 				     "command-ring",
+ 				     xhci->debugfs_root);
+ 
+-	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupter->event_ring,
++	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupters[0]->event_ring,
+ 				     "event-ring",
+ 				     xhci->debugfs_root);
+ 
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 19a402123de0..c51150af22f2 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -1840,6 +1840,26 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ 	kfree(ir);
+ }
+ 
++void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir)
++{
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	unsigned int intr_num;
++
++	/* interrupter 0 is primary interrupter, don't touch it */
++	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters) {
++		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
++		return;
++	}
++
++	/* fixme, should we check xhci->interrupter[intr_num] == ir */
++	spin_lock(&xhci->lock);
++	intr_num = ir->intr_num;
++	xhci_free_interrupter(xhci, ir);
++	xhci->interrupters[intr_num] = NULL;
++	spin_unlock(&xhci->lock);
++}
++EXPORT_SYMBOL_GPL(xhci_remove_secondary_interrupter);
++
+ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ {
+ 	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
+@@ -1847,9 +1867,13 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ 
+ 	cancel_delayed_work_sync(&xhci->cmd_timer);
+ 
+-	xhci_free_interrupter(xhci, xhci->interrupter);
+-	xhci->interrupter = NULL;
+-	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed primary event ring");
++	for (i = 0; i < xhci->max_interrupters; i++) {
++		if (xhci->interrupters[i]) {
++			xhci_free_interrupter(xhci, xhci->interrupters[i]);
++			xhci->interrupters[i] = NULL;
++		}
++	}
++	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed interrupters");
+ 
+ 	if (xhci->cmd_ring)
+ 		xhci_ring_free(xhci, xhci->cmd_ring);
+@@ -1919,6 +1943,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ 	for (i = 0; i < xhci->num_port_caps; i++)
+ 		kfree(xhci->port_caps[i].psi);
+ 	kfree(xhci->port_caps);
++	kfree(xhci->interrupters);
+ 	xhci->num_port_caps = 0;
+ 
+ 	xhci->usb2_rhub.ports = NULL;
+@@ -1927,6 +1952,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ 	xhci->rh_bw = NULL;
+ 	xhci->ext_caps = NULL;
+ 	xhci->port_caps = NULL;
++	xhci->interrupters = NULL;
+ 
+ 	xhci->page_size = 0;
+ 	xhci->page_shift = 0;
+@@ -2279,6 +2305,13 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+ 		return -EINVAL;
+ 	}
+ 
++	if (xhci->interrupters[intr_num]) {
++		xhci_warn(xhci, "Interrupter %d\n already set up", intr_num);
++		return -EINVAL;
++	}
++
++	xhci->interrupters[intr_num] = ir;
++	ir->intr_num = intr_num;
+ 	ir->ir_set = &xhci->run_regs->ir_set[intr_num];
+ 
+ 	/* set ERST count with the number of entries in the segment table */
+@@ -2298,10 +2331,53 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+ 	return 0;
+ }
+ 
++struct xhci_interrupter *
++xhci_create_secondary_interrupter(struct usb_hcd *hcd)
++{
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct xhci_interrupter *ir;
++	unsigned int i;
++	int err = -ENOSPC;
++
++	if (!xhci->interrupters)
++		return NULL;
++
++	ir = xhci_alloc_interrupter(xhci, GFP_KERNEL);
++	if (!ir)
++		return NULL;
++
++	spin_lock_irq(&xhci->lock);
++
++	/* Find available secondary interrupter, interrupter 0 is reserverd for primary */
++	for (i = 1; i < xhci->max_interrupters; i++) {
++		if (xhci->interrupters[i] == NULL) {
++			err = xhci_add_interrupter(xhci, ir, i);
++			break;
++		}
++	}
++
++	spin_unlock_irq(&xhci->lock);
++
++	if (!err) {
++		xhci_dbg(xhci, "Add secondary interrupter %d, max interrupters %d\n",
++			 i, xhci->max_interrupters);
++		return ir;
++	}
++
++	xhci_warn(xhci, "Failed to add secondary interrupter, max interrupters %d\n",
++		  xhci->max_interrupters);
++
++	xhci_free_interrupter(xhci, ir);
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(xhci_create_secondary_interrupter);
++
+ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+ {
+-	dma_addr_t	dma;
++	struct xhci_interrupter *ir;
+ 	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
++	dma_addr_t	dma;
+ 	unsigned int	val, val2;
+ 	u64		val_64;
+ 	u32		page_size, temp;
+@@ -2425,11 +2501,14 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+ 	/* Allocate and set up primary interrupter 0 with an event ring. */
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+ 		       "Allocating primary event ring");
+-	xhci->interrupter = xhci_alloc_interrupter(xhci, flags);
+-	if (!xhci->interrupter)
++	xhci->interrupters = kcalloc_node(xhci->max_interrupters, sizeof(*xhci->interrupters),
++					  flags, dev_to_node(dev));
++
++	ir = xhci_alloc_interrupter(xhci, flags);
++	if (!ir)
+ 		goto fail;
+ 
+-	if (xhci_add_interrupter(xhci, xhci->interrupter, 0))
++	if (xhci_add_interrupter(xhci, ir, 0))
+ 		goto fail;
+ 
+ 	xhci->isoc_bei_interval = AVOID_BEI_INTERVAL_MAX;
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 646ff125def5..56f45408dc0c 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -3097,7 +3097,7 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
+ 	writel(status, &xhci->op_regs->status);
+ 
+ 	/* This is the handler of the primary interrupter */
+-	ir = xhci->interrupter;
++	ir = xhci->interrupters[0];
+ 	if (!hcd->msi_enabled) {
+ 		u32 irq_pending;
+ 		irq_pending = readl(&ir->ir_set->irq_pending);
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 5b73a7d281ed..58d75b412bad 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -456,7 +456,7 @@ static int xhci_init(struct usb_hcd *hcd)
+ 
+ static int xhci_run_finished(struct xhci_hcd *xhci)
+ {
+-	struct xhci_interrupter *ir = xhci->interrupter;
++	struct xhci_interrupter *ir = xhci->interrupters[0];
+ 	unsigned long	flags;
+ 	u32		temp;
+ 
+@@ -508,7 +508,7 @@ int xhci_run(struct usb_hcd *hcd)
+ 	u64 temp_64;
+ 	int ret;
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+-	struct xhci_interrupter *ir = xhci->interrupter;
++	struct xhci_interrupter *ir = xhci->interrupters[0];
+ 	/* Start the xHCI host controller running only after the USB 2.0 roothub
+ 	 * is setup.
+ 	 */
+@@ -572,7 +572,7 @@ void xhci_stop(struct usb_hcd *hcd)
+ {
+ 	u32 temp;
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+-	struct xhci_interrupter *ir = xhci->interrupter;
++	struct xhci_interrupter *ir = xhci->interrupters[0];
+ 
+ 	mutex_lock(&xhci->mutex);
+ 
+@@ -668,36 +668,49 @@ EXPORT_SYMBOL_GPL(xhci_shutdown);
+ #ifdef CONFIG_PM
+ static void xhci_save_registers(struct xhci_hcd *xhci)
+ {
+-	struct xhci_interrupter *ir = xhci->interrupter;
++	struct xhci_interrupter *ir;
++	unsigned int i;
+ 
+ 	xhci->s3.command = readl(&xhci->op_regs->command);
+ 	xhci->s3.dev_nt = readl(&xhci->op_regs->dev_notification);
+ 	xhci->s3.dcbaa_ptr = xhci_read_64(xhci, &xhci->op_regs->dcbaa_ptr);
+ 	xhci->s3.config_reg = readl(&xhci->op_regs->config_reg);
+ 
+-	if (!ir)
+-		return;
++	/* save both primary and all secondary interrupters */
++	for (i = 0; i < xhci->max_interrupters; i++) {
++		ir = xhci->interrupters[i];
++		if (!ir)
++			continue;
+ 
+-	ir->s3_erst_size = readl(&ir->ir_set->erst_size);
+-	ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
+-	ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+-	ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
+-	ir->s3_irq_control = readl(&ir->ir_set->irq_control);
++		ir->s3_erst_size = readl(&ir->ir_set->erst_size);
++		ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
++		ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
++		ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
++		ir->s3_irq_control = readl(&ir->ir_set->irq_control);
++	}
+ }
+ 
+ static void xhci_restore_registers(struct xhci_hcd *xhci)
+ {
+-	struct xhci_interrupter *ir = xhci->interrupter;
++	struct xhci_interrupter *ir;
++	unsigned int i;
+ 
+ 	writel(xhci->s3.command, &xhci->op_regs->command);
+ 	writel(xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
+ 	xhci_write_64(xhci, xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
+ 	writel(xhci->s3.config_reg, &xhci->op_regs->config_reg);
+-	writel(ir->s3_erst_size, &ir->ir_set->erst_size);
+-	xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
+-	xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
+-	writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
+-	writel(ir->s3_irq_control, &ir->ir_set->irq_control);
++
++	for (i = 0; i < xhci->max_interrupters; i++) {
++		ir = xhci->interrupters[i];
++		if (!ir)
++			continue;
++
++		writel(ir->s3_erst_size, &ir->ir_set->erst_size);
++		xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
++		xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
++		writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
++		writel(ir->s3_irq_control, &ir->ir_set->irq_control);
++	}
+ }
+ 
+ static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
+@@ -1058,7 +1071,7 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
+ 		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
+ 		temp = readl(&xhci->op_regs->status);
+ 		writel((temp & ~0x1fff) | STS_EINT, &xhci->op_regs->status);
+-		xhci_disable_interrupter(xhci->interrupter);
++		xhci_disable_interrupter(xhci->interrupters[0]);
+ 
+ 		xhci_dbg(xhci, "cleaning up memory\n");
+ 		xhci_mem_cleanup(xhci);
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 7e282b4522c0..d706a27ec0a3 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -17,6 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/usb/hcd.h>
+ #include <linux/io-64-nonatomic-lo-hi.h>
++#include <linux/usb/xhci-intr.h>
+ 
+ /* Code sharing between pci-quirks and xhci hcd */
+ #include	"xhci-ext-caps.h"
+@@ -1541,18 +1542,6 @@ static inline const char *xhci_trb_type_string(u8 type)
+ #define AVOID_BEI_INTERVAL_MIN	8
+ #define AVOID_BEI_INTERVAL_MAX	32
+ 
+-struct xhci_segment {
+-	union xhci_trb		*trbs;
+-	/* private to HCD */
+-	struct xhci_segment	*next;
+-	dma_addr_t		dma;
+-	/* Max packet sized bounce buffer for td-fragmant alignment */
+-	dma_addr_t		bounce_dma;
+-	void			*bounce_buf;
+-	unsigned int		bounce_offs;
+-	unsigned int		bounce_len;
+-};
+-
+ enum xhci_cancelled_td_status {
+ 	TD_DIRTY = 0,
+ 	TD_HALTED,
+@@ -1585,16 +1574,6 @@ struct xhci_cd {
+ 	union xhci_trb		*cmd_trb;
+ };
+ 
+-enum xhci_ring_type {
+-	TYPE_CTRL = 0,
+-	TYPE_ISOC,
+-	TYPE_BULK,
+-	TYPE_INTR,
+-	TYPE_STREAM,
+-	TYPE_COMMAND,
+-	TYPE_EVENT,
+-};
+-
+ static inline const char *xhci_ring_type_string(enum xhci_ring_type type)
+ {
+ 	switch (type) {
+@@ -1615,46 +1594,6 @@ static inline const char *xhci_ring_type_string(enum xhci_ring_type type)
+ 	}
+ 
+ 	return "UNKNOWN";
+-}
+-
+-struct xhci_ring {
+-	struct xhci_segment	*first_seg;
+-	struct xhci_segment	*last_seg;
+-	union  xhci_trb		*enqueue;
+-	struct xhci_segment	*enq_seg;
+-	union  xhci_trb		*dequeue;
+-	struct xhci_segment	*deq_seg;
+-	struct list_head	td_list;
+-	/*
+-	 * Write the cycle state into the TRB cycle field to give ownership of
+-	 * the TRB to the host controller (if we are the producer), or to check
+-	 * if we own the TRB (if we are the consumer).  See section 4.9.1.
+-	 */
+-	u32			cycle_state;
+-	unsigned int		stream_id;
+-	unsigned int		num_segs;
+-	unsigned int		num_trbs_free; /* used only by xhci DbC */
+-	unsigned int		bounce_buf_len;
+-	enum xhci_ring_type	type;
+-	bool			last_td_was_short;
+-	struct radix_tree_root	*trb_address_map;
+-};
+-
+-struct xhci_erst_entry {
+-	/* 64-bit event ring segment address */
+-	__le64	seg_addr;
+-	__le32	seg_size;
+-	/* Set to zero */
+-	__le32	rsvd;
+-};
+-
+-struct xhci_erst {
+-	struct xhci_erst_entry	*entries;
+-	unsigned int		num_entries;
+-	/* xhci->event_ring keeps track of segment dma addresses */
+-	dma_addr_t		erst_dma_addr;
+-	/* Num entries the ERST can contain */
+-	unsigned int		erst_size;
+ };
+ 
+ struct xhci_scratchpad {
+@@ -1707,18 +1646,6 @@ struct xhci_bus_state {
+ 	unsigned long		resuming_ports;
+ };
+ 
+-struct xhci_interrupter {
+-	struct xhci_ring	*event_ring;
+-	struct xhci_erst	erst;
+-	struct xhci_intr_reg __iomem *ir_set;
+-	unsigned int		intr_num;
+-	/* For interrupter registers save and restore over suspend/resume */
+-	u32	s3_irq_pending;
+-	u32	s3_irq_control;
+-	u32	s3_erst_size;
+-	u64	s3_erst_base;
+-	u64	s3_erst_dequeue;
+-};
+ /*
+  * It can take up to 20 ms to transition from RExit to U0 on the
+  * Intel Lynx Point LP xHCI host.
+@@ -1799,7 +1726,7 @@ struct xhci_hcd {
+ 	struct reset_control *reset;
+ 	/* data structures */
+ 	struct xhci_device_context_array *dcbaa;
+-	struct xhci_interrupter *interrupter;
++	struct xhci_interrupter **interrupters;
+ 	struct xhci_ring	*cmd_ring;
+ 	unsigned int            cmd_ring_state;
+ #define CMD_RING_STATE_RUNNING         (1 << 0)
+diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
+new file mode 100644
+index 000000000000..e0091ee2c73a
+--- /dev/null
++++ b/include/linux/usb/xhci-intr.h
+@@ -0,0 +1,86 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __LINUX_XHCI_INTR_H
++#define __LINUX_XHCI_INTR_H
++
++#include <linux/kernel.h>
++
++struct xhci_erst_entry {
++	/* 64-bit event ring segment address */
++	__le64	seg_addr;
++	__le32	seg_size;
++	/* Set to zero */
++	__le32	rsvd;
++};
++
++enum xhci_ring_type {
++	TYPE_CTRL = 0,
++	TYPE_ISOC,
++	TYPE_BULK,
++	TYPE_INTR,
++	TYPE_STREAM,
++	TYPE_COMMAND,
++	TYPE_EVENT,
++};
++
++struct xhci_erst {
++	struct xhci_erst_entry	*entries;
++	unsigned int		num_entries;
++	/* xhci->event_ring keeps track of segment dma addresses */
++	dma_addr_t		erst_dma_addr;
++	/* Num entries the ERST can contain */
++	unsigned int		erst_size;
++};
++
++struct xhci_segment {
++	union xhci_trb		*trbs;
++	/* private to HCD */
++	struct xhci_segment	*next;
++	dma_addr_t		dma;
++	/* Max packet sized bounce buffer for td-fragmant alignment */
++	dma_addr_t		bounce_dma;
++	void			*bounce_buf;
++	unsigned int		bounce_offs;
++	unsigned int		bounce_len;
++};
++
++struct xhci_ring {
++	struct xhci_segment	*first_seg;
++	struct xhci_segment	*last_seg;
++	union  xhci_trb		*enqueue;
++	struct xhci_segment	*enq_seg;
++	union  xhci_trb		*dequeue;
++	struct xhci_segment	*deq_seg;
++	struct list_head	td_list;
++	/*
++	 * Write the cycle state into the TRB cycle field to give ownership of
++	 * the TRB to the host controller (if we are the producer), or to check
++	 * if we own the TRB (if we are the consumer).  See section 4.9.1.
++	 */
++	u32			cycle_state;
++	unsigned int		stream_id;
++	unsigned int		num_segs;
++	unsigned int		num_trbs_free;
++	unsigned int		num_trbs_free_temp;
++	unsigned int		bounce_buf_len;
++	enum xhci_ring_type	type;
++	bool			last_td_was_short;
++	struct radix_tree_root	*trb_address_map;
++};
++
++struct xhci_interrupter {
++	struct xhci_ring	*event_ring;
++	struct xhci_erst	erst;
++	struct xhci_intr_reg __iomem *ir_set;
++	unsigned int		intr_num;
++	/* For interrupter registers save and restore over suspend/resume */
++	u32	s3_irq_pending;
++	u32	s3_irq_control;
++	u32	s3_erst_size;
++	u64	s3_erst_base;
++	u64	s3_erst_dequeue;
++};
++
++struct xhci_interrupter *
++xhci_create_secondary_interrupter(struct usb_hcd *hcd);
++void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
++#endif
