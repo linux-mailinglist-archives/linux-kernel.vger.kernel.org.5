@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1537618B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335077618C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbjGYMsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 08:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S232215AbjGYMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 08:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233707AbjGYMsB (ORCPT
+        with ESMTP id S229524AbjGYMtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 08:48:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3341BC2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 05:47:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 25 Jul 2023 08:49:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4997FC4;
+        Tue, 25 Jul 2023 05:49:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4343C616CE
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:47:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7785C433C9;
-        Tue, 25 Jul 2023 12:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690289264;
-        bh=KzMqdsVdb/RNrFDTE7RYUsqrP0bpiOVqoDz4Fsk9EeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mti/hJ/AKMENtv/H3XHgNbi6EDSN4by+4kzW6H6SN/+2h8kA1Cd64a0Kse+Bkbg1C
-         EsmaEJwF6QbQXctEcBGt+loYUQ+ziNBGuDN8FjI7C4d6hlTzNdUGKRd51GIOAjmRUg
-         4k5JxXEvgHmtab3ZTh7ZjKE0JwVrh5/unVhBLbtJVjiCkjIuvkgvOBvkG7NzuzX2wE
-         tPWxvvarMe1SDHfhxa2JRJtlfriNoRhrqMvhaZGpFSt2hjcg/KNQMAm6lCZvr7xTlN
-         Rko/+vKeqoI2EKfLGbf4Q/Q7xzLDodZU/z7MS66HE+V3rwUFPpXt5OTqeYmQOiEMCY
-         NIekY8nAEtpRQ==
-Date:   Tue, 25 Jul 2023 14:47:39 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, jack@suse.cz,
-        keescook@chromium.org, peterz@infradead.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        di.shen@unisoc.com
-Subject: Re: [PATCH] pid: Add the judgment of whether ns is NULL in the
- find_pid_ns
-Message-ID: <20230725-gespeichert-auffuhr-00ed9e57ec7f@brauner>
-References: <20230713071713.5762-1-xuewen.yan@unisoc.com>
- <20230725-hemmschwelle-braten-481527898001@brauner>
- <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CAEDD1F8D6;
+        Tue, 25 Jul 2023 12:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690289372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zfxaBQKu9pFIm/CSy+E7ZH0ZFKwSyMdTppqUuWuzZK0=;
+        b=ZMW4KhwS4YTYl+FNV2yCV2SSG41p47it3FrxFVbR/XWhq17vatqFq2tKkAhE/HsTr8QAnG
+        CapZET8Je9swPUfnQvwTg865CY5pfsHFaGYsTC5W+8v0DA96Z6457nsq5IlLkV1GgiKFZW
+        qWG+XwT/hlObMz9POHaegXsrQWHmyKs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690289372;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zfxaBQKu9pFIm/CSy+E7ZH0ZFKwSyMdTppqUuWuzZK0=;
+        b=jmc0w2TxfUsZ/vakyCbU30JoTCHxiH82j4PTfH38/9kRlQoZOgsX8U/VmK5C/w+VJFHuDP
+        O8wUkSf6Tjc8TLCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1E0813342;
+        Tue, 25 Jul 2023 12:49:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G63YINvEv2TbSwAAMHmgww
+        (envelope-from <colyli@suse.de>); Tue, 25 Jul 2023 12:49:31 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH][next] bcache: remove redundant assignment to variable
+ cur_idx
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <20230725114637.37073-1-colin.i.king@gmail.com>
+Date:   Tue, 25 Jul 2023 20:49:19 +0800
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Bcache Linux <linux-bcache@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DFEED6F9-45FE-48BA-BE50-51B780846DE3@suse.de>
+References: <20230725114637.37073-1-colin.i.king@gmail.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,57 +75,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:24:18PM +0800, Xuewen Yan wrote:
-> On Tue, Jul 25, 2023 at 4:49 PM Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > On Thu, Jul 13, 2023 at 03:17:13PM +0800, Xuewen Yan wrote:
-> > > There is no the judgment of whether namspace is NULL in find_pid_ns.
-> > > But there is a corner case when ns is null, for example: if user
-> > > call find_get_pid when current is in exiting, the following stack would
-> > > set thread_id be null:
-> > > release_task
-> > >     __exit_signal(p);
-> > >         __unhash_process(tsk, group_dead);
-> > >               detach_pid(p, PIDTYPE_PID);
-> > >                   __change_pid(task, type, NULL);
-> > >
-> > > If user call find_get_pid at now, in find_vpid function, the
-> >
-> > I fail to see how this can happen. The code you're referencing is in
-> > release_task(). If current has gone through that then current obviously
-> > can't call find_vpid() on itself anymore or anything else for that
-> > matter.
-> 
-> This happened when user calls  find_vpid() in irq.
-> 
-> [72117.635162] Call trace:
-> [72117.635595]  idr_find+0xc/0x24
-> [72117.636103]  find_get_pid+0x40/0x68
-> [72117.636812]  send_event+0x88/0x180 [demux]
-> [72117.637593]  vbvop_copy_data+0x150/0x344 [demux]
-> [72117.638434]  dmisr_video_parsing_mpeg12+0x29c/0x42c [demux]
-> [72117.639393]  dmisr_video_parsing_switch+0x68/0xec [demux]
-> [72117.640332]  dmisr_handle_video_pes+0x10c/0x26c [demux]
-> [72117.641108]  tasklet_action_common+0x130/0x224
-> [72117.641784]  tasklet_action+0x28/0x34
-> [72117.642366]  __do_softirq+0x128/0x4dc
-> [72117.642944]  irq_exit+0xf8/0xfc
-> [72117.643459]  __handle_domain_irq+0xb0/0x108
-> [72117.644102]  gic_handle_irq+0x6c/0x124
-> [72117.644691]  el1_irq+0x108/0x200
-> [72117.645217]  _raw_write_unlock_irq+0x2c/0x5c
-> [72117.645870]  release_task+0x144/0x1ac   <<<<<<
-> [72117.646447]  do_exit+0x524/0x94c
-> [72117.646970]  __do_sys_exit_group+0x0/0x14
-> [72117.647591]  do_group_exit+0x0/0xa0
-> [72117.648146]  __se_sys_exit+0x0/0x20
-> [72117.648704]  el0_svc_common+0xcc/0x1bc
-> [72117.649292]  el0_svc_handler+0x2c/0x3c
-> [72117.649881]  el0_svc+0x8/0xc
-> 
-> In release_task, write_unlock_irq(&tasklist_lock) will open irq, at
-> this time, if user calls find_get_pid() in irq, because
-> current->thread_id is NULL,
-> it will handle the NULL pointer.
 
-Uhm, where is that code from? This doesn't seem to be upstream.
+
+> 2023=E5=B9=B47=E6=9C=8825=E6=97=A5 19:46=EF=BC=8CColin Ian King =
+<colin.i.king@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Variable cur_idx is being initialized with a value that is never read,
+> it is being re-assigned later in a while-loop. Remove the redundant
+> assignment. Cleans up clang scan build warning:
+>=20
+> drivers/md/bcache/writeback.c:916:2: warning: Value stored to =
+'cur_idx'
+> is never read [deadcode.DeadStores]
+>=20
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Looks good to me. Thanks.
+
+Reviewed-by: Coly Li <colyli@suse.de>
+
+
+Coly Li
+
+> ---
+> drivers/md/bcache/writeback.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/md/bcache/writeback.c =
+b/drivers/md/bcache/writeback.c
+> index 24c049067f61..c3e872e0a6f2 100644
+> --- a/drivers/md/bcache/writeback.c
+> +++ b/drivers/md/bcache/writeback.c
+> @@ -913,7 +913,7 @@ static int bch_dirty_init_thread(void *arg)
+> int cur_idx, prev_idx, skip_nr;
+>=20
+> k =3D p =3D NULL;
+> - cur_idx =3D prev_idx =3D 0;
+> + prev_idx =3D 0;
+>=20
+> bch_btree_iter_init(&c->root->keys, &iter, NULL);
+> k =3D bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
+> --=20
+> 2.39.2
+>=20
+
