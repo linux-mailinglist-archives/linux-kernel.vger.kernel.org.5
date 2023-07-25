@@ -2,70 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AFB7616B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EC47616D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 13:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjGYLlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 07:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
+        id S235028AbjGYLnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 07:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234961AbjGYLkx (ORCPT
+        with ESMTP id S235455AbjGYLnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:40:53 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2904F3;
-        Tue, 25 Jul 2023 04:40:40 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so45099215e9.0;
-        Tue, 25 Jul 2023 04:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690285239; x=1690890039;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oIwK4vNakYsmHhWk3gPu9jeD67klp1zgcobWm0hLfMM=;
-        b=qzWmo+ENoePc/UCYjokwm8n28ajtGiHJ8cBotYdjFTxBLJ3ZyGwp4fhCr1uKAe0qgg
-         eCHqn/SNWsBHo1OO75pdizfTIc4oGRcS2hA1Nmc4UeW+MqGByA5PCewlnvGbjn89sxLs
-         1028IIY0p9O+5piV+G92YSigAUjgbbkKvVLoImuT+mIcTACzEL1rPKR+Mb2bREQ5VSno
-         pprqhzm8/IkUTHEitJwsR9QKc9aiSzDX6ADuw2GNbIaHLlNlgJIVRBcD4L+h8EnEHT1v
-         gFYo9UVtuoKT7YI2Yd9nHXrcBo3xrf0gpd701I0UozteYywqEJuyggJI07Dod8VFivHi
-         lOTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690285239; x=1690890039;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oIwK4vNakYsmHhWk3gPu9jeD67klp1zgcobWm0hLfMM=;
-        b=DMrtKbJG0ZieEC742BOODrSL1TASnO6AdySL5iGHkzl+p+i8rkqB0KwFKi8yjxulKO
-         obKp5wmAMnugrcJtw86BDfXylKp62GtG66kZFNeLCb7n9hBOFMZP+YprNDFMUqjF3l8d
-         z0XBqjwZu0lpt1KSwWqrnEDC+lbd3pt2B72sKejL9EYMl7EFdtrbv3II80IjgQ2lySpA
-         JSuOanm/s4jDh5WArF6WFOC9tsT8wOo4N5S96FirZERr1GBsjPVHoXjupuveehLP6q8B
-         U/jDiUCyUEERGQtEFqkP4J+qqDGocxGeiMeWXhCXDWIBPrzQtbcnJxlEp0ndyKNtDKjQ
-         pBNA==
-X-Gm-Message-State: ABy/qLYxSfg8kBtSQDKV7HS5PF9JFcsOMuhogE0LPsL5jLS1l02VfRVZ
-        MfMXO3uOgnTtk+9/bOHUCnA=
-X-Google-Smtp-Source: APBJJlEHMeV1GT0gHESC09Zjy+axUc4imX5ZHprKSvGpdZB+jCUtQ1yHI/p8VsPGTg9IdOvMJtAw0g==
-X-Received: by 2002:a05:6000:4c:b0:313:e456:e64a with SMTP id k12-20020a056000004c00b00313e456e64amr8961163wrx.21.1690285238976;
-        Tue, 25 Jul 2023 04:40:38 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id q3-20020adfea03000000b0031435c2600esm16177847wrm.79.2023.07.25.04.40.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 04:40:38 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Carl Vanderlip <quic_carlv@quicinc.com>,
-        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] accel/qaic: remove redundant assignment to pointer pexec
-Date:   Tue, 25 Jul 2023 12:40:37 +0100
-Message-Id: <20230725114037.36806-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 25 Jul 2023 07:43:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D367212D;
+        Tue, 25 Jul 2023 04:43:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B62BE15BF;
+        Tue, 25 Jul 2023 04:43:30 -0700 (PDT)
+Received: from [10.163.51.115] (unknown [10.163.51.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5AEB3F67D;
+        Tue, 25 Jul 2023 04:42:42 -0700 (PDT)
+Message-ID: <9d07e82a-06fb-a5f8-6f4f-f3c16784b9b7@arm.com>
+Date:   Tue, 25 Jul 2023 17:12:40 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V13 - RESEND 06/10] arm64/perf: Enable branch stack events
+ via FEAT_BRBE
+Content-Language: en-US
+To:     Yang Shen <shenyang39@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
+Cc:     Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <20230711082455.215983-1-anshuman.khandual@arm.com>
+ <20230711082455.215983-7-anshuman.khandual@arm.com>
+ <5c7c1ff3-1e2a-1258-7fa0-c82a9ab62646@huawei.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <5c7c1ff3-1e2a-1258-7fa0-c82a9ab62646@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,26 +55,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointer pexec is being assigned a value however it is never read. The
-assignment is redundant and can be removed.
+Hello Yang,
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/accel/qaic/qaic_data.c | 1 -
- 1 file changed, 1 deletion(-)
+On 7/25/23 12:42, Yang Shen wrote:
+>> +    if (!(branch_type & PERF_SAMPLE_BRANCH_NO_CYCLES))
+>> +        brbcr |= BRBCR_EL1_CC;
+> 
+> Hi Anshuman,
+> 
+> Here is problem about enable CYCLES_COUNT. The SPEC defines that the CYCLES_COUNT is only
+> 
+> valid when the BRECR_EL1.CC & BRBCR_EL2.CC is true. And here the SPEC also defines that
+> 
+> when PSTATE.EL == EL2 and HCR_EL2.E2h == '1', 'MSR BRBCR_EL1, <Xt>' means writing to
+> 
+> BRBCR_EL2 actually. So 'armv8pmu_branch_enable' can only set the BRBCR_EL2.CC, while the
+> 
+> BRECR_EL1.CC is still 0. The CYCLES_COUNT will be always 0 in records.
 
-diff --git a/drivers/accel/qaic/qaic_data.c b/drivers/accel/qaic/qaic_data.c
-index e9a1cb779b30..8a6cb14f490e 100644
---- a/drivers/accel/qaic/qaic_data.c
-+++ b/drivers/accel/qaic/qaic_data.c
-@@ -1320,7 +1320,6 @@ static int __qaic_execute_bo_ioctl(struct drm_device *dev, void *data, struct dr
- 	user_data = u64_to_user_ptr(args->data);
- 
- 	exec = kcalloc(args->hdr.count, size, GFP_KERNEL);
--	pexec = (struct qaic_partial_execute_entry *)exec;
- 	if (!exec)
- 		return -ENOMEM;
- 
--- 
-2.39.2
 
+Agreed, this is a valid problem i.e BRBCR_EL1.CC and BRBCR_EL2.CC both needs to be set
+for valid cycle count information regardless if the kernel runs in EL1 or EL2. A simple
+hack in the current code setting BRBCR_EL12.C, which in turn sets BRBCR_EL1.CC when the
+kernel runs in EL2 solves the problem.
+
+> 
+> As a solution, maybe BRBCR_EL12 should be added for driver according to the registers definition.
+
+Right, will add the definition for BRBCR_EL12 in arch/arm64/tools/sysreg
+
+> 
+> Or, do you have a more standard solution?
+
+Right, there are some nuances involved here.
+
+Kernel could boot
+	
+a. Directly into EL2 and stays in EL2 for good
+b. Directly into EL2 but switches into EL1
+c. Directly into EL1 without ever going into EL2
+
+In all the above cases BRBCR_EL1.CC and BRBCR_EL2.CC needs to be set when cycle count
+is requested in the perf event interface (event->attr.branch_sample_type) via clearing
+PERF_SAMPLE_BRANCH_NO_CYCLES.
+
+
+- For the case as in (c) where kernel boots into EL1 directly and hence cannot ever set
+  EL2 register, BRBCR_EL2.CC would be a booting requirement - updated in booting.rst
+
+- For the cases as in (a) and (b) kernel boots via EL2, hence there is an opportunity
+  to set both BRBCR_EL1.CC (via accessed BRBCR_EL12.CC) and BRBCR_EL2.CC. Depending on
+  where the kernel lands up eventually, either BRBCR_EL1.CC or BRBCR_EL2.CC will be the
+  toggle switch to ON or OFF cycle counting in the driver via branch_type_to_brbcr().
+  So a new macro __init_el2_brbe is required which will get called from init_el2_state
+  setting both the register fields as explained earlier.
+
+I am working on these changes, will post the code soon.
