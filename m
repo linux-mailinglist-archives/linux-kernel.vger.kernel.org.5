@@ -2,223 +2,714 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5039760D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4709E760D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 10:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbjGYIoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 04:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        id S231852AbjGYIoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 04:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjGYIn2 (ORCPT
+        with ESMTP id S233110AbjGYInh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 04:43:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8BB2100
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A099E2238C;
-        Tue, 25 Jul 2023 08:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690274542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LN7abiJtxMulznyHMJQAdbbO9gDCYknD/hJxzBUtmVQ=;
-        b=PATFFidW84PmyG8pAzJVd201JO8jdl1/apw99ALckAW7AXbBWQTc9E1tK3+1EpvVQDMd3d
-        Z/yk47DhnFqy8JFvJkaA05WLhbJg9BDA6XwN2zQBoNzb08PR2XmmDpChaSRijWTREZ8BSi
-        jeBI26Bn9ejxZio9MBPpKtncxgcyieU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5155113342;
-        Tue, 25 Jul 2023 08:42:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DjgWEe6Kv2TuPgAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 25 Jul 2023 08:42:22 +0000
-Message-ID: <938e9198-8684-6e1b-d3a9-4601bedd2004@suse.com>
-Date:   Tue, 25 Jul 2023 10:42:21 +0200
+        Tue, 25 Jul 2023 04:43:37 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B312688
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:37 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so58625e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 01:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690274555; x=1690879355;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DTZgKfzLHKFzwK6BjQFLwR4UK3a4zvRR5zzOh1gJjL4=;
+        b=pnKhrQD+J7n9aixTtaigFA2CdbB3rPSUAcEbiAts3kWsgY+aqZ25Hkmriotepl/KLs
+         q2FeE+rLMWBqFnIlhDL7sd38XUpk3WAuIadYfnecn1+V7KRpsL36VSWrBH07TK87YGtz
+         qpEkQk7rWqQPep7PpsIVA13wCghPNmvnBPB1GUyWu7qSUKIt332Fxr0spr34fGDDTvbY
+         nMmoVgTT/KVQQS2EArinnI6klVnoxJuF2zcb0CrD2tAxPATQ+RR4vnf/mw+Veg0IxOtV
+         MHxzbcIURegyCUo2OE/pBt032La+EQ7zxxhzOP8kPaWxY7eAiThZUIQgcHTM812NUirQ
+         dgEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690274555; x=1690879355;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DTZgKfzLHKFzwK6BjQFLwR4UK3a4zvRR5zzOh1gJjL4=;
+        b=YFX95SspuB5hILK00/bDc0M97phCMKrXttMUmLTsb1H3c4pkxxKK3c6hQLL6JCgLqJ
+         wntr/UyF8tZOUKwU4hK5y9f+ion3oQZ0w0O9taZkmZDF5+XOEH0u8KcMKbBXOx3BNFXS
+         /Bj5Y6nLsV9mvxoYwsOWTVYFckPBmYisApCCjZrdoM4iw9dSE2pH/vJhdkWlohjyE/RQ
+         JwNVNIPUXMP6mcl7WqZJHtGfQacy0E1vQg0F8p9TnJcaTK71dT0Cm6HhyvBoe8UDcjyP
+         cRMj+GB2bSsjJk3LBJIE5pD6QksA5AuKe+9u7ua7BZWewq5r9TVtwH2yURboB+5SXaEp
+         aVvQ==
+X-Gm-Message-State: ABy/qLag6QAAzvz95eB5+mCwjs7MZh2cz1MW3YEjSYP8MBZJMJqXqCAG
+        5vHysKwHvgsFU6RIHFdK3/y3RQ/iwWS30mbpx1JwsQ==
+X-Google-Smtp-Source: APBJJlFRt3cwduziOFQ8rVhsPd05hwqCEzGZRceIdn41dig70hW30vmUcd/nwwQQ697yy+IHDz5v1xiQCq7Vz1+i6GY=
+X-Received: by 2002:a7b:cd93:0:b0:3f6:f4b:d4a6 with SMTP id
+ y19-20020a7bcd93000000b003f60f4bd4a6mr33475wmj.7.1690274555439; Tue, 25 Jul
+ 2023 01:42:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V3 2/2] xen: privcmd: Add support for irqfd
-Content-Language: en-US
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        Erik Schilling <erik.schilling@linaro.org>,
-        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <ffae9d7021829fea19fd93fda3c30b52b0af923e.1690190453.git.viresh.kumar@linaro.org>
- <8c1ea7faa0fe5deed1b2c86ea0f73e824f8a001d.1690190453.git.viresh.kumar@linaro.org>
-From:   Juergen Gross <jgross@suse.com>
-In-Reply-To: <8c1ea7faa0fe5deed1b2c86ea0f73e824f8a001d.1690190453.git.viresh.kumar@linaro.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0pVDYdB0AhBfd9mnjxflwa0K"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230724162834.1354164-1-rmoar@google.com> <20230724162834.1354164-6-rmoar@google.com>
+In-Reply-To: <20230724162834.1354164-6-rmoar@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 25 Jul 2023 16:42:23 +0800
+Message-ID: <CABVgOS=R8OvM8JJr35ap1F_srw19M85Vr_7=KVmscOz0=bzC4g@mail.gmail.com>
+Subject: Re: [PATCH v2 5/9] kunit: tool: Add command line interface to filter
+ and report attributes
+To:     Rae Moar <rmoar@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        linux-hardening@vger.kernel.org, jstultz@google.com,
+        tglx@linutronix.de, sboyd@kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000078e55206014bb624"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0pVDYdB0AhBfd9mnjxflwa0K
-Content-Type: multipart/mixed; boundary="------------cU0FjSzGoxJGMDvaoRzrxGMA";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
- =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
- stratos-dev@op-lists.linaro.org, Erik Schilling <erik.schilling@linaro.org>,
- Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <938e9198-8684-6e1b-d3a9-4601bedd2004@suse.com>
-Subject: Re: [PATCH V3 2/2] xen: privcmd: Add support for irqfd
-References: <ffae9d7021829fea19fd93fda3c30b52b0af923e.1690190453.git.viresh.kumar@linaro.org>
- <8c1ea7faa0fe5deed1b2c86ea0f73e824f8a001d.1690190453.git.viresh.kumar@linaro.org>
-In-Reply-To: <8c1ea7faa0fe5deed1b2c86ea0f73e824f8a001d.1690190453.git.viresh.kumar@linaro.org>
-
---------------cU0FjSzGoxJGMDvaoRzrxGMA
-Content-Type: multipart/mixed; boundary="------------dN83e0dptSsRjzwwXIJxoum7"
-
---------------dN83e0dptSsRjzwwXIJxoum7
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-T24gMjUuMDcuMjMgMDg6NDcsIFZpcmVzaCBLdW1hciB3cm90ZToNCj4gWGVuIHByb3ZpZGVz
-IHN1cHBvcnQgZm9yIGluamVjdGluZyBpbnRlcnJ1cHRzIHRvIHRoZSBndWVzdHMgdmlhIHRo
-ZQ0KPiBIWVBFUlZJU09SX2RtX29wKCkgaHlwZXJjYWxsLiBUaGUgc2FtZSBpcyB1c2VkIGJ5
-IHRoZSBWaXJ0aW8gYmFzZWQNCj4gZGV2aWNlIGJhY2tlbmQgaW1wbGVtZW50YXRpb25zLCBp
-biBhbiBpbmVmZmljaWVudCBtYW5uZXIgY3VycmVudGx5Lg0KPiANCj4gR2VuZXJhbGx5LCB0
-aGUgVmlydGlvIGJhY2tlbmRzIGFyZSBpbXBsZW1lbnRlZCB0byB3b3JrIHdpdGggdGhlIEV2
-ZW50ZmQNCj4gYmFzZWQgbWVjaGFuaXNtLiBJbiBvcmRlciB0byBtYWtlIHN1Y2ggYmFja2Vu
-ZHMgd29yayB3aXRoIFhlbiwgYW5vdGhlcg0KPiBzb2Z0d2FyZSBsYXllciBuZWVkcyB0byBw
-b2xsIHRoZSBFdmVudGZkcyBhbmQgcmFpc2UgYW4gaW50ZXJydXB0IHRvIHRoZQ0KPiBndWVz
-dCB1c2luZyB0aGUgWGVuIGJhc2VkIG1lY2hhbmlzbS4gVGhpcyByZXN1bHRzIGluIGFuIGV4
-dHJhIGNvbnRleHQNCj4gc3dpdGNoLg0KPiANCj4gVGhpcyBpcyBub3QgYSBuZXcgcHJvYmxl
-bSBpbiBMaW51eCB0aG91Z2guIEl0IGlzIHByZXNlbnQgd2l0aCBvdGhlcg0KPiBoeXBlcnZp
-c29ycyBsaWtlIEtWTSwgZXRjLiBhcyB3ZWxsLiBUaGUgZ2VuZXJpYyBzb2x1dGlvbiBpbXBs
-ZW1lbnRlZCBpbg0KPiB0aGUga2VybmVsIGZvciB0aGVtIGlzIHRvIHByb3ZpZGUgYW4gSU9D
-VEwgY2FsbCB0byBwYXNzIHRoZSBpbnRlcnJ1cHQNCj4gZGV0YWlscyBhbmQgZXZlbnRmZCwg
-d2hpY2ggbGV0cyB0aGUga2VybmVsIHRha2UgY2FyZSBvZiBwb2xsaW5nIHRoZQ0KPiBldmVu
-dGZkIGFuZCByYWlzaW5nIG9mIHRoZSBpbnRlcnJ1cHQsIGluc3RlYWQgb2YgaGFuZGxpbmcg
-dGhpcyBpbiB1c2VyDQo+IHNwYWNlICh3aGljaCBpbnZvbHZlcyBhbiBleHRyYSBjb250ZXh0
-IHN3aXRjaCkuDQo+IA0KPiBUaGlzIHBhdGNoIGFkZHMgc3VwcG9ydCB0byBpbmplY3QgYSBz
-cGVjaWZpYyBpbnRlcnJ1cHQgdG8gZ3Vlc3QgdXNpbmcNCj4gdGhlIGV2ZW50ZmQgbWVjaGFu
-aXNtLCBieSBwcmV2ZW50aW5nIHRoZSBleHRyYSBjb250ZXh0IHN3aXRjaC4NCj4gDQo+IElu
-c3BpcmVkIGJ5IGV4aXN0aW5nIGltcGxlbWVudGF0aW9ucyBmb3IgS1ZNLCBldGMuLg0KPiAN
-Cj4gU2lnbmVkLW9mZi1ieTogVmlyZXNoIEt1bWFyIDx2aXJlc2gua3VtYXJAbGluYXJvLm9y
-Zz4NCj4gLS0tDQo+IFYyLjEtPlYzDQo+IC0gTm8gY2hhbmdlcw0KPiANCj4gVjItPlYyLjEN
-Cj4gLSBTZWxlY3QgRVZFTlRGRCBmcm9tIEtjb25maWcNCj4gDQo+IFYxLT5WMjoNCj4gLSBJ
-bXByb3ZlIGVycm9yIGhhbmRsaW5nLg0KPiAtIFJlbW92ZSB0aGUgdW5uZWNlc3NhcnkgdXNh
-Z2Ugb2YgbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKCkuDQo+IC0gUmVzdHJpY3QgdGhlIHVz
-ZSBvZiBYRU5fRE1PUF9zZXRfaXJxX2xldmVsIHRvIG9ubHkgQVJNNjQuDQo+IA0KPiAgIGRy
-aXZlcnMveGVuL0tjb25maWcgICAgICAgIHwgICAxICsNCj4gICBkcml2ZXJzL3hlbi9wcml2
-Y21kLmMgICAgICB8IDI3NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyst
-DQo+ICAgaW5jbHVkZS91YXBpL3hlbi9wcml2Y21kLmggfCAgMTQgKysNCj4gICAzIGZpbGVz
-IGNoYW5nZWQsIDI4OSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMveGVuL0tjb25maWcgYi9kcml2ZXJzL3hlbi9LY29uZmlnDQo+
-IGluZGV4IGQ1ZDdjNDAyYjY1MS4uNzk2NzM5M2M1NWE0IDEwMDY0NA0KPiAtLS0gYS9kcml2
-ZXJzL3hlbi9LY29uZmlnDQo+ICsrKyBiL2RyaXZlcnMveGVuL0tjb25maWcNCj4gQEAgLTI2
-MSw2ICsyNjEsNyBAQCBjb25maWcgWEVOX1NDU0lfQkFDS0VORA0KPiAgIGNvbmZpZyBYRU5f
-UFJJVkNNRA0KPiAgIAl0cmlzdGF0ZSAiWGVuIGh5cGVyY2FsbCBwYXNzdGhyb3VnaCBkcml2
-ZXIiDQo+ICAgCWRlcGVuZHMgb24gWEVODQo+ICsJc2VsZWN0IEVWRU5URkQNCg0KSSBkb24n
-dCBsaWtlIHRoaXMuIENhbiB3ZSBtYXliZSBhZGQgYW5vdGhlciBib29sIGNvbmZpZyBpdGVt
-IGRlcGVuZGluZyBvbg0KWEVOX1BSSVZDTUQsIEVWRU5URkQgYW5kIFhFTl9WSVJUSU8sIHdo
-aWNoIGNhbiB0aGVuIGJlIHVzZWQgdG8gZ3VhcmQgdGhlDQpjb2RlIGFkZGl0aW9ucyB0byBw
-cml2Y21kLmM/DQoNClRoaXMgd291bGQgYXZvaWQgYWRkaW5nIGFkZGl0aW9uYWwgY29kZSBm
-b3IgZXZlcnlvbmUuDQoNCg0KSnVlcmdlbg0K
---------------dN83e0dptSsRjzwwXIJxoum7
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
+--00000000000078e55206014bb624
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+On Tue, 25 Jul 2023 at 00:30, Rae Moar <rmoar@google.com> wrote:
+>
+> Add ability to kunit.py to filter attributes and report a list of tests
+> including attributes without running tests.
+>
+> Add flag "--filter" to input filters on test attributes. Tests will be
+> filtered out if they do not match all inputted filters.
+>
+> Example: --filter speed=3Dslow (This filter would run only the tests that=
+ are
+> marked as slow)
+>
+> Filters have operations: <, >, <=3D, >=3D, !=3D, and =3D. But note that t=
+he
+> characters < and > are often interpreted by the shell, so they may need t=
+o
+> be quoted or escaped.
+>
+> Example: --filter "speed>slow" or --filter speed\>slow (This filter would
+> run only the tests that have the speed faster than slow.
+>
+> Additionally, multiple filters can be used.
+>
+> Example: --filter "speed=3Dslow, module!=3Dexample" (This filter would ru=
+n
+> only the tests that have the speed slow and are not in the "example"
+> module)
+>
+> Note if the user wants to skip filtered tests instead of not
+> running/showing them use the "--filter_action=3Dskip" flag.
+>
+> Expose the output of kunit.action=3Dlist option with flag "--list_tests" =
+to
+> output a list of tests. Additionally, add flag "--list_tests_attr" to
+> output a list of tests and their attributes. These flags are useful to se=
+e
+> tests and test attributes without needing to run tests.
+>
+> Example of the output of "--list_tests_attr":
+>   example
+>   example.test_1
+>   example.test_2
+>   # example.test_2.speed: slow
+>
+> This output includes a suite, example, with two test cases, test_1 and
+> test_2. And in this instance test_2 has been marked as slow.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> ---
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Looks good, working well here.
 
---------------dN83e0dptSsRjzwwXIJxoum7--
+Reviewed-by: David Gow <davidgow@google.com>
 
---------------cU0FjSzGoxJGMDvaoRzrxGMA--
 
---------------0pVDYdB0AhBfd9mnjxflwa0K
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+-- David
 
------BEGIN PGP SIGNATURE-----
+>
+> Changes since v1:
+> - No major changes
+>
+> Changes since RFC v2:
+> - Remove --filter_skip flag and replace with =E2=80=93-filter_action
+> - Make KUnit executor errors visible in kunit.py and raw_output
+> - Fix up help comments
+>
+> Changes since RFC v1:
+> - Change method for inputting filters to allow for spaces in filtering
+>   values
+> - Add option to skip filtered tests instead of not run or show them with
+>   the -=E2=80=93filter_skip flag
+> - Separate the new feature to list tests and their attributes into both
+>   =E2=80=93-list_tests (lists just tests) and =E2=80=93-list_tests_attr (=
+lists all)
+>
+>  tools/testing/kunit/kunit.py           | 70 ++++++++++++++++++++++++--
+>  tools/testing/kunit/kunit_kernel.py    |  8 ++-
+>  tools/testing/kunit/kunit_parser.py    | 11 +++-
+>  tools/testing/kunit/kunit_tool_test.py | 39 +++++++-------
+>  4 files changed, 99 insertions(+), 29 deletions(-)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 3905c43369c3..bc74088c458a 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -55,8 +55,12 @@ class KunitExecRequest(KunitParseRequest):
+>         build_dir: str
+>         timeout: int
+>         filter_glob: str
+> +       filter: str
+> +       filter_action: Optional[str]
+>         kernel_args: Optional[List[str]]
+>         run_isolated: Optional[str]
+> +       list_tests: bool
+> +       list_tests_attr: bool
+>
+>  @dataclass
+>  class KunitRequest(KunitExecRequest, KunitBuildRequest):
+> @@ -102,19 +106,41 @@ def config_and_build_tests(linux: kunit_kernel.Linu=
+xSourceTree,
+>
+>  def _list_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecR=
+equest) -> List[str]:
+>         args =3D ['kunit.action=3Dlist']
+> +
+> +       if request.kernel_args:
+> +               args.extend(request.kernel_args)
+> +
+> +       output =3D linux.run_kernel(args=3Dargs,
+> +                          timeout=3Drequest.timeout,
+> +                          filter_glob=3Drequest.filter_glob,
+> +                          filter=3Drequest.filter,
+> +                          filter_action=3Drequest.filter_action,
+> +                          build_dir=3Drequest.build_dir)
+> +       lines =3D kunit_parser.extract_tap_lines(output)
+> +       # Hack! Drop the dummy TAP version header that the executor print=
+s out.
+> +       lines.pop()
+> +
+> +       # Filter out any extraneous non-test output that might have gotte=
+n mixed in.
+> +       return [l for l in output if re.match(r'^[^\s.]+\.[^\s.]+$', l)]
+> +
+> +def _list_tests_attr(linux: kunit_kernel.LinuxSourceTree, request: Kunit=
+ExecRequest) -> Iterable[str]:
+> +       args =3D ['kunit.action=3Dlist_attr']
+> +
+>         if request.kernel_args:
+>                 args.extend(request.kernel_args)
+>
+>         output =3D linux.run_kernel(args=3Dargs,
+>                            timeout=3Drequest.timeout,
+>                            filter_glob=3Drequest.filter_glob,
+> +                          filter=3Drequest.filter,
+> +                          filter_action=3Drequest.filter_action,
+>                            build_dir=3Drequest.build_dir)
+>         lines =3D kunit_parser.extract_tap_lines(output)
+>         # Hack! Drop the dummy TAP version header that the executor print=
+s out.
+>         lines.pop()
+>
+>         # Filter out any extraneous non-test output that might have gotte=
+n mixed in.
+> -       return [l for l in lines if re.match(r'^[^\s.]+\.[^\s.]+$', l)]
+> +       return lines
+>
+>  def _suites_from_test_list(tests: List[str]) -> List[str]:
+>         """Extracts all the suites from an ordered list of tests."""
+> @@ -128,10 +154,18 @@ def _suites_from_test_list(tests: List[str]) -> Lis=
+t[str]:
+>                         suites.append(suite)
+>         return suites
+>
+> -
+> -
+>  def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRe=
+quest) -> KunitResult:
+>         filter_globs =3D [request.filter_glob]
+> +       if request.list_tests:
+> +               output =3D _list_tests(linux, request)
+> +               for line in output:
+> +                       print(line.rstrip())
+> +               return KunitResult(status=3DKunitStatus.SUCCESS, elapsed_=
+time=3D0.0)
+> +       if request.list_tests_attr:
+> +               attr_output =3D _list_tests_attr(linux, request)
+> +               for line in attr_output:
+> +                       print(line.rstrip())
+> +               return KunitResult(status=3DKunitStatus.SUCCESS, elapsed_=
+time=3D0.0)
+>         if request.run_isolated:
+>                 tests =3D _list_tests(linux, request)
+>                 if request.run_isolated =3D=3D 'test':
+> @@ -155,6 +189,8 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, r=
+equest: KunitExecRequest) -
+>                         args=3Drequest.kernel_args,
+>                         timeout=3Drequest.timeout,
+>                         filter_glob=3Dfilter_glob,
+> +                       filter=3Drequest.filter,
+> +                       filter_action=3Drequest.filter_action,
+>                         build_dir=3Drequest.build_dir)
+>
+>                 _, test_result =3D parse_tests(request, metadata, run_res=
+ult)
+> @@ -341,6 +377,16 @@ def add_exec_opts(parser: argparse.ArgumentParser) -=
+> None:
+>                             nargs=3D'?',
+>                             default=3D'',
+>                             metavar=3D'filter_glob')
+> +       parser.add_argument('--filter',
+> +                           help=3D'Filter KUnit tests with attributes, '
+> +                           'e.g. module=3Dexample or speed>slow',
+> +                           type=3Dstr,
+> +                               default=3D'')
+> +       parser.add_argument('--filter_action',
+> +                           help=3D'If set to skip, filtered tests will b=
+e skipped, '
+> +                               'e.g. --filter_action=3Dskip. Otherwise t=
+hey will not run.',
+> +                           type=3Dstr,
+> +                               choices=3D['skip'])
+>         parser.add_argument('--kernel_args',
+>                             help=3D'Kernel command-line parameters. Maybe=
+ be repeated',
+>                              action=3D'append', metavar=3D'')
+> @@ -350,6 +396,12 @@ def add_exec_opts(parser: argparse.ArgumentParser) -=
+> None:
+>                             'what ran before it.',
+>                             type=3Dstr,
+>                             choices=3D['suite', 'test'])
+> +       parser.add_argument('--list_tests', help=3D'If set, list all test=
+s that will be '
+> +                           'run.',
+> +                           action=3D'store_true')
+> +       parser.add_argument('--list_tests_attr', help=3D'If set, list all=
+ tests and test '
+> +                           'attributes.',
+> +                           action=3D'store_true')
+>
+>  def add_parse_opts(parser: argparse.ArgumentParser) -> None:
+>         parser.add_argument('--raw_output', help=3D'If set don\'t parse o=
+utput from kernel. '
+> @@ -398,8 +450,12 @@ def run_handler(cli_args: argparse.Namespace) -> Non=
+e:
+>                                         json=3Dcli_args.json,
+>                                         timeout=3Dcli_args.timeout,
+>                                         filter_glob=3Dcli_args.filter_glo=
+b,
+> +                                       filter=3Dcli_args.filter,
+> +                                       filter_action=3Dcli_args.filter_a=
+ction,
+>                                         kernel_args=3Dcli_args.kernel_arg=
+s,
+> -                                       run_isolated=3Dcli_args.run_isola=
+ted)
+> +                                       run_isolated=3Dcli_args.run_isola=
+ted,
+> +                                       list_tests=3Dcli_args.list_tests,
+> +                                       list_tests_attr=3Dcli_args.list_t=
+ests_attr)
+>         result =3D run_tests(linux, request)
+>         if result.status !=3D KunitStatus.SUCCESS:
+>                 sys.exit(1)
+> @@ -441,8 +497,12 @@ def exec_handler(cli_args: argparse.Namespace) -> No=
+ne:
+>                                         json=3Dcli_args.json,
+>                                         timeout=3Dcli_args.timeout,
+>                                         filter_glob=3Dcli_args.filter_glo=
+b,
+> +                                       filter=3Dcli_args.filter,
+> +                                       filter_action=3Dcli_args.filter_a=
+ction,
+>                                         kernel_args=3Dcli_args.kernel_arg=
+s,
+> -                                       run_isolated=3Dcli_args.run_isola=
+ted)
+> +                                       run_isolated=3Dcli_args.run_isola=
+ted,
+> +                                       list_tests=3Dcli_args.list_tests,
+> +                                       list_tests_attr=3Dcli_args.list_t=
+ests_attr)
+>         result =3D exec_tests(linux, exec_request)
+>         stdout.print_with_timestamp((
+>                 'Elapsed time: %.3fs\n') % (result.elapsed_time))
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/ku=
+nit_kernel.py
+> index 7f648802caf6..0b6488efed47 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -330,11 +330,15 @@ class LinuxSourceTree:
+>                         return False
+>                 return self.validate_config(build_dir)
+>
+> -       def run_kernel(self, args: Optional[List[str]]=3DNone, build_dir:=
+ str=3D'', filter_glob: str=3D'', timeout: Optional[int]=3DNone) -> Iterato=
+r[str]:
+> +       def run_kernel(self, args: Optional[List[str]]=3DNone, build_dir:=
+ str=3D'', filter_glob: str=3D'', filter: str=3D'', filter_action: Optional=
+[str]=3DNone, timeout: Optional[int]=3DNone) -> Iterator[str]:
+>                 if not args:
+>                         args =3D []
+>                 if filter_glob:
+> -                       args.append('kunit.filter_glob=3D'+filter_glob)
+> +                       args.append('kunit.filter_glob=3D' + filter_glob)
+> +               if filter:
+> +                       args.append('kunit.filter=3D"' + filter + '"')
+> +               if filter_action:
+> +                       args.append('kunit.filter_action=3D' + filter_act=
+ion)
+>                 args.append('kunit.enable=3D1')
+>
+>                 process =3D self._ops.start(args, build_dir)
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/ku=
+nit_parser.py
+> index fbc094f0567e..79d8832c862a 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -212,6 +212,7 @@ KTAP_START =3D re.compile(r'\s*KTAP version ([0-9]+)$=
+')
+>  TAP_START =3D re.compile(r'\s*TAP version ([0-9]+)$')
+>  KTAP_END =3D re.compile(r'\s*(List of all partitions:|'
+>         'Kernel panic - not syncing: VFS:|reboot: System halted)')
+> +EXECUTOR_ERROR =3D re.compile(r'\s*kunit executor: (.*)$')
+>
+>  def extract_tap_lines(kernel_output: Iterable[str]) -> LineStream:
+>         """Extracts KTAP lines from the kernel output."""
+> @@ -242,6 +243,8 @@ def extract_tap_lines(kernel_output: Iterable[str]) -=
+> LineStream:
+>                                 # remove the prefix, if any.
+>                                 line =3D line[prefix_len:]
+>                                 yield line_num, line
+> +                       elif EXECUTOR_ERROR.search(line):
+> +                               yield line_num, line
+>         return LineStream(lines=3Disolate_ktap_output(kernel_output))
+>
+>  KTAP_VERSIONS =3D [1]
+> @@ -447,7 +450,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+>         Log of diagnostic lines
+>         """
+>         log =3D []  # type: List[str]
+> -       non_diagnostic_lines =3D [TEST_RESULT, TEST_HEADER, KTAP_START]
+> +       non_diagnostic_lines =3D [TEST_RESULT, TEST_HEADER, KTAP_START, T=
+AP_START]
+>         while lines and not any(re.match(lines.peek())
+>                         for re in non_diagnostic_lines):
+>                 log.append(lines.pop())
+> @@ -713,6 +716,11 @@ def parse_test(lines: LineStream, expected_num: int,=
+ log: List[str], is_subtest:
+>         """
+>         test =3D Test()
+>         test.log.extend(log)
+> +
+> +       # Parse any errors prior to parsing tests
+> +       err_log =3D parse_diagnostic(lines)
+> +       test.log.extend(err_log)
+> +
+>         if not is_subtest:
+>                 # If parsing the main/top-level test, parse KTAP version =
+line and
+>                 # test plan
+> @@ -774,6 +782,7 @@ def parse_test(lines: LineStream, expected_num: int, =
+log: List[str], is_subtest:
+>                 # Don't override a bad status if this test had one report=
+ed.
+>                 # Assumption: no subtests means CRASHED is from Test.__in=
+it__()
+>                 if test.status in (TestStatus.TEST_CRASHED, TestStatus.SU=
+CCESS):
+> +                       print_log(test.log)
+>                         test.status =3D TestStatus.NO_TESTS
+>                         test.add_error('0 tests run!')
+>
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit=
+/kunit_tool_test.py
+> index be35999bb84f..b28c1510be2e 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -597,7 +597,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.ca=
+ll_count, 0)
+>                 self.assertEqual(self.linux_source_mock.run_kernel.call_c=
+ount, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', timeout=3D300)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_run_passes_args_pass(self):
+> @@ -605,7 +605,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.ca=
+ll_count, 1)
+>                 self.assertEqual(self.linux_source_mock.run_kernel.call_c=
+ount, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', timeout=3D300)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_exec_passes_args_fail(self):
+> @@ -629,7 +629,7 @@ class KUnitMainTest(unittest.TestCase):
+>                         kunit.main(['run'])
+>                 self.assertEqual(e.exception.code, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', timeout=3D300)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains(' 0 tests run=
+!'))
+>
+>         def test_exec_raw_output(self):
+> @@ -670,13 +670,13 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.linux_source_mock.run_kernel =3D mock.Mock(return_va=
+lue=3D[])
+>                 kunit.main(['run', '--raw_output', 'filter_glob'])
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'filter_glob', timeout=3D300)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'filter_glob', filter=3D'', filter_action=3DNone, timeout=3D300)
+>
+>         def test_exec_timeout(self):
+>                 timeout =3D 3453
+>                 kunit.main(['exec', '--timeout', str(timeout)])
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', timeout=3Dtimeout)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', filter=3D'', filter_action=3DNone, timeout=3Dtimeout)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_run_timeout(self):
+> @@ -684,7 +684,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 kunit.main(['run', '--timeout', str(timeout)])
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.ca=
+ll_count, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', timeout=3Dtimeout)
+> +                       args=3DNone, build_dir=3D'.kunit', filter_glob=3D=
+'', filter=3D'', filter_action=3DNone, timeout=3Dtimeout)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_run_builddir(self):
+> @@ -692,7 +692,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 kunit.main(['run', '--build_dir=3D.kunit'])
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.ca=
+ll_count, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3Dbuild_dir, filter_glob=
+=3D'', timeout=3D300)
+> +                       args=3DNone, build_dir=3Dbuild_dir, filter_glob=
+=3D'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_config_builddir(self):
+> @@ -710,7 +710,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 build_dir =3D '.kunit'
+>                 kunit.main(['exec', '--build_dir', build_dir])
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3DNone, build_dir=3Dbuild_dir, filter_glob=
+=3D'', timeout=3D300)
+> +                       args=3DNone, build_dir=3Dbuild_dir, filter_glob=
+=3D'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_run_kunitconfig(self):
+> @@ -786,7 +786,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 kunit.main(['run', '--kernel_args=3Da=3D1', '--kernel_arg=
+s=3Db=3D2'])
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.ca=
+ll_count, 1)
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                     args=3D['a=3D1','b=3D2'], build_dir=3D'.kunit', fil=
+ter_glob=3D'', timeout=3D300)
+> +                     args=3D['a=3D1','b=3D2'], build_dir=3D'.kunit', fil=
+ter_glob=3D'', filter=3D'', filter_action=3DNone, timeout=3D300)
+>                 self.print_mock.assert_any_call(StrContains('Testing comp=
+lete.'))
+>
+>         def test_list_tests(self):
+> @@ -794,13 +794,11 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.linux_source_mock.run_kernel.return_value =3D ['TAP =
+version 14', 'init: random output'] + want
+>
+>                 got =3D kunit._list_tests(self.linux_source_mock,
+> -                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*', None, 'suite'))
+> -
+> +                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*', '', None, None, 'suite', False, False))
+>                 self.assertEqual(got, want)
+>                 # Should respect the user's filter glob when listing test=
+s.
+>                 self.linux_source_mock.run_kernel.assert_called_once_with=
+(
+> -                       args=3D['kunit.action=3Dlist'], build_dir=3D'.kun=
+it', filter_glob=3D'suite*', timeout=3D300)
+> -
+> +                       args=3D['kunit.action=3Dlist'], build_dir=3D'.kun=
+it', filter_glob=3D'suite*', filter=3D'', filter_action=3DNone, timeout=3D3=
+00)
+>
+>         @mock.patch.object(kunit, '_list_tests')
+>         def test_run_isolated_by_suite(self, mock_tests):
+> @@ -809,10 +807,10 @@ class KUnitMainTest(unittest.TestCase):
+>
+>                 # Should respect the user's filter glob when listing test=
+s.
+>                 mock_tests.assert_called_once_with(mock.ANY,
+> -                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*.test*', None, 'suite'))
+> +                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*.test*', '', None, None, 'suite', False, False))
+>                 self.linux_source_mock.run_kernel.assert_has_calls([
+> -                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test*', timeout=3D300),
+> -                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite2.test*', timeout=3D300),
+> +                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test*', filter=3D'', filter_action=3DNone, timeout=3D300),
+> +                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite2.test*', filter=3D'', filter_action=3DNone, timeout=3D300)=
+,
+>                 ])
+>
+>         @mock.patch.object(kunit, '_list_tests')
+> @@ -822,13 +820,12 @@ class KUnitMainTest(unittest.TestCase):
+>
+>                 # Should respect the user's filter glob when listing test=
+s.
+>                 mock_tests.assert_called_once_with(mock.ANY,
+> -                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*', None, 'test'))
+> +                                    kunit.KunitExecRequest(None, None, '=
+.kunit', 300, 'suite*', '', None, None, 'test', False, False))
+>                 self.linux_source_mock.run_kernel.assert_has_calls([
+> -                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test1', timeout=3D300),
+> -                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test2', timeout=3D300),
+> -                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite2.test1', timeout=3D300),
+> +                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test1', filter=3D'', filter_action=3DNone, timeout=3D300),
+> +                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite.test2', filter=3D'', filter_action=3DNone, timeout=3D300),
+> +                       mock.call(args=3DNone, build_dir=3D'.kunit', filt=
+er_glob=3D'suite2.test1', filter=3D'', filter_action=3DNone, timeout=3D300)=
+,
+>                 ])
+>
+> -
+>  if __name__ =3D=3D '__main__':
+>         unittest.main()
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmS/iu0FAwAAAAAACgkQsN6d1ii/Ey8L
-ZAgAgGWQ0HJDC93HDXPsqUP9EcQznNgD/sLKmwPOK44NADZZQZbVsnQBCUWM07L10NMR2DHXrczI
-pR/G/PEXWQwT+taHkSgYnsacP2u2toXo0YT6bez76Ycg2SaDV/CWHZXJHNJC3tasajgqP15+xPvo
-M0OSufBdOAVNHjNrp+L03AgeCBPW6wIdd/2i298Z7e4T9OmWPjC3wzKPRNIz/x5ikfP9v1bwp/Sa
-ZB0n91pKvs0Md6OeNE0+dcK0F1WNojvX637J809uFgI+CokLfTyEKt/QQ9V/aHHKadlgQDRJ1sb0
-h6sk3nYDlLpWJc5p4HAT0kRqNp/FHsLzzO+4YZGASQ==
-=OaDI
------END PGP SIGNATURE-----
+--00000000000078e55206014bb624
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
---------------0pVDYdB0AhBfd9mnjxflwa0K--
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA3
+4p3b2Thc3ulFKIHsb0nJrAF6B5emHJ8LUWAbsd8NCzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjUwODQyMzVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAYDKGT/KfKnJp0YLym+bF
+HI6wafdusN4ji/ko994sD9nOymP5IfoJRdROHfV10WO0C1jCei6etCo9d1TTf2vpHjb6t087PisQ
+PGlsCXyzz5HtJG/1pwSR+jnJHYJFfsNbij0FCl/zm1c72Npme5FwCF4+KFHzdfSbaFjDQ/dQiYaR
+kq0EzUBkHnkURNuf1rmDba6MqEgaxQwjOv8oiRds9REk8njTXisAeSxDglDPv8heNGSj1gDIZ/b3
+P2xoZUbci21P2IL3EvpGSqyUS8aOcxEjA2iaIi50GwJwFwB8boY5ynt2AwVhseHxmMAXVEZ3DACj
+rXpZKCT2ggYPA1EzHA==
+--00000000000078e55206014bb624--
