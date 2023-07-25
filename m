@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB50762257
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D03762284
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 21:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjGYTf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 15:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        id S230140AbjGYTib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 15:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjGYTf5 (ORCPT
+        with ESMTP id S229991AbjGYTi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:35:57 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5191FE5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:35:56 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98377c5d53eso938986566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690313753; x=1690918553;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gclOxOI7R55sgWeaMlz/Z0n4pJQKGgWmP/XSgabn5CQ=;
-        b=Y9R+Cxepw00O08yzgAeyVjwFQZsM/JKs0HLJC9v/ANZbVyQQDrkaZtmiEIW1poNrhJ
-         Hze00kw8vtlXD4HgWQ0qKFEyGp5kAr0FhWEVSbm/gHqGL2yOBAIRp+KgGo/1S560+axl
-         ln+NRnGFcpt3zVcoW43vg0PKdm6oZNQJc97jQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690313753; x=1690918553;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gclOxOI7R55sgWeaMlz/Z0n4pJQKGgWmP/XSgabn5CQ=;
-        b=H40YScFnS/oJVl+2hDG6TwTGR1DCc2ihj4ABoa6cat74Z7uOMvl3yn9HhrWoPhCd72
-         355TrHGI6RZjHYi3/DYKsFCjjqstatvdtXvH1ao/2sDkxug3oik83oY/41ZokHAiKhat
-         e296Re8hk24IJfLuzEVyiZ6Wv2THCsurlDbB0K/bbf/Ia7hOZEZBYrM9T68UBbzRRqXp
-         0OeZ/DA+BzToVNFrhLseTMCAYqPq+GhWVb1uPD3TfD6NT7M8u+aOXgNhVjfYoiF9smMe
-         iiytIXjSkwo8qHRpd+8NsY+a9AJRZYbAym+KMbz4ZGqU+VbDm48AefVeg8PJWrwvyo1p
-         GpWA==
-X-Gm-Message-State: ABy/qLbkZl8zCLinSM9Xenj6x2iCEVrUDAqFBsiXQTZqICVj4ugM67wt
-        hxzdeUvYCBSXRz13gDzFVw3iADC7cSyi30UsMFhi5VfW
-X-Google-Smtp-Source: APBJJlGbYlwMlBLEGkNycnQdZHBTktU/Nyg1iExpuLx+PZ/fLIytf161v92ushD6yOlmy8dINwrwiw==
-X-Received: by 2002:a17:906:3f5d:b0:99b:6e54:bd6e with SMTP id f29-20020a1709063f5d00b0099b6e54bd6emr10376782ejj.56.1690313753376;
-        Tue, 25 Jul 2023 12:35:53 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id a5-20020a170906274500b009932337747esm8549707ejd.86.2023.07.25.12.35.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 12:35:52 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so3136a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:35:52 -0700 (PDT)
-X-Received: by 2002:a50:9514:0:b0:519:7d2:e256 with SMTP id
- u20-20020a509514000000b0051907d2e256mr170514eda.0.1690313752109; Tue, 25 Jul
- 2023 12:35:52 -0700 (PDT)
+        Tue, 25 Jul 2023 15:38:29 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC632706
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 12:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690313878; x=1721849878;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SonwbsmHGSG68n2c1J5WDmVivVD8DKYXvlRT7mbdVPQ=;
+  b=Imefr2KryCMOPYexdLHkpjCXvr5t5SOkkYzComZ2cfExdgYrfiMhoFmu
+   MyHNorFzMguTxudEzqRby5yJ6qMQc1qxjKd0bwrTaVe3Cs7gDIu/PiOnq
+   KmE3ldF4FMyI2Oy292ON3ycUqPXqu7M1g/e+49fGf5ygyO2xL+Xgs5t8C
+   uE0E03qGZvn9+kc+Fp64qKPPNX7XZNeQn8icKRQ7jNBxfoCdOMRKptoKA
+   WVK5XfkHP+ltJ2jPnYyiOqqFFTiiHosQEKHihRAX3/NrxbSDxpY+vnvnF
+   PF9nNxMdrA3noNRGe2L9U4ZlaVwptlEocIgs4/xhyD3w/Oz3DIbXt/pfB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="367856203"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="367856203"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 12:37:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="791512094"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="791512094"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Jul 2023 12:37:13 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qONqK-0000I5-22;
+        Tue, 25 Jul 2023 19:37:12 +0000
+Date:   Wed, 26 Jul 2023 03:36:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Laight <David.Laight@aculab.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH next resend 5/5] minmax: Relax check to allow comparison
+ between int and small unsigned constants.
+Message-ID: <202307260303.3ftEpZRU-lkp@intel.com>
+References: <48c2cd0407f14859919d4fcbe526234a@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20230725084633.67179-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725084633.67179-1-krzysztof.kozlowski@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 25 Jul 2023 12:35:39 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xt26=rBf99mzkAuwwtb2f-jnKtnHaEhXnthz0a5zke4Q@mail.gmail.com>
-Message-ID: <CAD=FV=Xt26=rBf99mzkAuwwtb2f-jnKtnHaEhXnthz0a5zke4Q@mail.gmail.com>
-Subject: Re: [PATCH RFT] arm64: dts: qcom: sc7280: drop incorrect EUD port on
- SoC side
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48c2cd0407f14859919d4fcbe526234a@AcuMS.aculab.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,68 +72,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi David,
 
-On Tue, Jul 25, 2023 at 1:46=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Qualcomm Embedded USB Debugger (EUD) second port should point to Type-C
-> USB connector.  Such connector was defined directly in root node of
-> sc7280.dtsi which is clearly wrong.  SC7280 is a chip, so physically it
-> does not have USB Type-C port.  The connector is usually accessible
-> through some USB switch or controller.
->
-> Correct the EUD/USB connector topology by removing the top-level fake
-> USB connector and adding appropriate ports in boards having actual USB
-> Type-C connector defined (Herobrine, IDP).  All other boards will have
-> this EUD port missing.
->
-> This fixes also dtbs_check warnings:
->
->   sc7280-herobrine-crd.dtb: connector: ports:port@0: 'reg' is a required =
-property
->
-> Fixes: 9ee402ccfeb1 ("arm64: dts: qcom: sc7280: Fix EUD dt node syntax")
-> Cc: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> Not tested on hardware.
-> ---
->  .../arm64/boot/dts/qcom/sc7280-herobrine.dtsi | 15 +++++++++++++
->  .../arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi | 15 +++++++++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi          | 21 +------------------
->  3 files changed, 31 insertions(+), 20 deletions(-)
+kernel test robot noticed the following build warnings:
 
-FWIW, I've always been very intrigued about the embedded USB port but
-never managed to find any way to get it actually enabled. :( ...so I'm
-probably not the best person to actually review this. That being said:
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.5-rc3 next-20230725]
+[cannot apply to next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-1. I'm nearly certain that this is completely unusable on herobrine
-boards. Specifically on herobrine there's a USB hub between the SoC
-and all the physical ports on the device and (I think?) that prevents
-EUD from working. It is possible that hoglin/zoglin is an exception
-here and Qualcomm might have some backdoor way to access EUD on these
-devices since this is hardware that they built.
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minmax-Allow-min-max-clamp-if-the-arguments-have-the-same-signedness/20230725-204940
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/48c2cd0407f14859919d4fcbe526234a%40AcuMS.aculab.com
+patch subject: [PATCH next resend 5/5] minmax: Relax check to allow comparison between int and small unsigned constants.
+config: riscv-randconfig-r024-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260303.3ftEpZRU-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260303.3ftEpZRU-lkp@intel.com/reproduce)
 
-2. I've always been pretty baffled about the sc7280 EUD stuff since
-the device tree shows the EUD on "usb_2". For some background: there
-are two USB controllers on sc7280. There's "usb_1" which is USB
-2.0/3.0 capable and, at an SoC level, is the "Type C" port.
-Specifically the pins on the SoC for the USB 3.0 signals are the same
-pins on the SoC as two of the DisplayPort lanes. Then there's "usb_2"
-which is USB 2.0 only. If you'll notice, "usb_2" is not set to status
-"okay" on any boards except "sc7280-idp.dts".
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260303.3ftEpZRU-lkp@intel.com/
 
-I asked Qualcomm at least a few times in the past if the EUD is truly
-on the USB 2.0 port (which means it isn't connected to anything on
-herobrine boards) or if it's actually on the "type C" port (which
-means there's a hub in between) and never got a ton of clarify...
+All warnings (new ones prefixed by >>):
 
-Given how baffling everything is, I wouldn't be opposed to just
-deleting the EUD from the device tree until there is more clarity
-here. If you don't want to just delete it, at least I'd say that it
-shouldn't be hooked up for herobrine.
+   In file included from include/linux/kernel.h:27,
+                    from include/linux/cpumask.h:10,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/mutex.h:17,
+                    from include/linux/notifier.h:14,
+                    from include/linux/kprobes.h:21,
+                    from include/linux/kgdb.h:19,
+                    from include/linux/fb.h:6,
+                    from drivers/gpu/drm/drm_modes.c:35:
+   drivers/gpu/drm/drm_modes.c: In function 'drm_mode_parse_command_line_for_connector':
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:36:27: note: in definition of macro '__cmp'
+      36 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                           ^
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:47:27: note: in expansion of macro '__int_const'
+      47 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:36:45: note: in definition of macro '__cmp'
+      36 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                             ^
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:47:43: note: in expansion of macro '__int_const'
+      47 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:36:51: note: in definition of macro '__cmp'
+      36 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                   ^
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:47:27: note: in expansion of macro '__int_const'
+      47 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:36:57: note: in definition of macro '__cmp'
+      36 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                         ^
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:47:43: note: in expansion of macro '__int_const'
+      47 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:39:16: note: in expansion of macro '__int_const'
+      39 |         typeof(__int_const(x)) unique_x = (x);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:48:17: note: in expansion of macro '__cmp_once'
+      48 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:25:47: note: in expansion of macro '__is_noneg_int'
+      25 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:40:16: note: in expansion of macro '__int_const'
+      40 |         typeof(__int_const(y)) unique_y = (y);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:48:17: note: in expansion of macro '__cmp_once'
+      48 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+   In file included from include/linux/init.h:5,
+                    from include/linux/printk.h:6,
+                    from include/asm-generic/bug.h:22,
+                    from arch/riscv/include/asm/bug.h:83,
+                    from include/linux/bug.h:5,
+                    from arch/riscv/include/asm/cmpxchg.h:9,
+                    from arch/riscv/include/asm/atomic.h:19,
+                    from include/linux/atomic.h:7,
+                    from include/linux/refcount.h:95,
+                    from include/linux/fb.h:5:
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:41:9: note: in expansion of macro 'static_assert'
+      41 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:31:17: note: in expansion of macro '__is_noneg_int'
+      31 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                 ^~~~~~~~~~~~~~
+   include/linux/minmax.h:41:23: note: in expansion of macro '__types_ok'
+      41 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:48:17: note: in expansion of macro '__cmp_once'
+      48 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
+>> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
+      23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:41:9: note: in expansion of macro 'static_assert'
+      41 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:31:38: note: in expansion of macro '__is_noneg_int'
+      31 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                                      ^~~~~~~~~~~~~~
+   include/linux/minmax.h:41:23: note: in expansion of macro '__types_ok'
+      41 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:48:17: note: in expansion of macro '__cmp_once'
+      48 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:81:25: note: in expansion of macro '__careful_cmp'
+      81 | #define max(x, y)       __careful_cmp(max, x, y)
+         |                         ^~~~~~~~~~~~~
+   drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
+    2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+         |                             ^~~
 
--Doug
+
+vim +23 include/linux/minmax.h
+
+     6	
+     7	/*
+     8	 * min()/max()/clamp() macros must accomplish three things:
+     9	 *
+    10	 * - Avoid multiple evaluations of the arguments (so side-effects like
+    11	 *   "x++" happen only once) when non-constant.
+    12	 * - Perform signed v unsigned type-checking (to generate compile
+    13	 *   errors instead of nasty runtime surprises).
+    14	 *   Constants from 0 to INT_MAX are cast to (int) so can be used
+    15	 *   in comparisons with signed types.
+    16	 * - Retain result as a constant expressions when called with only
+    17	 *   constant expressions (to avoid tripping VLA warnings in stack
+    18	 *   allocation usage).
+    19	 */
+    20	
+    21	#define __is_noneg_int(x)					\
+    22		__builtin_choose_expr(!__is_constexpr(x), false, 	\
+  > 23			((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+    24	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
