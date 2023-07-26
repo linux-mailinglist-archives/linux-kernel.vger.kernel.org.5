@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 031BF763B82
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636A3763B88
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbjGZPqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        id S234561AbjGZPrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbjGZPqI (ORCPT
+        with ESMTP id S231176AbjGZPrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:46:08 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611941BE3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:46:07 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d0fc1d97716so3892712276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690386366; x=1690991166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4KgyDeQrSBviYcAIl4THJ/dOEwnDjoTrG5uDNKkzwM=;
-        b=PsNPRHYGxbBz6NhNZl9HzDTLscRYCauDynkogxjqM4vd7hBxQ+UoR8vRi/VGV5eAix
-         i6iR+TqvHdX0HW1JfDcq3ua3fxqq1dlcy5B/RNlCMgeMhgrBtb0udwNDfUXssml9Q2gT
-         IQ0ls4Pq4MVgfzZSaevYYaeMU9q+b3jTC4U4NtqLSoT6F81+KyNPbaJJKkoYdJR73WeC
-         +5Ml22mdt0a2Dot9cV8j6PEMF1DZkiG3N5dRvImEXSCO3nYWII/qahD5zelN+mlXS6VH
-         ORmnhXQ/Va7Q7jLftQMYzhVN+HfAbj6OerHQGyyJlvRXMUQVyWSBiohATWAA+OJkYaVe
-         XM8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690386366; x=1690991166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F4KgyDeQrSBviYcAIl4THJ/dOEwnDjoTrG5uDNKkzwM=;
-        b=KDDSoNMv/6OKuW08XoUoWyOj3nDpLBnYLPHdB0CzSz5cQgF1KiCS/Bjb1HRwgOJSqA
-         L7xFq9EPsIVSqopUiZC0KWrXhc4WXrxvGucTp5tlie4s1uORf8sxZhEXpqU+jDNllwrI
-         RGodCseUN9yBeSyj/GA4lXk7mN2tEAkFNWBi5HFb8V5z39od/50xt5EOUyXXyglGKM8R
-         Xw4b1gL3ZcW1XSZnfVbUiov9PyhMS2FtNE4No8cWo7a6yvKeWa9hJcZDlillU6KFjkpt
-         FsVJqO+dMlWUBCJxzjBupMcsismREgd81CyZVENTXtG4DQZGbE9ViGWV/Ebb+UyNkbuz
-         vEIA==
-X-Gm-Message-State: ABy/qLacXQZApCDnlzNQdcxdaRmvd7/FW7tJvrL2sbDmLTjm45yXUa31
-        VrfhPjIRzlq8pL7O/ASaDwhcxJZgfc/DIBLylvuV0Q==
-X-Google-Smtp-Source: APBJJlF8/q7GpusPPrHAc1t8Ynbc8xtVqX7zeutqSFIS9pZYmvtcqn4HwbMgy47aDeoql3KKwDFgB8XgDhgRE6AS10A=
-X-Received: by 2002:a5b:f45:0:b0:d0e:c8fb:986a with SMTP id
- y5-20020a5b0f45000000b00d0ec8fb986amr2197424ybr.42.1690386366531; Wed, 26 Jul
- 2023 08:46:06 -0700 (PDT)
+        Wed, 26 Jul 2023 11:47:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F63193;
+        Wed, 26 Jul 2023 08:47:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D579161B91;
+        Wed, 26 Jul 2023 15:47:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1C6C433C8;
+        Wed, 26 Jul 2023 15:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690386464;
+        bh=ntzUm32RuTuI9DzAzwAs39wscUDZsYJF5RGGxmCI+/k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RzpKJzruvMIC6e+h2wdEZ8qON1ieukXJk9w17kGJCOFFhOSuDkuhkgAjiLEpp9ifj
+         mrc1myf+Y48t+Jb4jFaAz85JzvoY2huic7EW0fpoQguPpDQPFtrTSV1ghUlipQMaQq
+         9RNJiikJiqwV0/LpAsTq0sQhSAAZlQseAlot147AlZ0Onm8a8NFL6ujdtNciaRzOBa
+         z3TtnqnGYqS+7OBw1t5LYs2F7ztrg3Fs1v1aujCnJwNfYUL8UG1sEEOx+vGHlbGl1d
+         xNFWTAZVcXM9GzsKbiYWh31EUWCa5tm1DlUx4shA55XFcYDXHbwZorPr1TRaJ9tFpb
+         Nc5fstcERHKZw==
+Date:   Wed, 26 Jul 2023 08:47:42 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        "Subbaraya Sundeep" <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "Ryder Lee" <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        "Sean Wang" <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH net-next v2] page_pool: split types and declarations
+ from page_pool.h
+Message-ID: <20230726084742.7dc67c79@kernel.org>
+In-Reply-To: <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
+References: <20230725131258.31306-1-linyunsheng@huawei.com>
+        <ZL/fVF7WetuLgB0l@hera>
+        <20230725141223.19c1c34c@kernel.org>
+        <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
 MIME-Version: 1.0
-References: <0000000000002b5e2405f14e860f@google.com> <0000000000009655cc060165265f@google.com>
- <CANp29Y7UVO8QGJUC-WB=CT_MKJVUzpJ2pH+e6WAcwqX_4FPgpA@mail.gmail.com>
-In-Reply-To: <CANp29Y7UVO8QGJUC-WB=CT_MKJVUzpJ2pH+e6WAcwqX_4FPgpA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 26 Jul 2023 18:45:55 +0300
-Message-ID: <CAA8EJpq2Az=8gLyFY7j3D8-P=PUAo6ydmzvvpkcfNQnA0OCEoA@mail.gmail.com>
-Subject: Re: [syzbot] [gfs2?] KASAN: use-after-free Read in qd_unlock (2)
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com>,
-        agruenba@redhat.com, andersson@kernel.org,
-        cluster-devel@redhat.com, eadavis@sina.com,
-        konrad.dybcio@linaro.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 18:09, Aleksandr Nogikh <nogikh@google.com> wrote:
->
-> On Wed, Jul 26, 2023 at 5:03=E2=80=AFPM syzbot
-> <syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit 41a37d157a613444c97e8f71a5fb2a21116b70d7
-> > Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > Date:   Mon Dec 26 04:21:51 2022 +0000
-> >
-> >     arm64: dts: qcom: qcs404: use symbol names for PCIe resets
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17b48111=
-a80000
-> > start commit:   [unknown]
-> > git tree:       upstream
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dfe56f7d1939=
-26860
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D3f6a670108ce4=
-3356017
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1209f878c=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D111a48ab480=
-000
-> >
-> > If the result looks correct, please mark the issue as fixed by replying=
- with:
->
-> No, it's quite unlikely.
+On Wed, 26 Jul 2023 12:48:05 +0200 Alexander Lobakin wrote:
+> > I prefer the more systematic approach of creating a separate types.h
+> > file, so I don't have to keep chasing people or cleaning up the include
+> > hell myself. I think it should be adopted more widely going forward,
+> > it's not just about the page pool.  
+> 
+> I have this patch reworked to introduce
+> include/net/page_pool/{types,helpers}.h in my tree, maybe someone could
+> take a quick look[0] and say if this works while I'm preparing the next
+> version for sending? Not the most MLish way, I know :s
+> 
+> [0]
+> https://github.com/alobakin/linux/commit/19741ee072c32eb1d30033cd4fcb236d1c00bfbf
 
-I highly suspect that the bisect was wrong here. The only thing that
-was changed by the mentioned commit is the device tree for the pretty
-obscure platform, which is not 'Google Compute Engine'.
-
->
-> >
-> > #syz fix: arm64: dts: qcom: qcs404: use symbol names for PCIe resets
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
-ction
-
---=20
-With best wishes
-Dmitry
+LGTM!
