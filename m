@@ -2,106 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52599763BF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DE1763BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjGZQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S231601AbjGZQHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGZQG3 (ORCPT
+        with ESMTP id S230148AbjGZQHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:06:29 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B504CE69
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:06:27 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcd6c0282so84843566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:06:27 -0700 (PDT)
+        Wed, 26 Jul 2023 12:07:32 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F180E69
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:07:31 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5221f193817so6433204a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:07:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690387586; x=1690992386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CckCMVKjZtn73XX/vGnQfTQ1nmreAGHjbMwMQmDTxGU=;
-        b=kqJyRA2lp8IC8e9gMZ6tOLzH5l0AWw7aW8S1vNCCo6CLMzYRNZqA/H84/Rxe18LRfi
-         xgzei+t1qVCu/+ntDtNND2BqDs1Xog1Spwy6D7Tzl5frx9eqJOQIVIHvjigqGB+vhuQI
-         26cbg32Xct1MabQ391lQlEs4DXjaEn/GvgNaraFG82mdbrCM9mdbADsFmHhxAgIQtazZ
-         xhuWZ6YAAeseT5qc0feu+s3JV7+BJG6PxeXON+aq7vAB/wJaWw2j6nW1l1xaA6ECoZ4+
-         BWgrNniVIp51EKvI99C6pgZ66YSDkOT6oDrcTyyli4uTLccwwgsnxlZtwDA4icefZ9TS
-         hZug==
+        d=chromium.org; s=google; t=1690387646; x=1690992446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Et58EXEmfLq1LIQL5SXUSCkby5ZyaZ1e6VeyOPEhc/Y=;
+        b=YouFWzJwYRT/4JuRamWAxq++pu6E8dO4RZxZ26atgp2D2dMXxNPkeEMgxkQW5dOlCK
+         AqTMXiA0KiCDZtS/ih4apau2fxQjuYTd+O833LMfEFWKr5h0zfs6qKVzE+3bDgGPG/g1
+         1pFyNb+9m5+kWblp1Ei0X97GYPAIvrA6XL5X8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690387586; x=1690992386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CckCMVKjZtn73XX/vGnQfTQ1nmreAGHjbMwMQmDTxGU=;
-        b=CoEl2bNlaNEQQjxTp71z8HkWkAKnJN57tjRmx+noBH2oX77cNbj9JArtRROfqKUeTA
-         vKSnwQrZkluTRxVLdQ7l95BNYlBBcmI5WsIVawqRWabXslbNkVUAUVGjt4be/svcbCjG
-         LXN5q78xTxZ3Vtx+3PmR9wCHdavnWQjbURvz0r6gFppvSNLV8gbiy377g2mWyuZ5KcFB
-         MX5d5Pv18EFUGMgsw5Fx5d0tbUJjCC6lwlfqi4onYYTl5caS8gr2pWxH9UUJcpFIeZ1L
-         aMdl/UBGbyF2GgKO38z8P+TdHdwBw924xTKsGWDoVZdoshu2I8AJlQfpjwhvjVDe851g
-         50FA==
-X-Gm-Message-State: ABy/qLbL3DB2Sgj3WgFE7SmYQIOfYz+NjptSdvwhH76Ze7PxoDyC0KdM
-        zPN+Utyl3HmyUebsiQu0WYjSqg==
-X-Google-Smtp-Source: APBJJlEtkywycgl/q6V+qC4E7blxzJwpc/X+9+4tWcX8bKQr/5GQq60ouHzd8zXSCEyn5IHGR28H7g==
-X-Received: by 2002:a17:907:2c59:b0:979:dad9:4e9 with SMTP id hf25-20020a1709072c5900b00979dad904e9mr2210669ejc.50.1690387586235;
-        Wed, 26 Jul 2023 09:06:26 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id l26-20020a170906a41a00b00997cce73cc7sm9659059ejz.29.2023.07.26.09.06.25
+        d=1e100.net; s=20221208; t=1690387646; x=1690992446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Et58EXEmfLq1LIQL5SXUSCkby5ZyaZ1e6VeyOPEhc/Y=;
+        b=fcEm8eK8u2Yfb6Rqwbc8z69sKE+Ek+UX6r+yaNHGfT3Nx+bU8tMk2Mi8rMN46wZ36l
+         +oI9lvhJw8ow5BD8zo3St7nMm7tPrlxcmisgNYdnxuvqPOsEtczrAe9xh8sMWNLUd9YB
+         FM4e5f6MFezf32MtdAbwldKR5lWATrGkCeyuxWyd3tt+awUnsa8b68sK8uN16icQ3zfV
+         78ylYS7/bIH1S5FWGlCaH8V9xpnrfY4GyeuWIj1HA3WhrqeWLXnZJtep18v1nwCO+TRO
+         uzoJ0J97YE21AbKODY2A5j1a9TpLNvZViviFY+WORLKq0elX21r4a0HqTKm0/3d63U6/
+         NISQ==
+X-Gm-Message-State: ABy/qLbxZNS0RrHx8bvc8USFYjctET/jd1vZezUTSHO+Wiu14jHAOdeW
+        3LnfXXkq2QYR5v891xyOQBXSv6CMnU2o6gojPJuP1qP4
+X-Google-Smtp-Source: APBJJlGiTD0wsXlxUVFiQoJwbiFrImpY+QsrYwTvsk/rsBtZ9SOALzDWoyBNB/ZqalBQwX9opQsqhA==
+X-Received: by 2002:a17:906:8a4d:b0:99b:d007:67b1 with SMTP id gx13-20020a1709068a4d00b0099bd00767b1mr770617ejc.72.1690387646685;
+        Wed, 26 Jul 2023 09:07:26 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id j16-20020a170906051000b00993860a6d37sm9685781eja.40.2023.07.26.09.07.26
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 09:06:25 -0700 (PDT)
-Message-ID: <52c60fe9-fff0-29a7-1e7a-12ebd207ca58@linaro.org>
-Date:   Wed, 26 Jul 2023 18:06:24 +0200
+        Wed, 26 Jul 2023 09:07:26 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-516500163b2so12634a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:07:26 -0700 (PDT)
+X-Received: by 2002:a50:ccc4:0:b0:506:b280:4993 with SMTP id
+ b4-20020a50ccc4000000b00506b2804993mr349749edj.2.1690387645063; Wed, 26 Jul
+ 2023 09:07:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] regulator: dt-bindings: dlg,slg51000: Convert to DT
- schema
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+References: <20230725203545.2260506-1-dianders@chromium.org>
+ <20230725133443.v3.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid> <rorhwk3jx72twmqnxqb45uhm7azxxfirvferwyznbhbfmdf7ja@6k6ebhehmsn4>
+In-Reply-To: <rorhwk3jx72twmqnxqb45uhm7azxxfirvferwyznbhbfmdf7ja@6k6ebhehmsn4>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 26 Jul 2023 09:07:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
+Message-ID: <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
+Subject: Re: [PATCH v3 08/10] HID: i2c-hid: Support being a panel follower
+To:     Benjamin Tissoires <bentiss@kernel.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Eric Jeong <eric.jeong.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
- <d33e5dbc-ca38-4702-903a-b36f9a824391@sirena.org.uk>
- <1c3684e3-b88a-0476-9376-19d07956e261@linaro.org>
- <4859d289-f4e2-4676-9be4-182f7dbda8b6@sirena.org.uk>
- <2df8d695-62aa-329f-f355-d6081d970ec2@linaro.org>
- <34edabd6-8dd1-42f8-8309-07dfbf157dff@sirena.org.uk>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <34edabd6-8dd1-42f8-8309-07dfbf157dff@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, cros-qcom-dts-watchers@chromium.org,
+        linux-arm-msm@vger.kernel.org,
+        yangcong5@huaqin.corp-partner.google.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Chris Morgan <macroalpha82@gmail.com>,
+        linux-input@vger.kernel.org, hsinyi@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 14:30, Mark Brown wrote:
-> On Wed, Jul 26, 2023 at 02:18:43PM +0200, Krzysztof Kozlowski wrote:
->> On 26/07/2023 13:55, Mark Brown wrote:
-> 
->>> Oh, you mean if the regulator is in use in the system rather than if
->>> it's enabled!
-> 
->> Enabled as "always-on" or "boot-on" could be encoded in the schema with
->> multiple if::then:. But it is not enough, because regulators can be
->> enabled on demand by drivers. So that's what I meant by "used".
-> 
-> Right, you said "enabled" in the changelog bit though.
+Hi,
 
-Regulator can be enabled in different ways, including by drivers. The
-text in description was accurate.
+On Wed, Jul 26, 2023 at 1:57=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
+org> wrote:
+>
+> > @@ -1143,7 +1208,14 @@ void i2c_hid_core_remove(struct i2c_client *clie=
+nt)
+> >       struct i2c_hid *ihid =3D i2c_get_clientdata(client);
+> >       struct hid_device *hid;
+> >
+> > -     i2c_hid_core_power_down(ihid);
+> > +     /*
+> > +      * If we're a follower, the act of unfollowing will cause us to b=
+e
+> > +      * powered down. Otherwise we need to manually do it.
+> > +      */
+> > +     if (ihid->is_panel_follower)
+> > +             drm_panel_remove_follower(&ihid->panel_follower);
+>
+> That part is concerning, as we are now calling hid_drv->suspend() when re=
+moving
+> the device. It might or not have an impact (I'm not sure of it), but we
+> are effectively changing the path of commands sent to the device.
+>
+> hid-multitouch might call a feature in ->suspend, but the remove makes
+> that the physical is actually disconnected, so the function will fail,
+> and I'm not sure what is happening then.
 
-Best regards,
-Krzysztof
+It's not too hard to change this if we're sure we want to. I could
+change how the panel follower API works, though I'd rather keep it how
+it is now for symmetry. Thus, if we want to do this I'd probably just
+set a boolean at the beginning of i2c_hid_core_remove() to avoid the
+suspend when the panel follower API calls us back.
 
+That being said, are you sure you want me to do that?
+
+1. My patch doesn't change the behavior of any existing hardware. It
+will only do anything for hardware that indicates it needs the panel
+follower logic. Presumably these people could confirm that the logic
+is OK for them, though I'll also admit that it's likely not many of
+them will test the remove() case.
+
+2. Can you give more details about why you say that the function will
+fail? The first thing that the remove() function will do is to
+unfollow the panel and that can cause the suspend to happen. At the
+time this code runs all the normal communications should work and so
+there should be no problems calling into the suspend code.
+
+3. You can correct me if I'm wrong, but I'd actually argue that
+calling the suspend code during remove actually fixes issues and we
+should probably do it for the non-panel-follower case as well. I think
+there are at least two benefits. One benefit is that if the i2c-hid
+device is on a power rail that can't turn off (either an always-on or
+a shared power rail) that we'll at least get the device in a low power
+state before we stop managing it with this driver. The second benefit
+is that it implicitly disables the interrupt and that fixes a
+potential crash at remove time(). The crash in the old code I'm
+imagining is:
+
+a) i2c_hid_core_remove() is called.
+
+b) We try to power down the i2c hid device, which might not do
+anything if the device is on an always-on rail.
+
+c) We call hid_destroy_device(), which frees the hid device.
+
+d) An interrupt comes in before the call to free_irq() and we try to
+dispatch it to the already freed hid device and crash.
+
+
+If you agree that my reasoning makes sense, I can add a separate patch
+before this one to suspend during remove.
+
+
+
+-Doug
