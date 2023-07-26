@@ -2,235 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D72E764008
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EBA763E1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbjGZTzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S231938AbjGZSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjGZTzN (ORCPT
+        with ESMTP id S230000AbjGZSE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:55:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D138D2D71
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vn0i/JBWfk9tGY5FR6jOFAnRknE2zxE4bTcx/jW7l4U=; b=bqn/Z267Z+jffkewSP+VRgDJ+z
-        oUrtQLRGcOg3Q9MOJtCU8tDRcqw1/wn00XrUONnhzU52gbBjWx+MxDNjl4EEs8DmgDaEAKsOGKpDl
-        SKXiR2vurLSMwyuTkAY0vNOQfstluPSKEXwBPQv5gPcPa93F3LQ7QLWjnkJwxCW16nDIPQ9YQoMSm
-        Jbw5A8XL1q5wUX5L6DPAhMkeXKvO0jujSK9ceFIsaLUFXcUfXCnc0yILMeu5sDIrjUL6YXfJ5Cemj
-        Ehes/eO+vpzg4YPMjW8sidj9ua72Ch9V2RIyQfawzlNj3SRnbWZ+mMgz6WwATbw8T7yhOwQD4cc5J
-        13gtVkBg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOkao-005ynY-1Y;
-        Wed, 26 Jul 2023 19:54:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 676F23006C6;
-        Wed, 26 Jul 2023 21:54:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 137C020297BBD; Wed, 26 Jul 2023 18:49:58 +0200 (CEST)
-Date:   Wed, 26 Jul 2023 18:49:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        g@hirez.programming.kicks-ass.net
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Wed, 26 Jul 2023 14:04:27 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19322115;
+        Wed, 26 Jul 2023 11:04:26 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb8e45185bso355215ad.1;
+        Wed, 26 Jul 2023 11:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690394666; x=1690999466;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=l2QbhaPAlPYsT2PUzbG85aHBFLLce4qA+jmwFSFHZJs=;
+        b=RxeYPUxj81dmSfsMgf7dWDb/x4yccpl81Wwpt9jIfTBqNerwz6I/f0Y2D6vCkarqHG
+         jIN3AXT7UXkFlPJK4sCMpyv7R0Kw+Hp38YRb/PQcMUfdKi9HlFbwmH7Wcqzg+/cn5Yvi
+         wtuS/8Nom5UxtBNApqNaK+J8+v3jWSHKr9P6sjmulQyS0UOJMLozVm92WPc85+4Aj7BM
+         qd3p1yMNk0jYFD3oWpLJqKtfEutmScT2mYZEy5SyxY6MtbZHM9jVhWjt1Fv7uFo0qIhH
+         XrZc0C8TDyKaMPNSff/oh+dvXx+FQ0RtuhMvRaqttecbmNygJxhw0ptQwKrXp5k4OJSc
+         /ZOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690394666; x=1690999466;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2QbhaPAlPYsT2PUzbG85aHBFLLce4qA+jmwFSFHZJs=;
+        b=K574ZWrwSlTQYTk4vJflygVsNnKp0Up049P8Ugh8W3cXoSLmih7ehYc7Dr1/aORmB3
+         hLLWs3a88wEBNAJAlFldmBPeQ3uEDjw0mc/ibHlu8g5Wyq6/m4ZM762OgLnK5Q1/YUCM
+         Y4aqaifpk9EXuX2PRzz89nXQyrZogBZqQpACghhru2IcNTPiRWq+9LWo0rVFqD140/LO
+         LJV6wMdJJfKkj4oBzxCHf53IhV9IyxmzkpWSXSJXUo5Jo+fhsmEwhR/A8uxPhhX9/YM+
+         a3pSGUYdpvYC5UUVej9Psux1bVMAmARFnaVHTODyifQcFvl1wk8T3D6+5Ien1os9wgJb
+         148Q==
+X-Gm-Message-State: ABy/qLZXNnsO9sYBgjaVkrNeoZaLZxRDEgPRwVdW0Bu5qyVA4SFTTdKn
+        KKhVGSd/qw5yEPmctBUlPiU=
+X-Google-Smtp-Source: APBJJlERukextq0jo17nDcTkBIhIccterGAj2jKmLEWMyL/Qo+VJor/7Vn2chc1fRzMn2xOxxLPIyQ==
+X-Received: by 2002:a17:902:bb8c:b0:1bb:98de:251d with SMTP id m12-20020a170902bb8c00b001bb98de251dmr1664814pls.63.1690394665778;
+        Wed, 26 Jul 2023 11:04:25 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:8218:22e3:beae:16c:c1d1])
+        by smtp.gmail.com with ESMTPSA id t11-20020a170902a5cb00b001b9dab0397bsm11790053plq.29.2023.07.26.11.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 11:04:25 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Wed, 26 Jul 2023 23:34:17 +0530
+To:     Anup Sharma <anupnewsmail@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Re: Stopping the tick on a fully loaded system
-Message-ID: <20230726164958.GV38236@hirez.programming.kicks-ass.net>
-References: <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
- <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
- <ZL2Z8InSLmI5GU9L@localhost.localdomain>
- <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
- <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
- <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
- <20230725222851.GC3784071@hirez.programming.kicks-ass.net>
- <CAJZ5v0gyQvPqCN8jPrJqJVNeYXkhmCOnkuNvLgdqQtcS-fgF-g@mail.gmail.com>
- <CAJZ5v0iW=kg4i1Fi_Fny=CaH_YKiGps+6KsBPcgWzS5YOk00VA@mail.gmail.com>
- <20230726161432.GW4253@hirez.programming.kicks-ass.net>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Adding Support for Firefox's Gecko Profile Format
+Message-ID: <ZMFgIekihhoGFBpn@yoga>
+References: <ZH5YBBWW5ANckoMp@yoga>
+ <CAP-5=fU7ukrQSh_8OwH9C+a-EwCamCrMaZxjqDhE9f+bFJwQBQ@mail.gmail.com>
+ <ZIHPXV5/ZopqcSSc@yoga>
+ <ZIofrGKElc3nkNk0@yoga>
+ <CAP-5=fV9tXNpYHH9DW0cVbRoFLGvG9SNn-MUhuyKuVBRuDqjoA@mail.gmail.com>
+ <ZJyT8bt0LFLw6hKV@yoga>
+ <CAM9d7ch7TdagV+dzj6MCp4fY15Vc4oGJjKAoQDyc=BXqy7qi+A@mail.gmail.com>
+ <287bf3c8-fa0e-8c36-df14-7d728c63c265@intel.com>
+ <ZKQu00bJZwO+Fc6m@yoga>
+ <ZKRcTqAsKxF/Q3fQ@yoga>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230726161432.GW4253@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZKRcTqAsKxF/Q3fQ@yoga>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 06:14:32PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 26, 2023 at 05:53:46PM +0200, Rafael J. Wysocki wrote:
-> 
-> > > > That means we don't track nearly enough data to reliably tell anything
-> > > > about disabling the tick or not. We should have at least one bucket
-> > > > beyond TICK_NSEC for this.
+On Tue, Jul 04, 2023 at 11:22:14PM +0530, Anup Sharma wrote:
+> On Tue, Jul 04, 2023 at 08:08:11PM +0530, Anup Sharma wrote:
+> > On Thu, Jun 29, 2023 at 09:35:22AM +0300, Adrian Hunter wrote:
+> > > On 29/06/23 09:26, Namhyung Kim wrote:
+> > > > Hi Anup,
+> > > > 
+> > > > On Wed, Jun 28, 2023 at 1:11 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
+> > > >>
+> > > >> On Wed, Jun 14, 2023 at 01:17:52PM -0700, Ian Rogers wrote:
+> > > >>> On Wed, Jun 14, 2023 at 1:14 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
+> > > >>>>
+> > > >>>> On Thu, Jun 08, 2023 at 06:23:49PM +0530, Anup Sharma wrote:
+> > > >>>> I wanted to take a moment to provide you with an update on the progress
+> > > >>>> of our Firefox Gecko converter work. While I must emphasize that the code
+> > > >>>> I'm sharing is not the final version, I wanted to share the advancements
+> > > >>>> I have made thus far.
+> > > >>>>
+> > > >>>> This script can generate a JSON format from the output of the "perf script" command.
+> > > >>>> I attempted to load this JSON file into profile.firefox.com, and although it
+> > > >>>> successfully loaded, the call tree are not visible. I'm certain this issue
+> > > >>>> is related to the format of the JSON file or if there is another underlying
+> > > >>>> cause. I will continue investigating to determine the cause of this problem.
+> > > >>>
+> > > >>> Great Anup, progress can be frustrating slow at first but it is a good
+> > > >>> milestone to be generating output and having firefox profiler consume
+> > > >>> it. You can open up the JavaScript console for the firefox profiler
+> > > >>> and it will give some debug output. This should hopefully help you
+> > > >>> make progress.
+> > > >>
+> > > >> This week I tried playing with perf-script-python, the first challenge was
+> > > >> figuring out how to parse the data coming from the process_events.
+> > > >> Understanding the structure and extracting the necessary information
+> > > >> proved to be more complex than anticipated. This required me to spend
+> > > >> a significant amount of time researching and experimenting with different
+> > > >> parsing techniques.
+> > > > 
+> > > > I'm not sure what kind of parsing you meant.  IIRC the sample data is
+> > > > in a dict and all the information should be available there.  Maybe we
+> > > > missed some new sample data types though.
+> > > 
+> > > Most data is there.  There are existing scripts in
+> > > tools/perf/scripts/python/ for reference.
+> > > 
+> > > There is also the dlfilter API:
+> > > 
+> > > https://perf.wiki.kernel.org/index.php/Latest_Manual_Page_of_perf-dlfilter.1
 > > >
-> > > Quite likely.
+> > Hello everyone,
 > > 
-> > So the reasoning here was that those additional bins would not be
-> > necessary for idle state selection, but the problem of whether or not
-> > to stop the tick is kind of separate from the idle state selection
-> > problem if the target residency values for all of the idle states are
-> > relatively short.  And so it should be addressed separately which
-> > currently it is not.  Admittedly, this is a mistake.
+> > I hope you're all doing well. I have been working on the using process_events function and have made
+> > progress in developing the converter script. Currently, I am in the testing phase. However, I
+> > have encountered a problem after performing some recent compilations. I am no longer receiving
+> > the complete callchains in the output as I used to.
+> > For Example, when I ran the command perf script -F +pid, the output would include detailed
+> > information like the following example:
+> > 
+> > perf-exec  132554/132554  171854.674582:        356 cycles:P: 
+> > 	ffffffff8fab3fc6 arch_static_branch+0x6 (inlined)
+> > 	ffffffff8fab3fc6 static_key_false+0x6 (inlined)
+> > 	ffffffff8fab3fc6 native_write_msr+0x6 (/lib/modules/6.4.0-rc1/build/vmlinux)
+> > 	ffffffff8fa12ca5 intel_pmu_enable_all+0x15 (/lib/modules/6.4.0-rc1/build/vmlinux)
+> > 
+> > However, in my current situation, the output is limited to the following:
+> > 
+> > perf  108107/108107  [000] 67650.031827:          1 cycles:P:  
+> > ffffffff83ab3fc4 native_write_msr+0x4 (/lib/modules/6.4.0-rc1/build/vmlinux)
+> > perf  108107/108107  [000] 67650.031832:          1 cycles:P:
+> > ffffffff83ab3fc4 native_write_msr+0x4 (/lib/modules/6.4.0-rc1/build/vmlinux)
+> > 
+> > It seems to be issue in perf record. I would appreciate any suggestions or assistance
+> > in resolving this issue. Thank you all for your help.
 > 
-> Right, the C state buckets are enough to pick a state, but not to handle
-> the tick thing.
-> 
-> The below hack boots on my ivb-ep with extra (disabled) states. Now let
-> me go hack up teo to make use of that.
-> 
-> name		residency
-> 
-> POLL		0
-> C1              1
-> C1E             80
-> C3              156
-> C6              300
-> TICK            1000
-> POST-TICK       2000
-> 
+> My apologies, I realized that I had mistakenly not included the '-g' option,
+> and it is now working fine."
 
-builds and boots, futher untested -- I need to see to dinner.
+Dear all,
 
-The idea is that teo_update() should account to the highest state if
-measured_ns is 'large'.
+I want to share a recent development in our project that
+I have been working on this week. I have successfully
+implemented a new feature that allows users to directly
+open the browser and visualize the output of perf.data
+on Firefox Profiler.
 
-Then, then the tick is on, see if the majority (50%) of the
-hit+intercepts are below the TICK threshold, if so, don't stop the tick
-and assume duration_ns = TICK_NSEC -- iow. don't call
-tick_nohz_get_sleep_length().
+To enhance user experience, I have made sure this option
+is enabled by default. Additionally, I've also added a
+handy command line argument, "--save-only," which allows
+users to save the output file as needed. This enhancement
+replaces the previous standard output method, providing a
+much-improved experience.
 
-I'll check if the below code actually does as intended once the loonies
-are in bed.
+Moreover, Everything is processed locally, and no data is
+sent to any server.
 
+During this implementation, I had the opportunity to delve
+into several exciting topics, including threading, HTTP server,
+and CORS mechanisms. The learning process has been both
+challenging and rewarding.
 
----
+Currently, I am in the process of performing some clean-up tasks.
+Once that is complete, I will be sharing the next version of the
+series, which includes this fantastic new feature, with all of
+you very soon.
 
-diff --git a/drivers/cpuidle/governors/teo.c b/drivers/cpuidle/governors/teo.c
-index 987fc5f3997d..362470c8c273 100644
---- a/drivers/cpuidle/governors/teo.c
-+++ b/drivers/cpuidle/governors/teo.c
-@@ -197,7 +197,6 @@ struct teo_cpu {
- 	int next_recent_idx;
- 	int recent_idx[NR_RECENT];
- 	unsigned long util_threshold;
--	bool utilized;
- };
- 
- static DEFINE_PER_CPU(struct teo_cpu, teo_cpus);
-@@ -227,7 +226,7 @@ static bool teo_cpu_is_utilized(int cpu, struct teo_cpu *cpu_data)
- static void teo_update(struct cpuidle_driver *drv, struct cpuidle_device *dev)
- {
- 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
--	int i, idx_timer = 0, idx_duration = 0;
-+	int i, idx_timer = 0, idx_duration = drv->state_count-1;
- 	u64 measured_ns;
- 
- 	if (cpu_data->time_span_ns >= cpu_data->sleep_length_ns) {
-@@ -362,11 +361,12 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 	unsigned int recent_sum = 0;
- 	unsigned int idx_hit_sum = 0;
- 	unsigned int hit_sum = 0;
-+	unsigned int tick_sum = 0;
- 	int constraint_idx = 0;
- 	int idx0 = 0, idx = -1;
- 	bool alt_intercepts, alt_recent;
- 	ktime_t delta_tick;
--	s64 duration_ns;
-+	s64 duration_ns = TICK_NSEC;
- 	int i;
- 
- 	if (dev->last_state_idx >= 0) {
-@@ -376,36 +376,26 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 
- 	cpu_data->time_span_ns = local_clock();
- 
--	duration_ns = tick_nohz_get_sleep_length(&delta_tick);
--	cpu_data->sleep_length_ns = duration_ns;
-+	if (!tick_nohz_tick_stopped()) {
-+		for (i = 1; i < drv->state_count; i++) {
-+			struct teo_bin *prev_bin = &cpu_data->state_bins[i-1];
-+			struct cpuidle_state *s = &drv->states[i];
- 
--	/* Check if there is any choice in the first place. */
--	if (drv->state_count < 2) {
--		idx = 0;
--		goto end;
--	}
--	if (!dev->states_usage[0].disable) {
--		idx = 0;
--		if (drv->states[1].target_residency_ns > duration_ns)
--			goto end;
--	}
-+			tick_sum += prev_bin->intercepts;
-+			tick_sum += prev_bin->hits;
- 
--	cpu_data->utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
--	/*
--	 * If the CPU is being utilized over the threshold and there are only 2
--	 * states to choose from, the metrics need not be considered, so choose
--	 * the shallowest non-polling state and exit.
--	 */
--	if (drv->state_count < 3 && cpu_data->utilized) {
--		for (i = 0; i < drv->state_count; ++i) {
--			if (!dev->states_usage[i].disable &&
--			    !(drv->states[i].flags & CPUIDLE_FLAG_POLLING)) {
--				idx = i;
--				goto end;
--			}
-+			if (s->target_residency_ns >= TICK_NSEC)
-+				break;
- 		}
-+
-+		if (2*tick_sum > cpu_data->total)
-+			*stop_tick = false;
- 	}
- 
-+	if (*stop_tick)
-+		duration_ns = tick_nohz_get_sleep_length(&delta_tick);
-+	cpu_data->sleep_length_ns = duration_ns;
-+
- 	/*
- 	 * Find the deepest idle state whose target residency does not exceed
- 	 * the current sleep length and the deepest idle state not deeper than
-@@ -541,7 +531,7 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 	 * If the CPU is being utilized over the threshold, choose a shallower
- 	 * non-polling state to improve latency
- 	 */
--	if (cpu_data->utilized)
-+	if (teo_cpu_is_utilized(dev->cpu, cpu_data))
- 		idx = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
- 
- end:
-@@ -549,8 +539,7 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 	 * Don't stop the tick if the selected state is a polling one or if the
- 	 * expected idle duration is shorter than the tick period length.
- 	 */
--	if (((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) ||
--	    duration_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
-+	if ((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) || !*stop_tick) {
- 		*stop_tick = false;
- 
- 		/*
+Thank you for your ongoing support and encouragement.
+
+Thanks,
+Anup
+
+> > Regards,
+> > Anup
+> > > > 
+> > > >>
+> > > >> The second challenge revolved around the usage of event hooks provided with the perf script
+> > > >> python event handlers. I found myself deliberating between two approaches. The first
+> > > >> approach involved creating custom functions that would be called using the event
+> > > >> handlers. These functions would then save the data in an organized format within
+> > > >> globally created data structures. The alternative approach was to write the entire
+> > > >> logic inside the event handlers themselves.
+> > > >>
+> > > >> Additionally, I contemplated whether it would be more suitable to handle the creation of
+> > > >> a Gecko format for JSON and the profile format within the same script or to separate
+> > > >> them into different scripts.
+> > > >>
+> > > >> I will discuss this points during tomorrow's office hour.
+> > > >>
+> > > >> However, I have gained a deeper understanding of the problem at hand and will use this
+> > > >> knowledge to make more informed decisions and progress more effectively in the coming weeks.
+> > > > 
+> > > > Sounds like you did a good amount of research on how perf script
+> > > > works.  We can talk about the details in the meeting.
+> > > > 
+> > > > Thanks,
+> > > > Namhyung
+> > > 
