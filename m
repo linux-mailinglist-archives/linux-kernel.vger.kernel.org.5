@@ -2,103 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EE37630A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895307630B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjGZI7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S232759AbjGZJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjGZI7E (ORCPT
+        with ESMTP id S232974AbjGZJCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:59:04 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBC919AD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:53:08 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so1554477a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690361587; x=1690966387;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y323VqrnUwbgFr3AWb69nYFgPXshHmv3xK/j+qJy0Bg=;
-        b=Xfj/4PSo4GwepbrqH4ykwdWq2F3+aV9+IwCm0z0na6qALSSvFky5z/aDJjzySbo8xf
-         rb0gc8He5P3H0AQFdfQsakIc4/6km7FAGGWGYQVURdtmpkN7YsomsMD7xgvL7zOCvEaP
-         gVqzVgEhGBN/zbM+4mdju9H9V05u2avVS7KrPearyxsIcOs0vN6kZiVIoy3hNLEG53px
-         A7jAGYO5IFdGEJ4XkvMycqSaZ4qacog8mhjWxx3OJnizcqxWRB9aNKln6aG1WGgpfleO
-         DDnpy6KWwh3ZRACV0/UhJiwVASCqgfkKkxmqY/7DxEZPL8mbNOIRPf5kei2uFRhRy+gg
-         G5Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690361587; x=1690966387;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y323VqrnUwbgFr3AWb69nYFgPXshHmv3xK/j+qJy0Bg=;
-        b=QrHAobI3GmIDGdezO5L7n0IWWD+Cz7IQOkN/ZWepFASO0XOcD+fL/7pDWqzUEoYaRO
-         P+63xEtB6aHHqGePaSR8ZDb0oPzmFgs0fL2cxrZieOHLlCgV8tNCfFx4xfTRVbO7KHfU
-         K3heGAL5J2cZwIROCIncMW1dtesjvB96lnDvbqTUnRic5hLAuaR7Pdla8dueX/HqKTMX
-         5S9AhPrtM2PkkB+ULb3wO24YrZwq6gC/s0HyHKRMDZizBMrjoVEd5aBEhqhPVb4ri5r2
-         Hbj63r8lk4sZv1knDXHzq5lzkW9i2EV4TNXx1B0OPHuPfvpJzsy8xULFxEfasvkSYpGg
-         /sAg==
-X-Gm-Message-State: ABy/qLapvlnxCb3k88lZqv30X4xbt49oBhChVhmGxhp6LxQpL3SLjd8K
-        tSP6/TMoCUGXBCgGhO+2HOKfaQ==
-X-Google-Smtp-Source: APBJJlGJkcswTgOcEC/0azVT1I0P9EPqZI5ur9E7qHLTgnW7AEp7IKoSN5ESxsx2FVdpiE8O5+jd6Q==
-X-Received: by 2002:a17:907:d01:b0:978:8979:c66c with SMTP id gn1-20020a1709070d0100b009788979c66cmr6659274ejc.18.1690361587522;
-        Wed, 26 Jul 2023 01:53:07 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id rv14-20020a17090710ce00b0099b921de301sm4606340ejb.159.2023.07.26.01.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 01:53:07 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Wed, 26 Jul 2023 05:02:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B233CE47;
+        Wed, 26 Jul 2023 01:57:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 42C5C6191D;
+        Wed, 26 Jul 2023 08:57:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ADE5C433C8;
+        Wed, 26 Jul 2023 08:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690361861;
+        bh=kjiQFIohojvIrF639adWnH/h/VJNwIVgZ5idr1q2NXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fROJJIaB+DQoYOGdT7clpGBJe5sWA4dgcmlZ6PPjD9fSbVK79++e73RLoBLrm5GgL
+         VnAXtQyoTTorp3Z4L1EILfqE75lUzu/8rWyScRJ2e6fbBbknQCvFvmFLEbCsPLqS9S
+         9CtKzfZcYOpmSunwgPsNbVqlf5bWA8u9/krqmW9KkA3ztsDz8r5LZnI1gutIXZOadu
+         fuiPW/Zyg13o9K6+5twxyaQxNfF19ict/uV6aCffmXvLg5jiGYWXmvB8h8UtNzbU4E
+         YA+NAOuYPkXJpGxqnyS0+/E/nW9V+w+z5Qstd6c9fixjvd4d2oNmuMQ/qX5rZfIKE3
+         ZpMvnkujKt7pg==
+Date:   Wed, 26 Jul 2023 10:57:34 +0200
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>, replicant@osuosl.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        =?UTF-8?q?Martin=20J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Henrik Grimler <henrik@grimler.se>,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: samsung: exynos4412-midas: add USB connector and USB OTG
-Date:   Wed, 26 Jul 2023 10:53:02 +0200
-Message-Id: <169036157564.124820.10583684522543257497.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230723142417.97734-1-krzysztof.kozlowski@linaro.org>
-References: <20230723142417.97734-1-krzysztof.kozlowski@linaro.org>
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, cros-qcom-dts-watchers@chromium.org,
+        linux-arm-msm@vger.kernel.org,
+        yangcong5@huaqin.corp-partner.google.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Chris Morgan <macroalpha82@gmail.com>,
+        linux-input@vger.kernel.org, hsinyi@google.com
+Subject: Re: [PATCH v3 08/10] HID: i2c-hid: Support being a panel follower
+Message-ID: <rorhwk3jx72twmqnxqb45uhm7azxxfirvferwyznbhbfmdf7ja@6k6ebhehmsn4>
+References: <20230725203545.2260506-1-dianders@chromium.org>
+ <20230725133443.v3.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725133443.v3.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Sun, 23 Jul 2023 16:24:17 +0200, Krzysztof Kozlowski wrote:
-> Add full description of USB-MUIC (MAX77693 MUIC) and MUIC-MHL
-> connections, along with proper USB connector and OTG mode for DWC2 USB
-> controller.
+On Jul 25 2023, Douglas Anderson wrote:
+> As talked about in the patch ("drm/panel: Add a way for other devices
+> to follow panel state"), we really want to keep the power states of a
+> touchscreen and the panel it's attached to in sync with each other. In
+> that spirit, add support to i2c-hid to be a panel follower. This will
+> let the i2c-hid driver get informed when the panel is powered on and
+> off. From there we can match the i2c-hid device's power state to that
+> of the panel.
 > 
-> This fixes dtc W=1 warnings:
+> NOTE: this patch specifically _doesn't_ use pm_runtime to keep track
+> of / manage the power state of the i2c-hid device, even though my
+> first instinct said that would be the way to go. Specific problems
+> with using pm_runtime():
+> * The initial power up couldn't happen in a runtime resume function
+>   since it create sub-devices and, apparently, that's not good to do
+>   in your resume function.
+> * Managing our power state with pm_runtime meant fighting to make the
+>   right thing happen at system suspend to prevent the system from
+>   trying to resume us only to suspend us again. While this might be
+>   able to be solved, it added complexity.
+> Overall the code without pm_runtime() ended up being smaller and
+> easier to understand.
 > 
->   Warning (graph_child_address): /i2c-mhl/hdmi-bridge@39/ports: graph node has single child node 'port@0', #address-cells/#size-cells are not necessary
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 > 
-> [...]
+> Changes in v3:
+> - Add "depends on DRM || !DRM" to Kconfig to avoid randconfig error.
+> - Split more of the panel follower code out of the core.
+> 
+> Changes in v2:
+> - i2c_hid_core_panel_prepared() and ..._unpreparing() are now static.
+> 
+>  drivers/hid/i2c-hid/Kconfig        |  2 +
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 82 +++++++++++++++++++++++++++++-
+>  2 files changed, 82 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hid/i2c-hid/Kconfig b/drivers/hid/i2c-hid/Kconfig
+> index 3be17109301a..2bdb55203104 100644
+> --- a/drivers/hid/i2c-hid/Kconfig
+> +++ b/drivers/hid/i2c-hid/Kconfig
+> @@ -70,5 +70,7 @@ config I2C_HID_OF_GOODIX
+>  
+>  config I2C_HID_CORE
+>  	tristate
+> +	# We need to call into panel code so if DRM=m, this can't be 'y'
+> +	depends on DRM || !DRM
+>  endif
+>  
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index fa8a1ca43d7f..fa6d1f624342 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -38,6 +38,8 @@
+>  #include <linux/mutex.h>
+>  #include <asm/unaligned.h>
+>  
+> +#include <drm/drm_panel.h>
+> +
+>  #include "../hid-ids.h"
+>  #include "i2c-hid.h"
+>  
+> @@ -107,6 +109,8 @@ struct i2c_hid {
+>  	struct mutex		reset_lock;
+>  
+>  	struct i2chid_ops	*ops;
+> +	struct drm_panel_follower panel_follower;
+> +	bool			is_panel_follower;
+>  };
+>  
+>  static const struct i2c_hid_quirks {
+> @@ -1058,6 +1062,59 @@ static int i2c_hid_core_initial_power_up(struct i2c_hid *ihid)
+>  	return ret;
+>  }
+>  
+> +static int i2c_hid_core_panel_prepared(struct drm_panel_follower *follower)
+> +{
+> +	struct i2c_hid *ihid = container_of(follower, struct i2c_hid, panel_follower);
+> +	struct hid_device *hid = ihid->hid;
+> +
+> +	/*
+> +	 * hid->version is set on the first power up. If it's still zero then
+> +	 * this is the first power on so we should perform initial power up
+> +	 * steps.
+> +	 */
+> +	if (!hid->version)
+> +		return i2c_hid_core_initial_power_up(ihid);
+> +
+> +	return i2c_hid_core_resume(ihid);
+> +}
+> +
+> +static int i2c_hid_core_panel_unpreparing(struct drm_panel_follower *follower)
+> +{
+> +	struct i2c_hid *ihid = container_of(follower, struct i2c_hid, panel_follower);
+> +
+> +	return i2c_hid_core_suspend(ihid);
+> +}
+> +
+> +static const struct drm_panel_follower_funcs i2c_hid_core_panel_follower_funcs = {
+> +	.panel_prepared = i2c_hid_core_panel_prepared,
+> +	.panel_unpreparing = i2c_hid_core_panel_unpreparing,
+> +};
+> +
+> +static int i2c_hid_core_register_panel_follower(struct i2c_hid *ihid)
+> +{
+> +	struct device *dev = &ihid->client->dev;
+> +	int ret;
+> +
+> +	ihid->is_panel_follower = true;
+> +	ihid->panel_follower.funcs = &i2c_hid_core_panel_follower_funcs;
+> +
+> +	/*
+> +	 * If we're not in control of our own power up/power down then we can't
+> +	 * do the logic to manage wakeups. Give a warning if a user thought
+> +	 * that was possible then force the capability off.
+> +	 */
+> +	if (device_can_wakeup(dev)) {
+> +		dev_warn(dev, "Can't wakeup if following panel\n");
+> +		device_set_wakeup_capable(dev, false);
+> +	}
+> +
+> +	ret = drm_panel_add_follower(dev, &ihid->panel_follower);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+>  int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
+>  		       u16 hid_descriptor_address, u32 quirks)
+>  {
+> @@ -1119,7 +1176,15 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
+>  	hid->bus = BUS_I2C;
+>  	hid->initial_quirks = quirks;
+>  
+> -	ret = i2c_hid_core_initial_power_up(ihid);
+> +	/*
+> +	 * If we're a panel follower, we'll register and do our initial power
+> +	 * up when the panel turns on; otherwise we do it right away.
+> +	 */
+> +	if (drm_is_panel_follower(&client->dev))
+> +		ret = i2c_hid_core_register_panel_follower(ihid);
+> +	else
+> +		ret = i2c_hid_core_initial_power_up(ihid);
 
-Applied, thanks!
+nitpicks, but I'm not sure I'm a big fan of having
+"if (drm_is_panel_follower(&client->dev))" sprinkled everywhere in the
+generic probe/resume/suspend code.
 
-[1/1] ARM: dts: samsung: exynos4412-midas: add USB connector and USB OTG
-      https://git.kernel.org/krzk/linux/c/57f706bf73079379a9e9f5490c94c2473077bb2e
+Would it be OK to define a `static int __do_i2c_hid_core_initial_power_up(struct i2c_hid *ihid)`
+that would do the actual powering up, and have
+i2c_hid_core_initial_power_up() doing the test if we are a panel
+follower?
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The i2c_hid_core_panel_* will need to be updated to use the `__do_`
+prefixed functions.
+
+> +
+>  	if (ret)
+>  		goto err_mem_free;
+>  
+> @@ -1143,7 +1208,14 @@ void i2c_hid_core_remove(struct i2c_client *client)
+>  	struct i2c_hid *ihid = i2c_get_clientdata(client);
+>  	struct hid_device *hid;
+>  
+> -	i2c_hid_core_power_down(ihid);
+> +	/*
+> +	 * If we're a follower, the act of unfollowing will cause us to be
+> +	 * powered down. Otherwise we need to manually do it.
+> +	 */
+> +	if (ihid->is_panel_follower)
+> +		drm_panel_remove_follower(&ihid->panel_follower);
+
+That part is concerning, as we are now calling hid_drv->suspend() when removing
+the device. It might or not have an impact (I'm not sure of it), but we
+are effectively changing the path of commands sent to the device.
+
+hid-multitouch might call a feature in ->suspend, but the remove makes
+that the physical is actually disconnected, so the function will fail,
+and I'm not sure what is happening then.
+
+> +	else
+> +		i2c_hid_core_power_down(ihid);
+
+Same here, I *think* it would be best to have the `if (ihid->is_panel_follower)`
+test in i2c_hid_core_power_down()  (and have a separate
+_do_i2c_hid_core_power_down()).
+
+>  
+>  	hid = ihid->hid;
+>  	hid_destroy_device(hid);
+> @@ -1171,6 +1243,9 @@ static int i2c_hid_core_pm_suspend(struct device *dev)
+>  	struct i2c_client *client = to_i2c_client(dev);
+>  	struct i2c_hid *ihid = i2c_get_clientdata(client);
+>  
+> +	if (ihid->is_panel_follower)
+> +		return 0;
+
+Not sure we need to split that one with _do_ prefix, it's already split
+:)
+
+> +
+>  	return i2c_hid_core_suspend(ihid);
+>  }
+>  
+> @@ -1179,6 +1254,9 @@ static int i2c_hid_core_pm_resume(struct device *dev)
+>  	struct i2c_client *client = to_i2c_client(dev);
+>  	struct i2c_hid *ihid = i2c_get_clientdata(client);
+>  
+> +	if (ihid->is_panel_follower)
+> +		return 0;
+
+Same here, no need to split.
+
+> +
+>  	return i2c_hid_core_resume(ihid);
+>  }
+>  
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
+
+Cheers,
+Benjamin
