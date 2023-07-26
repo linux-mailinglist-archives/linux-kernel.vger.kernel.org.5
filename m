@@ -2,83 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5168A763A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229AF763A9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234868AbjGZPPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
+        id S234932AbjGZPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbjGZPOq (ORCPT
+        with ESMTP id S234892AbjGZPPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:14:46 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D149C421E;
-        Wed, 26 Jul 2023 08:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690384452; x=1721920452;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=twdnQmWxP0xXWy9qV4unW07+aDwHB9IVDIUtmrg3iVc=;
-  b=nXIoviKcpNAc7mB93v/2dmuFi576PBG9wqlJvb0GvZGcyZgnFw7U0pfx
-   v7Y584+vyDFDNWcRhHY9HSbOpomuhNcYfS7cum+uWClnArvjDKzFUxMwp
-   bXBsry1WTGCT7JjQNPihZYivNC6dX5+8i7qn90L8bZhjx1zB4bbVb0pNC
-   9NZx5HqGNAy7SCYm6jM9oEbHC0MbiHtN8qR1tTw0fvvNjggScuvtwSUgL
-   lnSI86ZZu+uQ+bFxRZa6W3SwFM+44zR960oQiJTpHyqT/hsko51Z7k+k+
-   ZOPA/i0eI3mctbi5eVVdCtC4BS92E8MwnTf0wGS5yVmJjVNwMliUJ1mef
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="431845185"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="431845185"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 08:13:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="720503292"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="720503292"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 08:13:44 -0700
-Date:   Wed, 26 Jul 2023 08:13:43 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] Parse event sort/regroup fixes
-Message-ID: <ZME4Jxg5g21B2l4Y@tassilo>
-References: <20230719001836.198363-1-irogers@google.com>
- <ZLf4C/+x2ZSpb1Uz@kernel.org>
- <CAP-5=fWXd8KhvxnPjjFjtybNZ7BsN6n_55xFaEA_-Jda0g2+XQ@mail.gmail.com>
+        Wed, 26 Jul 2023 11:15:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C179B26A1;
+        Wed, 26 Jul 2023 08:14:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C493168F;
+        Wed, 26 Jul 2023 08:14:48 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98DD53F67D;
+        Wed, 26 Jul 2023 08:14:03 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 16:13:53 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/11] firmware: arm_scmi: Add the SCMI performance
+ domain
+Message-ID: <ZME4MQpYd7kJmFzF@e120937-lin>
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-11-ulf.hansson@linaro.org>
+ <ZLf4c7ejFBJLH7iN@e120937-lin>
+ <CAPDyKFr3ann52GAtOLfnLSGgsdF+EZBNz_apNo_OHzrQ-Hg55Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fWXd8KhvxnPjjFjtybNZ7BsN6n_55xFaEA_-Jda0g2+XQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAPDyKFr3ann52GAtOLfnLSGgsdF+EZBNz_apNo_OHzrQ-Hg55Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Andi,
-> >
-> >         Can you please check these patches and provide a Tested-by?
+On Fri, Jul 21, 2023 at 05:19:51PM +0200, Ulf Hansson wrote:
+> Hi Cristian,
 > 
-> I think we should be aiming to get these fixes/changes into Linux 6.5
-> and it's a shame this didn't happen last week. Feedback appreciated.
 
-Sorry was on vacation. Will test right now.
+Hi,
 
--Andi
+> On Wed, 19 Jul 2023 at 16:51, Cristian Marussi <cristian.marussi@arm.com> wrote:
+> >
+> > On Thu, Jul 13, 2023 at 04:17:37PM +0200, Ulf Hansson wrote:
+> > > To enable support for performance scaling (DVFS) for generic devices with
+> > > the SCMI performance protocol, let's add an SCMI performance domain. This
+> > > is being modelled as a genpd provider, with support for performance scaling
+> > > through genpd's ->set_performance_state() callback.
+> > >
+> > > Note that, this adds the initial support that allows consumer drivers for
+> > > attached devices, to vote for a new performance state via calling the
+> > > dev_pm_genpd_set_performance_state(). However, this should be avoided as
+> > > it's in most cases preferred to use the OPP library to vote for a new OPP
+> > > instead. The support using the OPP library isn't part of this change, but
+> > > needs to be implemented from subsequent changes.
+> > >
+> >
+> > Hi Ulf,
+> >
+> > a couple of remarks down below.
+> >
+> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > ---
+> > >
+> > > Changes in v2:
+> > >       - Converted to use the new ->domain_info_get() callback.
+> > >
+> > > ---
+> > >  drivers/firmware/arm_scmi/Kconfig            |  12 ++
+> > >  drivers/firmware/arm_scmi/Makefile           |   1 +
+> > >  drivers/firmware/arm_scmi/scmi_perf_domain.c | 155 +++++++++++++++++++
+> > >  3 files changed, 168 insertions(+)
+> > >  create mode 100644 drivers/firmware/arm_scmi/scmi_perf_domain.c
+> >
+> > [snip]
+> >
+> > > +static int scmi_perf_domain_probe(struct scmi_device *sdev)
+> > > +{
+> > > +     struct device *dev = &sdev->dev;
+> > > +     const struct scmi_handle *handle = sdev->handle;
+> > > +     const struct scmi_perf_proto_ops *perf_ops;
+> > > +     struct scmi_protocol_handle *ph;
+> > > +     struct scmi_perf_domain *scmi_pd;
+> > > +     struct genpd_onecell_data *scmi_pd_data;
+> > > +     struct generic_pm_domain **domains;
+> > > +     int num_domains, i, ret = 0;
+> > > +     u32 perf_level;
+> > > +
+> > > +     if (!handle)
+> > > +             return -ENODEV;
+> > > +
+> > > +     /* The OF node must specify us as a power-domain provider. */
+> > > +     if (!of_find_property(dev->of_node, "#power-domain-cells", NULL))
+> > > +             return 0;
+> > > +
+> > > +     perf_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_PERF, &ph);
+> > > +     if (IS_ERR(perf_ops))
+> > > +             return PTR_ERR(perf_ops);
+> > > +
+> > > +     num_domains = perf_ops->num_domains_get(ph);
+> > > +     if (num_domains < 0) {
+> > > +             dev_warn(dev, "Failed with %d when getting num perf domains\n",
+> > > +                      num_domains);
+> > > +             return num_domains;
+> > > +     } else if (!num_domains) {
+> > > +             return 0;
+> > > +     }
+> > > +
+> > > +     scmi_pd = devm_kcalloc(dev, num_domains, sizeof(*scmi_pd), GFP_KERNEL);
+> > > +     if (!scmi_pd)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     scmi_pd_data = devm_kzalloc(dev, sizeof(*scmi_pd_data), GFP_KERNEL);
+> > > +     if (!scmi_pd_data)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     domains = devm_kcalloc(dev, num_domains, sizeof(*domains), GFP_KERNEL);
+> > > +     if (!domains)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     for (i = 0; i < num_domains; i++, scmi_pd++) {
+> > > +             scmi_pd->info = perf_ops->domain_info_get(ph, i);
+> >
+> > So here you are grabbing all the performance domains exposed by the
+> > platform via PERF protocol and then a few lines down below you are
+> > registering them with pm_genpd_init(), but the list of domains obtained
+> > from the platform will contain NOT only devices but also CPUs possibly,
+> > already managed by the SCMI CPUFreq driver.
+> 
+> Correct.
+> 
+> >
+> > In fact the SCMI CPUFreq driver, on his side, takes care to pick only
+> > domains that are bound in the DT to a CPU (via scmi_cpu_domain_id DT
+> > parsing) but here you are registering all domains with GenPD upfront.
+> 
+> Right, genpds are acting as providers, which need to be registered
+> upfront to allow consumer devices to be attached when they get probed.
+> 
+> This isn't specific to this case, but how the genpd infrastructure is
+> working per design.
+> 
+> >
+> > Is it not possible that, once registered, GenPD can decide, at some point
+> > in the future, to try act on some of these domains associated with a CPU ?
+> > (like Clock framework does at the end of boot trying to disable unused
+> >  clocks...not familiar with internals of GenPD, though)
+> 
+> The "magic" that exists in genpd is to save/restore the performance
+> state at genpd_runtime_suspend|resume().
+> 
+> That means the consumer device needs to be attached and runtime PM
+> enabled, otherwise genpd will just leave the performance level
+> unchanged. In other words, the control is entirely at the consumer
+> driver (scmi cpufreq driver).
+> 
+
+Ok, so if the DT is well formed and a CPU-related perf domain is not
+wrongly referred from a driver looking for a device perf-domain, the
+genPD subsystem wont act on the CPUs domains.
+
+> >
+> > > +             scmi_pd->domain_id = i;
+> > > +             scmi_pd->perf_ops = perf_ops;
+> > > +             scmi_pd->ph = ph;
+> > > +             scmi_pd->genpd.name = scmi_pd->info->name;
+> > > +             scmi_pd->genpd.flags = GENPD_FLAG_OPP_TABLE_FW;
+> > > +             scmi_pd->genpd.set_performance_state = scmi_pd_set_perf_state;
+> > > +
+> > > +             ret = perf_ops->level_get(ph, i, &perf_level, false);
+> > > +             if (ret) {
+> > > +                     dev_dbg(dev, "Failed to get perf level for %s",
+> > > +                              scmi_pd->genpd.name);
+> > > +                     perf_level = 0;
+> > > +             }
+> > > +
+> > > +             /* Let the perf level indicate the power-state too. */
+> > > +             ret = pm_genpd_init(&scmi_pd->genpd, NULL, perf_level == 0);
+> >
+> > In SCMI world PERF levels should have nothing to do with the Power
+> > state of a domain: you have the POWER protocol for that, so you should
+> > not assume that perf level 0 means OFF, but you can use the POWER protocol
+> > operation .state_get() to lookup the power state. (and you can grab both
+> > perf and power ops from the same driver)
+> 
+> Well, I think this may be SCMI FW implementation specific, but
+> honestly I don't know exactly what the spec says about this. In any
+> case, I don't think it's a good idea to mix this with the POWER
+> domain, as that's something that is entirely different. We have no
+> clue of those relationships (domain IDs).
+> 
+> My main idea behind this, is just to give the genpd internals a
+> reasonably defined value for its power state.
+> 
+
+The thing is that in the SCMI world you cannot assume that perf_level 0
+means powered off, the current SCP/SCMI platform fw, as an example, wont
+advertise a 0-perf-level and wont act on such a request, because you are
+supposed to use POWER protocol to get/set the power-state of a device.
+
+So it could be fine, as long as genPD wont try to set the level to 0
+expecting the domain to be as a consequence also powered off and as
+long as it is fine for these genpd domains to be always initialized
+as ON. (since perf_level could never be found as zero..)
+
+Thanks,
+Cristian
