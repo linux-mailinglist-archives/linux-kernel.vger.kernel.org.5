@@ -2,95 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C67763EBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8986F763EBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjGZSl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
+        id S231156AbjGZSmy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjGZSl0 (ORCPT
+        with ESMTP id S231500AbjGZSmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:41:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0442D4D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690396834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hLRB+0VH4NUNA9S2GxQpRS/NrBaKH7At4oaqQkmEFHQ=;
-        b=eW2XlbWRNsiKQ0HchbRrMi0EBoKn7kzTbeUhNDLbc20qep9yS0CwIk2YX4JrkU00z8Q6BI
-        nbstPRIW4lqquvHwKr/ztjgzsoCDKCKnijT1qquCGWweY4nNP1PLcCCN03fZOdNtAjLET9
-        wIVxq3csgTscjkHJHMMBGT0kBrBYum4=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-4yDsoVl3NRGJd77MLrqXuQ-1; Wed, 26 Jul 2023 14:40:32 -0400
-X-MC-Unique: 4yDsoVl3NRGJd77MLrqXuQ-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fb1a5788f0so75825e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:40:31 -0700 (PDT)
+        Wed, 26 Jul 2023 14:42:52 -0400
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB2F1710;
+        Wed, 26 Jul 2023 11:42:51 -0700 (PDT)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5666a2b7f55so27139eaf.0;
+        Wed, 26 Jul 2023 11:42:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690396830; x=1691001630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hLRB+0VH4NUNA9S2GxQpRS/NrBaKH7At4oaqQkmEFHQ=;
-        b=N7U+jt2YXjhHV7LouyARLtcY5I7fqZ1xAvYh2AFt/Cu+Cwlt7eUa9ZOakx8zZfT5MD
-         hTVDwVgwBvbqReCMWpZY7yGPscEMVjEikBGORjPMru3ZKB2qnvxrCgHmSqJN4rfz3Nao
-         j071hpkK99XvKAzI/IVcg5kjiCyDAkXG4qLvM+FpemyMog7KkM6X+nqLiM1xLixZkmib
-         Tw290UoD8XvmQ1QrdI586tT6gW1MeHVXU3nXE4YaEqw2BBM4aB9cxQGTDmaVkUYl3sWu
-         s8IAeYUbprxA+pHug5ExMrQZvrNOckHom5g1mIntiWVe9qtOX/DmcHYrgbnzK9NdyU3P
-         NWiA==
-X-Gm-Message-State: ABy/qLaXsqFHVllo8O2f468izrq4BMe6cKpx21cgTeBMAQbB9FISu+5x
-        X9qUAgG7Cxe2BbWOQs9KMEsGWE8NGmmS2hERPLydPbdzINIBSMJmA90baOdeSHyyF7lCug18jLt
-        R758oMIO6eM5t8VsXKfcL7THq
-X-Received: by 2002:a05:6512:3103:b0:4fd:d213:dfd0 with SMTP id n3-20020a056512310300b004fdd213dfd0mr20087lfb.11.1690396830368;
-        Wed, 26 Jul 2023 11:40:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFfIFB6koq240oc65lATC1OG8dihM0yJR6Errj2gYzEcAeMZ8KdgTUnrOPiNp0AKGTRCUhLIw==
-X-Received: by 2002:a05:6512:3103:b0:4fd:d213:dfd0 with SMTP id n3-20020a056512310300b004fdd213dfd0mr20068lfb.11.1690396830026;
-        Wed, 26 Jul 2023 11:40:30 -0700 (PDT)
-Received: from redhat.com ([2.52.14.22])
-        by smtp.gmail.com with ESMTPSA id o26-20020aa7d3da000000b005222c160464sm4518711edr.72.2023.07.26.11.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 11:40:27 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 14:40:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH RFC net-next v5 11/14] vhost/vsock: implement datagram
- support
-Message-ID: <20230726143850-mutt-send-email-mst@kernel.org>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
+        d=1e100.net; s=20221208; t=1690396971; x=1691001771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GHGJiTdlB+dQD70EMhHhI8xvC4trd7Ff2YAN4Uy5bO0=;
+        b=fWfhN9XMlCSXkOM5nl7TysGvcv3RYp+RJlGeMfND1nKIx97wFWHudBsTtOZBPrH4Qk
+         qLRhlvXhxsHDLs6wp1e/SU8d3a7C8IkshpCRQreXCqiS73bkie65l9SJlq8kPuNYo5vh
+         +YmLL5dZXmXwPpW9T5uK6TBIOLgb6URoOcU4CLRVD/kfJjKcznA7FCnxqO8V1HwgHDey
+         e4Ugo/Nou+tvq7IoDRp8F3vMpF3dndO050fEnU9HhkAL4UNeN5VGq6msgzjBYPmjTOkz
+         Ukci7oO2xDZdtE5ndZDipZllMU9+pDcThQgBUNsfcY0VjukkaYiEeU9Wfscr2KUV5Mi/
+         YfMg==
+X-Gm-Message-State: ABy/qLbdEzPMjwso0J7CZM3uFSKklB8C3GxogzcxFHuUhos7HmHplyro
+        0q5AH653DERuSXMeZzRwQxcEgM/An32mHg5cIjY=
+X-Google-Smtp-Source: APBJJlH2x90Q7lDJXp2zFV9JTsLkAsPOTtP2AQhhIx6ipnMvhPSFtKFj5OTgP4amlKMBVmsiWEo6/1u7nvN10N6++l4=
+X-Received: by 2002:a05:6870:3291:b0:1bb:8ff4:1830 with SMTP id
+ q17-20020a056870329100b001bb8ff41830mr2906100oac.3.1690396970780; Wed, 26 Jul
+ 2023 11:42:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+References: <20230723-thermal-fix-of-memory-corruption-v1-1-ed4fa16d199d@kernel.org>
+ <f559a614-93d5-121a-8ff3-0da77bc85f44@linaro.org> <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
+In-Reply-To: <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 26 Jul 2023 20:42:39 +0200
+Message-ID: <CAJZ5v0jJ+YM=7LUEKB_b5GUsGopLTT0eyPmomYV0OcGQp2gvig@mail.gmail.com>
+Subject: Re: [PATCH] thermal/of: Fix double free of params during unregistration
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-sunxi@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,179 +67,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:50:15AM +0000, Bobby Eshleman wrote:
-> This commit implements datagram support for vhost/vsock by teaching
-> vhost to use the common virtio transport datagram functions.
-> 
-> If the virtio RX buffer is too small, then the transmission is
-> abandoned, the packet dropped, and EHOSTUNREACH is added to the socket's
-> error queue.
-> 
-> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+On Sun, Jul 23, 2023 at 4:32 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Sun, Jul 23, 2023 at 11:57:52AM +0200, Daniel Lezcano wrote:
+> > On 23/07/2023 01:26, Mark Brown wrote:
+>
+> > I think this issue has been fixed by:
+>
+> > https://lore.kernel.org/all/20230708112720.2897484-2-a.fatoum@pengutronix.de/
+>
+> Yes, that should fix the same issue.
+>
+> > Rafael ? Did you pick it up ?
+>
+> There was a message on the thread saying the patches have been applied
+> for v6.5 but I can't see them in either mainline or -next.
 
-EHOSTUNREACH?
+They should be there in linux-next (as of today).
 
-
-> ---
->  drivers/vhost/vsock.c    | 62 +++++++++++++++++++++++++++++++++++++++++++++---
->  net/vmw_vsock/af_vsock.c |  5 +++-
->  2 files changed, 63 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> index d5d6a3c3f273..da14260c6654 100644
-> --- a/drivers/vhost/vsock.c
-> +++ b/drivers/vhost/vsock.c
-> @@ -8,6 +8,7 @@
->   */
->  #include <linux/miscdevice.h>
->  #include <linux/atomic.h>
-> +#include <linux/errqueue.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/vmalloc.h>
-> @@ -32,7 +33,8 @@
->  enum {
->  	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
->  			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-> -			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
-> +			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET) |
-> +			       (1ULL << VIRTIO_VSOCK_F_DGRAM)
->  };
->  
->  enum {
-> @@ -56,6 +58,7 @@ struct vhost_vsock {
->  	atomic_t queued_replies;
->  
->  	u32 guest_cid;
-> +	bool dgram_allow;
->  	bool seqpacket_allow;
->  };
->  
-> @@ -86,6 +89,32 @@ static struct vhost_vsock *vhost_vsock_get(u32 guest_cid)
->  	return NULL;
->  }
->  
-> +/* Claims ownership of the skb, do not free the skb after calling! */
-> +static void
-> +vhost_transport_error(struct sk_buff *skb, int err)
-> +{
-> +	struct sock_exterr_skb *serr;
-> +	struct sock *sk = skb->sk;
-> +	struct sk_buff *clone;
-> +
-> +	serr = SKB_EXT_ERR(skb);
-> +	memset(serr, 0, sizeof(*serr));
-> +	serr->ee.ee_errno = err;
-> +	serr->ee.ee_origin = SO_EE_ORIGIN_NONE;
-> +
-> +	clone = skb_clone(skb, GFP_KERNEL);
-> +	if (!clone)
-> +		return;
-> +
-> +	if (sock_queue_err_skb(sk, clone))
-> +		kfree_skb(clone);
-> +
-> +	sk->sk_err = err;
-> +	sk_error_report(sk);
-> +
-> +	kfree_skb(skb);
-> +}
-> +
->  static void
->  vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->  			    struct vhost_virtqueue *vq)
-> @@ -160,9 +189,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->  		hdr = virtio_vsock_hdr(skb);
->  
->  		/* If the packet is greater than the space available in the
-> -		 * buffer, we split it using multiple buffers.
-> +		 * buffer, we split it using multiple buffers for connectible
-> +		 * sockets and drop the packet for datagram sockets.
->  		 */
-
-won't this break things like recently proposed zerocopy?
-I think splitup has to be supported for all types.
-
-
->  		if (payload_len > iov_len - sizeof(*hdr)) {
-> +			if (le16_to_cpu(hdr->type) == VIRTIO_VSOCK_TYPE_DGRAM) {
-> +				vhost_transport_error(skb, EHOSTUNREACH);
-> +				continue;
-> +			}
-> +
->  			payload_len = iov_len - sizeof(*hdr);
->  
->  			/* As we are copying pieces of large packet's buffer to
-> @@ -394,6 +429,7 @@ static bool vhost_vsock_more_replies(struct vhost_vsock *vsock)
->  	return val < vq->num;
->  }
->  
-> +static bool vhost_transport_dgram_allow(u32 cid, u32 port);
->  static bool vhost_transport_seqpacket_allow(u32 remote_cid);
->  
->  static struct virtio_transport vhost_transport = {
-> @@ -410,7 +446,8 @@ static struct virtio_transport vhost_transport = {
->  		.cancel_pkt               = vhost_transport_cancel_pkt,
->  
->  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
-> -		.dgram_allow              = virtio_transport_dgram_allow,
-> +		.dgram_allow              = vhost_transport_dgram_allow,
-> +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
->  
->  		.stream_enqueue           = virtio_transport_stream_enqueue,
->  		.stream_dequeue           = virtio_transport_stream_dequeue,
-> @@ -443,6 +480,22 @@ static struct virtio_transport vhost_transport = {
->  	.send_pkt = vhost_transport_send_pkt,
->  };
->  
-> +static bool vhost_transport_dgram_allow(u32 cid, u32 port)
-> +{
-> +	struct vhost_vsock *vsock;
-> +	bool dgram_allow = false;
-> +
-> +	rcu_read_lock();
-> +	vsock = vhost_vsock_get(cid);
-> +
-> +	if (vsock)
-> +		dgram_allow = vsock->dgram_allow;
-> +
-> +	rcu_read_unlock();
-> +
-> +	return dgram_allow;
-> +}
-> +
->  static bool vhost_transport_seqpacket_allow(u32 remote_cid)
->  {
->  	struct vhost_vsock *vsock;
-> @@ -799,6 +852,9 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
->  	if (features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
->  		vsock->seqpacket_allow = true;
->  
-> +	if (features & (1ULL << VIRTIO_VSOCK_F_DGRAM))
-> +		vsock->dgram_allow = true;
-> +
->  	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
->  		vq = &vsock->vqs[i];
->  		mutex_lock(&vq->mutex);
-> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> index e73f3b2c52f1..449ed63ac2b0 100644
-> --- a/net/vmw_vsock/af_vsock.c
-> +++ b/net/vmw_vsock/af_vsock.c
-> @@ -1427,9 +1427,12 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
->  		return prot->recvmsg(sk, msg, len, flags, NULL);
->  #endif
->  
-> -	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
-> +	if (unlikely(flags & MSG_OOB))
->  		return -EOPNOTSUPP;
->  
-> +	if (unlikely(flags & MSG_ERRQUEUE))
-> +		return sock_recv_errqueue(sk, msg, len, SOL_VSOCK, 0);
-> +
->  	transport = vsk->transport;
->  
->  	/* Retrieve the head sk_buff from the socket's receive queue. */
-> 
-> -- 
-> 2.30.2
-
+Surely, they are present in my linux-next branch.
