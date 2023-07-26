@@ -2,246 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5716763134
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06370763132
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbjGZJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
+        id S231756AbjGZJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGZJFV (ORCPT
+        with ESMTP id S231896AbjGZJE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:05:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730DF1733
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690362150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fbCnVEZGVan0LOAWlI9A4kVTUyU9gSMJrtUcgBn70zY=;
-        b=U1baJ9UijCZnNBH9IwoMVjWXUQSldx924zc+kcRrewZ5599iUV+Jtpb86aenT4esyy3Wzt
-        HjYgCodWUyUqqhEFVeOxDek2d+qZSvDQkio0obhe+Tu868v+ijq6AgK4BOb7M/JEo+367g
-        +t0Vs9WGeq69Yopmed17MwS/zeSmS1I=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-kaIfk3jdN1SkqF9HQaqO5A-1; Wed, 26 Jul 2023 05:02:29 -0400
-X-MC-Unique: kaIfk3jdN1SkqF9HQaqO5A-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5223d4b9da2so1363692a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:02:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690362149; x=1690966949;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fbCnVEZGVan0LOAWlI9A4kVTUyU9gSMJrtUcgBn70zY=;
-        b=YMmwLABGWtIOuc16qgGGKtfSQKRcrs0wAQFi7Juw/jannGcffuPFKqbDXTwUjNhxsx
-         BZz0CtlDM94sidsBk3R0f7nmRyOlGa7tmX3uknDUZtx88ck16OjA6RA7tYRjfTQaPk4l
-         qMCDmouhNrKdD3VmL8KjFOZBmiXG7F5iznsmj8C+WWS4pz44ZzvTc5EUtGWbrSNkSRKl
-         Knaq56oeilLImv5nDRu7Xhu3pyO3/PI7RtG7nU1qebpXtD4lWzEjJMu1SiVsQzIxt7JB
-         z7kD82cFigeT5rkPZrCX+0OGxHxMMmWzIfvJ5f6tAa7SlQxnM8tRhvOpwF6yeCkA4V2m
-         wiuw==
-X-Gm-Message-State: ABy/qLaX9Uiwr5xfLiumC9crHGBZLNg8Te7xDBIzh+NLoWj7tM1t7NZ1
-        0DJYpVRqmPGAwdgGBeUPDplLKTJ2ZTQrRWUshv0PCOE+9JO4n5n+0zfulcD6DhL4E9aSJsNDHRx
-        W6YTX9WnmLZSlGwlvVEzyWMgP
-X-Received: by 2002:a17:906:cd0d:b0:993:f9d4:eab3 with SMTP id oz13-20020a170906cd0d00b00993f9d4eab3mr1096763ejb.18.1690362148588;
-        Wed, 26 Jul 2023 02:02:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEqRtx90yFrstV2jcIP+3tnAJ6nGUMmC+UhepeKXSD2mg/LZv0m+3f5MZ/vIWUuOk1Kx0p28w==
-X-Received: by 2002:a17:906:cd0d:b0:993:f9d4:eab3 with SMTP id oz13-20020a170906cd0d00b00993f9d4eab3mr1096746ejb.18.1690362148245;
-        Wed, 26 Jul 2023 02:02:28 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id c11-20020a170906924b00b0098e34446464sm9283162ejx.25.2023.07.26.02.02.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:02:27 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <ab722ec1-ae45-af1f-b869-e7339402c852@redhat.com>
-Date:   Wed, 26 Jul 2023 11:02:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc:     brouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp
- size limits
+        Wed, 26 Jul 2023 05:04:56 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C3F3A8F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690362204; x=1721898204;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=EXhpn91VmuxciT0CG81MYpmT/9KcbWVHY0ipWWh0/i4=;
+  b=XzAfFK9AqZYUpmLNncohJ80tsAJPL6N53QoVyCJsC2dZJmmCNW/qt2Xx
+   gC3rFNaXnnU6MdsdOB2xM/7ts0Aefqu3sy1FlY8FQ6VtTXeWgAHc/swFt
+   ONjJnMsLMbpyqvADO8G5GiLPM7EXUExogUwxtmeS9UONs4Gm6o+2sbJ5D
+   CJg9XGQ27FFT+fEghNmahv4uNftv5ygkabFNfNOHhnojOyHs5WhXb65s2
+   r1b0X2MZY1bhuOLwro+ezUIEVNLdIboTxvApgbE7T/OWnKt09Vjs2yscN
+   cZrAQMVBKGWgFEAjYW8lw+fqAbHEUmegS3Y/kVeSx62kNm6HtYRXLPGsw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352860916"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="352860916"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 02:03:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="816589873"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="816589873"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Jul 2023 02:03:21 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 02:03:21 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 02:03:21 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 02:03:21 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 02:03:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lrvqs95dP0qK04X5DKsvT0Js3eJqATMJb4G3BbnVQ2y4b68na2srFOa+k6LI/sWotv+heXDZZJc1C3QKWZbDs1dy/FdBzU3DL5dayWCJ8j2hdAl/PCUc6OqNuJMqGyplshkC66Ur2ZBzLBC4+AhvUFRf6oINiP6ndfnjJF+/PH/yVIb4Ecn9o2oUX0ZVKDA/fWgbiVxSxjVhA2w6+nDTNwgdYTwOpcm3UFRa3drLvXa48NOSjgETSdNcE/58cWY++xj61h77mfNhs8viE2jK+0Vp1VDelco4x+4zw7pXVTma1FAfSnInVXkUXXNsuWZ0fsV9HD8oGc9oigZZtwMMyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EXhpn91VmuxciT0CG81MYpmT/9KcbWVHY0ipWWh0/i4=;
+ b=KvnftV4yYigpbG5Zp3EneNNQ/Mej+IBITFcWKiTXUbXZ7/78yFmVJ+U4U5weVGM6F2EvNXOQVuzfEVODe99feOt6Xm9DIfKbPawO+KM66hgHe9wJDqWUzXaDrUotcmcONvjxRynHOn2QruBCFbDiYd94twFEmaI3HX0CEgtbZbBi+237ZnAmgDmBwTHnwkyLg8eosMx5KVmHWR7cbeai1bq3HpOf7EvriOG11RatAQVhSbY7/4MXNQg1DwzZgS5+td331RZoKxPGFBQ7I3eHp76Cd+pKr9OO1fwCrtWDcx2rxZmiboDQMFiXlNe/NWpkwuwrm6LuP8yxbwWGEhQtXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com (2603:10b6:930:26::22)
+ by CO1PR11MB5059.namprd11.prod.outlook.com (2603:10b6:303:9a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
+ 2023 09:03:17 +0000
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb]) by CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb%7]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 09:03:17 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        "Zhi, Yong" <yong.zhi@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        "Bhat, Uday M" <uday.m.bhat@intel.com>,
+        "Chiang, Mac" <mac.chiang@intel.com>,
+        "R, Dharageswari" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Thread-Topic: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Thread-Index: AQHZv4iOElXQr78YhkykGlIThIMz5K/Ls3wAgAADvOCAAAbXgIAAAn/Q
+Date:   Wed, 26 Jul 2023 09:03:16 +0000
+Message-ID: <CY5PR11MB6257A9E85B4543D40AF6FD859700A@CY5PR11MB6257.namprd11.prod.outlook.com>
+References: <20230726140848.2267568-1-brent.lu@intel.com>
+ <20230726140848.2267568-2-brent.lu@intel.com>
+ <7349d6f4-4866-6fb3-57c9-9ce2d6989576@linux.intel.com>
+ <CY5PR11MB625741E8CCBA25EAA82739579700A@CY5PR11MB6257.namprd11.prod.outlook.com>
+ <9e8892cd-4c31-61a2-94e0-379e576cb7d6@linux.intel.com>
+In-Reply-To: <9e8892cd-4c31-61a2-94e0-379e576cb7d6@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Jason Wang <jasowang@redhat.com>,
-        Andrew Kanner <andrew.kanner@gmail.com>
-References: <20230725155403.796-1-andrew.kanner@gmail.com>
- <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
-In-Reply-To: <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6257:EE_|CO1PR11MB5059:EE_
+x-ms-office365-filtering-correlation-id: 7aca381b-b773-4a39-dfd0-08db8db726a3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fh5juPTN7Yi3eZLpiCXgFnH+Znb9wSY3gQr0RhnVv+8g5J6D3jvRsxMVbNCSKTE2fh4C2OHNDL8btpo5fu/padfXTnNvci3Q3VqsEyCVONh0u8PVciF9pFImtkgtxLWCl88Ee+jXgXgvcksdZArMgaCEEkpxo7IKhoV/Eu58uGnSrbXXewIGkMS/TmQWmlBSVbbsUUFSH/rizAlfEehN6D5ArRBohQrmqcz0YAm8mw4Uts1strEfcmf50JgQ9PAZt5X+33EbKG+K8/DSa7aqXnUvNrqZQHqUNYDT9tzeWi6uuOD9RH49K2Q+Kvwu0R4AnrCRmvdLAsO7a2z5+5aCHO4axBEFAJ23bKsUZ/A/sEn2lBm02IJW1kkB+Y/kAfkTiVvRTZ29wVwPXzsjTNlth99tsOIXOJjLYYl5yCEAJmKgEPumQTWvlD7IquKhgDZO8bwFpTeP/S839UdCMRx9Ah+ek6jo1Y59e4JvCrtoS7nMhw2MmM8AdmvFFr2GrzXSMA8MbuFlkzlEVPtnywQeEgkSQRf8tmouFpHUVmxW8RSnNz3AOz0TQIms1VsNhWZey2qHldQX45y7DVf3R5wVhG1uLA+KKiayiHbu2B56BQk66Pahvr4nwTnX4cDNIoM8ZPSuQaHj3qD/XU8g5C74DA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(39860400002)(376002)(366004)(346002)(451199021)(54906003)(110136005)(478600001)(7696005)(9686003)(33656002)(86362001)(55016003)(38070700005)(4744005)(2906002)(66556008)(66476007)(186003)(6506007)(71200400001)(26005)(66446008)(64756008)(82960400001)(122000001)(38100700002)(76116006)(66946007)(316002)(4326008)(52536014)(41300700001)(8936002)(8676002)(7416002)(5660300002)(11716005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QnBqSUNKaGlKVEdVbFE2M2tSMVF5b3ZCVTAvR0pTL3ZUSUt6MWYxYXhTc2hr?=
+ =?utf-8?B?bHFldnRyNkdZWUcrK3BucFRvalZjRjlaaHNzTG9nZHluK2p2YkFDVFdwRFJC?=
+ =?utf-8?B?UVVjOGkySkgyaUZWbytoSzFkbXFGTWJJM0F6bWtlbXVaakNYMFBFV3dTTnR0?=
+ =?utf-8?B?RHlISGw3ejZLR1JFNHdPbElsYnIrZnp5c1E5NnNlNnNUTzZ2dFFKWU9hYVNv?=
+ =?utf-8?B?RnQyU1pLeGgxVjNNblJ4QWpUcFVibEdkTSs1V2Z2NWZlY2VMdVJwN2RpbElz?=
+ =?utf-8?B?U1QwUjg3bmVYV2hGaVVLOUNCbEFzaVdEaCtpUHk2MTR5ajlVWWd3UDhlWElJ?=
+ =?utf-8?B?dHFVOEoxMzNQT3ZnbVgwZGF4UVRhbU1ZNFIrWWNFTVdlUkRYWnpGaW1oeXRV?=
+ =?utf-8?B?Uloxd3FlRUt5aUo2d1ZYOERSM3BycGZEVnFBaUh5dmt6L3ozVzFQK00vMGRl?=
+ =?utf-8?B?NDk3UjhIQXZUU25sczdNcnB5K0lnSkpSdlVyajRuNXVkd3J0bHc4K3hIR0VZ?=
+ =?utf-8?B?L0l0NVpzeHczalI3V1Bia1dvcFMvbTBwekRHZWxvT0VkZ3pCOHg3aDdEOXJF?=
+ =?utf-8?B?ektpWk9oZHhJam90TGJ1OUpmb09jc0I4T0xyaG9BUkR2OEFjTWVyLzkrZkti?=
+ =?utf-8?B?UmlpYjhzSUhSSlAyaTdaSFFteFd0SW9hNnZKcDFISWZEUzBjTS9VL3RNLzZI?=
+ =?utf-8?B?eTFZbDh0cmtkTmExWWR5T2NPb0sxSzl6bUVubk96UENwV2M0bkNFN25Ta2Ra?=
+ =?utf-8?B?Y2lOb0I2UUtSQVFua014MHNJWjdDcnlEZWVNV205WXdndEJXdUgwbFFObFoz?=
+ =?utf-8?B?bnNybGVBTkw0NlBDN1h6RlJNdG1qVFRSNnl2OVNpZXZCTlBPbDFMY0I1N1lu?=
+ =?utf-8?B?WlpnTzJqOFVXNGpWUHhXeFduSmo0dThpQWFuV2hsbXBaaXVkZWVLeW4zTlY2?=
+ =?utf-8?B?ZS9tZVFEQys4RnJITHphZWZUc2tQQVNFRmNUUGV1R3lEMk9pcW45TmJockhR?=
+ =?utf-8?B?VkhYTm5PYU9kcWVlOVhIUCs4MUVOLytxRmYwT09hTDQ2UEY1Q2cvT2lzdE5M?=
+ =?utf-8?B?cEk1cENoTTB0dFNFZE11dUV0K0FPeU1DQ2JmMUZpU3ExUzhzWmE3a2RJcS92?=
+ =?utf-8?B?UkR1NFkrNHo5a0ZJVnIySHdqTncrZXZna2Y2U1VHcjZZTTBBOE94OGVQVHJT?=
+ =?utf-8?B?T01hcDlYVWxabklLRFkxWmcxd2hmdWN0QXN2b1dkNXpRU3dvd2RNV2VpemtU?=
+ =?utf-8?B?SzVRd2c4THNnekUwWVg3Rmw0K2FOTG5MTkFIU0g4QlNnNVdDN2YzOVh3eldL?=
+ =?utf-8?B?eHhZM2FvUmZmMHRhRmxGalJOazhQVnJmVGZMZGJKRlNFME1Ycnl5cVNyZjg1?=
+ =?utf-8?B?UjJtd3JaZUxDeUhLVEJKN0VkOUZGbFQ3ekR0cXB0VVFmRUxCYjl2bTNkMEJL?=
+ =?utf-8?B?ckU5b3J5RHhERFNnUUcwMDdGbkRudWR3bmZ2QkpUZG5MUTRNcVd5QnI2ZlE5?=
+ =?utf-8?B?VmtDbjk3N1VTclRodHBNYS9pak5EKy9PQ0t2SmpJVEVQRUFPL2UvN3p0S2lx?=
+ =?utf-8?B?LzdXR3Nkc251NGFIZTZleDNNTGlHWStnTEQ3N2FOeGJ4Z2ZKc2docGhUeVQ1?=
+ =?utf-8?B?bTQybVd2MlFmdzFrMzBZVlpJdGdLRThWK0lYSHEvQzJFM1dGb0lYQ1BLL0VY?=
+ =?utf-8?B?alJCYWxtcG40L1h3Qzl3c28wejZ5YTBmUTVnQnF4eUFGWVVhTnE4UU9Od1VI?=
+ =?utf-8?B?elZMMGhjSzNGSnowWGUyZUlkdDlQMEtJbFhReDZxNFVmQVIxNWJVNURRVnVF?=
+ =?utf-8?B?VnVMeDF0SnlSYzR2YVRvRzFtWGQ1YitmMC8yQnNoQ0lQL1hhUHVvdzhmcXNE?=
+ =?utf-8?B?TG5zYTZUdU90RXFVUDV1TU9lS0VhaFc1dithTkdBcXY2bkljaW16a3dPcTNu?=
+ =?utf-8?B?MytHVlRmUi9mSGptT0Jzd2VaWDRYOW1PbzR2a21KazBEVjZxOGJFa0FGc0c4?=
+ =?utf-8?B?UkJFR0lySDFNTmZrSm5rT1kybkZlbGs0U3h2d3ZmNVVxZ3duWnlmaUJJYk9y?=
+ =?utf-8?B?RTB0M3dodDVBZHNRSkd0NDIvNXNNcE8wQXZHVzZ5OXlkV25rVjhmS3hsYWtr?=
+ =?utf-8?Q?zuXQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6257.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7aca381b-b773-4a39-dfd0-08db8db726a3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 09:03:16.9614
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IabNq5UmRzrVhe+O4Uav6tzH98WVjbSMV8QbKxK258wr7jHkPLVcy/WNd07EXsPKAUDDa3VDPpvr8fZflrF8Sg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5059
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc. John and Ahern
-
-On 26/07/2023 04.09, Jason Wang wrote:
-> On Tue, Jul 25, 2023 at 11:54 PM Andrew Kanner <andrew.kanner@gmail.com> wrote:
->>
->> Syzkaller reported the following issue:
->> =======================================
->> Too BIG xdp->frame_sz = 131072
-
-Is this a contiguous physical memory allocation?
-
-131072 bytes equal order 5 page.
-
-Looking at tun.c code I cannot find a code path that could create
-order-5 skb->data, but only SKB with order-0 fragments.  But I guess it
-is the netif_receive_generic_xdp() what will realloc to make this linear
-(via skb_linearize())
-
->> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
->>    ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
->> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
->>    bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
->> ...
->> Call Trace:
->>   <TASK>
->>   bpf_prog_4add87e5301a4105+0x1a/0x1c
->>   __bpf_prog_run include/linux/filter.h:600 [inline]
->>   bpf_prog_run_xdp include/linux/filter.h:775 [inline]
->>   bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
->>   netif_receive_generic_xdp net/core/dev.c:4807 [inline]
->>   do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
->>   tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
->>   tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
->>   call_write_iter include/linux/fs.h:1871 [inline]
->>   new_sync_write fs/read_write.c:491 [inline]
->>   vfs_write+0x650/0xe40 fs/read_write.c:584
->>   ksys_write+0x12f/0x250 fs/read_write.c:637
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
->> ("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But
->> tun_get_user() still provides an execution path with do_xdp_generic()
->> and exceed XDP limits for packet size.
-
-I added this check and maybe it is too strict. XDP can work on higher
-order pages, as long as this is contiguous physical memory (e.g. a 
-page).  And
-
-An order 5 page (131072 bytes) seems excessive, but maybe TUN have a 
-use-case for having such large packets? (Question to Ahern?)
-
-I'm considering we should change the size-limit to order-2 (16384) or 
-order-3 (32768).
-
-Order-3 because netstack have:
-   #define SKB_FRAG_PAGE_ORDER get_order(32768)
-
-And order-2 because netstack have: SKB_MAX_ALLOC (16KiB)
-  - See discussion in commit 6306c1189e77 ("bpf: Remove MTU check in 
-__bpf_skb_max_len").
-  - https://git.kernel.org/torvalds/c/6306c1189e77
-
-
->>
->> Using the syzkaller repro with reduced packet size it was also
->> discovered that XDP_PACKET_HEADROOM is not checked in
->> tun_can_build_skb(), although pad may be incremented in
->> tun_build_skb().
->>
->> If we move the limit check from tun_can_build_skb() to tun_build_skb()
->> we will make xdp to be used only in tun_build_skb(), without falling
->> in tun_alloc_skb(), etc. And moreover we will drop the packet which
->> can't be processed in tun_build_skb().
-
-Looking at tun_build_skb() is uses the page_frag system, and can thus 
-create up-to SKB_FRAG_PAGE_ORDER (size 32768 / order-3).
-
->>
->> Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
->> Link: https://syzkaller.appspot.com/bug?id=5335c7c62bfff89bbb1c8f14cdabebe91909060f
->> Fixes: 7df13219d757 ("tun: reserve extra headroom only when XDP is set")
->> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
->> ---
->>
->> Notes:
->>      V2 -> V3:
->>      * attach the forgotten changelog
->>      V1 -> V2:
->>      * merged 2 patches in 1, fixing both issues: WARN_ON_ONCE with
->>        syzkaller repro and missing XDP_PACKET_HEADROOM in pad
->>      * changed the title and description of the execution path, suggested
->>        by Jason Wang <jasowang@redhat.com>
->>      * move the limit check from tun_can_build_skb() to tun_build_skb() to
->>        remove duplication and locking issue, and also drop the packet in
->>        case of a failed check - noted by Jason Wang <jasowang@redhat.com>
-> 
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> 
-> Thanks
-> 
->>
->>   drivers/net/tun.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
->> index d75456adc62a..7c2b05ce0421 100644
->> --- a/drivers/net/tun.c
->> +++ b/drivers/net/tun.c
->> @@ -1594,10 +1594,6 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
->>          if (zerocopy)
->>                  return false;
->>
->> -       if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
->> -           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
->> -               return false;
->> -
->>          return true;
->>   }
->>
->> @@ -1673,6 +1669,9 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
->>          buflen += SKB_DATA_ALIGN(len + pad);
->>          rcu_read_unlock();
->>
->> +       if (buflen > PAGE_SIZE)
->> +               return ERR_PTR(-EFAULT);
-
-Concretely I'm saying maybe use SKB_FRAG_PAGE_ORDER "size" here?
-
-e.g. create SKB_FRAG_PAGE_SIZE define as below.
-  if (buflen > SKB_FRAG_PAGE_SIZE)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 656ea89f60ff..4c4b3c257b52 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2886,7 +2886,8 @@ extern int sysctl_optmem_max;
-  extern __u32 sysctl_wmem_default;
-  extern __u32 sysctl_rmem_default;
-
--#define SKB_FRAG_PAGE_ORDER    get_order(32768)
-+#define SKB_FRAG_PAGE_SIZE     32768
-+#define SKB_FRAG_PAGE_ORDER    get_order(SKB_FRAG_PAGE_SIZE)
-  DECLARE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
-
->> +
->>          alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
->>          if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL)))
->>                  return ERR_PTR(-ENOMEM);
-
---Jesper
-
+PiANCj4gUm91dGVzIGFuZCBjb2RlYyBjb25mIGFyZSBkaWZmZXJlbnQgdGhpbmdzLCBub3QgZm9s
+bG93aW5nIGhvdyB5b3UgY2FuIG1lcmdlDQo+IHRoZW0/DQo+IA0KPiBXb25kZXJpbmcgaWYgeW91
+IGFyZSByZWZlcnJpbmcgdG8gYSBkaWZmZXJlbnQgYXJyYXksIGkuZS4NCj4gDQo+IHN0YXRpYyBz
+dHJ1Y3Qgc25kX3NvY19jb2RlY19jb25mIG1heF85ODM5MF9jb2RlY19jb25mW10NCj4gDQo+IHN0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19jb2RlY19jb25mIG1heF85ODM5MF80c3BrX2NvZGVjX2NvbmZb
+XQ0KPiANCg0KWWVzIEkgbWVhbiBtYXhfOTgzOTBfY29kZWNfY29uZiBhbmQgbWF4Xzk4MzkwXzRz
+cGtfY29kZWNfY29uZi4gU29ycnkNCmZvciB0aGUgbWlzdGFrZS4NCg0KUmVnYXJkcywNCkJyZW50
+DQoNCg==
