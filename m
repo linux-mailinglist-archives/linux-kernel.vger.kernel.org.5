@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659FD764064
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082B8764065
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjGZURj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S230408AbjGZUSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjGZURg (ORCPT
+        with ESMTP id S229595AbjGZUSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:17:36 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796FDBF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:17:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9922d6f003cso17482266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690402654; x=1691007454;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TIw5M7YBct0ebCkuxRxGyVInX15QsjTBfpmn2gCjrlg=;
-        b=HnznN/U58EK46QCHNToLfcrCIZZ7BbcFMYn/KG7ki5VIvImGrizBEW+JWdZ9ooH/T3
-         RvBts02mBNI2iqWV1ktp7rzuoOYnQPbDEKki+1WfDgw39bASx98Ig4ApBkV0/35o1DEK
-         9U56DZstCcYdFA2o6JnHlFTpkV2L/MR7jjBgFcZUxeJy8T73/EdT0L/7i4ltvpxNztcr
-         XVmBrZ5GWen5uKnrTBXpOtyR2ry1ByvFbkDposXKzQaNMcjLfuodfXK/4RC/OOgztpV9
-         d82VDOFteA3ZJ0NsBcar9Gu9RG7LQDmtIS/lMiAbPlW3WMlQIgGlZj6DUFh45+PIAr5R
-         ZiJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690402654; x=1691007454;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TIw5M7YBct0ebCkuxRxGyVInX15QsjTBfpmn2gCjrlg=;
-        b=QZpzKpoLP+rf7Udn97+QTfgUvNqo7Q1bqsgsZEdm1j0YzkpCqFQqKawNFcoRboKOJM
-         0B7M1UdgEQviRCy7xJzZ2Ectvl5924LVzZMv1cneNKd/fJvssuKqKaBsGd6cnMJJG7fP
-         /dP3hhLOv5B7UsJfPUI8/xH//74QLl0ykhvP7myokDFETpEVUJcGhn0hYDf3ZiBlczbr
-         bND1kbNTUmbda+cvxG3iBYjQqyg481pJxR1BHhLyWLbEEplCbRhejQsni274Zu0D7v+O
-         oXKz7nTxPhEwZ12wX1U8nzC2TpCKztcKogIPtTuDPg39/O8QKBGSXELBv5wHjk3DIQeR
-         54tQ==
-X-Gm-Message-State: ABy/qLYaA0NoLsx35yHxFFyl2ALNuPpU9WBEqmrex7R+eapcV/8lkPgu
-        hc9yuCvVFiNCp9sfZnM2IwP43Q==
-X-Google-Smtp-Source: APBJJlH/Z/+ouAQuj6hfTlPnr5EX2+fyovpgX5IPIN6FWgx+Vmn3c7YBaLt4rauRmEInXz3DL3/gdg==
-X-Received: by 2002:a17:906:1006:b0:98e:2334:af12 with SMTP id 6-20020a170906100600b0098e2334af12mr185769ejm.45.1690402654001;
-        Wed, 26 Jul 2023 13:17:34 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id lg23-20020a170906f89700b0098733a40bb7sm10060069ejb.155.2023.07.26.13.17.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 13:17:33 -0700 (PDT)
-Message-ID: <36ed5a07-dce2-f5be-bdc7-8c5b1c3c3829@linaro.org>
-Date:   Wed, 26 Jul 2023 22:17:31 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/4] dt-bindings: Add bindings for peci-npcm
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Iwona Winiarska <iwona.winiarska@intel.com>,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Tyrone Ting <warp5tw@gmail.com>
-References: <20230726192740.1383740-1-iwona.winiarska@intel.com>
- <20230726192740.1383740-2-iwona.winiarska@intel.com>
- <6a9c250e-5192-909b-d60f-7b9888a23145@linaro.org>
-In-Reply-To: <6a9c250e-5192-909b-d60f-7b9888a23145@linaro.org>
+        Wed, 26 Jul 2023 16:18:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F5D198D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:18:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A3B6661CBE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:18:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F0FDC433C8;
+        Wed, 26 Jul 2023 20:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690402719;
+        bh=MMioSWLe0J+F5cA3VOGFUM/YW6sX+D23b5MfVPZqMwg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BAp862XDg5jm4GYl6C/MPJCbU0NcJd6qPBVRi+my42pt/DpGQq+SWl6YIT7fPp2PL
+         HcTDTo7GooY8BqKKq/e9K45b7acdnf/8e4JgzivN0rxkQUcPLhm+263tGJc5Oa2wxs
+         G7HZ6q+3UPSjZyikhKl7/dD9hL3rjG9tai4JLO+c=
+Date:   Wed, 26 Jul 2023 13:18:22 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrew Yang (=?UTF-8?B?5qWK5pm65by3?=) <Andrew.Yang@mediatek.com>
+Cc:     "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Casper Li (=?UTF-8?B?5p2O5Lit5qau?=) <casper.li@mediatek.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH] zsmalloc: Fix races between modifications of fullness
+ and isolated
+Message-Id: <20230726131822.22ac039ee4c696ea0726b510@linux-foundation.org>
+In-Reply-To: <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
+References: <20230721063705.11455-1-andrew.yang@mediatek.com>
+        <20230726031846.GJ955071@google.com>
+        <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,28 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 21:39, Krzysztof Kozlowski wrote:
-> On 26/07/2023 21:27, Iwona Winiarska wrote:
->> From: Tomer Maimon <tmaimon77@gmail.com>
->>
->> Add device tree bindings for the peci-npcm controller driver.
->>
->> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
->> Signed-off-by: Tyrone Ting <warp5tw@gmail.com>
->> Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
->> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
->> ---
->> Changes v1 -> v2:
->>
->> * Renamed binding filename to match compatible (Krzysztof)
-> 
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
+On Wed, 26 Jul 2023 06:59:20 +0000 Andrew Yang (楊智強) <Andrew.Yang@mediatek.com> wrote:
 
-Un-reviewed. Why testing the code before sending to LKML? Obviously not
-needed.
+> > Have you observed issues in real life? That commit is more than a
+> > year
+> > and a half old, so I wonder.
+> > 
+> Yes, we encountered many kernel exceptions of
+> VM_BUG_ON(zspage->isolated == 0) in dec_zspage_isolation() and
+> BUG_ON(!pages[1]) in zs_unmap_object() lately.
+> This issue only occurs when migration and reclamation occur at the
+> same time. With our memory stress test, we can reproduce this issue
+> several times a day. We have no idea why no one else encountered
+> this issue. BTW, we switched to the new kernel version with this
+> defect a few months ago.
 
-Best regards,
-Krzysztof
+Ah.  It's important that such information be in the changelog!
 
+I have put this info into my copy of the v1 patch's changelog.
+
+I have moved the v1 patch from the mm-unstable branch into
+mm-hotfixes-unstable, so it is staged for merging in this -rc cycle.
+
+I have also added a cc:stable so that the fix gets backported into
+kernels which contain c4549b871102.
+
+I have added a note-to-self that a v2 patch is expected.
