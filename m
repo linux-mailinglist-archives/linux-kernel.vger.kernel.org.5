@@ -2,67 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6486C7634E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAAA7634F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbjGZL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
+        id S233619AbjGZLaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbjGZL3L (ORCPT
+        with ESMTP id S230269AbjGZLaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:29:11 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010581BCD;
-        Wed, 26 Jul 2023 04:28:49 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36Q6ITNS030470;
-        Wed, 26 Jul 2023 06:28:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=O
-        UJSTwXZg3bJ5hQCeQ48YCQHgLKuZPr+bJiVRQrLcyE=; b=WLhyZ30aQufpXxHJ+
-        HC9Wy5TTLz9J0vtD2kj1phDh23h1Rt0vsyv8I71DMPrRlV7cvDFvyZfGWWHcIMFp
-        a19nnYyp0twn0INx3QnbUJHDz4vXJMU2nUlboCTbpfnXpHQ6dkTj10bNjkaKrDjC
-        EpWm34ZAiJleafGtiFD9SFoMvTFNJA0Mx/iSxXx0JgIXWrqRU4e4eGKJln5Nv/h4
-        aTCxmGhogbYrSrQ4ZYo/8+CTMNAC4apoVkIg+G8mtP9zVzVBuFoX/en/m0G89JfH
-        uPbnYi8xzVRaxLpFxRLUCZBP/ly8QFCifCwpCDseQ1qqCntWvb3SGZgReFltlM5h
-        3q4Wg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s2q710nrk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 06:28:04 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
- 2023 12:28:02 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Wed, 26 Jul 2023 12:28:02 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.196])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0825D15B4;
-        Wed, 26 Jul 2023 11:28:01 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <rafael@kernel.org>, <lenb@kernel.org>, <hdegoede@redhat.com>,
-        <markgross@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ACPI: scan: Create platform device for CS35L56
-Date:   Wed, 26 Jul 2023 12:27:59 +0100
-Message-ID: <20230726112759.18814-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        Wed, 26 Jul 2023 07:30:00 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2115.outbound.protection.outlook.com [40.107.117.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740182D70;
+        Wed, 26 Jul 2023 04:29:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SzfH0N/s8OhVP8xfXFrlWXkDlP6tta+qHUOQD7ZDtIThfV0ItfwkTOvneU+Zc22g/+S60NvmLYCCV9AvPZ77VbFDt8UMzTlFeI9PDBQuu5IDk6BwttASrhmQ3QPrztQ5CGqZP2lnyBMakpxDMXLGEDG1Vyt6f69kQNd1oYtylKVxEnd9hGxnOAQgewXNO6W/5+hXZkPWx1GHgCIm9kG7uw8KRoN5WmQWT7K3eWtL+CQZoCd4LeZFqcB76U4CAMzcUtEk+Og8HIeNMSCos6AdpB0qatLpaoEvKeYigrIYkua0wjB6soQkMznRaIpQZeKVQLkwTxjghk/Bdm8HR2H+eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QF1RdSQIQPg/5ii6mDAmLc0B6z7wKXww0QwwHCMFkOw=;
+ b=QOEvY2vltCJ1mo57VU116/WdlM7Zvj5MkljpoI6qyDM4azmodHhaKFNwFltcGrlfayhVfAQ3gjGOg7CZIk5WvnhGYRC6N5D01E1XLbvXDZTPt+7Pwy6YIzKIy57N0jtHivzqeZ9ljK3xVTIYIygkMXOCluZn1zuzBJGU8AX43vJ0A+6oO9QOYAhWo37MKoepxSj0OuLu+tqta8d9tMn4tfiiOoF0smhXBJE8dn5ragDIWqSqBBZj8r/eeaaxdAOJTwF94w8s1waLct2HrNBiQURgMYjk91dGItMcSJ4gIwrY//0gtt48TjZ9tHnSTfPj8q7xkVXffyZ0+TvJHigBgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QF1RdSQIQPg/5ii6mDAmLc0B6z7wKXww0QwwHCMFkOw=;
+ b=pne4jdvUFUGvSgE870Hv7lu+iEHIp6RMbH+lHr2No68+JiD+TB/VrvXdeZvh4dXj6C+AbOdzlaggt9DP9TMHXbNUbf5u5JGudADkRWW8HENxipTfVBeomfRWY5rsf1+oSvJd7kPxLjjV0PbaVGu6StFIP6FeQpHqKFGjJaJKP5fc9EZ2jkqjYiNc42g1awlTyfFubPbPuutI0vhLWlCVev/VYSWSYEszVemhwvNCveg4kMionB9NFqBNhvV2UpvKJEJiEknX76mF0E89cuFc+qeBKY5vZWlKc3SVZAzjh49Vldf9L/pfLnUPakXoBTRvdmlQW/gbPE/K0ORe/DPlVw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
+ (2603:1096:300:78::18) by SEZPR06MB6331.apcprd06.prod.outlook.com
+ (2603:1096:101:12c::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
+ 2023 11:29:24 +0000
+Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
+ ([fe80::74f9:2f8c:e5b8:a573]) by PS1PR0601MB3737.apcprd06.prod.outlook.com
+ ([fe80::74f9:2f8c:e5b8:a573%6]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 11:29:23 +0000
+From:   Wang Ming <machel@vivo.com>
+To:     Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, gregkh@linuxfoundation.org,
+        Wang Ming <machel@vivo.com>
+Subject: [PATCH net v5] bonding: Remove error checking for debugfs_create_dir()
+Date:   Wed, 26 Jul 2023 19:29:00 +0800
+Message-Id: <20230726112913.4393-1-machel@vivo.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: ZmawruouD-Mt96hwH4BfXdXTmhE2ScWQ
-X-Proofpoint-ORIG-GUID: ZmawruouD-Mt96hwH4BfXdXTmhE2ScWQ
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-ClientProxiedBy: TYAPR01CA0012.jpnprd01.prod.outlook.com (2603:1096:404::24)
+ To PS1PR0601MB3737.apcprd06.prod.outlook.com (2603:1096:300:78::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PS1PR0601MB3737:EE_|SEZPR06MB6331:EE_
+X-MS-Office365-Filtering-Correlation-Id: ffbd5fae-6476-491b-40f2-08db8dcb8fd9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A0fON+JX8EQomvbttKBrWuRsb1Z+QChaF9a+9+PsD0L/F2F/v5UH9uvue+FwC6vqIYzZ/OVCWub3r43Pq741XqRgpXtpcqSAMQLZ4RyOMvxcYHz+015gvnv1rjksRnhUeqIwDuy72Rxxuqkx26TLT57pGo8sQJ3ai9eRZc6EwRNjWucOjvVOOOehAVoUvvyQ4R6Iy7q6CepNDXnzhqzB1tDe4lAOolKX+J0ZGwme8xvNPnucmjetDKjH860Q2RC+nKePv+aNVU7Z1O8iVen9tDW9b4wQVIfvCe+iFlaVrbntJPkto765t097xYMWcpGua2X/l+BDZtPXNatuBjX+eBeY/nbSG5lCZYiQ4lXW0r4O60vxx1KiMYryH6TNqyHt+SiZNaNHniGX7aUTbl+NPUYBDEdroR+PfdFBnJ/YXbqg4wW9gRvogKC/b5XrbSfQd+1CuBRhOReZxoyOIXLxm0kjKdkdYvh5+nj1Da2gc6FyXDcIMxlTDgkNeR000rO5tLBjpmxvKTNmMWa63IQ4nMf0JBXF5iBGdpwfemnTV+UnmSBozNvvDmUIeTmlLooT50XULUTmDwydIU+C4rNQWxytSNFJp2NlyZiHxgPjfhA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB3737.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(39860400002)(376002)(366004)(396003)(451199021)(86362001)(36756003)(110136005)(52116002)(2906002)(478600001)(4744005)(38100700002)(38350700002)(2616005)(1076003)(186003)(107886003)(6506007)(26005)(41300700001)(5660300002)(8676002)(6512007)(8936002)(6666004)(6486002)(66476007)(66556008)(83380400001)(66946007)(316002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m1zIfj+fBgYF0z8cgKa6pUfBozOwT9BLoqN7etOLmSmqOVtojlXelffEjaZT?=
+ =?us-ascii?Q?wfSfQPMO9bfFDnIz5WLPnBMdCM3MREUXKHQBM7MKU+xU111cWDjd1l7jZFXw?=
+ =?us-ascii?Q?HX/d7xqusorb0HJ2MOiPBy4mUtuz6wzOTe4lStkJmIXwbRLG5DIm22Xw5UH2?=
+ =?us-ascii?Q?9xxMg3Z6twdH/rG76aJudL3CSwkAsZ5SWG6FrK2v4x+dXcKc5qWbtV2UorjN?=
+ =?us-ascii?Q?6H1lc5kTThA4henLVCazd8k7rs3zafimQslD1PJAcg6vvon291WoEK+eZPsl?=
+ =?us-ascii?Q?vkTtnE0Mz/65Rl/ShlhqBSEzdoOe76WHtBhKh965LfWASUM7j28rS9kiQY5F?=
+ =?us-ascii?Q?w7YDo7bzrYXZaRi4DBWrSJWDhZ/OPGdqojGOk7jEple5shVDSySZwY5o3kj1?=
+ =?us-ascii?Q?CIxFLiKS6OruVpHVwrwmn2UQD6VonWoPAnY5p+xxsoLyoYS2mafok7MmTqqx?=
+ =?us-ascii?Q?QRNJJb2QcNTEiZWtej/wxDeFS1IDic4c1Cji7SoL2QCX3m9FrGmSTmV0CmUu?=
+ =?us-ascii?Q?5/pDcBMbe5qBtv6vc4suL7hMyNQv/HXzje3lVUhAiP7DBEDPhgsmQ8XUQSlH?=
+ =?us-ascii?Q?Y3S39RLpLp2KCtqQ5Ze0c3vEZlV0Cy+GRK5bBzRwSJjv/GWfLhOLpPDkwU5J?=
+ =?us-ascii?Q?fJEzhX+9A64+2+sBYWPfzTibROOpAmaeosLZGVne/5UgXOsCc8S8F6hyYYDi?=
+ =?us-ascii?Q?Oa2tWIdCXyMw7C5oZ+eU5w7aBQmgadbmqt9l2/Ppj/WyAnNfEM3Cc+pSC4fC?=
+ =?us-ascii?Q?sk7h8Z1skwQ6eweBkKl81/AXOgBDRtmfQ9N4V4zEAgWUeqCKTGfoe9EqMuUf?=
+ =?us-ascii?Q?UxGCpdP3FDSpKI8y2GrVo8Jn6NGAHqRQYscxQtFqZdVllS0LOy6tsKTjEZh8?=
+ =?us-ascii?Q?+pOycTyUObgm6Xs833MGp99PbxGXDGxwE5NO71f1/wifohwt1t6zpv2nFozb?=
+ =?us-ascii?Q?YUv7Z5mI1UZ52d6QtgtfhW828cJafFPnBsTHQTBbMoUV1Tl3ALcOGQVz/kXD?=
+ =?us-ascii?Q?YgSQZBAbDg7y3zTJkhymxk8w+gIMtvvH/FviVSK6I2XWHxqaz4CuwAWuqmwD?=
+ =?us-ascii?Q?ohz9o6C5YP8QucUHnNmzZjqRmZBRBzsYkOR86xjT/TwOaMaZT04wp2x4H70u?=
+ =?us-ascii?Q?TdeiCLJE+ybUx2Twse4/CVl2UmZtooiKAi5FiCGuP7T6reBjfgBlouL0K3oN?=
+ =?us-ascii?Q?YKBkon0XJYGK10JM4u2KDF7AYlwodWowmOKRuxa78IYTzu5pieP0kit7PR/O?=
+ =?us-ascii?Q?Ana1fi0hDecBnHqwTpZPdyJsCZuPnWVGkwCPsAtXd8Un0vhRnG59HYo92lak?=
+ =?us-ascii?Q?a1h/Sx2zHPQrCQsjTP6Gxu8yXj/O1C/aLzorBZ9x/dHkuTZdo5AqF3IeD+9C?=
+ =?us-ascii?Q?VQro6r0y0uIvsJPQz4O9m32FTeHGm0yBcnK/V5WKTbsESsP2wTTbAxSXMMOl?=
+ =?us-ascii?Q?IAcvB5x36kt5xFgs8w6JZaFzchsXt08V7y3X+xykmrxDo0fK536IM1Y74QBg?=
+ =?us-ascii?Q?RyQtmQHOOrM7GJUju1/e6DtVu+aVnyTZliArd2wBHklLSISXrJejlptL9yx7?=
+ =?us-ascii?Q?gu8Gt1wG+on5nXMuaKcE0910Xcm1Kx+hvwmWY2WC?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffbd5fae-6476-491b-40f2-08db8dcb8fd9
+X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB3737.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 11:29:23.5925
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B2dqjg3maAxH/1GGTOejy5BFhyrRNakDTbyBiTyePzX3o+r3dKdAHTOejCIDQUHtetT8Wjgj5s0AiyjQx+yNEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6331
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,64 +117,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+It is expected that most callers should _ignore_ the errors
+return by debugfs_create_dir() in bond_debug_reregister().
 
-The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
-is used in multiples, and can be connected either to I2C or SPI.
-
-There will be multiple instances under the same Device() node. Add it
-to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
-driver.
-
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Wang Ming <machel@vivo.com>
 ---
- drivers/acpi/scan.c                             |  1 +
- drivers/platform/x86/serial-multi-instantiate.c | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
+ drivers/net/bonding/bond_debugfs.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 5b145f1aaa1b..87e385542576 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1714,6 +1714,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 		{"BSG1160", },
- 		{"BSG2150", },
- 		{"CSC3551", },
-+		{"CSC3556", },
- 		{"INT33FE", },
- 		{"INT3515", },
- 		/* Non-conforming _HID for Cirrus Logic already released */
-diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-index f3dcbdd72fec..dcf2914b97c9 100644
---- a/drivers/platform/x86/serial-multi-instantiate.c
-+++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -316,6 +316,17 @@ static const struct smi_node cs35l41_hda = {
- 	.bus_type = SMI_AUTO_DETECT,
- };
+diff --git a/drivers/net/bonding/bond_debugfs.c b/drivers/net/bonding/bond_debugfs.c
+index 594094526..a41f76542 100644
+--- a/drivers/net/bonding/bond_debugfs.c
++++ b/drivers/net/bonding/bond_debugfs.c
+@@ -87,9 +87,6 @@ void bond_debug_reregister(struct bonding *bond)
+ void bond_create_debugfs(void)
+ {
+ 	bonding_debug_root = debugfs_create_dir("bonding", NULL);
+-
+-	if (!bonding_debug_root)
+-		pr_warn("Warning: Cannot create bonding directory in debugfs\n");
+ }
  
-+static const struct smi_node cs35l56_hda = {
-+	.instances = {
-+		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-+		{}
-+	},
-+	.bus_type = SMI_AUTO_DETECT,
-+};
-+
- /*
-  * Note new device-ids must also be added to ignore_serial_bus_ids in
-  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-@@ -324,6 +335,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)&bsg1160_data },
- 	{ "BSG2150", (unsigned long)&bsg2150_data },
- 	{ "CSC3551", (unsigned long)&cs35l41_hda },
-+	{ "CSC3556", (unsigned long)&cs35l56_hda },
- 	{ "INT3515", (unsigned long)&int3515_data },
- 	/* Non-conforming _HID for Cirrus Logic already released */
- 	{ "CLSA0100", (unsigned long)&cs35l41_hda },
+ void bond_destroy_debugfs(void)
 -- 
-2.30.2
+2.25.1
 
