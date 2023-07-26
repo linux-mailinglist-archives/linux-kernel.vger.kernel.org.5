@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA8E76288F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AF9762897
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjGZCI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        id S229922AbjGZCJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjGZCI4 (ORCPT
+        with ESMTP id S230396AbjGZCJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:08:56 -0400
+        Tue, 25 Jul 2023 22:09:13 -0400
 Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97BB2126
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:54 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba5563cd6so13916485ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5E7212B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:09:10 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb982d2603so27087625ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690337334; x=1690942134;
+        d=google.com; s=20221208; t=1690337350; x=1690942150;
         h=cc:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=qvzO5xTQNyURF4nL/piskJHmeTo2rL1d+zB5x7OHimk=;
-        b=P3IIEFPbQNJ6ydPAceQ0K37zoFX3b3J2u6B8NX8ZC0LYS9+4qVnufJnJyKV1j69+b0
-         qn00VhJ/cCwEIzq5BPya/R6SuNkeKjW08SKgzDtl3ioaP2hZmq4Vov3Z8E3uB4mVmY0w
-         JbWy8VyAazE9+WN02GeoJjHeOoPa/oR/xEUq17gPUyXhP7z71yvtqB+mbjCK2Oo98JBs
-         eAwzGbMWH02REmapWlwdU8nHEUUSOaSrWkJMC6oBVPDHiBvlBuyFInat74L6zpRdym+4
-         UrJxKrR56Em1fhpdgM7dcYKWeeXxydVjyqk8R3MbFUs3DW6/xbh/D7lhGfMKNqdFPR7D
-         j77Q==
+        bh=8LeyURJhAn2AzUQBzLso1xOEDBoev9e7HFXuCVjNovQ=;
+        b=Hzvg48EZXi+Qn+Kn+L8rhB6LI49k7zWVxG4AdxNE6CMPZhZCYkoPltd4lay2eeSiX5
+         +mJWj2FGm5pVOOLNBnwO279iAT1xkeCWdHfNz7eVsPTmj1RoGYlTm3z6I3RbB2Gv84Pn
+         tnysZgJz1TVHOlHDXNH2bpHeLkwD9s5XAOy0YE1ZTJyc1VSqPOAEhEmH2uubfpaRui2u
+         ErrABnuLYgi30FHIdkfaQQS06w3xWEPRZgV/aeG/GvIYV9kj6LIN7YFiOII2/AQ69MkM
+         uMQHUIFSVegQdoS5rF3QPLBgO16ohLH1+aiJvHp94Wjyff3S0DA3TaQr52Rz7ebKqD8/
+         hayg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690337334; x=1690942134;
+        d=1e100.net; s=20221208; t=1690337350; x=1690942150;
         h=cc:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qvzO5xTQNyURF4nL/piskJHmeTo2rL1d+zB5x7OHimk=;
-        b=Tn83WAmigf2BRbojiG/NNoX+b+dKUonu6sFZpDQ7qPns+3ghCFLoSXyiUKa5JHsC/I
-         0geRb0MwStxCwhMu2cdGz08ffa9Oilz426F+Z3257HbZxpvRrx4zpEYrrAF0FVYl4gEw
-         JPdp/AluK+IvnDS0TrzzO7tYIghBNbLAHacsht2suwFTWyI9END1Y+2vRLsDNZ4Mlfy5
-         SuF+ASdilQvjPBpPw2Zse5xL7U7BrT12E4iZg+/rEhCsz0TbTlWqsrLt9dQh+yPmrVOP
-         PCaNRXom7kb+tHHwzmfKLK5k6Y1ssfjEB9zPTxvZmG1u9713C5sKSYocs3OCpLHmBNaQ
-         L94g==
-X-Gm-Message-State: ABy/qLbkPSk2pRxkn+wcFeKzLDvy/skk+lkQZKx9rtqyzT4mlxagCE+0
-        dBlPRc3ZoUuSX9WfBpa5qO/+MiyuAIFwOLg=
-X-Google-Smtp-Source: APBJJlFcGWdyVXRjmhYk8oHznaQ2BZoyJHq53LoLgm0V6/jCQj6VeXM0/pLHHRwvwG+p9kRwiKJeJb2Vn9hTC44=
+        bh=8LeyURJhAn2AzUQBzLso1xOEDBoev9e7HFXuCVjNovQ=;
+        b=A13d9paIPg2qLOiyIUO6FnhWkClryWFiA7y9eZGL25zhyUVxCERmzQcrat/0zKxFV2
+         IRiQQNGG9bEqXigiSOdLrGUdmK8IaABs8b1zl+rk1FnyMdUVYI63ISdP8ECKARUQ1kdG
+         ejvO2NJgYZ4YqYvZ5dCiV4XSvi2C0qzujLIzke1/LUDiHrOCHhRoI08sUVZRT9qywxVt
+         3sTO6EOlmE5WSZ2cIENDeAzjWjEOgE4y3YBzJut31tg846QATsLJ/h3UaDkFKBrpIjzS
+         8hJEPN/wy+0vk2UE+rbMJwriuyGsKXsSuGLj00lWX4t5X3ObbsT6S7ol6HLRM0cy6+we
+         zvDQ==
+X-Gm-Message-State: ABy/qLbhh8WO83it8y7Ht0EVqGy1yuXqrWmUHk7zjSBhwrDGHw828I8F
+        hMFdH1eeDwB4UoUGXk5pJmhHEnRhO8i9yJA=
+X-Google-Smtp-Source: APBJJlGyEKOO9DWyzE41ZGfqP+2QT+1pDBaerSfzPVTbYOZqnKPITI7I9ng+JYY0Iuq5Eo2wWMVwUFbqwn6FAN0=
 X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
- (user=rdbabiera job=sendgmr) by 2002:a17:902:f145:b0:1ae:6895:cb96 with SMTP
- id d5-20020a170902f14500b001ae6895cb96mr3661plb.5.1690337334001; Tue, 25 Jul
- 2023 19:08:54 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 02:08:07 +0000
+ (user=rdbabiera job=sendgmr) by 2002:a17:903:32ce:b0:1b3:e4f1:1b3f with SMTP
+ id i14-20020a17090332ce00b001b3e4f11b3fmr4335plr.2.1690337350022; Tue, 25 Jul
+ 2023 19:09:10 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 02:09:02 +0000
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230726020810.1408299-1-rdbabiera@google.com>
-Subject: [PATCH v1] usb: typec: tcpm: set initial svdm version based on pd revision
+Message-ID: <20230726020903.1409072-1-rdbabiera@google.com>
+Subject: [PATCH v1] usb: typec: altmodes/displayport: Signal hpd when
+ configuring pin assignment
 From:   RD Babiera <rdbabiera@google.com>
-Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, kyletso@google.com, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        RD Babiera <rdbabiera@google.com>, stable@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, RD Babiera <rdbabiera@google.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
@@ -68,94 +69,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sending Discover Identity messages to a Port Partner that uses Power
-Delivery v2 and SVDM v1, we currently send PD v2 messages with SVDM v2.0,
-expecting the port partner to respond with its highest supported SVDM
-version as stated in Section 6.4.4.2.3 in the Power Delivery v3
-specification. However, sending SVDM v2 to some Power Delivery v2 port
-partners results in a NAK whereas sending SVDM v1 does not.
+When connecting to some DisplayPort partners, the initial status update
+after entering DisplayPort Alt Mode notifies that the DFP_D/UFP_D is not in
+the connected state. This leads to sending a configure message that keeps
+the device in USB mode. The port partner then sets DFP_D/UFP_D to the
+connected state and HPD to high in the same Attention message. Currently,
+the HPD signal is dropped in order to handle configuration.
 
-NAK messages can be handled by the initiator (PD v3 section 6.4.4.2.5.1),
-and one solution could be to resend Discover Identity on a lower SVDM
-version if possible. But, Section 6.4.4.3 of PD v2 states that "A NAK
-response Should be taken as an indication not to retry that particular
-Command."
+This patch saves changes to the HPD signal when the device chooses to
+configure during dp_altmode_status_update, and invokes sysfs_notify if
+necessary for HPD after configuring.
 
-Instead, we can set the SVDM version to the maximum one supported by the
-negotiated PD revision. When operating in PD v2, this obeys Section
-6.4.4.2.3, which states the SVDM field "Shall be set to zero to indicate
-Version 1.0." In PD v3, the SVDM field "Shall be set to 01b to indicate
-Version 2.0."
-
-Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
+Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mode")
 Cc: stable@vger.kernel.org
 Signed-off-by: RD Babiera <rdbabiera@google.com>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 35 +++++++++++++++++++++++++++++++----
- 1 file changed, 31 insertions(+), 4 deletions(-)
+ drivers/usb/typec/altmodes/displayport.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 829d75ebab42..5b0a428fcf5d 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -3928,6 +3928,31 @@ static enum typec_cc_status tcpm_pwr_opmode_to_rp(enum typec_pwr_opmode opmode)
- 	}
- }
+diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+index 66de880b28d0..cdf8261e22db 100644
+--- a/drivers/usb/typec/altmodes/displayport.c
++++ b/drivers/usb/typec/altmodes/displayport.c
+@@ -60,6 +60,7 @@ struct dp_altmode {
  
-+static void tcpm_set_initial_svdm_version(struct tcpm_port *port)
-+{
-+	switch (port->negotiated_rev) {
-+	case PD_REV30:
-+		break;
-+	/*
-+	 * 6.4.4.2.3 Structured VDM Version
-+	 * 2.0 states "At this time, there is only one version (1.0) defined.
-+	 * This field Shall be set to zero to indicate Version 1.0."
-+	 * 3.0 states "This field Shall be set to 01b to indicate Version 2.0."
-+	 * To ensure that we follow the Power Delivery revision we are currently
-+	 * operating on, downgrade the SVDM version to the highest one supported
-+	 * by the Power Delivery revision.
-+	 */
-+	case PD_REV20:
-+		typec_partner_set_svdm_version(port->partner,
-+					       SVDM_VER_1_0);
-+		break;
-+	default:
-+		typec_partner_set_svdm_version(port->partner,
-+					       SVDM_VER_1_0);
-+		break;
-+	}
-+}
-+
- static void run_state_machine(struct tcpm_port *port)
+ 	enum dp_state state;
+ 	bool hpd;
++	bool pending_hpd;
+ 
+ 	struct mutex lock; /* device lock */
+ 	struct work_struct work;
+@@ -144,8 +145,13 @@ static int dp_altmode_status_update(struct dp_altmode *dp)
+ 		dp->state = DP_STATE_EXIT;
+ 	} else if (!(con & DP_CONF_CURRENTLY(dp->data.conf))) {
+ 		ret = dp_altmode_configure(dp, con);
+-		if (!ret)
++		if (!ret) {
+ 			dp->state = DP_STATE_CONFIGURE;
++			if (dp->hpd != hpd) {
++				dp->hpd = hpd;
++				dp->pending_hpd = true;
++			}
++		}
+ 	} else {
+ 		if (dp->hpd != hpd) {
+ 			drm_connector_oob_hotplug_event(dp->connector_fwnode);
+@@ -161,6 +167,16 @@ static int dp_altmode_configured(struct dp_altmode *dp)
  {
- 	int ret;
-@@ -4165,9 +4190,10 @@ static void run_state_machine(struct tcpm_port *port)
- 		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
- 		 * port->explicit_contract to decide whether to send the command.
- 		 */
--		if (port->explicit_contract)
-+		if (port->explicit_contract) {
-+			tcpm_set_initial_svdm_version(port);
- 			mod_send_discover_delayed_work(port, 0);
--		else
-+		} else
- 			port->send_discover = false;
+ 	sysfs_notify(&dp->alt->dev.kobj, "displayport", "configuration");
+ 	sysfs_notify(&dp->alt->dev.kobj, "displayport", "pin_assignment");
++	/*
++	 * If the DFP_D/UFP_D sends a change in HPD when first notifying the
++	 * DisplayPort driver that it is connected, then we wait until
++	 * configuration is complete to signal HPD.
++	 */
++	if (dp->pending_hpd) {
++		drm_connector_oob_hotplug_event(dp->connector_fwnode);
++		sysfs_notify(&dp->alt->dev.kobj, "displayport", "hpd");
++		dp->pending_hpd = false;
++	}
  
- 		/*
-@@ -4455,9 +4481,10 @@ static void run_state_machine(struct tcpm_port *port)
- 		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
- 		 * port->explicit_contract.
- 		 */
--		if (port->explicit_contract)
-+		if (port->explicit_contract) {
-+			tcpm_set_initial_svdm_version(port);
- 			mod_send_discover_delayed_work(port, 0);
--		else
-+		} else
- 			port->send_discover = false;
- 
- 		power_supply_changed(port->psy);
+ 	return dp_altmode_notify(dp);
+ }
 
 base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
