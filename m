@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1B4762F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8128762F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbjGZIS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
+        id S232039AbjGZITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbjGZIRo (ORCPT
+        with ESMTP id S231682AbjGZISV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:17:44 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BB1658B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:07:27 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4R9mhn71bVz9slb;
-        Wed, 26 Jul 2023 10:07:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1690358842;
+        Wed, 26 Jul 2023 04:18:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B82C659B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690358856;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xHAU2WtxLXCpVwOzHZxYiWNoKZatMkP5oCbz6WI4SPA=;
-        b=vMEbZRzJAQ3lUXTzas65sGQJH7SiTk2H9+hGxGPfZBgaoNnDDESraZNFpqi+KbbBY3Bn76
-        pg3PEa4GhMsndYsMHpjPfNTK54A1xOPLLgp+dfcWlaWMem0PuTXRoCsFRDHqtxtZcX6Jur
-        Q/HIIU1v8MR3O5Ii0s72NZnFWy8/W/zKsmiKeYGAVbdkmMVb4pNpzZZFxv6TTg92E83vVQ
-        QOPqcNW1EBrlF3HSifSTgscVfHRV1vfMQKlpGoMnGSaZB9gM7YROGdoUXkiU2QdrnLen3Z
-        l5YzlmE1/iDJypA4/AkNcR/1B6s5Rc7/yATifP8rv4TJHBjWZh86d4MpPq/nnw==
-Message-ID: <8eb58a5f-02d0-fadf-1d5a-790b6af2d81e@mailbox.org>
-Date:   Wed, 26 Jul 2023 10:07:19 +0200
+        bh=doH+Gc+pvfSmMN9JRX0ZHP8FjJCTxeeLb0vPQ04C/z4=;
+        b=hHJ/KSp5L1ancLougfDn+x7L+3rheOsFs+8YoAF1bDhmsoiAQ4cS7gOSIlJL1UgdWeIVsb
+        Xz54O+GKPfRYycJAV41kZgKhEdXWy4OL3zVLCsdBs5bmf88fr2oYhtWLd2vJmY2X1fmZti
+        tQqW8AMm+3ltZUe1j/qH9q77wfA9cDI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-45-IWrEjwGJMWGbS8l1pLAvaw-1; Wed, 26 Jul 2023 04:07:34 -0400
+X-MC-Unique: IWrEjwGJMWGbS8l1pLAvaw-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-521dd050a78so4510382a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:07:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690358853; x=1690963653;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=doH+Gc+pvfSmMN9JRX0ZHP8FjJCTxeeLb0vPQ04C/z4=;
+        b=LBZVqxAcCfvdGnPTTv1O+QpWGE0PP60pN0oDdSRo/N40rHzMEhAWMoHoG/NL7VGvM5
+         /Ce3R1HT4LakrUXtx1RmMQcbOHF1Y8HR5mV4pi00wR5VZ5i6Iz9cln4cc8sQU3mYNW8b
+         J7c7ExmAjIkCYauUfWLCNnRxp/EDX/rVL1bjgk3F97ql3FnWBsUiEtJ/i1WwfKKF1+7f
+         /7295b5XGl8R5zLf/egYAhFSIGQZ++ymNBOSptxWuDwliDW12BpriUrymcJWkU6xXGWK
+         2mBb2zJgg451ZyL0y35EXLQGy9zRQOfCY6sN9KdSE77tSzmOcPfBSUl69aNts/NXeWXf
+         KpTw==
+X-Gm-Message-State: ABy/qLb3pfH4w0MCec6PbFubfsd8u9wL3mFV68xYQvzhz5eR+MXE+xyt
+        TbBKwRHKz9l5pAXG/9DdQgMSXDBAsY4HEyI5eR/YPaKmFbENpkD6pGKPiOU5dutM3KJKqxVxRlC
+        lZaDgrgGWwxKBogQxEzl8gjaK
+X-Received: by 2002:a05:6402:1246:b0:522:5855:ee78 with SMTP id l6-20020a056402124600b005225855ee78mr964862edw.32.1690358853687;
+        Wed, 26 Jul 2023 01:07:33 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH2XrWgjm/sLJUUbD9LYlxGifKI8T30aaMlr4mQGKC/gjS5LhzfuV5hHjzYlRuIpESGb6pJgQ==
+X-Received: by 2002:a05:6402:1246:b0:522:5855:ee78 with SMTP id l6-20020a056402124600b005225855ee78mr964847edw.32.1690358853344;
+        Wed, 26 Jul 2023 01:07:33 -0700 (PDT)
+Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id x5-20020aa7dac5000000b005221fd1103esm5249650eds.41.2023.07.26.01.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 01:07:32 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 10:07:32 +0200
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Woody Suwalski <terraluna977@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, mst@redhat.com
+Subject: Re: [RFC 0/3] acpipcihp: fix kernel crash on 2nd resume
+Message-ID: <20230726100732.1b9ae446@imammedo.users.ipa.redhat.com>
+In-Reply-To: <46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com>
+References: <20230725113938.2277420-1-imammedo@redhat.com>
+        <88a06e12-600a-a4bd-f216-44753965ce48@gmail.com>
+        <20230725171958.1eacd24e@imammedo.users.ipa.redhat.com>
+        <46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
- Document DRM device reset expectations)
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
-Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-References: <20230627132323.115440-1-andrealmeid@igalia.com>
- <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
- <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
- <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
-Content-Language: de-CH-frami, en-CA
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: c99f3890bef0434ccc7
-X-MBO-RS-META: 7uaxsifuwngj5cyzfa3ngxf83jx37585
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 15:02, André Almeida wrote:
-> Em 25/07/2023 05:03, Michel Dänzer escreveu:
->> On 7/25/23 04:55, André Almeida wrote:
->>> Hi everyone,
->>>
->>> It's not clear what we should do about non-robust OpenGL apps after GPU resets, so I'll try to summarize the topic, show some options and my proposal to move forward on that.
->>>
->>> Em 27/06/2023 10:23, André Almeida escreveu:
->>>> +Robustness
->>>> +----------
->>>> +
->>>> +The only way to try to keep an application working after a reset is if it
->>>> +complies with the robustness aspects of the graphical API that it is using.
->>>> +
->>>> +Graphical APIs provide ways to applications to deal with device resets. However,
->>>> +there is no guarantee that the app will use such features correctly, and the
->>>> +UMD can implement policies to close the app if it is a repeating offender,
->>>> +likely in a broken loop. This is done to ensure that it does not keep blocking
->>>> +the user interface from being correctly displayed. This should be done even if
->>>> +the app is correct but happens to trigger some bug in the hardware/driver.
->>>> +
->>> Depending on the OpenGL version, there are different robustness API available:
->>>
->>> - OpenGL ABR extension [0]
->>> - OpenGL KHR extension [1]
->>> - OpenGL ES extension  [2]
->>>
->>> Apps written in OpenGL should use whatever version is available for them to make the app robust for GPU resets. That usually means calling GetGraphicsResetStatusARB(), checking the status, and if it encounter something different from NO_ERROR, that means that a reset has happened, the context is considered lost and should be recreated. If an app follow this, it will likely succeed recovering a reset.
->>>
->>> What should non-robustness apps do then? They certainly will not be notified if a reset happens, and thus can't recover if their context is lost. OpenGL specification does not explicitly define what should be done in such situations[3], and I believe that usually when the spec mandates to close the app, it would explicitly note it.
->>>
->>> However, in reality there are different types of device resets, causing different results. A reset can be precise enough to damage only the guilty context, and keep others alive.
->>>
->>> Given that, I believe drivers have the following options:
->>>
->>> a) Kill all non-robust apps after a reset. This may lead to lose work from innocent applications.
->>>
->>> b) Ignore all non-robust apps OpenGL calls. That means that applications would still be alive, but the user interface would be freeze. The user would need to close it manually anyway, but in some corner cases, the app could autosave some work or the user might be able to interact with it using some alternative method (command line?).
->>>
->>> c) Kill just the affected non-robust applications. To do that, the driver need to be 100% sure on the impact of its resets.
->>>
->>> RadeonSI currently implements a), as can be seen at [4], while Iris implements what I think it's c)[5].
->>>
->>> For the user experience point-of-view, c) is clearly the best option, but it's the hardest to archive. There's not much gain on having b) over a), perhaps it could be an optional env var for such corner case applications.
->>
->> I disagree on these conclusions.
->>
->> c) is certainly better than a), but it's not "clearly the best" in all cases. The OpenGL UMD is not a privileged/special component and is in no position to decide whether or not the process as a whole (only some thread(s) of which may use OpenGL at all) gets to continue running or not.
->>
-> 
-> Thank you for the feedback. How do you think the documentation should look like for this part?
+On Tue, 25 Jul 2023 11:59:56 -0400
+Woody Suwalski <terraluna977@gmail.com> wrote:
 
-The initial paragraph about robustness should say "keep OpenGL working" instead of "keep an application working". If an OpenGL context stops working, it doesn't necessarily mean the application stops working altogether.
+> Igor Mammedov wrote:
+> > On Tue, 25 Jul 2023 09:51:53 -0400
+> > Woody Suwalski <terraluna977@gmail.com> wrote:
+> > =20
+> >> Igor Mammedov wrote: =20
+> >>> Changelog:
+> >>>     * split out debug patch into a separate one with extra printk add=
+ed
+> >>>     * fixed inverte bus->self check (probably a reason why it didn't =
+work before)
+> >>>
+> >>>
+> >>> 1/3 debug patch
+> >>> 2/3 offending patch
+> >>> 3/3 potential fix
+> >>>    =20
+> >>> I added more files to trace, add following to kernel CLI
+> >>>      dyndbg=3D"file drivers/pci/access.c +p; file drivers/pci/hotplug=
+/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; f=
+ile drivers/pci/setup-bus.c +p; file drivers/acpi/bus.c +p" ignore_loglevel
+> >>>
+> >>> should be applied on top of
+> >>>      e8afd0d9fccc PCI: pciehp: Cancel bringup sequence if card is not=
+ present
+> >>>
+> >>> apply a patch one by one and run testcase + capture dmesg after each =
+patch
+> >>> one shpould endup with 3 dmesg to ananlyse
+> >>>    1st - old behaviour - no crash
+> >>>    2nd - crash
+> >>>    3rd - no crash hopefully
+> >>>
+> >>> Igor Mammedov (3):
+> >>>     acpiphp: extra debug hack
+> >>>     PCI: acpiphp: Reassign resources on bridge if necessary
+> >>>     acpipcihp: use __pci_bus_assign_resources() if bus doesn't have b=
+ridge
+> >>>
+> >>>    drivers/pci/hotplug/acpiphp_glue.c | 23 ++++++++++++++++++-----
+> >>>    1 file changed, 18 insertions(+), 5 deletions(-)
+> >>>    =20
+> >> Actually applying patch1 is already creating the crash (why???), =20
+> > probably it's due to an extra debug line, I've added.
+> > I dropped suspicions one, can you try again and see if it works.
+> > =20
+> >> hence I
+> >> have added also dmesg-6.5-0.txt which shows a working condition based =
+on
+> >> git e8afd0d9fccc level (acpiphp_glue in kernel 6.4)
+> >>
+> >> Patch3 did not fix the issue, it seems that the culprit is somewhere
+> >> else triggered by=C2=A0 "benign" patch1 :-(
+> >>
+> >> Also note about the trigger description in patch3: the dmesg trace on
+> >> Inspiron laptop is collected after the first wake from suspend to ram.
+> >> The consecutive=C2=A0 attempt to sleep results in a frozen system. =20
+> > Thanks for clarification, I'll correct commit message once culprit
+> > is found.
+> > =20
+> Good news. After removing the botched debug statement which was masking=20
+> the original issue, the testing went as you have predicted, and on patch=
+=20
+> 3 system suspends to RAM OK.
+Thanks for confirmation,
+I'll post cleaned up 3/3 patch today.
 
-
-If the application doesn't use the robustness extensions, your option b) is what should happen by default whenever possible. And it really has to be possible if the robustness extensions are supported.
-
-
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+>=20
+> Here are the requested 3 dmesg outputs, #2 is for the bad run.
+>=20
+> I can retest with a final version of the patch once you have it ready...
+>=20
+> Thanks, Woody
+>=20
 
