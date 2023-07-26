@@ -2,85 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DA6763007
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722A9763013
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbjGZIjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S233049AbjGZIku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjGZIiY (ORCPT
+        with ESMTP id S233291AbjGZIkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:38:24 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826E455B5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:28:19 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52256241b76so1937757a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1690360098; x=1690964898;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BNQhgI3bztXsDKLKL9Y51hRanaV6IoqzrzInBKdjpB4=;
-        b=EskMqoHcrf+I1oDvZ7vE+vwdKapI2s4EtPHSd2O6GRmPDAQgEnsg4w2DuFGlJBZkYw
-         ocIssKw1G5HEEK48lpLYg7iG3fHlvnxlherMdtpBvVhh5v4Ga8lpe+w5OLop13ui6ixn
-         AwWFvow+tkZvLjq6RfGsOPqdzy24w//lZGjr0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690360098; x=1690964898;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BNQhgI3bztXsDKLKL9Y51hRanaV6IoqzrzInBKdjpB4=;
-        b=fB2ntxKJ1D75wewegRC9VOTeaI27vPDh+xcWbfYywq5WG74Pc9OV4oHbSI16emLXnn
-         M9AplOxvp5oQCCbMdIqBQIbIF4+o7YQaWnZ2bAj9OLVdceiqhGdOg7xrpEqJTDx55qSR
-         O+bySUpm2QlCWLK+Rx8xFgP2HFgm7EhEVjZj948r9DUw/8QnHhfO/h0SN0gzac+JMwq2
-         sI36esPcFGEBDMiXgg5OuuQ1b4AjxE0bGaHIaoGVzPwrRNgNyF2dnPD5vxctIZBtWVbo
-         jMp9Wj/76aLyWdwhLi7HFVdMZY2HQdBAUW8OWf9gRQgGMrw3wFQGOgrwH16sMq0CF424
-         0bQw==
-X-Gm-Message-State: ABy/qLbvdL+/tzzn6CdJ7dSTj4kqi+RXMzofWPp7Ds5P3TH7HAUS5JzD
-        0j/qedF2c7IdBiESEhM5HKZVlhhoOlcJ3z2LY5dB49aDw3Ho9ZSUH4E=
-X-Google-Smtp-Source: APBJJlGd15R95sOTqLbRdv7fFyc+q6u6i0ZUzRxw/mCnaiFn/PjKBrTza/CNFkF+qTar8yZLD+EHTg1UeDSvSqGEe6o=
-X-Received: by 2002:a05:6402:129a:b0:522:4d1b:3acf with SMTP id
- w26-20020a056402129a00b005224d1b3acfmr841200edv.37.1690360097943; Wed, 26 Jul
- 2023 01:28:17 -0700 (PDT)
+        Wed, 26 Jul 2023 04:40:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D831030DC;
+        Wed, 26 Jul 2023 01:30:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 729CB61874;
+        Wed, 26 Jul 2023 08:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA5EFC433C7;
+        Wed, 26 Jul 2023 08:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690360208;
+        bh=MZlsqwvEaKa/yI517K0J73nbY/02V1t5zyWzamkHD0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lf3Q0IFo+0kftu2Q+mAiF4qDpgo7ZXqFt18LOlsbvcdugsNuXy7AuE9Kdu0oXUKLQ
+         lt8jSGL0UtPI0AQcYCZoF+SRqwEymKlrHrWWM+BBjpXkGG5oEd9fyj/+G4t94pPMAH
+         C1AmgiK2Wv6v/7LVP/ldj9Iw57Ncot1s/HEibpg4Uv470e08UT0BDUX6rwHIscz8UV
+         TcH2Tpj5EOmgHxmWA/IXR6/+uCxDX0dYeTrgRtfYcQdX3Hk03pMfw7zZN6XxBj7acz
+         DUT2ADqXYTuW3ggwvPGUxB/Zst/uiGlgsHxvsTDCc7lBsySB7KyFL8G2nWP2cVa6wh
+         nvsZKOl3Rj3/w==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qOZua-0003qO-1p;
+        Wed, 26 Jul 2023 10:30:24 +0200
+Date:   Wed, 26 Jul 2023 10:30:24 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Sajid Dalvi <sdalvi@google.com>,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Xiaolei Wang <xiaolei.wang@windriver.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] Revert "PCI: dwc: Wait for link up only if link is
+ started"
+Message-ID: <ZMDZoJgBtURn-Vf5@hovoldconsulting.com>
+References: <20230706082610.26584-1-johan+linaro@kernel.org>
+ <20230725200515.GA663333@bhelgaas>
 MIME-Version: 1.0
-References: <20230723150658.241597-1-jdamato@fastly.com> <20230723150658.241597-3-jdamato@fastly.com>
- <d950f4f6-6581-a99f-3375-c0359d45c9f5@gmail.com>
-In-Reply-To: <d950f4f6-6581-a99f-3375-c0359d45c9f5@gmail.com>
-From:   Joe Damato <jdamato@fastly.com>
-Date:   Wed, 26 Jul 2023 11:28:06 +0300
-Message-ID: <CALALjgwVj4ZQ351djbSTqbzVDWPrmJxX7yXweYKXbTtLz0aZ9w@mail.gmail.com>
-Subject: Re: [net 2/2] net/mlx5: Fix flowhash key set/get for custom RSS
-To:     Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     netdev@vger.kernel.org, saeedm@nvidia.com, ecree@solarflare.com,
-        andrew@lunn.ch, kuba@kernel.org, davem@davemloft.net,
-        leon@kernel.org, pabeni@redhat.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725200515.GA663333@bhelgaas>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 12:59:32PM +0300, Tariq Toukan wrote:
->
->
-> On 23/07/2023 18:06, Joe Damato wrote:
-> >mlx5 flow hash field retrieval and set only worked on the default
-> >RSS context, not custom RSS contexts.
-> >
-> >For example, before this patch attempting to retrieve the flow hash fields
-> >for RSS context 1 fails:
-> >
->
-> Hi,
->
-> You are adding new driver functionality, please take it through net-next.
+On Tue, Jul 25, 2023 at 03:05:15PM -0500, Bjorn Helgaas wrote:
+> [+cc Fabio, Xiaolei, Jon]
+> 
+> On Thu, Jul 06, 2023 at 10:26:10AM +0200, Johan Hovold wrote:
+> > This reverts commit da56a1bfbab55189595e588f1d984bdfb5cf5924.
+> > 
+> > A recent commit broke controller probe by returning an error in case the
+> > link does not come up during host initialisation.
+> > 
+> > As explained in commit 886a9c134755 ("PCI: dwc: Move link handling into
+> > common code") and as indicated by the comment "Ignore errors, the link
+> > may come up later" in the code, waiting for link up and ignoring errors
+> > is the intended behaviour:
+> > 
+> > 	 Let's standardize this to succeed as there are usecases where
+> > 	 devices (and the link) appear later even without hotplug. For
+> > 	 example, a reconfigured FPGA device.
+> > 
+> > Reverting the offending commit specifically fixes a regression on
+> > Qualcomm platforms like the Lenovo ThinkPad X13s which no longer reach
+> > the interconnect sync state if a slot does not have a device populated
+> > (e.g. an optional modem).
+> > 
+> > Note that enabling asynchronous probing by default as was done for
+> > Qualcomm platforms by commit c0e1eb441b1d ("PCI: qcom: Enable async
+> > probe by default"), should take care of any related boot time concerns.
+> > 
+> > Finally, note that the intel-gw driver is the only driver currently not
+> > providing a start_link callback and instead starts the link in its
+> > host_init callback, and which may avoid an additional one-second timeout
+> > during probe by making the link-up wait conditional. If anyone cares,
+> > that can be done in a follow-up patch with a proper motivation.
+> > 
+> > Fixes: da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started")
+> > Reported-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > Cc: Sajid Dalvi <sdalvi@google.com>
+> > Cc: Ajay Agarwal <ajayagarwal@google.com>
+> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> 
+> da56a1bfbab5 appeared in v6.5-rc1, so we should definitely fix this
+> before v6.5.
+> 
+> Based on the conversation here, I applied this to for-linus for v6.5.
+> 
+> I looked for Bjorn A's report but couldn't find it; I'd like to
+> include the URL if there is one.  I did add the reports from Fabio
+> Estevam, Xiaolei Wang, and Jon Hunter (Fabio and Xiaolei even included
+> patches).
 
-Thanks for reviewing the code I sent; I made the changes you requested and
-sent a v2, but through net-next this time.
+Bjorn only mentioned to me off-list that that something was wrong with
+PCI in linux-next and that it prevented us from reaching the sync state.
+So there is no URL to a public report to link to.
+
+> Current commit log, corrections/additions welcome:
+> 
+>   This reverts commit da56a1bfbab55189595e588f1d984bdfb5cf5924.
+> 
+>   Bjorn Andersson, Fabio Estevam, Xiaolei Wang, and Jon Hunter reported that
+>   da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started") broke
+>   controller probing by returning an error in case the link does not come up
+>   during host initialisation, e.g., when the slot is empty.
+
+I think that adding the corresponding Reported-by tags and Links after
+my SoB below should be enough to credit reports that I was not aware of
+when investigating this.
+
+But if you decide to rewrite this paragraph, then please spell out "for
+example" as I would not use "e.g." outside of parentheses.
+
+>   As explained in commit 886a9c134755 ("PCI: dwc: Move link handling into
+>   common code") and as indicated by the comment "Ignore errors, the link may
+>   come up later" in the code, waiting for link up and ignoring errors is the
+>   intended behaviour:
+> 
+>     Let's standardize this to succeed as there are usecases where devices
+>     (and the link) appear later even without hotplug. For example, a
+>     reconfigured FPGA device.
+> 
+>   Reverting the offending commit specifically fixes a regression on Qualcomm
+>   platforms like the Lenovo ThinkPad X13s which no longer reach the
+>   interconnect sync state if a slot does not have a device populated (e.g. an
+>   optional modem).
+> 
+>   Note that enabling asynchronous probing by default as was done for Qualcomm
+>   platforms by commit c0e1eb441b1d ("PCI: qcom: Enable async probe by
+>   default"), should take care of any related boot time concerns.
+> 
+>   Finally, note that the intel-gw driver is the only driver currently not
+>   providing a .start_link() callback and instead starts the link in its
+>   .host_init() callback, which may avoid an additional one-second timeout
+>   during probe by making the link-up wait conditional. If anyone cares, that
+>   can be done in a follow-up patch with a proper motivation.
+> 
+>   [bhelgaas: add Fabio Estevam, Xiaolei Wang, Jon Hunter reports]
+>   Fixes: da56a1bfbab5 ("PCI: dwc: Wait for link up only if link is started")
+>   Link: https://lore.kernel.org/r/20230704122635.1362156-1-festevam@gmail.com/
+>   Link: https://lore.kernel.org/r/20230705010624.3912934-1-xiaolei.wang@windriver.com/
+>   Link: https://lore.kernel.org/r/6ca287a1-6c7c-7b90-9022-9e73fb82b564@nvidia.com
+>   Link: https://lore.kernel.org/r/20230706082610.26584-1-johan+linaro@kernel.org
+>   Reported-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+>   Reported-by: Fabio Estevam <festevam@gmail.com>
+>   Reported-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+>   Reported-by: Jon Hunter <jonathanh@nvidia.com>
+>   Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+>   Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>   Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>   Cc: Sajid Dalvi <sdalvi@google.com>
+>   Cc: Ajay Agarwal <ajayagarwal@google.com>
+
+Looks like you've "sorted" the trailers here instead of keeping the
+temporal order (which would make it more clear what you added after I
+posted the patch) and adding each Link after its corresponding
+Reported-by tag (e.g. as suggested by checkpatch these days).
+
+Johan
