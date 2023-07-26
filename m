@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0A2762B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61E8762B80
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjGZG1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
+        id S231299AbjGZGd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbjGZG1G (ORCPT
+        with ESMTP id S230289AbjGZGdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:27:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A69713E;
-        Tue, 25 Jul 2023 23:27:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC2D4615D5;
-        Wed, 26 Jul 2023 06:27:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94C10C433C8;
-        Wed, 26 Jul 2023 06:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690352824;
-        bh=upPRTBdQI2wH9eTqLVZgmtXfPMny6sYV8ZuTbavkfn4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fv9q5ZqVJ36qpYD6nJaBTYoyKJANH6Uyjo+MX8d/7K8LKhRtiqX0v3zl0vegmmJ5U
-         gr8L7WicKs/RvyOdAnD/4dadB6QNKZHo9BE0A2RO+PUgUBFZXIckrNlR41HhMu96AA
-         D2wGEhHUISY/MMi3YWVyRINWUCMh96+iWMcqS2nYEbeJho9fUa4u0rrUfxF05etIrT
-         6eJcqIxMKlJNfYT7jy3WwFUSJ19gp3qPvIvj1kAJxYETY8hCaFK/Nt5iuPenSU+w4d
-         XGCyAKj3M9ZeA6LPV1cdybuZvrnpXhGuzCf6y513lVjH4QKO9pqu2WubOX9f4WyWN4
-         2RWMIk59eHf8w==
-Date:   Tue, 25 Jul 2023 23:30:17 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>
-Cc:     srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
-        stable <stable@kernel.org>
-Subject: Re: [PATCH v2] misc: fastrpc: Fix incorrect DMA mapping unmap request
-Message-ID: <zo6wjmqolvnla7x24qguh6rbjpf7l62vmckxhy3nps7hhaljdr@kyoh6xedhxaq>
-References: <1690182571-7348-1-git-send-email-quic_ekangupt@quicinc.com>
+        Wed, 26 Jul 2023 02:33:54 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEA81FF2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:33:52 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52227142a27so4555417a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690353230; x=1690958030;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MZgSHgs+DaEu5YKeJ7xYroSTsKzuw+qbovR9q1BksYk=;
+        b=NaBZnXsxeuQzuczGqtwCBX1JMo5/AIwWPrRzlQV8QJaimiIAHSQsOIuaYcJjRxy1Z5
+         Q1UWMcH8xX5l22eNgWA/GbI+x3joki79DVJBtDuNur0X8xfbhlhbqeIgWxI0grb/JA2M
+         C24RvYntdb5GQliZBLWZDreB5mFr0eJtLAr0+YUIxnroqi9XLSOrmgh/JX2kGFtgkiRw
+         VxWo5BbGMVGiPFxS6O3eFR7+ZMESRuUDjOlJOCc4z2Co2cqR0UQLB+eMlw3cqEZZSMfX
+         TSK5V+jxjrsLvD1tVaRfO5oxGhLWk03ll+e1lulIhT8+GiPpwGKLv8pTRptqC81fck/7
+         1Lvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690353230; x=1690958030;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MZgSHgs+DaEu5YKeJ7xYroSTsKzuw+qbovR9q1BksYk=;
+        b=WpM84RSCLjKUvEuwKcscdxUd+lyps7J++/wiM+TtziZIl1G7hq9HlQWScvZhMrm/QT
+         c9nFbYEBjQyyz3r60jSG5gy+WA0mGkhy6ubolB9K8owl4+Ls9qYLRf4x6cw4XuoKNyOl
+         TYGR1CxPboUO12kfgcyZiAHld0huLWQZUZ3g1jD3FDJX5BM2KWUnZB0WUfmeaCD49oMg
+         tO7dsrTP0UeMzrPViIbHuQ33H6A4pzXUe+gQdltk3t8spf3T7ULJbwQYpE+ipIV1IHJl
+         fnAh2ICl40/Nwiw+1TIUpv83Zt5UOtDbX/MH4Tq6+AyMKiLNeGsMcmlFvB+p6rfMOVrY
+         N8TQ==
+X-Gm-Message-State: ABy/qLa7wU+abe0biY6oCfxtXDWO13G7ZyIczO4qkb+qn1SlFDpILEOl
+        m4Y8BaYWvfNn9MMk6USXcmhHow==
+X-Google-Smtp-Source: APBJJlEqrM14tJfMA+TcQHw7fvQjjF0gb0G1lKIEdzmcSA/W2bZSmpfQbJgqHftRJIIo5i2M02/PaQ==
+X-Received: by 2002:aa7:d958:0:b0:522:3ebc:84b9 with SMTP id l24-20020aa7d958000000b005223ebc84b9mr776848eds.24.1690353230229;
+        Tue, 25 Jul 2023 23:33:50 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id q2-20020a056402032200b0051d9de03516sm8450368edw.52.2023.07.25.23.33.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 23:33:49 -0700 (PDT)
+Message-ID: <30d0689f-5a6a-c593-2a30-1ef2dc37f1af@linaro.org>
+Date:   Wed, 26 Jul 2023 08:33:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690182571-7348-1-git-send-email-quic_ekangupt@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] media: dt-bindings: drop unneeded status from examples
+Content-Language: en-US
+To:     Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230725101625.75162-1-krzysztof.kozlowski@linaro.org>
+ <e8138fd1-5d1f-8fc3-e29a-547902c2ab18@foss.st.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <e8138fd1-5d1f-8fc3-e29a-547902c2ab18@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 12:39:31PM +0530, Ekansh Gupta wrote:
-> Scatterlist table is obtained during map create request and the same
-
-I'm guessing that this all happens in fastrpc_map_create() where:
-
-  map->table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
-
-fails, we jump to map_err, and then call fastrpc_map_put(map), which
-then ends up in the code below?
-
-> table is used for DMA mapping unmap. In case there is any failure
-> while getting the sg_table, ERR_PTR is returned instead of sg_table.
-
-The problem isn't that ERR_PTR() is being returned, the problem is that
-this is being assigned to map->table and you keep running.
-
+On 25/07/2023 12:55, Benjamin Mugnier wrote:
+> Hi Krzysztof,
 > 
-> When the map is getting freed, there is only a non-NULL check of
-> sg_table which will also be true in case failure was returned instead
-> of sg_table. This would result in improper unmap request. Add proper
-> check to avoid bad unmap request.
+> Thank you for your patch.
 > 
-> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
-> Cc: stable <stable@kernel.org>
-> Tested-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+> For the st-mipid02 :
+> Reviewed-By: Benjamin Mugnier <benjamin.mugnier@foss.st.com>
 
-You always test your own patches, so no need to declare this.
+I don't think we have half-reviews. There are half-acks, but not reviews.
 
-> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> ---
-> Changes in v2:
->   - Added fixes information to commit text
-> 
->  drivers/misc/fastrpc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index 9666d28..75da69a 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -313,7 +313,7 @@ static void fastrpc_free_map(struct kref *ref)
->  
->  	map = container_of(ref, struct fastrpc_map, refcount);
->  
-> -	if (map->table) {
-> +	if (map->table && !IS_ERR(map->table)) {
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L542
 
-Rather than carrying around an IS_ERR(map->table), I think you should
-address this at the originating place. E.g. assign the return value of
-the dma_buf_map_attachment_unlocked() to a local variable and only if it
-is valid you assign map->table. Or perhaps make it NULL in the error
-path.
+Best regards,
+Krzysztof
 
-Regards,
-Bjorn
-
->  		if (map->attr & FASTRPC_ATTR_SECUREMAP) {
->  			struct qcom_scm_vmperm perm;
->  			int vmid = map->fl->cctx->vmperms[0].vmid;
-> -- 
-> 2.7.4
-> 
