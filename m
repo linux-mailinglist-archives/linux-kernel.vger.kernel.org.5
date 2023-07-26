@@ -2,161 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F55762A4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC1E762A51
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjGZE2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 00:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
+        id S232019AbjGZE2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 00:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbjGZE1k (ORCPT
+        with ESMTP id S232065AbjGZE1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 00:27:40 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BBB1FF2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:26:26 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34617b29276so1468815ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1690345586; x=1690950386;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lavfuE2py63kVqVG37hnlHpSBQOco6qEbPDbyiaGHr8=;
-        b=KqNnFaBvS8w7I7Srdl6Jvzm1b1m8LmOq6bK3MqaoIGO2Jsq06v9TC8TZKZ/LI8J5wR
-         6G2uTZ5CofCxhiBDp8OUDQd4uGKXq+Ghy2JQLWqdNQaSuf3sx3bg+KWKkXxjuGn1k6Ns
-         UAv/ymipwkhEjgru0+r9KINywii/CVWwNkj99dIaqLBjW8xQ59aBZs53xoxVyyhcAHXG
-         /F435bvD/JsfH7CxoLctneRrgi3Cx0VedSUIQ6syZ8+BbEoPh+mVGrW1ugwLiHPeIb/Q
-         fryDob8lF1DUfKrl6BRvkBu1j9fUe6VHD9dwTt7rDNExgRE09b0GNE59iwA8dgsQAceg
-         7m0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690345586; x=1690950386;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lavfuE2py63kVqVG37hnlHpSBQOco6qEbPDbyiaGHr8=;
-        b=iFdwBfzws/LKig8T3SKakIsG/9V9sQCN4STtiCiRBlzJTHV4rSfA8UKpNO3ftgKYA8
-         ZPChLvF4KwQcPKS0uvO+SIeIU+ftug1kFDATDqARTf6CTJpqVFHbsZc3PjqT26mksrW4
-         V3DuqWIfV9XBQNB9fJO2Y2TVXSRn6zc2OaR1fbAG5KndBSguL41ulkyj876fRJXSQnIO
-         wVJs2oJQnoYrEJw8Ko6waO7/d2xPQLXxnhRgota/ZLEaYda13o61O7UMh7j3rKhBvvzY
-         aJizRw6iUSqApv5aKeomV6UHfUO645L15NuHu2kX0ohZXQZ2rzD8rhcF17QwgGj4GPTb
-         H9RQ==
-X-Gm-Message-State: ABy/qLYy7GAYwYmukcWs2MSR10xfSaZcfQBzI1GpSdf4uAuCp6hknGIp
-        3S/mXZ5QQn9XFo/1i38dIyduGPAxtvwNCe8egyUVIw==
-X-Google-Smtp-Source: APBJJlHvcJ/8Fz022/unHWa1t7PeKP7/pURtkJm4fhXV77/BJ2s2iC9flzceWDnwDO/a8UM371CQfe7YxffPrAH9qk8=
-X-Received: by 2002:a05:6e02:1c2a:b0:346:63f1:a96f with SMTP id
- m10-20020a056e021c2a00b0034663f1a96fmr3000190ilh.2.1690345585840; Tue, 25 Jul
- 2023 21:26:25 -0700 (PDT)
+        Wed, 26 Jul 2023 00:27:53 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A22082D48;
+        Tue, 25 Jul 2023 21:26:52 -0700 (PDT)
+Received: from [10.171.20.65] (unknown [167.220.238.65])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 828E22380B17;
+        Tue, 25 Jul 2023 21:26:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 828E22380B17
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1690345612;
+        bh=eSSFE37BQmdV3L+lRN6zp4WJzj2Rij++NeZzBS9Ss18=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NUbkG6N/qUDaTVwL9jnj7ui1eZdAUrlBVfgO9lR4L4yeg6xMsLL+Mke/nHxZAIWwe
+         LMTsUWfsjCwmyBGhvkOh85DG1KQECCboYHoQTuMQwEop/imCW01vVXFQzfGk/gDLcp
+         7xCt93YJAuZOfKXJpuXDmP3NGKu/RPKcC0moGjPg=
+Message-ID: <4d0715a5-70a8-9667-ccf0-de9bc933bb04@linux.microsoft.com>
+Date:   Wed, 26 Jul 2023 09:56:45 +0530
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com>
- <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
- <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
- <CAK9=C2XoQjPzZ5yB5jfTbee4-Pb8GgFAZRbfcMwMk9pyo39WxQ@mail.gmail.com>
- <CANXhq0q7R9Srx6U=fReq7LDLFgW6rMmjKH=o6MzDT5AWNRXP6w@mail.gmail.com> <592edb17-7fa4-3b5b-2803-e8c50c322eee@linux.intel.com>
-In-Reply-To: <592edb17-7fa4-3b5b-2803-e8c50c322eee@linux.intel.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Wed, 26 Jul 2023 12:26:14 +0800
-Message-ID: <CANXhq0pS_=YxgrxSKbdfrFdGcBduzk3LTyC4vp_hqoJTbX3e0g@mail.gmail.com>
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 7/9] x86/hyperv: Initialize cpu and memory for SEV-SNP
+ enlightened guest
+Content-Language: en-US
+To:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        michael.h.kelley@microsoft.com
+Cc:     Tianyu Lan <tiala@microsoft.com>, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, Michael Kelley <mikelley@microsoft.com>
+References: <20230718032304.136888-1-ltykernel@gmail.com>
+ <20230718032304.136888-8-ltykernel@gmail.com>
+From:   Jinank Jain <jinankjain@linux.microsoft.com>
+In-Reply-To: <20230718032304.136888-8-ltykernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:21=E2=80=AFAM Baolu Lu <baolu.lu@linux.intel.com=
-> wrote:
->
-> On 2023/7/24 21:23, Zong Li wrote:
-> >>>>> In RISC-V IOMMU, certain devices can be set to bypass mode when the
-> >>>>> IOMMU is in translation mode. To identify the devices that require
-> >>>>> bypass mode by default, does it be sensible to add a property to
-> >>>>> indicate this behavior?
-> >>>> Bypass mode for a device is a property of that device (similar to dm=
-a-coherent)
-> >>>> and not of the IOMMU. Other architectures (ARM and x86) never added =
-such
-> >>>> a device property for bypass mode so I guess it is NOT ADVISABLE to =
-do it.
-> >>>>
-> >>>> If this is REALLY required then we can do something similar to the Q=
-COM
-> >>>> SMMU driver where they have a whitelist of devices which are allowed=
- to
-> >>>> be in bypass mode (i.e. IOMMU_DOMAIN_IDENTITY) based their device
-> >>>> compatible string and any device outside this whitelist is blocked b=
-y default.
-> >>>>
-> >>> I have considered that adding the property of bypass mode to that
-> >>> device would be more appropriate. However, if we want to define this
-> >>> property for the device, it might need to go through the generic IOMM=
-U
-> >>> dt-bindings, but I'm not sure if other IOMMU devices need this. I am
-> >>> bringing up this topic here because I would like to explore if there
-> >>> are any solutions on the IOMMU side, such as a property that indicate=
-s
-> >>> the phandle of devices wishing to set bypass mode, somewhat similar t=
-o
-> >>> the whitelist you mentioned earlier. Do you think we should address
-> >>> this? After all, this is a case of RISC-V IOMMU supported.
-> >> Bypass mode is a common feature across IOMMUs. Other IOMMUs don't
-> >> have a special property for bypass mode at device-level or at IOMMU le=
-vel,
-> >> which clearly indicates that defining a RISC-V specific property is no=
-t the
-> >> right way to go.
-> >>
-> >> The real question is how do we set IOMMU_DOMAIN_IDENTITY (i.e.
-> >> bypass/identity domain) as the default domain for certain devices ?
-> >>
-> >> One possible option is to implement def_domain_type() IOMMU operation
-> >> for RISC-V IOMMU which will return IOMMU_DOMAIN_IDENTITY for
-> >> certain devices based on compatible string matching (i.e. whitelist of
-> >> devices). As an example, refer qcom_smmu_def_domain_type()
-> >> of drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >>
-> > That is indeed one way to approach it, and we can modify the
-> > compatible string when we want to change the mode. However, it would
-> > be preferable to explore a more flexible approach to achieve this
-> > goal. By doing so, we can avoid hard coding anything in the driver or
-> > having to rebuild the kernel  whenever we want to change the mode for
-> > certain devices. While I have considered extending a cell in the
-> > 'iommus' property to indicate a device's desire to set bypass mode, it
-> > doesn't comply with the iommu documentation and could lead to
-> > ambiguous definitions.
->
-> Hard coding the matching strings in the iommu driver is definitely not a
-> preferable way. A feasible solution from current code's point of view is
-> that platform opt-in the device's special requirements through DT or
-> ACPI. And in the def_domain_type callback, let the iommu core know that,
-> hence it can allocate a right type of domain for the device.
->
-> Thoughts?
->
+Hi Tianyu,
 
-It would be nice if we can deal with it at this time. As we discussed
-earlier, we might need to consider how to indicate that, such as
-putting a property in device side or iommu side, and whether we need
-to define it in generic dt-binding instead of RISC-V specific
-dt-binding.
+On 7/18/2023 8:53 AM, Tianyu Lan wrote:
+> From: Tianyu Lan <tiala@microsoft.com>
+>
+> Hyper-V enlightened guest doesn't have boot loader support.
+> Boot Linux kernel directly from hypervisor with data (kernel
+> image, initrd and parameter page) and memory for boot up that
+> is initialized via AMD SEV PSP protocol (Please reference
+> Section 4.5 Launching a Guest of [1]).
+>
+> Kernel needs to read processor and memory info from EN_SEV_
+> SNP_PROCESSOR/MEM_INFO_ADDR address which are populated by
+> Hyper-V. The data is prepared by hypervisor via SNP_
+> LAUNCH_UPDATE with page type SNP_PAGE_TYPE_UNMEASURED and
+> Initialize smp cpu related ops, validate system memory and
+> add them into e820 table.
+>
+> [1]: https://www.amd.com/system/files/TechDocs/56860.pdf
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Signed-off-by: Tianyu Lan <tiala@microsoft.com>
+> ---
+> Change since v2:
+> 	* Update change log.
+> ---
+>   arch/x86/hyperv/ivm.c           | 93 +++++++++++++++++++++++++++++++++
+>   arch/x86/include/asm/mshyperv.h | 17 ++++++
+>   arch/x86/kernel/cpu/mshyperv.c  |  3 ++
+>   3 files changed, 113 insertions(+)
+>
+> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+> index b2b5cb19fac9..ede47c8264e0 100644
+> --- a/arch/x86/hyperv/ivm.c
+> +++ b/arch/x86/hyperv/ivm.c
+> @@ -18,6 +18,11 @@
+>   #include <asm/mshyperv.h>
+>   #include <asm/hypervisor.h>
+>   #include <asm/mtrr.h>
+> +#include <asm/coco.h>
+> +#include <asm/io_apic.h>
+> +#include <asm/sev.h>
+> +#include <asm/realmode.h>
+> +#include <asm/e820/api.h>
+>   
+>   #ifdef CONFIG_AMD_MEM_ENCRYPT
+>   
+> @@ -58,6 +63,8 @@ union hv_ghcb {
+>   
+>   static u16 hv_ghcb_version __ro_after_init;
+>   
+> +static u32 processor_count;
+> +
+>   u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size)
+>   {
+>   	union hv_ghcb *hv_ghcb;
+> @@ -357,6 +364,92 @@ static bool hv_is_private_mmio(u64 addr)
+>   	return false;
+>   }
+>   
+> +static __init void hv_snp_get_smp_config(unsigned int early)
+> +{
+> +	/*
+> +	 * The "early" parameter can be true only if old-style AMD
+> +	 * Opteron NUMA detection is enabled, which should never be
+> +	 * the case for an SEV-SNP guest.  See CONFIG_AMD_NUMA.
+> +	 * For safety, just do nothing if "early" is true.
+> +	 */
+> +	if (early)
+> +		return;
+> +
+> +	/*
+> +	 * There is no firmware and ACPI MADT table support in
+> +	 * in the Hyper-V SEV-SNP enlightened guest. Set smp
+> +	 * related config variable here.
+> +	 */
+> +	while (num_processors < processor_count) {
+> +		early_per_cpu(x86_cpu_to_apicid, num_processors) = num_processors;
+> +		early_per_cpu(x86_bios_cpu_apicid, num_processors) = num_processors;
+> +		physid_set(num_processors, phys_cpu_present_map);
+> +		set_cpu_possible(num_processors, true);
+> +		set_cpu_present(num_processors, true);
+> +		num_processors++;
+> +	}
+> +}
+> +
+> +__init void hv_sev_init_mem_and_cpu(void)
+> +{
+> +	struct memory_map_entry *entry;
+> +	struct e820_entry *e820_entry;
+> +	u64 e820_end;
+> +	u64 ram_end;
+> +	u64 page;
+> +
+> +	/*
+> +	 * Hyper-V enlightened snp guest boots kernel
+> +	 * directly without bootloader. So roms, bios
+> +	 * regions and reserve resources are not available.
+> +	 * Set these callback to NULL.
+> +	 */
+> +	x86_platform.legacy.rtc			= 0;
+> +	x86_platform.legacy.reserve_bios_regions = 0;
+> +	x86_platform.set_wallclock		= set_rtc_noop;
+> +	x86_platform.get_wallclock		= get_rtc_noop;
+> +	x86_init.resources.probe_roms		= x86_init_noop;
+> +	x86_init.resources.reserve_resources	= x86_init_noop;
+> +	x86_init.mpparse.find_smp_config	= x86_init_noop;
+> +	x86_init.mpparse.get_smp_config		= hv_snp_get_smp_config;
+> +
+> +	/*
+> +	 * Hyper-V SEV-SNP enlightened guest doesn't support ioapic
+> +	 * and legacy APIC page read/write. Switch to hv apic here.
+> +	 */
+> +	disable_ioapic_support();
 
-> Best regards,
-> baolu
+Where are we switching hv_apic? May I am missing something here?
+
+Also in my experiments I have seen that if we don't enable I/O Apic 
+legacy serial console does not seem to work for SEV-SNP guests.
+
+> +
+> +	/* Get processor and mem info. */
+> +	processor_count = *(u32 *)__va(EN_SEV_SNP_PROCESSOR_INFO_ADDR);
+> +	entry = (struct memory_map_entry *)__va(EN_SEV_SNP_MEM_INFO_ADDR);
+> +
+> +	/*
+> +	 * There is no bootloader/EFI firmware in the SEV SNP guest.
+> +	 * E820 table in the memory just describes memory for kernel,
+> +	 * ACPI table, cmdline, boot params and ramdisk. The dynamic
+> +	 * data(e.g, vcpu number and the rest memory layout) needs to
+> +	 * be read from EN_SEV_SNP_PROCESSOR_INFO_ADDR.
+> +	 */
+> +	for (; entry->numpages != 0; entry++) {
+> +		e820_entry = &e820_table->entries[
+> +				e820_table->nr_entries - 1];
+> +		e820_end = e820_entry->addr + e820_entry->size;
+> +		ram_end = (entry->starting_gpn +
+> +			   entry->numpages) * PAGE_SIZE;
+> +
+> +		if (e820_end < entry->starting_gpn * PAGE_SIZE)
+> +			e820_end = entry->starting_gpn * PAGE_SIZE;
+> +
+> +		if (e820_end < ram_end) {
+> +			pr_info("Hyper-V: add e820 entry [mem %#018Lx-%#018Lx]\n", e820_end, ram_end - 1);
+> +			e820__range_add(e820_end, ram_end - e820_end,
+> +					E820_TYPE_RAM);
+> +			for (page = e820_end; page < ram_end; page += PAGE_SIZE)
+> +				pvalidate((unsigned long)__va(page), RMP_PG_SIZE_4K, true);
+> +		}
+> +	}
+> +}
+> +
+>   void __init hv_vtom_init(void)
+>   {
+>   	/*
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index 025eda129d99..e57df590846a 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -50,6 +50,21 @@ extern bool hv_isolation_type_en_snp(void);
+>   
+>   extern union hv_ghcb * __percpu *hv_ghcb_pg;
+>   
+> +/*
+> + * Hyper-V puts processor and memory layout info
+> + * to this address in SEV-SNP enlightened guest.
+> + */
+> +#define EN_SEV_SNP_PROCESSOR_INFO_ADDR  0x802000
+> +#define EN_SEV_SNP_MEM_INFO_ADDR	0x802018
+> +
+> +struct memory_map_entry {
+> +	u64 starting_gpn;
+> +	u64 numpages;
+> +	u16 type;
+> +	u16 flags;
+> +	u32 reserved;
+> +};
+> +
+>   int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
+>   int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
+>   int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags);
+> @@ -234,12 +249,14 @@ void hv_ghcb_msr_read(u64 msr, u64 *value);
+>   bool hv_ghcb_negotiate_protocol(void);
+>   void __noreturn hv_ghcb_terminate(unsigned int set, unsigned int reason);
+>   void hv_vtom_init(void);
+> +void hv_sev_init_mem_and_cpu(void);
+>   #else
+>   static inline void hv_ghcb_msr_write(u64 msr, u64 value) {}
+>   static inline void hv_ghcb_msr_read(u64 msr, u64 *value) {}
+>   static inline bool hv_ghcb_negotiate_protocol(void) { return false; }
+>   static inline void hv_ghcb_terminate(unsigned int set, unsigned int reason) {}
+>   static inline void hv_vtom_init(void) {}
+> +static inline void hv_sev_init_mem_and_cpu(void) {}
+>   #endif
+>   
+>   extern bool hv_isolation_type_snp(void);
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 5398fb2f4d39..d3bb921ee7fe 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -529,6 +529,9 @@ static void __init ms_hyperv_init_platform(void)
+>   	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
+>   		mark_tsc_unstable("running on Hyper-V");
+>   
+> +	if (hv_isolation_type_en_snp())
+> +		hv_sev_init_mem_and_cpu();
+> +
+>   	hardlockup_detector_disable();
+>   }
+>   
+
+Regards,
+
+Jinank
+
