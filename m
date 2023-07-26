@@ -2,224 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B39763C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1852D763C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjGZQKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S232018AbjGZQKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjGZQK1 (ORCPT
+        with ESMTP id S231472AbjGZQKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:10:27 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221DD1FCF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:10:24 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-403e7472b28so49806801cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690387823; x=1690992623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K7viDi95/DtqS7YumhA/QRcfR2/DcATgamUSnc6vM2A=;
-        b=sxj07bNcg5678Si4gdEEp+WW40Oh8OI/eqiNU57JICAoq/E0Moh1ql4Pa0rJCD5mXQ
-         owdUb7eyP+YcKFu9dUnu4PnUQ1PmNYO06AVBi6/Nq1AJjmy0x9dpbxtZCwdMGx8tDzkR
-         u9NWYslhaCMLBzgQIrcdD92wnxlUg+s93/lZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690387823; x=1690992623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K7viDi95/DtqS7YumhA/QRcfR2/DcATgamUSnc6vM2A=;
-        b=UH/ZFtv3tWLg0DW4ysd0dsq5URbSjRJHspac2vlsddLKyROHUso2UyYCVX9eJK73Fp
-         jKoZDH8GimFfduUa4nfrl0sLnqIlQ/c27JbSiVJNYLMEkEIwNXgKrW1ee1W1iXmwTDy7
-         T5wXX7i3Nt5TxVP4b2SXEpZJuhxFez+g3ViHEAIDGSJSmFnuiq/RmNZVcrDxoahArFqy
-         YsfhN0rcvwROtKSuBvqO/YvuUJLl0OAia+CQBpDeK8XZjhcxUH8qESGDNv7U7QQOfyiW
-         ahVLexYoU8o8x4Ry/IBOp+3REBy/g4yhNWYjztN1LCV8ShHAFUP0ows1L2mn4KrUeWRq
-         Ug7w==
-X-Gm-Message-State: ABy/qLbgJ380ZgZZPSF/H7y95wVXgPH35GMnbh+urD7bW9nPJIyNxPb4
-        FpkKFxcw7Jbt489PWF+aI/4MLw==
-X-Google-Smtp-Source: APBJJlFVm/mD0dcIslde2+vo1h0MzL3tM9Znqz5P9eLlBAcDjqJloXRDQy5GwhCsjZ2SScRq8TUP2A==
-X-Received: by 2002:ac8:5c02:0:b0:403:a63d:9a2e with SMTP id i2-20020ac85c02000000b00403a63d9a2emr3018341qti.10.1690387823149;
-        Wed, 26 Jul 2023 09:10:23 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id fb14-20020a05622a480e00b003f7fd3ce69fsm4902747qtb.59.2023.07.26.09.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 09:10:22 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 09:10:20 -0700
-From:   Yan Zhai <yan@cloudflare.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-Message-ID: <ZMFFbChK/66/8XZd@debian.debian>
-References: <cover.1690332693.git.yan@cloudflare.com>
- <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
- <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
- <ZMEqYOOBc1ZNcEER@debian.debian>
- <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
+        Wed, 26 Jul 2023 12:10:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88924E69;
+        Wed, 26 Jul 2023 09:10:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1177161B98;
+        Wed, 26 Jul 2023 16:10:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA26C433C8;
+        Wed, 26 Jul 2023 16:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690387835;
+        bh=qhh+3j8N6q6NVAAvJRPIR8+pO3TF/9D0pqLuDATiMAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hbLIuZJ5cKJWKw0PxRddMDu7C0WukuzT1O2DRtIHr+Lx+bT/vQNcoohdpANr+yqhL
+         NA7jomWdrEr/qLXCoFD28mKU9qXAY0YyPUeLiqhK8u/vuAgkFT0MXPsW5LjISoI06Y
+         dfSGQQTeQAwh7lAbJ9YnKgx856uZhZy4BoVm4ahnJYXM+1lM+Hy6IjLD4Xta26OUrw
+         eGV+1VESWYE4NcGq3NbRJuwKKWqtUmUQuPgzbt96mVeytVTclTlMHbHgO5Dp6S0tQd
+         4cKgIqQ4BwrA8wnKlcTa5j2bFjRC9nsrTDJKYRx6IGm/ij9D3Vd2cSXypGYJSmr/QV
+         IJrpU4ESz9g3w==
+Date:   Wed, 26 Jul 2023 09:10:33 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Okan Sahin <okan.sahin@analog.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v3 2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831
+ Regulator Support
+Message-ID: <20230726161033.GA1102409@dev-arch.thelio-3990X>
+References: <20230717050736.10075-1-okan.sahin@analog.com>
+ <20230717050736.10075-3-okan.sahin@analog.com>
+ <20230718155502.GA3542993@dev-arch.thelio-3990X>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230718155502.GA3542993@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 06:01:00PM +0300, Dan Carpenter wrote:
-> On Wed, Jul 26, 2023 at 07:14:56AM -0700, Yan Zhai wrote:
-> > On Wed, Jul 26, 2023 at 04:39:08PM +0300, Dan Carpenter wrote:
-> > > I'm not positive I understand the code in ip_finish_output2().  I think
-> > > instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
-> > > != LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
-> > > LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
-> > > instead?
-> > > 
-> > I considered about changing lwt side logic. But it would bring larger
-> > impact since there are multiple types of encaps on this hook, not just
-> > bpf redirect. Changing bpf return values is a minimum change on the
-> > other hand. In addition, returning value of NET_RX_DROP and
-> > NET_XMIT_CN are the same, so if we don't do something in bpf redirect,
-> > there is no way to distinguish them later: the former is considered as
-> > an error, while "CN" is considered as non-error.
-> 
-> Uh, NET_RX/XMIT_DROP values are 1.  NET_XMIT_CN is 2.
-> 
-> I'm not an expert but I think what happens is that we treat NET_XMIT_CN
-> as success so that it takes a while for the resend to happen.
-> Eventually the TCP layer will detect it as a dropped packet.
-> 
-My eyes slipped lines. CN is 2. But the fact RX return value can be
-returned on a TX path still makes me feel unclean. Odds are low that
-we will have new statuses in future, it is a risk. I'd hope to contain
-these values only inside BPF redirect code as they are the reason why
-such rx values can show up there. Meanwhile, your argument do make
-good sense to me that the same problem may occur for other stuff. It
-is true. In fact, I just re-examined BPF-REROUTE path, it has the
-exact same issue by directly sending dst_output value back.
+Hi Okan,
 
-So I would propose to do two things:
-1. still convert BPF redirect ingress code to contain the propagation
-of mixed return. Return only TX side value instead, which is also what
-majority of those local senders are expecting. (I was wrong about
-positive values returned to sendmsg below btw, they are not).
+On Tue, Jul 18, 2023 at 08:55:02AM -0700, Nathan Chancellor wrote:
 
-2. change LWTUNNEL_XMIT_CONTINUE and check for this at xmit hook.
+<snip>
 
-> > 
-> > > Also there seems to be a leak in lwtunnel_xmit().  Should that return
-> > > LWTUNNEL_XMIT_CONTINUE or should it call kfree_skb() before returning?
-> > > 
-> > > Something like the following?
-> > > 
-> > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > > index 11652e464f5d..375790b672bc 100644
-> > > --- a/include/linux/netdevice.h
-> > > +++ b/include/linux/netdevice.h
-> > > @@ -112,6 +112,9 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
-> > >  #define NET_XMIT_CN		0x02	/* congestion notification	*/
-> > >  #define NET_XMIT_MASK		0x0f	/* qdisc flags in net/sch_generic.h */
-> > >  
-> > > +#define LWTUNNEL_XMIT_DONE NET_XMIT_SUCCESS
-> > > +#define LWTUNNEL_XMIT_CONTINUE 0x3
-> > > +
-> > >  /* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
-> > >   * indicates that the device will soon be dropping packets, or already drops
-> > >   * some packets of the same priority; prompting us to send less aggressively. */
-> > > diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
-> > > index 6f15e6fa154e..8ab032ee04d0 100644
-> > > --- a/include/net/lwtunnel.h
-> > > +++ b/include/net/lwtunnel.h
-> > > @@ -16,12 +16,6 @@
-> > >  #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
-> > >  #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
-> > >  
-> > > -enum {
-> > > -	LWTUNNEL_XMIT_DONE,
-> > > -	LWTUNNEL_XMIT_CONTINUE,
-> > > -};
-> > > -
-> > > -
-> > >  struct lwtunnel_state {
-> > >  	__u16		type;
-> > >  	__u16		flags;
-> > > diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
-> > > index 711cd3b4347a..732415d1287d 100644
-> > > --- a/net/core/lwtunnel.c
-> > > +++ b/net/core/lwtunnel.c
-> > > @@ -371,7 +371,7 @@ int lwtunnel_xmit(struct sk_buff *skb)
-> > >  
-> > >  	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
-> > >  	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
-> > > -		return 0;
-> > > +		return LWTUNNEL_XMIT_CONTINUE;
-> > 
-> > You are correct this path would leak skb. Return continue (or drop)
-> > would avoid the leak. Personally I'd prefer drop instead to signal the
-> > error setup. Since this is a separate issue, do you want to send a
-> > separate patch on this? Or I am happy to do it if you prefer.
-> > 
+> > +static struct regulator_desc max77857_regulator_desc = {
+> > +	.ops = &max77857_regulator_ops,
+> > +	.name = "max77857",
+> > +	.linear_ranges = max77857_lin_ranges,
+> > +	.n_linear_ranges = ARRAY_SIZE(max77857_lin_ranges),
+> > +	.vsel_mask = 0xFF,
+> > +	.vsel_reg = MAX77857_REG_CONT2,
+> > +	.ramp_delay_table = max77857_ramp_table[0],
+> > +	.n_ramp_values = ARRAY_SIZE(max77857_ramp_table[0]),
+> > +	.ramp_reg = MAX77857_REG_CONT3,
+> > +	.ramp_mask = GENMASK(1, 0),
+> > +	.ramp_delay = max77857_ramp_table[0][0],
 > 
-> I don't know which makes sense so I'll leave that up to you.
+> This breaks the build with GCC 5.x through 7.x:
 > 
-This conversation is juicy, I think we discovered two potential new
-problem sites (the leak here and the reroute path) :)
+>   drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not constant
+>     .ramp_delay = max77857_ramp_table[0][0],
+>                   ^~~~~~~~~~~~~~~~~~~
+>   drivers/regulator/max77857-regulator.c:312:16: note: (near initialization for 'max77857_regulator_desc.ramp_delay')
+> 
+> and clang:
+> 
+>   drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not a compile-time constant
+>     312 |         .ramp_delay = max77857_ramp_table[0][0],
+>         |                       ^~~~~~~~~~~~~~~~~~~~~~~~~
+>   1 error generated.
+> 
+> This relies on a GCC 8.x+ change that accepts more things as
+> compile-time constants, which is being worked on in clang
+> (https://reviews.llvm.org/D76096). Since the kernel supports older
+> compilers, this will have to be worked around somehow. Perhaps a define
+> that can be used in both places?
 
-> > >  
-> > >  	ret = -EOPNOTSUPP;
-> > >  	rcu_read_lock();
-> > > diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> > > index 6e70839257f7..4be50a211b14 100644
-> > > --- a/net/ipv4/ip_output.c
-> > > +++ b/net/ipv4/ip_output.c
-> > > @@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
-> > >  	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
-> > >  		int res = lwtunnel_xmit(skb);
-> > >  
-> > > -		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
-> > > +		if (res != LWTUNNEL_XMIT_CONTINUE)
-> > >  			return res;
-> > 
-> > Unfortunately we cannot return res directly here when res > 0. This is
-> > the final reason why I didn't patch here. Return values here can be
-> > propagated back to sendmsg syscall, so returning a positive value
-> > would break the syscall convention.
-> 
-> The neigh_output() function is going to return NET_XMIT_DROP so this
-> already happens.  Is that not what we want to happen?
-> 
-My bad, those return values are processed at ip_send_skb etc, while I
-was staring only at ip_local_out and beneath with my sleepy eyes.
+Was there any update on this? I do not mind sending a patch for this
+myself if I have some sort of guidance on how you would prefer for this
+to be fixed, should you be too busy to look into it.
 
-> I guess my concern is that eventually people will eventually new
-> introduce bugs.  Fixing incorrect error codes is something that I do
-> several times per week.  :P
-> 
-> regards,
-> dan carpenter
-> 
-> 
+Cheers,
+Nathan
