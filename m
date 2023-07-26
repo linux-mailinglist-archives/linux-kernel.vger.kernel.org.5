@@ -2,150 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DEE763A3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B644B763A0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234831AbjGZPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
+        id S234781AbjGZPEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234824AbjGZPFs (ORCPT
+        with ESMTP id S234737AbjGZPD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:05:48 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3016D2733;
-        Wed, 26 Jul 2023 08:05:07 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68A4D168F;
-        Wed, 26 Jul 2023 08:04:48 -0700 (PDT)
-Received: from bogus (unknown [10.57.96.101])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C1FA3F67D;
-        Wed, 26 Jul 2023 08:04:02 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 16:03:27 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Steve Clevenger OS <scclevenger@os.amperecomputing.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Len Brown <lenb@kernel.org>,
-        Ganapatrao Kulkarni OS <gankulkarni@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: Re: acpi: Remove ETM from AMBA scan list (was Re: [PATCH V6 6/6]
- coresight: etm4x: Add ACPI support in platform driver)
-Message-ID: <20230726150327.jfhla23nhlszigq7@bogus>
-References: <20230710062500.45147-1-anshuman.khandual@arm.com>
- <20230710062500.45147-7-anshuman.khandual@arm.com>
- <38f0c8f3-5fb3-a18a-456d-867da2998786@arm.com>
- <ac77142d-964b-691d-ea15-105a523d9738@arm.com>
- <46a3d6d3-f14e-efde-83eb-5952f313f909@arm.com>
- <abbcf3c8-fbd9-727e-780b-74aaf5ae8ec1@os.amperecomputing.com>
- <CAJZ5v0iy9QfSRuy_kNNZarJZyO35GN25Td39GGN=kNbr0-fuBA@mail.gmail.com>
+        Wed, 26 Jul 2023 11:03:59 -0400
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CD62D5B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:03:31 -0700 (PDT)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-39cdf9f9d10so11083700b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:03:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690383811; x=1690988611;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8wyKibTr8k/NSeubFc4y5q8h8vNK9/oynyCVrZ6x5+Q=;
+        b=h1FgE9kXB5Mz8OddP39YEa4dDRuqbt9wm1OsuYRw9s076Xe8tOSlw+3HedhTd7YYQZ
+         88vGJO2wV290xZcd+A3dZhmp+DyGaRlDAVOKQbBb2AVrbDNwniGk0xeZFXYTDQyyRgkQ
+         q0KMKknpooGzo/KxzXuOE9pxWt/KKmidebdxgfUpjYlwOcJKENJac4REuUm+CuJ3M7sK
+         j6/fcNzEnAHovEDpFmQJbPPUz6U4x3wsRSf2nmM4gHTNK7ixatyi1Bh726XmS/PTK2Ma
+         Yvnh9xv+hEEfj2yqwLK0dUibhXwu02el+nNhAZBpoCwZMvGTCiPkKv302Xd5ZyEMeHo9
+         0RqQ==
+X-Gm-Message-State: ABy/qLZhTHuq2quglmA4UVAmL57fnVKdZfJhVbwZPix7TrF9eH6TMUSH
+        LkZQl1yJVuCEPtmAnfNcT/Ygt66Th0nVOTJVmt6tMgtK8OhS
+X-Google-Smtp-Source: APBJJlHVqSyLEBclB3tQD4vr9mZJ9hegiZ1FlT2olGWiMvQebgqSxbAMmWl0J/vYqeFidm1ZBu0jFydr0CDmwU8Z1xWGp11AFQAU
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iy9QfSRuy_kNNZarJZyO35GN25Td39GGN=kNbr0-fuBA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1206:b0:3a4:8115:5e7 with SMTP id
+ a6-20020a056808120600b003a4811505e7mr5403236oil.10.1690383810972; Wed, 26 Jul
+ 2023 08:03:30 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 08:03:30 -0700
+In-Reply-To: <0000000000002b5e2405f14e860f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009655cc060165265f@google.com>
+Subject: Re: [syzbot] [gfs2?] KASAN: use-after-free Read in qd_unlock (2)
+From:   syzbot <syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, andersson@kernel.org,
+        cluster-devel@redhat.com, dmitry.baryshkov@linaro.org,
+        eadavis@sina.com, konrad.dybcio@linaro.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:33:26PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Jul 25, 2023 at 10:18 PM Steve Clevenger OS
-> <scclevenger@os.amperecomputing.com> wrote:
-> >
-> >
-> > Hi Rafael, Len,
-> >
-> > On 7/24/2023 9:25 AM, Suzuki K Poulose wrote:
-> > > Hi Rafael/Len
-> > >
-> > > On 19/07/2023 11:11, Suzuki K Poulose wrote:
-> > >> Rafael, Len
-> > >>
-> > >> Ping (packets 6, lost 100%).
-> > >>
-> > >>
-> > >> On 10/07/2023 17:40, Suzuki K Poulose wrote:
-> > >>> Rafael, Len
-> > >>>
-> > >>> On 10/07/2023 07:25, Anshuman Khandual wrote:
-> > >>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > >>>>
-> > >>>> Drop ETM4X ACPI ID from the AMBA ACPI device list, and instead just
-> > >>>> move it
-> > >>>> inside the new ACPI devices list detected and used via platform driver.
-> > >>>>
-> > >>>> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > >>>> Cc: Len Brown <lenb@kernel.org>
-> > >>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > >>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > >>>> Cc: Mike Leach <mike.leach@linaro.org>
-> > >>>> Cc: Leo Yan <leo.yan@linaro.org>
-> > >>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > >>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> > >>>> Cc: linux-acpi@vger.kernel.org
-> > >>>> Cc: coresight@lists.linaro.org
-> > >>>> Cc: linux-arm-kernel@lists.infradead.org
-> > >>>> Cc: linux-kernel@vger.kernel.org
-> > >>>> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com> (for ACPI specific
-> > >>>> changes)
-> > >>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > >>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > >>>
-> > >>> We would like to queue this via coresight tree. The acpi_amba bits have
-> > >>> been reviewed by Sudeep. Please could you give us an Ack, if you are
-> > >>> happy with the proposal ?
-> > >>>
-> > >
-> > > Please could one of you respond to this patch ? We are blocked on your
-> > > Ack for queuing this. There are machines out there, which rely on this
-> > > patch to use Arm self-hosted tracing based on CoreSight.
-> > >
-> > > Kind regards
-> > > Suzuki
-> >
-> > Ampere Computing AmpereOne machines rely on this patch series to enable
-> > System Register Access to the ETMv4. Ampere removed the ETM MMIO
-> > descriptions from our CoreSight ACPI to use this.
-> >
-> > Suzuki's e-mail requests for review/Ack of this patch thread date back
-> > to May 30.
-> 
-> I've just talked to Suzuki about this:
-> 
-> https://lore.kernel.org/linux-acpi/20230726140515.368981-1-suzuki.poulose@arm.com
-> 
-> This patch has received a Reviewed-by from Sudeep which for all
-> purposes should be sufficient for any ARM-related ACPI material that
-> doesn't affect any other architectures.  An ACK from me (or Len for
-> that matter) would not make any real difference from the technical
-> perspective.
-> 
-> I would appreciate assigning an official ARM maintainer to acpi_amba.c
-> so as to avoid such unnecessary delays in the future.
+syzbot suspects this issue was fixed by commit:
 
-Ah I just crossed and replied on other thread. I will soon send an update
-to add this file under Arm ACPI for the maintenance.
+commit 41a37d157a613444c97e8f71a5fb2a21116b70d7
+Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon Dec 26 04:21:51 2022 +0000
 
--- 
-Regards,
-Sudeep
+    arm64: dts: qcom: qcs404: use symbol names for PCIe resets
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b48111a80000
+start commit:   [unknown] 
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe56f7d193926860
+dashboard link: https://syzkaller.appspot.com/bug?extid=3f6a670108ce43356017
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1209f878c80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a48ab480000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: arm64: dts: qcom: qcs404: use symbol names for PCIe resets
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
