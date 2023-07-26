@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE54E762A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB81762A86
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbjGZEzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 00:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S231443AbjGZE71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 00:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjGZEzm (ORCPT
+        with ESMTP id S231359AbjGZE7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 00:55:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8227019AD
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:55:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 202E36145A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:55:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC2E3C433C7;
-        Wed, 26 Jul 2023 04:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690347339;
-        bh=jOeF8cppzlPBCIFSmBztXHTHPsxcIlXUKSUY753sPaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cxwcE7OfXPa1gb3qMiUZj/lC1U5j/C1r691UiAJQVkcVVAudxFcwtAGx8Wu2AcBnB
-         8lw24oou0sqv8AzGPDJFOusy7EgHHBLa0o5YKEMRCYKB89vjV3tpZvC17ICy6u/8X6
-         wk9O06Fvrp3aj5VQ4wyFnph/ve5zGaqkPJNX5ABraRKfX98byGF+KGkHOPeLYldO83
-         LJguFqCyv0CZWxH63HcSnPxUnB+xQo2/ZUImevvR5gtdveNs84BRWD/GnRadRWkB03
-         xjDYrOn/ZU721oOo2Pfgdaa1cWGeddodXaPNYVMwVN/JG2S9oD+Y1Nz2p6/u6fUTNP
-         VKL7rm/ov1IpQ==
-Date:   Wed, 26 Jul 2023 10:25:35 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Robert Lee <lerobert@google.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: compress: add opus codec define
-Message-ID: <ZMCnR0AooUOLbQKB@matsya>
-References: <20230725093005.3499455-1-lerobert@google.com>
- <87sf9ctifg.wl-tiwai@suse.de>
- <CAOM6g_Db8qwbDmbWSSLKqUHsSMLUYxFtpqKi1cWsXsXTE9B+vA@mail.gmail.com>
- <87lef4thir.wl-tiwai@suse.de>
- <CAOM6g_DVKpEhnVStpNWmPoXyHNUuNTA+CNbdPxasObGcXtGEpQ@mail.gmail.com>
+        Wed, 26 Jul 2023 00:59:18 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0581D1FC2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690347556; x=1721883556;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TTQweHb9px5w+WSSg/IXmEMaMZomGcINs6qdcew+w+k=;
+  b=J5ATywCaCoyfxMootTvKWlF7/Tb+4IVoQYGnFY/DjyK2dYIBgKo5IV4P
+   DR+i1v/I5m7towtLnv9HNvch7GWsvKYJY+x9QSD6I/9lefdxR5Y/puOeP
+   oz9g6Vw8MgmD+cjD94C4g5SMTGt9IBpSiRcVNdvhEPE2I2IiJReAHZTWx
+   H6hte+4tAwD3PNWWceVxHFrtDttziwlkxz+PfB3g0aj5o6e9mDwsJ/Imf
+   lPchiP9r15Dv8eHotyejMFwFw/loIADpBOw6jEz35s28EirqHQLAeNZJu
+   w/B6DhG0dJOT9yjGMbPiqw4uIZoYk2RppqPnT9tjbe++aOliq4sPht3aK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="365371841"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="365371841"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 21:59:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="756047739"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="756047739"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.117])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jul 2023 21:59:14 -0700
+From:   kah.jing.lee@intel.com
+To:     dinguyen@kernel.org
+Cc:     linux-kernel@vger.kernel.org, radu.bacrau@intel.com,
+        tien.sung.ang@intel.com, Kah Jing Lee <kah.jing.lee@intel.com>
+Subject: [PATCH v4 0/2] Query the RSU SPT table offset to determine RSU page size
+Date:   Wed, 26 Jul 2023 12:57:19 +0800
+Message-Id: <cover.1690347245.git.kah.jing.lee@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOM6g_DVKpEhnVStpNWmPoXyHNUuNTA+CNbdPxasObGcXtGEpQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-07-23, 09:47, Robert Lee wrote:
+From: Kah Jing Lee <kah.jing.lee@intel.com>
 
-Please stop top posting!
+Hi,
+This patchset is to add the generic mailbox command in the svc driver
+to enable the rsu driver to query spt address.
+SPT0 address - lower range & SPT1 address - upper range address will be
+queried in order to determine the page size of RSU, whether it is
+32kB or 64kB that is supported.
 
-> Yes, but we still need this change to let the sound system can use the
-> codec. or do you have any suggestions?
+Thanks,
+KJ
 
-Upstream your driver along with this change should be the way to go
+changelog v2:
+- Update the comment on svc COMMAND_MBOX_SEND_CMD
+- Update the rsu mailbox cmd ret_val to use already defined ret
 
-> 
-> Thanks,
-> Robert.
-> 
-> Takashi Iwai <tiwai@suse.de> 於 2023年7月25日 週二 下午6:25寫道：
-> >
-> > On Tue, 25 Jul 2023 12:14:56 +0200,
-> > Robert Lee wrote:
-> > >
-> > > Thanks for reply so quickly.
-> > > And yes, there are other changes but it is inside our offload pcm
-> > > driver to handle it.
-> > > Currently we only use it to decode, and we don't need additional option for it.
-> >
-> > It means still a downstream-only change :)
-> >
-> > It's nice to upstream changes in general, but from the upstream POV,
-> > only changing this gives no benefit.  Let's tie with the actual use
-> > case *in the upstream*.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> >
-> > >
-> > > Thanks,
-> > > Robert.
-> > >
-> > > Takashi Iwai <tiwai@suse.de> 於 2023年7月25日 週二 下午6:05寫道：
-> > > >
-> > > > On Tue, 25 Jul 2023 11:30:05 +0200,
-> > > > Robert Lee wrote:
-> > > > >
-> > > > > Add to support decode Opus codec in Ogg container.
-> > > > >
-> > > > > Signed-off-by: Robert Lee <lerobert@google.com>
-> > > >
-> > > > The change makes sense only when it's really used.  So usually it's
-> > > > better to put into a series that actually implements its usage.
-> > > >
-> > > >
-> > > > thanks,
-> > > >
-> > > > Takashi
-> > > >
-> > > > > ---
-> > > > >  include/uapi/sound/compress_params.h | 3 ++-
-> > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-> > > > > index ddc77322d571..bac5797bcb02 100644
-> > > > > --- a/include/uapi/sound/compress_params.h
-> > > > > +++ b/include/uapi/sound/compress_params.h
-> > > > > @@ -43,7 +43,8 @@
-> > > > >  #define SND_AUDIOCODEC_BESPOKE               ((__u32) 0x0000000E)
-> > > > >  #define SND_AUDIOCODEC_ALAC                  ((__u32) 0x0000000F)
-> > > > >  #define SND_AUDIOCODEC_APE                   ((__u32) 0x00000010)
-> > > > > -#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_APE
-> > > > > +#define SND_AUDIOCODEC_OPUS                  ((__u32) 0x00000011)
-> > > > > +#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_OPUS
-> > > > >
-> > > > >  /*
-> > > > >   * Profile and modes are listed with bit masks. This allows for a
-> > > > > --
-> > > > > 2.41.0.487.g6d72f3e995-goog
-> > > > >
-> > >
+changelog v3:
+- Check for IS_ERR on stratix10_svc_allocate_memory return
 
+changelog v4:
+- Fix checkpatch alignment issue
+
+Radu Bacrau (1):
+  firmware: stratix10-rsu: query spt addresses
+
+Teh Wen Ping (1):
+  firmware: stratix10-svc: Generic Mailbox Command
+
+ drivers/firmware/stratix10-rsu.c              | 102 +++++++++++++++++-
+ drivers/firmware/stratix10-svc.c              |  18 ++++
+ include/linux/firmware/intel/stratix10-smc.h  |  25 +++++
+ .../firmware/intel/stratix10-svc-client.h     |   5 +
+ 4 files changed, 148 insertions(+), 2 deletions(-)
+
+
+base-commit: 0b5547c51827e053cc754db47d3ec3e6c2c451d2
 -- 
-~Vinod
+2.25.1
+
