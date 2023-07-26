@@ -2,152 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4147D76314E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359257631FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjGZJKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        id S231545AbjGZJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbjGZJKX (ORCPT
+        with ESMTP id S231837AbjGZJ1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:10:23 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB5D4C28;
-        Wed, 26 Jul 2023 02:06:43 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9e9765f2cso34354235ad.3;
-        Wed, 26 Jul 2023 02:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690362397; x=1690967197;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xEZHGYX9dSDjbkw+aqvi35n/7qtSj+sTI/JiA4c39II=;
-        b=V8/deSWmG396BLvgSvQm/q/sW8F4ll0rggeYWR5l7A1QI2BE44QCvNG7DhKQZO+nUz
-         Hl5Q4LrptJuN29klB4Km3mt68+InGxb6/U7hco5KUJ3lQvQR4GYjfUFuGFXCGMxaml5q
-         FMJZhM4dV4PMEfc8jYk/dt8fywgBl5rsoi3UojvQ+9GteT8aiF4/P5pKgdmYQ1AshnNa
-         sXl9SwGwPRNdprlYrD3xXSpWrQ2EJcMZ4wAoIj8fNceR6yiqG2ivqD25XJ5VnI+TiDaO
-         03gqQUh7uPumgXfzNv3cW7w81plFxpU4kCzz8sVjJc/ReFbt9FYVjQDQr+Kk634bCYZG
-         fjhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690362397; x=1690967197;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xEZHGYX9dSDjbkw+aqvi35n/7qtSj+sTI/JiA4c39II=;
-        b=l63F1IvDPX+rg4xVjnkFL1Zj+wnhfr+lf2nlUKvL3IbE5ITapRC4XArrgOfrTc1A51
-         BEtzC3Bcok23qElNXgmklNYx9pQSfOwz9YnLgLqxhLmrOT5d/9B5nL2vUS9zuGZnpNbF
-         5mX0Z0WJBBUpNIPODj0lxLYy29eIYWmuuaJcUYhIWYjXlWE0fpHbCTBb6YbiZG+Rc6GT
-         D4F3bb7hdcMZj7uB16Ru8WFuoaOiIQxUvBf+/amcrs8NcWlCzV9H1mkySc4PU1iJIvaq
-         FzFHb3s9yuHNRP/QRsEH7dujO46uQbQNlG3UFF+kiNOKAcQkySdqqped/UWT2tbpauet
-         w6Iw==
-X-Gm-Message-State: ABy/qLZieuoQcUsH2+SmFq4OvETa8N3ze3GhO/jti4X8DxiHkIWSNk58
-        v/TcJTtEcEUlHNW0p17Z//c=
-X-Google-Smtp-Source: APBJJlFAL7nZwqV0hS+O4zyWNLpS8Aoc6RDig/MMKJhDEjWNVBlApPDpDmoY0T5+wYpdK3lwXSDJtw==
-X-Received: by 2002:a17:902:728a:b0:1b9:dea2:800f with SMTP id d10-20020a170902728a00b001b9dea2800fmr1046434pll.8.1690362397271;
-        Wed, 26 Jul 2023 02:06:37 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id q7-20020a170902dac700b001b7feed285csm12538593plx.36.2023.07.26.02.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 02:06:36 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     vkoul@kernel.org, sugaya.taichi@socionext.com,
-        orito.takao@socionext.com, len.baker@gmx.com,
-        jaswinder.singh@linaro.org
-Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH RESEND] dmaengine: milbeaut-hdmac: Fix potential deadlock on &mc->vc.lock
-Date:   Wed, 26 Jul 2023 09:06:28 +0000
-Message-Id: <20230726090628.1784-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 26 Jul 2023 05:27:42 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4D9423B;
+        Wed, 26 Jul 2023 02:25:58 -0700 (PDT)
+Received: from dggpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R9p1B1gzvz1GDKg;
+        Wed, 26 Jul 2023 17:06:38 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 17:07:30 +0800
+Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
+ iort_node_get_rmr_info()
+From:   Hanjun Guo <guohanjun@huawei.com>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Guanghui Feng <guanghuifeng@linux.alibaba.com>
+CC:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+        "alikernel-developer@linux.alibaba.com" 
+        <alikernel-developer@linux.alibaba.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
+References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
+ <ZLZEq0QBBW4rcxJM@lpieralisi> <597f481b0e5149dabe4821ca618af6b3@huawei.com>
+ <613da2c3-d515-b49c-4ff3-cf94836b2acf@huawei.com>
+Message-ID: <7689b8a7-105c-d8a4-4ba0-10aafdfd75e8@huawei.com>
+Date:   Wed, 26 Jul 2023 17:07:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <613da2c3-d515-b49c-4ff3-cf94836b2acf@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &mc->vc.lock is acquired by milbeaut_hdmac_interrupt() under irq
-context, other acquisition of the same lock under process context should
-disable irq, otherwise deadlock could happen if the irq preempts the
-execution of process context code while the lock is held in process context
-on the same CPU.
+On 2023/7/19 17:13, Hanjun Guo wrote:
+> On 2023/7/18 16:56, Shameerali Kolothum Thodi wrote:
+>>> [+Catalin, Will, Shameer]
+[...]
+>>> Shameer, I know this may look like overkill since the hunk we are
+>>> removing is buggy but can you please test this patch on platforms
+>>> with RMR to make sure we are not triggering regressions by removing
+>>> it (by the specs that's what should be done but current firmware
+>>> is always something to reckon with) ?
+>> Yes, that is a valid fix. Unlikely it will be a problem. Anyway, I 
+>> have requested
+>> Hanjun to help with the testing as I don't have a test setup with me now.
+> 
+> Valid fix for me as well, we had a firmware bug which reported the
+> numbers of ID as 1 when we only have one ID mapping, so remove the
+> check is fine for the old firmware, but to make it sure, we need some
+> test before give it a pass.
+> 
+>>
+>> Hanjun, please help.
+> 
+> I need some time to get it properly tested on two versions of firmware,
+> and get the test machine properly setup, please allow me give the
+> feedback next week.
 
-milbeaut_hdmac_chan_config(), milbeaut_hdmac_chan_resume() and
-milbeaut_hdmac_chan_pause() are such callback functions not disable irq by
-default.
+No regressions were found,
 
-Possible deadlock scenario:
-milbeaut_hdmac_chan_config()
-    -> spin_lock(&mc->vc.lock)
-        <hard interruption>
-        -> milbeaut_hdmac_interrupt()
-        -> spin_lock(&mc->vc.lock); (deadlock here)
+Tested-by: Hanjun Guo <guohanjun@huawei.com>
 
-This flaw was found by an experimental static analysis tool I am developing
-for irq-related deadlock.
-
-The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
-the three callback functions to disable irq while lock is held.
-
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/dma/milbeaut-hdmac.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/dma/milbeaut-hdmac.c b/drivers/dma/milbeaut-hdmac.c
-index 1b0a95892627..6151c830ff6e 100644
---- a/drivers/dma/milbeaut-hdmac.c
-+++ b/drivers/dma/milbeaut-hdmac.c
-@@ -214,10 +214,11 @@ milbeaut_hdmac_chan_config(struct dma_chan *chan, struct dma_slave_config *cfg)
- {
- 	struct virt_dma_chan *vc = to_virt_chan(chan);
- 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
-+	unsigned long flags;
- 
--	spin_lock(&mc->vc.lock);
-+	spin_lock_irqsave(&mc->vc.lock, flags);
- 	mc->cfg = *cfg;
--	spin_unlock(&mc->vc.lock);
-+	spin_unlock_irqrestore(&mc->vc.lock, flags);
- 
- 	return 0;
- }
-@@ -226,13 +227,14 @@ static int milbeaut_hdmac_chan_pause(struct dma_chan *chan)
- {
- 	struct virt_dma_chan *vc = to_virt_chan(chan);
- 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
-+	unsigned long flags;
- 	u32 val;
- 
--	spin_lock(&mc->vc.lock);
-+	spin_lock_irqsave(&mc->vc.lock, flags);
- 	val = readl_relaxed(mc->reg_ch_base + MLB_HDMAC_DMACA);
- 	val |= MLB_HDMAC_PB;
- 	writel_relaxed(val, mc->reg_ch_base + MLB_HDMAC_DMACA);
--	spin_unlock(&mc->vc.lock);
-+	spin_unlock_irqrestore(&mc->vc.lock, flags);
- 
- 	return 0;
- }
-@@ -241,13 +243,14 @@ static int milbeaut_hdmac_chan_resume(struct dma_chan *chan)
- {
- 	struct virt_dma_chan *vc = to_virt_chan(chan);
- 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
-+	unsigned long flags;
- 	u32 val;
- 
--	spin_lock(&mc->vc.lock);
-+	spin_lock_irqsave(&mc->vc.lock, flags);
- 	val = readl_relaxed(mc->reg_ch_base + MLB_HDMAC_DMACA);
- 	val &= ~MLB_HDMAC_PB;
- 	writel_relaxed(val, mc->reg_ch_base + MLB_HDMAC_DMACA);
--	spin_unlock(&mc->vc.lock);
-+	spin_unlock_irqrestore(&mc->vc.lock, flags);
- 
- 	return 0;
- }
--- 
-2.17.1
-
+Thanks
+Hanjun
