@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200D76344F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E60763451
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbjGZKwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        id S232814AbjGZKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjGZKwg (ORCPT
+        with ESMTP id S229500AbjGZKyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:52:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60839B;
-        Wed, 26 Jul 2023 03:52:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B09361A6A;
-        Wed, 26 Jul 2023 10:52:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5953C433C7;
-        Wed, 26 Jul 2023 10:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690368754;
-        bh=KG8VdKwUgTGqEdy8lzbomg0CTxuXTcFOjsxpbCtDpUA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=cbPKm6J4HnYOyMVzKuwCfQYY449JRquxLH2eyPOA+IrwSMYRG60IoQSHVoRurc+f+
-         yeBaqHSAW7H9Fa3L4Wpsh07jcwCWAlavU3I72CusIIphGfvyhP7mBv0JJnazlCGSIr
-         dLAH41XWbmKHZGXINOB2aQktTWMqJxfHlMALZtFaY44oSs8l41aaaT8gaYIzaoIuXM
-         rZ6Ckk9pu5XnbqkIOY3vzDz1GDYt6CxMVhqvVN2J7dyK6ha2kat08rtbiGHffJ+MAY
-         Xgsfuhsfc3GH0SHwYdKDpg7Nu0uJtLCFvS/6ftk/mkRblGCb/l3x6OeRoSd6YzEcDB
-         6fTAk1rgZhWYQ==
-Received: (nullmailer pid 801871 invoked by uid 1000);
-        Wed, 26 Jul 2023 10:52:32 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Wed, 26 Jul 2023 06:54:06 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E829B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690368845; x=1721904845;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tV4kWXpWkDACr62OMZFOfCAZMY0F61TPzIcnQPWNHhM=;
+  b=TpMqAWOATy8laiOYYhHEEh+6pybfv+ixBPdPqWQvpRG2eZY/vqh4yJGp
+   ZQVgPh0HrtShAFL9BJB13CQ3O2wmiSfsq/N4yumH7fnTnKwKXD7muUEOJ
+   fIwhkiEeFQ6cPatbWvo+prE4NPVVaWeNyVW15qPNzpbtlipP13eMLB4jC
+   Vu+5BK8S8rboU82zH0waLnkcD9ElnPCinNTtCHaUOv+KE/8ojWoTlMgsP
+   3Ip1ibM4+iffEk6f7cmmrVtkvhBapGkW3h7B4F93eDrjOtl2rUkma4Bgv
+   Y6EuO8Emki+AvZM6kmdaGfr6L43n4gvPEC1otBytyFAjMzixtH5Sj9ilR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="370657274"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="370657274"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 03:54:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="726495829"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="726495829"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2023 03:54:03 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOc96-0000ud-14;
+        Wed, 26 Jul 2023 10:53:43 +0000
+Date:   Wed, 26 Jul 2023 18:52:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yogesh Lal <quic_ylal@quicinc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Subject: drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect
+ type in argument 2 (different address spaces)
+Message-ID: <202307261856.Pu27vw5Y-lkp@intel.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     like@awinic.com
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, liweilei@awinic.com,
-        devicetree@vger.kernel.org, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        liangdong@awinic.com, wangweidong.a@awinic.com, broonie@kernel.org
-In-Reply-To: <20230726081612.586295-3-like@awinic.com>
-References: <20230726081612.586295-1-like@awinic.com>
- <20230726081612.586295-3-like@awinic.com>
-Message-Id: <169036875268.801839.3994914135438671684.robh@kernel.org>
-Subject: Re: [PATCH V1 2/2] regulator: aw37503: add device-tree binding
-Date:   Wed, 26 Jul 2023 04:52:32 -0600
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
+commit: a376c10d45a8e6ee5ea55791193f90625b35e156 remoteproc: qcom: pas: Adjust the phys addr wrt the mem region
+date:   5 months ago
+config: arm64-randconfig-r093-20230726 (https://download.01.org/0day-ci/archive/20230726/202307261856.Pu27vw5Y-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307261856.Pu27vw5Y-lkp@intel.com/reproduce)
 
-On Wed, 26 Jul 2023 08:16:12 +0000, like@awinic.com wrote:
-> From: Alec Li <like@awinic.com>
-> 
-> Add aw37503 regulator device-tree binding documentation
-> 
-> Signed-off-by: Alec Li <like@awinic.com>
-> ---
->  .../bindings/regulator/awinic,aw37503.yaml    | 73 +++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307261856.Pu27vw5Y-lkp@intel.com/
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+sparse warnings: (new ones prefixed by >>)
+>> drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem * @@     got void * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     expected void const volatile [noderef] __iomem *
+   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     got void *
+   drivers/remoteproc/qcom_q6v5_pas.c:108:6: sparse: sparse: symbol 'adsp_segment_dump' was not declared. Should it be static?
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *mem_region @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     expected void *mem_region
+   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     got void [noderef] __iomem *
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *dtb_mem_region @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     expected void *dtb_mem_region
+   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     got void [noderef] __iomem *
 
-yamllint warnings/errors:
+vim +123 drivers/remoteproc/qcom_q6v5_pas.c
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml: properties: 'patternProperties' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
-	hint: A json-schema keyword was found instead of a DT property name.
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml: properties:compatible:const: ['awinic,aw37503'] is not of type 'integer', 'string'
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml: properties:patternProperties: 'anyOf' conditional failed, one must be fixed:
-	'^out[pn]$' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
-	'type' was expected
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml: properties:compatible:const: ['awinic,aw37503'] is not of type 'string'
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+   107	
+   108	void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
+   109			       void *dest, size_t offset, size_t size)
+   110	{
+   111		struct qcom_adsp *adsp = rproc->priv;
+   112		int total_offset;
+   113	
+   114		total_offset = segment->da + segment->offset + offset - adsp->mem_phys;
+   115		if (total_offset < 0 || total_offset + size > adsp->mem_size) {
+   116			dev_err(adsp->dev,
+   117				"invalid copy request for segment %pad with offset %zu and size %zu)\n",
+   118				&segment->da, offset, size);
+   119			memset(dest, 0xff, size);
+   120			return;
+   121		}
+   122	
+ > 123		memcpy_fromio(dest, adsp->mem_region + total_offset, size);
+   124	}
+   125	
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230726081612.586295-3-like@awinic.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
