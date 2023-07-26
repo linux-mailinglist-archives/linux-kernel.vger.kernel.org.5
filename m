@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6CA762D8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F99E762D80
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjGZHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        id S231920AbjGZH32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjGZH3U (ORCPT
+        with ESMTP id S231617AbjGZH2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:29:20 -0400
-Received: from out-11.mta0.migadu.com (out-11.mta0.migadu.com [91.218.175.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEA72D70
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:27:57 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690356475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kddOZo1OB/dnx2Sd2Hp9HvVcJFH2vK8XN/l3RDrCzYA=;
-        b=a/sL/5lBqKAXrNPPoGDoF4xs326hzfVSG6fDcE24LmH82hZ/SqypmSeuU9lQJ3KTx+xcp1
-        7al1E8o2xtQTLBYQCCJl5EzU27s8InsUsoNIWntcSz8ycucQarnPdtrwtOYnknCdh1RCgu
-        fJXvZ2Nwuby67i5oc/L72SWSvxqIPXA=
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 27/47] md/raid5: dynamically allocate the md-raid5
- shrinker
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-28-zhengqi.arch@bytedance.com>
-Date:   Wed, 26 Jul 2023 15:27:13 +0800
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <8A1603B9-570E-45DE-9597-90C3E2825A7A@linux.dev>
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-28-zhengqi.arch@bytedance.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        Wed, 26 Jul 2023 03:28:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD01D1BFB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:27:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 797446167E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:27:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9B93C433C7;
+        Wed, 26 Jul 2023 07:27:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690356453;
+        bh=lXv5kEOl0nlAkBvS9zBgaIgcRETE3LySQnYmx497ku8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dgbVQRa6ex9Z2aR9Gw41oJcNj9Tg/od57dkdOg2sVsMk6yfZK4nbETQ+DZLZA9jwg
+         wnhU/Ngv0Vqvi1xGwcevef4TLER12M+WuKznZ16S6t8byEfMPx0tsSUgajxyICTB5Z
+         Tr2KKSwTyyRbkegHOgyeZZsj2RUgAQaTHnk3gPaLWV9vGUJH9a9ZoIY9JSnNZdeDBO
+         dUqOu+HKJJm7inL5/TrX0DccQN3zfNSglELy6aEqQkq6Ctx+4VgGy282Xyzj3VhIxA
+         VyP4S+dwyb2Exg68QFlrmGkSZRHpVvcur2plbTGsbXpBfcq/7JDQ/0PGE5yuvolQTr
+         6VuJ7aw9e9jjA==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qOYvj-00GwkB-61;
+        Wed, 26 Jul 2023 08:27:31 +0100
+Date:   Wed, 26 Jul 2023 08:27:27 +0100
+Message-ID: <87wmynqgio.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mostafa Saleh <smostafa@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Fuad Tabba <tabba@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: fix __kvm_host_psci_cpu_entry() prototype
+In-Reply-To: <20230724121850.1386668-1-arnd@kernel.org>
+References: <20230724121850.1386668-1-arnd@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: arnd@kernel.org, oliver.upton@linux.dev, catalin.marinas@arm.com, will@kernel.org, smostafa@google.com, arnd@arndb.de, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, tabba@google.com, ricarkol@google.com, qperret@google.com, kaleshsingh@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,17 +79,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+On Mon, 24 Jul 2023 13:18:42 +0100,
+Arnd Bergmann <arnd@kernel.org> wrote:
 > 
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the md-raid5 shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct r5conf.
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> The kvm_host_psci_cpu_entry() function was renamed in order to add a wrapper around
+> it, but the prototype did not change, so now the missing-prototype warning came
+> back in W=1 builds:
+> 
+> arch/arm64/kvm/hyp/nvhe/psci-relay.c:203:28: error: no previous prototype for function '__kvm_host_psci_cpu_entry' [-Werror,-Wmissing-prototypes]
+> asmlinkage void __noreturn __kvm_host_psci_cpu_entry(bool is_cpu_on)
+> 
+> Fixes: dcf89d1111995 ("KVM: arm64: Add missing BTI instructions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
 
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
