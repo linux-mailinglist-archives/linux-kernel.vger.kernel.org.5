@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE6C7634D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362C87634D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbjGZL0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
+        id S233339AbjGZL0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233144AbjGZL0B (ORCPT
+        with ESMTP id S233257AbjGZL0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:26:01 -0400
+        Wed, 26 Jul 2023 07:26:06 -0400
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3578B2696
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:25:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C2E2689
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:26:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690370758; x=1721906758;
+  t=1690370761; x=1721906761;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uR6vP9XNifQEQ5wsH49+BPU6uQckPmTufn140/lNQlc=;
-  b=VnxmNog3mUHuhlKXbhuM0APRVManFrAhJrhxfQW82HenOlI3UM7rOvmS
-   U6R2CTcYTgoJ39BtJHTZo5GLjWhRlATNnV/NgZ/RmIJSPV59QvE9NhRFR
-   LLVS6zK8xuRpIPr5y4aQGUbjvOFBdhn/FmjT4Wq2yo7nY4k3doYk8FNp8
-   8gZ1cnOBHCmVlgo5mug1YJdY7vL/Ei7DJS1kF2x7uOOm60doHk1S+hy6u
-   5c/K+LXLr7Pv+Nn+zA7ufYn0HlKH2pg7VI79dO28cdreSoiR1K9ffsjzu
-   oFLVJGrS4gantrYPcj0SotzFA21tlWykq8knUWnQTrBqp2B0rseihgqhw
+  bh=k9oROdILzd+iAfn2LHZf2F4VtQKvvgvPEAtqzujmFHQ=;
+  b=DKTEFuSxvKEQftvI85ZM4j6UKL8M60NEhMs+REMH+oNL6h/GSHigD8Yy
+   2rybelFweHIHjuMPjLYYsszQljwYUg7KAaZZvXy4umT5V/D6Chq0pL//C
+   g+T6urToBb1v6SfVofagApNnaTGHCAjj+QBilXNuyOFohvkqTd4Xbtbc+
+   qaJvKx/c41qs5dMk/K87ouXgubZWUIQevcE32KVlSAWI4nQoYaWf0Tf1x
+   7nfZUeKyK3neohl7jgc14qKHgu9MqoKyRmHpx+tZlE4yVms7nMsCB63+k
+   FSwQ7tMdTcgdS9nCAiZcRfs66xCM0RcFOjvCxvRS2GB/EDHc1VbELHGJf
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="370663879"
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="370663910"
 X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="370663879"
+   d="scan'208";a="370663910"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:25:57 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:26:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="791810933"
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="791810953"
 X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="791810933"
+   d="scan'208";a="791810953"
 Received: from bterry-mobl2.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.177.246])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:25:54 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:25:57 -0700
 From:   Kai Huang <kai.huang@intel.com>
 To:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
         pbonzini@redhat.com, isaku.yamahata@intel.com,
         sathyanarayanan.kuppuswamy@linux.intel.com,
         n.borisov.lkml@gmail.com, kai.huang@intel.com
-Subject: [PATCH v3 02/12] x86/tdx: Skip saving output regs when SEAMCALL fails with VMFailInvalid
-Date:   Wed, 26 Jul 2023 23:25:04 +1200
-Message-ID: <a825cbf3d8b7f994330ce8c4481ac750d2935cf7.1690369495.git.kai.huang@intel.com>
+Subject: [PATCH v3 03/12] x86/tdx: Make macros of TDCALLs consistent with the spec
+Date:   Wed, 26 Jul 2023 23:25:05 +1200
+Message-ID: <b3f5a25e72094a11add22e1a7c5dda3ea91d0e98.1690369495.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690369495.git.kai.huang@intel.com>
 References: <cover.1690369495.git.kai.huang@intel.com>
@@ -66,19 +66,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If SEAMCALL fails with VMFailInvalid, the SEAM software (e.g., the TDX
-module) won't have chance to set any output register.  Skip saving the
-output registers to the structure in this case.
+The TDX spec names all TDCALLs with prefix "TDG".  Currently, the kernel
+doesn't follow such convention for the macros of those TDCALLs but uses
+prefix "TDX_" for all of them.  Although it's arguable whether the TDX
+spec names those TDCALLs properly, it's better for the kernel to follow
+the spec when naming those macros.
 
-Also, as '.Lno_output_struct' is the very last symbol before RET, rename
-it to '.Lout' to make it short.
+Change all macros of TDCALLs to make them consistent with the spec.  As
+a bonus, they get distinguished easily from the host-side SEAMCALLs,
+which all have prefix "TDH".
 
-Opportunistically make the asm directives unindented.
+No functional change intended.
 
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 ---
 
@@ -86,104 +85,97 @@ v2 -> v3:
  - No change.
 
 v1 -> v2:
- - A new patch to improve SEAMCALL VMFailInvalid failure, with v1 patch
-   "x86/tdx: Move FRAME_BEGIN/END to TDX_MODULE_CALL asm macro" merged.
+ - Rebase to 6.5-rc2.
 
 ---
- arch/x86/coco/tdx/tdcall.S      |  3 ---
- arch/x86/virt/vmx/tdx/tdxcall.S | 29 ++++++++++++++++++++---------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ arch/x86/coco/tdx/tdx-shared.c    |  4 ++--
+ arch/x86/coco/tdx/tdx.c           |  8 ++++----
+ arch/x86/include/asm/shared/tdx.h | 10 +++++-----
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
-index 2eca5f43734f..e5d4b7d8ecd4 100644
---- a/arch/x86/coco/tdx/tdcall.S
-+++ b/arch/x86/coco/tdx/tdcall.S
-@@ -78,10 +78,7 @@
-  * Return status of TDCALL via RAX.
-  */
- SYM_FUNC_START(__tdx_module_call)
--	FRAME_BEGIN
- 	TDX_MODULE_CALL host=0
--	FRAME_END
--	RET
- SYM_FUNC_END(__tdx_module_call)
+diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
+index ef20ddc37b58..f10cd3e4a04e 100644
+--- a/arch/x86/coco/tdx/tdx-shared.c
++++ b/arch/x86/coco/tdx/tdx-shared.c
+@@ -35,7 +35,7 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
+ 	}
  
- /*
-diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
-index 49a54356ae99..6bdf6e137953 100644
---- a/arch/x86/virt/vmx/tdx/tdxcall.S
-+++ b/arch/x86/virt/vmx/tdx/tdxcall.S
-@@ -1,5 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <asm/asm-offsets.h>
-+#include <asm/frame.h>
- #include <asm/tdx.h>
+ 	tdcall_rcx = start | page_size;
+-	if (__tdx_module_call(TDX_ACCEPT_PAGE, tdcall_rcx, 0, 0, 0, NULL))
++	if (__tdx_module_call(TDG_MEM_PAGE_ACCEPT, tdcall_rcx, 0, 0, 0, NULL))
+ 		return 0;
  
- /*
-@@ -18,6 +19,7 @@
-  *            TDX module.
-  */
- .macro TDX_MODULE_CALL host:req
-+	FRAME_BEGIN
+ 	return accept_size;
+@@ -45,7 +45,7 @@ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
+ {
  	/*
- 	 * R12 will be used as temporary storage for struct tdx_module_output
- 	 * pointer. Since R12-R15 registers are not used by TDCALL/SEAMCALL
-@@ -44,7 +46,7 @@
- 	mov %rsi, %rcx
- 	/* Leave input param 2 in RDX */
- 
--	.if \host
-+.if \host
- 	seamcall
- 	/*
- 	 * SEAMCALL instruction is essentially a VMExit from VMX root
-@@ -57,13 +59,10 @@
- 	 * This value will never be used as actual SEAMCALL error code as
- 	 * it is from the Reserved status code class.
+ 	 * For shared->private conversion, accept the page using
+-	 * TDX_ACCEPT_PAGE TDX module call.
++	 * TDG_MEM_PAGE_ACCEPT TDX module call.
  	 */
--	jnc .Lno_vmfailinvalid
--	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
--.Lno_vmfailinvalid:
--
--	.else
-+	jc .Lseamcall_vmfailinvalid
-+.else
- 	tdcall
--	.endif
-+.endif
+ 	while (start < end) {
+ 		unsigned long len = end - start;
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 1d6b863c42b0..05785df66b1c 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -91,7 +91,7 @@ int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport)
+ {
+ 	u64 ret;
+ 
+-	ret = __tdx_module_call(TDX_GET_REPORT, virt_to_phys(tdreport),
++	ret = __tdx_module_call(TDG_MR_REPORT, virt_to_phys(tdreport),
+ 				virt_to_phys(reportdata), TDREPORT_SUBTYPE_0,
+ 				0, NULL);
+ 	if (ret) {
+@@ -152,7 +152,7 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
+ 	 * Guest-Host-Communication Interface (GHCI), section 2.4.2 TDCALL
+ 	 * [TDG.VP.INFO].
+ 	 */
+-	tdx_module_call(TDX_GET_INFO, 0, 0, 0, 0, &out);
++	tdx_module_call(TDG_VP_INFO, 0, 0, 0, 0, &out);
  
  	/*
- 	 * Fetch output pointer from stack to R12 (It is used
-@@ -80,7 +79,7 @@
- 	 * Other registers may contain details of the failure.
+ 	 * The highest bit of a guest physical address is the "sharing" bit.
+@@ -594,7 +594,7 @@ void tdx_get_ve_info(struct ve_info *ve)
+ 	 * Note, the TDX module treats virtual NMIs as inhibited if the #VE
+ 	 * valid flag is set. It means that NMI=>#VE will not result in a #DF.
  	 */
- 	test %r12, %r12
--	jz .Lno_output_struct
-+	jz .Lout
+-	tdx_module_call(TDX_GET_VEINFO, 0, 0, 0, 0, &out);
++	tdx_module_call(TDG_VP_VEINFO_GET, 0, 0, 0, 0, &out);
  
- 	/* Copy result registers to output struct: */
- 	movq %rcx, TDX_MODULE_rcx(%r12)
-@@ -90,7 +89,19 @@
- 	movq %r10, TDX_MODULE_r10(%r12)
- 	movq %r11, TDX_MODULE_r11(%r12)
+ 	/* Transfer the output parameters */
+ 	ve->exit_reason = out.rcx;
+@@ -774,7 +774,7 @@ void __init tdx_early_init(void)
+ 	cc_set_mask(cc_mask);
  
--.Lno_output_struct:
-+.Lout:
- 	/* Restore the state of R12 register */
- 	pop %r12
-+
-+	FRAME_END
-+	RET
-+
-+.if \host
-+.Lseamcall_vmfailinvalid:
-+	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
-+	/* pop the unused output pointer back to %r9 */
-+	pop %r9
-+	jmp .Lout
-+.endif	/* \host */
-+
- .endm
+ 	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
+-	tdx_module_call(TDX_WR, 0, TDCS_NOTIFY_ENABLES, 0, -1ULL, NULL);
++	tdx_module_call(TDG_VM_WR, 0, TDCS_NOTIFY_ENABLES, 0, -1ULL, NULL);
+ 
+ 	/*
+ 	 * All bits above GPA width are reserved and kernel treats shared bit
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index 7513b3bb69b7..78f109446da6 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -11,11 +11,11 @@
+ #define TDX_IDENT		"IntelTDX    "
+ 
+ /* TDX module Call Leaf IDs */
+-#define TDX_GET_INFO			1
+-#define TDX_GET_VEINFO			3
+-#define TDX_GET_REPORT			4
+-#define TDX_ACCEPT_PAGE			6
+-#define TDX_WR				8
++#define TDG_VP_INFO			1
++#define TDG_VP_VEINFO_GET		3
++#define TDG_MR_REPORT			4
++#define TDG_MEM_PAGE_ACCEPT		6
++#define TDG_VM_WR			8
+ 
+ /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+ #define TDCS_NOTIFY_ENABLES		0x9100000000000010
 -- 
 2.41.0
 
