@@ -2,360 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7257627D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CA57627D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjGZAh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 20:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        id S230158AbjGZAoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 20:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjGZAh0 (ORCPT
+        with ESMTP id S229680AbjGZAoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 20:37:26 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08B199A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 17:37:24 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-997c4107d62so891313866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 17:37:24 -0700 (PDT)
+        Tue, 25 Jul 2023 20:44:54 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DDC1BFB;
+        Tue, 25 Jul 2023 17:44:53 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98df3dea907so948001166b.3;
+        Tue, 25 Jul 2023 17:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690331842; x=1690936642;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uj8uOQ1xFhK03A6y5unkx5o1F73Orlzpfqc5kQDwjHc=;
-        b=xKnoP3BxZtdLidI1PCKarNGWJNWTE8yRAL9mnpHEoI5dPgGXx5McjtBjL9p7XYYL1W
-         0ByVZdOKntHLDlNyOMaXno6hoPyJ6bUno1z8gWbZUvkUKI6I30Ev/8cbHbRaNTUbSORF
-         nSpn5O0ZOZgXVPpTOApU4ce06qX4rLlnD/NhCTU6OAm06PnZ45fsCMdLFH4pGgikUi48
-         3xueAYdeMu1BWhQQLUq6hLic6dHwbz9G1VAl5ETc79cTow9ZCxfPKfCdFl5qr5IA8YeV
-         IoGxDVEtglitDQKwO+ZpWsDyoL8iPwbUNMN+H+10tB/r7YUdia2QSuL4f3k5xIQpaOE/
-         /WMg==
+        d=gmail.com; s=20221208; t=1690332291; x=1690937091;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qM+o2x0Q9td2BAJ6ErJnDWRLqW6HpDY4XZZK/xV7DJk=;
+        b=VvinILAje6hRqPdaqfbQf9bzhtnpCg24gtbeWFXmRnQogQ08NnWKzGNQLwtVODnM3H
+         s/CSC99woI9rU0OcTEWhcFNcTdeNDZublWp3rQhqaOy6DZImFMRVMO8bau9wVLdeBQ8p
+         Adzi0Icn91S17dWMtr7qxo0VBOadTPN54U84MB4h2bOBdLtD8CkgXbR7z7jqPn8pDhIO
+         4fpHVu1K1fif0CTD+oaqgvyN3eUkQ5jqt5UfFy676Yf9S/DV6UXUeRkbtxukVasa3+JN
+         O+XtEUktRjEoJzU8G3Y8IuLTiHdgfn6+ntZepGiDNWzPHDurB3AOEyBnW9t9j665XxXp
+         XVfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690331842; x=1690936642;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uj8uOQ1xFhK03A6y5unkx5o1F73Orlzpfqc5kQDwjHc=;
-        b=UmsJijrCUz7BaZvUqOxRJGY3DwkmduoylY/Dz1k+jeWgQDSmXB1jtBD4/wHyb0ZOP8
-         /olaugFFhAmfvTic95kpGm7BHZzJNLWoj789G+AUyZz6gkVOn1bNZYhmsVWOLjZylszP
-         +yS7qJxOlEzDIuLy3mppf/Jlmcj1MrmZYy1Toe7XuCPCrn+KV9+BFT7Yhvz0kRUv+1wD
-         ejx35gCQNzYq8sfNBu6+o3gX8oC5xpfVYEh6VEX/ayBxEclLTSw5t19kvRAvzElV+6/z
-         h+qvdokdXcbJuSZT+KPmy2SndTqmR8i2bp0YeVmxeZmxwxloHO0QLvSnLuZs//7Qekxu
-         pvJA==
-X-Gm-Message-State: ABy/qLbytEaEKaeYIMTcMNjoLDMgK8b+9nzTdxBbL5BwPZTa+9pB8/hL
-        q9Qab1atflOBrMdx2GS+jZgTPhkRPCTW/8kFZVnLsJ5yFu/1SVRwQDg=
-X-Google-Smtp-Source: APBJJlHDLczizjzV239PjazMIjInu33c/gMqALgI5baOCHHh2fPkrny9XpeAXG4B8MrktvjoHVtCH0gCbzcmg0BhFYc=
-X-Received: by 2002:a17:906:8472:b0:99b:5161:8e0d with SMTP id
- hx18-20020a170906847200b0099b51618e0dmr261271ejc.21.1690331842179; Tue, 25
- Jul 2023 17:37:22 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690332291; x=1690937091;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qM+o2x0Q9td2BAJ6ErJnDWRLqW6HpDY4XZZK/xV7DJk=;
+        b=D1utsuttQWYPyYlx7Na7+NCi0DiW7OINCQ+iYVnA4p3MqS4+AuTxNTebYiD26lHPe6
+         Z+g8ClgrrOEzRUebRQnkmp7K/iYXmV7ZvnDqe7IVu/2u0HkKST/r0jTx3hdNq9rGaBcR
+         S8Na2KGChogp2uF7fH4tbX3qQdo8LHuBaW8DREm0PEAw5EwFRwp/b7rrFwa7rlZAOTKN
+         UktwtjsGbd+byX+fVThHrrKieJ4Uo+YiEOUzStaUqhadEwEEFwxu34t4MUWWchTXRtzS
+         QDbk6nlEuB4voPUZdWFcH6CL1VpCNHGjD2ZNR3/tJPhkV//h3O05YpTw33bMY2nC6O4g
+         Y8Yw==
+X-Gm-Message-State: ABy/qLb0JvKtL6KM9GEdw/0SG7LkKnIAmJjT3e2995zb8H/HmUpHNECg
+        4run84cE2VUqNhTyxEHjBiw=
+X-Google-Smtp-Source: APBJJlHlPfzZ6qbC7dkc0DtHVZlVOnNjAEeLA5C4h9N570Z0BOO6mVhWMJOa4FO1xoP29KyrUNp38g==
+X-Received: by 2002:a17:906:224e:b0:993:ec0b:1a24 with SMTP id 14-20020a170906224e00b00993ec0b1a24mr357232ejr.7.1690332291380;
+        Tue, 25 Jul 2023 17:44:51 -0700 (PDT)
+Received: from skbuf ([188.25.175.105])
+        by smtp.gmail.com with ESMTPSA id b11-20020a170906150b00b009786ae9ed50sm8849308ejd.194.2023.07.25.17.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 17:44:51 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 03:44:48 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Petr Machata <petrm@nvidia.com>
+Subject: Re: [PATCH net-next v2 1/1] net: dsa: microchip: Add partial ACL
+ support for ksz9477 switches
+Message-ID: <20230726004448.yctikq3kipyehd7v@skbuf>
+References: <20230721140224.1465766-1-o.rempel@pengutronix.de>
+ <20230721140224.1465766-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20230726002904.655377-1-yosryahmed@google.com> <20230726002904.655377-2-yosryahmed@google.com>
-In-Reply-To: <20230726002904.655377-2-yosryahmed@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 25 Jul 2023 17:36:45 -0700
-Message-ID: <CAJD7tkZK2T2ebOPw6K0M+YWyKUtx9bE2uyFj4VOehhd+fYnk8w@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg: use rstat for non-hierarchical stats
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <muchun.song@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721140224.1465766-1-o.rempel@pengutronix.de>
+ <20230721140224.1465766-1-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> Currently, memcg uses rstat to maintain hierarchical stats. Counters are
-> maintained for hierarchical stats at each memcg. Rstat tracks which
-> cgroups have updates on which cpus to keep those counters fresh on the
-> read-side.
->
-> For non-hierarchical stats, we do not maintain counters. Instead, the
-> percpu counters for a given stat need to be summed to get the
-> non-hierarchical stat value. The original implementation did the same.
-> At some point before rstat, non-hierarchical counters were introduced by
-> commit a983b5ebee57 ("mm: memcontrol: fix excessive complexity in
-> memory.stat reporting"). However, those counters were updated on the
-> performance critical write-side, which caused regressions, so they were
-> later removed by commit 815744d75152 ("mm: memcontrol: don't batch
-> updates of local VM stats and events"). See [1] for more detailed
-> history.
->
-> Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a
-> half) enjoyed cheap reads of non-hierarchical stats, specifically on
-> cgroup v1. When moving to more recent kernels, a performance regression
-> for reading non-hierarchical stats is observed.
->
-> Now that we have rstat, we know exactly which percpu counters have
-> updates for each stat. We can maintain non-hierarchical counters again,
-> making reads much more efficient, without affecting the performance
-> critical write-side. Hence, add non-hierarchical (i.e local) counters
-> for the stats, and extend rstat flushing to keep those up-to-date.
->
-> A caveat is that we now a stats flush before reading
-> local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
-> or memcg_events_local(), where we previously only needed a flush to
-> read hierarchical stats. Most contexts reading non-hierarchical stats
-> are already doing a flush, add a flush to the only missing context in
-> count_shadow_nodes().
->
-> With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
-> machine with 256 cpus on cgroup v1:
->  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
->  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
->  real    0m0.125s
->  user    0m0.005s
->  sys     0m0.120s
->
-> After:
->  real    0m0.032s
->  user    0m0.005s
->  sys     0m0.027s
->
-> [1]https://lore.kernel.org/lkml/20230725201811.GA1231514@cmpxchg.org/
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->
+On Fri, Jul 21, 2023 at 04:02:24PM +0200, Oleksij Rempel wrote:
+> This patch adds partial Access Control List (ACL) support for the
+> ksz9477 family of switches. ACLs enable filtering of incoming layer 2
+> MAC, layer 3 IP, and layer 4 TCP/UDP packets on each port. They provide
+> additional capabilities for filtering routed network protocols and can
+> take precedence over other forwarding functions.
+> 
+> ACLs can filter ingress traffic based on header fields such as
+> source/destination MAC address, EtherType, IPv4 address, IPv4 protocol,
+> UDP/TCP ports, and TCP flags. The ACL is an ordered list of up to 16
+> access control rules programmed into the ACL Table. Each entry specifies
+> a set of matching conditions and action rules for controlling packet
+> forwarding and priority.
+> 
+> The ACL also implements a count function, generating an interrupt
+> instead of a forwarding action. It can be used as a watchdog timer or an
+> event counter. The ACL consists of three parts: matching rules, action
+> rules, and processing entries. Multiple match conditions can be either
+> AND'ed or OR'ed together.
+> 
+> This patch introduces support for a subset of the available ACL
+> functionality, specifically layer 2 matching and prioritization of
+> matched packets. For example:
+> 
+> tc qdisc add dev lan2 clsact
+> tc filter add dev lan2 ingress protocol 0x88f7 flower action skbedit prio 7
+> 
+> tc qdisc add dev lan1 clsact
+> tc filter add dev lan1 ingress protocol 0x88f7 flower action skbedit prio 7
+> 
+> The hardware offloading implementation was benchmarked against a
+> configuration without hardware offloading. This latter setup relied on a
+> software-based Linux bridge. No noticeable differences were observed
+> between the two configurations. Here is an example of software-based
+> test:
+> 
+> ip l s dev enu1u1 up
+> ip l s dev enu1u2 up
+> ip l s dev enu1u4 up
+> ethtool -A enu1u1 autoneg off rx off tx off
+> ethtool -A enu1u2 autoneg off rx off tx off
+> ethtool -A enu1u4 autoneg off rx off tx off
+> ip l a name br0 type bridge
+> ip l s dev br0 up
+> ip l s enu1u1 master br0
+> ip l s enu1u2 master br0
+> ip l s enu1u4 master br0
+> 
+> tc qdisc add dev enu1u1 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> tc qdisc add dev enu1u4 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> tc qdisc add dev enu1u2 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> 
+> tc qdisc add dev enu1u1 clsact
+> tc filter add dev enu1u1 ingress protocol 0x0800  flower action skbedit prio 7
+> 
+> tc qdisc add dev enu1u4 clsact
+> tc filter add dev enu1u4 ingress protocol 0x0800  flower action skbedit prio 0
+> 
+> On a system attached to the port enu1u2 I run two iperf3 server
+> instances:
+> iperf3 -s -p 5210 &
+> iperf3 -s -p 5211 &
+> 
+> On systems attached to enu1u4 and enu1u1 I run:
+> iperf3 -u -c  172.17.0.1 -p 5210 -b100M  -l1472 -t100
+> and
+> iperf3 -u -c  172.17.0.1 -p 5211 -b100M  -l1472 -t100
+> 
+> As a result, IP traffic on port enu1u1 will be prioritized and take
+> precedence over IP traffic on port enu1u4
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->
-> v1 -> v2:
-> - Rewrite the changelog based on the history context provided by
->   Johannes (Thanks!).
-> - Fix a subtle bug where updating a local counter would be missed if it
->   was cancelled out by a pending update from child memcgs.
 
-
-Johannes, I fixed a subtle bug here and I kept your Ack, I wasn't sure
-what the Ack retention policy should be here. A quick look at the fix
-would be great.
-
-Thanks!
-
->
->
-> ---
->  include/linux/memcontrol.h |  7 ++--
->  mm/memcontrol.c            | 67 +++++++++++++++++++++-----------------
->  mm/workingset.c            |  1 +
->  3 files changed, 43 insertions(+), 32 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 5818af8eca5a..a9f2861a57a5 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -112,6 +112,9 @@ struct lruvec_stats {
->         /* Aggregated (CPU and subtree) state */
->         long state[NR_VM_NODE_STAT_ITEMS];
->
-> +       /* Non-hierarchical (CPU aggregated) state */
-> +       long state_local[NR_VM_NODE_STAT_ITEMS];
-> +
->         /* Pending child counts during tree propagation */
->         long state_pending[NR_VM_NODE_STAT_ITEMS];
->  };
-> @@ -1020,14 +1023,12 @@ static inline unsigned long lruvec_page_state_loc=
-al(struct lruvec *lruvec,
->  {
->         struct mem_cgroup_per_node *pn;
->         long x =3D 0;
-> -       int cpu;
->
->         if (mem_cgroup_disabled())
->                 return node_page_state(lruvec_pgdat(lruvec), idx);
->
->         pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
-> +       x =3D READ_ONCE(pn->lruvec_stats.state_local[idx]);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x =3D 0;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e8ca4bdcb03c..50f8035e998a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -742,6 +742,10 @@ struct memcg_vmstats {
->         long                    state[MEMCG_NR_STAT];
->         unsigned long           events[NR_MEMCG_EVENTS];
->
-> +       /* Non-hierarchical (CPU aggregated) page state & events */
-> +       long                    state_local[MEMCG_NR_STAT];
-> +       unsigned long           events_local[NR_MEMCG_EVENTS];
-> +
->         /* Pending child counts during tree propagation */
->         long                    state_pending[MEMCG_NR_STAT];
->         unsigned long           events_pending[NR_MEMCG_EVENTS];
-> @@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int=
- idx, int val)
->  /* idx can be of type enum memcg_stat_item or node_stat_item. */
->  static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, in=
-t idx)
->  {
-> -       long x =3D 0;
-> -       int cpu;
-> +       long x =3D READ_ONCE(memcg->vmstats->state_local[idx]);
->
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(memcg->vmstats_percpu->state[idx], cpu);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x =3D 0;
-> @@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup=
- *memcg, int event)
->
->  static unsigned long memcg_events_local(struct mem_cgroup *memcg, int ev=
-ent)
->  {
-> -       long x =3D 0;
-> -       int cpu;
->         int index =3D memcg_events_index(event);
->
->         if (index < 0)
->                 return 0;
->
-> -       for_each_possible_cpu(cpu)
-> -               x +=3D per_cpu(memcg->vmstats_percpu->events[index], cpu)=
-;
-> -       return x;
-> +       return READ_ONCE(memcg->vmstats->events_local[index]);
->  }
->
->  static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
-> @@ -5526,7 +5523,7 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
->         struct mem_cgroup *parent =3D parent_mem_cgroup(memcg);
->         struct memcg_vmstats_percpu *statc;
-> -       long delta, v;
-> +       long delta, delta_cpu, v;
->         int i, nid;
->
->         statc =3D per_cpu_ptr(memcg->vmstats_percpu, cpu);
-> @@ -5542,19 +5539,23 @@ static void mem_cgroup_css_rstat_flush(struct cgr=
-oup_subsys_state *css, int cpu)
->                         memcg->vmstats->state_pending[i] =3D 0;
->
->                 /* Add CPU changes on this level since the last flush */
-> +               delta_cpu =3D 0;
->                 v =3D READ_ONCE(statc->state[i]);
->                 if (v !=3D statc->state_prev[i]) {
-> -                       delta +=3D v - statc->state_prev[i];
-> +                       delta_cpu =3D v - statc->state_prev[i];
-> +                       delta +=3D delta_cpu;
->                         statc->state_prev[i] =3D v;
->                 }
->
-> -               if (!delta)
-> -                       continue;
-> -
->                 /* Aggregate counts on this level and propagate upwards *=
-/
-> -               memcg->vmstats->state[i] +=3D delta;
-> -               if (parent)
-> -                       parent->vmstats->state_pending[i] +=3D delta;
-> +               if (delta_cpu)
-> +                       memcg->vmstats->state_local[i] +=3D delta_cpu;
-> +
-> +               if (delta) {
-> +                       memcg->vmstats->state[i] +=3D delta;
-> +                       if (parent)
-> +                               parent->vmstats->state_pending[i] +=3D de=
-lta;
-> +               }
->         }
->
->         for (i =3D 0; i < NR_MEMCG_EVENTS; i++) {
-> @@ -5562,18 +5563,22 @@ static void mem_cgroup_css_rstat_flush(struct cgr=
-oup_subsys_state *css, int cpu)
->                 if (delta)
->                         memcg->vmstats->events_pending[i] =3D 0;
->
-> +               delta_cpu =3D 0;
->                 v =3D READ_ONCE(statc->events[i]);
->                 if (v !=3D statc->events_prev[i]) {
-> -                       delta +=3D v - statc->events_prev[i];
-> +                       delta_cpu =3D v - statc->events_prev[i];
-> +                       delta +=3D delta_cpu;
->                         statc->events_prev[i] =3D v;
->                 }
->
-> -               if (!delta)
-> -                       continue;
-> +               if (delta_cpu)
-> +                       memcg->vmstats->events_local[i] +=3D delta_cpu;
->
-> -               memcg->vmstats->events[i] +=3D delta;
-> -               if (parent)
-> -                       parent->vmstats->events_pending[i] +=3D delta;
-> +               if (delta) {
-> +                       memcg->vmstats->events[i] +=3D delta;
-> +                       if (parent)
-> +                               parent->vmstats->events_pending[i] +=3D d=
-elta;
-> +               }
->         }
->
->         for_each_node_state(nid, N_MEMORY) {
-> @@ -5591,18 +5596,22 @@ static void mem_cgroup_css_rstat_flush(struct cgr=
-oup_subsys_state *css, int cpu)
->                         if (delta)
->                                 pn->lruvec_stats.state_pending[i] =3D 0;
->
-> +                       delta_cpu =3D 0;
->                         v =3D READ_ONCE(lstatc->state[i]);
->                         if (v !=3D lstatc->state_prev[i]) {
-> -                               delta +=3D v - lstatc->state_prev[i];
-> +                               delta_cpu =3D v - lstatc->state_prev[i];
-> +                               delta +=3D delta_cpu;
->                                 lstatc->state_prev[i] =3D v;
->                         }
->
-> -                       if (!delta)
-> -                               continue;
-> +                       if (delta_cpu)
-> +                               pn->lruvec_stats.state_local[i] +=3D delt=
-a_cpu;
->
-> -                       pn->lruvec_stats.state[i] +=3D delta;
-> -                       if (ppn)
-> -                               ppn->lruvec_stats.state_pending[i] +=3D d=
-elta;
-> +                       if (delta) {
-> +                               pn->lruvec_stats.state[i] +=3D delta;
-> +                               if (ppn)
-> +                                       ppn->lruvec_stats.state_pending[i=
-] +=3D delta;
-> +                       }
->                 }
->         }
->  }
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index 4686ae363000..da58a26d0d4d 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrink=
-er *shrinker,
->                 struct lruvec *lruvec;
->                 int i;
->
-> +               mem_cgroup_flush_stats();
->                 lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid=
-));
->                 for (pages =3D 0, i =3D 0; i < NR_LRU_LISTS; i++)
->                         pages +=3D lruvec_page_state_local(lruvec,
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
+Sorry for the delay. I will review this patch (and other pending DSA
+patches) tomorrow.
