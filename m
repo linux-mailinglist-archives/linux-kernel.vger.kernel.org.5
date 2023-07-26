@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F16A762AB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F7F762AC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjGZFVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 01:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
+        id S231232AbjGZFZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 01:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjGZFVK (ORCPT
+        with ESMTP id S229554AbjGZFZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 01:21:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA71FF3;
-        Tue, 25 Jul 2023 22:21:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 956516142E;
-        Wed, 26 Jul 2023 05:21:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C01C433C8;
-        Wed, 26 Jul 2023 05:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690348863;
-        bh=9tnFNXSUclTx4dPB0bkbDkhLdl1cycMtiJarM2UDCjk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PwhIh2FjWWwVq2ZmmSrooXgU9udbde9AdEXaTQL7q/KeRv0vBxc5yR40M0fLMWBUQ
-         gDYQMR1ERmqSttiVW/bAWwH7n/wWpsibIRaAVff9gH5+YD0XuSysCoprKJN71U9NzR
-         Jz7LBOEP3NQM5OF+jjkExaGL0qmrNlQDhOh0S01G0kzOthEToE+YOzY/UaWSt7Rodb
-         gax5LVfKNepZyQg2BuYnZENwOoCPd1sDkznREmi1lWRXm6nHUBn3A8PAHVGGD4HjPo
-         qd9RVxF0BHttnFgQqce4w1sh23ZTxqmrglKMFQW3MAxVoMkjokEMJaSudU5hNmsb0F
-         Rrbs13QNkwyaA==
-Date:   Tue, 25 Jul 2023 22:24:15 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
-        konrad.dybcio@linaro.org, vkoul@kernel.org, kishon@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
-        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        geert+renesas@glider.be, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        quic_srichara@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 2/6] dt-bindings: phy: qcom,m31: Document qcom,m31 USB
- phy
-Message-ID: <cst3d76ong32lzcatxlcr5gbakmh3grm5tehvd36wrdza5ozd5@gfl4ysu7hdo6>
-References: <cover.1689913334.git.quic_varada@quicinc.com>
- <131eb1694229436919ac88bb9920fb54d6808388.1689913334.git.quic_varada@quicinc.com>
- <ymbcafqqhc6hgrfhpef4byehvfyjzovs5zeprmj343erdv5ti5@tj2iunu6whvi>
- <20230724160136.GA3619408-robh@kernel.org>
+        Wed, 26 Jul 2023 01:25:34 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EC1212D;
+        Tue, 25 Jul 2023 22:25:33 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b9f47214a3so5793001a34.0;
+        Tue, 25 Jul 2023 22:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690349133; x=1690953933;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1lHvF+ZP+0haOLHn0VbIkloIdVOeWuG2FX3VUkNfPwo=;
+        b=UCgmIBrBIBIx5CELpPEkhMO8rxqk8S3p/aAG3/pDxhSzUtsaLQR8Ux94khw7OWBh4W
+         I9/WiI8mkPCkfcPLT5nqVSsoNbj6nr2muQsxg/0POCEeRXgRVyIzyVyYETdhxSGR+AP6
+         EUQpr3MNyxJYjgXEpbXpXpklEEq6PO5Tv/p4ZzGXLhzX2ARJLqYAFOIPvtiRMFg/zJ54
+         E+YstzhXL3wtkajKtHdePx0RvrqpobpcccF0oY8Pkx+BnZy5q0Ed9r1wbj/NZiuo/SXV
+         qhjIxPxZnrCY14o1xlnJbkCZNAbzDpVATSy5yiK5DfwIfGmRfikQzp2D0LnmPMUSyFMT
+         +HIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690349133; x=1690953933;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1lHvF+ZP+0haOLHn0VbIkloIdVOeWuG2FX3VUkNfPwo=;
+        b=JeJoumlv/9rtXkB2eBqTinsFgsFY8EtjOHM31Jbnw/lM/lnACdkArGwcYkeJJaRG/C
+         opu3KLXk58/COqXwTrA/WR/beqCo2krCoN83Ey07ysAqpHIYhlTktxsQC3Hm/0xqhUuU
+         jzeGb5c8qUbrI3AZ9oGk8tDvHm1yBYBvF4sF5/NvVzb8eYRjm8XySExIV2vOnxwUvGsG
+         2WaSDRKovUaMpeaHSs10fbZZf1UlMFI0CvpkfpIaiGTAVZICYE+kFrOOCN71HZdO4tcd
+         8pd55XT7cAjkYlHTxWYZGWHo5zQU7MbSNZpAXVYv9mHsfcJ6zs6Pdfnubz/HhUJlhYQq
+         tKMA==
+X-Gm-Message-State: ABy/qLaCYqh1qj8pbM/hTJXSVr6IrJk0ZCK8NLS7bG+ziw3o0ISc4TNc
+        P+PoZbwzdNz1+PAOOV4YuqACofBpbaw=
+X-Google-Smtp-Source: APBJJlFx5uPk2u2KKQW2qyBYvhoEmXAc4H0jW8UfEEThFzsyc1v5RAw/+R2kgj/yBAMsL9UP3uFuDw==
+X-Received: by 2002:a05:6358:5919:b0:135:acfd:8786 with SMTP id g25-20020a056358591900b00135acfd8786mr1140120rwf.3.1690349132813;
+        Tue, 25 Jul 2023 22:25:32 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n26-20020a638f1a000000b0055b61cd99a1sm11682812pgd.81.2023.07.25.22.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 22:25:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 25 Jul 2023 22:25:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     werneazc@gmail.com
+Cc:     jdelvare@suse.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, robh+dt@kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>
+Subject: Re: [PATCH v6 2/2] hwmon: (hs3001) Add driver for Renesas HS3001
+Message-ID: <a3406e39-8580-4ad7-b7ad-19e24eb33526@roeck-us.net>
+References: <0f32155b-bcc1-4d9e-bba9-058d63194abc@roeck-us.net>
+ <20230725042207.22310-2-andre.werner@systec-electronic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724160136.GA3619408-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230725042207.22310-2-andre.werner@systec-electronic.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:01:36AM -0600, Rob Herring wrote:
-> On Fri, Jul 21, 2023 at 10:10:57PM -0700, Bjorn Andersson wrote:
-> > On Fri, Jul 21, 2023 at 10:05:27AM +0530, Varadarajan Narayanan wrote:
-> > [..]
-> > > diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
-[..]
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
-> > > +    usbphy0: usb-phy@7b000 {
-> > 
-> > usb@
+On Tue, Jul 25, 2023 at 06:22:07AM +0200, werneazc@gmail.com wrote:
+> From: Andre Werner <andre.werner@systec-electronic.com>
 > 
-> You mean phy@? But 'usb2-phy' is accepted too.
+> Add base support for Renesas HS3001 temperature
+> and humidity sensors and its compatibles HS3002,
+> HS3003 and HS3004.
 > 
+> The sensor has a fix I2C address 0x44. The resolution
+> is fixed to 14bit (ref. Missing feature).
+> 
+> Missing feature:
+> - Accessing non-volatile memory: Custom board has no
+>   possibility to control voltage supply of sensor. Thus,
+>   we cannot send the necessary control commands within
+>   the first 10ms after power-on.
+> 
+> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
 
-Yes, had the controller in mind, sorry about that.
+Applied.
 
 Thanks,
-Bjorn
+Guenter
