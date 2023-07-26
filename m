@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5D676409C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F0176409D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbjGZUi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S231590AbjGZUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbjGZUi5 (ORCPT
+        with ESMTP id S231454AbjGZUi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:38:57 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2C9211C
+        Wed, 26 Jul 2023 16:38:58 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B8B2701
         for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:38:54 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6bb31eaf566so246745a34.1
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9ef9b1920so318226a34.1
         for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:38:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690403933; x=1691008733;
+        d=1e100.net; s=20221208; t=1690403934; x=1691008734;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=u3U83D8RcOlx9rOsA7J835iOrVjjr+XUpSDsN1aHke0=;
-        b=GFPddhogVQTY8Snitl6Q+qoVyiqMCEMQ6YNAav6BP13kc8Rxc/8v2tUXPpVG6TxbJA
-         L9Xf9cTGzkNeGNs66u5FHWAhaomaniIvV1zHVyDnwf7+j5apMzQWxBUm31o2tf0mgMYu
-         uaRRiw+vOo3ospd+Cm9RRKOfenEzFISH/D49NKwzYoElruRy27pdJsmtE52MDF99QYys
-         nx9QVm6mnObdJAry0Zk6mnD6kMNurvl2Ak6/69o6Tawug4mn4bq5BNSuRjaCDTkbx9JU
-         558VXsuCb8TMt8HsfZ/tDukzjqxDY1wa5DsdTECCS/usBlfFNCRYZ7qZE/TJC2VDH9Ql
-         snUg==
-X-Gm-Message-State: ABy/qLZw59OXUw8FKBIEyk2JhUbSEI7uMZZai/lvjdhG/9y5kgJ9w8Mb
-        sbE3rm1aE/zv2HIMPAzEre9KLhDdB3IvlZS3zoQpOjuVrJ49
-X-Google-Smtp-Source: APBJJlE0ZZaVDyIjAP5iqwqPtt8lOYU2A5UCaROWAj3xGpm3FdeLMGopbCQDjaamsHuFU4FrqdevYXzVrxz3iMqvcTsIh/iCFXqm
+        bh=A8/T6DJX/3wv1BC8DhRFtQNRzsSzmfoIuUvWC3HeVoI=;
+        b=HHJieX5TXFBi00otkt5K7UlQ2xWrwAuMuL5JFQT3skfgyTq4JL51Wiu58KdW458YpH
+         dUFN9d7hJQlEn/7lKqXhsVcE/GUYChZWHLgrdQkiG1JjSIQ61c2WKXWNbyPkbW8g1Jnv
+         yp+jusq8knB+3KtW5g9JAdEzwXXbn0OIycVQ4NI2BtCzSFh2Lp1AywD/trBN5XnbPwMz
+         6KAqTVM8VDBOAjQ3alamIZnD2zYPgSFyG9jp+yVfJQQVsP70Y9yfppmJJzB1FOzZ95mS
+         2ApqBqbmjAq2niDnJI8YZ5TCZOMB21Imd/WA2kFUB4YBneGX3a262QC3plGVRgrTcSEi
+         CJ9A==
+X-Gm-Message-State: ABy/qLZvEkOkCuO0ODUR/7pOcivPl7F6FAgjmSmXyJXYrDdJRm5iJaVw
+        SFDeDIPlauJz1B8PVMSi10QQq5sM4dEiILUr3jSRUD1QTh75
+X-Google-Smtp-Source: APBJJlGdJHXoNxgmq9ObjtPT/NLsIT7+Lda0f4Gws9gtz2pu+1cHJ9AjIhw4YlfXSucl86UHvr0WCk1zlcO5XANSCBhBc36Ps9RO
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:44a:b0:6b9:2c07:8849 with SMTP id
- d10-20020a056830044a00b006b92c078849mr882534otc.0.1690403933776; Wed, 26 Jul
- 2023 13:38:53 -0700 (PDT)
+X-Received: by 2002:a05:6870:d8b2:b0:1bb:84d0:5b8d with SMTP id
+ dv50-20020a056870d8b200b001bb84d05b8dmr826402oab.6.1690403934002; Wed, 26 Jul
+ 2023 13:38:54 -0700 (PDT)
 Date:   Wed, 26 Jul 2023 13:38:53 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fff1b4060169d558@google.com>
-Subject: [syzbot] Monthly dri report (Jul 2023)
-From:   syzbot <syzbot+list93d6dbb263336d3889a4@syzkaller.appspotmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000036333060169d6a8@google.com>
+Subject: [syzbot] Monthly serial report (Jul 2023)
+From:   syzbot <syzbot+list2f20ebac1d924d54d3c4@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dri maintainers/developers,
+Hello serial maintainers/developers,
 
-This is a 31-day syzbot report for the dri subsystem.
+This is a 31-day syzbot report for the serial subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dri
+https://syzkaller.appspot.com/upstream/s/serial
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 8 issues are still open and 30 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 3 issues are still open and 4 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 322     Yes   WARNING in drm_wait_one_vblank
-                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
-<2> 36      Yes   WARNING in vkms_get_vblank_timestamp (2)
-                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
-<3> 33      Yes   inconsistent lock state in sync_info_debugfs_show
-                  https://syzkaller.appspot.com/bug?extid=007bfe0f3330f6e1e7d1
-<4> 1       Yes   memory leak in vma_node_allow
-                  https://syzkaller.appspot.com/bug?extid=58ea3177ba8bd0a5d8ee
+<1> 591     Yes   KMSAN: uninit-value in n_tty_receive_buf_common (2)
+                  https://syzkaller.appspot.com/bug?extid=b68d24ad0de64bdba684
+<2> 49      Yes   BUG: soft lockup in tx
+                  https://syzkaller.appspot.com/bug?extid=5e87db90e68fbc4707c6
+<3> 15      Yes   general protection fault in serial8250_tx_chars
+                  https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
 
 ---
 This report is generated by a bot. It may contain errors.
