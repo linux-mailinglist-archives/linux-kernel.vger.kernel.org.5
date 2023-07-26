@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01951763FE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B2F763FDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjGZTmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S229809AbjGZTmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjGZTmE (ORCPT
+        with ESMTP id S230484AbjGZTmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:42:04 -0400
+        Wed, 26 Jul 2023 15:42:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F1B1BE3;
-        Wed, 26 Jul 2023 12:42:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E2B2122;
+        Wed, 26 Jul 2023 12:42:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6014861CBB;
-        Wed, 26 Jul 2023 19:42:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0408AC433C7;
-        Wed, 26 Jul 2023 19:41:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A632E61CB6;
+        Wed, 26 Jul 2023 19:42:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99B7AC433CA;
+        Wed, 26 Jul 2023 19:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690400522;
-        bh=6e6cReriYF7em75Hf0iAxdRhfTIt48diinTa2LCaE+U=;
+        s=k20201202; t=1690400520;
+        bh=SM4xFHkPLeUYUDMk/9j+ThiUSf7Itm0vPEQ3iXBVLgo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sLyIAGyV6TUHuowqKx/5JfDcmeo0WhbUg1yCQ8GAUu2bA1CHQXElka+Q1GRT7V1yv
-         R0EddtJuV1su72lOKWDmqPZkTqr3rjqushe4n3Y0JyPwiujSaR6lzMnBE/bXB37uce
-         8O1V4aPEPJ7CtaWT6N1qd3sf2g3qg1GZ/ysRkHn0W2duBIi4pMtC3lDu6nsoC6Pt3/
-         swHIlZLsRsV+7qlwiW9MPLzwOhahR6eIG7+fvoyQ2iGsIvPP2A61lMuC8l5VN12v0v
-         2zw+8Jdxg6lE+m401O76ze1xAH8enmcSNQ3pjVXumpOLBXI9Yvybgks7Mc9qIvNX4N
-         FrlfiSoNf+zHg==
-Date:   Wed, 26 Jul 2023 12:41:48 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a cpumask
- field by another cpumask
-Message-ID: <20230726194148.4jhyqqbtn3qqqqsq@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-3-vschneid@redhat.com>
+        b=ElWae17LIL3ZjRjRJXy/dQ7BFoY5mDXR8EYlpt8e5IXLirZDeY3zOTjSVvcfozF0n
+         Pp9g67p+19OOs1WR+914dOcQ2Mu/NYN2K/OrTB7AFk2HF/EmJ4bO+YgHqNyhM7QCqs
+         6QIYBofrsYqyXRjerY6xOn0bizf1S6k7kKJgkC5H69mm9JrjTP8qAvzcePWPPbnHmC
+         nJIsV4PiqfLu0bt5TO+vnfh73PvpmH8f39K2gUwFthE8hbD6Hy3DT0dDa+XOLyzrM4
+         0E6pn7fhijboRyJjP8xRwiQisD/w2cRpOPh8FXihFMSqQAoy0RhncUKhrd61Uu3+Lj
+         yn8W2D/iX+GDQ==
+Date:   Wed, 26 Jul 2023 20:41:55 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230726-armchair-evasive-427dd245a9fe@spud>
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+ <20230726-outclass-parade-2ccea9f6688a@spud>
+ <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/XgSBHUpeXMHM/69"
 Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-3-vschneid@redhat.com>
+In-Reply-To: <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -106,42 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
->  int filter_assign_type(const char *type)
->  {
-> -	if (strstr(type, "__data_loc") && strstr(type, "char"))
-> -		return FILTER_DYN_STRING;
-> +	if (strstr(type, "__data_loc")) {
-> +		if (strstr(type, "char"))
-> +			return FILTER_DYN_STRING;
-> +		if (strstr(type, "cpumask_t"))
-> +			return FILTER_CPUMASK;
-> +		}
 
-The closing bracket has the wrong indentation.
+--/XgSBHUpeXMHM/69
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +		/* Copy the cpulist between { and } */
-> +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
-> +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
+On Thu, Jul 27, 2023 at 03:34:16AM +0800, Mingzheng Xing wrote:
+> On 7/27/23 02:02, Conor Dooley wrote:
 
-Need to check kmalloc() failure?  And also free tmp?
+> > This is still broken for:
+> > CONFIG_CLANG_VERSION=3D0
+> > CONFIG_AS_IS_GNU=3Dy
+> > CONFIG_AS_VERSION=3D23500
+> > CONFIG_LD_IS_BFD=3Dy
+> > CONFIG_LD_VERSION=3D23500
+>=20
+> Do you mean that these CONFIG_* will cause kernel
+> compilation errors when paired with certain versions of GCC?
+> Or perhaps I misunderstood your meaning.
 
-> +
-> +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
-> +		if (!pred->mask)
-> +			goto err_mem;
-> +
-> +		/* Now parse it */
-> +		if (cpulist_parse(tmp, pred->mask)) {
-> +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
-> +			goto err_free;
-> +		}
-> +
-> +		/* Move along */
-> +		i++;
-> +		if (field->filter_type == FILTER_CPUMASK)
-> +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
-> +
+No, this section is generated by kconfig, although I messed up my
+trimming of the list & accidentally removed the gcc version, rather
+than the clang version. Here's the full thing:
 
--- 
-Josh
+CONFIG_CC_VERSION_TEXT=3D"riscv64-unknown-linux-gnu-gcc (g2ee5e430018) 12.2=
+=2E0"
+CONFIG_CC_IS_GCC=3Dy
+CONFIG_GCC_VERSION=3D120200
+CONFIG_CLANG_VERSION=3D0
+CONFIG_AS_IS_GNU=3Dy
+CONFIG_AS_VERSION=3D23500
+CONFIG_LD_IS_BFD=3Dy
+CONFIG_LD_VERSION=3D23500
+CONFIG_LLD_VERSION=3D0
+CONFIG_CC_CAN_LINK=3Dy
+CONFIG_CC_CAN_LINK_STATIC=3Dy
+CONFIG_CC_HAS_ASM_GOTO_OUTPUT=3Dy
+CONFIG_CC_HAS_ASM_GOTO_TIED_OUTPUT=3Dy
+CONFIG_CC_HAS_ASM_INLINE=3Dy
+CONFIG_CC_HAS_NO_PROFILE_FN_ATTR=3Dy
+CONFIG_PAHOLE_VERSION=3D0
+CONFIG_CONSTRUCTORS=3Dy
+CONFIG_IRQ_WORK=3Dy
+CONFIG_BUILDTIME_TABLE_SORT=3Dy
+
+--/XgSBHUpeXMHM/69
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMF3AwAKCRB4tDGHoIJi
+0ox+AQD2N9SfZLE1Y7/Z6Yk1dCe3++FevTh0MNY9GYKvQ6Xo9AEAxQ43w781k2ON
+DCdKUNVCSHPYrmD5riGkYr4LgtXcHgw=
+=8aCt
+-----END PGP SIGNATURE-----
+
+--/XgSBHUpeXMHM/69--
