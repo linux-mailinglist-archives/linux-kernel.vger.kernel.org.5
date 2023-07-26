@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 359257631FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E65776316F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbjGZJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
+        id S229814AbjGZJPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjGZJ1m (ORCPT
+        with ESMTP id S233628AbjGZJPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:27:42 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4D9423B;
-        Wed, 26 Jul 2023 02:25:58 -0700 (PDT)
-Received: from dggpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R9p1B1gzvz1GDKg;
-        Wed, 26 Jul 2023 17:06:38 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 17:07:30 +0800
-Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
- iort_node_get_rmr_info()
-From:   Hanjun Guo <guohanjun@huawei.com>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Guanghui Feng <guanghuifeng@linux.alibaba.com>
-CC:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
-        "alikernel-developer@linux.alibaba.com" 
-        <alikernel-developer@linux.alibaba.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
-References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
- <ZLZEq0QBBW4rcxJM@lpieralisi> <597f481b0e5149dabe4821ca618af6b3@huawei.com>
- <613da2c3-d515-b49c-4ff3-cf94836b2acf@huawei.com>
-Message-ID: <7689b8a7-105c-d8a4-4ba0-10aafdfd75e8@huawei.com>
-Date:   Wed, 26 Jul 2023 17:07:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 26 Jul 2023 05:15:12 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D215FF3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:11:05 -0700 (PDT)
+X-UUID: 54cb153c21d0454194b8b462b543549b-20230726
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:43ece9a5-5a2f-45a0-96ab-a3cf8af89fa9,IP:5,U
+        RL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:25
+X-CID-INFO: VERSION:1.1.28,REQID:43ece9a5-5a2f-45a0-96ab-a3cf8af89fa9,IP:5,URL
+        :0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:25
+X-CID-META: VersionHash:176cd25,CLOUDID:6cf3ceb3-a467-4aa9-9e04-f584452e3794,B
+        ulkID:230726171049V0EI4FCE,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
+        nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI
+        :0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 54cb153c21d0454194b8b462b543549b-20230726
+X-User: oushixiong@kylinos.cn
+Received: from localhost.localdomain [(111.48.58.12)] by mailgw
+        (envelope-from <oushixiong@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 841946839; Wed, 26 Jul 2023 17:10:46 +0800
+From:   oushixiong <oushixiong@kylinos.cn>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org, oushixiong <oushixiong@kylinos.cn>
+Subject: [PATCH 1/2] tty: vt: Fix spelling typo in comment
+Date:   Wed, 26 Jul 2023 17:10:43 +0800
+Message-Id: <20230726091044.705393-1-oushixiong@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <613da2c3-d515-b49c-4ff3-cf94836b2acf@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.247]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/19 17:13, Hanjun Guo wrote:
-> On 2023/7/18 16:56, Shameerali Kolothum Thodi wrote:
->>> [+Catalin, Will, Shameer]
-[...]
->>> Shameer, I know this may look like overkill since the hunk we are
->>> removing is buggy but can you please test this patch on platforms
->>> with RMR to make sure we are not triggering regressions by removing
->>> it (by the specs that's what should be done but current firmware
->>> is always something to reckon with) ?
->> Yes, that is a valid fix. Unlikely it will be a problem. Anyway, I 
->> have requested
->> Hanjun to help with the testing as I don't have a test setup with me now.
-> 
-> Valid fix for me as well, we had a firmware bug which reported the
-> numbers of ID as 1 when we only have one ID mapping, so remove the
-> check is fine for the old firmware, but to make it sure, we need some
-> test before give it a pass.
-> 
->>
->> Hanjun, please help.
-> 
-> I need some time to get it properly tested on two versions of firmware,
-> and get the test machine properly setup, please allow me give the
-> feedback next week.
+Signed-off-by: oushixiong <oushixiong@kylinos.cn>
+---
+ drivers/tty/vt/vt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No regressions were found,
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 1e8e57b45688..bcdd249e47a0 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -3473,7 +3473,7 @@ static int __init con_init(void)
+ 		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
+ 		tty_port_init(&vc->port);
+ 		visual_init(vc, currcons, 1);
+-		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
++		/* Assuming vc->vc_{cols,rows,screenbuf_size} are same here. */
+ 		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
+ 		vc_init(vc, vc->vc_rows, vc->vc_cols,
+ 			currcons || !vc->vc_sw->con_save_screen);
+-- 
+2.25.1
 
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
 
-Thanks
-Hanjun
+No virus found
+		Checked by Hillstone Network AntiVirus
