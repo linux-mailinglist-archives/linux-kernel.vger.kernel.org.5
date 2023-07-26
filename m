@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA047634FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7E176350E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjGZLb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
+        id S233826AbjGZLcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbjGZLby (ORCPT
+        with ESMTP id S233656AbjGZLcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:31:54 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2F8BF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:31:53 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so25853335ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690371113; x=1690975913;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Pv4E2/kDpVfa/Dtz4RIrx4SYaXDBMv1Xx1z917P6AGI=;
-        b=l0T/8cA7WKqxO3XFgE9ZfKHIIgxeet6bqJaEbDCqCpPOhySJ+dWssA6/afqm4C3FaR
-         BR/Swp7B2kTCsvcYs2Oap1e+4HLd1dRmTS77blnj+HrL9avMOXUxz4gPSKuPLn5X/bfV
-         sQWxK2YW/GaopekmCSB+3S7uSk4HI1OVOvaWI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690371113; x=1690975913;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pv4E2/kDpVfa/Dtz4RIrx4SYaXDBMv1Xx1z917P6AGI=;
-        b=h1g5YLR4glZNNjJciaRU5q12eh6X6E4TzrebNWiSALQ1KjqffPy+xlJSCUb3lHGdVe
-         5u87aYu0NJvwW0Du6XYQu8kEv4waKGQ7e0Ootr40BdQ+eYemWE0G73aEAFsmCus+f9Zh
-         sO+1V8y63ZuCFAbywiIp9mfFSzLsrW4Ju4MseSS+5FHWFvwr2Eb+CVsmyI8uEbu+NNV3
-         SxJtJOr8YoKYIyS7E+PTykQh20OzZNLaj9H8G0JS5nXPXantUqKf1mbci28s44Rb3v5b
-         mvYmQ76ccoazM/ut0o89f5rwGIZ+dkNW6KfxpITqHm0oZ3AhAht4tPszOh7UV6egdAEK
-         T3UA==
-X-Gm-Message-State: ABy/qLZhBx6hLH5AM1mfTAMfSjIYH/w6y/SgthnhqRM/eGOP8xzgbGPv
-        LTsi2+0L1j/ehpkxX6n4QjTwLA==
-X-Google-Smtp-Source: APBJJlFCJJMP3H6D5za0xJAObSY0B6q4CxM92CBcDxsHlqd8NDdz090Z75NONySCDQqIjyGz7wBlWg==
-X-Received: by 2002:a17:902:8f8d:b0:1b8:8af0:416f with SMTP id z13-20020a1709028f8d00b001b88af0416fmr1630769plo.1.1690371112691;
-        Wed, 26 Jul 2023 04:31:52 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:a2a4:d590:6375:66ba])
-        by smtp.gmail.com with ESMTPSA id y3-20020a1709029b8300b001b895336435sm12863278plp.21.2023.07.26.04.31.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 04:31:52 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 20:31:47 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Andrew Yang =?utf-8?B?KOaliuaZuuW8tyk=?= 
-        <Andrew.Yang@mediatek.com>
-Cc:     "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Casper Li =?utf-8?B?KOadjuS4reamrik=?= <casper.li@mediatek.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] zsmalloc: Fix races between modifications of fullness
- and isolated
-Message-ID: <20230726113147.GK955071@google.com>
-References: <20230721063705.11455-1-andrew.yang@mediatek.com>
- <20230726031846.GJ955071@google.com>
- <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 26 Jul 2023 07:32:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10E6BF;
+        Wed, 26 Jul 2023 04:32:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A3EB61A8D;
+        Wed, 26 Jul 2023 11:32:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA78AC433C8;
+        Wed, 26 Jul 2023 11:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690371165;
+        bh=wq+kGX1o6azl/+AxJe/umF5svvBwne/PrZi7iuI++k0=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=e1hankn3CHxOhV5V7dL9xTWosq9z/AofiRirVkpOjA5iGzdOg2AqeCG/lPXcfSVuf
+         NLnHQ8xPlaS3pRI4KBAejMqJ/9BDmbpTNDdG4GGoJApzH9gUqgXlIXbAJMEuxctoIS
+         6TH+ublhNs4PXHTBz9tII/L0d5YdsiwqMQhhqqyOL6xfDC/m1t8m7XHlDAvW7/JeUA
+         Y7CJxKafOQrVbAqZyxMgeC6wgPtZF0Yp2f6Jx/Gi404YrKPKekJc1fm+VKNqhl8zF4
+         44iwHUskx7tCXskhYbfbD94aM0do3HAm8eFIcjFR2ae6oW991MwijW+S7cmTHLlyov
+         Y/YMdbOcLz5Dg==
+Received: (nullmailer pid 1021823 invoked by uid 1000);
+        Wed, 26 Jul 2023 11:32:41 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     olivier.moysan@foss.st.com, lee@kernel.org, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-iio@vger.kernel.org,
+        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        andi.shyti@kernel.org, vkoul@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        ulf.hansson@linaro.org, richardcochran@gmail.com,
+        catalin.marinas@arm.com, conor+dt@kernel.org, edumazet@google.com,
+        gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
+        fabrice.gasnier@foss.st.com, linux-spi@vger.kernel.org,
+        davem@davemloft.net, mchehab@kernel.org, pabeni@redhat.com,
+        herbert@gondor.apana.org.au, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, robh+dt@kernel.org,
+        alexandre.torgue@foss.st.com, hugues.fruchet@foss.st.com,
+        krzysztof.kozlowski+dt@linaro.org, jic23@kernel.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        Oleksii_Moisieiev@epam.com, linux-i2c@vger.kernel.org,
+        kuba@kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org, arnaud.pouliquen@foss.st.com,
+        arnd@kernel.org
+In-Reply-To: <20230726090129.233316-1-gatien.chevallier@foss.st.com>
+References: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
+ <20230726090129.233316-1-gatien.chevallier@foss.st.com>
+Message-Id: <169037116156.1021724.12937477325696165938.robh@kernel.org>
+Subject: Re: [PATCH v3 04/11] dt-bindings: bus: document ETZPC
+Date:   Wed, 26 Jul 2023 05:32:41 -0600
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/26 06:59), Andrew Yang (楊智強) wrote:
-> On Wed, 2023-07-26 at 12:18 +0900, Sergey Senozhatsky wrote:
-> >
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On (23/07/21 14:37), Andrew Yang wrote:
-> > >
-> > > Since fullness and isolated share the same unsigned int,
-> > > modifications of them should be protected by the same lock.
-> > >
-> > > Signed-off-by: Andrew Yang <andrew.yang@mediatek.com>
-> > > Fixes: c4549b871102 ("zsmalloc: remove zspage isolation for
-> > migration")
-> >
-> > Have you observed issues in real life? That commit is more than a
-> > year
-> > and a half old, so I wonder.
-> >
-> Yes, we encountered many kernel exceptions of
-> VM_BUG_ON(zspage->isolated == 0) in dec_zspage_isolation() and
-> BUG_ON(!pages[1]) in zs_unmap_object() lately.
 
-Got it.
+On Wed, 26 Jul 2023 11:01:22 +0200, Gatien Chevallier wrote:
+> Document ETZPC (Extended TrustZone protection controller). ETZPC is a
+> firewall controller.
+> 
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> ---
+> 
+> Changes in V2:
+> 	- Corrected errors highlighted by Rob's robot
+> 	- No longer define the maxItems for the "feature-domains"
+> 	  property
+> 	- Fix example (node name, status)
+> 	- Declare "feature-domain-names" as an optional
+> 	  property for child nodes
+> 	- Fix description of "feature-domains" property
+> 	- Reorder the properties so it matches RIFSC
+> 	- Add missing "feature-domain-controller" property
+> 
+>  .../bindings/bus/st,stm32-etzpc.yaml          | 96 +++++++++++++++++++
+>  1 file changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+> 
 
-> This issue only occurs when migration and reclamation occur at the
-> same time. With our memory stress test, we can reproduce this issue
-> several times a day. We have no idea why no one else encountered
-> this issue. BTW, we switched to the new kernel version with this
-> defect a few months ago.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Yeah, pretty curious myself.
+yamllint warnings/errors:
 
-> > > @@ -1858,8 +1860,8 @@ static int zs_page_migrate(struct page
-> > *newpage, struct page *page,
-> > >   * Since we complete the data copy and set up new zspage
-> > structure,
-> > >   * it's okay to release the pool's lock.
-> > >   */
-> >
-> > This comment should be moved too, because this is not where we unlock
-> > the
-> > pool anymore.
-> >
-> Okay, I will submit a new patch later.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/bus/st,stm32-etzpc.example.dtb: serial@4c001000: Unevaluated properties are not allowed ('feature-domains' was unexpected)
+	from schema $id: http://devicetree.org/schemas/serial/st,stm32-uart.yaml#
 
-Thank you!
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230726090129.233316-1-gatien.chevallier@foss.st.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
