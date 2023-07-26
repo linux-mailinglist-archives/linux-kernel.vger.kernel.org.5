@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02E4763E3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370E7763E3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjGZSQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S231296AbjGZSQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbjGZSQL (ORCPT
+        with ESMTP id S230245AbjGZSQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:16:11 -0400
-Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84CA26A8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:16:07 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 18:15:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1690395365; x=1690654565;
-        bh=MHVHWNiRFk45RwUMHZjzyqHvHB/7TIueiT4PFTuQxkM=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Ay7oOHLfmGFsPbhpVgaXw64CWpTLO2Jc7obTWA9nxpU99nWyg4mLHOmhPKH0etHJG
-         zd/gfMJRP910cx4K1jopLYL4mD7RcG/qE2niaVn5dSyl4/GQ87k0ZuEw1IiP10dLbA
-         4jYhX5Lctrc2U07p3KVkD2zWiCnf/Qu4kL4D5IIGrPaqZh+q0v8YnjvCn/Q5hPosAV
-         uM+tantdEa91El/9a+pXSQB4ztN4MfhFZ4xV1QkzZ6YCWCzF98+ypc4FUWU2OGbG+e
-         /GY99WJj/z/XAkOz6G9KgEA9q3dIDlEFUtDN4vKs6wDVbVTmX8q6WpCN1CYxQfJGJi
-         h5iSTkTOHzuOQ==
-To:     =?utf-8?Q?Micha=C5=82_Winiarski?= <michal.winiarski@intel.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        James Zhu <James.Zhu@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: Re: [PATCH v6 3/4] drm: Expand max DRM device number to full MINORBITS
-Message-ID: <83s0YPWEdYE6C2a8pa6UAa3EaWZ2zG-q7IL9M-y6W1ucF9V54VnZtigKj3BGKUA2FZpIrs0VVxmpHO2RAhs_FdOnss9vNLQNSHySY8uH7YA=@emersion.fr>
-In-Reply-To: <20230724211428.3831636-4-michal.winiarski@intel.com>
-References: <20230724211428.3831636-1-michal.winiarski@intel.com> <20230724211428.3831636-4-michal.winiarski@intel.com>
-Feedback-ID: 1358184:user:proton
+        Wed, 26 Jul 2023 14:16:34 -0400
+X-Greylist: delayed 156028 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Jul 2023 11:16:31 PDT
+Received: from out-13.mta1.migadu.com (out-13.mta1.migadu.com [IPv6:2001:41d0:203:375::d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C3F2703
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:16:31 -0700 (PDT)
+Message-ID: <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690395390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tPEwfOCRbnMBgzOD350ywUVV+S/+4plDOcrL1fOck6o=;
+        b=u7TTINrL0DskF3YYfvOoWKUHJ1f9hxgLrTn2Et6ECWUav5//+y8i/cc/p8qujOxUB3M6ea
+        ssvyTfpD8sZKwfX54BJfnEpFlXRXYgaPsRA6/Inbte9mUZRk6z5Jf91Wh0PLKPDKrMO7sZ
+        zaVgGzJbO7UUZXMrxAixFjL9w+UU7XM=
+Date:   Wed, 26 Jul 2023 11:16:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Gal Pressman <gal@nvidia.com>
+References: <000000000000ee69e80600ec7cc7@google.com>
+ <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
+ <20230726071254.GA1380402@unreal> <20230726082312.1600053e@kernel.org>
+ <20230726170133.GX11388@unreal>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230726170133.GX11388@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, July 24th, 2023 at 23:14, Micha=C5=82 Winiarski <michal.winiarsk=
-i@intel.com> wrote:
+On 7/26/23 10:01 AM, Leon Romanovsky wrote:
+> On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
+>> On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
+>>>> Thanks, I'll take a look this evening.
+>>>
+>>> Did anybody post a fix for that?
+>>>
+>>> We are experiencing the following kernel panic in netdev commit
+>>> b57e0d48b300 (net-next/main) Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
+>>
+>> Not that I know, looks like this is with Daniel's previous fix already
+>> present, and syzbot is hitting it, too :(
+> 
+> My naive workaround which restored our regression runs is:
+> 
+> diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+> index 69a272712b29..10c9ab830702 100644
+> --- a/kernel/bpf/tcx.c
+> +++ b/kernel/bpf/tcx.c
+> @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
+>                          bpf_prog_put(tuple.prog);
+>                  tcx_skeys_dec(ingress);
+>          }
+> -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
+> +       tcx_miniq_set_active(entry, false);
 
-> Having a limit of 64 DRM devices is not good enough for modern world
-> where we have multi-GPU servers, SR-IOV virtual functions and virtual
-> devices used for testing.
-> Let's utilize full minor range for DRM devices.
-> To avoid regressing the existing userspace, we're still maintaining the
-> numbering scheme where 0-63 is used for primary, 64-127 is reserved
-> (formerly for control) and 128-191 is used for render.
-> For minors >=3D 192, we're allocating minors dynamically on a first-come,
-> first-served basis.
+Thanks for the report. I will look into it.
 
-In general the approach looks good to me. Old libdrm will see the new
-nodes as nodes with an unknown type when it tries to infer the nod type
-from the minor, which is as good as it gets.
+>          tcx_entry_free(entry);
+>   }
+> 
 
-We do need patches to stop trying to infer the node type from the minor
-in libdrm, though. Emil has suggested using sysfs, which we already do
-in a few places in libdrm.
