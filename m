@@ -2,378 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A0276367C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B3376367D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbjGZMjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        id S233030AbjGZMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjGZMi5 (ORCPT
+        with ESMTP id S230296AbjGZMkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:38:57 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A87211F;
-        Wed, 26 Jul 2023 05:38:53 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-783549ef058so341671039f.2;
-        Wed, 26 Jul 2023 05:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690375132; x=1690979932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cf6OwVLQHQNeiV+aHWN79/Ax5ahja0xu3b0dTMYI8Ns=;
-        b=kOGIRxX80h68BkPmzIsDtq20w41MC9R8mNVaLYSW7deW7kIPS5kzOS5yG/XfWVERA3
-         icsIgDBHuyXhiNT0HnxDch9KcMnY+80uN/CvTerqx25hwY3eF8RN9iT4zdBTT4w6S41t
-         JXAnLYyruyBylOfJYmkGurfhGv7j15C3mg4ChyPvK0dAR1BpQe6nNUeLTcnb1ZXqBFU9
-         XVWd3q2vk29RpbcJPVNWlnnv3ESu1aUG51k0dGb7NKCL0nm8GwamiO38CvRC4tWVpW96
-         g56tb5VQ3p4fjIiZD2mKWT0tjwBJIFkKUXVHUXXIt2T5hAHycsXwPIjTtJ3V3XdaX8QY
-         oThg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690375132; x=1690979932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cf6OwVLQHQNeiV+aHWN79/Ax5ahja0xu3b0dTMYI8Ns=;
-        b=MFYM76CV5rcj5CC/ohXBmuoIjFJC5d4QEA1eOqGi2loDOqxKXRYcn7YGzB+4wKtc62
-         UMpJoPnuXKYkX42xnw1vsJezrSBlSv7gOTYtAvoOaP88vPlZoRqkSzBS8g57Wug7PFuW
-         pfWjQ05bE2z2XXg9cFoMUNxsrSBCKF3qD3Gzo60+8IGI87F1OqBzm6C3H5tdOyB8ylvN
-         SJOk+G9r9RWZFB3aH3c3rvJCKlXDWhetSDxSpiZpNq0KzChOCYPymcODQfE0bulC8ovc
-         oMcUfhHjrxL5I6c71VJ/kO/tZ4dSmibITJtMUSN95bnSOvYb4+fLHL4zDY77LceOtjK9
-         kDHg==
-X-Gm-Message-State: ABy/qLbnprQD8qIwCbUv2JMsRqY1BGlN0nAhswTpiHueTJRZ1rNM1/zd
-        8JT9D/Xn65cjXDyxP2u6w+I0Z/WY+e7wwA==
-X-Google-Smtp-Source: APBJJlEb4W5+9f9dPxAdLK7TLONORL9U2tAintf8EBm6snxcdcujCz20c9hhnzLsGqMd6tSFnXOe/g==
-X-Received: by 2002:a05:6602:420c:b0:786:2878:9593 with SMTP id cb12-20020a056602420c00b0078628789593mr1975737iob.0.1690375127409;
-        Wed, 26 Jul 2023 05:38:47 -0700 (PDT)
-Received: from james-x399.localdomain (71-33-156-134.hlrn.qwest.net. [71.33.156.134])
-        by smtp.gmail.com with ESMTPSA id cg7-20020a0566381bc700b0042baffe832fsm4352025jab.101.2023.07.26.05.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 05:38:46 -0700 (PDT)
-From:   James Hilliard <james.hilliard1@gmail.com>
-To:     devicetree@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Pierluigi Passaro <pierluigi.p@variscite.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v7 3/3] ARM: dts: imx6q: Add Variscite MX6 Custom board support
-Date:   Wed, 26 Jul 2023 06:37:41 -0600
-Message-Id: <20230726123747.4097755-3-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230726123747.4097755-1-james.hilliard1@gmail.com>
-References: <20230726123747.4097755-1-james.hilliard1@gmail.com>
-MIME-Version: 1.0
+        Wed, 26 Jul 2023 08:40:10 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B5E1FC4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:40:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F6uTYm8OtKFc5hGNnCwHSF5jtvo8rxjB/5kFgSv+kdsHBHSJAYfBxZb8J+pPc/YjNumvhhs45AP+Fqg8vR1t505az34FW1K31j5VWRimJ1ST2tby5iYwvoXcCJcaHGzVF9hNFpTTKLPps7kqpKVrbwiOYLHrNSjwdOpCj9MSbcYNacKV0/F31qXiFXZFaIVxydOxbyWJGObmW0o7eAqRPlA7KuJSz7rE5fQIeGDIXkuHqvS9EEnCi4I+A3mbkHz1hR2dc0EsBREhux0ySIH3zvpn6rjCcU3KG0E41kwDDFfMtzthaNlvJnXgJOnR2LV60wdBfzJ19/aX94XoW6VfjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+N8HjKK0y8u881uxZ/oB1l5f5XebEVGw3UdFckxorAI=;
+ b=ntM9x+Mmn7gwdtavv/zzVktIx2gcg70ju1rjRpMa0bTPlTjKsKFgq24AXrFE5gG4i4KwEMAvzFqZFXkd2WISN/04ZTKmxo5mXTmqMWO3ViGIA49hemAv4ook/NEZfuje1qHCvFbs7jDzhLasvQCuV5CcUGVoSRuNIAYEL6EydwUTSHG9qUl0RFtbOYPVKX68FH3roxGcPpOzNgzUGJavIluAelPyEbwvLDi5JF9v7MtnmpUMqzavo22FgJxh34+XxrJbBuQ9mkay4MMkoAKsKyo1mTYlua5IdkFvN+XhIhtTKC75ADytLPjit77Nh4OGv0SXDpJP+2gYBL0vn4KDGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+N8HjKK0y8u881uxZ/oB1l5f5XebEVGw3UdFckxorAI=;
+ b=lX4cpNun/FAQUf1OslXDlW7IxScQ9qLbLoDlRyVMVPeVftatjtFtp8+u8EA9TPRKXOT96y7g+gZzkmT4+4s6S7rEE0WBBiGNDBOqnlFHDAB0FLBKzwgViAau3SMBUYvRpQpcKt3MNt2e8Rdi6ROu4A/nqP/6DI3PsHrntMp8udybbidjvteEyH1iMNumcbNg2U9RG2RPbM2yYiUu2qjDn/WokG4GpYoVxqGF2ZbMCTQudxi295S+Q8SrNIh4SnPYm0d0yJSsu0LxxR3zYzqxVT/j89CoK6uYsqc48QAtdJVeXozRglZrE4m+PD12odVmqk1UJJcKLJL+LxulSJkZ6w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
+ TY0PR06MB5471.apcprd06.prod.outlook.com (2603:1096:400:265::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29; Wed, 26 Jul 2023 12:40:06 +0000
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::535e:25af:a3bc:d600]) by SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::535e:25af:a3bc:d600%4]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 12:40:04 +0000
+From:   Wang Ming <machel@vivo.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
+Subject: [PATCH v2] mailbox: Remove error checking for debugfs_create_dir()
+Date:   Wed, 26 Jul 2023 20:39:03 +0800
+Message-Id: <20230726123917.7438-1-machel@vivo.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0228.apcprd06.prod.outlook.com
+ (2603:1096:4:68::36) To SG2PR06MB3743.apcprd06.prod.outlook.com
+ (2603:1096:4:d0::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|TY0PR06MB5471:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e5f92b8-1d28-460c-c6f0-08db8dd56fba
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IyGFHPprWqS9wGzm5u5uj/E0hEEJgQ8NggIEx8wcOC4p99DxIZkTBDq0JtJUGmDRQu6HP8n1t2oSu+hS+ohmuLEWgWZ13TebiYvvyLikG/BorFdTzJda0nCz4NmHgOiEY+z9LidFeFU9gTr/wpgYpWM2fExoKS6gBxtC97fDZ0hIDi0FygV0rELuFuB9h28oB6vocBQt7ARt7JU0JjA0AsmL6it4SyeWk4W+cLC9fDiJLcLaMY3HeDv99RdV5RONbWn1JLJdHX3mQfRpi+EDA6UUJhm6dcXwSgLbt0fpdPyaHkklywceDojLuE8eV1hmrcPH3O/QFsGURgllNGDw53kX/IYapoxwYKMVvc/Y+vwfisbdSi3PBKjEs0HYS2A7D5bCQ4crbEyGWcqNh+2aDYt8+8XiDGrTUmjudc5AflW5iuTLYopxOjlKnuC12nlThvzQCxOOh+0vhlL8twZBh+v740Kr5wdGCA82fmPiG4QEsqozhFA2JjuHztYRSJ5qmAMBH7KJb3bKESIygVwvMthUoXLszLI8wC3nLpegVuytNffiOVYA6o0G2A1RMbWWgQ4X1p8XiZo1ErTv6Cq31ju3GkHbARa0IQysKcNjhIDn+wTSwmcJPN9UVpaR+8kd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(366004)(136003)(396003)(451199021)(107886003)(186003)(26005)(2616005)(1076003)(6506007)(4326008)(83380400001)(66476007)(8676002)(316002)(15650500001)(8936002)(41300700001)(66556008)(66946007)(5660300002)(6512007)(6486002)(52116002)(2906002)(478600001)(4744005)(38100700002)(38350700002)(36756003)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cSh6FdnhVw5tODiPJ58BP/pUcXgozysvjdI655EhUrpJTiPR5LJx8MWHn3mQ?=
+ =?us-ascii?Q?6qWgeAQ3+3eJ1kS4ukuj4MIB+3s3oYCpQmF6Eodc11JPHT3r8cmawlg+5sM3?=
+ =?us-ascii?Q?C1SSldXKZ6Ea9AWzSvHTpd9va9a90lgEm9Tfr5cApoxt0wrZrMddloWMgyfL?=
+ =?us-ascii?Q?eOe/xQp9JeGmWkdo8oY5SYtbYMwawoM2qQwVomjDfyc1zA8tNSQ7m0CjzJUm?=
+ =?us-ascii?Q?etHTiSpq0RxP1QCykH3RxuEMf3ydP1Q5ET56/Ij/yJ6rX6Ef2PW0mg1japU1?=
+ =?us-ascii?Q?7K0q1m/YjPVts5h3DHWbcajhv25JiYyIcqsy9dCfYGerwVEjE3GXajnima0d?=
+ =?us-ascii?Q?U6jcqTQB0DIO0ziVPCYfqiXfopUArYNDZzdK+7JklEE6iOY1Zlasvs65JjIg?=
+ =?us-ascii?Q?c/vjn6I81+5BkB+nZu5WEVlLfr+acQzmNxuQyHyBLHv5hm7/Kyqo6cSJ9BL4?=
+ =?us-ascii?Q?dTtNF/WYywdIhwPg/Z8+QG/WURCe6kPj1qooKTOkuOPfsIFPVGxKcC8TkD/T?=
+ =?us-ascii?Q?Sjq5B7GK527/T6oUBj8JDU+bmW6qO3gjjYhS++KUcd6LUeAijUBXoZ3I2/lv?=
+ =?us-ascii?Q?SPT11gp/7hVHA3yvtIBqno9J6nNcoRWC5jZhYxA40tsDiU17rS5qB803HpZd?=
+ =?us-ascii?Q?uN8B9j6BcqIUZboSIK/B/i8lHtfFrg0los6fiyRNBOeGQytdBzBcSa1uO0Ne?=
+ =?us-ascii?Q?iqHKLVfmPc0abWxt8ZYsnMwFw1zsAgU+/JCRMdOxgSXgU9ocdqMhITi9OJnS?=
+ =?us-ascii?Q?G84YulBknaZi/ntjlU0iE3PpbA8PYE0GpJhHVZy2wsFp1/r5cgprE1E4gsgH?=
+ =?us-ascii?Q?jUTu5MBDRmM1jXXleVr4hUJV+5o4T5XjVxZXXyRNRO0onPdgs1gnLcoepy5U?=
+ =?us-ascii?Q?sHmZ9xuuoCbpiYenzOapUSDv95NGYErxW85/dWhGrbZ/XbsrOrSvNWlYbPjx?=
+ =?us-ascii?Q?Jnuc3Bmx9quNyWz5QPuKU4KX5J1RUc7k15yUeFtcfpgaZCg8i8nmmuDxpzQK?=
+ =?us-ascii?Q?u+OcZned99e+8VG2so6DQWGIfBhbIAFCTgXhHc7VIb4ndk1aIWqiIhZ35Hdz?=
+ =?us-ascii?Q?gcytZqws4Z1NTG+yJ0XG9zhtWPUMn6mLnYD+OQs8eSBSrKPgBw4BoonAP9yV?=
+ =?us-ascii?Q?zlQme1dd5bpXuv8BVU+fJhG3QOT83YLFl8Qnh8hEYk9MkoMigwD5KcLDvyc+?=
+ =?us-ascii?Q?r4h+kFy6Eyk2NL2be4MErFY2nA7Ekj55eWgg7meICC3rCa45zhIrh77j6gp2?=
+ =?us-ascii?Q?a769ADXuy/6bCYc7HHDFDL99ccWAAmEcnsIQHaP53wkZrNnltqnwLyAoYOE5?=
+ =?us-ascii?Q?oEBfIvOn4nWjo3jKlNdgAqsicwQtDcVY6cSu6EbcK8CNns46OouO19d9/Xbi?=
+ =?us-ascii?Q?dfHjcgjPjC6qhBVz8kxbzsaotA0BS4h3+GwRW7GTwCvWD4/WqfQrEtRkxong?=
+ =?us-ascii?Q?P/zk0Lggy176mA302VIk+2pY3v7AvrP4UzMT+0G6W644UbTDoNeT0ElwhOVF?=
+ =?us-ascii?Q?bOizxISeXagu6K+ofxRTUjK57DFDQ7UN8Hf8P6J/Cpiu8BqA7nyodt3gAnAd?=
+ =?us-ascii?Q?DEowBA9HAuhtDHtBflG2Fa/xxCOUHuRFLOl0vpZC?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e5f92b8-1d28-460c-c6f0-08db8dd56fba
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 12:40:04.7584
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ni7mvGQLEq3YQgpGITlvckbTFQU3NFhCKlYE2OGXS6LqB+4MvUAYVCaubu1/NvOgffzF2w8ufFqbfGw8x4Q8jQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5471
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for the Variscite MX6 SoM Carrier Board.
+It is expected that most callers should _ignore_ the errors return by
+debugfs_create_dir() in mbox_test_add_debugfs().
 
-This Carrier-Board has the following :
-- LVDS interface for the VLCD-CAP-GLD-LVDS 7" LCD 800 x 480 touch display
-- HDMI Connector
-- USB Host + USB OTG Connector
-- 10/100/1000 Mbps Ethernet
-- miniPCI-Express slot
-- SD Card connector
-- Audio Headphone/Line In jack connectors
-- S-ATA
-- On-board DMIC
-- RS485 Header
-- CAN bus header
-- SPI header
-- Camera Interfaces header
-- OnBoard RTC with Coin Backup battery socket
-- RS232 Debug Header (IDC10)
-- RS232 DTE
-
-Product Page : https://www.variscite.com/product/single-board-computers/var-mx6customboard
-
-The dts file based on the ones provided by Variscite on their own
-kernel, but adapted for mainline.
-
-Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Signed-off-by: Wang Ming <machel@vivo.com>
 ---
- arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
- .../dts/nxp/imx/imx6q-var-mx6customboard.dts  | 231 ++++++++++++++++++
- 2 files changed, 232 insertions(+)
- create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
+ drivers/mailbox/mailbox-test.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-index 3629e343d322..258ec0e5b712 100644
---- a/arch/arm/boot/dts/nxp/imx/Makefile
-+++ b/arch/arm/boot/dts/nxp/imx/Makefile
-@@ -244,6 +244,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6q-udoo.dtb \
- 	imx6q-utilite-pro.dtb \
- 	imx6q-var-dt6customboard.dtb \
-+	imx6q-var-mx6customboard.dtb \
- 	imx6q-vicut1.dtb \
- 	imx6q-wandboard.dtb \
- 	imx6q-wandboard-revb1.dtb \
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts b/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
-new file mode 100644
-index 000000000000..e5552efc505b
---- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
-@@ -0,0 +1,231 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Support for Variscite MX6 Carrier-board
-+ *
-+ * Copyright 2016 Variscite, Ltd. All Rights Reserved
-+ * Copyright 2022 Bootlin
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6qdl-var-som.dtsi"
-+#include <dt-bindings/pwm/pwm.h>
-+
-+/ {
-+	model = "Variscite i.MX6 QUAD/DUAL VAR-SOM-MX6 Custom Board";
-+	compatible = "variscite,mx6customboard", "variscite,var-som-imx6q", "fsl,imx6q";
-+
-+	panel0: lvds-panel0 {
-+		compatible =  "panel-lvds";
-+		backlight = <&backlight_lvds>;
-+		width-mm = <152>;
-+		height-mm = <91>;
-+		label = "etm070001adh6";
-+		data-mapping = "jeida-18";
-+
-+		panel-timing {
-+			clock-frequency = <32000000>;
-+			hactive = <800>;
-+			vactive = <480>;
-+			hback-porch = <39>;
-+			hfront-porch = <39>;
-+			vback-porch = <29>;
-+			vfront-porch = <13>;
-+			hsync-len = <47>;
-+			vsync-len = <2>;
-+		};
-+
-+		port {
-+			panel_in_lvds0: endpoint {
-+				remote-endpoint = <&lvds0_out>;
-+			};
-+		};
-+	};
-+
-+	panel1: lvds-panel1 {
-+		compatible =  "panel-lvds";
-+		width-mm = <152>;
-+		height-mm = <91>;
-+		data-mapping = "jeida-18";
-+
-+		panel-timing {
-+			clock-frequency = <38251000>;
-+			hactive = <800>;
-+			vactive = <600>;
-+			hback-porch = <112>;
-+			hfront-porch = <32>;
-+			vback-porch = <3>;
-+			vfront-porch = <17>;
-+			hsync-len = <80>;
-+			vsync-len = <4>;
-+		};
-+
-+		port {
-+			panel_in_lvds1: endpoint {
-+				remote-endpoint = <&lvds1_out>;
-+			};
-+		};
-+	};
-+
-+	backlight_lvds: backlight-lvds {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm2 0 50000 0>;
-+		brightness-levels = <0 4 8 16 32 64 128 248>;
-+		default-brightness-level = <7>;
-+		power-supply = <&reg_3p3v>;
-+	};
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	touchscreen@24 {
-+		compatible = "cypress,tt21000";
-+		reg = <0x24>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		reset-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+		vdd-supply = <&reg_3p3v>;
-+		touchscreen-size-x = <880>;
-+		touchscreen-size-y = <1280>;
-+	};
-+
-+	touchscreen@38 {
-+		compatible = "edt,edt-ft5306";
-+		reg = <0x38>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		touchscreen-size-x = <1800>;
-+		touchscreen-size-y = <1000>;
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_ipu1: ipu1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK	0x10
-+			MX6QDL_PAD_DI0_PIN15__IPU1_DI0_PIN15		0x10
-+			MX6QDL_PAD_DI0_PIN2__IPU1_DI0_PIN02		0x10
-+			MX6QDL_PAD_DI0_PIN3__IPU1_DI0_PIN03		0x10
-+			MX6QDL_PAD_DI0_PIN4__IPU1_DI0_PIN04		0x10
-+			MX6QDL_PAD_DISP0_DAT0__IPU1_DISP0_DATA00	0x10
-+			MX6QDL_PAD_DISP0_DAT1__IPU1_DISP0_DATA01	0x10
-+			MX6QDL_PAD_DISP0_DAT2__IPU1_DISP0_DATA02	0x10
-+			MX6QDL_PAD_DISP0_DAT3__IPU1_DISP0_DATA03	0x10
-+			MX6QDL_PAD_DISP0_DAT4__IPU1_DISP0_DATA04	0x10
-+			MX6QDL_PAD_DISP0_DAT5__IPU1_DISP0_DATA05	0x10
-+			MX6QDL_PAD_DISP0_DAT6__IPU1_DISP0_DATA06	0x10
-+			MX6QDL_PAD_DISP0_DAT7__IPU1_DISP0_DATA07	0x10
-+			MX6QDL_PAD_DISP0_DAT8__IPU1_DISP0_DATA08	0x10
-+			MX6QDL_PAD_DISP0_DAT9__IPU1_DISP0_DATA09	0x10
-+			MX6QDL_PAD_DISP0_DAT10__IPU1_DISP0_DATA10	0x10
-+			MX6QDL_PAD_DISP0_DAT11__IPU1_DISP0_DATA11	0x10
-+			MX6QDL_PAD_DISP0_DAT12__IPU1_DISP0_DATA12	0x10
-+			MX6QDL_PAD_DISP0_DAT13__IPU1_DISP0_DATA13	0x10
-+			MX6QDL_PAD_DISP0_DAT14__IPU1_DISP0_DATA14	0x10
-+			MX6QDL_PAD_DISP0_DAT15__IPU1_DISP0_DATA15	0x10
-+			MX6QDL_PAD_DISP0_DAT16__IPU1_DISP0_DATA16	0x10
-+			MX6QDL_PAD_DISP0_DAT17__IPU1_DISP0_DATA17	0x10
-+			MX6QDL_PAD_DISP0_DAT18__IPU1_DISP0_DATA18	0x10
-+			MX6QDL_PAD_DISP0_DAT19__IPU1_DISP0_DATA19	0x10
-+			MX6QDL_PAD_DISP0_DAT20__IPU1_DISP0_DATA20	0x10
-+			MX6QDL_PAD_DISP0_DAT21__IPU1_DISP0_DATA21	0x10
-+			MX6QDL_PAD_DISP0_DAT22__IPU1_DISP0_DATA22	0x10
-+			MX6QDL_PAD_DISP0_DAT23__IPU1_DISP0_DATA23	0x10
-+		>;
-+	};
-+
-+	pinctrl_camera: cameragrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT12__IPU1_CSI0_DATA12		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT13__IPU1_CSI0_DATA13		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT14__IPU1_CSI0_DATA14		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT15__IPU1_CSI0_DATA15		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT16__IPU1_CSI0_DATA16		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT17__IPU1_CSI0_DATA17		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT18__IPU1_CSI0_DATA18		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT19__IPU1_CSI0_DATA19		0x1b0b0
-+			MX6QDL_PAD_CSI0_DATA_EN__IPU1_CSI0_DATA_EN	0x1b0b0
-+			MX6QDL_PAD_CSI0_PIXCLK__IPU1_CSI0_PIXCLK	0x1b0b0
-+			MX6QDL_PAD_CSI0_MCLK__IPU1_CSI0_HSYNC		0x1b0b0
-+			MX6QDL_PAD_CSI0_VSYNC__IPU1_CSI0_VSYNC		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_7__FLEXCAN1_TX		0x1b0b0
-+			MX6QDL_PAD_GPIO_8__FLEXCAN1_RX		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usbotg_var: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_4__GPIO1_IO04		0x17059
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD		0x17071
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK		0x10071
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0		0x17071
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1		0x17071
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2		0x17071
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3		0x17071
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17059
-+			MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10059
-+			MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17059
-+			MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
-+			MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
-+			MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
-+		>;
-+	};
-+};
-+
-+&ldb {
-+	status = "okay";
-+
-+	lvds-channel@0 {
-+		fsl,data-mapping = "spwg";
-+		fsl,data-width = <24>;
-+		status = "okay";
-+
-+		port@4 {
-+			reg = <4>;
-+
-+			lvds0_out: endpoint {
-+				remote-endpoint = <&panel_in_lvds0>;
-+			};
-+		};
-+	};
-+
-+	lvds-channel@1 {
-+		fsl,data-mapping = "spwg";
-+		fsl,data-width = <24>;
-+		status = "okay";
-+
-+		port@4 {
-+			reg = <4>;
-+
-+			lvds1_out: endpoint {
-+				remote-endpoint = <&panel_in_lvds1>;
-+			};
-+		};
-+	};
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	cd-gpios = <&gpio4 14 GPIO_ACTIVE_LOW>;
-+	wp-gpios = <&gpio4 15 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+};
+diff --git a/drivers/mailbox/mailbox-test.c b/drivers/mailbox/mailbox-test.c
+index fc6a12a51..54d11c025 100644
+--- a/drivers/mailbox/mailbox-test.c
++++ b/drivers/mailbox/mailbox-test.c
+@@ -268,10 +268,6 @@ static int mbox_test_add_debugfs(struct platform_device *pdev,
+ 		return 0;
+ 
+ 	tdev->root_debugfs_dir = debugfs_create_dir(dev_name(&pdev->dev), NULL);
+-	if (!tdev->root_debugfs_dir) {
+-		dev_err(&pdev->dev, "Failed to create Mailbox debugfs\n");
+-		return -EINVAL;
+-	}
+ 
+ 	debugfs_create_file("message", 0600, tdev->root_debugfs_dir,
+ 			    tdev, &mbox_test_message_ops);
 -- 
-2.34.1
+2.25.1
 
