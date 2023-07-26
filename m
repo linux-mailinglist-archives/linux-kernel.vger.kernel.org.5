@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 405F7763E24
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D33763E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjGZSGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S231938AbjGZSII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbjGZSF6 (ORCPT
+        with ESMTP id S229577AbjGZSIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:05:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8312727;
-        Wed, 26 Jul 2023 11:05:57 -0700 (PDT)
+        Wed, 26 Jul 2023 14:08:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14B11FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:08:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C523B61C2F;
-        Wed, 26 Jul 2023 18:05:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C603C433C7;
-        Wed, 26 Jul 2023 18:05:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E12561C00
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:08:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 274A9C433C7;
+        Wed, 26 Jul 2023 18:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690394756;
-        bh=AEPtmDO63l60QJhXsd4SYCRUNeIj+/oodVwfUeY8hjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BQ7uyeNfjzdSkK3fLIdbMd7Fers9YmFeTfAkvTOqDrtr4zv978agpsWYC+IRx4OIr
-         fpD/P7lJm3jD+as8EMSrA8J1zsYlOErJerkW6jgX6SRQIvGLABQdTpUJ5j+30yiXh5
-         E09qCqcta9cG92MCuoWUWh+Wl7g2osDEMN8gw9JIf8xz2il6D5hgP3ioQLJEdue1UD
-         nmpHuGAEcg2mDkdzPkN6WCJ6yjb2zdvO9sGXF8In5iQIptg8XceRvMKK46Y2HVz7KM
-         Zno6Aw/OQAQZaj6n7kwCLoAPgRPQD2jbOxrhXmoxH7gjC0h06aDXLV2IPMpR4vpD4j
-         x1WqjrLttkNRg==
-Received: (nullmailer pid 1730126 invoked by uid 1000);
-        Wed, 26 Jul 2023 18:05:54 -0000
-Date:   Wed, 26 Jul 2023 12:05:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v1 1/6] gpio: ge: Add missing header
-Message-ID: <20230726180554.GA1725541-robh@kernel.org>
-References: <20230724161320.63876-1-andriy.shevchenko@linux.intel.com>
- <20230724161320.63876-2-andriy.shevchenko@linux.intel.com>
+        s=k20201202; t=1690394883;
+        bh=JVyjq9khiHsaa2EzqXPO6ynI006tU7vtTMC1jiwR+lg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=fkGjnpPm2GN3CUoAPKXuLP9eeBpcwqunRDJ2uVsc51l75wjEbLoqZMcg4QHIVs83Q
+         rMzVLrseDVPKqkWwMlUZJcll6X9W7Fnx/+W6wwc+erJDonNi87y2gbF5lDekoIujFO
+         pxrJvZz03Dxwh3uz9kny7Geznh9PYBouiLp6NDk25ugUBL689MCzzqScMB3BNiHHz9
+         WpSlbyNuEE2aGtDx3Zi+lCRVbu21lYb84DuS98biRiXwadpusVYPzaWtabhM4hKxvm
+         duTIdYUQOjs3XodEhaXjxPRik8tBM6tfcKP77EXYels+KytNt6xnPZsr7boxBGO5i4
+         e2XzKTh73t8pA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, justinstitt@google.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+References: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+Subject: Re: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
+Message-Id: <169039488086.108395.14504873016968111035.b4-ty@kernel.org>
+Date:   Wed, 26 Jul 2023 19:08:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724161320.63876-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,19 +65,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 07:13:15PM +0300, Andy Shevchenko wrote:
-> Add missing platform_device.h that used to be implied by of_device.h.
+On Tue, 25 Jul 2023 22:08:38 +0000, justinstitt@google.com wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1].
 > 
-> While at it, sort headers alphabetically for better maintenance.
+> A suitable replacement is `strscpy` [2].
 > 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: e91d0f05e66a ("gpio: Explicitly include correct DT includes")
-> Closes: https://lore.kernel.org/r/65b4ac1a-1128-6e2a-92c0-9bbcca4b760a@infradead.org
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpio-ge.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+> There are some hopes that someday the `strncpy` api could be ripped out
+> due to the vast number of suitable replacements (strscpy, strscpy_pad,
+> strtomem, strtomem_pad, strlcpy) [1].
+> 
+> [...]
 
-Thanks for fixing.
+Applied to
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: intel: avs: refactor strncpy usage in topology
+      commit: f6500ec12c1ec745fbec20fd4734b832bbfd4aac
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
