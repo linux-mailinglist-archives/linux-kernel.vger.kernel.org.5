@@ -2,171 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5C87640B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708607640B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjGZUml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
+        id S229873AbjGZUpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjGZUmj (ORCPT
+        with ESMTP id S229498AbjGZUpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:42:39 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE4212F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:42:36 -0700 (PDT)
+        Wed, 26 Jul 2023 16:45:31 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEED610DB;
+        Wed, 26 Jul 2023 13:45:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso3012921fa.0;
+        Wed, 26 Jul 2023 13:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=OZA55SnNbAmvZEmnAh3o1Vey5rx64nx3FOwYsy8KhWI=;
-  b=uCEDxfvQKI+OZ89DzhponjbY3VXv/Yryua8IgoxBZ9UIaendxM9D4OwW
-   /3hyo6rHOZX3mmqNZc3Ek+iDJgWSyKbZ3hN/Veb92iLre72eWFOy7w/8T
-   VUfzwM7DNGiP4hVKDO4iEuPMWGznDh7sQkb8XLv3Ut6S3bC2a6BuOQk5E
-   Q=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.01,232,1684792800"; 
-   d="scan'208";a="119229647"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:42:35 +0200
-Date:   Wed, 26 Jul 2023 22:42:34 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sean Christopherson <seanjc@google.com>
-cc:     Nicolas Palix <nicolas.palix@imag.fr>,
-        linux-kernel@vger.kernel.org, cocci@inria.fr,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2] Revert "debugfs, coccinelle: check for obsolete
- DEFINE_SIMPLE_ATTRIBUTE() usage"
-In-Reply-To: <20230726202920.507756-1-seanjc@google.com>
-Message-ID: <alpine.DEB.2.22.394.2307262242160.3129@hadrien>
-References: <20230726202920.507756-1-seanjc@google.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        d=gmail.com; s=20221208; t=1690404329; x=1691009129;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qGCqCU+TezLIUfpUCfOZVe0/fV0+wUaNn6X+yCvMglk=;
+        b=lNNTh4PYpy1EsvS/52nqXdTfZcerS4ldeEFiGJlgaPcyZYHxaWWQeENoJaZkzhyvsr
+         cyn/H40ulEnp8SkBAW8cRIQ6dmATRIiX0Y2IzODNLyItOlaE+w9+1ZADH/Rc4j+ANCmZ
+         kUFmVU0Jyw1c9yAbAOxdPV5i/nAa8Y5hEOJZeoVw9tB4FQp3YhuxiYYkFICpv7Si1c1f
+         KsalESTA7JU9o+ZcK6eGoIowgjP2iE5ZHZiaR9DDj30AklCLp/3S3a3OqKkrPQMAx+Ri
+         InXLNdZgqxpA3tDn4nwkkRN9wSIH9YuHHW3fRy/5CB0+i9TNt4+oGfAjuvohN0YCMAdc
+         iv3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690404329; x=1691009129;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qGCqCU+TezLIUfpUCfOZVe0/fV0+wUaNn6X+yCvMglk=;
+        b=IbRapYEITWECe77hptxCxlEvBBKqf2k7F0jF0qgoyIJb2WIyTp/Labt7tOu9UyVbIM
+         UeNSarJSmV3JDywSRDYdRmMLdozomYnZIw3Zi2+CNu2B0ejcBdDDMdf927AQzhcB/9ER
+         MnX/FKSaR0oAZLXVYlGOxVGwMxbi3pBQWbR70NYLM63crTj63ClIcf7hYwSsqaRT2lwf
+         R+GK9f3sN8/SvvtP0Ec/nsF6sX+ayL7B14KXQjx8LWwJpngBeoW9R6TUb5gKRj4KZC0K
+         wdI/9W45l2sswcC5wck1Rb2I8aRn4+PymhCQGeTvKUwn1bLw/CAujw7hiOzJoxAIlAt/
+         OJ1w==
+X-Gm-Message-State: ABy/qLYH+1ujNQEjIroz8/iIrD+Ba8uwefAf3JlOimb2ot0eeJYy+1JS
+        zhMQbpGqk6o7c7JGcvkk/d+B0CCC+oRd5vGXG+M=
+X-Google-Smtp-Source: APBJJlH4LtWwe/HU8YemRgvsa1IGuLJxx5RnR8HJey8fqgicxFCJQhO6NCTMFIxODRaNkQ+2UVCUr+Cg2IF6sSY1WJk=
+X-Received: by 2002:a2e:7315:0:b0:2b6:a763:5d13 with SMTP id
+ o21-20020a2e7315000000b002b6a7635d13mr164823ljc.27.1690404328662; Wed, 26 Jul
+ 2023 13:45:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a17:906:dc89:b0:978:9011:58a1 with HTTP; Wed, 26 Jul 2023
+ 13:45:27 -0700 (PDT)
+In-Reply-To: <20230726143419.19392-1-yuehaibing@huawei.com>
+References: <20230726143419.19392-1-yuehaibing@huawei.com>
+From:   Jay Vosburgh <j.vosburgh@gmail.com>
+Date:   Wed, 26 Jul 2023 13:45:27 -0700
+Message-ID: <CAAoacNmRXNbc5wZAjre3U-VwzKh_V==bmJZCoXLAHcWmNVW9Eg@mail.gmail.com>
+Subject: Re: [PATCH 27/29] bonding: 3ad: Remove unused declaration bond_3ad_update_lacp_active()
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, jon.toppins+linux@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liuhangbin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/26/23, YueHaibing <yuehaibing@huawei.com> wrote:
+> This is not used since commit 3a755cd8b7c6 ("bonding: add new option
+> lacp_active")
+
+To be clear, it appears that the cited commit added the declaration of
+bond_3ad_upate_lacp_active() to bond_3ad.h, but did not add the actual
+function definition.  A brief search suggests that the function has
+never existed.
+
+Regardless, the declaration shouldn't be there now.
+
+Acked-by: Jay Vosburgh <j.vosburgh@gmail.com>
 
 
-On Wed, 26 Jul 2023, Sean Christopherson wrote:
-
-> Remove coccinelle's recommendation to use DEFINE_DEBUGFS_ATTRIBUTE()
-> instead of DEFINE_SIMPLE_ATTRIBUTE().  Regardless of whether or not the
-> "significant overhead" incurred by debugfs_create_file() is actually
-> meaningful, warnings from the script have led to a rash of low-quality
-> patches that have sowed confusion and consumed maintainer time for little
-> to no benefit.  There have been no less than four attempts to "fix" KVM,
-> and a quick search on lore shows that KVM is not alone.
->
-> This reverts commit 5103068eaca290f890a30aae70085fac44cecaf6.
-
-Applied.
-
->
-> Link: https://lore.kernel.org/all/87tu2nbnz3.fsf@mpe.ellerman.id.au
-> Link: https://lore.kernel.org/all/c0b98151-16b6-6d8f-1765-0f7d46682d60@redhat.com
-> Link: https://lkml.kernel.org/r/20230706072954.4881-1-duminjie%40vivo.com
-> Link: https://lore.kernel.org/all/Y2FsbufV00jbyF0B@google.com
-> Link: https://lore.kernel.org/all/Y2ENJJ1YiSg5oHiy@orome
-> Link: https://lore.kernel.org/all/7560b350e7b23786ce712118a9a504356ff1cca4.camel@kernel.org
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
+>  include/net/bond_3ad.h | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> v2: Fix a copy+paste goof in the changelog, add Greg's Ack.
->
->  .../api/debugfs/debugfs_simple_attr.cocci     | 68 -------------------
->  1 file changed, 68 deletions(-)
->  delete mode 100644 scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
->
-> diff --git a/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci b/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
-> deleted file mode 100644
-> index 7c312310547c..000000000000
-> --- a/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
-> +++ /dev/null
-> @@ -1,68 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/// Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE
-> -/// for debugfs files.
-> -///
-> -//# Rationale: DEFINE_SIMPLE_ATTRIBUTE + debugfs_create_file()
-> -//# imposes some significant overhead as compared to
-> -//# DEFINE_DEBUGFS_ATTRIBUTE + debugfs_create_file_unsafe().
-> -//
-> -// Copyright (C): 2016 Nicolai Stange
-> -// Options: --no-includes
-> -//
-> -
-> -virtual context
-> -virtual patch
-> -virtual org
-> -virtual report
-> -
-> -@dsa@
-> -declarer name DEFINE_SIMPLE_ATTRIBUTE;
-> -identifier dsa_fops;
-> -expression dsa_get, dsa_set, dsa_fmt;
-> -position p;
-> -@@
-> -DEFINE_SIMPLE_ATTRIBUTE@p(dsa_fops, dsa_get, dsa_set, dsa_fmt);
-> -
-> -@dcf@
-> -expression name, mode, parent, data;
-> -identifier dsa.dsa_fops;
-> -@@
-> -debugfs_create_file(name, mode, parent, data, &dsa_fops)
-> -
-> -
-> -@context_dsa depends on context && dcf@
-> -declarer name DEFINE_DEBUGFS_ATTRIBUTE;
-> -identifier dsa.dsa_fops;
-> -expression dsa.dsa_get, dsa.dsa_set, dsa.dsa_fmt;
-> -@@
-> -* DEFINE_SIMPLE_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
-> -
-> -
-> -@patch_dcf depends on patch expression@
-> -expression name, mode, parent, data;
-> -identifier dsa.dsa_fops;
-> -@@
-> -- debugfs_create_file(name, mode, parent, data, &dsa_fops)
-> -+ debugfs_create_file_unsafe(name, mode, parent, data, &dsa_fops)
-> -
-> -@patch_dsa depends on patch_dcf && patch@
-> -identifier dsa.dsa_fops;
-> -expression dsa.dsa_get, dsa.dsa_set, dsa.dsa_fmt;
-> -@@
-> -- DEFINE_SIMPLE_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
-> -+ DEFINE_DEBUGFS_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
-> -
-> -
-> -@script:python depends on org && dcf@
-> -fops << dsa.dsa_fops;
-> -p << dsa.p;
-> -@@
-> -msg="%s should be defined with DEFINE_DEBUGFS_ATTRIBUTE" % (fops)
-> -coccilib.org.print_todo(p[0], msg)
-> -
-> -@script:python depends on report && dcf@
-> -fops << dsa.dsa_fops;
-> -p << dsa.p;
-> -@@
-> -msg="WARNING: %s should be defined with DEFINE_DEBUGFS_ATTRIBUTE" % (fops)
-> -coccilib.report.print_report(p[0], msg)
->
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> diff --git a/include/net/bond_3ad.h b/include/net/bond_3ad.h
+> index a016f275cb01..c5e57c6bd873 100644
+> --- a/include/net/bond_3ad.h
+> +++ b/include/net/bond_3ad.h
+> @@ -301,7 +301,6 @@ int  __bond_3ad_get_active_agg_info(struct bonding
+> *bond,
+>  int bond_3ad_lacpdu_recv(const struct sk_buff *skb, struct bonding *bond,
+>  			 struct slave *slave);
+>  int bond_3ad_set_carrier(struct bonding *bond);
+> -void bond_3ad_update_lacp_active(struct bonding *bond);
+>  void bond_3ad_update_lacp_rate(struct bonding *bond);
+>  void bond_3ad_update_ad_actor_settings(struct bonding *bond);
+>  int bond_3ad_stats_fill(struct sk_buff *skb, struct bond_3ad_stats
+> *stats);
 > --
-> 2.41.0.487.g6d72f3e995-goog
+> 2.34.1
 >
 >
