@@ -2,92 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAE5763EFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA03763F09
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbjGZSve convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
+        id S230229AbjGZSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjGZSvc (ORCPT
+        with ESMTP id S229590AbjGZSxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:51:32 -0400
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F7C270B;
-        Wed, 26 Jul 2023 11:51:31 -0700 (PDT)
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1bb3df62b34so34894fac.0;
-        Wed, 26 Jul 2023 11:51:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690397491; x=1691002291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JRGsH1Jfr6RATHY+BbPInolEKd5y3/mX+qRWdn1CGUY=;
-        b=FWorQ3k0gTLDgZU5HCJ6IP+DjHbd4tu7o1TpbdXgQB52EYsvwKMnR2PhJlF/ewVljV
-         RkjWtALROnlwiSBDhj16utPY35dlacmY8lhcT90KvYRJMxPbg9IVthh8VhZnYyt/Quv4
-         yEHZqMUzglDH65jffZaVFvDI/VFHQ29QAm0ceX9Ipa+zrhQ5A4oM8Bu6Ar3ceMvFe9Pu
-         JhQr81+WS+GD7RuGIWLFu4U/9ZGb7tClMtiQMNxwHDprqaPZo0TbXtVyNl/LQoi72tGl
-         5ClLDRNaH+52R1IQKuirGw0Y+0v+eIfEwnoSWJ7uouF3dXcRkEEFdqKxvTWc0P6uUD+M
-         wkpQ==
-X-Gm-Message-State: ABy/qLaYOeumLQt72Gn5rEZxoXSbWX0KD7ek/8XidF8fMuS46JZ8PDEI
-        Go5GwbUrK43uL7vAE3UmuBgDkJMGOLr2mwV7Xn0=
-X-Google-Smtp-Source: APBJJlFVCfzLFBWJ9nKz6/tyw2MPzkkpGTF3nE0WwxgFcOp8SstqNkXH4ER+l035s5VdMt4zisZ9NDaLmuRaMGBsFqE=
-X-Received: by 2002:a05:6870:1693:b0:1bb:81a1:f44e with SMTP id
- j19-20020a056870169300b001bb81a1f44emr3091322oae.3.1690397491100; Wed, 26 Jul
- 2023 11:51:31 -0700 (PDT)
+        Wed, 26 Jul 2023 14:53:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC922685
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:53:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E506961C9C
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:53:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EBDCC433C7;
+        Wed, 26 Jul 2023 18:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690397594;
+        bh=/OsjSXaYXBnGicGGKXYdVkxU7x46d6xO1z/t20cknDc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tw/lFetk7tT64WXIH8oO4Tm+Ta31kDLkDi8TmF69reiVnVGfyLK52zYnAXZyEVK1W
+         zWNn64YdOX968oGHCIcNNcpkCKctwY7b2uDmG2UMlHPogUT1OQLncwxdsgc8KZTowO
+         8PWlBloBOvawX5xTocwjGAiRUbDkmUXs7Q/omxV7QfbqKfTz5uexrYiU47AtJxMr8h
+         9kIQyzc3T4g4PERhxcYDgRGAoyhTP45FYaeNg2JUPr/pobf4h6/ypNyDXTATb9QqT8
+         CGtuLDOS4CZ4ANudHToxq6ySQmMwjwbeksf7SB47tobcSslQXnRNj0KH3EZ+4uR/Uj
+         NeiX7hGH6l3ZQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D0C64CE092A; Wed, 26 Jul 2023 11:53:13 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 11:53:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] init: keep boot_command_line after init
+Message-ID: <0df94114-71e2-41e0-a0b8-1c46bbb4e430@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230726143348.724611-1-arnd@kernel.org>
+ <CAKwvOdnk+e_QmE+QpcqzntNVgf8mL+NOPtUggj4F__iTf_XD+A@mail.gmail.com>
+ <034f0b5e-3c61-4392-8360-ebd57749d53e@app.fastmail.com>
 MIME-Version: 1.0
-References: <20230723-thermal-fix-of-memory-corruption-v1-1-ed4fa16d199d@kernel.org>
- <f559a614-93d5-121a-8ff3-0da77bc85f44@linaro.org> <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
- <CAJZ5v0jJ+YM=7LUEKB_b5GUsGopLTT0eyPmomYV0OcGQp2gvig@mail.gmail.com> <a72ca5e0-556a-4d16-9c5e-2b342bb074c1@sirena.org.uk>
-In-Reply-To: <a72ca5e0-556a-4d16-9c5e-2b342bb074c1@sirena.org.uk>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Jul 2023 20:51:20 +0200
-Message-ID: <CAJZ5v0jybAspzV2sWduERaMhBWPSYN_USiUcO_=eRUBB6vB6GQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal/of: Fix double free of params during unregistration
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-sunxi@lists.linux.dev, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <034f0b5e-3c61-4392-8360-ebd57749d53e@app.fastmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 8:47 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Jul 26, 2023 at 08:42:39PM +0200, Rafael J. Wysocki wrote:
-> > On Sun, Jul 23, 2023 at 4:32 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > There was a message on the thread saying the patches have been applied
-> > > for v6.5 but I can't see them in either mainline or -next.
->
-> > They should be there in linux-next (as of today).
->
-> Yes, they're there now.  They weren't at time of writing the above (on
-> Sunday).
->
-> > Surely, they are present in my linux-next branch.
->
-> Are they queued as fixes?
+On Wed, Jul 26, 2023 at 07:02:55PM +0200, Arnd Bergmann wrote:
+> On Wed, Jul 26, 2023, at 18:25, Nick Desaulniers wrote:
+> > On Wed, Jul 26, 2023 at 7:33 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >>
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> The boot command line is not available after the init section gets discarded,
+> >> so adding a permanent reference to it causes a link time warning:
+> >>
+> >> WARNING: modpost: vmlinux: section mismatch in reference: cmdline_load_proc_show+0x2 (section: .text) -> boot_command_line (section: .init.data)
+> >
+> > cmdline_load_proc_show is probably inlined, but should it also be
+> > marked __init?  It's lone call site seems to be __init AFAICT.
+> >
+> 
+> No, that's not what it does: cmdline_load_proc_show() is called
+> when someone reads /proc/cmdline_load from userspace. It's only
+> the function that creates this procfs file that is __init, but the
+> call happens later.
 
-They are.
+Thank you all!  I have declared a tie between Stephen Rothwell and Arnd
+Bergmann for this fix.  Please let me know if you are uncomfortable
+with these changes being squashed into the original with your guys'
+Co-developed-by.  I also added Nick's Reviewed-by, please see below.
 
->  It'd be really good to get these into v6.5,
-> they're rendering the Allwinner platforms I have unusable.
+							Thanx, Paul
 
-I'm going to send a pull request with them tomorrow or on Friday.
+------------------------------------------------------------------------
+
+commit de2f542cfbec295ac0f9b6a832d7b3ba20df391f
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Jul 21 16:05:38 2023 -0700
+
+    fs/proc: Add /proc/cmdline_load for boot loader arguments
+    
+    In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+    show all kernel boot parameters, both those supplied by the boot loader
+    and those embedded in the kernel image.  This works well for those who
+    just want to see all of the kernel boot parameters, but is not helpful to
+    those who need to see only those parameters supplied by the boot loader.
+    This is especially important when these parameters are presented to the
+    boot loader by automation that might gather them from diverse sources.
+    
+    Therefore, provide a /proc/cmdline_load file that shows only those kernel
+    boot parameters supplied by the boot loader.
+    
+    Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
+    it makes sense to put it in the same place that /proc/cmdline is located.
+    
+    Co-developed-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+    Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Alexey Dobriyan <adobriyan@gmail.com>
+    Cc: Masami Hiramatsu <mhiramat@kernel.org>
+    Cc: <linux-fsdevel@vger.kernel.org>
+
+diff --git a/fs/proc/cmdline.c b/fs/proc/cmdline.c
+index a6f76121955f..1d0ef9d2949d 100644
+--- a/fs/proc/cmdline.c
++++ b/fs/proc/cmdline.c
+@@ -3,6 +3,7 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
++#include <asm/setup.h>
+ #include "internal.h"
+ 
+ static int cmdline_proc_show(struct seq_file *m, void *v)
+@@ -12,6 +13,13 @@ static int cmdline_proc_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
++static int cmdline_load_proc_show(struct seq_file *m, void *v)
++{
++	seq_puts(m, boot_command_line);
++	seq_putc(m, '\n');
++	return 0;
++}
++
+ static int __init proc_cmdline_init(void)
+ {
+ 	struct proc_dir_entry *pde;
+@@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
+ 	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
+ 	pde_make_permanent(pde);
+ 	pde->size = saved_command_line_len + 1;
++	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
++		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
++		pde_make_permanent(pde);
++		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
++	}
+ 	return 0;
+ }
+ fs_initcall(proc_cmdline_init);
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 266c3e1640d4..c42a277db2da 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -112,6 +112,9 @@
+ #define __REFCONST       .section       ".ref.rodata", "a"
+ 
+ #ifndef __ASSEMBLY__
++
++#include <linux/cache.h>
++
+ /*
+  * Used for initialization calls..
+  */
+@@ -143,7 +146,7 @@ struct file_system_type;
+ 
+ /* Defined in init/main.c */
+ extern int do_one_initcall(initcall_t fn);
+-extern char __initdata boot_command_line[];
++extern char boot_command_line[] __ro_after_init;
+ extern char *saved_command_line;
+ extern unsigned int saved_command_line_len;
+ extern unsigned int reset_devices;
+diff --git a/init/main.c b/init/main.c
+index ad920fac325c..2121685c479a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
+ void (*__initdata late_time_init)(void);
+ 
+ /* Untouched command line saved by arch-specific code. */
+-char __initdata boot_command_line[COMMAND_LINE_SIZE];
++char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
+ /* Untouched saved command line (eg. for /proc) */
+ char *saved_command_line __ro_after_init;
+ unsigned int saved_command_line_len __ro_after_init;
