@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8830D763323
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A5763325
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbjGZKHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        id S233134AbjGZKII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjGZKHT (ORCPT
+        with ESMTP id S232493AbjGZKIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:07:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B951BFB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:07:04 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9qH707gKztRSb;
-        Wed, 26 Jul 2023 18:03:47 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.202) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 18:07:01 +0800
-From:   Zhu Wang <wangzhu9@huawei.com>
-To:     <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>,
-        <rfoss@kernel.org>, <Laurent.pinchart@ideasonboard.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <u.kleine-koenig@pengutronix.de>,
-        <javierm@redhat.com>, <dianders@chromium.org>,
-        <benjamin.mugnier@foss.st.com>, <kabel@kernel.org>,
-        <anarsoul@gmail.com>, <duwe@suse.de>, <mripard@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <wangzhu9@huawei.com>
-Subject: [PATCH -next] drm/bridge: fix -Wunused-const-variable= warning
-Date:   Wed, 26 Jul 2023 18:06:26 +0800
-Message-ID: <20230726100626.167490-1-wangzhu9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 26 Jul 2023 06:08:06 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32D5994;
+        Wed, 26 Jul 2023 03:08:04 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8Bx5fCD8MBk1iwKAA--.25566S3;
+        Wed, 26 Jul 2023 18:08:03 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxrM6C8MBkm6E7AA--.28785S3;
+        Wed, 26 Jul 2023 18:08:02 +0800 (CST)
+Message-ID: <5a891302-9657-ec95-4438-bc19d0efb556@loongson.cn>
+Date:   Wed, 26 Jul 2023 18:08:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 0/2] irqchip/loongson-eiointc: Add simple irq routing
+ method
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jianmin Lv <lvjianmin@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+References: <20230719063558.3131045-1-maobibo@loongson.cn>
+ <f19c393b-8c2e-e3aa-988a-88a423b59b99@loongson.cn>
+ <86h6prt2vx.wl-maz@kernel.org>
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <86h6prt2vx.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.202]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8BxrM6C8MBkm6E7AA--.28785S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tr1UCFWUAF4kXr1rXr18JFc_yoW8Jw4rpr
+        WfJas5Kr4rWryfKa4avF1jyr1Yy3s5XryqqFyfJw48XFn8tr1UJr18KFn09rnFvw4xCFy0
+        vF4rKFW7uFyUZ3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
+        67AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
+        CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+        1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
+        daVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1, the following warning occurs.
 
-drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c:48:17: warning: ‘anx781x_i2c_addresses’ defined but not used [-Wunused-const-variable=]
- static const u8 anx781x_i2c_addresses[] = {
-                 ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c:40:17: warning: ‘anx7808_i2c_addresses’ defined but not used [-Wunused-const-variable=]
- static const u8 anx7808_i2c_addresses[] = {
 
-The definition of above two data variables is included by the
-macro CONFIG_OF, so we also include the data variable
-definitions in the macro CONFIG_OF. And in addition the data
-variable anx78xx_match_table is included in the macro CONFIG_OF,
-so we add CONFIG_OF to the place where it is used.
+在 2023/7/26 17:53, Marc Zyngier 写道:
+> On Wed, 26 Jul 2023 10:45:51 +0100,
+> bibo mao <maobibo@loongson.cn> wrote:
+>>
+>> slight ping :)
+> 
+> Given that you have sent this series 5 times in two weeks, I don't
+> think anyone is in a hurry to review it again. Just give it time.
+Ok, I see. 
+Sorry to bring out some noise and thanks for your response.
 
-Fixes: 5d97408e0d70 ("drm/bridge: move ANA78xx driver to analogix subdirectory")
-
-Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
----
- drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-index 06a3e3243e19..799b33cebdd5 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-@@ -37,6 +37,7 @@
- 
- #define XTAL_CLK		270 /* 27M */
- 
-+#if IS_ENABLED(CONFIG_OF)
- static const u8 anx7808_i2c_addresses[] = {
- 	[I2C_IDX_TX_P0] = 0x78,
- 	[I2C_IDX_TX_P1] = 0x7a,
-@@ -52,6 +53,7 @@ static const u8 anx781x_i2c_addresses[] = {
- 	[I2C_IDX_RX_P0] = 0x7e,
- 	[I2C_IDX_RX_P1] = 0x80,
- };
-+#endif
- 
- struct anx78xx_platform_data {
- 	struct regulator *dvdd10;
-@@ -1387,7 +1389,9 @@ MODULE_DEVICE_TABLE(of, anx78xx_match_table);
- static struct i2c_driver anx78xx_driver = {
- 	.driver = {
- 		   .name = "anx7814",
-+#if IS_ENABLED(CONFIG_OF)
- 		   .of_match_table = of_match_ptr(anx78xx_match_table),
-+#endif
- 		  },
- 	.probe = anx78xx_i2c_probe,
- 	.remove = anx78xx_i2c_remove,
--- 
-2.17.1
+Regards
+Bibo Mao 
+> 
+> Thanks,
+> 
+> 	M.
+> 
+>>
+>> 在 2023/7/19 14:35, Bibo Mao 写道:
+>>> Fix return value checking of eiointc_index where int type
+>>> is converted uint32_t and check smaller than 0.
+>>>
+>>> Add simple irq route support on system with only one eiointc node,
+>>> rather than use anysend method.
+>>>
+>>> ---
+>>> Changes in v5:
+>>>   Modify typo issue.
+>>>
+>>> Changes in v4:
+>>>   Modify some spell checking problems.
+>>>   Add Fixes tag.
+>>>
+>>> Changes in v3:
+>>>   Modify some spell checking problems.
+>>>
+>>> Changes in v2:
+>>>   Use the simple irq routing on embeded board like 2K0500 and 2K2000
+>>> board, since there is only one eio node.
+>>>
+>>> ---
+>>> Bibo Mao (2):
+>>>   irqchip/loongson-eiointc: Fix return value checking of eiointc_index
+>>>   irqchip/loongson-eiointc: Simplify irq routing on some platforms
+>>>
+>>>  drivers/irqchip/irq-loongson-eiointc.c | 93 +++++++++++++++++++++++---
+>>>  1 file changed, 82 insertions(+), 11 deletions(-)
+>>>
+>>
+>>
+> 
 
