@@ -2,269 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39A0764040
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB1A764049
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjGZUIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        id S230179AbjGZUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbjGZUIb (ORCPT
+        with ESMTP id S229627AbjGZUKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:08:31 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFED12707;
-        Wed, 26 Jul 2023 13:08:29 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id 560F82383126; Wed, 26 Jul 2023 13:08:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 560F82383126
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1690402109;
-        bh=JEIhw/jaTya18OX189IFQdQJH+n9QTgW7FoEIyakSrw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IzPINmxZxbi4LqskiAoPawlZDRF9ZVIjChONAgLDBIGQHeyqZ08CtR3YUjvDQUdyx
-         sNyRjQhsn4ZrPic4n73xyIAa2hL30RMqot81bQ4RbUMz9pAXV3a9ab6sW6lsjorUW0
-         wzAdHLS9h1Jr95qoOKLSP98+xrJJaWi+OYepc4ws=
-From:   sharmaajay@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v3 4/4] RDMA/mana_ib : Query adapter capabilities
-Date:   Wed, 26 Jul 2023 13:08:24 -0700
-Message-Id: <1690402104-29518-5-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 26 Jul 2023 16:10:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE9C30DD;
+        Wed, 26 Jul 2023 13:09:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5833B61CAD;
+        Wed, 26 Jul 2023 20:09:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6400C433C8;
+        Wed, 26 Jul 2023 20:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690402179;
+        bh=ByihIIIrHPEgn7QBviz+5vCufrDNcl/yU4L5yAeVcho=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bsIrc1vdjx8vHm65t/6585qT7Ch4/HzM2hNl2MlDFay/0rRdj3AXFPNdPQPRmtgIt
+         vkVF8QzU+wlXddT2KDPhsXddQF0rnuF7B/vN8zwDTjr30r3kdPsFzNiQSl6ZlbFHKX
+         c2Cbhy4rbUvrgLDBV/YCdaAAW/6dAWr+rYAoDt8jouPqEk+/1GySiAOUMBQ2y/eL9o
+         mCVlZEwqn9+gQNf7TfqykloCVS1qX7CqFMuJf3P522GvItjInNuSd/3y2gyNvq2rx5
+         MNkzyHkoI/2a0v/5uk6tfhMUKGJ/oEOU9z2/I/NRcFjUusjTXI7JC/5/huZw7Gzgkl
+         C90jQKGAD75ew==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b9b6e943ebso13817621fa.1;
+        Wed, 26 Jul 2023 13:09:39 -0700 (PDT)
+X-Gm-Message-State: ABy/qLb0/OVlto75IeWAd/mlgYYBiaSETS5efSpO3NNv9qnp5u+Kydck
+        KQo6tTsvcmYSe+tzlBKdTmP+sXSDPK+jSO1xLg==
+X-Google-Smtp-Source: APBJJlEVoog0/4ge/YrLwTnu8bPhGFXj/nmL6U0D5RCzZSvpoJTVKOcH9N1dPnIvobmivRpzZI+r3KqKo0qcVTA47HY=
+X-Received: by 2002:a2e:9846:0:b0:2b8:3a1e:eebd with SMTP id
+ e6-20020a2e9846000000b002b83a1eeebdmr17905ljj.21.1690402177670; Wed, 26 Jul
+ 2023 13:09:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230714174028.4040093-1-robh@kernel.org> <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 26 Jul 2023 14:09:24 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+VvQ-eZBN1ifH3TwROoAL2ZpSpaQrzHOfxnMkvwqgJ=w@mail.gmail.com>
+Message-ID: <CAL_Jsq+VvQ-eZBN1ifH3TwROoAL2ZpSpaQrzHOfxnMkvwqgJ=w@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Explicitly include correct DT includes
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
+On Wed, Jul 26, 2023 at 12:15=E2=80=AFPM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Rob,
+>
+> On Fri, Jul 14, 2023 at 7:44=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
+te:
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those includ=
+e
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+>
+> Thanks for your patch, which is now commit 657c45b303f87d77 ("MIPS:
+> Explicitly include correct DT includes") in next-20230726.
+>
+> > --- a/arch/mips/lantiq/xway/gptu.c
+> > +++ b/arch/mips/lantiq/xway/gptu.c
+> > @@ -8,8 +8,8 @@
+> >  #include <linux/interrupt.h>
+> >  #include <linux/ioport.h>
+> >  #include <linux/init.h>
+> > -#include <linux/of_platform.h>
+> > -#include <linux/of_irq.h>
+>
+> Based on https://lore.kernel.org/all/202307270140.uClzsYnD-lkp@intel.com,
+> I guess you need to keep of_irq.h for of_irq_to_resource_table()?
 
-Query the adapter capabilities to expose to
-other clients and VF. This checks against
-the user supplied values and protects against
-overflows.
+Ugg, yes. Posting a fix momentarily.
 
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  4 ++
- drivers/infiniband/hw/mana/main.c    | 66 +++++++++++++++++++++++++---
- drivers/infiniband/hw/mana/mana_ib.h | 53 +++++++++++++++++++++-
- 3 files changed, 115 insertions(+), 8 deletions(-)
+Too many config combinations to test on some arches...
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 4077e440657a..e15da43c73a0 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -97,6 +97,10 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		goto free_error_eq;
- 	}
- 
-+	ret = mana_ib_query_adapter_caps(mib_dev);
-+	if (ret)
-+		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 1b1a8670d0fa..512815e1e64d 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -469,21 +469,27 @@ int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
- int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
- 			 struct ib_udata *uhw)
- {
-+	struct mana_ib_dev *mib_dev = container_of(ibdev,
-+			struct mana_ib_dev, ib_dev);
-+
- 	props->max_qp = MANA_MAX_NUM_QUEUES;
- 	props->max_qp_wr = MAX_SEND_BUFFERS_PER_QUEUE;
--
--	/*
--	 * max_cqe could be potentially much bigger.
--	 * As this version of driver only support RAW QP, set it to the same
--	 * value as max_qp_wr
--	 */
- 	props->max_cqe = MAX_SEND_BUFFERS_PER_QUEUE;
--
- 	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
- 	props->max_mr = MANA_IB_MAX_MR;
- 	props->max_send_sge = MAX_TX_WQE_SGL_ENTRIES;
- 	props->max_recv_sge = MAX_RX_WQE_SGL_ENTRIES;
- 
-+	/* If the Management SW is updated and supports adapter creation */
-+	if (mib_dev->adapter_handle) {
-+		props->max_qp = mib_dev->adapter_caps.max_qp_count;
-+		props->max_qp_wr = mib_dev->adapter_caps.max_requester_sq_size;
-+		props->max_cqe = mib_dev->adapter_caps.max_requester_sq_size;
-+		props->max_mr = mib_dev->adapter_caps.max_mr_count;
-+		props->max_send_sge = mib_dev->adapter_caps.max_send_wqe_size;
-+		props->max_recv_sge = mib_dev->adapter_caps.max_recv_wqe_size;
-+	}
-+
- 	return 0;
- }
- 
-@@ -599,3 +605,49 @@ int mana_ib_create_error_eq(struct mana_ib_dev *mib_dev)
- 
- 	return 0;
- }
-+
-+static void assign_caps(struct mana_ib_adapter_caps *caps,
-+			struct mana_ib_query_adapter_caps_resp *resp)
-+{
-+	caps->max_sq_id = resp->max_sq_id;
-+	caps->max_rq_id = resp->max_rq_id;
-+	caps->max_cq_id = resp->max_cq_id;
-+	caps->max_qp_count = resp->max_qp_count;
-+	caps->max_cq_count = resp->max_cq_count;
-+	caps->max_mr_count = resp->max_mr_count;
-+	caps->max_pd_count = resp->max_pd_count;
-+	caps->max_inbound_read_limit = resp->max_inbound_read_limit;
-+	caps->max_outbound_read_limit = resp->max_outbound_read_limit;
-+	caps->mw_count = resp->mw_count;
-+	caps->max_srq_count = resp->max_srq_count;
-+	caps->max_requester_sq_size = resp->max_requester_sq_size;
-+	caps->max_responder_sq_size = resp->max_responder_sq_size;
-+	caps->max_requester_rq_size = resp->max_requester_rq_size;
-+	caps->max_responder_rq_size = resp->max_responder_rq_size;
-+	caps->max_send_wqe_size = resp->max_send_wqe_size;
-+	caps->max_recv_wqe_size = resp->max_recv_wqe_size;
-+	caps->max_inline_data_size = resp->max_inline_data_size;
-+}
-+
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev)
-+{
-+	struct mana_ib_query_adapter_caps_resp resp = {};
-+	struct mana_ib_query_adapter_caps_req req = {};
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_GET_ADAPTER_CAP, sizeof(req),
-+			     sizeof(resp));
-+	req.hdr.resp.msg_version = MANA_IB__GET_ADAPTER_CAP_RESPONSE_V3;
-+	req.hdr.dev_id = mib_dev->gc->mana_ib.dev_id;
-+
-+	err = mana_gd_send_request(mib_dev->gc, sizeof(req), &req,
-+				   sizeof(resp), &resp);
-+
-+	if (err) {
-+		ibdev_err(&mib_dev->ib_dev, "Failed to query adapter caps err %d", err);
-+		return err;
-+	}
-+
-+	assign_caps(&mib_dev->adapter_caps, &resp);
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 8a652bccd978..1044358230d3 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -20,19 +20,41 @@
- 
- /* MANA doesn't have any limit for MR size */
- #define MANA_IB_MAX_MR_SIZE	U64_MAX
--
-+#define MANA_IB__GET_ADAPTER_CAP_RESPONSE_V3 3
- /*
-  * The hardware limit of number of MRs is greater than maximum number of MRs
-  * that can possibly represent in 24 bits
-  */
- #define MANA_IB_MAX_MR		0xFFFFFFu
- 
-+struct mana_ib_adapter_caps {
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+};
-+
- struct mana_ib_dev {
- 	struct ib_device ib_dev;
- 	struct gdma_dev *gdma_dev;
- 	struct gdma_context *gc;
- 	struct gdma_queue *fatal_err_eq;
- 	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
- };
- 
- struct mana_ib_wq {
-@@ -96,6 +118,7 @@ struct mana_ib_rwq_ind_table {
- };
- 
- enum mana_ib_command_code {
-+	MANA_IB_GET_ADAPTER_CAP = 0x30001,
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
- };
-@@ -120,6 +143,32 @@ struct mana_ib_destroy_adapter_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_ib_query_adapter_caps_req {
-+	struct gdma_req_hdr hdr;
-+}; /*HW Data */
-+
-+struct mana_ib_query_adapter_caps_resp {
-+	struct gdma_resp_hdr hdr;
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+}; /* HW Data */
-+
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *mib_dev,
- 				 struct ib_umem *umem,
- 				 mana_handle_t *gdma_region);
-@@ -194,4 +243,6 @@ int mana_ib_create_adapter(struct mana_ib_dev *mib_dev);
- 
- int mana_ib_destroy_adapter(struct mana_ib_dev *mib_dev);
- 
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev);
-+
- #endif
--- 
-2.25.1
 
+Rob
