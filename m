@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6487B76382A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085D5763839
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbjGZN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S233083AbjGZOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbjGZN4e (ORCPT
+        with ESMTP id S231346AbjGZOAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:56:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02E919B5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:54:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 26 Jul 2023 10:00:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20342211B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690379999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hI+xZjnjOx6iQYY+/HFIgbw6khCjngJ7Cxx7Odmq6DI=;
+        b=C7yMC1i40LKp6E5PjnGS55hYeEKO25dAn2+zPF944DVSxQGjsJkckeVs26N0Ga1jk4a751
+        syyP90/AfriDqhZ1pvtDLk2zYRrpzGnwscq3SRNbd5iYGggGHvZuAqyb+YfFbHSFPtwlLx
+        6/ReQgeRRsmg61cc0ELEEjvU87UhrZ0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-346-02aUmBj3PxCnqC9BrYH_Dw-1; Wed, 26 Jul 2023 09:59:56 -0400
+X-MC-Unique: 02aUmBj3PxCnqC9BrYH_Dw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C02961AE3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:54:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E204C433C8;
-        Wed, 26 Jul 2023 13:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690379676;
-        bh=sGxSXz0cFWUM6mikGWU97zEscdT5IkbZGSscNfphwp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ia3LVzruSjPX6o2KAMdWmgQmQ2Pl4MAzDbD6mjkIhGw1N4uU6zfcDQJw/4C7R8n6m
-         7NvETzHIqnlrhmCK+wjnNUIN6JnJ+AZV1g2D9yZ3GyFcp2kqbA6HLe7GkMUTMtm8z3
-         WRYRWYrJZXtezvXpsOD3GulSSEwsN01iyd7MCbFB7MTxqHvU6DBoydfKxe0Cy8B4rY
-         NEsX7oj9A5keo9GjJkf4lCrk1zo5nxJfby91VmBqh6hTfgyKFHFN6iRQEIb78zuZ+H
-         nMs/5jBBz0ybQGhwElBguz6RtLPfG/XZXlj2b3+rHyWVElH7/giSlHNKizfW9r5vZ9
-         DsvB9HRewAaDw==
-Date:   Wed, 26 Jul 2023 15:54:34 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
- .atomic_check callback
-Message-ID: <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
-References: <20230721070955.1170974-1-javierm@redhat.com>
- <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
- <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
- <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
- <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF4EF8028B2;
+        Wed, 26 Jul 2023 13:59:55 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.45.224.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2265840C2063;
+        Wed, 26 Jul 2023 13:59:51 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/3] Fix 'Spurious APIC interrupt (vector 0xFF) on CPU#n' issue
+Date:   Wed, 26 Jul 2023 16:59:42 +0300
+Message-Id: <20230726135945.260841-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cczvehknair5dagk"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Recently we found an issue which causes these error messages=0D
+to be sometimes logged if the guest has VFIO device attached:=0D
+=0D
+'Spurious APIC interrupt (vector 0xFF) on CPU#0, should never happen'=0D
+=0D
+It was traced to the incorrect APICv inhibition bug which started with=0D
+'KVM: x86: inhibit APICv/AVIC on changes to APIC ID or APIC base'=0D
+(All these issues are now fixed)=0D
+=0D
+However, there are valid cases for the APICv to be inhibited and it should =
+not=0D
+cause spurious interrupts to be injected to the guest.=0D
+=0D
+After some debug, the root cause was found and it is that __kvm_apic_update=
+_irr=0D
+doesn't set irr_pending which later triggers a int->unsigned char conversio=
+n=0D
+bug which leads to the wrong 0xFF injection.=0D
+=0D
+This also leads to an unbounded delay in injecting the interrupt and hurts=
+=0D
+performance.=0D
+=0D
+In addition to that, I also noticed that __kvm_apic_update_irr is not atomi=
+c=0D
+in regard to IRR, which can lead to an even harder to debug bug.=0D
+=0D
+V2: applied Paolo's feedback for the patch 1.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (3):=0D
+  KVM: x86: VMX: __kvm_apic_update_irr must update the IRR atomically=0D
+  KVM: x86: VMX: set irr_pending in kvm_apic_update_irr=0D
+  KVM: x86: check the kvm_cpu_get_interrupt result before using it=0D
+=0D
+ arch/x86/kvm/lapic.c | 25 +++++++++++++++++--------=0D
+ arch/x86/kvm/x86.c   | 10 +++++++---=0D
+ 2 files changed, 24 insertions(+), 11 deletions(-)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
---cczvehknair5dagk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 26, 2023 at 02:33:06PM +0200, Geert Uytterhoeven wrote:
-> > >> Also, Javier pointed me to a discussion you had on IRC about using d=
-evm
-> > >> allocation here. We can't really do that. KMS devices are only freed
-> > >> once the last userspace application closes its fd to the device file=
-, so
-> > >> you have an unbounded window during which the driver is still callab=
-le
-> > >> by userspace (and thus can still trigger an atomic commit) but the
-> > >> buffer would have been freed for a while.
-> > >
-> > > It should still be safe for (at least) the data_array buffer. That
-> > > buffer is only used to store pixels in hardware format, and immediate=
-ly
-> > > send them to the hardware.  If this can be called that late, it will
-> > > fail horribly, as you can no longer talk to the hardware at that point
-> > > (as ssd130x is an i2c driver, it might actually work; but a DRM driver
-> > >  that calls devm_platform_ioremap_resource() will crash when writing
-> > >  to its MMIO registers)?!?
-> >
-> > At the very least the SPI driver will fail since the GPIO that is used =
-to
-> > toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
-> > the regulator, backlight device, etc.
-> >
-> > But in any case, as mentioned it is only relevant if the data_array buf=
-fer
-> > is allocated at probe time, and from Maxime's explanation is more corre=
-ct
-> > to do it in the .atomic_check handler.
->=20
-> You need (at least) data_array for clear_screen, too, which is called
-> from .atomic_disable().
-
-I'm not sure I get what your concern is?
-
-Even if we entirely disable the plane, the state will not have been
-destroyed yet so you still have at least access to the data_array from
-the old state.
-
-Maxime
-
---cczvehknair5dagk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMElmgAKCRDj7w1vZxhR
-xV3/AQDnwMW+Ru8NZqVM/6Uv+aypaEiFS7yM6LQxS3jkrDgCJwEA9l1H6lonPdO4
-pWvLJ9iOIlUU+aoy6YCiZ8LSuDgdYA4=
-=pQQv
------END PGP SIGNATURE-----
-
---cczvehknair5dagk--
