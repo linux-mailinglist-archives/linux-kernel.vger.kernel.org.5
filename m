@@ -2,131 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E93763E57
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA344763EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbjGZSYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S231379AbjGZSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGZSYj (ORCPT
+        with ESMTP id S229685AbjGZSkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:24:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6A71FC2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:24:38 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe0e201f87so62127e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690395877; x=1691000677;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DMm+MukByH/bngQDWKuculviOTh1bUuwstlQEscD59I=;
-        b=jR5ta4KXGrccAKVEC2MgSliubflD3OrhlooylN4hMy/Jhf6cWJ9W3gYKmTTwVWVxj1
-         zLwshMd1VShyLFptZVe2Xxbn4JBE8PZ029Wvxwpr8CGD29GVRqA+svEZcblDGDIklDJj
-         lmoap2aX5Q74drwCaWBWtBVFYqcTlwQaOS42wX0ajIzHp2TXyicgd6461jA6SAaxL6ht
-         d2/J2cvgztCC0GVWyQKIybee39ZlxMlrwBUAWkUPvuAYYlqNi+pltu7K6Xzlqb8M89A6
-         QJ/K+KPKqIwPNnNSwlwkS6R9GVjTrVUdBBt11gWO5In1AHvgPMH16Ux0VFSCm6bFrMAq
-         vcSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690395877; x=1691000677;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DMm+MukByH/bngQDWKuculviOTh1bUuwstlQEscD59I=;
-        b=JzismGwC06FG/Xep2KTUF0jx25w7owCNpwWwd4kA4FQY6j3Va+NZQGkyBML0pvuhgd
-         04M5PSKGUVfO+swZHqxFLxJ4EX+Kxc8sC9k9mBRHWoOfBpWlmUV3hymlqngaSHGwDND8
-         n86/NGlR1cVvqFryU9lAEQjrbZkeZj0OJw6WB+gLmlMG23bLflZWB4dG9GcZ5xOE0glA
-         1he1FYnE8TFC2lTXuN2FV4N4zMkNoqIzxnXEYLJG903/6nStVbFI0KqvcLAXMwjxglOW
-         RnWik4tw20jL+mftuNukBSSCbZ9GhxrL7C0UaWr+DtTzsv8liONxUFnqBCDilKEhUu3c
-         Xy9A==
-X-Gm-Message-State: ABy/qLZ56ucd6ly9A4MM59DDflTMc4n6dj7IqTRaM15rrQNqkyYJhnte
-        1M8l5Bz7/xfaJn6y9lygx/rspQ==
-X-Google-Smtp-Source: APBJJlEC4KK34ke9StScpXn5HQIKp4rixX7PSMR2RamZGbcI/hdvdvZ/spxTurGWaQ+Aa3lvHDKLsQ==
-X-Received: by 2002:a05:6512:2038:b0:4fe:993:2220 with SMTP id s24-20020a056512203800b004fe09932220mr86936lfs.27.1690395876709;
-        Wed, 26 Jul 2023 11:24:36 -0700 (PDT)
-Received: from [192.168.1.101] (abxi164.neoplus.adsl.tpnet.pl. [83.9.2.164])
-        by smtp.gmail.com with ESMTPSA id e28-20020ac2547c000000b004f755ceafbcsm3408784lfn.217.2023.07.26.11.24.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 11:24:36 -0700 (PDT)
-Message-ID: <9ea4f4ed-8be0-859f-4f5d-d3bd0a727cb9@linaro.org>
-Date:   Wed, 26 Jul 2023 20:24:33 +0200
+        Wed, 26 Jul 2023 14:40:22 -0400
+Received: from uriel.iewc.co.za (uriel.iewc.co.za [IPv6:2c0f:f720:0:3::9a49:2248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD8019BD;
+        Wed, 26 Jul 2023 11:40:19 -0700 (PDT)
+Received: from [154.73.32.4] (helo=tauri.local.uls.co.za)
+        by uriel.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qOjCo-0001Sj-MK; Wed, 26 Jul 2023 20:25:50 +0200
+Received: from [192.168.1.145]
+        by tauri.local.uls.co.za with esmtp (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qOjCn-0005Ug-L2; Wed, 26 Jul 2023 20:25:49 +0200
+Message-ID: <27875beb-bd1c-0087-ac4c-420a9d92a5a9@uls.co.za>
+Date:   Wed, 26 Jul 2023 20:25:48 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] clk: qcom: reset: Increase max reset delay
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>
-References: <20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org>
- <20230726-topic-qcom_reset-v1-1-92de6d3e4c7c@linaro.org>
- <ZMFkO5aAT5I5kBac@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZMFkO5aAT5I5kBac@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
+Content-Language: en-GB
+To:     Antonio SJ Musumeci <trapexit@spawn.link>,
+        Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230726105953.843-1-jaco@uls.co.za>
+ <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
+ <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
+ <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
+ <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link>
+From:   Jaco Kroon <jaco@uls.co.za>
+Organization: Ultimate Linux Solutions (Pty) Ltd
+In-Reply-To: <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.2023 20:21, Stephan Gerhold wrote:
-> On Wed, Jul 26, 2023 at 03:26:19PM +0200, Konrad Dybcio wrote:
->> u8 limits us to 255 microseconds of delay. Promote the delay variable to
->> u16 to hold bigger values.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
-> It would be clearer to change this together with an actual user that
-> needs > 255us. AFAICT atm MSM8909 is the only user of this and it has
-> just 15us.
-Some LPASS resets ask for 500, but I'm still working on that driver.
+Hi,
 
-Konrad
+On 2023/07/26 19:23, Antonio SJ Musumeci wrote:
+> On 7/26/23 10:45, Bernd Schubert wrote:
+>> On 7/26/23 17:26, Jaco Kroon wrote:
+>>> Hi,
+>>>
+>>> On 2023/07/26 15:53, Bernd Schubert wrote:
+>>>> On 7/26/23 12:59, Jaco Kroon wrote:
+>>>>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+>>>>> ---
+>>>>>     fs/fuse/Kconfig   | 16 ++++++++++++++++
+>>>>>     fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
+>>>>>     2 files changed, 40 insertions(+), 18 deletions(-)
+>>>>>
+>>>>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+>>>>> index 038ed0b9aaa5..0783f9ee5cd3 100644
+>>>>> --- a/fs/fuse/Kconfig
+>>>>> +++ b/fs/fuse/Kconfig
+>>>>> @@ -18,6 +18,22 @@ config FUSE_FS
+>>>>>           If you want to develop a userspace FS, or if you want to use
+>>>>>           a filesystem based on FUSE, answer Y or M.
+>>>>>     +config FUSE_READDIR_ORDER
+>>>>> +    int
+>>>>> +    range 0 5
+>>>>> +    default 5
+>>>>> +    help
+>>>>> +        readdir performance varies greatly depending on the size of
+>>>>> the read.
+>>>>> +        Larger buffers results in larger reads, thus fewer reads and
+>>>>> higher
+>>>>> +        performance in return.
+>>>>> +
+>>>>> +        You may want to reduce this value on seriously constrained
+>>>>> memory
+>>>>> +        systems where 128KiB (assuming 4KiB pages) cache pages is
+>>>>> not ideal.
+>>>>> +
+>>>>> +        This value reprents the order of the number of pages to
+>>>>> allocate (ie,
+>>>>> +        the shift value).  A value of 0 is thus 1 page (4KiB) where
+>>>>> 5 is 32
+>>>>> +        pages (128KiB).
+>>>>> +
+>>>> I like the idea of a larger readdir size, but shouldn't that be a
+>>>> server/daemon/library decision which size to use, instead of kernel
+>>>> compile time? So should be part of FUSE_INIT negotiation?
+>>> Yes sure, but there still needs to be a default.  And one page at a time
+>>> doesn't cut it.
+>> With FUSE_INIT userspace would make that decision, based on what kernel
+>> fuse suggests? process_init_reply() already handles other limits - I
+>> don't see why readdir max has to be compile time option. Maybe a module
+>> option to set the limit?
+>>
+>> Thanks,
+>> Bernd
+> I had similar question / comment. This seems to me to be more
+> appropriately handed by the server via FUSE_INIT.
+>
+> And wouldn't "max" more easily be FUSE_MAX_MAX_PAGES? Is there a reason
+> not to allow upwards of 256 pages sized readdir buffer?
+
+Will look into FUSE_INIT.  The FUSE_INIT as I understand from what I've 
+read has some expansion constraints or the structure is somehow 
+negotiated.  Older clients in other words that's not aware of the option 
+will follow some default.  For backwards compatibility that default 
+should probably be 1 page.  For performance reasons it makes sense that 
+this limit be larger.
+
+glibc uses a 128KiB buffer for getdents64, so I'm not sure >128KiB here 
+makes sense.  Or if these two buffers are even directly related.
+
+Default to fc->max_pages (which defaults to 32 or 128KiB) if the 
+user-space side doesn't understand the max_readdir_pages limit aspect of 
+things?  Assuming these limits should be set separately.  I'm thinking 
+piggy backing on fc->max_pages is just fine to be honest.
+
+For the sake of avoiding division and modulo operations in the cache, 
+I'm thinking round-down max_pages to the closest power of two for the 
+sake of sticking to binary operators rather than divisions and mods?
+
+Current patch introduces a definite memory leak either way.  Tore 
+through about 12GB of RAM in a matter of 20 minutes or so.  Just going 
+to patch it that way first, and then based on responses above will look 
+into an alternative patch that does not depend on a compile-time 
+option.  Guessing __free_page should be a multi-page variant now.
+
+Thanks for all the feedback so far.
+
+Kind regards,
+Jaco
+
