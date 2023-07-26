@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B3376367D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7C6763682
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbjGZMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
+        id S233439AbjGZMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjGZMkK (ORCPT
+        with ESMTP id S230296AbjGZMli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:40:10 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B5E1FC4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:40:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F6uTYm8OtKFc5hGNnCwHSF5jtvo8rxjB/5kFgSv+kdsHBHSJAYfBxZb8J+pPc/YjNumvhhs45AP+Fqg8vR1t505az34FW1K31j5VWRimJ1ST2tby5iYwvoXcCJcaHGzVF9hNFpTTKLPps7kqpKVrbwiOYLHrNSjwdOpCj9MSbcYNacKV0/F31qXiFXZFaIVxydOxbyWJGObmW0o7eAqRPlA7KuJSz7rE5fQIeGDIXkuHqvS9EEnCi4I+A3mbkHz1hR2dc0EsBREhux0ySIH3zvpn6rjCcU3KG0E41kwDDFfMtzthaNlvJnXgJOnR2LV60wdBfzJ19/aX94XoW6VfjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+N8HjKK0y8u881uxZ/oB1l5f5XebEVGw3UdFckxorAI=;
- b=ntM9x+Mmn7gwdtavv/zzVktIx2gcg70ju1rjRpMa0bTPlTjKsKFgq24AXrFE5gG4i4KwEMAvzFqZFXkd2WISN/04ZTKmxo5mXTmqMWO3ViGIA49hemAv4ook/NEZfuje1qHCvFbs7jDzhLasvQCuV5CcUGVoSRuNIAYEL6EydwUTSHG9qUl0RFtbOYPVKX68FH3roxGcPpOzNgzUGJavIluAelPyEbwvLDi5JF9v7MtnmpUMqzavo22FgJxh34+XxrJbBuQ9mkay4MMkoAKsKyo1mTYlua5IdkFvN+XhIhtTKC75ADytLPjit77Nh4OGv0SXDpJP+2gYBL0vn4KDGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+N8HjKK0y8u881uxZ/oB1l5f5XebEVGw3UdFckxorAI=;
- b=lX4cpNun/FAQUf1OslXDlW7IxScQ9qLbLoDlRyVMVPeVftatjtFtp8+u8EA9TPRKXOT96y7g+gZzkmT4+4s6S7rEE0WBBiGNDBOqnlFHDAB0FLBKzwgViAau3SMBUYvRpQpcKt3MNt2e8Rdi6ROu4A/nqP/6DI3PsHrntMp8udybbidjvteEyH1iMNumcbNg2U9RG2RPbM2yYiUu2qjDn/WokG4GpYoVxqGF2ZbMCTQudxi295S+Q8SrNIh4SnPYm0d0yJSsu0LxxR3zYzqxVT/j89CoK6uYsqc48QAtdJVeXozRglZrE4m+PD12odVmqk1UJJcKLJL+LxulSJkZ6w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- TY0PR06MB5471.apcprd06.prod.outlook.com (2603:1096:400:265::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Wed, 26 Jul 2023 12:40:06 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::535e:25af:a3bc:d600]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::535e:25af:a3bc:d600%4]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
- 12:40:04 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH v2] mailbox: Remove error checking for debugfs_create_dir()
-Date:   Wed, 26 Jul 2023 20:39:03 +0800
-Message-Id: <20230726123917.7438-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0228.apcprd06.prod.outlook.com
- (2603:1096:4:68::36) To SG2PR06MB3743.apcprd06.prod.outlook.com
- (2603:1096:4:d0::18)
+        Wed, 26 Jul 2023 08:41:38 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48631FDA;
+        Wed, 26 Jul 2023 05:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690375296; x=1721911296;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=ETDxxOU+t5OdI9Iv6qVt7WaoqDevvPEJRI39rXKuOmU=;
+  b=lsBw+pzrzwnETjHnu/fj7RuparAhNU2HM4rRbINkuJiKoDDeWphPyLz2
+   +p6NiuWgbqgn0/PRilAf2U/UWVfnXXwORUPY7+kSdTiZsoKM4Us4Befo8
+   mIPEdmviMP2IOAZiRVpJEuAhAQFWC6wOHUHgEp2l/0GmcVhRng9QZQiAk
+   R2wAEn5cT1OgAq+c+4wb4Zex2ky3cQ+vOWldrjIpPbBqprd/wjLnEQvlF
+   vvZ7hguLdyQKdaT4HigbrZVn2iDM/p7rOdfuTec2Ah/u/ND84w7eKAHw3
+   +W4U0OnS9/TdXZBzY15DkcO0/TnUE9HT44NFBibJzW8S/PED2+GdrL8BO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="347617488"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="347617488"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 05:41:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="676683362"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="676683362"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.75])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 05:41:32 -0700
+Message-ID: <165b51d9-a9c8-1fea-f847-d3ce3757a7bd@intel.com>
+Date:   Wed, 26 Jul 2023 15:41:10 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|TY0PR06MB5471:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e5f92b8-1d28-460c-c6f0-08db8dd56fba
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IyGFHPprWqS9wGzm5u5uj/E0hEEJgQ8NggIEx8wcOC4p99DxIZkTBDq0JtJUGmDRQu6HP8n1t2oSu+hS+ohmuLEWgWZ13TebiYvvyLikG/BorFdTzJda0nCz4NmHgOiEY+z9LidFeFU9gTr/wpgYpWM2fExoKS6gBxtC97fDZ0hIDi0FygV0rELuFuB9h28oB6vocBQt7ARt7JU0JjA0AsmL6it4SyeWk4W+cLC9fDiJLcLaMY3HeDv99RdV5RONbWn1JLJdHX3mQfRpi+EDA6UUJhm6dcXwSgLbt0fpdPyaHkklywceDojLuE8eV1hmrcPH3O/QFsGURgllNGDw53kX/IYapoxwYKMVvc/Y+vwfisbdSi3PBKjEs0HYS2A7D5bCQ4crbEyGWcqNh+2aDYt8+8XiDGrTUmjudc5AflW5iuTLYopxOjlKnuC12nlThvzQCxOOh+0vhlL8twZBh+v740Kr5wdGCA82fmPiG4QEsqozhFA2JjuHztYRSJ5qmAMBH7KJb3bKESIygVwvMthUoXLszLI8wC3nLpegVuytNffiOVYA6o0G2A1RMbWWgQ4X1p8XiZo1ErTv6Cq31ju3GkHbARa0IQysKcNjhIDn+wTSwmcJPN9UVpaR+8kd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(366004)(136003)(396003)(451199021)(107886003)(186003)(26005)(2616005)(1076003)(6506007)(4326008)(83380400001)(66476007)(8676002)(316002)(15650500001)(8936002)(41300700001)(66556008)(66946007)(5660300002)(6512007)(6486002)(52116002)(2906002)(478600001)(4744005)(38100700002)(38350700002)(36756003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cSh6FdnhVw5tODiPJ58BP/pUcXgozysvjdI655EhUrpJTiPR5LJx8MWHn3mQ?=
- =?us-ascii?Q?6qWgeAQ3+3eJ1kS4ukuj4MIB+3s3oYCpQmF6Eodc11JPHT3r8cmawlg+5sM3?=
- =?us-ascii?Q?C1SSldXKZ6Ea9AWzSvHTpd9va9a90lgEm9Tfr5cApoxt0wrZrMddloWMgyfL?=
- =?us-ascii?Q?eOe/xQp9JeGmWkdo8oY5SYtbYMwawoM2qQwVomjDfyc1zA8tNSQ7m0CjzJUm?=
- =?us-ascii?Q?etHTiSpq0RxP1QCykH3RxuEMf3ydP1Q5ET56/Ij/yJ6rX6Ef2PW0mg1japU1?=
- =?us-ascii?Q?7K0q1m/YjPVts5h3DHWbcajhv25JiYyIcqsy9dCfYGerwVEjE3GXajnima0d?=
- =?us-ascii?Q?U6jcqTQB0DIO0ziVPCYfqiXfopUArYNDZzdK+7JklEE6iOY1Zlasvs65JjIg?=
- =?us-ascii?Q?c/vjn6I81+5BkB+nZu5WEVlLfr+acQzmNxuQyHyBLHv5hm7/Kyqo6cSJ9BL4?=
- =?us-ascii?Q?dTtNF/WYywdIhwPg/Z8+QG/WURCe6kPj1qooKTOkuOPfsIFPVGxKcC8TkD/T?=
- =?us-ascii?Q?Sjq5B7GK527/T6oUBj8JDU+bmW6qO3gjjYhS++KUcd6LUeAijUBXoZ3I2/lv?=
- =?us-ascii?Q?SPT11gp/7hVHA3yvtIBqno9J6nNcoRWC5jZhYxA40tsDiU17rS5qB803HpZd?=
- =?us-ascii?Q?uN8B9j6BcqIUZboSIK/B/i8lHtfFrg0los6fiyRNBOeGQytdBzBcSa1uO0Ne?=
- =?us-ascii?Q?iqHKLVfmPc0abWxt8ZYsnMwFw1zsAgU+/JCRMdOxgSXgU9ocdqMhITi9OJnS?=
- =?us-ascii?Q?G84YulBknaZi/ntjlU0iE3PpbA8PYE0GpJhHVZy2wsFp1/r5cgprE1E4gsgH?=
- =?us-ascii?Q?jUTu5MBDRmM1jXXleVr4hUJV+5o4T5XjVxZXXyRNRO0onPdgs1gnLcoepy5U?=
- =?us-ascii?Q?sHmZ9xuuoCbpiYenzOapUSDv95NGYErxW85/dWhGrbZ/XbsrOrSvNWlYbPjx?=
- =?us-ascii?Q?Jnuc3Bmx9quNyWz5QPuKU4KX5J1RUc7k15yUeFtcfpgaZCg8i8nmmuDxpzQK?=
- =?us-ascii?Q?u+OcZned99e+8VG2so6DQWGIfBhbIAFCTgXhHc7VIb4ndk1aIWqiIhZ35Hdz?=
- =?us-ascii?Q?gcytZqws4Z1NTG+yJ0XG9zhtWPUMn6mLnYD+OQs8eSBSrKPgBw4BoonAP9yV?=
- =?us-ascii?Q?zlQme1dd5bpXuv8BVU+fJhG3QOT83YLFl8Qnh8hEYk9MkoMigwD5KcLDvyc+?=
- =?us-ascii?Q?r4h+kFy6Eyk2NL2be4MErFY2nA7Ekj55eWgg7meICC3rCa45zhIrh77j6gp2?=
- =?us-ascii?Q?a769ADXuy/6bCYc7HHDFDL99ccWAAmEcnsIQHaP53wkZrNnltqnwLyAoYOE5?=
- =?us-ascii?Q?oEBfIvOn4nWjo3jKlNdgAqsicwQtDcVY6cSu6EbcK8CNns46OouO19d9/Xbi?=
- =?us-ascii?Q?dfHjcgjPjC6qhBVz8kxbzsaotA0BS4h3+GwRW7GTwCvWD4/WqfQrEtRkxong?=
- =?us-ascii?Q?P/zk0Lggy176mA302VIk+2pY3v7AvrP4UzMT+0G6W644UbTDoNeT0ElwhOVF?=
- =?us-ascii?Q?bOizxISeXagu6K+ofxRTUjK57DFDQ7UN8Hf8P6J/Cpiu8BqA7nyodt3gAnAd?=
- =?us-ascii?Q?DEowBA9HAuhtDHtBflG2Fa/xxCOUHuRFLOl0vpZC?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e5f92b8-1d28-460c-c6f0-08db8dd56fba
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 12:40:04.7584
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ni7mvGQLEq3YQgpGITlvckbTFQU3NFhCKlYE2OGXS6LqB+4MvUAYVCaubu1/NvOgffzF2w8ufFqbfGw8x4Q8jQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5471
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.1
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH v4 1/6] mmc: sdhci-cadence: Rename functions/structures to
+ SD4 specific
+To:     Piyush Malgujar <pmalgujar@marvell.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        yamada.masahiro@socionext.com, devicetree@vger.kernel.org
+Cc:     jannadurai@marvell.com, cchavva@marvell.com,
+        Dhananjay Kangude <dkangude@cadence.com>
+References: <20230717125146.16791-1-pmalgujar@marvell.com>
+ <20230717125146.16791-2-pmalgujar@marvell.com>
+Content-Language: en-US
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230717125146.16791-2-pmalgujar@marvell.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,29 +72,283 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is expected that most callers should _ignore_ the errors return by
-debugfs_create_dir() in mbox_test_add_debugfs().
+On 17/07/23 15:51, Piyush Malgujar wrote:
+> From: Dhananjay Kangude <dkangude@cadence.com>
+> 
+> Renaming the functions and structures specific to SD4 so
+> that it can be separated from upcoming SD6 related
+> functionality.
+> 
+> Signed-off-by: Dhananjay Kangude <dkangude@cadence.com>
+> Co-developed-by: Jayanthi Annadurai <jannadurai@marvell.com>
+> Signed-off-by: Jayanthi Annadurai <jannadurai@marvell.com>
+> Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
+> ---
+>  drivers/mmc/host/sdhci-cadence.c | 92 ++++++++++++++++----------------
+>  1 file changed, 46 insertions(+), 46 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-cadence.c b/drivers/mmc/host/sdhci-cadence.c
+> index d2f62505468932b069e3411f2a4b7418ffece517..9bb38281bcb244b0be91ef579046c40de7a06e1f 100644
+> --- a/drivers/mmc/host/sdhci-cadence.c
+> +++ b/drivers/mmc/host/sdhci-cadence.c
+> @@ -16,14 +16,14 @@
+>  
+>  #include "sdhci-pltfm.h"
+>  
+> -/* HRS - Host Register Set (specific to Cadence) */
+> -#define SDHCI_CDNS_HRS04		0x10		/* PHY access port */
+> -#define   SDHCI_CDNS_HRS04_ACK			BIT(26)> -#define   SDHCI_CDNS_HRS04_RD			BIT(25)
+> -#define   SDHCI_CDNS_HRS04_WR			BIT(24)
+> -#define   SDHCI_CDNS_HRS04_RDATA		GENMASK(23, 16)
+> -#define   SDHCI_CDNS_HRS04_WDATA		GENMASK(15, 8)
+> -#define   SDHCI_CDNS_HRS04_ADDR			GENMASK(5, 0)
+> +/* SD 4.0 Controller HRS - Host Register Set (specific to Cadence) */ where
+> +#define SDHCI_CDNS_HRS04			0x10	/* PHY access port */
+> +#define SDHCI_CDNS_SD4_HRS04_ACK		BIT(26)
+> +#define SDHCI_CDNS_SD4_HRS04_RD			BIT(25)
+> +#define SDHCI_CDNS_SD4_HRS04_WR			BIT(24)
+> +#define SDHCI_CDNS_SD4_HRS04_RDATA		GENMASK(23, 16)
+> +#define SDHCI_CDNS_SD4_HRS04_WDATA		GENMASK(15, 8)
+> +#define SDHCI_CDNS_SD4_HRS04_ADDR		GENMASK(5, 0)
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- drivers/mailbox/mailbox-test.c | 4 ----
- 1 file changed, 4 deletions(-)
+You have changed the style whereby the register and the fields
+had different indentations (compare SDHCI_CDNS_HRS04 and
+SDHCI_CDNS_HRS04_ACK).  The style doesn't matter much but it
+would be nicer not to end up with a mix of styles.
 
-diff --git a/drivers/mailbox/mailbox-test.c b/drivers/mailbox/mailbox-test.c
-index fc6a12a51..54d11c025 100644
---- a/drivers/mailbox/mailbox-test.c
-+++ b/drivers/mailbox/mailbox-test.c
-@@ -268,10 +268,6 @@ static int mbox_test_add_debugfs(struct platform_device *pdev,
- 		return 0;
- 
- 	tdev->root_debugfs_dir = debugfs_create_dir(dev_name(&pdev->dev), NULL);
--	if (!tdev->root_debugfs_dir) {
--		dev_err(&pdev->dev, "Failed to create Mailbox debugfs\n");
--		return -EINVAL;
--	}
- 
- 	debugfs_create_file("message", 0600, tdev->root_debugfs_dir,
- 			    tdev, &mbox_test_message_ops);
--- 
-2.25.1
+It is also a bit surprising not to continue using the register
+name as the prefix for the field name
+e.g. why SDHCI_CDNS_SD4_HRS04_ACK instead of SDHCI_CDNS_HRS04_SD4_ACK
+
+>  
+>  #define SDHCI_CDNS_HRS06		0x18		/* eMMC control */
+>  #define   SDHCI_CDNS_HRS06_TUNE_UP		BIT(15)
+> @@ -39,7 +39,7 @@
+>  /* SRS - Slot Register Set (SDHCI-compatible) */
+>  #define SDHCI_CDNS_SRS_BASE		0x200
+>  
+> -/* PHY */
+> +/* PHY registers for SD4 controller */
+>  #define SDHCI_CDNS_PHY_DLY_SD_HS	0x00
+>  #define SDHCI_CDNS_PHY_DLY_SD_DEFAULT	0x01
+>  #define SDHCI_CDNS_PHY_DLY_UHS_SDR12	0x02
+> @@ -60,7 +60,7 @@
+>   */
+>  #define SDHCI_CDNS_MAX_TUNING_LOOP	40
+>  
+> -struct sdhci_cdns_phy_param {
+> +struct sdhci_cdns_sd4_phy_param {
+>  	u8 addr;
+>  	u8 data;
+>  };
+> @@ -73,10 +73,10 @@ struct sdhci_cdns_priv {
+>  	void (*priv_writel)(struct sdhci_cdns_priv *priv, u32 val, void __iomem *reg);
+>  	struct reset_control *rst_hw;
+>  	unsigned int nr_phy_params;
+> -	struct sdhci_cdns_phy_param phy_params[];
+> +	struct sdhci_cdns_sd4_phy_param phy_params[];
+>  };
+>  
+> -struct sdhci_cdns_phy_cfg {
+> +struct sdhci_cdns_sd4_phy_cfg {
+>  	const char *property;
+>  	u8 addr;
+>  };
+> @@ -86,7 +86,7 @@ struct sdhci_cdns_drv_data {
+>  	const struct sdhci_pltfm_data pltfm_data;
+>  };
+>  
+> -static const struct sdhci_cdns_phy_cfg sdhci_cdns_phy_cfgs[] = {
+> +static const struct sdhci_cdns_sd4_phy_cfg sdhci_cdns_sd4_phy_cfgs[] = {
+>  	{ "cdns,phy-input-delay-sd-highspeed", SDHCI_CDNS_PHY_DLY_SD_HS, },
+>  	{ "cdns,phy-input-delay-legacy", SDHCI_CDNS_PHY_DLY_SD_DEFAULT, },
+>  	{ "cdns,phy-input-delay-sd-uhs-sdr12", SDHCI_CDNS_PHY_DLY_UHS_SDR12, },
+> @@ -106,76 +106,76 @@ static inline void cdns_writel(struct sdhci_cdns_priv *priv, u32 val,
+>  	writel(val, reg);
+>  }
+>  
+> -static int sdhci_cdns_write_phy_reg(struct sdhci_cdns_priv *priv,
+> -				    u8 addr, u8 data)
+> +static int sdhci_cdns_sd4_write_phy_reg(struct sdhci_cdns_priv *priv,
+> +					u8 addr, u8 data)
+>  {
+>  	void __iomem *reg = priv->hrs_addr + SDHCI_CDNS_HRS04;
+>  	u32 tmp;
+>  	int ret;
+>  
+> -	ret = readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS04_ACK),
+> +	ret = readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_SD4_HRS04_ACK),
+>  				 0, 10);
+>  	if (ret)
+>  		return ret;
+>  
+> -	tmp = FIELD_PREP(SDHCI_CDNS_HRS04_WDATA, data) |
+> -	      FIELD_PREP(SDHCI_CDNS_HRS04_ADDR, addr);
+> +	tmp = FIELD_PREP(SDHCI_CDNS_SD4_HRS04_WDATA, data) |
+> +	      FIELD_PREP(SDHCI_CDNS_SD4_HRS04_ADDR, addr);
+>  	priv->priv_writel(priv, tmp, reg);
+>  
+> -	tmp |= SDHCI_CDNS_HRS04_WR;
+> +	tmp |= SDHCI_CDNS_SD4_HRS04_WR;
+>  	priv->priv_writel(priv, tmp, reg);
+>  
+> -	ret = readl_poll_timeout(reg, tmp, tmp & SDHCI_CDNS_HRS04_ACK, 0, 10);
+> +	ret = readl_poll_timeout(reg, tmp, tmp & SDHCI_CDNS_SD4_HRS04_ACK, 0, 10);
+>  	if (ret)
+>  		return ret;
+>  
+> -	tmp &= ~SDHCI_CDNS_HRS04_WR;
+> +	tmp &= ~SDHCI_CDNS_SD4_HRS04_WR;
+>  	priv->priv_writel(priv, tmp, reg);
+>  
+> -	ret = readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS04_ACK),
+> +	ret = readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_SD4_HRS04_ACK),
+>  				 0, 10);
+>  
+>  	return ret;
+>  }
+>  
+> -static unsigned int sdhci_cdns_phy_param_count(struct device_node *np)
+> +static unsigned int sdhci_cdns_sd4_phy_param_count(struct device_node *np)
+>  {
+>  	unsigned int count = 0;
+>  	int i;
+>  
+> -	for (i = 0; i < ARRAY_SIZE(sdhci_cdns_phy_cfgs); i++)
+> -		if (of_property_read_bool(np, sdhci_cdns_phy_cfgs[i].property))
+> +	for (i = 0; i < ARRAY_SIZE(sdhci_cdns_sd4_phy_cfgs); i++)
+> +		if (of_property_read_bool(np, sdhci_cdns_sd4_phy_cfgs[i].property))
+>  			count++;
+>  
+>  	return count;
+>  }
+>  
+> -static void sdhci_cdns_phy_param_parse(struct device_node *np,
+> -				       struct sdhci_cdns_priv *priv)
+> +static void sdhci_cdns_sd4_phy_param_parse(struct device_node *np,
+> +					   struct sdhci_cdns_priv *priv)
+>  {
+> -	struct sdhci_cdns_phy_param *p = priv->phy_params;
+> +	struct sdhci_cdns_sd4_phy_param *p = priv->phy_params;
+>  	u32 val;
+>  	int ret, i;
+>  
+> -	for (i = 0; i < ARRAY_SIZE(sdhci_cdns_phy_cfgs); i++) {
+> -		ret = of_property_read_u32(np, sdhci_cdns_phy_cfgs[i].property,
+> +	for (i = 0; i < ARRAY_SIZE(sdhci_cdns_sd4_phy_cfgs); i++) {
+> +		ret = of_property_read_u32(np, sdhci_cdns_sd4_phy_cfgs[i].property,
+>  					   &val);
+>  		if (ret)
+>  			continue;
+>  
+> -		p->addr = sdhci_cdns_phy_cfgs[i].addr;
+> +		p->addr = sdhci_cdns_sd4_phy_cfgs[i].addr;
+>  		p->data = val;
+>  		p++;
+>  	}
+>  }
+>  
+> -static int sdhci_cdns_phy_init(struct sdhci_cdns_priv *priv)
+> +static int sdhci_cdns_sd4_phy_init(struct sdhci_cdns_priv *priv)
+>  {
+>  	int ret, i;
+>  
+>  	for (i = 0; i < priv->nr_phy_params; i++) {
+> -		ret = sdhci_cdns_write_phy_reg(priv, priv->phy_params[i].addr,
+> -					       priv->phy_params[i].data);
+> +		ret = sdhci_cdns_sd4_write_phy_reg(priv, priv->phy_params[i].addr,
+> +						   priv->phy_params[i].data);
+>  		if (ret)
+>  			return ret;
+>  	}
+> @@ -218,7 +218,7 @@ static u32 sdhci_cdns_get_emmc_mode(struct sdhci_cdns_priv *priv)
+>  	return FIELD_GET(SDHCI_CDNS_HRS06_MODE, tmp);
+>  }
+>  
+> -static int sdhci_cdns_set_tune_val(struct sdhci_host *host, unsigned int val)
+> +static int sdhci_cdns_sd4_set_tune_val(struct sdhci_host *host, unsigned int val)
+>  {
+>  	struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+>  	void __iomem *reg = priv->hrs_addr + SDHCI_CDNS_HRS06;
+> @@ -271,7 +271,7 @@ static int sdhci_cdns_execute_tuning(struct sdhci_host *host, u32 opcode)
+>  		return 0;
+>  
+>  	for (i = 0; i < SDHCI_CDNS_MAX_TUNING_LOOP; i++) {
+> -		if (sdhci_cdns_set_tune_val(host, i) ||
+> +		if (sdhci_cdns_sd4_set_tune_val(host, i) ||
+>  		    mmc_send_tuning(host->mmc, opcode, NULL)) { /* bad */
+>  			cur_streak = 0;
+>  		} else { /* good */
+> @@ -288,7 +288,7 @@ static int sdhci_cdns_execute_tuning(struct sdhci_host *host, u32 opcode)
+>  		return -EIO;
+>  	}
+>  
+> -	return sdhci_cdns_set_tune_val(host, end_of_streak - max_streak / 2);
+> +	return sdhci_cdns_sd4_set_tune_val(host, end_of_streak - max_streak / 2);
+>  }
+>  
+>  static void sdhci_cdns_set_uhs_signaling(struct sdhci_host *host,
+> @@ -410,7 +410,7 @@ static int elba_drv_init(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static const struct sdhci_ops sdhci_cdns_ops = {
+> +static const struct sdhci_ops sdhci_cdns_sd4_ops = {
+>  	.set_clock = sdhci_set_clock,
+>  	.get_timeout_clock = sdhci_cdns_get_timeout_clock,
+>  	.set_bus_width = sdhci_set_bus_width,
+> @@ -421,7 +421,7 @@ static const struct sdhci_ops sdhci_cdns_ops = {
+>  
+>  static const struct sdhci_cdns_drv_data sdhci_cdns_uniphier_drv_data = {
+>  	.pltfm_data = {
+> -		.ops = &sdhci_cdns_ops,
+> +	.ops = &sdhci_cdns_sd4_ops,
+>  		.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+>  	},
+>  };
+> @@ -433,9 +433,9 @@ static const struct sdhci_cdns_drv_data sdhci_elba_drv_data = {
+>  	},
+>  };
+>  
+> -static const struct sdhci_cdns_drv_data sdhci_cdns_drv_data = {
+> +static const struct sdhci_cdns_drv_data sdhci_cdns_sd4_drv_data = {
+>  	.pltfm_data = {
+> -		.ops = &sdhci_cdns_ops,
+> +		.ops = &sdhci_cdns_sd4_ops,
+>  	},
+>  };
+>  
+> @@ -497,9 +497,9 @@ static int sdhci_cdns_probe(struct platform_device *pdev)
+>  
+>  	data = of_device_get_match_data(dev);
+>  	if (!data)
+> -		data = &sdhci_cdns_drv_data;
+> +		data = &sdhci_cdns_sd4_drv_data;
+>  
+> -	nr_phy_params = sdhci_cdns_phy_param_count(dev->of_node);
+> +	nr_phy_params = sdhci_cdns_sd4_phy_param_count(dev->of_node);
+>  	host = sdhci_pltfm_init(pdev, &data->pltfm_data,
+>  				struct_size(priv, phy_params, nr_phy_params));
+>  	if (IS_ERR(host)) {
+> @@ -532,9 +532,9 @@ static int sdhci_cdns_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto free;
+>  
+> -	sdhci_cdns_phy_param_parse(dev->of_node, priv);
+> +	sdhci_cdns_sd4_phy_param_parse(dev->of_node, priv);
+>  
+> -	ret = sdhci_cdns_phy_init(priv);
+> +	ret = sdhci_cdns_sd4_phy_init(priv);
+>  	if (ret)
+>  		goto free;
+>  
+> @@ -574,7 +574,7 @@ static int sdhci_cdns_resume(struct device *dev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = sdhci_cdns_phy_init(priv);
+> +	ret = sdhci_cdns_sd4_phy_init(priv);
+>  	if (ret)
+>  		goto disable_clk;
+>  
 
