@@ -2,686 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC757636B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B137636BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbjGZMrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S232672AbjGZMuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbjGZMrI (ORCPT
+        with ESMTP id S232226AbjGZMuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:47:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07A810B;
-        Wed, 26 Jul 2023 05:47:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A9F151F891;
-        Wed, 26 Jul 2023 12:46:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690375619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Rsd5onop/xLr4jGsaKjJHNwPqDymtmAhLNM33a/hWs=;
-        b=cVhdceT5ptgnuOL+72i+kJi8MOJ4EKDDf12OV0z6cj1nMuUI0d30KM+zxwWxc0MBVmmVsc
-        vYf8Yf45K6jB7srg0JbeM1ZRkMwssXJKEn4emQmDkblLwpQgq5TViyWTQFBuJUSo0s3Id1
-        0yw2vmn5xVq97mi+08ReeY/oMyTRxtk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690375619;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Rsd5onop/xLr4jGsaKjJHNwPqDymtmAhLNM33a/hWs=;
-        b=jZ1hNV0i+w21ycC8ONsPmrseyrD7/nUvoeIzWHayjjQCz9ojQxoKO+sim/ueiuq+hwR9vK
-        ZJLwjk+pEH9rT2CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AA40139BD;
-        Wed, 26 Jul 2023 12:46:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KZFqJcMVwWRLUAAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 26 Jul 2023 12:46:59 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH blktests v1 11/11] nvme: Add explicitly host to allow_host list
-Date:   Wed, 26 Jul 2023 14:46:44 +0200
-Message-ID: <20230726124644.12619-12-dwagner@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726124644.12619-1-dwagner@suse.de>
-References: <20230726124644.12619-1-dwagner@suse.de>
+        Wed, 26 Jul 2023 08:50:13 -0400
+Received: from rivendell.linuxfromscratch.org (rivendell.linuxfromscratch.org [208.118.68.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 98FE81FF5;
+        Wed, 26 Jul 2023 05:49:22 -0700 (PDT)
+Received: from localhost.localdomain (xry111.site [89.208.246.23])
+        by rivendell.linuxfromscratch.org (Postfix) with ESMTPSA id 9EEF41C1E1F;
+        Wed, 26 Jul 2023 12:48:11 +0000 (GMT)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 1.0.0 at rivendell.linuxfromscratch.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfromscratch.org;
+        s=cert4; t=1690375697;
+        bh=nEcWm6IY8z0lmi0iw5ltF4n3BXetvjRkE909x/Ombzg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=d5Tg/STs6lECc/r/PVYVVjxJyMl9mSenXNnbo2hJ33ZZfqGYvTso+eT2rxe4yMZYS
+         r5N5bO/MeUz9iAGeBDjDgFDUircAf57YeHScQ29XpkXSgUj4Ln9r7Dmdnh7CyXDjtc
+         k4keION+i28qpCtQ59yPjdoutaNHGHbXqX1TBR4y5icpovej7tTSzgEa2xjEN5nWC8
+         YIv7u5ZLEGjej4rf4OTinm+i7/xs9nzUh0hCHfhaDYJjOjUasov+td+oSynOGtwbCE
+         Sso8Zcx2HVNmH68px0q7ake/J+ZvQOZleQNBekMNlCtY8+M/sLduPkuVpto3wOqy3N
+         y3+ltQLlCipHQ==
+Message-ID: <3e0994dab495920ac590dc28d6b9d9765abe0c7e.camel@linuxfromscratch.org>
+Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
+From:   Xi Ruoyao <xry111@linuxfromscratch.org>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Date:   Wed, 26 Jul 2023 20:48:08 +0800
+In-Reply-To: <ZL/jMYL3akl78ZZN@xhacker>
+References: <20230617161529.2092-1-jszhang@kernel.org>
+         <c9a44f534071a6d67f1e21bafdb713793c559124.camel@linuxfromscratch.org>
+         <20230725-unheard-dingy-42f0fafe7216@wendy> <ZL/jMYL3akl78ZZN@xhacker>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only allow to connect to our setup target with the correct hostnqn.
+On Tue, 2023-07-25 at 22:58 +0800, Jisheng Zhang wrote:
+> > Are you using the vendor OpenSBI? IIRC, and the lads can probably
+> > correct me here, you need to have an OpenSBI that contains
+> > https://github.com/riscv-software-src/opensbi/commit/78c2b19218bd62653b=
+9fb31623a42ced45f38ea6
+> > which the vendor supplied OpenSBI does not have.
+>=20
+> To ruoyao,
+>=20
+> I believe Conor has provided enough details and given you the clues.
+> And I believe you were using the legacy opensbi. If you still reproduce
+> the issue with the latest opensbi generic platform, plz provided full
+> uart log from openSBI to the kernel panic point.
 
-Thus we have to explicitly add the test hostnqn to the test subsysnqn
-allow_host list.
+Thanks you all for the help!
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- tests/nvme/004 |  2 ++
- tests/nvme/005 |  4 +++-
- tests/nvme/008 |  2 ++
- tests/nvme/009 |  2 ++
- tests/nvme/010 |  2 ++
- tests/nvme/011 |  2 ++
- tests/nvme/012 |  2 ++
- tests/nvme/013 |  2 ++
- tests/nvme/014 |  2 ++
- tests/nvme/015 |  2 ++
- tests/nvme/018 |  2 ++
- tests/nvme/019 |  2 ++
- tests/nvme/020 |  2 ++
- tests/nvme/021 |  2 ++
- tests/nvme/022 |  2 ++
- tests/nvme/023 |  2 ++
- tests/nvme/024 |  2 ++
- tests/nvme/025 |  2 ++
- tests/nvme/026 |  2 ++
- tests/nvme/027 |  2 ++
- tests/nvme/028 |  2 ++
- tests/nvme/029 |  2 ++
- tests/nvme/030 | 11 ++++++-----
- tests/nvme/040 |  3 +++
- tests/nvme/047 |  2 ++
- tests/nvme/rc  |  7 +++++--
- 26 files changed, 61 insertions(+), 8 deletions(-)
+I downloaded the latest opensbi 1.3.1 and put fw_dynamic.bin in the
+generic directory into /boot (renamed not to overwritten the vendor
+one), then loaded it onto address 0 from the vendor u-boot.  Now the
+plic issue was gone, but another panic happened.  Log is pasted at the
+end of this mail.
 
-diff --git a/tests/nvme/004 b/tests/nvme/004
-index 54d74b61f689..697c758d3059 100755
---- a/tests/nvme/004
-+++ b/tests/nvme/004
-@@ -34,6 +34,7 @@ test() {
- 	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}" \
- 		"${def_subsys_uuid}"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -46,6 +47,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 	losetup -d "$loop_dev"
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/005 b/tests/nvme/005
-index e49de7d905ba..402eb01fd3d8 100755
---- a/tests/nvme/005
-+++ b/tests/nvme/005
-@@ -34,6 +34,7 @@ test() {
- 	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}" \
- 		"${def_subsys_uuid}"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" ${def_subsysnqn}
- 
-@@ -46,8 +47,9 @@ test() {
- 	_nvme_disconnect_ctrl "${nvmedev}"
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
--
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
-+	_remove_nvmet_host "${def_hostnqn}"
-+
- 	losetup -d "$loop_dev"
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/008 b/tests/nvme/008
-index 752ab30a756b..3921fc6992b2 100755
---- a/tests/nvme/008
-+++ b/tests/nvme/008
-@@ -32,6 +32,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -46,6 +47,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/009 b/tests/nvme/009
-index 7debd837cc76..aac3c1e0f642 100755
---- a/tests/nvme/009
-+++ b/tests/nvme/009
-@@ -28,6 +28,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -42,6 +43,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/010 b/tests/nvme/010
-index cba711b29af8..19bb7f3fc7a7 100755
---- a/tests/nvme/010
-+++ b/tests/nvme/010
-@@ -32,6 +32,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -47,6 +48,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/011 b/tests/nvme/011
-index ba2718d81bd9..0e54c2588bc8 100755
---- a/tests/nvme/011
-+++ b/tests/nvme/011
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -44,6 +45,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/012 b/tests/nvme/012
-index 629b5194435e..c6b82c821bf2 100755
---- a/tests/nvme/012
-+++ b/tests/nvme/012
-@@ -36,6 +36,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -50,6 +51,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/013 b/tests/nvme/013
-index ca51544b82d1..441db7477d75 100755
---- a/tests/nvme/013
-+++ b/tests/nvme/013
-@@ -32,6 +32,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -46,6 +47,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/014 b/tests/nvme/014
-index 6d27300cfb30..3656f9399687 100755
---- a/tests/nvme/014
-+++ b/tests/nvme/014
-@@ -35,6 +35,7 @@ test() {
- 		 "${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -56,6 +57,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/015 b/tests/nvme/015
-index 1b3aa4aa36c2..bc04e39c628c 100755
---- a/tests/nvme/015
-+++ b/tests/nvme/015
-@@ -32,6 +32,7 @@ test() {
- 		 "${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -53,6 +54,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/018 b/tests/nvme/018
-index b66056d43041..68729c3cb070 100755
---- a/tests/nvme/018
-+++ b/tests/nvme/018
-@@ -30,6 +30,7 @@ test() {
- 		 "${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -50,6 +51,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm "${def_file_path}"
- 
-diff --git a/tests/nvme/019 b/tests/nvme/019
-index b456b38d038e..33a25d52e9fd 100755
---- a/tests/nvme/019
-+++ b/tests/nvme/019
-@@ -34,6 +34,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -48,6 +49,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/020 b/tests/nvme/020
-index ba88921d75af..f436cdc8b262 100755
---- a/tests/nvme/020
-+++ b/tests/nvme/020
-@@ -30,6 +30,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -44,6 +45,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/021 b/tests/nvme/021
-index 02ef9727ee59..5043fe4916be 100755
---- a/tests/nvme/021
-+++ b/tests/nvme/021
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -45,6 +46,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/022 b/tests/nvme/022
-index 74c12c3e0ba9..8b6f610c4894 100755
---- a/tests/nvme/022
-+++ b/tests/nvme/022
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -45,6 +46,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/023 b/tests/nvme/023
-index 413b6afa6d14..90af0338e81f 100755
---- a/tests/nvme/023
-+++ b/tests/nvme/023
-@@ -32,6 +32,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -48,6 +49,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/024 b/tests/nvme/024
-index 1baf5487ae64..7a89ddd79fd9 100755
---- a/tests/nvme/024
-+++ b/tests/nvme/024
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -44,6 +45,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/025 b/tests/nvme/025
-index 9eecd4d4a604..90f214eff6c8 100755
---- a/tests/nvme/025
-+++ b/tests/nvme/025
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -45,6 +46,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/026 b/tests/nvme/026
-index 8a8bc58170e2..ec352acaa489 100755
---- a/tests/nvme/026
-+++ b/tests/nvme/026
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -45,6 +46,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/027 b/tests/nvme/027
-index 723e721202be..339f7605a9f5 100755
---- a/tests/nvme/027
-+++ b/tests/nvme/027
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -44,6 +45,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/028 b/tests/nvme/028
-index d4e62e8cae1c..7f387eb337f6 100755
---- a/tests/nvme/028
-+++ b/tests/nvme/028
-@@ -29,6 +29,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -44,6 +45,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	rm -f "${def_file_path}"
- 
-diff --git a/tests/nvme/029 b/tests/nvme/029
-index b113e387f1fa..461e6c6c4454 100755
---- a/tests/nvme/029
-+++ b/tests/nvme/029
-@@ -65,6 +65,7 @@ test() {
- 		 "${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 
-@@ -85,6 +86,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/030 b/tests/nvme/030
-index a0b999cace94..9251e1744f61 100755
---- a/tests/nvme/030
-+++ b/tests/nvme/030
-@@ -28,6 +28,7 @@ test() {
- 
- 	_create_nvmet_subsystem "${subsys}1" "$(losetup -f)"
- 	_add_nvmet_subsys_to_port "${port}" "${subsys}1"
-+	_create_nvmet_host "${subsys}1" "${def_hostnqn}"
- 
- 	genctr=$(_discovery_genctr)
- 
-@@ -36,13 +37,13 @@ test() {
- 
- 	genctr=$(_check_genctr "${genctr}" "adding a subsystem to a port")
- 
--	echo 0 > "${NVMET_CFS}/subsystems/${subsys}2/attr_allow_any_host"
-+	_add_nvmet_allow_hosts "${subsys}2" "${def_hostnqn}"
- 
--	genctr=$(_check_genctr "${genctr}" "clearing attr_allow_any_host")
-+	genctr=$(_check_genctr "${genctr}" "adding host to allow_hosts")
- 
--	echo 1 > "${NVMET_CFS}/subsystems/${subsys}2/attr_allow_any_host"
-+	_remove_nvmet_allow_hosts "${subsys}2" "${def_hostnqn}"
- 
--	genctr=$(_check_genctr "${genctr}" "setting attr_allow_any_host")
-+	genctr=$(_check_genctr "${genctr}" "removing host from allow_hosts")
- 
- 	_remove_nvmet_subsystem_from_port "${port}" "${subsys}2"
- 	_remove_nvmet_subsystem "${subsys}2"
-@@ -51,8 +52,8 @@ test() {
- 
- 	_remove_nvmet_subsystem_from_port "${port}" "${subsys}1"
- 	_remove_nvmet_subsystem "${subsys}1"
--
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	echo "Test complete"
- }
-diff --git a/tests/nvme/040 b/tests/nvme/040
-index 452ecd690edf..1a9be5c9342c 100755
---- a/tests/nvme/040
-+++ b/tests/nvme/040
-@@ -32,6 +32,8 @@ test() {
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
-+
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}"
- 	udevadm settle
- 	nvmedev=$(_find_nvme_dev "${def_subsysnqn}")
-@@ -56,6 +58,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/047 b/tests/nvme/047
-index 2b81f7ea9ffd..1da24b5638a6 100755
---- a/tests/nvme/047
-+++ b/tests/nvme/047
-@@ -35,6 +35,7 @@ test() {
- 		"${def_subsys_uuid}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-+	_create_nvmet_host "${def_subsysnqn}" "${def_hostnqn}"
- 
- 	_nvme_connect_subsys "${nvme_trtype}" "${def_subsysnqn}" \
- 		--nr-write-queues 1 || echo FAIL
-@@ -57,6 +58,7 @@ test() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
- 	_remove_nvmet_subsystem "${def_subsysnqn}"
- 	_remove_nvmet_port "${port}"
-+	_remove_nvmet_host "${def_hostnqn}"
- 
- 	losetup -d "${loop_dev}"
- 
-diff --git a/tests/nvme/rc b/tests/nvme/rc
-index 706f95d74a4b..0000254da731 100644
---- a/tests/nvme/rc
-+++ b/tests/nvme/rc
-@@ -608,7 +608,7 @@ _create_nvmet_subsystem() {
- 	local cfs_path="${NVMET_CFS}/subsystems/${nvmet_subsystem}"
- 
- 	mkdir -p "${cfs_path}"
--	echo 1 > "${cfs_path}/attr_allow_any_host"
-+	echo 0 > "${cfs_path}/attr_allow_any_host"
- 	_create_nvmet_ns "${nvmet_subsystem}" "1" "${blkdev}" "${uuid}"
- }
- 
-@@ -679,7 +679,7 @@ _create_nvmet_passthru() {
- 	local passthru_path="${subsys_path}/passthru"
- 
- 	mkdir -p "${subsys_path}"
--	echo 1 > "${subsys_path}/attr_allow_any_host"
-+	echo 0 > "${subsys_path}/attr_allow_any_host"
- 
- 	_test_dev_nvme_ctrl > "${passthru_path}/device_path"
- 	echo 1 > "${passthru_path}/enable"
-@@ -694,6 +694,7 @@ _remove_nvmet_passhtru() {
- 	local passthru_path="${subsys_path}/passthru"
- 
- 	echo 0 > "${passthru_path}/enable"
-+	rm -f "${subsys_path}"/allowed_hosts/*
- 	rmdir "${subsys_path}"
- }
- 
-@@ -785,6 +786,7 @@ _nvmet_passthru_target_setup() {
- 	_create_nvmet_passthru "${subsys_name}"
- 	port="$(_create_nvmet_port "${nvme_trtype}")"
- 	_add_nvmet_subsys_to_port "${port}" "${subsys_name}"
-+	_create_nvmet_host "${subsys_name}" "${def_hostnqn}"
- 
- 	echo "$port"
- }
-@@ -811,6 +813,7 @@ _nvmet_passthru_target_cleanup() {
- 	_remove_nvmet_subsystem_from_port "${port}" "${subsys_name}"
- 	_remove_nvmet_port "${port}"
- 	_remove_nvmet_passhtru "${subsys_name}"
-+	_remove_nvmet_host "${def_hostnqn}"
- }
- 
- _discovery_genctr() {
--- 
-2.41.0
+I've not set up an initramfs, so I'm expecting a panic after all, but I
+think it should be "VFS: cannot mount root fs" or something, not
+"unexpected interrupt cause".
+
+Is it a problem with vendor u-boot?  Should I try loading a latest u-
+boot from the vendor one, and then load the kernel with the new u-boot?
+
+Or maybe my toolchain (GCC 13.1.0, Binutils-2.40, with no patches) can
+miscompile the kernel?
+
+## Flattened Device Tree blob at 46000000
+   Booting using the fdt blob at 0x46000000
+   Using Device Tree in place at 0000000046000000, end 00000000460050c4
+
+Starting kernel ...
+
+
+OpenSBI v1.3.1
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|___/_____|
+        | |
+        |_|
+
+Platform Name             : Sipeed Lichee Pi 4A
+Platform Features         : medeleg
+Platform HART Count       : 4
+Platform IPI Device       : aclint-mswi
+Platform Timer Device     : aclint-mtimer @ 3000000Hz
+Platform Console Device   : uart8250
+Platform HSM Device       : ---
+Platform PMU Device       : ---
+Platform Reboot Device    : ---
+Platform Shutdown Device  : ---
+Platform Suspend Device   : ---
+Platform CPPC Device      : ---
+Firmware Base             : 0x0
+Firmware Size             : 224 KB
+Firmware RW Offset        : 0x20000
+Firmware RW Size          : 96 KB
+Firmware Heap Offset      : 0x2e000
+Firmware Heap Size        : 40 KB (total), 2 KB (reserved), 9 KB (used), 28=
+ KB (free)
+Firmware Scratch Size     : 4096 B (total), 760 B (used), 3336 B (free)
+Runtime SBI Version       : 1.0
+
+Domain0 Name              : root
+Domain0 Boot HART         : 0
+Domain0 HARTs             : 0*,1*,2*,3*
+Domain0 Region00          : 0x000000ffdc008000-0x000000ffdc00bfff M: (I,R,W=
+) S/U: ()
+Domain0 Region01          : 0x000000ffdc000000-0x000000ffdc007fff M: (I,R,W=
+) S/U: ()
+Domain0 Region02          : 0x0000000000000000-0x000000000001ffff M: (R,X) =
+S/U: ()
+Domain0 Region03          : 0x0000000000020000-0x000000000003ffff M: (R,W) =
+S/U: ()
+Domain0 Region04          : 0x0000000000000000-0xffffffffffffffff M: (R,W,X=
+) S/U: (R,W,X)
+Domain0 Next Address      : 0x0000000040200000
+Domain0 Next Arg1         : 0x0000000046000000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : yes
+Domain0 SysSuspend        : yes
+
+Boot HART ID              : 0
+Boot HART Domain          : root
+Boot HART Priv Version    : v1.11
+Boot HART Base ISA        : rv64imafdcvx
+Boot HART ISA Extensions  : time
+Boot HART PMP Count       : 0
+Boot HART PMP Granularity : 0
+Boot HART PMP Address Bits: 0
+Boot HART MHPM Count      : 16
+Boot HART MIDELEG         : 0x0000000000000222
+Boot HART MEDELEG         : 0x000000000000b109
+[    0.000000] Linux version 6.5.0-rc3 (lfs@stargazer) (riscv64-lfs-linux-g=
+nu-gcc (GCC) 13.1.0, GNU ld (GNU Binutils) 2.40) #1 SMP PREEMPT Tue Jul 25 =
+13:38:20 CST 2023
+[    0.000000] Machine model: Sipeed Lichee Pi 4A
+[    0.000000] SBI specification v1.0 detected
+[    0.000000] SBI implementation ID=3D0x1 Version=3D0x10003
+[    0.000000] SBI TIME extension detected
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] earlycon: uart0 at MMIO32 0x000000ffe7014000 (options '11520=
+0n8')
+[    0.000000] printk: bootconsole [uart0] enabled
+[    0.000000] efi: UEFI not found.
+[    0.000000] OF: reserved mem: 0x0000000000000000..0x000000000001ffff (12=
+8 KiB) nomap non-reusable mmode_resv0@0
+[    0.000000] OF: reserved mem: 0x0000000000020000..0x000000000003ffff (12=
+8 KiB) nomap non-reusable mmode_resv1@20000
+[    0.000000] Zone ranges:
+[    0.000000]   DMA32    [mem 0x0000000000000000-0x00000000ffffffff]
+[    0.000000]   Normal   [mem 0x0000000100000000-0x00000001ffffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000000000-0x000000000003ffff]
+[    0.000000]   node   0: [mem 0x0000000000040000-0x00000001ffffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x00000001fffff=
+fff]
+[    0.000000] SBI HSM extension detected
+[    0.000000] riscv: base ISA extensions acdfim
+[    0.000000] riscv: ELF capabilities acdfim
+[    0.000000] percpu: Embedded 17 pages/cpu s38184 r0 d31448 u69632
+[    0.000000] Kernel command line: earlycon console=3DttyS0,115200
+[    0.000000] Dentry cache hash table entries: 1048576 (order: 11, 8388608=
+ bytes, linear)
+[    0.000000] Inode-cache hash table entries: 524288 (order: 10, 4194304 b=
+ytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 20643=
+84
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:of=
+f
+[    0.000000] software IO TLB: area num 4.
+[    0.000000] software IO TLB: mapped [mem 0x00000000fbfff000-0x00000000ff=
+fff000] (64MB)
+[    0.000000] Memory: 8145300K/8388608K available (4922K kernel code, 4786=
+K rwdata, 2048K rodata, 2148K init, 393K bss, 243308K reserved, 0K cma-rese=
+rved)
+[    0.000000] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, N=
+odes=3D1
+[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[    0.000000] rcu:     RCU event tracing is enabled.
+[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=3D64 to nr_cpu_id=
+s=3D4.
+[    0.000000]  Trampoline variant of Tasks RCU enabled.
+[    0.000000]  Tracing variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 1=
+00 jiffies.
+[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_ids=
+=3D4
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 64 local interrupts mapped
+[    0.000000] plic: interrupt-controller@ffd8000000: mapped 240 interrupts=
+ with 4 handlers for 8 contexts.
+[    0.000000] riscv: providing IPIs using SBI IPI extension
+[    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contentio=
+n.
+[    0.000000] clocksource: riscv_clocksource: mask: 0xffffffffffffffff max=
+_cycles: 0x1623fa770, max_idle_ns: 881590404476 ns
+[    0.000001] sched_clock: 64 bits at 3000kHz, resolution 333ns, wraps eve=
+ry 4398046511097ns
+[    0.008488] Console: colour dummy device 80x25
+[    0.012944] Kernel panic - not syncing: unexpected interrupt cause
+[    0.012952] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc3 #1
+[    0.012964] Hardware name: Sipeed Lichee Pi 4A (DT)
+[    0.012970] Call Trace:
+[    0.012976] [<ffffffff80004c38>] walk_stackframe+0x0/0x7e
+[    0.013002] [<ffffffff804c868c>] dump_stack_lvl+0x34/0x4e
+[    0.013022] [<ffffffff804c1334>] panic+0xf2/0x292
+[    0.013035] [<ffffffff802cddc0>] riscv_intc_irq+0x34/0x38
+[    0.013052] [<ffffffff804c8716>] handle_riscv_irq+0x66/0xa6
+[    0.059145] ---[ end Kernel panic - not syncing: unexpected interrupt ca=
+use ]---
 
