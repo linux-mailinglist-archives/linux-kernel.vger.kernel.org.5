@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8946576364C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D19F763650
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbjGZM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S233283AbjGZM1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbjGZM1Q (ORCPT
+        with ESMTP id S234010AbjGZM13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:27:16 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1151BE3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:27:15 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6b9c9944da8so5518720a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:27:15 -0700 (PDT)
+        Wed, 26 Jul 2023 08:27:29 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5970326BE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:27:26 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-583ae4818c8so58761357b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690374434; x=1690979234;
+        d=linaro.org; s=google; t=1690374445; x=1690979245;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CM3hiGl9z/rtYcMF0BH0vmLxKeA8C/hk1KBXUt3g7gs=;
-        b=TVbmMEOuCpU0fGkLFxHXjeK63YH6mzE8KNsFx6AVScyOs4b0FN52NAPMhVnH4rNIYX
-         zZsCYsnChLx5jc8NQpbFGALWg47cHbF3kaV6usLFsJ1pLsq9Vv9fLdwq1B5+VKT9i/Hy
-         J2plnjnfmbEr/nyUnlQbgNgvwEFsiqLuMBvHTsByWe/N6guU7JOMyWMnzrweIMqFygJf
-         Sh5xzgDT6AAHcfiYwMAO/L4vw2n3cOxbyyvO5c+uWYqimDBo2Wvmeu+Z0DTuhUyZ7Fuj
-         5/PYnbHhsJ5kiMPoQj3poVh1qjTjYFyQGTKh05CvbnewMu/LoF/kquVxt5H14kJqwFU6
-         Cm3A==
+        bh=xytvwAV0BU3B8ZVId1NpX2j1ZIQGa+bfPlc5rTSIhmg=;
+        b=oTKgk6cvDOz/jzdgKjaJ/cQ92upctsVgYslejhg9gbqdnrHGZchEpRr2h6TZdVnSVL
+         2CIiK8d5BoudJuVraCxOMWGow345fmPGb11JwNyD6w3V7FlUA+5vPpMc8aYgxLwzt51q
+         94AxY7jxE7cmlWOf4vdp0sq1VSF8Gp2eYS9/8F541mgnEzCG/yxqJsxsMSR8QPZEABH6
+         DxBerXsO99pRhgQgIgDS34ZUe7735VWt8CEfXe0qBk86t6jvehPK8aJiP8GldQYl8XB3
+         388monTXyn5bGHuR5nsKd6YiyghDoxTrJcdx45OnwjAJyUcspIhbijXlkoPnZT33LilO
+         rnhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690374434; x=1690979234;
+        d=1e100.net; s=20221208; t=1690374445; x=1690979245;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CM3hiGl9z/rtYcMF0BH0vmLxKeA8C/hk1KBXUt3g7gs=;
-        b=K2OZSh+tyvh2UWfqpHfa3/CFpgSpdghjttimJCbdnc/Z7pBtpU2CeNeDCxcMpGQMiw
-         TWOtn5ApIE7qAXPIG4wlUGuKTbYHqOo9mfME+2CM7tcnYYxYCen8W2cYk6dlVhJ+9G6/
-         NwNlrlGlxlEgQ/zgemMyX7K3SGg3B/4mUA3EPyTG9LxFcbtXZDK9PmpK+zQi/XPwk765
-         nfn7/ezyktZINbUeJJtKeirgISPQvKyMQZJryoBdZ8ZMvQt9zjU8HHIY9FkffCia6CDJ
-         /v2uG3MbG3VSBOoBdTXiOOFuz0xCMYpVD2VnC6OPoPsuZi5ljwI9Z5Yfz9i0lMJVe8jM
-         +QMQ==
-X-Gm-Message-State: ABy/qLZWiCOhwcdAVqttjFRdQ5IcsiqTPEIbkC6IJ/traHH91SE2fE+9
-        Xc5E4lgI0ms05rDS9m7DZOlG2KFGk0WswSfIb5cKJg==
-X-Google-Smtp-Source: APBJJlFJ9S9Zmaq1XO3jvFbcO9Eq1dpSS4Y5AhgxX/HP2Z2YwtT5buI9b4vn8pnbQx+oq10ptshSzpSzq/qorBhCldo=
-X-Received: by 2002:a05:6358:428f:b0:134:dc90:b7d1 with SMTP id
- s15-20020a056358428f00b00134dc90b7d1mr2114354rwc.25.1690374434346; Wed, 26
- Jul 2023 05:27:14 -0700 (PDT)
+        bh=xytvwAV0BU3B8ZVId1NpX2j1ZIQGa+bfPlc5rTSIhmg=;
+        b=Qqv4KQaXrne78ICxL3HiYTaHfptkeIAOn1SYtFgMEEfr+0sDSMhWn3rEYYsuZPEx6U
+         qZDbJ8yQlK2cYThYHuDusrdHqradSuXvcWOMF683h8A4gCh+CaV4VFNvlaUPP5/5lnaC
+         TAbgQqoFccQByUEwNXiZZ+fhIqQ++x2EqMkWNB6BXIHF57W5xJEmiA7dY/xWPJTcF1/n
+         gEKK8VaNviQKEmQgFWYuXMY3X2Rc6I8cW+gQPPRSIiV5HKKpllae7QAGj+XLFVYz2lKy
+         1ys6CYX0CU6ZJFRx9bW5fVcOu6ethHF0PDgw0M+US7YHKG+4RLJkE85RSsb5DWBHNIW8
+         MC4g==
+X-Gm-Message-State: ABy/qLYHSu/LMKMof7yr0QKrfoK79UIWZft5UxTTc005LAaAAL+NegvJ
+        3bdiaHvgrsblPLLqJksMnQkghVMD3pojtZVney/OIw==
+X-Google-Smtp-Source: APBJJlFD6NN6UJlweoiYrZKDWs+FEhc/yYSNPE0vEJMiGVh/uOHAYCGmBapgIdDiMjb2gHQrywGtB5CGPsA9pSIi5hc=
+X-Received: by 2002:a25:804f:0:b0:cb4:469e:3308 with SMTP id
+ a15-20020a25804f000000b00cb4469e3308mr1464176ybn.6.1690374445384; Wed, 26 Jul
+ 2023 05:27:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230726121724.3701240-1-arnd@kernel.org>
-In-Reply-To: <20230726121724.3701240-1-arnd@kernel.org>
+References: <20230726121724.3701240-1-arnd@kernel.org> <20230726121724.3701240-2-arnd@kernel.org>
+In-Reply-To: <20230726121724.3701240-2-arnd@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 26 Jul 2023 14:26:38 +0200
-Message-ID: <CAPDyKFroYh348BUBBfNC7UUVZHUefy1b5UHN9vkrdsOg-CU_Aw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] soc: starfive: remove stale Makefile entry
+Date:   Wed, 26 Jul 2023 14:26:49 +0200
+Message-ID: <CAPDyKFph13af0+47=TtG--WZ+A+H7qpz7158cAZ8=xo39Tdzbg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] genpd: move owl-sps-helper.c from drivers/soc
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>, Joel Stanley <joel@jms.id.au>,
-        Walker Chen <walker.chen@starfivetech.com>,
+Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Joel Stanley <joel@jms.id.au>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
         Yinbo Zhu <zhuyinbo@loongson.cn>,
         =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
         Emil Renner Berthing <kernel@esmil.dk>,
-        linux-kernel@vger.kernel.org
+        Walker Chen <walker.chen@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,13 +84,16 @@ On Wed, 26 Jul 2023 at 14:17, Arnd Bergmann <arnd@kernel.org> wrote:
 >
 > From: Arnd Bergmann <arnd@arndb.de>
 >
-> After the only starfive driver was moved out to the genpd subsystem, we get
-> a build failure:
+> Moving only one of the two files in drivers/soc/actions to drivers/genpd
+> caused a link failure in allmodconfig, as drivers/genpd is entered
+> for compile testing, but drivers/soc/actions accidentally got skipped:
 >
-> scripts/Makefile.build:41: drivers/soc/starfive/Makefile: No such file or directory
+> x86_64-linux-gnu-ld: vmlinux.o: in function `owl_sps_set_power':
+> owl-sps.c:(.text+0x16e259d): undefined reference to `owl_sps_set_pg'
 >
-> Fixes: f3fb16291f486 ("soc: starfive: Move the power-domain driver to the genpd dir")
-> Reported=by: kernel test robot <lkp@intel.com
+> Move the other one as well to allow build testing to work correctly.
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Thanks Arnd!
@@ -97,21 +107,47 @@ Uffe
 
 
 > ---
->  drivers/soc/Makefile | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/genpd/actions/Makefile                  | 1 +
+>  drivers/{soc => genpd}/actions/owl-sps-helper.c | 0
+>  drivers/soc/Makefile                            | 1 -
+>  drivers/soc/actions/Makefile                    | 3 ---
+>  4 files changed, 1 insertion(+), 4 deletions(-)
+>  rename drivers/{soc => genpd}/actions/owl-sps-helper.c (100%)
+>  delete mode 100644 drivers/soc/actions/Makefile
 >
+> diff --git a/drivers/genpd/actions/Makefile b/drivers/genpd/actions/Makefile
+> index e78c420a24540..7e8aa473d12d1 100644
+> --- a/drivers/genpd/actions/Makefile
+> +++ b/drivers/genpd/actions/Makefile
+> @@ -1,2 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0+
+> +obj-$(CONFIG_OWL_PM_DOMAINS_HELPER)    += owl-sps-helper.o
+>  obj-$(CONFIG_OWL_PM_DOMAINS)           += owl-sps.o
+> diff --git a/drivers/soc/actions/owl-sps-helper.c b/drivers/genpd/actions/owl-sps-helper.c
+> similarity index 100%
+> rename from drivers/soc/actions/owl-sps-helper.c
+> rename to drivers/genpd/actions/owl-sps-helper.c
 > diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index 3b0f9fb3b5c84..efdcd42f68cb3 100644
+> index efdcd42f68cb3..708eaad8f590d 100644
 > --- a/drivers/soc/Makefile
 > +++ b/drivers/soc/Makefile
-> @@ -29,7 +29,6 @@ obj-y                         += renesas/
->  obj-y                          += rockchip/
->  obj-$(CONFIG_SOC_SAMSUNG)      += samsung/
->  obj-y                          += sifive/
-> -obj-$(CONFIG_SOC_STARFIVE)     += starfive/
->  obj-y                          += sunxi/
->  obj-$(CONFIG_ARCH_TEGRA)       += tegra/
->  obj-y                          += ti/
+> @@ -3,7 +3,6 @@
+>  # Makefile for the Linux Kernel SOC specific device drivers.
+>  #
+>
+> -obj-$(CONFIG_ARCH_ACTIONS)     += actions/
+>  obj-y                          += apple/
+>  obj-y                          += aspeed/
+>  obj-$(CONFIG_ARCH_AT91)                += atmel/
+> diff --git a/drivers/soc/actions/Makefile b/drivers/soc/actions/Makefile
+> deleted file mode 100644
+> index 4ac88fec2050a..0000000000000
+> --- a/drivers/soc/actions/Makefile
+> +++ /dev/null
+> @@ -1,3 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0+
+> -
+> -obj-$(CONFIG_OWL_PM_DOMAINS_HELPER) += owl-sps-helper.o
 > --
 > 2.39.2
 >
