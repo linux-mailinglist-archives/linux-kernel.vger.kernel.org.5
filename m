@@ -2,192 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326067631DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE307631B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjGZJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        id S232558AbjGZJWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbjGZJY2 (ORCPT
+        with ESMTP id S232511AbjGZJVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:24:28 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE331E73
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so1487676b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690363335; x=1690968135;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xHFf+qIXuXcHU2hnpeM9isQldhnSqSauyHf1oBu4R8I=;
-        b=jAMndxc3vAfZ9MlugwiN2m1td4+ENgo1ZcEkULNu4w0l2e+7SjL15Aj8xsnH/hg6mq
-         Yuh7Pj+WIpy+9FKbmqcmIZPowwXwCsZ/HE/uYPa/USpf5RWRvsmKXdX1EOhGqDHtCRhA
-         5Tx4ycmmPjyUjagwQ6weN00EPkG2yYEGVkFAeT+5NL38WWOxpIAWxDe7x+TtdzGSmFXw
-         AaN6OIhFdWcuFQV9AajQEHTHNR/HQhAWIjBkgsz+1GmBQBDd2nNKfKbDgsLcpETIdF18
-         CdbQtqtDxhcETBnzscklNfC8QDSVXvKpexDlKf4G6IIrjU6vkXpbe5y1T2yEBA/OqHN2
-         vBww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363335; x=1690968135;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xHFf+qIXuXcHU2hnpeM9isQldhnSqSauyHf1oBu4R8I=;
-        b=d6eUqv+3kYM/YrrOuyfNSWpPXXLQShl7uMGHtUsR4DefYDlKziaLVy197yZmlnDpc6
-         rJcqHi97NqS6lf7euQuPqHHK+p0m/at0LxmWnAuKrGobR/YS/R/gBKKEpEzLngBVykOa
-         pcJa0DAYQ6c3BZUXk4w5qt2YXEdzCOKEvacgnE6FHKS88f0HsC20sbI+zsCnPK4RhfJn
-         IyxWdTfWJ8i10OY7mIPmgrPyMmckIu52XOOPQtgg+elBHidL6Xb+K1s+LpJnt5hLLBV9
-         yEUbEL/xr4866i1JPnDBh9dLBxGLat9qj4UN8jz0a2rKKeiWDSQOP9spkEXUruBNitCg
-         JKxQ==
-X-Gm-Message-State: ABy/qLYgAXPvjCi036hCXG0EAxyIvsGtBfEV/9orn/coJ6HoQsxmnIBj
-        OWALkPqzbBc1Qj+DJ6irMp9oxQ==
-X-Google-Smtp-Source: APBJJlGzKLkoeooTK7rnc1fJ6mfD6dUCrzzNETRC7Ci4c1Yh8zXhisYlXfajH5gn3qqQbLizO8XVQA==
-X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr1779967pzk.2.1690363335131;
-        Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id k11-20020aa790cb000000b006827c26f147sm10955045pfk.138.2023.07.26.02.22.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:22:14 -0700 (PDT)
-Message-ID: <d96777ce-be8a-1665-dd00-1e696e5575a8@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:22:02 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 11/47] gfs2: dynamically allocate the gfs2-qd shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-12-zhengqi.arch@bytedance.com>
- <e7204276-9de5-17eb-90ae-e51657d73ef4@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <e7204276-9de5-17eb-90ae-e51657d73ef4@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Wed, 26 Jul 2023 05:21:54 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2086.outbound.protection.outlook.com [40.107.20.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301B64227;
+        Wed, 26 Jul 2023 02:18:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PvYJdXxJKQ3ZFGJvs5ziOhGPq9jrAVzO/Xo0mpGGVzrOutbxK+txRpX/tYXkqXkVXw55gr1Xb/Kf80BVyEVZvhQ591+AbZenGResSRNPr9JmOvXcb1IJbZq6eftILsSyjnpiow+mbKusMu7MgojFWL2RlJnk9cUE1pnH08fsANcZXZDVEO7Vq5NZAWEqxJ/rvPSCsIJYq2qdFclMPE3ru+b5idy8Rt2r9XNMtvZW2Z8emEzRalYyiMJ/9OQg1J9Ypp1vnOaO2djylh2SK+NbAk49dRn8Gi1gbosKxv7nmu19OG0pQ5ML8n4lYNM6iNaJ9ahkun+MwkVyUGVf54nFVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=07v7NS9ZvnJH3P6vEXkf9vX+H/1aoox7/mhrQBMg2ek=;
+ b=M4OaYPYT5Pn6GsAsjYefszQrZTUzGDfBV0yQm7GU7bDqTt4mIiRYkLMAMi2IJX/7CTmtCJ2kJsdY1MTzg798Dedp52kwMOA3VNCPMlTNfgkKJ7Qlq1nRTTCMApz6LPmrFZe1Eh1fUHxkD0kPdVpUzRGU+9XyigU9SOam5aOUyuPPAKWnXRfhBJyq0xAeIPwLnJPGFxx5N4aYcScj/tV6ffR1I7a6WFi41wfNJ/r1PeZ1wixTLkylEaFv/Nh2w6XgPP1OUYQ54tCdqUNYebZqNzrwhwfL4eBI+KYKG9vBl/tol+XVSOLS2m+hoHNPIQzJSA/P38WrLX4MOoIoSHMgCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=07v7NS9ZvnJH3P6vEXkf9vX+H/1aoox7/mhrQBMg2ek=;
+ b=Fu0QIzQk3B2OaIPQOD9/pybJuud9Upn610XxwQUpJzIe0qjWRhF1TeyR+xiQXPCDSG3a8vF4/PXbcZlrI1xBYceo+VCI8+7DoxFPdf4IUkEv51DH+5pfneltSbiX9VQ81RNJlwtfYsJE01QYZp2OpPfUzOGgc/ekG4s6o8mUwdw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
+ by AM9PR04MB8953.eurprd04.prod.outlook.com (2603:10a6:20b:408::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
+ 2023 09:18:49 +0000
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::ea2b:9b70:e669:f0e4]) by VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::ea2b:9b70:e669:f0e4%3]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
+ 09:18:49 +0000
+From:   carlos.song@nxp.com
+To:     andi.shyti@kernel.org, aisheng.dong@nxp.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com
+Cc:     carlos.song@nxp.com, xiaoning.wang@nxp.com, haibo.chen@nxp.com,
+        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] i2c: imx-lpi2c: return -EINVAL when i2c peripheral clk doesn't work
+Date:   Wed, 26 Jul 2023 17:22:38 +0800
+Message-Id: <20230726092238.3424116-1-carlos.song@nxp.com>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0115.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::19) To VI1PR04MB5005.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::30)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5005:EE_|AM9PR04MB8953:EE_
+X-MS-Office365-Filtering-Correlation-Id: 70f86480-6b0a-4a9d-d2cf-08db8db951e9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FVq9R4v5CeHo66vGSH/PH5zZm/NBUw4gQIXrjDBLh7GTZTZtlTPxLPVSmHAmfa55H7AdKeYebWkiQBu9rdnuCyxtEWzGmKzj+XrZo+F2ZPva08mLVSul0l8cyZebtsy+z8eTfzr0us2gKxx1cQtE6UgTm4tm1lzCIltjASNsZdCXunKxREbWcjHbc7qF79phfjyU4vHT+YdRm+yhx2nRbWdNX5aZOzkWATPVURXhxNDhOCSyEUpprJ5vRM9SBKcnmP/dH+y+ZJnyDL1iy2WUXIoOIqBxIlCTgzuSRHcIEUObOK5Y5eqqji6EpOJrSzMcZmOZ3KtHu0qJVHCL/MM7nMtxfsbAshjBocqJOwEXV4opDp84ZgJWw/R8yzyAajrdkQXpuZSNXmgRD5vB/E1Qn9BGza7yoCCRXJbwpP4L6Dp9v/7JY1szDwiLPS5kxpw4NiejbPXEM/xYG5KAm23ZXUJ/FZviaWipwVyunQExs70u8tLOO7VRpNKl10lZu2ktkvp0l4Ggtm6vSG0IDQgqBZ8Cp+uDVy1NiXu+/1YmR2IwwnISVhRBc6NbtCi7dJIqFW7oIr62L52JUh2wiFDj8dRw5SzP1QaKeamxp8yU7cHAT6uHKermsp5vJ2Wk49B7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(346002)(396003)(39860400002)(376002)(451199021)(9686003)(6666004)(6512007)(6486002)(52116002)(66946007)(66556008)(4326008)(316002)(478600001)(38350700002)(38100700002)(83380400001)(66476007)(186003)(26005)(1076003)(6506007)(2616005)(36756003)(2906002)(8676002)(8936002)(5660300002)(86362001)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h1Zgi21/aa/b81uq/XwdakQjL52psZnSYo+rRBRGQYik88zV6ER0HJJjbiSF?=
+ =?us-ascii?Q?9XhTaGLz7XMjuZ7ufMbkO0SqgQwUQ+1yHpJqTopTQ3zwYeaewlWfi0/qbL7X?=
+ =?us-ascii?Q?HX03RO66SWflZVwIvF5ralaEv2//0ICsN87vVq5fjT8ijTERhsrUrjN4JqUK?=
+ =?us-ascii?Q?rQxwrA+TGbP9TKZdFbTznXnml0iVoAlnjIGZ+mPlaK3PJj5q/44xLRgmew+t?=
+ =?us-ascii?Q?PuflvTisyICclg1nFYgf5vDP8ztiE6n7n8eChshFQlrinEwfxFHF7FpjTIDn?=
+ =?us-ascii?Q?CALT+C7HlrxQNjvXuZ/sKH9yx7ygr/ykNbo60Nt67+8HnM9hjdu7Ig/KWKqr?=
+ =?us-ascii?Q?S5AP1Toc1Zy6RYjy/ubzut+30TFi5A1llSS63MNvbKGY5vdRl/q6rh8Dl4bB?=
+ =?us-ascii?Q?X67oiJl0ps+/h8qTBdHwMaCfkAw0bZvzQbrQlf/+qdRHIqbGfuwQzK6uGrub?=
+ =?us-ascii?Q?H9KsZdo2UG9RgmGG07FV0ZRG+4/2IIljMXiUhMWPPAvoe4xwYEuolPjEM9EP?=
+ =?us-ascii?Q?GsVp+sP6r5aFLpR4uJOFc8FRgdDwywAtwcp9QuKk9QKNbDZHdSKiLIoLEYsL?=
+ =?us-ascii?Q?Rrv54wWnGDswF1c3hkynty9r/vnWq7xGOC1bm+WAX2M31eVE6RXVBd9Vdr1a?=
+ =?us-ascii?Q?oMXRSO6sziyqdh8jep0EeezEBwrSFJTVXhxdFXduU7PhkAJhwR4yJ2bvGVMp?=
+ =?us-ascii?Q?j9/0pP7kzyatddjaVYeryweU5+bHDz2ajKaJy/4eT3aq7ry9Hl7yu73Mi0h6?=
+ =?us-ascii?Q?gfdRLsVLvWZLkZi32DBro0Mi2jtaB3NlOSt0ALBu96tMRVuDqqx5bMSF8D+h?=
+ =?us-ascii?Q?40bz7DGeLI9z7mu8AMowTqtVTZ0KxFl6glYfgjeCPuf2HCZgs6ukSujSEzlx?=
+ =?us-ascii?Q?pIzZwb7+QhaBpr6iiQiXNnSHCg+VpKnx19rtT2usav5szVv33wBw1FI5RNBG?=
+ =?us-ascii?Q?TH95CKpLY9qG/0I/IO5jbW/+Xw18vNQFFy10VquNu+xYSkWn1IK0FmQSsGu4?=
+ =?us-ascii?Q?7ScRQlz+DuTHBzL6iSSLT4IRpsd7y613OqG7wCxy45bexjIR3k420JZsv6dc?=
+ =?us-ascii?Q?F2/XyTi9kmJG7SW9naSaCLgz8SfFJpfwcNM6E9q69sMnOYU3DIKI9dDDfTpM?=
+ =?us-ascii?Q?PcmQjXubSJ+RvKChuBQFgFvN2zjzUmgHLAHZ4l92j9/rARaa0Y62v7xPA1Pp?=
+ =?us-ascii?Q?LgwtrmeTeFPuwzvrqE3vE5kM7f9S1eD/KYwLMxx6IVgh6VdWaMuynD5b2+w/?=
+ =?us-ascii?Q?MHYGDiLP2443Z02Lf0jESbTn6jjQ3g20Pc4HvT7LTt0S+w7xnXtS+ZGLs/rb?=
+ =?us-ascii?Q?/4OvpA1cbb68I2mai4apFluQnL9aBWPtnn1tfojlDK9zB+OCALKA4O2RFmkV?=
+ =?us-ascii?Q?QLvAELWpF0M5eFfrX/DBG+bsR0I8a0jstY64YQTLFJwrnJBEfBhOwG632cdE?=
+ =?us-ascii?Q?EomkE+IbuFSci/LNlmvgDqeJpZh8um/E2Q3e3St2lRndGZw0cOjmsUwO8csK?=
+ =?us-ascii?Q?NlzkKhwC2OQ8oeh4jGcxhZfCp8wvaANO/S5+IkmVGfYCWNtImSbPOySeQBo0?=
+ =?us-ascii?Q?Vtww6+WBXirfo5XTlgtHqO+XXIao5puQ9FQnZNGR?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70f86480-6b0a-4a9d-d2cf-08db8db951e9
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 09:18:48.9092
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zIepc2tCAQlWXGrYbMSGqSe/a5AIfCO3U7itQgXIooDRWyLzxEIcomhlXYJvi7d20b2j6w+ZeQdQN8Rr1+GoAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8953
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Carlos Song <carlos.song@nxp.com>
 
+On MX8X platforms, the default clock rate is 0 if without explicit
+clock setting in dts nodes. I2c can't work when i2c peripheral clk
+rate is 0.
 
-On 2023/7/26 14:49, Muchun Song wrote:
-> 
-> 
-> On 2023/7/24 17:43, Qi Zheng wrote:
->> Use new APIs to dynamically allocate the gfs2-qd shrinker.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   fs/gfs2/main.c  |  6 +++---
->>   fs/gfs2/quota.c | 26 ++++++++++++++++++++------
->>   fs/gfs2/quota.h |  3 ++-
->>   3 files changed, 25 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/gfs2/main.c b/fs/gfs2/main.c
->> index afcb32854f14..e47b1cc79f59 100644
->> --- a/fs/gfs2/main.c
->> +++ b/fs/gfs2/main.c
->> @@ -147,7 +147,7 @@ static int __init init_gfs2_fs(void)
->>       if (!gfs2_trans_cachep)
->>           goto fail_cachep8;
->> -    error = register_shrinker(&gfs2_qd_shrinker, "gfs2-qd");
->> +    error = gfs2_qd_shrinker_init();
->>       if (error)
->>           goto fail_shrinker;
->> @@ -196,7 +196,7 @@ static int __init init_gfs2_fs(void)
->>   fail_wq2:
->>       destroy_workqueue(gfs_recovery_wq);
->>   fail_wq1:
->> -    unregister_shrinker(&gfs2_qd_shrinker);
->> +    gfs2_qd_shrinker_exit();
->>   fail_shrinker:
->>       kmem_cache_destroy(gfs2_trans_cachep);
->>   fail_cachep8:
->> @@ -229,7 +229,7 @@ static int __init init_gfs2_fs(void)
->>   static void __exit exit_gfs2_fs(void)
->>   {
->> -    unregister_shrinker(&gfs2_qd_shrinker);
->> +    gfs2_qd_shrinker_exit();
->>       gfs2_glock_exit();
->>       gfs2_unregister_debugfs();
->>       unregister_filesystem(&gfs2_fs_type);
->> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
->> index 704192b73605..bc9883cea847 100644
->> --- a/fs/gfs2/quota.c
->> +++ b/fs/gfs2/quota.c
->> @@ -186,13 +186,27 @@ static unsigned long gfs2_qd_shrink_count(struct 
->> shrinker *shrink,
->>       return vfs_pressure_ratio(list_lru_shrink_count(&gfs2_qd_lru, sc));
->>   }
->> -struct shrinker gfs2_qd_shrinker = {
->> -    .count_objects = gfs2_qd_shrink_count,
->> -    .scan_objects = gfs2_qd_shrink_scan,
->> -    .seeks = DEFAULT_SEEKS,
->> -    .flags = SHRINKER_NUMA_AWARE,
->> -};
->> +static struct shrinker *gfs2_qd_shrinker;
->> +
->> +int gfs2_qd_shrinker_init(void)
-> 
-> It's better to declare this as __init.
+Add a i2c peripheral clk rate check before configuring the clock
+register. When i2c peripheral clk rate is 0 and directly return
+-EINVAL.
 
-OK, Will do.
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+---
+Changes for V5:
+- modify commit log
+- modify Signed-off-by list
+---
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
->> +{
->> +    gfs2_qd_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "gfs2-qd");
->> +    if (!gfs2_qd_shrinker)
->> +        return -ENOMEM;
->> +
->> +    gfs2_qd_shrinker->count_objects = gfs2_qd_shrink_count;
->> +    gfs2_qd_shrinker->scan_objects = gfs2_qd_shrink_scan;
->> +    gfs2_qd_shrinker->seeks = DEFAULT_SEEKS;
->> +
->> +    shrinker_register(gfs2_qd_shrinker);
->> +    return 0;
->> +}
->> +
->> +void gfs2_qd_shrinker_exit(void)
->> +{
->> +    shrinker_unregister(gfs2_qd_shrinker);
->> +}
->>   static u64 qd2index(struct gfs2_quota_data *qd)
->>   {
->> diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
->> index 21ada332d555..f9cb863373f7 100644
->> --- a/fs/gfs2/quota.h
->> +++ b/fs/gfs2/quota.h
->> @@ -59,7 +59,8 @@ static inline int gfs2_quota_lock_check(struct 
->> gfs2_inode *ip,
->>   }
->>   extern const struct quotactl_ops gfs2_quotactl_ops;
->> -extern struct shrinker gfs2_qd_shrinker;
->> +int gfs2_qd_shrinker_init(void);
->> +void gfs2_qd_shrinker_exit(void);
->>   extern struct list_lru gfs2_qd_lru;
->>   extern void __init gfs2_quota_hash_init(void);
-> 
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index c3287c887c6f..150d923ca7f1 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -209,6 +209,9 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
+ 	lpi2c_imx_set_mode(lpi2c_imx);
+ 
+ 	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
++	if (!clk_rate)
++		return -EINVAL;
++
+ 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
+ 		filt = 0;
+ 	else
+-- 
+2.34.1
+
