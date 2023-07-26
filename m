@@ -2,520 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EC6763A3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1B07639D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjGZPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S234474AbjGZPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234833AbjGZPFt (ORCPT
+        with ESMTP id S234357AbjGZPCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:05:49 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF042136;
-        Wed, 26 Jul 2023 08:05:09 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 817911C0016;
-        Wed, 26 Jul 2023 15:04:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690383845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CaV8D3HLdNycBUgoYdC+8wAq0ZcMzaqeTPSo5VYHcVo=;
-        b=NnHnJyvJLYcNXhNcTyUlOslMcxSXrTVCvrHA5wFt3VddiUR42cZMI1r/OTPfsu2Y+3WdKz
-        om06n9UV2qlOgwX4WBpStLrg/frDitXSm2oJvN4FQ9KxKIT+Fvi8j2Kuky/A0M25E1G2W5
-        gfiWbu7jMtt8vpZ3FrBiEwK1RzGrbvpagaLbcAjIVX9Y0b9Yh6CM3tKIyjrY+2B1sp5jes
-        dsAT9rZXTykZWyKe5hpoXM4oMakDEYFQa1wFKbvnCVhnOxVwFr+gQ1cWQffGzzVJrftbAH
-        w6UQhG5BUSSnTNMT8mr/urhvkHGxlVDPoWeiAI3RhHucUA/BQfyCbZjLNU0GoA==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256 pinmux
-Date:   Wed, 26 Jul 2023 17:02:20 +0200
-Message-ID: <20230726150225.483464-25-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726150225.483464-1-herve.codina@bootlin.com>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
+        Wed, 26 Jul 2023 11:02:25 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE7010F3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:02:24 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbfa811667so7682265e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690383742; x=1690988542;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tPSIiabiK2bB92IGCQhHNo24e4IiD57cduoDesI/uEQ=;
+        b=dO/LDAG1Z1DKZOmV71y3tSzTM7L/oULfRN3jBBUriEKRcjCYssuWh3yYzghtAXqlV+
+         uArOGHXt2nmRUO1+tIL8Y+UL86CNijqjbccsbXlrZFbz7d0dmh19MhzamK0sG9KIbyt4
+         KN0XhkM3OpfYjEaRlStZwFWEE2w99vDnIROJ9+/J2mTPt3Kh/m3ao+A0Hf6vmn7hyhrB
+         67RmvMASqvKA4ru00dYHq/HfDJLR5EjKZN6NPW+g7cnSbzdN0tvPJaIvyodEraL7vGZj
+         DRWgM8Raotd/f5j8m/p1FUd46k4wJgkT/U1lGeWimmYdw0rwkcmC1pG9uJl/SsH473aQ
+         QYhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690383742; x=1690988542;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tPSIiabiK2bB92IGCQhHNo24e4IiD57cduoDesI/uEQ=;
+        b=VGN1U7TVnqBm8Kr5oaMwRIbgxtBkDCNQXQKa3RkZdqLqsRk51ms7ht4LzC1BKuEZSV
+         vvIGhzfwtrhvioPruk72lsL9N8NorCtee2s2E/lZ4VTw+dX8XaeiKfHbE/ougrCkLnYq
+         u8h0M0HhtLXWzIEjT7HUUitUwgGbMOcSVAWoZkkdGQj2awwUuK8fI/LyIY+GBThf3O8i
+         3Z2xr/uDp8QGV+kBdeNo3b1UFmVk2pPngvialV/8aFymL8FwclOeyjMLP0rBUQ7oiGJf
+         Co8YCwj3RB6anFHjSlF67QYW34KFY/ju/XKVNKyZJsj3DDrLlAqnanoCXxAoykA5IBVS
+         bcow==
+X-Gm-Message-State: ABy/qLbLIaOoATkFUaP3pWsy6AG9IxqBxuqMgNlrQjw02C1jt2W79nf6
+        j8n8U6nf8Je20r0RRgRtWC0NFg==
+X-Google-Smtp-Source: APBJJlFs6YArZvcQLv3s/VScdvAm2rpaIl5b4MCX20jpRpa1L1Um5u3JLtxoUdsdj3uRMUxE6ISIgQ==
+X-Received: by 2002:a05:600c:6347:b0:3fa:7c6b:86e with SMTP id du7-20020a05600c634700b003fa7c6b086emr5150214wmb.12.1690383742604;
+        Wed, 26 Jul 2023 08:02:22 -0700 (PDT)
+Received: from ?IPV6:2a02:6b6a:b465:0:fc3:b498:9b55:91a8? ([2a02:6b6a:b465:0:fc3:b498:9b55:91a8])
+        by smtp.gmail.com with ESMTPSA id n6-20020a7bcbc6000000b003fb739d27aesm2257909wmi.35.2023.07.26.08.02.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 08:02:22 -0700 (PDT)
+Message-ID: <440d4a0e-c1ea-864b-54cb-aab74858319a@bytedance.com>
+Date:   Wed, 26 Jul 2023 16:02:21 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [RFC 2/4] mm/memblock: Add hugepage_size member to
+ struct memblock_region
+Content-Language: en-US
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com
+References: <20230724134644.1299963-1-usama.arif@bytedance.com>
+ <20230724134644.1299963-3-usama.arif@bytedance.com>
+ <20230726110113.GT1901145@kernel.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <20230726110113.GT1901145@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Lantiq PEF2256 is a framer and line interface component designed to
-fulfill all required interfacing between an analog E1/T1/J1 line and the
-digital PCM system highway/H.100 bus.
 
-This pinmux support handles the pin muxing part (pins RP(A..D) and pins
-XP(A..D)) of the PEF2256.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- drivers/pinctrl/Kconfig                |  14 ++
- drivers/pinctrl/Makefile               |   1 +
- drivers/pinctrl/pinctrl-pef2256-regs.h |  65 ++++++
- drivers/pinctrl/pinctrl-pef2256.c      | 310 +++++++++++++++++++++++++
- 4 files changed, 390 insertions(+)
- create mode 100644 drivers/pinctrl/pinctrl-pef2256-regs.h
- create mode 100644 drivers/pinctrl/pinctrl-pef2256.c
+On 26/07/2023 12:01, Mike Rapoport wrote:
+> On Mon, Jul 24, 2023 at 02:46:42PM +0100, Usama Arif wrote:
+>> This propagates the hugepage size from the memblock APIs
+>> (memblock_alloc_try_nid_raw and memblock_alloc_range_nid)
+>> so that it can be stored in struct memblock region. This does not
+>> introduce any functional change and hugepage_size is not used in
+>> this commit. It is just a setup for the next commit where huge_pagesize
+>> is used to skip initialization of struct pages that will be freed later
+>> when HVO is enabled.
+>>
+>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>> ---
+>>   arch/arm64/mm/kasan_init.c                   |  2 +-
+>>   arch/powerpc/platforms/pasemi/iommu.c        |  2 +-
+>>   arch/powerpc/platforms/pseries/setup.c       |  4 +-
+>>   arch/powerpc/sysdev/dart_iommu.c             |  2 +-
+>>   include/linux/memblock.h                     |  8 ++-
+>>   mm/cma.c                                     |  4 +-
+>>   mm/hugetlb.c                                 |  6 +-
+>>   mm/memblock.c                                | 60 ++++++++++++--------
+>>   mm/mm_init.c                                 |  2 +-
+>>   mm/sparse-vmemmap.c                          |  2 +-
+>>   tools/testing/memblock/tests/alloc_nid_api.c |  2 +-
+>>   11 files changed, 56 insertions(+), 38 deletions(-)
+>>
+> 
+> [ snip ]
+> 
+>> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+>> index f71ff9f0ec81..bb8019540d73 100644
+>> --- a/include/linux/memblock.h
+>> +++ b/include/linux/memblock.h
+>> @@ -63,6 +63,7 @@ struct memblock_region {
+>>   #ifdef CONFIG_NUMA
+>>   	int nid;
+>>   #endif
+>> +	phys_addr_t hugepage_size;
+>>   };
+>>   
+>>   /**
+>> @@ -400,7 +401,8 @@ phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
+>>   				      phys_addr_t start, phys_addr_t end);
+>>   phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
+>>   				      phys_addr_t align, phys_addr_t start,
+>> -				      phys_addr_t end, int nid, bool exact_nid);
+>> +				      phys_addr_t end, int nid, bool exact_nid,
+>> +				      phys_addr_t hugepage_size);
+> 
+> Rather than adding yet another parameter to memblock_phys_alloc_range() we
+> can have an API that sets a flag on the reserved regions.
+> With this the hugetlb reservation code can set a flag when HVO is
+> enabled and memmap_init_reserved_pages() will skip regions with this flag
+> set.
+> 
 
-diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 57d57af1f624..a3aa96b59c97 100644
---- a/drivers/pinctrl/Kconfig
-+++ b/drivers/pinctrl/Kconfig
-@@ -377,6 +377,20 @@ config PINCTRL_PALMAS
- 	  open drain configuration for the Palmas series devices like
- 	  TPS65913, TPS80036 etc.
- 
-+config PINCTRL_PEF2256
-+	tristate "Lantiq PEF2256 (FALC56) pin controller driver"
-+	depends on OF && FRAMER_PEF2256
-+	select PINMUX
-+	select GENERIC_PINCONF
-+	help
-+	  This option enables the pin controller support for the Lantiq PEF2256
-+	  framer, also known as FALC56.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called pinctrl-pef2256.
-+
- config PINCTRL_PIC32
- 	bool "Microchip PIC32 pin controller driver"
- 	depends on OF
-diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index 482b391b5deb..8f211f7671a8 100644
---- a/drivers/pinctrl/Makefile
-+++ b/drivers/pinctrl/Makefile
-@@ -40,6 +40,7 @@ obj-$(CONFIG_PINCTRL_MLXBF3)	+= pinctrl-mlxbf3.o
- obj-$(CONFIG_PINCTRL_OCELOT)	+= pinctrl-ocelot.o
- obj-$(CONFIG_PINCTRL_OXNAS)	+= pinctrl-oxnas.o
- obj-$(CONFIG_PINCTRL_PALMAS)	+= pinctrl-palmas.o
-+obj-$(CONFIG_PINCTRL_PEF2256)	+= pinctrl-pef2256.o
- obj-$(CONFIG_PINCTRL_PIC32)	+= pinctrl-pic32.o
- obj-$(CONFIG_PINCTRL_PISTACHIO)	+= pinctrl-pistachio.o
- obj-$(CONFIG_PINCTRL_RK805)	+= pinctrl-rk805.o
-diff --git a/drivers/pinctrl/pinctrl-pef2256-regs.h b/drivers/pinctrl/pinctrl-pef2256-regs.h
-new file mode 100644
-index 000000000000..586d94007e24
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-pef2256-regs.h
-@@ -0,0 +1,65 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * PEF2256 pinctrl registers definition
-+ *
-+ * Copyright 2023 CS GROUP France
-+ *
-+ * Author: Herve Codina <herve.codina@bootlin.com>
-+ */
-+#ifndef __PEF2256_PINCTRL_REGS_H__
-+#define __PEF2256_PINCTRL_REGS_H__
-+
-+#include "linux/bitfield.h"
-+
-+/* Port Configuration 1..4 */
-+#define PEF2256_PC1		  0x80
-+#define PEF2256_PC2		  0x81
-+#define PEF2256_PC3		  0x82
-+#define PEF2256_PC4		  0x83
-+#define PEF2256_12_PC_RPC_MASK	  GENMASK(6, 4)
-+#define PEF2256_12_PC_RPC_SYPR	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x0)
-+#define PEF2256_12_PC_RPC_RFM	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x1)
-+#define PEF2256_12_PC_RPC_RFMB	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x2)
-+#define PEF2256_12_PC_RPC_RSIGM	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x3)
-+#define PEF2256_12_PC_RPC_RSIG	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x4)
-+#define PEF2256_12_PC_RPC_DLR	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x5)
-+#define PEF2256_12_PC_RPC_FREEZE  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x6)
-+#define PEF2256_12_PC_RPC_RFSP	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x7)
-+#define PEF2256_12_PC_XPC_MASK    GENMASK(4, 0)
-+#define PEF2256_12_PC_XPC_SYPX	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x0)
-+#define PEF2256_12_PC_XPC_XFMS	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x1)
-+#define PEF2256_12_PC_XPC_XSIG	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x2)
-+#define PEF2256_12_PC_XPC_TCLK	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x3)
-+#define PEF2256_12_PC_XPC_XMFB	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x4)
-+#define PEF2256_12_PC_XPC_XSIGM	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x5)
-+#define PEF2256_12_PC_XPC_DLX	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x6)
-+#define PEF2256_12_PC_XPC_XCLK	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x7)
-+#define PEF2256_12_PC_XPC_XLT	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x8)
-+#define PEF2256_2X_PC_RPC_MASK	  GENMASK(7, 4)
-+#define PEF2256_2X_PC_RPC_SYPR	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x0)
-+#define PEF2256_2X_PC_RPC_RFM	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x1)
-+#define PEF2256_2X_PC_RPC_RFMB	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x2)
-+#define PEF2256_2X_PC_RPC_RSIGM	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x3)
-+#define PEF2256_2X_PC_RPC_RSIG	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x4)
-+#define PEF2256_2X_PC_RPC_DLR	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x5)
-+#define PEF2256_2X_PC_RPC_FREEZE  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x6)
-+#define PEF2256_2X_PC_RPC_RFSP	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x7)
-+#define PEF2256_2X_PC_RPC_GPI	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x9)
-+#define PEF2256_2X_PC_RPC_GPOH	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xa)
-+#define PEF2256_2X_PC_RPC_GPOL	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xb)
-+#define PEF2256_2X_PC_RPC_LOS	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xc)
-+#define PEF2256_2X_PC_XPC_MASK	  GENMASK(3, 0)
-+#define PEF2256_2X_PC_XPC_SYPX	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x0)
-+#define PEF2256_2X_PC_XPC_XFMS	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x1)
-+#define PEF2256_2X_PC_XPC_XSIG	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x2)
-+#define PEF2256_2X_PC_XPC_TCLK	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x3)
-+#define PEF2256_2X_PC_XPC_XMFB	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x4)
-+#define PEF2256_2X_PC_XPC_XSIGM	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x5)
-+#define PEF2256_2X_PC_XPC_DLX	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x6)
-+#define PEF2256_2X_PC_XPC_XCLK	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x7)
-+#define PEF2256_2X_PC_XPC_XLT	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x8)
-+#define PEF2256_2X_PC_XPC_GPI	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x9)
-+#define PEF2256_2X_PC_XPC_GPOH	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0xa)
-+#define PEF2256_2X_PC_XPC_GPOL	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0xb)
-+
-+#endif /* __PEF2256_PINCTRL_REGS_H__ */
-diff --git a/drivers/pinctrl/pinctrl-pef2256.c b/drivers/pinctrl/pinctrl-pef2256.c
-new file mode 100644
-index 000000000000..90f611f6cc12
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-pef2256.c
-@@ -0,0 +1,310 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * PEF2256 also known as FALC56 driver
-+ *
-+ * Copyright 2023 CS GROUP France
-+ *
-+ * Author: Herve Codina <herve.codina@bootlin.com>
-+ */
-+
-+#include <linux/framer/pef2256.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pinctrl/pinctrl.h>
-+#include <linux/pinctrl/pinconf-generic.h>
-+#include <linux/pinctrl/pinmux.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include "pinctrl-pef2256-regs.h"
-+
-+struct pef2256_pinreg_desc {
-+	int offset;
-+	u8 mask;
-+};
-+
-+struct pef2256_function_desc {
-+	const char *name;
-+	const char * const*groups;
-+	unsigned int ngroups;
-+	u8 func_val;
-+};
-+
-+struct pef2256_pinctrl {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	enum pef2256_version version;
-+	struct {
-+		struct pinctrl_desc pctrl_desc;
-+		const struct pef2256_function_desc *functions;
-+		unsigned int nfunctions;
-+	} pinctrl;
-+};
-+
-+static int pef2256_get_groups_count(struct pinctrl_dev *pctldev)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	return pef2256->pinctrl.pctrl_desc.npins;
-+}
-+
-+static const char *pef2256_get_group_name(struct pinctrl_dev *pctldev,
-+					  unsigned int selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	return pef2256->pinctrl.pctrl_desc.pins[selector].name;
-+}
-+
-+static int pef2256_get_group_pins(struct pinctrl_dev *pctldev, unsigned int selector,
-+				  const unsigned int **pins,
-+				  unsigned int *num_pins)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	*pins = &pef2256->pinctrl.pctrl_desc.pins[selector].number;
-+	*num_pins = 1;
-+
-+	return 0;
-+}
-+
-+static const struct pinctrl_ops pef2256_pctlops = {
-+	.get_groups_count	= pef2256_get_groups_count,
-+	.get_group_name		= pef2256_get_group_name,
-+	.get_group_pins		= pef2256_get_group_pins,
-+	.dt_node_to_map		= pinconf_generic_dt_node_to_map_pin,
-+	.dt_free_map		= pinconf_generic_dt_free_map,
-+};
-+
-+static int pef2256_get_functions_count(struct pinctrl_dev *pctldev)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	return pef2256->pinctrl.nfunctions;
-+}
-+
-+static const char *pef2256_get_function_name(struct pinctrl_dev *pctldev,
-+					     unsigned int selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	return pef2256->pinctrl.functions[selector].name;
-+}
-+
-+static int pef2256_get_function_groups(struct pinctrl_dev *pctldev, unsigned int selector,
-+				       const char * const **groups,
-+				       unsigned * const num_groups)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	*groups = pef2256->pinctrl.functions[selector].groups;
-+	*num_groups = pef2256->pinctrl.functions[selector].ngroups;
-+	return 0;
-+}
-+
-+static int pef2256_set_mux(struct pinctrl_dev *pctldev, unsigned int func_selector,
-+			   unsigned int group_selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+	const struct pef2256_pinreg_desc *pinreg_desc;
-+	u8 func_val;
-+
-+	/* We map 1 group <-> 1 pin */
-+	pinreg_desc = pef2256->pinctrl.pctrl_desc.pins[group_selector].drv_data;
-+	func_val = pef2256->pinctrl.functions[func_selector].func_val;
-+
-+	return regmap_update_bits(pef2256->regmap, pinreg_desc->offset,
-+				  pinreg_desc->mask, func_val);
-+}
-+
-+static const struct pinmux_ops pef2256_pmxops = {
-+	.get_functions_count	= pef2256_get_functions_count,
-+	.get_function_name	= pef2256_get_function_name,
-+	.get_function_groups	= pef2256_get_function_groups,
-+	.set_mux		= pef2256_set_mux,
-+};
-+
-+#define PEF2256_PINCTRL_PIN(_number, _name, _offset, _mask) { \
-+	.number = _number, \
-+	.name = _name, \
-+	.drv_data = &(struct pef2256_pinreg_desc) { \
-+		.offset = _offset, \
-+		.mask = _mask, \
-+	}, \
-+}
-+
-+static const struct pinctrl_pin_desc pef2256_v12_pins[] = {
-+	PEF2256_PINCTRL_PIN(0, "RPA", PEF2256_PC1, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(1, "RPB", PEF2256_PC2, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(2, "RPC", PEF2256_PC3, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(3, "RPD", PEF2256_PC4, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(4, "XPA", PEF2256_PC1, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(5, "XPB", PEF2256_PC2, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(6, "XPC", PEF2256_PC3, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(7, "XPD", PEF2256_PC4, PEF2256_12_PC_XPC_MASK),
-+};
-+
-+static const struct pinctrl_pin_desc pef2256_v2x_pins[] = {
-+	PEF2256_PINCTRL_PIN(0, "RPA", PEF2256_PC1, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(1, "RPB", PEF2256_PC2, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(2, "RPC", PEF2256_PC3, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(3, "RPD", PEF2256_PC4, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(4, "XPA", PEF2256_PC1, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(5, "XPB", PEF2256_PC2, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(6, "XPC", PEF2256_PC3, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(7, "XPD", PEF2256_PC4, PEF2256_2X_PC_XPC_MASK),
-+};
-+
-+static const char *const pef2256_rp_groups[] = { "RPA", "RPB", "RPC", "RPD" };
-+static const char *const pef2256_xp_groups[] = { "XPA", "XPB", "XPC", "XPD" };
-+static const char *const pef2256_all_groups[] = { "RPA", "RPB", "RPC", "RPD",
-+						  "XPA", "XPB", "XPC", "XPD" };
-+
-+#define PEF2256_FUNCTION(_name, _func_val, _groups) { \
-+	.name = _name, \
-+	.groups = _groups, \
-+	.ngroups = ARRAY_SIZE(_groups), \
-+	.func_val = _func_val, \
-+}
-+
-+static const struct pef2256_function_desc pef2256_v2x_functions[] = {
-+	PEF2256_FUNCTION("SYPR",   PEF2256_2X_PC_RPC_SYPR,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFM",    PEF2256_2X_PC_RPC_RFM,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFMB",   PEF2256_2X_PC_RPC_RFMB,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIGM",  PEF2256_2X_PC_RPC_RSIGM,  pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIG",   PEF2256_2X_PC_RPC_RSIG,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("DLR",    PEF2256_2X_PC_RPC_DLR,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("FREEZE", PEF2256_2X_PC_RPC_FREEZE, pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFSP",   PEF2256_2X_PC_RPC_RFSP,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("LOS",    PEF2256_2X_PC_RPC_LOS,    pef2256_rp_groups),
-+
-+	PEF2256_FUNCTION("SYPX",  PEF2256_2X_PC_XPC_SYPX,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XFMS",  PEF2256_2X_PC_XPC_XFMS,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIG",  PEF2256_2X_PC_XPC_XSIG,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("TCLK",  PEF2256_2X_PC_XPC_TCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XMFB",  PEF2256_2X_PC_XPC_XMFB,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIGM", PEF2256_2X_PC_XPC_XSIGM, pef2256_xp_groups),
-+	PEF2256_FUNCTION("DLX",   PEF2256_2X_PC_XPC_DLX,   pef2256_xp_groups),
-+	PEF2256_FUNCTION("XCLK",  PEF2256_2X_PC_XPC_XCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XLT",   PEF2256_2X_PC_XPC_XLT,   pef2256_xp_groups),
-+
-+	PEF2256_FUNCTION("GPI",  PEF2256_2X_PC_RPC_GPI | PEF2256_2X_PC_XPC_GPI,
-+			 pef2256_all_groups),
-+	PEF2256_FUNCTION("GPOH", PEF2256_2X_PC_RPC_GPOH | PEF2256_2X_PC_XPC_GPOH,
-+			 pef2256_all_groups),
-+	PEF2256_FUNCTION("GPOL", PEF2256_2X_PC_RPC_GPOL | PEF2256_2X_PC_XPC_GPOL,
-+			 pef2256_all_groups),
-+};
-+
-+static const struct pef2256_function_desc pef2256_v12_functions[] = {
-+	PEF2256_FUNCTION("SYPR",   PEF2256_12_PC_RPC_SYPR,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFM",    PEF2256_12_PC_RPC_RFM,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFMB",   PEF2256_12_PC_RPC_RFMB,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIGM",  PEF2256_12_PC_RPC_RSIGM,  pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIG",   PEF2256_12_PC_RPC_RSIG,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("DLR",    PEF2256_12_PC_RPC_DLR,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("FREEZE", PEF2256_12_PC_RPC_FREEZE, pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFSP",   PEF2256_12_PC_RPC_RFSP,   pef2256_rp_groups),
-+
-+	PEF2256_FUNCTION("SYPX",  PEF2256_12_PC_XPC_SYPX,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XFMS",  PEF2256_12_PC_XPC_XFMS,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIG",  PEF2256_12_PC_XPC_XSIG,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("TCLK",  PEF2256_12_PC_XPC_TCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XMFB",  PEF2256_12_PC_XPC_XMFB,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIGM", PEF2256_12_PC_XPC_XSIGM, pef2256_xp_groups),
-+	PEF2256_FUNCTION("DLX",   PEF2256_12_PC_XPC_DLX,   pef2256_xp_groups),
-+	PEF2256_FUNCTION("XCLK",  PEF2256_12_PC_XPC_XCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XLT",   PEF2256_12_PC_XPC_XLT,   pef2256_xp_groups),
-+};
-+
-+static int pef2256_register_pinctrl(struct pef2256_pinctrl *pef2256)
-+{
-+	struct pinctrl_dev	*pctrl;
-+
-+	pef2256->pinctrl.pctrl_desc.name    = dev_name(pef2256->dev);
-+	pef2256->pinctrl.pctrl_desc.owner   = THIS_MODULE;
-+	pef2256->pinctrl.pctrl_desc.pctlops = &pef2256_pctlops;
-+	pef2256->pinctrl.pctrl_desc.pmxops  = &pef2256_pmxops;
-+	if (pef2256->version == PEF2256_VERSION_1_2) {
-+		pef2256->pinctrl.pctrl_desc.pins  = pef2256_v12_pins;
-+		pef2256->pinctrl.pctrl_desc.npins = ARRAY_SIZE(pef2256_v12_pins);
-+		pef2256->pinctrl.functions  = pef2256_v12_functions;
-+		pef2256->pinctrl.nfunctions = ARRAY_SIZE(pef2256_v12_functions);
-+	} else {
-+		pef2256->pinctrl.pctrl_desc.pins  = pef2256_v2x_pins;
-+		pef2256->pinctrl.pctrl_desc.npins = ARRAY_SIZE(pef2256_v2x_pins);
-+		pef2256->pinctrl.functions  = pef2256_v2x_functions;
-+		pef2256->pinctrl.nfunctions = ARRAY_SIZE(pef2256_v2x_functions);
-+	}
-+
-+	pctrl = devm_pinctrl_register(pef2256->dev, &pef2256->pinctrl.pctrl_desc, pef2256);
-+	if (IS_ERR(pctrl)) {
-+		dev_err(pef2256->dev, "pinctrl driver registration failed\n");
-+		return PTR_ERR(pctrl);
-+	}
-+
-+	return 0;
-+}
-+
-+static void pef2256_reset_pinmux(struct pef2256_pinctrl *pef2256)
-+{
-+	u8 val;
-+	/*
-+	 * Reset values cannot be used.
-+	 * They define the SYPR/SYPX pin mux for all the RPx and XPx pins and
-+	 * Only one pin can be muxed to SYPR and one pin can be muxed to SYPX.
-+	 * Choose here an other reset value.
-+	 */
-+	if (pef2256->version == PEF2256_VERSION_1_2)
-+		val = PEF2256_12_PC_XPC_XCLK | PEF2256_12_PC_RPC_RFSP;
-+	else
-+		val = PEF2256_2X_PC_XPC_GPI | PEF2256_2X_PC_RPC_GPI;
-+
-+	regmap_write(pef2256->regmap, PEF2256_PC1, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC2, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC3, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC4, val);
-+}
-+
-+static int pef2256_pinctrl_probe(struct platform_device *pdev)
-+{
-+	struct pef2256_pinctrl *pef2256_pinctrl;
-+	struct pef2256 *pef2256;
-+	int ret;
-+
-+	pef2256_pinctrl = devm_kzalloc(&pdev->dev, sizeof(*pef2256_pinctrl), GFP_KERNEL);
-+	if (!pef2256_pinctrl)
-+		return -ENOMEM;
-+
-+	device_set_node(&pdev->dev, dev_fwnode(pdev->dev.parent));
-+
-+	pef2256 = dev_get_drvdata(pdev->dev.parent);
-+
-+	pef2256_pinctrl->dev = &pdev->dev;
-+	pef2256_pinctrl->regmap = pef2256_get_regmap(pef2256);
-+	pef2256_pinctrl->version = pef2256_get_version(pef2256);
-+
-+	platform_set_drvdata(pdev, pef2256_pinctrl);
-+
-+	pef2256_reset_pinmux(pef2256_pinctrl);
-+	ret = pef2256_register_pinctrl(pef2256_pinctrl);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct platform_driver pef2256_pinctrl_driver = {
-+	.driver = {
-+		.name = "lantiq-pef2256-pinctrl",
-+	},
-+	.probe = pef2256_pinctrl_probe,
-+};
-+module_platform_driver(pef2256_pinctrl_driver);
-+
-+MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
-+MODULE_DESCRIPTION("PEF2256 pin controller driver");
-+MODULE_LICENSE("GPL");
--- 
-2.41.0
+Hi,
 
+Thanks for the review.
+
+I think you meant memblock_alloc_range_nid/memblock_alloc_try_nid_raw 
+and not memblock_phys_alloc_range?
+
+My initial approach was to use flags, but I think it looks worse than 
+what I have done in this RFC (I have pushed the flags prototype at 
+https://github.com/uarif1/linux/commits/flags_skip_prep_init_gigantic_HVO, 
+top 4 commits for reference (the main difference is patch 2 and 4 from 
+RFC)). The major points are (the bigger issue is in patch 4):
+
+- (RFC vs flags patch 2 comparison) In the RFC, hugepage_size is 
+propagated from memblock_alloc_try_nid_raw through function calls. When 
+using flags, the "no_init" boolean is propogated from 
+memblock_alloc_try_nid_raw through function calls until the region flags 
+are available in memblock_add_range and the new MEMBLOCK_NOINIT flag is 
+set. I think its a bit more tricky to introduce a new function to set 
+the flag in the region AFTER the call to memblock_alloc_try_nid_raw has 
+finished as the memblock_region can not be found.
+So something (hugepage_size/flag information) still has to be propagated 
+through function calls and a new argument needs to be added.
+
+- (RFC vs flags patch 4 comparison) We can't skip initialization of the 
+whole region, only the tail pages. We still need to initialize the 
+HUGETLB_VMEMMAP_RESERVE_SIZE (PAGE_SIZE) struct pages for each gigantic 
+page.
+In the RFC, hugepage_size from patch 2 was used in the for loop in 
+memmap_init_reserved_pages in patch 4 to reserve 
+HUGETLB_VMEMMAP_RESERVE_SIZE struct pages for every hugepage_size. This 
+looks very simple and not hacky.
+If we use a flag, there are 2 ways to initialize the 
+HUGETLB_VMEMMAP_RESERVE_SIZE struct pages per hugepage:
+
+1. (implemented in github link patch 4) memmap_init_reserved_pages skips 
+the region for initialization as you suggested, and then we initialize 
+HUGETLB_VMEMMAP_RESERVE_SIZE struct pages per hugepage somewhere later 
+(I did it in gather_bootmem_prealloc). When calling 
+reserve_bootmem_region in gather_bootmem_prealloc, we need to skip 
+early_page_uninitialised and this makes it look a bit hacky.
+
+2. We initialize the HUGETLB_VMEMMAP_RESERVE_SIZE struct pages per 
+hugepage in memmap_init_reserved_pages itself. As we have used a flag 
+and havent passed hugepage_size, we need to get the gigantic page size 
+somehow. There doesnt seem to be a nice way to determine the gigantic 
+page size in that function which is architecture dependent. I think 
+gigantic page size can be given by PAGE_SIZE << (PUD_SHIFT - 
+PAGE_SHIFT), but not sure if this is ok for all architectures? If we can 
+use PAGE_SIZE << (PUD_SHIFT - PAGE_SHIFT) it will look much better than 
+point 1.
+
+Both the RFC patches and the github flags implementation work, but I 
+think RFC patches look much cleaner. If there is a strong preference for 
+the the github patches I can send it to mailing list?
+
+Thanks,
+Usama
+
+
+>>   phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
+>>   
+>>   static __always_inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
+>> @@ -415,7 +417,7 @@ void *memblock_alloc_exact_nid_raw(phys_addr_t size, phys_addr_t align,
+>>   				 int nid);
+>>   void *memblock_alloc_try_nid_raw(phys_addr_t size, phys_addr_t align,
+>>   				 phys_addr_t min_addr, phys_addr_t max_addr,
+>> -				 int nid);
+>> +				 int nid, phys_addr_t hugepage_size);
+>>   void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
+>>   			     phys_addr_t min_addr, phys_addr_t max_addr,
+>>   			     int nid);
+>> @@ -431,7 +433,7 @@ static inline void *memblock_alloc_raw(phys_addr_t size,
+>>   {
+>>   	return memblock_alloc_try_nid_raw(size, align, MEMBLOCK_LOW_LIMIT,
+>>   					  MEMBLOCK_ALLOC_ACCESSIBLE,
+>> -					  NUMA_NO_NODE);
+>> +					  NUMA_NO_NODE, 0);
+>>   }
+>>   
+>>   static inline void *memblock_alloc_from(phys_addr_t size,
+> 
