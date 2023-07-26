@@ -2,88 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52A576346A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F3C76351F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbjGZK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        id S234072AbjGZLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjGZK7N (ORCPT
+        with ESMTP id S234066AbjGZLhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:59:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234B69B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:59:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A0A9261A53
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:59:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A2AC433C7;
-        Wed, 26 Jul 2023 10:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690369152;
-        bh=cXAxx7ipjEHqiG8r+x+mmfq9j1I34+FnlTDvkbY9rY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HieFCXUnKbJKN5LX3RCnbwkevAuET9VNV05FEz2C+Y3XH5XL9VLieZyPmeX/yqazU
-         /S9m/QHRXPw1WuXirTu421waNapnZ7tN+fN1yzA/+qp3HNH0T4HCxtSPULgtWxtL7J
-         UQmZk9y+2IAGbGrWp7btvoNO6zaLteuhPp/YW8iAEDrm0OSRU0/SGNXCq73Wf72RDy
-         Uw53VkWHUUyZo1lC7OxX/j9bD5EPHiM8D5TKH8s1s1fjhijuIT8nXe4QwEWTyYtM5G
-         yk9rdSv7chQmGcnxmpvHwX4EUEfLCp//NnAyebHRfwA3JpOmo01HZpovM4SvaLBzY+
-         wQw8qeaqHnlyg==
-Date:   Wed, 26 Jul 2023 12:59:08 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Re: Stopping the tick on a fully loaded system
-Message-ID: <ZMD8fP36By1KYgkk@localhost.localdomain>
-References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
- <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
- <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
- <ZL2Z8InSLmI5GU9L@localhost.localdomain>
- <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
- <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
- <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
+        Wed, 26 Jul 2023 07:37:18 -0400
+X-Greylist: delayed 900 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Jul 2023 04:37:16 PDT
+Received: from ida.iewc.co.za (ida.iewc.co.za [154.73.34.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768F51BF6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:37:16 -0700 (PDT)
+Received: from [154.73.32.4] (helo=plastiekpoot)
+        by ida.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jkroon@uls.co.za>)
+        id 1qOcFo-0007AC-D8; Wed, 26 Jul 2023 13:00:28 +0200
+Received: from jkroon by plastiekpoot with local (Exim 4.96)
+        (envelope-from <jkroon@uls.co.za>)
+        id 1qOcFm-0000jk-0m;
+        Wed, 26 Jul 2023 13:00:26 +0200
+From:   Jaco Kroon <jaco@uls.co.za>
+To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jaco Kroon <jaco@uls.co.za>
+Subject: [PATCH] fuse: enable larger read buffers for readdir.
+Date:   Wed, 26 Jul 2023 12:59:37 +0200
+Message-ID: <20230726105953.843-1-jaco@uls.co.za>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Tue, Jul 25, 2023 at 04:27:56PM +0200, Rafael J. Wysocki a écrit :
-> On Tue, Jul 25, 2023 at 3:07 PM Anna-Maria Behnsen
-> I'll let Frederic respond to the above, but from my perspective it all
-> just means that the idle governors in use today are not perfect.
-> 
-> However, they will never be perfect, because they only have a little
-> time to make a decision, so it's a matter of balancing that with
-> precision.
+Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+---
+ fs/fuse/Kconfig   | 16 ++++++++++++++++
+ fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
+ 2 files changed, 40 insertions(+), 18 deletions(-)
 
-So, even without considering Anna-Maria's patchset, sparing
-the next timer lookup if we already know we won't stop it would show
-quite a benefit because that lookup involves locking and quite some
-overhead walking through all levels.
+diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+index 038ed0b9aaa5..0783f9ee5cd3 100644
+--- a/fs/fuse/Kconfig
++++ b/fs/fuse/Kconfig
+@@ -18,6 +18,22 @@ config FUSE_FS
+ 	  If you want to develop a userspace FS, or if you want to use
+ 	  a filesystem based on FUSE, answer Y or M.
+ 
++config FUSE_READDIR_ORDER
++	int
++	range 0 5
++	default 5
++	help
++		readdir performance varies greatly depending on the size of the read.
++		Larger buffers results in larger reads, thus fewer reads and higher
++		performance in return.
++
++		You may want to reduce this value on seriously constrained memory
++		systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
++
++		This value reprents the order of the number of pages to allocate (ie,
++		the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
++		pages (128KiB).
++
+ config CUSE
+ 	tristate "Character device in Userspace support"
+ 	depends on FUSE_FS
+diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
+index dc603479b30e..98c62b623240 100644
+--- a/fs/fuse/readdir.c
++++ b/fs/fuse/readdir.c
+@@ -13,6 +13,12 @@
+ #include <linux/pagemap.h>
+ #include <linux/highmem.h>
+ 
++#define READDIR_PAGES_ORDER		CONFIG_FUSE_READDIR_ORDER
++#define READDIR_PAGES			(1 << READDIR_PAGES_ORDER)
++#define READDIR_PAGES_SIZE		(PAGE_SIZE << READDIR_PAGES_ORDER)
++#define READDIR_PAGES_MASK		(READDIR_PAGES_SIZE - 1)
++#define READDIR_PAGES_SHIFT		(PAGE_SHIFT + READDIR_PAGES_ORDER)
++
+ static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
+ {
+ 	struct fuse_conn *fc = get_fuse_conn(dir);
+@@ -52,10 +58,10 @@ static void fuse_add_dirent_to_cache(struct file *file,
+ 	}
+ 	version = fi->rdc.version;
+ 	size = fi->rdc.size;
+-	offset = size & ~PAGE_MASK;
+-	index = size >> PAGE_SHIFT;
++	offset = size & ~READDIR_PAGES_MASK;
++	index = size >> READDIR_PAGES_SHIFT;
+ 	/* Dirent doesn't fit in current page?  Jump to next page. */
+-	if (offset + reclen > PAGE_SIZE) {
++	if (offset + reclen > READDIR_PAGES_SIZE) {
+ 		index++;
+ 		offset = 0;
+ 	}
+@@ -83,7 +89,7 @@ static void fuse_add_dirent_to_cache(struct file *file,
+ 	}
+ 	memcpy(addr + offset, dirent, reclen);
+ 	kunmap_local(addr);
+-	fi->rdc.size = (index << PAGE_SHIFT) + offset + reclen;
++	fi->rdc.size = (index << READDIR_PAGES_SHIFT) + offset + reclen;
+ 	fi->rdc.pos = dirent->off;
+ unlock:
+ 	spin_unlock(&fi->rdc.lock);
+@@ -104,7 +110,7 @@ static void fuse_readdir_cache_end(struct file *file, loff_t pos)
+ 	}
+ 
+ 	fi->rdc.cached = true;
+-	end = ALIGN(fi->rdc.size, PAGE_SIZE);
++	end = ALIGN(fi->rdc.size, READDIR_PAGES_SIZE);
+ 	spin_unlock(&fi->rdc.lock);
+ 
+ 	/* truncate unused tail of cache */
+@@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
+ 	struct fuse_mount *fm = get_fuse_mount(inode);
+ 	struct fuse_io_args ia = {};
+ 	struct fuse_args_pages *ap = &ia.ap;
+-	struct fuse_page_desc desc = { .length = PAGE_SIZE };
++	struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+ 	u64 attr_version = 0;
+ 	bool locked;
+ 
+-	page = alloc_page(GFP_KERNEL);
++	page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+ 	if (!page)
+ 		return -ENOMEM;
+ 
+ 	plus = fuse_use_readdirplus(inode, ctx);
+ 	ap->args.out_pages = true;
+-	ap->num_pages = 1;
++	ap->num_pages = READDIR_PAGES;
+ 	ap->pages = &page;
+ 	ap->descs = &desc;
+ 	if (plus) {
+ 		attr_version = fuse_get_attr_version(fm->fc);
+-		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
++		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
+ 				    FUSE_READDIRPLUS);
+ 	} else {
+-		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
++		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
+ 				    FUSE_READDIR);
+ 	}
+ 	locked = fuse_lock_inode(inode);
+@@ -383,7 +389,7 @@ static enum fuse_parse_result fuse_parse_cache(struct fuse_file *ff,
+ 					       void *addr, unsigned int size,
+ 					       struct dir_context *ctx)
+ {
+-	unsigned int offset = ff->readdir.cache_off & ~PAGE_MASK;
++	unsigned int offset = ff->readdir.cache_off & ~READDIR_PAGES_MASK;
+ 	enum fuse_parse_result res = FOUND_NONE;
+ 
+ 	WARN_ON(offset >= size);
+@@ -504,16 +510,16 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
+ 
+ 	WARN_ON(fi->rdc.size < ff->readdir.cache_off);
+ 
+-	index = ff->readdir.cache_off >> PAGE_SHIFT;
++	index = ff->readdir.cache_off >> READDIR_PAGES_SHIFT;
+ 
+-	if (index == (fi->rdc.size >> PAGE_SHIFT))
+-		size = fi->rdc.size & ~PAGE_MASK;
++	if (index == (fi->rdc.size >> READDIR_PAGES_SHIFT))
++		size = fi->rdc.size & ~READDIR_PAGES_MASK;
+ 	else
+-		size = PAGE_SIZE;
++		size = READDIR_PAGES_SIZE;
+ 	spin_unlock(&fi->rdc.lock);
+ 
+ 	/* EOF? */
+-	if ((ff->readdir.cache_off & ~PAGE_MASK) == size)
++	if ((ff->readdir.cache_off & ~READDIR_PAGES_MASK) == size)
+ 		return 0;
+ 
+ 	page = find_get_page_flags(file->f_mapping, index,
+@@ -559,9 +565,9 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
+ 	if (res == FOUND_ALL)
+ 		return 0;
+ 
+-	if (size == PAGE_SIZE) {
++	if (size == READDIR_PAGES_SIZE) {
+ 		/* We hit end of page: skip to next page. */
+-		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, PAGE_SIZE);
++		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, READDIR_PAGES_SIZE);
+ 		goto retry;
+ 	}
+ 
+-- 
+2.41.0
 
-Thanks.
