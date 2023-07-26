@@ -2,137 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCC0763063
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538FE76306B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbjGZIrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S233407AbjGZIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbjGZIqa (ORCPT
+        with ESMTP id S233394AbjGZIrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:46:30 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A354ECD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:39:05 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63d30554eefso899066d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690360744; x=1690965544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFMVJEruV9LE4C75mlWS0Nb+yQQsemXUAAUYYCpPIuI=;
-        b=IWf8UxJcTVihLcsA4TFlENhD7ULcH/J8QQvz3LpIPT+291r2x7X2mEcDMRu9rsFS2i
-         uzAnseQ77kIMUJOuq/KpVpxIyPOGu3YdRD1Iu/ZYlMrzJes8Sfp+GTFkWCrulEKCtSZH
-         GX9ss5XhkbuJTiMFgnHboaZiC/ocPQNc3rvRg=
+        Wed, 26 Jul 2023 04:47:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A224EDA
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690360749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fAaxUKQ38GDgR2OmXqLR47mRWIe2n/NF7SoPW0emVCM=;
+        b=YTpkfUSNMwNue0LhzuiKyz6E8ij2Jdz9nQJxx4ClDB65qsqt+3sKLNCC0onSt25o0podOM
+        rRf9o0QaiHKT8LD9x0TZz5PWI+52P+NgX+k760XpSp8amjDyzc9Us6fYC9WFkT74kndv3a
+        oCrvi44sdKYvfGePbwBuBEB5PlbtOks=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-93-oQRUPdrmMuW2AoByFLhnig-1; Wed, 26 Jul 2023 04:39:08 -0400
+X-MC-Unique: oQRUPdrmMuW2AoByFLhnig-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so34302825e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:39:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690360744; x=1690965544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZFMVJEruV9LE4C75mlWS0Nb+yQQsemXUAAUYYCpPIuI=;
-        b=AQKHOL5zumfiedkIekz75GJBdPVwmhnYinFafp8jAHJQIUMQX9inPNbgSn+V8A7z0v
-         jlOPk9A6mAdiKgfEdn+JUvICMr2AXt+IIqn0fdHm0IJdNWtA5A2K8Hfqgqx/7y+Pa586
-         38Hwx4R8gFX3iq3f9Xb/JK+IrLK1/QieoDpTnNFKCX8LusWue+gGeOPhPH9nmNLyChoW
-         wvfJnByZ4OtRhAjdv89smuaDkrla40W8ELImCrI45Y38sDPLmHgHOB6gHYNLARcnW2np
-         /Z7V56L7f6naPfjQczFoKFDWiIzFoLLWks0+RKuZqcW5umgrg4a7XK2xx7aTDdKCCyHA
-         B+FA==
-X-Gm-Message-State: ABy/qLY/g6XRjCMNKEpIi4U4/YR4iBoBB0GO+vq5wiRv+70czEAxc1Am
-        StacN3lArJPlKOTSi7lPhEahDv41q1OgrglyoblZ8A==
-X-Google-Smtp-Source: APBJJlEGiaUywGCmaNYszPALFU773pTdtso8TsiY/u4+zHIYqBgpCQpkfhscxyazpu1MT1uTBaytyQ==
-X-Received: by 2002:a0c:f294:0:b0:63c:f0af:14f6 with SMTP id k20-20020a0cf294000000b0063cf0af14f6mr1194642qvl.65.1690360744400;
-        Wed, 26 Jul 2023 01:39:04 -0700 (PDT)
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com. [209.85.219.47])
-        by smtp.gmail.com with ESMTPSA id t27-20020a0cb39b000000b0063cdeac3419sm4093780qve.110.2023.07.26.01.38.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 01:38:58 -0700 (PDT)
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-63cf3dcffe0so25051076d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:38:53 -0700 (PDT)
-X-Received: by 2002:a05:6214:16cc:b0:62f:f2f0:2af3 with SMTP id
- d12-20020a05621416cc00b0062ff2f02af3mr1247360qvz.41.1690360732250; Wed, 26
- Jul 2023 01:38:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690360747; x=1690965547;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fAaxUKQ38GDgR2OmXqLR47mRWIe2n/NF7SoPW0emVCM=;
+        b=Ke0dP5Cj27QvFj4+/usGGpwopuydnAPGhhalV8qr+SijSHWzTkx1clkoBMeX2FTb78
+         L7lY2Zm8H9hfCU8ednV8F+C8RK9Ti0EMhzpOjZ3IKdc2vOi6/YLWQK57Ma0Vg7RFWCm6
+         el0Yuv9wdXuYk98xyhA5ayjlFcRK9WPSFrSHoInudOtAokvpdXPDvxlUWZ3dlsEmhAfU
+         rE4JTyoBYKxb1q+AP+3IUFmh4PzbRvMOERhBCHJ24FZeNQLVgbxVYV5pl/Gmj2KapCsA
+         xThA4gIP/xYHnRVG2iRYCAHlC1Z7Q+mmpvDM9QN1yBJl+213O4NMA3JOFCSDqJhsCVXm
+         X9Tg==
+X-Gm-Message-State: ABy/qLYPC2krctyOZSnWbdrGhaFbJNrHZ4A7Q1ghpc6hFA/xhm6QEQIZ
+        noFYvUSqwg83vKcg90T2Q1iMZDAufaTlJo0kfpfs9oASvsDJx2jvpVnSRi4ubWzhRqhIcFF5gg8
+        M8SFGpy/v3YkkmQmhbCIRm9lk
+X-Received: by 2002:a7b:c4d9:0:b0:3fd:ee50:d6a4 with SMTP id g25-20020a7bc4d9000000b003fdee50d6a4mr760517wmk.17.1690360747438;
+        Wed, 26 Jul 2023 01:39:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEr6DyQHuloA2nD4iog3/3e8RP4qSZv58+bnBAhRP20NVfUdCPAbe6s+RxrRyARWcpPBM/KHg==
+X-Received: by 2002:a7b:c4d9:0:b0:3fd:ee50:d6a4 with SMTP id g25-20020a7bc4d9000000b003fdee50d6a4mr760504wmk.17.1690360747093;
+        Wed, 26 Jul 2023 01:39:07 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id l25-20020a7bc459000000b003fbaade072dsm1343652wmi.23.2023.07.26.01.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 01:39:06 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, Helge Deller <deller@gmx.de>,
+        linux-fbdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+In-Reply-To: <20230726083557.GA921641@ravnborg.org>
+References: <5ab3d1fe7b67ab10e4bc1bdbc0fa7731f7960965.1690300189.git.geert+renesas@glider.be>
+ <87a5vkj7qe.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdWBznkqYxCWD2uwGtWLqXnBqX1Ycg31fBDc4cq2u8DkNQ@mail.gmail.com>
+ <877cqoj5q5.fsf@minerva.mail-host-address-is-not-set>
+ <c10d925b-8d37-caa0-8f66-a0206f948c69@suse.de>
+ <874jlrkbtf.fsf@minerva.mail-host-address-is-not-set>
+ <20230726083557.GA921641@ravnborg.org>
+Date:   Wed, 26 Jul 2023 10:39:06 +0200
+Message-ID: <87y1j3hxsl.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20230717-uvc-oob-v2-1-c7745a8d5847@chromium.org>
- <20230725213451.GU31069@pendragon.ideasonboard.com> <CANiDSCttkqows7PZS823Jpk-CqK9Gz2rujF_R4SPDi=wcPJ2LA@mail.gmail.com>
- <20230726080753.GX31069@pendragon.ideasonboard.com> <952fb983-d1e0-2c4b-a7e8-81c33473c727@leemhuis.info>
-In-Reply-To: <952fb983-d1e0-2c4b-a7e8-81c33473c727@leemhuis.info>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 26 Jul 2023 10:38:40 +0200
-X-Gmail-Original-Message-ID: <CANiDSCvVag+sW5JDTKAPuML_-+6xHWgF+NeKoBKSd5MMr1Yiag@mail.gmail.com>
-Message-ID: <CANiDSCvVag+sW5JDTKAPuML_-+6xHWgF+NeKoBKSd5MMr1Yiag@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Fix OOB read
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@kernel.org, Zubin Mithra <zsm@chromium.org>,
-        =?UTF-8?Q?Kai_Wasserb=C3=A4ch?= <kai@dev.carbon-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thorsten
+Sam Ravnborg <sam@ravnborg.org> writes:
 
-On Wed, 26 Jul 2023 at 10:33, Thorsten Leemhuis <linux@leemhuis.info> wrote:
+> On Tue, Jul 25, 2023 at 09:53:16PM +0200, Javier Martinez Canillas wrote:
+>> Thomas Zimmermann <tzimmermann@suse.de> writes:
+>> 
+>> > Hi
+>> >
+>> 
+>> [...]
+>> 
+>> >> 
+>> >> Yes. I meant to move drivers/video/logo/ to drivers/fbdev/core/logo and to
+>> >> source its Kconfig from drivers/fbdev/core/Kconfig, since it now depends
+>> >> on FB_CORE.
+>> >
+>> > No, please rather leave it where it is. There's no code dependencies to 
+>> > the fbdev core; it merely depends on the Kconfig token.
+>> >
+>> 
+>> Sure, fine by me. But I disagree that there's merely a Kconfig dependency.
+>> The include/linux/linux_logo.h header declares both fb_find_logo() and
+>> fb_append_extra_logo().
+>> 
+>> The fb_find_logo() function is defined in drivers/video/logo.c while the
+>> fb_append_extra_logo() is in drivers/video/fbdev/core/fbmem.c, even though
+>> only arch/powerpc/platforms/cell/spu_base.c uses fb_append_extra_logo().
+>> 
+>> So there's a relationship already between logo and fbdev/core, that's why
+>> I wondered if would make sense to also move drivers/video/logo.c to have
+>> both functions in there.
+> Or as I also suggested on irc - to pull out all the logo stuff from
+> fbmem and put it in video/logo/
+> With a bit of refactoring to make it obvious this is logo stuff and
+> maybe avoid some of the ifdeffery in the code of the users.
 >
-> On 26.07.23 10:07, Laurent Pinchart wrote:
-> > (CC'ing Kai and Thorsten who have added the check to checkpatch)
-> >
-> > On Wed, Jul 26, 2023 at 08:24:50AM +0200, Ricardo Ribalda wrote:
-> >> On Tue, 25 Jul 2023 at 23:34, Laurent Pinchart wrote:
-> >>> On Thu, Jul 20, 2023 at 05:46:54PM +0000, Ricardo Ribalda wrote:
-> >>>> If the index provided by the user is bigger than the mask size, we might do an
-> >>>> out of bound read.
-> >>>>
-> >>>> CC: stable@kernel.org
-> >>>> Fixes: 40140eda661e ("media: uvcvideo: Implement mask for V4L2_CTRL_TYPE_MENU")
-> >>>> Reported-by: Zubin Mithra <zsm@chromium.org>
-> >>>
-> >>> checkpatch now requests a Reported-by tag to be immediately followed by
-> >>> a Closes
+
+Agreed. That option may be better.
+
+> 	Sam
 >
-> Not that it matters, the changes I performed only required a Link: tag,
-> which is how things should have been done for many years already. It
-> later became Closes: due to patches from Matthieu. But whatever. :-D
->
-
-I prefer to leave the Reported-by and remove the Closes, that way we
-credit the reporter (assuming they approved to be referred).
-
-But if that is not possible, just remove the reported-by. A private
-link is pretty much noise on the tree.
-
-Thanks!
-
-> >>> tag that contains the URL to the report. Could you please
-> >>> provide that ?
-> >> I saw that, but the URL is kind of private:
-> >> Closes: http://issuetracker.google.com/issues/289975230
-> > Ah :-S I wonder if we should drop the Reported-by tag then ?
->
-> That's what I do, unless the reporter granted his permission. To quote
-> Documentation/process/5.Posting.rst : ```Be careful in the addition of
-> tags to your patches, as only Cc: is appropriate for addition without
-> the explicit permission of the person named; using Reported-by: is fine
-> most of the time as well, but ask for permission if the bug was reported
-> in private.```
->
-> I heard of on instance where a GDPR complaint was filed due to a
-> Reported-by: tag. So maybe that part should be even revisited reg. the
-> Cc: aspect. :-/
->
-> Ciao, Thorsten
-
-
 
 -- 
-Ricardo Ribalda
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
