@@ -2,137 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D87763494
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8FD763497
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjGZLMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        id S232988AbjGZLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbjGZLMa (ORCPT
+        with ESMTP id S233300AbjGZLM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:12:30 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2096.outbound.protection.outlook.com [40.107.255.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CD09B;
-        Wed, 26 Jul 2023 04:12:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kCW2bkQj+tP6BwA274z0bPCUL586U09fxMCj0bTDc8Xaeyxr5al6PKQEnCVdtckZFNx00EFURVNbFDVjc10UVVkdZt50becBhmmCM/nqakpHLZB7499lz5rAXRPp6fyuUowr3Z2f6zURfOmtCl/AWcTqtIXhkpvCQc2r3SmU0e2jKuMWwaKmd7McWHhAljUdGirzZFm9LAB3vkgJdZYfgiDYpBGDf7vm5NzcDUC/ljneNwLCZNugt8mE5SAzrfCu8gz/yV0lLICONOYsjkMlF3KslkESbfTsaMTldgG41/6bzhObvCQX0Ul7sfef6Eili51oiHBs0OY6zxTTfxHYlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JygoujT0HJMPyhBYZRZGKaebtH3lUlWTp8CsN8SMKSw=;
- b=cjkHLKtjgh8Mx615oLne3Pdeg9pXnikFVo5KhSqtu6uylif1W7scfwW0OHqM4LdvK0oVskJCNVa04eOVGzVWQRufjCZKGRd7wsQM5LwDOpn3qNkiw7Mauk8LIhip20aROxekacOoGzGTMML1IHCT++PgMi/FJfiG2M1T+MO+Bz1QwB2ZlbBYBlHkopFoV1Iapzv7BEgh45HtKprmPPC7tbNkuACenqQY6ypENznQWtyxFEAohnUwy6IjTVdeLyOVTLrdG8xErpAlbUYp28Af+TIfSD99LocwWNNaiUox7jwagTlWGdj9c1lp/3a6bajALIY9BXwCuzFfeqi+fYXxtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JygoujT0HJMPyhBYZRZGKaebtH3lUlWTp8CsN8SMKSw=;
- b=DnqAPObr7o3AY0P8JvaxwCy3Jh0eeHCm/84qgFkKIo5XPBmqYo+9ZagZnQm+VQKjdAMb7lqA4B1s8xR4IOK6JHhQo6Yhc2eBTXycWe/jqE+ziUw8vJU5PI8Tp1trmPWNQndV4024OLzNgPwJjqG0IIJet86QAV/EE+gueBGx8l+WbnQREqDInJSS5YP+epa/qMFILdmM42KZCmxJ9Whz1Ff9IWh3Dy+yCQ7i0uq2tjxpxZ208zpGudDjub8KjRi+HXc4wyLihKD8OvWYA0ZBQCKzB1B7+th2e0BCpG9ySRODsuEMyWc2CIXzKRAtnRo+HfIHswjcRzhGdolRgY+DoQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
- (2603:1096:300:78::18) by JH0PR06MB6722.apcprd06.prod.outlook.com
- (2603:1096:990:35::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
- 2023 11:12:22 +0000
-Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
- ([fe80::74f9:2f8c:e5b8:a573]) by PS1PR0601MB3737.apcprd06.prod.outlook.com
- ([fe80::74f9:2f8c:e5b8:a573%6]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
- 11:12:22 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Kalle Valo <kvalo@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH net-next v4] wifi: ath6kl: Remove error checking for debugfs_create_dir()
-Date:   Wed, 26 Jul 2023 19:11:59 +0800
-Message-Id: <20230726111209.4096-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0043.apcprd02.prod.outlook.com
- (2603:1096:3:18::31) To PS1PR0601MB3737.apcprd06.prod.outlook.com
- (2603:1096:300:78::18)
+        Wed, 26 Jul 2023 07:12:57 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D119B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:12:55 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-c5ffb6cda23so7202265276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690369974; x=1690974774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZC3AR3+9slbh/4XbZH2z2i5m6IqJXybcbNCnztjWWm4=;
+        b=GIKp7cxeKp4zmEz2mQN94gHbvPxItEqza6KBeYXLugORmRYcLv1CWod7hbvJstboIE
+         vdlhucLz9Nc/5F+paWv3OhNx6UH3ba0RZBXJLlDquQ0UZbxvouGn7q6YWYtTc2yYblFN
+         alhR9KB47Get+0nnNmVUMvWDWk22w4ehhNi4PC4AIDmz3WDbiWYhmlLco4oOVQwtcJ0t
+         fHQCjRTYj3MdDUuTtRaAPoo6lZYv/L9WLJ9B0FofS2x563l1EZD+8svWHfeBhIqnXUOP
+         npO0BMqSN8Zi4KvSMwa4Yo1UhZEffezUycW8ODgBHD8Nz0n/RP3vDiy+0R+3WZhbvwAE
+         4Q3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690369974; x=1690974774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZC3AR3+9slbh/4XbZH2z2i5m6IqJXybcbNCnztjWWm4=;
+        b=ErbNo5mw9m8xzzyV1QgOp1/0atpeB61z1ptIRQMeGXMlgztDzKIpi6qKjAW8drcGSV
+         9LWtYPRW8qyBkt4fP/uU6CxEacxm9D218QBvgU3W3kRL80FwQCT5UQYk1PgTREPUk6aA
+         GS/VZ/pqn7GhR7/4YHhkAndVdZAZJyVMP9K4ty09u2PYo9SgfRDjZSfujBxbGgL5Cdpv
+         fbxTFYJI9bbehoS2QJhM4ZOLVo8gZd3wCs5SqFFGzdQuURjBXilCaTDfZ3vG6o8Ru9fE
+         pIQgIIRK3UNCe0PkUI+g+bQzlLtCwt7SillKI+LVYJJVYb7ip7Dniwg2USTvI1+QrjRS
+         89bQ==
+X-Gm-Message-State: ABy/qLbrmxsSO3DX8SdvgXSR1XQwfD0qLyTTO97ZucaZFaPvaOW2Qb8O
+        NZuliGwlzc5nlgIwEAcGCGU2Ajrjy23DRh46t8dM5w==
+X-Google-Smtp-Source: APBJJlGLdZHOcJAENAqLfGiqi/72oSkGaPDVZwRn15fbhmiMArFKWA4P9ndHJR4qlDNh2XztdXFdHxu4C2CClhB66Sk=
+X-Received: by 2002:a81:69c2:0:b0:584:1a4d:bbfa with SMTP id
+ e185-20020a8169c2000000b005841a4dbbfamr1741114ywc.29.1690369974370; Wed, 26
+ Jul 2023 04:12:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PS1PR0601MB3737:EE_|JH0PR06MB6722:EE_
-X-MS-Office365-Filtering-Correlation-Id: 42ab8901-b911-4bd5-fa9e-08db8dc92f11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LWmOaqGyipv7gp3pvlyLhWIkvMhT1h5BLOw/TAAN97aWH/aF2NNZPFmNAHygcFlttuHT8UZC/u0rF/4+jgPu8wMTc79IGgRVrdBvul36a4lOtX6CAp4c3rWlFrdqqPB2ERNd0Lyq9RfsDBLjfLWP2XwikIS8+8gwTPU6veWfpdw9GWBeerFRlLiRiMKYrU6A/LsPhkXiLnzkgMXPWNTZPaduhPM4I3tqCc1LuuD8tmSlsGr0m9adgOBdSAeN+pV8K78f9Vr7tmFLT9c4EWrRP7pxAURxWZYY9xi7jbGkQTkwrtzSlzozJHcawcCNz46LRKqbQMpdNdRePKvZT61NvciJv96s+WAG+lA2BwU584ve53PFPue7XgZi1DA3pe3Ytj/2qwYBREpmVRPHkIqglCkdlEzOvz89cxh+xcfN51tWZl5pzLEDU5RU/PvkHNG0l3Rng4ySTkvmH4+wHdxcwnLOeHUbFVZlM7oCb1NOd/NSFE8N2Oy+U+JZ78M/zHxrzMR0Tog/tItkabmqx9Kz1epAhS55MCRR0+kK4SEdLu+EfwucAHjve6OI8ItPZy3agtAiVRBmNQxqbggrB33AF10/m/KUlTUeJt+sxS/5qI90UK+tmWYJqn7XMuQGFIlqw/onJVcn6WU4M3GKLWF3eg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB3737.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(451199021)(86362001)(36756003)(107886003)(2906002)(478600001)(110136005)(4744005)(52116002)(38350700002)(38100700002)(26005)(186003)(1076003)(2616005)(6506007)(66946007)(5660300002)(6512007)(6666004)(6486002)(41300700001)(66556008)(316002)(66476007)(8676002)(83380400001)(4326008)(8936002)(32563001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FylmX8upuEXY/48NoQqLwTk6aJ/eB9Ky2f9Bh17EO9ov4x5hOEK1ndjoD5mH?=
- =?us-ascii?Q?ELkUMstoMBGYPrLEs/401h+yAmcurGNEzO0lo+UQY3Yj2j2HBWSKRrYMIRv7?=
- =?us-ascii?Q?eodY9eHJzCyZiiZKA260wsVqAbmWQ7g8QinxtzFMJ824eVDwH5DPdA4VjO5/?=
- =?us-ascii?Q?71wXqzUcpMcdVDLJuLeg73xWA3i35M27MbgjKpKcH/flWoKIE5Yn88NCCQ1v?=
- =?us-ascii?Q?3k9mnl85WMMI78qKLhin2l+SIZr12CwC9nTIRjw6QiZHuGcmq2o6CCHPixBb?=
- =?us-ascii?Q?4ickCczmgZpak9Wa4eqKFiK7ZCCP+pnxsIx9c4B7N3UMTDub2e2y5opPCTDB?=
- =?us-ascii?Q?XDGKhPK+7+DXADaObae/ETnP6WhcHiDK8HszaJphTfz8Uy+d2YgkH+57iHqQ?=
- =?us-ascii?Q?YPU2gdrVn22KexIuh21MqvuXCKDdtUVHRfRqWJdlwEw555c4WqTyksM9oVJv?=
- =?us-ascii?Q?mgkSNK/zdWQ+snf9Cp0u5skCHnn27cWn3DC09t5JqrkEP5MAdrlcLAJHbQ0Y?=
- =?us-ascii?Q?Pde6puYop63LKjai7MOdwE6fygdXh1RpBysb76qd010yGiun2TUuTze6YWAs?=
- =?us-ascii?Q?imAmkaY5/YzWkW2jgGb0hY1T/ast063UEfT0j5XjOWLwVk1PlmUK8lzla4/v?=
- =?us-ascii?Q?dtwX45XOkfG/KEVMbEj9H91wvrMCyHk4nIza9a8J/KPNarJKbNlWK0F8OM91?=
- =?us-ascii?Q?jglML+WZk1urJn7C7nYpwMjPU60SC8n145Kq5AMnsdlZOMYB4o/ta9Zw4cJF?=
- =?us-ascii?Q?69I1oCkZ4macw50HTUYF4nbFFbMfdfpcX02eUf4o/zl9UU4DzVaGXeKjcLPi?=
- =?us-ascii?Q?ClwJQNp97hD6cP4dnkLMO0paGid2tWB3Iq8rnGfVFbqZ/NxtAYLtXqDrRbSb?=
- =?us-ascii?Q?h19zCr0HncMrziyAoL1phs8dIcFZe8jgKiva/gcV87XGmCUV6sfRqc/zbHNp?=
- =?us-ascii?Q?zf/A7lwDMtlW91I3zElIeC6Y0/PoAgtS29pYgipFzk+xtym2eMIm7n5ffxPA?=
- =?us-ascii?Q?cDrZD1CV7ikL9LnvjvRrd3nuZWJJLrMOVfw32tfUf+SpU3sG8oHJNz2sHn+V?=
- =?us-ascii?Q?MpMGWIoUtmgLHYGMOJkxRWlrkgODmmST0M8wpXUT1dvrA2vqTzbP/6F6ChQ5?=
- =?us-ascii?Q?HW4Adyt9PmJqxIYF6EEHdoLcTcu//4Bo5ZkdFF67EaaIn5uKxRAiw6lYrT/1?=
- =?us-ascii?Q?dNxN4+O038rWf1/BszL8Q5EfNe0suElblaEbFa1XOVSdQnjxhVoSHQ2VTj77?=
- =?us-ascii?Q?ERuAVeD/21DVuqXc4+pCRnz/Mffu5uXsbrelzZRBcqViwZMweYp4afkTmTAA?=
- =?us-ascii?Q?uqqKNZxTbsbtWDWm/1a4hg00TzMBB8zYsJY55mpZ7yJE1Ia3b+9319ET1foq?=
- =?us-ascii?Q?/KOGKOLA536GakK0xCzM119i6PmpBrpyaAsYBLRVOLah+GWTiDErEoGGMXtC?=
- =?us-ascii?Q?YNGc3X+cjL8Rm6KdoX8D3VYcd+okxcfI3PZFxduELaP04Q5wZZlhMCk22UYJ?=
- =?us-ascii?Q?mosZ90eD3D36L/8pN3QvNunDSnjz5YPINIpvIV5Xh33GFXwPFHr3laUyH+W6?=
- =?us-ascii?Q?dVzVQplLgKug2GIzI5rwzLhcqNQHLvusEdG5z83g?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42ab8901-b911-4bd5-fa9e-08db8dc92f11
-X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB3737.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 11:12:22.2575
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YalZge5dZvG1HE/kdBBjc4TJK72CU3xza2JDwjBHKKRCzfosCfreu1EhdfUXbTWTb3Mf6MoLfxxUwTbgB44CQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6722
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-9-ulf.hansson@linaro.org> <20230719151716.qhobfnclrjf4yqkg@bogus>
+ <CAPDyKFpjMWOAbV+b2DcxDWqvRDQCbSC6Ti+KGGPWJoC4Ghp7=w@mail.gmail.com>
+ <20230721115535.mx46dg56pxjnzbuv@bogus> <20230721143304.GA1092306-robh@kernel.org>
+ <20230721183817.34lgb42nlnsvqx4s@bogus>
+In-Reply-To: <20230721183817.34lgb42nlnsvqx4s@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 26 Jul 2023 13:12:18 +0200
+Message-ID: <CAPDyKFqsaz=hruktv+sPQz-ttOtWa9O_Jvp2iLnpxQqX2r7yBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/11] dt-bindings: firmware: arm,scmi: Extend bindings
+ for protocol@13
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is expected that most callers should _ignore_ the errors
-return by debugfs_create_dir() in ath6kl_debug_init_fs().
+On Fri, 21 Jul 2023 at 20:38, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Fri, Jul 21, 2023 at 08:33:04AM -0600, Rob Herring wrote:
+> > On Fri, Jul 21, 2023 at 12:55:35PM +0100, Sudeep Holla wrote:
+> > > On Fri, Jul 21, 2023 at 01:42:43PM +0200, Ulf Hansson wrote:
+> > > > On Wed, 19 Jul 2023 at 17:17, Sudeep Holla <sudeep.holla@arm.com> w=
+rote:
+> > > > >
+> > > > > On Thu, Jul 13, 2023 at 04:17:35PM +0200, Ulf Hansson wrote:
+> > > > > > The protocol@13 node is describing the performance scaling opti=
+on for the
+> > > > > > ARM SCMI interface, as a clock provider. This is unnecessary li=
+miting, as
+> > > > > > performance scaling is in many cases not limited to switching a=
+ clock's
+> > > > > > frequency.
+> > > > > >
+> > > > > > Therefore, let's extend the binding so the interface can be mod=
+elled as a
+> > > > > > generic performance domaintoo. The common way to describe this,=
+ is to use
+> > > > > > the "power-domain" DT bindings, so let's use that.
+> > > > > >
+> > > > >
+> > > > > One thing I forgot to ask earlier is how we can manage different =
+domain IDs
+> > > > > for perf and power domains which is the case with current SCMI pl=
+atforms as
+> > > > > the spec never mandated or can ever mandate the perf and power do=
+mains IDs
+> > > > > to match. They need not be same anyways.
+> > > >
+> > > > Based upon what you describe above, I have modelled the perf-domain
+> > > > and the power-domain as two separate power-domain providers.
+> > > >
+> > > > A consumer device being hooked up to both domains, would specify th=
+e
+> > > > domain IDs in the second power-domain-cell, along the lines of the
+> > > > below. Then we would use power-domain-names to specify what each
+> > > > power-domain represents.
+> > > >
+> > > > power-domains =3D <&scmi_pd 2>, <&scmi_dvfs 4>;
+> > > > power-domain-names =3D "power", "perf";
+> > > >
+> > > > I hope this makes it clearer!?
+> > >
+> > > Yes it make is clear definitely, but it does change the definition of=
+ the
+> > > generic binding of the "power-domains" property now. I am interesting=
+ in
+> > > the feedback from the binding maintainers with respect to that. Or is=
+ it
+> > > already present ? IIUC, the ones supported already are generally both
+> > > power and performance providers. May be it doesn't matter much, just
+> > > wanted to explicit ask and confirm those details.
+> >
+> > I commented on v1.
+> >
+> > Looks like abuse of "power-domains" to me, but nothing new really.
+> > Please define when to use a power domain vs. a perf domain and don't
+> > leave it up to the whims of the platform. Maybe perf domains was a
+> > mistake and they should be deprecated?
+> >
+>
+> Just a thought here, instead of deprecating it I was thinking if possible
+> to keep the power-domains and performance-domains separate and just exten=
+d
+> the genpd to handle the latter. There by we are not mixing up and creatin=
+g
+> confusions that need more specific definitions in the binding(which is no=
+t
+> a big deal) but platforms getting it wrong inspite of that is a big probl=
+em.
+> Keep it separate makes it more aligned to the hardware and doesn't dilute
+> the definitions and probably avoids any possible mistakes due to that.
+>
+> Sorry Ulf I am just not yet convinced to mix them up yet =F0=9F=98=89 and=
+ wish you
+> don't convince me to. Let me know why the above suggestion won't work.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- drivers/net/wireless/ath/ath6kl/debug.c | 2 --
- 1 file changed, 2 deletions(-)
+The main point I think we need to consider too, is that on some
+platforms, the power-domain and the performance-domain are managed
+together by the FW. It is not really two separate things and hence it
+would not quite be correct to describe it as two different types of
+providers in DT.
 
-diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
-index 433a047f3747..b837d31416df 100644
---- a/drivers/net/wireless/ath/ath6kl/debug.c
-+++ b/drivers/net/wireless/ath/ath6kl/debug.c
-@@ -1793,8 +1793,6 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
- {
- 	ar->debugfs_phy = debugfs_create_dir("ath6kl",
- 					     ar->wiphy->debugfsdir);
--	if (!ar->debugfs_phy)
--		return -ENOMEM;
- 
- 	debugfs_create_file("tgt_stats", 0400, ar->debugfs_phy, ar,
- 			    &fops_tgt_stats);
--- 
-2.25.1
+If we should follow your suggestion above, to use the
+performance-domain bindings, then I think we need an additional new
+binding to cover the above mentioned case too. This would lead us into
+having one binding for the power-domain, another for the
+performance-domain and a third for the power+performance-domain.
 
+In my opinion this sounds quite like a mess. I would rather keep using
+the power-domain bindings for all these cases. Of course, it's a bit
+of a stretch too, but I think it should be less confusing in the end,
+assuming we extend/clarify the description of the power-domain
+bindings, of course.
+
+Did that convince you? :-)
+
+Kind regards
+Uffe
