@@ -2,269 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F114763636
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2FE763635
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjGZMXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S233184AbjGZMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbjGZMXN (ORCPT
+        with ESMTP id S233595AbjGZMXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:23:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDF5DD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690374144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bUUISbPeBpBhrVSDp02ey71lZSBC2EQUMmF6cUaMALg=;
-        b=jV2Kd9ouStGNB67AxWaOGnKggy6YmVxKT1z2wDkrslaXu56r308ogcj0XadqXM5t2O1TV7
-        GQcVQDKby2FIguFJFB4jJvLUcUk6kvbigC0+msuWi2MalONwM7St9DBJKdT11u9T5BY37R
-        RciVUZneI7kb0BItJvJ2NoJh3rD08Ys=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-1oejh5ZZPPW2ybUviQYFAA-1; Wed, 26 Jul 2023 08:22:23 -0400
-X-MC-Unique: 1oejh5ZZPPW2ybUviQYFAA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fd0fa4d08cso35336275e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:22:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690374142; x=1690978942;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bUUISbPeBpBhrVSDp02ey71lZSBC2EQUMmF6cUaMALg=;
-        b=cPUlZP6RgY3kT9oqK7GxnKNrbNh53LRLOdqDM33QnkAeo8+mqrXxjd04HCx3zs06iw
-         FoIrYe1gYwTlKgolHcvYP4eYws/tZ7v2GGKg9JGMLB38WVDn7Avrsm2k5hZrl744Vhyt
-         SlODOYcwSb9q/icnBC6H+I3OqrGQdgASNhuoxQbO774aRHkvDwRzfy0Gf5rqULXHUqyO
-         M1K2g+2Yi/GnSzxyT7va49NlWAGbc13A+qvCZLoOGxBeAl2pM7+RlMQmnaMzmsuOz+h6
-         ++bd5fy9Ry9bifatf7VQuc1hVC5jtSjpXPfon6mCxqBNe9p/40wMreTHzKHNMLAYB4aN
-         vzbA==
-X-Gm-Message-State: ABy/qLbbZNHDW6QWiAzfPEGV+YHj3Zn7ablMztU0aKAwh/xi8QyckZgi
-        EvU8ZzvVK2jVv1egonVoZLvj4JAU3l1ChIaDpkja3nFVETdv0MqHsuXlukxrG8qiqfeQ0ai+Wqs
-        ev85UCkhYo7yE1ipvWXgMrohA
-X-Received: by 2002:a1c:4b1a:0:b0:3fb:c9f4:150e with SMTP id y26-20020a1c4b1a000000b003fbc9f4150emr1264665wma.14.1690374142403;
-        Wed, 26 Jul 2023 05:22:22 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEJRwKE37yLczW34KD10P4WTou7UxdNcZ2rXB7lFmLQeMcB8Dc7lH3Tbr7TI9+V+K/XUAHlQA==
-X-Received: by 2002:a1c:4b1a:0:b0:3fb:c9f4:150e with SMTP id y26-20020a1c4b1a000000b003fbc9f4150emr1264640wma.14.1690374141899;
-        Wed, 26 Jul 2023 05:22:21 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id l13-20020a1ced0d000000b003fc00892c13sm1822976wmh.35.2023.07.26.05.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 05:22:21 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
- .atomic_check callback
-In-Reply-To: <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
-References: <20230721070955.1170974-1-javierm@redhat.com>
- <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
- <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
- <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
-Date:   Wed, 26 Jul 2023 14:22:20 +0200
-Message-ID: <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 26 Jul 2023 08:23:02 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8F9100;
+        Wed, 26 Jul 2023 05:22:57 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9AAC55C00FE;
+        Wed, 26 Jul 2023 08:22:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 26 Jul 2023 08:22:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690374174; x=1690460574; bh=nkzmqGGyaTyM6
+        C3rwgSVjdOiXlg1wgXUYIewV7EBzv8=; b=TVbQptaJxZGVKDcrbJhPFjfg1lYcL
+        pQZfPof3bfGKSSQz9kzhZQ4nLK3XeJKp8eKWl+TK2xv/9rheOS9Tqgz5SS5jOzWp
+        XqHD8/dy0Q9dKcELfQVmaAN+IbL+nClZ9jF9Zk0LBCDl6LGTsoQeBdUoPoxSjA03
+        RzMNKNyKm7L3g0HpRCZHMtbAFqvVhontwW/v0LaIMPTR9RjtOSSBvN+6ci1acpZ+
+        kQT1HKEDLr7gHk8ancWtoBC9rEgFE9IE4Y3gb5r4WNjA91VguKQy6uC+YUIkyx0l
+        E104KkVu7yWK/bp65gRDy6NGAzDQ7IxE+p/EDBy6iGyPf35fwzbpyR9gw==
+X-ME-Sender: <xms:HhDBZG5FuNsGIrpVUn0eLAYhsXSLdBkYebjLWh3nqvHJkmQPP5ClCA>
+    <xme:HhDBZP5_NMl43vqsV-GDJTQ3e-ld-GnPnCAoOM5I8l3Q9-3BeVxS8nqlWjXTZoT_o
+    1DVB0rfZVqQ5mE>
+X-ME-Received: <xmr:HhDBZFcL4Q-2-CPh6hygFkmwRnUlq1fQJJIizUFB3ZTm4cPrvnKXwm6bTl3qsgOPBBKwzUzlY17xfUoFbCLbbeAisP6cdw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefgfejkeduieefheehhfdvffekleeuteegvdejfedufffgleeugefglefhgefg
+    teenucffohhmrghinhepuhhnihiighdrhhhrpdhgihhthhhusgdrtghomhenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihgu
+    ohhstghhrdhorhhg
+X-ME-Proxy: <xmx:HhDBZDJqGR5dnJKPTwDd0j6nBYxucLJS-TBIB73A4k_N_PN8F-UUmA>
+    <xmx:HhDBZKLnliRASX3an8iW2VEaEY7Xi1tZKe0XppWDAH9rFllkg7M9Sg>
+    <xmx:HhDBZEzImq6gbLgbPazKqjCdK3ZItccLG78RTvm_4bEB4F6vG3EvTg>
+    <xmx:HhDBZLoF1rAU6431kbLRaQwPbnAvjTD9j4xs1Y9VdfaizwqRS8D7kg>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 08:22:53 -0400 (EDT)
+Date:   Wed, 26 Jul 2023 15:22:48 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding:
+ custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
+Message-ID: <ZMEQGIOQXv6so30x@shredder>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+ <ZLzj5oYrbHGvCMkq@shredder>
+ <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
+ <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
+ <ZL6OljQubhVtQjcD@shredder>
+ <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Mon, Jul 24, 2023 at 10:46:09PM +0200, Mirsad Todorovac wrote:
+> On 7/24/23 16:45, Ido Schimmel wrote:
+> > On Sun, Jul 23, 2023 at 11:37:46PM +0200, Mirsad Todorovac wrote:
+> > > Some tests however exited with error:
+> 
+> Hi,
+> 
+> > > marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc2-net-forwarding-11.log
+> > > not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
+> > > not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
+> > > not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
+> > 
+> > I can't reproduce these three.
+> 
+> I have now enabled 'set -x' and here is the link to the output.
+> 
+> NOTE as there are side-effects to running the test scripts, I have ran the
 
-Hello Geert,
+I don't believe this is correct after "selftests: forwarding: Switch off
+timeout".
 
-> Hi Maxime,
->
-> On Wed, Jul 26, 2023 at 12:00=E2=80=AFPM Maxime Ripard <mripard@kernel.or=
-g> wrote:
->> On Tue, Jul 25, 2023 at 09:21:52PM +0200, Geert Uytterhoeven wrote:
->> > > --- a/drivers/gpu/drm/solomon/ssd130x.c
->> > > +++ b/drivers/gpu/drm/solomon/ssd130x.c
->> > > @@ -141,12 +141,26 @@ const struct ssd130x_deviceinfo ssd130x_varian=
-ts[] =3D {
->> > >  };
->> > >  EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
->> > >
->> > > +struct ssd130x_plane_state {
->> > > +       struct drm_plane_state base;
->> > > +       /* Intermediate buffer to convert pixels from XRGB8888 to R1=
- */
->> > > +       u8 *buffer;
->> > > +       /* Buffer that contains R1 pixels to be written to the panel=
- */
->> > > +       u8 *data_array;
->> >
->> > The second buffer actually contains pixels in hardware format.
->> > For now that is a transposed buffer of R1 pixels, but that will change
->> > when you will add support for greyscale displays.
->> >
->> > So I'd write "hardware format" instead of R1 for both.
->> >
->> > BTW, I still think data_array should be allocated during probing,
->> > as it is related to the hardware, not to a plane.
->>
->> I somewhat disagree.
->>
->> If I understood right during our discussion with Javier, the buffer size
->> derives from the mode size (height and width).
->>
->> In KMS, the mode is tied to the KMS state, and thus you can expect the
->> mode to change every state commit. So the more logical thing to do is to
->> tie the buffer size (and thus the buffer pointer) to the state since
->> it's only valid for that particular state for all we know.
->>
->> Of course, our case is allows use to simplify things since it's a fixed
->> mode, but one of Javier's goal with this driver was to provide a good
->> example we can refer people to, so I think it's worth keeping.
->
-> The second buffer (containing the hardware format) has a size that
-> depends on the full screen size, not the current mode (I believe that's
-> also the size of the frame buffer backing the plane?).  So its size is
-> fixed.
->
+> whole suite, just in case:
+> 
+> https://domac.alu.unizg.hr/~mtodorov/linux/selftests/net-forwarding/kselftest-6.5-rc3-net-forwarding-12.log.xz
+> 
+> > Do you have systemd-networkd running?
+> 
+> No:
 
-Yes, is fixed. But Maxime's point is that this is a characteristic of this
-particular device and even when the display resolution can't be changed,
-the correct thing to do is to keep all state related to the mode (even the
-buffer used to store the hardware pixels that are written to the display)
+[...]
 
-> Given the allocations are now done based on plane state, I think the
-> first buffer should be sized according to the frame buffer backing
-> the plane? Currently it uses the full screen size, too (cfr. below).
->
+> > > not ok 15 selftests: net/forwarding: ethtool_extended_state.sh # exit=1
+> > > not ok 17 selftests: net/forwarding: ethtool.sh # exit=1
+> > > not ok 25 selftests: net/forwarding: hw_stats_l3_gre.sh # exit=1
+> > 
+> > Fixed these three.
+> > 
+> > > not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
+> > 
+> > Fixed.
+> 
+> Great job, that's almost 50% of them!
+> 
+> > > not ok 80 selftests: net/forwarding: tc_actions.sh # exit=1
+> > > not ok 83 selftests: net/forwarding: tc_flower.sh # exit=1
+> > > not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
+> > > not ok 89 selftests: net/forwarding: tc_tunnel_key.sh # exit=1
+> > 
+> > Can't reproduce these.
+> 
+> Hope the above will help.
 
-But can the mode even be changed if ssd130x_connector_helper_get_modes()
-just adds a single display mode with mode->hdisplay =3D=3D ssd130x->width a=
-nd
-mode->vdisplay =3D=3D ssd130x->height.
+Pushed fixes for tc_actions.sh, tc_flower.sh and tc_tunnel_key.sh to the
+same branch. Please test them.
 
->> > > @@ -159,23 +173,23 @@ static int ssd130x_buf_alloc(struct ssd130x_de=
-vice *ssd130x)
->> > >
->> > >         pitch =3D drm_format_info_min_pitch(fi, 0, ssd130x->width);
->> > >
->> > > -       ssd130x->buffer =3D kcalloc(pitch, ssd130x->height, GFP_KERN=
-EL);
->> > > -       if (!ssd130x->buffer)
->> > > +       ssd130x_state->buffer =3D kcalloc(pitch, ssd130x->height, GF=
-P_KERNEL);
->
-> Based on full screen width and height.
->
+Regarding the MDB tests and tc_flower_l2_miss.sh, I suspect you might
+have some daemon in user space that sends IGMP queries and therefore
+messes with the tests. Please run the following commands in a separate
+terminal before running tc_flower_l2_miss.sh:
 
-You think that using ssd130x->mode->vdisplay instead will be more clear her=
-e?
+# perf probe --add 'br_ip4_multicast_query'
+# perf record -a -g -e 'probe:br_ip4_multicast_query'
 
->> > > +       if (!ssd130x_state->buffer)
->> > >                 return -ENOMEM;
->> > >
->> > > -       ssd130x->data_array =3D kcalloc(ssd130x->width, pages, GFP_K=
-ERNEL);
->> > > -       if (!ssd130x->data_array) {
->> > > -               kfree(ssd130x->buffer);
->> > > +       ssd130x_state->data_array =3D kcalloc(ssd130x->width, pages,=
- GFP_KERNEL);
->
-> Based on full screen width and height (hardware page size).
->
+After the test finishes, terminate the second command and run:
 
-Yes, this depends on the panel attached to the OLED controller, and that
-resolution is fixed and taken from the Device Tree (or ACPI table).
+# perf report --stdio
 
->> > > +       if (!ssd130x_state->data_array) {
->> > > +               kfree(ssd130x_state->buffer);
->> >
->> > Should ssd130x_state->buffer be reset to NULL here?
->> > I.e. if .atomic_check() fails, will .atomic_destroy_state() be called,
->> > leading to a double free?
->>
->> That's a good question.
->>
->> I never really thought of that, but yeah, AFAIK atomic_destroy_state()
->> will be called when atomic_check() fails.
->>
->> Which means that it's probably broken in a lot of drivers.
->>
->> Also, Javier pointed me to a discussion you had on IRC about using devm
->> allocation here. We can't really do that. KMS devices are only freed
->> once the last userspace application closes its fd to the device file, so
->> you have an unbounded window during which the driver is still callable
->> by userspace (and thus can still trigger an atomic commit) but the
->> buffer would have been freed for a while.
->
-> It should still be safe for (at least) the data_array buffer. That
-> buffer is only used to store pixels in hardware format, and immediately
-> send them to the hardware.  If this can be called that late, it will
-> fail horribly, as you can no longer talk to the hardware at that point
-> (as ssd130x is an i2c driver, it might actually work; but a DRM driver
->  that calls devm_platform_ioremap_resource() will crash when writing
->  to its MMIO registers)?!?
->
+It should show us if queries were received and which process sent them.
 
-At the very least the SPI driver will fail since the GPIO that is used to
-toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
-the regulator, backlight device, etc.
+> 
+> > Pushed the fixes on top of the fixes from yesterday:
+> > 
+> > https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
+> 
+> I have applied them.
+> 
+> BTW, after running the full net/forwarding test suite, "ip link show"
+> looks like this:
+> 
+> marvin@defiant:~/linux/kernel/linux_torvalds$ ip link show
+> 256: veth7@veth6: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 16:74:e0:e6:f0:92 brd ff:ff:ff:ff:ff:ff
+> 257: veth6@veth7: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 22:f3:40:50:fb:73 brd ff:ff:ff:ff:ff:ff
+> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 2: enp16s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+>     link/ether 9c:6b:00:01:fb:80 brd ff:ff:ff:ff:ff:ff
+> 3: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether b6:46:e6:4c:e4:00 brd ff:ff:ff:ff:ff:ff
+> 4: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 2e:ff:7f:8a:6b:d4 brd ff:ff:ff:ff:ff:ff
+> 5: veth3@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether ba:33:37:81:dc:5b brd ff:ff:ff:ff:ff:ff
+> 6: veth2@veth3: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether f2:fd:0a:9b:94:17 brd ff:ff:ff:ff:ff:ff
+> 278: veth9@veth8: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 0a:f1:22:04:0f:55 brd ff:ff:ff:ff:ff:ff
+> 279: veth8@veth9: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 92:be:71:00:59:0f brd ff:ff:ff:ff:ff:ff
+> 282: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/gre 0.0.0.0 brd 0.0.0.0
+> 283: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+> 284: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+> 366: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/tunnel6 :: brd :: permaddr ce1e:75f3:f565::
+> 367: ip6gre0@NONE: <NOARP> mtu 1448 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/gre6 :: brd :: permaddr 1e91:da47:154d::
+> 237: veth5@veth4: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 6a:e3:dc:ad:8c:a0 brd ff:ff:ff:ff:ff:ff
+> 238: veth4@veth5: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>     link/ether ce:a7:61:90:c8:2d brd ff:ff:ff:ff:ff:ff
+> marvin@defiant:~/linux/kernel/linux_torvalds$
+> 
+> This is kinda awkward, because I have to reboot the machine for the next run, each time.
 
-But in any case, as mentioned it is only relevant if the data_array buffer
-is allocated at probe time, and from Maxime's explanation is more correct
-to do it in the .atomic_check handler.
+Why? The fact that the veth pairs are already present doesn't impact the
+selftests.
 
->> > > +static struct drm_plane_state *ssd130x_primary_plane_duplicate_stat=
-e(struct drm_plane *plane)
->> > > +{
->> > > +       struct ssd130x_plane_state *old_ssd130x_state;
->> > > +       struct ssd130x_plane_state *ssd130x_state;
->> > > +
->> > > +       if (WARN_ON(!plane->state))
->> > > +               return NULL;
->> > > +
->> > > +       old_ssd130x_state =3D to_ssd130x_plane_state(plane->state);
->> > > +       ssd130x_state =3D kmemdup(old_ssd130x_state, sizeof(*ssd130x=
-_state), GFP_KERNEL);
->> >
->> > I know this is the standard pattern, but the "dup" part is a bit
->> > silly here:
->> >   - The ssd130x-specific parts in ssd130x_plane_state are zeroed below,
->> >   - The base part is copied again in
->> >     __drm_atomic_helper_plane_duplicate_state).
->> > So (for now) you might as well just call kzalloc() ;-)
->>
->> Still if we ever add a field in the state structure, it will be
->> surprising that it's not copied over.
->>
->> The code is there and looks good to me, so I'd rather keep it.
->
-> Fair enough, let's keep it.
->
+> 
+> I am in no condition to try to figure out which tests leaked links.
 
-Yeah. At the very least helps since will be consistent with other drivers.
+The veth pairs were created by the first invocation of the selftests and
+are not deleted at the end. We already discussed it. But the fact that
+they are already present does not mean you can't re-run the tests.
 
-> Gr{oetje,eeting}s,
->
->                         Geert
-
---=20
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Regarding gre0, gretap0, erspan0, ip6tnl0 and ip6gre0, they are
+automatically created by the kernel when the relevant kernel modules are
+loaded. They are not used by the selftests.
