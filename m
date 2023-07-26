@@ -2,67 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B23763918
+	by mail.lfdr.de (Postfix) with ESMTP id 2A294763917
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbjGZO2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
+        id S234520AbjGZO2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234502AbjGZO2e (ORCPT
+        with ESMTP id S234481AbjGZO2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:28:34 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D29B4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:28:34 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb119be881so51637415ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690381713; x=1690986513;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iCvX+WYhj5dekGw4g3WHkvBAMFYYr8sXX+D13FHMfqA=;
-        b=f3dsw2E2l/B/cUFrODAkpl1M5OV5n27zUh0TtgO7ZVOPLJBKhFVIHjs+5JB8zmB1sy
-         suMKD2y9b0K4Ha7tTHZvAiIupK8FK/ggWg/Y/T30voOfQE9nbUOygUDJCgwPnd9DaIW0
-         rhc9Adfd7VRJR1ip84y2Y9F6pTcDx/3FbWxuI328R3IufSOP7emgXXaTsXCpvClztO8N
-         aRpojkWDoGwkSrT36kghgwaJJfpZGLPkmeYyuHoXHAUu5yuqOu0HgxFmePOJ4EqIWhZz
-         Vhs8N0aW0sG9/G/EVh3bo2AgKnFWIkcRjAzq950BlbibwDQSRCzGe3ZTXQMRBGglcWzq
-         pD9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690381713; x=1690986513;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iCvX+WYhj5dekGw4g3WHkvBAMFYYr8sXX+D13FHMfqA=;
-        b=ETVQJy2L45w+HZOfGfjW/EAH134ydhU/dfEmXI2guTVT31CGJKjkjy3AWcHWD2Tw5s
-         YNDcPoOh6I8RTA7+SCayP7x8miuRNTDuHSiagSUX8K2CMXzk7S+5FcNa9gJvTiV4F8Qs
-         cWNWDlEWevYVh6gLWL03QnkeEpRQ+jm2WOpZcI6O2bMRE/fXz85pkAzOovKWc7Z5mPdO
-         C4t0YTrBVf2474oGNQj+z8AWFD++HmJ3VTq3W0rr26DNOvLtuaYBZDWk4QdCCYri6sAd
-         xWtF/PTmLv2sAorYF1d/S1zI0TGuPnd3iu3XOPeuYP3htLrJIH9iZxLfaYw0j9DLXg0+
-         +d0Q==
-X-Gm-Message-State: ABy/qLaJOUFgWDLTQ3agRH4bg8bQE1rBborDtiOwtKqQdR0DmO4/bC4A
-        kXA9xjeteEIHq2UXWUstx9c=
-X-Google-Smtp-Source: APBJJlFgRurokiGu50ZcGdSRGZbbIAEsnfEeD56NX7ND2XmLmc3XeMtiBfQo2ah3ofMPQZ4U2bnpoQ==
-X-Received: by 2002:a17:902:ec8c:b0:1ab:11c8:777a with SMTP id x12-20020a170902ec8c00b001ab11c8777amr2739116plg.13.1690381713404;
-        Wed, 26 Jul 2023 07:28:33 -0700 (PDT)
-Received: from linux.. (static.111.40.78.5.clients.your-server.de. [5.78.40.111])
-        by smtp.gmail.com with ESMTPSA id g4-20020a170902c38400b001b8b26fa6a9sm2189312plg.19.2023.07.26.07.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 10:28:32 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F7BB4;
         Wed, 26 Jul 2023 07:28:32 -0700 (PDT)
-From:   Binglei Wang <l3b2w1@gmail.com>
-X-Google-Original-From: Binglei Wang
-To:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        l3b2w1@gmail.com
-Subject: [PATCH v3] cma: check for memory region overlapping
-Date:   Wed, 26 Jul 2023 22:28:23 +0800
-Message-Id: <20230726142823.6356-1-l3b2w1@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1D2845AA;
+        Wed, 26 Jul 2023 16:27:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690381650;
+        bh=otxqm+DdFpAX4RM94f1Az82cGPaIxL7FXlKCnZ5XCqI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f8hdDKyDU5ndts2nDCDKOydtIp7lXOSual09z/j5U2lXqeTn8qaGieo2cDjCBKJ+R
+         IIRBfXjZCJdlsVT1Z2eH9rr/7jz0wUT58j8iUy9/pcRq3UCt6yWF3yy5YZE5dcWbWd
+         6vP11JbXIFZF/kwmTodTaHgmNP/JcaN/hbWBhokA=
+Date:   Wed, 26 Jul 2023 17:28:35 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Wang Ming <machel@vivo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v2] media: platform: Use dev_err_probe instead of dev_err
+Message-ID: <20230726142835.GA5148@pendragon.ideasonboard.com>
+References: <20230726115208.5463-1-machel@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230726115208.5463-1-machel@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,41 +49,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Binglei Wang <l3b2w1@gmail.com>
+Hi Wang,
 
-In the process of parsing the DTS, checks
-whether the memory region specified by the DTS CMA node area
-overlaps with the kernel text memory space reserved by memblock
-before calling early_init_fdt_scan_reserved_mem.
-Maybe it's better to have some warning prompts printed.
+Thank you for the patch.
 
-Signed-off-by: Binglei Wang <l3b2w1@gmail.com>
----
+On Wed, Jul 26, 2023 at 07:51:58PM +0800, Wang Ming wrote:
+> It is possible that dma_request_chan will return EPROBE_DEFER,
+> which means that dma->xdev->dev is not ready yet. In this case,
+> dev_err(dma->xdev->dev), there will be no output. This patch
+> fixes the bug.
 
-Notes:
-    v3: fix compile error.
-    v2: delete the logic code for handling return -EBUSY.
-    v1: return -EBUSY when detect overlapping and handle the return case.
+It's not a bug. The existing code works as expected. dev_err_probe() is
+nicer though, as it records the reason for the probe deferral. Here's a
+proposal for a better commit message:
 
- kernel/dma/contiguous.c | 5 +++++
- 1 file changed, 5 insertions(+)
+  It is possible that dma_request_chan() returns EPROBE_DEFER, in which
+  case the driver defers probing without printing any message. Use
+  dev_err_probe() to record the probe deferral cause and ease debugging.
 
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index 6ea80ae42..dc6d2af1e 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -410,6 +410,11 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
- 		return -EBUSY;
- 	}
- 
-+	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
-+		pr_info("Reserved memory: overlap with other memblock reserved region\n");
-+		return -EBUSY;
-+	}
-+
- 	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
- 	    of_get_flat_dt_prop(node, "no-map", NULL))
- 		return -EINVAL;
+If you're fine with this, there's no need to resubmit, I'll update the
+commit message locally and merge the patch.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> Signed-off-by: Wang Ming <machel@vivo.com>
+> ---
+>  drivers/media/platform/xilinx/xilinx-dma.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/xilinx/xilinx-dma.c b/drivers/media/platform/xilinx/xilinx-dma.c
+> index 80d6f5b072ea..16ad39bef6c6 100644
+> --- a/drivers/media/platform/xilinx/xilinx-dma.c
+> +++ b/drivers/media/platform/xilinx/xilinx-dma.c
+> @@ -708,9 +708,8 @@ int xvip_dma_init(struct xvip_composite_device *xdev, struct xvip_dma *dma,
+>  	snprintf(name, sizeof(name), "port%u", port);
+>  	dma->dma = dma_request_chan(dma->xdev->dev, name);
+>  	if (IS_ERR(dma->dma)) {
+> -		ret = PTR_ERR(dma->dma);
+> -		if (ret != -EPROBE_DEFER)
+> -			dev_err(dma->xdev->dev, "no VDMA channel found\n");
+> +		ret = dev_err_probe(dma->xdev->dev, PTR_ERR(dma->dma),
+> +			"no VDMA channel found\n");
+>  		goto error;
+>  	}
+>  
+
 -- 
-2.34.1
+Regards,
 
+Laurent Pinchart
