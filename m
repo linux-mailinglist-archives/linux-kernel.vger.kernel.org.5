@@ -2,236 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9387A764093
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EA0764099
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjGZUf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S231417AbjGZUh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbjGZUf4 (ORCPT
+        with ESMTP id S229608AbjGZUh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:35:56 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B912B2704
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:35:54 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a3c78ede4bso219079b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:35:54 -0700 (PDT)
+        Wed, 26 Jul 2023 16:37:27 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40952701;
+        Wed, 26 Jul 2023 13:37:25 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so2527171fa.3;
+        Wed, 26 Jul 2023 13:37:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1690403754; x=1691008554;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UbJeRzU7wigg3Cu4qDyeUEG2N0zmDly89LtEzqyMs4E=;
-        b=TxGCtU4yiHilQLBjUikX0JH9p6bb2UNI26c3vHmd5RO8FYRkDvNulnhPJd3CKSq9Fo
-         gOIC9PqsHWZlRyLBv3mi4bIOQDpNAYCYZlr81fsXoGFwE2cUSvufGtSEX0dw8bo7gqqP
-         vd09xr+NRbEsFtKf5A8oTo1/4bZUznMU31ew4iJs9g3kOnfP6XqNJsyomSHnsRBJhQRF
-         2si1a902AlFy8F5TkVpPzp9EA4/2bLGvXYGY8pAIvq+RYJueW8d5oxz/SNTEEIMBGhZy
-         ye5hpxcBNZC2MQcUkJVCvw7mM/HP7xVL//qt4/c6EwBoG/qjLV9Wz/SDxuo19X3BtYi3
-         TbCw==
+        d=gmail.com; s=20221208; t=1690403844; x=1691008644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0lwD0XW5XNFFxl46sPGBkyRuR0c2+TXyAF+CGil8NRI=;
+        b=WBqtUarSorotOYNCJWkNReSAf19CXEDpnJUFPGIYyvbDGPlIhT1+vr65mlLeyLiFth
+         GmCuACdJUKmp+aXMjQJaPSWfUyQzmfkXHGzk1XVUCq+ELSSJcCrHrh6NujIUxHhB+pw6
+         nrYhrtteDJSDiCNTnF299w8Z9/ab/lCPugj6dQRq2KaUlgPuKoQROhjcGJ8gNM13Bqq6
+         HXJ0oEeCTipLRP3OmuZJqKsKtZxr2J8MAGrlTNRyxx+TIF/yZUzVNn9X44NDKlLi5I1l
+         PROjUW0OkV6M0DhbGgLHOtqYwRlhKYlkumzwjTCDK8bK1/gq+2Hvl44iae7i0AeSagm4
+         dsUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690403754; x=1691008554;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UbJeRzU7wigg3Cu4qDyeUEG2N0zmDly89LtEzqyMs4E=;
-        b=cLmXt18g2WyYdYgp5/DN6wDETT0yNNQjS+Z2sxSAnCij+fYiGxSeVnU7tdZ0wQhxml
-         J0BLicWD/FS8TwaZCeeyrdK03En8BIooNvo0n5xnwAB+Wmrb7xcN4iKjptF9YDWHWe2S
-         rnYWFv05BGYMd01L/D/NQP5tj7yANHnOW+j1NgoGfa2RO9HSFu0MtheVvQ+P69Ry1Waz
-         zPb6njhY9FY4nb8eKqXzS24r54f3VQZvrGg23yPaEiuY19ZGZM/qbRufdFFnTVD0Chx8
-         RzRM4cObP2Aiw5Q3vy6lgTgDsLccqxr7mgXNWsd80b1WKKb1VywYL6+rtfqm+qu2ws/F
-         kRAA==
-X-Gm-Message-State: ABy/qLb8383Y14MUB6SrVoVfLNmkbBambrThmLHsEQFNgf7K4ZFxZ/w1
-        YJMRMg6FlW+ZXK0kFSzs8CAIHQ==
-X-Google-Smtp-Source: APBJJlFMm0AI2+RVorQy6CQwizGZeLXoyZBFhxx7j6jzyKq1c1RJlExUWOEk9RJSbT6hVnqn+H4ZZA==
-X-Received: by 2002:a05:6808:aac:b0:3a4:19fd:cd51 with SMTP id r12-20020a0568080aac00b003a419fdcd51mr588581oij.10.1690403754044;
-        Wed, 26 Jul 2023 13:35:54 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:10:580::7a9])
-        by smtp.gmail.com with ESMTPSA id k19-20020a0cf593000000b00634daee6ecbsm5390895qvm.113.2023.07.26.13.35.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 13:35:53 -0700 (PDT)
-Message-ID: <3d26f0f719cd5f71c20e80599362cd52bcfe8dd4.camel@ndufresne.ca>
-Subject: Re: [PATCH] dt-bindings: media: Add bindings for Imagination E5010
- JPEG Encoder driver
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
-        j-luthra@ti.com, b-brnich@ti.com, detheridge@ti.com,
-        p-mantena@ti.com, vijayp@ti.com
-Date:   Wed, 26 Jul 2023 16:35:52 -0400
-In-Reply-To: <b6bddd59-ac78-3f75-828e-cff54766fc72@linaro.org>
-References: <20230726162615.1270075-1-devarsht@ti.com>
-         <b6bddd59-ac78-3f75-828e-cff54766fc72@linaro.org>
+        d=1e100.net; s=20221208; t=1690403844; x=1691008644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0lwD0XW5XNFFxl46sPGBkyRuR0c2+TXyAF+CGil8NRI=;
+        b=KIeyFqN3IrEPVStL8fHKKTBEc61YjKglY7MV8QLhdRs4w3hHd+BIJd/rGgpRtteHeM
+         ULe/wPZ/s22nwauGlOPb/0omYiRFlZTiV+m9BOCEAKxGO/wQtKBhHFd86jipOmVAWmKj
+         3WL83AaYdrIZ+GSblrFyYfWz2N5BFlyHHnOfzYdD2Xp7C/9inJ4AAMaQIzEffzmanCp4
+         wy2hQSCglKo7ievZpjeCKBLQzEp5LQbg6+eMF4XowBuA0W9vdFr0AvVu/00xJx+1e1bu
+         Qv/nEDV28WiypPjauHBQg2owMGaWSMiQZHlnD87S+Z9B3T6awYKQlBqyWpDvlBJdmsja
+         K0mA==
+X-Gm-Message-State: ABy/qLYXjZhn3ocZZW+AaEQCCUHyP+dx46werLhdSdWxqzC766UPg8aJ
+        ha2HAcPhnB+pzl2PHOCHAnUDSWA8p00vyg/hMI4=
+X-Google-Smtp-Source: APBJJlEBZjUVEWmH37ptqLNcNX8TxOf/NsFag9dWp+iIhP+gTcIv5RvFOUu1qEFSS9+AlBqg9RVIEdg2dS0OjOpUZFE=
+X-Received: by 2002:a2e:8490:0:b0:2b6:9afe:191c with SMTP id
+ b16-20020a2e8490000000b002b69afe191cmr129103ljh.7.1690403843955; Wed, 26 Jul
+ 2023 13:37:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20571.1690369076@warthog.procyon.org.uk> <416eca24-6baf-69d9-21a2-c434a9744596@redhat.com>
+In-Reply-To: <416eca24-6baf-69d9-21a2-c434a9744596@redhat.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 26 Jul 2023 15:37:12 -0500
+Message-ID: <CAH2r5mtMLQ91znvYP71s_K7uS_HibC_yOpkZea-f=+NteFJyPg@mail.gmail.com>
+Subject: Re: [PATCH] crypto, cifs: Fix error handling in extract_iter_to_sg()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steve French <sfrench@samba.org>, akpm@linux-foundation.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 26 juillet 2023 =C3=A0 18:33 +0200, Krzysztof Kozlowski a =C3=
-=A9crit=C2=A0:
-> On 26/07/2023 18:26, Devarsh Thakkar wrote:
-> > Add dt-bindings for Imagination E5010 JPEG Encoder driver which is
-> > implemented as stateful V4L2 M2M driver.
-> >=20
-> > Co-developed-by: David Huang <d-huang@ti.com>
-> > Signed-off-by: David Huang <d-huang@ti.com>
->=20
-> A nit, subject: drop second/last, redundant "bindings for". The
-> "dt-bindings" prefix is already stating that these are bindings.
->=20
-> Drop also "driver". Bindings are for hardware, not drivers.
->=20
-> Prefix starts with media and then dt-bindings.
+Acked-off-by: Steve French <stfrench@microsoft.com>
 
-That being said, I haven't seen any submission for the driver using these, =
-is it
-common practice to upstream bindings for unsupported hardware ?
-
-Nicolas
-
->=20
->=20
-> > Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+On Wed, Jul 26, 2023 at 8:56=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 26.07.23 12:57, David Howells wrote:
+> >
+> > Fix error handling in extract_iter_to_sg().  Pages need to be unpinned,=
+ not
+> > put in extract_user_to_sg() when handling IOVEC/UBUF sources.
+> >
+> > The bug may result in a warning like the following:
+> >
+> >    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 __lse_atomic_add arch/arm=
+64/include/asm/atomic_lse.h:27 [inline]
+> >    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 arch_atomic_add arch/arm6=
+4/include/asm/atomic.h:28 [inline]
+> >    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 raw_atomic_add include/li=
+nux/atomic/atomic-arch-fallback.h:537 [inline]
+> >    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 atomic_add include/linux/=
+atomic/atomic-instrumented.h:105 [inline]
+> >    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 try_grab_page+0x108/0x160=
+ mm/gup.c:252
+> >    ...
+> >    pc : try_grab_page+0x108/0x160 mm/gup.c:229
+> >    lr : follow_page_pte+0x174/0x3e4 mm/gup.c:651
+> >    ...
+> >    Call trace:
+> >     __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:27 [inline]
+> >     arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+> >     raw_atomic_add include/linux/atomic/atomic-arch-fallback.h:537 [inl=
+ine]
+> >     atomic_add include/linux/atomic/atomic-instrumented.h:105 [inline]
+> >     try_grab_page+0x108/0x160 mm/gup.c:252
+> >     follow_pmd_mask mm/gup.c:734 [inline]
+> >     follow_pud_mask mm/gup.c:765 [inline]
+> >     follow_p4d_mask mm/gup.c:782 [inline]
+> >     follow_page_mask+0x12c/0x2e4 mm/gup.c:839
+> >     __get_user_pages+0x174/0x30c mm/gup.c:1217
+> >     __get_user_pages_locked mm/gup.c:1448 [inline]
+> >     __gup_longterm_locked+0x94/0x8f4 mm/gup.c:2142
+> >     internal_get_user_pages_fast+0x970/0xb60 mm/gup.c:3140
+> >     pin_user_pages_fast+0x4c/0x60 mm/gup.c:3246
+> >     iov_iter_extract_user_pages lib/iov_iter.c:1768 [inline]
+> >     iov_iter_extract_pages+0xc8/0x54c lib/iov_iter.c:1831
+> >     extract_user_to_sg lib/scatterlist.c:1123 [inline]
+> >     extract_iter_to_sg lib/scatterlist.c:1349 [inline]
+> >     extract_iter_to_sg+0x26c/0x6fc lib/scatterlist.c:1339
+> >     hash_sendmsg+0xc0/0x43c crypto/algif_hash.c:117
+> >     sock_sendmsg_nosec net/socket.c:725 [inline]
+> >     sock_sendmsg+0x54/0x60 net/socket.c:748
+> >     ____sys_sendmsg+0x270/0x2ac net/socket.c:2494
+> >     ___sys_sendmsg+0x80/0xdc net/socket.c:2548
+> >     __sys_sendmsg+0x68/0xc4 net/socket.c:2577
+> >     __do_sys_sendmsg net/socket.c:2586 [inline]
+> >     __se_sys_sendmsg net/socket.c:2584 [inline]
+> >     __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2584
+> >     __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+> >     invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:52
+> >     el0_svc_common.constprop.0+0x44/0xe4 arch/arm64/kernel/syscall.c:14=
+2
+> >     do_el0_svc+0x38/0xa4 arch/arm64/kernel/syscall.c:191
+> >     el0_svc+0x2c/0xb0 arch/arm64/kernel/entry-common.c:647
+> >     el0t_64_sync_handler+0xc0/0xc4 arch/arm64/kernel/entry-common.c:665
+> >     el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:591
+> >
+> > Fixes: 018584697533 ("netfs: Add a function to extract an iterator into=
+ a scatterlist")
+> > Reported-by: syzbot+9b82859567f2e50c123e@syzkaller.appspotmail.com
+> > Link: https://lore.kernel.org/linux-mm/000000000000273d0105ff97bf56@goo=
+gle.com/
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > cc: Sven Schnelle <svens@linux.ibm.com>
+> > cc: akpm@linux-foundation.org
+> > cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > cc: "David S. Miller" <davem@davemloft.net>
+> > cc: Jeff Layton <jlayton@kernel.org>
+> > cc: Steve French <sfrench@samba.org>
+> > cc: Shyam Prasad N <nspmangalore@gmail.com>
+> > cc: Rohith Surabattula <rohiths.msft@gmail.com>
+> > cc: Jens Axboe <axboe@kernel.dk>
+> > cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > cc: "David S. Miller" <davem@davemloft.net>
+> > cc: Eric Dumazet <edumazet@google.com>
+> > cc: Jakub Kicinski <kuba@kernel.org>
+> > cc: Paolo Abeni <pabeni@redhat.com>
+> > cc: Matthew Wilcox <willy@infradead.org>
+> > cc: linux-mm@kvack.org
+> > cc: linux-crypto@vger.kernel.org
+> > cc: linux-cachefs@redhat.com
+> > cc: linux-cifs@vger.kernel.org
+> > cc: linux-fsdevel@vger.kernel.org
+> > cc: netdev@vger.kernel.org
 > > ---
-> >  .../bindings/media/img,e5010-jpeg-enc.yaml    | 79 +++++++++++++++++++
-> >  MAINTAINERS                                   |  5 ++
-> >  2 files changed, 84 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/img,e5010-j=
-peg-enc.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc=
-.yaml b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
-> > new file mode 100644
-> > index 000000000000..0060373eace7
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
-> > @@ -0,0 +1,79 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Imagination E5010 JPEG Encoder
-> > +
-> > +maintainers:
-> > +  - Devarsh Thakkar <devarsht@ti.com>
-> > +
-> > +description: |
-> > +  The E5010 is a JPEG encoder from Imagination Technologies implemente=
-d on
-> > +  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YU=
-V422
-> > +  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
-> > +  8Kx8K resolution.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: img,e5010-jpeg-enc
->=20
-> Your description suggests that this is part of TI SoC. Pretty often
-> licensed blocks cannot be used on their own and need some
-> customizations. Are you sure your block does not need any customization
-> thus no dedicated compatible is needed?
->=20
-> > +
-> > +  reg:
-> > +    items:
-> > +      - description: The E5010 main register region
-> > +      - description: The E5010 mmu register region
-> > +
-> > +  reg-names:
-> > +    items:
-> > +      - const: regjasper
-> > +      - const: regmmu
-> > +
->=20
-> Drop reg from both
->=20
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  resets:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    minItems: 1
-> > +    maxItems: 2
->=20
-> You need to specify the items. Also, no variable number of clocks. Why
-> would they vary if block is strictly defined?
->=20
-> > +
-> > +  clock-names:
-> > +    minItems: 1
-> > +    maxItems: 2
->=20
-> Instead list the names.
->=20
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - reg-names
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - power-domains
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +
-> > +    cbass_main {
->=20
-> That's some weird name. Probably you meant soc. Anyway, underscores are
-> not allowed.
->=20
-> > +      #address-cells =3D <2>;
-> > +      #size-cells =3D <2>;
-> > +      e5010: e5010@fd20000 {
->=20
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
-tree-basics.html#generic-names-recommendation
->=20
->=20
-> Drop the label.
->=20
-> > +          compatible =3D "img,e5010-jpeg-enc";
-> > +          reg =3D <0x00 0xfd20000 0x00 0x100>,
-> > +                <0x00 0xfd20200 0x00 0x200>;
-> > +          reg-names =3D "regjasper", "regmmu";
-> > +          clocks =3D <&k3_clks 201 0>;
-> > +          clock-names =3D "core_clk";
-> > +          power-domains =3D <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
-> > +          interrupts =3D <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-> > +      };
-> > +    };
->=20
->=20
-> Best regards,
-> Krzysztof
->=20
+> >   lib/scatterlist.c |    2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+> > index e86231a44c3d..c65566b4dc66 100644
+> > --- a/lib/scatterlist.c
+> > +++ b/lib/scatterlist.c
+> > @@ -1148,7 +1148,7 @@ static ssize_t extract_user_to_sg(struct iov_iter=
+ *iter,
+> >
+> >   failed:
+> >       while (sgtable->nents > sgtable->orig_nents)
+> > -             put_page(sg_page(&sgtable->sgl[--sgtable->nents]));
+> > +             unpin_user_page(sg_page(&sgtable->sgl[--sgtable->nents]))=
+;
+> >       return res;
+> >   }
+> >
+> >
+>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
+
+--=20
+Thanks,
+
+Steve
