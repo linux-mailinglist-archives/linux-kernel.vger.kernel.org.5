@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8986F763EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A81763EC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbjGZSmy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        id S231852AbjGZSnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbjGZSmw (ORCPT
+        with ESMTP id S231987AbjGZSm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:42:52 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB2F1710;
-        Wed, 26 Jul 2023 11:42:51 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5666a2b7f55so27139eaf.0;
-        Wed, 26 Jul 2023 11:42:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690396971; x=1691001771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GHGJiTdlB+dQD70EMhHhI8xvC4trd7Ff2YAN4Uy5bO0=;
-        b=fWfhN9XMlCSXkOM5nl7TysGvcv3RYp+RJlGeMfND1nKIx97wFWHudBsTtOZBPrH4Qk
-         qLRhlvXhxsHDLs6wp1e/SU8d3a7C8IkshpCRQreXCqiS73bkie65l9SJlq8kPuNYo5vh
-         +YmLL5dZXmXwPpW9T5uK6TBIOLgb6URoOcU4CLRVD/kfJjKcznA7FCnxqO8V1HwgHDey
-         e4Ugo/Nou+tvq7IoDRp8F3vMpF3dndO050fEnU9HhkAL4UNeN5VGq6msgzjBYPmjTOkz
-         Ukci7oO2xDZdtE5ndZDipZllMU9+pDcThQgBUNsfcY0VjukkaYiEeU9Wfscr2KUV5Mi/
-         YfMg==
-X-Gm-Message-State: ABy/qLbdEzPMjwso0J7CZM3uFSKklB8C3GxogzcxFHuUhos7HmHplyro
-        0q5AH653DERuSXMeZzRwQxcEgM/An32mHg5cIjY=
-X-Google-Smtp-Source: APBJJlH2x90Q7lDJXp2zFV9JTsLkAsPOTtP2AQhhIx6ipnMvhPSFtKFj5OTgP4amlKMBVmsiWEo6/1u7nvN10N6++l4=
-X-Received: by 2002:a05:6870:3291:b0:1bb:8ff4:1830 with SMTP id
- q17-20020a056870329100b001bb8ff41830mr2906100oac.3.1690396970780; Wed, 26 Jul
- 2023 11:42:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230723-thermal-fix-of-memory-corruption-v1-1-ed4fa16d199d@kernel.org>
- <f559a614-93d5-121a-8ff3-0da77bc85f44@linaro.org> <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
-In-Reply-To: <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Jul 2023 20:42:39 +0200
-Message-ID: <CAJZ5v0jJ+YM=7LUEKB_b5GUsGopLTT0eyPmomYV0OcGQp2gvig@mail.gmail.com>
-Subject: Re: [PATCH] thermal/of: Fix double free of params during unregistration
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-sunxi@lists.linux.dev, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 26 Jul 2023 14:42:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A741BFB;
+        Wed, 26 Jul 2023 11:42:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 298CB61C5B;
+        Wed, 26 Jul 2023 18:42:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8741FC433C9;
+        Wed, 26 Jul 2023 18:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690396974;
+        bh=sJn2F9B+51V/6N+ADe2Jxz4ugA0gEnIsxtxnLHrZXmg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=C6cvA1Kv3fF/Yz38q3U3b09v+YBQ7qUiivVkW3nt4rhtecuSleAs6OkqnQ4K2+3xA
+         pXh6QusW3cuchqTB5xYSsZ6XnPXUfVa/I+kCIxo8a6c8aTCn/yHmaLR9HaHxNgHvIg
+         yd24WL9GcptTKsXXv9VfoLo4eAZLAGFFi8aEmvee4RRJkIl/8nYiNfJMC56UcbBujm
+         St7Y5PzWt88DYAGnLVUq/Be7/gTmi0Ap8UbCJ0zthRuDHOt7+OksXhoRhb/nkVQr1k
+         3eOFZBmJ4+iOLhOh7VgR5c2j4C6CEpwvZN4679b81v1X68x5g4v24WBQf1kImkVM2l
+         sX9/765H+dEiA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 735E3C41672;
+        Wed, 26 Jul 2023 18:42:54 +0000 (UTC)
+Subject: Re: [GIT PULL] ksmbd server fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5muSHRKyEq8tuivVSAvDW4ko37UVrKNAfNSveDy09mP=Hg@mail.gmail.com>
+References: <CAH2r5muSHRKyEq8tuivVSAvDW4ko37UVrKNAfNSveDy09mP=Hg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5muSHRKyEq8tuivVSAvDW4ko37UVrKNAfNSveDy09mP=Hg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/6.5-rc3-ksmbd-server-fixes
+X-PR-Tracked-Commit-Id: 536bb492d39bb6c080c92f31e8a55fe9934f452b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f40125c0a160912ee3ac8def2f7de5bacb80df50
+Message-Id: <169039697446.1355.8369761950630485655.pr-tracker-bot@kernel.org>
+Date:   Wed, 26 Jul 2023 18:42:54 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 4:32 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sun, Jul 23, 2023 at 11:57:52AM +0200, Daniel Lezcano wrote:
-> > On 23/07/2023 01:26, Mark Brown wrote:
->
-> > I think this issue has been fixed by:
->
-> > https://lore.kernel.org/all/20230708112720.2897484-2-a.fatoum@pengutronix.de/
->
-> Yes, that should fix the same issue.
->
-> > Rafael ? Did you pick it up ?
->
-> There was a message on the thread saying the patches have been applied
-> for v6.5 but I can't see them in either mainline or -next.
+The pull request you sent on Wed, 26 Jul 2023 01:17:12 -0500:
 
-They should be there in linux-next (as of today).
+> git://git.samba.org/ksmbd.git tags/6.5-rc3-ksmbd-server-fixes
 
-Surely, they are present in my linux-next branch.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f40125c0a160912ee3ac8def2f7de5bacb80df50
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
