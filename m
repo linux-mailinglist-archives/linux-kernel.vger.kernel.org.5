@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C4A7632F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5127632F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjGZJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S233763AbjGZJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjGZJ4m (ORCPT
+        with ESMTP id S232348AbjGZJ5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:56:42 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E6C1724;
-        Wed, 26 Jul 2023 02:55:42 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q69iHS020307;
-        Wed, 26 Jul 2023 09:55:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=kzoRlk5carqDtnNugenB7ivRrMCCf/zpBHHPfUp3Oj4=;
- b=TMj/B3aR8u2F9lVF8q3b6K36G6EL5G6jLmiP5l1bwdxrxcze8qX/cJdh1qjTAIZQiwmM
- rMGUv6MrtVfC1tThbXa7dLaPCtODBFKQm2EYt3JkncUV1oTHZooG33IQlWdNuJe7aD23
- A2eYo47t0vSCsdgxbScnWzmNXK83eMCbUBzoP7iABFlT4H3znxgwoYmFtmmAFkeifqPW
- U5RCYR6RG7kBMymBOMYn8ZctxC2DyCCe1M2zPhMn184JThevO8XU4q1GfxE31XrKrdix
- 6h01rXRJMQMHbgkeDYFN/0ShJAD9PS/GXpRujHla5U3scNx3r2hC6VIo1AnP4xnJU5Ij TA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2draakfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 09:55:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36Q9taq6019132
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 09:55:36 GMT
-Received: from [10.217.219.52] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
- 2023 02:55:06 -0700
-Message-ID: <3f4ebebb-b1cb-27da-053f-146c8699c16e@quicinc.com>
-Date:   Wed, 26 Jul 2023 15:25:03 +0530
+        Wed, 26 Jul 2023 05:57:19 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57B810F9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:56:21 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9q2c3VMJzNmZ6;
+        Wed, 26 Jul 2023 17:52:56 +0800 (CST)
+Received: from [10.67.103.231] (10.67.103.231) by
+ kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 17:56:18 +0800
+Message-ID: <0909d861-e256-8d91-587f-16254283b149@huawei.com>
+Date:   Wed, 26 Jul 2023 17:56:18 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: usb: common: usb-conn-gpio: Prevent bailing out if initial role
- is none
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1688638258-23806-1-git-send-email-quic_prashk@quicinc.com>
- <2023072517-revocable-squiggly-de1c@gregkh>
-From:   Prashanth K <quic_prashk@quicinc.com>
-In-Reply-To: <2023072517-revocable-squiggly-de1c@gregkh>
+ Thunderbird/91.2.0
+Subject: Re: [PATCH RESEND v3 2/2] doc: soc: hisilicon: Add Kunpeng HCCS
+ driver documentation
+To:     Wei Xu <xuwei5@hisilicon.com>, <arnd@arndb.de>, <krzk@kernel.org>,
+        <sudeep.holla@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <wanghuiqiang@huawei.com>,
+        <tanxiaofei@huawei.com>, <liuyonglong@huawei.com>,
+        <lihuisong@huawei.com>
+References: <20230424073020.4039-1-lihuisong@huawei.com>
+ <20230725075706.48939-1-lihuisong@huawei.com>
+ <20230725075706.48939-3-lihuisong@huawei.com>
+ <64BF8EDE.7090304@hisilicon.com>
+From:   "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <64BF8EDE.7090304@hisilicon.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: cd4gVA2QL_lvy8E-sUR62OOQGKXsn8UP
-X-Proofpoint-ORIG-GUID: cd4gVA2QL_lvy8E-sUR62OOQGKXsn8UP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_04,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 priorityscore=1501 clxscore=1011 suspectscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307260088
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.103.231]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,71 +58,124 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 25-07-23 09:04 pm, Greg Kroah-Hartman wrote:
-> On Thu, Jul 06, 2023 at 03:40:58PM +0530, Prashanth K wrote:
->> Currently if we bootup a device without cable connected, then
->> usb-conn-gpio won't call set_role() since last_role is same as
->> current role. This happens because during probe last_role gets
->> initialised to zero.
+在 2023/7/25 16:59, Wei Xu 写道:
+> Hi Huisong,
+>
+> On 2023/7/25 15:57, Huisong Li wrote:
+>> Document the sysfs attributes description provided by HCCS driver on
+>> Kunpeng SoC.
 >>
->> To avoid this, add a new flag initial_det in usb_conn_info,
->> which is used to prevent bailing out during init detection.
->>
->> Fixes: 4602f3bff266 ("usb: common: add USB GPIO based connection detection driver")
->> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+>> Signed-off-by: Huisong Li <lihuisong@huawei.com>
 >> ---
->>   drivers/usb/common/usb-conn-gpio.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>   .../sysfs-devices-platform-kunpeng_hccs       | 76 +++++++++++++++++++
+>>   MAINTAINERS                                   |  1 +
+>>   2 files changed, 77 insertions(+)
+>>   create mode 100644 Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
 >>
->> diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
->> index 766005d..46290ff 100644
->> --- a/drivers/usb/common/usb-conn-gpio.c
->> +++ b/drivers/usb/common/usb-conn-gpio.c
->> @@ -42,6 +42,7 @@ struct usb_conn_info {
->>   
->>   	struct power_supply_desc desc;
->>   	struct power_supply *charger;
->> +	bool initial_det;
-> 
-> What does "initial_det" mean?  Please document this better.
-> 
-Yea sure, will update that. It was supposed to mean initial_detection.
->>   };
->>   
->>   /*
->> @@ -86,11 +87,13 @@ static void usb_conn_detect_cable(struct work_struct *work)
->>   	dev_dbg(info->dev, "role %s -> %s, gpios: id %d, vbus %d\n",
->>   		usb_role_string(info->last_role), usb_role_string(role), id, vbus);
->>   
->> -	if (info->last_role == role) {
->> +	if (!info->initial_det && info->last_role == role) {
->>   		dev_warn(info->dev, "repeated role: %s\n", usb_role_string(role));
->>   		return;
->>   	}
->>   
->> +	info->initial_det = false;
+>> diff --git a/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs b/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
+>> new file mode 100644
+>> index 000000000000..83ebed801249
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
+>> @@ -0,0 +1,76 @@
+>> +What:		/sys/devices/platform/HISI04Bx:00/chipX/all_linked
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/linked_full_lane
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/crc_err_cnt
+>> +Date:		May 2023
+> Please update the date to "November 2023" to match the 6.6 kernel.
+Ack. will fix in next version.
+>
+>> +KernelVersion:	6.6
+>> +Contact:	Huisong Li <lihuisong@huawei.org>
+>> +Description:
+>> +		The /sys/devices/platform/HISI04Bx:00/chipX/ directory
+>> +		contains read-only attributes exposing some summarization
+>> +		information of all HCCS ports under a specified chip.
+>> +		The X in 'chipX' indicates the Xth chip on platform.
 >> +
->>   	if (info->last_role == USB_ROLE_HOST && info->vbus)
->>   		regulator_disable(info->vbus);
->>   
->> @@ -258,6 +261,7 @@ static int usb_conn_probe(struct platform_device *pdev)
->>   	device_set_wakeup_capable(&pdev->dev, true);
->>   
->>   	/* Perform initial detection */
->> +	info->initial_det = true;
-> 
-> What is protecting this from changing right after you test for it?
-> 
-> thanks,
-> 
-> greg k-h
+>> +		There are following attributes in this directory:
+>> +		================= ==== =========================================
+>> +		all_linked:       (RO) if all enabled ports on this chip are
+>> +				       linked (bool).
+>> +		linked_full_lane: (RO) if all linked ports on this chip are full
+>> +				       lane (bool).
+>> +		crc_err_cnt:      (RO) total CRC err count for all ports on this
+>> +				       chip.
+>> +		============= ==== =============================================
+>> +
+>> +What:		/sys/devices/platform/HISI04Bx:00/chipX/dieY/all_linked
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/linked_full_lane
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/crc_err_cnt
+>> +Date:		May 2023
+> Ditto.
+Ack
+>
+>> +KernelVersion:	6.6
+>> +Contact:	Huisong Li <lihuisong@huawei.org>
+>> +Description:
+>> +		The /sys/devices/platform/HISI04Bx:00/chipX/dieY/ directory
+>> +		contains read-only attributes exposing some summarization
+>> +		information of all HCCS ports under a specified die.
+>> +		The Y in 'dieY' indicates the hardware id of the die on chip who
+>> +		has chip id X.
+>> +
+>> +		There are following attributes in this directory:
+>> +		================= ==== =========================================
+>> +		all_linked:       (RO) if all enabled ports on this die are
+>> +				       linked (bool).
+>> +		linked_full_lane: (RO) if all linked ports on this die are full
+>> +				       lane (bool).
+>> +		crc_err_cnt:      (RO) total CRC err count for all ports on this
+>> +				       die.
+>> +		============= ==== =============================================
+>> +
+>> +What:		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/type
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/lane_mode
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/enable
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/cur_lane_num
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/lane_mask
+>> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/crc_err_cnt
+>> +Date:		May 2023
+> Ditto.
 
-Hi Greg, this variable is only used/changed by usb_conn_detect_cable() 
-which is called in next line. So the chance of it changing is none.
-Basically this initial_det flag points if its initial detection or not.
-If yes, then prevent bailing out in usb_conn_detect_cable(). Please let 
-me know if your comment was regarding something else.
+Ack
 
-Regards,
-Prashanth K
+>
+>> +KernelVersion:	6.6
+>> +Contact:	Huisong Li <lihuisong@huawei.org>
+>> +Description:
+>> +		The /sys/devices/platform/HISI04Bx/chipX/dieX/hccsN/ directory
+>> +		contains read-only attributes exposing information about
+>> +		a HCCS port. The N value in 'hccsN' indicates this port id.
+>> +		The X in 'chipX' indicates the ID of the chip to which the
+>> +		HCCS port belongs. For example, X ranges from to 'n - 1' if the
+>> +		chip number on platform is n.
+>> +		The Y in 'dieY' indicates the hardware id of the die to which
+>> +		the hccs port belongs.
+>> +
+>> +		The HCCS port have the following attributes:
+>> +		============= ==== =============================================
+>> +		type:         (RO) port type (string), e.g. HCCS-v1 -> H32
+>> +		lane_mode:    (RO) the lane mode of this port (string), e.g. x8
+>> +		enable:       (RO) indicate if this port is enabled (bool).
+>> +		cur_lane_num: (RO) current lane number of this port.
+>> +		lane_mask:    (RO) current lane mask of this port, every bit
+>> +			           indicates a lane.
+>> +		crc_err_cnt:  (RO) CRC err count on this port.
+>> +		============= ==== =============================================
+>> +		Note: type, lane_mode and enable are fixed attributes on
+>> +		      running platform.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 4e55ff992171..7a34bab232eb 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -9474,6 +9474,7 @@ F:	drivers/crypto/hisilicon/zip/
+>>   HISILICON KUNPENG SOC HCCS DRIVER
+>>   M:	Huisong Li <lihuisong@huawei.com>
+>>   S:	Maintained
+>> +F:	Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
+>>   F:	drivers/soc/hisilicon/kunpeng_hccs.c
+>>   F:	drivers/soc/hisilicon/kunpeng_hccs.h
+>>   
+>>
+> .
