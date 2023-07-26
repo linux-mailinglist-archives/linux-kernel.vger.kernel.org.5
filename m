@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E32763B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BD8763B0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjGZP3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S233523AbjGZP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjGZP3p (ORCPT
+        with ESMTP id S232641AbjGZP35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:29:45 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C742136
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:29:44 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-565f3881cbeso4668719eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690385383; x=1690990183;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U6AGl6EJ9ojfwoIPkx72Nb+mtQBvhnepwNiGsBvw4D0=;
-        b=o2lRCoF8UiW4g2FvhAfGcHRAWarVH1BVZr1TRiXK/HguesFgB+xKw7VvS1aovlHwYp
-         btM0bh5TIHLSfJTKNMemFYfpvPepO4KeteDn3QXnHvXtkx2AVd8F842l8VTteoD6aNa3
-         W2No7UR1sANH9yQS2q9/XldQaX3WZKEtPsdTHNOmYcAUeLjYJ988VKB6lnlKHk1/OtwF
-         24g0TgUN1/wMfPYWD0VIqbFQiYahiGwlWwrh9KB3vccu6rAqpn184sEjlu3dJKnXN2gf
-         w0qWpk6HWDTfSSTofgWsKEU6gsaNr5kquhTnOnvYxYi/6ITjfNo9Sk23AKIVpcmDvbzF
-         EqJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690385383; x=1690990183;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U6AGl6EJ9ojfwoIPkx72Nb+mtQBvhnepwNiGsBvw4D0=;
-        b=VArNQ4+VI3LlI85yVjVyXZgRGYsKbX17y6GJePToabE1ED0UgN6wHkBc2tFCAmrQYr
-         VYlfHRMFgFt/e3BYQ359+5LWInVUXhww9LBj4mROtyLC6pK7JoEQoKUhmsnOG8dTUanJ
-         ScWVLZiTeUFByvTE3aqX+kDOQQHNAWmTNEinUCM+eEB0IrhCeT+aBrKMFmfYpY1uh5yP
-         2oZJpmlUixt+D5p5okbZbt//Kzhxu4rhLvU5Ph0dC2z6l93clx4cUwMw6L6RoW/j3RqE
-         OS4AVxsaUg+yD9J8DI4tlwKY52sAT14frg0IwGlVILsN+BaUKdQ4Y8SeB/AAYjuoqtOi
-         lO4A==
-X-Gm-Message-State: ABy/qLaN7n6CzpF1SQHk/PZKtqBAIkW9yJraH8K9iG4hDJSLYbR73Yd7
-        CwRewL/y47/A5n+1ctR2W5sK
-X-Google-Smtp-Source: APBJJlGTcKYWeISBmDCN0aDKSXjg/bNNvDOKZoF6gCXICknVsGl/EaEkWIvL8cSGJJy86LKI8Jxf9Q==
-X-Received: by 2002:a05:6358:2607:b0:134:c279:c825 with SMTP id l7-20020a056358260700b00134c279c825mr2799666rwc.12.1690385383248;
-        Wed, 26 Jul 2023 08:29:43 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.53])
-        by smtp.gmail.com with ESMTPSA id k186-20020a636fc3000000b00553dcfc2179sm12886092pgc.52.2023.07.26.08.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 08:29:42 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com
-Cc:     robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] PCI: qcom-ep: Treat unknown irq events as an error
-Date:   Wed, 26 Jul 2023 20:59:31 +0530
-Message-Id: <20230726152931.18134-1-manivannan.sadhasivam@linaro.org>
+        Wed, 26 Jul 2023 11:29:57 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853FB2136;
+        Wed, 26 Jul 2023 08:29:53 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1690385383t5iif69s
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 23:29:42 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: J5JfekO1WsiL3ug9fgDy4ITrNZ0Fco01rrnYx6BE0VpZMg43YoQewkRlQLBJn
+        hmjsVReJmsufwSNs1hcQEemS4Gi3UmrZjM2f332VOw0ctbp2I3bQ+11jvuvtO4kgHhB1Bb4
+        dgGHIEGSE1tH1ti5KfpuC1PJsLVA/YVixLnj6aMYZ6bf0vgvAsv1gLDot4aVJxN2aa9fLYE
+        D6+rvyZuIvWtkwPdlPTQepiwz9uEs22TuKaaByxV6pg93K+XJ9rbwzWtaI9m8I1BFDibKhC
+        7AWSr78gfaqfy5Y9MO3W7CAKq/11Z9jdzhX8g/dEApdrCur/O2zk/h5CKHGRV66cIvNu5CJ
+        gA75ep7cyJr+vfuVIyd/on06QRLMAMKwr89tP9wp2mTul2iE2UJZCTmuVdM5dw35aNaqmQg
+        ei5hA+tkEb8=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4160635926283433686
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        thomas@t-8ch.de
+Subject: [PATCH v2 5/7] selftests/nolibc: add test support for ppc
+Date:   Wed, 26 Jul 2023 23:29:38 +0800
+Message-Id: <20230726152938.251649-1-falcon@tinylab.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <55603bb4aecb20561e63f9ab10563c0c470300b1.1690373704.git.falcon@tinylab.org>
+References: <55603bb4aecb20561e63f9ab10563c0c470300b1.1690373704.git.falcon@tinylab.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes, the Qcom PCIe EP controller can receive some interrupts that are
-not known to the driver like safety interrupts in newer SoCs. In those
-cases, if the driver doesn't clear the interrupts, then it will end up in
-interrupt storm. But the users won't have any idea about it due to the log
-being treated as a debug message.
+Hi, Willy
 
-So let's treat the unknown event log as an error, so that it at least makes
-the user aware, thereby getting fixed eventually.
+I'm very sorry, the extra configs/powerpc.config file is missing in this
+patch, perhaps a failed rebase introduced this issue.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-qcom-ep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please don't merge it, to avoid manually merge another addtional patch, if no
+other issues in this v2 series, I will send v3 immediately, just wait for your
+feedbacks, no hurry.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 267e1247d548..802dedcc929c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -593,7 +593,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
- 		dw_pcie_ep_linkup(&pci->ep);
- 		pcie_ep->link_status = QCOM_PCIE_EP_LINK_UP;
- 	} else {
--		dev_dbg(dev, "Received unknown event: %d\n", status);
-+		dev_err(dev, "Received unknown event: %d\n", status);
- 	}
- 
- 	return IRQ_HANDLED;
--- 
-2.25.1
+Best regards,
+Zhangjin
 
+> The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
+> powerpc kernel.
+> 
+> The pmac32_defconfig is used with extra PMACZILOG console options to
+> enable normal print.
+> 
+> Note, zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
+> overlapping" error, so, vmlinux is used instead.
+> 
+> Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
+> ppc variant for 32-bit PowerPC and use it as the default variant of
+> powerpc architecture.
+> 
+> Users can pass ARCH=powerpc or ARCH=ppc to test 32-bit PowerPC.
+> 
+> [1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
+> 
+> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> ---
+>  tools/testing/selftests/nolibc/Makefile | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> index f04ec1cc132b..0e9abb7f3d4f 100644
+> --- a/tools/testing/selftests/nolibc/Makefile
+> +++ b/tools/testing/selftests/nolibc/Makefile
+> @@ -16,10 +16,12 @@ endif
+>  
+>  # XARCH is used to save user-input ARCH variant
+>  # allow configure default variant for target ARCH
+> +XARCH_powerpc    = ppc
+>  XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
+>  
+>  # ARCH is supported by kernel
+>  # map from user-input variant to kernel-supported
+> +ARCH_ppc         = powerpc
+>  override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
+>  
+>  # kernel image names by architecture
+> @@ -29,6 +31,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
+>  IMAGE_arm64      = arch/arm64/boot/Image
+>  IMAGE_arm        = arch/arm/boot/zImage
+>  IMAGE_mips       = vmlinuz
+> +IMAGE_ppc        = vmlinux
+>  IMAGE_riscv      = arch/riscv/boot/Image
+>  IMAGE_s390       = arch/s390/boot/bzImage
+>  IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+> @@ -42,6 +45,7 @@ DEFCONFIG_x86        = defconfig
+>  DEFCONFIG_arm64      = defconfig
+>  DEFCONFIG_arm        = multi_v7_defconfig
+>  DEFCONFIG_mips       = malta_defconfig
+> +DEFCONFIG_ppc        = pmac32_defconfig
+>  DEFCONFIG_riscv      = defconfig
+>  DEFCONFIG_s390       = defconfig
+>  DEFCONFIG_loongarch  = defconfig
+> @@ -60,6 +64,7 @@ QEMU_ARCH_x86        = x86_64
+>  QEMU_ARCH_arm64      = aarch64
+>  QEMU_ARCH_arm        = arm
+>  QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+> +QEMU_ARCH_ppc        = ppc
+>  QEMU_ARCH_riscv      = riscv64
+>  QEMU_ARCH_s390       = s390x
+>  QEMU_ARCH_loongarch  = loongarch64
+> @@ -72,6 +77,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
+>  QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+>  QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+>  QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+> +QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+>  QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+>  QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+>  QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+> -- 
+> 2.25.1
