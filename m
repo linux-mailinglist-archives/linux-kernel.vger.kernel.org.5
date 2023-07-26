@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A34763F52
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099E2763F5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjGZTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S231933AbjGZTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGZTPu (ORCPT
+        with ESMTP id S231631AbjGZTQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:15:50 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C262717
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1690398947;
-        bh=bmzxxv67tO74PHxuba7Soe8mJqMyNYizlfnKxsPM08M=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=Slz40rBcNg5VBnPJlKmJcQgcc8zXDXXHfi6GWanPrskFbpWCnLbrOfXifHHKsJI6i
-         dZc19fNna8rfODN/zP4QJldpojme4UPn93dg2dDy0Z88M95iT0oMXL5uwvLOZ8x3Ai
-         Y9psfhQ2en9M2jm7p5YX7KWX8btM+e5r85mtch1VCzH87wMGgbd++0SJGjgsviyUKG
-         ev9SJLRAjLsYnvz8xp1fiKOQslL5lRIHsFax/UGqPO9GLh4gH/oBrOSc19u7MJRqlA
-         jatlWQqBFtvtsRLvHq5/atYit2VYplL2v0AbGqBntIL6uOV28qgX1zF6lqBUYeC7gC
-         8KLxl2bh7Ex7g==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RB3X25JQJz1JsM;
-        Wed, 26 Jul 2023 15:15:46 -0400 (EDT)
-Message-ID: <934429dc-03d7-f7d4-8828-723e756f1411@efficios.com>
-Date:   Wed, 26 Jul 2023 15:16:34 -0400
+        Wed, 26 Jul 2023 15:16:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A78C1FF0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:16:49 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qOk06-0008V4-Rl; Wed, 26 Jul 2023 21:16:46 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qOk05-002JRn-U7; Wed, 26 Jul 2023 21:16:45 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qOk05-0081Jk-1G; Wed, 26 Jul 2023 21:16:45 +0200
+Date:   Wed, 26 Jul 2023 21:16:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] w1: ds2482: Switch back to use struct i2c_driver's
+ .probe()
+Message-ID: <20230726191643.ex6cckrwnlx5bgz6@pengutronix.de>
+References: <20230612072807.839689-1-u.kleine-koenig@pengutronix.de>
+ <6d76105f-daa1-1cd0-35b3-1727aa967bcc@linaro.org>
+ <20230613070237.srqd3sy2c3lp7u5p@pengutronix.de>
+ <dcc99c16-3807-1f81-03b8-86095f08258e@linaro.org>
+ <20230720085253.arndjzqyhlbiioyy@pengutronix.de>
+ <6b38bf1f-600c-e6e9-ebf7-c27a06fffed1@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
-Content-Language: en-US
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
- <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
- <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
- <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
- <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
-In-Reply-To: <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="255rtgoxmoh34m77"
+Content-Disposition: inline
+In-Reply-To: <6b38bf1f-600c-e6e9-ebf7-c27a06fffed1@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 14:56, Mathieu Desnoyers wrote:
-> On 7/26/23 13:40, Shrikanth Hegde wrote:
-[...]
->> Do you have SMT here? What is the system utilization when you are running
->> this workload?
-> 
-> Yes, SMT is enabled, which brings the number of logical cpus to 384.
 
-Here is an additional interesting data point with nosmt=force on
-6.4.4:
+--255rtgoxmoh34m77
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+Hello Krzysztof,
 
-baseline:                       90s
-with idle-delay+nr_running<=4:  87s (3% speedup)
+On Wed, Jul 26, 2023 at 10:21:39AM +0200, Krzysztof Kozlowski wrote:
+> On 20/07/2023 10:52, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Jun 13, 2023 at 10:06:46AM +0200, Krzysztof Kozlowski wrote:
+> >> On 13/06/2023 09:02, Uwe Kleine-K=F6nig wrote:
+> >>> Assuming there are only less than 10 patches remaining on top of
+> >>> v6.5-rc1, I intend to create a pull request for Wolfram with the
+> >>> remaining bits and a patch doing
+> >>
+> >> Sure, go ahead:
+> >>
+> >> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >=20
+> > Thanks, but this didn't happen because I missed a few introductions of
+> > new .probe_new. My plan was rescheduled to one merge window later. So if
+> > you want to take this for v6.6-rc1 that would be great.
+>=20
+> I don't have anything in w1 queue, so it would be easier if you take it
+> with the rest.
 
-hackbench -g 16 -f 20 --threads --pipe -l 480000 -s 100
+OK, will do.
 
-baseline:                       52s
-with idle-delay+nr_running<=4:  32s (38% speedup)
+Thanks
+Uwe
 
-So the impact of the patch appears to depend on how much the
-system actually reaches idle, which does make sense.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Thanks,
+--255rtgoxmoh34m77
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Mathieu
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTBcRoACgkQj4D7WH0S
+/k7UnQf9GzYYX1vMwlQhlqgTTPGvGCvBmDC2yE29X3l/tibDVAWVNsUqneb89DF9
+sjA3pT30BquyJU8gMZwDu2utsiQvkYz7wCL9ZudsSJaerWTxwHNVCT3aSiFgetex
+qAztPjl56MZ17VgLYHCdAtC2lFcJVSt6M8aJq7wkztRpgAX4xZjzcD1YowUIu+L3
+Cq/kMwqm05njYgcNgbIibeVP2Di3gsLqlwXtDdd57iBzed3l+SzLCsBn0fHSURiE
+wxR62xVMRBIfdtOExB5G9XnacuSj0ZD72M3jraAIKfHKRyA/aiWHWzCyhO4c0b1i
+Gcu6oYbHBU/+ViMrrl/wDnAh0L0M/g==
+=e8SN
+-----END PGP SIGNATURE-----
 
+--255rtgoxmoh34m77--
