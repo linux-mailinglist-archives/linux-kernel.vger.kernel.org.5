@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9B97635A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C8B7635AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbjGZLwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
+        id S232155AbjGZLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjGZLwv (ORCPT
+        with ESMTP id S234354AbjGZLyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:52:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D75F106;
-        Wed, 26 Jul 2023 04:52:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D401461AB0;
-        Wed, 26 Jul 2023 11:52:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8370DC433C7;
-        Wed, 26 Jul 2023 11:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690372369;
-        bh=8w/nLjkl+nqIUFXUBTIfnkF5EfW/TGFj9s/NoPLragY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=akD/HSYbxVXXEERtZtCqh6Z/ZCB3eEUg4gJ52Y+tPfupgBO5JLY7T/ktCvZYHxcrh
-         YxCut95Sw2qrViRyB2tjz6VO2zBND12MnSUxmT/V8k6V+PFo0G8hTw15B+Gdxhqgar
-         EHA3bhne6Tl/AeS/Z9Lq85UKEN3DbhEQe4NZdYiM/AI8eqFx9Iq8BHHQVqze8RRvw2
-         VMSw2zZEJp2plrtm3Wer8mzHrExsbmR/ygIKKyPYcDHE9RDML8VyCNWIyQ5z2rZmew
-         zASthRVAZrRumWdSNy+gco8tjceGYnkHf9wUGDAA+WPtxTuzxWVyBO+653MEtR+3OL
-         GWxi33pVTGL5A==
-Received: (nullmailer pid 1158235 invoked by uid 1000);
-        Wed, 26 Jul 2023 11:52:47 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+        Wed, 26 Jul 2023 07:54:47 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F061188;
+        Wed, 26 Jul 2023 04:54:42 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1qOd63-0005Ck-Pc; Wed, 26 Jul 2023 13:54:27 +0200
+Date:   Wed, 26 Jul 2023 13:54:27 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Alexey Romanov <AVRomanov@sberdevices.ru>
+Cc:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "olivia@selenic.com" <olivia@selenic.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "khilman@baylibre.com" <khilman@baylibre.com>,
+        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+        "martin.blumenstingl@googlemail.com" 
+        <martin.blumenstingl@googlemail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        kernel <kernel@sberdevices.ru>
+Subject: Re: [PATCH v1 1/3] drivers: rng: add check status bit feature
+Message-ID: <20230726115427.aigzl2wjgc6ccyt6@viti.kaiser.cx>
+References: <20230725141252.98848-1-avromanov@sberdevices.ru>
+ <20230725141252.98848-2-avromanov@sberdevices.ru>
+ <20230725195901.n2klvgz7outqaatk@viti.kaiser.cx>
+ <20230726075243.f37sjcurmog3eunh@cab-wsm-0029881>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     TY Chang <tychang@realtek.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-In-Reply-To: <20230726090409.16606-8-tychang@realtek.com>
-References: <20230726090409.16606-1-tychang@realtek.com>
- <20230726090409.16606-8-tychang@realtek.com>
-Message-Id: <169037236741.1158189.1605537876806523813.robh@kernel.org>
-Subject: Re: [PATCH 7/7] dt-bindings: pinctrl: realtek: add RTD1619B
- pinctrl binding
-Date:   Wed, 26 Jul 2023 05:52:47 -0600
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726075243.f37sjcurmog3eunh@cab-wsm-0029881>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexey,
 
-On Wed, 26 Jul 2023 17:04:09 +0800, TY Chang wrote:
-> Add device tree bindings for RTD1619B.
-> 
-> Signed-off-by: TY Chang <tychang@realtek.com>
-> ---
->  .../pinctrl/realtek,rtd1619b-pinctrl.yaml     | 162 ++++++++++++++++++
->  1 file changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1619b-pinctrl.yaml
-> 
+Alexey Romanov (AVRomanov@sberdevices.ru) wrote:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > > +static int meson_rng_wait_status(void __iomem *cfg_addr, int bit)
+> > > +{
+> > > +	u32 status;
+> > > +	u32 cnt = 0;
+> > > +
+> > > +	do {
+> > > +		status = readl_relaxed(cfg_addr) & BIT(bit);
+> > > +		cpu_relax();
+> > > +	} while (status && (cnt++ < RETRY_CNT));
+> > > +
 
-yamllint warnings/errors:
+> > Could you use readl_relaxed_poll_timeout here instead of open coding the
+> > loop?
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/pinctrl/realtek,rtd1619b-pinctrl.example.dtb: /example-0/pinctrl@4e000: failed to match any schema with compatible: ['realtek,rtd16xxb-pinctrl']
+> At first I also thought about this API. But later I came to the
+> conclusion that it is inappropriate here:
 
-doc reference errors (make refcheckdocs):
+> 1. We can't call rng_read from an atomic context.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230726090409.16606-8-tychang@realtek.com
+Agreed. A hwrng read function may sleep (an example for this is
+exynos_trng_do_read). But this doesn't prevent us from using
+readl_relaxed_poll_timeout.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+> 2. RNG for me looks like a very lightweight primitive to me that 
+> should work quiclky.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+> But, now I looked again at the API and realized that we can use
+> readl_relaxed_poll_timeout_atomic() instead of
+> readl_relaxed_poll_timeout(). What do you think?
 
-pip3 install dtschema --upgrade
+Ok, if you know that your rng hardware won't need much time to set the
+bit that you're checking, you may use readl_relaxed_poll_timeout_atomic.
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+stm32_rtc_set_alarm does something similar.
 
+Best regards,
+Martin
