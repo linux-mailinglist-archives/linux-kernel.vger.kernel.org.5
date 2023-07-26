@@ -2,87 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D089763E16
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC17763E1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjGZSCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S231802AbjGZSCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjGZSCG (ORCPT
+        with ESMTP id S230000AbjGZSCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:02:06 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F2A212F;
-        Wed, 26 Jul 2023 11:02:04 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-666e97fcc60so103007b3a.3;
-        Wed, 26 Jul 2023 11:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690394524; x=1690999324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aIbhbsFub5sfXuEeIKeiPG1VxDkvSU/NB7uNJB/xYPg=;
-        b=DrV6694IMBwt1WrK1pQy1hgm+HWPPe96fKb/GfUFGcPRJH/c0H+Ta0qADBUQ1+VKr6
-         N3CoJnhi/XDBPkLIj7Elv3xDtnbimzEqeNIHqrNe7SShVQ8gdoFORhuW4QU5yoWlohWG
-         vc7+I3kQxGQ94eDe2W21QnURvDTYdagj/5NSkOBG7vmCNvkYbQ758cHkypKJwB4hZON+
-         BlEUHXvz5nZq8wPinNs3hM6naxG3pfd8mDiDQUUCKwTrYslsjuED6Ad481jngfpx4fiZ
-         1Yw71B+Ag58hITsHqzEMntMhuZVn1tqhm2EfGO2OkWvVbfx9MTi1p6l0hLJzx0FL03yY
-         rs3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690394524; x=1690999324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aIbhbsFub5sfXuEeIKeiPG1VxDkvSU/NB7uNJB/xYPg=;
-        b=LkDtKwpH6TgSQFkAapz34p4UKKrT2gXSxGsV0hM+pb5r2nHchJejCz65t3h0GBYnAL
-         ZdRQ3jeoyFh8PPx3YIX7z8jkarekrNqvGu8lbI7V/M6cz6rSfEmPJONfGgbPAR+O5ROP
-         ANTRrFCjOHDkcFN9oXZ1oC8lqoRWKDK2ID7QWnkkNwx1sUTYidvHrEbVrocMkSz283ad
-         Uq+FwQ9zqOqQ7htRWriyew1fzjWGU3OMeKv6NtO98GXgWZV0xJYTEu7ZOF9p+G0oVvAm
-         qVnqSlOf1aUA/SqM7aZsnxaFrrrQQI+HYgOqyYJ+28rOVgF7VXtEqbQUyi2rr3D1bB4U
-         /LoQ==
-X-Gm-Message-State: ABy/qLY+X2tvBoxhdLb+zrnEwrcXefzIgxVRijaAT4fkNrGqwktrhNDg
-        frMEvG2adZ/1IZOSNxgAJ9g=
-X-Google-Smtp-Source: APBJJlEnwxO09eC1Sfit93AkJ1w5RlG81bOuS4b5whcmhpCdGcCBCSNeZtMp7vbrbsje/GxxH6RnGA==
-X-Received: by 2002:a05:6a20:4b1b:b0:137:2f8c:fab0 with SMTP id fp27-20020a056a204b1b00b001372f8cfab0mr2408024pzb.49.1690394522585;
-        Wed, 26 Jul 2023 11:02:02 -0700 (PDT)
-Received: from localhost (c-73-190-126-111.hsd1.wa.comcast.net. [73.190.126.111])
-        by smtp.gmail.com with ESMTPSA id i73-20020a636d4c000000b00553d42a7cb5sm592204pgc.68.2023.07.26.11.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 11:02:02 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 18:02:01 +0000
-From:   Bobby Eshleman <bobbyeshleman@gmail.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        bpf@vger.kernel.org, Jiang Wang <jiang.wang@bytedance.com>
-Subject: Re: [PATCH RFC net-next v5 00/14] virtio/vsock: support datagrams
-Message-ID: <ZMFfmcnF51PBnR+N@bullseye>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+        Wed, 26 Jul 2023 14:02:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B32269E;
+        Wed, 26 Jul 2023 11:02:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55CFA61C2A;
+        Wed, 26 Jul 2023 18:02:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4799CC433C7;
+        Wed, 26 Jul 2023 18:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690394561;
+        bh=ZuEBFKvfvWvmo7RjmoDN0IFVptnWEiaCxWHx7e3scdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QRZb+vSdMaDrEDii2mqaKfhC/axpTjFGGcq/anbalORnGsHk6wpre5hOHR7uDoIc7
+         fVQLRH3RQZjibGwjweDJJAQI7GBqxNXjoNe2eKK57v5o5lJcuU4QL8aHvUezuWzyZx
+         rJsq3Rdr4RAZJdMyLKtsQyDouD3QDh9sWFsl2PTwcNeG0RGXEVKrFmpv7Ciyhqhphd
+         5Y3+70q3IVKS4GJ+EpIEF9OfVPMTrvA2/PO1uaTFTgdQMa5pUeW9AWtaHNQSwS80S3
+         AdwpA1VTAcGbBVVgAV3lwY8mb5k/mAvBS9Exee15tqIbRnpnzFsalAyXf2nGvb3iGt
+         wqJLsyvJkYc8g==
+Date:   Wed, 26 Jul 2023 19:02:36 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230726-outclass-parade-2ccea9f6688a@spud>
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UtMXT2cLyqU/RCBj"
 Content-Disposition: inline
-In-Reply-To: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,155 +63,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:50:04AM +0000, Bobby Eshleman wrote:
-> Hey all!
-> 
-> This series introduces support for datagrams to virtio/vsock.
-> 
-> It is a spin-off (and smaller version) of this series from the summer:
->   https://lore.kernel.org/all/cover.1660362668.git.bobby.eshleman@bytedance.com/
-> 
-> Please note that this is an RFC and should not be merged until
-> associated changes are made to the virtio specification, which will
-> follow after discussion from this series.
-> 
-> Another aside, the v4 of the series has only been mildly tested with a
-> run of tools/testing/vsock/vsock_test. Some code likely needs cleaning
-> up, but I'm hoping to get some of the design choices agreed upon before
-> spending too much time making it pretty.
 
-Stale from v4 cover, sorry.
+--UtMXT2cLyqU/RCBj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> This series first supports datagrams in a basic form for virtio, and
-> then optimizes the sendpath for all datagram transports.
-> 
-> The result is a very fast datagram communication protocol that
-> outperforms even UDP on multi-queue virtio-net w/ vhost on a variety
-> of multi-threaded workload samples.
-> 
-> For those that are curious, some summary data comparing UDP and VSOCK
-> DGRAM (N=5):
-> 
-> 	vCPUS: 16
-> 	virtio-net queues: 16
-> 	payload size: 4KB
-> 	Setup: bare metal + vm (non-nested)
-> 
-> 	UDP: 287.59 MB/s
-> 	VSOCK DGRAM: 509.2 MB/s
+On Thu, Jul 27, 2023 at 01:45:24AM +0800, Mingzheng Xing wrote:
+> Binutils-2.38 and GCC-12.1.0 bump[0] default ISA spec to newer version
+> 20191213 which moves some instructions from the I extension to the
+> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+> that version, we should turn on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+> to cope with the new changes.
+>=20
+> The case of clang is special[1][2], where older clang versions (<17) need
+> to be rolled back to old ISA spec to fix it. And the less common case,
+> since older GCC versions (<11.1.0) did not support zicsr and zifencei
 
-Also stale. After dropping the lockless sendpath patch and deferring it
-to later, this data does not apply to the series anymore.
+Can you provide a link to explain why this is 11.1.0 in particular?
 
-> 
-> Some notes about the implementation...
-> 
-> This datagram implementation forces datagrams to self-throttle according
-> to the threshold set by sk_sndbuf. It behaves similar to the credits
-> used by streams in its effect on throughput and memory consumption, but
-> it is not influenced by the receiving socket as credits are.
-> 
-> The device drops packets silently.
-> 
-> As discussed previously, this series introduces datagrams and defers
-> fairness to future work. See discussion in v2 for more context around
-> datagrams, fairness, and this implementation.
-> 
-> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> extension for -march, also requires a fallback to cope with it.
+>=20
+> For more information, please refer to:
+> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
+> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang a=
+nd binutils")
+> Link: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579=
+d4a7a4a76bab51b5b52fec2cd [0]
+> Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.o=
+rg [1]
+> Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org=
+ [2]
+
+> Link: https://lore.kernel.org/all/20230725170405.251011-1-xingmingzheng@i=
+scas.ac.cn
+
+This shouldn't be here, you don't link to your old patches.
+
+> Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+
+This is still broken for:
+CONFIG_CLANG_VERSION=3D0
+CONFIG_AS_IS_GNU=3Dy
+CONFIG_AS_VERSION=3D23500
+CONFIG_LD_IS_BFD=3Dy
+CONFIG_LD_VERSION=3D23500
+
+Please don't post a v2 while there is still ongoing discussion on the
+v1. I'll try to reply here tomorrow with a diff you can fold in to fix
+the problem.
+
+Thanks,
+Conor.
+
 > ---
-> Changes in v5:
-> - teach vhost to drop dgram when a datagram exceeds the receive buffer
->   - now uses MSG_ERRQUEUE and depends on Arseniy's zerocopy patch:
-> 	"vsock: read from socket's error queue"
-> - replace multiple ->dgram_* callbacks with single ->dgram_addr_init()
->   callback
-> - refactor virtio dgram skb allocator to reduce conflicts w/ zerocopy series
-> - add _fallback/_FALLBACK suffix to dgram transport variables/macros
-> - add WARN_ONCE() for table_size / VSOCK_HASH issue
-> - add static to vsock_find_bound_socket_common
-> - dedupe code in vsock_dgram_sendmsg() using module_got var
-> - drop concurrent sendmsg() for dgram and defer to future series
-> - Add more tests
->   - test EHOSTUNREACH in errqueue
->   - test stream + dgram address collision
-> - improve clarity of dgram msg bounds test code
-> - Link to v4: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com
-> 
-> Changes in v4:
-> - style changes
->   - vsock: use sk_vsock(vsk) in vsock_dgram_recvmsg instead of
->     &sk->vsk
->   - vsock: fix xmas tree declaration
->   - vsock: fix spacing issues
->   - virtio/vsock: virtio_transport_recv_dgram returns void because err
->     unused
-> - sparse analysis warnings/errors
->   - virtio/vsock: fix unitialized skerr on destroy
->   - virtio/vsock: fix uninitialized err var on goto out
->   - vsock: fix declarations that need static
->   - vsock: fix __rcu annotation order
-> - bugs
->   - vsock: fix null ptr in remote_info code
->   - vsock/dgram: make transport_dgram a fallback instead of first
->     priority
->   - vsock: remove redundant rcu read lock acquire in getname()
-> - tests
->   - add more tests (message bounds and more)
->   - add vsock_dgram_bind() helper
->   - add vsock_dgram_connect() helper
-> 
-> Changes in v3:
-> - Support multi-transport dgram, changing logic in connect/bind
->   to support VMCI case
-> - Support per-pkt transport lookup for sendto() case
-> - Fix dgram_allow() implementation
-> - Fix dgram feature bit number (now it is 3)
-> - Fix binding so dgram and connectible (cid,port) spaces are
->   non-overlapping
-> - RCU protect transport ptr so connect() calls never leave
->   a lockless read of the transport and remote_addr are always
->   in sync
-> - Link to v2: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v2-0-079cc7cee62e@bytedance.com
-> 
-> ---
-> Bobby Eshleman (13):
->       af_vsock: generalize vsock_dgram_recvmsg() to all transports
->       af_vsock: refactor transport lookup code
->       af_vsock: support multi-transport datagrams
->       af_vsock: generalize bind table functions
->       af_vsock: use a separate dgram bind table
->       virtio/vsock: add VIRTIO_VSOCK_TYPE_DGRAM
->       virtio/vsock: add common datagram send path
->       af_vsock: add vsock_find_bound_dgram_socket()
->       virtio/vsock: add common datagram recv path
->       virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
->       vhost/vsock: implement datagram support
->       vsock/loopback: implement datagram support
->       virtio/vsock: implement datagram support
-> 
-> Jiang Wang (1):
->       test/vsock: add vsock dgram tests
-> 
->  drivers/vhost/vsock.c                   |  64 ++-
->  include/linux/virtio_vsock.h            |  10 +-
->  include/net/af_vsock.h                  |  14 +-
->  include/uapi/linux/virtio_vsock.h       |   2 +
->  net/vmw_vsock/af_vsock.c                | 281 ++++++++++---
->  net/vmw_vsock/hyperv_transport.c        |  13 -
->  net/vmw_vsock/virtio_transport.c        |  26 +-
->  net/vmw_vsock/virtio_transport_common.c | 190 +++++++--
->  net/vmw_vsock/vmci_transport.c          |  60 +--
->  net/vmw_vsock/vsock_loopback.c          |  10 +-
->  tools/testing/vsock/util.c              | 141 ++++++-
->  tools/testing/vsock/util.h              |   6 +
->  tools/testing/vsock/vsock_test.c        | 680 ++++++++++++++++++++++++++++++++
->  13 files changed, 1320 insertions(+), 177 deletions(-)
-> ---
-> base-commit: 37cadc266ebdc7e3531111c2b3304fa01b2131e8
-> change-id: 20230413-b4-vsock-dgram-3b6eba6a64e5
-> 
-> Best regards,
-> -- 
-> Bobby Eshleman <bobby.eshleman@bytedance.com>
-> 
+>=20
+> v2:
+> - Update the Kconfig help text and commit message.
+> - Add considerations for low version gcc case.
+>=20
+> Sorry for the formatting error on my mailing list reply.
+>=20
+>  arch/riscv/Kconfig | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 4c07b9189c86..08afd47de157 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -570,24 +570,27 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+>  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>  	def_bool y
+>  	# https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed44=
+286efa8ae8717a77d94b51ac3614e2ca6dc
+> -	depends on AS_IS_GNU && AS_VERSION >=3D 23800
+> +	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579d4=
+a7a4a76bab51b5b52fec2cd
+> +	depends on GCC_VERSION >=3D 120100 || (AS_IS_GNU && AS_VERSION >=3D 238=
+00)
+>  	help
+> -	  Newer binutils versions default to ISA spec version 20191213 which
+> -	  moves some instructions from the I extension to the Zicsr and Zifencei
+> -	  extensions.
+> +	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
+> +	  20191213 which moves some instructions from the I extension to the
+> +	  Zicsr and Zifencei extensions.
+> =20
+>  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+>  	def_bool y
+>  	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>  	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4=
+498694e15bf8a16
+> -	depends on CC_IS_CLANG && CLANG_VERSION < 170000
+> +	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad08c382d=
+a47e048007a78fa3fb4ef49
+> +	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
+> +		   (CC_IS_GCC && GCC_VERSION < 110100)
+>  	help
+> -	  Certain versions of clang do not support zicsr and zifencei via -march
+> -	  but newer versions of binutils require it for the reasons noted in the
+> -	  help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+> +	  Certain versions of clang (or GCC) do not support zicsr and zifencei =
+via
+> +	  -march but newer versions of binutils require it for the reasons noted
+> +	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. T=
+his
+>  	  option causes an older ISA spec compatible with these older versions
+> -	  of clang to be passed to GAS, which has the same result as passing zi=
+csr
+> -	  and zifencei to -march.
+> +	  of clang (or GCC) to be passed to GAS, which has the same result as
+> +	  passing zicsr and zifencei to -march.
+> =20
+>  config FPU
+>  	bool "FPU support"
+> --=20
+> 2.34.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--UtMXT2cLyqU/RCBj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMFfvAAKCRB4tDGHoIJi
+0qoeAQDp3ypoQuZjQevaA9Hr4AFTnPXwwDMwgAo89yt9uZDNRgD/XaPIQrd0555E
+aPpCSI4Ukz489022i+qI1s80u07U0AI=
+=UaXr
+-----END PGP SIGNATURE-----
+
+--UtMXT2cLyqU/RCBj--
