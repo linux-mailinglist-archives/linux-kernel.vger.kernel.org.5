@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D95763F98
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFCD763F9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbjGZT3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        id S232146AbjGZT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbjGZT3R (ORCPT
+        with ESMTP id S231908AbjGZT33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:29:17 -0400
+        Wed, 26 Jul 2023 15:29:29 -0400
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EE32D6A;
-        Wed, 26 Jul 2023 12:29:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092ED2D7D;
+        Wed, 26 Jul 2023 12:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690399749; x=1721935749;
+  t=1690399758; x=1721935758;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dkGJm5iG8le/XoYOxBxQniOIy2iGaYjjjM3wmjqRvPs=;
-  b=QuH4nYJnS7gB/4FhxJFuHXcI5sbJtVVBaowLQzwiILpESmWgjocEgj5W
-   QGYNM4qATo1ZdYrD+EJLG1v/6DqjqZFz4gtZKsDgM494N9dUr/nCNXe7u
-   ljszrHwVwwEyCAEH33JU5XAw5wnczFefIKYU7XL6xKJm8vLPewxLFWbui
-   6k8qlaxMwn5CvurFVSzQLlkGBzZzaABo3OZ8dDc4Aod8fRxKVv1mcGQd+
-   MOISRXlVq+EIQbOpbB+siVq8mbQRPLAi8N1KPuWk5YjM+lthPfHVBIoU9
-   KlEMBPfu4oVpBGSvKiVXQ7IgnyyNzdyVY9NpLRBMekaOHAJ3YoQB3euRd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371722787"
+  bh=WeEGqpvtDT+7iTCOG+Fl7R/2EclFppBGdUDQfhYalbc=;
+  b=ClWDwPoz4E4GQFMuS3IEKstdtzrMTtD/al7oJa17ln5F8GsMTT2F/caB
+   Rm6u7F9fCdVzXTnmDhT+GgkFpJ/h84qB2eMQlEsYi2+ViBQXck4mmhZXg
+   oe72QfaIA2rHTif18jkIWPnm+vwAc7q5LObld6t1Nq3syhDY6yen3EM2Z
+   EGhr65kFdwXVM0HqYSV+ktrZyywRXbL99OPyYHYskal7oDTgcFp0BrxrY
+   fNuN5EXnCr8I/0AGYbqI9is008ByLPYZO5nkKcXqJpWRU5mSi9K4a97Yj
+   ae2joG3aF9VuNsbkfobWUZ4Xwyuk9bmtlDtj4vAIbjiiXJbPb0/fiVVlw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371722808"
 X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="371722787"
+   d="scan'208";a="371722808"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:09 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900554786"
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900554813"
 X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="900554786"
+   d="scan'208";a="900554813"
 Received: from wfryca-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.133.1])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:05 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:14 -0700
 From:   Iwona Winiarska <iwona.winiarska@intel.com>
 To:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -52,9 +52,9 @@ Cc:     Avi Fishman <avifishman70@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
         Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v2 3/4] ARM: dts: nuvoton: Add PECI controller node
-Date:   Wed, 26 Jul 2023 21:27:39 +0200
-Message-Id: <20230726192740.1383740-4-iwona.winiarska@intel.com>
+Subject: [PATCH v2 4/4] arm64: dts: nuvoton: Add PECI controller node
+Date:   Wed, 26 Jul 2023 21:27:40 +0200
+Message-Id: <20230726192740.1383740-5-iwona.winiarska@intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230726192740.1383740-1-iwona.winiarska@intel.com>
 References: <20230726192740.1383740-1-iwona.winiarska@intel.com>
@@ -74,29 +74,29 @@ Add PECI controller node with all required information.
 
 Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
 ---
- arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi | 9 +++++++++
+ arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-index c7b5ef15b716..cccc33441050 100644
---- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-+++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-@@ -220,6 +220,15 @@ kcs3: kcs3@0 {
- 				};
- 			};
+diff --git a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
+index aa7aac8c3774..b8326bbe9fde 100644
+--- a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
++++ b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
+@@ -68,6 +68,15 @@ apb {
+ 			ranges = <0x0 0x0 0xf0000000 0x00300000>,
+ 				<0xfff00000 0x0 0xfff00000 0x00016000>;
  
-+			peci0: peci-controller@f0100000 {
-+				compatible = "nuvoton,npcm750-peci";
-+				reg = <0xf0100000 0x200>;
++			peci0: peci-controller@100000 {
++				compatible = "nuvoton,npcm845-peci";
++				reg = <0x100000 0x1000>;
 +				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk NPCM7XX_CLK_APB3>;
++				clocks = <&clk NPCM8XX_CLK_APB3>;
 +				cmd-timeout-ms = <1000>;
 +				status = "disabled";
 +			};
 +
- 			spi0: spi@200000 {
- 				compatible = "nuvoton,npcm750-pspi";
- 				reg = <0x200000 0x1000>;
+ 			timer0: timer@8000 {
+ 				compatible = "nuvoton,npcm845-timer";
+ 				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.40.1
 
