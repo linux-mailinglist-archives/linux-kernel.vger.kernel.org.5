@@ -2,176 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A70F762DD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE144762DCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbjGZHfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S232731AbjGZHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbjGZHe4 (ORCPT
+        with ESMTP id S232167AbjGZHew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:34:56 -0400
-Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [95.215.58.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37582132
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:32:27 -0700 (PDT)
-Message-ID: <4ee26da4-314e-0517-5d9a-31fb107368ef@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690356746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OYGRVTqgscFQdcJoAIv1RQJgZK2J3Xems6RanwsA4o0=;
-        b=GCsKw+CqeG0NLvU5JG9vhNLkiCqBIozjq4+mghrN4n54qEc8Ada19ZBzziy+rqbgGP2UKc
-        TRnfIbI6wQqD1XzBynZ64zgbT937OIDi9314tjiKBhNwZptVDCqjhQglYT3NeOO47ZzKdD
-        /L1dy0OB1iSvzxJ2Vh5k44+kOPJOpuA=
-Date:   Wed, 26 Jul 2023 15:32:10 +0800
+        Wed, 26 Jul 2023 03:34:52 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5781A1734
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:32:21 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-986d8332f50so991401066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690356740; x=1690961540;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uYOBCLqUzTsg1SYuGgTRKxpgxdSVk+qVnKZKLrCeVQM=;
+        b=iAX4H7CweXHesk9Pu9HT+x2bqyVzF5qN2whX9hexKrbgxRioiDf9AK0vh79jBOThFS
+         J3xb1pwYXRx5ZaZWHFedFq3MuR3EFoz5qYvDNMoA77mOnWTWsChUhqx7aYZ6uOdzBNbD
+         JYT0HX6jnwvRGNrKjFP2IHxGEzDJpxonuA2UDSATqc9cfLms+Q4ooAoi6hyWOKqEcFTn
+         X5NogTxWGTR2KbORk0Sibss8KwFCWF10Ijqzk2KlVWlNUo908ZsyBqntqlUSOX/RKwJE
+         8ocMfoqDwR3cFl+4MP5MkPOAObL1a6cyJCmLqBDGicr+nTHgWMguKpU5xuxrlxh2IX/E
+         Pwyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690356740; x=1690961540;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uYOBCLqUzTsg1SYuGgTRKxpgxdSVk+qVnKZKLrCeVQM=;
+        b=NXu9ybVJka/YZRdeBZv/+UBxUFzmV+jw/Wh81Z+iQLvdi9QnmJ78ftkV2vVvaBvH9H
+         9UAK7iLNdYCH+59SzoGpU8OH+lkLmNBsraQSgzdjp+baeogr/g/EPo+fkWRELxdS4OA1
+         6NrPJZJSmPhjIkv10yn8t3o7+KBOjSiKUWd6VS+YuA4ehR7UWZAim3UpzBhah0kaEzp3
+         TU5le/hfCPoS40dXNnB+FnSjy6ShMpMq0xDtdP09eb8uRwaNlS5H+gHsoF3/Xm2VSuPO
+         ujd25lFq/36xY8DXssZ9MNERGjsr9B7CThMSKdaF/gZlRv3xyOoOtDHoeSUgeJ0eRz6J
+         06Dw==
+X-Gm-Message-State: ABy/qLYRI+401WBbMWVCkLbj8wwq0GUyaOHWHeHZqdqcecmHnjMKxBzl
+        WE6k348CMdUve9tdd5E21L/aTw==
+X-Google-Smtp-Source: APBJJlFbes5WLaYz3q0efLPZPmpXiJi/y3dYOYYg0SNNl1ShryNV9jroH5yY+Gv2eiDUWKAz1tWI8w==
+X-Received: by 2002:a17:906:5396:b0:993:f6c8:300f with SMTP id g22-20020a170906539600b00993f6c8300fmr952163ejo.15.1690356739830;
+        Wed, 26 Jul 2023 00:32:19 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id v17-20020a1709067d9100b0098d2261d189sm9343518ejo.19.2023.07.26.00.32.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 00:32:19 -0700 (PDT)
+Message-ID: <1c3684e3-b88a-0476-9376-19d07956e261@linaro.org>
+Date:   Wed, 26 Jul 2023 09:32:17 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 28/47] bcache: dynamically allocate the md-bcache
- shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-29-zhengqi.arch@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-29-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] regulator: dt-bindings: dlg,slg51000: Convert to DT
+ schema
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Jeong <eric.jeong.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
+ <d33e5dbc-ca38-4702-903a-b36f9a824391@sirena.org.uk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <d33e5dbc-ca38-4702-903a-b36f9a824391@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/07/2023 12:43, Mark Brown wrote:
+> On Tue, Jul 25, 2023 at 08:31:32AM +0200, Krzysztof Kozlowski wrote:
+> 
+>> 1. Mention that supplies are required, if the regulator is enabled.
+> 
+> This is just adding an OS specific note in the description, it's not
+> actually marking the properties as required.
 
+They cannot be required, because it depends whether the regulator is
+used or not. IOW, they are not required for unused regulators, which is
+not possible to encode in the schema.
 
-On 2023/7/24 17:43, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the md-bcache shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct cache_set.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->   drivers/md/bcache/bcache.h |  2 +-
->   drivers/md/bcache/btree.c  | 27 ++++++++++++++++-----------
->   drivers/md/bcache/sysfs.c  |  3 ++-
->   3 files changed, 19 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-> index 5a79bb3c272f..c622bc50f81b 100644
-> --- a/drivers/md/bcache/bcache.h
-> +++ b/drivers/md/bcache/bcache.h
-> @@ -541,7 +541,7 @@ struct cache_set {
->   	struct bio_set		bio_split;
->   
->   	/* For the btree cache */
-> -	struct shrinker		shrink;
-> +	struct shrinker		*shrink;
->   
->   	/* For the btree cache and anything allocation related */
->   	struct mutex		bucket_lock;
-> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
-> index fd121a61f17c..c176c7fc77d9 100644
-> --- a/drivers/md/bcache/btree.c
-> +++ b/drivers/md/bcache/btree.c
-> @@ -667,7 +667,7 @@ static int mca_reap(struct btree *b, unsigned int min_order, bool flush)
->   static unsigned long bch_mca_scan(struct shrinker *shrink,
->   				  struct shrink_control *sc)
->   {
-> -	struct cache_set *c = container_of(shrink, struct cache_set, shrink);
-> +	struct cache_set *c = shrink->private_data;
->   	struct btree *b, *t;
->   	unsigned long i, nr = sc->nr_to_scan;
->   	unsigned long freed = 0;
-> @@ -734,7 +734,7 @@ static unsigned long bch_mca_scan(struct shrinker *shrink,
->   static unsigned long bch_mca_count(struct shrinker *shrink,
->   				   struct shrink_control *sc)
->   {
-> -	struct cache_set *c = container_of(shrink, struct cache_set, shrink);
-> +	struct cache_set *c = shrink->private_data;
->   
->   	if (c->shrinker_disabled)
->   		return 0;
-> @@ -752,8 +752,8 @@ void bch_btree_cache_free(struct cache_set *c)
->   
->   	closure_init_stack(&cl);
->   
-> -	if (c->shrink.list.next)
-> -		unregister_shrinker(&c->shrink);
-> +	if (c->shrink)
-> +		shrinker_unregister(c->shrink);
->   
->   	mutex_lock(&c->bucket_lock);
->   
-> @@ -828,14 +828,19 @@ int bch_btree_cache_alloc(struct cache_set *c)
->   		c->verify_data = NULL;
->   #endif
->   
-> -	c->shrink.count_objects = bch_mca_count;
-> -	c->shrink.scan_objects = bch_mca_scan;
-> -	c->shrink.seeks = 4;
-> -	c->shrink.batch = c->btree_pages * 2;
-> +	c->shrink = shrinker_alloc(0, "md-bcache:%pU", c->set_uuid);
-> +	if (!c->shrink) {
-> +		pr_warn("bcache: %s: could not allocate shrinker\n", __func__);
-> +		return -ENOMEM;
-
-Seems you have cheanged the semantic of this. In the past,
-it is better to have a shrinker, but now it becomes a mandatory.
-Right? I don't know if it is acceptable. From my point of view,
-just do the cleanup, don't change any behaviour.
-
-> +	}
-> +
-> +	c->shrink->count_objects = bch_mca_count;
-> +	c->shrink->scan_objects = bch_mca_scan;
-> +	c->shrink->seeks = 4;
-> +	c->shrink->batch = c->btree_pages * 2;
-> +	c->shrink->private_data = c;
->   
-> -	if (register_shrinker(&c->shrink, "md-bcache:%pU", c->set_uuid))
-> -		pr_warn("bcache: %s: could not register shrinker\n",
-> -				__func__);
-> +	shrinker_register(c->shrink);
->   
->   	return 0;
->   }
-> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
-> index 0e2c1880f60b..45d8af755de6 100644
-> --- a/drivers/md/bcache/sysfs.c
-> +++ b/drivers/md/bcache/sysfs.c
-> @@ -866,7 +866,8 @@ STORE(__bch_cache_set)
->   
->   		sc.gfp_mask = GFP_KERNEL;
->   		sc.nr_to_scan = strtoul_or_return(buf);
-> -		c->shrink.scan_objects(&c->shrink, &sc);
-> +		if (c->shrink)
-> +			c->shrink->scan_objects(c->shrink, &sc);
->   	}
->   
->   	sysfs_strtoul_clamp(congested_read_threshold_us,
+Best regards,
+Krzysztof
 
