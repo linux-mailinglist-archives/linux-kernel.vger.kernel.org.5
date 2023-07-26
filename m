@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56187638CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D367B7638D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbjGZOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
+        id S234519AbjGZOQg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 10:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbjGZOQL (ORCPT
+        with ESMTP id S234508AbjGZOQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:16:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7BF4201
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690380812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KyY1COWWZwFG4H+/fy8Ic1ZEI+oVlwAbyLmr8esJTF4=;
-        b=fg2mPODsIlbBFUASFAqq5z3cZ6tc0CtUYViinG5GRhM96tqpv3jsGuyY1blivSN57CNeVa
-        JiUP/096B3j3H+iIODwFyHAvwL0s2u37FQAKUIJFFntnGzwIHgrTXF3zN5+2U8ODhpMuRD
-        x+WofMw+UXSpTOdPOP049HeWvAkRqkg=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-656-Dz9_jGYCOS2AGsRiW5yI3Q-1; Wed, 26 Jul 2023 10:13:30 -0400
-X-MC-Unique: Dz9_jGYCOS2AGsRiW5yI3Q-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-993d7ca4607so437052066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:13:30 -0700 (PDT)
+        Wed, 26 Jul 2023 10:16:16 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A202D42
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:06 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6b9c9944da8so5618300a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690380809; x=1690985609;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KyY1COWWZwFG4H+/fy8Ic1ZEI+oVlwAbyLmr8esJTF4=;
-        b=C2OyiDKGNBspL7upUVyj+20g3itLWQLfyQsOpq76nVOpCtbv4KzgxW5fwzoTAf/Rmx
-         a/xDmgrwbFBinEUDdooqAA6gP8w3+cEPuKupkK/APexye2U17qe/K0EmGe3o3jzrSoA6
-         eoMhz07m4Q5yDTlNd0IVCCUR5Sa78hqLrQ9eo8RhPBSksikiWFfJoxPmT5C9BTg8YeFO
-         N2BgfIfhLm7zsbyXvKaZHXiCio2u3qlmdLLeifFvE3sMLnUQxxg+hbDNBZhCznNizq+P
-         DnXi1Ig87pgrF0QRBEbSVcMvyDNtA0dTiSBHH8ST9HV7M2CFHafwVUuQH6hUU6LeIXQL
-         bfOA==
-X-Gm-Message-State: ABy/qLYXUTqzYASpRi+5fXncdzEp7xwknlf/Of5bn6TmE5OpvJZNOwDO
-        s+vH9+1Qno5iCFuUfefFvV//+sfMWb57ST+jP9V+C5fhkrD3D0ktqO1ns7/doqg6ZyvutlGVEhn
-        sPbRXl8DvCAy+w7v8Dm1+y7GO
-X-Received: by 2002:a17:907:78c9:b0:99a:7ff1:9b5a with SMTP id kv9-20020a17090778c900b0099a7ff19b5amr1914198ejc.4.1690380809505;
-        Wed, 26 Jul 2023 07:13:29 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFdhfFeI7OOPveQLJFoZw4tzXl5uQexk/9zkYfeT1992uWM69oWilEd8x1eiUFOP6qI7Sc0Gg==
-X-Received: by 2002:a17:907:78c9:b0:99a:7ff1:9b5a with SMTP id kv9-20020a17090778c900b0099a7ff19b5amr1914182ejc.4.1690380809169;
-        Wed, 26 Jul 2023 07:13:29 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ko5-20020a170907986500b00988781076e2sm9639387ejc.78.2023.07.26.07.13.28
+        d=1e100.net; s=20221208; t=1690380858; x=1690985658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hYmXF6+fhXjo5iXeYGhM12iR95vAqcFzUbgaNOIrO3o=;
+        b=ARCVNh9u84aWPUOC95raEa3iUzmQ9tpqsM6QnlQRsG+yO+MEF0KJHS3G47IfJnqBGo
+         WYgxite+YQxJz5U0J8sUh1HDA/4wWEV0ueJGvf976FNroIWflWGDzWXpMNQqjTRQ8NlH
+         5JcWp+0OOUqFy/vVU3ZBGME3Vnmm/MGCi0lIo5LKJ1qrnpQPIgULVfsharpkRyYMjuGJ
+         sqsNRVfI701Y3t90QX50q+RK7BjyL5wbP4tir7Xl2BSopN2FhPyVG3ZNelnN8uGckZyY
+         CqxScExsoEB7YLvhrTE/aHmWshF64SRj5pf7DS9kyOGogtiqiBGscjaMdn7fvw7K5Xb0
+         QY/w==
+X-Gm-Message-State: ABy/qLZbRhlUObcPdHmuewVnSe9ZSCrkIy9iIjBz6+IeHR7AREChDkC3
+        VFMYIqcmFvzdis3mrggfv6A/bo/IJLQxJQ==
+X-Google-Smtp-Source: APBJJlEv2QIOCdbp+Cs87QsJXehkB+z5hXs71D1N0BoIoR5rzBOHygqpFE4JyiWuStiGWiKRJf/8uA==
+X-Received: by 2002:a05:6358:7e12:b0:135:a5fe:53e1 with SMTP id o18-20020a0563587e1200b00135a5fe53e1mr2165108rwm.14.1690380857982;
+        Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id y1-20020a056902052100b00d0fe6cb4741sm1668367ybs.25.2023.07.26.07.14.17
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 07:13:28 -0700 (PDT)
-Message-ID: <33cdbf63-8fe4-da7e-5d36-6e63fe303b24@redhat.com>
-Date:   Wed, 26 Jul 2023 16:13:28 +0200
+        Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-c11e2b31b95so7149362276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
+X-Received: by 2002:a25:828c:0:b0:d0b:5a37:1aa0 with SMTP id
+ r12-20020a25828c000000b00d0b5a371aa0mr1586828ybk.36.1690380856985; Wed, 26
+ Jul 2023 07:14:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ACPI: scan: Create platform device for CS35L56
-Content-Language: en-US, nl
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, rafael@kernel.org,
-        lenb@kernel.org, markgross@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        Simon Trimmer <simont@opensource.cirrus.com>
-References: <20230726112759.18814-1-rf@opensource.cirrus.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230726112759.18814-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20230721070955.1170974-1-javierm@redhat.com> <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
+ <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
+ <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
+ <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
+ <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
+In-Reply-To: <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 Jul 2023 16:14:04 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX54sYfv2HJQZxMD_O2XT_nmuoQEE2iTbWkJ9-QvfAWYQ@mail.gmail.com>
+Message-ID: <CAMuHMdX54sYfv2HJQZxMD_O2XT_nmuoQEE2iTbWkJ9-QvfAWYQ@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
+ .atomic_check callback
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,86 +78,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+Hi Maxime,
 
-On 7/26/23 13:27, Richard Fitzgerald wrote:
-> From: Simon Trimmer <simont@opensource.cirrus.com>
-> 
-> The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
-> is used in multiples, and can be connected either to I2C or SPI.
-> 
-> There will be multiple instances under the same Device() node. Add it
-> to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
-> driver.
-> 
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+On Wed, Jul 26, 2023 at 3:54 PM Maxime Ripard <mripard@kernel.org> wrote:
+> On Wed, Jul 26, 2023 at 02:33:06PM +0200, Geert Uytterhoeven wrote:
+> > > >> Also, Javier pointed me to a discussion you had on IRC about using devm
+> > > >> allocation here. We can't really do that. KMS devices are only freed
+> > > >> once the last userspace application closes its fd to the device file, so
+> > > >> you have an unbounded window during which the driver is still callable
+> > > >> by userspace (and thus can still trigger an atomic commit) but the
+> > > >> buffer would have been freed for a while.
+> > > >
+> > > > It should still be safe for (at least) the data_array buffer. That
+> > > > buffer is only used to store pixels in hardware format, and immediately
+> > > > send them to the hardware.  If this can be called that late, it will
+> > > > fail horribly, as you can no longer talk to the hardware at that point
+> > > > (as ssd130x is an i2c driver, it might actually work; but a DRM driver
+> > > >  that calls devm_platform_ioremap_resource() will crash when writing
+> > > >  to its MMIO registers)?!?
+> > >
+> > > At the very least the SPI driver will fail since the GPIO that is used to
+> > > toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
+> > > the regulator, backlight device, etc.
+> > >
+> > > But in any case, as mentioned it is only relevant if the data_array buffer
+> > > is allocated at probe time, and from Maxime's explanation is more correct
+> > > to do it in the .atomic_check handler.
+> >
+> > You need (at least) data_array for clear_screen, too, which is called
+> > from .atomic_disable().
+>
+> I'm not sure I get what your concern is?
+>
+> Even if we entirely disable the plane, the state will not have been
+> destroyed yet so you still have at least access to the data_array from
+> the old state.
 
-Thanks, patch looks good to me:
+Currently, clearing the screen is done from the plane's .atomic_disable()
+callback, so the plane's state should be fine.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+But IIUIC, DRM allows the user to enable/disable the display without
+creating any plane first, so clearing should be handled in the CRTC's
+.atomic_disable() callback instead? Then, would we still have access
+to valid plane state?
 
-I have 1 other serial-multi-instantiate.c patches in my fixes branch (see below) and since this just adds new hw-ids I think this can go upstream through my fixes branch too.
+Thanks!
 
-Rafael, do you agree with me taking this upstream as a 6.5 fix? And if yes may I have your ack for that ?
+Gr{oetje,eeting}s,
 
-About that 1 patch, that adds a new IRQ type: IRQ_RESOURCE_AUTO and I wonder if this patch should not use that same new type right from the start:
+                        Geert
 
-https://git.kernel.org/pub/scm/linux/kernel/agit/pdx86/platform-drivers-x86.git/commit/?h=fixes&id=676b7c5ecab36274442887ceadd6dee8248a244f
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-This makes me realize that I should probably have pinged you and ask for feedback on that patch since it was send by a community member rather then by Cirrus. Note this is currently in Linus' master tree, so any fixes to it need to be submitted on top (not that I expect any issues since it still behaves as before on acpi_dev_gpio_irq_get() success and only adds an platform_get_irq() fallback when that fails).
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/acpi/scan.c                             |  1 +
->  drivers/platform/x86/serial-multi-instantiate.c | 12 ++++++++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 5b145f1aaa1b..87e385542576 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1714,6 +1714,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
->  		{"BSG1160", },
->  		{"BSG2150", },
->  		{"CSC3551", },
-> +		{"CSC3556", },
->  		{"INT33FE", },
->  		{"INT3515", },
->  		/* Non-conforming _HID for Cirrus Logic already released */
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index f3dcbdd72fec..dcf2914b97c9 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -316,6 +316,17 @@ static const struct smi_node cs35l41_hda = {
->  	.bus_type = SMI_AUTO_DETECT,
->  };
->  
-> +static const struct smi_node cs35l56_hda = {
-> +	.instances = {
-> +		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_GPIO, 0 },
-> +		{}
-> +	},
-> +	.bus_type = SMI_AUTO_DETECT,
-> +};
-> +
->  /*
->   * Note new device-ids must also be added to ignore_serial_bus_ids in
->   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> @@ -324,6 +335,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
->  	{ "BSG1160", (unsigned long)&bsg1160_data },
->  	{ "BSG2150", (unsigned long)&bsg2150_data },
->  	{ "CSC3551", (unsigned long)&cs35l41_hda },
-> +	{ "CSC3556", (unsigned long)&cs35l56_hda },
->  	{ "INT3515", (unsigned long)&int3515_data },
->  	/* Non-conforming _HID for Cirrus Logic already released */
->  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
