@@ -2,174 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7CC763D03
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2EC763D07
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbjGZQzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39524 "EHLO
+        id S231966AbjGZQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjGZQzf (ORCPT
+        with ESMTP id S231263AbjGZQ4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:55:35 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA95211F;
-        Wed, 26 Jul 2023 09:55:33 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [114.249.159.178])
-        by APP-05 (Coremail) with SMTP id zQCowABHTxf0T8Fk333YDg--.1863S2;
-        Thu, 27 Jul 2023 00:55:16 +0800 (CST)
-Message-ID: <a07f237a-20a2-06f0-3e20-0f4cd783649f@iscas.ac.cn>
-Date:   Thu, 27 Jul 2023 00:55:16 +0800
+        Wed, 26 Jul 2023 12:56:21 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F239F211F;
+        Wed, 26 Jul 2023 09:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690390580; x=1721926580;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=JzePxdujMch5SdQ4iwj3VbDUHOAXybVBdROP+jWCD5c=;
+  b=cQCxTsfelWtoh2gi5Wsnju8hIJJs4zVRN8x5g0JNpVlgy/yuJai1L7G7
+   6h4ioWNoa1MuYOrG2UZMLgxNWCf4L/yk7Wc6ibrD986prP+zdCcMX5W+H
+   CPu+OKClgsKD2j3q/5oWoXpHaWgOj95hatV4ba6G6+aIcuHYjFVevnYF7
+   3rDCW8BEc4GmUrXUlEo+EOAFmvPvpSeDUAIT/JoYTUlQsJakJOVC/GfNc
+   SmMU7q/bqqe97zqnnjfQorcnky/pl18Cq2G0sWJsAvkZVFlZ5rZh/fXeQ
+   NH4eD7vH2EH/KeJVbanyhSSJp/eZbDFJ3y4kEVa5ShZWC7T0+jfQxRdeS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="348355030"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="348355030"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 09:56:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="676777774"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="676777774"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jul 2023 09:56:17 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Christopherson,, Sean" <seanjc@google.com>
+Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
+References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
+ <20230717202938.94989-1-haitao.huang@linux.intel.com>
+ <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
+ <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <b5779418-e2a4-ca7a-866f-97e49cd272cb@intel.com>
+ <op.18aontlmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <eb1aea6f-3688-f871-2335-ff911a51ef52@intel.com>
+ <op.18aqz7sbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <ad2d9610-61c0-4719-9df1-0116ef317d8a@intel.com>
+ <op.18asliuzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <520111c9ccdd7356f9eaf20013e3e3c75b06398e.camel@intel.com>
+ <d718cdda-2d5b-9b4b-d90d-55449ec1ac75@intel.com>
+ <op.18b0u6evwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <e42435bd3949de94840fa3fae88be5f3bcc6373e.camel@intel.com>
+ <df3ee23c71e9c653db43a38e1b3fddf31e0bce37.camel@intel.com>
+Date:   Wed, 26 Jul 2023 11:56:16 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Subject: Re: [PATCH] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-To:     Conor Dooley <conor@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org
-References: <20230725170405.251011-1-xingmingzheng@iscas.ac.cn>
- <20230725172344.GA1445373@dev-arch.thelio-3990X>
- <20230725-skating-agent-b092f2257ca1@spud>
- <20230725-name-aggregate-5de303072c9d@spud>
-Content-Language: en-US
-Organization: ISCAS
-In-Reply-To: <20230725-name-aggregate-5de303072c9d@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: zQCowABHTxf0T8Fk333YDg--.1863S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw43Aw4DWrWrAFy7tw4rAFb_yoW7ArW7p3
-        9xGFn0krs5XrWxCwn7tw1UWFyFq395GrW5Wr1UG34Yvrn0vFyxKr4v9w4j9FyDZrs3Cw1j
-        vr1S9Fyavw1DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07beeHgUUUUU=
-X-Originating-IP: [114.249.159.178]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiAxMECmTBI3VlbwAAsn
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.18o7z2biwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <df3ee23c71e9c653db43a38e1b3fddf31e0bce37.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 06:17, Conor Dooley wrote:
-> On Tue, Jul 25, 2023 at 07:57:54PM +0100, Conor Dooley wrote:
->> On Tue, Jul 25, 2023 at 10:23:44AM -0700, Nathan Chancellor wrote:
->>> On Wed, Jul 26, 2023 at 01:04:05AM +0800, Mingzheng Xing wrote:
->>>> When compiling the kernel with the toolchain composed of GCC >= 12.1.0 and
->>>> binutils < 2.38, default ISA spec used when building binutils and GCC, the
->>>> following build failure will appear because the
->>>> CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI is not turned on.
->>>> (i.e, gcc-12.1.0 and binutils-2.36, or gcc-12.3.0 and binutils-2.37, use
->>>> default ISA spec.)
->>>>
->>>>    CC      arch/riscv/kernel/vdso/vgettimeofday.o
->>>>    <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h: Assembler messages:
->>>>    <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
->>> The gift that keeps on giving :/
->>>
->>>> Binutils has updated the default ISA spec version, and the community has
->>>> responded well to this[1][2][3], but it appears that this is not over yet.
-> Also, I just noticed this comment. I disagree with the wording "well",
-> and more like "with weeping and gnashing of teeth" ;) This stuff is a
-> huge pain in the ass, and mixing toolchains between LLVM & GNU stuff (or
-> using an older binutils with a newer GCC) really makes it a lot worse.
-At least in the usual way , except in my unusual case...
-> Thanks for submitting a fix for this so that Nathan or I didn't have to!
-Hopefully this patch will make things better.
->>>> We also need to consider the situation of binutils < 2.38 but
->>>> GCC >= 12.1.0, since the combination between different versions of GCC and
->>>> binutils is not unique, which is to some extent flexible. GCC release
->>>> 12.1.0 updated the default ISA spec version in GCC commit[4].
->>> I suspect this combination is not too common because binutils 2.38 came
->>> out before GCC 12.1.0 but as you note, it is obviously possible. What
->>> toolchain has this combination in the wild, which would be helpful for
->>> documentation purposes?
->> Yeah, that'd be great to know, at least the other niche stuff that we
->> are working around had a clear use-case (testing LLVM in debian containers)
->> whereas there's no clear user for this.
->> That's doubly interesting, as this patch seems to break things for binutils
->> < 2.35, and if we have to make a trade-off between those too, then it'd
->> be good to be able to weigh up the options.
->> Do we perhaps need the misa-spec workaround instead for this case?
->> Haven't tested that though, trying to dig myself out of email backlog.
-> I don't think the misa-spec stuff is what we need actually. Instead, the
-> workaround/fix that this patch implements just needs to be constrained to
-> versions of GAS greater than 2.35.
-I'm sorry, I didn't quite understand this, could you provide some more
-information, thank you very much!
-I'll change the handling in v2. After testing it myself, it seems to 
-work fine.
+On Thu, 20 Jul 2023 19:52:22 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Thanks,
-Mingzheng.
-> Thanks,
-> Conor.
->
->>>> For more information, please refer to:
->>>>
->>>> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
->>>> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang and binutils")
->>>>
->>>> [1]:https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/aE1ZeHHCYf4
->>>> [2]:https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.org
->>>> [3]:https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
->>>> [4]:https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
->> btw, please make these regular Link: tags (with a [N] at EOL) and drop
->> the space between them and the sign off. Also, this probably needs to be
->> CC:stable@vger.kernel.org  too.
->>>> Signed-off-by: Mingzheng Xing<xingmingzheng@iscas.ac.cn>
->>>> ---
->>>>   arch/riscv/Kconfig | 6 +++++-
->>>>   1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>>> index 4c07b9189c86..b49cea30f6cc 100644
->>>> --- a/arch/riscv/Kconfig
->>>> +++ b/arch/riscv/Kconfig
->>>> @@ -570,11 +570,15 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
->>>>   config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->>>>   	def_bool y
->>>>   	#https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
->>>> -	depends on AS_IS_GNU && AS_VERSION >= 23800
->>>> +	#https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
->>>> +	depends on CC_IS_GCC && GCC_VERSION >= 120100 || \
->>>> +		   AS_IS_GNU && AS_VERSION >= 23800
->>> GCC_VERSION will be 0 for clang, so you don't need the CC_IS_GCC check.
->>> With that change, this should be able to stay on one line:
->>>
->>>      depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
->>>
->>>>   	help
->>>>   	  Newer binutils versions default to ISA spec version 20191213 which
->>>>   	  moves some instructions from the I extension to the Zicsr and Zifencei
->>>>   	  extensions.
->>>> +	  Similarly, GCC release 12.1.0 has changed the default ISA spec version to
->>>> +	  20191213, so the above situation requires this option to be enabled.
->>>>   
->>>>   config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
->>>>   	def_bool y
->>>> -- 
->>>> 2.34.1
->>>>
+> On Fri, 2023-07-21 at 00:32 +0000, Huang, Kai wrote:
+>> On Wed, 2023-07-19 at 08:53 -0500, Haitao Huang wrote:
+>> > Hi Dave and Kai
+>> > On Tue, 18 Jul 2023 19:21:54 -0500, Dave Hansen  
+>> <dave.hansen@intel.com>
+>> > wrote:
+>> >
+>> > > On 7/18/23 17:14, Huang, Kai wrote:
+>> > > > Also perhaps the patch title is too vague.  Adding more  
+>> information
+>> > > > doesn't hurt
+>> > > > I think, e.g., mentioning it is a fix for NULL pointer  
+>> dereference in
+>> > > > the EAUG
+>> > > > flow.
+>> > >
+>> > > Yeah, let's say something like:
+>> > >
+>> > > 	x86/sgx: Resolve SECS reclaim vs. page fault race
+>> > >
+>> > The patch is not to resolve SECS vs #PF race though the race is a
+>> > necessary condition to cause the NULL pointer. The same condition  
+>> does not
+>> > cause NULL pointer in the ELDU path of #PF, only in EAUG path of #PF.
+>> >
+>> > And the issue really is the NULL pointer not checked and fix was to  
+>> reuse
+>> > the same code to reload SECS in ELDU code path for EAUG code path
+>> >
+>> >
+>> > How about this:
+>> >
+>> > x86/sgx:  Reload reclaimed SECS for EAUG on #PF
+>> >
+>> > or
+>> >
+>> > x86/sgx: Fix a NULL pointer to SECS used for EAUG on #PF
+>> >
+>>
+>> Perhaps you can add "EAUG" part to what Dave suggested?
+>>
+>> 	x86/sgx: Resolves SECS reclaim vs. page fault race on EAUG
+>>
+>> (assuming Dave is fine with this :-))
+Sure, I can use this too.
 
+> Btw, do you have a real call trace?  If you have, I think you can add  
+> that to
+> the changelog too because that catches people's eye immediately.
+
+Previously I was not able to reproduce without SGX cgroup patches. Now I  
+managed to get a trace with a QEMU setup with small EPC (8M), large RAM  
+(128G) and 128 vCPUs:
+
+[ 1682.914263] BUG: kernel NULL pointer dereference, address:  
+0000000000000000
+[ 1682.922966] #PF: supervisor read access in kernel mode
+[ 1682.929115] #PF: error_code(0x0000) - not-present page
+[ 1682.935264] PGD 0 P4D 0
+[ 1682.938383] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[ 1682.943620] CPU: 43 PID: 2681 Comm: test_sgx Not tainted  
+6.3.0-rc4sgxcet #12
+[ 1682.951989] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS  
+rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+[ 1682.965504] RIP: 0010:sgx_encl_eaug_page+0xc7/0x210
+[ 1682.971359] Code: 25 49 8b 96 98 04 00 00 48 8d 40 48 48 89 42 08 48 89  
+56 48 49 8d 96 98 04 00 00 48 89 56 50 49 89 86 98 04 00 00 49 8b 46 60  
+<8b> 10 48 c1 e2 05 488
+[ 1682.993330] RSP: 0000:ffffb2e64725bc00 EFLAGS: 00010246
+[ 1682.999585] RAX: 0000000000000000 RBX: ffff987e5abac428 RCX:  
+0000000000000000
+[ 1683.008059] RDX: 0000000000000001 RSI: 0000000000000000 RDI:  
+ffff987e61aee000
+[ 1683.016533] RBP: ffffb2e64725bcf0 R08: 0000000000000000 R09:  
+ffffb2e64725bb58
+[ 1683.025008] R10: 0000000000000000 R11: 00007f3f5c418fff R12:  
+ffff987e61aee020
+[ 1683.033479] R13: ffff987e505bc080 R14: ffff987e61aee000 R15:  
+ffffb2e6420fcb20
+[ 1683.041949] FS:  00007f3f5cb48740(0000) GS:ffff989cfe8c0000(0000)  
+knlGS:0000000000000000
+[ 1683.051540] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1683.058478] CR2: 0000000000000000 CR3: 0000000115896002 CR4:  
+0000000000770ee0
+[ 1683.067018] DR0: 0000000000000000 DR1: 0000000000000000 DR2:  
+0000000000000000
+[ 1683.075539] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:  
+0000000000000400
+[ 1683.084085] PKRU: 55555554
+[ 1683.087465] Call Trace:
+[ 1683.090547]  <TASK>
+[ 1683.093220]  ? __kmem_cache_alloc_node+0x16a/0x440
+[ 1683.099034]  ? xa_load+0x6e/0xa0
+[ 1683.103038]  sgx_vma_fault+0x119/0x230
+[ 1683.107630]  __do_fault+0x36/0x140
+[ 1683.111828]  do_fault+0x12f/0x400
+[ 1683.115928]  __handle_mm_fault+0x728/0x1110
+[ 1683.121050]  handle_mm_fault+0x105/0x310
+[ 1683.125850]  do_user_addr_fault+0x1ee/0x750
+[ 1683.130957]  ? __this_cpu_preempt_check+0x13/0x20
+[ 1683.136667]  exc_page_fault+0x76/0x180
+[ 1683.141265]  asm_exc_page_fault+0x27/0x30
+[ 1683.146160] RIP: 0033:0x7ffc6496beea
+[ 1683.150563] Code: 43 48 8b 4d 10 48 c7 c3 28 00 00 00 48 83 3c 19 00 75  
+31 48 83 c3 08 48 81 fb 00 01 00 00 75 ec 48 8b 19 48 8d 0d 00 00 00 00  
+<0f> 01 d7 48 8b 5d 101
+[ 1683.172773] RSP: 002b:00007ffc64935b68 EFLAGS: 00000202
+[ 1683.179138] RAX: 0000000000000003 RBX: 00007f3800000000 RCX:  
+00007ffc6496beea
+[ 1683.187675] RDX: 0000000000000000 RSI: 0000000000000000 RDI:  
+0000000000000000
+[ 1683.196200] RBP: 00007ffc64935b70 R08: 0000000000000000 R09:  
+0000000000000000
+[ 1683.204724] R10: 0000000000000000 R11: 0000000000000000 R12:  
+0000000000000000
+[ 1683.213310] R13: 0000000000000000 R14: 0000000000000000 R15:  
+0000000000000000
+[ 1683.221850]  </TASK>
+[ 1683.224636] Modules linked in: isofs intel_rapl_msr intel_rapl_common  
+binfmt_misc kvm_intel nls_iso8859_1 kvm ppdev irqbypass input_leds  
+parport_pc joydev parport rapi
+[ 1683.291173] CR2: 0000000000000000
+[ 1683.295271] ---[ end trace 0000000000000000 ]---
+
+
+
+I'll add this to the commit as well.
+
+Thanks
+Haitao
