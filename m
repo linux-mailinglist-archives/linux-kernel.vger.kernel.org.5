@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BAE763BB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33F9763BBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233817AbjGZP4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S234495AbjGZP5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbjGZP4X (ORCPT
+        with ESMTP id S233264AbjGZP5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:56:23 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C079E100;
-        Wed, 26 Jul 2023 08:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=7UDgfaBKbDx6HXbNdob8rAF7nTMRLH3Ebyzm12lV4pQ=; b=nyD1WleQwZllG/YbayTavTKoHL
-        vWq30msw3K3zW2SynqSS0cEvRP4X5NrtrKIlZtOhkI9n8m84bt/U68ob57/c+OffL0asV1YdYzXBP
-        EvbKartx1Y9G7J9lSG/tuNUaE6eBZJicKxZhl2AqoS10NjDbDnxw1n3wEpN/+kfDv3Lg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qOgrs-002NEQ-8B; Wed, 26 Jul 2023 17:56:04 +0200
-Date:   Wed, 26 Jul 2023 17:56:04 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
-Cc:     "Verdun, Jean-Marie" <verdun@hpe.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/5] dt-bindings: net: Add HPE GXP UMAC
-Message-ID: <c69866c3-aa90-45bc-8dd6-556f474bb693@lunn.ch>
-References: <20230721212044.59666-1-nick.hawkins@hpe.com>
- <20230721212044.59666-4-nick.hawkins@hpe.com>
- <57d882ed-82e5-4584-8126-ca2007064126@lunn.ch>
- <DM4PR84MB192785EC6F2B8A76FF9E5E3F8803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
- <4c19532d-a909-4ca6-a0a7-d4cd9cc828b0@lunn.ch>
- <DM4PR84MB19274F3AA411D4CAE7EE84D88803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+        Wed, 26 Jul 2023 11:57:23 -0400
+Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90A4100
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
+        MIME-Version:Date:Message-ID:content-disposition;
+        bh=4QVwg/3buKSKa87Kcb2VqaMkmqvy97Dgt5k/CEvT8aQ=; b=heBCf9Bwkfy9wEwW2XMdjOiYW5
+        zLEwoiA+XKTBS9uzuU2MaAA/esjk7A5WciR4XIjg20XBNfvqswFXaY8N+KiFjo1TW6XdQDwSEWvGl
+        1ZC70U/NnmlNfFql1lJ92MS1Fjae6kjsIG8V01ayjngNsvoljymDw39ZBXuPTDLg/OYD3J7INrQ5p
+        lGoI48P+v7yQbUCa2jKAwbWBedwKXXly6pslTWyCAZayqtBthXYaKxlOjJ/GtJ4cmNf6C6il3mRVD
+        B+2TRn0lysrZP8Em/dpRF08Ik7INqpgJ7FCvsuSfbuJG+BuKj/FczJq7AD/LLq8Y2WohlEFJ3/kbc
+        Sx9i2jTw==;
+Received: from d75-158-34-12.abhsia.telus.net ([75.158.34.12] helo=[192.168.11.155])
+        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <logang@deltatee.com>)
+        id 1qOgt3-00B3w0-6K; Wed, 26 Jul 2023 09:57:18 -0600
+Message-ID: <9378e69f-2bd4-9d8d-c736-b8799f6ebecc@deltatee.com>
+Date:   Wed, 26 Jul 2023 09:57:16 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR84MB19274F3AA411D4CAE7EE84D88803A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Chengfeng Ye <dg573847474@gmail.com>, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230726104827.60382-1-dg573847474@gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+In-Reply-To: <20230726104827.60382-1-dg573847474@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 75.158.34.12
+X-SA-Exim-Rcpt-To: dg573847474@gmail.com, vkoul@kernel.org, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] dmaengine: plx_dma: Fix potential deadlock on
+ &plxdev->ring_lock
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 02:35:48PM +0000, Hawkins, Nick wrote:
-> > > > Do both ports get the sane MAC address?
-> > >
-> > > No they do not. The first one will get the MAC address, the second
-> > > will be an external phy we are managing via the MDIO path.
+
+
+On 2023-07-26 04:48, Chengfeng Ye wrote:
+> As plx_dma_process_desc() is invoked by both tasklet plx_dma_desc_task()
+> under softirq context and plx_dma_tx_status() callback that executed under
+> process context, the lock aquicision of &plxdev->ring_lock inside
+> plx_dma_process_desc() should disable irq otherwise deadlock could happen
+> if the irq preempts the execution of process context code while the lock
+> is held in process context on the same CPU.
 > 
-> > Then please put the mac-address property in the correct place, inside
-> port@0.
+> Possible deadlock scenario:
+> plx_dma_tx_status()
+>     -> plx_dma_process_desc()
+>     -> spin_lock(&plxdev->ring_lock)
+>         <tasklet softirq>
+>         -> plx_dma_desc_task()
+>         -> plx_dma_process_desc()
+>         -> spin_lock(&plxdev->ring_lock) (deadlock here)
 > 
-> Greetings Andrew,
+> This flaw was found by an experimental static analysis tool I am developing
+> for irq-related deadlock.
 > 
-> I was mistaken, the Mac address belongs with UMAC,
-> not the phys. The reason ports are listed here is
-> because having two separate phy-handles
-> in one node is not allowed. The layout of the
-> hardware inside the GXP is unconventional.
+> The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
+> plx_dma_process_desc() to disable irq while lock is held.
+> 
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
-It is not that unconventional. See
+Makes sense. Thanks!
 
-Documentation/devicetree/bindings/net/marvell-orion-net.txt
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
-This is an Ethernet block, with two MACs inside it. Each MAC gets its
-own subblock containing MAC specific properties like the MAC address,
-phy-handle, etc.
-
-	    Andrew
+Logan
