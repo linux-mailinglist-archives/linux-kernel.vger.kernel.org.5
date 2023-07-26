@@ -2,146 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C59376284A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D8376284F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbjGZBr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
+        id S230224AbjGZBtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjGZBr0 (ORCPT
+        with ESMTP id S229498AbjGZBtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:47:26 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DA026A2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:47:25 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-583b4522927so47270967b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690336045; x=1690940845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8GWTIil/tm7mqD4sdysaM/Da0PfAMCmi2KUFDiSQGwA=;
-        b=I1wqWaF7xVjCzMs+jeu7Mf+11Tx5KCsdv9Rcv8lBYR569EaeTkQdk73AgXA4ErQA64
-         DPGXqVv9KUqyjwD3DzDKPxPkonBtIFfFSX3TgmXhhbTTCUhZ3NtNlBPp1MuGDWxEHX8D
-         MYlpqLfRIDc5AzwBTMCOH/e+aeyoWWZlJ2I7BZHXDhjbctB+EQkirNbOpQhBdpqKafxE
-         Rg6X3ztrKELT3NWEgghlPLWFZr4/2Bx+dV9IMww3z0bKxISmI6QbYC6sa+xJp2O9UWDr
-         Dsa+PY7a2rbCE/i+18XdesZACx9KaxCONOsHPA84XQwnN7mjce6ymDN3CWOm7GPYBsdU
-         wvyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690336045; x=1690940845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8GWTIil/tm7mqD4sdysaM/Da0PfAMCmi2KUFDiSQGwA=;
-        b=EOSocA2FhfjFeCgLxVB06uOG3Ck1jBdSekZ4jO/DvRoum1u35A3TiS+F1jQQ2RVnEP
-         y8LMTC1p9EH6c6hUWxPNDHlWCa0dPA7h3meSdkYfcH9ESMxyQQx+hjFUoeqntB+p58BQ
-         KOpvW/29EfTBoE+Wts5I18BmjxM8JugmYH3myfQoFt+LTqkiJB6doQ7TO5C553jJi8FW
-         4KJSZVzfCevmkp3V+rFhj5Ms0asWrczOyaCRErSE0d0QWOI8oe1OO7RGB3Ex+Gps27NM
-         2TWkpbJG9znGF+DQUjlz3xOegfPFQUjdCIB76TnWJe4Omy5iz3sbLXdLoy8Jg7e9pQn9
-         FEZg==
-X-Gm-Message-State: ABy/qLb9k+yUkY79K6R2MvcCcKbzNW0qxPZ6LqFm2JkOTeo52oTxMp+A
-        rdPyiNajnMcYTEJS1Rbls4JNotwbLziiX5/o1HPs
-X-Google-Smtp-Source: APBJJlGKCmF6Eq7yIsgErcnDcg/CYg926aKaUaYzEfOzvWSEGEZNw51kJosjI5zxYDSJvamqMRJphUgL4Cq5GX9fLzQ=
-X-Received: by 2002:a81:7bd5:0:b0:579:f5e3:ad07 with SMTP id
- w204-20020a817bd5000000b00579f5e3ad07mr844539ywc.14.1690336044906; Tue, 25
- Jul 2023 18:47:24 -0700 (PDT)
+        Tue, 25 Jul 2023 21:49:23 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2065.outbound.protection.outlook.com [40.107.22.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2437B9B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:49:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CV6bigJ0gbFQZfCw2FeG1NlRmrco31qYVSpT2TMTbPA0A8UPheYn4oWDniurWbrCVFPREeusNScbQKzf7wiKi/jZQwUhYfEiQlXVOt53ckRl3mPggsLcTOWSsATaQTdrFeqCMiOrB8u8iPz76h4uToV7b+Ekhko2R8boqLE56Z6ysFPPE+JBe6G7++3F8BO0dz3WGtRc5nGx0mm7qZElA+LuypYu4+XmEWBZRDUjjlBO/cMfKPgm2Paw6cAVJLhIQn74KlcKS4NW2+zPAyfiqLNsMgizGCKzI4oDoLDzwQjcA2hcMyUpw9w9bxL8aqLQs2KzKIvTVMrQexTZNYTmRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gvdnAdk7QzctPMErf+ih3R5qpCemk0bDu3ZPzO6Aw/o=;
+ b=LWQD+NsreOpP65/kDzJW97J72HVOyh5CB9+Z1afQ55ugi9GIh/DzzHywgte5eQsuRW/eYL3MPQ4SPfb2MmPh2VjdO+VFuanfjT8TfGeocBkulWNJFNzixR0//KjOb5lnpTmb3WR9zvLvuommGtiOMrh/8u5C3nNUKRRh5ptSWT3exy/qP6SnBZW6Bw5gBBls8Eay+2yHFYQCaTVb6Of2maWwLf7zANPIwnWqCOHgfxdaN+hJhEgA1dwo8nXvA6KIoAsVeLFZvnBpZayUuo7my3k57V4jT9D1BPErljjQbnhQgoQv6t8CBuj0rbaiO0eytdcYHJX5tAw8BNAXDtL8ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gvdnAdk7QzctPMErf+ih3R5qpCemk0bDu3ZPzO6Aw/o=;
+ b=qReyIk1sVRoOrkVmAHQMyCywTztGuoVsFClyZnMEgKSFv9/fcch9MJIkfVLYxKKz6u5mXc0RbJrJSc4yUC5biQ7IzJo1ReLnAo30e7rV84Bh9tPvwfZS/L8bBxgzc71pStu2u/0lPKG95es7GvyLaFQxn2eB49S+Nutj1NGAeEM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
+ by PR3PR04MB7322.eurprd04.prod.outlook.com (2603:10a6:102:8e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
+ 2023 01:49:19 +0000
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
+ 01:49:18 +0000
+From:   Sandor Yu <Sandor.yu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com,
+        adrian.larumbe@collabora.com, treding@nvidia.com,
+        the.cheaterman@gmail.com, l.stach@pengutronix.de,
+        ville.syrjala@linux.intel.com, cychiang@chromium.org,
+        Sandor.yu@nxp.com, shengjiu.wang@nxp.com
+Subject: [PATCH] drm: bridge: dw_hdmi: Fix ELD is not updated issue
+Date:   Wed, 26 Jul 2023 09:48:33 +0800
+Message-Id: <20230726014833.1647244-1-Sandor.yu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGBP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::36)
+ To PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
 MIME-Version: 1.0
-References: <20230725093005.3499455-1-lerobert@google.com> <87sf9ctifg.wl-tiwai@suse.de>
- <CAOM6g_Db8qwbDmbWSSLKqUHsSMLUYxFtpqKi1cWsXsXTE9B+vA@mail.gmail.com> <87lef4thir.wl-tiwai@suse.de>
-In-Reply-To: <87lef4thir.wl-tiwai@suse.de>
-From:   Robert Lee <lerobert@google.com>
-Date:   Wed, 26 Jul 2023 09:47:13 +0800
-Message-ID: <CAOM6g_DVKpEhnVStpNWmPoXyHNUuNTA+CNbdPxasObGcXtGEpQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: compress: add opus codec define
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9448:EE_|PR3PR04MB7322:EE_
+X-MS-Office365-Filtering-Correlation-Id: 53e0ac55-0e35-4851-0467-08db8d7a86a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Mj31pVqzgWG2eCKm1fRDv29ovWrKee16G3AjYekoFC7WSxhAdSh4U+vK/cbmrC5jzUQuiSlhcklX7oLKa5FWqtBY4VLyQMhIqELL9nHPBPkFKfHQx4IHl2SomfbMI6p3JR3RZXANNH6JAxANQb9Vcz6vPGfrkmDiWg68NcdInL1ZwMwzYQ8mb5FEJmV9dpPZSieU3ukA/ZSxw3zF835BbmrYfDu818k1KrCBv+LcLrxl1gZkMjIFXiSa5ok0W3Ce5Z2OUtUstLuxICPXhxsvI0fnK1Zv4iVCFN88dDJtWG6h1ATAHwpj/jKltZrbrAXvrMPRQwCLjgYDYS21Mj+Kegcdf0b4zJf1AurTK6paLPmL6AqMf+DxjReG6Elp4kmzieOuQSKUNm7rjAT/oXskH2eGbVUtkGcEZd7DYAg5sWl1Z7CSzA3GCS1Z1E7U+lQw7DP4yeiGINHILkM1Kgx351nWfxk3Bvz11G4jxnJS07S7QcUKkR6/81IG5/1AwkttPoEaQ3ny16tmi4uCZfg07KzQ6zdLKnf2gbLKqcVIk7DGnoO+dS0ydwKkBKcBPjVpsexE7nIoRMZ5PY8rf5lToxtgKZOWC1yj/juAAFGeIduBfAN8MXjMfs7Z5YX85VMH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(451199021)(15650500001)(8676002)(8936002)(7416002)(5660300002)(41300700001)(316002)(4326008)(2906002)(66946007)(66476007)(66556008)(6512007)(26005)(52116002)(478600001)(186003)(6506007)(1076003)(6666004)(6486002)(86362001)(36756003)(2616005)(83380400001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sNqHo2FvjED9FLNyJb9fPb1L59YwmqoosNsAnXuwWltkM/Q1nTNSui+fTXi6?=
+ =?us-ascii?Q?h2PsYEtmB2GCVopsqLDgg6arHCfW8doEfcbCW3RSY1I9+eMmK0Z9QBIQwI6K?=
+ =?us-ascii?Q?Gg2y68u7n6qe84igdfiZt5MhlgOYkZO8vbAsjz+uPV5TNq8oNSSDbuYwTkOB?=
+ =?us-ascii?Q?ErfpYAdSmoyRdHnkC0deOTP8X5gV/WvbQ0S0D5iy4gK0S1ErIHxeDtAWCYqs?=
+ =?us-ascii?Q?ZTfeRqMCluz4MA56UN7BownEQ6mGGJAOV+oKg/vDoW4JB613qizkhsklSZPL?=
+ =?us-ascii?Q?RbnGNN5PU31RbySxfoYdbQ2k2k+jJu+ut9Kmvs6Df06oi2/dJAkoBu5N4rYm?=
+ =?us-ascii?Q?BapqLTrDf1iwc/UQARjjfq+s6WHXpEDSgLZsyAPSxkgAQhgFtv+4EIiAPFaw?=
+ =?us-ascii?Q?KgDsgZM48W5hmjLIIzZ4qmNe843BCB44o+rd1oEKksHZbipG8FOucz+GpJiy?=
+ =?us-ascii?Q?B9LeFzInImAaj6HZuijlGEQ53Woh0TJTrNdNluSySnf5h6GN0H7UvC0178vA?=
+ =?us-ascii?Q?rBJPaS3jwyjFXzlJ70JluwHfArie3XQsPodbIfNip9myLDq5vztFsQWjIwJC?=
+ =?us-ascii?Q?pOp0mB4TuxA653RCiAsFrhgWWY6XiM1w7xKpwCnoSQq1AcxzAWX/tDdbM7p5?=
+ =?us-ascii?Q?VuypbadhdIYdNpnUXWhAEmwaEVhVDGDbw2BRxxMmEvfwPCspI7ZJmxcmzqc/?=
+ =?us-ascii?Q?92gvHH2YBfd/8upHswvm9aw+wB+5vBeESHyMVeCiid5nbCYyX1vELusz8ROp?=
+ =?us-ascii?Q?EHhzcxe/wE8lOgEksizheb2vOvqDhoWFQccwHIGviUPXxzL0JXSSv5MVxh+C?=
+ =?us-ascii?Q?jUqxIDb+y1cJ0OB9Icl+0f1ysG+nxT2F13sWO6ubbDzaqUSiK+wYQzwlcq9D?=
+ =?us-ascii?Q?sXNVShHll/47vVVl04B4QGwd2fs4cOws7Iv3Xc3dV968CCIuJ9A3qGzs7Odb?=
+ =?us-ascii?Q?/LnEGW+wCab50BFFzKmkp1ae180rKL/mcnqMR6p86GeY+JDfV2Ds7tzMg6yq?=
+ =?us-ascii?Q?mBACyz5hSgxrsO0x1RgGns3eJwqxcB7NVQTTrvvgAPZXe1TI7MN+ER5xBRRq?=
+ =?us-ascii?Q?LfYJXQDZtGkafjZv1tsEYRB+npFV9R8ZyX9Fn8U2QofvwV99KDzS5Sr3+BJN?=
+ =?us-ascii?Q?f24Dj3stBO8RBw3jNZfJQmjrSkM8DUzZX2mvaCgvdLkAdOQHnRtHjjqAyo7G?=
+ =?us-ascii?Q?oS7xeHxyqTaVzUP1vgeZTPkI8la0/83eia8uXTjTQkJoav4MwmYRXX1wu9Vn?=
+ =?us-ascii?Q?k38YOk2HALUbyjer+XgJqs5NDF4KzXkcGtM2PDFB4L5JzeETnbioydyQTiDr?=
+ =?us-ascii?Q?Q3cS3hT280bU6hiReYcjalm0cp7BIzkecEzSVavPl/r7T40jNqnQ2LBvsOOV?=
+ =?us-ascii?Q?hA3YJtEN5wtgpIbrumCIFX8ozHiaWNiew/nrBI/wPusuFvp6/pHXLWj242i1?=
+ =?us-ascii?Q?VWdjbNQKrlcwqkaMfp7HGE54Sm64fojkPyY91Hbul1yuOPUh1fKcUlXEvvET?=
+ =?us-ascii?Q?7cJYxUa/fkmHLNA7cE9eMk3nVtZNaR6kif2/JXDFDEnP69VEtSJWgsrVPi/M?=
+ =?us-ascii?Q?PVwsD4PbUYvpxTQevYsHvlYjjqNl4lsPObG8ENbm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53e0ac55-0e35-4851-0467-08db8d7a86a0
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 01:49:18.8973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Nw/LO8a78HmavYOH/ATEMb+CZe0qPfmZ1bsnxH4RDcTE7ZXYY8GLEPbFAZ+Mque+3/fvFaUT2PMDo573kIWwhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7322
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, but we still need this change to let the sound system can use the
-codec. or do you have any suggestions?
+The ELD (EDID-Like Data) is not updated when the HDMI cable
+is plugged into different HDMI monitors.
+This is because the EDID is not updated in the HDMI HPD function.
+As a result, the ELD data remains unchanged and may not reflect
+the capabilities of the newly connected HDMI sink device.
 
-Thanks,
-Robert.
+To address this issue, the handle_plugged_change function should move to
+the bridge_atomic_enable and bridge_atomic_disable functions.
+Make sure the EDID is properly updated before updating ELD.
 
-Takashi Iwai <tiwai@suse.de> =E6=96=BC 2023=E5=B9=B47=E6=9C=8825=E6=97=A5 =
-=E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=886:25=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, 25 Jul 2023 12:14:56 +0200,
-> Robert Lee wrote:
-> >
-> > Thanks for reply so quickly.
-> > And yes, there are other changes but it is inside our offload pcm
-> > driver to handle it.
-> > Currently we only use it to decode, and we don't need additional option=
- for it.
->
-> It means still a downstream-only change :)
->
-> It's nice to upstream changes in general, but from the upstream POV,
-> only changing this gives no benefit.  Let's tie with the actual use
-> case *in the upstream*.
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > Thanks,
-> > Robert.
-> >
-> > Takashi Iwai <tiwai@suse.de> =E6=96=BC 2023=E5=B9=B47=E6=9C=8825=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=886:05=E5=AF=AB=E9=81=93=EF=BC=9A
-> > >
-> > > On Tue, 25 Jul 2023 11:30:05 +0200,
-> > > Robert Lee wrote:
-> > > >
-> > > > Add to support decode Opus codec in Ogg container.
-> > > >
-> > > > Signed-off-by: Robert Lee <lerobert@google.com>
-> > >
-> > > The change makes sense only when it's really used.  So usually it's
-> > > better to put into a series that actually implements its usage.
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > >
-> > > > ---
-> > > >  include/uapi/sound/compress_params.h | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/uapi/sound/compress_params.h b/include/uapi/so=
-und/compress_params.h
-> > > > index ddc77322d571..bac5797bcb02 100644
-> > > > --- a/include/uapi/sound/compress_params.h
-> > > > +++ b/include/uapi/sound/compress_params.h
-> > > > @@ -43,7 +43,8 @@
-> > > >  #define SND_AUDIOCODEC_BESPOKE               ((__u32) 0x0000000E)
-> > > >  #define SND_AUDIOCODEC_ALAC                  ((__u32) 0x0000000F)
-> > > >  #define SND_AUDIOCODEC_APE                   ((__u32) 0x00000010)
-> > > > -#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_APE
-> > > > +#define SND_AUDIOCODEC_OPUS                  ((__u32) 0x00000011)
-> > > > +#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_OPUS
-> > > >
-> > > >  /*
-> > > >   * Profile and modes are listed with bit masks. This allows for a
-> > > > --
-> > > > 2.41.0.487.g6d72f3e995-goog
-> > > >
-> >
+Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index 9a3db5234a0e0..6fa4848591226 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -196,7 +196,6 @@ struct dw_hdmi {
+ 
+ 	hdmi_codec_plugged_cb plugged_cb;
+ 	struct device *codec_dev;
+-	enum drm_connector_status last_connector_result;
+ };
+ 
+ #define HDMI_IH_PHY_STAT0_RX_SENSE \
+@@ -235,7 +234,7 @@ int dw_hdmi_set_plugged_cb(struct dw_hdmi *hdmi, hdmi_codec_plugged_cb fn,
+ 	mutex_lock(&hdmi->mutex);
+ 	hdmi->plugged_cb = fn;
+ 	hdmi->codec_dev = codec_dev;
+-	plugged = hdmi->last_connector_result == connector_status_connected;
++	plugged = hdmi->connector.status == connector_status_connected;
+ 	handle_plugged_change(hdmi, plugged);
+ 	mutex_unlock(&hdmi->mutex);
+ 
+@@ -2446,20 +2445,7 @@ static void dw_hdmi_update_phy_mask(struct dw_hdmi *hdmi)
+ 
+ static enum drm_connector_status dw_hdmi_detect(struct dw_hdmi *hdmi)
+ {
+-	enum drm_connector_status result;
+-
+-	result = hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
+-
+-	mutex_lock(&hdmi->mutex);
+-	if (result != hdmi->last_connector_result) {
+-		dev_dbg(hdmi->dev, "read_hpd result: %d", result);
+-		handle_plugged_change(hdmi,
+-				      result == connector_status_connected);
+-		hdmi->last_connector_result = result;
+-	}
+-	mutex_unlock(&hdmi->mutex);
+-
+-	return result;
++	return hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
+ }
+ 
+ static struct edid *dw_hdmi_get_edid(struct dw_hdmi *hdmi,
+@@ -2958,6 +2944,7 @@ static void dw_hdmi_bridge_atomic_disable(struct drm_bridge *bridge,
+ 	hdmi->curr_conn = NULL;
+ 	dw_hdmi_update_power(hdmi);
+ 	dw_hdmi_update_phy_mask(hdmi);
++	handle_plugged_change(hdmi, false);
+ 	mutex_unlock(&hdmi->mutex);
+ }
+ 
+@@ -2976,6 +2963,7 @@ static void dw_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
+ 	hdmi->curr_conn = connector;
+ 	dw_hdmi_update_power(hdmi);
+ 	dw_hdmi_update_phy_mask(hdmi);
++	handle_plugged_change(hdmi, true);
+ 	mutex_unlock(&hdmi->mutex);
+ }
+ 
+@@ -3369,7 +3357,6 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
+ 	hdmi->rxsense = true;
+ 	hdmi->phy_mask = (u8)~(HDMI_PHY_HPD | HDMI_PHY_RX_SENSE);
+ 	hdmi->mc_clkdis = 0x7f;
+-	hdmi->last_connector_result = connector_status_disconnected;
+ 
+ 	mutex_init(&hdmi->mutex);
+ 	mutex_init(&hdmi->audio_mutex);
+-- 
+2.34.1
+
