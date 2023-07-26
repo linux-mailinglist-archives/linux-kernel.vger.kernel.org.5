@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC7F762DE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BDD762DE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbjGZHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        id S232734AbjGZHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232601AbjGZHgM (ORCPT
+        with ESMTP id S232274AbjGZHgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:36:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A826D3C06;
-        Wed, 26 Jul 2023 00:34:50 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso3324024a12.1;
-        Wed, 26 Jul 2023 00:34:50 -0700 (PDT)
+        Wed, 26 Jul 2023 03:36:13 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0E71BC3;
+        Wed, 26 Jul 2023 00:35:04 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso775411fac.3;
+        Wed, 26 Jul 2023 00:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690356890; x=1690961690;
+        d=gmail.com; s=20221208; t=1690356903; x=1690961703;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tRnV5JdNqK6jPNuTWUhB/5FsT2nTy7kPcLhJ05f7V50=;
-        b=NzKVQUZrWEDUPGwG4L+CoCaFCJJhMB3qp1CBS7I0lfQxIHInFbXvLjzxd6CcGSAIMx
-         UYbji16yO2CamWVEoGMpBgWgQr6OV4yZ3DWE/AIdk8L/DDD2q7ZeusVf3LISZ8H0CXa8
-         OGKGLI6Bhp+wM/g6RiVwa+q23WQ+yTQlxysKN9YBUGACp7e7GVRPLURKESnjcx1nJ5fq
-         DEmehtyA7lolA8OwCGibF9pECUI2lyUnOxTEh7QFUb4oQJ3GRlusSczyY8p24T0LOxvS
-         IOa7OdBcEwy28ODFQNkPKCt0FBZNETXWKgEaiilD8EljeUvp4n0wb4p561Wy+pnXem7U
-         6oOA==
+        bh=zpAr8v012KhqX1+x4NzPtOBVQVImVkoVUEI38Fgz8rc=;
+        b=i0eKRsjIyVVbYd1lVLYFxs9VTw0eWkseRLxPrzo9du3bo1l6Nzh8E1FwkWGBF2qugV
+         Y8U1q5Ph/70usobN09D7YmqaNyyArEvNbSprA0/2uxpvKlv2uQjCaMfnHMva3Yb0f1FB
+         ddR0dZZn6opfxuiMHySD5eknjPBwgYMHlgrpOlRVhVGAT+8UonayAU5yvdTKTDQqTPEK
+         CFNrU2R2qA6Ym9PDMgNAS4IsDymUeoyhRfRgmnew0xzJg0+Nkb02anrDM6/qucjm96FN
+         SUZSp9zve0eb2iVwngD3Gf1tsbeYG/NR5YxVxCmFRUxRguroX6gNXx11a/Glro8JQyJz
+         Z3FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690356890; x=1690961690;
+        d=1e100.net; s=20221208; t=1690356903; x=1690961703;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tRnV5JdNqK6jPNuTWUhB/5FsT2nTy7kPcLhJ05f7V50=;
-        b=Z5Nd7sXg2aXZGAB/aKp92ZeB2S76TY01juZSS2WbWAbosUqx6I/uWx60kvIXMiLJXi
-         d2YiC48chAoH3S7Xp5qOpzU/Di0w8FiTTlqAr8oewlmtH3DnRwatpuNalHlRscbRao2a
-         2lUwBi49TYeEFfigjVCgqQ1Pb7LZ01ewuR0f4bHYN/7ALuNEU4xnH5CWXsDQlZtVkq41
-         F3bWDjVHv80aUntyZTGLai4qtepZ02AyD40tB23Iyt0mPVOfHKyFqgHQmG1/Yc1eEeJK
-         64dkpnJDgs6uXZcIS6sBLzF08ccYpw1BDSBL2TONChdA2+y520Gd/E8qtBmkA7+Q6XzV
-         DtoA==
-X-Gm-Message-State: ABy/qLb3gOZWjvabigIuMAU0DQUfkpmO+vyKqqzxSHhKN7qBeSKq8MrA
-        85TsR4i6NX4LTW0nid7LMT9GZ9cZvi0=
-X-Google-Smtp-Source: APBJJlF6n2Ig8m+bkHWYCA2c2ByN+HHLx0s15IbXCnTeXShR14Daff60GOc1GOVPzozLC6BIyTkR5A==
-X-Received: by 2002:a17:90a:6344:b0:268:400:ecef with SMTP id v4-20020a17090a634400b002680400ecefmr982916pjs.45.1690356889861;
-        Wed, 26 Jul 2023 00:34:49 -0700 (PDT)
+        bh=zpAr8v012KhqX1+x4NzPtOBVQVImVkoVUEI38Fgz8rc=;
+        b=DWSMpdWVVe/fzRWip3kvwYRZjCrE8hjTue8NPHzLHYyi11VUvZcR8M/FvPK3A5vPjU
+         EJYKfUNm4wzRfp+nrKu9wfMPVzys7ktJ1hTey7LP9o371p9T85/SRi8gIC3d7jYGs06V
+         MUsq4GfQqnbx21W+Ckfu3ewB5mqFIyvUUnXiaO/HHJS+zS0z4tgwlRn4/Xx8p2hlzvzI
+         8r/ELiRxG64zfFFoJ4C15TBWuZl6jv8xIaLblzj3VOuBBb/KsDowPQn6zbHm5tpxNOln
+         D8WfW50tA5KozeDERU5YqlQhZggroeleuj5nSjOfQCV5UaDWNZbMTxOF7GnblDgnPGog
+         5vpw==
+X-Gm-Message-State: ABy/qLZ5KKfLblYvmGZRCNvC5j//cUkQq9AziG96VZxQXyZkNYrqV79s
+        3coaGvAQlS3ey4BHjhgRAl97QGx3VJU=
+X-Google-Smtp-Source: APBJJlFFomszN8kP3yspGJBy2E3RSVrZUxTKDq37vM5cokbTsNsZRBeutqBDHbNe6M8AoC5aMFbX+w==
+X-Received: by 2002:a05:6870:3049:b0:1bb:979d:5b05 with SMTP id u9-20020a056870304900b001bb979d5b05mr1623942oau.57.1690356903596;
+        Wed, 26 Jul 2023 00:35:03 -0700 (PDT)
 Received: from cxl-test.. ([103.181.222.211])
-        by smtp.gmail.com with ESMTPSA id hi16-20020a17090b30d000b0025be7b69d73sm692301pjb.12.2023.07.26.00.34.47
+        by smtp.gmail.com with ESMTPSA id hi16-20020a17090b30d000b0025be7b69d73sm692301pjb.12.2023.07.26.00.35.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 00:34:49 -0700 (PDT)
+        Wed, 26 Jul 2023 00:35:03 -0700 (PDT)
 From:   Raghu Halharvi <raghuhack78@gmail.com>
 To:     linux-cxl@vger.kernel.org,
         Alison Schofield <alison.schofield@intel.com>,
         raghuhack78@gmail.com, ira.weiny@intel.com, bwidawsk@kernel.org,
         dan.j.williams@intel.com, vishal.l.verma@intel.com
 Cc:     linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>
-Subject: [PATCH v7 1/2] cxl/mbox: Remove redundant dev_err() after failed mem alloc
-Date:   Wed, 26 Jul 2023 07:34:20 +0000
-Message-Id: <20230726073421.2452-2-raghuhack78@gmail.com>
+Subject: [PATCH v7 2/2] cxl/region: Remove else after return statement
+Date:   Wed, 26 Jul 2023 07:34:21 +0000
+Message-Id: <20230726073421.2452-3-raghuhack78@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230726073421.2452-1-raghuhack78@gmail.com>
 References: <20230726073421.2452-1-raghuhack78@gmail.com>
@@ -76,34 +76,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Issue found with checkpatch
 
-A return of errno should be good enough if the memory allocation fails,
-the error message here is redundant as per the coding style, removing
-it.
+The else section here is redundant after return statement, removing it.
+Sanity and correctness is not affected due to this fix.
 
 Signed-off-by: Raghu Halharvi <raghuhack78@gmail.com>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
 Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 ---
- drivers/cxl/core/mbox.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/cxl/core/region.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index d6d067fbee97..af7f37cea871 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -1325,10 +1325,8 @@ struct cxl_memdev_state *cxl_memdev_state_create(struct device *dev)
- 	struct cxl_memdev_state *mds;
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index e115ba382e04..bfd3b13dd2c1 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -133,11 +133,11 @@ static int cxl_region_invalidate_memregion(struct cxl_region *cxlr)
+ 				&cxlr->dev,
+ 				"Bypassing cpu_cache_invalidate_memregion() for testing!\n");
+ 			return 0;
+-		} else {
+-			dev_err(&cxlr->dev,
+-				"Failed to synchronize CPU cache state\n");
+-			return -ENXIO;
+ 		}
++
++		dev_err(&cxlr->dev,
++			"Failed to synchronize CPU cache state\n");
++		return -ENXIO;
+ 	}
  
- 	mds = devm_kzalloc(dev, sizeof(*mds), GFP_KERNEL);
--	if (!mds) {
--		dev_err(dev, "No memory available\n");
-+	if (!mds)
- 		return ERR_PTR(-ENOMEM);
--	}
- 
- 	mutex_init(&mds->mbox_mutex);
- 	mutex_init(&mds->event.log_lock);
+ 	cpu_cache_invalidate_memregion(IORES_DESC_CXL);
 -- 
 2.39.2
 
