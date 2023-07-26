@@ -2,163 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2747B763F8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3FE763F9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbjGZT2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S231511AbjGZTaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbjGZT2P (ORCPT
+        with ESMTP id S231370AbjGZT3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:28:15 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AAC2D42
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:28:13 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbbc4ae328so958835ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690399693; x=1691004493;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JT2UHI+2Np7L7QsdeetNAkLhraffv5kgEdfCjKl11Yk=;
-        b=VVF1b7RUawi3/QYYQt22u1jH5OUH1Tf8XnLnE4b/agwXthOwpe69728aWprc+cBAPp
-         m1NzpejyJPFn+J7cEl/k4Xfw7NV/DNs921DAj4mD25qN63m2UV8rxLRjeMa24TJWqXH7
-         YevHJEPTBXycw8cNMxRiQayY5davffRodPeaquNPMlG3yhTbW+l2TZNv0KoNxIAjUf1u
-         vx7QnvYOOpb+Nn9iea9EFg+zAfgVPq5/2O4eLtzlraYz5aepPr1S1PEGRUkv/ClpXjx1
-         oD0KN8QbT88DXT6sIsMyGXbNhhlwFsmmZRUM0BDYakuaZeCUCb/tpsShC/zQA5q7Janp
-         MXpA==
+        Wed, 26 Jul 2023 15:29:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190692D5B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690399743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SwkepaC05QLl5gztwV48WAfFUdJ93Ti/DuPyfYVfFp8=;
+        b=XwrU2YLYnHbCMZ6NJWpLROK+pvkm6m49kwsDarw8mXGc7mSEdNcW28bnizm36Ca0WrOWT/
+        8/r/1L7BpEs5sGAhvBMy+iRjS0e2K84gg21xfw1g5Gf1cUvba4VwIemaygFVI29kbSdp5w
+        q7RPoR44zs95AvCw5jRDieHT4inxjBw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-671-r2vllq_-PO-mCRYr0_3SAw-1; Wed, 26 Jul 2023 15:29:02 -0400
+X-MC-Unique: r2vllq_-PO-mCRYr0_3SAw-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-997d069a914so3327666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:29:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690399693; x=1691004493;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JT2UHI+2Np7L7QsdeetNAkLhraffv5kgEdfCjKl11Yk=;
-        b=APZK3EBRIN8fWw6YSv12WySkRBtK0qJVA0ylwFLP8kHh3wMuSo2Ln725WV/ITneuf0
-         QgiLe5akFhh3cNFPuSGp1x9XQpHNv32DLRFKAOFxC4V8JOglPaHArKuTtheRrYwTJXbG
-         vXSmEK4VB0YTrWaCKz+3O940q8ojYZwsQeiwwDNpn0uJkM3u2eXU0SLLuh7lJxxzxeEG
-         DQn7ZI769SX//yEba6V43Rzu26Z+wTIPBIoOprQ08Z25jLyqoSF1REYgeKcqPvr+mTrs
-         VQ68w27MnnDHxjz+s38lsWRqtX3syyWYAPHBgWNnlL3S6XEuNIV2sN5OgzkWlOzKwc8k
-         tLLg==
-X-Gm-Message-State: ABy/qLaaTV1wXwKBb80tQocCs5tmBuJl2yYuia0Rjm9iMMdCbaCEzqkY
-        eFHu4s3IOpf/EKNiDTcSt+ggS6VE2e4=
-X-Google-Smtp-Source: APBJJlGcmwLcdH6TXOymYc9nTB5UyZup+2YRvQp3iON5gHoKZStwU7nqu5mwxNJ6DvyQEbhf1ifDNjwDMJ4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ce8b:b0:1b8:2055:fc1f with SMTP id
- f11-20020a170902ce8b00b001b82055fc1fmr13036plg.2.1690399693010; Wed, 26 Jul
- 2023 12:28:13 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 12:28:11 -0700
-In-Reply-To: <8f7ea958-7caa-a185-10d2-900024aeddf0@quicinc.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
- <8f7ea958-7caa-a185-10d2-900024aeddf0@quicinc.com>
-Message-ID: <ZMFzyy5mZVxLn4uo@google.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690399725; x=1691004525;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SwkepaC05QLl5gztwV48WAfFUdJ93Ti/DuPyfYVfFp8=;
+        b=W5NVblB01VHaHxhUbQHYwn1Bzhd0fJZeHOBXCw3SMDB4agoT3b5tFcOzaMpNWoEUa2
+         +Nj9zIvB2UU3Azcrkv1eYCk8XSHV5T2PP8GvU7k17ssdUqf6kgKFQth1VimJvouZ5EZu
+         boXc6u0mQE+n6k2SaRgHEhfG3qdaq3q3bngQF+OfOHE/ATK9yJmVTF4RKwszLmJVyr1j
+         6mAMbZdEwyACXy8A3xqNY+ird9SDbDPXGM2r/I+EzrHaJ2uPeIUxFWn1kKOdiMKMUXsm
+         zMC9vxFlyfiJ9iNhRi5S1FLzTrYQCjdyJN+LFK7nvQg5G+yeA4RoyomSizt3YEMhO0jM
+         pWQA==
+X-Gm-Message-State: ABy/qLab02SH43IY38KQev9UPQtEJsm8ipJkLnfa+LQ+aqPD6dRP9QZz
+        CzLqi4UNZ0tnhBSP/z7pN9//utziLUWM7NUwtwcK9r9+YOBmbEUUwLb89nZt5HCNMUr3QxIFJg9
+        Wf4OfgB9e2wUMvHuwAOqNdJC/
+X-Received: by 2002:a17:906:1ba2:b0:991:e7c3:5712 with SMTP id r2-20020a1709061ba200b00991e7c35712mr98549ejg.30.1690399725408;
+        Wed, 26 Jul 2023 12:28:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHhQ3WDKlew1+1e3F7M/hEhcV3TrwVWza1XW/STKFBc6D4wdOZOdGNePdu6A08NQAkUqJEdpA==
+X-Received: by 2002:a17:906:1ba2:b0:991:e7c3:5712 with SMTP id r2-20020a1709061ba200b00991e7c35712mr98541ejg.30.1690399725074;
+        Wed, 26 Jul 2023 12:28:45 -0700 (PDT)
+Received: from redhat.com ([2.52.14.22])
+        by smtp.gmail.com with ESMTPSA id w8-20020a1709064a0800b0099bd4e3b4b3sm155891eju.199.2023.07.26.12.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 12:28:42 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 15:28:38 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     Parav Pandit <parav@nvidia.com>,
+        "linma@zju.edu.cn" <linma@zju.edu.cn>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 0/2] vdpa: Enable strict validation for netlink ops
+Message-ID: <20230726152820-mutt-send-email-mst@kernel.org>
+References: <20230726183054.10761-1-dtatulea@nvidia.com>
+ <20230726143640-mutt-send-email-mst@kernel.org>
+ <8a97e0d439d74373605b00dcaef91108ced9e5ee.camel@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a97e0d439d74373605b00dcaef91108ced9e5ee.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023, Elliot Berman wrote:
-> 
-> 
-> On 7/18/2023 4:44 PM, Sean Christopherson wrote:
-> > TODO
->  <snip>
-> > diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-> > index 6325d1d0e90f..15041aa7d9ae 100644
-> > --- a/include/uapi/linux/magic.h
-> > +++ b/include/uapi/linux/magic.h
-> > @@ -101,5 +101,6 @@
-> >   #define DMA_BUF_MAGIC		0x444d4142	/* "DMAB" */
-> >   #define DEVMEM_MAGIC		0x454d444d	/* "DMEM" */
-> >   #define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
-> > +#define GUEST_MEMORY_MAGIC	0x474d454d	/* "GMEM" */
-> 
-> 
-> Should this be:
-> 
-> #define GUEST_MEMORY_KVM_MAGIC
-> 
-> or KVM_GUEST_MEMORY_KVM_MAGIC?
-> 
-> BALLOON_KVM_MAGIC is KVM-specific few lines above.
+On Wed, Jul 26, 2023 at 06:56:24PM +0000, Dragos Tatulea wrote:
+> On Wed, 2023-07-26 at 14:36 -0400, Michael S. Tsirkin wrote:
+> > On Wed, Jul 26, 2023 at 09:30:48PM +0300, Dragos Tatulea wrote:
+> > > The original patch from Lin Ma enables the vdpa driver to use validation
+> > > netlink ops.
+> > > 
+> > > The second patch simply disables the validation skip which is no longer
+> > > neccesary. Patchset started of from this discussion [0].
+> > > 
+> > > [0]
+> > > https://lore.kernel.org/virtualization/20230726074710-mutt-send-email-mst@kernel.org/T/#t
+> > 
+> > Cc stable with at least 1/2 ?
+> > 
+> Sent a v2 with stable in cc. But looks like 1/2 breaks the "fix one thing only"
+> rule due to the many Fixes tags I guess...
 
-Ah, good point.  My preference would be either KVM_GUEST_MEMORY_MAGIC or
-KVM_GUEST_MEMFD_MAGIC.  Though hopefully we don't actually need a dedicated
-filesystem, I _think_ it's unnecessary if we don't try to support userspace
-mounts.
+you can split it up to 3 patches to simplify backports if you like.
 
-> ---
+
+
+> > > Dragos Tatulea (1):
+> > >   vdpa: Enable strict validation for netlinks ops
+> > > 
+> > > Lin Ma (1):
+> > >   vdpa: Complement vdpa_nl_policy for nlattr length check
+> > > 
+> > >  drivers/vdpa/vdpa.c | 9 +++------
+> > >  1 file changed, 3 insertions(+), 6 deletions(-)
+> > > 
+> > > -- 
+> > > 2.41.0
+> > 
 > 
-> Originally, I was planning to use the generic guest memfd infrastructure to
-> support Gunyah hypervisor, however I see that's probably not going to be
-> possible now that the guest memfd implementation is KVM-specific. I think
-> this is good for both KVM and Gunyah as there will be some Gunyah specifics
-> and some KVM specifics in each of implementation, as you mentioned in the
-> previous series.
 
-Yeah, that's where my headspace is at too.  Sharing the actual uAPI, and even
-internal APIs to some extent, doesn't save all that much, e.g. wiring up an ioctl()
-is the easy part.  Whereas I strongly suspect each hypervisor use case will want
-different semantics for the uAPI.
-
-> I'll go through series over next week or so and I'll try to find how much
-> similar Gunyah guest mem fd implementation would be and we can see if it's
-> better to pull whatever that ends up being into a common implementation?
-
-That would be awesome!  
-
-> We could also agree to have completely divergent fd implementations like we
-> do for the UAPI. Thoughts?
-
-I'd like to avoid _completely_ divergent implementations, e.g. the majority of
-kvm_gmem_allocate() and __kvm_gmem_create() isn't KVM specific.  I think there
-would be value in sharing the core allocation logic, even if the other details
-are different.  Especially if we fully commit to not supporting migration or
-swap, and decide to use xarray directly to manage folios instead of bouncing
-through the filemap APIs.
-
-Thanks!
