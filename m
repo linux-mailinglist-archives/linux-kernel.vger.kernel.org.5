@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0265763D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40A0763DA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjGZR0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S232405AbjGZR1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjGZR0R (ORCPT
+        with ESMTP id S229524AbjGZR1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:26:17 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F651FDA;
-        Wed, 26 Jul 2023 10:26:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690392374; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=q6X5h8Fwa4huGbMCWO2FtTBI8+0PCWdL3S5qjNNNPkdPilwYLIEKLGZEubfdeShcnZ
-    qMaroeRlUzLT+UpJwKPfHF6pJhM8v2x/X2Q43kzrKlTduz2FOLlc7uqQsfZ+SM97zpGQ
-    0yWbCuRvMqNTZ26TfpYDFaZUFc8bhIhiQIOx+QZ23oVG/0X0X7ilrr5Uo/jC6ppeYf/9
-    /2ior4NH4WYeqw6JNuPIMFy8h31SGgok0cedLMw3mrYWc7OUahKcUUBAAGuZ3Vrlmhe3
-    kgFg9CUEqJM9D90dxEFjJ40EL9pRJiSqlyMJmN2J/g2pkr0yGz3navVOBLLt2DswE/CQ
-    uKoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690392374;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=wnFrsFevLv+W25WxW5m3+d6JiTPQB16nSEq3hHRGu+g=;
-    b=nmpsZGsYKjvwcRo9RCEYr+Teue1KIVzB1PBt0obP1rTuHkneTVCXneE+qTNOTo7Nm8
-    icHpaKYknG1lcDPe4eyW1ZEzWt6rwAJZHOHIufSGTFGpT1ZA6gPYrqjabAtJe1lKACya
-    K0iMFelRv5WY7DgoXcRCpfM4IiMiIe1dvoVNEFJYhLneASNG/VjQuc18IoCc/EM47hY8
-    VV7JffgZZy/q237xqucDfUtviwx/tYqDICJoeE6iEaR4vClunr3lQY0dV6QRlpZLQWf0
-    43IVrPos6YK3whbOMtBdQlbkb+JZcnDT7UOvptwErqz6u7xYtIATrA4x/yLAIJ2Z2Rf3
-    Ox4Q==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690392374;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=wnFrsFevLv+W25WxW5m3+d6JiTPQB16nSEq3hHRGu+g=;
-    b=CLMr1ziN0eoLOPeZ49YQqhrJdib5PT6QCdzRPnSYbr6HWZvpJzeAD/xGATdeM5U//1
-    fIQZL4i/nfc2Ecgqz8Aj/1gJiRTj4pwGGhyXNYW/8xgi7ePQMcxYphQBN2SckJvvQAno
-    /SrbnNEBzTaNUP7/3ECLVbSlghdhp8Wu1noiksHLuwwPo3wKQgv6ZlGHDvYB14Smg2QY
-    XVhItYU5V6WV3gResVIxDNG+QiqUAGHwiH+d2V54i/+TMSm5utm6tIguhHR30EDab7X2
-    LiX3kMh8oZpK1GbBpKokCXxtckKbxbILsfuYwTULp4mpKI6Tt7Pf7QzkQ8Vsiv+AtKVK
-    eG+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690392374;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=wnFrsFevLv+W25WxW5m3+d6JiTPQB16nSEq3hHRGu+g=;
-    b=J1xy1RwPEn3FM+D+27b6X7IAeP8Kyj6Vhob4Dn6iJnC+G51KPPj+mQuOHdDv2hUo6f
-    L6kWB2wzTINtLf3PNgAA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA95vh"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z6QHQE8Fg
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 26 Jul 2023 19:26:14 +0200 (CEST)
-Date:   Wed, 26 Jul 2023 19:26:13 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] interconnect: qcom: qcm2290: Set AB coefficients
-Message-ID: <ZMFXNZbYdpnFVsoV@gerhold.net>
-References: <20230726-topic-icc_coeff-v1-0-31616960818c@linaro.org>
- <20230726-topic-icc_coeff-v1-2-31616960818c@linaro.org>
- <ZMFVZJa647SNwrJX@gerhold.net>
- <5667c93a-408f-3802-b168-f3a145dfcb43@linaro.org>
+        Wed, 26 Jul 2023 13:27:02 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FD71BC1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:27:00 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40540a8a3bbso17141cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690392419; x=1690997219;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eh/u/3oGRS27e8zFhRvxdI/qhhrHZL9r58i24C4GPzM=;
+        b=Z5nnOHOsigSkUjHY9VXlm8uRkVIK+o/C2ciOWGFX5ZreNGtzqo/DStSNwyhEIhOtlQ
+         1HZzHZ5Z/bI51P/9sr29qxtvtj/V7i2ofdTHxABNFkC9eDM95l42z0FNMm0TGm319XUX
+         8bUiZ5pTUJOSjIx+EL3W7+eREjzSB+v3AHoeoeHSU8w7nIsb0HUjj5eVzjlzr07yvf4A
+         3xFcVLyORSM2Y7MmUPJ7UscJYE2y4a9wj3WBOgW8PAgwhhKBZTvGayeQaIqTVoCeQwAx
+         UmxxXi4SVtt1jxPdhne6PV59lg+8y8GnTdCo+UhI8ClHj1C9555IwX7cRS7NSPp9n0NB
+         3W1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690392419; x=1690997219;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eh/u/3oGRS27e8zFhRvxdI/qhhrHZL9r58i24C4GPzM=;
+        b=FP9oggE0sqyztOm3k5utzVGOj10IPBE7L3B1gCb57jxSkEQj6NVGUR7sMYQX75sZqA
+         gZheKOnbh2eyt5N8J4LYVsCZP0v3LHjK1Pnc/EvefGGftdyVkljpSPEAQR4LbVE8IASL
+         EY6OX+mjG4acPdf9f27BE69GCGi+UJDH1dq1w2ldPjs6/W6Jc8NFP0MooMlyXEbvyjyw
+         X3Z0UhKDPfb5TWIor9JBVvbHDBTF89cbxTdIq000Z30IUyQQQfGmr7f7ETpKSHRkPl7P
+         5ChNUazREikbjQB3RJESfQOa0v1CVhyxz/wxrDsYrFfAC3KNVI065ZTinlAx4C5Of3LZ
+         6UxQ==
+X-Gm-Message-State: ABy/qLbU0EouLWyGZJoXO4SndFLlc2K48Z5e7CbanHGwUTQtQPK4rId6
+        yU//02jiqnj9votF9USup+Z/Zyc499ewHrgIP4R/VL+HMOm49in25h0=
+X-Google-Smtp-Source: APBJJlHGWp+bm4jUOLGlkNEl7j1aAqridXdXn43BV8tVe7NcvahvARkO60jNNy8/qF/NabVfFMjAZLZ74r9V7SwkK/E=
+X-Received: by 2002:a05:622a:18a1:b0:403:eeb9:a76 with SMTP id
+ v33-20020a05622a18a100b00403eeb90a76mr529479qtc.17.1690392419547; Wed, 26 Jul
+ 2023 10:26:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5667c93a-408f-3802-b168-f3a145dfcb43@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230725092149.443119-1-xiexiuqi@huawei.com>
+In-Reply-To: <20230725092149.443119-1-xiexiuqi@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 26 Jul 2023 10:26:48 -0700
+Message-ID: <CAP-5=fV5NZTFM_9+KnKhZKWmnqc223koOioE9O6hzAvPMrxy7g@mail.gmail.com>
+Subject: Re: [PATCH] tools/mm: fix undefined reference to pthread_once
+To:     Xie XiuQi <xiexiuqi@huawei.com>
+Cc:     akpm@linux-foundation.org, acme@redhat.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, weiyongjun1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,22 +70,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 07:20:27PM +0200, Konrad Dybcio wrote:
-> On 26.07.2023 19:18, Stephan Gerhold wrote:
-> > On Wed, Jul 26, 2023 at 06:25:44PM +0200, Konrad Dybcio wrote:
-> >> Some buses need additional manual adjustments atop the usual
-> >> calculations. Fill in the missing coefficients.
-> >>
-> >> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > 
-> > What about the funny util-fact/vrail-comp on the mas-apps-proc node
-> > downstream?
-> Can't see it neither on msm-5.4 (with the icc API) nor in the 4.19 (msmbus)
-> device tree.
-> 
+On Tue, Jul 25, 2023 at 2:24=E2=80=AFAM Xie XiuQi <xiexiuqi@huawei.com> wro=
+te:
+>
+> Commit 97d5f2e9ee12 ("tools api fs: More thread safety for global
+> filesystem variables") introduces pthread_once, so the libpthread
+> should be added at link time, or we'll meet the following compile
+> error when 'make -C tools/mm':
+>
+>   gcc -Wall -Wextra -I../lib/ -o page-types page-types.c ../lib/api/libap=
+i.a
+>   ~/linux/tools/lib/api/fs/fs.c:146: undefined reference to `pthread_once=
+'
+>   ~/linux/tools/lib/api/fs/fs.c:147: undefined reference to `pthread_once=
+'
+>   ~/linux/tools/lib/api/fs/fs.c:148: undefined reference to `pthread_once=
+'
+>   ~/linux/tools/lib/api/fs/fs.c:149: undefined reference to `pthread_once=
+'
+>   ~/linux/tools/lib/api/fs/fs.c:150: undefined reference to `pthread_once=
+'
+>   /usr/bin/ld: ../lib/api/libapi.a(libapi-in.o):~/linux/tools/lib/api/fs/=
+fs.c:151:
+>   more undefined references to `pthread_once' follow
+>   collect2: error: ld returned 1 exit status
+>   make: *** [Makefile:22: page-types] Error 1
+>
+> Fixes: 97d5f2e9ee12 ("tools api fs: More thread safety for global filesys=
+tem variables")
+> Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
 
-Not sure where to get up-to-date device trees nowadays. The AOSP repo
-I was looking at has this commit where it was added:
-https://android.googlesource.com/kernel/msm-extra/devicetree/+/02f8c342b23c20a5cf967df649814be37a08227c%5E%21/#F0
+Apologies.
+Acked-by: Ian Rogers <irogers@google.com>
 
-Stephan
+Alternatively we could #ifdef the behavior, but this way is cleaner imo.
+
+Thanks,
+Ian
+
+> ---
+>  tools/mm/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/mm/Makefile b/tools/mm/Makefile
+> index 6c1da51f4177..9997b2e401ae 100644
+> --- a/tools/mm/Makefile
+> +++ b/tools/mm/Makefile
+> @@ -9,7 +9,7 @@ LIB_DIR =3D ../lib/api
+>  LIBS =3D $(LIB_DIR)/libapi.a
+>
+>  CFLAGS +=3D -Wall -Wextra -I../lib/
+> -LDFLAGS +=3D $(LIBS)
+> +LDFLAGS +=3D $(LIBS) -lpthread
+>
+>  all: $(TARGETS)
+>
+> --
+> 2.25.1
+>
