@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A0676396A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF1176396F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjGZOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
+        id S232809AbjGZOnl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 10:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjGZOmG (ORCPT
+        with ESMTP id S232065AbjGZOnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:42:06 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE4A10DB;
-        Wed, 26 Jul 2023 07:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690382526; x=1721918526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ZxC6gwU9yWXdN1PqA4ssVDQ/brLW7zgoTQ9uUdeKKU0=;
-  b=YGTAty6qe2KoxsufowERzMEv90MeNvzx/g0Isz5AwL2k773qtPVWbJkf
-   ltrPfnXVv0gKmLrgyBc+VupmH2z+/P/rrXw8BvDH0R8b2N6G6Ehl9rC4T
-   pbyQTbC5u8o4FDNEd/KiHaSblrpW+Zpl3IOxfJrKJLMOJnsbECuMrwwan
-   27LADtK7QBxbZTHJwbUZw1sTfVLE37w0Afyn18Ax/lno2Dra58vEfDRVf
-   MBpHtPns02M/tw5VypDSWgUBs2CFnAjetcd58yyWIqENdlTetvSAavKhR
-   j/k2l7Z/SmRPnKHRpt32iPT0b9jDYEkYeeDwvGiwFYrQ7+QPgSx2N+Uzz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371645477"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="371645477"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 07:42:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="756270101"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="756270101"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 26 Jul 2023 07:42:02 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qOfiD-00BKUL-0p;
-        Wed, 26 Jul 2023 17:42:01 +0300
-Date:   Wed, 26 Jul 2023 17:42:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ruihong Luo <colorsu1922@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        stable@vger.kernel.org, luoruihong@xiaomi.com,
-        weipengliang@xiaomi.com, wengjinfei@xiaomi.com
-Subject: Re: [PATCH v4] serial: 8250_dw: Preserve original value of DLF
- register
-Message-ID: <ZMEwuMLQlwABZeRo@smile.fi.intel.com>
-References: <20230713004235.35904-1-colorsu1922@gmail.com>
- <5fac4a28-ff70-d6e6-dcee-8cb45916789@linux.intel.com>
- <ZLFAD8lblUA6/cVd@smile.fi.intel.com>
- <2023072546-ladies-landlord-8a6d@gregkh>
+        Wed, 26 Jul 2023 10:43:39 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B216CE;
+        Wed, 26 Jul 2023 07:43:38 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-569b5489e6cso626901eaf.0;
+        Wed, 26 Jul 2023 07:43:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690382617; x=1690987417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L0c1yWE0v+Gdqy5SNM2fbnebZ+8ijvAe6qjOROFkPo0=;
+        b=WR51e1q7aGfPAW9X1igdUgv3UhPfSXaljpqrwO0xoIUZDkMSZqKkcfdPDnwY9x8Uso
+         ridKmpgHeHUVXBVGRPsP3sLxEqLYEq6GubDqYZQknzzE1S690Dtk0/b/1/75ByGCz30m
+         +1xRMAzWNtNesaPxg32nCqRaVZiRpg6VS1Pxz+yFutVAvYy8A3m1+seyOzDtBmaBzSK5
+         jgKBetGZ+yZ7+tK8UA6HehNjEqbyduSisgz43hRuKUcp5DYFB+rJqoIlHCHjgML/R8Rq
+         RRDCcTBDUZ6G7HItg4Ig12BqOhY8EnoXnmrEEpIAUgI0qfxX4IqGL4MSW9RxDzmmWTBr
+         FbAg==
+X-Gm-Message-State: ABy/qLb0xwcsLkeeRnbVK8zgjORSOV1vwJH4K2VgihlbdbZicnQO5Ujg
+        eIZ7GIYX2dRqZvhZJeauidUMvvCzleWW5cQEPvMvA+IoDX4=
+X-Google-Smtp-Source: APBJJlEot1TWnEx9OLBHq2rxdXllWLriB2pHNXKA39iLz+HaQZ1tvB9FFWjGQdsV9y9nwDblo5UnNr/4Aqqp8e4O0qc=
+X-Received: by 2002:a4a:e5d6:0:b0:563:3b56:5dc1 with SMTP id
+ r22-20020a4ae5d6000000b005633b565dc1mr1677694oov.0.1690382617381; Wed, 26 Jul
+ 2023 07:43:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023072546-ladies-landlord-8a6d@gregkh>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <006901d9be8c$f4439930$dccacb90$@telus.net> <CAJZ5v0hqPb1+tzGiOCSKr=4QcjnRKT5Gd8FcNbD_Gz5CnAw8tw@mail.gmail.com>
+ <CAAYoRsUu-5u73cSASua133EE3+zTRbTgq-kEn2L52e4=n6X46g@mail.gmail.com>
+In-Reply-To: <CAAYoRsUu-5u73cSASua133EE3+zTRbTgq-kEn2L52e4=n6X46g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 26 Jul 2023 16:43:26 +0200
+Message-ID: <CAJZ5v0jiQ-JFsFAFQFTZVGe-NobaRp7oo95R=Dju9b54n6iKEw@mail.gmail.com>
+Subject: Re: [PATCH] x86/aperfmperf: Make stale CPU frequency response within limits.
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-pm@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        yang.jie@linux.intel.com, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:31:17PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 14, 2023 at 03:31:11PM +0300, Andy Shevchenko wrote:
-> > On Fri, Jul 14, 2023 at 03:07:42PM +0300, Ilpo J�rvinen wrote:
-> > > On Thu, 13 Jul 2023, Ruihong Luo wrote:
-> > > 
-> > > > Preserve the original value of the Divisor Latch Fraction (DLF) register.
-> > > > When the DLF register is modified without preservation, it can disrupt
-> > > > the baudrate settings established by firmware or bootloader, leading to
-> > > > data corruption and the generation of unreadable or distorted characters.
-> > > > 
-> > > > Fixes: 701c5e73b296 ("serial: 8250_dw: add fractional divisor support")
-> > 
-> > > You forgot to add:
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > 
-> > It's there. Just not in the commit message. It's fine.
-> 
-> No it isn't, that's not how to have a patch added to the stable tree, as
-> my form letter says:
-> 
-> <formletter>
-> 
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read:
->     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> for how to do this properly.
-> 
-> </formletter>
-> 
-> I'll go fix it up by hand...
+Hi Doug,
 
-Good to know, thank you for the clarification!
+On Tue, Jul 25, 2023 at 9:12 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> Hi Rafael,
+>
+> On Tue, Jul 25, 2023 at 11:31 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Tue, Jul 25, 2023 at 2:14 AM Doug Smythies <dsmythies@telus.net> wrote:
+> > >
+> > > Currently, when the CPU frequency is stale the nominal clock frequency
+> > > is returned by calls to arch_freq_get_on_cpu(). Some users are
+> > > confused by the high reported frequency when their system is idle
+> > > and/or it is above a reduced maximum they set.
+> > >
+> > > This patch will return the policy minimum as the stale frequency reply
+> > > from arch_freq_get_on_cpu().
+> > >
+> > > Reported-by: Yang Jie <yang.jie@linux.intel.com>
+> > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=217597
+> > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > ---
+> > >  arch/x86/kernel/cpu/aperfmperf.c | 13 +++++--------
+> > >  drivers/cpufreq/cpufreq.c        | 18 ++++++++++++++++++
+> > >  include/linux/cpufreq.h          |  5 +++++
+> > >  3 files changed, 28 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kernel/cpu/aperfmperf.c b/arch/x86/kernel/cpu/aperfmperf.c
+> > > index fdbb5f07448f..44cc96864d94 100644
+> > > --- a/arch/x86/kernel/cpu/aperfmperf.c
+> > > +++ b/arch/x86/kernel/cpu/aperfmperf.c
+> > > @@ -418,9 +418,10 @@ unsigned int arch_freq_get_on_cpu(int cpu)
+> > >         unsigned long last;
+> > >         u64 acnt, mcnt;
+> > >
+> > > -       if (!cpu_feature_enabled(X86_FEATURE_APERFMPERF))
+> > > -               goto fallback;
+> > > -
+> > > +       if (!cpu_feature_enabled(X86_FEATURE_APERFMPERF)){
+> > > +               freq = cpufreq_quick_get(cpu);
+> > > +               return freq ? freq : cpufreq_quick_get_min(cpu);
+> > > +       }
+> > >         do {
+> > >                 seq = raw_read_seqcount_begin(&s->seq);
+> > >                 last = s->last_update;
+> > > @@ -433,13 +434,9 @@ unsigned int arch_freq_get_on_cpu(int cpu)
+> > >          * which covers idle and NOHZ full CPUs.
+> > >          */
+> > >         if (!mcnt || (jiffies - last) > MAX_SAMPLE_AGE)
+> > > -               goto fallback;
+> > > +               return cpufreq_quick_get_min(cpu);
+> > >
+> > >         return div64_u64((cpu_khz * acnt), mcnt);
+> > > -
+> > > -fallback:
+> > > -       freq = cpufreq_quick_get(cpu);
+> > > -       return freq ? freq : cpu_khz;
+> >
+> > It looks to me like modifying cpufreq_quick_get) to return policy->min
+> > if policy->cur is 0 would work in a similar way, wouldn't it?
+>
+> For the configuration of intel_cpufreq driver (intel_pstate in
+> passive mode), schedutil governor, HWP enabled, for
+> a stale frequency  policy->cur is not 0 and will always
+> be whatever the min value was when the driver was initialized,
+> regardless of what has been set since.
 
+So I would prefer to address this in the intel_pstate driver than to
+work around it in the core.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> The patch I submitted deals with that situation also.
+>
+> A complete list of driver/governor/HWP stale frequency
+> replies can be found on the bugzilla report at:
+>
+> https://bugzilla.kernel.org/attachment.cgi?id=304694
+>
+> There might be push back on some of the performance
+> governor stale frequency replies. I could not figure out
+> a performance governor dependant reply.
+>
+> Also there are other callers to cpufreq_quick_get
+> and I was not sure I could mess with the function
+> response for them. For example
+> drivers/devfreq/tegra30-devfreq.c
+> and drivers/thermal/cpufreq_cooling.c
+> and drivers/powercap/dtpm_cpu.c
 
+IIUC, all of the above rely on policy->cur being nonzero.
 
+There are other users doing questionable things when
+cpufreq_quick_get() returns 0 that I think would be better off if the
+min is returned instead.
