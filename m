@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A22AC762FAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36104762FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjGZIXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
+        id S233086AbjGZIYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbjGZIWU (ORCPT
+        with ESMTP id S233117AbjGZIWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:22:20 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7456E99
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:19 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-348c03de0e7so16509305ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:19 -0700 (PDT)
+        Wed, 26 Jul 2023 04:22:53 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951426EA2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:24 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-563dfffea87so495581a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690359018; x=1690963818;
+        d=bytedance.com; s=google; t=1690359024; x=1690963824;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zLmPRatqLaPjNdFSIOQqmfdfgzRaFIKbs75zNZxQM3k=;
-        b=edqfz4k42nCM4mbt3rgbm433jEQgkgjdf50ULvk8j2xYHjezVeSFt1oZ907tUkLq6H
-         ow/CoVkmA5DqlFbF8xELCu7XeAPlG3bTVmgL6D3d33T+UtZlMVWJMJvrYHZ4nrda3KuW
-         Pp+6+h0GCAVyTF84xW6NaL1Yy0kreE4NvfODNzLeX1FkzSpYfE4EDIGnEfkgGSLFIcf/
-         JNvbkrZvHx4x5rq0B03sAvUSxcYYjCKmiCcAjvYEtA5Y4uzZBxgt5r99KZvcg2AJ4Ce2
-         mlpfpAvootB9ZFpXGuoGEyHBwrOZDmHKQMbdKy+9I1mars1V4N4rHoRVXeHhHak5dgDV
-         uiPw==
+        bh=oxj+btiC5bp07i0raCrQCISm2j0evx87VB7Ft6vQm0Y=;
+        b=P+/0rgLtEdpbjzKqmA02o57JAFTpubjCpSW6mbosOnpFa92pkdk6Jcgr2NP/7Cwuqv
+         X704pWI/GcFkT+iYFHPSJB4sqKMdrdQDbQO40IHz8iIVf4GjaTiv6wZEnyXnNguWrM+W
+         x4jUL97/rQ4GOieM5c2xzpBxvTkZ6DSetuV5zIGVZqGZ2sm4rHt43AqEx6Fkn8k50sjH
+         SRru4KNzIIA6FNTeYMNPz5gIVMHzVscuHdHd4gtKTsN9OUrOXGyDqcUS5HBnD3L+NgwX
+         G5eGekoi/fvhPV5mfSGu8zzazu4u7WPmnD8TUvnKm5P2igUsV6DLAbGfvYr5+JXeQ9DH
+         sPGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690359018; x=1690963818;
+        d=1e100.net; s=20221208; t=1690359024; x=1690963824;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zLmPRatqLaPjNdFSIOQqmfdfgzRaFIKbs75zNZxQM3k=;
-        b=aWtrxjF1kCpeTRpF9u6Rgcqbc3rRKslqBQcTAO64Xha2JuLo9TrVHs2a9Ad7WlFp2d
-         qNRZ6oymkX5NjgKhIfIjvf4ykwKpPNOppEc2YfKb/4rUcxrDeYlu/cNIKPdUSCviaOAD
-         XA8BSjgCw+O/Xefwmb0gcohkxV83nIZe0Ucenj0T/zsWsN9OY/Vlexe8jxT/BcOai/bu
-         cEneq9jtMp8RiIP/B7iIXH+kXuL9QhpwbGrI4L8jS8HlavrIzLyCszaL/SH8ABiLWM/4
-         ejZ/QcEPwMHJXpqexTLGz04eWpAI/tL7gz59SqpzV00dP2WZbhnU0OITPw70ZaPM/2MM
-         B14Q==
-X-Gm-Message-State: ABy/qLYHE5sYr+lENtiiOhNdjuB7c6xssiGslyKnj2Wnw54FbUAJKddc
-        M7qkZoG56MxafSUCzH3iZ7sczw==
-X-Google-Smtp-Source: APBJJlGa1sI8Ot6wDuAGAIzbtMGaPwlxOu08ayCD0nVOoODHEZRjd9Ytl9786BZoeyT8Q0+YuiMnMQ==
-X-Received: by 2002:a05:6e02:92d:b0:348:c57f:b016 with SMTP id o13-20020a056e02092d00b00348c57fb016mr1153348ilt.3.1690359018367;
-        Wed, 26 Jul 2023 01:10:18 -0700 (PDT)
+        bh=oxj+btiC5bp07i0raCrQCISm2j0evx87VB7Ft6vQm0Y=;
+        b=ST/ygb2omoo2B6YbOZKvUc5nx+mLRb6IPoBNbqDZyALeOhHYNtYqlmTQyAw/jFNqOi
+         5f5QIOp9E31x0/nFaipam3h7+g3cGWmn/2TwMZa9j/IE69PhIGMBvPteuQcv0qOjgSFt
+         pBsE25Gf+9lBqljidDe7FENBt0eAqo7DHYUUkdz3IaMMzJGWS4cHpCcvFuG97ZPVr/4H
+         5mcP+efKuIP7IW0LUKY3Y1fNCVI8afPKKPrDBUG3T9rQ+BezIE4kZMpBH3ejpFVOwnlw
+         er6G+aegHrml2/PyLCate0JqC4+g10d7w7srFpfcdy6jwetCSrKmrKLS0FEFe3Gg8E6Q
+         xrZw==
+X-Gm-Message-State: ABy/qLaageP8CtDHOnnTtJLdMbHfV+MfbNwx/gS9DLdw49mdk2CNMz6x
+        jnRsruW9UAhvLeHpQ63xfv56Bg==
+X-Google-Smtp-Source: APBJJlGlSCxdEfq1BDlME7pPijSE799iYFshp/KuL1hJgcfxhw5EPTeKsWGCQw9soPRWN5f9bpFYXQ==
+X-Received: by 2002:a17:90b:1b4f:b0:25b:f66c:35a9 with SMTP id nv15-20020a17090b1b4f00b0025bf66c35a9mr1209893pjb.48.1690359024079;
+        Wed, 26 Jul 2023 01:10:24 -0700 (PDT)
 Received: from GL4FX4PXWL.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id gc17-20020a17090b311100b002680b2d2ab6sm756540pjb.19.2023.07.26.01.10.13
+        by smtp.gmail.com with ESMTPSA id gc17-20020a17090b311100b002680b2d2ab6sm756540pjb.19.2023.07.26.01.10.18
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 26 Jul 2023 01:10:18 -0700 (PDT)
+        Wed, 26 Jul 2023 01:10:23 -0700 (PDT)
 From:   Peng Zhang <zhangpeng.00@bytedance.com>
 To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
         willy@infradead.org, brauner@kernel.org, surenb@google.com,
@@ -58,9 +58,9 @@ To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
 Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: [PATCH 05/11] maple_tree: Add test for mt_dup()
-Date:   Wed, 26 Jul 2023 16:09:10 +0800
-Message-Id: <20230726080916.17454-6-zhangpeng.00@bytedance.com>
+Subject: [PATCH 06/11] maple_tree: Introduce mas_replace_entry() to directly replace an entry
+Date:   Wed, 26 Jul 2023 16:09:11 +0800
+Message-Id: <20230726080916.17454-7-zhangpeng.00@bytedance.com>
 X-Mailer: git-send-email 2.37.0 (Apple Git-136)
 In-Reply-To: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
 References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
@@ -69,240 +69,75 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test for mt_dup().
+If mas has located a specific entry, it may be need to replace this
+entry, so introduce mas_replace_entry() to do this. mas_replace_entry()
+will be more efficient than mas_store*() because it doesn't do many
+unnecessary checks.
+
+This function should be inline, but more functions need to be moved to
+the header file, so I didn't do it for the time being.
 
 Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
 ---
- tools/testing/radix-tree/maple.c | 202 +++++++++++++++++++++++++++++++
- 1 file changed, 202 insertions(+)
+ include/linux/maple_tree.h |  1 +
+ lib/maple_tree.c           | 25 +++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/tools/testing/radix-tree/maple.c b/tools/testing/radix-tree/maple.c
-index e5da1cad70ba..3052e899e5df 100644
---- a/tools/testing/radix-tree/maple.c
-+++ b/tools/testing/radix-tree/maple.c
-@@ -35857,6 +35857,204 @@ static noinline void __init check_locky(struct maple_tree *mt)
- 	mt_clear_in_rcu(mt);
+diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
+index 229fe78e4c89..a05e9827d761 100644
+--- a/include/linux/maple_tree.h
++++ b/include/linux/maple_tree.h
+@@ -462,6 +462,7 @@ struct ma_wr_state {
+ 
+ void *mas_walk(struct ma_state *mas);
+ void *mas_store(struct ma_state *mas, void *entry);
++void mas_replace_entry(struct ma_state *mas, void *entry);
+ void *mas_erase(struct ma_state *mas);
+ int mas_store_gfp(struct ma_state *mas, void *entry, gfp_t gfp);
+ void mas_store_prealloc(struct ma_state *mas, void *entry);
+diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+index efac6761ae37..d58572666a00 100644
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -5600,6 +5600,31 @@ void *mas_store(struct ma_state *mas, void *entry)
  }
+ EXPORT_SYMBOL_GPL(mas_store);
  
-+/*
-+ * Compare two nodes and return 0 if they are the same, non-zero otherwise.
++/**
++ * mas_replace_entry() - Replace an entry that already exists in the maple tree
++ * @mas: The maple state
++ * @entry: The entry to store
++ *
++ * Please note that mas must already locate an existing entry, and the new entry
++ * must not be NULL. If these two points cannot be guaranteed, please use
++ * mas_store*() instead, otherwise it will cause an internal error in the maple
++ * tree. This function does not need to allocate memory, so it must succeed.
 + */
-+static int __init compare_node(struct maple_enode *enode_a,
-+			       struct maple_enode *enode_b)
++void mas_replace_entry(struct ma_state *mas, void *entry)
 +{
-+	struct maple_node *node_a, *node_b;
-+	struct maple_node a, b;
-+	void **slots_a, **slots_b; /* Do not use the rcu tag. */
-+	enum maple_type type;
-+	int i;
++	void __rcu **slots;
 +
-+	if (((unsigned long)enode_a & MAPLE_NODE_MASK) !=
-+	    ((unsigned long)enode_b & MAPLE_NODE_MASK)) {
-+		pr_err("The lower 8 bits of enode are different.\n");
-+		return -1;
-+	}
++#ifdef CONFIG_DEBUG_MAPLE_TREE
++	MAS_WARN_ON(mas, !mte_is_leaf(mas->node));
++	MAS_WARN_ON(mas, !entry);
++	MAS_WARN_ON(mas, mas->offset >= mt_slots[mte_node_type(mas->node)]);
++#endif
 +
-+	type = mte_node_type(enode_a);
-+	node_a = mte_to_node(enode_a);
-+	node_b = mte_to_node(enode_b);
-+	a = *node_a;
-+	b = *node_b;
-+
-+	/* Do not compare addresses. */
-+	if (ma_is_root(node_a) || ma_is_root(node_b)) {
-+		a.parent = (struct maple_pnode *)((unsigned long)a.parent &
-+						  MA_ROOT_PARENT);
-+		b.parent = (struct maple_pnode *)((unsigned long)b.parent &
-+						  MA_ROOT_PARENT);
-+	} else {
-+		a.parent = (struct maple_pnode *)((unsigned long)a.parent &
-+						  MAPLE_NODE_MASK);
-+		b.parent = (struct maple_pnode *)((unsigned long)b.parent &
-+						  MAPLE_NODE_MASK);
-+	}
-+
-+	if (a.parent != b.parent) {
-+		pr_err("The lower 8 bits of parents are different. %p %p\n",
-+			a.parent, b.parent);
-+		return -1;
-+	}
-+
-+	/*
-+	 * If it is a leaf node, the slots do not contain the node address, and
-+	 * no special processing of slots is required.
-+	 */
-+	if (ma_is_leaf(type))
-+		goto cmp;
-+
-+	slots_a = ma_slots(&a, type);
-+	slots_b = ma_slots(&b, type);
-+
-+	for (i = 0; i < mt_slots[type]; i++) {
-+		if (!slots_a[i] && !slots_b[i])
-+			break;
-+
-+		if (!slots_a[i] || !slots_b[i]) {
-+			pr_err("The number of slots is different.\n");
-+			return -1;
-+		}
-+
-+		/* Do not compare addresses in slots. */
-+		((unsigned long *)slots_a)[i] &= MAPLE_NODE_MASK;
-+		((unsigned long *)slots_b)[i] &= MAPLE_NODE_MASK;
-+	}
-+
-+cmp:
-+	/*
-+	 * Compare all contents of two nodes, including parent (except address),
-+	 * slots (except address), pivots, gaps and metadata.
-+	 */
-+	return memcmp(&a, &b, sizeof(struct maple_node));
++	slots = ma_slots(mte_to_node(mas->node), mte_node_type(mas->node));
++	rcu_assign_pointer(slots[mas->offset], entry);
 +}
++EXPORT_SYMBOL_GPL(mas_replace_entry);
 +
-+/*
-+ * Compare two trees and return 0 if they are the same, non-zero otherwise.
-+ */
-+static int __init compare_tree(struct maple_tree *mt_a, struct maple_tree *mt_b)
-+{
-+	MA_STATE(mas_a, mt_a, 0, 0);
-+	MA_STATE(mas_b, mt_b, 0, 0);
-+
-+	if (mt_a->ma_flags != mt_b->ma_flags) {
-+		pr_err("The flags of the two trees are different.\n");
-+		return -1;
-+	}
-+
-+	mas_dfs_preorder(&mas_a);
-+	mas_dfs_preorder(&mas_b);
-+
-+	if (mas_is_ptr(&mas_a) || mas_is_ptr(&mas_b)) {
-+		if (!(mas_is_ptr(&mas_a) && mas_is_ptr(&mas_b))) {
-+			pr_err("One is MAS_ROOT and the other is not.\n");
-+			return -1;
-+		}
-+		return 0;
-+	}
-+
-+	while (!mas_is_none(&mas_a) || !mas_is_none(&mas_b)) {
-+
-+		if (mas_is_none(&mas_a) || mas_is_none(&mas_b)) {
-+			pr_err("One is MAS_NONE and the other is not.\n");
-+			return -1;
-+		}
-+
-+		if (mas_a.min != mas_b.min ||
-+		    mas_a.max != mas_b.max) {
-+			pr_err("mas->min, mas->max do not match.\n");
-+			return -1;
-+		}
-+
-+		if (compare_node(mas_a.node, mas_b.node)) {
-+			pr_err("The contents of nodes %p and %p are different.\n",
-+			       mas_a.node, mas_b.node);
-+			mt_dump(mt_a, mt_dump_dec);
-+			mt_dump(mt_b, mt_dump_dec);
-+			return -1;
-+		}
-+
-+		mas_dfs_preorder(&mas_a);
-+		mas_dfs_preorder(&mas_b);
-+	}
-+
-+	return 0;
-+}
-+
-+static noinline void __init check_mt_dup(struct maple_tree *mt)
-+{
-+	DEFINE_MTREE(new);
-+	int i, j, ret, count = 0;
-+
-+	/* stored in the root pointer*/
-+	mt_init_flags(&tree, 0);
-+	mtree_store_range(&tree, 0, 0, xa_mk_value(0), GFP_KERNEL);
-+	mt_dup(&tree, &new, GFP_KERNEL);
-+	mt_validate(&new);
-+	if (compare_tree(&tree, &new))
-+		MT_BUG_ON(&new, 1);
-+
-+	mtree_destroy(&tree);
-+	mtree_destroy(&new);
-+
-+	for (i = 0; i < 1000; i += 3) {
-+		if (i & 1)
-+			mt_init_flags(&tree, 0);
-+		else
-+			mt_init_flags(&tree, MT_FLAGS_ALLOC_RANGE);
-+
-+		for (j = 0; j < i; j++) {
-+			mtree_store_range(&tree, j * 10, j * 10 + 5,
-+					  xa_mk_value(j), GFP_KERNEL);
-+		}
-+
-+		ret = mt_dup(&tree, &new, GFP_KERNEL);
-+		MT_BUG_ON(&new, ret != 0);
-+		mt_validate(&new);
-+		if (compare_tree(&tree, &new))
-+			MT_BUG_ON(&new, 1);
-+
-+		mtree_destroy(&tree);
-+		mtree_destroy(&new);
-+	}
-+
-+	/* Test memory allocation failed. */
-+	for (i = 0; i < 1000; i += 3) {
-+		if (i & 1)
-+			mt_init_flags(&tree, 0);
-+		else
-+			mt_init_flags(&tree, MT_FLAGS_ALLOC_RANGE);
-+
-+		for (j = 0; j < i; j++) {
-+			mtree_store_range(&tree, j * 10, j * 10 + 5,
-+					  xa_mk_value(j), GFP_KERNEL);
-+		}
-+
-+		mt_set_non_kernel(50);
-+		ret = mt_dup(&tree, &new, GFP_NOWAIT);
-+		mt_set_non_kernel(0);
-+		if (ret != 0) {
-+			MT_BUG_ON(&new, ret != -ENOMEM);
-+			count++;
-+			mtree_destroy(&tree);
-+			continue;
-+		}
-+
-+		mt_validate(&new);
-+		if (compare_tree(&tree, &new))
-+			MT_BUG_ON(&new, 1);
-+
-+		mtree_destroy(&tree);
-+		mtree_destroy(&new);
-+	}
-+
-+	/* pr_info("mt_dup() fail %d times\n", count); */
-+	BUG_ON(!count);
-+}
-+
- extern void test_kmem_cache_bulk(void);
- 
- void farmer_tests(void)
-@@ -35904,6 +36102,10 @@ void farmer_tests(void)
- 	check_null_expand(&tree);
- 	mtree_destroy(&tree);
- 
-+	mt_init_flags(&tree, 0);
-+	check_mt_dup(&tree);
-+	mtree_destroy(&tree);
-+
- 	/* RCU testing */
- 	mt_init_flags(&tree, 0);
- 	check_erase_testset(&tree);
+ /**
+  * mas_store_gfp() - Store a value into the tree.
+  * @mas: The maple state
 -- 
 2.20.1
 
