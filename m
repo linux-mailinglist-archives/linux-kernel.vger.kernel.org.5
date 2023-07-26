@@ -2,142 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB25976301A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CEB76301C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbjGZIma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        id S231817AbjGZIml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233226AbjGZIl7 (ORCPT
+        with ESMTP id S233276AbjGZImM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:41:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1147A85
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:31:08 -0700 (PDT)
+        Wed, 26 Jul 2023 04:42:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F92535A5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690360267;
+        s=mimecast20190719; t=1690360296;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o/8TBEU2aeN4aopJ2IRbNvdTcHHJiwsIyoYlbscqtTk=;
-        b=FZI8WQ71Bo3To2Jma4qm1zk9Sk3ueDHC1CBCAqS65Gk7V6gVwrOahqSeJ0u/0zf+R2fLAB
-        DYB+8hwqD3y8fl/NqTBDSZGIZcBoCj0DfOnf33c6B6K87gOzjVQJB6PWYtKTM2m1GlmpOe
-        QK3IUqO08diiubmKFQzjCp9nMPHahg0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-URt1iQzpNdCVsR1VDJfjcg-1; Wed, 26 Jul 2023 04:31:05 -0400
-X-MC-Unique: URt1iQzpNdCVsR1VDJfjcg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fa96b67ac1so38467325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:31:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690360264; x=1690965064;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o/8TBEU2aeN4aopJ2IRbNvdTcHHJiwsIyoYlbscqtTk=;
-        b=GLSKCiPHX7ld+xY3c+m+/h6X7iI88+9z9cZr6vZyRvFpAOhCH5yGJMDW40WJ4FBDpj
-         U0gIk0dqGEua4kbVV2s6NswMDja/QlvqTrO1Zp3wQrDGIQpCA4JDKzID4gE99TgVcgje
-         oAqmPHfTqS9SpEq/231bOnFqE32E7Ai8oAnPjSY7az/fPGImDbzYghnbGpcNIKfHAHkf
-         kNXsn1Swppx1Xt+8aGlz26ebydG9t+CEW+GrELzZhndfY9nMmqvOfCSqSlw5gWbciaRZ
-         q4KZenwi7X1z5mnth8mUyczDDu0vLAf6wDSM5W3W44Pe06sWfS5VYxwboC/Sr6bT3G9l
-         pOLw==
-X-Gm-Message-State: ABy/qLZhjzkHm4pgdKaarD84TyXzSdB+SFFZsLJQPjU4RpmMoDR+Uvy+
-        tDyHdbdfLPcBnH0v/aIZPmUO9tBLlxpQBO1/1ORYg/JF4cCmM6ElbVi9Tr6vdu6OwEGK3wmaDKr
-        eRfhD8ukkYhEZZf1a8mTctogs
-X-Received: by 2002:a05:600c:2281:b0:3fd:2a34:e867 with SMTP id 1-20020a05600c228100b003fd2a34e867mr835248wmf.25.1690360264248;
-        Wed, 26 Jul 2023 01:31:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHryebkUbQGetMhiB7/gQUnN1wLgo9/ViGR56iSz8IUVNC1EfMeqI/ocBmFhgTOKOpVKbJNCQ==
-X-Received: by 2002:a05:600c:2281:b0:3fd:2a34:e867 with SMTP id 1-20020a05600c228100b003fd2a34e867mr835236wmf.25.1690360263814;
-        Wed, 26 Jul 2023 01:31:03 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:f600:a519:c50:799b:f1e3? (p200300cbc705f600a5190c50799bf1e3.dip0.t-ipconnect.de. [2003:cb:c705:f600:a519:c50:799b:f1e3])
-        by smtp.gmail.com with ESMTPSA id 12-20020a05600c25cc00b003fbb06af219sm1309455wml.32.2023.07.26.01.31.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 01:31:03 -0700 (PDT)
-Message-ID: <61234a18-7797-722e-ae14-1aa352c4d850@redhat.com>
-Date:   Wed, 26 Jul 2023 10:31:02 +0200
+        bh=IcQFJ3tUmAnHYIABPf9SJB76XvMzLVKYy/gpK1xHZk8=;
+        b=C9LC0q6FRFF5tXb1RWFywBSjgC7A6q/hT4gSqRpNwZfphmFN1U59RMMY+GuG94vPxv+OUX
+        NqIlP4IUU4W//ly7vNcf5bxp5Av3TZdUHKsL2RYDAm/CU10ED2d1hKVRVgHruMtPpENnnY
+        nhUqQGPX8DPrzAi9ei+RtjMNVgy+0b8=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-27-C1_QioUYM1m9sYUI7bsa-w-1; Wed, 26 Jul 2023 04:31:33 -0400
+X-MC-Unique: C1_QioUYM1m9sYUI7bsa-w-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D81A73C0E446;
+        Wed, 26 Jul 2023 08:31:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D7EF4A9004;
+        Wed, 26 Jul 2023 08:31:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <yt9d8rb44cbe.fsf@linux.ibm.com>
+References: <yt9d8rb44cbe.fsf@linux.ibm.com> <000000000000273d0105ff97bf56@google.com>
+To:     syzbot <syzbot+9b82859567f2e50c123e@syzkaller.appspotmail.com>
+Cc:     dhowells@redhat.com, Sven Schnelle <svens@linux.ibm.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: Re: [syzbot] [mm?] WARNING in try_grab_page
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Ross Zwisler <zwisler@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>
-References: <20230718220106.GA3117638@google.com>
- <ZLd/WEZTH5rlwYjP@dhcp22.suse.cz> <20230719075952.GH1901145@kernel.org>
- <ZLeZaa5LMH1c2zQ3@dhcp22.suse.cz>
- <9770454d-f840-c7cf-314e-ce81839393e3@redhat.com>
- <20230719230515.GA3654720@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: collision between ZONE_MOVABLE and memblock allocations
-In-Reply-To: <20230719230515.GA3654720@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <125376.1690360290.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 26 Jul 2023 09:31:30 +0100
+Message-ID: <125377.1690360290@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> As an alternative, we might use the "memmap=nn[KMG]!ss[KMG]" [1] parameter
->> to mark some memory as protected.
->>
->> That memory can then be configured as devdax device and online to
->> ZONE_MOVABLE (dev/dax).
->>
->> [1] https://docs.pmem.io/persistent-memory/getting-started-guide/creating-development-environments/linux-environments/linux-memmap
-> 
-> I've previously been reconfiguring devdax memory like this:
-> 
->    ndctl create-namespace --reconfig=namespace0.0 -m devdax -f
->    daxctl reconfigure-device --mode=system-ram dax0.0
-> 
-> Is this how you've been doing it, or is there something else I should
-> consider?
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
 
-No, exactly like that.
+lib/scatterlist: Fix error handling in extract_iter_to_sg()
 
-> 
-> I just sent mail to Michal outlining my use case, hopefully it makes sense.
+Fix the error handling in extract_iter_to_sg().  Pages need to be unpinned=
+,
+not put, and only if they actually got pinned (which is the case in
+extract_user_to_sg()).
 
-Yes, thanks for sharing, I'll dig deeper into that next.
+The bug may result in a warning like the following:
 
-> 
-> I had thought about using 'memmap=' in the first kernel and the worry was that
-> I'd have to support many different machines with different memory
-> configurations, and have to hard-code memory offsets and lengths for the
-> various memmap= kernel command line parameters. 
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 __lse_atomic_add arch/arm64/i=
+nclude/asm/atomic_lse.h:27 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 arch_atomic_add arch/arm64/in=
+clude/asm/atomic.h:28 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 raw_atomic_add include/linux/=
+atomic/atomic-arch-fallback.h:537 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 atomic_add include/linux/atom=
+ic/atomic-instrumented.h:105 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 try_grab_page+0x108/0x160 mm/=
+gup.c:252
+  ...
+  pc : try_grab_page+0x108/0x160 mm/gup.c:229
+  lr : follow_page_pte+0x174/0x3e4 mm/gup.c:651
+  ...
+  Call trace:
+   __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:27 [inline]
+   arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+   raw_atomic_add include/linux/atomic/atomic-arch-fallback.h:537 [inline]
+   atomic_add include/linux/atomic/atomic-instrumented.h:105 [inline]
+   try_grab_page+0x108/0x160 mm/gup.c:252
+   follow_pmd_mask mm/gup.c:734 [inline]
+   follow_pud_mask mm/gup.c:765 [inline]
+   follow_p4d_mask mm/gup.c:782 [inline]
+   follow_page_mask+0x12c/0x2e4 mm/gup.c:839
+   __get_user_pages+0x174/0x30c mm/gup.c:1217
+   __get_user_pages_locked mm/gup.c:1448 [inline]
+   __gup_longterm_locked+0x94/0x8f4 mm/gup.c:2142
+   internal_get_user_pages_fast+0x970/0xb60 mm/gup.c:3140
+   pin_user_pages_fast+0x4c/0x60 mm/gup.c:3246
+   iov_iter_extract_user_pages lib/iov_iter.c:1768 [inline]
+   iov_iter_extract_pages+0xc8/0x54c lib/iov_iter.c:1831
+   extract_user_to_sg lib/scatterlist.c:1123 [inline]
+   extract_iter_to_sg lib/scatterlist.c:1349 [inline]
+   extract_iter_to_sg+0x26c/0x6fc lib/scatterlist.c:1339
+   hash_sendmsg+0xc0/0x43c crypto/algif_hash.c:117
+   sock_sendmsg_nosec net/socket.c:725 [inline]
+   sock_sendmsg+0x54/0x60 net/socket.c:748
+   ____sys_sendmsg+0x270/0x2ac net/socket.c:2494
+   ___sys_sendmsg+0x80/0xdc net/socket.c:2548
+   __sys_sendmsg+0x68/0xc4 net/socket.c:2577
+   __do_sys_sendmsg net/socket.c:2586 [inline]
+   __se_sys_sendmsg net/socket.c:2584 [inline]
+   __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2584
+   __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+   invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:52
+   el0_svc_common.constprop.0+0x44/0xe4 arch/arm64/kernel/syscall.c:142
+   do_el0_svc+0x38/0xa4 arch/arm64/kernel/syscall.c:191
+   el0_svc+0x2c/0xb0 arch/arm64/kernel/entry-common.c:647
+   el0t_64_sync_handler+0xc0/0xc4 arch/arm64/kernel/entry-common.c:665
+   el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:591
 
-Indeed.
+Fixes: 018584697533 ("netfs: Add a function to extract an iterator into a =
+scatterlist")
+Reported-by: syzbot+9b82859567f2e50c123e@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-mm/000000000000273d0105ff97bf56@google=
+.com/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Sven Schnelle <svens@linux.ibm.com>
+cc: akpm@linux-foundation.org
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: Steve French <sfrench@samba.org>
+cc: Shyam Prasad N <nspmangalore@gmail.com>
+cc: Rohith Surabattula <rohiths.msft@gmail.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-mm@kvack.org
+cc: linux-crypto@vger.kernel.org
+cc: linux-cachefs@redhat.com
+cc: linux-cifs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: netdev@vger.kernel.org
+---
+ lib/scatterlist.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> If I can make ZONE_MOVABLE
-> work that's preferable because the kernel will choose the correct usermem-only
-> region for me, and then I can just use that region for the crash kernel and
-> 3rd kernel boots.
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index e86231a44c3d..c65566b4dc66 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -1148,7 +1148,7 @@ static ssize_t extract_user_to_sg(struct iov_iter *i=
+ter,
+ =
 
-It really sounds like you might be better off using CMA or 
-alloc_contig_pages().
-
-The latter is unreliable, though, and the memory cannot be used for 
-other purposes once alloc_contig_pages() succeeded
-
-See arch/powerpc/platforms/powernv/memtrace.c one one user that needs to 
-set aside a lot of memory to store HW traces.
-
--- 
-Cheers,
-
-David / dhildenb
+ failed:
+ 	while (sgtable->nents > sgtable->orig_nents)
+-		put_page(sg_page(&sgtable->sgl[--sgtable->nents]));
++		unpin_user_page(sg_page(&sgtable->sgl[--sgtable->nents]));
+ 	return res;
+ }
+ =
 
