@@ -2,265 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF417633E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF957633EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjGZKfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
+        id S233838AbjGZKge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233828AbjGZKe4 (ORCPT
+        with ESMTP id S232167AbjGZKgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:34:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F522126
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:34:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C4A6821CAC;
-        Wed, 26 Jul 2023 10:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690367692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rP9cCoRQS2E3rGBBhQPwvc58rPFE1YgDISl0GEDJwyA=;
-        b=3GiZP0ywJ9twiZK95tEdvn42lF3vNqbRlVXTr5uHmQaNt7gk5vdFLBVY7EF6iLkqgvX6HW
-        TqgKt1lo2w+nb3z+EiAm6XT7r1M2LzPtgrwED4nO13z6nHBuQIIn2of1c7yXEsfCDd91Ag
-        EH48EE4rY2WI4aAGVHWrsw+qxiHh+bU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690367692;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rP9cCoRQS2E3rGBBhQPwvc58rPFE1YgDISl0GEDJwyA=;
-        b=anRpI62xl12WDfgp8LFxrUmRveWxcwf0808WL6NI7A4gnSaWp7oep1P4W5ox7tQdMKYt6J
-        qHcUOgc2PzBiJmDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 78B7A139BD;
-        Wed, 26 Jul 2023 10:34:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XMi7HMz2wGSzCwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 26 Jul 2023 10:34:52 +0000
-Message-ID: <7a94996f-b6f0-c427-eb1e-126bcb97930c@suse.cz>
-Date:   Wed, 26 Jul 2023 12:34:52 +0200
+        Wed, 26 Jul 2023 06:36:32 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118EF2126;
+        Wed, 26 Jul 2023 03:36:30 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QAaDvp045912;
+        Wed, 26 Jul 2023 05:36:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690367773;
+        bh=AsQ7eL3/H2JJHOml5th1RT/qIatR0oms1Ab+63AsSdY=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=oO2vlJsRYavoQbpnR7BH7gv/D6zsLsuKLq8VVi5DAQcF5dI92qLsXfFhlduzSrmeH
+         ArZM4IJpCeczHcpAVUPJDp8KPKaVcK0Lo5i2oIt3GC/hjn3Gth5hPMbAnAnK6d49+b
+         cwvbg8c/vCB7LtynoQBuBk2cuAEcXDjkBhsWlmO4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QAaDhR058238
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 05:36:13 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 05:36:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 05:36:13 -0500
+Received: from [172.24.227.217] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QAa7iP077859;
+        Wed, 26 Jul 2023 05:36:07 -0500
+Message-ID: <296b0e98-4012-09f6-84cd-6f87a85f095f@ti.com>
+Date:   Wed, 26 Jul 2023 16:06:06 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC 1/2] Revert "mm, slub: change percpu partial accounting from
- objects to pages"
+ Thunderbird/102.11.0
+Subject: Re: [EXTERNAL] Re: [PATCH v11 07/10] net: ti: icssg-prueth: Add ICSSG
+ Stats
 Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Feng Tang <feng.tang@intel.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>,
-        Jay Patel <jaypatel@linux.ibm.com>,
-        Binder Makin <merimus@google.com>, aneesh.kumar@linux.ibm.com,
-        tsahu@linux.ibm.com, piyushs@linux.ibm.com, fengwei.yin@intel.com,
-        ying.huang@intel.com, lkp <lkp@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230723190906.4082646-1-42.hyeyoo@gmail.com>
- <20230723190906.4082646-2-42.hyeyoo@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230723190906.4082646-2-42.hyeyoo@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Jakub Kicinski <kuba@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230724112934.2637802-1-danishanwar@ti.com>
+ <20230724112934.2637802-8-danishanwar@ti.com>
+ <20230725205014.04e4bba3@kernel.org>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <20230725205014.04e4bba3@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nit: I would change the subject from "Revert: " as it's not a revert
-exactly. If we can come up with a good subject that's not very long :)
+Hi Jakub
 
-On 7/23/23 21:09, Hyeonggon Yoo wrote:
-> This is partial revert of commit b47291ef02b0 ("mm, slub: change percpu
-> partial accounting from objects to pages"). and full revert of commit
-> 662188c3a20e ("mm/slub: Simplify struct slab slabs field definition").
+On 26/07/23 9:20 am, Jakub Kicinski wrote:
+> On Mon, 24 Jul 2023 16:59:31 +0530 MD Danish Anwar wrote:
+>> +	/* Rx */
+>> +	ICSSG_STATS(rx_packets, true),
+>> +	ICSSG_STATS(rx_broadcast_frames, false),
+>> +	ICSSG_STATS(rx_multicast_frames, false),
 > 
-> While b47291ef02b0 prevents percpu partial slab list becoming too long,
-> it assumes that the order of slabs are always oo_order(s->oo).
-
-I think I've considered this possibility, but decided it's not important
-because if the system becomes memory pressured in a way that it can't
-allocate the oo_order() and has to fallback, we no longer care about
-accurate percpu caching, as we're unlikely having optimum performance anyway.
-
-> The current approach can surprisingly lower the number of objects cached
-> per cpu when it fails to allocate high order slabs. Instead of accounting
-> the number of slabs, change it back to accounting objects, but keep
-> the assumption that the slab is always half-full.
-
-That's a nice solution as that avoids converting the sysfs variable, so I
-wouldn't mind going that way even if I doubt the performance benefits in a
-memory pressured system. But maybe there's a concern that if the system is
-really memory pressured and has to fallback to smaller orders, before this
-patch it would keep fewer percpu partial slabs than after this patch, which
-would increase the pressure further and thus be counter-productive?
-
-> With this change, the number of cached objects per cpu is not surprisingly
-> decreased even when it fails to allocate high order slabs. It still
-> prevents large inaccuracy because it does not account based on the
-> number of free objects when taking slabs.
-> ---
->  include/linux/slub_def.h |  2 --
->  mm/slab.h                |  6 ++++++
->  mm/slub.c                | 31 ++++++++++++-------------------
->  3 files changed, 18 insertions(+), 21 deletions(-)
+> There is a standard stat for mcast.
 > 
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> index deb90cf4bffb..589ff6a2a23f 100644
-> --- a/include/linux/slub_def.h
-> +++ b/include/linux/slub_def.h
-> @@ -109,8 +109,6 @@ struct kmem_cache {
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  	/* Number of per cpu partial objects to keep around */
->  	unsigned int cpu_partial;
-> -	/* Number of per cpu partial slabs to keep around */
-> -	unsigned int cpu_partial_slabs;
->  #endif
->  	struct kmem_cache_order_objects oo;
->  
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 799a315695c6..be38a264df16 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -65,7 +65,13 @@ struct slab {
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  				struct {
->  					struct slab *next;
-> +#ifdef CONFIG_64BIT
->  					int slabs;	/* Nr of slabs left */
-> +					int pobjects;	/* Approximate count */
-> +#else
-> +					short int slabs;
-> +					short int pobjects;
-> +#endif
->  				};
->  #endif
->  			};
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f7940048138c..199d3d03d5b9 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -486,18 +486,7 @@ static inline unsigned int oo_objects(struct kmem_cache_order_objects x)
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  static void slub_set_cpu_partial(struct kmem_cache *s, unsigned int nr_objects)
->  {
-> -	unsigned int nr_slabs;
-> -
->  	s->cpu_partial = nr_objects;
-> -
-> -	/*
-> -	 * We take the number of objects but actually limit the number of
-> -	 * slabs on the per cpu partial list, in order to limit excessive
-> -	 * growth of the list. For simplicity we assume that the slabs will
-> -	 * be half-full.
-> -	 */
-> -	nr_slabs = DIV_ROUND_UP(nr_objects * 2, oo_objects(s->oo));
-> -	s->cpu_partial_slabs = nr_slabs;
->  }
->  #else
->  static inline void
-> @@ -2275,7 +2264,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
->  	struct slab *slab, *slab2;
->  	void *object = NULL;
->  	unsigned long flags;
-> -	unsigned int partial_slabs = 0;
-> +	int objects_taken = 0;
->  
->  	/*
->  	 * Racy check. If we mistakenly see no partial slabs then we
-> @@ -2312,11 +2301,11 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
->  		} else {
->  			put_cpu_partial(s, slab, 0);
->  			stat(s, CPU_PARTIAL_NODE);
-> -			partial_slabs++;
-> +			objects_taken += slab->objects / 2;
->  		}
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  		if (!kmem_cache_has_cpu_partial(s)
-> -			|| partial_slabs > s->cpu_partial_slabs / 2)
-> +			|| objects_taken > s->cpu_partial / 2)
->  			break;
->  #else
->  		break;
-> @@ -2699,13 +2688,14 @@ static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
->  	struct slab *slab_to_unfreeze = NULL;
->  	unsigned long flags;
->  	int slabs = 0;
-> +	int pobjects = 0;
->  
->  	local_lock_irqsave(&s->cpu_slab->lock, flags);
->  
->  	oldslab = this_cpu_read(s->cpu_slab->partial);
->  
->  	if (oldslab) {
-> -		if (drain && oldslab->slabs >= s->cpu_partial_slabs) {
-> +		if (drain && oldslab->pobjects >= s->cpu_partial) {
->  			/*
->  			 * Partial array is full. Move the existing set to the
->  			 * per node partial list. Postpone the actual unfreezing
-> @@ -2714,14 +2704,17 @@ static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
->  			slab_to_unfreeze = oldslab;
->  			oldslab = NULL;
->  		} else {
-> +			pobjects = oldslab->pobjects;
->  			slabs = oldslab->slabs;
->  		}
->  	}
->  
->  	slabs++;
-> +	pobjects += slab->objects / 2;
->  
->  	slab->slabs = slabs;
->  	slab->next = oldslab;
-> +	slab->pobjects = pobjects;
->  
->  	this_cpu_write(s->cpu_slab->partial, slab);
->  
-> @@ -5653,13 +5646,13 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
->  
->  		slab = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
->  
-> -		if (slab)
-> +		if (slab) {
->  			slabs += slab->slabs;
-> +			objects += slab->objects;
-> +		}
->  	}
->  #endif
->  
-> -	/* Approximate half-full slabs, see slub_set_cpu_partial() */
-> -	objects = (slabs * oo_objects(s->oo)) / 2;
->  	len += sysfs_emit_at(buf, len, "%d(%d)", objects, slabs);
->  
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
-> @@ -5669,7 +5662,7 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
->  		slab = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
->  		if (slab) {
->  			slabs = READ_ONCE(slab->slabs);
-> -			objects = (slabs * oo_objects(s->oo)) / 2;
-> +			objects = READ_ONCE(slab->pobjects);
->  			len += sysfs_emit_at(buf, len, " C%d=%d(%d)",
->  					     cpu, objects, slabs);
->  		}
 
+Sure. I will add multicast stats via .ndo_get_stats64 instead of ethtool.
+
+>> +	ICSSG_STATS(rx_crc_errors, true),
+>> +	ICSSG_STATS(rx_mii_error_frames, false),
+>> +	ICSSG_STATS(rx_odd_nibble_frames, false),
+>> +	ICSSG_STATS(rx_frame_max_size, false),
+>> +	ICSSG_STATS(rx_max_size_error_frames, false),
+>> +	ICSSG_STATS(rx_frame_min_size, false),
+>> +	ICSSG_STATS(rx_min_size_error_frames, false),
+>> +	ICSSG_STATS(rx_over_errors, true),
+>> +	ICSSG_STATS(rx_class0_hits, false),
+>> +	ICSSG_STATS(rx_class1_hits, false),
+>> +	ICSSG_STATS(rx_class2_hits, false),
+>> +	ICSSG_STATS(rx_class3_hits, false),
+>> +	ICSSG_STATS(rx_class4_hits, false),
+>> +	ICSSG_STATS(rx_class5_hits, false),
+>> +	ICSSG_STATS(rx_class6_hits, false),
+>> +	ICSSG_STATS(rx_class7_hits, false),
+>> +	ICSSG_STATS(rx_class8_hits, false),
+>> +	ICSSG_STATS(rx_class9_hits, false),
+>> +	ICSSG_STATS(rx_class10_hits, false),
+>> +	ICSSG_STATS(rx_class11_hits, false),
+>> +	ICSSG_STATS(rx_class12_hits, false),
+>> +	ICSSG_STATS(rx_class13_hits, false),
+>> +	ICSSG_STATS(rx_class14_hits, false),
+>> +	ICSSG_STATS(rx_class15_hits, false),
+>> +	ICSSG_STATS(rx_smd_frags, false),
+>> +	ICSSG_STATS(rx_bucket1_size, false),
+>> +	ICSSG_STATS(rx_bucket2_size, false),
+>> +	ICSSG_STATS(rx_bucket3_size, false),
+>> +	ICSSG_STATS(rx_bucket4_size, false),
+> 
+> Are the bucket sizes configurable? Can we set the bucket sizes
+> to standard RMON ones and use ethtool RMON stats?
+
+The bucket sizes are not configurable. Bucket size is read from hardware and is
+fixed. I don't think we can configure bucket size and use ethtool RMON stats.
+It's better to dump bucket sizes via ethtool -S.
+
+-- 
+Thanks and Regards,
+Danish.
