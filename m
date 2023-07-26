@@ -2,132 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5747628B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9877628BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjGZC1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
+        id S229706AbjGZC15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjGZC1a (ORCPT
+        with ESMTP id S230450AbjGZC1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:27:30 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232D22688
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:27:29 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7680e3910dfso640215485a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:27:29 -0700 (PDT)
+        Tue, 25 Jul 2023 22:27:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A4268E;
+        Tue, 25 Jul 2023 19:27:53 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bb775625e2so3387535ad.1;
+        Tue, 25 Jul 2023 19:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690338448; x=1690943248;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Viglh2d5OeFZB4xvJ6G2it4K8JrKHO/8Dv7RWTjX6kM=;
-        b=qiuBPF2hMgALZZur5FAR+HdKzYGyMy5aZ4P02N3w7FWd1Bq1UCB24KYv3PIzmkcwgn
-         5jL+7wud0KqGkqddn84+oqqhrKYTN1xB2JXK1F6UxnuCdlSY5ZOT1qOIqulX1RsjL/Z8
-         yj36fZTmlZ3DLWqG8W+JgUSduItc0u9Q60U1ymm3J2MXaYg2kilpRR61x6fTwGuBaDi7
-         LzILlbb/HJK1siWIEbmUXa68+IQjPCzlYUI0vsPQPXSj4cM9bPulYjGXXSmfd+fT0Wkr
-         lcr3/ssxb2Lgj5vA5tRzhnAQmjQM9GKuiVBM0zZTbyi41QuJkedPdVJi3S6GxN4qVIXJ
-         1GCg==
+        d=gmail.com; s=20221208; t=1690338473; x=1690943273;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cwDd3FlNAcnu8OFFd4jReM06wRpoPnJZwl+5W5GMCH8=;
+        b=ck2GKHTewdEYt75S/Q3bPinu+2zxdRzwh3/beFXNA0/X83Ez57jCP9dYvkW/+zhGio
+         as8OdTMgop4uWh2onq8chERlN9SC6Cq/7ft3rC03pWHOcCuPloabYZk1kqx5np9Oj/Oe
+         4E+YZeaRxlPYMJLQu7FhLfjji4DXSR0h4vgvsL+TFc0fMqvMX8ebRahTzoKaCEzYeGdh
+         fv4FePoEPBuoytPEcs2iRQeBi76j3Ue1UK7Jg63CqNc1I7TiCQ3AbB+viC9VFOmudtVh
+         DRbtCsYiZXMS53DMhUjPIVZBWXWMp0UQPyCy5QjmPMt6XluOva+HIHMbHs1O/COyO7ez
+         TV8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690338448; x=1690943248;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Viglh2d5OeFZB4xvJ6G2it4K8JrKHO/8Dv7RWTjX6kM=;
-        b=lyXeUj7CKCt0cfmEIe7e4jGnSWkQW8htDA6WQdl/kV+pbFaI3a279aXuTMuAlv1f2F
-         iDdz1xJxD92WZMU7wdSOHmupV6wWAfbvHJMzBN+pTRqTSFSlGWNTHkzR4nNfZ2d+H66e
-         Qa0+6UuKP1jKQ2pUlkIZ79Z8s4Gexk6he1/vvuB6RCnBsezIj7Yx6w8IrnbogzLzqGcX
-         dC3f6z5VCbBzeaMNKZhACBynzNnL6Tv+jJTQJVeRdqHn/7BiKvYsp9fuWYXwEq7cnmBt
-         mXghlOkmgBv5MmvRm6Em31dcblre1pMW5AHl4nvX6Que3hra22QQHiyuHkAchoBN+HKa
-         r8Cg==
-X-Gm-Message-State: ABy/qLYazAUtQlp87iMYztdfV2eZ1jCD+3ahlumLVmgeligtOaupPQuk
-        T1HyT7r3ZK2JJ+IX2rDx4lk6BA==
-X-Google-Smtp-Source: APBJJlHoou/JhXl86qfNBbCvOwucbpA2OuUZCVJ3udRUMF0veeQza39o7kfYXYRLWZCd1fWcueXZRA==
-X-Received: by 2002:a05:620a:44c4:b0:767:dfc8:a944 with SMTP id y4-20020a05620a44c400b00767dfc8a944mr997383qkp.41.1690338448296;
-        Tue, 25 Jul 2023 19:27:28 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:ab7f:7b75:8135:310])
-        by smtp.gmail.com with ESMTPSA id d18-20020a17090ac25200b00263dee538b1sm219346pjx.25.2023.07.25.19.27.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 19:27:27 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 19:27:25 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     James Morse <james.morse@arm.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Peter Newman <peternewman@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
-        "lcherian@marvell.com" <lcherian@marvell.com>,
-        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
-        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
-        "xingxin.hx@openanolis.org" <xingxin.hx@openanolis.org>,
-        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>,
-        "Pitre, Nicolas" <npitre@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "aricciardi@baylibre.com" <aricciardi@baylibre.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [RFC PATCH 0/2] Resctrl - rewrite (WIP)
-Message-ID: <ZMCEjZgyi5oI+KWh@x1>
-References: <20230620033702.33344-1-tony.luck@intel.com>
- <ZJqhDYLG+/Kr44sp@x1>
- <SJ1PR11MB60832BA425B43CA19C778100FC27A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZJ4clUlN2OujgHlC@agluck-desk3>
+        d=1e100.net; s=20221208; t=1690338473; x=1690943273;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cwDd3FlNAcnu8OFFd4jReM06wRpoPnJZwl+5W5GMCH8=;
+        b=eqNNY9BYol1WtUVhgq8KS0ZFwhAVqV8U4eEGj9u7xVMvEuYrsqd+2hjLZD00/PI0Og
+         PXHNqBIgQOorQMN5GHNY7YUjylhg48pLEircM3jEboykLm1j8rz1sGmA6mvFeiXZEjgQ
+         GQmHPKrjUv5TQ11PKsESoYq97RqVtBJLc3Vg0TdUY8SCKvbezGoJb7ldR98JHoHr0K+R
+         VQ5uy5ppIRAP1rsswpPrtHAbsdOzP4FMK8oaGWqBdBD+J8qfNNbIP06/dy9cmd76MKx/
+         GMF85HzVAs2spDOAGkHFc1fZZDoSmPblauzu1iw/JbOLvLaLDvdqRFfSuRDy19Ihb/P8
+         EELQ==
+X-Gm-Message-State: ABy/qLYO2/Ds7Z0MVRVRqC36w22NGopcyQbakk0F+Gqw4g15LPceCMzB
+        TqBx4Y1EoXu+/kCx3B7sQ0rwbnOsU9Q=
+X-Google-Smtp-Source: APBJJlFrLybNmFITvVjFHWux/7QmVErofzURl8PlBaki744McktGFjv/4vfFGyZoRFLy9JLC2hrqAQ==
+X-Received: by 2002:a17:902:d4c9:b0:1b9:e23b:bb6a with SMTP id o9-20020a170902d4c900b001b9e23bbb6amr968439plg.11.1690338472601;
+        Tue, 25 Jul 2023 19:27:52 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170902bb9800b001bb9b5e86b7sm5787630pls.91.2023.07.25.19.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 19:27:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <13b9a16f-0f26-23a4-1e2e-5b1cf9cb4070@roeck-us.net>
+Date:   Tue, 25 Jul 2023 19:27:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZJ4clUlN2OujgHlC@agluck-desk3>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     RD Babiera <rdbabiera@google.com>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230726020946.1409565-1-rdbabiera@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v1] usb: typec: bus: verify partner exists in
+ typec_altmode_attention
+In-Reply-To: <20230726020946.1409565-1-rdbabiera@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 29, 2023 at 05:06:45PM -0700, Tony Luck wrote:
-> On Tue, Jun 27, 2023 at 04:33:52PM +0000, Luck, Tony wrote:
-> > I've made some significant changes since I posted those patches. I pushed
-> > the latest version to:
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git    resctrl2_v64
+On 7/25/23 19:09, RD Babiera wrote:
+> Some usb hubs will negotiate DisplayPort Alt mode with the device
+> but will then negotiate a data role swap after entering the alt
+> mode. The data role swap causes the device to unregister all alt
+> modes, however the usb hub will still send Attention messages
+> even after failing to reregister the Alt Mode. type_altmode_attention
+> currently does not verify whether or not a device's altmode partner
+> exists, which results in a NULL pointer error when dereferencing
+> the typec_altmode and typec_altmode_ops belonging to the altmode
+> partner.
 > 
-> I just pushed one big commit with all the bits I've updated so far
-> this week. Fixes some serious issues as well as general cleanup.
+
+Is this theory or actually observed ?
+
+> This patch verifies the presence of a device's altmode partner
+> before sending the Attention message to the Alt Mode driver. It
+> also changes the return type from void to int so errors can be
+> logged at the tcpm level.
 > 
-> HEAD is now:
+> Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> ---
+>   drivers/usb/typec/bus.c           | 12 ++++++++++--
+>   drivers/usb/typec/tcpm/tcpm.c     |  5 ++++-
+>   include/linux/usb/typec_altmode.h |  2 +-
+>   3 files changed, 15 insertions(+), 4 deletions(-)
 > 
-> afb7cdd4d640 resctrl2: Many cleanups, fixes, and new functionality
+> diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
+> index fe5b9a2e61f5..2f1823e16b3b 100644
+> --- a/drivers/usb/typec/bus.c
+> +++ b/drivers/usb/typec/bus.c
+> @@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
+>    *
+>    * Notifies the partner of @adev about Attention command.
+>    */
+> -void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+> +int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+>   {
+> -	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
+> +	struct altmode *partner = to_altmode(adev)->partner;
+> +	struct typec_altmode *pdev = &partner->adev;
+
+This dereferences partner
+
+> +
+> +	if (!partner || !pdev)
+
+... and then checks if partner is NULL.
+
+On top of that, pdev is not NULL even if partner is NULL because
+adev is not the first element of struct altmode.
+
+In summary, this code and the check as implemented does not make
+sense. Maybe partner can be NULL, but pdev will never be NULL.
+
+> +		return -ENODEV;
+>   
+>   	if (pdev->ops && pdev->ops->attention)
+>   		pdev->ops->attention(pdev, vdo);
+> +	else
+> +		return -EOPNOTSUPP;
+> +
+
+So far this was explicitly permitted. Now it will log an error each time it is
+observed. I do not see the point of this log message; obviously it was
+not intended to be considered an error, and I do not understand why it should
+suddenly be one that is worth clogging the log.
+
+Guenter
+
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(typec_altmode_attention);
+>   
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 829d75ebab42..be37a662e54d 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1791,6 +1791,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   	u32 p[PD_MAX_PAYLOAD];
+>   	u32 response[8] = { };
+>   	int i, rlen = 0;
+> +	int ret;
+>   
+>   	for (i = 0; i < cnt; i++)
+>   		p[i] = le32_to_cpu(payload[i]);
+> @@ -1877,7 +1878,9 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   			}
+>   			break;
+>   		case ADEV_ATTENTION:
+> -			typec_altmode_attention(adev, p[1]);
+> +			ret = typec_altmode_attention(adev, p[1]);
+> +			if (ret)
+> +				tcpm_log(port, "altmode_attention failed ret:%d", ret);
+>   			break;
+>   		}
+>   	}
+> diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
+> index 350d49012659..28aeef8f9e7b 100644
+> --- a/include/linux/usb/typec_altmode.h
+> +++ b/include/linux/usb/typec_altmode.h
+> @@ -67,7 +67,7 @@ struct typec_altmode_ops {
+>   
+>   int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
+>   int typec_altmode_exit(struct typec_altmode *altmode);
+> -void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+> +int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+>   int typec_altmode_vdm(struct typec_altmode *altmode,
+>   		      const u32 header, const u32 *vdo, int count);
+>   int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
 > 
-> If you've started writing your own architecture specific modules there
-> are some small interface changes. Most should be found by the compiler
-> barfing, but the new ".reset()" resource function called during unmount
-> of /sys/fs/resctrl might be less obvious.
-> 
-> -Tony
+> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 
-I have access to a Xeon Silver 4310 machine which reports to have
-cat_l3, cqm_mbm_local, cqm_mbm_total and mba.
-
-I would like to test resctrl2 on it so I can better understand how it
-works. I think that will help me understand how to adapt the RISC-V
-CBQRI resctrl proof-of-concept to use resctrl2.
-
-Would you be able to provide an example of how you loaded the necessary
-resctrl2 kernel modules?
-
-Also, is resctrl2_v65rc1 the latest to branch to test?
-
-Thank you,
-Drew
