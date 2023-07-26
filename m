@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB1A764049
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4679D76404E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbjGZUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        id S231587AbjGZUKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjGZUKb (ORCPT
+        with ESMTP id S230302AbjGZUKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:10:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE9C30DD;
-        Wed, 26 Jul 2023 13:09:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 26 Jul 2023 16:10:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F91272B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hfpF0MlIi5qyQQVYwuMI3LPZ43WeU1gqs6bIcz+hgDo=; b=cuivzJkq6IxDKNOrSzDFBcQPc+
+        uP2d7gDwExZOVy7cEA0WvpYQqFnbr6s2WtbDv0DokrMaOUPjblwZH2zfU2cpkVKHTLaywLANBZUoI
+        wpHhzj4c1D22SFseQ6EY53BdI77csx747R0hTCj700wREDBlEOaIi7dQJLBIVpqIS4lU4Cw7c/69r
+        4e8SSqpVOeu9r/MbK0cublMW1MzjQwNC6k+1duAWz4j6OcNlGUkVbNQrve4AAAoU4iW1Yi05JzPAB
+        5JUe5DN1b7yh8Hv3vPn451tzjudOk+LS9SEgPczY7/OkypsFfP7sDRUqE8G6DiLtekUaDIm/6NCSg
+        j4t4VS4w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qOkpR-006oNQ-IH; Wed, 26 Jul 2023 20:09:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5833B61CAD;
-        Wed, 26 Jul 2023 20:09:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6400C433C8;
-        Wed, 26 Jul 2023 20:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690402179;
-        bh=ByihIIIrHPEgn7QBviz+5vCufrDNcl/yU4L5yAeVcho=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bsIrc1vdjx8vHm65t/6585qT7Ch4/HzM2hNl2MlDFay/0rRdj3AXFPNdPQPRmtgIt
-         vkVF8QzU+wlXddT2KDPhsXddQF0rnuF7B/vN8zwDTjr30r3kdPsFzNiQSl6ZlbFHKX
-         c2Cbhy4rbUvrgLDBV/YCdaAAW/6dAWr+rYAoDt8jouPqEk+/1GySiAOUMBQ2y/eL9o
-         mCVlZEwqn9+gQNf7TfqykloCVS1qX7CqFMuJf3P522GvItjInNuSd/3y2gyNvq2rx5
-         MNkzyHkoI/2a0v/5uk6tfhMUKGJ/oEOU9z2/I/NRcFjUusjTXI7JC/5/huZw7Gzgkl
-         C90jQKGAD75ew==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b9b6e943ebso13817621fa.1;
-        Wed, 26 Jul 2023 13:09:39 -0700 (PDT)
-X-Gm-Message-State: ABy/qLb0/OVlto75IeWAd/mlgYYBiaSETS5efSpO3NNv9qnp5u+Kydck
-        KQo6tTsvcmYSe+tzlBKdTmP+sXSDPK+jSO1xLg==
-X-Google-Smtp-Source: APBJJlEVoog0/4ge/YrLwTnu8bPhGFXj/nmL6U0D5RCzZSvpoJTVKOcH9N1dPnIvobmivRpzZI+r3KqKo0qcVTA47HY=
-X-Received: by 2002:a2e:9846:0:b0:2b8:3a1e:eebd with SMTP id
- e6-20020a2e9846000000b002b83a1eeebdmr17905ljj.21.1690402177670; Wed, 26 Jul
- 2023 13:09:37 -0700 (PDT)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F494300164;
+        Wed, 26 Jul 2023 22:09:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3719A21BD3681; Wed, 26 Jul 2023 22:09:49 +0200 (CEST)
+Date:   Wed, 26 Jul 2023 22:09:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: Re: Stopping the tick on a fully loaded system
+Message-ID: <20230726200949.GA3869356@hirez.programming.kicks-ass.net>
+References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
+ <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
+ <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
+ <ZL2Z8InSLmI5GU9L@localhost.localdomain>
+ <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
+ <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
+ <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
+ <20230725222851.GC3784071@hirez.programming.kicks-ass.net>
+ <f84ecbee-cb2a-d574-422-b357f0d4ca2@linutronix.de>
+ <CAJZ5v0hLprrBhfqMRUhStvmm3D_xaSLxmNOYB4sfhLSzLYeR-w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230714174028.4040093-1-robh@kernel.org> <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 26 Jul 2023 14:09:24 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+VvQ-eZBN1ifH3TwROoAL2ZpSpaQrzHOfxnMkvwqgJ=w@mail.gmail.com>
-Message-ID: <CAL_Jsq+VvQ-eZBN1ifH3TwROoAL2ZpSpaQrzHOfxnMkvwqgJ=w@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Explicitly include correct DT includes
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hLprrBhfqMRUhStvmm3D_xaSLxmNOYB4sfhLSzLYeR-w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,43 +77,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 12:15=E2=80=AFPM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Rob,
->
-> On Fri, Jul 14, 2023 at 7:44=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> > The DT of_device.h and of_platform.h date back to the separate
-> > of_platform_bus_type before it as merged into the regular platform bus.
-> > As part of that merge prepping Arm DT support 13 years ago, they
-> > "temporarily" include each other. They also include platform_device.h
-> > and of.h. As a result, there's a pretty much random mix of those includ=
-e
-> > files used throughout the tree. In order to detangle these headers and
-> > replace the implicit includes with struct declarations, users need to
-> > explicitly include the correct includes.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
->
-> Thanks for your patch, which is now commit 657c45b303f87d77 ("MIPS:
-> Explicitly include correct DT includes") in next-20230726.
->
-> > --- a/arch/mips/lantiq/xway/gptu.c
-> > +++ b/arch/mips/lantiq/xway/gptu.c
-> > @@ -8,8 +8,8 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/ioport.h>
-> >  #include <linux/init.h>
-> > -#include <linux/of_platform.h>
-> > -#include <linux/of_irq.h>
->
-> Based on https://lore.kernel.org/all/202307270140.uClzsYnD-lkp@intel.com,
-> I guess you need to keep of_irq.h for of_irq_to_resource_table()?
+On Wed, Jul 26, 2023 at 08:30:01PM +0200, Rafael J. Wysocki wrote:
 
-Ugg, yes. Posting a fix momentarily.
+> > - The governors teo and menu do the tick_nohz_next_event() check even if
+> >   the CPU is fully loaded and but the check is not for free.
+> 
+> Let me have a loot at teo in that respect.
+> 
+> The problem is when tick_nohz_get_sleep_length() should not be called.
+> The easy case is when the governor would select the shallowest idle
+> state without taking it into account, but what about the deeper ones?
+> I guess this depends on the exit latency of the current candidate idle
+> state, but what exit latency would be low enough?  I guess 2 us would
+> be fine, but what about 10 us, or even 20 us for that matter?
 
-Too many config combinations to test on some arches...
+The patch I send here:
+
+  https://lkml.kernel.org/r/20230726164958.GV38236@hirez.programming.kicks-ass.net
+
+(which was stuck in a mailqueue :/) tries to address that.
+
+Additionally, I think we can do something like this on top of all that,
+stop going deeper when 66% of wakeups is at or below the current state.
 
 
-Rob
+--- a/drivers/cpuidle/governors/teo.c
++++ b/drivers/cpuidle/governors/teo.c
+@@ -362,6 +362,7 @@ static int teo_select(struct cpuidle_dri
+ 	unsigned int idx_hit_sum = 0;
+ 	unsigned int hit_sum = 0;
+ 	unsigned int tick_sum = 0;
++	unsigned int thresh_sum = 0;
+ 	int constraint_idx = 0;
+ 	int idx0 = 0, idx = -1;
+ 	bool alt_intercepts, alt_recent;
+@@ -396,6 +397,8 @@ static int teo_select(struct cpuidle_dri
+ 		duration_ns = tick_nohz_get_sleep_length(&delta_tick);
+ 	cpu_data->sleep_length_ns = duration_ns;
+ 
++	thresh_sum = 2 * cpu_data->total / 3; /* 66% */
++
+ 	/*
+ 	 * Find the deepest idle state whose target residency does not exceed
+ 	 * the current sleep length and the deepest idle state not deeper than
+@@ -426,6 +429,9 @@ static int teo_select(struct cpuidle_dri
+ 		if (s->target_residency_ns > duration_ns)
+ 			break;
+ 
++		if (intercept_sum + hit_sum > thresh_sum)
++			break;
++
+ 		idx = i;
+ 
+ 		if (s->exit_latency_ns <= latency_req)
