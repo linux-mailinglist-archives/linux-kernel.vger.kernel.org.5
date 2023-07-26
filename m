@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680F67637B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461E27637BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234117AbjGZNhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S233231AbjGZNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjGZNgy (ORCPT
+        with ESMTP id S232483AbjGZNiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:36:54 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D668E1734;
-        Wed, 26 Jul 2023 06:36:52 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bb7b8390e8so22745035ad.2;
-        Wed, 26 Jul 2023 06:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690378612; x=1690983412;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qde5oqHOAvsDSREhKG9It0ouCEwVKT5mPlK+bDyfn8=;
-        b=rneJtUcl30vC39kDvh6x+a76gLDmYJAkBzKP7aG3pFg1C3ryu8gJfBnKVm70cc3+LQ
-         uBirqVzGIsqygHIuus6YjLwNCf8VYDUOorB/g0f1dg2gHb+IXNYlgvOibtpmUGAOvSpz
-         +a3AVG1chnPpM/dm1/0uzr4gfPxFSoIwQuPH7t0NWyv8IOTlazh9dVQohPwaHh9vHF1S
-         ieF2yle5Lymz3dF5RDIlqoZztGg78FyY1ifDXn1Ly7/tymZ9tFhu9BKgTLN8+dko+iYp
-         4GRCMGREZe6uPhRLHX9l/dluODpWd8qM1STadRcugZN9TojqXqA83DdZGcWxtnDAu5G3
-         ercQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690378612; x=1690983412;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3qde5oqHOAvsDSREhKG9It0ouCEwVKT5mPlK+bDyfn8=;
-        b=KIbCxMzNXwoj9/MUu7cHaWZc1GWMHULQtHXhOosaM8ihHtG+QaQXM818QheI7VCMK4
-         UcFbQPJdNB//za7UsUWUdAWLcEIn7LGVZWfRZ0sv4LAHXl3c6AtoT4pzpTM+lMJ8dyCu
-         phVl3Sx6GPDmofEi8+45yG/j+P47bY7QOPmDh0oAQyi6yA7vIeJmNHPYNpjBV8PkWjEr
-         rTP/ZTV0DQFkBL2lSLTj3hkwck9d8ruakFNCimnGO6do0NuoH8S6kOb+Gix7SX26DfhY
-         lb0HZNTxX1KGBIGO2ngbgFP3M85CvvxO/Z7+req188M6jevnCMwMCkdTNf/Du62RIvyO
-         QA6g==
-X-Gm-Message-State: ABy/qLah+KzNKpNjRsD/dVVsyVzGJVbM7fHw05Un07UPWvFB6GV8qPO2
-        FbMyVNCoQTu5SoiAg7rF4WA=
-X-Google-Smtp-Source: APBJJlHG2scKX86QkShM+T+SiQW+luLXUkOMNb1/y4zZzKHvkDQFINn7xy0QEl2wpBRdLQKvelvW8g==
-X-Received: by 2002:a17:902:d487:b0:1bb:c5b5:8353 with SMTP id c7-20020a170902d48700b001bbc5b58353mr2195782plg.4.1690378612102;
-        Wed, 26 Jul 2023 06:36:52 -0700 (PDT)
-Received: from bangji.roam.corp.google.com ([114.129.115.132])
-        by smtp.gmail.com with ESMTPSA id q8-20020a170902b10800b001b8baa83639sm13206369plr.200.2023.07.26.06.36.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 06:36:51 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH 2/2] perf build: Include generated header files properly
-Date:   Wed, 26 Jul 2023 06:36:42 -0700
-Message-ID: <20230726133642.750342-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230726133642.750342-1-namhyung@kernel.org>
-References: <20230726133642.750342-1-namhyung@kernel.org>
+        Wed, 26 Jul 2023 09:38:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B480F118;
+        Wed, 26 Jul 2023 06:38:11 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QCEbXL029223;
+        Wed, 26 Jul 2023 13:38:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=xr58Ttl/tZUIt/Rk6PYHYfdDG34LXOshnBUPuif6OfI=;
+ b=NSuMPOS7BAsFYtk1ChGXugYPGq7CN+Qyk8bNuhD3EviojnhtvdirdiUohEN9MNcuCQ08
+ hnZpdFc18kkQOqIbF/lQLXiv66c1Ih7xRtT1u+AHwajUOEftYHwAB47axL4pHbdE/DLL
+ N9uRB4x46KftNGZA0kwJDJ1oiD9En6HYh3RahKtfXgO9ns+C0Y8HSduT4ikgLCiMNDh/
+ yZdfixn2zLZlq37A39Z8rJQT0Om2rLpsVzo23lBM4tPQHwqg/jbeSujzvHqGwLzm7ZVS
+ 0sS8RiC6j6bAcaIkmMxXiLiDLLNwof2ZrLbGzzW4j13IB2ayrLWkhsSQVE6Mnh2DGu3r qg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2v4tgyvf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 13:38:07 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36QDc6ZI003783
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 13:38:06 GMT
+Received: from [10.50.21.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
+ 2023 06:38:03 -0700
+Message-ID: <c0b314db-bd29-7211-2a70-667405eb5bd0@quicinc.com>
+Date:   Wed, 26 Jul 2023 19:08:00 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH][next] accel/qaic: remove redundant assignment to pointer
+ pexec
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Carl Vanderlip <quic_carlv@quicinc.com>,
+        "Oded Gabbay" <ogabbay@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230725114037.36806-1-colin.i.king@gmail.com>
+ <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
+Content-Language: en-US
+From:   Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+In-Reply-To: <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gNn-ja2ju0Xs11dqy647vzHtwKvYu086
+X-Proofpoint-GUID: gNn-ja2ju0Xs11dqy647vzHtwKvYu086
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_06,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 bulkscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307260120
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,98 +84,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The flex and bison generate header files from the source.  When user
-specified a build directory with O= option, it'd generate files under
-the directory.  The build command has -I option to specify the header
-include directory.
 
-But the -I option only affects the files included like <...>.  Let's
-change the flex and bison headers to use it instead of "...".
 
-Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-Cc: stable@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/pmu-events/jevents.py | 2 +-
- tools/perf/util/bpf-filter.c     | 4 ++--
- tools/perf/util/expr.c           | 4 ++--
- tools/perf/util/parse-events.c   | 4 ++--
- tools/perf/util/pmu.c            | 4 ++--
- 5 files changed, 9 insertions(+), 9 deletions(-)
+On 7/26/2023 8:30 AM, Jeffrey Hugo wrote:
+> On 7/25/2023 5:40 AM, Colin Ian King wrote:
+>> Pointer pexec is being assigned a value however it is never read. The
+>> assignment is redundant and can be removed.
+>>
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+>> ---
+>>   drivers/accel/qaic/qaic_data.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/accel/qaic/qaic_data.c 
+>> b/drivers/accel/qaic/qaic_data.c
+>> index e9a1cb779b30..8a6cb14f490e 100644
+>> --- a/drivers/accel/qaic/qaic_data.c
+>> +++ b/drivers/accel/qaic/qaic_data.c
+>> @@ -1320,7 +1320,6 @@ static int __qaic_execute_bo_ioctl(struct 
+>> drm_device *dev, void *data, struct dr
+>>       user_data = u64_to_user_ptr(args->data);
+>>       exec = kcalloc(args->hdr.count, size, GFP_KERNEL);
+>> -    pexec = (struct qaic_partial_execute_entry *)exec;
+>>       if (!exec)
+>>           return -ENOMEM;
+> 
+> It does look like pexec is not used in this function after it was 
+> refactored.  Shouldn't the declaration at the beginning of the function 
+> also be removed?
 
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index 12e80bb7939b..82c42c46d886 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -999,7 +999,7 @@ such as "arm/cortex-a34".''',
-   _args = ap.parse_args()
- 
-   _args.output_file.write("""
--#include "pmu-events/pmu-events.h"
-+#include <pmu-events/pmu-events.h>
- #include "util/header.h"
- #include "util/pmu.h"
- #include <string.h>
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-index 0b30688d78a7..47f01df658d9 100644
---- a/tools/perf/util/bpf-filter.c
-+++ b/tools/perf/util/bpf-filter.c
-@@ -9,8 +9,8 @@
- #include "util/evsel.h"
- 
- #include "util/bpf-filter.h"
--#include "util/bpf-filter-flex.h"
--#include "util/bpf-filter-bison.h"
-+#include <util/bpf-filter-flex.h>
-+#include <util/bpf-filter-bison.h>
- 
- #include "bpf_skel/sample-filter.h"
- #include "bpf_skel/sample_filter.skel.h"
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index 4814262e3805..7410a165f68b 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -10,8 +10,8 @@
- #include "debug.h"
- #include "evlist.h"
- #include "expr.h"
--#include "expr-bison.h"
--#include "expr-flex.h"
-+#include <util/expr-bison.h>
-+#include <util/expr-flex.h>
- #include "util/hashmap.h"
- #include "smt.h"
- #include "tsc.h"
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index acde097e327c..f3773467c103 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -18,8 +18,8 @@
- #include "debug.h"
- #include <api/fs/tracing_path.h>
- #include <perf/cpumap.h>
--#include "parse-events-bison.h"
--#include "parse-events-flex.h"
-+#include <util/parse-events-bison.h>
-+#include <util/parse-events-flex.h>
- #include "pmu.h"
- #include "pmus.h"
- #include "asm/bug.h"
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 7f984a7f16ca..b6654b9f55d2 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -19,8 +19,8 @@
- #include "evsel.h"
- #include "pmu.h"
- #include "pmus.h"
--#include "pmu-bison.h"
--#include "pmu-flex.h"
-+#include <util/pmu-bison.h>
-+#include <util/pmu-flex.h>
- #include "parse-events.h"
- #include "print-events.h"
- #include "header.h"
--- 
-2.41.0.487.g6d72f3e995-goog
-
+Yeah we should remove the declaration as well. Although it is used some 
+where to calculate its size i.e. sizeof(*pexec). We need to directly use 
+the type in sizeof() i.e. sizeof(struct qaic_partial_execute_entry).
