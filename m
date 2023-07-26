@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BF5763D98
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E1E763D9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjGZRV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
+        id S231669AbjGZRX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjGZRVW (ORCPT
+        with ESMTP id S229524AbjGZRX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:21:22 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912F52721
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:21:18 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5221cf2bb8cso15745a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690392077; x=1690996877;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=too89VOKg4aVRVsOKXI6D9LDbHqxYzZFNKPkb45L/xw=;
-        b=K8dE9tk+ewfahp9/J7/sYh67jaGw270PVYU6mD45mc3tAPQ4nXe3tJwVEpotz0Kdey
-         WkIQO70OQ6AoJkqSRt70bhfnnVzm8av/LwoRxx+2h/oz7KCJmiA27v3N17IWYzA91HNG
-         vIIL6vghTK5w8k9cy4zsDYrClv9h8f6pNfLde+fMds1zvbb5aZ7ORnwpTaKuDuFaCwQv
-         RXxZHm6ChCUpHhl7O7GMUas/xHrAu9boAJzgpqQpeaSBjPz+Ba2RA3bj/+IDPbVfGKQZ
-         13WP+Y2sYbrIFVXDudT+SrOiXq+/PxgUcUrQvS5xBhNRdc0dQrNx+JEjCVeCTMZyGj7Q
-         gVnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690392077; x=1690996877;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=too89VOKg4aVRVsOKXI6D9LDbHqxYzZFNKPkb45L/xw=;
-        b=GkSSpaL7j1m9sYcxpADxJXidjJ2PuOQzQrRpFZ4Xa+UOwIo9f0QKwLZCvqf3urldx2
-         Jp+9p33iZNG4FuX3rTbUtVB/7qE4NCZ7Gs0b38jjG0wr/ADMCOCBeZNxYTiJPuqibcO7
-         IPY0Asz3L4o6KFNmt/meGDUnCTNMXOvr/iUGvWz673vGds3fdR0b6NL5v000iRNxfOl6
-         /2L0uXQXBceWhmUYNlx0YAN1Ek/OlDumk6zQQYqadWWf3N7akyNGp9pUWGknbLqTM2Br
-         BylKN5mIuUw1uK2eHYYHLwCdk334eZTLfsBOMCTnzEi1urxFWNTmMUO6egyL9HlvkuQd
-         9oMA==
-X-Gm-Message-State: ABy/qLaH+LlX80HkmP5qtHm0ZiEjewOIZEzprZPgqARKe1O0V7fWFRe5
-        50GI34y8YTNMdw5405csN9irIw==
-X-Google-Smtp-Source: APBJJlEyoGURsUYBAQaNMwsyfDXwqKgX55lxzPCYh6e9DV5uQcwnRiL+KCwu7sXNVeMpK8z6KNcc1A==
-X-Received: by 2002:aa7:d71a:0:b0:522:36e8:bc88 with SMTP id t26-20020aa7d71a000000b0052236e8bc88mr1939347edq.12.1690392076903;
-        Wed, 26 Jul 2023 10:21:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id k11-20020aa7d8cb000000b005222c6fb512sm4306131eds.1.2023.07.26.10.21.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 10:21:16 -0700 (PDT)
-Message-ID: <0aa471ce-da83-172d-d870-1ec7a562baf7@linaro.org>
-Date:   Wed, 26 Jul 2023 19:21:14 +0200
+        Wed, 26 Jul 2023 13:23:56 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86331BEF
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:23:55 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 17:23:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spawn.link;
+        s=protonmail2; t=1690392230; x=1690651430;
+        bh=xht0eNWiq91QqwjoETUuyoeUTJAOT+E+Nv0Zqu3eDMI=;
+        h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=ghDddWh5ZraQzHYL5jj/f1p7VdtBQDLUuSYJQyxvWCa0Ib3B2YftOvHSrEL9XgMeb
+         1A2qoRQgFE1E8CZy1wofnPA1fCZHT9mvCxu3B+m+noP8zG/z3eGILA/qOunvJrTuEB
+         j0luuniDPYHXeqsCw3v85R+5Bxh4P7VpuKyg7YQkXvRU0sCZU/4CNiqosbxfhPGgPp
+         eU9nvZNphOBYqnwXDnwl8gLqSdnjv8NOnBZtSxc89Zkcxecy5uTDB+FxZTbgwjYXv8
+         VCYgKavP2RYiqkvcOkQLOvMoLFxSOiSQA7QIywByOm5knjrdJbFpQxAjE5jG6+2xL2
+         b82yPTSdVZMew==
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Jaco Kroon <jaco@uls.co.za>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Antonio SJ Musumeci <trapexit@spawn.link>
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
+Message-ID: <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link>
+In-Reply-To: <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
+References: <20230726105953.843-1-jaco@uls.co.za> <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm> <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za> <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
+Feedback-ID: 55718373:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 1/5] dt-bindings: media: platform: visconti: Add
- Toshiba Visconti Video Input Interface
-Content-Language: en-US
-To:     yuji2.ishikawa@toshiba.co.jp, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nobuhiro1.iwamatsu@toshiba.co.jp, broonie@kernel.org
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230714015059.18775-1-yuji2.ishikawa@toshiba.co.jp>
- <20230714015059.18775-2-yuji2.ishikawa@toshiba.co.jp>
- <7aa255e8-1cf1-03c6-02c8-de7c737a5683@linaro.org>
- <TYAPR01MB62012F7EA98012DBE0B383A29203A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <TYAPR01MB62012F7EA98012DBE0B383A29203A@TYAPR01MB6201.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 08:08, yuji2.ishikawa@toshiba.co.jp wrote:
->> unevaluatedProperties: false
-> 
-> In the previous discussion with Laurent, I believe additionalProperties was preferred in terms of handling properties not explicitly mentioned.
-> 
-> https://lore.kernel.org/all/Y82NtJCtr+CZgS9k@pendragon.ideasonboard.com/
-
-OK.
-
-> 
-> Do you have concern about defaulting properties in video-interface.yaml to forbidden?
-> If defaulting to optional (like most of other bindings) is better, I'll use unevaluatedProperties.
-> 
-
-...
-
-> there's no need to specify clock-lane with device tree.
-> 
-> I'll drop "clock-lanes".
-> 
->>> +
->>> +          bus-type: true
->>> +          clock-noncontinuous: true
->>> +          link-frequencies: true
->>> +          remote-endpoint: true
+On 7/26/23 10:45, Bernd Schubert wrote:
+>
+> On 7/26/23 17:26, Jaco Kroon wrote:
+>> Hi,
 >>
->> Drop all of these "xxx: true", should not be needed after converting to
->> unevaluatedProperties: false
->>
-> 
-> I'll drop "xxx: true" if unevaluatedProperties is chosen instead of additionalProperties.
+>> On 2023/07/26 15:53, Bernd Schubert wrote:
+>>>
+>>> On 7/26/23 12:59, Jaco Kroon wrote:
+>>>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+>>>> ---
+>>>>  =C2=A0 fs/fuse/Kconfig=C2=A0=C2=A0 | 16 ++++++++++++++++
+>>>>  =C2=A0 fs/fuse/readdir.c | 42 ++++++++++++++++++++++++---------------=
+---
+>>>>  =C2=A0 2 files changed, 40 insertions(+), 18 deletions(-)
+>>>>
+>>>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+>>>> index 038ed0b9aaa5..0783f9ee5cd3 100644
+>>>> --- a/fs/fuse/Kconfig
+>>>> +++ b/fs/fuse/Kconfig
+>>>> @@ -18,6 +18,22 @@ config FUSE_FS
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 If you want to develop a u=
+serspace FS, or if you want to use
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a filesystem based on FUSE=
+, answer Y or M.
+>>>>  =C2=A0 +config FUSE_READDIR_ORDER
+>>>> +=C2=A0=C2=A0=C2=A0 int
+>>>> +=C2=A0=C2=A0=C2=A0 range 0 5
+>>>> +=C2=A0=C2=A0=C2=A0 default 5
+>>>> +=C2=A0=C2=A0=C2=A0 help
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 readdir performance varies=
+ greatly depending on the size of
+>>>> the read.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Larger buffers results in =
+larger reads, thus fewer reads and
+>>>> higher
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 performance in return.
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 You may want to reduce thi=
+s value on seriously constrained
+>>>> memory
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 systems where 128KiB (assu=
+ming 4KiB pages) cache pages is
+>>>> not ideal.
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This value reprents the or=
+der of the number of pages to
+>>>> allocate (ie,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the shift value).=C2=A0 A =
+value of 0 is thus 1 page (4KiB) where
+>>>> 5 is 32
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pages (128KiB).
+>>>> +
+>>> I like the idea of a larger readdir size, but shouldn't that be a
+>>> server/daemon/library decision which size to use, instead of kernel
+>>> compile time? So should be part of FUSE_INIT negotiation?
+>> Yes sure, but there still needs to be a default.=C2=A0 And one page at a=
+ time
+>> doesn't cut it.
+> With FUSE_INIT userspace would make that decision, based on what kernel
+> fuse suggests? process_init_reply() already handles other limits - I
+> don't see why readdir max has to be compile time option. Maybe a module
+> option to set the limit?
+>
+> Thanks,
+> Bernd
 
-Since we keep unevaluated, this should stay.
+I had similar question / comment. This seems to me to be more=20
+appropriately handed by the server via FUSE_INIT.
 
+And wouldn't "max" more easily be FUSE_MAX_MAX_PAGES? Is there a reason=20
+not to allow upwards of 256 pages sized readdir buffer?
 
-Best regards,
-Krzysztof
 
