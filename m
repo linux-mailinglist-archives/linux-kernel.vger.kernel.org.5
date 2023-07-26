@@ -2,201 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE0B7639CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB71E7639D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbjGZPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
+        id S234591AbjGZPCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbjGZPBK (ORCPT
+        with ESMTP id S234581AbjGZPCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:01:10 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEFF212D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:01:06 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-317716a4622so1380049f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690383665; x=1690988465;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7zM+YG+vsWbtMUD6XdWA2JUgtaWQiytdCsuMze1m6/k=;
-        b=xN+/DtpXH07sL2bRF9VUZv/uyejUHbIwAWXONp9i6bShF/IthrYdyTZLT21dJM/qr8
-         I5ew8CLX5YeZDjgGUd0yCTtM771EB4OKUZjDuYcLHEaWfVdyDLZGq/VJCmjTyislOOH7
-         /bdLpRikQFGNfjB9iskGIEUSrPpeNj2QJIV9AGMxkZ1jJVqVEtpT9G2eBVLNr+aJGdEj
-         1eTC3DrbPKi9DAuK/CaO6tyHt6309JGswVakuEOJv5B2n9LzhB8lGoll4rZFuKDZc+Jj
-         6zJ1a1mF6OY1s5ZHeY+fsVt7T9UdyA65pK+Zijy+e6VHka5DD7sHx0yTUV0npYpashkR
-         8RrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690383665; x=1690988465;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7zM+YG+vsWbtMUD6XdWA2JUgtaWQiytdCsuMze1m6/k=;
-        b=GkYelm9fKU1GjpM8HZZh2iPWhfvOlmxgsFMi5sx2bujuZ0jYmfd+Z4hA7bCakOrNVh
-         E6yC+frhRc8EpVD89IF8pAOignMdlryrfD63K2cp14iYeO806UXcWzBznHHeFM+M92aE
-         O2PyLFRDWNm8gM+fPgEz3PG1v56yVjtr7E5G9c9KVmhRGSrwcUX6NFIjTelBAbpKp57M
-         7PII+it3Xf68rt3t3+myLRAe6PJKCpk/hlbYlc6omAX2HDw62wN2pENo1EG3TdHDTiBr
-         QrbB0JjrnVFKm2jAE8cRVkzTiLweC/BpafPYTmOQHcUML7yXW2XbjymRh/9eyeLxSxq0
-         MU3A==
-X-Gm-Message-State: ABy/qLb1SORnMAdNRExqgm3QlhOrqojooiYT5LrfoFJU6tFpRnUM1rY7
-        gLtcCPLZQD4aH0ujrMafBFLOVw==
-X-Google-Smtp-Source: APBJJlEaZJPaPa+6TPkoJHqPWeFXbl2DaYbcmbJ8WCzC3KLHfm3d4h9pKWO+0VMCv16cBZiIKuONVw==
-X-Received: by 2002:adf:f786:0:b0:317:49e9:c57 with SMTP id q6-20020adff786000000b0031749e90c57mr1591410wrp.43.1690383664792;
-        Wed, 26 Jul 2023 08:01:04 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o20-20020a5d58d4000000b0031433443265sm20096799wrf.53.2023.07.26.08.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 08:01:03 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 18:01:00 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Wed, 26 Jul 2023 11:02:43 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6882681;
+        Wed, 26 Jul 2023 08:02:38 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2CC861C000F;
+        Wed, 26 Jul 2023 15:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690383756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FpeWQVS1LV41419lc34wEM78sy9lpE/B0BYD4uQm7jg=;
+        b=Gzf68b/XHUTXP3KQE7d0QnVpc5X/vl4c556z35tFIPXX7gqQeb2ezoJ3mjAyEKVJkOl0AQ
+        GmlcY4CyOtXQ1AqovYAZ2wJEvUiZPsUAQj7m6vIGBk8ArMF2YWjK3MFRLhOvKsdkSUA9zn
+        0VZQAsXOFs8fu2RxSDvcPmiBJ5AUbyiedZaQJ4FqFlm/HNf47DKgzMUA7za4uA3gDddVWc
+        caO0ECW6RKM0cPwoqi9mEpM4Va5EQ0ap2n+P9/+PwD02v2D56YykatyZT3rvigBESrQuyI
+        RaqXj8+rvS/zlmzMRVVqLN4K3ZmHPcLy9ykbbAHz65med6BnWMaVgzu4EAMKWg==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-Message-ID: <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
-References: <cover.1690332693.git.yan@cloudflare.com>
- <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
- <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
- <ZMEqYOOBc1ZNcEER@debian.debian>
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 00/28] Add support for QMC HDLC, framer infrastruture and PEF2256 framer
+Date:   Wed, 26 Jul 2023 17:01:56 +0200
+Message-ID: <20230726150225.483464-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMEqYOOBc1ZNcEER@debian.debian>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 07:14:56AM -0700, Yan Zhai wrote:
-> On Wed, Jul 26, 2023 at 04:39:08PM +0300, Dan Carpenter wrote:
-> > I'm not positive I understand the code in ip_finish_output2().  I think
-> > instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
-> > != LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
-> > LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
-> > instead?
-> > 
-> I considered about changing lwt side logic. But it would bring larger
-> impact since there are multiple types of encaps on this hook, not just
-> bpf redirect. Changing bpf return values is a minimum change on the
-> other hand. In addition, returning value of NET_RX_DROP and
-> NET_XMIT_CN are the same, so if we don't do something in bpf redirect,
-> there is no way to distinguish them later: the former is considered as
-> an error, while "CN" is considered as non-error.
+Hi,
 
-Uh, NET_RX/XMIT_DROP values are 1.  NET_XMIT_CN is 2.
+I have a system where I need to handle an HDLC interface and some audio
+data.
 
-I'm not an expert but I think what happens is that we treat NET_XMIT_CN
-as success so that it takes a while for the resend to happen.
-Eventually the TCP layer will detect it as a dropped packet.
+The HDLC data are transferred using a TDM bus on which a PEF2256
+(E1/T1 framer) is present. The PEF2256 transfers data from/to the TDM
+bus to/from the E1 line. This PEF2256 is connected to a PowerQUICC SoC
+for the control path and the TDM is connected to the SoC (QMC component)
+for the data path.
 
-> 
-> > Also there seems to be a leak in lwtunnel_xmit().  Should that return
-> > LWTUNNEL_XMIT_CONTINUE or should it call kfree_skb() before returning?
-> > 
-> > Something like the following?
-> > 
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 11652e464f5d..375790b672bc 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -112,6 +112,9 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
-> >  #define NET_XMIT_CN		0x02	/* congestion notification	*/
-> >  #define NET_XMIT_MASK		0x0f	/* qdisc flags in net/sch_generic.h */
-> >  
-> > +#define LWTUNNEL_XMIT_DONE NET_XMIT_SUCCESS
-> > +#define LWTUNNEL_XMIT_CONTINUE 0x3
-> > +
-> >  /* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
-> >   * indicates that the device will soon be dropping packets, or already drops
-> >   * some packets of the same priority; prompting us to send less aggressively. */
-> > diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
-> > index 6f15e6fa154e..8ab032ee04d0 100644
-> > --- a/include/net/lwtunnel.h
-> > +++ b/include/net/lwtunnel.h
-> > @@ -16,12 +16,6 @@
-> >  #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
-> >  #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
-> >  
-> > -enum {
-> > -	LWTUNNEL_XMIT_DONE,
-> > -	LWTUNNEL_XMIT_CONTINUE,
-> > -};
-> > -
-> > -
-> >  struct lwtunnel_state {
-> >  	__u16		type;
-> >  	__u16		flags;
-> > diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
-> > index 711cd3b4347a..732415d1287d 100644
-> > --- a/net/core/lwtunnel.c
-> > +++ b/net/core/lwtunnel.c
-> > @@ -371,7 +371,7 @@ int lwtunnel_xmit(struct sk_buff *skb)
-> >  
-> >  	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
-> >  	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
-> > -		return 0;
-> > +		return LWTUNNEL_XMIT_CONTINUE;
-> 
-> You are correct this path would leak skb. Return continue (or drop)
-> would avoid the leak. Personally I'd prefer drop instead to signal the
-> error setup. Since this is a separate issue, do you want to send a
-> separate patch on this? Or I am happy to do it if you prefer.
-> 
+From the QMC HDLC driver, I need to handle HDLC data using the QMC,
+carrier detection using the PEF2256 (E1 line carrier) and set/get some
+PEF2256 configuration.
 
-I don't know which makes sense so I'll leave that up to you.
+The QMC HDLC driver considers the PEF2256 as a generic framer.
+It performs operations that involve the PEF2256 through the generic
+framer API.
 
-> >  
-> >  	ret = -EOPNOTSUPP;
-> >  	rcu_read_lock();
-> > diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> > index 6e70839257f7..4be50a211b14 100644
-> > --- a/net/ipv4/ip_output.c
-> > +++ b/net/ipv4/ip_output.c
-> > @@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
-> >  	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
-> >  		int res = lwtunnel_xmit(skb);
-> >  
-> > -		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
-> > +		if (res != LWTUNNEL_XMIT_CONTINUE)
-> >  			return res;
-> 
-> Unfortunately we cannot return res directly here when res > 0. This is
-> the final reason why I didn't patch here. Return values here can be
-> propagated back to sendmsg syscall, so returning a positive value
-> would break the syscall convention.
+The audio data are exchanged with the PEF2256 using a CPU DAI connected
+to the TDM bus through the QMC and the PEF2256 needs to be seen as a
+codec in order to be linked to the CPU DAI.
+The codec handles the carrier detection using the PEF2256 and reports
+the carrier state to the ALSA subsystem using the ASoC jack detection.
 
-The neigh_output() function is going to return NET_XMIT_DROP so this
-already happens.  Is that not what we want to happen?
+The codec, even if instantiated by the PEF2256 driver, considers the
+PEF2256 as a generic framer.
 
-I guess my concern is that eventually people will eventually new
-introduce bugs.  Fixing incorrect error codes is something that I do
-several times per week.  :P
+The generic framer has:
+ - 2 consumers (QMC HDLC drv and codec)
+ - 1 provider (PEF2256)
 
-regards,
-dan carpenter
+So, the design is the following:
+                        +------------------+           +---------+
+                        | QMC              | <- TDM -> | PEF2256 | <-> E1
+     +---------+        |  +-------------+ |           |         |
+     | CPU DAI | <-data--> | QMC channel | |           |         |
+     +---------+        |  +-------------+ |           |         |
++--------------+        |  +-------------+ |           |         |
+| QMC HDLC drv | <-data--> | QMC channel | |           |         |
++--------------+        |  +-------------+ |           |         |
+     ^                  +------------------+           |         |
+     |   +--------+     +-------------+                |         |
+     +-> | framer | <-> | PEF2256 drv | <- local bus ->|         |
+         |        |     |             |                +---------+
+     +-> |        |     |             |
+     |   +--------+     |  +-------+  |
+     +-------------------> | codec |  |
+                        |  +-------+  |
+                        +-------------+
 
+Further more, the TDM timeslots used by the QMC HDLC driver need to be
+configured at runtime (QMC dynamic timeslots).
+
+Several weeks ago, I sent two series related to this topic:
+ - Add the Lantiq PEF2256 audio support [1]
+ - RFC Add support for QMC HDLC and PHY [2]
+This current series is a rework of these two series taking into account
+feedbacks previously received.
+
+In order to implement all of this, I do the following:
+ 1) Perform some fixes (patches 1, 2, 3, 4)
+ 2) Introduce the QMC HDLC driver (patches 5, 6, 7)
+ 3) Add QMC dynamic timeslot support (patches 8 - 18)
+ 4) Add timeslots change support in QMC HDLC (patch 19)
+ 5) Introduce framer infrastructure (patch 20)
+ 6) Add PEF2256 framer provider (patches 11, 22, 23, 24, 25)
+ 7) Add framer codec as a framer consumer (patch 26)
+ 8) Add framer support as a framer consumer in QMC HDLC (patch 27, 28)
+
+The series contains the full story and detailed modifications.
+If needed, the series can be split and/or commmits can be squashed.
+Let me know.
+
+Compare to the previous iteration
+  https://lore.kernel.org/linux-kernel/20230725092417.43706-1-herve.codina@bootlin.com/
+This v2 series mainly:
+ - Adds 2 patches to fix some compilation warning present on existing
+   files (__iomem addresses declaration issues).
+ - Fixes compilation warning on some patches.
+ - Reword a commit log.
+
+Best regards,
+Hervé
+
+[1]: https://lore.kernel.org/all/20230417171601.74656-1-herve.codina@bootlin.com/
+[2]: https://lore.kernel.org/all/20230323103154.264546-1-herve.codina@bootlin.com/
+
+Changes v1 -> v2
+  - Patches 1, 2 (New in v2)
+    Fix __iomem addresses declaration
+
+  - Patch 19 (17 in v1)
+    Fix a compilation warning
+
+  - Patch 26 (24 in v1)
+    Fix a typo in Kconfig file
+    Fix issues raised by sparse (make C=1)
+
+Herve Codina (28):
+  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix rx channel reset
+  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
+  dt-bindings: net: Add support for QMC HDLC
+  net: wan: Add support for QMC HDLC
+  MAINTAINERS: Add the Freescale QMC HDLC driver entry
+  soc: fsl: cpm1: qmc: Introduce available timeslots masks
+  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
+  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
+  soc: fsl: cpm1: qmc: Remove no more needed checks from
+    qmc_check_chans()
+  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
+  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
+  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
+  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
+  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
+    stop()
+  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
+  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
+    runtime
+  wan: qmc_hdlc: Add runtime timeslots changes support
+  net: wan: Add framer framework support
+  dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1 framer
+  mfd: core: Ensure disabled devices are skiped without aborting
+  net: wan: framer: Add support for the Lantiq PEF2256 framer
+  pinctrl: Add support for the Lantic PEF2256 pinmux
+  MAINTAINERS: Add the Lantiq PEF2256 driver entry
+  ASoC: codecs: Add support for the framer codec
+  dt-bindings: net: fsl,qmc-hdlc: Add framer support
+  net: wan: fsl_qmc_hdlc: Add framer support
+
+ .../devicetree/bindings/net/fsl,qmc-hdlc.yaml |  46 +
+ .../bindings/net/lantiq,pef2256.yaml          | 226 +++++
+ MAINTAINERS                                   |  17 +
+ drivers/mfd/mfd-core.c                        |  18 +-
+ drivers/net/wan/Kconfig                       |  14 +
+ drivers/net/wan/Makefile                      |   3 +
+ drivers/net/wan/framer/Kconfig                |  35 +
+ drivers/net/wan/framer/Makefile               |   7 +
+ drivers/net/wan/framer/framer-core.c          | 935 ++++++++++++++++++
+ drivers/net/wan/framer/pef2256/Makefile       |   8 +
+ drivers/net/wan/framer/pef2256/pef2256-regs.h | 250 +++++
+ drivers/net/wan/framer/pef2256/pef2256.c      | 880 +++++++++++++++++
+ drivers/net/wan/fsl_qmc_hdlc.c                | 820 +++++++++++++++
+ drivers/pinctrl/Kconfig                       |  14 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-pef2256-regs.h        |  65 ++
+ drivers/pinctrl/pinctrl-pef2256.c             | 310 ++++++
+ drivers/soc/fsl/qe/qmc.c                      | 501 ++++++++--
+ drivers/soc/fsl/qe/tsa.c                      |  22 +-
+ include/linux/framer/framer-provider.h        | 194 ++++
+ include/linux/framer/framer.h                 | 215 ++++
+ include/linux/framer/pef2256.h                |  31 +
+ include/soc/fsl/qe/qmc.h                      |  25 +-
+ sound/soc/codecs/Kconfig                      |  15 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/framer-codec.c               | 423 ++++++++
+ sound/soc/fsl/fsl_qmc_audio.c                 |   2 +-
+ 27 files changed, 4957 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+ create mode 100644 drivers/net/wan/framer/Kconfig
+ create mode 100644 drivers/net/wan/framer/Makefile
+ create mode 100644 drivers/net/wan/framer/framer-core.c
+ create mode 100644 drivers/net/wan/framer/pef2256/Makefile
+ create mode 100644 drivers/net/wan/framer/pef2256/pef2256-regs.h
+ create mode 100644 drivers/net/wan/framer/pef2256/pef2256.c
+ create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
+ create mode 100644 drivers/pinctrl/pinctrl-pef2256-regs.h
+ create mode 100644 drivers/pinctrl/pinctrl-pef2256.c
+ create mode 100644 include/linux/framer/framer-provider.h
+ create mode 100644 include/linux/framer/framer.h
+ create mode 100644 include/linux/framer/pef2256.h
+ create mode 100644 sound/soc/codecs/framer-codec.c
+
+-- 
+2.41.0
 
