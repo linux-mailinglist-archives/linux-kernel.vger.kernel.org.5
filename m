@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DC0764032
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DBA764035
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjGZUIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S230466AbjGZUI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjGZUIX (ORCPT
+        with ESMTP id S229572AbjGZUI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:08:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993652706;
-        Wed, 26 Jul 2023 13:08:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FFE761C63;
-        Wed, 26 Jul 2023 20:08:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0861C433C7;
-        Wed, 26 Jul 2023 20:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690402101;
-        bh=tkm5m6riRK6JiPDBJ3xtHiTEA7gBu5th4OS3XdarM5c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TSpMUIurbr1bdPa/0B6DOsiuTbVYbYdn1w3Y7xsqo/U8GbwvNsc+J4PEbd+BSWgDg
-         DfIrSvjcMk6VubAyi5DhS3kIVk1nU/Re2CFRBWg4ziggvxwJAHngCA9FozCAef+xCe
-         8VeOB00p7A3EdAdVg8o3k6pTY+Y6zKOkQyFMykrCcZkz4jbdWQjwa3FAlWRdpCvOzR
-         vhJ4gkmZ1/ILwHRkxBH9i+ENvEDsISTlBVGM0+iSpMkRzVyYuewU+GapzRblvcE79/
-         le+jGJbme2f1E5tR6UmraYRRWhqLC/ZkZi+LF0UnsNew5Ryjz9Eq3FKcLq9Jmcj0Ou
-         tkfw6LwxZKPNg==
-Date:   Wed, 26 Jul 2023 13:08:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Wed, 26 Jul 2023 16:08:27 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB16A2701;
+        Wed, 26 Jul 2023 13:08:26 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1174)
+        id 4602A2383123; Wed, 26 Jul 2023 13:08:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4602A2383123
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1690402106;
+        bh=BGDglPPcOLPbs33vvdiQMlsE2V42+tWMX+3izbX4MkE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l6eMBgBeQLt5oYEcLfTwlZuV1sgk/sCELW/55h1Q5PuLYHBzHHNDflPY2QUIlVuT5
+         BYvvF9sHsQL0xenbwyzp475yFMIXWq4LVgWfrIokyBWVj6uddE/clth5m+OZRFhksF
+         Ca2EpTCv/uH4OAfu+rH1eGBLHPdHRn4rIle0kr4U=
+From:   sharmaajay@linuxonhyperv.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Gal Pressman <gal@nvidia.com>, ranro@nvidia.com,
-        samiram@nvidia.com, drort@nvidia.com,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH net-next v10 08/16] tls: Inline do_tcp_sendpages()
-Message-ID: <20230726130819.6cc6aa0c@kernel.org>
-In-Reply-To: <e9c41176-829a-af5a-65d2-78a2f414cd04@gmail.com>
-References: <ecbb5d7e-7238-28e2-1a17-686325e2bb50@gmail.com>
-        <4c49176f-147a-4283-f1b1-32aac7b4b996@gmail.com>
-        <20230522121125.2595254-1-dhowells@redhat.com>
-        <20230522121125.2595254-9-dhowells@redhat.com>
-        <2267272.1686150217@warthog.procyon.org.uk>
-        <5a9d4ffb-a569-3f60-6ac8-070ab5e5f5ad@gmail.com>
-        <776549.1687167344@warthog.procyon.org.uk>
-        <7337a904-231d-201d-397a-7bbe7cae929f@gmail.com>
-        <20230630102143.7deffc30@kernel.org>
-        <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com>
-        <20230705091914.5bee12f8@kernel.org>
-        <bbdce803-0f23-7d3f-f75a-2bc3cfb794af@gmail.com>
-        <20230725173036.442ba8ba@kernel.org>
-        <e9c41176-829a-af5a-65d2-78a2f414cd04@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: [Patch v3 0/4] RDMA/mana_ib Read Capabilities
+Date:   Wed, 26 Jul 2023 13:08:20 -0700
+Message-Id: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 22:20:42 +0300 Tariq Toukan wrote:
-> > There is a small bug in this commit, we should always set SPLICE.
-> > But I don't see how that'd cause the warning you're seeing.
-> > Does your build have CONFIG_DEBUG_VM enabled?  
-> 
-> No.
-> 
-> # CONFIG_DEBUG_VM is not set
-> # CONFIG_DEBUG_VM_PGTABLE is not set
+From: Ajay Sharma <sharmaajay@microsoft.com>
 
-Try testing v6.3 with DEBUG_VM enabled or just remove the IS_ENABLED()
-from: https://github.com/torvalds/linux/blob/v6.4/net/ipv4/tcp.c#L1051
+This patch series introduces some cleanup changes and
+resource control changes. The mana and mana_ib devices
+are used at common places so a consistent naming is
+introduced. Adapter object container to have a common
+point of object release for resources and query the
+management software to prevent resource overflow.
+It also introduces async channel for management to
+notify the clients in case of errors/info.
+
+Ajay Sharma (4):
+  RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
+  RDMA/mana_ib : Register Mana IB  device with Management SW
+  RDMA/mana_ib : Create adapter and Add error eq
+  RDMA/mana_ib : Query adapter capabilities
+
+ drivers/infiniband/hw/mana/cq.c               |  12 +-
+ drivers/infiniband/hw/mana/device.c           |  72 +++--
+ drivers/infiniband/hw/mana/main.c             | 282 +++++++++++++-----
+ drivers/infiniband/hw/mana/mana_ib.h          |  96 +++++-
+ drivers/infiniband/hw/mana/mr.c               |  42 ++-
+ drivers/infiniband/hw/mana/qp.c               |  82 ++---
+ drivers/infiniband/hw/mana/wq.c               |  21 +-
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 151 ++++++----
+ drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
+ include/net/mana/gdma.h                       |  16 +-
+ 10 files changed, 529 insertions(+), 248 deletions(-)
+
+-- 
+2.25.1
+
