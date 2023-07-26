@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B46762932
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DD1762934
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjGZDVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
+        id S230521AbjGZDWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjGZDVu (ORCPT
+        with ESMTP id S230486AbjGZDWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:21:50 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60825121
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690341709; x=1721877709;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=41wbTtODPkpjnhNbDqWe3jLLGDqh9EzgVAF8fhApyhM=;
-  b=XuYN+rHsrFlgbLdUGzv0/+TELCtFFa8Ss6Ap/FqDmbP03LxtsRd3OKa2
-   9EdsaOMWKmusUtfOgoSIBs8/Z4Q6kOQ+bV4Yb0u0zrXWgXSL2bYwAkrAC
-   ky7q+7r4kJWyN7lHFPE6CLa9UMQ7GtSjBL/0NFQUNatLYF9arCB9j3pxp
-   79MyIa0Q9d8L5Gaw43SPsnWDhuJtK0lCsohAq9MJApXO0PNdjur3tRvKm
-   PetzourLtORVpaLfBkdw3qdF/rI7DInRMmPjcOKQYRtFyiwqwmAwi5viM
-   FVAM5QF6yG92FBCx6nex3pZOOtxft8vqttXyquIAj1alGPhJQkwyv3Go8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="371513237"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="371513237"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 20:21:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="726345744"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="726345744"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.208.129]) ([10.254.208.129])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 20:21:36 -0700
-Message-ID: <592edb17-7fa4-3b5b-2803-e8c50c322eee@linux.intel.com>
-Date:   Wed, 26 Jul 2023 11:21:34 +0800
+        Tue, 25 Jul 2023 23:22:01 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8552697;
+        Tue, 25 Jul 2023 20:21:58 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9fMR097cz4f3jMH;
+        Wed, 26 Jul 2023 11:21:55 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgCHLaFPkcBkmKBNOw--.42869S4;
+        Wed, 26 Jul 2023 11:21:55 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH] epoll: simplify ep_alloc()
+Date:   Wed, 26 Jul 2023 11:21:35 +0800
+Message-Id: <20230726032135.933-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-To:     Zong Li <zong.li@sifive.com>, Anup Patel <apatel@ventanamicro.com>
-References: <cover.1689792825.git.tjeznach@rivosinc.com>
- <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com>
- <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
- <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
- <CAK9=C2XoQjPzZ5yB5jfTbee4-Pb8GgFAZRbfcMwMk9pyo39WxQ@mail.gmail.com>
- <CANXhq0q7R9Srx6U=fReq7LDLFgW6rMmjKH=o6MzDT5AWNRXP6w@mail.gmail.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <CANXhq0q7R9Srx6U=fReq7LDLFgW6rMmjKH=o6MzDT5AWNRXP6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCHLaFPkcBkmKBNOw--.42869S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4UAF43Kr4xKFWUKFWfXwb_yoWkZrX_AF
+        W09a4DGrW8JF4fJa4UAw1YvFWfKa1FvFW8Zr40kFZ7Wa43Gr93Zayqvr43Zr17uFW3WFya
+        vwn7C39Iq3Wj9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JrC_JFWl1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
+        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
+        v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFCJmUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/24 21:23, Zong Li wrote:
->>>>> In RISC-V IOMMU, certain devices can be set to bypass mode when the
->>>>> IOMMU is in translation mode. To identify the devices that require
->>>>> bypass mode by default, does it be sensible to add a property to
->>>>> indicate this behavior?
->>>> Bypass mode for a device is a property of that device (similar to dma-coherent)
->>>> and not of the IOMMU. Other architectures (ARM and x86) never added such
->>>> a device property for bypass mode so I guess it is NOT ADVISABLE to do it.
->>>>
->>>> If this is REALLY required then we can do something similar to the QCOM
->>>> SMMU driver where they have a whitelist of devices which are allowed to
->>>> be in bypass mode (i.e. IOMMU_DOMAIN_IDENTITY) based their device
->>>> compatible string and any device outside this whitelist is blocked by default.
->>>>
->>> I have considered that adding the property of bypass mode to that
->>> device would be more appropriate. However, if we want to define this
->>> property for the device, it might need to go through the generic IOMMU
->>> dt-bindings, but I'm not sure if other IOMMU devices need this. I am
->>> bringing up this topic here because I would like to explore if there
->>> are any solutions on the IOMMU side, such as a property that indicates
->>> the phandle of devices wishing to set bypass mode, somewhat similar to
->>> the whitelist you mentioned earlier. Do you think we should address
->>> this? After all, this is a case of RISC-V IOMMU supported.
->> Bypass mode is a common feature across IOMMUs. Other IOMMUs don't
->> have a special property for bypass mode at device-level or at IOMMU level,
->> which clearly indicates that defining a RISC-V specific property is not the
->> right way to go.
->>
->> The real question is how do we set IOMMU_DOMAIN_IDENTITY (i.e.
->> bypass/identity domain) as the default domain for certain devices ?
->>
->> One possible option is to implement def_domain_type() IOMMU operation
->> for RISC-V IOMMU which will return IOMMU_DOMAIN_IDENTITY for
->> certain devices based on compatible string matching (i.e. whitelist of
->> devices). As an example, refer qcom_smmu_def_domain_type()
->> of drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>
-> That is indeed one way to approach it, and we can modify the
-> compatible string when we want to change the mode. However, it would
-> be preferable to explore a more flexible approach to achieve this
-> goal. By doing so, we can avoid hard coding anything in the driver or
-> having to rebuild the kernel  whenever we want to change the mode for
-> certain devices. While I have considered extending a cell in the
-> 'iommus' property to indicate a device's desire to set bypass mode, it
-> doesn't comply with the iommu documentation and could lead to
-> ambiguous definitions.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Hard coding the matching strings in the iommu driver is definitely not a
-preferable way. A feasible solution from current code's point of view is
-that platform opt-in the device's special requirements through DT or
-ACPI. And in the def_domain_type callback, let the iommu core know that,
-hence it can allocate a right type of domain for the device.
+The get_current_user() does not fail, and moving it after kzalloc() can
+simplify the code a bit.
 
-Thoughts?
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ fs/eventpoll.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-Best regards,
-baolu
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 4b1b3362f697b11..1d9a71a0c4c1678 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -975,15 +975,11 @@ void eventpoll_release_file(struct file *file)
+ 
+ static int ep_alloc(struct eventpoll **pep)
+ {
+-	int error;
+-	struct user_struct *user;
+ 	struct eventpoll *ep;
+ 
+-	user = get_current_user();
+-	error = -ENOMEM;
+ 	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
+ 	if (unlikely(!ep))
+-		goto free_uid;
++		return -ENOMEM;
+ 
+ 	mutex_init(&ep->mtx);
+ 	rwlock_init(&ep->lock);
+@@ -992,16 +988,12 @@ static int ep_alloc(struct eventpoll **pep)
+ 	INIT_LIST_HEAD(&ep->rdllist);
+ 	ep->rbr = RB_ROOT_CACHED;
+ 	ep->ovflist = EP_UNACTIVE_PTR;
+-	ep->user = user;
++	ep->user = get_current_user();
+ 	refcount_set(&ep->refcount, 1);
+ 
+ 	*pep = ep;
+ 
+ 	return 0;
+-
+-free_uid:
+-	free_uid(user);
+-	return error;
+ }
+ 
+ /*
+-- 
+2.25.1
+
