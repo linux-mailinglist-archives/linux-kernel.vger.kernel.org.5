@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BEB763E51
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC8D763E53
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbjGZSWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S231481AbjGZSXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjGZSWC (ORCPT
+        with ESMTP id S229624AbjGZSXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:22:02 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAE69B;
-        Wed, 26 Jul 2023 11:22:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690395714; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=QKDUeY2c4KMFmPhWbOh17l3C3JCuHOnrKsMPyR3JQw0SXsdtGKQScgX9PElA09VXQH
-    CAKtxNUScJlkaOlKmY+lsvLFXR7/+9cIsQHR3qUS0u7EH0UeqGUuMBlKA1htbSe2aMLb
-    nf1BiwX5XxZq3trnDh2lCxkz5chVGxy6nnnParfnXGBegDq2/PaOptiPdtWy/yWBWyR9
-    sh/+vik6NMuMl2xjD7kZWOB17kxLBWnJ65E429M0SkHOqe3ZahCio6Shkr1bFo9wl7/x
-    FgYwWsQ+V3UcxNm6QL8L6n6QPza8YIKEsfb8CMDGqVlTaAjY9QRQUEiw/Fx9rkKBTnrk
-    0LCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690395714;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=pAxjLnIoaNbujX0TER+0fFkItda8fdcC2Nx7HZvipWU=;
-    b=PEHVxDqsDduVF047VhmXBM5LB8R/mg70nVhpDJckSu2QHmwo195a5Pkb14Fb5W6dkU
-    3+NxK3J5OVHhunakVLWY353nMzcECxHeCrXvrJ8IeL4ZiiDIfJsSqmFjGzTxP5ZOQyX0
-    ZIdZAO5LB025h9meYYsWOC+ssdSIDlr3s+FLDLN8U1hlrKyGfmAe+RuiMPrcEDTXappQ
-    VgMWXzqZmeoupvOhtVyW2wtc7D3Ar/KytAlT8tceURIKQ00qF9HjmwNZJtIGd4zbZj9v
-    w7YIShDZnVU+Khv89QGPBv8RwuXVu34Q242A97jzR1Mk1xZhEnSbNvem89y8ZNZFtetj
-    QxSA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690395714;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=pAxjLnIoaNbujX0TER+0fFkItda8fdcC2Nx7HZvipWU=;
-    b=KPaMD6gee/+/3sSj2zd4CCW6CV64fAXhZMU85T6kmu4tdV1Ur3ZnGS2eAnyQYcqWI7
-    OjU2VFwzXzHQU8x5u/aNVZe4p7IsUmPAFF8E0VsyiZR7Fl0my6zp+H1ACFushBUg6ALD
-    3GifpjZg1JIjV7dPwjZh0lws8cjC1cx1c0tXKA4w1POEI+J7BU5T05Q+ZJLMEc7twXXr
-    K7a1dItccBAaxuN01wydfK4JwRdUpM3aYcWztq3Axgb9JufA4s/2WuJVdzSjkVQa2TFk
-    WZMEQWJB5RsQwASy3q8kMYguuXjH++QmVonT14S4VqpzPO7ICIZiO499B9KOPDy5WTUy
-    SRNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690395714;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=pAxjLnIoaNbujX0TER+0fFkItda8fdcC2Nx7HZvipWU=;
-    b=tZCt7VeO50i5IwJTy/HTGAj5p8Y3QO7kDQFoZa+0CyGCy9zYv0uOyB8FunRJrTLMg3
-    OceV0WbSZACFQzmQ7+Dw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA95vh"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z6QILr8Kd
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 26 Jul 2023 20:21:53 +0200 (CEST)
-Date:   Wed, 26 Jul 2023 20:21:47 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 1/2] clk: qcom: reset: Increase max reset delay
-Message-ID: <ZMFkO5aAT5I5kBac@gerhold.net>
-References: <20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org>
- <20230726-topic-qcom_reset-v1-1-92de6d3e4c7c@linaro.org>
+        Wed, 26 Jul 2023 14:23:46 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344751FC0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:23:45 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so63127a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690395823; x=1691000623;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NZCZJYUl4mKPI/pczMk3c9xLSqgIxbuy2H9MzYgI8y8=;
+        b=Y0EDEZzah53+3pjRj7/z4ehdhG4+8UvWvi89LeaQM1opkYsEitjlMtEBHWorOUXDxK
+         R7hm1VHlGkeDJae0vH9NkYclXoarknQkpzrGFy/k3rSkSi82v5w4aE1slFPNsBeRx/iA
+         rjZNn2LFAR5b3f9kXUssUif51slPldfDoh5yssktPqsj5bmZCpDoYcFWtmJ4qM4STeKc
+         Kc5W56QMbAODzsXM1XAFBfJO4nmLj4wLKbksLLCeZzTQamnWxbypEm0BIjgy2PCvOGCZ
+         0LyRiCgOJ5lrrEQkAlN0xedxa1KN45yi24xfxvWtv5UouAPxhVpjLC6/8T0UOlxIOw/o
+         1mbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690395823; x=1691000623;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NZCZJYUl4mKPI/pczMk3c9xLSqgIxbuy2H9MzYgI8y8=;
+        b=NwkuAyr2hu1sv9QVLrTrH1eMUyClEfRpkAYZu5CMHmRzWFruAEeB+1VXj/eA0o3Q/U
+         2ci0UhGMMRSLscQv3oRTXC/mRUkEyX3IJ+q7hrtobeXPyyxBPFPjKrqXA35eRkonVVLK
+         Bq7UkM9pjS8Q0DGLN8Ps4vr4aXGyyn1rMI0XwxBuP8yb+ME2V4P0GXkhPWX7sTeXJwgG
+         pdbBYQJJnQ3hgcZK7CMxVm5P8PhWzjANtIP4FLEufRCw845IUqjtpSfs4ZsHcdlDxPB7
+         uRAv9Xj+5S4NlX86g7xSiqPRU0BeF8keLiYoavLXizTFPZr+OwOucwfLhbJT9yKwV0z7
+         eOYQ==
+X-Gm-Message-State: ABy/qLZAV2DBGJsRs+xMxSdlPYxvvJrTSFmk6IesNKMhOFOHflFkUhE0
+        b+C32rqkgVHlknImXQVP8aI5MQ==
+X-Google-Smtp-Source: APBJJlG71Uvqr1ntpB2z5rNB+DM34Lxt66COR4vBEYKoPTnMOgG3P74vdY1A7POXJnNjqvLLYW7uMg==
+X-Received: by 2002:a50:fa89:0:b0:522:2711:86a with SMTP id w9-20020a50fa89000000b005222711086amr369040edr.15.1690395823694;
+        Wed, 26 Jul 2023 11:23:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n1-20020a05640204c100b0051e0f21c43fsm9040843edw.31.2023.07.26.11.23.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 11:23:43 -0700 (PDT)
+Message-ID: <91580323-dbb9-cd7e-40be-7dc1467e4106@linaro.org>
+Date:   Wed, 26 Jul 2023 20:23:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726-topic-qcom_reset-v1-1-92de6d3e4c7c@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
+ Custom Board
+Content-Language: en-US
+To:     James Hilliard <james.hilliard1@gmail.com>,
+        devicetree@vger.kernel.org
+Cc:     Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230726123747.4097755-1-james.hilliard1@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726123747.4097755-1-james.hilliard1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 03:26:19PM +0200, Konrad Dybcio wrote:
-> u8 limits us to 255 microseconds of delay. Promote the delay variable to
-> u16 to hold bigger values.
+On 26/07/2023 14:37, James Hilliard wrote:
+> Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-It would be clearer to change this together with an actual user that
-needs > 255us. AFAICT atm MSM8909 is the only user of this and it has
-just 15us.
-
-Thanks,
-Stephan
-
+> Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 > ---
->  drivers/clk/qcom/reset.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/clk/qcom/reset.h b/drivers/clk/qcom/reset.h
-> index 9a47c838d9b1..fe0561bf53d4 100644
-> --- a/drivers/clk/qcom/reset.h
-> +++ b/drivers/clk/qcom/reset.h
-> @@ -11,7 +11,7 @@
->  struct qcom_reset_map {
->  	unsigned int reg;
->  	u8 bit;
-> -	u8 udelay;
-> +	u16 udelay;
->  	u32 bitmask;
->  };
->  
-> 
-> -- 
-> 2.41.0
-> 
+
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
