@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC56763FF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8089C763FF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjGZTuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        id S231549AbjGZTuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjGZTud (ORCPT
+        with ESMTP id S229703AbjGZTuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:50:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228381BD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:49:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690400984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G7Idb8UnTmHWFQ6e9XeN95NGwXrVTgOeFRSIgTo8gQY=;
-        b=WnDY6bYLAZbUxLrgT5k/zdnh7juz2hi1IeICkriJckTnforRU508MMw0fXuNbzJMnllpEJ
-        7PvF//QE76MGSB5Z+vD08ZWwEwgYlTSZDeuOAoOH02BaPA0M6oJoXPen4ZlRyIDmA+0jxW
-        5INS4VrQdQtF+vdvFGyO5m0nZ9CVbSM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-EnhkXsBkP9KVe9fOHsBzwQ-1; Wed, 26 Jul 2023 15:49:43 -0400
-X-MC-Unique: EnhkXsBkP9KVe9fOHsBzwQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a348facbbso4181166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:49:42 -0700 (PDT)
+        Wed, 26 Jul 2023 15:50:02 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC44212B;
+        Wed, 26 Jul 2023 12:50:00 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bba04b9df3so1470515ad.0;
+        Wed, 26 Jul 2023 12:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690401000; x=1691005800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o0fC+88gZBz8jtA7XWzXX83zAKhjWaVQ+UtgjI6/8g4=;
+        b=oukBQFR9IQO7+GHjeNafPLNndng0nKABjpaczwth9BgzQpiqLcIQmG3R0hQGndcxJm
+         cYdWVh5nwhTZeVggUqY+dTHuIGwyN30/6fp2sp0wyfL72IGfNgg/LyhmK/aOsL0qe9rh
+         hdl08+mPzCse2OTUc3DCOSQQdlnPnOVKbMtUM7PQdS9pjxjPVU1Ss81NUNDkqum4hDE7
+         kbOOH4W3oJ+SWJh62vMxckP4920VO+vrtvTrkBs9b9GwH/Y8ktjUNvzdGAnSNbKu64a/
+         V4UOi3avOQ9xPragbr0BWF/d/6EXsVAYc16BmiSMrYcqsAW0FvN+x0wHlEhYvWG6eIOr
+         cRAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690400981; x=1691005781;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G7Idb8UnTmHWFQ6e9XeN95NGwXrVTgOeFRSIgTo8gQY=;
-        b=AWXAtHRac9IfA2IduzDhzMOhh74JtWPbFCb63vPIOw1G17gdmzYpZHilWwCiyhJZyk
-         KLDKVE8QmpYRX5VwyNv5d/H+ogwwy8qfOy5g4V6UCF5qRND/R3mmnal+H8OuRWIoGqYG
-         YgcNEYqdJpnUD2RpE60lVsJqA6vvsWZo0OeG5WfYWfMMCDck+YMTztGF+35Tw0MxlvbC
-         z0jZKyFYERvwGjmnFAsb8SW72NBJ8Jpqg0pTiOtzeALsN3pvDX29HAUBbmOYOA5+UKbB
-         8PNPZmpP+nYKi7QLCSHq3O0+VUOFPK3kxsbP0zQXVHOBri704HJYcq24f7ITDzl8oAh9
-         klBQ==
-X-Gm-Message-State: ABy/qLZySHP8Lj39YkYBgM1jObG19MbDthxhTvxtYJf3QTV33Rn6lWRT
-        eIMDrRipIe76SE+jYkDBmXPpNoiF/iYWu1bYewvpRi2RzyAanIbMVLYyoZYf8mqoEGEQyyJQmb6
-        p+q7MsjhC06DQoEDsjftGkJSZ
-X-Received: by 2002:a17:907:2be4:b0:993:e691:6dd5 with SMTP id gv36-20020a1709072be400b00993e6916dd5mr160978ejc.7.1690400981640;
-        Wed, 26 Jul 2023 12:49:41 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGtjEVVf36IhSTspsZ3AQVtc7mXvm+lx88lxam8fjNHDqAi6nVllIEtEDae1iK04Jdl3tO90A==
-X-Received: by 2002:a17:907:2be4:b0:993:e691:6dd5 with SMTP id gv36-20020a1709072be400b00993e6916dd5mr160965ejc.7.1690400981365;
-        Wed, 26 Jul 2023 12:49:41 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id lc28-20020a170906dffc00b0098e422d6758sm9966745ejc.219.2023.07.26.12.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 12:49:40 -0700 (PDT)
-Message-ID: <b82bec27-f750-19e7-f133-3ea615d2a438@redhat.com>
-Date:   Wed, 26 Jul 2023 21:49:39 +0200
+        d=1e100.net; s=20221208; t=1690401000; x=1691005800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o0fC+88gZBz8jtA7XWzXX83zAKhjWaVQ+UtgjI6/8g4=;
+        b=abi/rdoXNLzBc9TMGXunPsBtSJk61llCeXQjtVnl6vg3u/H1S0CUZ9mZ5X4iuzsg/f
+         CIAAvfh/WfemX/Jal+WRnUNbN1aZ5+gStCIQHltmo8U2Ml7kym9vHavgLGiqjKvNcO+L
+         /8kqwTwgMlafrduFI9W4pWRXUkHlrW9uN2VKVjKFHt4Thnolbxu+3ga3hsAcOeR0JBQt
+         OPh12QtiUPRr8dqTuDzrlaBhS8EpOxsJKIskRUIEFDk09ECv3/GZssjTzLgIZp6svh2n
+         J2NRSUinvGyZLDEcY7VhjR/B9N+65ZEgnDmUfSiFtV2u5IZbu+9oKS3UZiIzUdHJb07w
+         /dXQ==
+X-Gm-Message-State: ABy/qLYRdb+JfmGxQTKEHIw+kd0nvaV8VRymMLgaMs0/qAPw0hMipPEj
+        7RMTZhoqTSFZr4nIidtjHHM=
+X-Google-Smtp-Source: APBJJlH9zA2mvZYIt6QxxOCW9WRumbHaz6Bvl8nhJS60Ba3BomJSyn3mO77wiPDJYkyr1sgu1cfIgw==
+X-Received: by 2002:a17:903:2286:b0:1b8:66f6:87a3 with SMTP id b6-20020a170903228600b001b866f687a3mr3538222plh.52.1690400999964;
+        Wed, 26 Jul 2023 12:49:59 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:18d])
+        by smtp.gmail.com with ESMTPSA id iy12-20020a170903130c00b001bbb25dd3a7sm5477801plb.187.2023.07.26.12.49.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 12:49:59 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 26 Jul 2023 09:49:57 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
+Message-ID: <ZMF45fhrZhiNdn53@slm.duckdns.org>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
+ <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
+ <8959f665-4353-3630-a6c7-5dca60959faa@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] usb: dwc3: pci: skip BYT GPIO lookup table for
- hardwired phy
-To:     Gratian Crisan <gratian.crisan@ni.com>, Thinh.Nguyen@synopsys.com,
-        gregkh@linuxfoundation.org, felipe.balbi@linux.intel.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gratian@gmail.com
-References: <20230726184555.218091-2-gratian.crisan@ni.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230726184555.218091-2-gratian.crisan@ni.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8959f665-4353-3630-a6c7-5dca60959faa@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,79 +89,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 7/26/23 20:45, Gratian Crisan wrote:
-> Hardware based on the Bay Trail / BYT SoCs require an external ULPI phy for
-> USB device-mode. The phy chip usually has its 'reset' and 'chip select'
-> lines connected to GPIOs described by ACPI fwnodes in the DSDT table.
+On Wed, Jul 26, 2023 at 05:44:28PM +0100, Tvrtko Ursulin wrote:
+...
+> > So, yeah, if you want to add memory controls, we better think through how
+> > the fd ownership migration should work.
 > 
-> Because of hardware with missing ACPI resources for the 'reset' and 'chip
-> select' GPIOs commit 5741022cbdf3 ("usb: dwc3: pci: Add GPIO lookup table
-> on platforms without ACPI GPIO resources") introduced a fallback
-> gpiod_lookup_table with hard-coded mappings for Bay Trail devices.
+> It would be quite easy to make the implicit migration fail - just the matter
+> of failing the first ioctl, which is what triggers the migration, after the
+> file descriptor access from a new owner.
+
+So, it'd be best if there's no migration involved at all as per the
+discussion with Maarten.
+
+> But I don't think I can really add that in the RFC given I have no hard
+> controls or anything like that.
 > 
-> However there are existing Bay Trail based devices, like the National
-> Instruments cRIO-903x series, where the phy chip has its 'reset' and
-> 'chip-select' lines always asserted in hardware via resistor pull-ups. On
-> this hardware the phy chip is always enabled and the ACPI dsdt table is
-> missing information not only for the 'chip-select' and 'reset' lines but
-> also for the BYT GPIO controller itself "INT33FC".
+> With GPU usage throttling it doesn't really apply, at least I don't think it
+> does, since even when migrated to a lower budget group it would just get
+> immediately de-prioritized.
 > 
-> With the introduction of the gpiod_lookup_table initializing the USB
-> device-mode on these hardware now errors out. The error comes from the
-> gpiod_get_optional() calls in dwc3_pci_quirks() which will now return an
-> -ENOENT error due to the missing ACPI entry for the INT33FC gpio controller
-> used in the aforementioned table.
+> I don't think hard GPU time limits are feasible in general, and while soft
+> might be, again I don't see that any limiting would necessarily have to run
+> immediately on implicit migration.
+
+Yeah, I wouldn't worry about hard allocation of GPU time. CPU RT control
+does that but it's barely used.
+
+> Second part of the story are hypothetical/future memory controls.
 > 
-> This hardware used to work before because gpiod_get_optional() will return
-> NULL instead of -ENOENT if no GPIO has been assigned to the requested
-> function. The dwc3_pci_quirks() code for setting the 'cs' and 'reset' GPIOs
-> was then skipped (due to the NULL return). This is the correct behavior in
-> cases where the phy chip is hardwired and there are no GPIOs to control.
+> I think first thing to say is that implicit migration is important, but it
+> is not really established to use the file descriptor from two places or to
+> migrate more than once. It is simply fresh fd which gets sent to clients
+> from Xorg, which is one of the legacy ways of doing things.
 > 
-> Since the gpiod_lookup_table relies on the presence of INT33FC fwnode
-> in ACPI tables only add the table if we know the entry for the INT33FC
-> gpio controller is present. This allows Bay Trail based devices with
-> hardwired dwc3 ULPI phys to continue working.
+> So we probably can just ignore that given no significant amount of memory
+> ownership would be getting migrated.
+
+So, if this is the case, it'd be better to clarify this. ie. if the summary is:
+
+fd gets assigned to the user with a certain action at which point the fd
+doesn't have significant resources attached to it and the fd can't be moved
+to some other cgroup afterwards.
+
+then, everything is pretty simple. No need to worry about migration at all.
+fd just gets assigned once at the beginning and everything gets accounted
+towards that afterwards.
+
+> And for drm.memory.stat I think what I have is good enough - both private
+> and shared data get accounted, for any clients that have handles to
+> particular buffers.
 > 
-> Fixes: 5741022cbdf3 ("usb: dwc3: pci: Add GPIO lookup table on platforms without ACPI GPIO resources")
-> Signed-off-by: Gratian Crisan <gratian.crisan@ni.com>
-> ---
-> V1 -> V2: Remove redundant NULL check
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-
+> Maarten was working on memory controls so maybe he would have more thoughts
+> on memory ownership and implicit migration.
 > 
->  drivers/usb/dwc3/dwc3-pci.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> But I don't think there is anything incompatible with that and
+> drm.memory.stats as proposed here, given how the categories reported are the
+> established ones from the DRM fdinfo spec, and it is fact of the matter that
+> we can have multiple memory regions per driver.
 > 
-> diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-> index 44a04c9b2073..6604845c397c 100644
-> --- a/drivers/usb/dwc3/dwc3-pci.c
-> +++ b/drivers/usb/dwc3/dwc3-pci.c
-> @@ -233,10 +233,12 @@ static int dwc3_pci_quirks(struct dwc3_pci *dwc,
->  
->  			/*
->  			 * A lot of BYT devices lack ACPI resource entries for
-> -			 * the GPIOs, add a fallback mapping to the reference
-> +			 * the GPIOs. If the ACPI entry for the GPIO controller
-> +			 * is present add a fallback mapping to the reference
->  			 * design GPIOs which all boards seem to use.
->  			 */
-> -			gpiod_add_lookup_table(&platform_bytcr_gpios);
-> +			if (acpi_dev_present("INT33FC", NULL, -1))
-> +				gpiod_add_lookup_table(&platform_bytcr_gpios);
->  
->  			/*
->  			 * These GPIOs will turn on the USB2 PHY. Note that we have to
+> The main thing that would change between this RFC and future memory controls
+> in the area of drm.memory.stat is the implementation - it would have to get
+> changed under the hood from "collect on query" to "account at
+> allocation/free/etc". But that is just implementation details.
 
+I'd much prefer to straighten out this before adding a prelimiary stat only
+thing. If the previously described ownership model is sufficient, none of
+this is complicated, right? We can just add counters to track the resources
+and print them out.
+
+Thanks.
+
+-- 
+tejun
