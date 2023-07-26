@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420D4762E9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E05B762E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbjGZHtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S232253AbjGZHs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjGZHrX (ORCPT
+        with ESMTP id S231437AbjGZHr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:47:23 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35741FC4;
-        Wed, 26 Jul 2023 00:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690357384; x=1721893384;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zbfnCY12tOIDGCHWJrhLFBreINIxAOjEBVeQh4krr5w=;
-  b=EA+ZjHES97Ry4qPBc9dOobgADciiLnN2WjZJjOTy9CNUHG+tKcnPfNZR
-   payzNRMAq/dZyEeH+0K8emrH7XdggrCZ1AOZ5WrmNBpia5g5Kr8MKS4+M
-   Nw1iWf2Y/YRkYxYJwSL+gNa2mwEBJ/r43ihswjeJiIQUVU8wB6scj4VE1
-   WhY1S3VwE04Zx5dxlH0f79yCtUh0SSb5i9UXcfnQmtIq7QVG/7FEdl0jQ
-   EVzL75fPrPz3DJaDZu0XvG4ModZ0jxnEl6rFOEGZ7uo/LTz+LdFxusBUz
-   8+PwAKNgjicTy1R1itniT8WRT9kB5F4lYrY24b1oXpjbmBYsqQ+FYwZsM
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="asc'?scan'208";a="237830243"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 00:43:04 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 26 Jul 2023 00:43:03 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 26 Jul 2023 00:43:01 -0700
-Date:   Wed, 26 Jul 2023 08:42:27 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Peng Fan <peng.fan@nxp.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: power: fsl,scu-pd: separate out fsl,scu-pd
-Message-ID: <20230726-trolling-chair-41f8258ef8ef@wendy>
-References: <20230725102900.225262-1-peng.fan@oss.nxp.com>
- <20230725-excretory-speed-003064040657@spud>
- <DU0PR04MB94171BDFA6FF61A644138F688800A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+        Wed, 26 Jul 2023 03:47:27 -0400
+Received: from out-2.mta0.migadu.com (out-2.mta0.migadu.com [IPv6:2001:41d0:1004:224b::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BC02717
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:43:27 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690357405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+aerI/sO0j2fmQVgjSVx0YO7MkLGWoxsUQn7du25+U0=;
+        b=F+MJm/neBJbq7tW7eIkjIVqgdq36l373zW3oIPnHFEgcEO1ErqNG0rkAJcj4mKstGsmy6p
+        MJoebA2utTLKaQltPP+gkceIYICCJsEmZisKkNbcYMVLD4F1Y7MjGsWhMbpE+a9xd07m05
+        Y5cUxoHDptpMUDVldJ/eAJXVrJl4pbg=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VALnaJ/7H33Rsjw7"
-Content-Disposition: inline
-In-Reply-To: <DU0PR04MB94171BDFA6FF61A644138F688800A@DU0PR04MB9417.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH v2 37/47] xfs: dynamically allocate the xfs-inodegc
+ shrinker
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-38-zhengqi.arch@bytedance.com>
+Date:   Wed, 26 Jul 2023 15:42:45 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <FB641EED-655F-4F87-83DC-1B2B30ECCC24@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-38-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---VALnaJ/7H33Rsjw7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 26, 2023 at 12:21:10AM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH] dt-bindings: power: fsl,scu-pd: separate out fsl,s=
-cu-pd
-> >=20
-> > On Tue, Jul 25, 2023 at 06:29:00PM +0800, Peng Fan (OSS) wrote:
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > >
-> > > Add an entry dedicated for fsl,scu-pd which could serve i.MX8DXL
-> >=20
-> > Why not just add a soc-specific compatible for the i.MX8DXL?
-> > The current form of this does not look right to me.
->=20
-> I could add one dedicated for i.MX8DXL.
 
-Also, where is the user for this? I'd expect to see a dts patch too?
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> 
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the xfs-inodegc shrinker, so that it can be freed
+> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+> read-side critical section when releasing the struct xfs_mount.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
---VALnaJ/7H33Rsjw7
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDOXwAKCRB4tDGHoIJi
-0qrHAP95TOltWFjbVY6ECdOwnXc2h9+ak7nsM8ik4kSVwN09SgEAsn0Abr5/Eoxl
-6oC4QjnYu+V3wFEnqRavq2VrfryEdQQ=
-=L4Jg
------END PGP SIGNATURE-----
-
---VALnaJ/7H33Rsjw7--
