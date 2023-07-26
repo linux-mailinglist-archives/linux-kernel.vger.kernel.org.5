@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2541A76308D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F737630AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjGZIzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        id S232147AbjGZJBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGZIzO (ORCPT
+        with ESMTP id S230379AbjGZJBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:55:14 -0400
-Received: from out-38.mta1.migadu.com (out-38.mta1.migadu.com [IPv6:2001:41d0:203:375::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DBA30EB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:48:30 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 17:48:18 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690361307;
+        Wed, 26 Jul 2023 05:01:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5387B448D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690361745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=McfcWIQnPPHbZphZYBIYnAn4Lt4MKunTWFsFjRbBvKo=;
-        b=VPvLRZynAgP2muaMo3LsPtLZy2mhoXJLuhdHAtWI6xGA1KbScW/I/bmY75xBDkKv/0HAsw
-        5i4Zhfs+toFsZZvzs+e2qApek5r37BcJHL7nMO5kXIUV4mBtqMr21tmpxVHtq2CJw9wD5K
-        +Z+B5fzao0764V0NTUf+6eRd76p17Ng=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jiaqi Yan <jiaqiyan@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: Do not clear hugetlb dtor until
- allocating vmemmap
-Message-ID: <20230726084818.GA268581@ik1-406-35019.vs.sakura.ne.jp>
-References: <20230718004942.113174-1-mike.kravetz@oracle.com>
- <20230718004942.113174-2-mike.kravetz@oracle.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XtYwhjvqgWz9QjsOakEd2O0h4kwm2uV/DxKMgZHITXQ=;
+        b=gR90ZHTsIFPJbAg2V6QtHYtdEIqf2mztrfr0Mgys9KrMhyuyY0t/FSMznnqYIoC/FdnCJ5
+        UleAVqbAVPU/Q6qM/4fPFnhkhvDrswBoaCVTV7NFetsh8GE+y7msa1LmcZgi2YxDl9X7Ik
+        EcWj1iqRLydknv2UFssVsyJgK70VqtA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-80--kpPVwcUMIqEd3se6Fhlag-1; Wed, 26 Jul 2023 04:55:42 -0400
+X-MC-Unique: -kpPVwcUMIqEd3se6Fhlag-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AE08D803470;
+        Wed, 26 Jul 2023 08:55:41 +0000 (UTC)
+Received: from fedora.. (unknown [10.43.17.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A4754094DC0;
+        Wed, 26 Jul 2023 08:55:40 +0000 (UTC)
+From:   tglozar@redhat.com
+To:     linux-kernel@vger.kernel.org
+Cc:     john.fastabend@gmail.com, jakub@cloudflare.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: [PATCH RFC net] bpf: sockmap: Remove preempt_disable in sock_map_sk_acquire
+Date:   Wed, 26 Jul 2023 10:50:03 +0200
+Message-ID: <20230726085003.261112-1-tglozar@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230718004942.113174-2-mike.kravetz@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 05:49:41PM -0700, Mike Kravetz wrote:
-> Freeing a hugetlb page and releasing base pages back to the underlying
-> allocator such as buddy or cma is performed in two steps:
-> - remove_hugetlb_folio() is called to remove the folio from hugetlb
->   lists, get a ref on the page and remove hugetlb destructor.  This
->   all must be done under the hugetlb lock.  After this call, the page
->   can be treated as a normal compound page or a collection of base
->   size pages.
-> - update_and_free_hugetlb_folio() is called to allocate vmemmap if
->   needed and the free routine of the underlying allocator is called
->   on the resulting page.  We can not hold the hugetlb lock here.
-> 
-> One issue with this scheme is that a memory error could occur between
-> these two steps.  In this case, the memory error handling code treats
-> the old hugetlb page as a normal compound page or collection of base
-> pages.  It will then try to SetPageHWPoison(page) on the page with an
-> error.  If the page with error is a tail page without vmemmap, a write
-> error will occur when trying to set the flag.
-> 
-> Address this issue by modifying remove_hugetlb_folio() and
-> update_and_free_hugetlb_folio() such that the hugetlb destructor is not
-> cleared until after allocating vmemmap.  Since clearing the destructor
-> requires holding the hugetlb lock, the clearing is done in
-> remove_hugetlb_folio() if the vmemmap is present.  This saves a
-> lock/unlock cycle.  Otherwise, destructor is cleared in
-> update_and_free_hugetlb_folio() after allocating vmemmap.
-> 
-> Note that this will leave hugetlb pages in a state where they are marked
-> free (by hugetlb specific page flag) and have a ref count.  This is not
-> a normal state.  The only code that would notice is the memory error
-> code, and it is set up to retry in such a case.
-> 
-> A subsequent patch will create a routine to do bulk processing of
-> vmemmap allocation.  This will eliminate a lock/unlock cycle for each
-> hugetlb page in the case where we are freeing a large number of pages.
-> 
-> Fixes: ad2fa3717b74 ("mm: hugetlb: alloc the vmemmap pages associated with each HugeTLB page")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+From: Tomas Glozar <tglozar@redhat.com>
 
-I wrote a reproducer to cause the race condition between memory failure
-and shrinking free hugepage pool (with vmemmap optimization enabled).
-Then I observed that v6.5-rc2 kernel panicked with "BUG: unable to handle
-page fault for address...", and confirmed that the kernel with your patches
-do not reproduce it.  Thank you for fixing this.
+Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+patchset notes for details).
 
-Tested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+BUG (sleeping function called from invalid context) on RT kernels.
+
+preempt_disable was introduced together with lock_sk and rcu_read_lock
+in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+in parallel") with no comment on why it is necessary.
+
+Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+
+Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+---
+ net/core/sock_map.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 19538d628714..08ab108206bf 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
+ 	__acquires(&sk->sk_lock.slock)
+ {
+ 	lock_sock(sk);
+-	preempt_disable();
+ 	rcu_read_lock();
+ }
+ 
+@@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
+ 	__releases(&sk->sk_lock.slock)
+ {
+ 	rcu_read_unlock();
+-	preempt_enable();
+ 	release_sock(sk);
+ }
+ 
+
+base-commit: 22117b3ae6e37d07225653d9ae5ae86b3a54f99c
+-- 
+2.39.3
+
