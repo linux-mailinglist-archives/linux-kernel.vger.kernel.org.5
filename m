@@ -2,142 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1205B7635BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003177635C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbjGZL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        id S232531AbjGZMCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbjGZL6y (ORCPT
+        with ESMTP id S230477AbjGZMB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:58:54 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2136.outbound.protection.outlook.com [40.107.117.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16DEAA
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:58:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HH2oNjBBse53DXsnGkx/B2K/E2M166SogoMhsiI5XPS3KIklSDI8N904GGOmlvy1WegN5R2IdPhda878G6tMLB21GRC21LJ5MCVcbVIVQMsPhOT1Suilpd/Xy22HfK5pLAutQSdI9mUpNa5YWAvu3bRAoIWqalvGgJubxbr7hT2emRP8EIib3OobJBoYf7ncfyDRAs8d+YnbKmkzTKJycaUMw/0TcXG9NjRIiEdPDlo+mQK7As9hOKh3yGQy9ryhkRqCscTQTQCPLIyqZrZn8Nk28iUwJipYPuhKglovvhXwjTGB6hOq+0anh5laLbT4nCO2KE54tMFtCkJdcuAlzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yEReteL9mcEFSjPblt1m/QYREJHzBl1Gp3O7+iL5F5w=;
- b=aM4bQ/bWfKR0lqqXKljJip7JxJr6B5GOnmQtLrP2IRF9hXFCIkhlQ7lZl75dPZKRNePBPdAr9NcH5HKmhmnSZ/RSVfexeDQK2ycV6GtEIl/6e1UKZhuMSR5/Y9eMQbwh66SXNcjMgNdoj5GCm1gpkiJyqsdzVlCuDs2aq06krpPF/hYNGCNP5jxTxQZsmAkQjIJVemDm4Un/AGkozmUQpcqFgBG411jp+cDAqHM1WXQ/Y+mTJPj5Aa7q7PH0gzyS/dtsoiwH7E9zgRC89k82H+yKIMfro7uh9Snd55X+AbAu2y5JFCSAMbiMQznRVWNew2caPriEKqdCf6Bw6RcbHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yEReteL9mcEFSjPblt1m/QYREJHzBl1Gp3O7+iL5F5w=;
- b=QpkaqNIvRD7nZ7iyYPP3UG43a1g3AZQ6ogdkuEMe+aIlI/d3cJs0I36ClLlvCO/DFH3tBRu6ZIEgC/b/thHq8c4sW6qUDPZwsPo2OikAya679A4WH186Bi3+57QwVasxD0FDsn3UXiuZlL41DA5vXPom10E9HLvv/S3MT6R+D5Mn/Bkuhq9n5a40JnFB4oghsMfV5r5vpDpXLhVHxYe2TNodRFbqWL3+7OmGXh3MBMbPvN3yJ5E5xzFUm1HbO5OZiRQIeDYKcE5QIkqdSaEF4abbGj6+a2XOWfOBxGh++BMhFhIG7chBZ3oQhbBPadcQgX/Vec36o0YXbHaCxuW3KQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- KL1PR06MB6580.apcprd06.prod.outlook.com (2603:1096:820:ef::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Wed, 26 Jul 2023 11:58:47 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::535e:25af:a3bc:d600]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::535e:25af:a3bc:d600%4]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
- 11:58:45 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH v2] gpu: drm: Use dev_err_probe instead of dev_err
-Date:   Wed, 26 Jul 2023 19:57:56 +0800
-Message-Id: <20230726115806.5702-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCPR01CA0031.jpnprd01.prod.outlook.com
- (2603:1096:405:1::19) To SG2PR06MB3743.apcprd06.prod.outlook.com
- (2603:1096:4:d0::18)
+        Wed, 26 Jul 2023 08:01:59 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B5DAA
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:01:58 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bb29b9044dso2925400a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690372917; x=1690977717;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=twuF7CNt9sItgP2G+wun0ymCcO+4ADFhcc3cTlAhSLU=;
+        b=L2pP1T66VUA97kTMIT7zDsbk+Sj1U4LKl+x+uma0vuTcHTwZhwha6pzsA2Uo21AkyM
+         DTYRtPvoGZPTiNUjDj58nzV/gO1YXk/7YoxTrOYa3VFGs1SQdSLJ5FrNm6oPsVS27858
+         1TaD1nsizPSLGY9xfJQATDGvg3g5QdzI1PLF9MMoB+hvq5UoVZ/5EOF72Sk0XXc4PzU5
+         F4murQgk+c9gIxdKiBxrfHMEmu1J5d+z4lBn452m9DbU1if2+YJSoK9ArWRrM1mZaBOM
+         P+4SdRKts30leJFnLldgzucZDJyVZtaH3qpw9LzWFXOEX+tYXai8yBb4q8pgE6Y7JhbJ
+         HWcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690372917; x=1690977717;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=twuF7CNt9sItgP2G+wun0ymCcO+4ADFhcc3cTlAhSLU=;
+        b=ETn3wJVugyT37oaz04nijpbmO0IvzfXTP06RVH/Z4hRHUNHPAcvei3bApekbOG53eo
+         qYumz6DCzxxc3pqiC2961ynNoXgb6eKz8ll/n0TKxBT1DC5JkLKa588jFIPraOjHYJuX
+         Ga799TSHa1b9o5VzMldWwhhFZHMadxQWQZOYJrvuwy+JHEFtntAV5df1qX44+lVkjouj
+         kplURdWb0ek1H+t2P2zjesIb06VEZokJ9gRTkJ3n9T4ujaDfwm09nIS/Bt1GE9lcJhLx
+         EYPWCX7FLiVtu5vOA0BnmZ0kWVU76MX4Sihaw9rzKYS+hYRndmlt9hbM1EcAfvnoyDWi
+         mh4Q==
+X-Gm-Message-State: ABy/qLZh+Yn3bp+lnkkzxMPSmDrW0HWlIXDev4Ihnsoel2CSjptMDT8m
+        Q2vqL9XGLbjOoHmm0qEbcOihS/+xbwGGzSpGrsEg6Q==
+X-Google-Smtp-Source: APBJJlHrtiForKK6WMD54JzL/emKsiGI0pIQtfmHcUV1rpcoTneVDZAEEvNz6C+KKim/FAU7rhxBywt5iJ7uVhquiFo=
+X-Received: by 2002:a05:6358:6f1d:b0:134:61a5:7f05 with SMTP id
+ r29-20020a0563586f1d00b0013461a57f05mr1664623rwn.10.1690372917492; Wed, 26
+ Jul 2023 05:01:57 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|KL1PR06MB6580:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7bc84672-4ded-4e21-26d2-08db8dcfa8b3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BY+7wwJySDdwh3MqNAM2XVaBYW11dCFJkzsfRI1vxctvu3PJL3NIBx079rIp5NWTzrFdeI3ul/1LhfQkk/iQtGUZG/Jpk/QqKF0hNKFcBq2lP2QSVqtIEoUkjC6qSxWvGRfb6+/rsaAJ9G+szf0Zq3hrEhsFJx8e0pdR4GRttPr6SOcP5Yo1vp9KFqCsmNL8TatIU2dX3kNYuQE52uNOYpB0kLtnFxAVJQbegnzlF3cPp5kPJyZELagcmA4TmicJHJtS/hPPBuzJqBpkp27+Eg/JEF73vCNe8rEAkJ0eaerkoKIk4TLYnYbzfacchHW4I3Iw66uXDCvYfCWJxSdhcbclsHrgssVgNex1zObozPb0zezDiKM7qHYou2Xb6FeJm3XErsT0zh1x5l8k14ipVln29nMWUFUAkfLiinQuJmcl/hMFzbzPiMlB6WXigFdNj3ef0qaqys/YJMWO/0RP4JouF2xP6eIawO6kN9Aa4BeXpmBtOMjHvZ2xZpM2bvKXsld+4R1PNfqeaDpdgGRUHP5eDZnRrzFrqAermco1Gl+ar8Bwko7ATNoQrVEXwoJTu+5BkcqEBJQ8fxtot7Ph/JYZxnqXoNwiz2hrbrpGeAdHaOOgbJdgu7zwZbe3Xe7p
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(451199021)(478600001)(36756003)(6486002)(2906002)(52116002)(6666004)(4326008)(66476007)(66556008)(66946007)(110136005)(4744005)(38100700002)(38350700002)(316002)(186003)(8676002)(86362001)(1076003)(6506007)(26005)(83380400001)(5660300002)(2616005)(8936002)(41300700001)(6512007)(107886003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MgCTh7lWW37uP6kbdgjFDpYizZ6e3P68nLZIztzzfuddHPyowp42/e0g5Dd2?=
- =?us-ascii?Q?qrJBwA7WB2Z9I+tj3U3V4MgbSJK/JqYsOTHGbdfdBzBYjxV3WY8NXzqqUcOu?=
- =?us-ascii?Q?UsbjmWzWa/FUiN1vrXUbLnrkW7yAf+YbQSK8Q1fx7DvEzdmxXmvwjZOFSnfa?=
- =?us-ascii?Q?DFwQxhfbvl4RWkFgU0EubEGi1gG8I+ze9pqtHOzgeMDSwGyrVfyjbYOIlQ5U?=
- =?us-ascii?Q?cnD7UXilP4xjWfHKpVPVcClccW2YT88g4YXnL2H49hbIOCpKtzG8Bw+DTz5h?=
- =?us-ascii?Q?DkFwt6Kb4+HRX7PNFvIgGoBOvSSNc00gmyL8piI4gbk+MMIBIGnI41NOqhnR?=
- =?us-ascii?Q?OmHTk130i/a7hp4LVw/92T+8A+1EwVjSLoP3/nj9FgIyaAYp/PKTt/RLBfIo?=
- =?us-ascii?Q?ZkH9vuEh6CGJBq1KeocEKL6/W0L0v7tBnK5Oeiwt4NeCpQEbblgrGbPzQ+DG?=
- =?us-ascii?Q?t/yrfvoEcTZrh/KRScDouPslErPcLngaq64aShALkjsQEGvKsGh+0WbbPu1O?=
- =?us-ascii?Q?PzypHlM5Y4eUk1Fc+LP5Ei22GXGTQuihoT268h9tcnp1E/QoCkXal3vRY1vV?=
- =?us-ascii?Q?wdwFQOG36XVPXGMYu16qtoj89Gac+yWYUMGflI9rAPJHFCkA3ztWooMKQmLI?=
- =?us-ascii?Q?yIS2AIS9zXe/QnldAdUmwbMdEXRHQ5DCZb8+hqjb/dXc1KuUfw9Vq+oF0ePM?=
- =?us-ascii?Q?zYV96cUQljzI0CtqnSUh9+RMurGrCymT/+dAubzDTSRJjDBfb+hJBuF/e7I/?=
- =?us-ascii?Q?jRsCLKOFWS7uIs4CkehtXSDDL+K6C3AEKMZhgzH4ppQZQP6o14NT+DpeCYGQ?=
- =?us-ascii?Q?dpMloVySrlZYTR2EUIwiGzG16H1JsxuMKGX/fZPBBjvYCSN3SPVBSbp7bHMc?=
- =?us-ascii?Q?Bs1mVXFBH8hmAJY5i7/TiqooatUF1jVa/6p7v704TFyvYbblvvRVnthAY62D?=
- =?us-ascii?Q?E5q9/T2IH4RjCG1vBHQ3b2E3U4STbRLxzPe0IINx97NST3r/f8HQ8ek+klJF?=
- =?us-ascii?Q?GvNM+kB+uLAAcwFMSO7+cGL8R6T7JhkmGgWQ2YmGeGnxqktc3YTb/5gXD5q7?=
- =?us-ascii?Q?SxJb+znNd5MPmdglEss+UxNPxkyEiWI0Ry/s32yx9hs6gqLSuU/Xrg1G/4FI?=
- =?us-ascii?Q?VQJbkpCzhnx9/PyQCCvySSdcbNIM6mNX3TK/gvz2ilQDzbDWJ+QpdewOX5XA?=
- =?us-ascii?Q?Whm5f87TtU2MPdLW/vpjXGGYrV9WRtNA0opkL3Wfwk+4k3KqQAJmZpqzGpzm?=
- =?us-ascii?Q?2jXSpEBLCR5xr/iyPDCFbMb2vVOUUjhr27Xd4g0tQ2Ohu8B/cCOfDwxM8ayU?=
- =?us-ascii?Q?IkyyVW35W/gb6PT41HFVltqdBSxD5ZJ7Pi2tk0d7I3JCgsRG6JpxhJWD1ivx?=
- =?us-ascii?Q?IgrQ7BxJdfWgXgMZIrHUapdTjeB4XNZhkkR9IRPwQ2BOvfj4Y9oh4YqnpbV8?=
- =?us-ascii?Q?ZZ+oxbbiUf3xKdvJUAYdYPNxphrM0LKcpEIz8koGa9RYuMOTnZ4XLQjzSc7w?=
- =?us-ascii?Q?Smuz/MhweXkvCipL60ynClWsm+3CLBuJ9SgA1VX65wQlcgTYSV70saPGF0TC?=
- =?us-ascii?Q?2nBixu44mKc0VmjiGhJkMMRn2rhABt0gGBX0llV1?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bc84672-4ded-4e21-26d2-08db8dcfa8b3
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 11:58:44.8974
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XVEXZ8DKVpkfnRKy+FVLehs7k9v9OR56gRFK6Li825PHxIFsUR2D6B80L/KDnisuO7ylZhtfRcVHmPbEM/6oWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6580
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-11-ulf.hansson@linaro.org> <ZLf4c7ejFBJLH7iN@e120937-lin>
+ <20230719155920.iuu2ue2co535dfkx@bogus>
+In-Reply-To: <20230719155920.iuu2ue2co535dfkx@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 26 Jul 2023 14:01:21 +0200
+Message-ID: <CAPDyKFqMXWshKRd-dcETa9SRWFF4w5MFrWBSVkMn80dHg0Cvjg@mail.gmail.com>
+Subject: Re: [PATCH v2 10/11] firmware: arm_scmi: Add the SCMI performance domain
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that dma_request_chan will return EPROBE_DEFER,
-which means that disp->dev is not ready yet. In this case,
-dev_err(disp->dev), there will be no output. This patch fixes the bug.
+On Wed, 19 Jul 2023 at 17:59, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Wed, Jul 19, 2023 at 03:51:45PM +0100, Cristian Marussi wrote:
+> > On Thu, Jul 13, 2023 at 04:17:37PM +0200, Ulf Hansson wrote:
+>
+> [...]
+>
+> > > +   scmi_pd_data = devm_kzalloc(dev, sizeof(*scmi_pd_data), GFP_KERNEL);
+> > > +   if (!scmi_pd_data)
+> > > +           return -ENOMEM;
+> > > +
+> > > +   domains = devm_kcalloc(dev, num_domains, sizeof(*domains), GFP_KERNEL);
+> > > +   if (!domains)
+> > > +           return -ENOMEM;
+> > > +
+> > > +   for (i = 0; i < num_domains; i++, scmi_pd++) {
+> > > +           scmi_pd->info = perf_ops->domain_info_get(ph, i);
+> >
+> > So here you are grabbing all the performance domains exposed by the
+> > platform via PERF protocol and then a few lines down below you are
+> > registering them with pm_genpd_init(), but the list of domains obtained
+> > from the platform will contain NOT only devices but also CPUs possibly,
+> > already managed by the SCMI CPUFreq driver.
+> >
+>
+> Agreed, I pointed out briefly in the previous patch I think. I am not sure
+> how will that work if the performance and power domains are not 1-1 mapping
+> or if they are CPUs then this might confusing ? Not sure but looks like
+> we might be creating a spaghetti here :(.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- drivers/gpu/drm/xlnx/zynqmp_disp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I assume the discussions around the DT bindings are making it more
+clear on how this should work. The scmi performance-domain and the
+scmi power-domain are two separate providers.
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 3b87eebddc97..676f09fe8594 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -1094,8 +1094,8 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
- 			 "%s%u", dma_names[layer->id], i);
- 		dma->chan = dma_request_chan(disp->dev, dma_channel_name);
- 		if (IS_ERR(dma->chan)) {
--			dev_err(disp->dev, "failed to request dma channel\n");
--			ret = PTR_ERR(dma->chan);
-+			ret = dev_err_probe(disp->dev, PTR_ERR(dma->chan),
-+				"failed to request dma channel\n");
- 			dma->chan = NULL;
- 			return ret;
- 		}
--- 
-2.25.1
+>
+> > In fact the SCMI CPUFreq driver, on his side, takes care to pick only
+> > domains that are bound in the DT to a CPU (via scmi_cpu_domain_id DT
+> > parsing) but here you are registering all domains with GenPD upfront.
+> >
+>
+> +1
+>
+> > Is it not possible that, once registered, GenPD can decide, at some point
+> > in the future, to try act on some of these domains associated with a CPU ?
+>
+> IIRC, all unused genpd are turned off right. It may not impact here but still
+> super confusing as we will be creating power domains for the set of domains
+> actually advertised as power domains by the firmware. This will add another
+> set.
+>
+> > (like Clock framework does at the end of boot trying to disable unused
+> >  clocks...not familiar with internals of GenPD, though)
+> >
+>
+> Ah, I am reading too much serialised. Just agreed and wrote the same above.
+>
+> > > +           scmi_pd->domain_id = i;
+> > > +           scmi_pd->perf_ops = perf_ops;
+> > > +           scmi_pd->ph = ph;
+> > > +           scmi_pd->genpd.name = scmi_pd->info->name;
+> > > +           scmi_pd->genpd.flags = GENPD_FLAG_OPP_TABLE_FW;
+> > > +           scmi_pd->genpd.set_performance_state = scmi_pd_set_perf_state;
+> > > +
+> > > +           ret = perf_ops->level_get(ph, i, &perf_level, false);
+> > > +           if (ret) {
+> > > +                   dev_dbg(dev, "Failed to get perf level for %s",
+> > > +                            scmi_pd->genpd.name);
+> > > +                   perf_level = 0;
+> > > +           }
+> > > +
+> > > +           /* Let the perf level indicate the power-state too. */
+> > > +           ret = pm_genpd_init(&scmi_pd->genpd, NULL, perf_level == 0);
+> >
+> > In SCMI world PERF levels should have nothing to do with the Power
+> > state of a domain: you have the POWER protocol for that, so you should
+> > not assume that perf level 0 means OFF, but you can use the POWER protocol
+> > operation .state_get() to lookup the power state. (and you can grab both
+> > perf and power ops from the same driver)
+> >
+> > The tricky part would be to match the PERF domain at hand with the
+> > related POWER domain to query the state for, I suppose.
+> >
+>
+> I wanted to ask the same. E.g. on juno, GPU has perf domain 2 and power domain
+> 9. It would be good if we can how it would work there ? What is expected
+> from the gpu driver in terms of managing perf and power ? Does it need
+> to specify 2 power domains now and specify which is perf and which power in
+> its bindings ?
 
+Yes, correct.
+
+Note that, we already have plenty of consumer devices/drivers that are
+managing multiple PM domains. They use
+dev_pm_domain_attach_by_id|name() to attach their devices to their
+corresponding domain(s). In addition, they often use device_link_add()
+to simplify runtime PM management.
+
+That said, we should expect to see some boilerplate code in consumer
+drivers that deals with this attaching/detaching of multiple PM
+domains. That's a separate problem we may want to address later on. In
+fact, it's already been discussed earlier at LKML (I can't find the
+link right now).
+
+[...]
+
+Kind regards
+Uffe
