@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C134E7634A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A987634A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbjGZLR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S232314AbjGZLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbjGZLRR (ORCPT
+        with ESMTP id S232336AbjGZLQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:17:17 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED3271C;
-        Wed, 26 Jul 2023 04:17:05 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b89cfb4571so52378915ad.3;
-        Wed, 26 Jul 2023 04:17:05 -0700 (PDT)
+        Wed, 26 Jul 2023 07:16:44 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72C810D4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:16:42 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-992b66e5affso1086593766b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690370225; x=1690975025;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3SELQNWCM0Vfw3jXEg+B1K9VTFsk/ohvBXYAV3q7aEg=;
-        b=VFoAMxMovxl0is1nUMBnCSNE9X5PgOjqbXMiaQ0q6vw1eawI5Rw9c/TaEYx+CtgVNq
-         eLbLeqdNQO4MbKLFqZp0306yByHdqsMGdgDZW9BfBayclUurcDjgTmykcml0NwwOzKiJ
-         4BNytXk7PUC38VPUsj0sFBPZV9/rY1oXSRPf++d6eDudmWuKilJ6XGLh0FUwbrv/LH3Y
-         xrtdkSMVt3/6BOk+QYapRvSKc4+A8m/fYDk/9kKshfu8pZsz+a96OSZsPEz7tNpeQBje
-         HU0lae0F5wnYcq40IM92aFGy4XnUv1qINNiQQdmWIwQuVTPJvG/7t5fwiC0NKVuZfDrz
-         wn+w==
+        d=linaro.org; s=google; t=1690370201; x=1690975001;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hx+42rhLxUakB0N7R62IoqPsIZgz3eNSeyOpr/b73UE=;
+        b=BDNMnOlka3aRoFnrwvEtaE4M2POUnu2N9gyVc/F0W5F6zvnbe/ZI0uIM2dMDDOb2eg
+         5Yv1OwlASIsxGAfAXwL1V9MxipBxeDq6mQCZsGuZWduaDH6TW5aJvFI0IGp8LnQh8Cqu
+         iKB/0h2zjPVHaG+c9mPgwm11w3LUFqDtIqhyy0vsBJNkRNSlq1SiXPlvPMU7I1ZDnriM
+         4nXkws8AOHVRd2q8fbzowQVBe3mFuqruuAL4x7a5Y6A6LQEZL8+sMAVxe7YS2qDMb2Ff
+         SOFISqYyK7NgfAp4vvraLIMn4GtOlFfBUndLts6ZfXG6MmKkzBfvJVXvfLeq3gO7HquV
+         e0Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690370225; x=1690975025;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3SELQNWCM0Vfw3jXEg+B1K9VTFsk/ohvBXYAV3q7aEg=;
-        b=Lpghc9GJt6ikddCT0Hfj5GNgt1zqyPRVBKiM17YXH96QuO99wkYcGnemrKMNYkOZSi
-         UXYIRxyXnwHl92gsVDocj6+EDTF7TN656qPccXnufGEbMTR7MaBC9FyVR7qLhLcq/Mtq
-         jCx0NBujUX9x31ZdsqpR+esRbZem0N6htXKKZK1MMNr1MLAB1pYPobGBLmzUHTw4cSpe
-         R9H/XP9xAm9uGpX1NTvtIbRAWzdVtOzoQJ/WJcXnGSZhsUXzQwozChk2D21s6o9XxAR/
-         tBXCxarxaPxg9kdENOYcvgc+QrnyLwvEVr3qBpmKy6B4KEZJnQvN+7LfvKSvMsayZuXv
-         wwrg==
-X-Gm-Message-State: ABy/qLZ7wl748FgR7+3AOAbEi0H+eaPpwTdQ3jErixQgiCho8B+pqyVQ
-        zJtGzuWueobuEPBmR6cZWuM=
-X-Google-Smtp-Source: APBJJlF2L3aSjYORABVQ8C/l87u3iEkhcgxf2vRMJtoFdMU6Mk6qPtz6/QuCfCqr8mrP5N9mgwdiXg==
-X-Received: by 2002:a17:903:2308:b0:1b8:400a:48f2 with SMTP id d8-20020a170903230800b001b8400a48f2mr2189158plh.62.1690370225095;
-        Wed, 26 Jul 2023 04:17:05 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id jh11-20020a170903328b00b001bb3beb2bc6sm5676141plb.65.2023.07.26.04.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 04:17:04 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     vkoul@kernel.org, rsahu@apm.com, lho@apm.com, allen.lkml@gmail.com,
-        romain.perier@gmail.com, dan.j.williams@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] dmaengine: xgene: Fix potential deadlock on &chan->lock
-Date:   Wed, 26 Jul 2023 11:16:30 +0000
-Message-Id: <20230726111630.25670-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690370201; x=1690975001;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hx+42rhLxUakB0N7R62IoqPsIZgz3eNSeyOpr/b73UE=;
+        b=CpoY3TJIu1J7VrrcP+c4S7UDjRevGW/ErI2cUkGpJLb4BVdAhKOdLeIjX3HMUVECxF
+         m1bfT+jK/dBXW/+PwagbQ6COONyUHJVt6Bmr4O8dmjQF/LepDqDpW1vUQ98TIY6czr6w
+         TprnF12/9PzWh6Ud4JFxKuyH2IPVJd2ZDRz8wZYvguxeEtGEXY3jGjX6ZzmOZkrGjnQX
+         L7unVkNRZ8r7nBjp4jezurda2LQkwyTHVAMSReN+YQoZhMPoY8tuzriaarNXEEiQSJcr
+         R59YGtzIrpDcA4oyqN6rX0JnkHpDYL9uPlDWejJk4znos28wItnMwIlIa32R9Fu7VTpE
+         /AWQ==
+X-Gm-Message-State: ABy/qLb6tIOOsU3EvWhC+qu/failMf8Cirh1RT4v2Z3lBIKkhU0VGkoI
+        Fzg9mXBL/KsbMOxGREYjPjX5Nw==
+X-Google-Smtp-Source: APBJJlHyiMXrxVUKIVyU54SdDmvWLUg7maOrfK7QI0HKExQ+dUwhKnDCKxSN8h88OPha5NPGftf/TA==
+X-Received: by 2002:a17:906:cc59:b0:993:d7c4:1a78 with SMTP id mm25-20020a170906cc5900b00993d7c41a78mr1528295ejb.10.1690370200956;
+        Wed, 26 Jul 2023 04:16:40 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id jp7-20020a170906f74700b009937dbabbd5sm9430093ejb.220.2023.07.26.04.16.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 04:16:36 -0700 (PDT)
+Message-ID: <284e464a-85dc-f07b-27f8-fda516ca7b24@linaro.org>
+Date:   Wed, 26 Jul 2023 13:16:35 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V1 1/2] regulator: aw37503: add regulator driver for
+ AWINIC AW37503
+Content-Language: en-US
+To:     like@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        liweilei@awinic.com, liangdong@awinic.com, wangweidong.a@awinic.com
+References: <20230726081612.586295-1-like@awinic.com>
+ <20230726081612.586295-2-like@awinic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726081612.586295-2-like@awinic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As xgene_dma_cleanup_descriptors() is invoked by both tasklet
-xgene_dma_tasklet_cb() under softirq context and
-xgene_dma_free_chan_resources() callback that executed under process
-context, the lock aquicision of &chan->lock inside
-xgene_dma_cleanup_descriptors() should disable irq otherwise deadlock
-could happen if the tasklet softirq preempts the execution of process
-context code while the lock is held in process context on the same CPU.
+On 26/07/2023 10:16, like@awinic.com wrote:
+> From: Alec Li <like@awinic.com>
+> 
+> Add regulator driver for the device AWINIC AW37503 which is single
+> inductor - dual output power supply device. AW37503 device is
+> designed to support general positive/negative driven applications
+> like TFT display panels.
+> 
 
-Possible deadlock scenario:
-xgene_dma_free_chan_resources()
-    -> xgene_dma_cleanup_descriptors()
-    -> spin_lock(&chan->lock)
-        <tasklet softirq>
-        -> xgene_dma_tasklet_cb()
-        -> xgene_dma_cleanup_descriptors()
-        -> spin_lock(&chan->lock) (deadlock here)
+Thank you for your patch. There is something to discuss/improve.
 
-This flaw was found by an experimental static analysis tool I am developing
-for irq-related deadlock.
 
-The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
-plx_dma_process_desc() to disable irq while lock is held.
+> +
+> +static int aw37503_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct aw37503_regulator *chip;
+> +	struct regulator_dev *rdev;
+> +	struct regmap *regmap;
+> +	struct regulator_config config = { };
+> +	int id;
+> +	int ret;
+> +
+> +	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
+> +	if (!chip)
+> +		return -ENOMEM;
+> +
+> +	regmap = devm_regmap_init_i2c(client, &aw37503_regmap_config);
+> +	if (IS_ERR(regmap)) {
+> +		ret = PTR_ERR(regmap);
+> +		dev_err(dev, "regmap init failed: %d\n", ret);
+> +		return ret;
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/dma/xgene-dma.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+return dev_err_probe
 
-diff --git a/drivers/dma/xgene-dma.c b/drivers/dma/xgene-dma.c
-index 3589b4ef50b8..e766511badcf 100644
---- a/drivers/dma/xgene-dma.c
-+++ b/drivers/dma/xgene-dma.c
-@@ -689,11 +689,12 @@ static void xgene_dma_cleanup_descriptors(struct xgene_dma_chan *chan)
- 	struct xgene_dma_desc_sw *desc_sw, *_desc_sw;
- 	struct xgene_dma_desc_hw *desc_hw;
- 	struct list_head ld_completed;
-+	unsigned long flags;
- 	u8 status;
- 
- 	INIT_LIST_HEAD(&ld_completed);
- 
--	spin_lock(&chan->lock);
-+	spin_lock_irqsave(&chan->lock, flags);
- 
- 	/* Clean already completed and acked descriptors */
- 	xgene_dma_clean_completed_descriptor(chan);
-@@ -762,7 +763,7 @@ static void xgene_dma_cleanup_descriptors(struct xgene_dma_chan *chan)
- 	 */
- 	xgene_chan_xfer_ld_pending(chan);
- 
--	spin_unlock(&chan->lock);
-+	spin_unlock_irqrestore(&chan->lock, flags);
- 
- 	/* Run the callback for each descriptor, in order */
- 	list_for_each_entry_safe(desc_sw, _desc_sw, &ld_completed, node) {
--- 
-2.17.1
+> +	}
+> +
+> +	i2c_set_clientdata(client, chip);
+> +	chip->dev = dev;
+> +
+> +	for (id = 0; id < AW37503_MAX_REGULATORS; ++id) {
+> +		config.regmap = regmap;
+> +		config.dev = dev;
+> +		config.driver_data = chip;
+> +
+> +		rdev = devm_regulator_register(dev, &aw_regs_desc[id],
+> +					       &config);
+> +		if (IS_ERR(rdev)) {
+> +			ret = PTR_ERR(rdev);
+> +			dev_err(dev, "regulator %s register failed: %d\n",
+> +				aw_regs_desc[id].name, ret);
+> +			return ret;
+
+return dev_err_probe will be easier
+
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct i2c_device_id aw37503_id[] = {
+> +	{.name = "aw37503",},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(i2c, aw37503_id);
+> +
+> +static const struct of_device_id aw37503_dt_ids[] = {
+> +	{.compatible = "awinic,aw37503",},
+> +	{ /* Sentinel */ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, aw37503_dt_ids);
+> +
+> +static struct i2c_driver aw37503_i2c_driver = {
+> +	.driver = {
+> +		.name = "aw37503",
+> +		.of_match_table = of_match_ptr(aw37503_dt_ids),
+
+Drop of_match_ptr()
+
+
+Best regards,
+Krzysztof
 
