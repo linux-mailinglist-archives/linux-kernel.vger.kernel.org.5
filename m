@@ -2,138 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE7E763277
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CCC763270
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbjGZJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
+        id S233688AbjGZJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbjGZJiM (ORCPT
+        with ESMTP id S233409AbjGZJh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:38:12 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87119A2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:38:11 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q9bikD015029;
-        Wed, 26 Jul 2023 09:37:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=SoYofsSQ3ZYhteD634BlJ89CumxmiI/eGtSFXLNkEn4=;
- b=RiDNMDIbP/pIiObx9LU6OX/p1TOFj1ExgVI+c9pNfbbIAGDAxyg4B4yOu4STIPr1hmMm
- kjFeKCL0ZjMvPStXf5O8nd3c3RDPW8Q8VKhYVJtvdMbL+GeboD2IvA4YAcNLI65+634l
- zLEB1kS+f5QDwejac+L/1Q82RiEhpSgfB1CgIdo9sdG4KzL6fIJPd9RcwLKN4t8J21db
- NGpKW09C8UaVK8lN3ypK0Zlg/WPoczDman7dqgmY2vhsw+QQsGCsrs3JXMBz5njR9U2G
- iZWzyqbef/nr2aNN0URW+KCRmPWw2U3mhRMy4tzXqJ6pk7M5Y5+uGBPvW6gzGpUBRxw6 oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s30w282jm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 09:37:57 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q9bv7s016060;
-        Wed, 26 Jul 2023 09:37:57 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s30w282hu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 09:37:57 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q8mMJs003624;
-        Wed, 26 Jul 2023 09:37:56 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0txk3hb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 09:37:55 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36Q9bs5i18285122
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 09:37:54 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E24852004D;
-        Wed, 26 Jul 2023 09:37:53 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A85FE2004E;
-        Wed, 26 Jul 2023 09:37:51 +0000 (GMT)
-Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.179.15.237])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Jul 2023 09:37:51 +0000 (GMT)
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-To:     peterz@infradead.org, vincent.guittot@linaro.org
-Cc:     sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dietmar.eggemann@arm.com, mgorman@suse.de
-Subject: [RFC PATCH] sched/fair: Skip idle CPU search on busy system
-Date:   Wed, 26 Jul 2023 15:06:12 +0530
-Message-Id: <20230726093612.1882644-1-sshegde@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 26 Jul 2023 05:37:26 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BED21BE8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:36:35 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666e6541c98so6074686b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690364195; x=1690968995;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nk61oX1/MYUdyW6PNrc230vTitw/FwpBYWVnoTlWaUA=;
+        b=No2cHOzQ7eUv+boiODVr0cWIKqjTwcXftOWUG+y1SDZfTYGHtNZzoesK5eIoc2R+gR
+         AyBug9ruIOHc0gRXqoYy6jcvfoWcntvDLEOyVp5YMRFAsd0JQu+6+Hr16oq0EapmcygN
+         J2iuyp8oY4RbCWlWzft4k/sq/vjH9y2ktsztnnEpaHcg1TNQGXj0brbP9Yp7CMhvAfvH
+         /6/Vg1oW+5ZFEmOYT+BJGhxuT82yj0wbfYifkkt15HFRwU/qpPEIurYPDlqAi6TPZ23G
+         Zo/7Xi9VsQUAydvnBd3acC+Emk2yrkHe2DFaBlzAYTKjfgjJyOZm2pcbUBdmLapFj9B0
+         s6sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690364195; x=1690968995;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nk61oX1/MYUdyW6PNrc230vTitw/FwpBYWVnoTlWaUA=;
+        b=KPr0mCD5vxwzZmNQqmfAzbx5FNLJeLHf9wlJNp/ymMQsS1MJaen0VloBwdl7ti3TUl
+         DaoMBmn+p9vehG+Dhvpc8xBHemQQhT37k/Pe2i3DHANXH+Sv/udKzEjpcJ4luiggk3lH
+         kT+fE/qJ+ZFSe2HWMMrhO0gT41jyvTDQOM0uepEDnIk+ouTdBdhI8ehA6SMJ77WXv0mW
+         T6W21dhdsR7dNRtAaQlRYIeOGj+5uh63C80OuG9B+Ar0zCWAS5jedfx8Y02nZGx9RsWK
+         6aiTKIONJ6WUubtJZGPUG3pxG/6bSD6jS07O4JFRI59vFXPG6aN8pAUamdDSzYM/y0op
+         wXfw==
+X-Gm-Message-State: ABy/qLaVjYCc/cILS9LydtfrpudxpMzMUurAUccSAl9t1yOqOoUdjvA4
+        TVDlVhzU+1WAeQk2dXrEL2jHW2sHXu8=
+X-Google-Smtp-Source: APBJJlErSx6YYmSKdDYLYtHeTkpzTtINxCEcSouXrYVFjm+IbJc5RiimhEkKxn72ZFv3PcO0Rijecg==
+X-Received: by 2002:a05:6a00:2e23:b0:67e:6269:6ea8 with SMTP id fc35-20020a056a002e2300b0067e62696ea8mr2280925pfb.22.1690364194780;
+        Wed, 26 Jul 2023 02:36:34 -0700 (PDT)
+Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id f13-20020aa78b0d000000b006815fbe3245sm11043330pfd.37.2023.07.26.02.36.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:36:34 -0700 (PDT)
+Message-ID: <16f29fd8-ae31-bb93-3ccf-e722faf033ba@gmail.com>
+Date:   Wed, 26 Jul 2023 18:36:31 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HXHlIhn_VNCTSYEy09sfnCApQElA2qwD
-X-Proofpoint-GUID: Tc2ZT_nucLg8jF9l306BkyfxXMEzzfTD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_03,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- malwarescore=0 mlxlogscore=999 mlxscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260084
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 10/11] mtd: spi-nor: spansion: switch s25hx_t to use
+ vreg_offset for quad_enable()
+Content-Language: en-US
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        takahiro.kuwano@infineon.com, michael@walle.cc
+Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
+        miquel.raynal@bootlin.com, richard@nod.at
+References: <20230726075257.12985-1-tudor.ambarus@linaro.org>
+ <20230726075257.12985-11-tudor.ambarus@linaro.org>
+From:   Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <20230726075257.12985-11-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the system is fully busy, there will not be any idle CPU's.
-In that case, load_balance will be called mainly with CPU_NOT_IDLE
-type. In should_we_balance its currently checking for an idle CPU if
-one exist. When system is 100% busy, there will not be an idle CPU and
-these idle_cpu checks can be skipped. This would avoid fetching those rq
-structures.
+On 7/26/2023 4:52 PM, Tudor Ambarus wrote:
+> All s25hx_t flashes have single or multi chip flavors and already use
+> n_dice and vreg_offset in cypress_nor_sr_ready_and_clear. Switch s25hx_t
+> to always use vreg_offset for the quad_enable() method, so that we use
+> the same code base for both single and multi chip package flashes.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/mtd/spi-nor/spansion.c | 18 +++++++-----------
+>  1 file changed, 7 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index 30a3ffbfa381..6abef5b515a1 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -24,8 +24,6 @@
+>  #define SPINOR_REG_CYPRESS_STR1V					\
+>  	(SPINOR_REG_CYPRESS_VREG + SPINOR_REG_CYPRESS_STR1)
+>  #define SPINOR_REG_CYPRESS_CFR1			0x2
+> -#define SPINOR_REG_CYPRESS_CFR1V					\
+> -	(SPINOR_REG_CYPRESS_VREG + SPINOR_REG_CYPRESS_CFR1)
+>  #define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
+>  #define SPINOR_REG_CYPRESS_CFR2			0x3
+>  #define SPINOR_REG_CYPRESS_CFR2V					\
+> @@ -348,10 +346,6 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
+>  	u8 i;
+>  	int ret;
+>  
+> -	if (!params->n_dice)
+> -		return cypress_nor_quad_enable_volatile_reg(nor,
+> -						SPINOR_REG_CYPRESS_CFR1V);
+> -
+>  	for (i = 0; i < params->n_dice; i++) {
+>  		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR1;
+>  		ret = cypress_nor_quad_enable_volatile_reg(nor, addr);
+> @@ -657,15 +651,17 @@ static int s25hx_t_late_init(struct spi_nor *nor)
+>  {
+>  	struct spi_nor_flash_parameter *params = nor->params;
+>  
+> +	if (!params->n_dice || !params->vreg_offset) {
+> +		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
+> +			__func__);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+>  	/* Fast Read 4B requires mode cycles */
+>  	params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
+> -
+> +	params->ready = cypress_nor_sr_ready_and_clear;
+>  	cypress_nor_ecc_init(nor);
+>  
+> -	/* Replace ready() with multi die version */
+> -	if (params->n_dice)
+> -		params->ready = cypress_nor_sr_ready_and_clear;
+> -
+>  	return 0;
+>  }
+>  
 
-This is a minor optimization for a specific case of 100% utilization.
-
-.....
-Coming to the current implementation. It is a very basic approach to the
-issue. It may not be the best/perfect way to this.  It works only in
-case of CONFIG_NO_HZ_COMMON. nohz.nr_cpus is a global info available which
-tracks idle CPU's. AFAIU there isn't any other. If there is such info, we
-can use that instead. nohz.nr_cpus is atomic, which might be costly too.
-
-Alternative way would be to add a new attribute to sched_domain and update
-it in cpu idle entry/exit path per CPU. Advantage is, check can be per
-env->sd instead of global. Slightly complicated, but maybe better. there
-could other advantage at wake up to limit the scan etc.
-
-Your feedback would really help. Does this optimization makes sense?
-
-Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
----
- kernel/sched/fair.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 373ff5f55884..903d59b5290c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10713,6 +10713,12 @@ static int should_we_balance(struct lb_env *env)
- 		return 1;
- 	}
-
-+#ifdef CONFIG_NO_HZ_COMMON
-+	/* If the system is fully busy, its better to skip the idle checks */
-+	if (env->idle == CPU_NOT_IDLE && atomic_read(&nohz.nr_cpus) == 0)
-+		return group_balance_cpu(sg) == env->dst_cpu;
-+#endif
-+
- 	/* Try to find first idle CPU */
- 	for_each_cpu_and(cpu, group_balance_mask(sg), env->cpus) {
- 		if (!idle_cpu(cpu))
---
-2.31.1
-
+Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
