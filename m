@@ -2,171 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF19764278
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37E1764285
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjGZXTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 19:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        id S231130AbjGZX1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 19:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjGZXTD (ORCPT
+        with ESMTP id S229809AbjGZX1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 19:19:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44298110
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 16:19:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D76A461BAF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:19:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CBE5C433C8;
-        Wed, 26 Jul 2023 23:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690413541;
-        bh=OyzZD5MHFQ71H/7riF0ScWcazkzij12xVCuT2YfRhl0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KwAO6H00AZupIs+wOw57k4SWypFeb4kiLtPomsQBCR8dp2v6ehfiCEWYqQdg/AmH6
-         49ifx71i+yGverkc41Ppyyv5imfJi8Zkw2Fhb3HvQLCCnpGY+4UpVHVcFFznJN2c7C
-         TAgQSvYPhzj9kqdOxU8fdIZ/mhFQOtg67ZUqps9sPzuINfheocfcUJtmbV/0D5X5TZ
-         XH9jGEBN7S4PQwd92OEINDKEwHleXv4DjNcwtCUxlNNeCPLC9PMBShRzAZICGk/cWg
-         wU2GB+/5u3jo1MYNyKjCkjBedi58jSpdiHR6Mx7u/g17kPzgr1KMVLsMaFrg+5JCG5
-         VcL9Hwff2A0/A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B5E83CE0AD7; Wed, 26 Jul 2023 16:19:00 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 16:19:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-Message-ID: <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230726214103.3261108-1-jannh@google.com>
+        Wed, 26 Jul 2023 19:27:12 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3A21BD6;
+        Wed, 26 Jul 2023 16:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690414031; x=1721950031;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/LalIiZo9IvflODCSqzRzGt8GVtou+uN6XNZMeXz8K0=;
+  b=V4rKUp+8gOOAQIOv2Ghd6l0YhZWUwN6I3wwiC0Nr1B+hyKOZNfOcGath
+   jYW+QvW/M7zlNgs5ATLAcfWWo6wsD3Ai6EJhTc416Tyari27TGKUK62e1
+   mGwNY4d7OsHAEQhR8RppNFiOoyvFRGkce2anQ/g6ha+v7IQblDVY7qI/n
+   NRQ2sz4IG6fedpNbV1XD1ZK0Y4v4bE1Yt0+Vr4iC9m6r+eqgGXCqd9aVA
+   6pFfzQajySmzw6uUCFVrwiZ/rUcTRMRfHUMDq6dtW4g/+JKYdwfrM/b3G
+   5wRKd0hH68nJ6j6nHUM73TWPoH8HQbdi6attPXwN/nNwM7Mr3g4KwO0x1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="370832148"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="370832148"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 16:27:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="1057417096"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="1057417096"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Jul 2023 16:26:55 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOnuA-0001RN-2v;
+        Wed, 26 Jul 2023 23:26:54 +0000
+Date:   Thu, 27 Jul 2023 07:26:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>, olivia@selenic.com,
+        herbert@gondor.apana.org.au, jiajie.ho@starfivetech.com,
+        conor.dooley@microchip.com, martin@kaiser.cx, mmyangfl@gmail.com,
+        jenny.zhang@starfivetech.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, leoliu@zhaoxin.com,
+        CobeChen@zhaoxin.com, YunShen@zhaoxin.com, TonyWWang@zhaoxin.com,
+        leoliu-oc <leoliu-oc@zhaoxin.com>
+Subject: Re: [PATCH] hwrng: add Zhaoxin HW RNG driver
+Message-ID: <202307270707.SlAbd4tx-lkp@intel.com>
+References: <20230726113553.1965627-1-LeoLiu-oc@zhaoxin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726214103.3261108-1-jannh@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230726113553.1965627-1-LeoLiu-oc@zhaoxin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:41:01PM +0200, Jann Horn wrote:
-> Hi!
-> 
-> Patch 1 here is a straightforward fix for a race in per-VMA locking code
-> that can lead to use-after-free; I hope we can get this one into
-> mainline and stable quickly.
-> 
-> Patch 2 is a fix for what I believe is a longstanding memory ordering
-> issue in how vma->anon_vma is used across the MM subsystem; I expect
-> that this one will have to go through a few iterations of review and
-> potentially rewrites, because memory ordering is tricky.
-> (If someone else wants to take over patch 2, I would be very happy.)
-> 
-> These patches don't really belong together all that much, I'm just
-> sending them as a series because they'd otherwise conflict.
-> 
-> I am CCing:
-> 
->  - Suren because patch 1 touches his code
->  - Matthew Wilcox because he is also currently working on per-VMA
->    locking stuff
->  - all the maintainers/reviewers for the Kernel Memory Consistency Model
->    so they can help figure out the READ_ONCE() vs smp_load_acquire()
->    thing
+Hi LeoLiu-oc,
 
-READ_ONCE() has weaker ordering properties than smp_load_acquire().
+kernel test robot noticed the following build errors:
 
-For example, given a pointer gp:
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master linus/master v6.5-rc3 next-20230726]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-	p = whichever(gp);
-	a = 1;
-	r1 = p->b;
-	if ((uintptr_t)p & 0x1)
-		WRITE_ONCE(b, 1);
-	WRITE_ONCE(c, 1);
+url:    https://github.com/intel-lab-lkp/linux/commits/LeoLiu-oc/hwrng-add-Zhaoxin-HW-RNG-driver/20230726-193710
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20230726113553.1965627-1-LeoLiu-oc%40zhaoxin.com
+patch subject: [PATCH] hwrng: add Zhaoxin HW RNG driver
+config: i386-randconfig-r006-20230726 (https://download.01.org/0day-ci/archive/20230727/202307270707.SlAbd4tx-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230727/202307270707.SlAbd4tx-lkp@intel.com/reproduce)
 
-Leaving aside the "&" needed by smp_load_acquire(), if "whichever" is
-"READ_ONCE", then the load from p->b and the WRITE_ONCE() to "b" are
-ordered after the load from gp (the former due to an address dependency
-and the latter due to a (fragile) control dependency).  The compiler
-is within its rights to reorder the store to "a" to precede the load
-from gp.  The compiler is forbidden from reordering the store to "c"
-wtih the load from gp (because both are volatile accesses), but the CPU
-is completely within its rights to do this reordering.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307270707.SlAbd4tx-lkp@intel.com/
 
-But if "whichever" is "smp_load_acquire()", all four of the subsequent
-memory accesses are ordered after the load from gp.
+All errors (new ones prefixed by >>):
 
-Similarly, for WRITE_ONCE() and smp_store_release():
+   drivers/char/hw_random/zhaoxin-rng.c: Assembler messages:
+>> drivers/char/hw_random/zhaoxin-rng.c:57: Error: bad register name `%rcx'
+>> drivers/char/hw_random/zhaoxin-rng.c:58: Error: bad register name `%rdx'
+>> drivers/char/hw_random/zhaoxin-rng.c:59: Error: bad register name `%rdi'
 
-	p = READ_ONCE(gp);
-	r1 = READ_ONCE(gi);
-	r2 = READ_ONCE(gj);
-	a = 1;
-	WRITE_ONCE(b, 1);
-	if (r1 & 0x1)
-		whichever(p->q, r2);
 
-Again leaving aside the "&" needed by smp_store_release(), if "whichever"
-is WRITE_ONCE(), then the load from gp, the load from gi, and the load
-from gj are all ordered before the store to p->q (by address dependency,
-control dependency, and data dependency, respectively).  The store to "a"
-can be reordered with the store to p->q by the compiler.  The store to
-"b" cannot be reordered with the store to p->q by the compiler (again,
-both are volatile), but the CPU is free to reorder them, especially when
-whichever() is implemented as a conditional store.
+vim +57 drivers/char/hw_random/zhaoxin-rng.c
 
-But if "whichever" is "smp_store_release()", all five of the earlier
-memory accesses are ordered before the store to p->q.
+    54	
+    55	static inline int rep_xstore(size_t size, size_t factor, void *result)
+    56	{
+  > 57		__asm__ __volatile__ (
+  > 58		"movq %0, %%rcx\n"
+  > 59		"movq %1, %%rdx\n"
+    60		"movq %2, %%rdi\n"
+    61		".byte 0xf3, 0x0f, 0xa7, 0xc0"
+    62		:
+    63		: "r"(size), "r"(factor), "r"(result)
+    64		: "%rcx", "%rdx", "%rdi", "memory");
+    65	
+    66		return 0;
+    67	}
+    68	
 
-Does that help, or am I missing the point of your question?
-
-							Thanx, Paul
-
->  - people involved in the previous discussion on the security list
-> 
-> 
-> Jann Horn (2):
->   mm: lock_vma_under_rcu() must check vma->anon_vma under vma lock
->   mm: Fix anon_vma memory ordering
-> 
->  include/linux/rmap.h | 15 ++++++++++++++-
->  mm/huge_memory.c     |  4 +++-
->  mm/khugepaged.c      |  2 +-
->  mm/ksm.c             | 16 +++++++++++-----
->  mm/memory.c          | 32 ++++++++++++++++++++------------
->  mm/mmap.c            | 13 ++++++++++---
->  mm/rmap.c            |  6 ++++--
->  mm/swapfile.c        |  3 ++-
->  8 files changed, 65 insertions(+), 26 deletions(-)
-> 
-> 
-> base-commit: 20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
