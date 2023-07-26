@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3ACD7628F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06EF7628F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjGZC5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S230521AbjGZC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjGZC5S (ORCPT
+        with ESMTP id S229822AbjGZC5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:57:18 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6771733
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:57:16 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso4411384a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:57:16 -0700 (PDT)
+        Tue, 25 Jul 2023 22:57:46 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453EF106;
+        Tue, 25 Jul 2023 19:57:45 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55adfa72d3fso3243041a12.3;
+        Tue, 25 Jul 2023 19:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690340236; x=1690945036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzW/rGy0LH4fLap0MWB55Z1wHu6aT4al09wHOfF+Fkg=;
-        b=Lx3RvL8PGnRpdj0gs5Nff7ZN5lTV1K2HUd8DXaOCVSlt00IXLloat8B9zWzAXj8gd7
-         YN0go/qOiXHWOOqIkdMfr7Wd+MzLSf6z3DXj1efrB9MelA8ezROYuDZsFAF6yfGMOp76
-         DpnfxX6QRJR6B1/00mAG7FntmlZ5qhRrOsM9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690340236; x=1690945036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690340265; x=1690945065;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KzW/rGy0LH4fLap0MWB55Z1wHu6aT4al09wHOfF+Fkg=;
-        b=VzfKdyHxWo8/6XxVMfkEeY5M2IUrk4e1vkZEDPrxDd1p+i9BMUsAzUEDglRYX+Vmbc
-         zq/6uptVDLsSwgl9xJ4EZwsfkiKT024QV+fBYkyrJ2c20zrtPDbXYdnbwI5AakU4xLoL
-         QQ6bAvB6g/gzuX167xSZ0oVXeiDf3PkpmjQbKVKd38DVoWavoXKzk7OS7MTfQBue0HNV
-         IN+UK97K1qrhnvu2sXflotyiPvFc88Re5C20dvwudajL645OPQtM92RjfYDjpuxsGajl
-         EDPQgEx1Yd5ORMR9ROfMoGygc5N6YtMuT/g82n4PSSeXibVszem6hLhKV8P7Y36Asufv
-         fd7A==
-X-Gm-Message-State: ABy/qLZ53pplGAaOJ5bCtG7FHY+mzZgKxMhtl295gFBt3wfF7lzu4tG8
-        uECkltCdoLqvjDTPe0wcOUNfCQ==
-X-Google-Smtp-Source: APBJJlFUk0Z43kk1Az93vm7xK9BJbIOtVoFyjdZiRzE/WW3xC26bs5uXcxwhdbRPXvg8cpevnX5lgA==
-X-Received: by 2002:a05:6a20:3d10:b0:133:71e4:c172 with SMTP id y16-20020a056a203d1000b0013371e4c172mr1061473pzi.15.1690340236429;
-        Tue, 25 Jul 2023 19:57:16 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:a2a4:d590:6375:66ba])
-        by smtp.gmail.com with ESMTPSA id i5-20020a170902c94500b001bb1f0605b2sm11726272pla.214.2023.07.25.19.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 19:57:16 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 11:57:11 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Andrew Yang <andrew.yang@mediatek.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        wsd_upstream@mediatek.com, casper.li@mediatek.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] zsmalloc: Fix races between modifications of fullness
- and isolated
-Message-ID: <20230726025711.GI955071@google.com>
-References: <20230721063705.11455-1-andrew.yang@mediatek.com>
- <20230726023122.GH955071@google.com>
+        bh=Vk1HjFcBc1GtTDRHtJQF8KdFGzRcJUPncSBKnYseuuM=;
+        b=K0vICeWVh3tzWSLAdPbGiR3yhNI964VAqbftkTON5aZ9fVGHVQgr1zz6rz7rbDharv
+         1UHEV26Nj3CBk/JQp42/yKehDIq3pI5eGtQFBI0MODSWh/5J6EPfIw9PDPQAqCA9bYR7
+         +X/XJ8wcMyAPw+vLP8s2lsWJWq/gSffoc14+au2Q8y4SkUB+Uto/1wdEDnpuY8ltB5g2
+         sOb1arx4e6mpoWJjX6zhCrPBzFAy+MBBBKJ7adyz65qzeD2RXausSdEZ3ESlEOYxksh+
+         1T7XhOycftQLQcD+3nPch6wbZaUO9JQC/VnxV8ATRAvc07K2kTM483Hd5qB7uo4/EDjd
+         ph7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690340265; x=1690945065;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Vk1HjFcBc1GtTDRHtJQF8KdFGzRcJUPncSBKnYseuuM=;
+        b=Dil9TdfENfpL3n5MhVnuTvv5hQhZDZXLa65rRv0b3ZIiqVcM5EypB7ygMJS+gvnZso
+         i1EesDIw3a9Kmb1+m08Kf5BfbJxE8iHy4SxmwKJfKB7ec/I8d8BzdrYvCd08z9LI51U3
+         3yWjTBIzpyibvu/wpEoi/PQRaRmPrjLXDnFnN8Kz+IXVLHxtCYoVK9u7PlY4QzMnI9Ab
+         wcPQgArS4Rf6gzz0lJ344pAtQochikYdmy852HyP2UMhbUdG9LZMGFay2B+UgbcmZvUt
+         MfXHj3oCkAYDvxtkLutOoDl44zFzpUetolOIqDQDuhB2b8ZqQD9fjG2SC+4ZAwAkH8qd
+         jizw==
+X-Gm-Message-State: ABy/qLbsAuMYrVbd66BzewkcagjZiiZkFxpMSW+Xnxpl/42SZG6jga1v
+        pFLEmMwJrQKS6svuFZNEvR4=
+X-Google-Smtp-Source: APBJJlHFTLyUhR7TdUembZ48HfygjQ6ODz6Q3J5DfEJS0mBMY9b3/X5gEFD9Vsnn+HXY9iSVFYh2kw==
+X-Received: by 2002:a17:902:be07:b0:1bb:8064:91d2 with SMTP id r7-20020a170902be0700b001bb806491d2mr694517pls.69.1690340264626;
+        Tue, 25 Jul 2023 19:57:44 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
+        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001b8b6a19bd6sm362317plx.63.2023.07.25.19.57.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 19:57:43 -0700 (PDT)
+Message-ID: <6e222bb6-84b4-3bc2-4ed3-5f249d128733@gmail.com>
+Date:   Wed, 26 Jul 2023 10:57:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726023122.GH955071@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] x86/hyperv: Rename hv_isolation_type_snp/en_snp() to
+ isol_type_snp_paravisor/enlightened()
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, arnd@arndb.de,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org, nikunj@amd.com,
+        thomas.lendacky@amd.com, liam.merwick@oracle.com,
+        alexandr.lobakin@intel.com, michael.roth@amd.com,
+        tiala@microsoft.com, pasha.tatashin@soleen.com,
+        peterz@infradead.org, jpoimboe@kernel.org,
+        michael.h.kelley@microsoft.com
+References: <20230725150825.283891-1-ltykernel@gmail.com>
+ <871qgwow1q.fsf@redhat.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <871qgwow1q.fsf@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/26 11:31), Sergey Senozhatsky wrote:
-> On (23/07/21 14:37), Andrew Yang wrote:
-> > 
-> > Since fullness and isolated share the same unsigned int,
-> > modifications of them should be protected by the same lock.
+On 7/25/2023 11:22 PM, Vitaly Kuznetsov wrote:
+> Tianyu Lan <ltykernel@gmail.com> writes:
 > 
-> Sorry, I don't think I follow. Can you please elaborate?
-> What is fullness in this context?
+>> From: Tianyu Lan <tiala@microsoft.com>
+>>
+>> Rename hv_isolation_type_snp and hv_isolation_type_en_snp()
+>> to make them much intuitiver.
+>>
+>> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> Signed-off-by: Tianyu Lan <tiala@microsoft.com>
+> 
+> Thanks for the patch! A few comments below ...
+> 
+>> ---
+>> This patch is based on the patchset "x86/hyperv: Add AMD sev-snp
+>> enlightened guest support on hyperv" https://lore.kernel.org/lkml/
+>> 20230718032304.136888-3-ltykernel@gmail.com/T/.
+>>
+>>   arch/x86/hyperv/hv_init.c       |  6 +++---
+>>   arch/x86/hyperv/ivm.c           | 17 +++++++++--------
+>>   arch/x86/include/asm/mshyperv.h |  8 ++++----
+>>   arch/x86/kernel/cpu/mshyperv.c  | 12 ++++++------
+>>   drivers/hv/connection.c         |  2 +-
+>>   drivers/hv/hv.c                 | 16 ++++++++--------
+>>   drivers/hv/hv_common.c          | 10 +++++-----
+>>   include/asm-generic/mshyperv.h  |  4 ++--
+>>   8 files changed, 38 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+>> index 2eda4e69849d..2911c2525ed5 100644
+>> --- a/arch/x86/hyperv/ivm.c
+>> +++ b/arch/x86/hyperv/ivm.c
+>> @@ -591,24 +591,25 @@ bool hv_is_isolation_supported(void)
+>>   	return hv_get_isolation_type() != HV_ISOLATION_TYPE_NONE;
+>>   }
+>>   
+>> -DEFINE_STATIC_KEY_FALSE(isolation_type_snp);
+>> +DEFINE_STATIC_KEY_FALSE(isol_type_snp_paravisor_flag);
+>>   
+>>   /*
+>> - * hv_isolation_type_snp - Check system runs in the AMD SEV-SNP based
+>> + * isol_type_snp_paravisor - Check system runs in the AMD SEV-SNP based
+>>    * isolation VM.
+>>    */
+>> -bool hv_isolation_type_snp(void)
+>> +bool isol_type_snp_paravisor(void)
+> 
+> 
+> I think that it would be better to keep 'hv_' prefix here for two reasons:
+> ...
+> 
 
-Oh, my bad, so that's zspage's fullness:FULLNESS_BITS and
-isolated:ISOLATED_BITS.  I somehow thought about something
-very different (page isolated, not zspage isolated).
+Agree. Will update.
+
+Thanks.
+
