@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1BB763CF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7BC763CFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbjGZQxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S231765AbjGZQyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjGZQxk (ORCPT
+        with ESMTP id S230142AbjGZQyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:53:40 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2AC26AC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:53:38 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso9097455e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:53:38 -0700 (PDT)
+        Wed, 26 Jul 2023 12:54:10 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC2626AE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:54:08 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4813422f311so3977e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690390417; x=1690995217;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UPiX7fReDR3fI6kmxK7fKJRGBv6XCkE0IO8pClG7+g=;
-        b=IBozOJkHMEJObNgwvMorzSH0KtIJG9/P8EQ1ZZJVm28cONWXXjTayecK4rWdnAyUxW
-         xxbMsywVvJPOah5xbdygmmgf+ExN/CF0K0egEoibj6PKc5IY6dINi6UaHUBLrrmte37n
-         qic+uwFKpgt43UklcnIv686n/cFqm13uOiM9iMZFtjQLJqOuOHW106bp0ljruQlr69w3
-         AnNrCBMX1dkprJy1ItKB7yxlKQvEbFdlYpsQuo/sAJ6RNxGA+WFBXtGTDXp5+veI3VGk
-         L49LlZG33rdpSc3BboCAuzFoSAI0Zlf0aIGHtfzhMFBjbcfnxs+ej+jjt00pALR/gJ/r
-         GpIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690390417; x=1690995217;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1690390447; x=1690995247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2UPiX7fReDR3fI6kmxK7fKJRGBv6XCkE0IO8pClG7+g=;
-        b=A6syDrYLUUuPSAceMW9z+7UkN+2Usy72cJzu+dwHQqvSSe1xHeymY9PsUuzm1UczeY
-         m6zDeywq5bKyld+hI8DB5nh0nb/urFfxeZiKg/9vrjvMJwNbpBbfpgRAeKEnKwtUz2e/
-         olxVhT9ZMlOHj9GHp2BFq6kuuRR7Pn3A6jcXjmM+8rNeaeycaqkO8jqk8W5Gdlfnaoej
-         ToEy8pvPVjw2J5Rg1KJTuqb06XAuRL8G5zKJfKP7/a1NsmatbhTVGOp/QoX05436xhf9
-         xy+VUNQKnzUQN0Cy1SC/TkMbcFMJhdH9Hz3aZ+k78BIs0GGjpD2a5cHys5dUP8DqSmZf
-         GCEQ==
-X-Gm-Message-State: ABy/qLa416iGIrNc2XGAQ2rhvjJuZycG6Nkb6CdUbevbZ85fc9xfqapa
-        YMiRAA3drSG1sbDkfqfhbntumw==
-X-Google-Smtp-Source: APBJJlFH2LcZdnXOgKo+SIZ831oYDnQvR/FZ52W3UHhYnhv2g2sJD4xB3T7pPoCuCQZaT/q8WmoofQ==
-X-Received: by 2002:a05:600c:4e14:b0:3fa:ef97:1fa5 with SMTP id b20-20020a05600c4e1400b003faef971fa5mr77269wmq.6.1690390417249;
-        Wed, 26 Jul 2023 09:53:37 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id f2-20020a7bc8c2000000b003fc04eb92cbsm2483960wml.44.2023.07.26.09.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 09:53:36 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 19:53:33 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-Message-ID: <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain>
-References: <cover.1690332693.git.yan@cloudflare.com>
- <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
- <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
- <ZMEqYOOBc1ZNcEER@debian.debian>
- <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
- <ZMFFbChK/66/8XZd@debian.debian>
+        bh=l1Ud4xqP5nkcbT5GKuYNAcPWbp+qIOEpFRn8TEyuTR4=;
+        b=uAQJO9Y7aK/Xx14i40eQ12DBo4ncfbEYufIzV4tBGwMns0gBvVx13OxJQwokCn+LW+
+         3JY4JxwVps3hWob17Cd/I960fxHow2OldIkyj9727U3m9nZy5KdJXeI59+sQPsaSwD3c
+         Os2xh0ZCR6rrWmgZZcMBAUKzHH/YyhKYbych2csHZJahxDTKh+ft4rh7WrnKgB69x6Iv
+         fpaeNj72u424cnrKtDbGxpBC12KWKBf5KhoqmT73enm9TnfEmW7JBlEbQCI8A7gA/slZ
+         GmLgCbENar2x7KDg2+Tzxvv2r9hyCOIsizBdcWDrpHqLpxTu2btwxamJ1df0I3e1Ifo7
+         hiRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690390447; x=1690995247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l1Ud4xqP5nkcbT5GKuYNAcPWbp+qIOEpFRn8TEyuTR4=;
+        b=V4MV0ZlQuTtRMABEdXR11b+t5SruQjZagcsdT7hC94tGe0G8JvmVo8pV0JTQ9XhITD
+         V/ZeWqeYn/PxuCdv1+uudNCicnalMmzMMeiypnx2w0WHIfPB5zZNUYBBANOyUbO5GOgj
+         7XHnFm2Q3z5F7Gx6hhlECUipzxAN34POEuNLGnTa2AaWCswq43omkMva+xMBkEJVDL1C
+         J4i1fyZPrPxXeNshIhBrrg/MssKOa7Aq0D3SP16Z6sQOtFSwGystPVQ20cE4ZgkKj5+4
+         uw5NGIIz9CDnrCR0O/5YCYpOIYgAoOnR29OEdo6SyNL2tqxE943t2aJrAK7PFegxWgkR
+         PyWw==
+X-Gm-Message-State: ABy/qLYTUbBmoWfNiwoy38MKnJTUTc2dN+6i1bdCD8lqz86dB8oKFoPt
+        RERociIwaWmzo12mWCX8S/GmiCPoOerOLgVxhbjPGQ==
+X-Google-Smtp-Source: APBJJlFaEX/3W3iFpn5QK5fhlrSRrfhlg42PFev+G3+gvgN+2bnEQiwgQCj3IvYw/kaVM+4pmC01br8Z9QPrsQYyurc=
+X-Received: by 2002:a1f:600f:0:b0:486:4338:33ec with SMTP id
+ u15-20020a1f600f000000b00486433833ecmr1863820vkb.11.1690390447618; Wed, 26
+ Jul 2023 09:54:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMFFbChK/66/8XZd@debian.debian>
+References: <20230726045247.338066179@linuxfoundation.org>
+In-Reply-To: <20230726045247.338066179@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 26 Jul 2023 22:23:56 +0530
+Message-ID: <CA+G9fYvK5Zz4b2hh64SwZMh4YED=ssDYkbwTUrThP4wS8aSs6A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/310] 5.4.251-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -93,50 +74,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 09:10:20AM -0700, Yan Zhai wrote:
-> On Wed, Jul 26, 2023 at 06:01:00PM +0300, Dan Carpenter wrote:
-> > On Wed, Jul 26, 2023 at 07:14:56AM -0700, Yan Zhai wrote:
-> > > On Wed, Jul 26, 2023 at 04:39:08PM +0300, Dan Carpenter wrote:
-> > > > I'm not positive I understand the code in ip_finish_output2().  I think
-> > > > instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
-> > > > != LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
-> > > > LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
-> > > > instead?
-> > > > 
-> > > I considered about changing lwt side logic. But it would bring larger
-> > > impact since there are multiple types of encaps on this hook, not just
-> > > bpf redirect. Changing bpf return values is a minimum change on the
-> > > other hand. In addition, returning value of NET_RX_DROP and
-> > > NET_XMIT_CN are the same, so if we don't do something in bpf redirect,
-> > > there is no way to distinguish them later: the former is considered as
-> > > an error, while "CN" is considered as non-error.
-> > 
-> > Uh, NET_RX/XMIT_DROP values are 1.  NET_XMIT_CN is 2.
-> > 
-> > I'm not an expert but I think what happens is that we treat NET_XMIT_CN
-> > as success so that it takes a while for the resend to happen.
-> > Eventually the TCP layer will detect it as a dropped packet.
-> > 
-> My eyes slipped lines. CN is 2. But the fact RX return value can be
-> returned on a TX path still makes me feel unclean. Odds are low that
-> we will have new statuses in future, it is a risk. I'd hope to contain
-> these values only inside BPF redirect code as they are the reason why
-> such rx values can show up there. Meanwhile, your argument do make
-> good sense to me that the same problem may occur for other stuff. It
-> is true. In fact, I just re-examined BPF-REROUTE path, it has the
-> exact same issue by directly sending dst_output value back.
-> 
-> So I would propose to do two things:
-> 1. still convert BPF redirect ingress code to contain the propagation
-> of mixed return. Return only TX side value instead, which is also what
-> majority of those local senders are expecting. (I was wrong about
-> positive values returned to sendmsg below btw, they are not).
-> 
-> 2. change LWTUNNEL_XMIT_CONTINUE and check for this at xmit hook.
-> 
+On Wed, 26 Jul 2023 at 10:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.251 release.
+> There are 310 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 28 Jul 2023 04:51:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.251-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Sounds good!
 
-regards,
-dan carpenter
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.251-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 25e11282f51e116ed3658f586a175a559364ab39
+* git describe: v5.4.250-311-g25e11282f51e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
+50-311-g25e11282f51e
+
+## Test Regressions (compared to v5.4.249)
+
+## Metric Regressions (compared to v5.4.249)
+
+## Test Fixes (compared to v5.4.249)
+
+## Metric Fixes (compared to v5.4.249)
+
+## Test result summary
+total: 104377, pass: 85830, fail: 1143, skip: 17339, xfail: 65
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 145 total, 143 passed, 2 failed
+* arm64: 45 total, 41 passed, 4 failed
+* i386: 28 total, 20 passed, 8 failed
+* mips: 27 total, 27 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 30 total, 30 passed, 0 failed
+* riscv: 12 total, 12 passed, 0 failed
+* s390: 6 total, 6 passed, 0 failed
+* sh: 12 total, 12 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 38 total, 36 passed, 2 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-mincore
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kunit
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
