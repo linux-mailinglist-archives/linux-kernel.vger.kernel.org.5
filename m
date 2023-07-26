@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC770763B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A41763B45
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbjGZPiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
+        id S234323AbjGZPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbjGZPh7 (ORCPT
+        with ESMTP id S234174AbjGZPjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:37:59 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C3A106
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:37:57 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9b50be31aso13935911fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690385876; x=1690990676;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EmBWJuNz3Xx88K6hY2rbiOhgaOpqje9Puiq+sg34Aj0=;
-        b=QGwHFvP8/GyyjKVQEbUaYbyjOv4kaxWrqHnIdRJAB6uYz+FF2dsJU8VfOvQ4gfMr1n
-         ohtoFiYmnncwqfPx1F9fMFYsKa3SNf+J5+ijAGKtL7Dk6o63vj+z7Ze0rZW7xIrtHqRo
-         6aItGIcHkprPTLrYV4wVDfnlEoRul8rJW4gVvsosG99Q6Z63SPXZKgkOSPZxUUos14Ew
-         W4KcsAkht1at8t8wL5TKzYWQZauxmFJx/TD2Lw4eMHw2irtcGzQ7nPadvfYn7neiBNYo
-         lR6LBq1xRJ/X2KMhYTPknlfmThA3JVrbjxfd+mKgSewTMYCAhVS3vhqJzNFZno/JKVPK
-         ZR1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690385876; x=1690990676;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EmBWJuNz3Xx88K6hY2rbiOhgaOpqje9Puiq+sg34Aj0=;
-        b=j8iSRK6k0IU3zNnkxpXi6SglNA81YbrIAo8ZBnMScGAT3Ek/Mv3QaqEUOUxdGHNjfD
-         LSGo+7uVV3UE/rAP4H5ZzzhMUYhrTsAM/1wIkSbdQKD9i6OamYSr632sGr7rNtZJ3M2m
-         DugkiUFu1E9t8dEQv2h5SagIH8gaPUYzFK6skM8hwx5RIX0oQnbM0XKdqK47N+FTcuVF
-         ovk3Xk+ffFA1T4rqGt68KWjoSpjrgzGRU+4jkzoLTFU59/73WGyx9vqDiVj2csjeR/4+
-         N+Sbwh63lmWTqnhLAGCE4xMLb4PMs3xpiXKko9RYouqUAsGUzjJB0EVjxoq77i/E3bxe
-         pOpw==
-X-Gm-Message-State: ABy/qLbpDKAIRG7XAgFu9KkfSHL5CdUcAFTsnYZj902rN6uoxo1VMvC6
-        HueWJAzMbJI3LTfT46kS9VWgxQ==
-X-Google-Smtp-Source: APBJJlFOpaetD5YJcyZxCNTeXWrlJcOp//wSthqk/u5qJqC73XwPdta6gEjdkdDprwKxB05zuF2EKg==
-X-Received: by 2002:ac2:5f63:0:b0:4fe:df7:bcf1 with SMTP id c3-20020ac25f63000000b004fe0df7bcf1mr1600519lfc.57.1690385875781;
-        Wed, 26 Jul 2023 08:37:55 -0700 (PDT)
-Received: from [192.168.1.101] (abxh240.neoplus.adsl.tpnet.pl. [83.9.1.240])
-        by smtp.gmail.com with ESMTPSA id a25-20020a056512021900b004f85628ec34sm355780lfo.33.2023.07.26.08.37.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 08:37:55 -0700 (PDT)
-Message-ID: <7d8220b3-baf4-e0fc-b20a-1e672e2664e6@linaro.org>
-Date:   Wed, 26 Jul 2023 17:37:52 +0200
+        Wed, 26 Jul 2023 11:39:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4465EB5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690385918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vowpWuHV+0GHYhLidQCz/tJr8CGvlY+3r6OngHZa8oI=;
+        b=F4jB+eCsG8eE0z4QUH8emVPdc8Bp1PKOsGoZ8JIUyCz1JMNziImveaqTzHbEy04lxRslWH
+        lbJKWDlsxP6nJdZ1mC6FMQeYP1eUSADDCxwM/hE7uW4yZrNMhw+nrFCobQOfdKeVh9ljq2
+        B2GJg7bodSZ8AeZiK2flw/M6oZAKm1o=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-562-PQeal5gdMN-WA7t_owBKyw-1; Wed, 26 Jul 2023 11:38:35 -0400
+X-MC-Unique: PQeal5gdMN-WA7t_owBKyw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5AD912800E88;
+        Wed, 26 Jul 2023 15:38:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FE16145414B;
+        Wed, 26 Jul 2023 15:38:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com>
+References: <CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com>
+To:     =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>
+Cc:     dhowells@redhat.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        regressions@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Another regression in the af_alg series (s390x-specific)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 6/7] clk: qcom: gcc-qdu1000: Update the SDCC clock RCG
- ops
-Content-Language: en-US
-To:     Imran Shaik <quic_imrashai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20230719041450.737929-1-quic_imrashai@quicinc.com>
- <20230719041450.737929-7-quic_imrashai@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230719041450.737929-7-quic_imrashai@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <15124.1690385912.1@warthog.procyon.org.uk>
+Date:   Wed, 26 Jul 2023 16:38:32 +0100
+Message-ID: <15125.1690385912@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.07.2023 06:14, Imran Shaik wrote:
-> Update the GCC SDCC clock RCG ops to floor_ops to avoid
-> the overclocking issues on QDU1000 and QRU1000 SoCs.
-> 
-> Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
-> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
-> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Well, I can reproduce it fairly easily.  It seems to be:
 
-Konrad
+	static inline void scatterwalk_start(struct scatter_walk *walk,
+					     struct scatterlist *sg)
+	{
+		walk->sg = sg;
+		walk->offset = sg->offset;  <----
+	}
+
+Presumably sg is rubbish.
+
+Dump of assembler code for function gcm_walk_start:
+   0x0000000000000038 <+0>:     jgnop   0x38 <gcm_walk_start>
+   0x000000000000003e <+6>:     xc      8(64,%r2),8(%r2)
+   0x0000000000000044 <+12>:    st      %r4,32(%r2)
+   0x0000000000000048 <+16>:    stg     %r3,0(%r2)
+   0x000000000000004e <+22>:    l       %r1,8(%r3)
+   0x0000000000000052 <+26>:    st      %r1,8(%r2)
+   0x0000000000000056 <+30>:    jg      0x56 <gcm_walk_start+30>
+
+I'm don't know much about s390x assembly, but I'm guessing %r2 has "walk" and
+%r3 has "sg".
+
+AS:0000000116d50007 R3:0000000000000024 
+Fault in home space mode while using kernel ASCE.
+Failing address: 0026070200000000 TEID: 0026070200000803
+Unable to handle kernel pointer dereference in virtual kernel address space
+
+Krnl GPRS: 000000000000000c 0000038000000310 00000380002a7938 0026070200000000
+           0000000000000000 0000000115593cb4 0000000000000000 0000000000000010
+           0000000100000000 000000017e984690 000000000000000c 0000000000000000
+           000003ffaf12cf98 0000000000000000 000003ff7fc536ba 00000380002a77e0
+
+I'm not sure what to make of the 0026070200000000.
+
+David
+
