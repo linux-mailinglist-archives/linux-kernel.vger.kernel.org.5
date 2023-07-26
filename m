@@ -2,159 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B30A76424E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 00:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAF876427F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjGZW5S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 18:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        id S230521AbjGZXX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 19:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbjGZW5P (ORCPT
+        with ESMTP id S229621AbjGZXX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 18:57:15 -0400
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64EE271D;
-        Wed, 26 Jul 2023 15:57:14 -0700 (PDT)
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7878e573827so11624839f.1;
-        Wed, 26 Jul 2023 15:57:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690412234; x=1691017034;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PCmsUfocE9nW+Ujffe8WMtyaTbfPSG5Ra3w/88GS7Cs=;
-        b=Y1pGY9gxRxZgx8o/K7Q7Wu7fC+AERx1rMm4PQ27QsCE7apgo1FUm2W4WeHFyuUGpRa
-         BLzZc/INEOD7i2RVK78fDDOxM2wuIgvrgsPe8qsF82O59hehZu1vFwxR/GAcoCPiH92u
-         euwATkOHp0R267sxXTPUt2AWzo1dCXWRqX76r70QwdWidDS+0HJuJz5XsHblZIhYqUvd
-         e4A9NMk795NPmUAiLp5ROq1eOT9bRa5nKU+Zrm8OuZGL5oyeghv2HPcTXW/MnCeI8/S2
-         D9HWEc724L8+LvtuYa7cW9yUfR35wh5AjWBA3Iet/dI5BDsF23qFu0nXcZgLkIslxjYE
-         A6mg==
-X-Gm-Message-State: ABy/qLY6XjMngTS8ESoermipv85ii0GrHk+TtjW7mi+Ej9i1u91RxQGP
-        fzLiY56GeLeZ3gy0oN9Z6k+3fmoU6swfMv65NvQ=
-X-Google-Smtp-Source: APBJJlHh2gUCZiBJFkBIROZc3Z1R5phzbX2MgRI7IChXg2C2q6TW7eiEAOCTDJz5b3e5CQMyu3m2/tYQ9TdHHFdG4cs=
-X-Received: by 2002:a05:6602:42ca:b0:783:63ac:25cf with SMTP id
- ce10-20020a05660242ca00b0078363ac25cfmr3470921iob.7.1690412233786; Wed, 26
- Jul 2023 15:57:13 -0700 (PDT)
+        Wed, 26 Jul 2023 19:23:27 -0400
+X-Greylist: delayed 1023 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Jul 2023 16:23:25 PDT
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B49F19BA;
+        Wed, 26 Jul 2023 16:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=s1; h=From:Cc:To:Subject:Date:Message-ID:Sender;
+        bh=TzAjea2nGNOKcL40wex2xg6v2cKZ58dDAwDQ7iciIm4=; b=f0zt7pMLMdwTX2ta0nfexztCNV
+        HHSlhUIacV52g6Gm/BaxdE3SMrwORdOn5s+8WObEEgzbC5Yag7Rt5w51QdFXF5BQ2xQ+kE8pzPJHB
+        uyQDsCgOGOl3r278g3GDzjHAqe8AiV95iGzS6tgoB3mrXdg5CM+GgyjdqteS04HxHAnxMTTiX5kKP
+        SBg2HaSWD/1ufvrzD23UAqTfw4OAVyFh5EvqH+OguUd0YQ6qxaTTnn4VDuMXN1xyxToxZK61kVwPM
+        YQ21CzfWqTRP/lL9yJp3jtuxRCI7cBUOfCLhf2L3xMxqYH1Q0i4lczsT/GPf068f+FrxpXbFVX+Bq
+        /Nk4kViA==;
+Received: from cw141ip123.vpn.codeweavers.com ([10.69.141.123])
+        by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <pgofman@codeweavers.com>)
+        id 1qOna7-005Zuy-A7; Wed, 26 Jul 2023 18:06:11 -0500
+Message-ID: <94c6b665-bbc2-5030-f9b1-d933791008b8@codeweavers.com>
+Date:   Wed, 26 Jul 2023 17:06:02 -0600
 MIME-Version: 1.0
-References: <20230726133642.750342-1-namhyung@kernel.org> <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 26 Jul 2023 15:57:02 -0700
-Message-ID: <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        kernel@collabora.com
+References: <20230713101415.108875-6-usama.anjum@collabora.com>
+ <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+ <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
+ <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
+ <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com>
+ <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
+ <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com>
+ <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
+ <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
+ <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
+ <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com>
+ <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
+ <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com>
+ <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
+ <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com>
+ <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
+Content-Language: en-GB
+From:   Paul Gofman <pgofman@codeweavers.com>
+In-Reply-To: <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+Hello Michał,
 
-On Wed, Jul 26, 2023 at 8:48 AM Ian Rogers <irogers@google.com> wrote:
+     I was looking into that from the Wine point of view and did a bit 
+of testing, so will try to answer the question cited below.
+
+     Without Windows large pages I guess the only way to make this work 
+correctly is to disable THP with madvise(MADV_NOHUGEPAGE) on the memory 
+ranges allocated with MEM_WRITE_WATCH, as the memory changes should not 
+only be reported but also tracked with 4k page granularity as Windows 
+applications expect.
+
+     Currently we don't implement MEM_LARGE_PAGES flag support in Wine 
+(while of course might want to do that in the future). On Windows using 
+this flag requires special permissions and implies more than just using 
+huge pages under the hood but also, in particular, locking pages in 
+memory. I'd expect that support to be extended in Windows though in the 
+future in some way. WRT write watches, the range is watched with large 
+page granularity. GetWriteWatch lpdwGranularity output parameter returns 
+the value of "large page minimum" (returned by GetLargePageMinimum) and 
+the returned addresses correspond to those large pages. I suppose to 
+implement that on top of Linux huge pages we'd need a way to control 
+huge pages allocation at the first place, i. e., a way to enforce the 
+specified size for the huge pages for the memory ranged being mapped. 
+Without that I am afraid the only way to correctly implement that is to 
+still disable THP on the range and only adjust our API output so that 
+matches expected.
+
+     Not related to the question, but without any relation to Wine and 
+Windows API current way of dealing with THP in the API design looks a 
+bit not straightforward to me. In a sense that transparent huge pages 
+will appear not so transparent when it comes to dirty pages tracking. If 
+I understand correctly, the application which allocated a reasonably big 
+memory area and didn't use madvise(MADV_NOHUGEPAGE) might end up with a 
+whole range being a single page and getting dirtified as a whole, which 
+may likely void app's optimization based on changed memory tracking. Not 
+that I know an ideal way out of this, maybe it is a matter of having THP 
+disabled by default on watched ranges or clearly warning about this 
+caveat in documentation?
+
+Regards,
+     Paul.
+
+
+On 7/26/23 15:10, Michał Mirosław wrote:
 >
-> On Wed, Jul 26, 2023 at 6:36 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The bison and flex generate C files from the source (.y and .l)
-> > files.  When O= option is used, they are saved in a separate directory
-> > but the default build rule assumes the .C files are in the source
-> > directory.  So it might read invalid file if there are generated files
-> > from an old version.  The same is true for the pmu-events files.
-> >
-> > For example, the following command would cause a build failure:
-> >
-> >   $ git checkout v6.3
-> >   $ make -C tools/perf  # build in the same directory
-> >
-> >   $ git checkout v6.5-rc2
-> >   $ mkdir build  # create a build directory
-> >   $ make -C tools/perf O=build  # build in a different directory but it
-> >                                 # refers files in the source directory
-> >
-> > Let's update the build rule to specify those cases explicitly to depend
-> > on the files in the output directory.
-> >
-> > Note that it's not a complete fix and it needs the next patch for the
-> > include path too.
-> >
-> > Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/build/Makefile.build  | 8 ++++++++
-> >  tools/perf/pmu-events/Build | 4 ++++
-> >  2 files changed, 12 insertions(+)
-> >
-> > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-> > index 89430338a3d9..f9396696fcbf 100644
-> > --- a/tools/build/Makefile.build
-> > +++ b/tools/build/Makefile.build
-> > @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
-> >         $(call rule_mkdir)
-> >         $(call if_changed_dep,cc_s_c)
-> >
-> > +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
-> > +       $(call rule_mkdir)
-> > +       $(call if_changed_dep,$(host)cc_o_c)
-> > +
-> > +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
-> > +       $(call rule_mkdir)
-> > +       $(call if_changed_dep,$(host)cc_o_c)
-> > +
+>>> 3. BTW, One of the uses is the GetWriteWatch and I wonder how it
+>>> behaves on HugeTLB (MEM_LARGE_PAGES allocation)? Shouldn't it return a
+>>> list of huge pages and write *lpdwGranularity = HPAGE_SIZE?
+>> Wine/Proton doesn't used hugetlb by default. Hugetlb isn't enabled by
+>> default on Debian as well. For GetWriteWatch() we don't care about the
+>> hugetlb at all. We have added hugetlb's implementation to complete the
+>> feature and leave out something.
+> How is GetWriteWatch() working when passed a VirtualAlloc(...,
+> MEM_LARGE_PAGES|MEM_WRITE_WATCH...)-allocated range? Does it still
+> report 4K pages?
+> This is only a problem when using max_pages: a hugetlb range might
+> need counting and reporting huge pages and not 4K parts.
 >
-> Hi Namhyung,
->
-> as we have:
-> ```
-> $(OUTPUT)%.o: %.c FORCE
->        $(call rule_mkdir)
->        $(call if_changed_dep,$(host)cc_o_c)
-> ```
-> I'm not sure what the 2 additional rules achieve.
-
-The above rule assumes the .c files are in the source directory
-(without $(OUTPUT) prefix).  It caused a trouble when the
-flex and bison files are generated in the output directory and
-you have an old version of them in the source directory.
+> Best Regards
+> Michał Mirosław
 
 
->
-> >  # Gather build data:
-> >  #   obj-y        - list of build objects
-> >  #   subdir-y     - list of directories to nest
-> > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-> > index 150765f2baee..f38a27765604 100644
-> > --- a/tools/perf/pmu-events/Build
-> > +++ b/tools/perf/pmu-events/Build
-> > @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY) $(METRIC_PY) $(METRIC_TEST_L
-> >         $(call rule_mkdir)
-> >         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARCH) $(JEVENTS_MODEL) pmu-events/arch $@
-> >  endif
-> > +
-> > +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
-> > +       $(call rule_mkdir)
-> > +       $(call if_changed_dep,$(host)cc_o_c)
->
-> If we add this, do the Makefile.build changes still need to happen?
-
-The Makefile.build changes are specific to flex and bison files.
-So yes, we need this for pmu-events.c to work properly with O=
-option.
-
-Thanks,
-Namhyung
