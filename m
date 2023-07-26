@@ -2,134 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FE6762802
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92175762801
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbjGZBJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35786 "EHLO
+        id S231203AbjGZBJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjGZBJm (ORCPT
+        with ESMTP id S229483AbjGZBJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:09:42 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0B9268B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690333780; x=1721869780;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8N2pAFQ3if94TCvGhYfcjiKTRVqUsuCoD4cDE6Th3ug=;
-  b=kp/G6OZW6xJf41vRbVxEi5dus8sYDEGFnNylmcZU6c7CXMhDHykMMX+G
-   p+rHWL9/y6Abk4ptAEM5KvFYR9rjYBS+yaH/1uQGpxLfaNns4l1R0Ea1s
-   2X56YzcjIwYagVMb83G7xM4guVnX6z0oc2rv5jI9p5cR7rM3NnhI5uwkU
-   FGU7rge0/WHSOEAvg1OqfkVkdKZIrUM0Xe94YQFPAwDWSTcKsg6zXWJEe
-   STr7S1WgVbLcbQN5hvdjZilxbYFuxTYImCcdluCVxpL7jKink9WrxFobR
-   pE+OenZ5YBJ3DYoJAOVSIef6wmxMm+vji1La1wDLSqNea2u7lPFYUpWbj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352785419"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="352785419"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 18:09:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="1056985602"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="1056985602"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 25 Jul 2023 18:09:38 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOT1c-0000V1-1E;
-        Wed, 26 Jul 2023 01:09:18 +0000
-Date:   Wed, 26 Jul 2023 09:08:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: arch/powerpc/mm/book3s64/radix_tlb.c:419:20: error: unused function
- '_tlbie_pid_lpid'
-Message-ID: <202307260802.Mjr99P5O-lkp@intel.com>
+        Tue, 25 Jul 2023 21:09:17 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D20268B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:09:15 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4039f7e1d3aso50987041cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690333755; x=1690938555;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0j4SOStVYxHKXGyoHBk90Z9/7O0dfp1WmJmpO/HijKg=;
+        b=sOVJjNqJxLUNOQKu8TUIs4EQXTFg4cyJ9WibcU6EPSNjZpSapC1e9ycnqVsUNFjzyD
+         9ZgMOAAmCDW3u4hbbP83OgjbUiZxD6av/PTe1NceH+6ufifpQsyofAHGSmkP0OQs9ErZ
+         IWg0eW2mUmPiUpWXpw+zPfINGloxY602J4CSk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690333755; x=1690938555;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0j4SOStVYxHKXGyoHBk90Z9/7O0dfp1WmJmpO/HijKg=;
+        b=SwLxAd4t7y92F0byVbJXbPR4jluYACWLgJkAGhdC8Q48GuWy/NZKlqQysoAcQBg2+P
+         6s/0nr4ANS0XrmhWf07GjKt3DLHTr6+jVeaKc+1Uvk9NZwDD5KOsgVx2k31DY2TBJxXD
+         /QrVAm+jOfiqQNGR2F18yjs4QnD/Rvj29Rm/lHXh7XxZuW5w9sIH/m6AxHm9VLEgrl2R
+         CnQ41Z/sGPXYk8bSNLaXk5M4Wxreg4KKTKdq2rP11j5BX2M9FvkhGwPu/cSFNINO19u9
+         1IrsWz2HhjjtWHxI5wx6B/j7LxobcxmCx7nIZLDgXkOtVZcFk/NDFU+9jFSVVUK34waX
+         oRXQ==
+X-Gm-Message-State: ABy/qLbI9Vmg86RR2Ejel5f5W77ufz/QMzoVQ9htynofmE5IfpSZwNwB
+        pfRpZNYZ4iAopDwfLluNxXaALw==
+X-Google-Smtp-Source: APBJJlFUth/aSY8rBZymZAD3NLSJzY7rSe0GwigSDuaV3WLpvc5NGyNX5px/T+GiWiLtdzhGQYMlXA==
+X-Received: by 2002:a05:622a:1111:b0:402:2e84:f06e with SMTP id e17-20020a05622a111100b004022e84f06emr738486qty.27.1690333755005;
+        Tue, 25 Jul 2023 18:09:15 -0700 (PDT)
+Received: from debian.debian ([140.141.197.139])
+        by smtp.gmail.com with ESMTPSA id b20-20020ac85414000000b0040541a8bd66sm4398523qtq.60.2023.07.25.18.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 18:09:14 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 18:09:12 -0700
+From:   Yan Zhai <yan@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Yan Zhai <yan@cloudflare.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@cloudflare.com, Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH v4 bpf 2/2] bpf: selftests: add lwt redirect regression test
+ cases
+Message-ID: <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
+References: <cover.1690332693.git.yan@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1690332693.git.yan@cloudflare.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
-commit: d78c8e32890ef7eca79ffd67c96022c7f9d8cce4 powerpc/mm: Rearrange if-else block to avoid clang warning
-date:   5 months ago
-config: powerpc-skiroot_defconfig (https://download.01.org/0day-ci/archive/20230726/202307260802.Mjr99P5O-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260802.Mjr99P5O-lkp@intel.com/reproduce)
+Tests BPF redirect at the lwt xmit hook to ensure error handling are
+safe, i.e. won't panic the kernel.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307260802.Mjr99P5O-lkp@intel.com/
+Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Signed-off-by: Yan Zhai <yan@cloudflare.com>
+---
+ tools/testing/selftests/bpf/Makefile          |   1 +
+ .../selftests/bpf/progs/test_lwt_redirect.c   |  66 +++++++
+ .../selftests/bpf/test_lwt_redirect.sh        | 174 ++++++++++++++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_redirect.c
+ create mode 100755 tools/testing/selftests/bpf/test_lwt_redirect.sh
 
-All errors (new ones prefixed by >>):
-
->> arch/powerpc/mm/book3s64/radix_tlb.c:419:20: error: unused function '_tlbie_pid_lpid' [-Werror,-Wunused-function]
-     419 | static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
-         |                    ^
->> arch/powerpc/mm/book3s64/radix_tlb.c:663:20: error: unused function '_tlbie_va_range_lpid' [-Werror,-Wunused-function]
-     663 | static inline void _tlbie_va_range_lpid(unsigned long start, unsigned long end,
-         |                    ^
-   2 errors generated.
-
-
-vim +/_tlbie_pid_lpid +419 arch/powerpc/mm/book3s64/radix_tlb.c
-
-1a472c9dba6b96 arch/powerpc/mm/tlb-radix.c          Aneesh Kumar K.V 2016-04-29  418  
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21 @419  static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  420  				   unsigned long ric)
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  421  {
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  422  	asm volatile("ptesync" : : : "memory");
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  423  
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  424  	/*
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  425  	 * Workaround the fact that the "ric" argument to __tlbie_pid
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  426  	 * must be a compile-time contraint to match the "i" constraint
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  427  	 * in the asm statement.
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  428  	 */
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  429  	switch (ric) {
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  430  	case RIC_FLUSH_TLB:
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  431  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_TLB);
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  432  		fixup_tlbie_pid_lpid(pid, lpid);
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  433  		break;
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  434  	case RIC_FLUSH_PWC:
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  435  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  436  		break;
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  437  	case RIC_FLUSH_ALL:
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  438  	default:
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  439  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_ALL);
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  440  		fixup_tlbie_pid_lpid(pid, lpid);
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  441  	}
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  442  	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
-f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  443  }
-2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  444  struct tlbiel_pid {
-2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  445  	unsigned long pid;
-2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  446  	unsigned long ric;
-2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  447  };
-2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  448  
-
-:::::: The code at line 419 was first introduced by commit
-:::::: f0c6fbbb90504fb7e9dbf0865463d3c2b4de49e5 KVM: PPC: Book3S HV: Add support for H_RPT_INVALIDATE
-
-:::::: TO: Bharata B Rao <bharata@linux.ibm.com>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
-
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 538df8fb8c42..e3a24d053793 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -66,6 +66,7 @@ TEST_PROGS := test_kmod.sh \
+ 	test_xdp_vlan_mode_generic.sh \
+ 	test_xdp_vlan_mode_native.sh \
+ 	test_lwt_ip_encap.sh \
++	test_lwt_redirect.sh \
+ 	test_tcp_check_syncookie.sh \
+ 	test_tc_tunnel.sh \
+ 	test_tc_edt.sh \
+diff --git a/tools/testing/selftests/bpf/progs/test_lwt_redirect.c b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
+new file mode 100644
+index 000000000000..3674e101f68f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_tracing_net.h"
++
++/* We don't care about whether the packet can be received by network stack.
++ * Just care if the packet is sent to the correct device at correct direction
++ * and not panic the kernel.
++ */
++static __always_inline int prepend_dummy_mac(struct __sk_buff *skb)
++{
++	char mac[] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0xf,
++		      0xe, 0xd, 0xc, 0xb, 0xa, 0x08, 0x00};
++
++	if (bpf_skb_change_head(skb, ETH_HLEN, 0)) {
++		bpf_printk("%s: fail to change head", __func__);
++		return -1;
++	}
++
++	if (bpf_skb_store_bytes(skb, 0, mac, sizeof(mac), 0)) {
++		bpf_printk("%s: fail to update mac", __func__);
++		return -1;
++	}
++
++	return 0;
++}
++
++SEC("redir_ingress")
++int test_lwt_redirect_in(struct __sk_buff *skb)
++{
++	if (prepend_dummy_mac(skb))
++		return BPF_DROP;
++
++	bpf_printk("Redirect skb to link %d ingress", skb->mark);
++	return bpf_redirect(skb->mark, BPF_F_INGRESS);
++}
++
++SEC("redir_egress")
++int test_lwt_redirect_out(struct __sk_buff *skb)
++{
++	if (prepend_dummy_mac(skb))
++		return BPF_DROP;
++
++	bpf_printk("Redirect skb to link %d egress", skb->mark);
++	return bpf_redirect(skb->mark, 0);
++}
++
++SEC("redir_egress_nomac")
++int test_lwt_redirect_out_nomac(struct __sk_buff *skb)
++{
++	int ret = bpf_redirect(skb->mark, 0);
++
++	bpf_printk("Redirect skb to link %d egress nomac: %d", skb->mark, ret);
++	return ret;
++}
++
++SEC("redir_ingress_nomac")
++int test_lwt_redirect_in_nomac(struct __sk_buff *skb)
++{
++	int ret = bpf_redirect(skb->mark, BPF_F_INGRESS);
++
++	bpf_printk("Redirect skb to link %d ingress nomac: %d", skb->mark, ret);
++	return ret;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_lwt_redirect.sh b/tools/testing/selftests/bpf/test_lwt_redirect.sh
+new file mode 100755
+index 000000000000..1b7b78b48174
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_lwt_redirect.sh
+@@ -0,0 +1,174 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# This regression test checks basic lwt redirect functionality,
++# making sure the kernel would not crash when redirecting packets
++# to a device, regardless its administration state:
++#
++# 1. redirect to a device egress/ingress should work normally
++# 2. redirect to a device egress/ingress should not panic when target is down
++# 3. redirect to a device egress/ingress should not panic when target carrier is down
++#
++# All test setup are simple: redirect ping packet via lwt xmit to cover above
++# situations. We do not worry about specific device type, except for the two
++# categories of devices that require MAC header and not require MAC header. For
++# carrier down situation, we use a vlan device as upper link, and bring down its
++# lower device.
++#
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++BPF_FILE="test_lwt_redirect.bpf.o"
++INGRESS_REDIR_IP=2.2.2.2
++EGRESS_REDIR_IP=3.3.3.3
++INGRESS_REDIR_IP_NOMAC=4.4.4.4
++EGRESS_REDIR_IP_NOMAC=5.5.5.5
++PASS=0
++FAIL=0
++
++readonly NS1="ns1-$(mktemp -u XXXXXX)"
++
++msg="skip all tests:"
++if [ $UID != 0 ]; then
++	echo $msg please run this as root >&2
++	exit $ksft_skip
++fi
++
++get_ip_direction()
++{
++	case $1 in
++		$INGRESS_REDIR_IP|$INGRESS_REDIR_IP_NOMAC)
++			echo ingress
++			;;
++		$EGRESS_REDIR_IP|$EGRESS_REDIR_IP_NOMAC)
++			echo egress
++			;;
++		*)
++			echo bug
++			;;
++	esac
++}
++
++test_pass()
++{
++	local testname=$1
++	local direction=`get_ip_direction $2`
++	shift 2
++	echo "Pass: $testname $direction $@"
++	PASS=$((PASS + 1))
++}
++
++test_fail()
++{
++	local testname=$1
++	local direction=`get_ip_direction $2`
++	shift 2
++	echo "Fail: $testname $direction $@"
++	FAIL=$((FAIL + 1))
++}
++
++setup()
++{
++	ip netns add $NS1
++
++	ip -n $NS1 link set lo up
++	ip -n $NS1 link add link_err type dummy
++	ip -n $NS1 link add link_w_mac type dummy
++	ip -n $NS1 link add link link_w_mac link_upper type vlan id 1
++	ip -n $NS1 link add link_wo_mac type gre remote 4.3.2.1 local 1.2.3.4
++	ip -n $NS1 link set link_err up
++	ip -n $NS1 link set link_w_mac up
++	ip -n $NS1 link set link_upper up
++	ip -n $NS1 link set link_wo_mac up
++
++	ip -n $NS1 addr add dev lo 1.1.1.1/32
++
++	# link_err is only used to make sure packets are redirected instead of
++	# being routed
++	ip -n $NS1 route add $INGRESS_REDIR_IP encap bpf xmit \
++		obj $BPF_FILE sec redir_ingress dev link_err
++	ip -n $NS1 route add $EGRESS_REDIR_IP encap bpf xmit \
++		obj $BPF_FILE sec redir_egress dev link_err
++	ip -n $NS1 route add $INGRESS_REDIR_IP_NOMAC encap bpf xmit \
++		obj $BPF_FILE sec redir_ingress_nomac dev link_err
++	ip -n $NS1 route add $EGRESS_REDIR_IP_NOMAC encap bpf xmit \
++		obj $BPF_FILE sec redir_egress_nomac dev link_err
++}
++
++cleanup_and_summary()
++{
++	ip netns del $NS1
++	echo PASSED:$PASS FAILED:$FAIL
++	if [ $FAIL -ne 0 ]; then
++		exit 1
++	else
++		exit 0
++	fi
++}
++
++test_redirect_normal()
++{
++	local test_name=${FUNCNAME[0]}
++	local link_name=$1
++	local link_id=`ip netns exec $NS1 cat /sys/class/net/${link_name}/ifindex`
++	local dest=$2
++
++	ip netns exec $NS1 timeout 2 tcpdump -i ${link_name} -c 1 -n -p icmp >/dev/null 2>&1 &
++	local jobid=$!
++	sleep 1
++
++	# hack: mark indicates the link to redirect to
++	ip netns exec $NS1 ping -m $link_id $dest -c 1 -w 1  > /dev/null 2>&1
++	wait $jobid
++
++	if [ $? -ne 0 ]; then
++		test_fail $test_name $dest $link_name
++	else
++		test_pass $test_name $dest $link_name
++	fi
++}
++
++test_redirect_no_panic_on_link_down()
++{
++	local test_name=${FUNCNAME[0]}
++	local link_name=$1
++	local link_id=`ip netns exec $NS1 cat /sys/class/net/${link_name}/ifindex`
++	local dest=$2
++
++	ip -n $NS1 link set $link_name down
++	# hack: mark indicates the link to redirect to
++	ip netns exec $NS1 ping -m $link_id $dest -c 1 -w 1 >/dev/null 2>&1
++
++	test_pass $test_name $dest to $link_name
++	ip -n $NS1 link set $link_name up
++}
++
++test_redirect_no_panic_on_link_carrier_down()
++{
++	local test_name=${FUNCNAME[0]}
++	local link_id=`ip netns exec $NS1 cat /sys/class/net/link_upper/ifindex`
++	local dest=$1
++
++	ip -n $NS1 link set link_w_mac down
++	# hack: mark indicates the link to redirect to
++	ip netns exec $NS1 ping -m $link_id $dest -c 1 -w 1 >/dev/null 2>&1
++
++	test_pass $test_name $dest to link_upper
++	ip -n $NS1 link set link_w_mac up
++}
++
++setup
++
++echo "Testing lwt redirect to devices requiring MAC header"
++for dest in $INGRESS_REDIR_IP $EGRESS_REDIR_IP; do
++	test_redirect_normal link_w_mac $dest
++	test_redirect_no_panic_on_link_down link_w_mac $dest
++	test_redirect_no_panic_on_link_carrier_down $dest
++done
++
++echo "Testing lwt redirect to devices not requiring MAC header"
++for dest in $INGRESS_REDIR_IP_NOMAC $EGRESS_REDIR_IP_NOMAC; do
++	test_redirect_normal link_wo_mac $dest
++	test_redirect_no_panic_on_link_down link_wo_mac $dest
++done
++
++cleanup_and_summary
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.2
+
