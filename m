@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6CE763DF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3031E763DF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjGZRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        id S229716AbjGZRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbjGZRw1 (ORCPT
+        with ESMTP id S229911AbjGZRyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:52:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B94110F3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:52:25 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb7373dd35so1636714e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:52:25 -0700 (PDT)
+        Wed, 26 Jul 2023 13:54:49 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55D7E77
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:54:48 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583f048985bso678107b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:54:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690393944; x=1690998744;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVO58FHteX4EULGG7zXipTSlDy4hu/mSuvZkpOily3k=;
-        b=PUJKuuwbKJfeKRKVxAwkioiHsnhQnMcjDgPXnxMNjttnEDE/+BglDX63I+M+Mx3tzS
-         gBwfZCr0zrRydMqQzWyxc6sZK8LPkkdMSFaZiCohklR02uIV67S1PvjqxdiAiUFzPdMk
-         nVmFQKDgzfEyYjVy6FeSPe3Yw1y1PEvQuRI7uMEv0y8x+5bSVvzaE/S3FZFE17t7oGdP
-         6O5OIBvujJ72/6ZTYdpm9kvln0Gbv9GvdZGYmBz91olHvOw10WrCBt3eDu5QO4qRFvDN
-         YaLtKEl6I1t8CUbky8a9DZz3Ez9SwnfJ1OFeNphOjwQtxBLJqMhq98iUBVPTXNKNf+am
-         UbIg==
+        d=google.com; s=20221208; t=1690394088; x=1690998888;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xG7APS0bpzhflq+N7hw4kFiKO+WKlxLTJZYGvt3CQHo=;
+        b=r3AoAVVwXCnsICUvyscGekoz3oFfjq5LSawP9P+x/3dZsCgHaSvF+83M857+TS1rEG
+         msMIiWcmh08qrR/m5y8BaUaPileeNeV/4WZI+ptttwX0j/L0hJ9ewnfs/7EEEk8RQtRP
+         0bZQ6SwNrVPA0eq6uqfF728qbXKaNRYp+O/ZbUovxA7JEeWLDRHSZn2BaYRjea/4bbdU
+         3OZSU6rQ+azh0Mq9Qu/L51DJfQLBXnbMGl9HmbH0E9EHsUdrZK8Dm//Dz7sR9io08858
+         DefwI3nbwgWdvs7KmCxb5ZksLySaaoxrhK5CHX9dv2YZIcrTuad2+PGbluXzKd2JCfz3
+         0IiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690393944; x=1690998744;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YVO58FHteX4EULGG7zXipTSlDy4hu/mSuvZkpOily3k=;
-        b=g/jBta6wL3RvxbD+atSOr0ioP7JpPlCauJ0m8+MYFFRMdjppKC1nsxgpMQDN3GAWYG
-         ixumO6TEzue2D9DuXP7msjcem+4kLi2czw+XbtzTqnSqxZr3aek9sl+k/GIWz22cwHcu
-         WZBqgUgnxEDHPNL+wRkuTrmX1Ts0EKl2cfw9/IoYWa1n45Ikd/qumKd+PkpniU2uCvOv
-         /sPxpykWJqGm6JDNVjVFYjKBGyTANrERv568p827dOX2IkVmfTnQqW3P4vylA+Eoz7xr
-         rYW8ixPVZpvqdrLaDigdI7UqYz55QA5vWfhaS9o17EOy2Jp8ufjwiFkHSbEmMwK+Q+oW
-         3cvQ==
-X-Gm-Message-State: ABy/qLZJ3jx1+vqcWDqg5lzHWBZJgcSMjQCLMfhFvRA/wNydL98A5Rd8
-        48/Z996vsxL21IPfIwCbf9lOGw==
-X-Google-Smtp-Source: APBJJlF1UQJUHoAPg9+WkjejxrUhgoGYxVfQf96mmywhElB413YJ2401ozJWhPfN+wGMUT1phLJbRQ==
-X-Received: by 2002:a19:f704:0:b0:4fb:103f:7d56 with SMTP id z4-20020a19f704000000b004fb103f7d56mr74778lfe.14.1690393943803;
-        Wed, 26 Jul 2023 10:52:23 -0700 (PDT)
-Received: from [192.168.1.101] (abyl5.neoplus.adsl.tpnet.pl. [83.9.31.5])
-        by smtp.gmail.com with ESMTPSA id q2-20020a19a402000000b004fde41a2059sm2997365lfc.305.2023.07.26.10.52.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 10:52:23 -0700 (PDT)
-Message-ID: <88658e21-c8eb-47de-9c4d-76a3f645af0e@linaro.org>
-Date:   Wed, 26 Jul 2023 19:52:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] interconnect: qcom: qcm2290: Set AB coefficients
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230726-topic-icc_coeff-v1-0-31616960818c@linaro.org>
- <20230726-topic-icc_coeff-v1-2-31616960818c@linaro.org>
- <ZMFVZJa647SNwrJX@gerhold.net>
- <5667c93a-408f-3802-b168-f3a145dfcb43@linaro.org>
- <ZMFXNZbYdpnFVsoV@gerhold.net>
- <0e5e5343-1831-c922-8f79-93cb9073dee3@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <0e5e5343-1831-c922-8f79-93cb9073dee3@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        d=1e100.net; s=20221208; t=1690394088; x=1690998888;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xG7APS0bpzhflq+N7hw4kFiKO+WKlxLTJZYGvt3CQHo=;
+        b=QlWtl7PUaxXozFj1urEdEuXaO3F3kuCIELv3yuc4hHEATdHl8mbkgyFTdjdpbbD8HW
+         4eW8Dg2Axa3O/S3Lcts0D40IPjbzrVlzEJ9dDv98QwuanoUHtvdJdMn2EYOpm47Tm+v6
+         OVei9GUNFWpRuyf99GEXVrkXzVwrnzXNyjW3fbSgQ4ps4/EAYYRbutKEXDIQfIF/fz8C
+         sAvGT2ibo7g/xSKgmwwe4zNFgcDYkCnlS8gGLMGiio6/VXmCjrD+y6JOvfTAP37AEIp2
+         qwpSoQFctxbFIW7ed9tn8vsumaOzOC1kU4qpefbGyVuF/De/uduNodTlnpYNR3NXfFi5
+         zfMA==
+X-Gm-Message-State: ABy/qLb/RDFUN74LN/WizdqCj0a0j8bSoXOLDCfKcYccWTk39jRSgnGr
+        eJtzK2y4TcQ/544DsjteoxI+3qQ/9uY=
+X-Google-Smtp-Source: APBJJlGi+bgYJFCAeVVB9sjIVs2iwu4W7+o1j0GHGwfINh+9Bc60TY6drK/2Hsi6kKa275N2EWDhJKUSd/0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ad16:0:b0:584:41a6:6cd8 with SMTP id
+ l22-20020a81ad16000000b0058441a66cd8mr25083ywh.8.1690394088151; Wed, 26 Jul
+ 2023 10:54:48 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 10:54:46 -0700
+In-Reply-To: <a9b7df8f-77db-d8dc-efab-9ae7e9ef6922@amd.com>
+Mime-Version: 1.0
+References: <20230726024133.GA434307@L-PF27918B-1352.> <a9b7df8f-77db-d8dc-efab-9ae7e9ef6922@amd.com>
+Message-ID: <ZMFd5kkehlkIfnBA@google.com>
+Subject: Re: [Question] int3_selftest() generates a #UD instead of a #BP when
+ create a SEV VM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-coco@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,34 +69,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.2023 19:46, Konrad Dybcio wrote:
-> On 26.07.2023 19:26, Stephan Gerhold wrote:
->> On Wed, Jul 26, 2023 at 07:20:27PM +0200, Konrad Dybcio wrote:
->>> On 26.07.2023 19:18, Stephan Gerhold wrote:
->>>> On Wed, Jul 26, 2023 at 06:25:44PM +0200, Konrad Dybcio wrote:
->>>>> Some buses need additional manual adjustments atop the usual
->>>>> calculations. Fill in the missing coefficients.
->>>>>
->>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>>
->>>> What about the funny util-fact/vrail-comp on the mas-apps-proc node
->>>> downstream?
->>> Can't see it neither on msm-5.4 (with the icc API) nor in the 4.19 (msmbus)
->>> device tree.
->>>
->>
->> Not sure where to get up-to-date device trees nowadays. The AOSP repo
->> I was looking at has this commit where it was added:
->> https://android.googlesource.com/kernel/msm-extra/devicetree/+/02f8c342b23c20a5cf967df649814be37a08227c%5E%21/#F0
-> Oh right, take a look at this one:
-> 
-> https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/commit/201df022706e100cef8d28983c6a7b883fcaec5a
-> 
-> I guess I'll need to update the icc driver then.
-Moreover, this having vrail-comp = 96, means I'll have to go with
-the wrecked downstream way of *(100/(percent)) instead of
-*(percent/100)...
+On Wed, Jul 26, 2023, Tom Lendacky wrote:
+> On 7/25/23 21:41, Wu Zongyong wrote:
+> > Hi,
+> > 
+> > I try to boot a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with a
+> > firmware written by myself.
+> > 
+> > But when the linux kernel executed the int3_selftest(), a #UD generated
+> > instead of a #BP.
+> > 
+> > The stack is as follows.
+> > 
+> >      [    0.141804] invalid opcode: 0000 [#1] PREEMPT SMP^M
+> >      [    0.141804] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.3.0+ #37^M
+> >      [    0.141804] RIP: 0010:int3_selftest_ip+0x0/0x2a^M
+> >      [    0.141804] Code: eb bc 66 90 0f 1f 44 00 00 48 83 ec 08 48 c7 c7 90 0d 78 83 c7 44 24 04 00 00 00 00 e8 23 fe ac fd 85 c0 75 22 48 8d 7c 24 04 <cc> 90 90 90 90 83 7c 24 04 01 75 13 48 c7 c7 90 0d 78 83 e8 42 fc^M
+> >      [    0.141804] RSP: 0000:ffffffff82803f18 EFLAGS: 00010246^M
+> >      [    0.141804] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000007ffffffe^M
+> >      [    0.141804] RDX: ffffffff82fd4938 RSI: 0000000000000296 RDI: ffffffff82803f1c^M
+> >      [    0.141804] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000fffeffff^M
+> >      [    0.141804] R10: ffffffff82803e08 R11: ffffffff82f615a8 R12: 00000000ff062350^M
+> >      [    0.141804] R13: 000000001fddc20a R14: 000000000090122c R15: 0000000002000000^M
+> >      [    0.141804] FS:  0000000000000000(0000) GS:ffff88801f200000(0000) knlGS:0000000000000000^M
+> >      [    0.141804] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+> >      [    0.141804] CR2: ffff888004c00000 CR3: 000800000281f000 CR4: 00000000003506f0^M
+> >      [    0.141804] Call Trace:^M
+> >      [    0.141804]  <TASK>^M
+> >      [    0.141804]  alternative_instructions+0xe/0x100^M
+> >      [    0.141804]  check_bugs+0xa7/0x110^M
+> >      [    0.141804]  start_kernel+0x320/0x430^M
+> >      [    0.141804]  secondary_startup_64_no_verify+0xd3/0xdb^M
+> >      [    0.141804]  </TASK>^M
+> >      [    0.141804] Modules linked in:^M
+> >      [    0.141804] ---[ end trace 0000000000000000 ]--
+> > 
+> > I'm curious how this happend. I cannot find any condition that would
+> > cause the int3 instruction generate a #UD according to the AMD's spec.
 
-I also noticed that sm6125 makes very heavy use of per-node clocks..
+One possibility is that the value from memory that gets executed diverges from the
+value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
+be the case in this test), stale cache/tlb entries, etc.
 
-Konrad
+> > BTW, it worked nomarlly with qemu and ovmf.
+> 
+> Does this happen every time you boot the guest with your firmware? What
+> processor are you running on?
+
+And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
+a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
+tracepoints.
