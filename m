@@ -2,80 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C31762937
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524C4762938
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjGZDXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+        id S230520AbjGZDXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjGZDW6 (ORCPT
+        with ESMTP id S231162AbjGZDXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:22:58 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D57F2682;
-        Tue, 25 Jul 2023 20:22:57 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-78706966220so53146439f.1;
-        Tue, 25 Jul 2023 20:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690341777; x=1690946577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NL3EuYyvjjhZCYD78dzuWYzAA4q7ImU5255kcivdAlA=;
-        b=YrDQVT3n1O3EiYwvIGJo9jid1fKsLNw2s5BtVJ5JvGxYyPR1XjrUtnjfk86ybuDqvD
-         mjkbbUuyR5VaB9rjSCR72ECLkPoHrMLk2ceMPKchY63bLMTQ0uCFoaZDI1rHSRdcZkBa
-         Rj4LJYewPahFgAw+IE0I66Qm8T3wULByAcoETQYDq8VJzatnTf4P27YEUdI0SknFz3lz
-         XEQP6TM/KY0h1JyYR68C89+l8h3L8U59mSzM8/oIOIzhC7QsCaK/HqQy8I1TjSgmiW8m
-         rYeskGDA9hosrrCFYfjvbKnf/0CWiTVMAuWvQE8UyAnzJLx1bvG10rIKl4kTIK4KL4+E
-         i4Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690341777; x=1690946577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NL3EuYyvjjhZCYD78dzuWYzAA4q7ImU5255kcivdAlA=;
-        b=ZFUKr3MXFFgpLVQJoQ99KRY+WH6Go2sZFT0h+jdGANo7rzlk8tpjzBo7G7WJZSCHeT
-         3tCbY6k1XVuoHm+FZ+4gEUGEazWKBca+5jWHT4N+OnF5NWYQRZFMAr6XvZi+T9MC54wd
-         hIr1mM0BCvMECsNtC32s5ynjunHwcailj2ICnzTf5uh/K4bRHCvR14jVw3JUT2A/IsYs
-         JJikH7aGPBifoJoDg49RUXogLq46FPxLxDCp2lzBcLTbxH6qlsQ47xyLsJLkjGYl7OJ2
-         c07ph9qLIp6zawMxw24yrwPK8M3WdjbwGqFibLr+TCIVeQ1QSpzhAMRwA5L7KIJZTCT0
-         /czA==
-X-Gm-Message-State: ABy/qLYY8J6bLZsCBf0b8xLtBhZUMlfv9hX6QAw0B3FEZf+AAfyN1mB3
-        Ym33E5S9SflmCttw05qfhmQ=
-X-Google-Smtp-Source: APBJJlH6yBw+cvBcbmXyvs1PZzwvZEc6/RU38mhLvcrD3wYRbKLXGce0SxktHOdc8rnQsf8pyEfhoA==
-X-Received: by 2002:a6b:1446:0:b0:77a:ee79:652 with SMTP id 67-20020a6b1446000000b0077aee790652mr603947iou.1.1690341776913;
-        Tue, 25 Jul 2023 20:22:56 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id i75-20020a639d4e000000b0055387ffef10sm134985pgd.24.2023.07.25.20.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 20:22:56 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 20:22:53 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Johannes Zink <j.zink@pengutronix.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
-Message-ID: <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
-References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
- <20230725200606.5264b59c@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725200606.5264b59c@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 25 Jul 2023 23:23:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9D126A5;
+        Tue, 25 Jul 2023 20:23:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 306C9611B1;
+        Wed, 26 Jul 2023 03:23:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BE84C433C9;
+        Wed, 26 Jul 2023 03:23:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690341802;
+        bh=8R4nb7sZtOiJ7QLCgtoyNB8CYCZmCnMHzcUaqu+0Exo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AM64JEDMNgTbAVJDKPZpbskhxv23h0B6z/naDOyMSJ89K1+TxkbSSxPi8Xyt3vlLa
+         pe3tug470BN9avOE1oMQxtJdBloKyTxPj6gKOA7PhR16vswmThQzc1qLlAJoptCgTS
+         TtxKkmAp04mdR3wPTelTjoElxul9FI5OvqWZ8ZlOQt5Jp6XH9RZKrsI0B45fVlu9fv
+         pkcb38N+jzxycuqRpZNyWSvbbqOvK+52mHxYB5pObVnhuZoZ25FcjuachercgJ43X0
+         6K7PMkQWdjm68Z9MoZ7CZ66yXB8wmMQkPj3I9/N7mSZig9X0Xa+xDjSoi66iJfnp7v
+         M5m3Wejk4YUtA==
+Date:   Wed, 26 Jul 2023 12:23:17 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Petr Pavlu <petr.pavlu@suse.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, samitolvanen@google.com, x86@kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] x86/kprobes: Prohibit probing on compiler
+ generated CFI checking code
+Message-Id: <20230726122317.9058a6bed272835f0c1a3b29@kernel.org>
+In-Reply-To: <168904025785.116016.12766408611437534723.stgit@devnote2>
+References: <168904023542.116016.10540228903086100726.stgit@devnote2>
+        <168904025785.116016.12766408611437534723.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,20 +61,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:06:06PM -0700, Jakub Kicinski wrote:
+On Tue, 11 Jul 2023 10:50:58 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-> any opinion on this one?
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Prohibit probing on the compiler generated CFI typeid checking code
+> because it is used for decoding typeid when CFI error happens.
+> 
+> The compiler generates the following instruction sequence for indirect
+> call checks on x86;
+> 
+>    movl    -<id>, %r10d       ; 6 bytes
+>    addl    -4(%reg), %r10d    ; 4 bytes
+>    je      .Ltmp1             ; 2 bytes
+>    ud2                        ; <- regs->ip
+> 
+> And handle_cfi_failure() decodes these instructions (movl and addl)
+> for the typeid and the target address. Thus if we put a kprobe on
+> those instructions, the decode will fail and report a wrong typeid
+> and target address.
+> 
+> 
 
-Yeah, I saw it, but I can't get excited about drivers trying to
-correct delays.  I don't think this can be done automatically in a
-reliable way, and so I expect that the few end users who are really
-getting into the microseconds and nanoseconds will calibrate their
-systems end to end, maybe even patching out this driver nonsense in
-their kernels.
+Hi Peter,
 
-Having said that, I won't stand in the way of such driver stuff.
-After all, who cares about a few microseconds time error one way or
-the other?
+Can I pick this to probes/fixes branch ?
 
-Thanks,
-Richard
+Thank you,
+
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/kernel/kprobes/core.c |   34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index f7f6042eb7e6..fa8c2b41cbaf 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -54,6 +54,7 @@
+>  #include <asm/insn.h>
+>  #include <asm/debugreg.h>
+>  #include <asm/ibt.h>
+> +#include <asm/cfi.h>
+>  
+>  #include "common.h"
+>  
+> @@ -293,7 +294,40 @@ static int can_probe(unsigned long paddr)
+>  #endif
+>  		addr += insn.length;
+>  	}
+> +	if (IS_ENABLED(CONFIG_CFI_CLANG)) {
+> +		/*
+> +		 * The compiler generates the following instruction sequence
+> +		 * for indirect call checks and cfi.c decodes this;
+> +		 *
+> +		 *   movl    -<id>, %r10d       ; 6 bytes
+> +		 *   addl    -4(%reg), %r10d    ; 4 bytes
+> +		 *   je      .Ltmp1             ; 2 bytes
+> +		 *   ud2                        ; <- regs->ip
+> +		 *   .Ltmp1:
+> +		 *
+> +		 * Also, these movl and addl are used for showing expected
+> +		 * type. So those must not be touched.
+> +		 */
+> +		__addr = recover_probed_instruction(buf, addr);
+> +		if (!__addr)
+> +			return 0;
+> +
+> +		if (insn_decode_kernel(&insn, (void *)__addr) < 0)
+> +			return 0;
+> +
+> +		if (insn.opcode.value == 0xBA)
+> +			offset = 12;
+> +		else if (insn.opcode.value == 0x3)
+> +			offset = 6;
+> +		else
+> +			goto out;
+> +
+> +		/* This movl/addl is used for decoding CFI. */
+> +		if (is_cfi_trap(addr + offset))
+> +			return 0;
+> +	}
+>  
+> +out:
+>  	return (addr == paddr);
+>  }
+>  
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
