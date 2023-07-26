@@ -2,200 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B846A76349C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BFF76349E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbjGZLPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S230060AbjGZLPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbjGZLPC (ORCPT
+        with ESMTP id S231825AbjGZLPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:15:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1709197
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:15:01 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QBCMFc004325;
-        Wed, 26 Jul 2023 11:14:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=VsW19Z3EE6UAc3/wbvBMuusEpnSQoHb6PLgWAvcMsLs=;
- b=Xt56vqIOoXJzLcCuTQW0krghA8IgFeBno4AqlJ85vCvTCaCwMN6LNSVHq3InQIZ6RtJ2
- vBfoYuOiOjX3t3oelxuAYVowp2QgSoxIqzbFPpbZ+kqp4GE4B/i0EWebj2Lp9DVdPS6j
- SL55+DF8YiicZHnylLc72SX+rqYj7lfNLrtk2gfwHrCXUhZ76Ud2AIhmoLnuGcCVj0c6
- rnROIO2hfMc5GlIperkhcaREOf6R40oyCG6U3y0r1wO14GRu9q4jW6CVu4EjzvFGMPPV
- Hl8PcBhtRG/JOseB67ck8ruLFc0sduSwH/BqfuVELvWApXSK86aJG1k1K1If4vJkfRZ4 9g== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s32de81my-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 11:14:38 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36QA95wx014370;
-        Wed, 26 Jul 2023 11:14:37 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0sty4h34-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 11:14:37 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36QBEYmh16908838
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 11:14:34 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39F1220043;
-        Wed, 26 Jul 2023 11:14:34 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00F7F20040;
-        Wed, 26 Jul 2023 11:14:34 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Jul 2023 11:14:33 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [RFC] iommu/virtio: Use single flush queue (EXPERIMENTAL)
-Date:   Wed, 26 Jul 2023 13:14:33 +0200
-Message-Id: <20230726111433.1105665-1-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
-References: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: K9nDAre1-s-XX4i1RCjeHzfJAkHrr2Wd
-X-Proofpoint-ORIG-GUID: K9nDAre1-s-XX4i1RCjeHzfJAkHrr2Wd
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 26 Jul 2023 07:15:19 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7B9FD
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:15:18 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so1831420a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690370116; x=1690974916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lChKNKegfLv8YzWr0ThP7tf6+B40c9uLj92oms8T8Po=;
+        b=gTAWzL3C03KYGkRM28j66FVMjwSAV38XkmSWVKDYY51ECYfGiDr/sjEg6Zr9wR6U7b
+         jiJnswQu7mW4ovRiJFIILqi3SwerydIgFc/6VxpAgSthGQgiroNJDNeZmSSdNdnyEYFR
+         XEoMs94wXxy6zt6Z2lySNUQ5N860t390ATyzPriDG+2IUVgrBxa7+ifdLqo1qW7PSnXm
+         suPUYafUb2zi2ZwyRqI/LewS85pKdZokNGwNupyjHf2SKKuzqaK9fE+/hNI5a9cCIUe2
+         +Ugu5YOk2llGsmyq7sJqN7iiatcrnctA62xVqx/9/rvlLfu7gpDN03KFZLCThUY3/Dpd
+         iZCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690370116; x=1690974916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lChKNKegfLv8YzWr0ThP7tf6+B40c9uLj92oms8T8Po=;
+        b=CtlPqIdR+o2wBt6H3tX0J2qWxJOZxj/OekCLZlyPqKhdAxpNFTSnnNdVEtshslR69+
+         0FkqE5FayTFnQwnfJVnC1xmSYS7YozcagGHkqMqqq2xdo17ig7SSqWdPX8cqrFCe3DHK
+         rKyuNMwu8keXoDf2BMzmxT33jKBCHDiO9UYdiSjj9mBfs7oTKonJ1Sv4h1zc/3N6LASb
+         fHl/3USDTlsCDKhAN3VLHlKKzExpYmB0OmuLScGKG6i2vqa1+hFY0WgzOYxArHBl2jkJ
+         e4kX5O+Y3TEC/OsQ9/n/lkjypf0Cl4WzC0APLXhw6WLePQQp7AN6sTi3J+WJYhZpzb/J
+         7Ugg==
+X-Gm-Message-State: ABy/qLYt5v8xzD5ESeWDSINeBOm9Z6GNhLltEgsHarzeVslYFQp2euhj
+        fxnUCLhlkWMsOZ+2OqsOD7p+kg==
+X-Google-Smtp-Source: APBJJlG1Wgq0HOju4vWFnsvGKBJU9wiiZUckr5/BZIBoid1hxh0MHbzqfcNpHvRviJzmI2oczH6Wpw==
+X-Received: by 2002:a17:907:6d05:b0:994:fec:e1b7 with SMTP id sa5-20020a1709076d0500b009940fece1b7mr5592756ejc.0.1690370116633;
+        Wed, 26 Jul 2023 04:15:16 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id m26-20020a170906849a00b00982a352f078sm9291152ejx.124.2023.07.26.04.15.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 04:15:16 -0700 (PDT)
+Message-ID: <8bd37e11-2861-7877-0321-3f89cd088532@linaro.org>
+Date:   Wed, 26 Jul 2023 13:15:14 +0200
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_04,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 clxscore=1011 mlxscore=0
- impostorscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260097
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V1 2/2] regulator: aw37503: add device-tree binding
+Content-Language: en-US
+To:     like@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        liweilei@awinic.com, liangdong@awinic.com, wangweidong.a@awinic.com
+References: <20230726081612.586295-1-like@awinic.com>
+ <20230726081612.586295-3-like@awinic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726081612.586295-3-like@awinic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like on paged s390 guests with their virtual IOMMU, syncing
-mappings via virtio-iommu is quite expensive. It can thus benefit from
-queueing unmapped IOVAs and flushing them in batches but less so from
-parallel flushes which is what the shadow_on_flush flag introduced for
-s390 tunes dma-iommu to do.
+On 26/07/2023 10:16, like@awinic.com wrote:
+> From: Alec Li <like@awinic.com>
+> 
+> Add aw37503 regulator device-tree binding documentation
 
-For this to work .flush_iotlb_all is implemented. Furthermore
-.iotlb_sync_map is also implemented and used to pull the sync out of the
-mapping operation for some additional batching and performance gain.
+subject rather like:
+regulator: dt-bindings: Add Awinic aw37503
 
-In a basic test with NVMe pass-through to a KVM guest on a Ryzen 3900X
-these changes together lead to about 19% more IOPS in a fio test and
-slightly more bandwidth too.
+> 
+> Signed-off-by: Alec Li <like@awinic.com>
+> ---
+>  .../bindings/regulator/awinic,aw37503.yaml    | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+> new file mode 100644
+> index 000000000000..0cd6fb001e20
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/awinic,aw37503.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Awinic AW37503 Voltage Regulator
+> +
+> +maintainers:
+> +  - Alec Li <like@awinic.com>
+> +
+> +description: |
 
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
-Note:
-The idea of using the single flush queue scheme from my series "iommu/dma: s390
-DMA API conversion and optimized IOTLB flushing"[0] for virtio-iommu was already
-mentioned in the cover letter. I now wanted to explore this with this patch
-which may also serve as a test vehicle for the single flush queue scheme usable
-on non-s390.
+Do not need '|' unless you need to preserve formatting.
 
-Besides limited testing, this is marked experimental mainly because the use of
-queuing needs to be a concious decision as it allows continued access to
-unmapped pages for up to a second with the currently proposed single flush
-queue mechanism. Also it might make sense to split this patch to do the
-introduction and use of .iotlb_sync_map separately but as a test vehicle
-I found it easier to consume as a single patch.
+> +  The AW37503 is dual voltage regulator, designed to support positive/negative
+> +  supply for driving TFT-LCD panels. It support software-configurable output
+> +  switching and monitoring. The output voltages can be programmed via an I2C
+> +  compatible interface.
+> +
+> +properties:
+> +  compatible:
+> +    const:
+> +      - awinic,aw37503
 
-[0]: https://lore.kernel.org/linux-iommu/20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com/
+This has to be in one line. As pointed out by Rob's bot: please test it
+before sending.
 
- drivers/iommu/virtio-iommu.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  patternProperties:
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 3551ed057774..f29eb4ce2b88 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -843,7 +843,7 @@ static int viommu_map_pages(struct iommu_domain *domain, unsigned long iova,
- 			.flags		= cpu_to_le32(flags),
- 		};
- 
--		ret = viommu_send_req_sync(vdomain->viommu, &map, sizeof(map));
-+		ret = viommu_add_req(vdomain->viommu, &map, sizeof(map));
- 		if (ret) {
- 			viommu_del_mappings(vdomain, iova, end);
- 			return ret;
-@@ -909,6 +909,27 @@ static void viommu_iotlb_sync(struct iommu_domain *domain,
- {
- 	struct viommu_domain *vdomain = to_viommu_domain(domain);
- 
-+	if (!vdomain->nr_endpoints)
-+		return;
-+	viommu_sync_req(vdomain->viommu);
-+}
-+
-+static int viommu_iotlb_sync_map(struct iommu_domain *domain,
-+				 unsigned long iova, size_t size)
-+{
-+	struct viommu_domain *vdomain = to_viommu_domain(domain);
-+
-+	if (!vdomain->nr_endpoints)
-+		return 0;
-+	return viommu_sync_req(vdomain->viommu);
-+}
-+
-+static void viommu_flush_iotlb_all(struct iommu_domain *domain)
-+{
-+	struct viommu_domain *vdomain = to_viommu_domain(domain);
-+
-+	if (!vdomain->nr_endpoints)
-+		return;
- 	viommu_sync_req(vdomain->viommu);
- }
- 
-@@ -991,6 +1012,7 @@ static struct iommu_device *viommu_probe_device(struct device *dev)
- 		if (ret)
- 			goto err_free_dev;
- 	}
-+	dev->iommu->shadow_on_flush = 1;
- 
- 	return &viommu->iommu;
- 
-@@ -1037,6 +1059,8 @@ static bool viommu_capable(struct device *dev, enum iommu_cap cap)
- 	switch (cap) {
- 	case IOMMU_CAP_CACHE_COHERENCY:
- 		return true;
-+	case IOMMU_CAP_DEFERRED_FLUSH:
-+		return true;
- 	default:
- 		return false;
- 	}
-@@ -1057,7 +1081,9 @@ static struct iommu_ops viommu_ops = {
- 		.map_pages		= viommu_map_pages,
- 		.unmap_pages		= viommu_unmap_pages,
- 		.iova_to_phys		= viommu_iova_to_phys,
-+		.flush_iotlb_all	= viommu_flush_iotlb_all,
- 		.iotlb_sync		= viommu_iotlb_sync,
-+		.iotlb_sync_map		= viommu_iotlb_sync_map,
- 		.free			= viommu_domain_free,
- 	}
- };
+<sigh>
 
-base-commit: 5514392fe77cd45b0d33bf239f13ba594a6759e5
--- 
-2.39.2
+> +    "^out[pn]$":
+> +      type: object
+> +      $ref: regulator.yaml#
+> +      unvaluatedproperties: false
+> +
+> +      required:
+> +        - regulator-name
+> +        - enable-gpios
+
+regulator.yaml does not define enable-gpios, so you must define it in
+properties.
+
+> +
+> +      additionalProperties: false
+
+Drop, you already have unevaluatedProperties.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - outp
+> +  - outn
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        aw37503@3e {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+Best regards,
+Krzysztof
 
