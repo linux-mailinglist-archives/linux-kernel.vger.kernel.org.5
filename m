@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06EF7628F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CAB7628FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjGZC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        id S230343AbjGZDAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjGZC5q (ORCPT
+        with ESMTP id S229573AbjGZDAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:57:46 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453EF106;
-        Tue, 25 Jul 2023 19:57:45 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55adfa72d3fso3243041a12.3;
-        Tue, 25 Jul 2023 19:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690340265; x=1690945065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vk1HjFcBc1GtTDRHtJQF8KdFGzRcJUPncSBKnYseuuM=;
-        b=K0vICeWVh3tzWSLAdPbGiR3yhNI964VAqbftkTON5aZ9fVGHVQgr1zz6rz7rbDharv
-         1UHEV26Nj3CBk/JQp42/yKehDIq3pI5eGtQFBI0MODSWh/5J6EPfIw9PDPQAqCA9bYR7
-         +X/XJ8wcMyAPw+vLP8s2lsWJWq/gSffoc14+au2Q8y4SkUB+Uto/1wdEDnpuY8ltB5g2
-         sOb1arx4e6mpoWJjX6zhCrPBzFAy+MBBBKJ7adyz65qzeD2RXausSdEZ3ESlEOYxksh+
-         1T7XhOycftQLQcD+3nPch6wbZaUO9JQC/VnxV8ATRAvc07K2kTM483Hd5qB7uo4/EDjd
-         ph7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690340265; x=1690945065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Vk1HjFcBc1GtTDRHtJQF8KdFGzRcJUPncSBKnYseuuM=;
-        b=Dil9TdfENfpL3n5MhVnuTvv5hQhZDZXLa65rRv0b3ZIiqVcM5EypB7ygMJS+gvnZso
-         i1EesDIw3a9Kmb1+m08Kf5BfbJxE8iHy4SxmwKJfKB7ec/I8d8BzdrYvCd08z9LI51U3
-         3yWjTBIzpyibvu/wpEoi/PQRaRmPrjLXDnFnN8Kz+IXVLHxtCYoVK9u7PlY4QzMnI9Ab
-         wcPQgArS4Rf6gzz0lJ344pAtQochikYdmy852HyP2UMhbUdG9LZMGFay2B+UgbcmZvUt
-         MfXHj3oCkAYDvxtkLutOoDl44zFzpUetolOIqDQDuhB2b8ZqQD9fjG2SC+4ZAwAkH8qd
-         jizw==
-X-Gm-Message-State: ABy/qLbsAuMYrVbd66BzewkcagjZiiZkFxpMSW+Xnxpl/42SZG6jga1v
-        pFLEmMwJrQKS6svuFZNEvR4=
-X-Google-Smtp-Source: APBJJlHFTLyUhR7TdUembZ48HfygjQ6ODz6Q3J5DfEJS0mBMY9b3/X5gEFD9Vsnn+HXY9iSVFYh2kw==
-X-Received: by 2002:a17:902:be07:b0:1bb:8064:91d2 with SMTP id r7-20020a170902be0700b001bb806491d2mr694517pls.69.1690340264626;
-        Tue, 25 Jul 2023 19:57:44 -0700 (PDT)
-Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
-        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001b8b6a19bd6sm362317plx.63.2023.07.25.19.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 19:57:43 -0700 (PDT)
-Message-ID: <6e222bb6-84b4-3bc2-4ed3-5f249d128733@gmail.com>
-Date:   Wed, 26 Jul 2023 10:57:32 +0800
+        Tue, 25 Jul 2023 23:00:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604B5DD;
+        Tue, 25 Jul 2023 20:00:17 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q1wG3X004351;
+        Wed, 26 Jul 2023 03:00:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=TRhcpHmfH84VaKerw/NYkGhK9OkFCMUK2vCocw+fTt4=;
+ b=dGqf1rD/mNg6+OJ018/3DphGELfN13IjwaKJRUi2pk6KC7PwBH4DO1HUJeNw9jVxbhay
+ zusCKy6adMt11iXI+RlaJuS8bNWqpRc0vysBIRm4Os6mafPHaEv5XVBFI0Hk4TmgAKvR
+ eapOFoQpF+ekJKoDLtk/h69jePS0Ac5On1+TstpbKD4i8CWjare6zO9egIS2Pr2xx8YS
+ Kjbs8dAO/zSnk4OJ0Y1uz2NA1bcbTsUqxzx5WB5dhXlWirfxmkvXpZ+uz3ZGkXSCvTNr
+ XKtGadC/rcfDwOiYrNwnQ43Okad832pCIgiC6Ndx/pT3W9e8lV/L4USfeGROJfxQzUQl ig== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2gp1s9rw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 03:00:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36Q30BZB016985
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 03:00:11 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 20:00:10 -0700
+Message-ID: <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
+Date:   Tue, 25 Jul 2023 21:00:09 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] x86/hyperv: Rename hv_isolation_type_snp/en_snp() to
- isol_type_snp_paravisor/enlightened()
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, arnd@arndb.de,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org, nikunj@amd.com,
-        thomas.lendacky@amd.com, liam.merwick@oracle.com,
-        alexandr.lobakin@intel.com, michael.roth@amd.com,
-        tiala@microsoft.com, pasha.tatashin@soleen.com,
-        peterz@infradead.org, jpoimboe@kernel.org,
-        michael.h.kelley@microsoft.com
-References: <20230725150825.283891-1-ltykernel@gmail.com>
- <871qgwow1q.fsf@redhat.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <871qgwow1q.fsf@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH][next] accel/qaic: remove redundant assignment to pointer
+ pexec
+Content-Language: en-US
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        Carl Vanderlip <quic_carlv@quicinc.com>,
+        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230725114037.36806-1-colin.i.king@gmail.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20230725114037.36806-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3MC3o76mhSwtPg4ThrG2kUqC93NvcWlF
+X-Proofpoint-ORIG-GUID: 3MC3o76mhSwtPg4ThrG2kUqC93NvcWlF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 clxscore=1011 lowpriorityscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307260024
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/2023 11:22 PM, Vitaly Kuznetsov wrote:
-> Tianyu Lan <ltykernel@gmail.com> writes:
+On 7/25/2023 5:40 AM, Colin Ian King wrote:
+> Pointer pexec is being assigned a value however it is never read. The
+> assignment is redundant and can be removed.
 > 
->> From: Tianyu Lan <tiala@microsoft.com>
->>
->> Rename hv_isolation_type_snp and hv_isolation_type_en_snp()
->> to make them much intuitiver.
->>
->> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> Signed-off-by: Tianyu Lan <tiala@microsoft.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>   drivers/accel/qaic/qaic_data.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> Thanks for the patch! A few comments below ...
-> 
->> ---
->> This patch is based on the patchset "x86/hyperv: Add AMD sev-snp
->> enlightened guest support on hyperv" https://lore.kernel.org/lkml/
->> 20230718032304.136888-3-ltykernel@gmail.com/T/.
->>
->>   arch/x86/hyperv/hv_init.c       |  6 +++---
->>   arch/x86/hyperv/ivm.c           | 17 +++++++++--------
->>   arch/x86/include/asm/mshyperv.h |  8 ++++----
->>   arch/x86/kernel/cpu/mshyperv.c  | 12 ++++++------
->>   drivers/hv/connection.c         |  2 +-
->>   drivers/hv/hv.c                 | 16 ++++++++--------
->>   drivers/hv/hv_common.c          | 10 +++++-----
->>   include/asm-generic/mshyperv.h  |  4 ++--
->>   8 files changed, 38 insertions(+), 37 deletions(-)
->>
->> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
->> index 2eda4e69849d..2911c2525ed5 100644
->> --- a/arch/x86/hyperv/ivm.c
->> +++ b/arch/x86/hyperv/ivm.c
->> @@ -591,24 +591,25 @@ bool hv_is_isolation_supported(void)
->>   	return hv_get_isolation_type() != HV_ISOLATION_TYPE_NONE;
->>   }
->>   
->> -DEFINE_STATIC_KEY_FALSE(isolation_type_snp);
->> +DEFINE_STATIC_KEY_FALSE(isol_type_snp_paravisor_flag);
->>   
->>   /*
->> - * hv_isolation_type_snp - Check system runs in the AMD SEV-SNP based
->> + * isol_type_snp_paravisor - Check system runs in the AMD SEV-SNP based
->>    * isolation VM.
->>    */
->> -bool hv_isolation_type_snp(void)
->> +bool isol_type_snp_paravisor(void)
-> 
-> 
-> I think that it would be better to keep 'hv_' prefix here for two reasons:
-> ...
-> 
+> diff --git a/drivers/accel/qaic/qaic_data.c b/drivers/accel/qaic/qaic_data.c
+> index e9a1cb779b30..8a6cb14f490e 100644
+> --- a/drivers/accel/qaic/qaic_data.c
+> +++ b/drivers/accel/qaic/qaic_data.c
+> @@ -1320,7 +1320,6 @@ static int __qaic_execute_bo_ioctl(struct drm_device *dev, void *data, struct dr
+>   	user_data = u64_to_user_ptr(args->data);
+>   
+>   	exec = kcalloc(args->hdr.count, size, GFP_KERNEL);
+> -	pexec = (struct qaic_partial_execute_entry *)exec;
+>   	if (!exec)
+>   		return -ENOMEM;
+>   
 
-Agree. Will update.
-
-Thanks.
-
+It does look like pexec is not used in this function after it was 
+refactored.  Shouldn't the declaration at the beginning of the function 
+also be removed?
