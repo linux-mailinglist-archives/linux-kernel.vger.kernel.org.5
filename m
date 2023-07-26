@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE7376381C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A176381F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbjGZNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
+        id S233582AbjGZNwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGZNwY (ORCPT
+        with ESMTP id S233100AbjGZNww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:52:24 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BDC26A8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:52:20 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686ba97e4feso1200512b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:52:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690379540; x=1690984340;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ey/D5M5CPmKQzId6+XsuiPGSyzaXamRUEWGT1BcC7g8=;
-        b=oljGFhSavZjxkXX9CucTy5gLK6qGX0I821ndm/pPrymKSKvJ3P/6/lBeLNfqGQ4Prz
-         yG8vGsi8TbRKYjWbNGsB7yiDHaa22xpMOxU5nHjrXLOpOpFIaRgQgmi30rvNMGGaQlnA
-         aPogyoGDwEByaH6x2bu+i8DUJ8aQuv5RYESZZc2lxWmys95qEqie9+VLr28t9jXKQoGb
-         ACUOHsx+Kh0P0USxXLLtGjTtYmJCoHLrvO3TngfJVNsHF6lP/Mjr03UuslceDWRR7aFU
-         P220Nkr1pYqcfa9oPNp6sOExUOn8A0YJcEA5TAhibvstRj/Q8VU7/V3AREKD6GV4ila3
-         mM1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690379540; x=1690984340;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ey/D5M5CPmKQzId6+XsuiPGSyzaXamRUEWGT1BcC7g8=;
-        b=HNJhNYqKZ6tccgmgcWRDeQVFOL3b8k9SEoLprjZzI7Af68wJAaD4wWxM0MrjFBNXx1
-         acWO25nxyRVvxTk9qa1kS5slVivgHuCMRl7S4acmj+xVeX6IOxErKmUr4ZihJmgp/0Ks
-         jYgryLU83NkTnVqWMzIFwtvk46OdTGr3U/KGYSPdcLwBi5cA+WkDxMXKC/mva9phZD4o
-         4rRn8VUTLmFPSUHskTraoWIcdOBU9VoPxVJ85rcwwekFf1d5M2ICh3NFYa417g/eFZ9I
-         lC5WyXbwmKq61MkF4CtuHPk/n0tWDvjabJuMApDeAZeeurvebC1dnlirjhjDxXOitlSo
-         C06Q==
-X-Gm-Message-State: ABy/qLZ/iROfnZgQrdAB5LlrxcN1/hEvv7THYX/FYi5l1XDc9a4SFiDf
-        8Qzm4dvSKhchc8qavlPvx0Hm5w==
-X-Google-Smtp-Source: APBJJlGGggspPA6ImxibgpDOjxq8NwN3+9CEYkMOcJSUt5QiwCOV4FVffsYERBKNj9SOSpMuSGApCw==
-X-Received: by 2002:a05:6a00:234c:b0:686:c7be:5259 with SMTP id j12-20020a056a00234c00b00686c7be5259mr2598630pfj.32.1690379540161;
-        Wed, 26 Jul 2023 06:52:20 -0700 (PDT)
-Received: from ghost ([2601:c0:ca7f:e7c0:14ff:979a:dd27:29d7])
-        by smtp.gmail.com with ESMTPSA id d134-20020a63368c000000b0055be951145csm12722952pga.36.2023.07.26.06.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 06:52:19 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 09:52:15 -0400
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
-Subject: Re: [PATCH v6 4/4] RISC-V: mm: Document mmap changes
-Message-ID: <ZMElD/V0G715rf/S@ghost>
-References: <20230714165508.94561-1-charlie@rivosinc.com>
- <20230714165508.94561-5-charlie@rivosinc.com>
- <CAHVXubgSLhsMdS3aFbSuPNf2d_FXhztnFtRnbjsMstH5coCHWA@mail.gmail.com>
+        Wed, 26 Jul 2023 09:52:52 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC58F3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690379571; x=1721915571;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xvBkwY7sxuWl/Al5gD7mazKVZkI/LarItDLpbbjPsSg=;
+  b=VmUNi8VPfQtLBH5EPRxO4wlAJ/4StfPhCNgYDO1ZdZ171OTJoz7ZDqOr
+   yFoae9XxAe+LST9OFI0liR2gGm5bMSU1t8UwJU6rZRlkF2wzSNqUAVZDa
+   zWVC6UpQzfhQARgCXDgCIrLH2c6Q6K3xcjRZZ/PV8zwTFx0M3xlmq46Cf
+   8N20SSWZZ+hfgYKVHXDPSCvK+FtQTgGfCo7EG1Q7spPDW/CXjMnXJjzbS
+   LxM22cC70f0oDhDCx10VGKCeYyWWKEy9xNsmWnjCo6h26C3JGO5DI9NMX
+   WgC9+SasWWiGoz4/z2OwwWP7MC55zdQnZ/s/N6XgXAzsnp7fDo9R+Pe9Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="352922608"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="352922608"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 06:52:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="796587548"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="796587548"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 06:52:50 -0700
+Date:   Wed, 26 Jul 2023 06:52:48 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     James Morse <james.morse@arm.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Peter Newman <peternewman@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+        "lcherian@marvell.com" <lcherian@marvell.com>,
+        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+        "xingxin.hx@openanolis.org" <xingxin.hx@openanolis.org>,
+        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>,
+        "Pitre, Nicolas" <npitre@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "aricciardi@baylibre.com" <aricciardi@baylibre.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: Re: [RFC PATCH 0/2] Resctrl - rewrite (WIP)
+Message-ID: <ZMElMLPWi0+2jCp8@agluck-desk3>
+References: <20230620033702.33344-1-tony.luck@intel.com>
+ <ZJqhDYLG+/Kr44sp@x1>
+ <SJ1PR11MB60832BA425B43CA19C778100FC27A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZJ4clUlN2OujgHlC@agluck-desk3>
+ <ZMCEjZgyi5oI+KWh@x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHVXubgSLhsMdS3aFbSuPNf2d_FXhztnFtRnbjsMstH5coCHWA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZMCEjZgyi5oI+KWh@x1>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:59:12AM +0200, Alexandre Ghiti wrote:
-> On Fri, Jul 14, 2023 at 6:56 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
-> >
-> > The behavior of mmap is modified with this patch series, so explain the
-> > changes to the mmap hint address behavior.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  Documentation/riscv/vm-layout.rst | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >
-> > diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-layout.rst
-> > index 5462c84f4723..892412b91300 100644
-> > --- a/Documentation/riscv/vm-layout.rst
-> > +++ b/Documentation/riscv/vm-layout.rst
-> > @@ -133,3 +133,25 @@ RISC-V Linux Kernel SV57
-> >     ffffffff00000000 |  -4     GB | ffffffff7fffffff |    2 GB | modules, BPF
-> >     ffffffff80000000 |  -2     GB | ffffffffffffffff |    2 GB | kernel
-> >    __________________|____________|__________________|_________|____________________________________________________________
-> > +
-> > +
-> > +Userspace VAs
-> > +--------------------
-> > +To maintain compatibility with software that relies on the VA space with a
-> > +maximum of 48 bits the kernel will, by default, return virtual addresses to
-> > +userspace from a 48-bit range (sv48). This default behavior is achieved by
-> > +passing 0 into the hint address parameter of mmap. On CPUs with an address space
-> > +smaller than sv48, the CPU maximum supported address space will be the default.
-> > +
-> > +Software can "opt-in" to receiving VAs from another VA space by providing
-> > +a hint address to mmap. A call to mmap is guaranteed to return an address
-> > +that will not override the unset left-aligned bits in the hint address,
-> > +unless there is no space left in the address space. If there is no space
-> > +available in the requested address space, an address in the next smallest
-> > +available address space will be returned.
-> > +
-> > +For example, in order to obtain 48-bit VA space, a hint address greater than
-> > +:code:`1 << 38` must be provided.
+On Tue, Jul 25, 2023 at 07:27:25PM -0700, Drew Fustini wrote:
+> I have access to a Xeon Silver 4310 machine which reports to have
+> cat_l3, cqm_mbm_local, cqm_mbm_total and mba.
 > 
-> Is this correct? Shouldn't the hint be strictly greater than the
-> address space it targets? In patch 1, you state that "A hint address
-> passed to mmap will cause the largest address space that fits entirely
-> into the hint to be used", it seems contradictory to me.
+> I would like to test resctrl2 on it so I can better understand how it
+> works. I think that will help me understand how to adapt the RISC-V
+> CBQRI resctrl proof-of-concept to use resctrl2.
 > 
-That is a mistake, it should have a hint address greater than 1 << 47. I
-will fix up the wording here.
-> > Note that this is 38 due to sv39 userspace
-> > +ending at :code:`1 << 38` and the addresses beyond this are reserved for the
-> > +kernel. Similarly, to obtain 57-bit VA space addresses, a hint address greater
-> > +than or equal to :code:`1 << 47` must be provided.
-> > --
-> > 2.41.0
-> >
+> Would you be able to provide an example of how you loaded the necessary
+> resctrl2 kernel modules?
+
+Drew,
+
+Sure. You simply mount the filesystem, and then load modules for
+whichever features you'd like to use. This will enable everything
+you list above:
+
+# mount -t resctrl resctrl /sys/fs/resctrl
+# modprobe rdt_l3_cat
+# modprobe rdt_llc_occupancy
+# modprobe rdt_mbm_local_bytes
+# modprobe rdt_mbm_total_bytes
+# modprobe rdt_l3_mba
+
+There are some experimental extras. E.g.
+
+# modprobe rdt_mbm_total_rate
+# modprobe rdt_mbm_local_rate
+
+Will each add an extra file to the mon_data directories to
+report the data rate in MB/s. The value reported is calculated
+by the once-per-second counter roll-over code in the kernel.
+So it might be up to one second out of date, but it is very cheap
+to read since it doesn't involve MSR access (or cross processor
+interrupts if you are reading from a CPU in a different scope).
+
+You can unload modules without unmounting the filesystem and
+load different ones to get different data/control. E.g. to
+switch from L3CAT to L3CDP (which you don't list as supported,
+so this may not work for you:
+
+# rmmod rdt_l3_cat
+# modprobe rdt_l3_cdp
+
+Or to switch from the default MBA that uses percentages to
+specify throttling to the MBM->MBA feedback code that uses
+MB/s in the schemata file:
+
+# rmmod rdt_l3_mba
+# modprobe rdt_l3_mba_MBps
+> 
+> Also, is resctrl2_v65rc1 the latest to branch to test?
+
+Yes. That's the latest. There haven't been any updates for a
+few days because I'm working on a module to support pseudo-locking.
+I'm half-way there (can do most of the bits to set a group into
+pseudo-locked mode ... about to work on the cleanup when the
+group is removed, the filesystem unmounted, or the module unloaded).
+
+-Tony
