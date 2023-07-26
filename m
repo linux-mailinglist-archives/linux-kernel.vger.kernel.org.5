@@ -2,61 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1DA763D12
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E51763D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjGZQ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S230149AbjGZQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbjGZQ5z (ORCPT
+        with ESMTP id S229866AbjGZQ7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:57:55 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EE89C;
-        Wed, 26 Jul 2023 09:57:53 -0700 (PDT)
-Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A2852660709C;
-        Wed, 26 Jul 2023 17:57:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690390672;
-        bh=GlSb/Bi4XjuFoQXGAU8G64f+6li+1Qu1vQWug/7FS4g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Y6BeWLgMrfIcehv5Ih0vL+HDn+bwY/cr2pesUVlIOakGBv2jPOsnhgCHHMoLQfonw
-         5n4dnGMiYpWm+DJEToZmn1iUqHIazQJ+WEd/rw+B+dfxnwttftEpKYYlNEPJ0LMRQZ
-         VElt4B1JoxD92zSWdD+vcjJ+2YsvEIIU1IYifPCyJwU4AIioe/JWHJuzFLZgjqUlev
-         NNQ2KRAiCa7f6K6uLij5Wmpwc3soLAoXy+3WAhTpIhu5OAzqUhSMVL42Ih4y5iQpcu
-         s8ce4GJ9a53q2gZBYUU40Jxg9qfwG1DGNgCWS3jn2WjigPEfwMHdHZMAhSj/Vx29E1
-         Y2VVSGXhTgy8g==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     kernel@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH v2] media: mediatek: vcodec: Consider vdecsys presence in reg range check
-Date:   Wed, 26 Jul 2023 12:57:39 -0400
-Message-ID: <20230726165742.614248-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 26 Jul 2023 12:59:55 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D40A188;
+        Wed, 26 Jul 2023 09:59:54 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52E172F4;
+        Wed, 26 Jul 2023 10:00:37 -0700 (PDT)
+Received: from [10.57.82.133] (unknown [10.57.82.133])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A95703F67D;
+        Wed, 26 Jul 2023 09:59:51 -0700 (PDT)
+Message-ID: <9c3b4a97-bbe2-a978-b000-9562123af523@arm.com>
+Date:   Wed, 26 Jul 2023 17:59:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH V6 0/6] coresight: etm4x: Migrate ACPI AMBA devices to
+ platform driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Cc:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
+        Steve Clevenger <scclevenger@os.amperecomputing.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Len Brown <lenb@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, devicetree@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230710062500.45147-1-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230710062500.45147-1-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,61 +57,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fe8a33978383 ("media: mediatek: vcodec: Read HW active status
-from syscon") allowed the driver to read the VDEC_SYS io space from a
-syscon instead of from the reg property when reg-names are supplied.
-However as part of that change, a smatch warning was introduced:
+On 10/07/2023 07:24, Anshuman Khandual wrote:
+> CoreSight ETM4x devices could be accessed either via MMIO (handled via
+> amba_driver) or CPU system instructions (handled via platform driver). But
+> this has the following issues :
+> 
+>    - Each new CPU comes up with its own PID and thus we need to keep on
+>      adding the "known" PIDs to get it working with AMBA driver. While
+>      the ETM4 architecture (and CoreSight architecture) defines way to
+>      identify a device as ETM4. Thus older kernels  won't be able to
+>      "discover" a newer CPU, unless we add the PIDs.
+> 
+>    - With ACPI, the ETM4x devices have the same HID to identify the device
+>      irrespective of the mode of access. This creates a problem where two
+>      different drivers (both AMBA based driver and platform driver) would
+>      hook into the "HID" and could conflict. e.g., if AMBA driver gets
+>      hold of a non-MMIO device, the probe fails. If we have single driver
+>      hooked into the given "HID", we could handle them seamlessly,
+>      irrespective of the mode of access.
+> 
+>    - CoreSight is heavily dependent on the runtime power management. With
+>      ACPI, amba_driver doesn't get us anywhere with handling the power
+>      and thus one need to always turn the power ON to use them. Moving to
+>      platform driver gives us the power management for free.
+> 
+> Due to all of the above, we are moving ACPI MMIO based etm4x devices to be
+> supported via tha platform driver. The series makes the existing platform
+> driver generic to handle both type of the access modes. Although existing
+> AMBA driver would still continue to support DT based etm4x MMIO devices.
+> Although some problems still remain, such as manually adding PIDs for all
+> new AMBA DT based devices.
+> 
+> The series applies on 6.5-rc1.
+> 
+> Changes in V6:
+> 
+> - Rebased on 6.5-rc1
+> 
 
-drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c:142 mtk_vcodec_get_reg_bases() error: buffer overflow 'mtk_dec_reg_names' 11 <= 11
+I have queued this version for v6.6, should appear on coresight/next soon.
 
-With a correct Devicetree, that is, one that follows the dt-binding, it
-wouldn't be possible to trigger such a buffer overflow. Even so, update
-the range validation of the reg property, so that the smatch warning is
-fixed and if an incorrect Devicetree is ever supplied the code errors
-out instead of causing memory corruption.
+Suzuki
 
-Reported-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Closes: https://lore.kernel.org/all/b5fd2dff-14a5-3ad8-9698-d1a50f4516fa@xs4all.nl
-Fixes: fe8a33978383 ("media: mediatek: vcodec: Read HW active status from syscon")
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
----
-
-Changes in v2:
-- Tidied logic by moving number of maximum regs to separate variable
-- Rebased on top of Hans' for-v6.6i branch
-
- drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
-index 6cf5f88a3a8e..f5b8c37f32f5 100644
---- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
-+++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
-@@ -96,6 +96,7 @@ static int mtk_vcodec_get_reg_bases(struct mtk_vcodec_dev *dev)
- 	int reg_num, i;
- 	struct resource *res;
- 	bool has_vdecsys_reg;
-+	int num_max_vdec_regs;
- 	static const char * const mtk_dec_reg_names[] = {
- 		"misc",
- 		"ld",
-@@ -122,10 +123,13 @@ static int mtk_vcodec_get_reg_bases(struct mtk_vcodec_dev *dev)
- 	else
- 		has_vdecsys_reg = true;
- 
-+	num_max_vdec_regs = has_vdecsys_reg ? NUM_MAX_VDEC_REG_BASE :
-+					      ARRAY_SIZE(mtk_dec_reg_names);
-+
- 	/* Sizeof(u32) * 4 bytes for each register base. */
- 	reg_num = of_property_count_elems_of_size(pdev->dev.of_node, "reg",
- 						  sizeof(u32) * 4);
--	if (reg_num <= 0 || reg_num > NUM_MAX_VDEC_REG_BASE) {
-+	if (reg_num <= 0 || reg_num > num_max_vdec_regs) {
- 		dev_err(&pdev->dev, "Invalid register property size: %d\n", reg_num);
- 		return -EINVAL;
- 	}
--- 
-2.41.0
 
