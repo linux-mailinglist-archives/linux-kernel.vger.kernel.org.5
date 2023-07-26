@@ -2,121 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2781E763592
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92505763597
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbjGZLsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S234379AbjGZLtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbjGZLsC (ORCPT
+        with ESMTP id S234349AbjGZLta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:48:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCD62701
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:47:35 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qOczB-0005pA-Ln; Wed, 26 Jul 2023 13:47:21 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 47A741FB4B5;
-        Wed, 26 Jul 2023 11:47:20 +0000 (UTC)
-Date:   Wed, 26 Jul 2023 13:47:19 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        support@ems-wuensche.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
-Message-ID: <20230726-hubcap-jersey-83445f9e5531-mkl@pengutronix.de>
-References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
- <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
- <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
- <61bbb2e6-8c18-d2fc-ce1e-78d462ac1bba@linux.intel.com>
- <2023072657-unloved-magma-8cf2@gregkh>
+        Wed, 26 Jul 2023 07:49:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35641A8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690372066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z3mFhfUODa9AHBePAn5JuvXf3BuDvAQZgN52GslCR8I=;
+        b=GARhhQkhsFuHW5WDFrzi0do6/IOcPcRfhvA6temtK8BSj0Y5+RvJ66vLIgPCbIPWHfqym2
+        1i49pd3QYAKwpkBN7l2M6Xr2bA6edSDdRO6I/mGlcJ+4jdbDGmfD/GgtaF2ewJzQ6g0fti
+        +UTzipA5bZ1OWvwh8ljxqv0J8I17LxE=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-n49NSQHBO9ydnTvAF-obEw-1; Wed, 26 Jul 2023 07:47:43 -0400
+X-MC-Unique: n49NSQHBO9ydnTvAF-obEw-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b701c82e83so56533441fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:47:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690372062; x=1690976862;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z3mFhfUODa9AHBePAn5JuvXf3BuDvAQZgN52GslCR8I=;
+        b=KUTyrnrcAUmn3kf1uQ56el0Wlk6VldzcUX/tw8pEZx7WaaG3K1ZiLpzO+oQL1NhCdM
+         9IURGK8QMMGKVWhd+anHXiPMFKXKT3sWFNlbP5fN/5nOmN4fKx73L/Jh/C2gjs1Tl7IV
+         1cEAqsGOeq7z7U432TbdrvWJM0G30OeRR93wXjHEI7Ob7H9/fWkxhWM/BB4BFWvGZlcp
+         CE9D5uVBvzgxb0ja/7MXCbgYtredoRLSuP2XxutJb7viUiBKO5aLBs36q0k4CrAPmTyz
+         C9136QwC8UDJIjK1VC5W54XVjJwLw32uNcj6Ei/6DvAeWSyZeuE4xC84S1K/cHXyuD2J
+         2zLQ==
+X-Gm-Message-State: ABy/qLbTusw2b4nnFVek5hqAx/e+IaiuqFnCb5Eze0dDnTvUSHqH9tTP
+        rZ/8jZTyw4KLef34CVyVk3e69meIuAbCS8WTXko0FEM4d3aHJvcWqJHDGVmXsWjN+mmSLp41Cen
+        lwjLtHC01DjLTBEAii9aSKOIx
+X-Received: by 2002:a2e:9010:0:b0:2b6:df71:cff1 with SMTP id h16-20020a2e9010000000b002b6df71cff1mr1183836ljg.52.1690372061941;
+        Wed, 26 Jul 2023 04:47:41 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGZIYBUdk56Yixlv7wviIYYWzDYfAykO70CSNJ5wRKXhKuZmsrVQQWEhJ444sYuY777oK81Vg==
+X-Received: by 2002:a2e:9010:0:b0:2b6:df71:cff1 with SMTP id h16-20020a2e9010000000b002b6df71cff1mr1183817ljg.52.1690372061563;
+        Wed, 26 Jul 2023 04:47:41 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:1f2:be95:2796:17af:f46c:dea1])
+        by smtp.gmail.com with ESMTPSA id u23-20020a2e8557000000b002b6e13fcedcsm4149437ljj.122.2023.07.26.04.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 04:47:36 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 07:47:26 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "linma@zju.edu.cn" <linma@zju.edu.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eli Cohen <elic@nvidia.com>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
+ check
+Message-ID: <20230726074710-mutt-send-email-mst@kernel.org>
+References: <20230723050656-mutt-send-email-mst@kernel.org>
+ <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
+ <8ecec51.e40ad.1898226c545.Coremail.linma@zju.edu.cn>
+ <20230723055820-mutt-send-email-mst@kernel.org>
+ <CACGkMEuGHMu6te3jRfEhhwTrWR1mpqp3hbVhDKQiXK9tgwz3qw@mail.gmail.com>
+ <56aa7d5c6d5840aedef83d3dc39f0bb3162bbb58.camel@nvidia.com>
+ <20230724050005-mutt-send-email-mst@kernel.org>
+ <280068e9c684f0ae644d195d3a4d3f5a1351c366.camel@nvidia.com>
+ <20230724160836-mutt-send-email-mst@kernel.org>
+ <00e14bc9e9a1f3749be62cbefc7adfaa1ba2d81c.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t6js5eclfcsqqax7"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2023072657-unloved-magma-8cf2@gregkh>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <00e14bc9e9a1f3749be62cbefc7adfaa1ba2d81c.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 25, 2023 at 08:26:32AM +0000, Dragos Tatulea wrote:
+> On Mon, 2023-07-24 at 16:08 -0400, Michael S. Tsirkin wrote:
+> > On Mon, Jul 24, 2023 at 11:42:42AM +0000, Dragos Tatulea wrote:
+> > > On Mon, 2023-07-24 at 05:16 -0400, Michael S. Tsirkin wrote:
+> > > > On Mon, Jul 24, 2023 at 08:38:04AM +0000, Dragos Tatulea wrote:
+> > > > > 
+> > > > > On Mon, 2023-07-24 at 15:11 +0800, Jason Wang wrote:
+> > > > > > On Sun, Jul 23, 2023 at 6:02 PM Michael S. Tsirkin <mst@redhat.com>
+> > > > > > wrote:
+> > > > > > > 
+> > > > > > > On Sun, Jul 23, 2023 at 05:48:46PM +0800, Lin Ma wrote:
+> > > > > > > > 
+> > > > > > > > > Sure, that is another undergoing task I'm working on. If the
+> > > > > > > > > nlattr
+> > > > > > > > > is
+> > > > > > > > > parsed with
+> > > > > > > > > NL_VALIDATE_UNSPEC, any forgotten nlattr will be rejected,
+> > > > > > > > > therefore
+> > > > > > > > > (which is the default
+> > > > > > > > > for modern nla_parse).
+> > > > > > > > 
+> > > > > > > > For the general netlink interface, the deciding flag should be
+> > > > > > > > genl_ops.validate defined in
+> > > > > > > > each ops. The default validate flag is strict, while the developer
+> > > > > > > > can
+> > > > > > > > overwrite the flag
+> > > > > > > > with GENL_DONT_VALIDATE_STRICT to ease the validation. That is to
+> > > > > > > > say,
+> > > > > > > > safer code should
+> > > > > > > > enforce NL_VALIDATE_STRICT by not overwriting the validate flag.
+> > > > > > > > 
+> > > > > > > > Regrads
+> > > > > > > > Lin
+> > > > > > > 
+> > > > > > > 
+> > > > > > > Oh I see.
+> > > > > > > 
+> > > > > > > It started here:
+> > > > > > > 
+> > > > > > > commit 33b347503f014ebf76257327cbc7001c6b721956
+> > > > > > > Author: Parav Pandit <parav@nvidia.com>
+> > > > > > > Date:   Tue Jan 5 12:32:00 2021 +0200
+> > > > > > > 
+> > > > > > >     vdpa: Define vdpa mgmt device, ops and a netlink interface
+> > > > > > > 
+> > > > > > > which did:
+> > > > > > > 
+> > > > > > > +               .validate = GENL_DONT_VALIDATE_STRICT |
+> > > > > > > GENL_DONT_VALIDATE_DUMP,
+> > > > > > > 
+> > > > > > > 
+> > > > > > > which was most likely just a copy paste from somewhere, right Parav?
+> > > > > > > 
+> > > > > > > and then everyone kept copying this around.
+> > > > > > > 
+> > > > > > > Parav, Eli can we drop these? There's a tiny chance of breaking
+> > > > > > > something
+> > > > > > > but I feel there aren't that many users outside mlx5 yet, so if you
+> > > > > > > guys can test on mlx5 and confirm no breakage, I think we are good.
+> > > > > > 
+> > > > > > Adding Dragos.
+> > > > > > 
+> > > > > I will check. Just to make sure I understand correctly: you want me to
+> > > > > drop
+> > > > > the
+> > > > > .validate flags all together in all vdpa ops and check, right?
+> > > > > 
+> > > > > Thanks,
+> > > > > Dragos
+> > > > 
+> > > > yes - I suspect you will then need this patch to make things work.
+> > > > 
+> > > Yep. Adding the patch and removing the .validate config on the vdpa_nl_ops
+> > > seems to work just fine.
+> > > 
+> > > Thanks,
+> > > Dragos
+> > 
+> > OK, post a patch?
+> > 
+> Sure, but how do I make it depend on this patch? Otherwise it will break things.
+> 
+> Thanks,
+> Dragos
 
---t6js5eclfcsqqax7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Send a patch series with this as patch 1/2 that one 2/2.
 
-On 26.07.2023 13:38:22, Greg Kroah-Hartman wrote:
-> On Thu, Jul 20, 2023 at 10:54:01PM +0800, Jiaqing Zhao wrote:
-> > On 2023-07-20 18:40, Marc Kleine-Budde wrote:
-> > > On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
-> > >> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
-> > >> Controller to pci_ids.h for its serial and parallel port driver
-> > >> support in subsequent patches.
-> > >=20
-> > > Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
-> > > the other patches depend on. How to coordinate among the subsystems?
-> > >=20
-> > > I don't mind taking the entire (v1) series with the Acks from the
-> > > tty/serial and parport maintainers, or give my Acked-by to upstream
-> > > via their trees.
-> >=20
-> > Add tty and parport maintainers to this thread.
-> >=20
-> > I'd like to ask other maintainers' opinion as I'm not sure which option
-> > is better and I had no similar experience before.=20
->=20
-> Either is fine with me, I can just take them all through my tty tree as
-> that's simplest for me :)
 
-Go ahead!
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---t6js5eclfcsqqax7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmTBB8QACgkQvlAcSiqK
-BOjobgf9E968vJVXb8xxGUp+xNfrKHksWTMZpC5ObFx3vrq/Lsiz4u9Pw7ZFYaIQ
-2wzOdPjqX7VUAtsAz1EUE05RTKSonK5+2f5Whp37Zaslf/UKet01MJcDK/9jrI23
-F6ikSwOqFwRww1pX6b/VpQrALCmCQMWRUgwfThSY0uFbGa3vCtC75CU6t6XwcMiD
-i72n8+LU3ylzD1kDUiavPBZjlR6RdI4cW6RrtT5/6CX4Oqxs7GWw6qVerw9uBnzn
-rRCvmoqDymIGp1Tb2xw1c+Ckt7fWohsngZ0m00XaG7Cp2Yr21M/03UD+6QHyJdtN
-y89e5PzuysAKybhCyBwd3OXpe/l4Uw==
-=v+NL
------END PGP SIGNATURE-----
-
---t6js5eclfcsqqax7--
