@@ -2,126 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A25C763DB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B17763DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbjGZRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        id S232517AbjGZRej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbjGZRdC (ORCPT
+        with ESMTP id S231854AbjGZReh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:33:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE31E2689;
-        Wed, 26 Jul 2023 10:33:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2123E2F4;
-        Wed, 26 Jul 2023 10:33:43 -0700 (PDT)
-Received: from [10.57.82.133] (unknown [10.57.82.133])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 648593F67D;
-        Wed, 26 Jul 2023 10:32:57 -0700 (PDT)
-Message-ID: <1b30a44e-519c-d4d5-ff98-f246cd70fe7c@arm.com>
-Date:   Wed, 26 Jul 2023 18:32:55 +0100
+        Wed, 26 Jul 2023 13:34:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FD4268C
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690392833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=595aIFAqz7KLDifNzOOpVRZNEJ01+8bEI4rnP/3L4To=;
+        b=EU90qie4Le5etddl8YKKIWKXHgzm41z8Z6eXELYjyMBArLmqSSfzLHflWXoGXMf35fZKZN
+        mD82zkAp3D/HziR3954TJwsErPkplaoq2tbalvFEWdyMdCU0z1ds/nGbHIHX8jR6QpoNrn
+        TO6ey8OVVycEb8LZvIjkoExlo3G3teo=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-Ug-6j0IUOm6inDah21MreA-1; Wed, 26 Jul 2023 13:33:52 -0400
+X-MC-Unique: Ug-6j0IUOm6inDah21MreA-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7872be95468so705039f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:33:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690392831; x=1690997631;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=595aIFAqz7KLDifNzOOpVRZNEJ01+8bEI4rnP/3L4To=;
+        b=SEPcS+vOTPqV1aoB2VI4o4YzCbt4ZldbeFwkYhsbs0k1Pb4NEBR1xCQt6PEFzjGqgX
+         uQtAn6kqfWshwi/EYBHiPeKtYIsC1UKnjKN5M0ttrmb8Lyj5/5wXwi0QwRMT0sL/OsSV
+         qUbMnj7VGddpFfNU8vfABKuAIKzWsYZmVUcjqbnuhur7T0mHpVA8sXG7JPqK5LGlsqpL
+         uJmLA4LkBcAYccvk565G04tf4e+aNMJBIKt3ieXdEd2YTECYTZehWUVLWk4VyFlThV7B
+         TOYL3qgYpNEpkkSBjQlWKjqOsUxtu8C+PtTGJF3akLaoQbEnZcsq91HNfRMDpPYQ8r/o
+         pf9g==
+X-Gm-Message-State: ABy/qLZP46xA1DoaxKbtCjeo9TCzIUt/yodR81zUhz+Jjnkx2D7nvqvf
+        2cZg5bb7oisgPa6Ns6G8B8AZ1nlapOxBudmNHgwlnwrTzCicYe4mejgcY6OzpjyfSkPNio5jam5
+        jOBjjdeYMCXdrE3aF3eeCUEwls5SadQXL
+X-Received: by 2002:a5e:8713:0:b0:786:98bd:66d4 with SMTP id y19-20020a5e8713000000b0078698bd66d4mr2821723ioj.15.1690392831042;
+        Wed, 26 Jul 2023 10:33:51 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFSNSK8ezzU7UY6kqRAWp8eJAgdkkstqtMf1gdt1dZfcxLAkXL1XnER7kAc9CqUzcaWir7uvw==
+X-Received: by 2002:a5e:8713:0:b0:786:98bd:66d4 with SMTP id y19-20020a5e8713000000b0078698bd66d4mr2821704ioj.15.1690392830818;
+        Wed, 26 Jul 2023 10:33:50 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id f23-20020a6be817000000b0078b9d1653a8sm3815595ioh.42.2023.07.26.10.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 10:33:50 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 11:33:49 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     <jgg@nvidia.com>, <kevin.tian@intel.com>, <yi.l.liu@intel.com>,
+        <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <farman@linux.ibm.com>
+Subject: Re: [PATCH v8 1/4] vfio: Do not allow !ops->dma_unmap in
+ vfio_pin/unpin_pages()
+Message-ID: <20230726113349.3dc1382c.alex.williamson@redhat.com>
+In-Reply-To: <064227abb779063c328fd79afc7c74dabdf2489e.1690226015.git.nicolinc@nvidia.com>
+References: <cover.1690226015.git.nicolinc@nvidia.com>
+        <064227abb779063c328fd79afc7c74dabdf2489e.1690226015.git.nicolinc@nvidia.com>
+Organization: Red Hat
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH V6 0/6] coresight: etm4x: Migrate ACPI AMBA devices to
- platform driver
-To:     Steve Clevenger OS <scclevenger@os.amperecomputing.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>
-Cc:     Ganapatrao Kulkarni OS <gankulkarni@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Len Brown <lenb@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230710062500.45147-1-anshuman.khandual@arm.com>
- <9c3b4a97-bbe2-a978-b000-9562123af523@arm.com>
- <e15a4a99-6fda-6f03-3ffb-3db93d678b2c@os.amperecomputing.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <e15a4a99-6fda-6f03-3ffb-3db93d678b2c@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 18:03, Steve Clevenger OS wrote:
-> 
-> Hi Suzuki,
-> 
-> On 7/26/2023 9:59 AM, Suzuki K Poulose wrote:
->> On 10/07/2023 07:24, Anshuman Khandual wrote:
->>> CoreSight ETM4x devices could be accessed either via MMIO (handled via
->>> amba_driver) or CPU system instructions (handled via platform driver).
->>> But
->>> this has the following issues :
->>>
->>>     - Each new CPU comes up with its own PID and thus we need to keep on
->>>       adding the "known" PIDs to get it working with AMBA driver. While
->>>       the ETM4 architecture (and CoreSight architecture) defines way to
->>>       identify a device as ETM4. Thus older kernels  won't be able to
->>>       "discover" a newer CPU, unless we add the PIDs.
->>>
->>>     - With ACPI, the ETM4x devices have the same HID to identify the
->>> device
->>>       irrespective of the mode of access. This creates a problem where two
->>>       different drivers (both AMBA based driver and platform driver) would
->>>       hook into the "HID" and could conflict. e.g., if AMBA driver gets
->>>       hold of a non-MMIO device, the probe fails. If we have single driver
->>>       hooked into the given "HID", we could handle them seamlessly,
->>>       irrespective of the mode of access.
->>>
->>>     - CoreSight is heavily dependent on the runtime power management. With
->>>       ACPI, amba_driver doesn't get us anywhere with handling the power
->>>       and thus one need to always turn the power ON to use them. Moving to
->>>       platform driver gives us the power management for free.
->>>
->>> Due to all of the above, we are moving ACPI MMIO based etm4x devices
->>> to be
->>> supported via tha platform driver. The series makes the existing platform
->>> driver generic to handle both type of the access modes. Although existing
->>> AMBA driver would still continue to support DT based etm4x MMIO devices.
->>> Although some problems still remain, such as manually adding PIDs for all
->>> new AMBA DT based devices.
->>>
->>> The series applies on 6.5-rc1.
->>>
->>> Changes in V6:
->>>
->>> - Rebased on 6.5-rc1
->>>
->>
->> I have queued this version for v6.6, should appear on coresight/next soon.
->>
->> Suzuki
-> 
-> Is there anyway to queue this for 6.5? Or has that ship sailed?
+On Mon, 24 Jul 2023 12:47:04 -0700
+Nicolin Chen <nicolinc@nvidia.com> wrote:
 
-Only fixes are allowed for v6.5 at this time.
+> A driver that doesn't implement ops->dma_unmap shouldn't be allowed to do
+> vfio_pin/unpin_pages(), though it can use vfio_dma_rw() to access an iova
+> range. Deny !ops->dma_unmap cases in vfio_pin/unpin_pages().
+> 
+> Suggested-by: Kevin Tian <kevin.tian@intel.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Reviewed-by: Yi Liu <yi.l.liu@intel.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>  drivers/vfio/vfio_main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Suzuki
+I assume these go through iommufd.
+
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
 
 > 
-> Thanks,
-> 
-> Steve C.
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index 902f06e52c48..0da8ed81a97d 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -1483,6 +1483,8 @@ int vfio_pin_pages(struct vfio_device *device, dma_addr_t iova,
+>  	/* group->container cannot change while a vfio device is open */
+>  	if (!pages || !npage || WARN_ON(!vfio_assert_device_open(device)))
+>  		return -EINVAL;
+> +	if (!device->ops->dma_unmap)
+> +		return -EINVAL;
+>  	if (vfio_device_has_container(device))
+>  		return vfio_device_container_pin_pages(device, iova,
+>  						       npage, prot, pages);
+> @@ -1520,6 +1522,8 @@ void vfio_unpin_pages(struct vfio_device *device, dma_addr_t iova, int npage)
+>  {
+>  	if (WARN_ON(!vfio_assert_device_open(device)))
+>  		return;
+> +	if (WARN_ON(!device->ops->dma_unmap))
+> +		return;
+>  
+>  	if (vfio_device_has_container(device)) {
+>  		vfio_device_container_unpin_pages(device, iova, npage);
 
