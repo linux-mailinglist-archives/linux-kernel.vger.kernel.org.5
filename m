@@ -2,204 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B61D763EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C67763EBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjGZSjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S231439AbjGZSl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjGZSju (ORCPT
+        with ESMTP id S229590AbjGZSl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:39:50 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9629519BD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:39:48 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bc02890c1so3254066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690396787; x=1691001587;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4MAGrdTQMzdYEj4illUgs9Le/LNfFeFQ/jUoJpzojCI=;
-        b=hDpLPL8C+lrAvejTTpF83hA/kj50XSAImbPhvRPGAh/Ta+aUF9a6NO0FiDQRAE3ARG
-         cs+s/sPD8T5f4saS0A8cXo74UIQTBSrWtyWe/yr0B96hOX+O4E7QHYfj/Aa+6FvnA8s4
-         e+L/7GFNNl6K0Nx5py2rEMOWE/MwIVFXtWDihTHfJtRzdapHUk8B3VDNDgVHoldHQZuY
-         Mh7WMlemyQfcTjczQHmhL5I6GgrHKC4VVUiCSqsesJbGnDkG0gkzIny0AE4MqkUqgTG6
-         6LciRPYOhP89NuVecgrN+eCdopo13hMgKDZuPlaCqGD1PdTHgrZiFFYG18JNdPMpM8KU
-         pb/w==
+        Wed, 26 Jul 2023 14:41:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0442D4D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690396834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hLRB+0VH4NUNA9S2GxQpRS/NrBaKH7At4oaqQkmEFHQ=;
+        b=eW2XlbWRNsiKQ0HchbRrMi0EBoKn7kzTbeUhNDLbc20qep9yS0CwIk2YX4JrkU00z8Q6BI
+        nbstPRIW4lqquvHwKr/ztjgzsoCDKCKnijT1qquCGWweY4nNP1PLcCCN03fZOdNtAjLET9
+        wIVxq3csgTscjkHJHMMBGT0kBrBYum4=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-4yDsoVl3NRGJd77MLrqXuQ-1; Wed, 26 Jul 2023 14:40:32 -0400
+X-MC-Unique: 4yDsoVl3NRGJd77MLrqXuQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fb1a5788f0so75825e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:40:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690396787; x=1691001587;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4MAGrdTQMzdYEj4illUgs9Le/LNfFeFQ/jUoJpzojCI=;
-        b=mGyKKGCplsyIyzyzbR35a3DmElOI1AtEIBsSJrr5lnTqWxuV+uNWk5V/ZSsX7qBkG5
-         qP6eBmAKO2MgEPePPiPsIVu3gMAdaCecs7S/IIMJ/tf1/R6rpQ0OckbEQTKWnpEtrjZH
-         C8/53LO3a6zfvPbsjLgda/jqngl+oelbTPCMSUba5jJ+SO8sKsGkOnt4kz7W0+Gtk2FX
-         h+CfWLe2rrHacLp3hCdIgPFZlag/ePVOmYTPbg4Lb9vurPA+05EWolTh+q0EHrJb0PPo
-         eUF6+q6k8Z1lD5fh0EYoYx9RlKgIwmvlxO8ydliAHB/HrHZRZPvKKLnNAPzPXa8vUBCT
-         gbYw==
-X-Gm-Message-State: ABy/qLb524dcGpdoQbxPLr4WvBjAjcSHD6tAFFEX2UsQrzwe422yaX4/
-        Yrwy+GXiyMe4DIu+Yn7QeRDEVw==
-X-Google-Smtp-Source: APBJJlHFlVHnDoYChSG864jT5xg1AbZSe/g0U/jSIJl/WB6hOgWi4F1WhdBqOKbUchvcRn28/tnecw==
-X-Received: by 2002:a17:906:854b:b0:99b:c830:cf23 with SMTP id h11-20020a170906854b00b0099bc830cf23mr19050ejy.27.1690396787013;
-        Wed, 26 Jul 2023 11:39:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id pk4-20020a170906d7a400b00993004239a4sm9877516ejb.215.2023.07.26.11.39.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 11:39:46 -0700 (PDT)
-Message-ID: <0fc2ba5d-8357-6dfb-4aa4-26de6b497c13@linaro.org>
-Date:   Wed, 26 Jul 2023 20:39:44 +0200
+        d=1e100.net; s=20221208; t=1690396830; x=1691001630;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hLRB+0VH4NUNA9S2GxQpRS/NrBaKH7At4oaqQkmEFHQ=;
+        b=N7U+jt2YXjhHV7LouyARLtcY5I7fqZ1xAvYh2AFt/Cu+Cwlt7eUa9ZOakx8zZfT5MD
+         hTVDwVgwBvbqReCMWpZY7yGPscEMVjEikBGORjPMru3ZKB2qnvxrCgHmSqJN4rfz3Nao
+         j071hpkK99XvKAzI/IVcg5kjiCyDAkXG4qLvM+FpemyMog7KkM6X+nqLiM1xLixZkmib
+         Tw290UoD8XvmQ1QrdI586tT6gW1MeHVXU3nXE4YaEqw2BBM4aB9cxQGTDmaVkUYl3sWu
+         s8IAeYUbprxA+pHug5ExMrQZvrNOckHom5g1mIntiWVe9qtOX/DmcHYrgbnzK9NdyU3P
+         NWiA==
+X-Gm-Message-State: ABy/qLaXsqFHVllo8O2f468izrq4BMe6cKpx21cgTeBMAQbB9FISu+5x
+        X9qUAgG7Cxe2BbWOQs9KMEsGWE8NGmmS2hERPLydPbdzINIBSMJmA90baOdeSHyyF7lCug18jLt
+        R758oMIO6eM5t8VsXKfcL7THq
+X-Received: by 2002:a05:6512:3103:b0:4fd:d213:dfd0 with SMTP id n3-20020a056512310300b004fdd213dfd0mr20087lfb.11.1690396830368;
+        Wed, 26 Jul 2023 11:40:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFfIFB6koq240oc65lATC1OG8dihM0yJR6Errj2gYzEcAeMZ8KdgTUnrOPiNp0AKGTRCUhLIw==
+X-Received: by 2002:a05:6512:3103:b0:4fd:d213:dfd0 with SMTP id n3-20020a056512310300b004fdd213dfd0mr20068lfb.11.1690396830026;
+        Wed, 26 Jul 2023 11:40:30 -0700 (PDT)
+Received: from redhat.com ([2.52.14.22])
+        by smtp.gmail.com with ESMTPSA id o26-20020aa7d3da000000b005222c160464sm4518711edr.72.2023.07.26.11.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 11:40:27 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 14:40:22 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v5 11/14] vhost/vsock: implement datagram
+ support
+Message-ID: <20230726143850-mutt-send-email-mst@kernel.org>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] drivers: misc: adi-axi-tdd: Add new TDD engine driver
-Content-Language: en-US
-To:     Eliza Balas <eliza.balas@analog.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230726071103.12172-1-eliza.balas@analog.com>
- <20230726071103.12172-2-eliza.balas@analog.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230726071103.12172-2-eliza.balas@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 09:11, Eliza Balas wrote:
-> This patch introduces the driver for the new ADI TDD engine HDL.
-> The generic TDD controller is in essence a waveform generator
-> capable of addressing RF applications which require Time Division
-> Duplexing, as well as controlling other modules of general
-> applications through its dedicated 32 channel outputs.
+On Wed, Jul 19, 2023 at 12:50:15AM +0000, Bobby Eshleman wrote:
+> This commit implements datagram support for vhost/vsock by teaching
+> vhost to use the common virtio transport datagram functions.
 > 
-> The reason of creating the generic TDD controller was to reduce
-> the naming confusion around the existing repurposed TDD core
-> built for AD9361, as well as expanding its number of output
-> channels for systems which require more than six controlling signals.
+> If the virtio RX buffer is too small, then the transmission is
+> abandoned, the packet dropped, and EHOSTUNREACH is added to the socket's
+> error queue.
 > 
-> Signed-off-by: Eliza Balas <eliza.balas@analog.com>
+> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+
+EHOSTUNREACH?
+
+
 > ---
->  .../sysfs-bus-platform-drivers-adi-axi-tdd    | 158 ++++
->  MAINTAINERS                                   |   2 +
->  drivers/misc/Kconfig                          |  10 +
->  drivers/misc/Makefile                         |   1 +
->  drivers/misc/adi-axi-tdd.c                    | 753 ++++++++++++++++++
->  5 files changed, 924 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-drivers-adi-axi-tdd
->  create mode 100644 drivers/misc/adi-axi-tdd.c
+>  drivers/vhost/vsock.c    | 62 +++++++++++++++++++++++++++++++++++++++++++++---
+>  net/vmw_vsock/af_vsock.c |  5 +++-
+>  2 files changed, 63 insertions(+), 4 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-platform-drivers-adi-axi-tdd b/Documentation/ABI/testing/sysfs-bus-platform-drivers-adi-axi-tdd
-> new file mode 100644
-> index 000000000000..eb5f3db7d0cb
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-platform-drivers-adi-axi-tdd
-> @@ -0,0 +1,158 @@
-> +What:           /sys/bus/platform/drivers/adi-axi-tdd/*/burst_count
-> +Date:           July 2023
-> +KernelVersion:  6.5
-
-We are in 6.5 now, so there is no way your driver will be in 6.5. Target
-6.6 and use phb crystall ball for next release date (September).
-
-...
-
-> +
-> +enum adi_axi_tdd_attribute_id {
-> +	ADI_TDD_ATTR_VERSION,
-> +	ADI_TDD_ATTR_CORE_ID,
-> +	ADI_TDD_ATTR_SCRATCH,
-> +	ADI_TDD_ATTR_MAGIC,
-> +
-
-...
-
-> +
-> +static int adi_axi_tdd_probe(struct platform_device *pdev)
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index d5d6a3c3f273..da14260c6654 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -8,6 +8,7 @@
+>   */
+>  #include <linux/miscdevice.h>
+>  #include <linux/atomic.h>
+> +#include <linux/errqueue.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/vmalloc.h>
+> @@ -32,7 +33,8 @@
+>  enum {
+>  	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
+>  			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
+> -			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
+> +			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET) |
+> +			       (1ULL << VIRTIO_VSOCK_F_DGRAM)
+>  };
+>  
+>  enum {
+> @@ -56,6 +58,7 @@ struct vhost_vsock {
+>  	atomic_t queued_replies;
+>  
+>  	u32 guest_cid;
+> +	bool dgram_allow;
+>  	bool seqpacket_allow;
+>  };
+>  
+> @@ -86,6 +89,32 @@ static struct vhost_vsock *vhost_vsock_get(u32 guest_cid)
+>  	return NULL;
+>  }
+>  
+> +/* Claims ownership of the skb, do not free the skb after calling! */
+> +static void
+> +vhost_transport_error(struct sk_buff *skb, int err)
 > +{
-> +	unsigned int expected_version, version, data;
-> +	struct adi_axi_tdd_state *st;
-> +	struct clk *aclk;
-> +	int ret;
+> +	struct sock_exterr_skb *serr;
+> +	struct sock *sk = skb->sk;
+> +	struct sk_buff *clone;
 > +
-> +	st = devm_kzalloc(&pdev->dev, sizeof(*st), GFP_KERNEL);
-> +	if (!st)
-> +		return -ENOMEM;
+> +	serr = SKB_EXT_ERR(skb);
+> +	memset(serr, 0, sizeof(*serr));
+> +	serr->ee.ee_errno = err;
+> +	serr->ee.ee_origin = SO_EE_ORIGIN_NONE;
 > +
-> +	st->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(st->base))
-> +		return PTR_ERR(st->base);
+> +	clone = skb_clone(skb, GFP_KERNEL);
+> +	if (!clone)
+> +		return;
 > +
-> +	platform_set_drvdata(pdev, st);
+> +	if (sock_queue_err_skb(sk, clone))
+> +		kfree_skb(clone);
 > +
-> +	aclk = devm_clk_get_enabled(&pdev->dev, "s_axi_aclk");
-> +	if (IS_ERR(aclk))
-> +		return PTR_ERR(aclk);
+> +	sk->sk_err = err;
+> +	sk_error_report(sk);
 > +
-> +	ret = devm_add_action_or_reset(&pdev->dev, adi_axi_tdd_clk_disable, aclk);
+> +	kfree_skb(skb);
+> +}
+> +
+>  static void
+>  vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+>  			    struct vhost_virtqueue *vq)
+> @@ -160,9 +189,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+>  		hdr = virtio_vsock_hdr(skb);
+>  
+>  		/* If the packet is greater than the space available in the
+> -		 * buffer, we split it using multiple buffers.
+> +		 * buffer, we split it using multiple buffers for connectible
+> +		 * sockets and drop the packet for datagram sockets.
+>  		 */
 
-Looks you have here double disable.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	st->clk.clk = devm_clk_get(&pdev->dev, "intf_clk");
-> +	if (IS_ERR(st->clk.clk))
-> +		return PTR_ERR(st->clk.clk);
-> +
-> +	ret = clk_prepare_enable(st->clk.clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, adi_axi_tdd_clk_disable, st->clk.clk);
-
-Looks you have here double disable.
-
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	st->clk.rate = clk_get_rate(st->clk.clk);
-> +	st->clk.nb.notifier_call = adi_axi_tdd_rate_change;
-> +	ret = clk_notifier_register(st->clk.clk, &st->clk.nb);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, adi_axi_tdd_clk_notifier_unreg, st->clk.clk);
-
-Wrap your lines. Limit is 80.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	st->regs = devm_regmap_init_mmio(&pdev->dev, st->base,
-> +					 &adi_axi_tdd_regmap_cfg);
-> +	if (IS_ERR(st->regs))
-> +		return PTR_ERR(st->regs);
-> +
-> +	ret = regmap_read(st->regs, ADI_AXI_REG_VERSION, &version);
-> +	if (ret)
-> +		return ret;
-> +
+won't this break things like recently proposed zerocopy?
+I think splitup has to be supported for all types.
 
 
-
-Best regards,
-Krzysztof
+>  		if (payload_len > iov_len - sizeof(*hdr)) {
+> +			if (le16_to_cpu(hdr->type) == VIRTIO_VSOCK_TYPE_DGRAM) {
+> +				vhost_transport_error(skb, EHOSTUNREACH);
+> +				continue;
+> +			}
+> +
+>  			payload_len = iov_len - sizeof(*hdr);
+>  
+>  			/* As we are copying pieces of large packet's buffer to
+> @@ -394,6 +429,7 @@ static bool vhost_vsock_more_replies(struct vhost_vsock *vsock)
+>  	return val < vq->num;
+>  }
+>  
+> +static bool vhost_transport_dgram_allow(u32 cid, u32 port);
+>  static bool vhost_transport_seqpacket_allow(u32 remote_cid);
+>  
+>  static struct virtio_transport vhost_transport = {
+> @@ -410,7 +446,8 @@ static struct virtio_transport vhost_transport = {
+>  		.cancel_pkt               = vhost_transport_cancel_pkt,
+>  
+>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+> -		.dgram_allow              = virtio_transport_dgram_allow,
+> +		.dgram_allow              = vhost_transport_dgram_allow,
+> +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
+>  
+>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+> @@ -443,6 +480,22 @@ static struct virtio_transport vhost_transport = {
+>  	.send_pkt = vhost_transport_send_pkt,
+>  };
+>  
+> +static bool vhost_transport_dgram_allow(u32 cid, u32 port)
+> +{
+> +	struct vhost_vsock *vsock;
+> +	bool dgram_allow = false;
+> +
+> +	rcu_read_lock();
+> +	vsock = vhost_vsock_get(cid);
+> +
+> +	if (vsock)
+> +		dgram_allow = vsock->dgram_allow;
+> +
+> +	rcu_read_unlock();
+> +
+> +	return dgram_allow;
+> +}
+> +
+>  static bool vhost_transport_seqpacket_allow(u32 remote_cid)
+>  {
+>  	struct vhost_vsock *vsock;
+> @@ -799,6 +852,9 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
+>  	if (features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
+>  		vsock->seqpacket_allow = true;
+>  
+> +	if (features & (1ULL << VIRTIO_VSOCK_F_DGRAM))
+> +		vsock->dgram_allow = true;
+> +
+>  	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
+>  		vq = &vsock->vqs[i];
+>  		mutex_lock(&vq->mutex);
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index e73f3b2c52f1..449ed63ac2b0 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -1427,9 +1427,12 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  		return prot->recvmsg(sk, msg, len, flags, NULL);
+>  #endif
+>  
+> -	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+> +	if (unlikely(flags & MSG_OOB))
+>  		return -EOPNOTSUPP;
+>  
+> +	if (unlikely(flags & MSG_ERRQUEUE))
+> +		return sock_recv_errqueue(sk, msg, len, SOL_VSOCK, 0);
+> +
+>  	transport = vsk->transport;
+>  
+>  	/* Retrieve the head sk_buff from the socket's receive queue. */
+> 
+> -- 
+> 2.30.2
 
