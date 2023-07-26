@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90ED76331E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8830D763323
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbjGZKGX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 06:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        id S233090AbjGZKHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjGZKGQ (ORCPT
+        with ESMTP id S233464AbjGZKHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:06:16 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE730BF;
-        Wed, 26 Jul 2023 03:06:15 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 6215A810C;
-        Wed, 26 Jul 2023 18:06:14 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Jul
- 2023 18:06:14 +0800
-Received: from ubuntu.localdomain (183.27.99.135) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Jul
- 2023 18:06:13 +0800
-From:   Minda Chen <minda.chen@starfivetech.com>
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: [dt-for-next v1 2/2] riscv: dts: starfive: Add USB dts node for JH7110
-Date:   Wed, 26 Jul 2023 03:06:09 -0700
-Message-ID: <20230726100609.72550-3-minda.chen@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230726100609.72550-1-minda.chen@starfivetech.com>
-References: <20230726100609.72550-1-minda.chen@starfivetech.com>
+        Wed, 26 Jul 2023 06:07:19 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B951BFB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:07:04 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9qH707gKztRSb;
+        Wed, 26 Jul 2023 18:03:47 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.202) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 18:07:01 +0800
+From:   Zhu Wang <wangzhu9@huawei.com>
+To:     <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>,
+        <rfoss@kernel.org>, <Laurent.pinchart@ideasonboard.com>,
+        <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>, <u.kleine-koenig@pengutronix.de>,
+        <javierm@redhat.com>, <dianders@chromium.org>,
+        <benjamin.mugnier@foss.st.com>, <kabel@kernel.org>,
+        <anarsoul@gmail.com>, <duwe@suse.de>, <mripard@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <wangzhu9@huawei.com>
+Subject: [PATCH -next] drm/bridge: fix -Wunused-const-variable= warning
+Date:   Wed, 26 Jul 2023 18:06:26 +0800
+Message-ID: <20230726100626.167490-1-wangzhu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.99.135]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.202]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add USB wrapper layer and Cadence USB3 controller dts
-configuration for StarFive JH7110 SoC and VisionFive2
-Board.
+When building with W=1, the following warning occurs.
 
-Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c:48:17: warning: ‘anx781x_i2c_addresses’ defined but not used [-Wunused-const-variable=]
+ static const u8 anx781x_i2c_addresses[] = {
+                 ^~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c:40:17: warning: ‘anx7808_i2c_addresses’ defined but not used [-Wunused-const-variable=]
+ static const u8 anx7808_i2c_addresses[] = {
+
+The definition of above two data variables is included by the
+macro CONFIG_OF, so we also include the data variable
+definitions in the macro CONFIG_OF. And in addition the data
+variable anx78xx_match_table is included in the macro CONFIG_OF,
+so we add CONFIG_OF to the place where it is used.
+
+Fixes: 5d97408e0d70 ("drm/bridge: move ANA78xx driver to analogix subdirectory")
+
+Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 ---
- .../jh7110-starfive-visionfive-2.dtsi         |  5 +++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 32 +++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 5feff4673503..36c402b4a726 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -273,6 +273,11 @@ &uart0 {
- 	status = "okay";
- };
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+index 06a3e3243e19..799b33cebdd5 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+@@ -37,6 +37,7 @@
  
-+&usb0 {
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
- &U74_1 {
- 	cpu-supply = <&vdd_cpu>;
- };
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index dbc1243a0e75..c58489468cad 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -446,6 +446,38 @@ i2c2: i2c@10050000 {
- 			status = "disabled";
- 		};
+ #define XTAL_CLK		270 /* 27M */
  
-+		usb0: usb@10100000 {
-+			compatible = "starfive,jh7110-usb";
-+			ranges = <0x0 0x0 0x10100000 0x100000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			starfive,stg-syscon = <&stg_syscon 0x4>;
-+			clocks = <&stgcrg JH7110_STGCLK_USB0_LPM>,
-+				 <&stgcrg JH7110_STGCLK_USB0_STB>,
-+				 <&stgcrg JH7110_STGCLK_USB0_APB>,
-+				 <&stgcrg JH7110_STGCLK_USB0_AXI>,
-+				 <&stgcrg JH7110_STGCLK_USB0_UTMI_APB>;
-+			clock-names = "lpm", "stb", "apb", "axi", "utmi_apb";
-+			resets = <&stgcrg JH7110_STGRST_USB0_PWRUP>,
-+				 <&stgcrg JH7110_STGRST_USB0_APB>,
-+				 <&stgcrg JH7110_STGRST_USB0_AXI>,
-+				 <&stgcrg JH7110_STGRST_USB0_UTMI_APB>;
-+			reset-names = "pwrup", "apb", "axi", "utmi_apb";
-+			status = "disabled";
-+
-+			usb_cdns3: usb@0 {
-+				compatible = "cdns,usb3";
-+				reg = <0x0 0x10000>,
-+				      <0x10000 0x10000>,
-+				      <0x20000 0x10000>;
-+				reg-names = "otg", "xhci", "dev";
-+				interrupts = <100>, <108>, <110>;
-+				interrupt-names = "host", "peripheral", "otg";
-+				phys = <&usbphy0>;
-+				phy-names = "cdns3,usb2-phy";
-+			};
-+		};
-+
- 		usbphy0: phy@10200000 {
- 			compatible = "starfive,jh7110-usb-phy";
- 			reg = <0x0 0x10200000 0x0 0x10000>;
++#if IS_ENABLED(CONFIG_OF)
+ static const u8 anx7808_i2c_addresses[] = {
+ 	[I2C_IDX_TX_P0] = 0x78,
+ 	[I2C_IDX_TX_P1] = 0x7a,
+@@ -52,6 +53,7 @@ static const u8 anx781x_i2c_addresses[] = {
+ 	[I2C_IDX_RX_P0] = 0x7e,
+ 	[I2C_IDX_RX_P1] = 0x80,
+ };
++#endif
+ 
+ struct anx78xx_platform_data {
+ 	struct regulator *dvdd10;
+@@ -1387,7 +1389,9 @@ MODULE_DEVICE_TABLE(of, anx78xx_match_table);
+ static struct i2c_driver anx78xx_driver = {
+ 	.driver = {
+ 		   .name = "anx7814",
++#if IS_ENABLED(CONFIG_OF)
+ 		   .of_match_table = of_match_ptr(anx78xx_match_table),
++#endif
+ 		  },
+ 	.probe = anx78xx_i2c_probe,
+ 	.remove = anx78xx_i2c_remove,
 -- 
-2.25.1
+2.17.1
 
