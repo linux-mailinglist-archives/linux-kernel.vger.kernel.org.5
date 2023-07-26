@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A04E6763777
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F42876377C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbjGZNYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S234087AbjGZN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233585AbjGZNYB (ORCPT
+        with ESMTP id S233856AbjGZN00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:24:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990971FFA
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:23:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3799961A3D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:23:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58562C433C8;
-        Wed, 26 Jul 2023 13:23:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690377833;
-        bh=RMJHNPuU7N+ifmLTxkLjkm+2qqsjVUIwz7cKJtDoWbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F/9e740JSt/fg+KTnjEJpsCcx4fWypXGT4Lr0x/lLPs12tVTqPVVtts97My4841L2
-         /y+6z/mj00yqiKQzILkiDXsS2N2zxbWHEvy8NSSm184Y+cNuGwwEAGq1GiZBanFuy1
-         Q7dkOwekJ13EVtH8hyPKeIH774ljmz6wBLSASLTYFCEUCyd/dH4q/DlLIlJRLEJYKp
-         +PPNAMUTQcWOBXkpsE6x7Vtsx6Cj0tKmuo4yZ7po/JLR1ysZ0NCM8FCsGplIiyLGLl
-         HLQDWxufS86yv1rLUUX0R9/gJ7fofNiJRxdT3V2R/7wV30kr/LAi8QiaPDCgc5u51G
-         yoWqAIkRwoTUg==
-Date:   Wed, 26 Jul 2023 16:23:17 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: collision between ZONE_MOVABLE and memblock allocations
-Message-ID: <20230726132317.GW1901145@kernel.org>
-References: <20230718220106.GA3117638@google.com>
- <20230719054434.GG1901145@kernel.org>
- <20230719222604.GB3528218@google.com>
- <20230721112009.GP1901145@kernel.org>
- <ZMDP+D54MoI9boYJ@dhcp22.suse.cz>
- <20230726104845.GS1901145@kernel.org>
- <ZMEYU4AlS0Vw7XIj@dhcp22.suse.cz>
+        Wed, 26 Jul 2023 09:26:26 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D70128
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:26:24 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso10765929e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690377982; x=1690982782;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/9yUKgO7zKJYMgcYFPgPnTgcVnPYS9vz4JlLdoJUgN4=;
+        b=Njl9CrBgAO7Rr5VrsMHnMrLdagHNqOSSpMGhNbK8LKS4tfwFBD9OvRLp9binQG7L20
+         hVBdZjBJPj4yxpYiIzPriS2EzbHTvgEYS/g0Xz/84L4G0FB4y3jlRi6AoAFos0/TfRJn
+         Cs3MKkkGXJ2S1F4gDF9bAk6HtFYiDBEvP6rDX5N5KyeghMiWEXziT4fVQkG5LxDKggTn
+         UBGxfZgQMOi5I3QVvRcQJLqLb6wlWs/sHd0HHG8rOadkAnotSsJ0c9aB1TGwFcJt8OyO
+         8XUo6P/1U1AxMpb4h6LyXtB1gqSoMwqAUZ/KOM8x3Tnvt6RAchcmQCkYnADW+Yoz8/6i
+         k6BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690377982; x=1690982782;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/9yUKgO7zKJYMgcYFPgPnTgcVnPYS9vz4JlLdoJUgN4=;
+        b=T0roHLV5OfXvDrEhibB4D0pQ/xg95klZ5CgdevOY0GmBC/AiF0yMdXk3Jkbym3k24Y
+         LDKT2LYLJGMtPphm32zjTkIKPsgZ3HyLU4aJQx2+ut2ZCx9oEvnBCIhVZN5keJsQr1w8
+         bbOTEVwKpcyY9aGj2F6Jt1pF62+pbbIA0XJcidunzO69QPPpOhLar++xuTKmjJpPPGjf
+         5720Jh78szPj9mvC3ieKUoW5ZBbSuXRW0a3GFZzNe1aO/u44cPx9csl0OcVJP26ukcFU
+         g6VbAzeKZLdxCj1IudEv+SqCLZ5SjBevRIN1lT/fOBh/sI/6Bea19M3UtxSDKUDrUvxJ
+         pmBw==
+X-Gm-Message-State: ABy/qLaaS1fOyqEqpXT1icPUWZAHlobUX1yTVyyOqEDB9EXK7pMpOxDk
+        vMV0Jp5+ZduMUfte9bqkQRUXfJZR4BIuHI6nTzlkUg==
+X-Google-Smtp-Source: APBJJlH+kC6rd4R61LgSmhssguQXkIwdrZWO8+aCxP+Kf7NtYbY6SsJQ8uAmKMjyCbpanVwsBI1daQ==
+X-Received: by 2002:a05:6512:3594:b0:4fc:4f3e:9cbf with SMTP id m20-20020a056512359400b004fc4f3e9cbfmr1266932lfr.50.1690377982608;
+        Wed, 26 Jul 2023 06:26:22 -0700 (PDT)
+Received: from [192.168.1.101] (abyl59.neoplus.adsl.tpnet.pl. [83.9.31.59])
+        by smtp.gmail.com with ESMTPSA id q20-20020ac24a74000000b004fe08e7dfbdsm742265lfp.44.2023.07.26.06.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 06:26:21 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/2] Fix up qcom reset controller
+Date:   Wed, 26 Jul 2023 15:26:18 +0200
+Message-Id: <20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMEYU4AlS0Vw7XIj@dhcp22.suse.cz>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPoewWQC/x2N0QqDMAwAf0XyvEBXxbr9yhijZtkMuFYTNwTx3
+ y17vIPjNjBWYYNrtYHyT0xyKnA+VUBDTG9GeRYG73ztgm9xyZMQzpQ/D2XjBZumCxdydReohZL
+ 10Rh7jYmGEqbvOBY5Kb9k/X9u930/AO6P51t3AAAA
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690377980; l=616;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=JJt+Fx5O226avAjx6F2X4Jc0LTcX/nKTaSByt/k1+Xs=;
+ b=p6z11iaQFY/T+4Sub7vRp5W9X18CTYVuqf2wMgbG/XwvZZ+woM4lZYAXdoqqVueQ9EHfoB1qx
+ F1LjJg46SiLBEeFR12vFBE3esrs16e0zlHW3R2hpLzg57ITeLydE3rT
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 02:57:55PM +0200, Michal Hocko wrote:
-> On Wed 26-07-23 13:48:45, Mike Rapoport wrote:
-> > On Wed, Jul 26, 2023 at 09:49:12AM +0200, Michal Hocko wrote:
-> > > On Fri 21-07-23 14:20:09, Mike Rapoport wrote:
-> > > > On Wed, Jul 19, 2023 at 04:26:04PM -0600, Ross Zwisler wrote:
-> > > > > On Wed, Jul 19, 2023 at 08:44:34AM +0300, Mike Rapoport wrote:
-> > > > > > 3. Switch memblock to use bottom up allocations. Historically memblock
-> > > > > > allocated memory from the top to avoid corrupting the kernel image and to
-> > > > > > avoid exhausting precious ZONE_DMA. I believe we can use bottom-up
-> > > > > > allocations with lower limit of memblock allocations set to 16M.
-> > > > > > 
-> > > > > > With the hack below no memblock allocations will end up in ZONE_MOVABLE:
-> > > > > 
-> > > > > Yep, I've confirmed that for my use cases at least this does the trick, thank
-> > > > > you!  I had thought about moving the memblock allocations, but had no idea it
-> > > > > was (basically) already supported and thought it'd be much riskier than just
-> > > > > adjusting where ZONE_MOVABLE lived.
-> > > > > 
-> > > > > Is there a reason for this to not be a real option for users, maybe per a
-> > > > > kernel config knob or something?  I'm happy to explore other options in this
-> > > > > thread, but this is doing the trick so far.
-> > > > 
-> > > > I think we can make x86 always use bottom up.
-> > > > 
-> > > > To do this properly we'd need to set lower limit for memblock allocations
-> > > > to MAX_DMA32_PFN and allow fallback below it so that early allocations
-> > > > won't eat memory from ZONE_DMA32.
-> > > > 
-> > > > Aside from x86 boot being fragile in general I don't see why this wouldn't
-> > > > work.
-> > > 
-> > > This would add a very subtle depency of a functionality on the specific
-> > > boot allocator behavior and that is bad for long term maintenance.
-> > 
-> > What do you mean by "specific boot allocator behavior"?
-> 
-> I mean that the expectation that the boot allocator starts from low
-> addresses and functionality depending on that is too fragile. This has
-> already caused some problems in the past IIRC.
+Let the toggle include a bigger delay and make sure it's using the
+correct function to achieve that.
 
-Well, any change in x86 boot sequence may cause all sorts of problems :)
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (2):
+      clk: qcom: reset: Increase max reset delay
+      clk: qcom: reset: Use the correct type of sleep/delay based on length
 
-We do some of the boot time allocations from low addresses when
-movable_node is enabled and that is entirely implicit and buried deep
-inside the code.
+ drivers/clk/qcom/reset.c | 8 +++++++-
+ drivers/clk/qcom/reset.h | 2 +-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+---
+base-commit: 0ba5d07205771c50789fd9063950aa75e7f1183f
+change-id: 20230726-topic-qcom_reset-44879c0387c6
 
-What I'm suggesting is to switch the allocations to bottom-up once and for
-all with explicitly set lower limit and a defined semantics for a fallback.
- 
-This might cause some bumps in the beginning, but I don't expect it to be a
-maintenance problem in the long run.
-
-And it will free higher memory from early allocations for all usecases, not
-just this one.
-
-> -- 
-> Michal Hocko
-> SUSE Labs
-
+Best regards,
 -- 
-Sincerely yours,
-Mike.
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
