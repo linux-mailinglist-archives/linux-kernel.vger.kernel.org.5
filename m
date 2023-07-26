@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED08763F5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A34763F52
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjGZTQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        id S231424AbjGZTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjGZTQs (ORCPT
+        with ESMTP id S229461AbjGZTPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:16:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A81C1FF0;
-        Wed, 26 Jul 2023 12:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690398994; x=1691003794; i=linosanfilippo@gmx.de;
- bh=XtJKEwl+cc1nQ+vurQl0d32oGbJP4QDV2yIvd7ZPqs0=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=dplnZJIMnrIdh/gSEjhvNBNQsMptt4qN/OUF01q78qsYA0rW46BE/bLHokop0YWnVbjiPox
- /XbRc1OZvJa4zZseDk0M4YHwD6jg47/zXs5rqQ0znSYx67LMh63d2ftK6o+zK7fNPQFoEON2X
- YEdi9UlontscDa6heAa8E8/j4S3dLLWUzHI8r+oSfYroQNdiAVq09NCaw9nO9a1YY2PawCuMd
- KOE6DqUT6PYS6w/zVbvY5Jiwf+a/fVFn70y8zHEOnMtlfuPkCwfWatLoSTRV9+VPIqzaIUAWx
- oqKERFQWozTWA1tLK84m1/AB5gygPSymjVuv0pIUDT+L0RcYBuGw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.0.0.62] ([113.53.91.195]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MGz1f-1qcAGf1ZqN-00E2LQ; Wed, 26
- Jul 2023 21:16:34 +0200
-Message-ID: <3f88771d-17df-fcf8-ef25-8813c6c754a9@gmx.de>
-Date:   Wed, 26 Jul 2023 21:16:30 +0200
+        Wed, 26 Jul 2023 15:15:50 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C262717
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1690398947;
+        bh=bmzxxv67tO74PHxuba7Soe8mJqMyNYizlfnKxsPM08M=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=Slz40rBcNg5VBnPJlKmJcQgcc8zXDXXHfi6GWanPrskFbpWCnLbrOfXifHHKsJI6i
+         dZc19fNna8rfODN/zP4QJldpojme4UPn93dg2dDy0Z88M95iT0oMXL5uwvLOZ8x3Ai
+         Y9psfhQ2en9M2jm7p5YX7KWX8btM+e5r85mtch1VCzH87wMGgbd++0SJGjgsviyUKG
+         ev9SJLRAjLsYnvz8xp1fiKOQslL5lRIHsFax/UGqPO9GLh4gH/oBrOSc19u7MJRqlA
+         jatlWQqBFtvtsRLvHq5/atYit2VYplL2v0AbGqBntIL6uOV28qgX1zF6lqBUYeC7gC
+         8KLxl2bh7Ex7g==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RB3X25JQJz1JsM;
+        Wed, 26 Jul 2023 15:15:46 -0400 (EDT)
+Message-ID: <934429dc-03d7-f7d4-8828-723e756f1411@efficios.com>
+Date:   Wed, 26 Jul 2023 15:16:34 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH][next] net: ethernet: slicoss: remove redundant increment
- of pointer data
+Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
 Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230726164522.369206-1-colin.i.king@gmail.com>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-In-Reply-To: <20230726164522.369206-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AoC8OX8jnUVP4YKYXasQs7JkiMpGUGOGDMbE1u8ZVDQoJOJ17Bn
- ilfbkpeYu+t3/Ck2FlxgjGaA0SiLOTLMD6TTGB/hShJUyEMUtJ7GAcmXOCOkd0rGxOcbb88
- kcuOYYeyH2e8jcTgkn9Q5GJSu9P0U0Oruc+Nnq3XJkVFHlqkJOShhRgei3jTE8r2dUb+0q9
- DAMgW5ugcqeOJUVKc7dpQ==
-UI-OutboundReport: notjunk:1;M01:P0:UOCVVL4dRLQ=;bNlu7v9O1dj5KH4akcoWPoKAb3+
- gletTswkxhLgWgesVvdtVauYQiRsHwnsDU4VDxLLdHKD8KoFiG9a83xs/6tt5H7F1D6WrMAYZ
- jvwqEdgdObMClNvlwO+5If/XuQg3Pyn1Iuv0LBZNO/C2oThIb4vNSQaOJ3cxeXvb2+AQagaYo
- LyBMq/E703ohR3uldFVmmq59M+RkwtDmPYWSZELZxebiMGIawj8tBqoIiDXp1PG+jtcgxXI/J
- vJoMzVXYU780i9etmHoy56G2SN7ijdsQtyQ/jWYnhiWGRpV+P/y5cT63Z6Y3BCSu3I/tLP5L2
- 6UVGAkzJijF2MdEnp7oMwWiYOeTmFl1gt+4YElzIBSkAzLr/T/4jTAGj0lVbsBQFFJ+TWi7Pp
- 3r0qlD5PoSFmwhpzr+6jPIL1SLvlUGmAP7bZJsWq7fnmbg/d9DEo1scsd05Re8wcIEgxnZ/Dl
- xxNT2pMfCds5eU6oIkdfrxZibHks5f70rCQ4vP/Ngxb7GN91z5mzDSZHBHnyFbkyWWUR2u/bq
- 6CoAmTk6VIBaKRhq0V9fJM6yXOFXcN4qtkiWkAIXJ9elJMpihdEOXSZD/MYHU7Y52rnhzJ15+
- cII4uuM5MjgneY2y4ifx3VDj4PTBUFcLm8UYJJLcRd37bN7iBesgpiuBeGgRs8b7fn/vmb0VF
- ROyv55KCW5Zmrr+go3ztNpWCTvWyYCyILPu/OmJOItXSdBa/7Zt3TA2S2ebpn3PzjCMkDU/Ya
- ByLcXO22n3F2jW7RJMy8TrqCzHqm4Z6zShpFyk87VymoLXxdS5DWfddA3BBxF5SrLlftf8Wx/
- eogtdhxk2goeDuDMlkQ7aNOdditbxAIrfNRitoTPe9wzM4gUPnvWTDbvmIak4Vi/Xrw+v6YDU
- 0+8rSacfVgEmCiCDGBVG6DS3znyhrg+AzeI3kgYjuNPppnA3Umfsf3GwdtkjIfgCJAyMOTB4L
- E+QgEXdQ2MQh3q15of04ps6cyR8=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
+ <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
+ <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
+ <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
+ <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
+In-Reply-To: <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/26/23 14:56, Mathieu Desnoyers wrote:
+> On 7/26/23 13:40, Shrikanth Hegde wrote:
+[...]
+>> Do you have SMT here? What is the system utilization when you are running
+>> this workload?
+> 
+> Yes, SMT is enabled, which brings the number of logical cpus to 384.
 
-On 26.07.23 18:45, Colin Ian King wrote:
-> The pointer data is being incremented but this change to the pointer
-> is not used afterwards. The increment is redundant and can be removed.
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/net/ethernet/alacritech/slicoss.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/alacritech/slicoss.c b/drivers/net/eth=
-ernet/alacritech/slicoss.c
-> index a30d0f172986..78231c85234d 100644
-> --- a/drivers/net/ethernet/alacritech/slicoss.c
-> +++ b/drivers/net/ethernet/alacritech/slicoss.c
-> @@ -1520,10 +1520,8 @@ static void slic_get_ethtool_stats(struct net_dev=
-ice *dev,
->
->  static void slic_get_strings(struct net_device *dev, u32 stringset, u8 =
-*data)
->  {
-> -	if (stringset =3D=3D ETH_SS_STATS) {
-> +	if (stringset =3D=3D ETH_SS_STATS)
->  		memcpy(data, slic_stats_strings, sizeof(slic_stats_strings));
-> -		data +=3D sizeof(slic_stats_strings);
-> -	}
->  }
->
->  static void slic_get_drvinfo(struct net_device *dev,
+Here is an additional interesting data point with nosmt=force on
+6.4.4:
 
-FWIW
-Acked-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
 
-Best Regards,
-Lino
+baseline:                       90s
+with idle-delay+nr_running<=4:  87s (3% speedup)
+
+hackbench -g 16 -f 20 --threads --pipe -l 480000 -s 100
+
+baseline:                       52s
+with idle-delay+nr_running<=4:  32s (38% speedup)
+
+So the impact of the patch appears to depend on how much the
+system actually reaches idle, which does make sense.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
