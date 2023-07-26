@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDE0763DE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECBD763DCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjGZRsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        id S229454AbjGZRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbjGZRr4 (ORCPT
+        with ESMTP id S232569AbjGZRhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:47:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98580E7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:47:55 -0700 (PDT)
+        Wed, 26 Jul 2023 13:37:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDA62727
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:37:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 35F3261C11
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:47:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97419C433C8;
-        Wed, 26 Jul 2023 17:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690393674;
-        bh=kjkGVTyWfRPTlqoBKs6nR/LSEfoi7kSB3Nvb0e/M5Ko=;
-        h=From:To:Cc:Subject:Date:From;
-        b=K0SrQ5ulVOTTLDVP6oHJEQXxHIkFbBaUETdeBHszGFfK0+NjtSd7ofnFIEXqp4xub
-         lIFsWox25y3QDPgmukdLm09UgY2wrtRkBvyDb7C538+aSHVJiMtXU//0P7XWQ0j8GJ
-         rVkzk7eNVcoE6kBs4Kbv3T1HRyIsz2zY/RjFnbp8MeZ+9yBZSWA6wwlzNoKN0DcpcT
-         xh4pQzrZEkHeGFhzOWeDTM8Gyt1cBStlnyi0gE9+rmXPLFRI/fDlNgQvZdPm8g+lwk
-         5lpP+Q9LuB4lm9c6Ul5WqG7TW0g9pHw2lGWbJZpqzSdD46JIoEKxC3s8uCoFbOKeVj
-         YdeJ86If7kgPA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: vdso: remove two .altinstructions related symbols
-Date:   Thu, 27 Jul 2023 01:36:19 +0800
-Message-Id: <20230726173619.3732-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE46C61B91
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:37:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7731BC433C8;
+        Wed, 26 Jul 2023 17:37:29 +0000 (UTC)
+Date:   Wed, 26 Jul 2023 18:37:26 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sme: Set new vector length before reallocating
+Message-ID: <ZMFZ1l6cEc7Qma7O@arm.com>
+References: <20230726-arm64-fix-sme-fix-v1-1-7752ec58af27@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726-arm64-fix-sme-fix-v1-1-7752ec58af27@kernel.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The two symbols __alt_instructions and __alt_instructions_end are not
-used, remove them.
+On Wed, Jul 26, 2023 at 01:12:26PM +0100, Mark Brown wrote:
+> As part of fixing the allocation of the buffer for SVE state when changing
+> SME vector length we introduced an immediate reallocation of the SVE state,
+> this is also done when changing the SVE vector length for consistency.
+> Unfortunately this reallocation is done prior to writing the new vector
+> length to the task struct, meaning the allocation is done with the old
+> vector length and can lead to memory corruption due to an undersized buffer
+> being used.
+> 
+> Move the update of the vector length before the allocation to ensure that
+> the new vector length is taken into account.
+> 
+> For some reason this isn't triggering any problems when running tests on
+> the arm64 fixes branch (even after repeated tries) but is triggering
+> issues very often after merge into mainline.
+> 
+> Fixes: d4d5be94a878 ("arm64/fpsimd: Ensure SME storage is allocated after SVE VL changes")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/arm64/kernel/vdso/vdso.lds.S | 2 --
- 1 file changed, 2 deletions(-)
+I'll add a cc stable here since the above commit was fixing code that
+went in for 5.19.
 
-diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
-index 6028f1fe2d1c..45354f2ddf70 100644
---- a/arch/arm64/kernel/vdso/vdso.lds.S
-+++ b/arch/arm64/kernel/vdso/vdso.lds.S
-@@ -50,9 +50,7 @@ SECTIONS
- 
- 	. = ALIGN(4);
- 	.altinstructions : {
--		__alt_instructions = .;
- 		*(.altinstructions)
--		__alt_instructions_end = .;
- 	}
- 
- 	.dynamic	: { *(.dynamic) }		:text	:dynamic
 -- 
-2.40.1
-
+Catalin
