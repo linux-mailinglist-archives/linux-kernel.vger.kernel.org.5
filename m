@@ -2,100 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB10A763231
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1F9763236
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjGZJbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S232153AbjGZJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbjGZJbe (ORCPT
+        with ESMTP id S232098AbjGZJbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:31:34 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798F2D43;
-        Wed, 26 Jul 2023 02:30:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690363808; x=1721899808;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VW/0RWz6OcJOAZAaREALwLaePcsp+WLwKLmTB+u9ah0=;
-  b=OMM1IKZ7w4vxeV6K1n0rO4Jkl4IdV9U6kaaBEZgs0GYq+A30GoyS1FGJ
-   TXmRvc9wT1wtKz4E8Lta5Xfbq7/rK8TriG8m2T6umUeOmmFJTl4k32QHY
-   b//GaGibOY1hlQeybMO+d4K8hpVDYRdFPndbhCYy95YqWurj/hvjQyXVZ
-   RXV7rhcE97k9J1MYTnxnu3YOhD7pl2c6950mrwa14aAJI4PVEzixxUe18
-   1G639Hlytg5OoVH4SMMd8hfmfhfcUWhtJAuaL/A/g2bUVsIvbUw5Y+bqy
-   vYM0Abyp8HC6ou3ZRoWBlaElHiulXSwotz7Tfy+ExRV3/Y8DJxbsOPBt6
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="asc'?scan'208";a="222289979"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 02:30:05 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 26 Jul 2023 02:30:04 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 26 Jul 2023 02:30:01 -0700
-Date:   Wed, 26 Jul 2023 10:29:27 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
-        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
-        <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-Message-ID: <20230726-preheated-carried-ac1a34bd7a4d@wendy>
-References: <20230725104514.821564989@linuxfoundation.org>
+        Wed, 26 Jul 2023 05:31:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED561420C;
+        Wed, 26 Jul 2023 02:30:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E09E619FD;
+        Wed, 26 Jul 2023 09:30:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DDCC433C7;
+        Wed, 26 Jul 2023 09:30:33 +0000 (UTC)
+Message-ID: <aeaf46cd-205e-8111-c366-d4aa7223be4c@xs4all.nl>
+Date:   Wed, 26 Jul 2023 11:30:32 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="abJNtELWpQ4Opme6"
-Content-Disposition: inline
-In-Reply-To: <20230725104514.821564989@linuxfoundation.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 1/2] Added Digiteq Automotive MGB4 driver
+Content-Language: en-US
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     tumic@gpxsee.org, Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
+References: <20230704131339.2177-1-tumic@gpxsee.org>
+ <20230704131339.2177-2-tumic@gpxsee.org>
+ <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
+In-Reply-To: <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---abJNtELWpQ4Opme6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 26/07/2023 11:14, Hans Verkuil wrote:
+> Hi Martin,
+> 
+> On 04/07/2023 15:13, tumic@gpxsee.org wrote:
+>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>
+>> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
+>> video interfaces. As for now, two modules - FPD-Link and GMSL - are
+>> available and supported by the driver. The card has two inputs and two
+>> outputs (FPD-Link only).
+>>
+>> In addition to the video interfaces it also provides a trigger signal
+>> interface and a MTD interface for FPGA firmware upload.
+>>
+>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>> ---
+>>  MAINTAINERS                             |   7 +
+>>  drivers/media/pci/Kconfig               |   1 +
+>>  drivers/media/pci/Makefile              |   1 +
+>>  drivers/media/pci/mgb4/Kconfig          |  17 +
+>>  drivers/media/pci/mgb4/Makefile         |   6 +
+>>  drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
+>>  drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
+>>  drivers/media/pci/mgb4/mgb4_core.c      | 711 ++++++++++++++++++
+>>  drivers/media/pci/mgb4/mgb4_core.h      |  72 ++
+>>  drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
+>>  drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
+>>  drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
+>>  drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
+>>  drivers/media/pci/mgb4/mgb4_io.h        |  33 +
+>>  drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
+>>  drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
+>>  drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
+>>  drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 757 +++++++++++++++++++
+>>  drivers/media/pci/mgb4/mgb4_sysfs_out.c | 700 ++++++++++++++++++
+>>  drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
+>>  drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
+>>  drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
+>>  drivers/media/pci/mgb4/mgb4_vin.c       | 930 ++++++++++++++++++++++++
+>>  drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
+>>  drivers/media/pci/mgb4/mgb4_vout.c      | 594 +++++++++++++++
+>>  drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
+>>  26 files changed, 4910 insertions(+)
+>>  create mode 100644 drivers/media/pci/mgb4/Kconfig
+>>  create mode 100644 drivers/media/pci/mgb4/Makefile
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
+>>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
+>>
+> 
+> When I build with: make W=1 KCFLAGS=-Wmaybe-uninitialized
+> 
+> I get this warning:
+> 
+> drivers/media/pci/mgb4/mgb4_vout.c: In function 'mgb4_vout_create':
+> drivers/media/pci/mgb4/mgb4_vout.c:473:27: warning: variable 'video' set but not used [-Wunused-but-set-variable]
+>   473 |         struct mgb4_regs *video;
+>       |                           ^~~~~
 
-On Tue, Jul 25, 2023 at 12:42:47PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.7 release.
-> There are 227 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+checkpatch.pl --strict also gives a lot of warnings.
 
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
+You can ignore the "line length of 131 exceeds 100 columns" warnings for the hex dump.
+Those are OK in that particular case.
 
-Thanks,
-Conor.
+But the suggested renamings would be good to implement to be consistent with other
+drivers.
 
---abJNtELWpQ4Opme6
-Content-Type: application/pgp-signature; name="signature.asc"
+Regarding these:
 
------BEGIN PGP SIGNATURE-----
+WARNING: Missing a blank line after declarations
+#3340: FILE: drivers/media/pci/mgb4/mgb4_trigger.c:93:
++               u32 data;
++               s64 ts __aligned(8);
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDndwAKCRB4tDGHoIJi
-0g9/AP0SMHkzqogQdYkeeBflvBCt2FWwRe8w/lFrXn/a38pq0AEAj7dkaHrDxhAN
-FIThd1J2wavJkGHq3MEHsN6LzE6V7QM=
-=+gnl
------END PGP SIGNATURE-----
+WARNING: externs should be avoided in .c files
+#3340: FILE: drivers/media/pci/mgb4/mgb4_trigger.c:93:
++               s64 ts __aligned(8);
 
---abJNtELWpQ4Opme6--
+This seems to be standard iio coding style, even though checkpatch
+gets confused by this. So let's leave this as-is.
+
+Regards,
+
+	Hans
