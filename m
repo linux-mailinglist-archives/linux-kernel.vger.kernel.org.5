@@ -2,186 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3C3764117
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2557764118
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjGZVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 17:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S231296AbjGZVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 17:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGZVX6 (ORCPT
+        with ESMTP id S230194AbjGZVX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 17:23:58 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4B269E;
-        Wed, 26 Jul 2023 14:23:43 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.99.148]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mi2BV-1pta0v23hh-00e1RL; Wed, 26 Jul 2023 23:22:56 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id 0EA553E9FD; Wed, 26 Jul 2023 23:22:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1690406570; bh=guMxT3zoTwr2vilWiRE+24bgG9Cap5wpXyAUs/XneQE=;
+        Wed, 26 Jul 2023 17:23:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56342685
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:23:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49E0F61CC7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:23:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09720C433C8;
+        Wed, 26 Jul 2023 21:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690406636;
+        bh=Cr6MMeqP+65xRzaEYL5cimVm8kzV7Vhv0CfB0k+tfFI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s6A0R4fi6QWjrigkfNpm/aqCP2zZqd9hR0eEZAvriHpSMxikVAfQHWcUVK7qVZJII
-         5H9TNx0gEVFDcCbkxuMzCCQW2SgPEF/oc/bJdhhI5/9hC3MCHIfZiurQ4uIlnF+eXH
-         RVVIxbEm90+nqFj9q15CIsxYN0KlpXLilMqJenjU=
-Date:   Wed, 26 Jul 2023 23:22:49 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     George Guo <guodongtai@kylinos.cn>
-Cc:     masahiroy@kernel.org, ndesaulniers@google.com, nathan@kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] samples/bpf: Update sockex2: get the expected output
- results
-Message-ID: <ZMGOqYG8oCAQmMtq@fjasle.eu>
-References: <20230726070955.178288-1-guodongtai@kylinos.cn>
+        b=pVWbh4tucaBiz9YE2hKhKDgjks3VFM9oRSuRV9NyI0UUR5aQONWbZdVemFS65CWES
+         bML4Gtz9oJYdEpkP/otuVTgtTXdnIdHPTkfvOqCiiQpjApTXZRVH4n11h9HCqLMb0z
+         5a1yCalwscfGSY4LpK2esnNbgF2TCrLchsQKFJv5TZm4anIb3PEbFhlKea4y57TYYL
+         bWUr8zVhT2UEy/YsF8ELsPyoP8zOjrgvOkMXsuAZVKRfsEHULbp8fCDYy/3IFXhwCD
+         40sdsr6nDCiAm75DKJZmIlbeDSlmDLOKxLDDdoCpGoN6sC/veeEe0yB1bowgzd39mp
+         Tyl/AMwzrjqzw==
+Date:   Wed, 26 Jul 2023 14:23:54 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 3/3] mm: Batch-zap large anonymous folio PTE mappings
+Message-ID: <20230726212354.GA811386@dev-arch.thelio-3990X>
+References: <20230720112955.643283-1-ryan.roberts@arm.com>
+ <20230720112955.643283-4-ryan.roberts@arm.com>
+ <20230726161942.GA1123863@dev-arch.thelio-3990X>
+ <44a91c46-08ba-9693-6c9c-a0a59921e9f1@arm.com>
+ <20230726195029.GA123524@dev-arch.thelio-3990X>
+ <fda96da3-7a57-dd07-2d43-aa10f23e3a26@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lNnXaHDZlVni+dB7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726070955.178288-1-guodongtai@kylinos.cn>
-X-Provags-ID: V03:K1:PEE9o+FfrnXX+8QFTuay5HcHbTBK8BtYX5C0kcSftKusoLpvWxw
- Y+yRx/pyYDxkC2FzKlPsUe1Zae5lLcVAJ2TM+EpR3C9yjNGMW156C1zqb330QIq7nLWw9xK
- G7bpU3i5/j/KfhuebM+47vwdoD/B8Z0uyrLMpnagZ+RDmLyqXhGjbsW2Pgsyi8455unU202
- wSHf+elj+ZRM5WRSlEzJg==
-UI-OutboundReport: notjunk:1;M01:P0:DbSP5bcjtjs=;7ah/Ba7fJBiL9s91hdBn2iE11MB
- THObXZkcooO4XVCmm49FFvGAlIqijqVrecu/5/QfXhyTQGh+qi1HNmHohAbk/WX4nPjCW3ZB0
- SrGAnvCZznKA6y8uBurmuNc84SigXjZRGNGRXItYmu/AKSRNo63+Wnz/LFhO2im3qzinpEC7p
- utBbhTDNoxHT7FjSc1K8sppgQzPb+n07xTr0+6bhTAIh8QtHpAbRCDPDzrMmHUvghpTCKEFcu
- D5fsyMjUM/RwQ6w7uCtkZtiRMhZW4lz3J0JGUZQNHzk97m/olyqLqoHIz+7S/5bLr8F+02AV8
- uSCAsZ6rnlBIefUGJA0bo0h6139g36gP7faxCTcs+DRYSPMwB3vCQtxZbz47EBPEy72zrPo4A
- K1Q/fSBdSCsS+bB/4n//Id1/GLXgF1q4V9HSjhulSBdfw1cHuH4ZW0cc2a7d2qnPlYn+DfMSy
- KZpIQkb0aNW/kUyqM1uFHMtfIcavqCzh/KNfuahitUiFWSc10DALjTCXIPiR0CjKYOESlTcbi
- eqRYISUgtiBIDby4zi2flkv96cseUi5VOdVa0S+pjHPI8Tt2Gsz6/YPnNtuxfwIzV8LcQvqoX
- eFJsArijjxg6cGKWJwLQOEF3cr8LecOD6FZo75mO5VdVg9d31cWSlzVIBRm+gYtk9w15rcEdv
- +mdA9Kys/zUoC9HRluTbBxPuxHH0ZJYQMwfcO+VNjw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <fda96da3-7a57-dd07-2d43-aa10f23e3a26@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 26, 2023 at 10:17:18PM +0100, Ryan Roberts wrote:
+> On 26/07/2023 20:50, Nathan Chancellor wrote:
+> > On Wed, Jul 26, 2023 at 08:38:25PM +0100, Ryan Roberts wrote:
+> >> On 26/07/2023 17:19, Nathan Chancellor wrote:
+> >>> Hi Ryan,
+> >>>
+> >>> On Thu, Jul 20, 2023 at 12:29:55PM +0100, Ryan Roberts wrote:
+> >>
+> >> ...
+> >>
+> >>>>
+> >>>
+> >>> After this change in -next as commit 904d9713b3b0 ("mm: batch-zap large
+> >>> anonymous folio PTE mappings"), I see the following splats several times
+> >>> when booting Debian's s390x configuration (which I have mirrored at [1])
+> >>> in QEMU (bisect log below):
+> >>>
+> >>> $ qemu-system-s390x \
+> >>>     -display none \
+> >>>     -nodefaults \
+> >>>     -M s390-ccw-virtio \
+> >>>     -kernel arch/s390/boot/bzImage \
+> >>>     -initrd rootfs.cpio \
+> >>>     -m 512m \
+> >>>     -serial mon:stdio
+> >>
+> >> I'm compiling the kernel for next-20230726 using the s390 cross compiler from kernel.org and the config you linked. Then booting with qemu-system-s390x (tried both distro's 4.2.1 and locally built 8.0.3) and the initrd you provided (tried passing it compressed and uncompressed), but I'm always getting a kernel panic due to not finding a rootfs:
+> >>
+> >> $ qemu-system-s390x \
+> >> 	-display none \
+> >> 	-nodefaults \
+> >> 	-M s390-ccw-virtio \
+> >> 	-kernel arch/s390/boot/bzImage
+> >> 	-initrd ../s390-rootfs.cpio.zst \
+> >> 	-m 512m \
+> >> 	-serial mon:stdio
+> >> KASLR disabled: CPU has no PRNG
+> >> KASLR disabled: CPU has no PRNG
+> >> Linux version 6.5.0-rc3-next-20230726 (ryarob01@e125769) (s390-linux-gcc (GCC) 13.1.0, GNU ld (GNU Binutils) 2.40) #1 SMP Wed Jul 26 19:56:26 BST 2023
+> >> setup: Linux is running under KVM in 64-bit mode
+> >> setup: The maximum memory size is 512MB
+> >> setup: Relocating AMODE31 section of size 0x00003000
+> >> cpu: 1 configured CPUs, 0 standby CPUs
+> >> Write protected kernel read-only data: 4036k
+> >> Zone ranges:
+> >>   DMA      [mem 0x0000000000000000-0x000000007fffffff]
+> >>   Normal   empty
+> >> Movable zone start for each node
+> >> Early memory node ranges
+> >>   node   0: [mem 0x0000000000000000-0x000000001fffffff]
+> >> Initmem setup node 0 [mem 0x0000000000000000-0x000000001fffffff]
+> >> percpu: Embedded 14 pages/cpu s26368 r0 d30976 u57344
+> >> Kernel command line: 
+> >> random: crng init done
+> >> Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+> >> Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+> >> Built 1 zonelists, mobility grouping on.  Total pages: 129024
+> >> mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+> >> Memory: 507720K/524288K available (3464K kernel code, 788K rwdata, 572K rodata, 796K init, 400K bss, 16568K reserved, 0K cma-reserved)
+> >> SLUB: HWalign=256, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> >> rcu: Hierarchical RCU implementation.
+> >> rcu:    RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=1.
+> >> rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+> >> rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
+> >> NR_IRQS: 3, nr_irqs: 3, preallocated irqs: 3
+> >> rcu: srcu_init: Setting srcu_struct sizes based on contention.
+> >> clocksource: tod: mask: 0xffffffffffffffff max_cycles: 0x3b0a9be803b0a9, max_idle_ns: 1805497147909793 ns
+> >> Console: colour dummy device 80x25
+> >> printk: console [ttysclp0] enabled
+> >> pid_max: default: 32768 minimum: 301
+> >> Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+> >> Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+> >> rcu: Hierarchical SRCU implementation.
+> >> rcu:    Max phase no-delay instances is 1000.
+> >> smp: Bringing up secondary CPUs ...
+> >> smp: Brought up 1 node, 1 CPU
+> >> clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+> >> futex hash table entries: 256 (order: 4, 65536 bytes, linear)
+> >> kvm-s390: SIE is not available
+> >> hypfs: The hardware system does not support hypfs
+> >> workingset: timestamp_bits=62 max_order=17 bucket_order=0
+> >> io scheduler mq-deadline registered
+> >> io scheduler kyber registered
+> >> cio: Channel measurement facility initialized using format extended (mode autodetected)
+> >> Discipline DIAG cannot be used without z/VM
+> >> vmur: The z/VM virtual unit record device driver cannot be loaded without z/VM
+> >> sclp_sd: Store Data request failed (eq=2, di=3, response=0x40f0, flags=0x00, status=0, rc=-5)
+> >> List of all partitions:
+> >> No filesystem could mount root, tried: 
+> >>
+> >> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(1,0)
+> >> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc3-next-20230726 #1
+> >> Hardware name: QEMU 8561 QEMU (KVM/Linux)
+> >> Call Trace:
+> >>  [<0000000000432b22>] dump_stack_lvl+0x62/0x80 
+> >>  [<0000000000158898>] panic+0x2f8/0x310 
+> >>  [<00000000005b7a56>] mount_root_generic+0x276/0x3b8 
+> >>  [<00000000005b7e46>] prepare_namespace+0x56/0x220 
+> >>  [<00000000004593e8>] kernel_init+0x28/0x1c8 
+> >>  [<000000000010217e>] __ret_from_fork+0x36/0x50 
+> >>  [<000000000046143a>] ret_from_fork+0xa/0x30
+> >>
+> >>
+> >> Any idea what I'm doing wrong here? Do I need to specify something on the kernel command line? (I've tried root=/dev/ram0, but get the same result).
+> > 
+> > Hmmm, interesting. The rootfs does need to be used decompressed (I think
+> > the kernel does support zstd compressed initrds but we only compress
+> > them to save space, not for running). Does the sha256sum sum match the
+> > one I just tested?
+> > 
+> > $ curl -LSsO https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/s390-rootfs.cpio.zst
+> > $ zstd -d s390-rootfs.cpio.zst
+> > $ sha256sum s390-rootfs.cpio
+> > 948fb3c2ad65e26aee8eb0a069f5c9e1ab2c59e4b4f62b63ead271e12a8479b4  s390-rootfs.cpio
+> 
+> Yes, this matches.
+> 
+> > $ qemu-system-s390x -display none -nodefaults -M s390-ccw-virtio -kernel arch/s390/boot/bzImage -initrd s390-rootfs.cpio -m 512m -serial mon:stdio
+> > ...
+> > [    7.890385] Trying to unpack rootfs image as initramfs...
+> > ...
+> > 
+> > I suppose it could be something with Kconfig too, here is the actual one
+> > that olddefconfig produces for me:
+> > 
+> > https://gist.github.com/nathanchance/3e4c1721ac204bbb969e2f288e1695c9
+> 
+> Ahh, I think this was the problem, after downloading this, the kernel is taking
+> much longer to compile and eventually giving me an assembler error:
+> 
+> arch/s390/kernel/mcount.S: Assembler messages:
+> arch/s390/kernel/mcount.S:140: Error: Unrecognized opcode: `aghik'
+> make[4]: *** [scripts/Makefile.build:360: arch/s390/kernel/mcount.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> make[3]: *** [scripts/Makefile.build:480: arch/s390/kernel] Error 2
+> make[2]: *** [scripts/Makefile.build:480: arch/s390] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [/data_nvme0n1/ryarob01/granule_perf/linux/Makefile:2035: .] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
+> 
+> The assembler that comes with the kernel.org toolchain is from binutils 2.40.
+> Perhaps that's too old for this instruction? It's inside an "#ifdef
+> CONFIG_FUNCTION_GRAPH_TRACER" block, so I'm guessing whatever config I was
+> previously using didn't have that enabled. I'll try to disable some configs to
+> workaround. What assembler are you using?
 
---lNnXaHDZlVni+dB7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah sorry about that, I forgot about that issue because I handled it
+during my bisect and all the manual reproduction/verification I have
+been doing in this thread has been against Andrew's -mm tree, which does
+not have that problem. Apply this patch on top of next-20230726 and
+everything should work...
 
-On Wed, Jul 26, 2023 at 03:09:55PM +0800 George Guo wrote:
-> Running "ping -4 -c5 localhost" only shows 4 times prints not 5:
->=20
-> $ sudo ./samples/bpf/sockex2
-> ip 127.0.0.1 bytes 392 packets 4
-> ip 127.0.0.1 bytes 784 packets 8
-> ip 127.0.0.1 bytes 1176 packets 12
-> ip 127.0.0.1 bytes 1568 packets 16
->=20
-> debug it with num prints:
-> $ sudo ./samples/bpf/sockex2
-> num =3D 1: ip 127.0.0.1 bytes 392 packets 4
-> num =3D 2: ip 127.0.0.1 bytes 784 packets 8
-> num =3D 3: ip 127.0.0.1 bytes 1176 packets 12
-> num =3D 4: ip 127.0.0.1 bytes 1568 packets 16
->=20
-> The reason is that we check it faster, just put sleep(1) before check
-> while(bpf_map_get_next_key(map_fd, &key, &next_key) =3D=3D 0).
-> Now we get the expected results:
->=20
-> $ sudo ./samples/bpf/sockex2
-> num =3D 0: ip 127.0.0.1 bytes 392 packets 4
-> num =3D 1: ip 127.0.0.1 bytes 784 packets 8
-> num =3D 2: ip 127.0.0.1 bytes 1176 packets 12
-> num =3D 3: ip 127.0.0.1 bytes 1568 packets 16
-> num =3D 4: ip 127.0.0.1 bytes 1960 packets 20
->=20
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> ---
+https://lore.kernel.org/20230726061834.1300984-1-hca@linux.ibm.com/
 
-Thanks, sounds reasonable to me (but I haven't checked it).  Might you want=
- to
-minimize the diff to only contain the move of the sleep call?
-
-Kind regards,
-Nicolas
-
-
->  samples/bpf/sockex2_user.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->=20
-> diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
-> index 2c18471336f0..84bf1ab77649 100644
-> --- a/samples/bpf/sockex2_user.c
-> +++ b/samples/bpf/sockex2_user.c
-> @@ -18,8 +18,8 @@ int main(int ac, char **argv)
->  	struct bpf_program *prog;
->  	struct bpf_object *obj;
->  	int map_fd, prog_fd;
-> -	char filename[256];
-> -	int i, sock, err;
-> +	char filename[256], command[64];
-> +	int i, sock, err, num =3D 5;
->  	FILE *f;
-> =20
->  	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-> @@ -42,21 +42,22 @@ int main(int ac, char **argv)
->  	assert(setsockopt(sock, SOL_SOCKET, SO_ATTACH_BPF, &prog_fd,
->  			  sizeof(prog_fd)) =3D=3D 0);
-> =20
-> -	f =3D popen("ping -4 -c5 localhost", "r");
-> +	snprintf(command, sizeof(command), "ping -4 -c%d localhost", num);
-> +	f =3D popen(command, "r");
->  	(void) f;
-> =20
-> -	for (i =3D 0; i < 5; i++) {
-> +	for (i =3D 0; i < num; i++) {
->  		int key =3D 0, next_key;
->  		struct pair value;
-> =20
-> +		sleep(1);
->  		while (bpf_map_get_next_key(map_fd, &key, &next_key) =3D=3D 0) {
->  			bpf_map_lookup_elem(map_fd, &next_key, &value);
-> -			printf("ip %s bytes %lld packets %lld\n",
-> +			printf("num =3D %d: ip %s bytes %lld packets %lld\n", i,
->  			       inet_ntoa((struct in_addr){htonl(next_key)}),
->  			       value.bytes, value.packets);
->  			key =3D next_key;
->  		}
-> -		sleep(1);
->  	}
->  	return 0;
->  }
-> --=20
-> 2.34.1
-
---=20
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
-
---lNnXaHDZlVni+dB7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmTBjqkACgkQB1IKcBYm
-EmnN7g/9HHXKhI3q4rW1w1RUQKsozSPEmGnWmd7f+9Yrt/oW76GQX+XxE9rhOksq
-XiKWtS+C/l0vNASQdWCrc77GPy5lKDSySoDzLy461PF9fEVQ1QbjCtoosHuM2eKm
-pmI8HUsAcEZbJ5RPr5U4gjKhXuCvNP66ZxmsXAAcbrdWMNVk5L3zMEo8iJGCnYr4
-/ry8UyJtP/qgNCJcX4wcUrNOfn9QsmIexLGh/zzG0pcH9PtQCdTBrSb6hFOSgv8J
-2yAx5a2PdD2RCKgcntYizbW1bhFIogC+1VcqfPB7Tv6bwZZiYBYsxV8OQr6Dpe5b
-sQUvem8wWTZQyjPuihsbAAiAnma2oCQMCgmSlOgDAouxbfrX8QFgDKY32mlpSZHC
-Kq21skAOOUR7s/kz3uHLuBdvNv/ayxTFXgupCXPR1xPIHaFIYanVds/pBLyc3FfA
-cX8mKCFLJhddSFmCXKdT2c6KmHcFDYQbnPPYh00l80qMfKKqNL/E32XMGNyAgAlO
-Agg2+WDAk0efJjb5zl5YSV6BSLRzNV+hUvFODhQUxjYWcWjrrs4eyHQQt6bQjkgk
-w69Mho1Wby+Q8LBXtD5DpraG+ZMrzi1dNtomQZtulB0c3o/j6BzN3VhGS7F5KKnk
-NYyfYbH4wH4k+XL9sboJxm8wbnn976sjemlM3oVq5l+3CqLvvHI=
-=qhta
------END PGP SIGNATURE-----
-
---lNnXaHDZlVni+dB7--
+Cheers,
+Nathan
