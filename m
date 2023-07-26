@@ -2,167 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF6A7627FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FE6762802
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjGZBIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
+        id S231244AbjGZBJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbjGZBI3 (ORCPT
+        with ESMTP id S231221AbjGZBJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:08:29 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C0A268B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:08:21 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76c4890a220so191370885a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690333700; x=1690938500;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n0NtF3U2QeP9UCLELIDDLvHXTMrNEAe+2WmgLDwewEc=;
-        b=Zwegie/aBtxLm5/hxoycUPRg/LkQ/+bpJIJPBs1adCSZnU6/M4XYi77KAHIkaUYFf5
-         5oiYrj8pSZiGiUIiSLGeDdPFyg85hpidIdlmu7QljlEKcwguPf2CD4c2jD2M9HiJpHkh
-         c0rIWHce8o8oUAI6BuBWP529MRjgnrlaI7qpg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690333700; x=1690938500;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n0NtF3U2QeP9UCLELIDDLvHXTMrNEAe+2WmgLDwewEc=;
-        b=GJ+fVWbV8jHyFW5qC78m0aSO6/pw+UvA0vh683219JK21svyLyWYyBlJqz4lqwfzcc
-         wfvMjTODJNX7JFDwDlWacDwcYThWsEZuxtM4pcFpGbUtfsto6T4I6j/j9gM4QhTy+y8y
-         rxhMWgVyJbZXJygPYwTvnXQxhWngINjGkQAbg3Z7SMxtoRYA/snvG4exjvOwk0vB4oaQ
-         Dv3l9pPfkzSbC12R+4ux5O/DTqtpjHwyAWHZwf/LvikBzH4Oc4xXkNaZQ/i0NzwfXNkE
-         wKmoX8nYQ/JsphLOfd02uZBJIEkFusCuXVP+0s9QaBUo44ic5dQQi3M6NJmJT10XyBvV
-         Rkng==
-X-Gm-Message-State: ABy/qLZDvrG7Z3CTYYbxc3qE1wOP1noOTXNSb2wxmIMtVFTVgAVIy8cY
-        wMnxudA8OHOvICEou4m1cq3c1Q==
-X-Google-Smtp-Source: APBJJlHootmHuQIc4Y64hnKm0eyRKTB4o0UGbqOkUA0SaKNL39yvmtLcwTImM1JUwqGGiCQBoMf6wA==
-X-Received: by 2002:a05:620a:e1e:b0:768:2472:d4ac with SMTP id y30-20020a05620a0e1e00b007682472d4acmr643965qkm.4.1690333700214;
-        Tue, 25 Jul 2023 18:08:20 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id t4-20020a05620a004400b00767c8308329sm812377qkt.25.2023.07.25.18.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 18:08:19 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 18:08:17 -0700
-From:   Yan Zhai <yan@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Yan Zhai <yan@cloudflare.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@cloudflare.com, Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-Message-ID: <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
-References: <cover.1690332693.git.yan@cloudflare.com>
+        Tue, 25 Jul 2023 21:09:42 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0B9268B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690333780; x=1721869780;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8N2pAFQ3if94TCvGhYfcjiKTRVqUsuCoD4cDE6Th3ug=;
+  b=kp/G6OZW6xJf41vRbVxEi5dus8sYDEGFnNylmcZU6c7CXMhDHykMMX+G
+   p+rHWL9/y6Abk4ptAEM5KvFYR9rjYBS+yaH/1uQGpxLfaNns4l1R0Ea1s
+   2X56YzcjIwYagVMb83G7xM4guVnX6z0oc2rv5jI9p5cR7rM3NnhI5uwkU
+   FGU7rge0/WHSOEAvg1OqfkVkdKZIrUM0Xe94YQFPAwDWSTcKsg6zXWJEe
+   STr7S1WgVbLcbQN5hvdjZilxbYFuxTYImCcdluCVxpL7jKink9WrxFobR
+   pE+OenZ5YBJ3DYoJAOVSIef6wmxMm+vji1La1wDLSqNea2u7lPFYUpWbj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352785419"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="352785419"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 18:09:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="1056985602"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="1056985602"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Jul 2023 18:09:38 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOT1c-0000V1-1E;
+        Wed, 26 Jul 2023 01:09:18 +0000
+Date:   Wed, 26 Jul 2023 09:08:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: arch/powerpc/mm/book3s64/radix_tlb.c:419:20: error: unused function
+ '_tlbie_pid_lpid'
+Message-ID: <202307260802.Mjr99P5O-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1690332693.git.yan@cloudflare.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-skb_do_redirect returns various of values: error code (negative),
-0 (success), and some positive status code, e.g. NET_XMIT_CN,
-NET_RX_DROP. Commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel
-infrastructure") didn't check the return code correctly, so positive
-values are propagated back along call chain:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
+commit: d78c8e32890ef7eca79ffd67c96022c7f9d8cce4 powerpc/mm: Rearrange if-else block to avoid clang warning
+date:   5 months ago
+config: powerpc-skiroot_defconfig (https://download.01.org/0day-ci/archive/20230726/202307260802.Mjr99P5O-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260802.Mjr99P5O-lkp@intel.com/reproduce)
 
-  ip_finish_output2
-    -> bpf_xmit
-      -> run_lwt_bpf
-        -> skb_do_redirect
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260802.Mjr99P5O-lkp@intel.com/
 
-Inside ip_finish_output2, redirected skb will continue to neighbor
-subsystem as if LWTUNNEL_XMIT_CONTINUE is returned, despite that this
-skb could have been freed. The bug can trigger use-after-free warning
-and crashes kernel afterwards:
+All errors (new ones prefixed by >>):
 
-https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
+>> arch/powerpc/mm/book3s64/radix_tlb.c:419:20: error: unused function '_tlbie_pid_lpid' [-Werror,-Wunused-function]
+     419 | static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
+         |                    ^
+>> arch/powerpc/mm/book3s64/radix_tlb.c:663:20: error: unused function '_tlbie_va_range_lpid' [-Werror,-Wunused-function]
+     663 | static inline void _tlbie_va_range_lpid(unsigned long start, unsigned long end,
+         |                    ^
+   2 errors generated.
 
-Convert positive statuses from skb_do_redirect eliminates this issue.
 
-Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Reported-by: Jordan Griege <jgriege@cloudflare.com>
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
----
- include/linux/netdevice.h | 2 ++
- net/core/filter.c         | 9 +++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+vim +/_tlbie_pid_lpid +419 arch/powerpc/mm/book3s64/radix_tlb.c
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index b828c7a75be2..520d808eec15 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -87,6 +87,8 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
- #define NET_RX_SUCCESS		0	/* keep 'em coming, baby */
- #define NET_RX_DROP		1	/* packet dropped */
- 
-+#define net_rx_errno(e)		((e) == NET_RX_DROP ? -ENOBUFS : (e))
-+
- #define MAX_NEST_DEV 8
- 
- /*
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 06ba0e56e369..564104543737 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2095,7 +2095,9 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
- 
- static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
- {
--	return dev_forward_skb_nomtu(dev, skb);
-+	int ret = dev_forward_skb_nomtu(dev, skb);
-+
-+	return net_rx_errno(ret);
- }
- 
- static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
-@@ -2108,7 +2110,7 @@ static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
- 		ret = netif_rx(skb);
- 	}
- 
--	return ret;
-+	return net_rx_errno(ret);
- }
- 
- static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
-@@ -2129,6 +2131,9 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
- 	ret = dev_queue_xmit(skb);
- 	dev_xmit_recursion_dec();
- 
-+	if (unlikely(ret > 0))
-+		ret = net_xmit_errno(ret);
-+
- 	return ret;
- }
- 
+1a472c9dba6b96 arch/powerpc/mm/tlb-radix.c          Aneesh Kumar K.V 2016-04-29  418  
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21 @419  static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  420  				   unsigned long ric)
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  421  {
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  422  	asm volatile("ptesync" : : : "memory");
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  423  
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  424  	/*
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  425  	 * Workaround the fact that the "ric" argument to __tlbie_pid
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  426  	 * must be a compile-time contraint to match the "i" constraint
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  427  	 * in the asm statement.
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  428  	 */
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  429  	switch (ric) {
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  430  	case RIC_FLUSH_TLB:
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  431  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_TLB);
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  432  		fixup_tlbie_pid_lpid(pid, lpid);
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  433  		break;
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  434  	case RIC_FLUSH_PWC:
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  435  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  436  		break;
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  437  	case RIC_FLUSH_ALL:
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  438  	default:
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  439  		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_ALL);
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  440  		fixup_tlbie_pid_lpid(pid, lpid);
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  441  	}
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  442  	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
+f0c6fbbb90504f arch/powerpc/mm/book3s64/radix_tlb.c Bharata B Rao    2021-06-21  443  }
+2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  444  struct tlbiel_pid {
+2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  445  	unsigned long pid;
+2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  446  	unsigned long ric;
+2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  447  };
+2275d7b5754a57 arch/powerpc/mm/book3s64/radix_tlb.c Nicholas Piggin  2019-09-03  448  
+
+:::::: The code at line 419 was first introduced by commit
+:::::: f0c6fbbb90504fb7e9dbf0865463d3c2b4de49e5 KVM: PPC: Book3S HV: Add support for H_RPT_INVALIDATE
+
+:::::: TO: Bharata B Rao <bharata@linux.ibm.com>
+:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
