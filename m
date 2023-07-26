@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C013763667
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21EB763677
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjGZMgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        id S232077AbjGZMig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjGZMgG (ORCPT
+        with ESMTP id S231210AbjGZMif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:36:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DFF1FEC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690374926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XrRclP6rIDLOdKio+U8eIclA36kjoF7aS12oWTBS7Y8=;
-        b=SH5qGEYvSB4HjIar2LqyR/gNL1mViwTG4Nibve5TzFmidKHbz0nCK9qLYTO7nXnm1zTiE6
-        zPYRCB4dm+FX4VPq/U+oGp4FK5T93ukdDIIkUDV8A9foQw2zonAxPl1h8OKAAdyCN7jeCy
-        01gqoONTi3ddP3mcZ00mw3UcEGiszyc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-266-wce5mkF9M-aFlY9zMsp0fg-1; Wed, 26 Jul 2023 08:35:23 -0400
-X-MC-Unique: wce5mkF9M-aFlY9zMsp0fg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0550F805951;
-        Wed, 26 Jul 2023 12:35:23 +0000 (UTC)
-Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A4576492B01;
-        Wed, 26 Jul 2023 12:35:21 +0000 (UTC)
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     terraluna977@gmail.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com,
-        rafael@kernel.org, linux-acpi@vger.kernel.org
-Subject: [PATCH 1/1] PCI: acpiphp:: use pci_assign_unassigned_bridge_resources() only if bus->self not NULL
-Date:   Wed, 26 Jul 2023 14:35:18 +0200
-Message-Id: <20230726123518.2361181-2-imammedo@redhat.com>
-In-Reply-To: <20230726123518.2361181-1-imammedo@redhat.com>
-References: <20230726123518.2361181-1-imammedo@redhat.com>
+        Wed, 26 Jul 2023 08:38:35 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918EE1FC4;
+        Wed, 26 Jul 2023 05:38:34 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-78372625badso341661839f.3;
+        Wed, 26 Jul 2023 05:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690375113; x=1690979913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aGT7UlmjRXi6PUL4RsiT1fEnt9Uyup46lUIlm5jld/A=;
+        b=gmMIekJSCAonC+Qw//FFTRq7li7414wah68hHNew0b++tLNPFKd+HQv/iQ1uv7502i
+         3/HLZ92/rBEUB3KhNk3FkV9OdKgb05us6gb9uEHbj25k2mWQ7iumpmyUPHydvhaATQ1v
+         K+uoufTUCYjqBQibmZctZk3Y0EzsTipnfpUxryMvsuC8iVNNE3RO2y9P9SQVkwNWh5bA
+         DroTfEFRR+hhCS1mqfHdWqyG8axiDHOJeGVpQjQfazqe7WbstNRRVQNbcVPXPYeCy/Ez
+         5mFD9MHW0npsmfgPpAlTjtR1wtnKC8PQYJ0kHquzVEvjxdUoYq+qn8Y+n9s3hsJRe/4a
+         DdEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690375113; x=1690979913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aGT7UlmjRXi6PUL4RsiT1fEnt9Uyup46lUIlm5jld/A=;
+        b=DHEHt3obdRUI0P4IxZnhmCFgIaFEiIO9T2qP4Ol40j8z9GUpY84TnN3WKG8097jqrm
+         21+0KAydZgwFCJS7NYWlbrquU7MIZcxyxSR99Tuq9TldpObIbwofBzCLk2RqICSNC4Up
+         vsJIpvnLEeFme7MlLunL3QERaMYaRe4NPtfdmt+E6t6aVqF3n2nK+9ToHWqroq2PV+K6
+         JjY/bo4sz7xE+IQaKYcBsS6NphDuHXV3RVxnYhl+NUm7N6b/Nquww3B8mrK2/9bNxXhE
+         zGwaiyvNEhS1Pi/05sIKaAVkfQvKmAGsGHQh9ojsQ3tIt6KVGlE9Ypmz2rhve2W4f1ku
+         vttg==
+X-Gm-Message-State: ABy/qLati9lyoGituXorbDFsTB2IWhM7/U17kH0wAmyWJWocUO6kzz4I
+        8eFjku9CO11T62+4RRDBQx2jnOEvZGb2CQ==
+X-Google-Smtp-Source: APBJJlG8Sr6PqOsWuM4C6cxct4nY9BAxq1iwf3FqwlGHmzatUWFPM3HwEphQpoEOJ4CTUCV7nbQoWg==
+X-Received: by 2002:a05:6602:420c:b0:786:2878:9593 with SMTP id cb12-20020a056602420c00b0078628789593mr1975128iob.0.1690375113466;
+        Wed, 26 Jul 2023 05:38:33 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-156-134.hlrn.qwest.net. [71.33.156.134])
+        by smtp.gmail.com with ESMTPSA id cg7-20020a0566381bc700b0042baffe832fsm4352025jab.101.2023.07.26.05.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 05:38:32 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v7 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with Custom Board
+Date:   Wed, 26 Jul 2023 06:37:39 -0600
+Message-Id: <20230726123747.4097755-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,103 +86,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit [1] switched acpiphp hotplug to use
-   pci_assign_unassigned_bridge_resources()
-which depends on bridge being available, however in some cases
-when acpiphp is in use, enable_slot() can get a slot without
-bridge associated.
-  1. legitimate case of hotplug on root bus
-      (likely not exiting on real hw, but widely used in virt world)
-  2. broken firmware, that sends 'Bus check' events to non
-     existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
-     endup at acpiphp:enable_slot(..., bridge = 0) and with bus
-     without bridge assigned to it.
+Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
 
-Issue is easy to reproduce with QEMU's 'pc' machine provides
-PCI hotplug on hostbridge slots. to reproduce boot kernel at
-commit [1] in VM started with followin CLI and hotplug a device:
-
-once guest OS is fully booted at qemu prompt:
-
-(qemu) device_add e1000
-
-it will cause NULL pointer dereference at
-
-    void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
-    {
-        struct pci_bus *parent = bridge->subordinate;
-
-[  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
-[...]
-[  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
-[  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
-[  612.277809]  enable_slot+0x21f/0x3e0
-[  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
-[  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
-[  612.277827]  acpi_device_hotplug+0xbc/0x540
-[  612.277834]  acpi_hotplug_work_fn+0x15/0x20
-[  612.277839]  process_one_work+0x1f7/0x370
-[  612.277845]  worker_thread+0x45/0x3b0
-[  612.277850]  ? __pfx_worker_thread+0x10/0x10
-[  612.277854]  kthread+0xdc/0x110
-[  612.277860]  ? __pfx_kthread+0x10/0x10
-[  612.277866]  ret_from_fork+0x28/0x40
-[  612.277871]  ? __pfx_kthread+0x10/0x10
-[  612.277876]  ret_from_fork_asm+0x1b/0x30
-
-The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
-following sequence:
-   1. suspend to RAM
-   2. wake up with the same backtrace being observed:
-   3. 2nd suspend to RAM attempt makes laptop freeze
-
-Fix it by using __pci_bus_assign_resources() instead of
-pci_assign_unassigned_bridge_resources()as we used to do
-but only in case when bus doesn't have a bridge associated
-with it.
-
-That let us keep hotplug on root bus working like it used to be
-but at the same time keeps resource reassignment usable on
-root ports (and other 1st level bridges) that was fixed by [1].
-
-1)
-Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
-Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
-Reported-by: Woody Suwalski <terraluna977@gmail.com>
-Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/pci/hotplug/acpiphp_glue.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-index 328d1e416014..3bc4e1f3efee 100644
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -498,6 +498,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 				acpiphp_native_scan_bridge(dev);
- 		}
- 	} else {
-+		LIST_HEAD(add_list);
- 		int max, pass;
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 2510eaa8906d..76bb098605e7 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -385,6 +385,12 @@ properties:
+           - const: toradex,apalis_imx6q
+           - const: fsl,imx6q
  
- 		acpiphp_rescan_slot(slot);
-@@ -511,10 +512,15 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 				if (pass && dev->subordinate) {
- 					check_hotplug_bridge(slot, dev);
- 					pcibios_resource_survey_bus(dev->subordinate);
-+					if (!bus->self)
-+						__pci_bus_size_bridges(dev->subordinate, &add_list);
- 				}
- 			}
- 		}
--		pci_assign_unassigned_bridge_resources(bus->self);
-+		if (bus->self)
-+			pci_assign_unassigned_bridge_resources(bus->self);
-+		else
-+			__pci_bus_assign_resources(bus, &add_list, NULL);
- 	}
- 
- 	acpiphp_sanitize_bus(bus);
++      - description: i.MX6Q Variscite VAR-SOM-MX6 Boards
++        items:
++          - const: variscite,mx6customboard
++          - const: variscite,var-som-imx6q
++          - const: fsl,imx6q
++
+       - description: TQ-Systems TQMa6Q SoM (variant A) on MBa6x
+         items:
+           - const: tq,imx6q-mba6x-a
 -- 
-2.39.3
+2.34.1
 
