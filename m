@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6595A76428E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC35764296
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjGZXdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 19:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        id S231151AbjGZXdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 19:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbjGZXdB (ORCPT
+        with ESMTP id S229687AbjGZXdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 19:33:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBC91BD1;
-        Wed, 26 Jul 2023 16:32:59 -0700 (PDT)
+        Wed, 26 Jul 2023 19:33:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2373F2727;
+        Wed, 26 Jul 2023 16:33:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E653961BAF;
-        Wed, 26 Jul 2023 23:32:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F757C433C7;
-        Wed, 26 Jul 2023 23:32:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96B9861CDB;
+        Wed, 26 Jul 2023 23:33:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7757C433C8;
+        Wed, 26 Jul 2023 23:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690414378;
-        bh=vGl5f8Mj7bBIOpcLd7XgVz7+FoDkK6OZsTuCGzsfUrQ=;
+        s=k20201202; t=1690414392;
+        bh=fCw5MBXiD1lggmFQTITNXliJqRzkSJyOEUC213FVJ/s=;
         h=From:To:Cc:Subject:Date:From;
-        b=hDV7a67tpFipVJH+fBV23DnEuUwV9M1/LeIoLcwypo8ROrj0W5/O56DxjNnJNWkMP
-         +77+LNZDRYqIMVkVQUJxULzkQlksdlArTRI8F4Jdzxvd1TyPxWABQaIaWzwlDhWZOh
-         LaCXk0FDFk5QfHPEEKYczm4sx6I4JGxl4rUnk/ivryrb6zKYYJFGZAqG8zck8xm4zz
-         1m8FQQ0vGQNYCWbmsmltMPr6nATq2fT1GHqBUyA6AMU2GWBed3new6SVmvGDu1JJMX
-         80E8laaJiOU4rUEHCnimNwhZXvLwgNi6q+fMz4WxHvHDXtbbe6VkMj4bcWokKjgIlX
-         UZDNArh6nXKZQ==
-Received: (nullmailer pid 3812608 invoked by uid 1000);
-        Wed, 26 Jul 2023 23:32:54 -0000
+        b=QxxF2VuK4Z+WRForiKwf9x4dZ2lgqeAs2m1MyK60KgGFibdO51duMYi0qN6slcYUE
+         wJ5QMrZaLvZofNhTqVzlIR1Ab6APHQS65oSAW7Dy4j1m71Aa+8BrhIQnF6It+ufJrs
+         DGjWFMwtqu7TcsQtF8UJELw/7lrKblN0Z5VFCqyiif+uVasS1ZsoDd/54SGjK5wnl+
+         CyY5zLf3zHakU3oCLUQZlMQZ5OiTeYoIB5qPleGqtKAqekmq/4Yr0JHCFgcnPIaaeg
+         zew21QqYT3BmigYoqn2CYdBsf+1L74aRrvrIjKrVYGmuhnv8fTx4B8FvTvc/NO8Nta
+         kini7+BCk1O9Q==
+Received: (nullmailer pid 3812927 invoked by uid 1000);
+        Wed, 26 Jul 2023 23:33:07 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     David Airlie <airlied@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+To:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Deepak Saxena <dsaxena@plexity.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Samin Guo <samin.guo@starfivetech.com>,
         Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Corey Minyard <minyard@acm.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
-        linuxppc-dev@lists.ozlabs.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        openipmi-developer@lists.sourceforge.net,
-        linux-aspeed@lists.ozlabs.org, linux-integrity@vger.kernel.org
-Subject: [PATCH v2] char: Explicitly include correct DT includes
-Date:   Wed, 26 Jul 2023 17:32:47 -0600
-Message-Id: <20230726233248.3812440-1-robh@kernel.org>
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH v3] watchdog: Explicitly include correct DT includes
+Date:   Wed, 26 Jul 2023 17:33:00 -0600
+Message-Id: <20230726233302.3812749-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,305 +100,442 @@ files used throughout the tree. In order to detangle these headers and
 replace the implicit includes with struct declarations, users need to
 explicitly include the correct includes.
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
+v3:
+ - Fix build for lantiq_wdt.c, pic32-dmt.c, pic32-wdt.c
 v2:
- - Fix build for pic32-rng.c dropping of_match_ptr()
+ - Add gef_wdt.c and mpc8xxx_wdt.c
 ---
- drivers/char/agp/uninorth-agp.c        | 1 +
- drivers/char/bsr.c                     | 3 +--
- drivers/char/hw_random/atmel-rng.c     | 2 +-
- drivers/char/hw_random/bcm2835-rng.c   | 3 +--
- drivers/char/hw_random/ingenic-trng.c  | 2 +-
- drivers/char/hw_random/iproc-rng200.c  | 3 +--
- drivers/char/hw_random/npcm-rng.c      | 3 +--
- drivers/char/hw_random/omap-rng.c      | 2 --
- drivers/char/hw_random/omap3-rom-rng.c | 1 -
- drivers/char/hw_random/pasemi-rng.c    | 3 +--
- drivers/char/hw_random/pic32-rng.c     | 5 ++---
- drivers/char/hw_random/stm32-rng.c     | 3 ++-
- drivers/char/hw_random/xgene-rng.c     | 5 ++---
- drivers/char/hw_random/xiphera-trng.c  | 1 -
- drivers/char/ipmi/kcs_bmc_aspeed.c     | 1 -
- drivers/char/tpm/tpm_ftpm_tee.c        | 1 -
- drivers/char/tpm/tpm_tis.c             | 1 -
- drivers/char/tpm/tpm_tis_spi_main.c    | 2 +-
- drivers/char/tpm/tpm_tis_synquacer.c   | 1 -
- 19 files changed, 15 insertions(+), 28 deletions(-)
+ drivers/watchdog/armada_37xx_wdt.c | 1 -
+ drivers/watchdog/at91rm9200_wdt.c  | 3 +--
+ drivers/watchdog/cpwd.c            | 2 +-
+ drivers/watchdog/ftwdt010_wdt.c    | 6 ++----
+ drivers/watchdog/gef_wdt.c         | 2 +-
+ drivers/watchdog/imx2_wdt.c        | 3 +--
+ drivers/watchdog/imx7ulp_wdt.c     | 1 -
+ drivers/watchdog/lantiq_wdt.c      | 3 ++-
+ drivers/watchdog/meson_wdt.c       | 4 ++--
+ drivers/watchdog/mpc8xxx_wdt.c     | 4 ++--
+ drivers/watchdog/mtk_wdt.c         | 1 -
+ drivers/watchdog/of_xilinx_wdt.c   | 3 +--
+ drivers/watchdog/pic32-dmt.c       | 1 -
+ drivers/watchdog/pic32-wdt.c       | 1 -
+ drivers/watchdog/pika_wdt.c        | 2 +-
+ drivers/watchdog/qcom-wdt.c        | 1 -
+ drivers/watchdog/rave-sp-wdt.c     | 2 +-
+ drivers/watchdog/riowd.c           | 2 +-
+ drivers/watchdog/rza_wdt.c         | 4 ++--
+ drivers/watchdog/rzg2l_wdt.c       | 2 +-
+ drivers/watchdog/s3c2410_wdt.c     | 1 -
+ drivers/watchdog/sama5d4_wdt.c     | 1 -
+ drivers/watchdog/sbsa_gwdt.c       | 3 +--
+ drivers/watchdog/starfive-wdt.c    | 3 ++-
+ drivers/watchdog/stm32_iwdg.c      | 1 -
+ drivers/watchdog/sunxi_wdt.c       | 1 -
+ drivers/watchdog/xilinx_wwdt.c     | 4 ++--
+ 27 files changed, 24 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/char/agp/uninorth-agp.c b/drivers/char/agp/uninorth-agp.c
-index 62de7f4ba864..84411b13c49f 100644
---- a/drivers/char/agp/uninorth-agp.c
-+++ b/drivers/char/agp/uninorth-agp.c
-@@ -3,6 +3,7 @@
-  * UniNorth AGPGART routines.
-  */
+diff --git a/drivers/watchdog/armada_37xx_wdt.c b/drivers/watchdog/armada_37xx_wdt.c
+index e58652939f8a..8133a5d05647 100644
+--- a/drivers/watchdog/armada_37xx_wdt.c
++++ b/drivers/watchdog/armada_37xx_wdt.c
+@@ -14,7 +14,6 @@
  #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/pci.h>
- #include <linux/slab.h>
- #include <linux/init.h>
-diff --git a/drivers/char/bsr.c b/drivers/char/bsr.c
-index 12143854aeac..70d31aed9011 100644
---- a/drivers/char/bsr.c
-+++ b/drivers/char/bsr.c
-@@ -6,11 +6,10 @@
-  * Author: Sonny Rao <sonnyrao@us.ibm.com>
-  */
+ #include <linux/moduleparam.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/types.h>
+diff --git a/drivers/watchdog/at91rm9200_wdt.c b/drivers/watchdog/at91rm9200_wdt.c
+index d20ec27ba354..558015f08c7a 100644
+--- a/drivers/watchdog/at91rm9200_wdt.c
++++ b/drivers/watchdog/at91rm9200_wdt.c
+@@ -18,6 +18,7 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/mfd/syscon/atmel-st.h>
+ #include <linux/miscdevice.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/platform_device.h>
+@@ -26,8 +27,6 @@
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
+ #include <linux/uaccess.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
  
-+#include <linux/device.h>
+ #define WDT_DEFAULT_TIME	5	/* seconds */
+ #define WDT_MAX_TIME		256	/* seconds */
+diff --git a/drivers/watchdog/cpwd.c b/drivers/watchdog/cpwd.c
+index 47250f9b68c7..901b94d456db 100644
+--- a/drivers/watchdog/cpwd.c
++++ b/drivers/watchdog/cpwd.c
+@@ -31,7 +31,7 @@
+ #include <linux/mutex.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/uaccess.h>
+ 
+ #include <asm/irq.h>
+diff --git a/drivers/watchdog/ftwdt010_wdt.c b/drivers/watchdog/ftwdt010_wdt.c
+index 442c5bf63ff4..28f5af752c10 100644
+--- a/drivers/watchdog/ftwdt010_wdt.c
++++ b/drivers/watchdog/ftwdt010_wdt.c
+@@ -14,7 +14,7 @@
+ #include <linux/io.h>
  #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/watchdog.h>
+@@ -221,20 +221,18 @@ static const struct dev_pm_ops ftwdt010_wdt_dev_pm_ops = {
+ 				ftwdt010_wdt_resume)
+ };
+ 
+-#ifdef CONFIG_OF
+ static const struct of_device_id ftwdt010_wdt_match[] = {
+ 	{ .compatible = "faraday,ftwdt010" },
+ 	{ .compatible = "cortina,gemini-watchdog" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, ftwdt010_wdt_match);
+-#endif
+ 
+ static struct platform_driver ftwdt010_wdt_driver = {
+ 	.probe		= ftwdt010_wdt_probe,
+ 	.driver		= {
+ 		.name	= "ftwdt010-wdt",
+-		.of_match_table = of_match_ptr(ftwdt010_wdt_match),
++		.of_match_table = ftwdt010_wdt_match,
+ 		.pm = &ftwdt010_wdt_dev_pm_ops,
+ 	},
+ };
+diff --git a/drivers/watchdog/gef_wdt.c b/drivers/watchdog/gef_wdt.c
+index 97afc907f659..6a1db1c783fa 100644
+--- a/drivers/watchdog/gef_wdt.c
++++ b/drivers/watchdog/gef_wdt.c
+@@ -31,7 +31,7 @@
+ #include <linux/fs.h>
  #include <linux/of.h>
  #include <linux/of_address.h>
--#include <linux/of_device.h>
 -#include <linux/of_platform.h>
- #include <linux/fs.h>
- #include <linux/module.h>
- #include <linux/cdev.h>
-diff --git a/drivers/char/hw_random/atmel-rng.c b/drivers/char/hw_random/atmel-rng.c
-index b8effe77d80f..a37367ebcbac 100644
---- a/drivers/char/hw_random/atmel-rng.c
-+++ b/drivers/char/hw_random/atmel-rng.c
-@@ -15,7 +15,7 @@
++#include <linux/platform_device.h>
  #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/hw_random.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
+ #include <linux/uaccess.h>
  
-diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index e98fcac578d6..e19b0f9f48b9 100644
---- a/drivers/char/hw_random/bcm2835-rng.c
-+++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -8,8 +8,7 @@
- #include <linux/io.h>
+diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
+index 6fcc3596103c..1a27665a2f53 100644
+--- a/drivers/watchdog/imx2_wdt.c
++++ b/drivers/watchdog/imx2_wdt.c
+@@ -26,8 +26,7 @@
  #include <linux/kernel.h>
  #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -#include <linux/of_address.h>
--#include <linux/of_platform.h>
+-#include <linux/of_device.h>
 +#include <linux/of.h>
  #include <linux/platform_device.h>
- #include <linux/printk.h>
+ #include <linux/regmap.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/imx7ulp_wdt.c b/drivers/watchdog/imx7ulp_wdt.c
+index 7ca486794ba7..c703586c6e5f 100644
+--- a/drivers/watchdog/imx7ulp_wdt.c
++++ b/drivers/watchdog/imx7ulp_wdt.c
+@@ -9,7 +9,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/reboot.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/lantiq_wdt.c b/drivers/watchdog/lantiq_wdt.c
+index 6fab504af88b..a273b97ebcb4 100644
+--- a/drivers/watchdog/lantiq_wdt.c
++++ b/drivers/watchdog/lantiq_wdt.c
+@@ -9,7 +9,8 @@
+ #include <linux/module.h>
+ #include <linux/bitops.h>
+ #include <linux/watchdog.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/uaccess.h>
  #include <linux/clk.h>
-diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
-index 0eb80f786f4d..759445d4f65a 100644
---- a/drivers/char/hw_random/ingenic-trng.c
-+++ b/drivers/char/hw_random/ingenic-trng.c
-@@ -11,8 +11,8 @@
- #include <linux/hw_random.h>
  #include <linux/io.h>
- #include <linux/iopoll.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
-index 06bc060534d8..34df3f0d3e45 100644
---- a/drivers/char/hw_random/iproc-rng200.c
-+++ b/drivers/char/hw_random/iproc-rng200.c
-@@ -12,8 +12,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- 
-diff --git a/drivers/char/hw_random/npcm-rng.c b/drivers/char/hw_random/npcm-rng.c
-index 9903d0357e06..8a304b754217 100644
---- a/drivers/char/hw_random/npcm-rng.c
-+++ b/drivers/char/hw_random/npcm-rng.c
-@@ -8,12 +8,11 @@
+diff --git a/drivers/watchdog/meson_wdt.c b/drivers/watchdog/meson_wdt.c
+index 539feaa1f904..497496f64f55 100644
+--- a/drivers/watchdog/meson_wdt.c
++++ b/drivers/watchdog/meson_wdt.c
+@@ -11,11 +11,11 @@
  #include <linux/init.h>
- #include <linux/random.h>
- #include <linux/err.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/hw_random.h>
- #include <linux/delay.h>
--#include <linux/of_irq.h>
- #include <linux/pm_runtime.h>
--#include <linux/of_device.h>
- 
- #define NPCM_RNGCS_REG		0x00	/* Control and status register */
- #define NPCM_RNGD_REG		0x04	/* Data register */
-diff --git a/drivers/char/hw_random/omap-rng.c b/drivers/char/hw_random/omap-rng.c
-index 00ff96703dd2..be03f76a2a80 100644
---- a/drivers/char/hw_random/omap-rng.c
-+++ b/drivers/char/hw_random/omap-rng.c
-@@ -26,8 +26,6 @@
- #include <linux/slab.h>
- #include <linux/pm_runtime.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/of_address.h>
- #include <linux/interrupt.h>
- #include <linux/clk.h>
- #include <linux/io.h>
-diff --git a/drivers/char/hw_random/omap3-rom-rng.c b/drivers/char/hw_random/omap3-rom-rng.c
-index f06e4f95114f..18dc46b1b58e 100644
---- a/drivers/char/hw_random/omap3-rom-rng.c
-+++ b/drivers/char/hw_random/omap3-rom-rng.c
-@@ -20,7 +20,6 @@
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/char/hw_random/pasemi-rng.c b/drivers/char/hw_random/pasemi-rng.c
-index 2498d4ef9fe2..6959d6edd44c 100644
---- a/drivers/char/hw_random/pasemi-rng.c
-+++ b/drivers/char/hw_random/pasemi-rng.c
-@@ -9,11 +9,10 @@
- 
- #include <linux/module.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/hw_random.h>
- #include <linux/delay.h>
--#include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/io.h>
- 
- #define SDCRNG_CTL_REG			0x00
-diff --git a/drivers/char/hw_random/pic32-rng.c b/drivers/char/hw_random/pic32-rng.c
-index 99c8bd0859a1..b314d994afcf 100644
---- a/drivers/char/hw_random/pic32-rng.c
-+++ b/drivers/char/hw_random/pic32-rng.c
-@@ -12,9 +12,8 @@
- #include <linux/hw_random.h>
  #include <linux/io.h>
  #include <linux/kernel.h>
 +#include <linux/mod_devicetable.h>
  #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -#include <linux/of.h>
 -#include <linux/of_device.h>
  #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
+ 
+diff --git a/drivers/watchdog/mpc8xxx_wdt.c b/drivers/watchdog/mpc8xxx_wdt.c
+index 1c569be72ea2..867f9f311379 100644
+--- a/drivers/watchdog/mpc8xxx_wdt.c
++++ b/drivers/watchdog/mpc8xxx_wdt.c
+@@ -16,8 +16,8 @@
+ #include <linux/fs.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <linux/watchdog.h>
+ #include <linux/io.h>
+diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+index a9c437598e7e..b2330b16b497 100644
+--- a/drivers/watchdog/mtk_wdt.c
++++ b/drivers/watchdog/mtk_wdt.c
+@@ -25,7 +25,6 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/types.h>
+diff --git a/drivers/watchdog/of_xilinx_wdt.c b/drivers/watchdog/of_xilinx_wdt.c
+index 2a079ca04aa3..05657dc1d36a 100644
+--- a/drivers/watchdog/of_xilinx_wdt.c
++++ b/drivers/watchdog/of_xilinx_wdt.c
+@@ -10,14 +10,13 @@
+ #include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/ioport.h>
+ #include <linux/watchdog.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+-#include <linux/of_address.h>
+ 
+ /* Register offsets for the Wdt device */
+ #define XWT_TWCSR0_OFFSET   0x0 /* Control/Status Register0 */
+diff --git a/drivers/watchdog/pic32-dmt.c b/drivers/watchdog/pic32-dmt.c
+index bc4ccddc75a3..ab0682492c85 100644
+--- a/drivers/watchdog/pic32-dmt.c
++++ b/drivers/watchdog/pic32-dmt.c
+@@ -12,7 +12,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/pic32-wdt.c b/drivers/watchdog/pic32-wdt.c
+index 6d1a00222991..1d282de312ef 100644
+--- a/drivers/watchdog/pic32-wdt.c
++++ b/drivers/watchdog/pic32-wdt.c
+@@ -12,7 +12,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/pika_wdt.c b/drivers/watchdog/pika_wdt.c
+index a98abd0d3146..782b8c23d99c 100644
+--- a/drivers/watchdog/pika_wdt.c
++++ b/drivers/watchdog/pika_wdt.c
+@@ -23,8 +23,8 @@
+ #include <linux/bitops.h>
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_platform.h>
+ 
+ #define DRV_NAME "PIKA-WDT"
+ 
+diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+index d776474dcdf3..9e790f0c2096 100644
+--- a/drivers/watchdog/qcom-wdt.c
++++ b/drivers/watchdog/qcom-wdt.c
+@@ -11,7 +11,6 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
+-#include <linux/of_device.h>
+ 
+ enum wdt_reg {
+ 	WDT_RST,
+diff --git a/drivers/watchdog/rave-sp-wdt.c b/drivers/watchdog/rave-sp-wdt.c
+index 2c95615b6354..5d1c2176d445 100644
+--- a/drivers/watchdog/rave-sp-wdt.c
++++ b/drivers/watchdog/rave-sp-wdt.c
+@@ -13,7 +13,7 @@
+ #include <linux/mfd/rave-sp.h>
+ #include <linux/module.h>
+ #include <linux/nvmem-consumer.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/reboot.h>
  #include <linux/slab.h>
+diff --git a/drivers/watchdog/riowd.c b/drivers/watchdog/riowd.c
+index c04b383e1712..b293792a292a 100644
+--- a/drivers/watchdog/riowd.c
++++ b/drivers/watchdog/riowd.c
+@@ -14,7 +14,7 @@
+ #include <linux/miscdevice.h>
+ #include <linux/watchdog.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/io.h>
+ #include <linux/uaccess.h>
+ #include <linux/slab.h>
+diff --git a/drivers/watchdog/rza_wdt.c b/drivers/watchdog/rza_wdt.c
+index fe6c2ed35e04..cb4901b3f777 100644
+--- a/drivers/watchdog/rza_wdt.c
++++ b/drivers/watchdog/rza_wdt.c
+@@ -9,9 +9,9 @@
+ #include <linux/bitops.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
  
-@@ -129,7 +128,7 @@ static struct platform_driver pic32_rng_driver = {
- 	.remove		= pic32_rng_remove,
- 	.driver		= {
- 		.name	= "pic32-rng",
--		.of_match_table = of_match_ptr(pic32_rng_of_match),
-+		.of_match_table = pic32_rng_of_match,
- 	},
- };
- 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index a6731cf0627a..efb6a9f9a11b 100644
---- a/drivers/char/hw_random/stm32-rng.c
-+++ b/drivers/char/hw_random/stm32-rng.c
-@@ -10,8 +10,9 @@
+diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+index d404953d0e0f..1741f98ca67c 100644
+--- a/drivers/watchdog/rzg2l_wdt.c
++++ b/drivers/watchdog/rzg2l_wdt.c
+@@ -11,7 +11,7 @@
  #include <linux/iopoll.h>
  #include <linux/kernel.h>
  #include <linux/module.h>
+-#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+index 95416a9bdd4b..2bcc8faa7fa5 100644
+--- a/drivers/watchdog/s3c2410_wdt.c
++++ b/drivers/watchdog/s3c2410_wdt.c
+@@ -23,7 +23,6 @@
+ #include <linux/slab.h>
+ #include <linux/err.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/regmap.h>
+ #include <linux/delay.h>
+diff --git a/drivers/watchdog/sama5d4_wdt.c b/drivers/watchdog/sama5d4_wdt.c
+index aeee934ca51b..71e8b5fbf51f 100644
+--- a/drivers/watchdog/sama5d4_wdt.c
++++ b/drivers/watchdog/sama5d4_wdt.c
+@@ -11,7 +11,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ #include <linux/reboot.h>
+diff --git a/drivers/watchdog/sbsa_gwdt.c b/drivers/watchdog/sbsa_gwdt.c
+index fd3cfdda4949..421ebcda62e6 100644
+--- a/drivers/watchdog/sbsa_gwdt.c
++++ b/drivers/watchdog/sbsa_gwdt.c
+@@ -43,10 +43,9 @@
+ #include <linux/io.h>
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/uaccess.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
+index 8058fca4d05d..9e6db8e0164f 100644
+--- a/drivers/watchdog/starfive-wdt.c
++++ b/drivers/watchdog/starfive-wdt.c
+@@ -8,7 +8,8 @@
+ #include <linux/clk.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
 +#include <linux/platform_device.h>
  #include <linux/pm_runtime.h>
  #include <linux/reset.h>
- #include <linux/slab.h>
-diff --git a/drivers/char/hw_random/xgene-rng.c b/drivers/char/hw_random/xgene-rng.c
-index 7c8f3cb7c6af..c25bb169563d 100644
---- a/drivers/char/hw_random/xgene-rng.c
-+++ b/drivers/char/hw_random/xgene-rng.c
-@@ -15,9 +15,8 @@
- #include <linux/init.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index 570a71509d2a..fa5e70c4b93a 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -17,7 +17,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
+ 
+diff --git a/drivers/watchdog/sunxi_wdt.c b/drivers/watchdog/sunxi_wdt.c
+index 6cf82922d3fb..b85354a99582 100644
+--- a/drivers/watchdog/sunxi_wdt.c
++++ b/drivers/watchdog/sunxi_wdt.c
+@@ -18,7 +18,6 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
+diff --git a/drivers/watchdog/xilinx_wwdt.c b/drivers/watchdog/xilinx_wwdt.c
+index 2585038d5575..1d998db41533 100644
+--- a/drivers/watchdog/xilinx_wwdt.c
++++ b/drivers/watchdog/xilinx_wwdt.c
+@@ -9,9 +9,9 @@
  #include <linux/interrupt.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
--#include <linux/of_irq.h>
--#include <linux/of_address.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
- #include <linux/timer.h>
- 
- #define RNG_MAX_DATUM			4
-diff --git a/drivers/char/hw_random/xiphera-trng.c b/drivers/char/hw_random/xiphera-trng.c
-index 2a9fea72b2e0..2c586d1fe8a9 100644
---- a/drivers/char/hw_random/xiphera-trng.c
-+++ b/drivers/char/hw_random/xiphera-trng.c
-@@ -7,7 +7,6 @@
- #include <linux/err.h>
  #include <linux/io.h>
- #include <linux/hw_random.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- 
-diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-index 2dea8cd5a09a..72640da55380 100644
---- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-@@ -14,7 +14,6 @@
+ #include <linux/ioport.h>
++#include <linux/mod_devicetable.h>
  #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
 -#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/poll.h>
- #include <linux/regmap.h>
-diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
-index 528f35b14fb6..76adb108076c 100644
---- a/drivers/char/tpm/tpm_ftpm_tee.c
-+++ b/drivers/char/tpm/tpm_ftpm_tee.c
-@@ -11,7 +11,6 @@
+-#include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <linux/watchdog.h>
  
- #include <linux/acpi.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/tee_drv.h>
- #include <linux/tpm.h>
-diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-index 7db3593941ea..e4030404c64e 100644
---- a/drivers/char/tpm/tpm_tis.c
-+++ b/drivers/char/tpm/tpm_tis.c
-@@ -25,7 +25,6 @@
- #include <linux/acpi.h>
- #include <linux/freezer.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/kernel.h>
- #include <linux/dmi.h>
- #include "tpm.h"
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 1f5207974a17..c6101914629d 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -28,7 +28,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- 
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/spi/spi.h>
- #include <linux/tpm.h>
- 
-diff --git a/drivers/char/tpm/tpm_tis_synquacer.c b/drivers/char/tpm/tpm_tis_synquacer.c
-index 49278746b0e2..7f9b4bfceb6e 100644
---- a/drivers/char/tpm/tpm_tis_synquacer.c
-+++ b/drivers/char/tpm/tpm_tis_synquacer.c
-@@ -9,7 +9,6 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/kernel.h>
- #include "tpm.h"
- #include "tpm_tis_core.h"
+ /* Max timeout is calculated at 100MHz source clock */
 -- 
 2.40.1
 
