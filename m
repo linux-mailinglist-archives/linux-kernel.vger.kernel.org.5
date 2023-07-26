@@ -2,180 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0E9763B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211EA763B15
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbjGZPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S233840AbjGZPan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233997AbjGZPbA (ORCPT
+        with ESMTP id S232934AbjGZPaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:31:00 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEBD2701;
-        Wed, 26 Jul 2023 08:30:54 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686bd857365so1101499b3a.3;
-        Wed, 26 Jul 2023 08:30:54 -0700 (PDT)
+        Wed, 26 Jul 2023 11:30:39 -0400
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A297F2689
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:30:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690385454; x=1690990254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QIvg9RvPixHqfad2Kamp9kJBh4DIZcFMKZRn7pfOsNE=;
-        b=UvNxr8eLJ9hNPoNo/nmVkgjI4LmuR9ztzcTY+8rMIzSoHv7gwljQlaHHd92gm95UVm
-         nU56pgA2IgpkZ87/1SXR5DOwjHop16+wfwPEV6IS33mO1QlQi6mSJ8FVmwoSi/+kZx4P
-         qanoK+6WcjuZX7MFStjdzc0nrwV3XSiclq3I9Cq47+YLuQmJjCuttPtZTA47gY8Px5VL
-         M0KGCrZjA8PmkcEwyq7+BkhWwhnMHinBdCCuaa+ygSj2WTJ1OO0iLTikgnWKqb83HYA/
-         7qGLhQ84+9qqmlQzBfUs/lur7fuEApadKSY61qyN9KpEKVsfsHhr/QJ2E0h+XppBvQji
-         sYQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690385454; x=1690990254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QIvg9RvPixHqfad2Kamp9kJBh4DIZcFMKZRn7pfOsNE=;
-        b=RwbvIAEsfrnnAkZp10d5GK2xnJ/PISXCb4hDRbDeoDEAmfqr/c4Ry6lcfXUFfrCNcq
-         /YuhuMlV5YN/35P4vjYhnxHYyM4BmmUDKUTu5/TirswnbZ9XEu5zOFbpWIYFsYTOSH06
-         xXSVVKhkHcEX3IxTQb9HvIVvz41o3dl1jg/0P+BkXFrleILggOmvUXldqNR/Yy4rmDY/
-         P0yx34lN5RE6pu2uVLYN554MMMEu63ERszFVgcobyM4pMxinpMBUuk6fhQPtNZIrvjPt
-         TuTkFx4KMcefaApb59FNLM4lPOOaEDRR/gr/HWit9Jg1XcHv0x1uze8oFF8beD4yzzoH
-         INyg==
-X-Gm-Message-State: ABy/qLaxNMwdkA9M8i8MKjifByrfhN1ISoeOjHYk1hO/kqAgpCx+3V03
-        cXLWMZBv4nW+bJU2y4bHpyqZhuyxoMLZPOtpal4=
-X-Google-Smtp-Source: APBJJlGsYifDPtFqieNjZSRGPJL2WJtbotBq8b23fwCEiS2YFyApRJq7zsSItWWZeZOofGURnKLE/TZxtTf3oC+7O6c=
-X-Received: by 2002:a17:90b:a4e:b0:268:5620:cfc7 with SMTP id
- gw14-20020a17090b0a4e00b002685620cfc7mr1509855pjb.30.1690385453708; Wed, 26
- Jul 2023 08:30:53 -0700 (PDT)
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1690385439; x=1721921439;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=ZjixsS62Rr6GJQ5wm3+wcP9Mfdcz39bR8AWo/tP3EXc=;
+  b=LBoHMWuxNO2mP9cuNNBTTxZj5WYW73HpBQDgo2t9UhqNFkhX9/iRPjhP
+   NJH4W24ANdY6+szt1CFijJFbr7lHg4gXCh80n63Bl8yxvDs8IqoQlMGA8
+   oqMn3VNfswbPKIxbrDXjVUPPaSOq0h0zt1RA928kxgYB9MjLaBl+VRWDu
+   c=;
+X-IronPort-AV: E=Sophos;i="6.01,232,1684800000"; 
+   d="scan'208";a="341886389"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 15:30:36 +0000
+Received: from EX19MTAUEB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com (Postfix) with ESMTPS id CA6DB806F9;
+        Wed, 26 Jul 2023 15:30:34 +0000 (UTC)
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19MTAUEB002.ant.amazon.com (10.252.135.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 26 Jul 2023 15:30:33 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Wed, 26 Jul 2023 15:30:33 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+        id 9468420D52; Wed, 26 Jul 2023 17:30:33 +0200 (CEST)
+From:   Pratyush Yadav <ptyadav@amazon.de>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, <linux-nvme@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
+ none
+References: <20230725110622.129361-1-ptyadav@amazon.de>
+        <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
+        <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
+        <20230726131408.GA15909@lst.de>
+Date:   Wed, 26 Jul 2023 17:30:33 +0200
+In-Reply-To: <20230726131408.GA15909@lst.de> (Christoph Hellwig's message of
+        "Wed, 26 Jul 2023 15:14:08 +0200")
+Message-ID: <mafs0cz0e8zc6.fsf_-_@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20230725131258.31306-1-linyunsheng@huawei.com>
- <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
- <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com> <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
-In-Reply-To: <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 26 Jul 2023 08:30:17 -0700
-Message-ID: <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from page_pool.h
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 4:23=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/7/26 18:43, Alexander Lobakin wrote:
-> > From: Alexander H Duyck <alexander.duyck@gmail.com>
-> > Date: Tue, 25 Jul 2023 08:47:46 -0700
-> >
-> >> On Tue, 2023-07-25 at 21:12 +0800, Yunsheng Lin wrote:
-> >>> Split types and pure function declarations from page_pool.h
-> >>> and add them in page_pool/types.h, so that C sources can
-> >>> include page_pool.h and headers should generally only include
-> >>> page_pool/types.h as suggested by jakub.
-> >>>
-> >>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >>> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> >>> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
-> >
-> > [...]
-> >
-> >>> +/* Caller must provide appropriate safe context, e.g. NAPI. */
-> >>> +void page_pool_update_nid(struct page_pool *pool, int new_nid);
-> >>> +
-> >>> +#endif /* _NET_PAGE_POOL_H */
-> >>
-> >>
-> >> This seems kind of overkill for what is needed. It seems like the
-> >> general thought process with splitting this was so that you had just
-> >> the minimum of what is needed to support skbuff.h and the functions
-> >> declared there. The rest of this would then be added via the .h to the
-> >> .c files that will actually be calling the functions.
-> >>
-> >> By that logic I think the only thing we really need is the function
-> >> declaration for page_pool_return_skb_page moved into skbuff.h. We coul=
-d
-> >> then just remove page_pool.h from skbuff.h couldn't we?
-> >
-> > This patch is not to drop page_pool.h include from skbuff.h.
-> > This is more future-proof (since I'm dropping this include anyway in my
-> > series) to have includes organized and prevent cases like that one with
-> > skbuff.h from happening. And to save some CPU cycles on preprocessing i=
-f
-> > that makes sense.
->
-> The suggestion is from below:
->
-> https://lore.kernel.org/all/20230710113841.482cbeac@kernel.org/
+On Wed, Jul 26 2023, Christoph Hellwig wrote:
 
-I get that. But it seemed like your types.h is full of inline
-functions. That is what I was responding to. I would leave the inline
-functions in page_pool.h unless there is some significant need for
-them.
+Hi all,
 
-> >
-> >>
-> >> Another thing we could consider doing is looking at splitting things u=
-p
-> >> so that we had a include file in net/core/page_pool.h to handle some o=
-f
-> >> the cases where we are just linking the page_pool bits to other core
-> >> file bits such as xdp.c and skbuff.c.
+> On Wed, Jul 26, 2023 at 10:58:36AM +0300, Sagi Grimberg wrote:
+>>>> For example, AWS EC2's i3.16xlarge instance does not expose NUMA
+>>>> information for the NVMe devices. This means all NVMe devices have
+>>>> NUMA_NO_NODE by default. Without this patch, random 4k read performance
+>>>> measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
+>>>> less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
+>>>> both nodes get similar performance (around 315k IOPS).
+>>>
+>>> irqbalance doesn't work with this driver though: the interrupts are
+>>> managed by the kernel. Is there some other reason to explain the perf
+>>> difference?
+
+Hmm, I did not know that. I have not gone and looked at the code but I
+think the same reasoning should hold, just with s/irqbalance/kernel. If
+the kernel IRQ balancer sees the device is on node 0, it would deliver
+its interrupts to CPUs on node 0.
+
+In my tests I can see that the interrupts for NVME queues are sent only
+to CPUs from node 0 without this patch. With this patch CPUs from both
+nodes get the interrupts.
+
+>>
+>> Maybe its because the numa_node goes to the tagset which allocates
+>> stuff based on that numa-node ?
 >
-> I suppose the above suggestion is about splitting or naming by
-> the user as the discussed in the below thread?
-> https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/
+> Yeah, the only explanation I could come up with is that without this
+> the allocations gets spread, and that somehow helps.  All of this
+> is a little obscure, but so is the NVMe practice of setting the node id
+> to first_memory_node, which no other driver does.  I'd really like to
+> understand what's going on here first.  After that this patch probably
+> is the right thing, I'd just like to understand why.
 
-Actually my suggestion is more about defining boundaries for what is
-meant to be used by drivers and what isn't. The stuff you could keep
-in net/core/page_pool.h would only be usable by the files in net/core/
-whereas the stuff you are keeping in the include/net/ folder is usable
-by drivers. It is meant to prevent things like what you were
-complaining about with the Mellanox drivers making use of interfaces
-you didn't intend them to use.
+See above for my conjecture on why this happens.
 
-So for example you could pull out functions like
-page_pool_return_skb_page, page_pool_use_xdp_mem,
-page_pool_update_nid, and the like and look at relocating them into
-the net/core/ folder and thereby prevent abuse of those functions by
-drivers.
+More specifically, I discovered this when running an application pinned
+to a node 1 CPU reading from an NVME device. I noticed it was performing
+worse than when it was pinned to node 0.
+
+If the process is free to move around it might not see such a large
+performance difference since it could move to a node 0 CPU. But if it is
+pinned to a CPU in node 1 then the interrupt will always hit a node 0
+CPU and create higher latency for the reads.
+
+I have a simple fio test that can reproduce this. Save this [1] as 
+fio.txt and then run numactl --cpunodebind 1 fio ./fio.txt. You can run
+it on any host with an NVME device that has no NUMA node. I have tested
+this on AWS EC2's i3.16xlarge instance type.
+
+[1]
+    [global]
+    ioengine=libaio
+    filename=/dev/nvme0n1
+    group_reporting=1
+    direct=1
+    verify=0
+    norandommap=0
+    size=10%
+    time_based=1
+    runtime=30
+    ramp_time=0
+    randrepeat=0
+    log_max_value=1
+    unified_rw_reporting=1
+    percentile_list=50:99:99.9:99.99:99.999
+    bwavgtime=10000
+
+    [4k_randread_qd16_4w]
+    stonewall
+    bs=4k
+    rw=randread
+    iodepth=32
+    numjobs=1
+
+-- 
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
