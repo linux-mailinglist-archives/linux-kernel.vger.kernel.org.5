@@ -2,180 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5127632F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71927632F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbjGZJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
+        id S233478AbjGZJ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjGZJ5T (ORCPT
+        with ESMTP id S233744AbjGZJ6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:57:19 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57B810F9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:56:21 -0700 (PDT)
-Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9q2c3VMJzNmZ6;
-        Wed, 26 Jul 2023 17:52:56 +0800 (CST)
-Received: from [10.67.103.231] (10.67.103.231) by
- kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+        Wed, 26 Jul 2023 05:58:32 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A84130DE;
+        Wed, 26 Jul 2023 02:57:55 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R9q5L3stVzLnrf;
+        Wed, 26 Jul 2023 17:55:18 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 17:56:18 +0800
-Message-ID: <0909d861-e256-8d91-587f-16254283b149@huawei.com>
-Date:   Wed, 26 Jul 2023 17:56:18 +0800
+ 15.1.2507.27; Wed, 26 Jul 2023 17:57:53 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix warning in trace_buffered_event_disable()
+Date:   Wed, 26 Jul 2023 17:58:04 +0800
+Message-ID: <20230726095804.920457-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH RESEND v3 2/2] doc: soc: hisilicon: Add Kunpeng HCCS
- driver documentation
-To:     Wei Xu <xuwei5@hisilicon.com>, <arnd@arndb.de>, <krzk@kernel.org>,
-        <sudeep.holla@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <wanghuiqiang@huawei.com>,
-        <tanxiaofei@huawei.com>, <liuyonglong@huawei.com>,
-        <lihuisong@huawei.com>
-References: <20230424073020.4039-1-lihuisong@huawei.com>
- <20230725075706.48939-1-lihuisong@huawei.com>
- <20230725075706.48939-3-lihuisong@huawei.com>
- <64BF8EDE.7090304@hisilicon.com>
-From:   "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <64BF8EDE.7090304@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.231]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600004.china.huawei.com (7.193.23.242)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Warning happened in trace_buffered_event_disable() at
+  WARN_ON_ONCE(!trace_buffered_event_ref)
 
-在 2023/7/25 16:59, Wei Xu 写道:
-> Hi Huisong,
->
-> On 2023/7/25 15:57, Huisong Li wrote:
->> Document the sysfs attributes description provided by HCCS driver on
->> Kunpeng SoC.
->>
->> Signed-off-by: Huisong Li <lihuisong@huawei.com>
->> ---
->>   .../sysfs-devices-platform-kunpeng_hccs       | 76 +++++++++++++++++++
->>   MAINTAINERS                                   |  1 +
->>   2 files changed, 77 insertions(+)
->>   create mode 100644 Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
->>
->> diff --git a/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs b/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
->> new file mode 100644
->> index 000000000000..83ebed801249
->> --- /dev/null
->> +++ b/Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
->> @@ -0,0 +1,76 @@
->> +What:		/sys/devices/platform/HISI04Bx:00/chipX/all_linked
->> +		/sys/devices/platform/HISI04Bx:00/chipX/linked_full_lane
->> +		/sys/devices/platform/HISI04Bx:00/chipX/crc_err_cnt
->> +Date:		May 2023
-> Please update the date to "November 2023" to match the 6.6 kernel.
-Ack. will fix in next version.
->
->> +KernelVersion:	6.6
->> +Contact:	Huisong Li <lihuisong@huawei.org>
->> +Description:
->> +		The /sys/devices/platform/HISI04Bx:00/chipX/ directory
->> +		contains read-only attributes exposing some summarization
->> +		information of all HCCS ports under a specified chip.
->> +		The X in 'chipX' indicates the Xth chip on platform.
->> +
->> +		There are following attributes in this directory:
->> +		================= ==== =========================================
->> +		all_linked:       (RO) if all enabled ports on this chip are
->> +				       linked (bool).
->> +		linked_full_lane: (RO) if all linked ports on this chip are full
->> +				       lane (bool).
->> +		crc_err_cnt:      (RO) total CRC err count for all ports on this
->> +				       chip.
->> +		============= ==== =============================================
->> +
->> +What:		/sys/devices/platform/HISI04Bx:00/chipX/dieY/all_linked
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/linked_full_lane
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/crc_err_cnt
->> +Date:		May 2023
-> Ditto.
-Ack
->
->> +KernelVersion:	6.6
->> +Contact:	Huisong Li <lihuisong@huawei.org>
->> +Description:
->> +		The /sys/devices/platform/HISI04Bx:00/chipX/dieY/ directory
->> +		contains read-only attributes exposing some summarization
->> +		information of all HCCS ports under a specified die.
->> +		The Y in 'dieY' indicates the hardware id of the die on chip who
->> +		has chip id X.
->> +
->> +		There are following attributes in this directory:
->> +		================= ==== =========================================
->> +		all_linked:       (RO) if all enabled ports on this die are
->> +				       linked (bool).
->> +		linked_full_lane: (RO) if all linked ports on this die are full
->> +				       lane (bool).
->> +		crc_err_cnt:      (RO) total CRC err count for all ports on this
->> +				       die.
->> +		============= ==== =============================================
->> +
->> +What:		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/type
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/lane_mode
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/enable
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/cur_lane_num
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/lane_mask
->> +		/sys/devices/platform/HISI04Bx:00/chipX/dieY/hccsN/crc_err_cnt
->> +Date:		May 2023
-> Ditto.
+  Call Trace:
+   ? __warn+0xa5/0x1b0
+   ? trace_buffered_event_disable+0x189/0x1b0
+   __ftrace_event_enable_disable+0x19e/0x3e0
+   free_probe_data+0x3b/0xa0
+   unregister_ftrace_function_probe_func+0x6b8/0x800
+   event_enable_func+0x2f0/0x3d0
+   ftrace_process_regex.isra.0+0x12d/0x1b0
+   ftrace_filter_write+0xe6/0x140
+   vfs_write+0x1c9/0x6f0
+   [...]
 
-Ack
+The cause of the warning is in __ftrace_event_enable_disable(),
+trace_buffered_event_enable() was called once while
+trace_buffered_event_disable() was called twice.
+Reproduction script show as below, for analysis, see the comments:
+ ```
+ #!/bin/bash
 
->
->> +KernelVersion:	6.6
->> +Contact:	Huisong Li <lihuisong@huawei.org>
->> +Description:
->> +		The /sys/devices/platform/HISI04Bx/chipX/dieX/hccsN/ directory
->> +		contains read-only attributes exposing information about
->> +		a HCCS port. The N value in 'hccsN' indicates this port id.
->> +		The X in 'chipX' indicates the ID of the chip to which the
->> +		HCCS port belongs. For example, X ranges from to 'n - 1' if the
->> +		chip number on platform is n.
->> +		The Y in 'dieY' indicates the hardware id of the die to which
->> +		the hccs port belongs.
->> +
->> +		The HCCS port have the following attributes:
->> +		============= ==== =============================================
->> +		type:         (RO) port type (string), e.g. HCCS-v1 -> H32
->> +		lane_mode:    (RO) the lane mode of this port (string), e.g. x8
->> +		enable:       (RO) indicate if this port is enabled (bool).
->> +		cur_lane_num: (RO) current lane number of this port.
->> +		lane_mask:    (RO) current lane mask of this port, every bit
->> +			           indicates a lane.
->> +		crc_err_cnt:  (RO) CRC err count on this port.
->> +		============= ==== =============================================
->> +		Note: type, lane_mode and enable are fixed attributes on
->> +		      running platform.
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 4e55ff992171..7a34bab232eb 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -9474,6 +9474,7 @@ F:	drivers/crypto/hisilicon/zip/
->>   HISILICON KUNPENG SOC HCCS DRIVER
->>   M:	Huisong Li <lihuisong@huawei.com>
->>   S:	Maintained
->> +F:	Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
->>   F:	drivers/soc/hisilicon/kunpeng_hccs.c
->>   F:	drivers/soc/hisilicon/kunpeng_hccs.h
->>   
->>
-> .
+ cd /sys/kernel/tracing/
+
+ # 1. Register a 'disable_event' command, then:
+ #    1) SOFT_DISABLED_BIT was set;
+ #    2) trace_buffered_event_enable() was called first time;
+ echo 'cmdline_proc_show:disable_event:initcall:initcall_finish' > \
+     set_ftrace_filter
+
+ # 2. Enable the event registered, then:
+ #    1) SOFT_DISABLED_BIT was cleared;
+ #    2) trace_buffered_event_disable() was called first time;
+ echo 1 > events/initcall/initcall_finish/enable
+
+ # 3. Try to call into cmdline_proc_show(), then SOFT_DISABLED_BIT was
+ #    set again!!!
+ cat /proc/cmdline
+
+ # 4. Unregister the 'disable_event' command, then:
+ #    1) SOFT_DISABLED_BIT was cleared again;
+ #    2) trace_buffered_event_disable() was called second time!!!
+ echo '!cmdline_proc_show:disable_event:initcall:initcall_finish' > \
+     set_ftrace_filter
+ ```
+
+To fix it, IIUC, we can change to call trace_buffered_event_enable() at
+fist time soft-mode enabled, and call trace_buffered_event_disable() at
+last time soft-mode disabled.
+
+Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace_events.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 5d6ae4eae510..578f1f7d49a6 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -611,7 +611,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ {
+ 	struct trace_event_call *call = file->event_call;
+ 	struct trace_array *tr = file->tr;
+-	unsigned long file_flags = file->flags;
+ 	int ret = 0;
+ 	int disable;
+ 
+@@ -635,6 +634,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 				break;
+ 			disable = file->flags & EVENT_FILE_FL_SOFT_DISABLED;
+ 			clear_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
++			/* Disable use of trace_buffered_event */
++			trace_buffered_event_disable();
+ 		} else
+ 			disable = !(file->flags & EVENT_FILE_FL_SOFT_MODE);
+ 
+@@ -673,6 +674,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 			if (atomic_inc_return(&file->sm_ref) > 1)
+ 				break;
+ 			set_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
++			/* Enable use of trace_buffered_event */
++			trace_buffered_event_enable();
+ 		}
+ 
+ 		if (!(file->flags & EVENT_FILE_FL_ENABLED)) {
+@@ -712,15 +715,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
+ 		break;
+ 	}
+ 
+-	/* Enable or disable use of trace_buffered_event */
+-	if ((file_flags & EVENT_FILE_FL_SOFT_DISABLED) !=
+-	    (file->flags & EVENT_FILE_FL_SOFT_DISABLED)) {
+-		if (file->flags & EVENT_FILE_FL_SOFT_DISABLED)
+-			trace_buffered_event_enable();
+-		else
+-			trace_buffered_event_disable();
+-	}
+-
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
