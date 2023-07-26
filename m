@@ -2,184 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BF1763C67
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF81C763C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjGZQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
+        id S231674AbjGZQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjGZQ06 (ORCPT
+        with ESMTP id S231357AbjGZQ1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:26:58 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD732D4F;
-        Wed, 26 Jul 2023 09:26:31 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QGQH7e009437;
-        Wed, 26 Jul 2023 11:26:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690388777;
-        bh=MVdmp+gOoZlAhPHT4qa7hQWAupBLfXTDw707s4VDyrA=;
-        h=From:To:CC:Subject:Date;
-        b=mn9gCRXkS8xbWmFJlFkauTNUAuNcDSnnZoeD+I8oI1UzVHso0fr1byxJzkyKrOvl4
-         0ifuSrl6fkucQSvx/DGkALB8XNvCHUlNr+Lsp3UJgVZK33eL0Ug/4OtnuMDOAWwKae
-         bmYdH2Z4mOxc/ilHyM4+ycvucgaw+s0gi2Cr08KA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QGQGbb014798
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Jul 2023 11:26:16 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
- Jul 2023 11:26:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 26 Jul 2023 11:26:16 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QGQF0Z015623;
-        Wed, 26 Jul 2023 11:26:16 -0500
-From:   Devarsh Thakkar <devarsht@ti.com>
-To:     <mchehab@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <b-brnich@ti.com>,
-        <detheridge@ti.com>, <p-mantena@ti.com>, <vijayp@ti.com>,
-        <devarsht@ti.com>
-Subject: [PATCH] dt-bindings: media: Add bindings for Imagination E5010 JPEG Encoder driver
-Date:   Wed, 26 Jul 2023 21:56:15 +0530
-Message-ID: <20230726162615.1270075-1-devarsht@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 26 Jul 2023 12:27:53 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8B026AC
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690388872; x=1721924872;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=97MgdinZzeqLR7dKFXO0MmcsC1rkrqiXpSbNH2kGwTI=;
+  b=bxKCGoWPeLY5lWUDCMXNMEVMSd10ffLHvuIvLC82hqeMbV9m6R6VhinZ
+   U989lgcH/toHGzW/3Tq5Zwi89oHZlGwRf1wR+VFBAbhWEIhGZ5JixgvvB
+   FsN/n1LQbNI4Jxoa6FpAqcLzc43dTANLgjtTCih7EgLY5SCd7bYfR+6Pf
+   pPinoSmWbrKAcPOL4uMr0HIJgqlo16ROQ1QjwBS4RfQzN+AJRtnMfagiH
+   PlKZjyOHPiLrex0/s4hpvRuQ4KiQ6TqHtUg1PyOf+lkun6Qu1gWPeyb3T
+   KVJpge878UganhNC0nVt1zEIqkwrgD57v0c42auc27DMjSGpexu62+4MM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="352968319"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="352968319"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 09:27:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="796643250"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="796643250"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Jul 2023 09:27:46 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qOhMW-00EzwV-0U;
+        Wed, 26 Jul 2023 19:27:44 +0300
+Date:   Wed, 26 Jul 2023 19:27:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Brent Lu <brent.lu@intel.com>
+Cc:     alsa-devel@alsa-project.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Uday M Bhat <uday.m.bhat@intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        "Dharageswari . R" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>
+Subject: Re: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Message-ID: <ZMFJf2MM35KBFR95@smile.fi.intel.com>
+References: <20230726140848.2267568-1-brent.lu@intel.com>
+ <20230726140848.2267568-2-brent.lu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726140848.2267568-2-brent.lu@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt-bindings for Imagination E5010 JPEG Encoder driver which is
-implemented as stateful V4L2 M2M driver.
+On Wed, Jul 26, 2023 at 10:08:47PM +0800, Brent Lu wrote:
+> Implement a helper function to get number of codecs from ACPI
+> subsystem to remove the need of quirk flag in machine driver.
 
-Co-developed-by: David Huang <d-huang@ti.com>
-Signed-off-by: David Huang <d-huang@ti.com>
-Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
----
- .../bindings/media/img,e5010-jpeg-enc.yaml    | 79 +++++++++++++++++++
- MAINTAINERS                                   |  5 ++
- 2 files changed, 84 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+...
 
-diff --git a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
-new file mode 100644
-index 000000000000..0060373eace7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Imagination E5010 JPEG Encoder
-+
-+maintainers:
-+  - Devarsh Thakkar <devarsht@ti.com>
-+
-+description: |
-+  The E5010 is a JPEG encoder from Imagination Technologies implemented on
-+  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YUV422
-+  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
-+  8Kx8K resolution.
-+
-+properties:
-+  compatible:
-+    const: img,e5010-jpeg-enc
-+
-+  reg:
-+    items:
-+      - description: The E5010 main register region
-+      - description: The E5010 mmu register region
-+
-+  reg-names:
-+    items:
-+      - const: regjasper
-+      - const: regmmu
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - power-domains
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    cbass_main {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+      e5010: e5010@fd20000 {
-+          compatible = "img,e5010-jpeg-enc";
-+          reg = <0x00 0xfd20000 0x00 0x100>,
-+                <0x00 0xfd20200 0x00 0x200>;
-+          reg-names = "regjasper", "regmmu";
-+          clocks = <&k3_clks 201 0>;
-+          clock-names = "core_clk";
-+          power-domains = <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
-+          interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a5c16bb92fe2..aab11219810f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10170,6 +10170,11 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
- F:	drivers/auxdisplay/img-ascii-lcd.c
- 
-+IMGTEC JPEG ENCODER DRIVER
-+M:	Devarsh Thakkar <devarsht@ti.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
-+
- IMGTEC IR DECODER DRIVER
- S:	Orphan
- F:	drivers/media/rc/img-ir/
+> +void max_98390_dai_link(struct snd_soc_dai_link *link)
+> +{
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	link->codecs = max_98390_components;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		link->num_codecs = num_codecs;
+> +		break;
+> +	default:
+
+> +		pr_err("invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+
+I believe you have struct device pointer available, use dev_err().
+
+> +		break;
+> +	}
+> +
+> +	link->init = max_98390_init;
+> +	link->ops = &max_98390_ops;
+> +}
+
+...
+
+> +void max_98390_set_codec_conf(struct snd_soc_card *card)
+>  {
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	card->codec_conf = max_98390_codec_conf;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		card->num_configs = num_codecs;
+> +		break;
+> +	default:
+> +		pr_err("invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+
+Ditto.
+
+> +		break;
+>  	}
+>  }
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
