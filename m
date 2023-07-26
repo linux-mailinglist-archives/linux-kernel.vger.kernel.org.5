@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18810762A87
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706D7762A77
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjGZE7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 00:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        id S231221AbjGZEyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 00:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjGZE7X (ORCPT
+        with ESMTP id S229627AbjGZEyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 00:59:23 -0400
-X-Greylist: delayed 383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Jul 2023 21:59:22 PDT
-Received: from mail.valinux.co.jp (mail.valinux.co.jp [210.128.90.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC9C1BD1;
-        Tue, 25 Jul 2023 21:59:22 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.valinux.co.jp (Postfix) with ESMTP id C0A3EA9283;
-        Wed, 26 Jul 2023 13:52:58 +0900 (JST)
-X-Virus-Scanned: Debian amavisd-new at valinux.co.jp
-Received: from mail.valinux.co.jp ([127.0.0.1])
-        by localhost (mail.valinux.co.jp [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wPaDkWnveZzF; Wed, 26 Jul 2023 13:52:58 +0900 (JST)
-Received: from [172.16.3.34] (vagw.valinux.co.jp [210.128.90.14])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Wed, 26 Jul 2023 00:54:02 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942D419AD;
+        Tue, 25 Jul 2023 21:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690347237;
+        bh=TdeNmVB+SeIWlacmvAwSccl9L0Em75y5kLVv1LWoRp4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MGSf7sgnaI9v57+h4KddKrCtakfSsLQAeWxsQfx6OeWKdPpqxmx7D3widt6WnimHT
+         /T6L3L65wC/g0Lvkn9y6O7s7mB4JTmNS2KrAp8FCiN3EyNK6vUsXp/myASVUAnVSyd
+         g57PrO0wL0hzT7+4q+wUBtP+8phgJmqPI5kQbxZvL+Hj7dpRBL2P4NPGbymXp+z4ew
+         7VwRzgdziEtDmgymmLyBsEw2lBLZiz/fi0nREQzZJmZyQYG8Qasgd5XSk6axu7/hnd
+         UFL7Mg48WOmmPUuXOtCKpHvVkJ6QjxO6HkSPph2Wr+zRrhC+YeusYIyVQE4B5ijfQ1
+         o0aiiwZJm1VuA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.valinux.co.jp (Postfix) with ESMTPSA id A5BDCA8FA7;
-        Wed, 26 Jul 2023 13:52:58 +0900 (JST)
-Message-ID: <9445401f-7cfb-bbb5-e25c-28f578efa212@valinux.co.jp>
-Date:   Wed, 26 Jul 2023 13:52:58 +0900
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R9hPd4tPgz4wy3;
+        Wed, 26 Jul 2023 14:53:57 +1000 (AEST)
+Date:   Wed, 26 Jul 2023 14:53:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20230726145356.5e42830f@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Kiwamu Okabe <okabe@valinux.co.jp>
-Subject: [PATCH] ACPI: tables: Fix NULL dereference by acpi_os_map_memory()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_SORBS_DUL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/DZmHxav8Sv6vAf8XNS+iwfE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Infer static analyzer https://fbinfer.com/ reports following
-NULL poinster dereference by the acpi_os_map_memory() function.
-I believe this patch does fix the issue without any panic.
+--Sig_/DZmHxav8Sv6vAf8XNS+iwfE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kiwamu Okabe <okabe@valinux.co.jp>
----
- drivers/acpi/tables.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hi all,
 
-diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-index 8ab0a82b4da4..ae7b7343bacf 100644
---- a/drivers/acpi/tables.c
-+++ b/drivers/acpi/tables.c
-@@ -717,6 +717,9 @@ acpi_table_initrd_override(struct acpi_table_header *existing_table,
- 	while (table_offset + ACPI_HEADER_SIZE <= all_tables_size) {
- 		table = acpi_os_map_memory(acpi_tables_addr + table_offset,
- 					   ACPI_HEADER_SIZE);
-+		if (WARN_ON(!table)) {
-+			return AE_OK;
-+		}
- 		if (table_offset + table->length > all_tables_size) {
- 			acpi_os_unmap_memory(table, ACPI_HEADER_SIZE);
- 			WARN_ON(1);
-@@ -772,6 +775,9 @@ static void __init acpi_table_initrd_scan(void)
- 	while (table_offset + ACPI_HEADER_SIZE <= all_tables_size) {
- 		table = acpi_os_map_memory(acpi_tables_addr + table_offset,
- 					   ACPI_HEADER_SIZE);
-+		if (WARN_ON(!table)) {
-+			return;
-+		}
- 		if (table_offset + table->length > all_tables_size) {
- 			acpi_os_unmap_memory(table, ACPI_HEADER_SIZE);
- 			WARN_ON(1);
--- 
-2.39.2
+After merging the mm tree, today's linux-next build (powerpc64
+allnoconfig) failed like this:
 
+In file included from arch/powerpc/include/asm/book3s/64/pgtable.h:285,
+                 from arch/powerpc/include/asm/book3s/64/mmu-hash.h:20,
+                 from arch/powerpc/include/asm/book3s/64/mmu.h:32,
+                 from arch/powerpc/include/asm/mmu.h:396,
+                 from arch/powerpc/include/asm/lppaca.h:46,
+                 from arch/powerpc/include/asm/paca.h:18,
+                 from arch/powerpc/include/asm/current.h:13,
+                 from include/linux/thread_info.h:23,
+                 from include/asm-generic/preempt.h:5,
+                 from ./arch/powerpc/include/generated/asm/preempt.h:1,
+                 from include/linux/preempt.h:79,
+                 from include/linux/spinlock.h:56,
+                 from include/linux/ipc.h:5,
+                 from include/uapi/linux/sem.h:5,
+                 from include/linux/sem.h:5,
+                 from include/linux/compat.h:14,
+                 from arch/powerpc/kernel/asm-offsets.c:12:
+arch/powerpc/include/asm/book3s/64/radix.h:367:30: error: static declaratio=
+n of 'vmemmap_can_optimize' follows non-static declaration
+  367 | #define vmemmap_can_optimize vmemmap_can_optimize
+      |                              ^~~~~~~~~~~~~~~~~~~~
+include/linux/mm.h:3695:20: note: in expansion of macro 'vmemmap_can_optimi=
+ze'
+ 3695 | static inline bool vmemmap_can_optimize(struct vmem_altmap *altmap,
+      |                    ^~~~~~~~~~~~~~~~~~~~
+arch/powerpc/include/asm/book3s/64/radix.h:367:30: note: previous declarati=
+on of 'vmemmap_can_optimize' with type 'bool(struct vmem_altmap *, struct d=
+ev_pagemap *)' {aka '_Bool(struct vmem_altmap *, struct dev_pagemap *)'}
+  367 | #define vmemmap_can_optimize vmemmap_can_optimize
+      |                              ^~~~~~~~~~~~~~~~~~~~
+arch/powerpc/include/asm/book3s/64/radix.h:368:6: note: in expansion of mac=
+ro 'vmemmap_can_optimize'
+  368 | bool vmemmap_can_optimize(struct vmem_altmap *altmap, struct dev_pa=
+gemap *pgmap);
+      |      ^~~~~~~~~~~~~~~~~~~~
+
+Presumably caused by commit
+
+  f684ffc3ac9f ("powerpc/book3s64/radix: add support for vmemmap optimizati=
+on for radix")
+
+I have reverted that commit (and the following 2) for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/DZmHxav8Sv6vAf8XNS+iwfE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTApuQACgkQAVBC80lX
+0GxyMAf/XII/D1P0qPMfvhceCyD7cW+v3WdJMdowSI9r0hGkHXA+7uBIC3m5278F
+ke9pjM2iPVGNC0Q9D1NJkHBxCmynlgt2ar5xnBvkI2382v1Vfp7nxYy7TJsSIiC2
+Ojg1mcNPfhTSVkCsFFkw3OnSSHz7BTCxpqCZ3kGfvDfXuvWEefdFvEJdwF/2djo0
+GD6FJUSMg27Eb1uB6AU58vsa4jydoXJUvDyUW+hbJcRGDEgbjnlkXWRcAGtqnKFJ
+Sdd9rf6K0e47C5839si4YG4ETEBo2g+nc6O5HkNPf8QNVdBgDJ0OEnpo7LTB0JPj
+cDpvXKyZ36dIqMyH7lTToIM4v1+rHA==
+=Fjpe
+-----END PGP SIGNATURE-----
+
+--Sig_/DZmHxav8Sv6vAf8XNS+iwfE--
