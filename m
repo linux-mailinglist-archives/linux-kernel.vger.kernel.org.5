@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE526763991
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C408763995
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjGZOvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S233014AbjGZOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbjGZOvH (ORCPT
+        with ESMTP id S232277AbjGZOwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:51:07 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BC41FDD;
-        Wed, 26 Jul 2023 07:51:04 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QEg8VX019731;
-        Wed, 26 Jul 2023 14:50:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=EJcsrSdqCiciidgYzCYrBcbrS/N5lLi5ni1hJMCHRJc=;
- b=GzrSnCSOGBqpY9WeafSpyblXQ84VlenQrT/QrcrQc71fjI1moBcbvqKEU4HZo/QaeFzr
- jh7N+XoIxzpL77gAWoDTeot3yp4uk7rgiWvS7WH0Fh7t92bP4ffPJVlaftDLWLG/dM8+
- dT81B2igwyZknrWJlIDOWJp7DzfHvknNZ3BB+psTgtOSx3ZIU41QYAoSd/Bzass8nWjE
- 1RO2BLuSiHKyWAjEeQ4tjuCWRkQjmYUigJnpEtihLgJk5nuy59H6/1fzTJNaXTYsbkH9
- BY64KbkTdAoFldp6+ulTbibKC86n5XOGL9GCCWYdtCJ+ll+y9NrNaeQ+PSqLfpbYVs8r 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s35330tq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 14:50:53 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36QEgF6f021001;
-        Wed, 26 Jul 2023 14:50:52 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s35330tpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 14:50:52 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36QCd2Vu014370;
-        Wed, 26 Jul 2023 14:50:51 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0sty5usp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 14:50:51 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36QEonNt45220340
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 14:50:49 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD67220043;
-        Wed, 26 Jul 2023 14:50:49 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4FDD320040;
-        Wed, 26 Jul 2023 14:50:47 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.87.146])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 26 Jul 2023 14:50:46 +0000 (GMT)
-Date:   Wed, 26 Jul 2023 20:20:44 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] ext4: correct some stale comment of criteria
-Message-ID: <ZMEyxLauFkXBwgUZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20230725185106.2147273-1-shikemeng@huaweicloud.com>
- <20230725185106.2147273-11-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725185106.2147273-11-shikemeng@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DA-8FhdRhAu4rHYXFMe3M46H41gG7Q9c
-X-Proofpoint-GUID: cvtDe6xRowjhcvackPOi70R1UNSnPmr5
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 26 Jul 2023 10:52:00 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD7D19A0;
+        Wed, 26 Jul 2023 07:51:58 -0700 (PDT)
+X-QQ-mid: bizesmtp74t1690383109tpb94mlh
+Received: from localhost.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 22:51:48 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: OtIeQkg1QQHHCIiiAVCObq1XZpMiZZrep3CdnHIkv0Cbq1h4RDrOm7rMYOmUZ
+        TPmC2nvXS5zvaOqkRcYFP7EfRTxQFyzdfssN9/Zr9xCoiY3tRyPj8srSEwFivyx8xeQaLQX
+        b3Odf2maFdKYvMj0gCu2tmb4PLz2APzE+8iPcs1RsXJWOiOSXyUWSY4BvsyCLc/90ENTR0t
+        vkfEksPIiQbt4oShglA/Z3TXba5fVnLCA5jXsgBn4u+TmtrrxNqAHTiAvJBk9QW/oXJw0GX
+        yHdj+I2fEEDUD8nlIrzcPleDk+h/UglC9Cr8TQPiTBTknIe75gEv+IJOBa/s3LWCAetWPu1
+        JqzNl/k0pRQXeSgeoZ6pjTQJDInAolTF/IwBwWez3jMOCp2mJukfmi+T11QwA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1055855130666732953
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v2 2/7] tools/nolibc: add support for powerpc64
+Date:   Wed, 26 Jul 2023 22:50:46 +0800
+Message-Id: <7a406115cb891105e554d2bebb3532a5de70f5ca.1690373704.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690373704.git.falcon@tinylab.org>
+References: <cover.1690373704.git.falcon@tinylab.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_06,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 02:51:06AM +0800, Kemeng Shi wrote:
-> We named criteria with CR_XXX, correct stale comment to criteria with
-> raw number.
+This follows the 64-bit PowerPC ABI [1], refers to the slides: "A new
+ABI for little-endian PowerPC64 Design & Implementation" [2] and the
+musl code in arch/powerpc64/crt_arch.h.
 
-Hi Kemeng,
+Firstly, stdu and clrrdi are used instead of stwu and clrrwi for
+powerpc64.
 
-Thanks for the cleanups.
+Second, the stack frame size is increased to 32 bytes for powerpc64, 32
+bytes is the minimal stack frame size supported described in [2].
 
-> 
-> Fixes: f52f3d2b9fba ("ext4: Give symbolic names to mballoc criterias")
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> ---
->  fs/ext4/mballoc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 36eea63eaace..de5da76e6748 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2777,8 +2777,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  
->  	/*
->  	 * ac->ac_2order is set only if the fe_len is a power of 2
-> -	 * if ac->ac_2order is set we also set criteria to 0 so that we
-> -	 * try exact allocation using buddy.
-> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
-> +	 * so that we try exact allocation using buddy.
->  	 */
->  	i = fls(ac->ac_g_ex.fe_len);
->  	ac->ac_2order = 0;
-> @@ -2835,8 +2835,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  			/*
->  			 * Batch reads of the block allocation bitmaps
->  			 * to get multiple READs in flight; limit
-> -			 * prefetching at cr=0/1, otherwise mballoc can
-> -			 * spend a lot of time loading imperfect groups
-> +			 * prefetching at cr below CR_FAST, otherwise mballoc
+Besides, the TOC pointer (GOT pointer) must be saved to r2.
 
-One of my earlier patchset has replaced the CR_FAST macro with
-ext4_mb_cr_expensive() so maybe we can account for that here:
+This works on both little endian and big endian 64-bit PowerPC.
 
-https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
+[1]: https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.pdf
+[2]: https://www.llvm.org/devmtg/2014-04/PDFs/Talks/Euro-LLVM-2014-Weigand.pdf
 
-Regards,
-ojaswin
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/include/nolibc/arch-powerpc.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> +			 * can spend a lot of time loading imperfect groups
+diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
+index caa943e1521a..d783ed0b5dbd 100644
+--- a/tools/include/nolibc/arch-powerpc.h
++++ b/tools/include/nolibc/arch-powerpc.h
+@@ -175,6 +175,19 @@
+ /* startup code */
+ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+ {
++#ifdef __powerpc64__
++	/* On 64-bit PowerPC, save TOC/GOT pointer to r2 */
++	extern char TOC __asm__ (".TOC.");
++	register volatile long r2 __asm__ ("r2") = (void *)&TOC - (void *)_start;
++
++	__asm__ volatile (
++		"mr     3, 1\n"         /* save stack pointer to r3, as arg1 of _start_c */
++		"clrrdi 1, 1, 4\n"      /* align the stack to 16 bytes                   */
++		"li     0, 0\n"         /* zero the frame pointer                        */
++		"stdu   1, -32(1)\n"    /* the initial stack frame                       */
++		"bl     _start_c\n"     /* transfer to c runtime                         */
++	);
++#else
+ 	__asm__ volatile (
+ 		"mr     3, 1\n"         /* save stack pointer to r3, as arg1 of _start_c */
+ 		"clrrwi 1, 1, 4\n"      /* align the stack to 16 bytes                   */
+@@ -182,6 +195,7 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
+ 		"stwu   1, -16(1)\n"    /* the initial stack frame                       */
+ 		"bl     _start_c\n"     /* transfer to c runtime                         */
+ 	);
++#endif
+ 	__builtin_unreachable();
+ }
+ 
+-- 
+2.25.1
 
->  			 */
->  			if ((prefetch_grp == group) &&
->  			    (cr >= CR_FAST ||
-> -- 
-> 2.30.0
-> 
