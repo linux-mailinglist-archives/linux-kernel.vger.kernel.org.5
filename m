@@ -2,163 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211EA763B15
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BD4763B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjGZPan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
+        id S233991AbjGZPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjGZPaj (ORCPT
+        with ESMTP id S233987AbjGZPat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:30:39 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A297F2689
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:30:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1690385439; x=1721921439;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=ZjixsS62Rr6GJQ5wm3+wcP9Mfdcz39bR8AWo/tP3EXc=;
-  b=LBoHMWuxNO2mP9cuNNBTTxZj5WYW73HpBQDgo2t9UhqNFkhX9/iRPjhP
-   NJH4W24ANdY6+szt1CFijJFbr7lHg4gXCh80n63Bl8yxvDs8IqoQlMGA8
-   oqMn3VNfswbPKIxbrDXjVUPPaSOq0h0zt1RA928kxgYB9MjLaBl+VRWDu
-   c=;
-X-IronPort-AV: E=Sophos;i="6.01,232,1684800000"; 
-   d="scan'208";a="341886389"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 15:30:36 +0000
-Received: from EX19MTAUEB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com (Postfix) with ESMTPS id CA6DB806F9;
-        Wed, 26 Jul 2023 15:30:34 +0000 (UTC)
-Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
- EX19MTAUEB002.ant.amazon.com (10.252.135.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 15:30:33 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Wed, 26 Jul 2023 15:30:33 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-        id 9468420D52; Wed, 26 Jul 2023 17:30:33 +0200 (CEST)
-From:   Pratyush Yadav <ptyadav@amazon.de>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, <linux-nvme@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
- none
-References: <20230725110622.129361-1-ptyadav@amazon.de>
-        <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
-        <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
-        <20230726131408.GA15909@lst.de>
-Date:   Wed, 26 Jul 2023 17:30:33 +0200
-In-Reply-To: <20230726131408.GA15909@lst.de> (Christoph Hellwig's message of
-        "Wed, 26 Jul 2023 15:14:08 +0200")
-Message-ID: <mafs0cz0e8zc6.fsf_-_@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 26 Jul 2023 11:30:49 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449401FFC;
+        Wed, 26 Jul 2023 08:30:47 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 14BC63200344;
+        Wed, 26 Jul 2023 11:30:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 26 Jul 2023 11:30:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:content-transfer-encoding:content-type:content-type:date:date
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1690385446; x=1690471846; bh=+FXui71M4KLr0BGEwEGbDcZQqLzS0w/dnD5
+        SDEjctV4=; b=shZkvMNkyJ1lFMNg0Or5U9Tf8NaZrEfAxjUz0SGr0yvn3EA/bPG
+        7HNnk4WzV8iDu3Wu54e7GwjQn8UXhbJamL4Q04h1/Ao/HIvUoJgh9ANhReL4C6TV
+        Hx8p1gB5RJ+ZWpy3jSDNGwlMrWB2qCNxqFOtw8qpisBDVXh/eMHC1RhKNqjx3jh5
+        GtlJbAc/FVdEFZnp964SsAOrM9pGcxfAls3Tr6h4SAgG8kM5PPWVeiyf16JGkQgA
+        h5tT/B0i5mt8xlawvCkAnOUYWH6F58A/i46oiDA8asJgISvivIzEflqpe7Ycf2q6
+        4+ozJkkOVeBEL2Q9v7ZIqbT27FNCPt8CQTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1690385446; x=
+        1690471846; bh=+FXui71M4KLr0BGEwEGbDcZQqLzS0w/dnD5SDEjctV4=; b=e
+        v+eCn2VtqzzwPzl31zhpIuEXwAArXP7mI2XJsg/p6sU5R+L3RNJCPOfussVEwrm9
+        iGXai+zhYfOMKor+ItuHEMlrNcjB0xikc5YsrFX85/SF8U3BLDavfGc10C2SpkUn
+        JCBR2sg6wYc0PjqrVL8Ywy98whIt6j7VJmQoftB/Wc240FXxX/mtT7L+DNglazD4
+        sSKmuw+WIslH6pMv2MiW/dkoBaB+vVWKM64xT/ZkIKTtbdE7xXB4HPdR3CPJpzYx
+        bx1WyHIwaF0RLW5zlZGoKNsTHqh2z7q8++gk9ZwlteyKQoj3EPte3Rzno2Kk+Pha
+        I/6KRgKH6CXmf8YHIAfbw==
+X-ME-Sender: <xms:JjzBZEAqHLvQBWcVRfHg20D0TEAA0z-BNFgxsKHQvtYKKd-NWYuUYg>
+    <xme:JjzBZGiZ6bMiAd2tolhqJaRCH6u6MBglAYfJu-9RxnwGm9Gwwy-2czq-A6X-PsZct
+    u9_rj6OdfhRNafn>
+X-ME-Received: <xmr:JjzBZHkZig3cGiB4ht3DG1tSwi-JtBubMRTaO7VoqSZZy6pOTtO3xuHUTNkPQkdvwA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdekjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculddutddmnecujfgurhepkfffgggfuffvfhfhjggtgfesthekredttdef
+    jeenucfhrhhomhepuegvrhhnugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusg
+    gvrhhtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpedtudeuueevgeek
+    feehieeukedvudelieevteevuedtueffhfeuteeivedvhfduvdenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghr
+    thesfhgrshhtmhgrihhlrdhfmh
+X-ME-Proxy: <xmx:JjzBZKz6HoWWxXnGlZdsRtWYdnpefHkQWv_f_GXM0yjTsLhxPUAbyA>
+    <xmx:JjzBZJQHO_4PvSoiwyFIK4_9US4wcfHZ8_pDr6zyu4rTGuYgNMTFTA>
+    <xmx:JjzBZFbORx0hcgjCiD741VMKu0_BKojaH-NDHYY6PW9HFIjR3OeuUQ>
+    <xmx:JjzBZEfzfzDiEyviqm2jC-V6OzjtXSJgJAD2129FVxUo6zLpLj4nJw>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 11:30:45 -0400 (EDT)
+Message-ID: <4470a31c-802e-51e2-75b0-362c05fecfb8@fastmail.fm>
+Date:   Wed, 26 Jul 2023 17:30:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
+To:     Jaco Kroon <jaco@uls.co.za>, Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230726105953.843-1-jaco@uls.co.za>
+ <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
+ <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
+Content-Language: en-US
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26 2023, Christoph Hellwig wrote:
 
-Hi all,
 
-> On Wed, Jul 26, 2023 at 10:58:36AM +0300, Sagi Grimberg wrote:
->>>> For example, AWS EC2's i3.16xlarge instance does not expose NUMA
->>>> information for the NVMe devices. This means all NVMe devices have
->>>> NUMA_NO_NODE by default. Without this patch, random 4k read performance
->>>> measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
->>>> less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
->>>> both nodes get similar performance (around 315k IOPS).
->>>
->>> irqbalance doesn't work with this driver though: the interrupts are
->>> managed by the kernel. Is there some other reason to explain the perf
->>> difference?
-
-Hmm, I did not know that. I have not gone and looked at the code but I
-think the same reasoning should hold, just with s/irqbalance/kernel. If
-the kernel IRQ balancer sees the device is on node 0, it would deliver
-its interrupts to CPUs on node 0.
-
-In my tests I can see that the interrupts for NVME queues are sent only
-to CPUs from node 0 without this patch. With this patch CPUs from both
-nodes get the interrupts.
-
+On 7/26/23 17:26, Jaco Kroon wrote:
+> Hi,
+> 
+> On 2023/07/26 15:53, Bernd Schubert wrote:
 >>
->> Maybe its because the numa_node goes to the tagset which allocates
->> stuff based on that numa-node ?
->
-> Yeah, the only explanation I could come up with is that without this
-> the allocations gets spread, and that somehow helps.  All of this
-> is a little obscure, but so is the NVMe practice of setting the node id
-> to first_memory_node, which no other driver does.  I'd really like to
-> understand what's going on here first.  After that this patch probably
-> is the right thing, I'd just like to understand why.
+>>
+>> On 7/26/23 12:59, Jaco Kroon wrote:
+>>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+>>> ---
+>>>   fs/fuse/Kconfig   | 16 ++++++++++++++++
+>>>   fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
+>>>   2 files changed, 40 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+>>> index 038ed0b9aaa5..0783f9ee5cd3 100644
+>>> --- a/fs/fuse/Kconfig
+>>> +++ b/fs/fuse/Kconfig
+>>> @@ -18,6 +18,22 @@ config FUSE_FS
+>>>         If you want to develop a userspace FS, or if you want to use
+>>>         a filesystem based on FUSE, answer Y or M.
+>>>   +config FUSE_READDIR_ORDER
+>>> +    int
+>>> +    range 0 5
+>>> +    default 5
+>>> +    help
+>>> +        readdir performance varies greatly depending on the size of 
+>>> the read.
+>>> +        Larger buffers results in larger reads, thus fewer reads and 
+>>> higher
+>>> +        performance in return.
+>>> +
+>>> +        You may want to reduce this value on seriously constrained 
+>>> memory
+>>> +        systems where 128KiB (assuming 4KiB pages) cache pages is 
+>>> not ideal.
+>>> +
+>>> +        This value reprents the order of the number of pages to 
+>>> allocate (ie,
+>>> +        the shift value).  A value of 0 is thus 1 page (4KiB) where 
+>>> 5 is 32
+>>> +        pages (128KiB).
+>>> +
+>>
+>> I like the idea of a larger readdir size, but shouldn't that be a 
+>> server/daemon/library decision which size to use, instead of kernel 
+>> compile time? So should be part of FUSE_INIT negotiation?
+> 
+> Yes sure, but there still needs to be a default.  And one page at a time 
+> doesn't cut it.
+> 
+> -- snip --
+> 
+>>>   -    page = alloc_page(GFP_KERNEL);
+>>> +    page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+>>
+>> I guess that should become folio alloc(), one way or the other. Now I 
+>> think order 0 was chosen before to avoid risk of allocation failure. I 
+>> guess it might work to try a large size and to fall back to 0 when 
+>> that failed. Or fail back to the slower vmalloc.
+> 
+> If this varies then a bunch of other code will become somewhat more 
+> complex, especially if one alloc succeeds, and then a follow-up succeeds.
 
-See above for my conjecture on why this happens.
+Yeah, the better choice is kvmalloc/kvfree which handles it internally.
 
-More specifically, I discovered this when running an application pinned
-to a node 1 CPU reading from an NVME device. I noticed it was performing
-worse than when it was pinned to node 0.
-
-If the process is free to move around it might not see such a large
-performance difference since it could move to a node 0 CPU. But if it is
-pinned to a CPU in node 1 then the interrupt will always hit a node 0
-CPU and create higher latency for the reads.
-
-I have a simple fio test that can reproduce this. Save this [1] as 
-fio.txt and then run numactl --cpunodebind 1 fio ./fio.txt. You can run
-it on any host with an NVME device that has no NUMA node. I have tested
-this on AWS EC2's i3.16xlarge instance type.
-
-[1]
-    [global]
-    ioengine=libaio
-    filename=/dev/nvme0n1
-    group_reporting=1
-    direct=1
-    verify=0
-    norandommap=0
-    size=10%
-    time_based=1
-    runtime=30
-    ramp_time=0
-    randrepeat=0
-    log_max_value=1
-    unified_rw_reporting=1
-    percentile_list=50:99:99.9:99.99:99.999
-    bwavgtime=10000
-
-    [4k_randread_qd16_4w]
-    stonewall
-    bs=4k
-    rw=randread
-    iodepth=32
-    numjobs=1
-
--- 
-Regards,
-Pratyush Yadav
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+> 
+> I'm not familiar with the differences between the different mechanisms 
+> available for allocation.
+> 
+> -- snip --
+> 
+>> Thanks,
+> My pleasure,
+> Jaco
