@@ -2,70 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 914C376342D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00FE76342E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbjGZKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S233608AbjGZKrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbjGZKra (ORCPT
+        with ESMTP id S233452AbjGZKrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:47:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B54FE63
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:46:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690368403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lvJT1Nrqg3NuKZyozBDgNxTT7my/YGr0ImgVXCIWT+Q=;
-        b=IJYVETPWCxzI0TsKUF03iS5J6N/60kYHXAgUCF8Yiv+YPO/nyFz7YlCF1S9G0GDGB93pQ6
-        TNNDzF7dmQKPSK3FSPHhDQefUzoJEv/V/oMw53QHDK4cs3wOYZO00a6HivQ75ugmmZ8OsC
-        D3XjeOx7P8pHNH8Te2Jdif8lcLcZqPw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-341-FPRlPA5MOl2fS2zC8T9MoQ-1; Wed, 26 Jul 2023 06:46:40 -0400
-X-MC-Unique: FPRlPA5MOl2fS2zC8T9MoQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 26 Jul 2023 06:47:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538A4E63
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:47:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 503CE892240;
-        Wed, 26 Jul 2023 10:46:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FA5240C2063;
-        Wed, 26 Jul 2023 10:46:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0000000000000ced8905fecceeba@google.com>
-References: <0000000000000ced8905fecceeba@google.com>
-To:     syzbot <syzbot+0bc501b7bf9e1bc09958@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [crypto?] general protection fault in shash_async_update
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B63BE61A6A
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:47:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E210C433C7;
+        Wed, 26 Jul 2023 10:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690368459;
+        bh=lq4pZ8INO+UH6l03TMi+2aIxYKEFFb1nihjG0kRG97A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rnOAttRWXvju9ATEfORudAXg5mXx0DYJAo4BbW9wdqCqNb1cGzgen63uy+pwQX6GT
+         rnzbv7253qOuppPXtbBpOFKOWHCkXkEpPeYs85Pr7zgK6ivrxTBl31uLLdeAIhQdx2
+         U3heifqKXUQ4obTgCTd4xGOcTL4n4cy2Gcp/ozDSMZG3AeHjPkUYUDbPnF+qJf76u/
+         PqrhEiC/trkOi+FkahJaXXgzJGA+qN7moKmQQOy5q2YV9Nz4IDwuiL8g133C2ykFU3
+         nsz0pS3cRzD7yJxyhNh4Dldvqhf7VVdv7JE9JkUd8vIGOWebAs2XAl46oiFI4aAD7j
+         E/W+B4X4Q8tqQ==
+Date:   Wed, 26 Jul 2023 12:47:35 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: Re: Stopping the tick on a fully loaded system
+Message-ID: <ZMD5xyxPUkKCDlVQ@localhost.localdomain>
+References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
+ <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
+ <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
+ <ZL2Z8InSLmI5GU9L@localhost.localdomain>
+ <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
+ <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <20271.1690368398.1@warthog.procyon.org.uk>
-Date:   Wed, 26 Jul 2023 11:46:38 +0100
-Message-ID: <20272.1690368398@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: crypto: af_alg/hash: Fix recvmsg() after sendmsg(MSG_MORE)
+Le Tue, Jul 25, 2023 at 03:07:05PM +0200, Anna-Maria Behnsen a écrit :
+> The worst case scenario will not happen, because remote timer expiry only
+> happens when CPU is not active in the hierarchy. And with your proposal
+> this is valid after tick_nohz_stop_tick().
+> 
+> Nevertheless, I see some problems with this. But this also depends if there
+> is the need to change current idle behavior or not. Right now, this are my
+> concerns:
+> 
+> - The determinism of tick_nohz_next_event() will break: The return of
+>   tick_nohz_next_event() will not take into account, if it is the last CPU
+>   going idle and then has to take care of remote timers. So the first timer
+>   of the CPU (regardless of global or local) has to be handed back even if
+>   it could be handled by the hierarchy.
+
+Bah, of course...
+
+> 
+> - When moving the tmigr_cpu_deactivate() to tick_nohz_stop_tick() and the
+>   return value of tmigr_cpu_deactivate() is before the ts->next_tick, the
+>   expiry has to be modified in tick_nohz_stop_tick().
+> 
+> - The load is simply moved to a later place - tick_nohz_stop_tick() is
+>   never called without a preceding tick_nohz_next_event() call. Yes,
+>   tick_nohz_next_event() is called under load ~8% more than
+>   tick_nohz_stop_tick(), but the 'quality' of the return value of
+>   tick_nohz_next_event() is getting worse.
+> 
+> - timer migration hierarchy is not a standalone timer infrastructure. It
+>   only makes sense to handle it in combination with the existing timer
+>   wheel. When the timer base is idle, the timer migration hierarchy with
+>   the migrators will do the job for global timers. So, I'm not sure about
+>   the impact of the changed locking - but I'm pretty sure changing that
+>   increases the probability for ugly races hidden somewhere between the
+>   lines.
+
+Sure thing, and this won't be pretty.
+
+> 
+> Thanks,
+> 
+> 	Anna-Maria
 
