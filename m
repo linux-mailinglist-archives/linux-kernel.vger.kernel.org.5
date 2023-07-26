@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBE6763615
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE4076361E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjGZMRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
+        id S232844AbjGZMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjGZMRe (ORCPT
+        with ESMTP id S230094AbjGZMSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:17:34 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4D31BF6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:17:28 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bbb4bde76dso533430fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:17:28 -0700 (PDT)
+        Wed, 26 Jul 2023 08:18:49 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C1A10F6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:18:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5221f3affe4so5430502a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:18:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1690373848; x=1690978648;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/0PSB6Q4tQ0VbeXGuwPR8oxpl0KqMEC65BPmeAh9GDM=;
-        b=G05f6CZe5H/9IGsFUzRc8wADFR0C472XZD5MzGbH2v3Z9Z0EiZdKBGI5zqU3T3dQCA
-         AvCK9JYcta0Jzsvlmo7hAbvSjG0FCtCG9XhV+XFKEdZySfo+1Tk+7Ja+G2eig3OqNtCy
-         MdWWpPFPDJI4rm2w5wxnP6qS59yUxxo9v9sIoAxEYeWkR+LTpC8cic+YxfENN0BtJXmE
-         rnUCjNbgVhpgF+qYxtHe9DXvPTY9EC93G9QoEF3zJlzgxSLh0Pp7uO//A3gCkIeiLNav
-         C+f1t29bNFYt7fPydYq+G50UxWkDGM5m+D0p7DFMD9wr8SlitZ3sHdA7fYyrYe6YS/yy
-         7kvA==
+        d=linaro.org; s=google; t=1690373926; x=1690978726;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6azGF30s6/qv2j89iv2+5FE7ffgv+cjytR45PZTjURM=;
+        b=WgZHVtxRjhde7m+/5Hh2CAyWb0YjxTNEuzB3aKBQwzX7L7TYU9pKTGHiy/ojarmK6w
+         g5FvbKCTo7l+2AX+NY+/XTORp8YksV6ZoiZukCAYhzlOHqJ0+Snvf0aEWzdu3nUOq3Ay
+         6M2DWtQlT9ejpk44gpM1McUcJuI/02r/UVXRcXdEtdn555EhGwJVj+0z70xq9AOvUfHB
+         vzq+0aXgYeL+8a+fGn0e59QT6zGG3bx3hdtgLWIDUPfavTOm91BsJsUQ2o/t1dXuPUYC
+         Wwy7tjhwZxnDy8ztuvPtt9Ppi0XhDbP3VOTLBZ8czmxe3KZwYrlpexEqUnz5SgD/q/xB
+         KEmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690373848; x=1690978648;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1690373926; x=1690978726;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/0PSB6Q4tQ0VbeXGuwPR8oxpl0KqMEC65BPmeAh9GDM=;
-        b=Vzia2FyJaTXzCCDQBMPKgu698G2Xymh3cxHf/mbBnxZZX48HW36io/GbBFEmBSdhws
-         m2PpDg/PA5NLsMnGc2cS41cSFdMUWh6oiX0doGd5jXP4Qlt3pSk/Eyyo2bhlbUBbseL3
-         N34z9LMa4pmtT9U+NXu95ZiXdhWUsHNZBXpbROXx2sBaJ22QDNggQZnHadmYoE+QKy5G
-         ORbdlmSZlSKPm1zJErJmBcDbzut/IDyx5GhY5s8kB/wLijZihcXtbBmouo5FD31NIyMR
-         5WxAapZYd9S3l6/hrah29dHcgto1F/hNcd7OxxJN1hT03L1B85Xl99bz6jiY3MlCuE+/
-         TASg==
-X-Gm-Message-State: ABy/qLZKG1xbgh/y6PeE6iG4zdiw8CQ1MQcd2AFt7rNZgf8fvc1rjlfs
-        aL+p+1zjsmgdu+1KiniwPiQ7vA==
-X-Google-Smtp-Source: APBJJlER/vAICvmtsZSZspI3r1Rtl4DeBU/8Xh5ht8tNl2f1NYU+kdczAWKMT7jUT8bkQnv76vuP2g==
-X-Received: by 2002:a05:6870:1fc3:b0:1bb:5756:3c06 with SMTP id gp3-20020a0568701fc300b001bb57563c06mr2013185oac.53.1690373847896;
-        Wed, 26 Jul 2023 05:17:27 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id w10-20020ac86b0a000000b003f9c6a311e1sm4731716qts.47.2023.07.26.05.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 05:17:27 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qOdSI-000uxy-Jm;
-        Wed, 26 Jul 2023 09:17:26 -0300
-Date:   Wed, 26 Jul 2023 09:17:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-Message-ID: <ZMEO1kNGfGjN6kZM@ziepe.ca>
-References: <cover.1689792825.git.tjeznach@rivosinc.com>
- <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com>
- <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
- <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
- <CAK9=C2XoQjPzZ5yB5jfTbee4-Pb8GgFAZRbfcMwMk9pyo39WxQ@mail.gmail.com>
- <CANXhq0q7R9Srx6U=fReq7LDLFgW6rMmjKH=o6MzDT5AWNRXP6w@mail.gmail.com>
- <592edb17-7fa4-3b5b-2803-e8c50c322eee@linux.intel.com>
- <CANXhq0pS_=YxgrxSKbdfrFdGcBduzk3LTyC4vp_hqoJTbX3e0g@mail.gmail.com>
+        bh=6azGF30s6/qv2j89iv2+5FE7ffgv+cjytR45PZTjURM=;
+        b=L86MfXXFeIZogYGVU18zCAjSoo+8YlGnx1dC5nTlYD4//+mOqIdT398Ts06v1f9VNs
+         akbOt1i5qE5krE+ZvrueV1iP6hs7pLTvZE0wg3rVVYQWtM/xRqBlhsM4o9F8yweBW1xx
+         aeYqwZagAOOGRaeB9ywG0Bp5zlq9AUmOeQjQSaMKYN9tXWV9N51HX9ru6i4Y7g3a+HqF
+         e1wjKTSePamkPYGG/n687A3BEwcmQqeXaFBoIRQAkQM1UG7vVVxSBdPQfuZ+sMrzfE3H
+         bsEVeS9UfSGphG9OUgG+LM651yf2vPENrix77lzNs7m/JGx8YykjSo8Zgi/lBe+G4Ygw
+         3m0g==
+X-Gm-Message-State: ABy/qLb0LyRZpMBTpSRRYNvsITDbVMHgIH0B1nH4l49RymbxkZOOftbr
+        pDQnN/BM3jlj6pNROIr36J83RQ==
+X-Google-Smtp-Source: APBJJlGx4zCyAzfvMl5ZN5hMuJmuXDkt+xm6nAibmH/Npd4jx3KsAzUuvUrdfx53PCXbsl/aHTggNA==
+X-Received: by 2002:aa7:c702:0:b0:521:a99b:a233 with SMTP id i2-20020aa7c702000000b00521a99ba233mr1426769edq.10.1690373926004;
+        Wed, 26 Jul 2023 05:18:46 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05640210c600b0052217b3a10dsm6017420edu.63.2023.07.26.05.18.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 05:18:45 -0700 (PDT)
+Message-ID: <2df8d695-62aa-329f-f355-d6081d970ec2@linaro.org>
+Date:   Wed, 26 Jul 2023 14:18:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANXhq0pS_=YxgrxSKbdfrFdGcBduzk3LTyC4vp_hqoJTbX3e0g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] regulator: dt-bindings: dlg,slg51000: Convert to DT
+ schema
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Jeong <eric.jeong.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
+ <d33e5dbc-ca38-4702-903a-b36f9a824391@sirena.org.uk>
+ <1c3684e3-b88a-0476-9376-19d07956e261@linaro.org>
+ <4859d289-f4e2-4676-9be4-182f7dbda8b6@sirena.org.uk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <4859d289-f4e2-4676-9be4-182f7dbda8b6@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,32 +84,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 12:26:14PM +0800, Zong Li wrote:
-> On Wed, Jul 26, 2023 at 11:21 AM Baolu Lu <baolu.lu@linux.intel.com> wrote:
-> >
-> > On 2023/7/24 21:23, Zong Li wrote:
-> > >>>>> In RISC-V IOMMU, certain devices can be set to bypass mode when the
-> > >>>>> IOMMU is in translation mode. To identify the devices that require
-> > >>>>> bypass mode by default, does it be sensible to add a property to
-> > >>>>> indicate this behavior?
-> > >>>> Bypass mode for a device is a property of that device (similar to dma-coherent)
-> > >>>> and not of the IOMMU. Other architectures (ARM and x86) never added such
-> > >>>> a device property for bypass mode so I guess it is NOT ADVISABLE to do it.
-> > >>>>
-> > >>>> If this is REALLY required then we can do something similar to the QCOM
-> > >>>> SMMU driver where they have a whitelist of devices which are allowed to
-> > >>>> be in bypass mode (i.e. IOMMU_DOMAIN_IDENTITY) based their device
-> > >>>> compatible string and any device outside this whitelist is
-> > >>>> blocked by default.
+On 26/07/2023 13:55, Mark Brown wrote:
+> On Wed, Jul 26, 2023 at 09:32:17AM +0200, Krzysztof Kozlowski wrote:
+>> On 25/07/2023 12:43, Mark Brown wrote:
+> 
+>>> This is just adding an OS specific note in the description, it's not
+>>> actually marking the properties as required.
+> 
+>> They cannot be required, because it depends whether the regulator is
+>> used or not. IOW, they are not required for unused regulators, which is
+>> not possible to encode in the schema.
+> 
+> Oh, you mean if the regulator is in use in the system rather than if
+> it's enabled!
 
-I have a draft patch someplace that consolidated all this quirk
-checking into the core code. Generally the expectation is that any
-device behind an iommu is fully functional in all modes. The existing
-quirks are for HW defects that make some devices not work properly. In
-this case the right outcome seems to be effectively blocking them from
-using the iommu.
+Enabled as "always-on" or "boot-on" could be encoded in the schema with
+multiple if::then:. But it is not enough, because regulators can be
+enabled on demand by drivers. So that's what I meant by "used".
 
-So, you should explain a lot more what "require bypass mode" means in
-the RISCV world and why any device would need it.
 
-Jason
+>  I suspect that there's a requirement that either at least
+> one of the supplies be provided so that the chip I/O works, or there's
+> some other currently undocumented supply that is required for that
+> reason.
+
+I can add requirement of at least one supply. I don't think it changes
+much, but sure.
+
+> 
+> BTW there's also a formatting error:
+> 
+> +  vin3-supply:
+> +    description:
+> +      Input supply for ldo3, required if regulatoris enabled
+> 
+> missing space before is.
+
+I'll fix with above at least one supply required.
+
+Best regards,
+Krzysztof
+
