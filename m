@@ -2,55 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A454763596
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A2676359B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbjGZLtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        id S233126AbjGZLue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234296AbjGZLtQ (ORCPT
+        with ESMTP id S232153AbjGZLua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:49:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F0630FC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:48:49 -0700 (PDT)
+        Wed, 26 Jul 2023 07:50:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12322D79
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:49:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 505E961AE1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:48:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E39E5C433C7;
-        Wed, 26 Jul 2023 11:48:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9E4561AA8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:49:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441B9C433C8;
+        Wed, 26 Jul 2023 11:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690372121;
-        bh=eZG9v0oZO9uEfsEIeSuInQVaRCDGDxegAVVDWaK0lZU=;
+        s=k20201202; t=1690372169;
+        bh=lbF0liGI7QHy1bpQGze9hCny5OUhXwB6mv1T2xUmixM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FO/McMF4qjCJ/ZEnvhx0ROGZLqNZRvkrnD/QyR5ni2dYbxz78blKyECZOeUSmTOYl
-         p/Bd0GGnU4Hq+WBUscxgIngIdoLN8Cfzw4quDBiosVJsARc4iSDKujlP6LM7yu8OEb
-         P0niNcp41mrQ7Is4Ri8H1gOTNcuIvI4M3voLzyhOpYoBtC4mw8Cn1MKcR79mjPF897
-         GCChIgLoqO3+kyWIV1LIkpTvQaBUE0/Kx6wiGjZ+tnSzW/YgClnDFO/TWSExNbOMJA
-         yg3yBBatxEnLBnr73eu6OgGvpori4tpJr/Aop2PkwBIJ1fUfwXkQwvFfLxAg+uHulF
-         zkrVjB6xThYWQ==
-Date:   Wed, 26 Jul 2023 14:48:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lcherian@marvell.com,
-        jerinj@marvell.com
-Subject: Re: [net-next PATCH] octeontx2-af: Tc flower offload support for
- inner VLAN
-Message-ID: <20230726114836.GU11388@unreal>
-References: <20230725103442.2749183-1-sumang@marvell.com>
+        b=udFHHdx//JEXY8/J5haNDvJ5+2W4enEwTQaN8r9/mk6x9Nap8a5w66bQBFShMoQD6
+         LP08fnZz6w+7Qe3jgYRyXWYKaj8pyIVvxiIyXPKcVuaQohmTj4iGUGdJR2VLJHBmZI
+         XAEtD7g2zk9e7uVCVzThcE3AM1NcmjIsMIXFFYFM9611RURnIXm4MIXmfqmzkDwOWA
+         ufp/H8We2eVZD+c719ZG0koNjl8GrcBeEMF94rpeOx8FzrXX4hR2Qq8NXGvTa/X3Ym
+         DsPpBk2lTv5RSGntLKH55ipC+la+9JtxNuNB7uBxnk6xETnmqUZm9jz2z+Xiq1/H/U
+         J+sPKSqCdmXog==
+Date:   Wed, 26 Jul 2023 12:49:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     justinstitt@google.com
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
+Message-ID: <8f9467c4-06c5-4e48-8f7e-2565e6b3b637@sirena.org.uk>
+References: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iADVvZ87iNIM/HX1"
 Content-Disposition: inline
-In-Reply-To: <20230725103442.2749183-1-sumang@marvell.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+X-Cookie: Just to have it is enough.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,44 +66,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 04:04:42PM +0530, Suman Ghosh wrote:
-> This patch extends current TC flower offload support to allow filters
-> involving inner VLAN matching, to be offloaded to HW.
-> 
-> Example command:
-> tc filter add dev eth2 protocol 802.1AD parent ffff: flower vlan_id 10
-> vlan_ethtype 802.1Q cvlan_id 20 skip_sw action drop
-> 
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
+
+--iADVvZ87iNIM/HX1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 25, 2023 at 10:08:38PM +0000, justinstitt@google.com wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1].
+>=20
+> A suitable replacement is `strscpy` [2].
+>=20
+> There are some hopes that someday the `strncpy` api could be ripped out
+> due to the vast number of suitable replacements (strscpy, strscpy_pad,
+> strtomem, strtomem_pad, strlcpy) [1].
+>=20
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nu=
+l-terminated-strings
+> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+>=20
 > ---
->  .../net/ethernet/marvell/octeontx2/af/mbox.h  |   1 +
->  .../net/ethernet/marvell/octeontx2/af/npc.h   |   3 +
->  .../marvell/octeontx2/af/rvu_debugfs.c        |   5 +
->  .../marvell/octeontx2/af/rvu_npc_fs.c         |  13 +++
->  .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 106 +++++++++++-------
->  5 files changed, 90 insertions(+), 38 deletions(-)
+>=20
+>=20
+> Link: https://github.com/KSPP/linux/issues/90
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
 
-<...>
+You've put your signoff after a --- which means it gets deleted when
+applied, don't do this.  The Signoff should be start of the main
+changelog.
 
-> +	if (!is_inner)
-> +		flow_rule_match_vlan(rule, &match);
-> +	else
-> +		flow_rule_match_cvlan(rule, &match);
+--iADVvZ87iNIM/HX1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-<...>
+-----BEGIN PGP SIGNATURE-----
 
-> +		if (!is_inner) {
-> +			flow_spec->vlan_tci = htons(vlan_tci);
-> +			flow_mask->vlan_tci = htons(vlan_tci_mask);
-> +			req->features |= BIT_ULL(NPC_OUTER_VID);
-> +		} else {
-> +			flow_spec->vlan_itci = htons(vlan_tci);
-> +			flow_mask->vlan_itci = htons(vlan_tci_mask);
-> +			req->features |= BIT_ULL(NPC_INNER_VID);
-> +		}
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTBCEIACgkQJNaLcl1U
+h9AFWQf+NwrKTGgyPU7rnOtBaswSIlcHbij0ClP3vSjtJ/15xC6XRDzxtti6UZa5
+HIOsxjuMRRTq6JKuh2/uRKc3IY2ZXqL1Wy7paSR+YB23DY+IBl3npR2aL3Bz7bP/
+YMvM2vvrzdLmxmkY+uvvuGGfA46jlgnKT6ULtHECymLHXUolMeXOGWsy0Gd+YPAO
+BL2P3v2NuPBe1b0KWfljfVaeGYXVGGvq9Xm4BcZPY3PCFngW00BvduN+USbQZFOy
++EQV18D7MB3sYYXmzmukLOdRNRSkKwE7p2q7Vy3ab0QX/Cwj1bV+hpKnKo2ielOW
+IrmADzy2JEdr5W1FP6jXtCemKMKkEQ==
+=g3ra
+-----END PGP SIGNATURE-----
 
-Slightly better approach will be to reverse these checks from
-"if (!is_inner)" to be "f (is_inner)".
-
-Other than that,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+--iADVvZ87iNIM/HX1--
