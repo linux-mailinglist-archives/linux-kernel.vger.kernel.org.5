@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6482D763E32
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4365763E36
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjGZSNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        id S229982AbjGZSP1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGZSNe (ORCPT
+        with ESMTP id S229437AbjGZSPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:13:34 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14656E4D;
-        Wed, 26 Jul 2023 11:13:34 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b8ad356fe4so373505ad.2;
-        Wed, 26 Jul 2023 11:13:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690395213; x=1691000013;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vwiSFj0tl/R+2ypAV/GDIAiCwQG00lhPHhABGlY+Hic=;
-        b=pvxRPcRPGAfCe4SrvnDaqzurhrKOcVas4Tnt6r7ITP3DnKTAdadQeNOZIYtvxZlyDn
-         DozhwK9IGtgCBWi3ffcMC796lhCxm+gzK2j9eyKV95IPGS8xj+8f2FDv/JB5ovIsi5UD
-         qt/8yTjnGNgleKv7v8WrBjBeJogMfejzAlE3SL+rMfERO6ucZIKXksiZVZQxIOZq65B5
-         Te2OlQwqeJbvNcZwIOAr0gAkZbUPY1eCfToHo7n8vHhiGE46COkFmR7//Wu2tE2h1BSV
-         BfhYiR8hECg45x0FqEJYUSKeCgH472DOcTHMgd2T7pCv+vwrYCYh6ITmAN924aXho4lc
-         mJbA==
+        Wed, 26 Jul 2023 14:15:24 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B02E78;
+        Wed, 26 Jul 2023 11:15:24 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb69c0070dso139391fac.1;
+        Wed, 26 Jul 2023 11:15:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690395213; x=1691000013;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690395323; x=1691000123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vwiSFj0tl/R+2ypAV/GDIAiCwQG00lhPHhABGlY+Hic=;
-        b=djFQyhEwBQOVcFLMqOZcpIAlHy9IU9cptrzQRUVzV/GDtVvyDyT+khD2uq2PE6U9DT
-         eGsqfl7VEaL5Ifb2PZCM9He4stSTpVjYWlsZIP7jvSSpBkHZqOyTYT9WUw35LKfL//eR
-         MU8YlMYGzL6+yqMv5H85F07lxKuSYIn34D5Eo4rMrZSu4c2FOyan2qJ/vQBvv9XCvGVG
-         D6uomz92sTzTDlzycf2fUb/T3JNKP40Mhzz1V/0GrXlZV9XEntaa7ndydyYGGHlrbv00
-         uScE8u8iyuwmei5P3jlAf8NQI3CpOPTWrOLtLhfPbi902YRg9TZwnxdeE7Q/1zwTMt8v
-         yIWA==
-X-Gm-Message-State: ABy/qLZNmHs5AU/AShaKfUpKqmgmic/NVhyw4nyVzDSb89YnAmjFEWG3
-        hYFJDFGzUMunjecSrG+4ovU=
-X-Google-Smtp-Source: APBJJlENsKtAIdpEBIKfw+s/pPsgNv0zC1TAnGLqNZq+eoO8cyf+D7Fq22VDKCbbaFYZ8L+dGs9mQA==
-X-Received: by 2002:a17:903:181:b0:1b1:ae33:30de with SMTP id z1-20020a170903018100b001b1ae3330demr2839399plg.13.1690395213483;
-        Wed, 26 Jul 2023 11:13:33 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id c9-20020a170902c1c900b001bb8be10a84sm9100254plc.304.2023.07.26.11.13.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 11:13:32 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        justin.tee@broadcom.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2] scsi: lpfc: Fix potential deadlock on &ndlp->lock
-Date:   Wed, 26 Jul 2023 18:13:22 +0000
-Message-Id: <20230726181322.26754-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        bh=PxLo+ssfIcGr82bGMB16DLkdE3iFP1HlTtobqG8HjjU=;
+        b=eLu2z0gBr3mJOhjjzDoDpgkGId/gi2rUTa6jkEoaH3BP4E+Qp6ZYw1RlD/08ntX89m
+         TklHZdrOzLzpMkwz4QwfDTGwGlfK+rHbpODZb2pCBcdpQvb/ZO3TeXcRhdRjyoG2hUru
+         +IggZU2z2wZa3AHo8kXsmsZ9Y9fT4P4RY190xr10GunQJKThLD16zFHCt++OKqwm9Zbl
+         T2CH4zTLDOWt/UlzM+F8XW8+m0DERDrHLl84VQD5i0S1F2Db86I1i/ABih4wQkyUNNiQ
+         VSTCg8cNDXARkRVeu+NuEhnmXm7wUkcgtPXNNLR/4u+a3AAuB8SMbqKqhaBODwJ9rUew
+         pKDg==
+X-Gm-Message-State: ABy/qLZ0cy42fNxRTMnivOgD5F49NtdMIIqDJK7VyzrADJJyf+ybukv8
+        nlPK+RkDL24hwqrDCTcd6upjgdfeFma5PQ==
+X-Google-Smtp-Source: APBJJlENQxxy9+hEQrtwV3ftQDOXryfK++Uc5gK5IcooB0jhaKarnClg9nIJJ0rlI/G+hi+UBbbtCA==
+X-Received: by 2002:a05:6870:8197:b0:1bb:6c17:2715 with SMTP id k23-20020a056870819700b001bb6c172715mr340020oae.2.1690395323260;
+        Wed, 26 Jul 2023 11:15:23 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id h185-20020a0ddec2000000b0057399b3bd26sm4302115ywe.33.2023.07.26.11.15.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 11:15:22 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d07c535377fso64793276.1;
+        Wed, 26 Jul 2023 11:15:22 -0700 (PDT)
+X-Received: by 2002:a25:8046:0:b0:cee:a470:89dc with SMTP id
+ a6-20020a258046000000b00ceea47089dcmr2430924ybn.52.1690395322627; Wed, 26 Jul
+ 2023 11:15:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230714174028.4040093-1-robh@kernel.org>
+In-Reply-To: <20230714174028.4040093-1-robh@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 Jul 2023 20:15:10 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
+Message-ID: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &ndlp->lock is acquired by timer lpfc_els_retry_delay() under softirq
-context, process context code acquiring the lock &ndlp->lock should
-disable irq or bh, otherwise deadlock could happen if the timer preempt
-the execution while the lock is held in process context on the same CPU.
+Hi Rob,
 
-The two lock acquisition inside lpfc_cleanup_pending_mbox() does not
-disable irq or softirq.
+On Fri, Jul 14, 2023 at 7:44 PM Rob Herring <robh@kernel.org> wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-[Deadlock Scenario]
-lpfc_cmpl_els_fdisc()
-    -> lpfc_cleanup_pending_mbox()
-    -> spin_lock(&ndlp->lock);
-        <irq>
-        -> lpfc_els_retry_delay()
-        -> lpfc_nlp_get()
-        -> spin_lock_irqsave(&ndlp->lock, flags); (deadlock here)
+Thanks for your patch, which is now commit 657c45b303f87d77 ("MIPS:
+Explicitly include correct DT includes") in next-20230726.
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+> --- a/arch/mips/lantiq/xway/gptu.c
+> +++ b/arch/mips/lantiq/xway/gptu.c
+> @@ -8,8 +8,8 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/ioport.h>
+>  #include <linux/init.h>
+> -#include <linux/of_platform.h>
+> -#include <linux/of_irq.h>
 
-The patch fix the potential deadlock by spin_lock_irq() to disable
-irq.
+Based on https://lore.kernel.org/all/202307270140.uClzsYnD-lkp@intel.com,
+I guess you need to keep of_irq.h for of_irq_to_resource_table()?
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/scsi/lpfc/lpfc_sli.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+>
+>  #include <lantiq_soc.h>
+>  #include "../clk.h"
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 58d10f8f75a7..8555f6bb9742 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -21049,9 +21049,9 @@ lpfc_cleanup_pending_mbox(struct lpfc_vport *vport)
- 				mb->mbox_flag |= LPFC_MBX_IMED_UNREG;
- 				restart_loop = 1;
- 				spin_unlock_irq(&phba->hbalock);
--				spin_lock(&ndlp->lock);
-+				spin_lock_irq(&ndlp->lock);
- 				ndlp->nlp_flag &= ~NLP_IGNR_REG_CMPL;
--				spin_unlock(&ndlp->lock);
-+				spin_unlock_irq(&ndlp->lock);
- 				spin_lock_irq(&phba->hbalock);
- 				break;
- 			}
-@@ -21067,9 +21067,9 @@ lpfc_cleanup_pending_mbox(struct lpfc_vport *vport)
- 			ndlp = (struct lpfc_nodelist *)mb->ctx_ndlp;
- 			mb->ctx_ndlp = NULL;
- 			if (ndlp) {
--				spin_lock(&ndlp->lock);
-+				spin_lock_irq(&ndlp->lock);
- 				ndlp->nlp_flag &= ~NLP_IGNR_REG_CMPL;
--				spin_unlock(&ndlp->lock);
-+				spin_unlock_irq(&ndlp->lock);
- 				lpfc_nlp_put(ndlp);
- 			}
- 		}
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
