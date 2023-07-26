@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4B5762C7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80653762C89
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjGZHFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
+        id S232252AbjGZHFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjGZHEc (ORCPT
+        with ESMTP id S232314AbjGZHFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:04:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDDA449C;
-        Wed, 26 Jul 2023 00:02:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08E3061528;
-        Wed, 26 Jul 2023 07:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A108C433C7;
-        Wed, 26 Jul 2023 07:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690354974;
-        bh=lHXQIHzrvHwVsw2n8ho3OKgRL8uci99i0feTnOVSPXM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldqMKqfu+uSVk/J2jwEuL29Q229yBjLU/PPwJs1j3nmCYIM1QcKUtwlATQ140U8PA
-         14OiMJVvfx9UHTvclH0jwM4ARgTDCAZ2YUNUZPjNyKAeTjlNuMcGwRkJhHjZ5eyhHG
-         Dr+6Gyw2jH5d/P5EP8blBX7+c3KuygsTVFowAjnEEZ+Qv0kaaaNY2AGPhR4aQEnt6O
-         u+olCAGloQKCDRePaqWiINXzZ2NikvEjE13BSwt0TL2rqwrl5jH7qeIPUqfQKKTEVO
-         +ptSf5CQhwHT8m3qmO9VShSPvvv8aew/UBPbueNsCwkKgGQ0Rjii39cLiAjmkQW9sm
-         J591R745bZWMQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qOYYA-0003RY-1L;
-        Wed, 26 Jul 2023 09:03:10 +0200
-Date:   Wed, 26 Jul 2023 09:03:10 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tim Jiang <quic_tjiang@quicinc.com>
-Cc:     marcel@holtmann.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        quic_bgodavar@quicinc.com, quic_hemantg@quicinc.com
-Subject: Re: [PATCH v12 0/2] Bluetooth: hci_qca: Add support for Qualcomm
- Bluetooth SoC QCA2066
-Message-ID: <ZMDFLl1iAHrcQkt_@hovoldconsulting.com>
-References: <20230726052245.609987-1-quic_tjiang@quicinc.com>
+        Wed, 26 Jul 2023 03:05:13 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070E9422B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:03:29 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so10081747e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690355007; x=1690959807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Sp6Oh3kIZYgwY/6PAzwynsD4VZMj8j6x6i38EBvjv4=;
+        b=k13+9VtFyhCyA5x2o3+p6BFUWl8Y6TGcK+ogwMkvvl5J81O/Se+A/TuSVB0nWIbUbQ
+         eLmY/aMEhNS9VKXnuu/br+QfQIdjkoNYdFPmWxQWHi3E3X3B/7Qmj8QgZCWbIo3kd/am
+         BKtbVu7bjEhU/rcld+xJvdH0tU3UkGNwB9aIR/EKRT9B+2ZW22Shf1ZbCr1N5GwCwsMo
+         xW3VYzQTdAWOKkcBF/cOcspJm/vh4XL2rihv5wMspqOb+CiQA37T76CuxE3qZHyHaYUz
+         l2fvbI8xagKyHKkbAAH1vziITBrrkGyyaqFMzfD13CzUIu/PjykZKvnzIL8VUDkVGvGt
+         ur/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690355007; x=1690959807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Sp6Oh3kIZYgwY/6PAzwynsD4VZMj8j6x6i38EBvjv4=;
+        b=bGbOI4xX8JB5sRBvtxq1QllBZeFmkmDQqoiSeKil0FS45BTRnmhbi3ddbArWU3EdNR
+         /SlFNvh8W+jaadgRV/2F/GGP2AEja+8+BXbr1yMB0P0X0WDVHkK/QXRcQFDiZWs/cGs5
+         E60PWXFTSm7aPGb7e3x4Cw9xZ7k4I6qYpTJabqscxbTfUc4/kIQG5c3M+1vj6hMLuTme
+         fcMK3cExkJkaV25DtIDp+9EynrNUi4FLIMRZU6wjqruD+ED1QpRDkPzYuVX6gqp7lRUf
+         lMr2wqOPZH4GVrS2G0y7AIfvaIA/3fOUMUY4DY/5V5pkHEH4FjR4Y0rmNewrDFR27tmG
+         FEGw==
+X-Gm-Message-State: ABy/qLZnwLKFQ86FKNqiO/vKWW4K06ZdGVCwGcCXt3ywQIL9y5UkAyH6
+        7qKFXJE3VU9gkZBidIMBzyZmHA==
+X-Google-Smtp-Source: APBJJlFWiuBO4vk/bvm/I48NbQmLqb+Rw/jod2Hiopmi/kTz7LGgnkmgmBKcX6/u4/1AX2YuxUoPVQ==
+X-Received: by 2002:ac2:495b:0:b0:4fe:8b5:588a with SMTP id o27-20020ac2495b000000b004fe08b5588amr723344lfi.57.1690355006710;
+        Wed, 26 Jul 2023 00:03:26 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id dy16-20020a05640231f000b005224f840130sm1572003edb.60.2023.07.26.00.03.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 00:03:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/8] AMR: dts: imx6sx-nitrogen6sx: drop incorrect regulator clock-names
+Date:   Wed, 26 Jul 2023 09:03:15 +0200
+Message-Id: <20230726070322.103871-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726052245.609987-1-quic_tjiang@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 01:22:43PM +0800, Tim Jiang wrote:
+regulator-fixed does not take "clock-names" property:
 
-Thanks for adding the changelog.
+  imx6sx-nitrogen6sx.dtb: regulator-wlan: Unevaluated properties are not allowed ('clock-names' was unexpected)
 
-You should also add a sentence or two here that describes what the
-series does (e.g. just say "This series adds support for ...").
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm/boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-Also make sure to run scripts/get_maintainer.pl on your series. Looks
-like you're still missing some maintainers on CC.
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts b/arch/arm/boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts
+index a2c79bcf9a11..23ccca2dea44 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts
+@@ -72,7 +72,6 @@ reg_wlan: regulator-wlan {
+ 		pinctrl-0 = <&pinctrl_reg_wlan>;
+ 		compatible = "regulator-fixed";
+ 		clocks = <&clks IMX6SX_CLK_CKO>;
+-		clock-names = "slow";
+ 		regulator-name = "wlan-en";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+-- 
+2.34.1
 
-You also did not CC at least on person providing review feedback on
-earlier versions.
-
-> Changes in v12
->  - fix compile error issue for patch 1/2
-> 
-> Changes in v11
->  - reverse two patches order
-> 
-> Changes in v10
->  - break out btsoc type print into seperate patch
-> 
-> Changes in v2-v9
->  - solve review comments for code style and commit message context
-
-This is not detailed enough for a changelog, but ok, let's forget about
-v2-v9 this time, but remember it for your future submissions.
-
-> Tim Jiang (2):
->   Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
->   Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
-
-As I mentioned elsewhere, these Subjects should be distinct and
-summarise what each patch does.
-
-Johan
