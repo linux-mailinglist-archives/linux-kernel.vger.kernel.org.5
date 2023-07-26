@@ -2,226 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03580762F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62482762F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbjGZIPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        id S232541AbjGZIQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjGZIPB (ORCPT
+        with ESMTP id S231500AbjGZIQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:15:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A001271B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690358701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eAjNRIihSOf+ZWCQiGmuIak9rrS2S/b0k59m1Q9Sn58=;
-        b=bFU9qI+raw/31792YRo/lGim4i/kOA97NVGZasjL4KlyVO55IpoomAIm6GN4VPGmIsTWvK
-        JMyA6g117P7zVtqv/myBP3UvWkGkJDbw64To3OXgSMDxDD4I2OucpIc9LGZ5K3mXuhuNxL
-        KVaHTIYiiMxpB+/TAWdhHueFrnim9Jo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-646-GvfWRODXO5aY7JcKiSAnkw-1; Wed, 26 Jul 2023 04:04:57 -0400
-X-MC-Unique: GvfWRODXO5aY7JcKiSAnkw-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-51da39aa6dcso4921031a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:04:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690358696; x=1690963496;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eAjNRIihSOf+ZWCQiGmuIak9rrS2S/b0k59m1Q9Sn58=;
-        b=ZNm1hTDaKcTllsA5kFwCq2OfZHpwgfq8S0fY2UjbEInzW18EUgqB7PqqPNxdiWCy5R
-         HZa4GhILUiUSwBWJD1WKMrGffSK3vEOkWRPNPEbJVU/oLWF0lnkSviHq/UQgi5A+7IES
-         RlJj3oJSv7atDr9BSbbXA5s58PQRzcqwK+Xfo45N5Zw9aHQG/dvV8U+OH7yjybrk+9ha
-         0ET5325+w6aO5pI+Xs6dWCTPt2fcHauAIPA8eLmE9V3We24hDspigssLKMfyTziZdpFX
-         2wwq92M4yXS2gs3aYpreeWXUVBTQ+NSVfVsDeB5SjstDMkMZwSORvdtdaPDUuxujmd8D
-         aDlQ==
-X-Gm-Message-State: ABy/qLaGJwq5wE8MP5cJ6uA08hF0xq8bQr9fWhOi3q4JVM/Hewe0QAuf
-        aHbQHDf0e87YgKeoRvzyU+nSYlfOi3ca2apkwBZTz7Q3V4Msqs18brMuip5+y8+PO5vm7CwIDum
-        KAxvtupGfSFPxqXYcQ+kY16+L
-X-Received: by 2002:a05:6402:1489:b0:522:30cc:a1f0 with SMTP id e9-20020a056402148900b0052230cca1f0mr1048239edv.14.1690358696042;
-        Wed, 26 Jul 2023 01:04:56 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH9cTC/+4nVrUrzuc8eu1ehgpHLqa3C+TMwtpTbgkUOYw+ZUE8Z5I+GDauZapCy0HXIvtSFdQ==
-X-Received: by 2002:a05:6402:1489:b0:522:30cc:a1f0 with SMTP id e9-20020a056402148900b0052230cca1f0mr1048219edv.14.1690358695716;
-        Wed, 26 Jul 2023 01:04:55 -0700 (PDT)
-Received: from sgarzare-redhat ([5.77.111.137])
-        by smtp.gmail.com with ESMTPSA id f5-20020a056402068500b0051ded17b30bsm8479399edy.40.2023.07.26.01.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 01:04:55 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 10:04:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        Wed, 26 Jul 2023 04:16:08 -0400
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D83A9032;
+        Wed, 26 Jul 2023 01:06:06 -0700 (PDT)
+Received: from localhost.localdomain (unknown [183.128.133.253])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXDxvL08BkJ3uYCg--.38134S4;
+        Wed, 26 Jul 2023 16:05:32 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     michael.chan@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        simon.horman@corigine.com, louis.peens@corigine.com,
+        yinjun.zhang@corigine.com, huanhuan.wang@corigine.com,
+        tglx@linutronix.de, bigeasy@linutronix.de, na.wang@corigine.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v3 4/4] vsock/test: MSG_PEEK test for
- SOCK_SEQPACKET
-Message-ID: <fbyxkuf3z3grrwnj6riwy4fki47yqfrdplhmcsd4ye3ga7apsk@5zeiorqk6uaz>
-References: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
- <20230725172912.1659970-5-AVKrasnov@sberdevices.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230725172912.1659970-5-AVKrasnov@sberdevices.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        oss-drivers@corigine.com
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH net-next v1] rtnetlink: remove redundant checks for nlattr IFLA_BRIDGE_MODE
+Date:   Wed, 26 Jul 2023 16:05:22 +0800
+Message-Id: <20230726080522.1064569-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXDxvL08BkJ3uYCg--.38134S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1DXF1xXw4xWrW3Gw17Wrg_yoWrGFWxpa
+        1UJa4xZ3yvqr45Xan7Ja18ZF9Yqay7t34DuF4Syw4rZ3WvvFyDCr4qgF9I9ryUArWUGF13
+        tr4UAF13Aas8X3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n
+        5UUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:29:12PM +0300, Arseniy Krasnov wrote:
->This adds MSG_PEEK test for SOCK_SEQPACKET. It works in the same way as
->SOCK_STREAM test, except it also tests MSG_TRUNC flag.
->
->Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->---
-> tools/testing/vsock/vsock_test.c | 58 +++++++++++++++++++++++++++++---
-> 1 file changed, 54 insertions(+), 4 deletions(-)
+The previous patch added the nla_len check in rtnl_bridge_setlink, which
+is the only caller for ndo_bridge_setlink handlers defined in low-level
+driver codes. Hence, this patch cleanups the redundant checks in each
+ndo_bridge_setlink handler function.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Please apply the fix discussed at the link:
+https://lore.kernel.org/all/20230726075314.1059224-1-linma@zju.edu.cn/
+first before this one.
 
-Thanks,
-Stefano
+Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c           | 3 ---
+ drivers/net/ethernet/emulex/benet/be_main.c         | 3 ---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 3 ---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c   | 3 ---
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 3 ---
+ 5 files changed, 15 deletions(-)
 
->
->diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->index 444a3ff0681f..90718c2fd4ea 100644
->--- a/tools/testing/vsock/vsock_test.c
->+++ b/tools/testing/vsock/vsock_test.c
->@@ -257,14 +257,19 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
->
-> #define MSG_PEEK_BUF_LEN 64
->
->-static void test_stream_msg_peek_client(const struct test_opts *opts)
->+static void test_msg_peek_client(const struct test_opts *opts,
->+				 bool seqpacket)
-> {
-> 	unsigned char buf[MSG_PEEK_BUF_LEN];
-> 	ssize_t send_size;
-> 	int fd;
-> 	int i;
->
->-	fd = vsock_stream_connect(opts->peer_cid, 1234);
->+	if (seqpacket)
->+		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	else
->+		fd = vsock_stream_connect(opts->peer_cid, 1234);
->+
-> 	if (fd < 0) {
-> 		perror("connect");
-> 		exit(EXIT_FAILURE);
->@@ -290,7 +295,8 @@ static void test_stream_msg_peek_client(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->-static void test_stream_msg_peek_server(const struct test_opts *opts)
->+static void test_msg_peek_server(const struct test_opts *opts,
->+				 bool seqpacket)
-> {
-> 	unsigned char buf_half[MSG_PEEK_BUF_LEN / 2];
-> 	unsigned char buf_normal[MSG_PEEK_BUF_LEN];
->@@ -298,7 +304,11 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
-> 	ssize_t res;
-> 	int fd;
->
->-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (seqpacket)
->+		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->+	else
->+		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+
-> 	if (fd < 0) {
-> 		perror("accept");
-> 		exit(EXIT_FAILURE);
->@@ -340,6 +350,21 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
-> 		exit(EXIT_FAILURE);
-> 	}
->
->+	if (seqpacket) {
->+		/* This type of socket supports MSG_TRUNC flag,
->+		 * so check it with MSG_PEEK. We must get length
->+		 * of the message.
->+		 */
->+		res = recv(fd, buf_half, sizeof(buf_half), MSG_PEEK |
->+			   MSG_TRUNC);
->+		if (res != sizeof(buf_peek)) {
->+			fprintf(stderr,
->+				"recv(2) + MSG_PEEK | MSG_TRUNC, exp %zu, got %zi\n",
->+				sizeof(buf_half), res);
->+			exit(EXIT_FAILURE);
->+		}
->+	}
->+
-> 	res = recv(fd, buf_normal, sizeof(buf_normal), 0);
-> 	if (res != sizeof(buf_normal)) {
-> 		fprintf(stderr, "recv(2), expected %zu, got %zi\n",
->@@ -356,6 +381,16 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->+static void test_stream_msg_peek_client(const struct test_opts *opts)
->+{
->+	return test_msg_peek_client(opts, false);
->+}
->+
->+static void test_stream_msg_peek_server(const struct test_opts *opts)
->+{
->+	return test_msg_peek_server(opts, false);
->+}
->+
-> #define SOCK_BUF_SIZE (2 * 1024 * 1024)
-> #define MAX_MSG_SIZE (32 * 1024)
->
->@@ -1125,6 +1160,16 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->+static void test_seqpacket_msg_peek_client(const struct test_opts *opts)
->+{
->+	return test_msg_peek_client(opts, true);
->+}
->+
->+static void test_seqpacket_msg_peek_server(const struct test_opts *opts)
->+{
->+	return test_msg_peek_server(opts, true);
->+}
->+
-> static struct test_case test_cases[] = {
-> 	{
-> 		.name = "SOCK_STREAM connection reset",
->@@ -1200,6 +1245,11 @@ static struct test_case test_cases[] = {
-> 		.run_client = test_stream_virtio_skb_merge_client,
-> 		.run_server = test_stream_virtio_skb_merge_server,
-> 	},
->+	{
->+		.name = "SOCK_SEQPACKET MSG_PEEK",
->+		.run_client = test_seqpacket_msg_peek_client,
->+		.run_server = test_seqpacket_msg_peek_server,
->+	},
-> 	{},
-> };
->
->-- 
->2.25.1
->
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index e5b54e6025be..9e098c1cf1ab 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -13101,9 +13101,6 @@ static int bnxt_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (mode == bp->br_mode)
+ 			break;
+diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
+index 18c2fc880d09..e8abc43a7061 100644
+--- a/drivers/net/ethernet/emulex/benet/be_main.c
++++ b/drivers/net/ethernet/emulex/benet/be_main.c
+@@ -4985,9 +4985,6 @@ static int be_ndo_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (BE3_chip(adapter) && mode == BRIDGE_MODE_VEPA)
+ 			return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 1726297f2e0d..d1381b1b3f3a 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10042,9 +10042,6 @@ static int ixgbe_ndo_bridge_setlink(struct net_device *dev,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		status = ixgbe_configure_bridge_mode(adapter, mode);
+ 		if (status)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index defb1efccb78..b2df8e517a85 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -4883,9 +4883,6 @@ static int mlx5e_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (mode > BRIDGE_MODE_VEPA)
+ 			return -EINVAL;
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+index 6b1fb5708434..85f36ec2f986 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+@@ -2068,9 +2068,6 @@ static int nfp_net_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		new_ctrl = nn->dp.ctrl;
+ 		mode = nla_get_u16(attr);
+ 		if (mode == BRIDGE_MODE_VEPA)
+-- 
+2.17.1
 
