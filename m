@@ -2,191 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81AB762912
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C438762917
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjGZDJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S231261AbjGZDKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjGZDIy (ORCPT
+        with ESMTP id S231262AbjGZDJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:08:54 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 149AF2682;
-        Tue, 25 Jul 2023 20:08:50 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36Q38OuzC011207, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36Q38OuzC011207
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 26 Jul 2023 11:08:25 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 26 Jul 2023 11:08:36 +0800
-Received: from fc38.localdomain (172.22.228.98) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Wed, 26 Jul
- 2023 11:08:34 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <kuba@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>
-Subject: [PATCH net-next v2 2/2] r8152: set bp in bulk
-Date:   Wed, 26 Jul 2023 11:08:08 +0800
-Message-ID: <20230726030808.9093-419-nic_swsd@realtek.com>
+        Tue, 25 Jul 2023 23:09:59 -0400
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA1F2717;
+        Tue, 25 Jul 2023 20:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1690340991; x=1721876991;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OO5DgnVYIF6etA+A5spa7likYOAXNBzPyYRVt7m4VLg=;
+  b=F0t10OTrbbqChGuLBNRlRKFX6xx9iNoD/L+gln42Zo9Ozuhfo8BCIZfg
+   wTmetSEeaIf7oKtkGXNNXv19+xwTbnz6idLYcYInbIEaOLh1GVvHieDJ3
+   U181QphxiynKTTBu2s6/3813LmsY31B+6X0Z9VR1vTIGrH9cZ85TRFPEA
+   0=;
+X-IronPort-AV: E=Sophos;i="6.01,231,1684800000"; 
+   d="scan'208";a="662694391"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 03:09:50 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com (Postfix) with ESMTPS id EE921806AA;
+        Wed, 26 Jul 2023 03:09:46 +0000 (UTC)
+Received: from EX19D019UWB002.ant.amazon.com (10.13.139.149) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 26 Jul 2023 03:09:40 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D019UWB002.ant.amazon.com (10.13.139.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 26 Jul 2023 03:09:40 +0000
+Received: from u7187ce7291cc57.ant.amazon.com (10.187.170.17) by
+ mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Wed, 26 Jul 2023 03:09:39 +0000
+From:   Tahsin Erdogan <trdgn@amazon.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     Tahsin Erdogan <trdgn@amazon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tun: avoid high-order page allocation for packet header
+Date:   Tue, 25 Jul 2023 20:09:36 -0700
+Message-ID: <20230726030936.1587269-1-trdgn@amazon.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726030808.9093-417-nic_swsd@realtek.com>
-References: <20230726030808.9093-417-nic_swsd@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.22.228.98]
-X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PLA_BP_0 ~ PLA_BP_15 (0xfc28 ~ 0xfc46) are continuous registers, so we
-could combine the control transfers into one control transfer.
+When GSO is not enabled and a packet is transmitted via writev(), all
+payload is treated as header which requires a contiguous memory allocation.
+This allocation request is harder to satisfy, and may even fail if there is
+enough fragmentation.
 
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Note that sendmsg() code path limits the linear copy length, so this change
+makes writev() and sendmsg() more consistent.
+
+Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
 ---
- drivers/net/usb/r8152.c | 75 ++++++++++++++---------------------------
- 1 file changed, 25 insertions(+), 50 deletions(-)
+ drivers/net/tun.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index f6578a99dbac..db9897e825b4 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -3978,29 +3978,10 @@ static void rtl_reset_bmu(struct r8152 *tp)
- /* Clear the bp to stop the firmware before loading a new one */
- static void rtl_clear_bp(struct r8152 *tp, u16 type)
- {
--	switch (tp->version) {
--	case RTL_VER_01:
--	case RTL_VER_02:
--	case RTL_VER_07:
--		break;
--	case RTL_VER_03:
--	case RTL_VER_04:
--	case RTL_VER_05:
--	case RTL_VER_06:
--		ocp_write_byte(tp, type, PLA_BP_EN, 0);
--		break;
--	case RTL_VER_14:
--		ocp_write_word(tp, type, USB_BP2_EN, 0);
-+	u16 bp[16] = {0};
-+	u16 bp_num;
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index d75456adc62a..b9d111fbea63 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1523,7 +1523,7 @@ static struct sk_buff *tun_alloc_skb(struct tun_file *tfile,
+ 	int err;
  
--		ocp_write_word(tp, type, USB_BP_8, 0);
--		ocp_write_word(tp, type, USB_BP_9, 0);
--		ocp_write_word(tp, type, USB_BP_10, 0);
--		ocp_write_word(tp, type, USB_BP_11, 0);
--		ocp_write_word(tp, type, USB_BP_12, 0);
--		ocp_write_word(tp, type, USB_BP_13, 0);
--		ocp_write_word(tp, type, USB_BP_14, 0);
--		ocp_write_word(tp, type, USB_BP_15, 0);
--		break;
-+	switch (tp->version) {
- 	case RTL_VER_08:
- 	case RTL_VER_09:
- 	case RTL_VER_10:
-@@ -4008,32 +3989,31 @@ static void rtl_clear_bp(struct r8152 *tp, u16 type)
- 	case RTL_VER_12:
- 	case RTL_VER_13:
- 	case RTL_VER_15:
--	default:
- 		if (type == MCU_TYPE_USB) {
- 			ocp_write_word(tp, MCU_TYPE_USB, USB_BP2_EN, 0);
--
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_8, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_9, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_10, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_11, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_12, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_13, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_14, 0);
--			ocp_write_word(tp, MCU_TYPE_USB, USB_BP_15, 0);
--		} else {
--			ocp_write_byte(tp, MCU_TYPE_PLA, PLA_BP_EN, 0);
-+			bp_num = 16;
-+			break;
+ 	/* Under a page?  Don't bother with paged skb. */
+-	if (prepad + len < PAGE_SIZE || !linear)
++	if (prepad + len < PAGE_SIZE)
+ 		linear = len;
+ 
+ 	skb = sock_alloc_send_pskb(sk, prepad + linear, len - linear, noblock,
+@@ -1838,6 +1838,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 			 */
+ 			zerocopy = false;
+ 		} else {
++			if (linear == 0)
++				linear = min_t(size_t, good_linear, copylen);
++
+ 			skb = tun_alloc_skb(tfile, align, copylen, linear,
+ 					    noblock);
  		}
-+		fallthrough;
-+	case RTL_VER_03:
-+	case RTL_VER_04:
-+	case RTL_VER_05:
-+	case RTL_VER_06:
-+		ocp_write_byte(tp, type, PLA_BP_EN, 0);
-+		fallthrough;
-+	case RTL_VER_01:
-+	case RTL_VER_02:
-+	case RTL_VER_07:
-+		bp_num = 8;
-+		break;
-+	case RTL_VER_14:
-+	default:
-+		ocp_write_word(tp, type, USB_BP2_EN, 0);
-+		bp_num = 16;
- 		break;
- 	}
- 
--	ocp_write_word(tp, type, PLA_BP_0, 0);
--	ocp_write_word(tp, type, PLA_BP_1, 0);
--	ocp_write_word(tp, type, PLA_BP_2, 0);
--	ocp_write_word(tp, type, PLA_BP_3, 0);
--	ocp_write_word(tp, type, PLA_BP_4, 0);
--	ocp_write_word(tp, type, PLA_BP_5, 0);
--	ocp_write_word(tp, type, PLA_BP_6, 0);
--	ocp_write_word(tp, type, PLA_BP_7, 0);
-+	generic_ocp_write(tp, PLA_BP_0, BYTE_EN_DWORD, bp_num << 1, bp, type);
- 
- 	/* wait 3 ms to make sure the firmware is stopped */
- 	usleep_range(3000, 6000);
-@@ -5007,10 +4987,9 @@ static void rtl8152_fw_phy_nc_apply(struct r8152 *tp, struct fw_phy_nc *phy)
- 
- static void rtl8152_fw_mac_apply(struct r8152 *tp, struct fw_mac *mac)
- {
--	u16 bp_en_addr, bp_index, type, bp_num, fw_ver_reg;
-+	u16 bp_en_addr, type, fw_ver_reg;
- 	u32 length;
- 	u8 *data;
--	int i;
- 
- 	switch (__le32_to_cpu(mac->blk_hdr.type)) {
- 	case RTL_FW_PLA:
-@@ -5052,12 +5031,8 @@ static void rtl8152_fw_mac_apply(struct r8152 *tp, struct fw_mac *mac)
- 	ocp_write_word(tp, type, __le16_to_cpu(mac->bp_ba_addr),
- 		       __le16_to_cpu(mac->bp_ba_value));
- 
--	bp_index = __le16_to_cpu(mac->bp_start);
--	bp_num = __le16_to_cpu(mac->bp_num);
--	for (i = 0; i < bp_num; i++) {
--		ocp_write_word(tp, type, bp_index, __le16_to_cpu(mac->bp[i]));
--		bp_index += 2;
--	}
-+	generic_ocp_write(tp, __le16_to_cpu(mac->bp_start), BYTE_EN_DWORD,
-+			  __le16_to_cpu(mac->bp_num) << 1, mac->bp, type);
- 
- 	bp_en_addr = __le16_to_cpu(mac->bp_en_addr);
- 	if (bp_en_addr)
 -- 
 2.41.0
 
