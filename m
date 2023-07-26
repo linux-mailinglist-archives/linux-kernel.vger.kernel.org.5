@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4365763E36
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FF0763E39
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjGZSP1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        id S230025AbjGZSPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGZSPY (ORCPT
+        with ESMTP id S231483AbjGZSPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:15:24 -0400
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B02E78;
-        Wed, 26 Jul 2023 11:15:24 -0700 (PDT)
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb69c0070dso139391fac.1;
-        Wed, 26 Jul 2023 11:15:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690395323; x=1691000123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PxLo+ssfIcGr82bGMB16DLkdE3iFP1HlTtobqG8HjjU=;
-        b=eLu2z0gBr3mJOhjjzDoDpgkGId/gi2rUTa6jkEoaH3BP4E+Qp6ZYw1RlD/08ntX89m
-         TklHZdrOzLzpMkwz4QwfDTGwGlfK+rHbpODZb2pCBcdpQvb/ZO3TeXcRhdRjyoG2hUru
-         +IggZU2z2wZa3AHo8kXsmsZ9Y9fT4P4RY190xr10GunQJKThLD16zFHCt++OKqwm9Zbl
-         T2CH4zTLDOWt/UlzM+F8XW8+m0DERDrHLl84VQD5i0S1F2Db86I1i/ABih4wQkyUNNiQ
-         VSTCg8cNDXARkRVeu+NuEhnmXm7wUkcgtPXNNLR/4u+a3AAuB8SMbqKqhaBODwJ9rUew
-         pKDg==
-X-Gm-Message-State: ABy/qLZ0cy42fNxRTMnivOgD5F49NtdMIIqDJK7VyzrADJJyf+ybukv8
-        nlPK+RkDL24hwqrDCTcd6upjgdfeFma5PQ==
-X-Google-Smtp-Source: APBJJlENQxxy9+hEQrtwV3ftQDOXryfK++Uc5gK5IcooB0jhaKarnClg9nIJJ0rlI/G+hi+UBbbtCA==
-X-Received: by 2002:a05:6870:8197:b0:1bb:6c17:2715 with SMTP id k23-20020a056870819700b001bb6c172715mr340020oae.2.1690395323260;
-        Wed, 26 Jul 2023 11:15:23 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id h185-20020a0ddec2000000b0057399b3bd26sm4302115ywe.33.2023.07.26.11.15.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 11:15:22 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d07c535377fso64793276.1;
-        Wed, 26 Jul 2023 11:15:22 -0700 (PDT)
-X-Received: by 2002:a25:8046:0:b0:cee:a470:89dc with SMTP id
- a6-20020a258046000000b00ceea47089dcmr2430924ybn.52.1690395322627; Wed, 26 Jul
- 2023 11:15:22 -0700 (PDT)
+        Wed, 26 Jul 2023 14:15:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7B52D44;
+        Wed, 26 Jul 2023 11:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x97cDGBfbbYgCu4TNBD9kXaxFG/QZ+f5W68FlyrkZcE=; b=Q2VKv6oQ6oHWzZEFcT0SsIsfBn
+        oD6MQPzRS5vQQlGWM5+zSeNvcE6Xyd37XYO3CpHLWgeAwlRVV6of7bh40pq3z2rmFr3UWJ6opyss6
+        5xmm07nFq4G84pv8yjwZTMUuua6sDDICAkKq2lvbSUsQ8mOMZ7KpxXAfIaq39fe5+m47fdqJu2CMK
+        Tn2RWeUgMz0lSjQj5z6W5UmOFQNclWFYFpEQl55xY6r9/NC6S8Lf4bxH+ZzMJCWJ7XdeF8SSHrPK6
+        pyiUI2TwB4IZx2YDr6NiJ87nWWbeqHbZMhA0LbGJ0A3u9k8VMwpSlTaE+uKN8QlK0tnYPithCoPM8
+        ROqfp5UQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOj2y-00BG7X-34;
+        Wed, 26 Jul 2023 18:15:40 +0000
+Date:   Wed, 26 Jul 2023 11:15:40 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, willy@infradead.org,
+        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 00/14] sysctl: Add a size argument to register functions
+ in sysctl
+Message-ID: <ZMFizKFkVxUFtSqa@bombadil.infradead.org>
+References: <CGME20230726140648eucas1p29a92c80fb28550e2087cd0ae190d29bd@eucas1p2.samsung.com>
+ <20230726140635.2059334-1-j.granados@samsung.com>
 MIME-Version: 1.0
-References: <20230714174028.4040093-1-robh@kernel.org>
-In-Reply-To: <20230714174028.4040093-1-robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Jul 2023 20:15:10 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
-Message-ID: <CAMuHMdXdqo-OFKtHdVNu77-cuS67Cvb6NV98eYK+gtba7ir5jA@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726140635.2059334-1-j.granados@samsung.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, Jul 26, 2023 at 04:06:20PM +0200, Joel Granados wrote:
+> What?
+> These commits set things up so we can start removing the sentinel elements.
 
-On Fri, Jul 14, 2023 at 7:44 PM Rob Herring <robh@kernel.org> wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Yes but the why must explained right away.
 
-Thanks for your patch, which is now commit 657c45b303f87d77 ("MIPS:
-Explicitly include correct DT includes") in next-20230726.
+> Why?
+> This is part of the push to trim down kernel/sysctl.c by moving the large array
+> that was causing merge conflicts. 
 
-> --- a/arch/mips/lantiq/xway/gptu.c
-> +++ b/arch/mips/lantiq/xway/gptu.c
-> @@ -8,8 +8,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/ioport.h>
->  #include <linux/init.h>
-> -#include <linux/of_platform.h>
-> -#include <linux/of_irq.h>
+Let me elaborate on that:
 
-Based on https://lore.kernel.org/all/202307270140.uClzsYnD-lkp@intel.com,
-I guess you need to keep of_irq.h for of_irq_to_resource_table()?
+While the move moving over time of array elements out of kernel/sysctl.c
+to their own place helps merge conflicts this patch set does not help
+with that in and of itself, what it does is help make sure the move of
+sysctls to their own files does not bloat the kernel more, and in fact
+helps reduce the overall build time size of the kernel and run time
+memory consumed by the kernel by about ~64 bytes per array.
 
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
->
->  #include <lantiq_soc.h>
->  #include "../clk.h"
+Without this patch set each time we moved a set of sysctls out of
+kernel/sysctl.c to its own subsystem we'd have to add a new sentinel
+element (an empty sysctl entry), and while that helps clean up
+kernel/sysctl.c to avoid merge conflicts, it also bloats the kernel
+by about 64 bytes on average each time.
 
-Gr{oetje,eeting}s,
+We can do better. We can make those moves *not* have a size penalty, and
+all around also reduce the build / run time of the kernel.
 
-                        Geert
+*This* is the why, that if we don't do this the cleanup of
+kernel/sysctl.c ends up slowly bloating the kernel. Willy had
+suggested we instead remove the sentinel so that each move does not
+incur a size penalty, but also that in turn reduces the size of the
+kernel at build time / run time by a ballpark about ~64 bytes per
+array.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Then the following is more details about estimates of overall size
+savings, it's not miscellaneous information at all, it's very relevant
+information to this patch set.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Misc:
+> A consequence of eventually removing all the sentinels (64 bytes per sentinel)
+> is the bytes we save. Here I include numbers for when all sentinels are removed
+> to contextualize this chunk
+>   * bloat-o-meter:
+>     The "yesall" configuration results save 9158 bytes (you can see the output here
+>     https://lore.kernel.org/all/20230621091000.424843-1-j.granados@samsung.com/.
+>     The "tiny" configuration + CONFIG_SYSCTL save 1215 bytes (you can see the
+>     output here [2])
+>   * memory usage:
+>     As we no longer need the sentinel element within proc_sysctl.c, we save some
+>     bytes in main memory as well. In my testing kernel I measured a difference of
+>     6720 bytes. I include the way to measure this in [1]
+
+  Luis
