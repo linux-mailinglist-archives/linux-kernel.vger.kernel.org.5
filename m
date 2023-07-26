@@ -2,168 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BD4763B18
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B996763B20
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbjGZPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
+        id S233096AbjGZPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233987AbjGZPat (ORCPT
+        with ESMTP id S231372AbjGZPc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:30:49 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449401FFC;
-        Wed, 26 Jul 2023 08:30:47 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 14BC63200344;
-        Wed, 26 Jul 2023 11:30:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 26 Jul 2023 11:30:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1690385446; x=1690471846; bh=+FXui71M4KLr0BGEwEGbDcZQqLzS0w/dnD5
-        SDEjctV4=; b=shZkvMNkyJ1lFMNg0Or5U9Tf8NaZrEfAxjUz0SGr0yvn3EA/bPG
-        7HNnk4WzV8iDu3Wu54e7GwjQn8UXhbJamL4Q04h1/Ao/HIvUoJgh9ANhReL4C6TV
-        Hx8p1gB5RJ+ZWpy3jSDNGwlMrWB2qCNxqFOtw8qpisBDVXh/eMHC1RhKNqjx3jh5
-        GtlJbAc/FVdEFZnp964SsAOrM9pGcxfAls3Tr6h4SAgG8kM5PPWVeiyf16JGkQgA
-        h5tT/B0i5mt8xlawvCkAnOUYWH6F58A/i46oiDA8asJgISvivIzEflqpe7Ycf2q6
-        4+ozJkkOVeBEL2Q9v7ZIqbT27FNCPt8CQTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1690385446; x=
-        1690471846; bh=+FXui71M4KLr0BGEwEGbDcZQqLzS0w/dnD5SDEjctV4=; b=e
-        v+eCn2VtqzzwPzl31zhpIuEXwAArXP7mI2XJsg/p6sU5R+L3RNJCPOfussVEwrm9
-        iGXai+zhYfOMKor+ItuHEMlrNcjB0xikc5YsrFX85/SF8U3BLDavfGc10C2SpkUn
-        JCBR2sg6wYc0PjqrVL8Ywy98whIt6j7VJmQoftB/Wc240FXxX/mtT7L+DNglazD4
-        sSKmuw+WIslH6pMv2MiW/dkoBaB+vVWKM64xT/ZkIKTtbdE7xXB4HPdR3CPJpzYx
-        bx1WyHIwaF0RLW5zlZGoKNsTHqh2z7q8++gk9ZwlteyKQoj3EPte3Rzno2Kk+Pha
-        I/6KRgKH6CXmf8YHIAfbw==
-X-ME-Sender: <xms:JjzBZEAqHLvQBWcVRfHg20D0TEAA0z-BNFgxsKHQvtYKKd-NWYuUYg>
-    <xme:JjzBZGiZ6bMiAd2tolhqJaRCH6u6MBglAYfJu-9RxnwGm9Gwwy-2czq-A6X-PsZct
-    u9_rj6OdfhRNafn>
-X-ME-Received: <xmr:JjzBZHkZig3cGiB4ht3DG1tSwi-JtBubMRTaO7VoqSZZy6pOTtO3xuHUTNkPQkdvwA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdekjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculddutddmnecujfgurhepkfffgggfuffvfhfhjggtgfesthekredttdef
-    jeenucfhrhhomhepuegvrhhnugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusg
-    gvrhhtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpedtudeuueevgeek
-    feehieeukedvudelieevteevuedtueffhfeuteeivedvhfduvdenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghr
-    thesfhgrshhtmhgrihhlrdhfmh
-X-ME-Proxy: <xmx:JjzBZKz6HoWWxXnGlZdsRtWYdnpefHkQWv_f_GXM0yjTsLhxPUAbyA>
-    <xmx:JjzBZJQHO_4PvSoiwyFIK4_9US4wcfHZ8_pDr6zyu4rTGuYgNMTFTA>
-    <xmx:JjzBZFbORx0hcgjCiD741VMKu0_BKojaH-NDHYY6PW9HFIjR3OeuUQ>
-    <xmx:JjzBZEfzfzDiEyviqm2jC-V6OzjtXSJgJAD2129FVxUo6zLpLj4nJw>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 26 Jul 2023 11:30:45 -0400 (EDT)
-Message-ID: <4470a31c-802e-51e2-75b0-362c05fecfb8@fastmail.fm>
-Date:   Wed, 26 Jul 2023 17:30:44 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
-To:     Jaco Kroon <jaco@uls.co.za>, Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230726105953.843-1-jaco@uls.co.za>
- <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
- <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
-Content-Language: en-US
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 26 Jul 2023 11:32:28 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B022136
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:32:26 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5635233876bso3597008a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:32:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690385546; x=1690990346;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=hfmPlDHM//CdQxH+FNIMT9hQbrC5TE6d8oSs8Vv3mFiP4Yxwh7Xq1zE+ghsQM8ajLS
+         olrZ91m4ZNbAzyVhUJhdPivUPF6QJQRQAayqxgM/FN2zEJid/T6tjet02urwcqQxVKF1
+         pCg+I6e+Ta528ZDcEtCTuCt6TiQlXHF0HP2YCupLkIaW60OXug/z+5yCXlDH2YCLILTA
+         PUkeLHGe6j/IAncLqmGK1bNCU6UJ4OjkbCI4ofsyLm+1RTbDqmHfZec680qFCaCQj7om
+         es60ZBquPQbMI1+MuI/U2OxUwsiZfBb73DZrgdsIzZP2dRli5JaZWa5K+FXgQMJU/qLp
+         hJMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690385546; x=1690990346;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=PD4xDLj3EUmoYPiGBYwoirlh/ZYDjK/5QrkOmoBizjzlt9IGM0XFup65AoFgOtfZf5
+         Oah1/u3u30OiUcw42x8Ne6paU4Re/bpc/7ALT1XwGWwOB4G9UezaRwEwb7p21j96S7ex
+         kYPTtoqc5apUIerFWSDFimbVU8haMHAiC36CLTzcfGRWVFOKrUPJ5W13b3puGXlb1Y3t
+         I9ky7HZwprYYnqXjW4OHWmxr+qYDUt0TmK4+psCDUr0d/LKrsj+89bT6IeHoDjR3mE6a
+         QtLgYP1GxULatHOufarcLSGKpSDHxnc5NWkMwPSFjow3O48V+o3xZPNHing0b3SLAi+a
+         q6/Q==
+X-Gm-Message-State: ABy/qLanIKV0VGeOAeW/BuIAbqdysQnccr9GfA2LaecYgmn7Fgd4Ltpc
+        078WeI8ff/ZAaiZB83uvAKMQcf7MRRWQAbSM
+X-Google-Smtp-Source: APBJJlEV1psb6hrUYzZ2qUbPMrxy2521kIy5mUO3uhqYVmcWuVNKPwnbr0Im3ZM2ll6UD7qKcSrZwb+nh29ttbHg
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a63:7f1c:0:b0:553:3ba2:f36 with SMTP id
+ a28-20020a637f1c000000b005533ba20f36mr10273pgd.9.1690385546207; Wed, 26 Jul
+ 2023 08:32:26 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 15:32:22 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230726153223.821757-1-yosryahmed@google.com>
+Subject: [PATCH] mm: memcg: use rstat for non-hierarchical stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, memcg uses rstat to maintain hierarchical stats. The rstat
+framework keeps track of which cgroups have updates on which cpus.
 
+For non-hierarchical stats, as memcg moved to rstat, they are no longer
+readily available as counters. Instead, the percpu counters for a given
+stat need to be summed to get the non-hierarchical stat value. This
+causes a performance regression when reading non-hierarchical stats on
+kernels where memcg moved to using rstat. This is especially visible
+when reading memory.stat on cgroup v1. There are also some code paths
+internal to the kernel that read such non-hierarchical stats.
 
-On 7/26/23 17:26, Jaco Kroon wrote:
-> Hi,
-> 
-> On 2023/07/26 15:53, Bernd Schubert wrote:
->>
->>
->> On 7/26/23 12:59, Jaco Kroon wrote:
->>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
->>> ---
->>>   fs/fuse/Kconfig   | 16 ++++++++++++++++
->>>   fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
->>>   2 files changed, 40 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
->>> index 038ed0b9aaa5..0783f9ee5cd3 100644
->>> --- a/fs/fuse/Kconfig
->>> +++ b/fs/fuse/Kconfig
->>> @@ -18,6 +18,22 @@ config FUSE_FS
->>>         If you want to develop a userspace FS, or if you want to use
->>>         a filesystem based on FUSE, answer Y or M.
->>>   +config FUSE_READDIR_ORDER
->>> +    int
->>> +    range 0 5
->>> +    default 5
->>> +    help
->>> +        readdir performance varies greatly depending on the size of 
->>> the read.
->>> +        Larger buffers results in larger reads, thus fewer reads and 
->>> higher
->>> +        performance in return.
->>> +
->>> +        You may want to reduce this value on seriously constrained 
->>> memory
->>> +        systems where 128KiB (assuming 4KiB pages) cache pages is 
->>> not ideal.
->>> +
->>> +        This value reprents the order of the number of pages to 
->>> allocate (ie,
->>> +        the shift value).  A value of 0 is thus 1 page (4KiB) where 
->>> 5 is 32
->>> +        pages (128KiB).
->>> +
->>
->> I like the idea of a larger readdir size, but shouldn't that be a 
->> server/daemon/library decision which size to use, instead of kernel 
->> compile time? So should be part of FUSE_INIT negotiation?
-> 
-> Yes sure, but there still needs to be a default.  And one page at a time 
-> doesn't cut it.
-> 
-> -- snip --
-> 
->>>   -    page = alloc_page(GFP_KERNEL);
->>> +    page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
->>
->> I guess that should become folio alloc(), one way or the other. Now I 
->> think order 0 was chosen before to avoid risk of allocation failure. I 
->> guess it might work to try a large size and to fall back to 0 when 
->> that failed. Or fail back to the slower vmalloc.
-> 
-> If this varies then a bunch of other code will become somewhat more 
-> complex, especially if one alloc succeeds, and then a follow-up succeeds.
+It is inefficient to iterate and sum counters in all cpus when the rstat
+framework knows exactly when a percpu counter has an update. Instead,
+maintain cpu-aggregated non-hierarchical counters for each stat. During
+an rstat flush, keep those updated as well. When reading
+non-hierarchical stats, we no longer need to iterate cpus, we just need
+to read the maintainer counters, similar to hierarchical stats.
 
-Yeah, the better choice is kvmalloc/kvfree which handles it internally.
+A caveat is that we now a stats flush before reading
+local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
+or memcg_events_local(), where we previously only needed a flush to
+read hierarchical stats. Most contexts reading non-hierarchical stats
+are already doing a flush, add a flush to the only missing context in
+count_shadow_nodes().
 
-> 
-> I'm not familiar with the differences between the different mechanisms 
-> available for allocation.
-> 
-> -- snip --
-> 
->> Thanks,
-> My pleasure,
-> Jaco
+With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+machine with 256 cpus on cgroup v1:
+ # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+ # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+ real	 0m0.125s
+ user	 0m0.005s
+ sys	 0m0.120s
+
+After:
+ real	 0m0.032s
+ user	 0m0.005s
+ sys	 0m0.027s
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ include/linux/memcontrol.h |  7 ++++---
+ mm/memcontrol.c            | 32 +++++++++++++++++++-------------
+ mm/workingset.c            |  1 +
+ 3 files changed, 24 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5818af8eca5a..a9f2861a57a5 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -112,6 +112,9 @@ struct lruvec_stats {
+ 	/* Aggregated (CPU and subtree) state */
+ 	long state[NR_VM_NODE_STAT_ITEMS];
+ 
++	/* Non-hierarchical (CPU aggregated) state */
++	long state_local[NR_VM_NODE_STAT_ITEMS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long state_pending[NR_VM_NODE_STAT_ITEMS];
+ };
+@@ -1020,14 +1023,12 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	long x = 0;
+-	int cpu;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
++	x = READ_ONCE(pn->lruvec_stats.state_local[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..90a22637818e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -742,6 +742,10 @@ struct memcg_vmstats {
+ 	long			state[MEMCG_NR_STAT];
+ 	unsigned long		events[NR_MEMCG_EVENTS];
+ 
++	/* Non-hierarchical (CPU aggregated) page state & events */
++	long			state_local[MEMCG_NR_STAT];
++	unsigned long		events_local[NR_MEMCG_EVENTS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long			state_pending[MEMCG_NR_STAT];
+ 	unsigned long		events_pending[NR_MEMCG_EVENTS];
+@@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ {
+-	long x = 0;
+-	int cpu;
++	long x = READ_ONCE(memcg->vmstats->state_local[idx]);
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+ 
+ static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+ {
+-	long x = 0;
+-	int cpu;
+ 	int index = memcg_events_index(event);
+ 
+ 	if (index < 0)
+ 		return 0;
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->events[index], cpu);
+-	return x;
++	return READ_ONCE(memcg->vmstats->events_local[index]);
+ }
+ 
+ static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
+@@ -5526,7 +5523,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+-	long delta, v;
++	long delta, delta_cpu, v;
+ 	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+@@ -5542,9 +5539,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			memcg->vmstats->state_pending[i] = 0;
+ 
+ 		/* Add CPU changes on this level since the last flush */
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->state[i]);
+ 		if (v != statc->state_prev[i]) {
+-			delta += v - statc->state_prev[i];
++			delta_cpu = v - statc->state_prev[i];
++			delta += delta_cpu;
+ 			statc->state_prev[i] = v;
+ 		}
+ 
+@@ -5553,6 +5552,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 
+ 		/* Aggregate counts on this level and propagate upwards */
+ 		memcg->vmstats->state[i] += delta;
++		memcg->vmstats->state_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->state_pending[i] += delta;
+ 	}
+@@ -5562,9 +5562,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (delta)
+ 			memcg->vmstats->events_pending[i] = 0;
+ 
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->events[i]);
+ 		if (v != statc->events_prev[i]) {
+-			delta += v - statc->events_prev[i];
++			delta_cpu = v - statc->events_prev[i];
++			delta += delta_cpu;
+ 			statc->events_prev[i] = v;
+ 		}
+ 
+@@ -5572,6 +5574,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			continue;
+ 
+ 		memcg->vmstats->events[i] += delta;
++		memcg->vmstats->events_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->events_pending[i] += delta;
+ 	}
+@@ -5591,9 +5594,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			if (delta)
+ 				pn->lruvec_stats.state_pending[i] = 0;
+ 
++			delta_cpu = 0;
+ 			v = READ_ONCE(lstatc->state[i]);
+ 			if (v != lstatc->state_prev[i]) {
+-				delta += v - lstatc->state_prev[i];
++				delta_cpu = v - lstatc->state_prev[i];
++				delta += delta_cpu;
+ 				lstatc->state_prev[i] = v;
+ 			}
+ 
+@@ -5601,6 +5606,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 				continue;
+ 
+ 			pn->lruvec_stats.state[i] += delta;
++			pn->lruvec_stats.state_local[i] += delta_cpu;
+ 			if (ppn)
+ 				ppn->lruvec_stats.state_pending[i] += delta;
+ 		}
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 4686ae363000..da58a26d0d4d 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
+ 
++		mem_cgroup_flush_stats();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
+-- 
+2.41.0.255.g8b1d071c50-goog
+
