@@ -2,175 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF037627B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E767627B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjGZAVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 20:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        id S231289AbjGZAXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 20:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjGZAVN (ORCPT
+        with ESMTP id S231236AbjGZAXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 20:21:13 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2082.outbound.protection.outlook.com [40.107.20.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6FDB6;
-        Tue, 25 Jul 2023 17:21:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JNYkFW13z+1sSNKj3DX6MyfpOrLOD470VgGPUUcsXRZWakNN9WD9bMrIYr/drvCppht01DQ7OWl2Qrd3GcsIEFT90gO08rYLBX2kpRID4+yJb7qRAyFbfISkTrjwEpW5XMsY5youQNiGD8zxKD4DOhq7usIgzzXHitxw/BQ6SnGbQ0rjr1Eo0jT1QJxKfPsBvxi2J1kqQ2smX+ahx08kcM/Tt7MpgSzShrZ9w3Rwb5bGtDDNKld8LsYd+1uaRo4SAvQkBbRmE3kDWqY5pNBtB+dhe1YJploY3eYRfXKUzx6/8AsC6iL5hJGEct9KWimO0S6a+f/0PbQdMtFj/Ach+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dxXCamVjdwu25b3It1lwKKQDO21J11jt91gklcLKPx8=;
- b=fwQmcNOIfNqQIpIEIa8DaJYZkt6amkr4rqpr85cJWdfqLhjg6j2l0Rok7csGSuiYpbskOG6/lEiTnQ8jr326VLuhiz51WUsJ1OgwS9jldUauCyHlHcZlW8id78pJiksJzGjAgLrPPooGZPetXBqIprWeZTucKXwUXp7pUHms5g9uy7oMrvpoXbcPy6FxdXalZCAqbMgoKwmgnJlksTzfve5kDHmrvhYvso52StY1XMkLLRS0QUwE32XYzl1ICdTuunJSvqHF+hSRWU97YkCAFQ+OjihOJ02M/8Ro4l9QyCx68yPj8KhlvOC2fLESVU+l+ppNPf81lBKV8AZLaTPVAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dxXCamVjdwu25b3It1lwKKQDO21J11jt91gklcLKPx8=;
- b=Sbmmn97D8r1pbyJRKzZ3nPI5YSOaRl0ns078raS/Qo+W5AhKAXajnCLpD0efgx7pHz6bnyJazlIcUOXC6cdYOsBgKUiS0f4zCEYuouhehgW6nVw2Mfjjt/nqXhjJ3L+9+2gFDyw7znUOOOmSbg9tZjhNOXDxBKgBe5Ddfu6qAoo=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PR3PR04MB7388.eurprd04.prod.outlook.com (2603:10a6:102:84::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
- 2023 00:21:10 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::5d6a:ec53:f2a8:5b97]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::5d6a:ec53:f2a8:5b97%6]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
- 00:21:10 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Conor Dooley <conor@kernel.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: RE: [PATCH] dt-bindings: power: fsl,scu-pd: separate out fsl,scu-pd
-Thread-Topic: [PATCH] dt-bindings: power: fsl,scu-pd: separate out fsl,scu-pd
-Thread-Index: AQHZvuIo+RWSoLABrUiHrp6dtY69Sa/K0C+AgABgB2A=
-Date:   Wed, 26 Jul 2023 00:21:10 +0000
-Message-ID: <DU0PR04MB94171BDFA6FF61A644138F688800A@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20230725102900.225262-1-peng.fan@oss.nxp.com>
- <20230725-excretory-speed-003064040657@spud>
-In-Reply-To: <20230725-excretory-speed-003064040657@spud>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|PR3PR04MB7388:EE_
-x-ms-office365-filtering-correlation-id: 0af12edd-7e7b-49b0-de9f-08db8d6e366a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3PH+avHIBmjATrvd0MrFnZuEjYJvzpRXFMzRXixLvwTElx6lZrO7as0YxxgyZ92NTW1gljOGj090QnRg5VDdAFWhODsLHHZGWXr8Hx5133vbEpdid+uf01MPYDUTUo/+EJFhAUnQsZke6isA8IK6/rgYsW+TFhqJTzhONrWzweg2DA2ebGHKqALzUjnFyuWBMWLwDGOtoO8OG5zCUtXukyrvJ0DG/Xo/0/1ljUddsKoVrFEobLLJHO5soD3xaSH9FLRec6EdjLNRiQzXV3O0qREnPLOmoxkKDwWbnAx+CTYU+Z/QEJdrWangvhggEbL+ajlAL36GClCs+FqEBzw9pZ10XBnBeL8RcZWb1NJu1HdLd3knXpN+ug+I/K5m4tuE3oBXMRGbt5aRyAhJ4nrZfZPc8h0heX/bYEXUf0sDApvcuzmPXqRKW3BX5JpzntOJ8Qui7sNjCGRMy0wh9nwI0wGUl9Hw86aaUHeMRRlxG6i7A9p3EfKHo069CrvFys0E87DpEjeSZyrw0gKUgvDLGEv5IgwcT29O9hov6iPwPq7k4VGxBcV5p2SF7rTqb+VEiX+ecnvI+27yTCwELgCzxp+M5cG1h4Q3p2RVnTErZ0xIFy8xnN/4+Kc+YcitH0+8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(376002)(346002)(366004)(39860400002)(451199021)(2906002)(54906003)(66556008)(66476007)(64756008)(66446008)(76116006)(66946007)(33656002)(83380400001)(38070700005)(86362001)(55016003)(38100700002)(122000001)(110136005)(7696005)(186003)(6506007)(9686003)(478600001)(71200400001)(26005)(41300700001)(5660300002)(316002)(4326008)(52536014)(44832011)(8936002)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N2z6IekH9zkIf6HzJKXKKQYv+BrWhZO79ZssRyN1m3WZ6mOz33p3hCjImHep?=
- =?us-ascii?Q?q8n7zlUYr+3WZM1zYvADI2MwRANySPKMDBk40oa7pid+vWACDU6fl67sJdhb?=
- =?us-ascii?Q?xpvHS4963kFfzElbrco9ByqS+T/yKTV/Bi30kbf/7gaALJUfOIBjWDOwCSeH?=
- =?us-ascii?Q?GOgaiibdWxqCiD121TYl3hfxNs5QkQ17RShSmgo45hxfDKl7VrDAxuOQtM5r?=
- =?us-ascii?Q?CgxNA2JR62Y8SF8GY11R1Ce1EfWb8boywdgFWSV/I/+vXVEvrDMTb70edzu7?=
- =?us-ascii?Q?Pw6qJsSAg3TnjxGC8Jiok3MWmPwR2IkEi0X3tVUvshxzTFj7vzVavHRzC+hm?=
- =?us-ascii?Q?rDLhqMkPd57lhNQGGr1yzN+zssVuswr2fVJWa2SC4U1s0lUNIU+UhvEG+5B8?=
- =?us-ascii?Q?umDpSlDHnEdvASnFkM2Uds3fNn/s55XQBr7pBRTF028cjRcSH0GEwIVWYODp?=
- =?us-ascii?Q?xQKBdRY9NvkJ60vrIqO8ImHTrRaJLMxf76eF7anckBQ0P948h7HhOBzs2Izh?=
- =?us-ascii?Q?DIOsruKvexkYO2cFF73AEHWl+A729uLB6BoPjetzWmL9D8PP2cNAmt68BxPZ?=
- =?us-ascii?Q?BMLlVSoqb6hI7GoEcTsE/eB49ZMPtjoafkI+xPTtQmvcS6vLGSoCpJKONmhz?=
- =?us-ascii?Q?Yglt4SMk0JBcl/gKkFfZTIaVDZMQneNU3V3dEo5SV+GKVdhg9iLHsll9DFUM?=
- =?us-ascii?Q?tWsmPY4qeiPWBhGsKUfrv9y8ZyFzC4umVDBYeJnXpHT4/ox2WYExIhFu84D/?=
- =?us-ascii?Q?TokScl6caiCUvMkCocfpDo48ip/DMqtn+aMP0i/sK2vA5rJ7FA8ucMEkiOl3?=
- =?us-ascii?Q?hO21999zRMdfwkegvAWpRHnBOXtFW7m67H9oVZUzmAxNYvzOV5DK9imGmuVG?=
- =?us-ascii?Q?roG3xLZnNU8zTF7DVu883NU6RWMTdQ7BtILeowIKOX041PLEufWriJG+d8XO?=
- =?us-ascii?Q?Zum3zyoLFbHkJYix5RM2dkuINwdUIpg+79MJw+XcXeI0ggeoeQtMS7Qw1MdA?=
- =?us-ascii?Q?aaeAiZnstAhiQQ3npaArZgLONiL2rj6VZWDKPhdvs0Ucfn8i8asc/fVaPP8B?=
- =?us-ascii?Q?9CfzKzewENiipaRBAVCmEVLEBiqrxpOvhWaMDY+6+VrMj1SUIXiP2wEjXaSD?=
- =?us-ascii?Q?02S+JEEGrMxaurCCJdoH3rXD9f4WQlUTSxsG8fFOHsJ7ALgeO9QcYiw+uq2v?=
- =?us-ascii?Q?sTThIAFRNY8oiv8ydxBEto9Q67JFcjDqvGRgFH8BOgrjol+AM3wpX8P0/ffO?=
- =?us-ascii?Q?EaO5hDajID4Bpp+qj5MbeHIyeClqKzpd2nhrlndpIQ2T3CFGL3e9LaqKwWA9?=
- =?us-ascii?Q?rPzydqMBP1EzoQIUQ5PgAucyhbRnZUh/hitQaAhKmMTiiiELM04C9qD/3IGM?=
- =?us-ascii?Q?+/e5mR3z0QayW9ip3kiN8Oqr+jxnTKA1rgwjs9w7xsCQShJAAbb9ROqykOI6?=
- =?us-ascii?Q?3r5B6Qc5GeEtJ2mCqZCP/5J4BGIDwbdYjSCrHnBgWhy6dT8MOdR/YAFF69Af?=
- =?us-ascii?Q?MtBV4GgcGXico2s0Jnm2nfIOKMkvLe+JFbYqlWvzV97pUettCfVBEx09xmK1?=
- =?us-ascii?Q?rRljvTrYzjIA38iIlc4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 25 Jul 2023 20:23:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBC41A8;
+        Tue, 25 Jul 2023 17:23:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9E0F61935;
+        Wed, 26 Jul 2023 00:23:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 138F5C433C7;
+        Wed, 26 Jul 2023 00:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690331023;
+        bh=n8uJXeLuOskMOSTFvxFIlIysin1FQNq5sN6Yig5KJJM=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=jV627cONptCuFZwZrq5vMcQjX1OSp8wmOlqA2sDDdyenGHxdLfdwB2aMp9XDV/aop
+         d0Wrw0e6HefzRPJ3ilyrJ0FUdTb8HoBgFxiVCrYpo/2Aoai9p8pBKsJykRLeUDF5zc
+         fEuCFpOBelgd15IZPGAF6m0UlebRcIM6/PWiBHmIPaGVB4grhhaieDtfxsVJjwzlZD
+         r8xHatJFgEov/rQBko1xbzzMgJ2KxXDb2LHioK3YbIk7xe4wVVVJIp37nRl/fiy+B/
+         OAHG4bRuQqrUChFU9ZnkDvO5GZ8NAEEkDCKKkSthM9bI54qIOCN8G7vbFnlB5dZo4B
+         pCHf7GCE4YXEQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id F3EF8EB64DD;
+        Wed, 26 Jul 2023 00:23:42 +0000 (UTC)
+From:   Mitchell Levy via B4 Relay 
+        <devnull+levymitchell0.gmail.com@kernel.org>
+Date:   Wed, 26 Jul 2023 00:23:31 +0000
+Subject: [PATCH] hv_balloon: Update the balloon driver to use the SBRM API
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0af12edd-7e7b-49b0-de9f-08db8d6e366a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 00:21:10.1459
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eqzqQnsKWDzovRTqDQ4dvfIAex2vJWU9LpKyGeEknnkQsmdOZardYzQBfVlmHH1FC1dH/vDNq5eBq+c/UZS3zw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7388
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230726-master-v1-1-b2ce6a4538db@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAIJnwGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDcyNT3dzE4pLUIt2kpOQUSyMDU3NTiyQloOKCotS0zAqwQdGxtbUAcXR
+ m81gAAAA=
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelly@microsoft.com, peterz@infradead.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690331022; l=7710;
+ i=levymitchell0@gmail.com; s=20230725; h=from:subject:message-id;
+ bh=84uGYvJcj5OV/bgfkKqlgiyUtrhDwWgEQj+Xrg0YrbI=;
+ b=BD5lgOcxZEQ142ZfkGpO3DuyzHnugCgXqED3QlEpvQ8EGyB3Hb629rgO6ebbbP9C8XgIh4FC3
+ uam7fNanBfgDV6LNQ6LINu2kpzcBU7M1DU1TzddZ3XXjORIkxVGdVRs
+X-Developer-Key: i=levymitchell0@gmail.com; a=ed25519;
+ pk=o3BLKQtTK7QMnUiW3/7p5JcITesvc3qL/w+Tz19oYeE=
+X-Endpoint-Received: by B4 Relay for levymitchell0@gmail.com/20230725 with auth_id=69
+X-Original-From: Mitchell Levy <levymitchell0@gmail.com>
+Reply-To: <levymitchell0@gmail.com>
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH] dt-bindings: power: fsl,scu-pd: separate out fsl,scu=
--pd
->=20
-> On Tue, Jul 25, 2023 at 06:29:00PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > Add an entry dedicated for fsl,scu-pd which could serve i.MX8DXL
->=20
-> Why not just add a soc-specific compatible for the i.MX8DXL?
-> The current form of this does not look right to me.
+From: Mitchell Levy <levymitchell0@gmail.com>
 
-I could add one dedicated for i.MX8DXL.
 
-Thanks,
-Peng.
 
->=20
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  .../devicetree/bindings/power/fsl,scu-pd.yaml         | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/power/fsl,scu-pd.yaml
-> b/Documentation/devicetree/bindings/power/fsl,scu-pd.yaml
-> > index 407b7cfec783..3a92e4fef7ae 100644
-> > --- a/Documentation/devicetree/bindings/power/fsl,scu-pd.yaml
-> > +++ b/Documentation/devicetree/bindings/power/fsl,scu-pd.yaml
-> > @@ -18,11 +18,14 @@ allOf:
-> >
-> >  properties:
-> >    compatible:
-> > -    items:
-> > +    oneOf:
-> >        - enum:
-> > -          - fsl,imx8qm-scu-pd
-> > -          - fsl,imx8qxp-scu-pd
-> > -      - const: fsl,scu-pd
-> > +          - fsl,scu-pd
-> > +      - items:
-> > +          - enum:
-> > +              - fsl,imx8qm-scu-pd
-> > +              - fsl,imx8qxp-scu-pd
-> > +          - const: fsl,scu-pd
-> >
-> >    '#power-domain-cells':
-> >      const: 1
-> > --
-> > 2.37.1
-> >
+---
+This patch is intended as a proof-of-concept for the new SBRM
+machinery[1]. For some brief background, the idea behind SBRM is using
+the __cleanup__ attribute to automatically unlock locks (or otherwise
+release resources) when they go out of scope, similar to C++ style RAII.
+This promises some benefits such as making code simpler (particularly
+where you have lots of goto fail; type constructs) as well as reducing
+the surface area for certain kinds of bugs.
+
+The changes in this patch should not result in any difference in how the
+code actually runs (i.e., it's purely an exercise in this new syntax
+sugar). In one instance SBRM was not appropriate, so I left that part
+alone, but all other locking/unlocking is handled automatically in this
+patch.
+
+Link: https://lore.kernel.org/all/20230626125726.GU4253@hirez.programming.kicks-ass.net/ [1]
+
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
+---
+ drivers/hv/hv_balloon.c | 82 +++++++++++++++++++++++--------------------------
+ 1 file changed, 38 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index dffcc894f117..2812601e84da 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -8,6 +8,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/cleanup.h>
+ #include <linux/kernel.h>
+ #include <linux/jiffies.h>
+ #include <linux/mman.h>
+@@ -646,7 +647,7 @@ static int hv_memory_notifier(struct notifier_block *nb, unsigned long val,
+ 			      void *v)
+ {
+ 	struct memory_notify *mem = (struct memory_notify *)v;
+-	unsigned long flags, pfn_count;
++	unsigned long pfn_count;
+ 
+ 	switch (val) {
+ 	case MEM_ONLINE:
+@@ -655,21 +656,22 @@ static int hv_memory_notifier(struct notifier_block *nb, unsigned long val,
+ 		break;
+ 
+ 	case MEM_OFFLINE:
+-		spin_lock_irqsave(&dm_device.ha_lock, flags);
+-		pfn_count = hv_page_offline_check(mem->start_pfn,
+-						  mem->nr_pages);
+-		if (pfn_count <= dm_device.num_pages_onlined) {
+-			dm_device.num_pages_onlined -= pfn_count;
+-		} else {
+-			/*
+-			 * We're offlining more pages than we managed to online.
+-			 * This is unexpected. In any case don't let
+-			 * num_pages_onlined wrap around zero.
+-			 */
+-			WARN_ON_ONCE(1);
+-			dm_device.num_pages_onlined = 0;
++		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
++			pfn_count = hv_page_offline_check(mem->start_pfn,
++							  mem->nr_pages);
++			if (pfn_count <= dm_device.num_pages_onlined) {
++				dm_device.num_pages_onlined -= pfn_count;
++			} else {
++				/*
++				 * We're offlining more pages than we
++				 * managed to online. This is
++				 * unexpected. In any case don't let
++				 * num_pages_onlined wrap around zero.
++				 */
++				WARN_ON_ONCE(1);
++				dm_device.num_pages_onlined = 0;
++			}
+ 		}
+-		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+ 		break;
+ 	case MEM_GOING_ONLINE:
+ 	case MEM_GOING_OFFLINE:
+@@ -721,24 +723,23 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 	unsigned long start_pfn;
+ 	unsigned long processed_pfn;
+ 	unsigned long total_pfn = pfn_count;
+-	unsigned long flags;
+ 
+ 	for (i = 0; i < (size/HA_CHUNK); i++) {
+ 		start_pfn = start + (i * HA_CHUNK);
+ 
+-		spin_lock_irqsave(&dm_device.ha_lock, flags);
+-		has->ha_end_pfn +=  HA_CHUNK;
++		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
++			has->ha_end_pfn +=  HA_CHUNK;
+ 
+-		if (total_pfn > HA_CHUNK) {
+-			processed_pfn = HA_CHUNK;
+-			total_pfn -= HA_CHUNK;
+-		} else {
+-			processed_pfn = total_pfn;
+-			total_pfn = 0;
+-		}
++			if (total_pfn > HA_CHUNK) {
++				processed_pfn = HA_CHUNK;
++				total_pfn -= HA_CHUNK;
++			} else {
++				processed_pfn = total_pfn;
++				total_pfn = 0;
++			}
+ 
+-		has->covered_end_pfn +=  processed_pfn;
+-		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
++			has->covered_end_pfn +=  processed_pfn;
++		}
+ 
+ 		reinit_completion(&dm_device.ol_waitevent);
+ 
+@@ -758,10 +759,10 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 				 */
+ 				do_hot_add = false;
+ 			}
+-			spin_lock_irqsave(&dm_device.ha_lock, flags);
+-			has->ha_end_pfn -= HA_CHUNK;
+-			has->covered_end_pfn -=  processed_pfn;
+-			spin_unlock_irqrestore(&dm_device.ha_lock, flags);
++			scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
++				has->ha_end_pfn -= HA_CHUNK;
++				has->covered_end_pfn -=  processed_pfn;
++			}
+ 			break;
+ 		}
+ 
+@@ -781,10 +782,9 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ static void hv_online_page(struct page *pg, unsigned int order)
+ {
+ 	struct hv_hotadd_state *has;
+-	unsigned long flags;
+ 	unsigned long pfn = page_to_pfn(pg);
+ 
+-	spin_lock_irqsave(&dm_device.ha_lock, flags);
++	guard(spinlock_irqsave)(&dm_device.ha_lock);
+ 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
+ 		/* The page belongs to a different HAS. */
+ 		if ((pfn < has->start_pfn) ||
+@@ -794,7 +794,6 @@ static void hv_online_page(struct page *pg, unsigned int order)
+ 		hv_bring_pgs_online(has, pfn, 1UL << order);
+ 		break;
+ 	}
+-	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+ }
+ 
+ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+@@ -803,9 +802,8 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ 	struct hv_hotadd_gap *gap;
+ 	unsigned long residual, new_inc;
+ 	int ret = 0;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&dm_device.ha_lock, flags);
++	guard(spinlock_irqsave)(&dm_device.ha_lock);
+ 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
+ 		/*
+ 		 * If the pfn range we are dealing with is not in the current
+@@ -852,7 +850,6 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ 		ret = 1;
+ 		break;
+ 	}
+-	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -947,7 +944,6 @@ static unsigned long process_hot_add(unsigned long pg_start,
+ {
+ 	struct hv_hotadd_state *ha_region = NULL;
+ 	int covered;
+-	unsigned long flags;
+ 
+ 	if (pfn_cnt == 0)
+ 		return 0;
+@@ -979,9 +975,9 @@ static unsigned long process_hot_add(unsigned long pg_start,
+ 		ha_region->covered_end_pfn = pg_start;
+ 		ha_region->end_pfn = rg_start + rg_size;
+ 
+-		spin_lock_irqsave(&dm_device.ha_lock, flags);
+-		list_add_tail(&ha_region->list, &dm_device.ha_region_list);
+-		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
++		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
++			list_add_tail(&ha_region->list, &dm_device.ha_region_list);
++		}
+ 	}
+ 
+ do_pg_range:
+@@ -2047,7 +2043,6 @@ static void balloon_remove(struct hv_device *dev)
+ 	struct hv_dynmem_device *dm = hv_get_drvdata(dev);
+ 	struct hv_hotadd_state *has, *tmp;
+ 	struct hv_hotadd_gap *gap, *tmp_gap;
+-	unsigned long flags;
+ 
+ 	if (dm->num_pages_ballooned != 0)
+ 		pr_warn("Ballooned pages: %d\n", dm->num_pages_ballooned);
+@@ -2073,7 +2068,7 @@ static void balloon_remove(struct hv_device *dev)
+ #endif
+ 	}
+ 
+-	spin_lock_irqsave(&dm_device.ha_lock, flags);
++	guard(spinlock_irqsave)(&dm_device.ha_lock);
+ 	list_for_each_entry_safe(has, tmp, &dm->ha_region_list, list) {
+ 		list_for_each_entry_safe(gap, tmp_gap, &has->gap_list, list) {
+ 			list_del(&gap->list);
+@@ -2082,7 +2077,6 @@ static void balloon_remove(struct hv_device *dev)
+ 		list_del(&has->list);
+ 		kfree(has);
+ 	}
+-	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+ }
+ 
+ static int balloon_suspend(struct hv_device *hv_dev)
+
+---
+base-commit: 3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
+change-id: 20230725-master-bbcd9205758b
+
+Best regards,
+-- 
+Mitchell Levy <levymitchell0@gmail.com>
+
