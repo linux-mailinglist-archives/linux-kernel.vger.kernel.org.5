@@ -2,142 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E76A764258
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AC3764267
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 01:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjGZXHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 19:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S230438AbjGZXJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 19:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGZXHX (ORCPT
+        with ESMTP id S230397AbjGZXJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 19:07:23 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12271737;
-        Wed, 26 Jul 2023 16:07:18 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QN1hxG022941;
-        Wed, 26 Jul 2023 23:06:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=hst80EK+5jLT39EI5q3/zwn9B9Ep+cXarB3YmbOzyXc=;
- b=k+D9BFUC0fJBW78f71nfk0im2alc0BGH1qMBS4AYsZnYbJloNpoqDNB9xDoR+QBuGCmy
- y3h7ItHHHOurVFQnRhiGXo3yCkpI/vjB6yWNMrO3k+IJ+OzxHs7GzA2jyeg5va8SwJsg
- EazS5Yaj0LfyuVpRU82PCm0q/XB/ExbaVVx+WQgPuH99DR50k7HtrQup43hoKUTxEDJb
- uWyfFCg5bz3S6nfwTkmj2jHD4je+AWd/bm8cfH88ScAh0bv3AnlTkw09ndIwTx251Si3
- Amnh0dqAC7dwY+9crEGIa0DQE4swWFSl3IqJIpaVFLOHLCM4YUExeiiG1rNJSHRqfZ5Z ug== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3afyr785-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 23:06:44 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36QN6hoF031629
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 23:06:43 GMT
-Received: from [10.110.23.161] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
- 2023 16:06:42 -0700
-Message-ID: <e0167cad-6af7-fc2a-f783-609a114d94fd@quicinc.com>
-Date:   Wed, 26 Jul 2023 16:06:41 -0700
+        Wed, 26 Jul 2023 19:09:54 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559B271E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 16:09:47 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686b9964ae2so304971b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 16:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690412986; x=1691017786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bNBWi9BFA7oJZNyI/XnA5H8tHZCJl01gNE0DBxlvZ40=;
+        b=Lnuap/X4mLRvumv8rxik6XXAmLQssX2LaTRnfxOwbhhRA6q+4W8DfrIsG7kVikG4Iw
+         ozUx9bZZDKNb4aqqrWuoDs7rpphs2fFB4IjiULQPXjflO/XhZA2vc5TzngrkqmMIM5UL
+         tCjpn3hCX/GmJvs5MwDi73VFwiTs9hADB2Cru8fy0ICxuL68/fE/7pFEUcb8ihUp2Ey5
+         GxMGCc+rwQuZGeGguv2m2EFaBOeJPE6kWVGxSMJPh4gYWl2FbXQzGnA0u5AYkb1ckWFe
+         PYG7wUThiNHKJJU/Kftp/PqqvyLMK20NIq4IuXuyA0M1JDxZWj46ZkNyp0CVDzf4FlQ+
+         b/TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690412986; x=1691017786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bNBWi9BFA7oJZNyI/XnA5H8tHZCJl01gNE0DBxlvZ40=;
+        b=SZnLlIun7qpYJtAKOPrjTA/nXKtjFFY3g7LyLlDnmWaynMQcJfKSA0oLA1dDRm9lVD
+         2dGtQZqhz+xJbf1ib54sFG3gcLGzBzG0OUkqdcZDUepAQ5bvS7AxvbXDWvIP7u+nPyZM
+         eHEvkmwcVNPdglkKzTLHelzJJvLov7uQDlxUdNzp/Ed+fBYcV93XI8rPLHF0P6w+WMge
+         Fnjgyle1Jq1ftFAcFESKqE0LBrEI8nhcGcOoJAmqJC9C+gQNsWcIZLmP9aBKD6xH+5xM
+         yhBhJ9epKcd0yWX8MshMPvpAVlnrjqCZjEO1yDyntVHZuvhjQlxnZ3pocMkjdAkhQrJw
+         wf6g==
+X-Gm-Message-State: ABy/qLb3Vh/qwwKRUOfmD9iaeed7G6PHGWIuE1tIO6zydqnR3i5B3w8a
+        q3Sgq1ae/UM6YIz5W+hLrYScKQ==
+X-Google-Smtp-Source: APBJJlHUt9d2hTqe2ud94c6lNUCrPn/cPviOHGLjkBp5h1xJnkt7lTpPKllT1sxo0CM9mi2vK7HwDA==
+X-Received: by 2002:a17:902:c10c:b0:1b8:b382:f6c3 with SMTP id 12-20020a170902c10c00b001b8b382f6c3mr2914213pli.13.1690412986476;
+        Wed, 26 Jul 2023 16:09:46 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id u9-20020a17090341c900b001ac95be5081sm58846ple.307.2023.07.26.16.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 16:09:45 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qOndW-00AvaD-0j;
+        Thu, 27 Jul 2023 09:09:42 +1000
+Date:   Thu, 27 Jul 2023 09:09:42 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 44/47] mm: shrinker: make global slab shrink lockless
+Message-ID: <ZMGnthZAh48JF+eV@dread.disaster.area>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-45-zhengqi.arch@bytedance.com>
+ <ZMDUkoIXUlTkCSYL@dread.disaster.area>
+ <19ad6d06-8a14-6102-5eae-2134dc2c5061@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 27/32] sound: soc: qdsp6: Add SND kcontrol to select
- offload device
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <oneukum@suse.com>,
-        <albertccwang@google.com>, <o-takashi@sakamocchi.jp>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-28-quic_wcheng@quicinc.com>
- <82568c9d-05b8-54dc-47e9-05c74a9260be@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <82568c9d-05b8-54dc-47e9-05c74a9260be@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zHrkparVg1APzQLo3hBS0lfjhvKXkqdF
-X-Proofpoint-ORIG-GUID: zHrkparVg1APzQLo3hBS0lfjhvKXkqdF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxscore=0 phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260207
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19ad6d06-8a14-6102-5eae-2134dc2c5061@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+On Wed, Jul 26, 2023 at 05:14:09PM +0800, Qi Zheng wrote:
+> On 2023/7/26 16:08, Dave Chinner wrote:
+> > On Mon, Jul 24, 2023 at 05:43:51PM +0800, Qi Zheng wrote:
+> > > @@ -122,6 +126,13 @@ void shrinker_free_non_registered(struct shrinker *shrinker);
+> > >   void shrinker_register(struct shrinker *shrinker);
+> > >   void shrinker_unregister(struct shrinker *shrinker);
+> > > +static inline bool shrinker_try_get(struct shrinker *shrinker)
+> > > +{
+> > > +	return READ_ONCE(shrinker->registered) &&
+> > > +	       refcount_inc_not_zero(&shrinker->refcount);
+> > > +}
+> > 
+> > Why do we care about shrinker->registered here? If we don't set
+> > the refcount to 1 until we have fully initialised everything, then
+> > the shrinker code can key entirely off the reference count and
+> > none of the lookup code needs to care about whether the shrinker is
+> > registered or not.
+> 
+> The purpose of checking shrinker->registered here is to stop running
+> shrinker after calling shrinker_free(), which can prevent the following
+> situations from happening:
+> 
+> CPU 0                 CPU 1
+> 
+> shrinker_try_get()
+> 
+>                        shrinker_try_get()
+> 
+> shrinker_put()
+> shrinker_try_get()
+>                        shrinker_put()
 
-On 7/25/2023 2:16 AM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/25/23 04:34, Wesley Cheng wrote:
->> Expose a kcontrol on the platform sound card, which will allow for
->> userspace to determine which USB card number and PCM device to offload.
->> This allows for userspace to potentially tag an alternate path for a
->> specific USB SND card and PCM device.  Previously, control was absent, and
->> the offload path would be enabled on the last USB SND device which was
->> connected.  This logic will continue to be applicable if no mixer input is
->> received for specific device selection.
->>
->> An example to configure the offload device using tinymix:
->> tinymix -D 0 set 'Q6USB offload SND device select' 1 0
->>
->> The above will set the Q6AFE device token to choose offload on card#1 and
->> pcm#0.  Device selection is made possible by setting the Q6AFE device
->> token.  The audio DSP utilizes this parameter, and will pass this field
->> back to the USB offload driver within the QMI stream requests.
-> 
-> I must be missing something... If you have a card 0 which exposes a
-> control to change what the card1 does, then it means you have a card0
-> with a PCM device what can potentially be used concurrently with the
-> card1 exposing an offload device.
-> 
-> Is there any sort of mutual exclusion to make sure the same USB endpoint
-> is not used twice?
-> > One would hope that when a device is opened the matching non-offloaded
-> one (or ones in the case of implicit feedback) is disabled or marked as
-> used?
-> 
-> I would guess in your Android setup you have control on such behavior at
-> the HAL level, but in the more generic Linux use I don't see what
-> would orchestrate the use of two devices, and at the kernel level what
-> would prevent it.
-> 
-Still going through the comments and trying to address the suggestions 
-in the code, so will reply pack to those as I make the needed changes.
+I don't see any race here? What is wrong with having multiple active
+users at once?
 
-As for the above question, the following change was made with the 
-intention to prevent the above scenario.
+> > 
+> > This should use a completion, then it is always safe under
+> > rcu_read_lock().  This also gets rid of the shrinker_lock spin lock,
+> > which only exists because we can't take a blocking lock under
+> > rcu_read_lock(). i.e:
+> > 
+> > 
+> > void shrinker_put(struct shrinker *shrinker)
+> > {
+> > 	if (refcount_dec_and_test(&shrinker->refcount))
+> > 		complete(&shrinker->done);
+> > }
+> > 
+> > void shrinker_free()
+> > {
+> > 	.....
+> > 	refcount_dec(&shrinker->refcount);
+> 
+> I guess what you mean is shrinker_put(), because here may be the last
+> refcount.
 
-https://lore.kernel.org/linux-usb/20230725023416.11205-23-quic_wcheng@quicinc.com/
+Yes, I did.
 
-Thanks
-Wesley Cheng
+> > 	wait_for_completion(&shrinker->done);
+> > 	/*
+> > 	 * lookups on the shrinker will now all fail as refcount has
+> > 	 * fallen to zero. We can now remove it from the lists and
+> > 	 * free it.
+> > 	 */
+> > 	down_write(shrinker_rwsem);
+> > 	list_del_rcu(&shrinker->list);
+> > 	up_write(&shrinker_rwsem);
+> > 	call_rcu(shrinker->rcu_head, shrinker_free_rcu_cb);
+> > }
+> > 
+> > ....
+> > 
+> > > @@ -686,11 +711,14 @@ EXPORT_SYMBOL(shrinker_free_non_registered);
+> > >   void shrinker_register(struct shrinker *shrinker)
+> > >   {
+> > > -	down_write(&shrinker_rwsem);
+> > > -	list_add_tail(&shrinker->list, &shrinker_list);
+> > > -	shrinker->flags |= SHRINKER_REGISTERED;
+> > > +	refcount_set(&shrinker->refcount, 1);
+> > > +
+> > > +	spin_lock(&shrinker_lock);
+> > > +	list_add_tail_rcu(&shrinker->list, &shrinker_list);
+> > > +	spin_unlock(&shrinker_lock);
+> > > +
+> > >   	shrinker_debugfs_add(shrinker);
+> > > -	up_write(&shrinker_rwsem);
+> > > +	WRITE_ONCE(shrinker->registered, true);
+> > >   }
+> > >   EXPORT_SYMBOL(shrinker_register);
+> > 
+> > This just looks wrong - you are trying to use WRITE_ONCE() as a
+> > release barrier to indicate that the shrinker is now set up fully.
+> > That's not necessary - the refcount is an atomic and along with the
+> > rcu locks they should provides all the barriers we need. i.e.
+> 
+> The reason I used WRITE_ONCE() here is because the shrinker->registered
+> will be read and written concurrently (read in shrinker_try_get() and
+> written in shrinker_free()), which is why I added shrinker::registered
+> field instead of using SHRINKER_REGISTERED flag (this can reduce the
+> addition of WRITE_ONCE()/READ_ONCE()).
+
+Using WRITE_ONCE/READ_ONCE doesn't provide memory barriers needed to
+use the field like this. You need release/acquire memory ordering
+here. i.e. smp_store_release()/smp_load_acquire().
+
+As it is, the refcount_inc_not_zero() provides a control dependency,
+as documented in include/linux/refcount.h, refcount_dec_and_test()
+provides release memory ordering. The only thing I think we may need
+is a write barrier before refcount_set(), such that if
+refcount_inc_not_zero() sees a non-zero value, it is guaranteed to
+see an initialised structure...
+
+i.e. refcounts provide all the existence and initialisation
+guarantees. Hence I don't see the need to use shrinker->registered
+like this and it can remain a bit flag protected by the
+shrinker_rwsem().
+
+
+> > void shrinker_register(struct shrinker *shrinker)
+> > {
+> > 	down_write(&shrinker_rwsem);
+> > 	list_add_tail_rcu(&shrinker->list, &shrinker_list);
+> > 	shrinker->flags |= SHRINKER_REGISTERED;
+> > 	shrinker_debugfs_add(shrinker);
+> > 	up_write(&shrinker_rwsem);
+> > 
+> > 	/*
+> > 	 * now the shrinker is fully set up, take the first
+> > 	 * reference to it to indicate that lookup operations are
+> > 	 * now allowed to use it via shrinker_try_get().
+> > 	 */
+> > 	refcount_set(&shrinker->refcount, 1);
+> > }
+> > 
+> > > diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
+> > > index f1becfd45853..c5573066adbf 100644
+> > > --- a/mm/shrinker_debug.c
+> > > +++ b/mm/shrinker_debug.c
+> > > @@ -5,6 +5,7 @@
+> > >   #include <linux/seq_file.h>
+> > >   #include <linux/shrinker.h>
+> > >   #include <linux/memcontrol.h>
+> > > +#include <linux/rculist.h>
+> > >   /* defined in vmscan.c */
+> > >   extern struct rw_semaphore shrinker_rwsem;
+> > > @@ -161,17 +162,21 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
+> > >   {
+> > >   	struct dentry *entry;
+> > >   	char buf[128];
+> > > -	int id;
+> > > -
+> > > -	lockdep_assert_held(&shrinker_rwsem);
+> > > +	int id, ret = 0;
+> > >   	/* debugfs isn't initialized yet, add debugfs entries later. */
+> > >   	if (!shrinker_debugfs_root)
+> > >   		return 0;
+> > > +	down_write(&shrinker_rwsem);
+> > > +	if (shrinker->debugfs_entry)
+> > > +		goto fail;
+> > > +
+> > >   	id = ida_alloc(&shrinker_debugfs_ida, GFP_KERNEL);
+> > > -	if (id < 0)
+> > > -		return id;
+> > > +	if (id < 0) {
+> > > +		ret = id;
+> > > +		goto fail;
+> > > +	}
+> > >   	shrinker->debugfs_id = id;
+> > >   	snprintf(buf, sizeof(buf), "%s-%d", shrinker->name, id);
+> > > @@ -180,7 +185,8 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
+> > >   	entry = debugfs_create_dir(buf, shrinker_debugfs_root);
+> > >   	if (IS_ERR(entry)) {
+> > >   		ida_free(&shrinker_debugfs_ida, id);
+> > > -		return PTR_ERR(entry);
+> > > +		ret = PTR_ERR(entry);
+> > > +		goto fail;
+> > >   	}
+> > >   	shrinker->debugfs_entry = entry;
+> > > @@ -188,7 +194,10 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
+> > >   			    &shrinker_debugfs_count_fops);
+> > >   	debugfs_create_file("scan", 0220, entry, shrinker,
+> > >   			    &shrinker_debugfs_scan_fops);
+> > > -	return 0;
+> > > +
+> > > +fail:
+> > > +	up_write(&shrinker_rwsem);
+> > > +	return ret;
+> > >   }
+> > >   int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
+> > > @@ -243,6 +252,11 @@ struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
+> > >   	shrinker->name = NULL;
+> > >   	*debugfs_id = entry ? shrinker->debugfs_id : -1;
+> > > +	/*
+> > > +	 * Ensure that shrinker->registered has been set to false before
+> > > +	 * shrinker->debugfs_entry is set to NULL.
+> > > +	 */
+> > > +	smp_wmb();
+> > >   	shrinker->debugfs_entry = NULL;
+> > >   	return entry;
+> > > @@ -266,14 +280,26 @@ static int __init shrinker_debugfs_init(void)
+> > >   	shrinker_debugfs_root = dentry;
+> > >   	/* Create debugfs entries for shrinkers registered at boot */
+> > > -	down_write(&shrinker_rwsem);
+> > > -	list_for_each_entry(shrinker, &shrinker_list, list)
+> > > +	rcu_read_lock();
+> > > +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+> > > +		if (!shrinker_try_get(shrinker))
+> > > +			continue;
+> > > +		rcu_read_unlock();
+> > > +
+> > >   		if (!shrinker->debugfs_entry) {
+> > > -			ret = shrinker_debugfs_add(shrinker);
+> > > -			if (ret)
+> > > -				break;
+> > > +			/* Paired with smp_wmb() in shrinker_debugfs_detach() */
+> > > +			smp_rmb();
+> > > +			if (READ_ONCE(shrinker->registered))
+> > > +				ret = shrinker_debugfs_add(shrinker);
+> > >   		}
+> > > -	up_write(&shrinker_rwsem);
+> > > +
+> > > +		rcu_read_lock();
+> > > +		shrinker_put(shrinker);
+> > > +
+> > > +		if (ret)
+> > > +			break;
+> > > +	}
+> > > +	rcu_read_unlock();
+> > >   	return ret;
+> > >   }
+> > 
+> > And all this churn and complexity can go away because the
+> > shrinker_rwsem is still used to protect shrinker_register()
+> > entirely....
+> 
+> My consideration is that during this process, there may be a
+> driver probe failure and then shrinker_free() is called (the
+> shrinker_debugfs_init() is called in late_initcall stage). In
+> this case, we need to use RCU+refcount to ensure that the shrinker
+> is not freed.
+
+Yeah, you're trying to work around the lack of a
+wait_for_completion() call in shrinker_free().
+
+With that, this doesn't need RCU at all, and the iteration can be
+done fully under the shrinker_rwsem() safely and so none of this
+code needs to change.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
