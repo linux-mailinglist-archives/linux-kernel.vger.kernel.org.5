@@ -2,47 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1F9763236
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C52763238
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbjGZJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
+        id S231391AbjGZJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbjGZJbu (ORCPT
+        with ESMTP id S232913AbjGZJcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:31:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED561420C;
-        Wed, 26 Jul 2023 02:30:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E09E619FD;
-        Wed, 26 Jul 2023 09:30:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DDCC433C7;
-        Wed, 26 Jul 2023 09:30:33 +0000 (UTC)
-Message-ID: <aeaf46cd-205e-8111-c366-d4aa7223be4c@xs4all.nl>
-Date:   Wed, 26 Jul 2023 11:30:32 +0200
+        Wed, 26 Jul 2023 05:32:05 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715A1BE8;
+        Wed, 26 Jul 2023 02:31:02 -0700 (PDT)
+Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R9pXH4mt8z1GDFR;
+        Wed, 26 Jul 2023 17:30:07 +0800 (CST)
+Received: from [10.67.108.26] (10.67.108.26) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
+ 2023 17:31:00 +0800
+Message-ID: <43731b35-c076-6d01-ad83-764fb2e9a8f0@huawei.com>
+Date:   Wed, 26 Jul 2023 17:30:49 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v8 1/2] Added Digiteq Automotive MGB4 driver
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH -next v8 0/2] support allocating crashkernel above 4G
+ explicitly on riscv
 Content-Language: en-US
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To:     tumic@gpxsee.org, Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
-References: <20230704131339.2177-1-tumic@gpxsee.org>
- <20230704131339.2177-2-tumic@gpxsee.org>
- <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
-In-Reply-To: <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+To:     Conor Dooley <conor.dooley@microchip.com>
+CC:     Conor Dooley <conor@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <bjorn@rivosinc.com>, <alex@ghiti.fr>, <akpm@linux-foundation.org>,
+        <atishp@rivosinc.com>, <bhe@redhat.com>,
+        <thunder.leizhen@huawei.com>, <horms@kernel.org>
+References: <20230725214413.2488159-1-chenjiahao16@huawei.com>
+ <20230725-judiciary-auction-ef50be622175@spud>
+ <96245a6f-cff1-9f2a-1217-4109d9a19291@huawei.com>
+ <20230726-affix-employed-319aada685e7@wendy>
+From:   "chenjiahao (C)" <chenjiahao16@huawei.com>
+In-Reply-To: <20230726-affix-employed-319aada685e7@wendy>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.26]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,105 +59,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 11:14, Hans Verkuil wrote:
-> Hi Martin,
-> 
-> On 04/07/2023 15:13, tumic@gpxsee.org wrote:
->> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+
+On 2023/7/26 14:45, Conor Dooley wrote:
+> On Wed, Jul 26, 2023 at 10:20:00AM +0800, chenjiahao (C) wrote:
+>> On 2023/7/26 5:48, Conor Dooley wrote:
+>>> Hey,
+>>>
+>>> Your $subject says -next, but the patch failed to apply to
+>>> riscv/for-next. What was the base for this patchset?
+>>>
+>>> Thanks,
+>>> Conor.
+>> Hi,
 >>
->> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
->> video interfaces. As for now, two modules - FPD-Link and GMSL - are
->> available and supported by the driver. The card has two inputs and two
->> outputs (FPD-Link only).
->>
->> In addition to the video interfaces it also provides a trigger signal
->> interface and a MTD interface for FPGA firmware upload.
->>
->> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
->> ---
->>  MAINTAINERS                             |   7 +
->>  drivers/media/pci/Kconfig               |   1 +
->>  drivers/media/pci/Makefile              |   1 +
->>  drivers/media/pci/mgb4/Kconfig          |  17 +
->>  drivers/media/pci/mgb4/Makefile         |   6 +
->>  drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
->>  drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
->>  drivers/media/pci/mgb4/mgb4_core.c      | 711 ++++++++++++++++++
->>  drivers/media/pci/mgb4/mgb4_core.h      |  72 ++
->>  drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
->>  drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
->>  drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
->>  drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
->>  drivers/media/pci/mgb4/mgb4_io.h        |  33 +
->>  drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
->>  drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
->>  drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
->>  drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 757 +++++++++++++++++++
->>  drivers/media/pci/mgb4/mgb4_sysfs_out.c | 700 ++++++++++++++++++
->>  drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
->>  drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
->>  drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
->>  drivers/media/pci/mgb4/mgb4_vin.c       | 930 ++++++++++++++++++++++++
->>  drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
->>  drivers/media/pci/mgb4/mgb4_vout.c      | 594 +++++++++++++++
->>  drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
->>  26 files changed, 4910 insertions(+)
->>  create mode 100644 drivers/media/pci/mgb4/Kconfig
->>  create mode 100644 drivers/media/pci/mgb4/Makefile
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
->>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
->>
-> 
-> When I build with: make W=1 KCFLAGS=-Wmaybe-uninitialized
-> 
-> I get this warning:
-> 
-> drivers/media/pci/mgb4/mgb4_vout.c: In function 'mgb4_vout_create':
-> drivers/media/pci/mgb4/mgb4_vout.c:473:27: warning: variable 'video' set but not used [-Wunused-but-set-variable]
->   473 |         struct mgb4_regs *video;
->       |                           ^~~~~
+>> My patchset was tested on current linux-next HEAD
+>> (commit ID: 1e25dd777248, tag: next-20230725) and
+>> it seems all ok.
+>> Could you try applying with the base above, or
+>> is there any problem with that base?
+> There's some difference between linux-next and riscv/for-next that
+> prevents the patchwork automation from applying the patches.
 
-checkpatch.pl --strict also gives a lot of warnings.
+Oh, I see. There is definitely a difference, since linux-next applied
+a bugfix patch b690e266dae2 ("riscv: mm: fix truncation warning on RV32")
+recently, whereas riscv/for-next didn't. I have worked on a wrong base
+and thanks for reminding :)
 
-You can ignore the "line length of 131 exceeds 100 columns" warnings for the hex dump.
-Those are OK in that particular case.
+I will rebase onto riscv/for-next and post my v9 pathset soon, please
+check over there.
 
-But the suggested renamings would be good to implement to be consistent with other
-drivers.
+Thanks,
+Jiahao
 
-Regarding these:
-
-WARNING: Missing a blank line after declarations
-#3340: FILE: drivers/media/pci/mgb4/mgb4_trigger.c:93:
-+               u32 data;
-+               s64 ts __aligned(8);
-
-WARNING: externs should be avoided in .c files
-#3340: FILE: drivers/media/pci/mgb4/mgb4_trigger.c:93:
-+               s64 ts __aligned(8);
-
-This seems to be standard iio coding style, even though checkpatch
-gets confused by this. So let's leave this as-is.
-
-Regards,
-
-	Hans
