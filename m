@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C2D763B14
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0E9763B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjGZPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S234345AbjGZPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjGZPaI (ORCPT
+        with ESMTP id S233997AbjGZPbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:30:08 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A0268B;
-        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-58451ecf223so5360817b3.1;
-        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
+        Wed, 26 Jul 2023 11:31:00 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEBD2701;
+        Wed, 26 Jul 2023 08:30:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686bd857365so1101499b3a.3;
+        Wed, 26 Jul 2023 08:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690385403; x=1690990203;
+        d=gmail.com; s=20221208; t=1690385454; x=1690990254;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
-        b=IfQOikjTb54JcoQOnhR/3Fq0FlEKu8EnycAFmIQLw1zLeRNxqDoNAwmyVIhZkPF/QT
-         +JKHfyxiDvW04jhJpcOFcj0C2PKdMmWCrunMR2AzxG0XfyRJJBMCaQhTRoLGmYm3IYXd
-         lGIO55xgdc1kvjTJ6XJE1yNt1XIOO0MtUoCMwigMn0OAQWsmSvhujLJ15v6B0t2yd6pw
-         X0MidQmtlMJG6RVSarnypuX/llFdlPvZ6IDlkQkBN9OSZUjnDHzhCWSbuvBlNcp7FRAP
-         sfVGXpcdfaxj9zK9FMZMTyJODEA5x5SDojiVCcamwVuuOafYQuYqurs6a8cIWKqW1bCF
-         zRVQ==
+        bh=QIvg9RvPixHqfad2Kamp9kJBh4DIZcFMKZRn7pfOsNE=;
+        b=UvNxr8eLJ9hNPoNo/nmVkgjI4LmuR9ztzcTY+8rMIzSoHv7gwljQlaHHd92gm95UVm
+         nU56pgA2IgpkZ87/1SXR5DOwjHop16+wfwPEV6IS33mO1QlQi6mSJ8FVmwoSi/+kZx4P
+         qanoK+6WcjuZX7MFStjdzc0nrwV3XSiclq3I9Cq47+YLuQmJjCuttPtZTA47gY8Px5VL
+         M0KGCrZjA8PmkcEwyq7+BkhWwhnMHinBdCCuaa+ygSj2WTJ1OO0iLTikgnWKqb83HYA/
+         7qGLhQ84+9qqmlQzBfUs/lur7fuEApadKSY61qyN9KpEKVsfsHhr/QJ2E0h+XppBvQji
+         sYQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690385403; x=1690990203;
+        d=1e100.net; s=20221208; t=1690385454; x=1690990254;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
-        b=G2ESgXcmeAZgIp9K1GKDJJ4qF4wwuf8kt8xqhwzMHznmcIXejYoiVFyGei4yfHc4NP
-         LvISr7TtR2akSqwbWIdDQcsjcsxhBZqlxFJu3iqxPQEmyBJ7ozuLlsAUaSPEFj2rpVRr
-         EVjyndX54eSzOvZB+Cje+L8xP+RvJYWrjfLE3f7KBPfNbkEKFTfacBP1KvRY7t+hzg17
-         LHKwGeB3vRZdyNPN5KN+uaimZutbcoSwh8C6q1KW12rl81nF48mRItwaYli8V1anOsiL
-         ShTH38TKExzEhsJcyRsSG9S2zA5iUYJpKuEc0Sj8qUKCtJj1tYEx11k/YdGAv2hVYirD
-         Sd4w==
-X-Gm-Message-State: ABy/qLbGFRo5doVjFaOdHucpLh5kj+CwB0sICi/+ZOkJSGHjk16zXged
-        L3y3N2+YKJ+Y2itt3G4Xm8iW6qPl8PYTb/aBdxI=
-X-Google-Smtp-Source: APBJJlH9c/Cm1Gn1k/bqGcIifEtT5WA6JYO4NWDRh17eGkNuN//LPGYMjb5PrsKWtVwk5jtZLub4b2CzwC+F8JFg/Zw=
-X-Received: by 2002:a81:a151:0:b0:584:5e7e:40c1 with SMTP id
- y78-20020a81a151000000b005845e7e40c1mr533351ywg.28.1690385402927; Wed, 26 Jul
- 2023 08:30:02 -0700 (PDT)
+        bh=QIvg9RvPixHqfad2Kamp9kJBh4DIZcFMKZRn7pfOsNE=;
+        b=RwbvIAEsfrnnAkZp10d5GK2xnJ/PISXCb4hDRbDeoDEAmfqr/c4Ry6lcfXUFfrCNcq
+         /YuhuMlV5YN/35P4vjYhnxHYyM4BmmUDKUTu5/TirswnbZ9XEu5zOFbpWIYFsYTOSH06
+         xXSVVKhkHcEX3IxTQb9HvIVvz41o3dl1jg/0P+BkXFrleILggOmvUXldqNR/Yy4rmDY/
+         P0yx34lN5RE6pu2uVLYN554MMMEu63ERszFVgcobyM4pMxinpMBUuk6fhQPtNZIrvjPt
+         TuTkFx4KMcefaApb59FNLM4lPOOaEDRR/gr/HWit9Jg1XcHv0x1uze8oFF8beD4yzzoH
+         INyg==
+X-Gm-Message-State: ABy/qLaxNMwdkA9M8i8MKjifByrfhN1ISoeOjHYk1hO/kqAgpCx+3V03
+        cXLWMZBv4nW+bJU2y4bHpyqZhuyxoMLZPOtpal4=
+X-Google-Smtp-Source: APBJJlGsYifDPtFqieNjZSRGPJL2WJtbotBq8b23fwCEiS2YFyApRJq7zsSItWWZeZOofGURnKLE/TZxtTf3oC+7O6c=
+X-Received: by 2002:a17:90b:a4e:b0:268:5620:cfc7 with SMTP id
+ gw14-20020a17090b0a4e00b002685620cfc7mr1509855pjb.30.1690385453708; Wed, 26
+ Jul 2023 08:30:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <4919.1690365747@warthog.procyon.org.uk>
-In-Reply-To: <4919.1690365747@warthog.procyon.org.uk>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Wed, 26 Jul 2023 23:29:51 +0800
-Message-ID: <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-Subject: Re: [dm-devel] Processes hung in "D" state in ext4, mm, md and dmcrypt
-To:     David Howells <dhowells@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-ext4@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
+References: <20230725131258.31306-1-linyunsheng@huawei.com>
+ <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
+ <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com> <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
+In-Reply-To: <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 26 Jul 2023 08:30:17 -0700
+Message-ID: <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from page_pool.h
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,56 +101,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 6:02=E2=80=AFPM David Howells <dhowells@redhat.com>=
- wrote:
+On Wed, Jul 26, 2023 at 4:23=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
+m> wrote:
 >
-> Hi,
+> On 2023/7/26 18:43, Alexander Lobakin wrote:
+> > From: Alexander H Duyck <alexander.duyck@gmail.com>
+> > Date: Tue, 25 Jul 2023 08:47:46 -0700
+> >
+> >> On Tue, 2023-07-25 at 21:12 +0800, Yunsheng Lin wrote:
+> >>> Split types and pure function declarations from page_pool.h
+> >>> and add them in page_pool/types.h, so that C sources can
+> >>> include page_pool.h and headers should generally only include
+> >>> page_pool/types.h as suggested by jakub.
+> >>>
+> >>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >>> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> >>> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+> >
+> > [...]
+> >
+> >>> +/* Caller must provide appropriate safe context, e.g. NAPI. */
+> >>> +void page_pool_update_nid(struct page_pool *pool, int new_nid);
+> >>> +
+> >>> +#endif /* _NET_PAGE_POOL_H */
+> >>
+> >>
+> >> This seems kind of overkill for what is needed. It seems like the
+> >> general thought process with splitting this was so that you had just
+> >> the minimum of what is needed to support skbuff.h and the functions
+> >> declared there. The rest of this would then be added via the .h to the
+> >> .c files that will actually be calling the functions.
+> >>
+> >> By that logic I think the only thing we really need is the function
+> >> declaration for page_pool_return_skb_page moved into skbuff.h. We coul=
+d
+> >> then just remove page_pool.h from skbuff.h couldn't we?
+> >
+> > This patch is not to drop page_pool.h include from skbuff.h.
+> > This is more future-proof (since I'm dropping this include anyway in my
+> > series) to have includes organized and prevent cases like that one with
+> > skbuff.h from happening. And to save some CPU cycles on preprocessing i=
+f
+> > that makes sense.
 >
-> With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm se=
-eing
-> a bunch of processes getting stuck in the D state on my desktop after a f=
-ew
-> hours of reading email and compiling stuff.  It's happened every day this=
- week
-> so far and I managed to grab stack traces of the stuck processes this mor=
-ning
-> (see attached).
+> The suggestion is from below:
 >
-> There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a =
-raid1
-> array with two partitions with an ext4 partition on it.  md2 is similar b=
-ut
-> it's dm-crypted and ext4 is on top of that.
+> https://lore.kernel.org/all/20230710113841.482cbeac@kernel.org/
+
+I get that. But it seemed like your types.h is full of inline
+functions. That is what I was responding to. I would leave the inline
+functions in page_pool.h unless there is some significant need for
+them.
+
+> >
+> >>
+> >> Another thing we could consider doing is looking at splitting things u=
+p
+> >> so that we had a include file in net/core/page_pool.h to handle some o=
+f
+> >> the cases where we are just linking the page_pool bits to other core
+> >> file bits such as xdp.c and skbuff.c.
 >
-...
+> I suppose the above suggestion is about splitting or naming by
+> the user as the discussed in the below thread?
+> https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/
 
-> =3D=3D=3D117547=3D=3D=3D
->     PID TTY      STAT   TIME COMMAND
->  117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
-> [<0>] blk_mq_get_tag+0x11e/0x2b0
-> [<0>] __blk_mq_alloc_requests+0x1bc/0x350
-> [<0>] blk_mq_submit_bio+0x2c7/0x680
-> [<0>] __submit_bio+0x8b/0x170
-> [<0>] submit_bio_noacct_nocheck+0x159/0x370
-> [<0>] __block_write_full_folio+0x1e1/0x400
-> [<0>] writepage_cb+0x1a/0x70
-> [<0>] write_cache_pages+0x144/0x3b0
-> [<0>] do_writepages+0x164/0x1e0
-> [<0>] __writeback_single_inode+0x3d/0x360
-> [<0>] writeback_sb_inodes+0x1ed/0x4b0
-> [<0>] __writeback_inodes_wb+0x4c/0xf0
-> [<0>] wb_writeback+0x298/0x310
-> [<0>] wb_workfn+0x35b/0x510
-> [<0>] process_one_work+0x1de/0x3f0
-> [<0>] worker_thread+0x51/0x390
-> [<0>] kthread+0xe5/0x120
-> [<0>] ret_from_fork+0x31/0x50
-> [<0>] ret_from_fork_asm+0x1b/0x30
+Actually my suggestion is more about defining boundaries for what is
+meant to be used by drivers and what isn't. The stuff you could keep
+in net/core/page_pool.h would only be usable by the files in net/core/
+whereas the stuff you are keeping in the include/net/ folder is usable
+by drivers. It is meant to prevent things like what you were
+complaining about with the Mellanox drivers making use of interfaces
+you didn't intend them to use.
 
-BTW, -rc3 fixes one similar issue on the above code path, so please try -rc=
-3.
-
-106397376c03 sbitmap: fix batching wakeup
-
-Thanks,
-Ming Lei
+So for example you could pull out functions like
+page_pool_return_skb_page, page_pool_use_xdp_mem,
+page_pool_update_nid, and the like and look at relocating them into
+the net/core/ folder and thereby prevent abuse of those functions by
+drivers.
