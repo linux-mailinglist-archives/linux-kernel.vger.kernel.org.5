@@ -2,127 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 285677640F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66177640FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjGZVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 17:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        id S229820AbjGZVMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 17:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjGZVKx (ORCPT
+        with ESMTP id S229487AbjGZVMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 17:10:53 -0400
-Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD141BE2;
-        Wed, 26 Jul 2023 14:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
-        MIME-Version:Date:Message-ID:content-disposition;
-        bh=GdQIbfATFxwt8LtDtqP230uJEWFrpPIrlWDHw9xXrWA=; b=rAIfnk+5U2VYLw+CBHnDr6b1D/
-        6B7I34rWocwCB55qJoKrqOhG9XIOJdaf1/niPN+luHvEAQTf4kCdB5UqRa/3o/FG8Yc2XIXpKAqRl
-        Sj1I1Fyf+gMcDFcN4F4Vd5y6BzxIpn1VuEvxIwYZ1abqOboUOkqY0hoPj3YjJFytRXZzt3bnKgd79
-        r0Yg632YO5WGwZ5QLszWKqJDoMrWQ2I6tDU+xKUIwUo6Y0rMl8Ku6lVH/OjXIs9zzFGJSx9+dw9Zo
-        2T4pvjlr+Q1iWCP6DnPaXf+dmtxTvuxIj2buhLCOa/00hfZH+F8HhQZ2DDb4TYRCLhw28tLBxfnud
-        X0DgvZNg==;
-Received: from d75-158-34-12.abhsia.telus.net ([75.158.34.12] helo=[192.168.11.155])
-        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <logang@deltatee.com>)
-        id 1qOlmN-00B8uv-PH; Wed, 26 Jul 2023 15:10:45 -0600
-Message-ID: <0e4caa6c-d5bd-61e7-2ef6-300973cd2db6@deltatee.com>
-Date:   Wed, 26 Jul 2023 15:10:43 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chengfeng Ye <dg573847474@gmail.com>, vkoul@kernel.org,
-        Yunbo Yu <yuyunbo519@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230726104827.60382-1-dg573847474@gmail.com>
- <9378e69f-2bd4-9d8d-c736-b8799f6ebecc@deltatee.com>
- <ecf68b20-0a07-18bb-42a8-e622054b01f8@wanadoo.fr>
-From:   Logan Gunthorpe <logang@deltatee.com>
-In-Reply-To: <ecf68b20-0a07-18bb-42a8-e622054b01f8@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 75.158.34.12
-X-SA-Exim-Rcpt-To: christophe.jaillet@wanadoo.fr, dg573847474@gmail.com, vkoul@kernel.org, yuyunbo519@gmail.com, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
+        Wed, 26 Jul 2023 17:12:20 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE691BE8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:12:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c6dd0e46a52so184301276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690405939; x=1691010739;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rZM5DChdNI8S3fRaG82Uf+jm5x9WWsFq+xNzYHKGX4I=;
+        b=TFvfXD2jpjpWq8sY4RDHzUNEf2ymN+fSetV8uTMDOQ+efdSDZm9AVu17Ww7vnobhgB
+         ipCdmG9oLkCSmc/Ewxmh9qpvD8J5WxmQPeRTIimCFCbthp+v2w4LMNk9MqelA3mbqiTx
+         b6yNHsrXMJYrky0IG18TgFNI2T0u0kk++fomF7W7zJ1tSMZaclcN9/xsXE1jSPnWxbIt
+         SD8OnfWzUGmqz8Li/3PhJb77U/8kU8ZqMf4watsGPkU4z89D+rJiwf62psgJ7kJGdK8l
+         Jy2wFbXod1DCUCD/DJQnR8q+eZ1PFAyayDYnC0l5FzvVGZBLA3+9PgSKC+VLpfHFrThr
+         Smow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690405939; x=1691010739;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rZM5DChdNI8S3fRaG82Uf+jm5x9WWsFq+xNzYHKGX4I=;
+        b=E99CINyJK3mRro6rzmDf29iavcCNZ15AJZ1xOvXwfxDberf5DpqZc2DwFjzpMPOhVV
+         upja0/505usyH0dg+zIBYOVHbFy5L/yG7lbrkYVKmax0JbAADeEoftjEmLG5PVeC0Z0N
+         BXp5y0QJ5eDQSivzvxbwQrzTfn3KmMIaRRWuA5mxSna/fqrZU+jtBTqVQcZp4F/sHv0C
+         E/7neLMyPQPiO+hkebSaoC5beg09V3e6JdaiiFTMZ0jFSD92sv2DInG8fcCrq0+a3z6a
+         4zf5Q0gLCNyaXeBuwO91hKL5Q65lz4VwYw5WGv+UYNWkcokqsJDEKdeAUzBD0+YZJJKu
+         jujg==
+X-Gm-Message-State: ABy/qLYYJUHLNCOAzG1PyI05EyL+B/BaS8tFN5nNAfuEeOxum8MVS0AH
+        qdGpfEWFSoLD19HaMuu9gOwm8Mu7IKQNnBCHAA==
+X-Google-Smtp-Source: APBJJlHztluktJg0B0qaDZ70CcY32gizNyhPP2LwGCkpCXg6eyN49WkgyiCmLZ6pxTh3gxGo8YcM18w/ekYxGaaJqw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:fe05:0:b0:d10:c94a:be7e with SMTP
+ id k5-20020a25fe05000000b00d10c94abe7emr19783ybe.8.1690405938894; Wed, 26 Jul
+ 2023 14:12:18 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 21:12:18 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIADGMwWQC/52NQQ6DIBBFr2JYdxqgamNXvUfjgg6DEhUMEFJjv
+ HupR+jy/fy8t7NIwVJkj2pngbKN1rsC4lIxHJUbCKwuzCSXN36XLajoEaxLNEOctllNBIEWnwk
+ 0rYFQJdIQU3C4btDpNxqULa85sqIsB2M/Z+7VFx5tTD5sZz2L3/pnKAsQoNuaeI1dYxrzHLwfZ rqiX1h/HMcXwpnJEOkAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690405938; l=2258;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=lQAXd/QKEocVTpWzsLq/yuRWIfGT/6JXnq+xx86jdyo=; b=qfHnDTc0z2fwrsubm0mfrEuvyffKkOeKhwokW9XrOjcVXFcWc7iFlQrcWEH+KOMyhxzifxMK8
+ aycPeRwhO0xD3vZ3vBW2pcHncCaCAkivn+JIrWDtsLx0CBm1ilapKZ+
+X-Mailer: b4 0.12.3
+Message-ID: <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
+Subject: [PATCH] ASoC: Intel: Skylake: replace deprecated strncpy with strscpy
+From:   justinstitt@google.com
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH] dmaengine: plx_dma: Fix potential deadlock on
- &plxdev->ring_lock
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-On 2023-07-26 15:00, Christophe JAILLET wrote:
-> Le 26/07/2023 à 17:57, Logan Gunthorpe a écrit :
->>
->>
->> On 2023-07-26 04:48, Chengfeng Ye wrote:
->>> As plx_dma_process_desc() is invoked by both tasklet plx_dma_desc_task()
->>> under softirq context and plx_dma_tx_status() callback that executed
->>> under
->>> process context, the lock aquicision of &plxdev->ring_lock inside
->>> plx_dma_process_desc() should disable irq otherwise deadlock could
->>> happen
->>> if the irq preempts the execution of process context code while the lock
->>> is held in process context on the same CPU.
->>>
->>> Possible deadlock scenario:
->>> plx_dma_tx_status()
->>>      -> plx_dma_process_desc()
->>>      -> spin_lock(&plxdev->ring_lock)
->>>          <tasklet softirq>
->>>          -> plx_dma_desc_task()
->>>          -> plx_dma_process_desc()
->>>          -> spin_lock(&plxdev->ring_lock) (deadlock here)
->>>
->>> This flaw was found by an experimental static analysis tool I am
->>> developing
->>> for irq-related deadlock.
->>>
->>> The tentative patch fixes the potential deadlock by
->>> spin_lock_irqsave() in
->>> plx_dma_process_desc() to disable irq while lock is held.
->>>
->>> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
->>
->> Makes sense. Thanks!
->>
->> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
->>
->> Logan
->>
-> 
-> Hi,
-> 
-> as explained in another reply [1], would spin_lock_bh() be enough in
-> such a case?
+It was pretty difficult, in this case, to try and figure out whether or
+not the destination buffer was zero-initialized. If it is and this
+behavior is relied on then perhaps `strscpy_pad` is the preferred
+option here.
 
-The driver originally used spin_lock_bh(). It was removed by Yunbo Yu in
-2022 who said that it was unnecessary to be used with a tasklet:
+Kees was able to help me out and identify the following code snippet
+which seems to show that the destination buffer is zero-initialized.
 
-1d05a0bdb420 ("dmaengine: plx_dma: Move spin_lock_bh() to spin_lock() ")
+|       skl = devm_kzalloc(&pci->dev, sizeof(*skl), GFP_KERNEL);
 
-If spin_lock_bh() is correct (which is what I originally thought when I
-wrote the driver, though I'm a bit confused now) then I guess that
-Yunbo's change was just incorrect. It sounded sensible at the time, but
-it looks like there are two call sites of plx_dma_desc_task(): one in
-the tasklet and one not in the tasklet. The one not in the tasklet needs
-to use the bh version.
+With this information, I opted for `strscpy` since padding is seemingly
+not required.
 
-So perhaps we should just revert 1d05a0bdb420?
+Also within this patch is a change to an instance of  `x > y - 1` to `x >= y`
+which tends to be more robust and readable. Consider, for instance, if `y` was
+somehow `INT_MIN`.
 
-Logan
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+
+Link: https://github.com/KSPP/linux/issues/90
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 96cfebded072..67f08ec3a2ea 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3154,12 +3154,12 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
+ 
+ 	switch (str_elem->token) {
+ 	case SKL_TKN_STR_LIB_NAME:
+-		if (ref_count > skl->lib_count - 1) {
++		if (ref_count >= skl->lib_count) {
+ 			ref_count = 0;
+ 			return -EINVAL;
+ 		}
+ 
+-		strncpy(skl->lib_info[ref_count].name,
++		strscpy(skl->lib_info[ref_count].name,
+ 			str_elem->string,
+ 			ARRAY_SIZE(skl->lib_info[ref_count].name));
+ 		ref_count++;
+
+---
+base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+change-id: 20230726-asoc-intel-skylake-remove-deprecated-strncpy-9dbcfc26040c
+
+Best regards,
+-- 
+Justin Stitt <justinstitt@google.com>
+
