@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D6E763222
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17905763227
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbjGZJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S231190AbjGZJbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbjGZJac (ORCPT
+        with ESMTP id S231747AbjGZJat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:30:32 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741F54482
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:28:45 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6748a616e17so1654069b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690363725; x=1690968525;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ET5z1iXVl3TCzfyIPhSPq9r+sES1n7GH6hJTCnF+vYo=;
-        b=RgneqgkXKODRrFr78EJ2DiU2LP1auMSsEluGXDNHK2/ImK1m1wgxIc9rc0KyChzerd
-         9pp9E0d70JkoKPUeaRftr+jglcQl9qJ1NHO80UjvVHwRcDm/HyYkv/adcdLVyb0tT2RZ
-         DBfPuhO0Xzb3EkxZ8Lnv+NpBNxlgzINPxdWjI2p4gXmhxr9F42wMDqq5WIk8CWvg0ei0
-         04D2fNryYi6h/fKlwXKsAJNXxbdFzcjkeSQHK+ZzWAzpfHtAdyeZZlzM27TnNlh1u/69
-         UWlC2QlusG6aR16W+ARLMoeEnjaKWlhVg7tepMtvkY5m/QLzYLh0WRDX9uQBe16cx9gs
-         O9rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363725; x=1690968525;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ET5z1iXVl3TCzfyIPhSPq9r+sES1n7GH6hJTCnF+vYo=;
-        b=X/FCCVVqzQJZGqgDafeqrOa3whN2hbCfkpPpufqTpPQ6cb7MbLRB3seBynl2Ss2tQ7
-         LtGgoeni7oy00uyRfMVcIsq30oyUrrbpKN5EMGBqbOw6Fp85mBq9Po2Xo0TyoB4kESgw
-         9zykyq0DzFMlar9syz8h9gg++g9wVk1SxIT3yjxRvaY8rZIS7lRzBIGQw4dlFUHUylLJ
-         rk7GTr+yGcAMx3rMwaNUqXxVGRmHku3ZKbVB6jD9fCcKkTSMbwqg/MgO72DJV59hg3g2
-         nBGM71S8GLJIiW/EMajSUhzeDCcLSJ/couXVt5J74Wz6FKYT16KNQI+dCxs2m+kRpp/O
-         cZuQ==
-X-Gm-Message-State: ABy/qLbI884sl/qbUAjn/pNaTWw66t3Zyo7HjBIWfvLAK3MVTcqbzygc
-        Ckq2kzZIWKG2XeZRG6o/RbZZ4A==
-X-Google-Smtp-Source: APBJJlFvSUUJYrPzKxRMgKGWHa7iMtrF7iaocGD/XAPkPO20BZ2/Wf52mLvF02dnCC8LpFHDclZgZw==
-X-Received: by 2002:a17:903:41c8:b0:1bb:83ec:832 with SMTP id u8-20020a17090341c800b001bb83ec0832mr2040388ple.2.1690363724990;
-        Wed, 26 Jul 2023 02:28:44 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id bc2-20020a170902930200b001a95f632340sm12591323plb.46.2023.07.26.02.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:28:44 -0700 (PDT)
-Message-ID: <acb14ed0-b9ca-e7c9-e81b-a2db290a1b94@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:28:30 +0800
+        Wed, 26 Jul 2023 05:30:49 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090FE1FF3;
+        Wed, 26 Jul 2023 02:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690363764; x=1721899764;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=l0UaXd8dxL8pcDlKqm2/iYLRu2YGyE+6AlZwryvSv9A=;
+  b=KAUbPg6OULG1qTpM6gRJ7y6u0GrJlYhkcEpXZR5SKpBkbzsQ6B5KcaYC
+   /xsOzxtF4fOqAy41gLs7GH7hTBNs/l4O80EPhoAWS7oUDfVOVjmAsylkM
+   pOd5YiRWoAotg8Ep+8Xn0lbinsIHi7ecjbWq20CQIeoafe+Wws0L81dOt
+   46FcHSFyJRVbOOx6X/hL8G8DTCEAb179Q7JngLV9iemst5S/RUoeTeF/B
+   V3bj5I6zn/h8hmQkmYSiUML3avslfD+RHYUSd8/LYIpUHr+Aep+olCfC5
+   KteBQEXVQD5Vj7jHVdbKjHqIpGXLwocgyRrTqM8mTdyrdK542+Yoo+MuA
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="asc'?scan'208";a="163273367"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 02:29:22 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 26 Jul 2023 02:29:21 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 26 Jul 2023 02:29:18 -0700
+Date:   Wed, 26 Jul 2023 10:28:44 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.1 000/183] 6.1.42-rc1 review
+Message-ID: <20230726-rockiness-gigabyte-5a7cdbcbb0bd@wendy>
+References: <20230725104507.756981058@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 21/47] mm: workingset: dynamically allocate the
- mm-shadow shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-22-zhengqi.arch@bytedance.com>
- <08F2140B-0684-4FB0-8FB9-CEB88882F884@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <08F2140B-0684-4FB0-8FB9-CEB88882F884@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f1CyDS59SEKSqCi6"
+Content-Disposition: inline
+In-Reply-To: <20230725104507.756981058@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--f1CyDS59SEKSqCi6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Jul 25, 2023 at 12:43:48PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.42 release.
+> There are 183 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-On 2023/7/26 15:13, Muchun Song wrote:
-> 
-> 
->> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->>
->> Use new APIs to dynamically allocate the mm-shadow shrinker.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->> mm/workingset.c | 26 ++++++++++++++------------
->> 1 file changed, 14 insertions(+), 12 deletions(-)
->>
->> diff --git a/mm/workingset.c b/mm/workingset.c
->> index 4686ae363000..4bc85f739b13 100644
->> --- a/mm/workingset.c
->> +++ b/mm/workingset.c
->> @@ -762,12 +762,7 @@ static unsigned long scan_shadow_nodes(struct shrinker *shrinker,
->> NULL);
->> }
->>
->> -static struct shrinker workingset_shadow_shrinker = {
->> -	.count_objects = count_shadow_nodes,
->> -	.scan_objects = scan_shadow_nodes,
->> -	.seeks = 0, /* ->count reports only fully expendable nodes */
->> -	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
->> -};
->> +static struct shrinker *workingset_shadow_shrinker;
-> 
-> 
-> Same as patch #17.
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-OK, will do.
+Thanks,
+Conor.
 
+--f1CyDS59SEKSqCi6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDnTAAKCRB4tDGHoIJi
+0l+sAQCBJlJFhCJ2oHjDIioOotqXhBCiUF93fXmG0HRQvs4qnwEA3Vkn+sTnjD1+
+Cf0GDGcx9WxJG4YwZVjL28GWA0RyOw0=
+=NZzc
+-----END PGP SIGNATURE-----
+
+--f1CyDS59SEKSqCi6--
