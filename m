@@ -2,276 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B09763FB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B56763FC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjGZTcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S229975AbjGZTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGZTcj (ORCPT
+        with ESMTP id S229454AbjGZTew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:32:39 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55795E4F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1690399958; x=1721935958;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=PdsSRu7tlZBA3gNrHuPdzW7N3hmmobQp+k8jhBUmFHA=;
-  b=OXynlwMLFT78B4BOVvI3Ilrp8Io9k8UJReLOGgz+K6PjmSWneq+2dNGX
-   ywFp2RnSyEoBKyayumzc/Wyeom9aDOFVTf2lf5GVMsck+H6lGbLzX2r4k
-   HqPJtLwR4RdR4wNKTneSH7LR69p6xRBnCQGV+WEqkdYLWefbcB1AIRmy5
-   4=;
-X-IronPort-AV: E=Sophos;i="6.01,232,1684800000"; 
-   d="scan'208";a="228901664"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 19:32:35 +0000
-Received: from EX19MTAUEC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 2DFAA46E5E;
-        Wed, 26 Jul 2023 19:32:34 +0000 (UTC)
-Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
- EX19MTAUEC002.ant.amazon.com (10.252.135.253) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 19:32:33 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Wed, 26 Jul 2023 19:32:33 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-        id 3672C20E1D; Wed, 26 Jul 2023 21:32:33 +0200 (CEST)
-From:   Pratyush Yadav <ptyadav@amazon.de>
-To:     Keith Busch <kbusch@kernel.org>
-CC:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        "Jens Axboe" <axboe@kernel.dk>, <linux-nvme@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
- none
-References: <20230725110622.129361-1-ptyadav@amazon.de>
-        <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
-        <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
-        <20230726131408.GA15909@lst.de> <mafs0cz0e8zc6.fsf_-_@amazon.de>
-        <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com>
-Date:   Wed, 26 Jul 2023 21:32:33 +0200
-In-Reply-To: <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com> (Keith Busch's
-        message of "Wed, 26 Jul 2023 10:17:20 -0600")
-Message-ID: <mafs08rb28o4u.fsf_-_@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 26 Jul 2023 15:34:52 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19F2E73;
+        Wed, 26 Jul 2023 12:34:50 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [114.249.159.178])
+        by APP-05 (Coremail) with SMTP id zQCowABnbrI4dcFk8hvfDg--.59552S2;
+        Thu, 27 Jul 2023 03:34:16 +0800 (CST)
+Message-ID: <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
+Date:   Thu, 27 Jul 2023 03:34:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+ <20230726-outclass-parade-2ccea9f6688a@spud>
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <20230726-outclass-parade-2ccea9f6688a@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: zQCowABnbrI4dcFk8hvfDg--.59552S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw43Xw15uF1DJFy8urykXwb_yoW7XrW5pr
+        W3CFyUCr4rXw48G3Wft34UWa4Yyrs3J3y8Jr43Kw1Uu3sxZF1FgrWkKw4agFyDZrZ3Gr40
+        vr1xu3ZYvw1qvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07beAp5UUUUU=
+X-Originating-IP: [114.249.159.178]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCgYECmTBJBelrwAAse
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26 2023, Keith Busch wrote:
-
-> On Wed, Jul 26, 2023 at 05:30:33PM +0200, Pratyush Yadav wrote:
->> On Wed, Jul 26 2023, Christoph Hellwig wrote:
->> > On Wed, Jul 26, 2023 at 10:58:36AM +0300, Sagi Grimberg wrote:
->> >>>> For example, AWS EC2's i3.16xlarge instance does not expose NUMA
->> >>>> information for the NVMe devices. This means all NVMe devices have
->> >>>> NUMA_NO_NODE by default. Without this patch, random 4k read performance
->> >>>> measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
->> >>>> less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
->> >>>> both nodes get similar performance (around 315k IOPS).
->> >>>
->> >>> irqbalance doesn't work with this driver though: the interrupts are
->> >>> managed by the kernel. Is there some other reason to explain the perf
->> >>> difference?
+On 7/27/23 02:02, Conor Dooley wrote:
+> On Thu, Jul 27, 2023 at 01:45:24AM +0800, Mingzheng Xing wrote:
+>> Binutils-2.38 and GCC-12.1.0 bump[0] default ISA spec to newer version
+>> 20191213 which moves some instructions from the I extension to the
+>> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+>> that version, we should turn on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>> to cope with the new changes.
 >>
->> Hmm, I did not know that. I have not gone and looked at the code but I
->> think the same reasoning should hold, just with s/irqbalance/kernel. If
->> the kernel IRQ balancer sees the device is on node 0, it would deliver
->> its interrupts to CPUs on node 0.
+>> The case of clang is special[1][2], where older clang versions (<17) need
+>> to be rolled back to old ISA spec to fix it. And the less common case,
+>> since older GCC versions (<11.1.0) did not support zicsr and zifencei
+> Can you provide a link to explain why this is 11.1.0 in particular?
+
+Okay, I can add it in commit message. gcc-11.1.0 is particular
+because it add support zicsr and zifencei extension for -march[1].
+
+Link: 
+https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49 
+[1]
+
+>> extension for -march, also requires a fallback to cope with it.
 >>
->> In my tests I can see that the interrupts for NVME queues are sent only
->> to CPUs from node 0 without this patch. With this patch CPUs from both
->> nodes get the interrupts.
->
-> Could you send the output of:
->
->   numactl --hardware
+>> For more information, please refer to:
+>> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
+>> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang and binutils")
+>> Link: https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd [0]
+>> Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.org [1]
+>> Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org [2]
+>> Link: https://lore.kernel.org/all/20230725170405.251011-1-xingmingzheng@iscas.ac.cn
+> This shouldn't be here, you don't link to your old patches.
 
-$ numactl --hardware
-available: 2 nodes (0-1)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-node 0 size: 245847 MB
-node 0 free: 245211 MB
-node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
-node 1 size: 245932 MB
-node 1 free: 245328 MB
-node distances:
-node   0   1
-  0:  10  21
-  1:  21  10
+My bad, I will fix it.
 
 >
-> and then with and without your patch:
+>> Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+> This is still broken for:
+> CONFIG_CLANG_VERSION=0
+> CONFIG_AS_IS_GNU=y
+> CONFIG_AS_VERSION=23500
+> CONFIG_LD_IS_BFD=y
+> CONFIG_LD_VERSION=23500
+
+Do you mean that these CONFIG_* will cause kernel
+compilation errors when paired with certain versions of GCC?
+Or perhaps I misunderstood your meaning.
+
 >
->   for i in $(cat /proc/interrupts | grep nvme0 | sed "s/^ *//g" | cut -d":" -f 1); do \
->     cat /proc/irq/$i/{smp,effective}_affinity_list; \
->   done
+> Please don't post a v2 while there is still ongoing discussion on the
+> v1. I'll try to reply here tomorrow with a diff you can fold in to fix
+> the problem.
 
-Without my patch:
+Okay, thanks for your review.
 
-    $   for i in $(cat /proc/interrupts | grep nvme0 | sed "s/^ *//g" | cut -d":" -f 1); do \
-    >     cat /proc/irq/$i/{smp,effective}_affinity_list; \
-    >   done
-    40
-    40
-    33
-    33
-    44
-    44
-    9
-    9
-    32
-    32
-    2
-    2
-    6
-    6
-    11
-    11
-    1
-    1
-    35
-    35
-    39
-    39
-    13
-    13
-    42
-    42
-    46
-    46
-    41
-    41
-    46
-    46
-    15
-    15
-    5
-    5
-    43
-    43
-    0
-    0
-    14
-    14
-    8
-    8
-    12
-    12
-    7
-    7
-    10
-    10
-    47
-    47
-    38
-    38
-    36
-    36
-    3
-    3
-    34
-    34
-    45
-    45
-    5
-    5
-
-With my patch:
-
-    $   for i in $(cat /proc/interrupts | grep nvme0 | sed "s/^ *//g" | cut -d":" -f 1); do \
-    >     cat /proc/irq/$i/{smp,effective}_affinity_list; \
-    >   done
-    9
-    9
-    15
-    15
-    5
-    5
-    23
-    23
-    38
-    38
-    52
-    52
-    21
-    21
-    36
-    36
-    13
-    13
-    56
-    56
-    44
-    44
-    42
-    42
-    31
-    31
-    48
-    48
-    5
-    5
-    3
-    3
-    1
-    1
-    11
-    11
-    28
-    28
-    18
-    18
-    34
-    34
-    29
-    29
-    58
-    58
-    46
-    46
-    54
-    54
-    59
-    59
-    32
-    32
-    7
-    7
-    56
-    56
-    62
-    62
-    49
-    49
-    57
-    57
-
--- 
-Regards,
-Pratyush Yadav
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+> Thanks,
+> Conor.
+>
+>> ---
+>>
+>> v2:
+>> - Update the Kconfig help text and commit message.
+>> - Add considerations for low version gcc case.
+>>
+>> Sorry for the formatting error on my mailing list reply.
+>>
+>>   arch/riscv/Kconfig | 23 +++++++++++++----------
+>>   1 file changed, 13 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 4c07b9189c86..08afd47de157 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -570,24 +570,27 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+>>   config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>>   	def_bool y
+>>   	# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
+>> -	depends on AS_IS_GNU && AS_VERSION >= 23800
+>> +	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
+>> +	depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
+>>   	help
+>> -	  Newer binutils versions default to ISA spec version 20191213 which
+>> -	  moves some instructions from the I extension to the Zicsr and Zifencei
+>> -	  extensions.
+>> +	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
+>> +	  20191213 which moves some instructions from the I extension to the
+>> +	  Zicsr and Zifencei extensions.
+>>   
+>>   config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+>>   	def_bool y
+>>   	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>>   	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
+>> -	depends on CC_IS_CLANG && CLANG_VERSION < 170000
+>> +	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
+>> +	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
+>> +		   (CC_IS_GCC && GCC_VERSION < 110100)
+>>   	help
+>> -	  Certain versions of clang do not support zicsr and zifencei via -march
+>> -	  but newer versions of binutils require it for the reasons noted in the
+>> -	  help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+>> +	  Certain versions of clang (or GCC) do not support zicsr and zifencei via
+>> +	  -march but newer versions of binutils require it for the reasons noted
+>> +	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+>>   	  option causes an older ISA spec compatible with these older versions
+>> -	  of clang to be passed to GAS, which has the same result as passing zicsr
+>> -	  and zifencei to -march.
+>> +	  of clang (or GCC) to be passed to GAS, which has the same result as
+>> +	  passing zicsr and zifencei to -march.
+>>   
+>>   config FPU
+>>   	bool "FPU support"
+>> -- 
+>> 2.34.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
