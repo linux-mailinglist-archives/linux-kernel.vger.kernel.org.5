@@ -2,148 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7925762FCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35BA762FCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbjGZIZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        id S233244AbjGZI0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjGZIZI (ORCPT
+        with ESMTP id S233176AbjGZIZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:25:08 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2141097;
-        Wed, 26 Jul 2023 01:14:39 -0700 (PDT)
-Received: from ubuntu.localdomain (unknown [124.236.128.36])
-        by mail-app3 (Coremail) with SMTP id cC_KCgA36JzP1cBk53O_Cw--.42286S2;
-        Wed, 26 Jul 2023 16:14:16 +0800 (CST)
-From:   Duoming Zhou <duoming@zju.edu.cn>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
-        davem@davemloft.net, UNGLinuxDriver@microchip.com,
-        woojung.huh@microchip.com, Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH net] net: usb: lan78xx: reorder cleanup operations to avoid UAF bugs
-Date:   Wed, 26 Jul 2023 16:14:07 +0800
-Message-Id: <20230726081407.18977-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgA36JzP1cBk53O_Cw--.42286S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr1kJFyDuFWrKr48Jw1UKFg_yoW5Zr4Dpa
-        95XF98Gr1kWr45KF13ZF48XFyrurs2yw4DGryfKw4vq3Z5tFyaq3srJ397WFW3CFWDZFsx
-        Zw1jqan3XFs5uaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUOnmRUUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQIAWTAePoKggA3sX
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 26 Jul 2023 04:25:53 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3555B4236
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690359332; x=1721895332;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3PBwGmmLNo5LsDc6Vk46BAUMhYfkHnDVYn22klH3w7w=;
+  b=iYFw1p56w75O9/uMtQHfWkdk4eUsdRxBkyqFOB2p2XKUMjlUmZ+KN9TS
+   PPnq3iJliEsy5DhYi0kbF423T8e3yAoymDg5Zaj1y9Sx91dhNbN7oYepC
+   bivox/TI98jDNFzTju2hh+DUcW7bAsixR4vtvYe1YO+6wXhA8LkdwU3Fx
+   auG8z49ikDxYwUckTGH3Qkdi1+3ddlglWEsujCWSUfUIeM+Is20xUJaBa
+   mXheSzEUQXZinEBN81C3vanLZxXb3xB7oOZ6JQ3twp3uUVfRbzaZ7fVqI
+   Xau0bVgxEHZjT6ZoEktFW8XeNh9kXRL6nFXN/hGG/8mfLshz76KFIivse
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="431752630"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="431752630"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 01:15:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="840179540"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="840179540"
+Received: from csmokx-mobl.ger.corp.intel.com (HELO [10.252.35.206]) ([10.252.35.206])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 01:15:21 -0700
+Message-ID: <7349d6f4-4866-6fb3-57c9-9ce2d6989576@linux.intel.com>
+Date:   Wed, 26 Jul 2023 10:15:02 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Content-Language: en-US
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Uday M Bhat <uday.m.bhat@intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        "Dharageswari . R" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230726140848.2267568-1-brent.lu@intel.com>
+ <20230726140848.2267568-2-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230726140848.2267568-2-brent.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The timer dev->stat_monitor can schedule the delayed work dev->wq and
-the delayed work dev->wq can also arm the dev->stat_monitor timer.
+On 7/26/23 4:08 PM, Brent Lu wrote:
+> Implement a helper function to get number of codecs from ACPI
+> subsystem to remove the need of quirk flag in machine driver.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>   sound/soc/intel/boards/sof_maxim_common.c | 171 +++++++++++++---------
+>   sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+>   2 files changed, 110 insertions(+), 82 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+> index 112e89951da0..1fdd66f5adc2 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.c
+> +++ b/sound/soc/intel/boards/sof_maxim_common.c
+> @@ -4,6 +4,7 @@
+>   #include <linux/module.h>
+>   #include <linux/string.h>
+>   #include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+>   #include <sound/soc.h>
+>   #include <sound/soc-acpi.h>
+>   #include <sound/soc-dai.h>
+> @@ -11,6 +12,18 @@
+>   #include <uapi/sound/asound.h>
+>   #include "sof_maxim_common.h"
+>   
+> +/* helper function to get the number of specific codec */
+> +static unsigned int get_num_codecs(const char *hid)
+> +{
+> +	struct acpi_device *adev;
+> +	unsigned int dev_num = 0;
+> +
+> +	for_each_acpi_dev_match(adev, hid, NULL, -1)
+> +		dev_num++;
+> +
+> +	return dev_num;
+> +}
+> +
+>   #define MAX_98373_PIN_NAME 16
+>   
+>   const struct snd_soc_dapm_route max_98373_dapm_routes[] = {
+> @@ -168,17 +181,6 @@ static struct snd_soc_codec_conf max_98390_codec_conf[] = {
+>   		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
+>   		.name_prefix = "Left",
+>   	},
+> -};
+> -
+> -static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
+> -	{
+> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
+> -		.name_prefix = "Right",
+> -	},
+> -	{
+> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
+> -		.name_prefix = "Left",
+> -	},
 
-When the device is detaching, the net_device will be deallocated. but
-the net_device private data could still be dereferenced in delayed work
-or timer handler. As a result, the UAF bugs will happen.
+if you remove the codec conf, doesn't this impact the Kcontrols names? 
+Does this break existing UCM files?
 
-One racy situation is shown below:
+It's rather hard to review with just the diff.
 
-      (Thread 1)                 |      (Thread 2)
-lan78xx_stat_monitor()           |
- ...                             |  lan78xx_disconnect()
- lan78xx_defer_kevent()          |    ...
-  ...                            |    cancel_delayed_work_sync(&dev->wq);
-  schedule_delayed_work()        |    ...
-  (wait some time)               |    free_netdev(net); //free net_device
-  lan78xx_delayedwork()          |
-  //use net_device private data  |
-  dev-> //use                    |
-
-Although we use cancel_delayed_work_sync() to cancel the delayed work
-in lan78xx_disconnect(), it could still be scheduled in timer handler
-lan78xx_stat_monitor().
-
-Another racy situation is shown below:
-
-      (Thread 1)                |      (Thread 2)
-lan78xx_delayedwork             |
- mod_timer()                    |  lan78xx_disconnect()
-                                |   cancel_delayed_work_sync()
- (wait some time)               |   if (timer_pending(&dev->stat_monitor))
-             	                |       del_timer_sync(&dev->stat_monitor);
- lan78xx_stat_monitor()         |   ...
-  lan78xx_defer_kevent()        |   free_netdev(net); //free
-   //use net_device private data|
-   dev-> //use                  |
-
-Although we use del_timer_sync() to delete the timer, the function
-timer_pending() returns 0 when the timer is activated. As a result,
-the del_timer_sync() will not be executed and the timer could be
-re-armed.
-
-In order to mitigate this bug, We use timer_shutdown_sync() to shutdown
-the timer and then use cancel_delayed_work_sync() to cancel the delayed
-work. As a result, the net_device could be deallocated safely.
-
-What's more, the dev->flags is set to EVENT_DEV_DISCONNECT in
-lan78xx_disconnect(). But it could still be set to EVENT_STAT_UPDATE
-in lan78xx_stat_monitor(). So this patch put the set_bit() behind
-timer_shutdown_sync().
-
-Fixes: 77dfff5bb7e2 ("lan78xx: Fix race condition in disconnect handling")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- drivers/net/usb/lan78xx.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index c458c030fad..59cde06aa7f 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -4224,8 +4224,6 @@ static void lan78xx_disconnect(struct usb_interface *intf)
- 	if (!dev)
- 		return;
- 
--	set_bit(EVENT_DEV_DISCONNECT, &dev->flags);
--
- 	netif_napi_del(&dev->napi);
- 
- 	udev = interface_to_usbdev(intf);
-@@ -4233,6 +4231,8 @@ static void lan78xx_disconnect(struct usb_interface *intf)
- 
- 	unregister_netdev(net);
- 
-+	timer_shutdown_sync(&dev->stat_monitor);
-+	set_bit(EVENT_DEV_DISCONNECT, &dev->flags);
- 	cancel_delayed_work_sync(&dev->wq);
- 
- 	phydev = net->phydev;
-@@ -4247,9 +4247,6 @@ static void lan78xx_disconnect(struct usb_interface *intf)
- 
- 	usb_scuttle_anchored_urbs(&dev->deferred);
- 
--	if (timer_pending(&dev->stat_monitor))
--		del_timer_sync(&dev->stat_monitor);
--
- 	lan78xx_unbind(dev, intf);
- 
- 	lan78xx_free_tx_resources(dev);
--- 
-2.17.1
+>   	{
+>   		.dlc = COMP_CODEC_CONF(MAX_98390_DEV2_NAME),
+>   		.name_prefix = "Tweeter Right",
+> @@ -189,19 +191,7 @@ static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
+>   	},
+>   };
+>   
+> -struct snd_soc_dai_link_component max_98390_components[] = {
+> -	{
+> -		.name = MAX_98390_DEV0_NAME,
+> -		.dai_name = MAX_98390_CODEC_DAI,
+> -	},
+> -	{
+> -		.name = MAX_98390_DEV1_NAME,
+> -		.dai_name = MAX_98390_CODEC_DAI,
+> -	},
+> -};
+> -EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> -
+> -struct snd_soc_dai_link_component max_98390_4spk_components[] = {
+> +static struct snd_soc_dai_link_component max_98390_components[] = {
+>   	{
+>   		.name = MAX_98390_DEV0_NAME,
+>   		.dai_name = MAX_98390_CODEC_DAI,
+> @@ -219,62 +209,56 @@ struct snd_soc_dai_link_component max_98390_4spk_components[] = {
+>   		.dai_name = MAX_98390_CODEC_DAI,
+>   	},
+>   };
+> -EXPORT_SYMBOL_NS(max_98390_4spk_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> +
+> +static const struct {
+> +	unsigned int tx;
+> +	unsigned int rx;
+> +} max_98390_tdm_mask[] = {
+> +	{.tx = 0x01, .rx = 0x3},
+> +	{.tx = 0x02, .rx = 0x3},
+> +	{.tx = 0x04, .rx = 0x3},
+> +	{.tx = 0x08, .rx = 0x3},
+> +};
+>   
+>   static int max_98390_hw_params(struct snd_pcm_substream *substream,
+>   			       struct snd_pcm_hw_params *params)
+>   {
+>   	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+>   	struct snd_soc_dai *codec_dai;
+> -	int i;
+> +	int i, ret = 0;
+>   
+>   	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+> -		if (i >= ARRAY_SIZE(max_98390_4spk_components)) {
+> +		if (i >= ARRAY_SIZE(max_98390_tdm_mask)) {
+>   			dev_err(codec_dai->dev, "invalid codec index %d\n", i);
+>   			return -ENODEV;
+>   		}
+>   
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
+> -			/* DEV0 tdm slot configuration Right */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x01, 3, 4, 32);
+> -		}
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
+> -			/* DEV1 tdm slot configuration Left */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x02, 3, 4, 32);
+> -		}
+> -
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV2_NAME)) {
+> -			/* DEVi2 tdm slot configuration Tweeter Right */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x04, 3, 4, 32);
+> -		}
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV3_NAME)) {
+> -			/* DEV3 tdm slot configuration Tweeter Left */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x08, 3, 4, 32);
+> +		ret = snd_soc_dai_set_tdm_slot(codec_dai, max_98390_tdm_mask[i].tx,
+> +					       max_98390_tdm_mask[i].rx, 4,
+> +					       params_width(params));
+> +		if (ret < 0) {
+> +			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
+> +				ret);
+> +			return ret;
+>   		}
+>   	}
+>   	return 0;
+>   }
+>   
+> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
+> +static int max_98390_init(struct snd_soc_pcm_runtime *rtd)
+>   {
+>   	struct snd_soc_card *card = rtd->card;
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+>   	int ret;
+>   
+> -	/* add regular speakers dapm route */
+> -	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
+> -				      ARRAY_SIZE(max_98390_dapm_routes));
+> -	if (ret) {
+> -		dev_err(rtd->dev, "unable to add Left/Right Speaker dapm, ret %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	/* add widgets/controls/dapm for tweeter speakers */
+> -	if (acpi_dev_present("MX98390", "3", -1)) {
+> +	switch (num_codecs) {
+> +	case 4:
+> +		/* add widgets/controls/dapm for tweeter speakers */
+>   		ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
+>   						ARRAY_SIZE(max_98390_tt_dapm_widgets));
+> -
+>   		if (ret) {
+> -			dev_err(rtd->dev, "unable to add tweeter dapm controls, ret %d\n", ret);
+> +			dev_err(rtd->dev, "unable to add tweeter dapm widgets, ret %d\n",
+> +				ret);
+>   			/* Don't need to add routes if widget addition failed */
+>   			return ret;
+>   		}
+> @@ -282,33 +266,80 @@ int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
+>   		ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
+>   						ARRAY_SIZE(max_98390_tt_kcontrols));
+>   		if (ret) {
+> -			dev_err(rtd->dev, "unable to add tweeter card controls, ret %d\n", ret);
+> +			dev_err(rtd->dev, "unable to add tweeter controls, ret %d\n",
+> +				ret);
+>   			return ret;
+>   		}
+>   
+>   		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
+>   					      ARRAY_SIZE(max_98390_tt_dapm_routes));
+> -		if (ret)
+> -			dev_err(rtd->dev,
+> -				"unable to add Tweeter Left/Right Speaker dapm, ret %d\n", ret);
+> +		if (ret) {
+> +			dev_err(rtd->dev, "unable to add tweeter dapm routes, ret %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		fallthrough;
+> +	case 2:
+> +		/* add regular speakers dapm route */
+> +		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
+> +					      ARRAY_SIZE(max_98390_dapm_routes));
+> +		if (ret) {
+> +			dev_err(rtd->dev, "unable to add dapm routes, ret %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +		break;
+> +	default:
+> +		dev_err(rtd->dev, "invalid codec number %d\n", num_codecs);
+> +		ret = -EINVAL;
+> +		break;
+>   	}
+> +
+>   	return ret;
+>   }
+> -EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+>   
+> -const struct snd_soc_ops max_98390_ops = {
+> +static const struct snd_soc_ops max_98390_ops = {
+>   	.hw_params = max_98390_hw_params,
+>   };
+> -EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+>   
+> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch)
+> +void max_98390_dai_link(struct snd_soc_dai_link *link)
+> +{
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	link->codecs = max_98390_components;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		link->num_codecs = num_codecs;
+> +		break;
+> +	default:
+> +		pr_err("invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+> +		break;
+> +	}
+> +
+> +	link->init = max_98390_init;
+> +	link->ops = &max_98390_ops;
+> +}
+> +EXPORT_SYMBOL_NS(max_98390_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> +
+> +void max_98390_set_codec_conf(struct snd_soc_card *card)
+>   {
+> -	if (ch == ARRAY_SIZE(max_98390_4spk_codec_conf)) {
+> -		card->codec_conf = max_98390_4spk_codec_conf;
+> -		card->num_configs = ARRAY_SIZE(max_98390_4spk_codec_conf);
+> -	} else {
+> -		card->codec_conf = max_98390_codec_conf;
+> -		card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	card->codec_conf = max_98390_codec_conf;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		card->num_configs = num_codecs;
+> +		break;
+> +	default:
+> +		pr_err("invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+> +		break;
+>   	}
+>   }
+>   EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
+> index 7a8c53049e4d..a3676d68cc12 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.h
+> +++ b/sound/soc/intel/boards/sof_maxim_common.h
+> @@ -27,18 +27,15 @@ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
+>   /*
+>    * Maxim MAX98390
+>    */
+> -#define MAX_98390_CODEC_DAI     "max98390-aif1"
+> -#define MAX_98390_DEV0_NAME     "i2c-MX98390:00"
+> -#define MAX_98390_DEV1_NAME     "i2c-MX98390:01"
+> -#define MAX_98390_DEV2_NAME     "i2c-MX98390:02"
+> -#define MAX_98390_DEV3_NAME     "i2c-MX98390:03"
+> -
+> -extern struct snd_soc_dai_link_component max_98390_components[2];
+> -extern struct snd_soc_dai_link_component max_98390_4spk_components[4];
+> -extern const struct snd_soc_ops max_98390_ops;
+> -
+> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch);
+> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
+> +#define MAX_98390_ACPI_HID	"MX98390"
+> +#define MAX_98390_CODEC_DAI	"max98390-aif1"
+> +#define MAX_98390_DEV0_NAME	"i2c-MX98390:00"
+> +#define MAX_98390_DEV1_NAME	"i2c-MX98390:01"
+> +#define MAX_98390_DEV2_NAME	"i2c-MX98390:02"
+> +#define MAX_98390_DEV3_NAME	"i2c-MX98390:03"
+> +
+> +void max_98390_dai_link(struct snd_soc_dai_link *link);
+> +void max_98390_set_codec_conf(struct snd_soc_card *card);
+>   
+>   /*
+>    * Maxim MAX98357A/MAX98360A
 
