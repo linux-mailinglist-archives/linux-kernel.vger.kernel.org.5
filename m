@@ -2,268 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EC8762F68
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03580762F6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjGZIPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        id S232478AbjGZIPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbjGZIOk (ORCPT
+        with ESMTP id S229939AbjGZIPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:14:40 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2390B5270
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:05:39 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q80BW3032353;
-        Wed, 26 Jul 2023 08:04:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=z17LpmUgP9yua4R/Ls32uf+x5wZN1PCE2KZUVsoI07A=;
- b=XmLlzxW0tTQMAq/JPGYya6VNO5wECvN1aFRnVSLWwdVCD3rJqHGH0l2BGperDkyZnx9m
- nY0PfG59aQ946y7uSk56X789MKDF8G+xMXAMXWy14ynlcvhhVEoz2RrG6R1y696seOsZ
- 1G+3cczW7wS2mBSDYfw6QAOtq4R/EADJM0I3zC0RmSHohHzOsq7eohxxj1sLs2z2oegX
- H8wYz++FXUSvCqY6Xaymrvlrk6CtlOetWCPfqW/zM1Uv4r6+MuMq0BMT2KaIUZp4V+kt
- cuVZOaDZl8Sy8a46T+nKxMtoiGsuJiaFE72eZbjQJpUlOY5PunbCxa5W5UrFwjzbhNy3 +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj07yd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:04:52 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q81qac006067;
-        Wed, 26 Jul 2023 08:04:52 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj07ws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:04:52 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7DBtO001851;
-        Wed, 26 Jul 2023 08:04:50 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0unjjryk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:04:50 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36Q84o196816266
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 08:04:50 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 514F258057;
-        Wed, 26 Jul 2023 08:04:50 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD2E35805D;
-        Wed, 26 Jul 2023 08:04:44 +0000 (GMT)
-Received: from [9.179.15.237] (unknown [9.179.15.237])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Jul 2023 08:04:44 +0000 (GMT)
-Message-ID: <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
-Date:   Wed, 26 Jul 2023 13:34:43 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
-Content-Language: en-US
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        shrikanth hegde <sshegde@linux.vnet.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m5xzHoUKzaDa61l7Kn6kN12dtr2GgLyM
-X-Proofpoint-ORIG-GUID: esGXYJWH4hP0mThGigHXoHOHrIgMC4ZM
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 26 Jul 2023 04:15:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A001271B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690358701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eAjNRIihSOf+ZWCQiGmuIak9rrS2S/b0k59m1Q9Sn58=;
+        b=bFU9qI+raw/31792YRo/lGim4i/kOA97NVGZasjL4KlyVO55IpoomAIm6GN4VPGmIsTWvK
+        JMyA6g117P7zVtqv/myBP3UvWkGkJDbw64To3OXgSMDxDD4I2OucpIc9LGZ5K3mXuhuNxL
+        KVaHTIYiiMxpB+/TAWdhHueFrnim9Jo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-GvfWRODXO5aY7JcKiSAnkw-1; Wed, 26 Jul 2023 04:04:57 -0400
+X-MC-Unique: GvfWRODXO5aY7JcKiSAnkw-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-51da39aa6dcso4921031a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:04:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690358696; x=1690963496;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eAjNRIihSOf+ZWCQiGmuIak9rrS2S/b0k59m1Q9Sn58=;
+        b=ZNm1hTDaKcTllsA5kFwCq2OfZHpwgfq8S0fY2UjbEInzW18EUgqB7PqqPNxdiWCy5R
+         HZa4GhILUiUSwBWJD1WKMrGffSK3vEOkWRPNPEbJVU/oLWF0lnkSviHq/UQgi5A+7IES
+         RlJj3oJSv7atDr9BSbbXA5s58PQRzcqwK+Xfo45N5Zw9aHQG/dvV8U+OH7yjybrk+9ha
+         0ET5325+w6aO5pI+Xs6dWCTPt2fcHauAIPA8eLmE9V3We24hDspigssLKMfyTziZdpFX
+         2wwq92M4yXS2gs3aYpreeWXUVBTQ+NSVfVsDeB5SjstDMkMZwSORvdtdaPDUuxujmd8D
+         aDlQ==
+X-Gm-Message-State: ABy/qLaGJwq5wE8MP5cJ6uA08hF0xq8bQr9fWhOi3q4JVM/Hewe0QAuf
+        aHbQHDf0e87YgKeoRvzyU+nSYlfOi3ca2apkwBZTz7Q3V4Msqs18brMuip5+y8+PO5vm7CwIDum
+        KAxvtupGfSFPxqXYcQ+kY16+L
+X-Received: by 2002:a05:6402:1489:b0:522:30cc:a1f0 with SMTP id e9-20020a056402148900b0052230cca1f0mr1048239edv.14.1690358696042;
+        Wed, 26 Jul 2023 01:04:56 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH9cTC/+4nVrUrzuc8eu1ehgpHLqa3C+TMwtpTbgkUOYw+ZUE8Z5I+GDauZapCy0HXIvtSFdQ==
+X-Received: by 2002:a05:6402:1489:b0:522:30cc:a1f0 with SMTP id e9-20020a056402148900b0052230cca1f0mr1048219edv.14.1690358695716;
+        Wed, 26 Jul 2023 01:04:55 -0700 (PDT)
+Received: from sgarzare-redhat ([5.77.111.137])
+        by smtp.gmail.com with ESMTPSA id f5-20020a056402068500b0051ded17b30bsm8479399edy.40.2023.07.26.01.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 01:04:55 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 10:04:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v3 4/4] vsock/test: MSG_PEEK test for
+ SOCK_SEQPACKET
+Message-ID: <fbyxkuf3z3grrwnj6riwy4fki47yqfrdplhmcsd4ye3ga7apsk@5zeiorqk6uaz>
+References: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
+ <20230725172912.1659970-5-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_01,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxlogscore=963 phishscore=0 clxscore=1015
- bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260070
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230725172912.1659970-5-AVKrasnov@sberdevices.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 25, 2023 at 08:29:12PM +0300, Arseniy Krasnov wrote:
+>This adds MSG_PEEK test for SOCK_SEQPACKET. It works in the same way as
+>SOCK_STREAM test, except it also tests MSG_TRUNC flag.
+>
+>Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>---
+> tools/testing/vsock/vsock_test.c | 58 +++++++++++++++++++++++++++++---
+> 1 file changed, 54 insertions(+), 4 deletions(-)
 
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-On 7/26/23 1:00 AM, Mathieu Desnoyers wrote:
-> Allow select_task_rq to consider a cpu as idle for 1ms after that cpu
-> has exited the idle loop.
-> 
-> This speeds up the following hackbench workload on a 192 cores AMD EPYC
-> 9654 96-Core Processor (over 2 sockets):
-> 
-> hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
-> 
-> from 49s to 34s. (30% speedup)
-> 
-> My working hypothesis for why this helps is: queuing more than a single
-> task on the runqueue of a cpu which just exited idle rather than
-> spreading work over other idle cpus helps power efficiency on systems
-> with large number of cores.
-> 
-> This was developed as part of the investigation into a weird regression
-> reported by AMD where adding a raw spinlock in the scheduler context
-> switch accelerated hackbench.
-> 
-> It turned out that changing this raw spinlock for a loop of 10000x
-> cpu_relax within do_idle() had similar benefits.
-> 
-> This patch achieve a similar effect without the busy-waiting by
-> introducing a runqueue state sampling the sched_clock() when exiting
-> idle, which allows select_task_rq to consider "as idle" a cpu which has
-> recently exited idle.
-> 
-> This patch should be considered "food for thoughts", and I would be glad
-> to hear feedback on whether it causes regressions on _other_ workloads,
-> and whether it helps with the hackbench workload on large Intel system
-> as well.
-> 
-> Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-> Cc: Aaron Lu <aaron.lu@intel.com>
-> Cc: x86@kernel.org
-> ---
->  kernel/sched/core.c  | 4 ++++
->  kernel/sched/sched.h | 3 +++
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index a68d1276bab0..d40e3a0a5ced 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6769,6 +6769,7 @@ void __sched schedule_idle(void)
->  	 * TASK_RUNNING state.
->  	 */
->  	WARN_ON_ONCE(current->__state);
-> +	WRITE_ONCE(this_rq()->idle_end_time, sched_clock());
->  	do {
->  		__schedule(SM_NONE);
->  	} while (need_resched());
-> @@ -7300,6 +7301,9 @@ int idle_cpu(int cpu)
->  {
->  	struct rq *rq = cpu_rq(cpu);
->  
-> +	if (sched_clock() < READ_ONCE(rq->idle_end_time) + IDLE_CPU_DELAY_NS)
+Thanks,
+Stefano
 
+>
+>diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>index 444a3ff0681f..90718c2fd4ea 100644
+>--- a/tools/testing/vsock/vsock_test.c
+>+++ b/tools/testing/vsock/vsock_test.c
+>@@ -257,14 +257,19 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
+>
+> #define MSG_PEEK_BUF_LEN 64
+>
+>-static void test_stream_msg_peek_client(const struct test_opts *opts)
+>+static void test_msg_peek_client(const struct test_opts *opts,
+>+				 bool seqpacket)
+> {
+> 	unsigned char buf[MSG_PEEK_BUF_LEN];
+> 	ssize_t send_size;
+> 	int fd;
+> 	int i;
+>
+>-	fd = vsock_stream_connect(opts->peer_cid, 1234);
+>+	if (seqpacket)
+>+		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
+>+	else
+>+		fd = vsock_stream_connect(opts->peer_cid, 1234);
+>+
+> 	if (fd < 0) {
+> 		perror("connect");
+> 		exit(EXIT_FAILURE);
+>@@ -290,7 +295,8 @@ static void test_stream_msg_peek_client(const struct test_opts *opts)
+> 	close(fd);
+> }
+>
+>-static void test_stream_msg_peek_server(const struct test_opts *opts)
+>+static void test_msg_peek_server(const struct test_opts *opts,
+>+				 bool seqpacket)
+> {
+> 	unsigned char buf_half[MSG_PEEK_BUF_LEN / 2];
+> 	unsigned char buf_normal[MSG_PEEK_BUF_LEN];
+>@@ -298,7 +304,11 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
+> 	ssize_t res;
+> 	int fd;
+>
+>-	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	if (seqpacket)
+>+		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	else
+>+		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
+>+
+> 	if (fd < 0) {
+> 		perror("accept");
+> 		exit(EXIT_FAILURE);
+>@@ -340,6 +350,21 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
+> 		exit(EXIT_FAILURE);
+> 	}
+>
+>+	if (seqpacket) {
+>+		/* This type of socket supports MSG_TRUNC flag,
+>+		 * so check it with MSG_PEEK. We must get length
+>+		 * of the message.
+>+		 */
+>+		res = recv(fd, buf_half, sizeof(buf_half), MSG_PEEK |
+>+			   MSG_TRUNC);
+>+		if (res != sizeof(buf_peek)) {
+>+			fprintf(stderr,
+>+				"recv(2) + MSG_PEEK | MSG_TRUNC, exp %zu, got %zi\n",
+>+				sizeof(buf_half), res);
+>+			exit(EXIT_FAILURE);
+>+		}
+>+	}
+>+
+> 	res = recv(fd, buf_normal, sizeof(buf_normal), 0);
+> 	if (res != sizeof(buf_normal)) {
+> 		fprintf(stderr, "recv(2), expected %zu, got %zi\n",
+>@@ -356,6 +381,16 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
+> 	close(fd);
+> }
+>
+>+static void test_stream_msg_peek_client(const struct test_opts *opts)
+>+{
+>+	return test_msg_peek_client(opts, false);
+>+}
+>+
+>+static void test_stream_msg_peek_server(const struct test_opts *opts)
+>+{
+>+	return test_msg_peek_server(opts, false);
+>+}
+>+
+> #define SOCK_BUF_SIZE (2 * 1024 * 1024)
+> #define MAX_MSG_SIZE (32 * 1024)
+>
+>@@ -1125,6 +1160,16 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+> 	close(fd);
+> }
+>
+>+static void test_seqpacket_msg_peek_client(const struct test_opts *opts)
+>+{
+>+	return test_msg_peek_client(opts, true);
+>+}
+>+
+>+static void test_seqpacket_msg_peek_server(const struct test_opts *opts)
+>+{
+>+	return test_msg_peek_server(opts, true);
+>+}
+>+
+> static struct test_case test_cases[] = {
+> 	{
+> 		.name = "SOCK_STREAM connection reset",
+>@@ -1200,6 +1245,11 @@ static struct test_case test_cases[] = {
+> 		.run_client = test_stream_virtio_skb_merge_client,
+> 		.run_server = test_stream_virtio_skb_merge_server,
+> 	},
+>+	{
+>+		.name = "SOCK_SEQPACKET MSG_PEEK",
+>+		.run_client = test_seqpacket_msg_peek_client,
+>+		.run_server = test_seqpacket_msg_peek_server,
+>+	},
+> 	{},
+> };
+>
+>-- 
+>2.25.1
+>
 
-Wouldn't this hurt the latency badly? Specially on a loaded system with 
-a workload that does a lot of wakeup.
-
-ran schbench on a 50% loaded system with stress-ng. (there could be a better benchmark to measure latency)
-I see that latency takes a hit. specially tail latencies.full log below with different schbench groups. 
-
-		     6.5-rc3		6.5-rc3+this patch
-
-Groups: 1
-50.0th:                 14.0              13.0
-75.0th:                 16.0              16.0
-90.0th:                 19.5              20.0
-95.0th:                 53.0              226.0
-99.0th:                 1969.0            2165.0
-99.5th:                 2912.0            2648.0
-99.9th:                 4680.0            4142.0
-
-Groups: 2
-50.0th:                 15.5              15.5
-75.0th:                 18.0              19.5
-90.0th:                 25.5              497.0
-95.0th:                 323.0             1384.0
-99.0th:                 2055.0            3144.0
-99.5th:                 2972.0            4014.0
-99.9th:                 6026.0            6560.0
-
-Groups: 4
-50.0th:                 18.0              18.5
-75.0th:                 21.5              26.0
-90.0th:                 56.0              940.5
-95.0th:                 678.0             1896.0
-99.0th:                 2484.0            3756.0
-99.5th:                 3224.0            4616.0
-99.9th:                 4960.0            6824.0
-
-Groups: 8
-50.0th:                 23.5              25.5
-75.0th:                 30.5              421.5
-90.0th:                 443.5             1722.0
-95.0th:                 1410.0            2736.0
-99.0th:                 3942.0            5496.0
-99.5th:                 5232.0            7016.0
-99.9th:                 7996.0            8896.0
-
-Groups: 16
-50.0th:                 33.5              41.5
-75.0th:                 49.0              752.0
-90.0th:                 1067.5            2332.0
-95.0th:                 2093.0            3468.0
-99.0th:                 5048.0            6728.0
-99.5th:                 6760.0            7624.0
-99.9th:                 8592.0            9504.0
-
-Groups: 32
-50.0th:                 60.0              79.0
-75.0th:                 456.5             1712.0
-90.0th:                 2788.0            3996.0
-95.0th:                 4544.0            5768.0
-99.0th:                 8444.0            9104.0
-99.5th:                 9168.0            9808.0
-99.9th:                 11984.0           12448.0
-
-
-> +		return 1;
-> +
->  	if (rq->curr != rq->idle)
->  		return 0;
->  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 81ac605b9cd5..8932e198a33a 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -97,6 +97,8 @@
->  # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
->  #endif
->  
-> +#define IDLE_CPU_DELAY_NS	1000000		/* 1ms */
-> +
->  struct rq;
->  struct cpuidle_state;
->  
-> @@ -1010,6 +1012,7 @@ struct rq {
->  
->  	struct task_struct __rcu	*curr;
->  	struct task_struct	*idle;
-> +	u64			idle_end_time;
->  	struct task_struct	*stop;
->  	unsigned long		next_balance;
->  	struct mm_struct	*prev_mm;
