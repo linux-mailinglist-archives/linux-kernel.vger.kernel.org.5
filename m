@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A45E176319D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F8F76318B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjGZJTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S233671AbjGZJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbjGZJSU (ORCPT
+        with ESMTP id S233761AbjGZJSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:18:20 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6872709
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:14:49 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-98377c5d53eso1023804966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690362871; x=1690967671;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fk7i5bQAJr07YyKh76/8O6OztU2SbJcyOHEnuaDv3bw=;
-        b=P+rVX4ms6l+sKxD6dS+weINuQvPKRoyvv3wc9Dhaea/+ftSWOHkfJcf6LAvcLMa7gk
-         t9elhcZFsuxwjf5EFQXhQkY/w5tQGQ+Uoffq5KtpfuALvvr8cAjPhJpVBVvOzVMAd36y
-         QevTQ4ry6nijQvIbS7jNKsuE2NkqHZo12vuB0rHSY32/PyiwCc1goiLD7bCUWYzO8G2n
-         UItG7jYmzIfhJd7PV4o5ksExVsM4hXdRohXhnZOr1DGuMqeEss7JZxd1B/WSd0CVjh/u
-         7EKDGs4w03aYHDRQr/u9WrX4d8HCZC+xZ5buaiC9zOkWZJXgUjmKA9uF+1E2XhFq6VXN
-         yS/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690362871; x=1690967671;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fk7i5bQAJr07YyKh76/8O6OztU2SbJcyOHEnuaDv3bw=;
-        b=J6nKyIHFeAAVKyT5gOP0rD7lG2FbpYJO4ymhYgC7y/mI9BcxDdE9JJT5LvZONqKm17
-         FxcINfmfDclPTgGcx0JClfDXKtnmmFpvjNlSsuTRnJ7cZ0aIsMATovOA7compISKabzf
-         knoNvAZMKMQdlQ8uILdUy6onTVWpN3TwcvUtmK9/52hxBFR2fyyvaR4bm04U2M/T0udI
-         i3MCEfHPFpcDiC8TX+oB5kvyXihj7UR7rtErle/KDIyf6KC2kBwqJwyRQIZYqYNPQHji
-         PwQQRI1Ss6u5TX5FuvwQ3B+xDxSPyebIWp7qz6yd0C8fF//FfEbkj9S82sIpnrTInmp9
-         K2Wg==
-X-Gm-Message-State: ABy/qLZHpzSfaj2gvMNujolA7sr2Pa2SAwfNF0WghIhhW90p/OPdFrkv
-        0RCmyRQj8ruHrvltm0opF0eBuA==
-X-Google-Smtp-Source: APBJJlEZzqiLGtY7i68uveOMtCr/P9iDDdKgv5h1StpH29ideFo6Muj51mPd4SgnFQ0WWi9T5jrr+Q==
-X-Received: by 2002:a17:907:a064:b0:993:f8b2:d6fa with SMTP id ia4-20020a170907a06400b00993f8b2d6famr1094370ejc.21.1690362871004;
-        Wed, 26 Jul 2023 02:14:31 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170906130800b00992b510089asm9384492ejb.84.2023.07.26.02.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 02:14:30 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v3 2/3] pinctrl: qcom: sm8350-lpass-lpi: add SM8350 LPASS TLMM
-Date:   Wed, 26 Jul 2023 11:14:18 +0200
-Message-Id: <169036285577.127914.11011181994412029245.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230719192058.433517-2-krzysztof.kozlowski@linaro.org>
-References: <20230719192058.433517-1-krzysztof.kozlowski@linaro.org> <20230719192058.433517-2-krzysztof.kozlowski@linaro.org>
+        Wed, 26 Jul 2023 05:18:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1169546A0;
+        Wed, 26 Jul 2023 02:14:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F20D619EE;
+        Wed, 26 Jul 2023 09:14:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF72C433C7;
+        Wed, 26 Jul 2023 09:14:24 +0000 (UTC)
+Message-ID: <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
+Date:   Wed, 26 Jul 2023 11:14:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 1/2] Added Digiteq Automotive MGB4 driver
+Content-Language: en-US
+To:     tumic@gpxsee.org, Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
+References: <20230704131339.2177-1-tumic@gpxsee.org>
+ <20230704131339.2177-2-tumic@gpxsee.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230704131339.2177-2-tumic@gpxsee.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Martin,
 
-On Wed, 19 Jul 2023 21:20:57 +0200, Krzysztof Kozlowski wrote:
-> Add driver for pin controller in Low Power Audio SubSystem (LPASS).  The
-> driver is similar to SM8250 LPASS pin controller, with difference in one
-> new pin (gpio14) belonging to swr_tx_data.
+On 04/07/2023 15:13, tumic@gpxsee.org wrote:
+> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
 > 
+> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
+> video interfaces. As for now, two modules - FPD-Link and GMSL - are
+> available and supported by the driver. The card has two inputs and two
+> outputs (FPD-Link only).
+> 
+> In addition to the video interfaces it also provides a trigger signal
+> interface and a MTD interface for FPGA firmware upload.
+> 
+> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+> ---
+>  MAINTAINERS                             |   7 +
+>  drivers/media/pci/Kconfig               |   1 +
+>  drivers/media/pci/Makefile              |   1 +
+>  drivers/media/pci/mgb4/Kconfig          |  17 +
+>  drivers/media/pci/mgb4/Makefile         |   6 +
+>  drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
+>  drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
+>  drivers/media/pci/mgb4/mgb4_core.c      | 711 ++++++++++++++++++
+>  drivers/media/pci/mgb4/mgb4_core.h      |  72 ++
+>  drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
+>  drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
+>  drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
+>  drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
+>  drivers/media/pci/mgb4/mgb4_io.h        |  33 +
+>  drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
+>  drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
+>  drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
+>  drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 757 +++++++++++++++++++
+>  drivers/media/pci/mgb4/mgb4_sysfs_out.c | 700 ++++++++++++++++++
+>  drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
+>  drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
+>  drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
+>  drivers/media/pci/mgb4/mgb4_vin.c       | 930 ++++++++++++++++++++++++
+>  drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
+>  drivers/media/pci/mgb4/mgb4_vout.c      | 594 +++++++++++++++
+>  drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
+>  26 files changed, 4910 insertions(+)
+>  create mode 100644 drivers/media/pci/mgb4/Kconfig
+>  create mode 100644 drivers/media/pci/mgb4/Makefile
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
+>  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
 > 
 
-Applied, thanks!
+When I build with: make W=1 KCFLAGS=-Wmaybe-uninitialized
 
-[2/3] pinctrl: qcom: sm8350-lpass-lpi: add SM8350 LPASS TLMM
-      https://git.kernel.org/krzk/linux-dt/c/be9f6d56381d995f600524ad99fa8a9cc5bd5c49
+I get this warning:
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+drivers/media/pci/mgb4/mgb4_vout.c: In function 'mgb4_vout_create':
+drivers/media/pci/mgb4/mgb4_vout.c:473:27: warning: variable 'video' set but not used [-Wunused-but-set-variable]
+  473 |         struct mgb4_regs *video;
+      |                           ^~~~~
+
+Regards,
+
+	Hans
