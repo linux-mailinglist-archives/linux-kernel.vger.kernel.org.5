@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC7B763CDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D83763CE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjGZQqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:46:51 -0400
+        id S232022AbjGZQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:46:57 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjGZQqi (ORCPT
+        with ESMTP id S231721AbjGZQqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:46:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE002707
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:34 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b8ad9eede0so55359835ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:34 -0700 (PDT)
+        Wed, 26 Jul 2023 12:46:44 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EAD2709
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbc06f830aso8629005ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690389993; x=1690994793;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690389995; x=1690994795;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nxXmOdIWe/bZgFmovuliVgy5AL4XQqsEakBY4VilH/8=;
-        b=uGj1t6oL4u1fl4y0bUjyIo+gEG6FvyX76N3UvGsKUanjjrHB6wnIUkhEejMij86pkP
-         EVcq1qYhmhAsWKH/bTv86zK02/LQZMQq7g4GucihnDv97RSd4YvXnrbgbDWPGh57Gm43
-         otyrPfQG7tSPmnn1LK0ZKv6nS+RjBkhyBwtgizouPL3Kq5x8fU1JxqHm8ESNdJya0Equ
-         u60fTChXgviIE+TR2UEeszDN/H3aPv73hS0hvyNcKuH0qJi9wFqWw0PjC0ks4SU85S2Z
-         5glfdqvmMevya7khD8CyeEfxUGRd305Yi1lCbXYzBjv2vJ/zFMEBiJB9hvll+QMy0/cX
-         T8VA==
+        bh=gcvGxWKs0ioHSwaNFVtuDJQ1B/8SpZlsoy8QXz36r7I=;
+        b=ctlEmW7DMTMNY+Sp7acXqqDtGLdfH554pjXRJaq8fLvxFb/RtQTWgjya5aX8frZUG+
+         kWLLX3V5bkPJ8D9sRUV/MwHTEJpB9RCwH6/ndhkksdQtRuU+HRr0zUfscDgxiFSHZA9+
+         yIU0ZD4Tam8mQ2WS+5pLZ/c5X4RhjfmHJo3MwLkOOIWTzwMnMBP8Q0wn+W52egZzi2xU
+         AAyOixs1odiPKZLEKGezwwzYUkbE2yPosL+ri5v70wHRzK4oQvk1fggscCcK6icuFnGe
+         uL29fxGA2FdvaKyJUxHyjHp+jMTQA1xrvEzeIai5Rjkq71aK2LAAFsldGh/eFZfk8xRM
+         s+hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690389993; x=1690994793;
+        d=1e100.net; s=20221208; t=1690389995; x=1690994795;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nxXmOdIWe/bZgFmovuliVgy5AL4XQqsEakBY4VilH/8=;
-        b=VExBFvCcjcZFwrpB2cHpNl7w08zJEJ5nejHDnJLjkP5y69YZLWD7KJ0jJOvA8kYxA8
-         bNln9Va2ImZ/tQU7ET/8qmGU4HP/89PvidXrAc5TrUvr/7UwgOpY5g0tabDvhMH3b7Rd
-         BMU8cETsVNfcpPZ5rX2l/Km7SMAPaJ/pRDI4rXHPuYW639MEdO3AYDGorX0NIqpk6ryO
-         /hooHS1m+jcfuGgrEfc8XX9rHv+cDz7lgzDDNl9axpzaxGZ5IScrVdkvNNfFPf8Io3gV
-         QMY8WffS64o+Cxnj64U7Q3J/IGGmweU4gtutQnbJ0Zp+SbVaNmd9luI+V6kg0JkHnLn6
-         veHQ==
-X-Gm-Message-State: ABy/qLaZF2hPSmJsjYkbuVzvkm3t9DPfy13NzXgg8t5Gv26vkcPBkisj
-        6fiqowg39+4TyWRrzv/KGgBNDA==
-X-Google-Smtp-Source: APBJJlHd8ZanXubRsLvs8LnpqdeDXtlGfjvqC1HSJQRHauQPQgT6PVzi7mdT5yfnVwFo9B2eoHwlEA==
-X-Received: by 2002:a17:902:c205:b0:1b5:219a:cbbd with SMTP id 5-20020a170902c20500b001b5219acbbdmr2429756pll.3.1690389993609;
-        Wed, 26 Jul 2023 09:46:33 -0700 (PDT)
+        bh=gcvGxWKs0ioHSwaNFVtuDJQ1B/8SpZlsoy8QXz36r7I=;
+        b=UnyS+c+DWsie+HqZk6qBnm52o0k6cKwoFJ0uMAKBALjxnbiAlTzuAK+eBVrLg4uJjL
+         6nM+i0SyNk5ieMwXXhTRNljvFkMeu46Fc6qo956f4GriYQHg1z8W/LyByIloSSzJGVHg
+         e/X/fFB6M5Va86Co9Z25ktkUNPVrZ1ePsVoBYTjPdK2Xut1OhcBxA0LB3qbmaeUgZLQx
+         nbz4WqOm4SZtfXU61XLs7/jznA1rx3WwYMwMwBoylibeC2E/bhYj3gDrykmg4dhFxoND
+         YRm5nnFkIGs6MEzv4/ppghPCW+k3tu9G3GzWp/641IRm5haXpdn5XITxP/qsFVYCvT0d
+         udKg==
+X-Gm-Message-State: ABy/qLYPd/Zq2qUNJ432CPIvrcZSE7+NlnTcwqbU/CwDxSoum+i1Ga/y
+        hskq7ZrXTna5aMnqNMCOzme1JA==
+X-Google-Smtp-Source: APBJJlHYD5X46sfJHvjFJ8cY7MrqSJBPdDrgEnmRM7T9AiO1YpDySEyimp6MxA9+6dubMdyjQlpBgQ==
+X-Received: by 2002:a17:902:c943:b0:1b2:676d:1143 with SMTP id i3-20020a170902c94300b001b2676d1143mr38193pla.15.1690389994874;
+        Wed, 26 Jul 2023 09:46:34 -0700 (PDT)
 Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id h5-20020a170902f54500b001bb6c5ff4edsm11628870plf.173.2023.07.26.09.46.32
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902f54500b001bb6c5ff4edsm11628870plf.173.2023.07.26.09.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 09:46:33 -0700 (PDT)
+        Wed, 26 Jul 2023 09:46:34 -0700 (PDT)
 From:   Charlie Jenkins <charlie@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
@@ -58,56 +58,62 @@ Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
         linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
         mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
         alexghiti@rivosinc.com
-Subject: [PATCH v7 3/4] RISC-V: mm: Update pgtable comment documentation
-Date:   Wed, 26 Jul 2023 09:45:57 -0700
-Message-ID: <20230726164620.717288-4-charlie@rivosinc.com>
+Subject: [PATCH v7 4/4] RISC-V: mm: Document mmap changes
+Date:   Wed, 26 Jul 2023 09:45:58 -0700
+Message-ID: <20230726164620.717288-5-charlie@rivosinc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230726164620.717288-1-charlie@rivosinc.com>
 References: <20230726164620.717288-1-charlie@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sv57 is supported in the kernel so pgtable.h should reflect that.
+The behavior of mmap is modified with this patch series, so explain the
+changes to the mmap hint address behavior.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 ---
- arch/riscv/include/asm/pgtable.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ Documentation/riscv/vm-layout.rst | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 530f6a171a2b..cd09ccd876b9 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -841,14 +841,16 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-  * Task size is 0x4000000000 for RV64 or 0x9fc00000 for RV32.
-  * Note that PGDIR_SIZE must evenly divide TASK_SIZE.
-  * Task size is:
-- * -     0x9fc00000 (~2.5GB) for RV32.
-- * -   0x4000000000 ( 256GB) for RV64 using SV39 mmu
-- * - 0x800000000000 ( 128TB) for RV64 using SV48 mmu
-+ * -        0x9fc00000	(~2.5GB) for RV32.
-+ * -      0x4000000000	( 256GB) for RV64 using SV39 mmu
-+ * -    0x800000000000	( 128TB) for RV64 using SV48 mmu
-+ * - 0x100000000000000	(  64PB) for RV64 using SV57 mmu
-  *
-  * Note that PGDIR_SIZE must evenly divide TASK_SIZE since "RISC-V
-  * Instruction Set Manual Volume II: Privileged Architecture" states that
-  * "load and store effective addresses, which are 64bits, must have bits
-  * 63–48 all equal to bit 47, or else a page-fault exception will occur."
-+ * Similarly for SV57, bits 63–57 must be equal to bit 56.
-  */
- #ifdef CONFIG_64BIT
- #define TASK_SIZE_64	(PGDIR_SIZE * PTRS_PER_PGD / 2)
+diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-layout.rst
+index 5462c84f4723..69ff6da1dbf8 100644
+--- a/Documentation/riscv/vm-layout.rst
++++ b/Documentation/riscv/vm-layout.rst
+@@ -133,3 +133,25 @@ RISC-V Linux Kernel SV57
+    ffffffff00000000 |  -4     GB | ffffffff7fffffff |    2 GB | modules, BPF
+    ffffffff80000000 |  -2     GB | ffffffffffffffff |    2 GB | kernel
+   __________________|____________|__________________|_________|____________________________________________________________
++
++
++Userspace VAs
++--------------------
++To maintain compatibility with software that relies on the VA space with a
++maximum of 48 bits the kernel will, by default, return virtual addresses to
++userspace from a 48-bit range (sv48). This default behavior is achieved by
++passing 0 into the hint address parameter of mmap. On CPUs with an address space
++smaller than sv48, the CPU maximum supported address space will be the default.
++
++Software can "opt-in" to receiving VAs from another VA space by providing
++a hint address to mmap. A hint address passed to mmap will cause the largest
++address space that fits entirely into the hint to be used, unless there is no
++space left in the address space. If there is no space available in the requested
++address space, an address in the next smallest available address space will be
++returned.
++
++For example, in order to obtain 48-bit VA space, a hint address greater than
++:code:`1 << 47` must be provided. Note that this is 47 due to sv48 userspace
++ending at :code:`1 << 47` and the addresses beyond this are reserved for the
++kernel. Similarly, to obtain 57-bit VA space addresses, a hint address greater
++than or equal to :code:`1 << 56` must be provided.
 -- 
 2.41.0
 
