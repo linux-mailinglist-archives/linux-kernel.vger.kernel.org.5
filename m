@@ -2,316 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83A7638EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F587638EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbjGZOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        id S233762AbjGZOUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234470AbjGZOT2 (ORCPT
+        with ESMTP id S233194AbjGZOUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:19:28 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61289270F;
-        Wed, 26 Jul 2023 07:19:10 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-785cbc5bfd2so337766939f.2;
-        Wed, 26 Jul 2023 07:19:10 -0700 (PDT)
+        Wed, 26 Jul 2023 10:20:05 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBD6E4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:20:04 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-47ec8c9d7a0so2511254e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690381149; x=1690985949;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NowQlchlnbrJXNkeYq/rAQnbh8UUad7ncD3cJWPJXGM=;
-        b=PgFP3gnKhkafq2lLjFsa4AMoPE+VjrxBPmzi5QPNTde3OXy6Tkk/M4v1x4cz6RLeB0
-         DvSI9wJHrmvu1sQpK+bVRAWOOYjC8ZFoH8QLRYl89g813h5za7qyPIiBNNYmfc0fF7+q
-         c75xPxv/fwSESr99MxP3brVNlIXtc+V0rbIKC0kvHxJzpZhAoRLz5TEWlVnDyI4tL661
-         EJYMQKkmG52voTWC2pcFq5+PfNKJ2/sJL56L9dQRQAavqaTgpyWGj6jkFx9ruaG3GxqP
-         pavXOJeotRxSL/ET4XXRIWfpqFvJFJ4N2M+csaI5Fd58th7Z4bzJgVqcE6eIhQcOAeQ5
-         CG2g==
+        d=linaro.org; s=google; t=1690381203; x=1690986003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XuNc2mBif+BIOHURuwHXxEfwwUubFU0eTRxo/J2Xwpo=;
+        b=NgAq6jTZRRUWgC9KwhgNd4VCGwpjlUXNLlWg3/b8GQcdidBn4j/KphpHayQVGb4Pas
+         pjoRK0loIAm1WNcE2WhzIENBnygJgddqYQUZU7/Ewit4BolBS++Uk/wQeT0NhFAXNFe/
+         2WirQoG+RKGmIU2+c2WqZEqhY02GAXwIrHhNINWNuLzOyJIEMwOmjI3CGb33mvvzZLfl
+         6W+PCe7IRhII+crLls1eXvFyOGBknTST1hQIfNc0ZmVOobLm9Lada6jKMr99cyfJ7QbQ
+         Ehd5dPNKuyaxRoy8TlaQPsjizsN/pZEgOj8S7Rx8bDtjSLdVqu/MWi5jMfZ5H/Ok8VX2
+         qvtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690381149; x=1690985949;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NowQlchlnbrJXNkeYq/rAQnbh8UUad7ncD3cJWPJXGM=;
-        b=a7xPnt6GUXqu9bC8vx7z3a32qp2LkE1g7g+HuGHPnxNzI/+/jpRW0ifx/h7KtGD7Yk
-         +j6kyWAG6Fae5sOHoD9a5cvCqb5uTl5HutRq9EFkMzb5zKOgi+nv3Ve9IQchspBUgUTu
-         o3/E3Hf4j3S5gbgXnxrCzlTJfSKMq6dUN54ikkPXK+dWlMn+rTeSvmL88cSUpsS1w/uY
-         qqKPMg0dRmXVccEHzYRYE3cG6Ewsbz03xi3825MFcq8PUp3ZvrBZ2R7XarrKHPbn7+MZ
-         auUGXWyjVz+s/MkpwG+Ts/ncdmF/qjB9rEHiI1WfOFLVK2WbACtQ0wLuiMMfY4mP5ar6
-         wC0w==
-X-Gm-Message-State: ABy/qLbsckc8W3MAhlwOEX5O+91Ypv/VDECxfNqak6fbTXXYLN7tYfOZ
-        5aCAzZS5a42f1lrbGK5wLdE=
-X-Google-Smtp-Source: APBJJlELR4bz95bg7QmIcjRVV8Hfdwqu96mNHrsDP+60nQETiuG9we5HnSKoPAioriDq0jpkrWM+jQ==
-X-Received: by 2002:a5e:a801:0:b0:785:d28f:1526 with SMTP id c1-20020a5ea801000000b00785d28f1526mr2235846ioa.3.1690381149508;
-        Wed, 26 Jul 2023 07:19:09 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h20-20020a0566380f9400b0041f4da30787sm4214033jal.167.2023.07.26.07.19.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 07:19:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a8b53088-70a0-f693-2081-4b9576ac492f@roeck-us.net>
-Date:   Wed, 26 Jul 2023 07:19:07 -0700
+        d=1e100.net; s=20221208; t=1690381203; x=1690986003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XuNc2mBif+BIOHURuwHXxEfwwUubFU0eTRxo/J2Xwpo=;
+        b=ax/sk3o4yGNhUgFfjgaynynCocmrGEKBKyvSapMSMu4eoYr/jExYmAD8l6m1Zv6cUH
+         3WK9DTruTMDqyLuLghYDqpSrQDm4zMCAxBrceH55enz+W8ZLhvWtYjbYMEYL5Flpb5z0
+         npaT22LjLy3ZgiPZoHwEnQwDuC0WC4O+WppKXUWZhdSIBZWihsaxcuRA6aebj9aNXgKG
+         QU0bgBdaelKAhOMjbB1LuEJjZl5ZCWoh+MCciXvZx4MK+ToGJtSq8RwMgBV7QPeqB7zT
+         6xnaIU8o7jhzjX+S9P5WavgUzKmZFlBrUPEmRX8kuWAwcK55TGro+UatJyBVGYI+XrCM
+         HwtA==
+X-Gm-Message-State: ABy/qLZ9hoWS3eeppIURdlQhV4uRXjUwCq+KcUndsLtXsNSh0kT+TdwU
+        fkBLBFyuDQ9a8dc0sT6Hyc+x/468atqTt6xaL5Z1ng==
+X-Google-Smtp-Source: APBJJlE3pdkBqKvbvyhlZC3z8P845HDU/BelwH4LpjEKE7V+540n769YZU7DhB1GE07skqLUqDBCTIlapB2gEGwv40I=
+X-Received: by 2002:a1f:3d8b:0:b0:471:5427:39a5 with SMTP id
+ k133-20020a1f3d8b000000b00471542739a5mr1460808vka.10.1690381203231; Wed, 26
+ Jul 2023 07:20:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-References: <20230725114030.1860571-1-Naresh.Solanki@9elements.com>
- <20230725114030.1860571-3-Naresh.Solanki@9elements.com>
- <46f3f44b-5c25-8193-70b5-59303be04ad0@roeck-us.net>
- <331889b5-caf7-ab68-fea2-6566e550d7e8@9elements.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in
- SVID mode
-In-Reply-To: <331889b5-caf7-ab68-fea2-6566e550d7e8@9elements.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230725104451.275227789@linuxfoundation.org>
+In-Reply-To: <20230725104451.275227789@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 26 Jul 2023 19:49:51 +0530
+Message-ID: <CA+G9fYvKc0eAvrt8oN7TY2UaEWxnM1Me16vaAjCpyR36gABw1Q@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/78] 5.15.123-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 05:22, Naresh Solanki wrote:
-> Hi Guenter,
-> 
-> On 25-07-2023 07:51 pm, Guenter Roeck wrote:
->> On 7/25/23 04:40, Naresh Solanki wrote:
->>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->>>
->>> The TDA38640 supports two operating modes to set the output voltage:
->>> - PMBUS
->>> - SVID
->>>
->>> Due to an undocumented bug the regulator cannot be enabled using BIT7
->>> of OPERATION(01h) register when in SVID mode.
->>> It works when in PMBUS mode. In SVID mode the regulator only cares
->>> about the ENABLE pin.
->>>
->>> Add a workaround that needs the ENABLE pin to be left floating or
->>> tied to a fixed level. The DT must contain the newly introduced
->>> property 'infineon,en-pin-fixed-level' to enable this workaround.
->>>
->>
->> Why is that property even needed ? Isn't the workaround always (and only)
->> required if the chip is in SVID mode ?
-> Will add below function to detect SVID mode.
-> static bool svid_mode(struct i2c_client *client)
-> {
->      /* PMBUS_MFR_READ(0xD0) + Address */
->      u8 write_buf[] = {0xd0, 0x44, 0x00};
->      u8 read_buf[2];
->      int ret;
-> 
->      struct i2c_msg msgs[2] = {
->          {
->              .addr = client->addr,
->              .flags = 0,
->              .buf = write_buf,
->              .len = sizeof(write_buf),
->          },
->          {
->              .addr = client->addr,
->              .flags = I2C_M_RD,
->              .buf = read_buf,
->              .len = sizeof(read_buf),
->          }
->      };
-> 
->      ret = i2c_transfer(client->adapter, msgs, 2);
-> 
-drop empty line
+On Tue, 25 Jul 2023 at 16:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.123 release.
+> There are 78 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.123-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
->      if (ret < 0) {
->          dev_err(&client->dev, "%s:%d i2c_transfer failed. %d", __func__, __LINE__, ret);
->          return ret;
 
-Return type is bool.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->      }
->      /* 0x44[15] determines PMBus Operating Mode */
->      return !!(read_buf[1] & BIT(7));
-> }
-> 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-"The application note AN_2203_PL12_2204_210835 having information on the register map
-  of TDA38640 is under review. The document will be uploaded to the Infineon website
-  once the review is completed."
+## Build
+* kernel: 5.15.123-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: 3bef1500d246a00c075b244b6bb5849082569081
+* git describe: v5.15.122-79-g3bef1500d246
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+.122-79-g3bef1500d246
 
-How annoying. Is that really the only way to get that information ?
+## Test Regressions (compared to v5.15.121)
 
-> Based on svid_mode will init accordingly:
->      if (!IS_ENABLED(CONFIG_SENSORS_TDA38640_REGULATOR) || !np || !svid_mode(client))
->          return pmbus_do_probe(client, &data->info);
-> 
+## Metric Regressions (compared to v5.15.121)
 
-This is unnecessary complexity. Just add the local read/write
-commands and be done with it.
+## Test Fixes (compared to v5.15.121)
 
-	if (svid_mode(client)) {
-		data->info.read_byte_data = tda38640_read_byte_data;
-	  	data->info.write_byte_data = tda38640_write_byte_data;
-	}
+## Metric Fixes (compared to v5.15.121)
 
-though it would be useful to error check the return value.
+## Test result summary
+total: 108059, pass: 88081, fail: 2274, skip: 17614, xfail: 90
 
-	ret = svid_mode();
-	if (ret < 0)
-		return ret;
-	if (ret) {
-		/* consider adding comments here */
-		data->info.read_byte_data = tda38640_read_byte_data;
-	  	data->info.write_byte_data = tda38640_write_byte_data;
-	}
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 114 total, 113 passed, 1 failed
+* arm64: 42 total, 40 passed, 2 failed
+* i386: 32 total, 30 passed, 2 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 3 total, 3 passed, 0 failed
+* powerpc: 24 total, 24 passed, 0 failed
+* riscv: 8 total, 8 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 12 total, 12 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 35 total, 33 passed, 2 failed
 
-Guenter
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* rcutorture
+* v4l2-compliance
 
->      dev_dbg(&client->dev, "SVID mode");
-> 
-> Regards,
-> Naresh
->>
->> Guenter
->>
->>> The workaround will map the PB_OPERATION_CONTROL_ON bit to the
->>> PB_ON_OFF_CONFIG_EN_PIN_REQ bit of the ON_OFF_CONFIG register.
->>> In combination with the fixed level on the ENABLE pin the regulator
->>> can be controlled as expected.
->>>
->>> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
->>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->>> ---
->>>   drivers/hwmon/pmbus/tda38640.c | 95 +++++++++++++++++++++++++++++++++-
->>>   1 file changed, 93 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/hwmon/pmbus/tda38640.c b/drivers/hwmon/pmbus/tda38640.c
->>> index 450b0273fb59..9d3b89d9845c 100644
->>> --- a/drivers/hwmon/pmbus/tda38640.c
->>> +++ b/drivers/hwmon/pmbus/tda38640.c
->>> @@ -18,6 +18,72 @@ static const struct regulator_desc __maybe_unused tda38640_reg_desc[] = {
->>>       PMBUS_REGULATOR("vout", 0),
->>>   };
->>> +struct tda38640_data {
->>> +    struct pmbus_driver_info info;
->>> +    u32 en_pin_lvl;
->>> +};
->>> +
->>> +#define to_tda38640_data(x)  container_of(x, struct tda38640_data, info)
->>> +
->>> +/*
->>> + * Map PB_ON_OFF_CONFIG_POLARITY_HIGH to PB_OPERATION_CONTROL_ON.
->>> + */
->>> +static int tda38640_read_byte_data(struct i2c_client *client, int page, int reg)
->>> +{
->>> +    const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
->>> +    struct tda38640_data *data = to_tda38640_data(info);
->>> +    int ret, on_off_config, enabled;
->>> +
->>> +    if (reg != PMBUS_OPERATION)
->>> +        return -ENODATA;
->>> +
->>> +    ret = pmbus_read_byte_data(client, page, reg);
->>> +    if (ret < 0)
->>> +        return ret;
->>> +
->>> +    on_off_config = pmbus_read_byte_data(client, page,
->>> +                         PMBUS_ON_OFF_CONFIG);
->>> +    if (on_off_config < 0)
->>> +        return on_off_config;
->>> +
->>> +    enabled = !!(on_off_config & PB_ON_OFF_CONFIG_POLARITY_HIGH);
->>> +
->>> +    enabled ^= data->en_pin_lvl;
->>> +    if (enabled)
->>> +        ret &= ~PB_OPERATION_CONTROL_ON;
->>> +    else
->>> +        ret |= PB_OPERATION_CONTROL_ON;
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +/*
->>> + * Map PB_OPERATION_CONTROL_ON to PB_ON_OFF_CONFIG_POLARITY_HIGH.
->>> + */
->>> +static int tda38640_write_byte_data(struct i2c_client *client, int page,
->>> +                    int reg, u8 byte)
->>> +{
->>> +    const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
->>> +    struct tda38640_data *data = to_tda38640_data(info);
->>> +    int enable, ret;
->>> +
->>> +    if (reg != PMBUS_OPERATION)
->>> +        return -ENODATA;
->>> +
->>> +    enable = !!(byte & PB_OPERATION_CONTROL_ON);
->>> +
->>> +    byte &= ~PB_OPERATION_CONTROL_ON;
->>> +    ret = pmbus_write_byte_data(client, page, reg, byte);
->>> +    if (ret < 0)
->>> +        return ret;
->>> +
->>> +    enable ^= data->en_pin_lvl;
->>> +
->>> +    return pmbus_update_byte_data(client, page, PMBUS_ON_OFF_CONFIG,
->>> +                      PB_ON_OFF_CONFIG_POLARITY_HIGH,
->>> +                      enable ? 0 : PB_ON_OFF_CONFIG_POLARITY_HIGH);
->>> +}
->>> +
->>>   static struct pmbus_driver_info tda38640_info = {
->>>       .pages = 1,
->>>       .format[PSC_VOLTAGE_IN] = linear,
->>> @@ -26,7 +92,6 @@ static struct pmbus_driver_info tda38640_info = {
->>>       .format[PSC_CURRENT_IN] = linear,
->>>       .format[PSC_POWER] = linear,
->>>       .format[PSC_TEMPERATURE] = linear,
->>> -
->>>       .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
->>>           | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP
->>>           | PMBUS_HAVE_IIN
->>> @@ -41,7 +106,33 @@ static struct pmbus_driver_info tda38640_info = {
->>>   static int tda38640_probe(struct i2c_client *client)
->>>   {
->>> -    return pmbus_do_probe(client, &tda38640_info);
->>> +    struct device *dev = &client->dev;
->>> +    struct device_node *np = dev_of_node(dev);
->>> +    struct tda38640_data *data;
->>> +
->>> +    data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->>> +    if (!data)
->>> +        return -ENOMEM;
->>> +    memcpy(&data->info, &tda38640_info, sizeof(tda38640_info));
->>> +
->>> +    if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
->>> +        of_property_read_u32(np, "infineon,en-pin-fixed-level", &data->en_pin_lvl))
->>> +        return pmbus_do_probe(client, &data->info);
->>> +
->>> +    /*
->>> +     * Apply ON_OFF_CONFIG workaround as enabling the regulator using the
->>> +     * OPERATION register doesn't work in SVID mode.
->>> +     */
->>> +    data->info.read_byte_data = tda38640_read_byte_data;
->>> +    data->info.write_byte_data = tda38640_write_byte_data;
->>> +    /*
->>> +     * One should configure PMBUS_ON_OFF_CONFIG here, but
->>> +     * PB_ON_OFF_CONFIG_POWERUP_CONTROL, PB_ON_OFF_CONFIG_EN_PIN_REQ and
->>> +     * PB_ON_OFF_CONFIG_EN_PIN_REQ are ignored by the device.
->>> +     * Only PB_ON_OFF_CONFIG_POLARITY_HIGH has an effect.
->>> +     */
->>> +
->>> +    return pmbus_do_probe(client, &data->info);
->>>   }
->>>   static const struct i2c_device_id tda38640_id[] = {
->>
-
+--
+Linaro LKFT
+https://lkft.linaro.org
