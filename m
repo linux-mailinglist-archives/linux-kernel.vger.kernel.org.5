@@ -2,168 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7543B76386D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE6D76387A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbjGZOIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S233029AbjGZOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjGZOHP (ORCPT
+        with ESMTP id S234340AbjGZOHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:07:15 -0400
+        Wed, 26 Jul 2023 10:07:22 -0400
 Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4082D5A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:07:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65C52698
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:07:04 -0700 (PDT)
 Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230726140701euoutp0238502fca2a7fd27d907802b134910b5d~1cAlzXb4B1520515205euoutp02w
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:07:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230726140701euoutp0238502fca2a7fd27d907802b134910b5d~1cAlzXb4B1520515205euoutp02w
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230726140703euoutp02df57de8cf3357f5dc8908f7b00a11d87~1cAoY2T9W1595615956euoutp02Z
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:07:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230726140703euoutp02df57de8cf3357f5dc8908f7b00a11d87~1cAoY2T9W1595615956euoutp02Z
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690380421;
-        bh=O9C8cu+eriqJgnbO4v2Z8b/dkIKixZDljclAYTZ36o0=;
+        s=mail20170921; t=1690380423;
+        bh=cMTBe7sf9ly5UubZ6NjClaUkcmfE+QKlrsv2BzOiDwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCh9soBByg/s7ArBTkcS868IDLNvIsbCkXDuk4jbQ32Qroi9/iiQnUSaa7CJC0s8N
-         qL7Kef6Ta0cNOF8iVu/k8RJlwbS+WT8kEZS1/W2ugTD5AgTveISpr/yuNd2dPcF9+w
-         ALeZ0NJ+FVtJ2ydU9piHLOcPsWTE4ucc5xhZmm1I=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230726140700eucas1p23c3d90dc8d83fc17d20e7181ad9cdf58~1cAlgA4qF3020930209eucas1p2T;
-        Wed, 26 Jul 2023 14:07:00 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id BC.66.42423.48821C46; Wed, 26
-        Jul 2023 15:07:00 +0100 (BST)
+        b=Vvd+n4h7geZSsoeldQAkwhPqgw3HCYur0tmqfRaEQJ9xFOCRtTd7tHFUqTzmwdoFe
+         SL+ejs5ZIgioncLKDt5lYO7DpE8uFT6Yl3U6HBeSUEfJ81Skd/vqEjPm/kxRxGmcxx
+         jTvBskRbLnKHuRmqJjxeP6cCb5QTSG74CGXq9e2s=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230726140702eucas1p14c105669e63c6e3cfd4d0cb7320154a4~1cAni14LW2259722597eucas1p1v;
+        Wed, 26 Jul 2023 14:07:02 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8A.F6.11320.68821C46; Wed, 26
+        Jul 2023 15:07:02 +0100 (BST)
 Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533~1cAlMkQVf2040620406eucas1p1h;
-        Wed, 26 Jul 2023 14:07:00 +0000 (GMT)
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230726140702eucas1p20c75fc21d675ea267dd2ad4ebd6e60b4~1cAnKGUn40231902319eucas1p2Q;
+        Wed, 26 Jul 2023 14:07:02 +0000 (GMT)
 Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
         eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230726140700eusmtrp23cb07803949101e69d6e6784132527b8~1cAlL-95p2014720147eusmtrp2g;
-        Wed, 26 Jul 2023 14:07:00 +0000 (GMT)
-X-AuditID: cbfec7f2-a3bff7000002a5b7-79-64c1288491dd
+        20230726140702eusmtrp215065597cf1bd38d1f098d84ab275544~1cAnJbZxl2063520635eusmtrp2E;
+        Wed, 26 Jul 2023 14:07:02 +0000 (GMT)
+X-AuditID: cbfec7f4-993ff70000022c38-41-64c12886d5f1
 Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 05.57.14344.48821C46; Wed, 26
-        Jul 2023 15:07:00 +0100 (BST)
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id A6.57.14344.68821C46; Wed, 26
+        Jul 2023 15:07:02 +0100 (BST)
 Received: from localhost (unknown [106.210.248.223]) by eusmtip2.samsung.com
         (KnoxPortal) with ESMTPA id
-        20230726140700eusmtip26639b8677aab72762d4dfdf7367693e1~1cAk7WVCu2007220072eusmtip2G;
-        Wed, 26 Jul 2023 14:07:00 +0000 (GMT)
+        20230726140702eusmtip2423b6f9945d4ce69ab1ed5e9d0188f6a~1cAm7AxCU2279822798eusmtip2E;
+        Wed, 26 Jul 2023 14:07:02 +0000 (GMT)
 From:   Joel Granados <j.granados@samsung.com>
-To:     mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Cc:     willy@infradead.org, josh@joshtriplett.org,
-        Joel Granados <j.granados@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 07/14] sysctl: Add size arg to __register_sysctl_init
-Date:   Wed, 26 Jul 2023 16:06:27 +0200
-Message-Id: <20230726140635.2059334-8-j.granados@samsung.com>
+To:     mcgrof@kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     willy@infradead.org, keescook@chromium.org, josh@joshtriplett.org,
+        Joel Granados <j.granados@samsung.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 08/14] sysctl: Add size to register_net_sysctl function
+Date:   Wed, 26 Jul 2023 16:06:28 +0200
+Message-Id: <20230726140635.2059334-9-j.granados@samsung.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230726140635.2059334-1-j.granados@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsWy7djPc7otGgdTDHYsULFYuv8ho8X/BfkW
-        Z7pzLfbsPclicXnXHDaLGxOeMlr8/gFkLdvp58DhMbvhIovHgk2lHptXaHncem3rsWlVJ5tH
-        35ZVjB6fN8kFsEdx2aSk5mSWpRbp2yVwZXTvfsNS0ChYcepUG0sD4xq+LkZODgkBE4n/7T2s
-        XYxcHEICKxglDsy6wgThfGGUWDv9AgtIlZDAZ0aJ3v3RMB2ff3+G6ljOKPFz5mNGCOclo8S0
-        /g2MIFVsAjoS59/cYe5i5OAQEYiVWDwlBSTMLDCdUWLJHBkQW1jAVeJX63lmEJtFQFVi8cll
-        LCDlvAK2Emumq0Lskpdouz4dbCKngJ3EyrXfWUFsXgFBiZMzn7BAjJSXaN46mxnkBAmBMxwS
-        648eYoJodpHYdGEtlC0s8er4FnYIW0bi/875TBANkxkl9v/7wA7hrGaUWNb4FarDWqLlyhN2
-        kIuYBTQl1u/SBzElBBwllh5SgjD5JG68FYS4gU9i0rbpzBBhXomONiGIGSoSfUunsEDYUhLX
-        L+9kg7A9JN68fMY8gVFxFpJvZiH5ZhbC2gWMzKsYxVNLi3PTU4sN81LL9YoTc4tL89L1kvNz
-        NzECE8/pf8c/7WCc++qj3iFGJg7GQ4wSHMxKIryGMftShHhTEiurUovy44tKc1KLDzFKc7Ao
-        ifNq255MFhJITyxJzU5NLUgtgskycXBKNTBJFJibrlHuSYst+5zUvsjZ9nuNOcOh3Rbu0RMX
-        MlxdxPj6Z7THn5wXeltEXb5vY7hwMkLdWe0rfwh/iM+Vj9u6AneJORupMFQ8Peb32CqVv+ju
-        tY88mfL7Ju6tPtXfUa9vlsZ8PWCJp9Gp7grWy92hGtd9Xk66ltKv77Dt/efcs1ZLKnXDFs/8
-        oh64+FO3i/xmJpaHW9yd+e6d2zJjTXqxWdp+tz0cVtEFrcfqLrn9CI+TDFS/49A0t8h5x7Fr
-        +/3ucHDMy9n3of4Le2TXIYGvOqtU7/yvmrGz78zfGeEqzvsXzVRkLjvmqXTOy7B/5/VfF32y
-        E303Jze4eOXGZ5ieCTsePm3iHin+h8VHfymxFGckGmoxFxUnAgAQeG4AqwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42I5/e/4Pd0WjYMpBgv+C1gs3f+Q0eL/gnyL
-        M925Fnv2nmSxuLxrDpvFjQlPGS1+/wCylu30c+DwmN1wkcVjwaZSj80rtDxuvbb12LSqk82j
-        b8sqRo/Pm+QC2KP0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLL
-        Uov07RL0Mrp3v2EpaBSsOHWqjaWBcQ1fFyMnh4SAicTn359Zuxi5OIQEljJK/Lz7j72LkQMo
-        ISXxfRknRI2wxJ9rXWwQNc8ZJVau38AOkmAT0JE4/+YOM4gtIhAvMfPxfSaQImaB2YwSq08e
-        AksIC7hK/Go9D2azCKhKLD65jAVkAa+ArcSa6aoQC+Ql2q5PZwSxOQXsJFau/c4KYgsBlfRM
-        fQq2i1dAUOLkzCcsIDYzUH3z1tnMExgFZiFJzUKSWsDItIpRJLW0ODc9t9hIrzgxt7g0L10v
-        OT93EyMwSrYd+7llB+PKVx/1DjEycTAeYpTgYFYS4TWM2ZcixJuSWFmVWpQfX1Sak1p8iNEU
-        6OyJzFKiyfnAOM0riTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCUamBa
-        wv5vmVce543wyHq5rhvfO278lvnwKOfW9FK9LY8bTvQ97j9TWK5QVcvR277nJcvTOQcuVl7b
-        v2nGLmOZvMJNHQrVmRIuG/QeTY/edfzY4wtpn18I2asvXMmueHeFgv+aQyveLro38Q+TcsK/
-        LN4VT79KdkgZTojbsNF9qrDdN6UFUVXLsxvfckU/8uaeEtuRIOEk8YXBoTIgufzllzSXKveC
-        P6bbrebc/NR5UWODnpmXV0iKYsbpWxabm0/Gf/aeOm3T6mUXw67n2075N/mFcrUKc/k390OZ
-        Z9acv2p4L4BZ42Je6m7H1bOmyGzuY/8UeeFk8/XVd09cUll5Sni19y87yb2uzzmbjQ6rrD7U
-        ocRSnJFoqMVcVJwIAN5IOfYbAwAA
-X-CMS-MailID: 20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKKsWRmVeSWpSXmKPExsWy7djP87ptGgdTDP6/MrSYc76FxeLpsUfs
+        Fkv3P2S0+L8g3+JMd67FhW19rBaXd81hs7gx4SmjxbEFYhbfTr9htPj9Yw6bA7fH7IaLLB5b
+        Vt5k8liwqdRj8wotj1uvbT02repk83i/7yqbR9+WVYwenzfJBXBGcdmkpOZklqUW6dslcGWs
+        WzOZqWCRTMXRaSvZGhjniHcxcnJICJhITF31ih3EFhJYwShx52l8FyMXkP2FUeL9q33MEM5n
+        RomuIzfZYTpaXp5ngUgsZ5TYuHQ5O4TzklHi4LmpLCBVbAI6Euff3AFrFxFYCdTeuoARxGEG
+        aXm1+CpYlbCAu8SKpydYQWwWAVWJL18WAHVwcPAK2EocavOCWCcv0XZ9OiOIzSlgJ7Fy7Xew
+        cl4BQYmTM5+AjWEGqmneOhtsmYTABw6JSS2LWCCaXSQW7l/OCmELS7w6vgXqBxmJ/zvnM0E0
+        TGaU2P/vAzuEs5pRYlnjVyaIKmuJlitP2EEuYhbQlFi/Sx8i7CjRc+84G0hYQoBP4sZbQYgj
+        +CQmbZvODBHmlehoE4KoVpHoWzoF6hwpieuXd7JB2B4Sv3buZZ/AqDgLyTuzkLwzC2HvAkbm
+        VYziqaXFuempxUZ5qeV6xYm5xaV56XrJ+bmbGIEp6/S/4192MC5/9VHvECMTB+MhRgkOZiUR
+        XsOYfSlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEebVtTyYLCaQnlqRmp6YWpBbBZJk4OKUamNLO
+        yDW4BT+xvr/50EWtc1e3Jfzl2rNOtOZz2pGO/1Pk/s4W/5IqMS9ZasqZlrJ9R7f/3r8/6oXn
+        X8bXH7aFhQY5R9x85SN+uc9wcuGnu69F2btems4LeXtJ0DvUwz+5auXqUsc5y1cmHH/022TR
+        y6ndiu/urHl02uV/9uU0hSO2ZwU7mx67f5xR53BR9rdQjcUVE4dLYtsZDi1OflcauNiwNSsr
+        Km7WvJK2qfpnLR/rJdqX/xHZ5pR60jVUTvq9whydLceWWb5Iev3Wr8V8vsvp44J/UoSSLzOF
+        K9dqf5nL8f/CssocFnsV/q3PCgxspW9leM5/7jy9TemDtfK1/96lErt3bTW6IVX4eqH9olNK
+        LMUZiYZazEXFiQCuNiZMyAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsVy+t/xe7ptGgdTDO7dE7eYc76FxeLpsUfs
+        Fkv3P2S0+L8g3+JMd67FhW19rBaXd81hs7gx4SmjxbEFYhbfTr9htPj9Yw6bA7fH7IaLLB5b
+        Vt5k8liwqdRj8wotj1uvbT02repk83i/7yqbR9+WVYwenzfJBXBG6dkU5ZeWpCpk5BeX2CpF
+        G1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GWsWzOZqWCRTMXRaSvZGhjniHcx
+        cnJICJhItLw8z9LFyMUhJLCUUeLI+1nMXYwcQAkpie/LOCFqhCX+XOtig6h5zijxYeIHNpAE
+        m4COxPk3d5hBEiICaxklbr49xQ7iMIM486ZPYwGpEhZwl1jx9AQriM0ioCrx5csCsA28ArYS
+        h9q8IDbIS7Rdn84IYnMK2EmsXPsdrFwIqKRn6lN2EJtXQFDi5MwnYCOZgeqbt85mnsAoMAtJ
+        ahaS1AJGplWMIqmlxbnpucVGesWJucWleel6yfm5mxiBkbXt2M8tOxhXvvqod4iRiYPxEKME
+        B7OSCK9hzL4UId6UxMqq1KL8+KLSnNTiQ4ymQGdPZJYSTc4HxnZeSbyhmYGpoYmZpYGppZmx
+        kjivZ0FHopBAemJJanZqakFqEUwfEwenVAOTUNeu8gkRvbsNNNdvWcXwcsHSy4uX96ZuijG8
+        3ZPItK3xlgLLsbkqLOW9CcpT3DSl76hqL1hx9teEbLWVHJvZ8mesWRfH8OTh8c+bVm13mqT3
+        8PWytN+dsS16MTohs19Nur6viS9+wtkK8Z5vR9wXcmo3P3mYtrqNf8nS5d7vjp9bd8aBmbvg
+        8h2Vv8rWO/ZXvzlvq2DhfZRbLSJPxHxTqt6cpxv0OgKSvz6pWTeZa9cC7n2zv0SGmfvuseU2
+        aV/o43v+3tm9x05NZQ2t2GX7p6t8q7TI/Q+ZGpOCV+a6BETc+mRcnSbsIHD9/p3DTScLpTeG
+        /czd915jsWjBrVqtnZm1WjozFrHL3PhpUn33sBJLcUaioRZzUXEiAAubwa41AwAA
+X-CMS-MailID: 20230726140702eucas1p20c75fc21d675ea267dd2ad4ebd6e60b4
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533
+X-RootMTR: 20230726140702eucas1p20c75fc21d675ea267dd2ad4ebd6e60b4
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533
+X-CMS-RootMailID: 20230726140702eucas1p20c75fc21d675ea267dd2ad4ebd6e60b4
 References: <20230726140635.2059334-1-j.granados@samsung.com>
-        <CGME20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533@eucas1p1.samsung.com>
+        <CGME20230726140702eucas1p20c75fc21d675ea267dd2ad4ebd6e60b4@eucas1p2.samsung.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is part of the effort to remove the sentinel element from the
-ctl_table array at register time. We add a size argument to
-__register_sysctl_init and modify the register_sysctl_init macro to
-calculate the array size with ARRAY_SIZE. The original callers do not
-need to be updated as they will go through the new macro.
+This is part of the effort to remove the sentinel (last empty) element
+from the ctl_table arrays.
+
+We create a new function register_net_sysctl_sz with an extra size
+argument. A macro replaces the existing register_net_sysctl. For now,
+the size passed by the macro is SIZE_MAX (will eventually be ARRAY_SIZE)
+to avoid compilation warnings from pointers to ctl_table arrays instead
+of the arrays themselves.
+
+Care is also taken to add table_size to the stopping criteria in such a
+way that when we remove the empty sentinel element, it will continue
+stopping in the last element of the ctl_table array
 
 Signed-off-by: Joel Granados <j.granados@samsung.com>
 ---
- fs/proc/proc_sysctl.c  | 11 ++---------
- include/linux/sysctl.h |  5 +++--
- 2 files changed, 5 insertions(+), 11 deletions(-)
+ include/net/net_namespace.h | 10 ++++++----
+ net/sysctl_net.c            | 22 +++++++++++++---------
+ 2 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index c04293911e7e..6c0721cd35f3 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1444,16 +1444,9 @@ EXPORT_SYMBOL(register_sysctl_sz);
-  * Context: if your base directory does not exist it will be created for you.
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index 78beaa765c73..e4e5fe75a281 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -469,15 +469,17 @@ void unregister_pernet_device(struct pernet_operations *);
+ 
+ struct ctl_table;
+ 
++#define register_net_sysctl(net, path, table)	\
++	register_net_sysctl_sz(net, path, table, SIZE_MAX)
+ #ifdef CONFIG_SYSCTL
+ int net_sysctl_init(void);
+-struct ctl_table_header *register_net_sysctl(struct net *net, const char *path,
+-					     struct ctl_table *table);
++struct ctl_table_header *register_net_sysctl_sz(struct net *net, const char *path,
++					     struct ctl_table *table, size_t table_size);
+ void unregister_net_sysctl_table(struct ctl_table_header *header);
+ #else
+ static inline int net_sysctl_init(void) { return 0; }
+-static inline struct ctl_table_header *register_net_sysctl(struct net *net,
+-	const char *path, struct ctl_table *table)
++static inline struct ctl_table_header *register_net_sysctl_sz(struct net *net,
++	const char *path, struct ctl_table *table, size_t table_size)
+ {
+ 	return NULL;
+ }
+diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+index d9cbbb51b143..051ed5f6fc93 100644
+--- a/net/sysctl_net.c
++++ b/net/sysctl_net.c
+@@ -122,12 +122,13 @@ __init int net_sysctl_init(void)
+  *    allocated.
   */
- void __init __register_sysctl_init(const char *path, struct ctl_table *table,
--				 const char *table_name)
-+				 const char *table_name, size_t table_size)
+ static void ensure_safe_net_sysctl(struct net *net, const char *path,
+-				   struct ctl_table *table)
++				   struct ctl_table *table, size_t table_size)
+ {
+ 	struct ctl_table *ent;
+ 
+ 	pr_debug("Registering net sysctl (net %p): %s\n", net, path);
+-	for (ent = table; ent->procname; ent++) {
++	ent = table;
++	for (size_t i = 0; i < table_size && ent->procname; ent++, i++) {
+ 		unsigned long addr;
+ 		const char *where;
+ 
+@@ -160,21 +161,24 @@ static void ensure_safe_net_sysctl(struct net *net, const char *path,
+ 	}
+ }
+ 
+-struct ctl_table_header *register_net_sysctl(struct net *net,
+-	const char *path, struct ctl_table *table)
++struct ctl_table_header *register_net_sysctl_sz(struct net *net,
++						const char *path,
++						struct ctl_table *table,
++						size_t table_size)
  {
 -	int count = 0;
--	struct ctl_table *entry;
--	struct ctl_table_header t_hdr, *hdr;
--
--	t_hdr.ctl_table = table;
--	list_for_each_table_entry(entry, (&t_hdr))
++	int count;
+ 	struct ctl_table *entry;
+ 
+ 	if (!net_eq(net, &init_net))
+-		ensure_safe_net_sysctl(net, path, table);
++		ensure_safe_net_sysctl(net, path, table, table_size);
+ 
+-	for (entry = table; entry->procname; entry++)
 -		count++;
--	hdr = register_sysctl_sz(path, table, count);
-+	struct ctl_table_header *hdr = register_sysctl_sz(path, table, table_size);
++	entry = table;
++	for (count = 0 ; count < table_size && entry->procname; entry++, count++)
++		;
  
- 	if (unlikely(!hdr)) {
- 		pr_err("failed when register_sysctl_sz %s to %s\n", table_name, path);
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index b1168ae281c9..09d7429d67c0 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -236,8 +236,9 @@ void unregister_sysctl_table(struct ctl_table_header * table);
+ 	return __register_sysctl_table(&net->sysctls, path, table, count);
+ }
+-EXPORT_SYMBOL_GPL(register_net_sysctl);
++EXPORT_SYMBOL_GPL(register_net_sysctl_sz);
  
- extern int sysctl_init_bases(void);
- extern void __register_sysctl_init(const char *path, struct ctl_table *table,
--				 const char *table_name);
--#define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
-+				 const char *table_name, size_t table_size);
-+#define register_sysctl_init(path, table)	\
-+	__register_sysctl_init(path, table, #table, ARRAY_SIZE(table))
- extern struct ctl_table_header *register_sysctl_mount_point(const char *path);
- 
- void do_sysctl_args(void);
+ void unregister_net_sysctl_table(struct ctl_table_header *header)
+ {
 -- 
 2.30.2
 
