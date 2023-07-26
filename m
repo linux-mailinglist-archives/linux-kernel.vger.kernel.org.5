@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E12F763C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F30E763C29
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjGZQQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S232894AbjGZQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232514AbjGZQQY (ORCPT
+        with ESMTP id S230242AbjGZQQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:16:24 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0204726A8;
-        Wed, 26 Jul 2023 09:16:18 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3461163c0b6so37727495ab.2;
-        Wed, 26 Jul 2023 09:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690388178; x=1690992978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=QxZ9c2bp3CuxoSR+aGIpzxjqwq5Taob+y5juqu6C380=;
-        b=fHG4e8YEkfo2hCaYEp+MWN/Tjr4PJgK6Nz2cnuHcBaUUBFmN4fP0iKYtQfYD/14MU+
-         WAeAWBQ3YeNRlNb54N/NMP2ONPKMACzn9R3wj5oHe34LgO4vH0U8bI6w+A4NyGyBjPIu
-         4UwbDUDo49VdxZvzj3IEBjSmUy/Jq1RA2q5nsFBBqVLwDcQuacOHIZvuyqpC6qOw9RDd
-         /522cutveGfKQxSzvQYHDLHF7nc6YB+ER1e0/7TnaetZAQW14n/JG2nBAKJ7ckXvh2Me
-         nsQ68wzT7HOnPhax/eGVttQry52ZH58YhEYA0bc/4Zkz6My5KWDhv2674A2k7nrKUVuL
-         KcEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690388178; x=1690992978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QxZ9c2bp3CuxoSR+aGIpzxjqwq5Taob+y5juqu6C380=;
-        b=AprYXHSU/N491sIWEnuUSU0P5pwulBrlBnMrd6ZmVHDhtpdgZZ9RiU8pc+yp5dYR2H
-         qON3HxqvnUv1NnLLaTXq7rcB2guH7JkS1T41vfRXG3sz12d0Jir5xczG18Ck0R7PyZRI
-         Xp9+WJp/PkoQ/DjiKPksOpyjN3iqt2TJ4Nbw8mx11f8AGYxNBOcjOx1jf7zRfD2UfmU8
-         JRjURarzXNfzNwz64RyEnx9cE4N2V62ue6/v6dPQogN7zqE8BvT5Q5UJhqKlEN2qTaRZ
-         mhg+cDu6tkDzUnsZHKZWCkCEv6phvoNDTBFLN4gultfyH8u4SVebvYfdJkX2eoXHrsGX
-         bWJQ==
-X-Gm-Message-State: ABy/qLbpmkBSI1hUQFZejnmJdiZwM1+SJWGaN/sVgf3OlcOr0K9EmOXJ
-        8lnNu6MgmHd2qgYIHTuzGxA=
-X-Google-Smtp-Source: APBJJlEp9Mnhsrk/vbd3sxc86lLCJQRy6tFN8Q0KMRjC7MUOpdzCothF98Xkf4mR3W49hmiOHu9uzw==
-X-Received: by 2002:a05:6e02:1050:b0:345:d6d4:f9f3 with SMTP id p16-20020a056e02105000b00345d6d4f9f3mr2124185ilj.17.1690388178145;
-        Wed, 26 Jul 2023 09:16:18 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u7-20020a92da87000000b00345d00dc3fdsm4512250iln.78.2023.07.26.09.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 09:16:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f8fdc8d7-6ac5-5e20-10ef-7417d79c1b91@roeck-us.net>
-Date:   Wed, 26 Jul 2023 09:16:15 -0700
+        Wed, 26 Jul 2023 12:16:30 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5A91BDA
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:16:27 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id CB81420003;
+        Wed, 26 Jul 2023 16:16:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690388186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eBmzEf3kjVQ82BbqkAs+ELGEXlJ8CUzuDkLRObIRhk4=;
+        b=N6BxAX76EenROMlARU/JmssigVE/7f+lesvsSK/kILa36HBHNRwtPOP1C/NA8GneXVZWlo
+        vwidYrwh4GOQ7EQWfGtYjcJIsu9vsAZ24pXLxDAjV6aWECeREVMNS0+TtlGuuLxzAzdEv7
+        hTixV+QT0O9oFHPfYJHM3x7zLuMoq3x8VN68tjceNpjiTvTsnUgoEpeaFRhUvZeij+bfX7
+        gPinUZg2zf75u1p9QXu4K/ZDUaRYE1EL0khQUcBr7IlqLu5uW+UM7N6c4E7U8LyuoFUu5l
+        3W6JvMGmhe7koaf81QJ5s0Z4aBWTKumknM2zq7NyO9B2zd5f4rtOeDdZekfD4A==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 1/1] ASoC: fsl: fsl_qmc_audio: Fix snd_pcm_format_t values handling
+Date:   Wed, 26 Jul 2023 18:16:20 +0200
+Message-ID: <20230726161620.495298-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] dt-bindings: hwmon: add renesas,isl28022
-Content-Language: en-US
-To:     =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
- <20230726152235.249569-3-mail@carsten-spiess.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230726152235.249569-3-mail@carsten-spiess.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,105 +60,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 08:22, Carsten Spieß wrote:
-> Add dt-bindings for Renesase ISL28022 power monitor.
-> 
-> Signed-off-by: Carsten Spieß <mail@carsten-spiess.de>
-> ---
->   .../bindings/hwmon/renesas,isl28022.yaml      | 67 +++++++++++++++++++
->   MAINTAINERS                                   |  1 +
->   2 files changed, 68 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
-> new file mode 100644
-> index 000000000000..5ecf892db269
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/renesas,isl28022.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Renesas ISL28022 power monitor
-> +
-> +maintainers:
-> +  - Carsten Spieß <mail@carsten-spiess.de>
-> +
-> +description: |
-> +  The ISL28022 is a power monitor with I2C interface. The device monitors
-> +  voltage, current via shunt resistor and calculated power.
-> +
-> +  Datasheets:
-> +    https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
-> +
-> +Required properties:
-> +  compatible:
-> +    enum:
-> +      - renesas,isl28022
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +Optional properties:
-> +  shunt-resistor-micro-ohms:
-> +    description:
-> +      Shunt resistor value in micro-Ohm
-> +      defaults to <0> when not set
-> +      monitoring of current and power not supported when <0>
-> +
+Running sparse on fsl_qmc_audio (make C=1) raises the following warnings:
+ fsl_qmc_audio.c:387:26: warning: restricted snd_pcm_format_t degrades to integer
+ fsl_qmc_audio.c:389:59: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:389:59:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:389:59:    got unsigned int [assigned] i
+ fsl_qmc_audio.c:564:26: warning: restricted snd_pcm_format_t degrades to integer
+ fsl_qmc_audio.c:569:50: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:569:50:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:569:50:    got int [assigned] i
+ fsl_qmc_audio.c:573:62: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:573:62:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:573:62:    got int [assigned] i
 
-Should not default to 0 (disabled).
+These warnings are due to snd_pcm_format_t values handling done in the
+driver. Some macros and functions exist to handle safely these values.
 
-> +  shunt-gain:
-> +    description:
-> +      Shunt gain to scale maximal shunt voltage to
-> +      40mV, 80mV, 160mV, 320mV
-> +      defaults to <8> (320mV) when not set
-> +    enum: [1, 2, 4, 8]
-> +
-> +  average:
-> +    description: |
-> +      Number of samples to be used to report voltage, current and power values.
-> +      defaults to <0> when not set
-> +    enum: [0, 1, 2, 4, 8, 16, 32, 64, 128]
+Use dedicated macros and functions to remove these warnings.
 
-Should not default to 0 (disabled).
+Fixes: 075c7125b11c ("ASoC: fsl: Add support for QMC audio")
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ sound/soc/fsl/fsl_qmc_audio.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        power-monitor@40 {
-> +            compatible = "renesas,isl28022";
-> +            reg = <0x10>;
-> +            shunt-resistor-micro-ohms = <8000>;
-> +            shunt-gain = <1>;
-> +            average = <128>;
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c61aa688cd11..ec9b97ace50b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11076,6 +11076,7 @@ ISL28022 HARDWARE MONITORING DRIVER
->   M:	Carsten Spieß <mail@carsten-spiess.de>
->   L:	linux-hwmon@vger.kernel.org
->   S:	Maintained
-> +F:	Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
->   F:	Documentation/hwmon/isl28022.rst
->   F:	drivers/hwmon/isl28022.c
->   
+diff --git a/sound/soc/fsl/fsl_qmc_audio.c b/sound/soc/fsl/fsl_qmc_audio.c
+index 7cbb8e4758cc..56d6b0b039a2 100644
+--- a/sound/soc/fsl/fsl_qmc_audio.c
++++ b/sound/soc/fsl/fsl_qmc_audio.c
+@@ -372,8 +372,8 @@ static int qmc_dai_hw_rule_format_by_channels(struct qmc_dai *qmc_dai,
+ 	struct snd_mask *f_old = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int slot_width;
++	snd_pcm_format_t format;
+ 	struct snd_mask f_new;
+-	unsigned int i;
+ 
+ 	if (!channels || channels > nb_ts) {
+ 		dev_err(qmc_dai->dev, "channels %u not supported\n",
+@@ -384,10 +384,10 @@ static int qmc_dai_hw_rule_format_by_channels(struct qmc_dai *qmc_dai,
+ 	slot_width = (nb_ts / channels) * 8;
+ 
+ 	snd_mask_none(&f_new);
+-	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+-		if (snd_mask_test(f_old, i)) {
+-			if (snd_pcm_format_physical_width(i) <= slot_width)
+-				snd_mask_set(&f_new, i);
++	pcm_for_each_format(format) {
++		if (snd_mask_test_format(f_old, format)) {
++			if (snd_pcm_format_physical_width(format) <= slot_width)
++				snd_mask_set_format(&f_new, format);
+ 		}
+ 	}
+ 
+@@ -551,26 +551,26 @@ static const struct snd_soc_dai_ops qmc_dai_ops = {
+ 
+ static u64 qmc_audio_formats(u8 nb_ts)
+ {
+-	u64 formats;
+-	unsigned int chan_width;
+ 	unsigned int format_width;
+-	int i;
++	unsigned int chan_width;
++	snd_pcm_format_t format;
++	u64 formats_mask;
+ 
+ 	if (!nb_ts)
+ 		return 0;
+ 
+-	formats = 0;
++	formats_mask = 0;
+ 	chan_width = nb_ts * 8;
+-	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++	pcm_for_each_format(format) {
+ 		/*
+ 		 * Support format other than little-endian (ie big-endian or
+ 		 * without endianness such as 8bit formats)
+ 		 */
+-		if (snd_pcm_format_little_endian(i) == 1)
++		if (snd_pcm_format_little_endian(format) == 1)
+ 			continue;
+ 
+ 		/* Support physical width multiple of 8bit */
+-		format_width = snd_pcm_format_physical_width(i);
++		format_width = snd_pcm_format_physical_width(format);
+ 		if (format_width == 0 || format_width % 8)
+ 			continue;
+ 
+@@ -581,9 +581,9 @@ static u64 qmc_audio_formats(u8 nb_ts)
+ 		if (format_width > chan_width || chan_width % format_width)
+ 			continue;
+ 
+-		formats |= (1ULL << i);
++		formats_mask |= pcm_format_to_bits(format);
+ 	}
+-	return formats;
++	return formats_mask;
+ }
+ 
+ static int qmc_audio_dai_parse(struct qmc_audio *qmc_audio, struct device_node *np,
+-- 
+2.41.0
 
