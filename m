@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC732763067
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C151376306F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbjGZIrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
+        id S231217AbjGZItf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233408AbjGZIqr (ORCPT
+        with ESMTP id S233434AbjGZItP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:46:47 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14CC4EFC;
-        Wed, 26 Jul 2023 01:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=EWUaQxeKGJ4qJalm52aP93ztFzOZTVzpHXehk2zbXTY=; b=DhOnjCq1ioxxsp65AMIiLHniTW
-        8m4u3Cq6Wa5ONKj85O7PiifX7Y+fCJIr+f/ZQcU8g1vR2VfjSyU45GbVxBOu+bDmYohMPh/yDWavW
-        C0Oqng3Ws+tcykRjQO/uh5qiXviftFfrfJjdPzBUaZOjYHuup5AFxZr0YuiimBPGw+kI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qOa37-002L6O-Ck; Wed, 26 Jul 2023 10:39:13 +0200
-Date:   Wed, 26 Jul 2023 10:39:13 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] r8152: set bp in bulk
-Message-ID: <0c42418b-7271-415d-991a-a4564cb3fad5@lunn.ch>
-References: <20230726030808.9093-417-nic_swsd@realtek.com>
- <20230726030808.9093-419-nic_swsd@realtek.com>
+        Wed, 26 Jul 2023 04:49:15 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC8722688
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:42:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD45A11FB;
+        Wed, 26 Jul 2023 01:42:58 -0700 (PDT)
+Received: from [10.57.77.6] (unknown [10.57.77.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 074E83F67D;
+        Wed, 26 Jul 2023 01:42:12 -0700 (PDT)
+Message-ID: <6978a045-c786-3dc2-d2e3-476b4933db96@arm.com>
+Date:   Wed, 26 Jul 2023 09:42:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726030808.9093-419-nic_swsd@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 0/4] variable-order, large folios for anonymous memory
+To:     Itaru Kitayama <itaru.kitayama@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>, Yang Shi <shy828301@gmail.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Zi Yan <ziy@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <83bb1b99-81d3-0f32-4bf2-032cb512a1a1@arm.com>
+ <2FCD9E8A-D38A-40C4-9825-AE7ECEEFC715@nvidia.com>
+ <34979a4c-0bab-fbb9-f8dd-ab3da816de52@arm.com>
+ <CANW9uysFm4c+zsFMUdZ8_d30rS23tHh45GJBqxdtjUFcpSjOOw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CANW9uysFm4c+zsFMUdZ8_d30rS23tHh45GJBqxdtjUFcpSjOOw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -	ocp_write_word(tp, type, PLA_BP_0, 0);
-> -	ocp_write_word(tp, type, PLA_BP_1, 0);
-> -	ocp_write_word(tp, type, PLA_BP_2, 0);
-> -	ocp_write_word(tp, type, PLA_BP_3, 0);
-> -	ocp_write_word(tp, type, PLA_BP_4, 0);
-> -	ocp_write_word(tp, type, PLA_BP_5, 0);
-> -	ocp_write_word(tp, type, PLA_BP_6, 0);
-> -	ocp_write_word(tp, type, PLA_BP_7, 0);
-> +	generic_ocp_write(tp, PLA_BP_0, BYTE_EN_DWORD, bp_num << 1, bp, type);
->  
->  	/* wait 3 ms to make sure the firmware is stopped */
->  	usleep_range(3000, 6000);
+On 26/07/2023 08:36, Itaru Kitayama wrote:
+> Ryan,
+> Do you have a kselfrest code for this new feature?
+> I’d like to test it out on FVP when I have the chance.
 
-How much time do you save compared to this 3ms - 6ms sleep?
-
-    Andrew
+A very timely question! I have modified the mm/cow tests to additionally test
+large anon folios. That patch is part of v4, which I am about to start writing
+the cover letter for. So look out for that in around an hour.
