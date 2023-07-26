@@ -2,176 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBA77634FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7205B763500
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbjGZLbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        id S233733AbjGZLb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbjGZLbO (ORCPT
+        with ESMTP id S233633AbjGZLb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:31:14 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58839DB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:31:13 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id BB3095C0048;
-        Wed, 26 Jul 2023 07:31:12 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 26 Jul 2023 07:31:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1690371072; x=1690457472; bh=tN1tOIi6LgdYyNWu0Imw1ahtdb+2EI1lLQO
-        E3uE4dcc=; b=Ism7zxqTNnubAG9Mfl1QlpNd6eWjoLk9spt6HFx1cFQEvWbxHZ0
-        pWaDXHKpVLqv9lVvUq8w4piGVIEu3BJBgCjCKIYPWYXzKvx49RCmFfO6ICOJ4Mc3
-        Tnd0GGh3ACh9POkx77WZapoXhspzHZLn6Wcplo1wXYU8nECgs1Ds0rFsuL49Vjzv
-        bhiveCvKJCxn3FHqBo2XLbTY6uZ7pLlUdadR076rN39BAaFklLT5C7ylDziEB9b1
-        64pcTA2x8DQpmYCKMoKYoOryD7QvpCp9v9S+X++ZvcBbSW/YUIYK6D5eSduCD+hL
-        eUB/K5xeFLtZYlPPeiecnQvgGrk4wn6WWgA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690371072; x=1690457472; bh=tN1tOIi6LgdYyNWu0Imw1ahtdb+2EI1lLQO
-        E3uE4dcc=; b=uboAnPfNz52PjzqONL4HLHIXmaOmMFmFmVTHgg+VS7n1nfglMFZ
-        zSezRUf3ny96xibiLrFvbiNokE6GXOSTECb8VbUv0Tq13Knq6Q7n3R6P15+7nv5a
-        fyDIQ4py9vTgCKKg/1jksqbsSzFG3n3dltAqPqfZjJMirqYYp9VBp7sD65CEnrqI
-        ttkzG5i/RBU+xg5YMTODg2pjG756wrgaoQnmcXAYOOGbwZhtKad9Uf0MCaqIEsGf
-        3R4Gy8dzM4CuJl+O9IKK/4VV3l5AV2KbnuakD59goVdvQoGkuFT0Q+hRFuCW3Add
-        j9gS1HusT+dP76MQ3/JdIBoc/Rpk4C/rbEQ==
-X-ME-Sender: <xms:_wPBZJQhXjP4Fz86xB7PJx5HJW_XqyKWIWWotkfT4Tz7V1mW4Jh8kA>
-    <xme:_wPBZCxgpQW9YqwIZJp46bxw7aQ9iq2h4cLbpcQPI4nmIjWojl4l_58vxW_dRM34R
-    o-ab0fMXfdnHMVbL1E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:_wPBZO3SwcPgSkl1dGcsN-Qigog45LAmXoeTFT0H7gE2NFeh69n0Sw>
-    <xmx:_wPBZBApZ7qQuNK2WUv4s3mfgCoF77jGujremOvvcnMajZESKT8gbw>
-    <xmx:_wPBZCig1ANqFipFayWz3ssbk5_CiHmnQtSpp27Hpv2wfgasoK-wtQ>
-    <xmx:AATBZNXQdRL4UJDvG0E_0kEicFpclUhkA3svPN0G1cg-N7axc6xENA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5799FB60089; Wed, 26 Jul 2023 07:31:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <e2e5d376-a307-4ddc-bebb-5c00141dcc01@app.fastmail.com>
-In-Reply-To: <20230726105436.h3kqtjzbhvjrg6kp@pengutronix.de>
-References: <20230726100626.167490-1-wangzhu9@huawei.com>
- <20230726105436.h3kqtjzbhvjrg6kp@pengutronix.de>
-Date:   Wed, 26 Jul 2023 13:30:49 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        "Zhu Wang" <wangzhu9@huawei.com>
-Cc:     "Andrzej Hajda" <andrzej.hajda@intel.com>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>, rfoss@kernel.org,
-        "laurent.pinchart" <Laurent.pinchart@ideasonboard.com>,
-        jonas@kwiboo.se, "Jernej Skrabec" <jernej.skrabec@gmail.com>,
-        "Dave Airlie" <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "Doug Anderson" <dianders@chromium.org>,
-        benjamin.mugnier@foss.st.com,
-        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
-        anarsoul@gmail.com, duwe@suse.de,
-        "Maxime Ripard" <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH -next] drm/bridge: fix -Wunused-const-variable= warning
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 26 Jul 2023 07:31:56 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97869F3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:31:55 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-57045429f76so78190277b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690371115; x=1690975915;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jLv11qpOMr7y6l1HWpJ5VrwcHkwmRcTE/5uBkJt0Km0=;
+        b=MkxNnvIpJkOmEk7n2jttHGuxqb5Oe+I9GZebdZVY8SsA8BUr2h2S3gwx0/jwtPeExC
+         eAExJkepuM6OhTmiLDNJdmep9oGFZpTA4E2M/9P/5OrFiFP1TKXmFdTYQKzdbCJXXR3u
+         JGXFyrLAksjRgzQRqbQi2oprebgFA6fiszIZyYkQY1HsVCk4asTJpJMRFMKGJQLvyMV8
+         QX7Pl/y3mDHq9WgeJJ+uZbPIpkK2S+YGTTQesbhDYXRRXCkgxJicREw3iubEJA2RbUyE
+         w8Pa0GsjAmHqgvc96Z/E2uoIdsTNVWZnaihpwvi5+qVGbTu2faTtcKPorTwIr3te3JOg
+         HqCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690371115; x=1690975915;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jLv11qpOMr7y6l1HWpJ5VrwcHkwmRcTE/5uBkJt0Km0=;
+        b=lJRylWtTagAswjov09MwHw38xe+NVred/tjwCCZAl+GzoCZt9dr46rm/gNUrrc4CAV
+         qMCTeMXDqrZRmwJrHRYNYCkPsAgHZZg5f6xBXbURgubrE4YUCjekw5qMKQ0E3DJb5YjO
+         0yi+C1wL4u6IspIXB+X9RdMPN+IE6emeyxwVaUbLpjvFEraGzgzSqtnHGM1wNhq/JrBQ
+         aJj5kow6ANp7SPexN84LK0xnDMy3vLIzw++ra0H6vt7xA5zRMYpt2EwHUCD5hVcspPh5
+         D2J70lupN6LTyXMS51LeiqvZjHw+9scj9ZQ3Fop37JKeBk1w1qlp6FqqmKDT4sxeBEEI
+         1EQA==
+X-Gm-Message-State: ABy/qLZMMvITwadhzyTWnrbslzjyJS2iijQtN1JlHIBH2vcyuyr0k/O4
+        PMu40nDeTV01pzDVCcGHWE5WifpiUmqbm6Vr2VFpoA==
+X-Google-Smtp-Source: APBJJlGCRFajfKQn9z6tzkQD4evt9uCaBCCq73lhqACV/XJdk0Ot20nld0e0VPgml5GXvLyxxSULQHK6xXMJYBDR4/g=
+X-Received: by 2002:a81:66c4:0:b0:583:a418:c3fc with SMTP id
+ a187-20020a8166c4000000b00583a418c3fcmr1895070ywc.23.1690371114731; Wed, 26
+ Jul 2023 04:31:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-10-ulf.hansson@linaro.org> <20230719152426.qwc5qqewrfjsarlz@bogus>
+ <CAPDyKFogrwFnz2ZuKE-mLrCQmTCQcrtjhhyzB4CnoVnxAXqKEg@mail.gmail.com> <20230721115917.lescikl75kmeqkw4@bogus>
+In-Reply-To: <20230721115917.lescikl75kmeqkw4@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 26 Jul 2023 13:31:19 +0200
+Message-ID: <CAPDyKFr6oduyihOd7u6UW3RJAJr=a3mT8Dw9GtryhK4+SRK_wg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] cpufreq: scmi: Add support to parse domain-id
+ using #power-domain-cells
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023, at 12:54, Uwe Kleine-K=C3=B6nig wrote:
-> On Wed, Jul 26, 2023 at 06:06:26PM +0800, Zhu Wang wrote:
->>
->> Fixes: 5d97408e0d70 ("drm/bridge: move ANA78xx driver to analogix sub=
-directory")
-
-This is the wrong commit, the driver was just in a different place
-before that, and the bug was already present in commit 0647e7dd3f7ab
-("drm/bridge: Add Analogix anx78xx support").
-
->> =20
->> +#if IS_ENABLED(CONFIG_OF)
->>  static const u8 anx7808_i2c_addresses[] =3D {
->>  	[I2C_IDX_TX_P0] =3D 0x78,
->>  	[I2C_IDX_TX_P1] =3D 0x7a,
->> @@ -52,6 +53,7 @@ static const u8 anx781x_i2c_addresses[] =3D {
->>  	[I2C_IDX_RX_P0] =3D 0x7e,
->>  	[I2C_IDX_RX_P1] =3D 0x80,
->>  };
->> +#endif
+On Fri, 21 Jul 2023 at 13:59, Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> You can mark anx7808_i2c_addresses with __maybe_unused, then the #if
-> isn't needed.
-
-Neither of these should be needed, as the driver only works with
-CONFIG_OF anyway.
-
->>  struct anx78xx_platform_data {
->>  	struct regulator *dvdd10;
->> @@ -1387,7 +1389,9 @@ MODULE_DEVICE_TABLE(of, anx78xx_match_table);
->>  static struct i2c_driver anx78xx_driver =3D {
->>  	.driver =3D {
->>  		   .name =3D "anx7814",
->> +#if IS_ENABLED(CONFIG_OF)
->>  		   .of_match_table =3D of_match_ptr(anx78xx_match_table),
->> +#endif
+> On Fri, Jul 21, 2023 at 01:52:17PM +0200, Ulf Hansson wrote:
+> > On Wed, 19 Jul 2023 at 17:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > On Thu, Jul 13, 2023 at 04:17:36PM +0200, Ulf Hansson wrote:
+> > > > The performance domain-id can be described in DT using the power-domains
+> > > > property or the clock property. The latter is already supported, so let's
+> > > > add support for the power-domains too.
+> > > >
+> > >
+> > > How is this supposed to work for the CPUs ? The CPU power domains are
+> > > generally PSCI on most of the platforms and the one using OSI explicitly
+> > > need to specify the details while ones using PC will not need to. Also they
+> > > can never be performance domains too. So I am not sure if I am following this
+> > > correctly.
+> >
+> > Your concerns are certainly correct, I completely forgot about this.
+> > We need to specify what power-domain index belongs to what, by using
+> > power-domain-names in DT. So a CPU node, that has both psci for power
+> > and scmi for performance would then typically look like this:
+> >
+> > power-domains = <&CPU_PD0>, <&scmi_dvfs 4>;
+> > power-domain-names = "psci", "scmi";
+> >
+> > I will take care of this in the next version - and thanks a lot for
+> > pointing this out!
 >
-> If CONFIG_OF is disabled of_match_ptr(something) evaluates to NULL, so
-> you can drop the #if here.
 >
-> Having said that the better fix is probably to just do
->
-> 	.of_match_table =3D anx78xx_match_table,
->
-> as systems using ACPI can benefit from the of_match_table, too.
-> See b89a9e9890d4 ("gpio: aggregator: Remove CONFIG_OF and of_match_ptr=
-()
-> protections") for an example.
+> Yes something like this will work. Just curious will this impact the idle
+> paths ? By that I mean will the presence of additional domains add more
+> work or will they be skipped as early as possible with just one additional
+> check ?
 
-Agreed, removing the #ifdef checks and the of_match_ptr()
-wrapper is the right solution here. I see similar things
-in other bridge drivers that could be changed at the same
-time:
+Unless I misunderstand your concern, I don't think there is any impact
+on the idle path whatsoever. This should be entirely orthogonal.
 
-$ git grep of_match_ptr drivers/gpu/drm/bridge/
-drivers/gpu/drm/bridge/analogix/analogix-anx6345.c:                .of_m=
-atch_table =3D of_match_ptr(anx6345_match_table),
-drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c:                .of_m=
-atch_table =3D of_match_ptr(anx78xx_match_table),
-drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c:            .of_matc=
-h_table =3D of_match_ptr(mhdp_ids),
-drivers/gpu/drm/bridge/chrontel-ch7033.c:               .of_match_table =
-=3D of_match_ptr(ch7033_dt_ids),
-drivers/gpu/drm/bridge/sil-sii8620.c:           .of_match_table =3D of_m=
-atch_ptr(sii8620_dt_match),
-drivers/gpu/drm/bridge/ti-tfp410.c:             .of_match_table =3D of_m=
-atch_ptr(tfp410_match),
+The scmi-cpufreq driver should only have to care about the
+scmi-performance domain, while the cpuidle-psci driver cares only
+about psci.
 
-The other ones are even worse because they use of_match_ptr()
-without the corresponding #ifdef around the match table, so
-the of_match_ptr() does not even have the effect of saving a few
-bytes of .data segment.
+Did that make sense?
 
-     Arnd
+Kind regards
+Uffe
