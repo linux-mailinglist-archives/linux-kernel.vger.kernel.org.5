@@ -2,85 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE2A7631C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326067631DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbjGZJYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
+        id S231134AbjGZJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjGZJXh (ORCPT
+        with ESMTP id S233084AbjGZJY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:23:37 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF7130EE
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:21:33 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qOai0-0007bE-Sl; Wed, 26 Jul 2023 11:21:28 +0200
-Message-ID: <ae1ad814-5613-704e-b0b1-4f1fc4bead44@leemhuis.info>
-Date:   Wed, 26 Jul 2023 11:21:27 +0200
+        Wed, 26 Jul 2023 05:24:28 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE331E73
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so1487676b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690363335; x=1690968135;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xHFf+qIXuXcHU2hnpeM9isQldhnSqSauyHf1oBu4R8I=;
+        b=jAMndxc3vAfZ9MlugwiN2m1td4+ENgo1ZcEkULNu4w0l2e+7SjL15Aj8xsnH/hg6mq
+         Yuh7Pj+WIpy+9FKbmqcmIZPowwXwCsZ/HE/uYPa/USpf5RWRvsmKXdX1EOhGqDHtCRhA
+         5Tx4ycmmPjyUjagwQ6weN00EPkG2yYEGVkFAeT+5NL38WWOxpIAWxDe7x+TtdzGSmFXw
+         AaN6OIhFdWcuFQV9AajQEHTHNR/HQhAWIjBkgsz+1GmBQBDd2nNKfKbDgsLcpETIdF18
+         CdbQtqtDxhcETBnzscklNfC8QDSVXvKpexDlKf4G6IIrjU6vkXpbe5y1T2yEBA/OqHN2
+         vBww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690363335; x=1690968135;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xHFf+qIXuXcHU2hnpeM9isQldhnSqSauyHf1oBu4R8I=;
+        b=d6eUqv+3kYM/YrrOuyfNSWpPXXLQShl7uMGHtUsR4DefYDlKziaLVy197yZmlnDpc6
+         rJcqHi97NqS6lf7euQuPqHHK+p0m/at0LxmWnAuKrGobR/YS/R/gBKKEpEzLngBVykOa
+         pcJa0DAYQ6c3BZUXk4w5qt2YXEdzCOKEvacgnE6FHKS88f0HsC20sbI+zsCnPK4RhfJn
+         IyxWdTfWJ8i10OY7mIPmgrPyMmckIu52XOOPQtgg+elBHidL6Xb+K1s+LpJnt5hLLBV9
+         yEUbEL/xr4866i1JPnDBh9dLBxGLat9qj4UN8jz0a2rKKeiWDSQOP9spkEXUruBNitCg
+         JKxQ==
+X-Gm-Message-State: ABy/qLYgAXPvjCi036hCXG0EAxyIvsGtBfEV/9orn/coJ6HoQsxmnIBj
+        OWALkPqzbBc1Qj+DJ6irMp9oxQ==
+X-Google-Smtp-Source: APBJJlGzKLkoeooTK7rnc1fJ6mfD6dUCrzzNETRC7Ci4c1Yh8zXhisYlXfajH5gn3qqQbLizO8XVQA==
+X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr1779967pzk.2.1690363335131;
+        Wed, 26 Jul 2023 02:22:15 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id k11-20020aa790cb000000b006827c26f147sm10955045pfk.138.2023.07.26.02.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:22:14 -0700 (PDT)
+Message-ID: <d96777ce-be8a-1665-dd00-1e696e5575a8@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:22:02 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Fwd: ath11k: QCN9074: ce desc not available for wmi command
-Content-Language: en-US, de-DE
-To:     Manikanta Pubbisetty <quic_mpubbise@quicinc.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Atheros 11K <ath11k@lists.infradead.org>
-References: <1326a6e4-758d-3344-d90c-8a126748b034@gmail.com>
- <6a0c3aa0-86a8-8c06-81df-2d7085946cf5@leemhuis.info>
- <16885654-09f0-c139-cc9b-c6c4d666932e@quicinc.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <16885654-09f0-c139-cc9b-c6c4d666932e@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690363293;33dfbb81;
-X-HE-SMSGID: 1qOai0-0007bE-Sl
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 11/47] gfs2: dynamically allocate the gfs2-qd shrinker
+Content-Language: en-US
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-12-zhengqi.arch@bytedance.com>
+ <e7204276-9de5-17eb-90ae-e51657d73ef4@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <e7204276-9de5-17eb-90ae-e51657d73ef4@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.07.23 11:17, Manikanta Pubbisetty wrote:
-> On 6/26/2023 6:19 PM, Linux regression tracking (Thorsten Leemhuis) wrote:
+
+
+On 2023/7/26 14:49, Muchun Song wrote:
+> 
+> 
+> On 2023/7/24 17:43, Qi Zheng wrote:
+>> Use new APIs to dynamically allocate the gfs2-qd shrinker.
 >>
->> Hmmm, there afaics was no real progress and not even a single reply from
->> a developer (neither here or in bugzilla) since the issue was reported
->> ~10 days ago. :-/
-
-BTW: Kalle, many thx for picking this up and posting & applying the revert!
-
->> Manikanta, did you maybe just miss that this is caused by change of
->> yours (and thus is something you should look into)?
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   fs/gfs2/main.c  |  6 +++---
+>>   fs/gfs2/quota.c | 26 ++++++++++++++++++++------
+>>   fs/gfs2/quota.h |  3 ++-
+>>   3 files changed, 25 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/fs/gfs2/main.c b/fs/gfs2/main.c
+>> index afcb32854f14..e47b1cc79f59 100644
+>> --- a/fs/gfs2/main.c
+>> +++ b/fs/gfs2/main.c
+>> @@ -147,7 +147,7 @@ static int __init init_gfs2_fs(void)
+>>       if (!gfs2_trans_cachep)
+>>           goto fail_cachep8;
+>> -    error = register_shrinker(&gfs2_qd_shrinker, "gfs2-qd");
+>> +    error = gfs2_qd_shrinker_init();
+>>       if (error)
+>>           goto fail_shrinker;
+>> @@ -196,7 +196,7 @@ static int __init init_gfs2_fs(void)
+>>   fail_wq2:
+>>       destroy_workqueue(gfs_recovery_wq);
+>>   fail_wq1:
+>> -    unregister_shrinker(&gfs2_qd_shrinker);
+>> +    gfs2_qd_shrinker_exit();
+>>   fail_shrinker:
+>>       kmem_cache_destroy(gfs2_trans_cachep);
+>>   fail_cachep8:
+>> @@ -229,7 +229,7 @@ static int __init init_gfs2_fs(void)
+>>   static void __exit exit_gfs2_fs(void)
+>>   {
+>> -    unregister_shrinker(&gfs2_qd_shrinker);
+>> +    gfs2_qd_shrinker_exit();
+>>       gfs2_glock_exit();
+>>       gfs2_unregister_debugfs();
+>>       unregister_filesystem(&gfs2_fs_type);
+>> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+>> index 704192b73605..bc9883cea847 100644
+>> --- a/fs/gfs2/quota.c
+>> +++ b/fs/gfs2/quota.c
+>> @@ -186,13 +186,27 @@ static unsigned long gfs2_qd_shrink_count(struct 
+>> shrinker *shrink,
+>>       return vfs_pressure_ratio(list_lru_shrink_count(&gfs2_qd_lru, sc));
+>>   }
+>> -struct shrinker gfs2_qd_shrinker = {
+>> -    .count_objects = gfs2_qd_shrink_count,
+>> -    .scan_objects = gfs2_qd_shrink_scan,
+>> -    .seeks = DEFAULT_SEEKS,
+>> -    .flags = SHRINKER_NUMA_AWARE,
+>> -};
+>> +static struct shrinker *gfs2_qd_shrinker;
+>> +
+>> +int gfs2_qd_shrinker_init(void)
 > 
-> Extremely sorry for having this missed [...]
+> It's better to declare this as __init.
+
+OK, Will do.
+
 > 
-> Hi Sanjay, [...]
-
-FWIW, Bagas Sanjaya just forwarded the report and the reporter is not
-CCed afaics (bugzilla privacy policy does not allow this, which
-complicates things a lot :-/ ). You have to use bugzilla to reach the
-reporter: https://bugzilla.kernel.org/show_bug.cgi?id=217536
-
-Bagas Sanjaya: wondering if you should make that "I'm just forwarding"
-aspect more obvious in your mails. And it afaics would also be good to
-mentioned the author of the culprit quite early in your mails, as there
-is a risk that people will miss that aspect otherwise.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+>> +{
+>> +    gfs2_qd_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "gfs2-qd");
+>> +    if (!gfs2_qd_shrinker)
+>> +        return -ENOMEM;
+>> +
+>> +    gfs2_qd_shrinker->count_objects = gfs2_qd_shrink_count;
+>> +    gfs2_qd_shrinker->scan_objects = gfs2_qd_shrink_scan;
+>> +    gfs2_qd_shrinker->seeks = DEFAULT_SEEKS;
+>> +
+>> +    shrinker_register(gfs2_qd_shrinker);
+>> +    return 0;
+>> +}
+>> +
+>> +void gfs2_qd_shrinker_exit(void)
+>> +{
+>> +    shrinker_unregister(gfs2_qd_shrinker);
+>> +}
+>>   static u64 qd2index(struct gfs2_quota_data *qd)
+>>   {
+>> diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
+>> index 21ada332d555..f9cb863373f7 100644
+>> --- a/fs/gfs2/quota.h
+>> +++ b/fs/gfs2/quota.h
+>> @@ -59,7 +59,8 @@ static inline int gfs2_quota_lock_check(struct 
+>> gfs2_inode *ip,
+>>   }
+>>   extern const struct quotactl_ops gfs2_quotactl_ops;
+>> -extern struct shrinker gfs2_qd_shrinker;
+>> +int gfs2_qd_shrinker_init(void);
+>> +void gfs2_qd_shrinker_exit(void);
+>>   extern struct list_lru gfs2_qd_lru;
+>>   extern void __init gfs2_quota_hash_init(void);
+> 
