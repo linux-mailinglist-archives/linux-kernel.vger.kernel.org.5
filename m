@@ -2,142 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3541762AE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A7D762AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjGZFj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 01:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        id S231730AbjGZFlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 01:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjGZFj1 (ORCPT
+        with ESMTP id S231714AbjGZFlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 01:39:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B822693
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690349917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pfs3nnD/SOOUA7MFV9W94hwiVWoxJiHiqbutUMOkKZQ=;
-        b=E81W2JoPqXZoVdmZWJQZTBzCOtCD9bksmEy1OmktNnXJ0ry8DW7oGBtVGp7FnEOx3u0p/E
-        hM76DEL06Wq5sFTNsIIGAc67meSTKUoi2E2anUag//TAGXpVCZnP6SZ+v7PHoPNtb1GKQa
-        rD+HrR6UdUc368CdE/2cEvEYrvawZxg=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-gThW64d1ORyqJT9XQdyKhQ-1; Wed, 26 Jul 2023 01:38:36 -0400
-X-MC-Unique: gThW64d1ORyqJT9XQdyKhQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b9b820c94fso1848591fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:38:35 -0700 (PDT)
+        Wed, 26 Jul 2023 01:41:35 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA710CB
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:41:33 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40540a8a3bbso158641cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690350093; x=1690954893;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8vB3ZsOk9cBST7fTSWJNjOBqYs2YpfH524LGGeQPGGI=;
+        b=UHzaH3GMBlUN53PXMgiPoDwHZvBsNNsXvdAXb1Ekxe6UUmqyn7kMSP90Lzj6GFrH/P
+         Y0MI9lNMzk9XywbShvsxGRsiQ5et4/rn9WQcy5TyHqtJpoPfUzVGSsidg2FLy6xQy5kS
+         A6WCbsca1dyj0G2yTj4GJVY4w5Ix+Erg92OuC8cFyi5vhuMGEulFcnpFUFDOfuDxfzEt
+         wfVM9TLPOz5GpESsZtAcHne/Z3ervD77SSsoz52/AxGzJJ4rr9UrwtwJvaSgJDcAj/y+
+         lNuopdHog6PPBtDPCt4wU00ZSdn1mn6x7jcvW79M0d7uqetC4LF9llDAMC6Q/izdCsFa
+         sydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690349915; x=1690954715;
+        d=1e100.net; s=20221208; t=1690350093; x=1690954893;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pfs3nnD/SOOUA7MFV9W94hwiVWoxJiHiqbutUMOkKZQ=;
-        b=L+a1OYQQS49ivoX1rxa5eREDv/WX6qMOrHRUF22oYTCtR2pGBGJp54Czik4O5fmCpL
-         JcU+EzCHQVYQ38eI16jy8GuPZ04Y2xMcCeHeDpzjyI6N2WHolXCQG7c27wYq2Nz/RnWu
-         iIeiCcXtAUTlrFjRvqQ1D/PcXa5THCRIk8DsVPVq4bopdieouUF/F7x/LGxSKKDSb7Z+
-         e9q4qvk9jEu422CHCmfqQN3rQ2V0tbQJnOX05bubhdfuOxo9RI2jE7SbS9u8gXenX1mf
-         nVRw6dhmrDcSbnV23RuYMt08mNGyvaLVOfgE7JMULsbZas/y2ee4DgrM+Z+CWQ4H9HSm
-         dDYQ==
-X-Gm-Message-State: ABy/qLbXBR0/e1OS+tzJ3oxoDF/LmPmHe3MxVEmhYZ65UzHbx2/knSEL
-        A058yLyXywSwNTBLWul3GcON05H/rAWeML14fdDr3LB4C29jj8E8T6oedifSFrRZEsI/JKGJ1vz
-        uOCxah36s5+VEPIDY2A76v2egR+2w7s4YQxP2orhJ
-X-Received: by 2002:a2e:8042:0:b0:2b6:dd9a:e1d3 with SMTP id p2-20020a2e8042000000b002b6dd9ae1d3mr605685ljg.44.1690349914783;
-        Tue, 25 Jul 2023 22:38:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHZ1ivRh44yxvv5AoW/k+bdQtpElC2pldw9fqqViy1tLZuooCCFV/0/FqgQ945tCdp+io30vgVHGutAPfdVtuA=
-X-Received: by 2002:a2e:8042:0:b0:2b6:dd9a:e1d3 with SMTP id
- p2-20020a2e8042000000b002b6dd9ae1d3mr605673ljg.44.1690349914469; Tue, 25 Jul
- 2023 22:38:34 -0700 (PDT)
+        bh=8vB3ZsOk9cBST7fTSWJNjOBqYs2YpfH524LGGeQPGGI=;
+        b=S5SQaDlofkLjtRTAaHFZ/pA64O9FtUKTHTxEhSl5YNvQBH6sfOiyow7EF386VMFQSE
+         V2qzn17eq6M8V2BjwgtqrmlNzRmxBRXRBHRcHbMo1mPJuuFyuOFF1qOwJpheqpg/d00z
+         Ww74VQMPp4r2WZ3d1l/k9nv6IwsCh/IR/KSzQRSDnYK0Gdbo9Sz3YQeJGrOEKfFTKzy/
+         Q0Evgq1O0xxSILLpE7bw5ndQLiFeyfNCm5f7/jeUUpgGx7l2pSX2BWnrW/unW6UCmYBi
+         3c3AkJ8cZkbqsG9eB+Ln3tOm/cxIQi/Dw3S5n+K6VzI3flcv1VUk+HoEWFPrrIjNI0Se
+         hU1g==
+X-Gm-Message-State: ABy/qLZiuVh8RQ5D32bPfiKI1gtCbPm78GMSeZUOFaMCXR6AcKylDhot
+        hZxQoOj1kOiNq9Kw+N/LI5vmkxUo9ZVS63Cn/rdtyw==
+X-Google-Smtp-Source: APBJJlEj+qdOhXPl2y8FC9vEJhkxeCPvWBDORu6ehn7BGavUlsMyMd3oTqBekQxBjtl/mHLHK4C/W3zyH0YTgme3mCo=
+X-Received: by 2002:a05:622a:1756:b0:3f8:e0a:3e66 with SMTP id
+ l22-20020a05622a175600b003f80e0a3e66mr369800qtk.3.1690350092955; Tue, 25 Jul
+ 2023 22:41:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230705114505.63274-1-maxime.coquelin@redhat.com>
-In-Reply-To: <20230705114505.63274-1-maxime.coquelin@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 26 Jul 2023 13:38:22 +0800
-Message-ID: <CACGkMEtF9c0dL+bk0=JovcVs-ZVzEJJXdt9gx=_Lh+KtwFu9ig@mail.gmail.com>
-Subject: Re: [PATCH] vduse: Use proper spinlock for IRQ injection
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     xieyongji@bytedance.com, mst@redhat.com, david.marchand@redhat.com,
-        lulu@redhat.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        xuanzhuo@linux.alibaba.com, eperezma@redhat.com
+References: <20230721094043.2506691-1-fengwei.yin@intel.com>
+ <20230721094043.2506691-3-fengwei.yin@intel.com> <CAOUHufY2tdO0JNTiY=RzHitR7CB1cM5kA=7bd6nbCUW6KM_OVA@mail.gmail.com>
+ <05bc90b6-4954-b945-f0d8-373f565c1248@intel.com> <CAOUHufYJE40wcT4HTYFJ_7X5=my3OPbMyMBt+QNZdByuL6j58Q@mail.gmail.com>
+ <feb58221-e481-3d71-8707-6ffe90158b66@intel.com>
+In-Reply-To: <feb58221-e481-3d71-8707-6ffe90158b66@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Tue, 25 Jul 2023 23:40:56 -0600
+Message-ID: <CAOUHufa9rFS-VjbCRG6KGjb4YKOZioH=dLdTyFLWqEFePoL+wQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/4] madvise: Use notify-able API to clear and
+ flush page table entries
+To:     Yin Fengwei <fengwei.yin@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, willy@infradead.org,
+        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 5, 2023 at 7:45=E2=80=AFPM Maxime Coquelin
-<maxime.coquelin@redhat.com> wrote:
+On Tue, Jul 25, 2023 at 10:44=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com=
+> wrote:
 >
-> The IRQ injection work used spin_lock_irq() to protect the
-> scheduling of the softirq, but spin_lock_bh() should be
-> used.
 >
-> With spin_lock_irq(), we noticed delay of more than 6
-> seconds between the time a NAPI polling work is scheduled
-> and the time it is executed.
 >
-> Fixes: c8a6153b6c59 ("vduse: Introduce VDUSE - vDPA Device in Userspace")
-> Cc: xieyongji@bytedance.com
+> On 7/26/23 11:26, Yu Zhao wrote:
+> > On Tue, Jul 25, 2023 at 8:49=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.=
+com> wrote:
+> >>
+> >>
+> >> On 7/25/23 13:55, Yu Zhao wrote:
+> >>> On Fri, Jul 21, 2023 at 3:41=E2=80=AFAM Yin Fengwei <fengwei.yin@inte=
+l.com> wrote:
+> >>>>
+> >>>> Currently, in function madvise_cold_or_pageout_pte_range(), the
+> >>>> young bit of pte/pmd is cleared notify subscripter.
+> >>>>
+> >>>> Using notify-able API to make sure the subscripter is signaled about
+> >>>> the young bit clearing.
+> >>>>
+> >>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+> >>>> ---
+> >>>>  mm/madvise.c | 18 ++----------------
+> >>>>  1 file changed, 2 insertions(+), 16 deletions(-)
+> >>>>
+> >>>> diff --git a/mm/madvise.c b/mm/madvise.c
+> >>>> index f12933ebcc24..b236e201a738 100644
+> >>>> --- a/mm/madvise.c
+> >>>> +++ b/mm/madvise.c
+> >>>> @@ -403,14 +403,7 @@ static int madvise_cold_or_pageout_pte_range(pm=
+d_t *pmd,
+> >>>>                         return 0;
+> >>>>                 }
+> >>>>
+> >>>> -               if (pmd_young(orig_pmd)) {
+> >>>> -                       pmdp_invalidate(vma, addr, pmd);
+> >>>> -                       orig_pmd =3D pmd_mkold(orig_pmd);
+> >>>> -
+> >>>> -                       set_pmd_at(mm, addr, pmd, orig_pmd);
+> >>>> -                       tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
+> >>>> -               }
+> >>>> -
+> >>>> +               pmdp_clear_flush_young_notify(vma, addr, pmd);
+> >>>>                 folio_clear_referenced(folio);
+> >>>>                 folio_test_clear_young(folio);
+> >>>>                 if (folio_test_active(folio))
+> >>>> @@ -496,14 +489,7 @@ static int madvise_cold_or_pageout_pte_range(pm=
+d_t *pmd,
+> >>>>
+> >>>>                 VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+> >>>>
+> >>>> -               if (pte_young(ptent)) {
+> >>>> -                       ptent =3D ptep_get_and_clear_full(mm, addr, =
+pte,
+> >>>> -                                                       tlb->fullmm)=
+;
+> >>>> -                       ptent =3D pte_mkold(ptent);
+> >>>> -                       set_pte_at(mm, addr, pte, ptent);
+> >>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
+> >>>> -               }
+> >>>> -
+> >>>> +               ptep_clear_flush_young_notify(vma, addr, pte);
+> >>>
+> >>> These two places are tricky.
+> >>>
+> >>> I agree there is a problem here, i.e., we are not consulting the mmu
+> >>> notifier. In fact, we do pageout on VMs on ChromeOS, and it's been a
+> >>> known problem to me for a while (not a high priority one).
+> >>>
+> >>> tlb_remove_tlb_entry() is batched flush, ptep_clear_flush_young() is
+> >>> not. But, on x86, we might see a performance improvement since
+> >>> ptep_clear_flush_young() doesn't flush TLB at all. On ARM, there migh=
+t
+> >>> be regressions though.
+> >>>
+> >>> I'd go with ptep_clear_young_notify(), but IIRC, Minchan mentioned he
+> >>> prefers flush. So I'll let him chime in.
+> >> I am OK with either way even no flush way here is more efficient for
+> >> arm64. Let's wait for Minchan's comment.
+> >
+> > Yes, and I don't think there would be any "negative" consequences
+> > without tlb flushes when clearing the A-bit.
+> >
+> >>> If we do end up with ptep_clear_young_notify(), please remove
+> >>> mmu_gather -- it should have been done in this patch.
+> >>
+> >> I suppose "remove mmu_gather" means to trigger flush tlb operation in
+> >> batched way to make sure no stale data in TLB for long time on arm64
+> >> platform.
+> >
+> > In madvise_cold_or_pageout_pte_range(), we only need struct
+> > mmu_gather *tlb because of tlb_remove_pmd_tlb_entry(), i.e., flushing
+> > tlb after clearing the A-bit. There is no correction, e.g., potential
+> > data corruption, involved there.
 >
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> From https://lore.kernel.org/lkml/20181029105515.GD14127@arm.com/,
+> the reason that arm64 didn't drop whole flush tlb in ptep_clear_flush_you=
+ng()
+> is to prevent the stale data in TLB. I suppose there is no correction iss=
+ue
+> there also.
+>
+> So why keep stale data in TLB in madvise_cold_or_pageout_pte_range() is f=
+ine?
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Sorry, I'm not sure I understand your question here.
 
-Thanks
+In this patch, you removed tlb_remove_tlb_entry(), so we don't need
+struct mmu_gather *tlb any more.
 
-
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index dc38ed21319d..df7869537ef1 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -935,10 +935,10 @@ static void vduse_dev_irq_inject(struct work_struct=
- *work)
->  {
->         struct vduse_dev *dev =3D container_of(work, struct vduse_dev, in=
-ject);
->
-> -       spin_lock_irq(&dev->irq_lock);
-> +       spin_lock_bh(&dev->irq_lock);
->         if (dev->config_cb.callback)
->                 dev->config_cb.callback(dev->config_cb.private);
-> -       spin_unlock_irq(&dev->irq_lock);
-> +       spin_unlock_bh(&dev->irq_lock);
->  }
->
->  static void vduse_vq_irq_inject(struct work_struct *work)
-> @@ -946,10 +946,10 @@ static void vduse_vq_irq_inject(struct work_struct =
-*work)
->         struct vduse_virtqueue *vq =3D container_of(work,
->                                         struct vduse_virtqueue, inject);
->
-> -       spin_lock_irq(&vq->irq_lock);
-> +       spin_lock_bh(&vq->irq_lock);
->         if (vq->ready && vq->cb.callback)
->                 vq->cb.callback(vq->cb.private);
-> -       spin_unlock_irq(&vq->irq_lock);
-> +       spin_unlock_bh(&vq->irq_lock);
->  }
->
->  static bool vduse_vq_signal_irqfd(struct vduse_virtqueue *vq)
-> --
-> 2.41.0
->
-
+If you are asking why I prefer ptep_clear_young_notify() (no flush),
+which also doesn't need tlb_remove_tlb_entry(), then the answer is
+that the TLB size doesn't scale like DRAM does: the gap has been
+growing exponentially. So there is no way TLB can hold stale entries
+long enough to cause a measurable effect on the A-bit. This isn't a
+conjecture -- it's been proven conversely: we encountered bugs (almost
+every year) caused by missing TLB flushes and resulting in data
+corruption. They were never easy to reproduce, meaning stale entries
+never stayed long in TLB.
