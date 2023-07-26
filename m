@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C0D763A8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B6B763AA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbjGZPMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        id S234802AbjGZPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbjGZPMb (ORCPT
+        with ESMTP id S234930AbjGZPQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:12:31 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8385C2D73;
-        Wed, 26 Jul 2023 08:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690384299; x=1721920299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xfcbdunn8MVYthWj9IRX2o+ue4q+jU9XBsqmvhqwWJs=;
-  b=CnrpEgVqddNstHVCQvItaLUIY9Dz1jP6tljxKHtt1ep/6Er0rpfBZhNG
-   8aj4KD8KwgMUvQQNPiMUN+q/KJLoCmSgsdihof0fhDsA/zUxlM/kG+1Ya
-   EG4vAEEnYHi7UW3zXH6Rob4YrMqnMmOwoIhDy2c+s4SOqeJgWkTGaXyzA
-   c/RixVrMHkt66SoB024Bv107O4ZkTsgikxoQsky8BJ12AC3LfarZ7mElc
-   RR1UsIcaPkBuEV55rtpNcBmMo5OGr2tyS/ZjQo2EMV4XVS1jp909G4dI5
-   vMRgXNh3SXWiWW7LK614pGjhObIRgkVmC8jONkCaxBOiCR3AUXml6C0Ln
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="434309019"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="434309019"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 08:11:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="720501450"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="720501450"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 26 Jul 2023 08:11:26 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOgAa-00013L-1j;
-        Wed, 26 Jul 2023 15:11:21 +0000
-Date:   Wed, 26 Jul 2023 23:11:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     sharmaajay@linuxonhyperv.com, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v2 3/5] RDMA/mana_ib : Add error eq and notification from
- SoC
-Message-ID: <202307262214.QoyNnN8T-lkp@intel.com>
-References: <1690343820-20188-4-git-send-email-sharmaajay@linuxonhyperv.com>
+        Wed, 26 Jul 2023 11:16:25 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E083C2F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:16:03 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id BDCA85C00C5;
+        Wed, 26 Jul 2023 11:15:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 26 Jul 2023 11:15:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=davidreaver.com;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1690384553; x=
+        1690470953; bh=m8+X5rABFhzKDpm1BfhOQA/g8LVHcIMKbshsuIWm/to=; b=U
+        YAVWoQ+gvaANdY6SRLHF2a4jmn1BKR2Xdw01sciV3XoYcTAvpZtU3F7vIl4Att94
+        LMuVkL5/Kbey+i09zio/NrMZK5IOPZ7Gl0JEVFJJ/dFveIitUNWS8QVmItaJWSs1
+        wq+l0ZcvUBJLIMwAdShXjiFjEAooTziIiHry9GGGwjUY9xzbOBESvM7Wkz4YRjP8
+        s8OagDlEmubgoXH0yKU66A6F2i+8uZCP3VCbOyvhdVCxb9Rq4FZXm53S3xtbO6C/
+        y1MpsTkXbLTpF8Js3FHvyc3NJJBDCnft4Gztg/zE7MBuZ8ANX+vz7IcJ/bH9KGdu
+        eQUGzOLzTJfNPPEtWlgvw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690384553; x=1690470953; bh=m8+X5rABFhzKD
+        pm1BfhOQA/g8LVHcIMKbshsuIWm/to=; b=IC0cxEhdQ2/ClQQ6XHBZFX6lrTJxR
+        oVr1uptOhykyajNmFCwMi9YBAtpIy/5xuxrwVGJKB9NMrqBDaNO/ddAU+juSOn+b
+        7hxIfMkR+2bHPUVGFiEZlCXpWk5teQtJWzHoKzhEobl6H+utyOAjbT7LoFuoWdHP
+        4SMVQOX0uhv1Lgx81iLIoaPOQjtq4gnSkFA8U0hmNGkGyFSd9KB+2I5OWK6gme99
+        ew6Aly3abPp3YfXfSlOkWqek1Qcc5SzfsEcekEYR72+zCXXf9Io697Ni+CG/QBNM
+        uaXUHGMYWqTyLgBFsSrbnI0tLffLVxGwnGa4tO8tNeyWsh2igkxeZk9bg==
+X-ME-Sender: <xms:qDjBZEwCjMgYyHySe1YisVf0j7C4Px-qLFzLS__3tzMoo4Oz6uGKuw>
+    <xme:qDjBZIRes3t4QzFthbE2wuPMVLKBKmqP-XycClvO2oVw5jMbk0BOKY7XHfw0oP30L
+    RGh3dYDwYHLcCYzF54>
+X-ME-Received: <xmr:qDjBZGUuWmNDiCP6udvl8dExIwFKBJ_3ePLDdXdetrLW_Nn2rRa9BQkCMbpHlIDxHj2tCoJVEurcOUf54XZUAQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpeffrghvihgu
+    ucftvggrvhgvrhcuoehmvgesuggrvhhiughrvggrvhgvrhdrtghomheqnecuggftrfgrth
+    htvghrnhepffeivddtkeegveehhfduiedtuedvtdfgffettdeuleffffektefgtdejveeu
+    vdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    gvsegurghvihgurhgvrghvvghrrdgtohhm
+X-ME-Proxy: <xmx:qDjBZCjrE_M_AWHHGTluarG9qGTpIm042kodiHiZ-VqFYsFkevIwJQ>
+    <xmx:qDjBZGDU5Bk2aRrOp3lj0jfeAjjnhD_I0TfHu6c2XK_bd6t8IzXF2Q>
+    <xmx:qDjBZDJJoyYOidTtUrq5-R6l4kqiW4phQ-x5xKN1Bi-KQJpSC5Mfuw>
+    <xmx:qTjBZJ9gD2BzEltrD-aIplRZF4Tgt1CoczITJLqEgJNAdutHUL5pUA>
+Feedback-ID: i67e946c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 11:15:51 -0400 (EDT)
+References: <20230722180925.1408885-1-hugo@hugovil.com>
+User-agent: mu4e 1.10.4; emacs 28.2
+From:   David Reaver <me@davidreaver.com>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] auxdisplay: hd44780: move cursor home after clear
+ display command
+Date:   Wed, 26 Jul 2023 08:12:41 -0700
+In-reply-to: <20230722180925.1408885-1-hugo@hugovil.com>
+Message-ID: <867cqm900q.fsf@davidreaver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690343820-20188-4-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-kernel test robot noticed the following build warnings:
+Hugo Villeneuve <hugo@hugovil.com> writes:
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.5-rc3 next-20230726]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>
+> The DISPLAY_CLEAR command on the NewHaven NHD-0220DZW-AG5 display
+> does NOT change the DDRAM address to 00h (home position) like the
+> standard Hitachi HD44780 controller. As a consequence, the starting
+> position of the initial string LCD_INIT_TEXT is not guaranteed to be
+> at 0,0 depending on where the cursor was before the DISPLAY_CLEAR
+> command.
+>
+> Extract of DISPLAY_CLEAR command from datasheets of:
+>
+>     Hitachi HD44780:
+>         ... It then sets DDRAM address 0 into the address counter...
+>
+>     NewHaven NHD-0220DZW-AG5 datasheet:
+> 	... This instruction does not change the DDRAM Address
+>
+> Move the cursor home after sending DISPLAY_CLEAR command to support
+> non-standard LCDs.
+>
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> ---
+>  drivers/auxdisplay/hd44780_common.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
+> index 3934c2eebf33..7cbf375b0fa5 100644
+> --- a/drivers/auxdisplay/hd44780_common.c
+> +++ b/drivers/auxdisplay/hd44780_common.c
+> @@ -82,7 +82,15 @@ int hd44780_common_clear_display(struct charlcd *lcd)
+>  	hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
+>  	/* datasheet says to wait 1,64 milliseconds */
+>  	long_sleep(2);
+> -	return 0;
+> +
+> +	/*
+> +	 * The Hitachi HD44780 controller (and compatible ones) reset the DDRAM
+> +	 * address when executing the DISPLAY_CLEAR command, thus the
+> +	 * following call is not required. However, other controllers do not
+> +	 * (e.g. NewHaven NHD-0220DZW-AG5), thus move the cursor to home
+> +	 * unconditionally to support both.
+> +	 */
+> +	return hd44780_common_home(lcd);
+>  }
+>  EXPORT_SYMBOL_GPL(hd44780_common_clear_display);
+>
+>
+> base-commit: d192f5382581d972c4ae1b4d72e0b59b34cadeb9
 
-url:    https://github.com/intel-lab-lkp/linux/commits/sharmaajay-linuxonhyperv-com/RDMA-mana-ib-Rename-all-mana_ib_dev-type-variables-to-mib_dev/20230726-115925
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/1690343820-20188-4-git-send-email-sharmaajay%40linuxonhyperv.com
-patch subject: [Patch v2 3/5] RDMA/mana_ib : Add error eq and notification from SoC
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230726/202307262214.QoyNnN8T-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307262214.QoyNnN8T-lkp@intel.com/reproduce)
+I tested this on a 16x2 HD44780 on my BeagleBone Black with:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307262214.QoyNnN8T-lkp@intel.com/
+    $ printf '\f' > /dev/lcd
+    $ printf 'Hello\nWorld!\n' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\f' > /dev/lcd
+    $ printf 'Goodbye\nWorld!\n' > /dev/lcd
 
-All warnings (new ones prefixed by >>):
+As expected, "Goodbye World!" was correctly placed left-aligned on the
+display, split over both lines.
 
->> drivers/infiniband/hw/mana/main.c:508:6: warning: no previous prototype for 'mana_ib_soc_event_handler' [-Wmissing-prototypes]
-     508 | void mana_ib_soc_event_handler(void *ctx, struct gdma_queue *queue,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/mana_ib_soc_event_handler +508 drivers/infiniband/hw/mana/main.c
-
-   507	
- > 508	void mana_ib_soc_event_handler(void *ctx, struct gdma_queue *queue,
-   509					struct gdma_event *event)
-   510	{
-   511		struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
-   512	
-   513		switch (event->type) {
-   514		case GDMA_EQE_SOC_EVENT_NOTIFICATION:
-   515			ibdev_info(&mib_dev->ib_dev, "Received SOC Notification");
-   516			break;
-   517		case GDMA_EQE_SOC_EVENT_TEST:
-   518			ibdev_info(&mib_dev->ib_dev, "Received SoC Test");
-   519			break;
-   520		default:
-   521			ibdev_err(&mib_dev->ib_dev, "Received unsolicited evt %d",
-   522				event->type);
-   523		}
-   524	}
-   525	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Tested-by: David Reaver <me@davidreaver.com>
