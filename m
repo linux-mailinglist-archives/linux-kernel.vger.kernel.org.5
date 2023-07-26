@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F446762C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C03C762C1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbjGZG6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
+        id S232200AbjGZG6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjGZG61 (ORCPT
+        with ESMTP id S232252AbjGZG5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:58:27 -0400
-Received: from out-20.mta1.migadu.com (out-20.mta1.migadu.com [IPv6:2001:41d0:203:375::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C303A2D78
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:58:14 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690354693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vJECzEbg6AvUr2F/gs+Gdm9ozTbMv8VDjSGrHUhWzDY=;
-        b=h66bJdZfshf2g1RLUpKqwxN7lHNgmJn36kolmPZUX2Aqc09HU6VbZ+x+Z0DjP9YGQTMTaE
-        Bmqs9Mr+MJHT0UpOpBW+6O4BcvF6xaU81Xxo7qywI9w5gMUx1fYGe1bTsluzGucfJTYdAa
-        elPkOC38C2T6cXpSojcQr4ueQ4x5eAU=
+        Wed, 26 Jul 2023 02:57:52 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECA63A9C
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:57:25 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1b03f7fb970so12389554fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:57:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690354643; x=1690959443;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z9IC2Px3hsKC6Dxupx1FkylpkrCD57M7Lz4dPPJQv8I=;
+        b=hvmkGs3H8/m4qVAq5kcBRzzelFKJfa9zPGKDcPlR+eJrqc4Zk5qYiDpgMXeeqJHy0j
+         m57CB7UbGYC0S/ikWWAzG4jCugbrTrKnZhs4ob8OHAcTPzUm+AWmLkBrnX1qeu/0ZbLD
+         33+C37EmoIIKdt1DR75J4dtu7XO0Ya7YXCMzNeVbp9I7A1lNQH4tJGN913JKcdl5dDDM
+         cNjYao2oKRpTLzV4F1UvHgk4LnU2jomXzn0okLWMBpRlFGCWY6JPOoxIMh5N0Xsm16po
+         /JyeJBWGPAFATrWU1rD+oOXLB2W8yR4sBwS6+5xDY+ufhmtNKbMtgGfVJUP1Q2KfYrjt
+         iV/w==
+X-Gm-Message-State: ABy/qLZGZVZyAksEqJV81Q1FvMJbN/4FzvVvVmigc7T68LPkAb2dfKZ/
+        vNOwXR0HLSRWE1rRrzsWLzJJSzgBFoDBG/YOZP2w8V48N6fQ
+X-Google-Smtp-Source: APBJJlEi0z/gxY9IKB9ZOROVZVrRiCmSqriMamO7iN1Vub7x4hmgU++d1Fui/uaeIMI5hdqa5e1O7nWfnmEEYHKIO1e0Dkad+4F7
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 13/47] nfs: dynamically allocate the nfs-acl shrinker
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-14-zhengqi.arch@bytedance.com>
-Date:   Wed, 26 Jul 2023 14:57:20 +0800
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <344A2B0E-8A25-494A-A8E1-5C75441B965D@linux.dev>
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-14-zhengqi.arch@bytedance.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:c7a8:b0:1ba:e872:7a2e with SMTP id
+ dy40-20020a056870c7a800b001bae8727a2emr2252504oab.11.1690354643035; Tue, 25
+ Jul 2023 23:57:23 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 23:57:22 -0700
+In-Reply-To: <000000000000607ff905ffc8e477@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000aeb7f06015e5cbd@google.com>
+Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (2)
+From:   syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, liam.howlett@oracle.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit a52f58b34afe095ebc5823684eb264404dad6f7b
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Mon Jul 24 18:54:10 2023 +0000
 
-> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> 
-> Use new APIs to dynamically allocate the nfs-acl shrinker.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+    mm: handle faults that merely update the accessed bit under the VMA lock
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1783585ea80000
+start commit:   [unknown] 
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1443585ea80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1043585ea80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f481ab36ce878b84
+dashboard link: https://syzkaller.appspot.com/bug?extid=8645fe63c4d22c8d27b8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1697cec9a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1566986ea80000
 
+Reported-by: syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com
+Fixes: a52f58b34afe ("mm: handle faults that merely update the accessed bit under the VMA lock")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
