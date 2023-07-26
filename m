@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFADC763CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAF4763CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjGZQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
+        id S230208AbjGZQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbjGZQqI (ORCPT
+        with ESMTP id S230509AbjGZQqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:46:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B282736;
-        Wed, 26 Jul 2023 09:45:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B4861BCE;
-        Wed, 26 Jul 2023 16:45:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3BA1C433C8;
-        Wed, 26 Jul 2023 16:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690389956;
-        bh=jZXU5ruoejJhbuBwYdY1ZLLXNDtD+W4XvI24g/fO+KE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W2GX0KSPedlzHVDnCDMF579Ei8TNx3SeQuZGttRTDbua0P/7iPBHdQrodkKvKz53q
-         ko95RC5W4SGMm2SMMHVOTaobkjO24mJ6Ypy4bSuugKBy7qT+nsdq5DrgpsI52CPR2L
-         uwNwruMz9AK4peZEO7k6wY+Iv2Gn482iFMcPojVDYrZp2ivX0pZlrCfk4eMa0fWVIl
-         ikzgZSI8G2YAzFObXRsuw7mu9/Ak1aC4V5gzFBUsLntUj3NDhREmvdADY2S83IWzai
-         aQM5dMHQuwMgCvkzilvUWxjVyoXqGRdfVX3dIKpw5tgyNoqVMnn6Fzsfz7sZNRBNac
-         4C9OxIis2Sv9A==
-Date:   Wed, 26 Jul 2023 18:45:48 +0200
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, cros-qcom-dts-watchers@chromium.org,
-        linux-arm-msm@vger.kernel.org,
-        yangcong5@huaqin.corp-partner.google.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Chris Morgan <macroalpha82@gmail.com>,
-        linux-input@vger.kernel.org, hsinyi@google.com
-Subject: Re: [PATCH v3 08/10] HID: i2c-hid: Support being a panel follower
-Message-ID: <bcshx6a3twlvvcwwzndep6gwczlppou3llwqyle6hmp26v57tk@7erwnkxfngse>
-References: <20230725203545.2260506-1-dianders@chromium.org>
- <20230725133443.v3.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid>
- <rorhwk3jx72twmqnxqb45uhm7azxxfirvferwyznbhbfmdf7ja@6k6ebhehmsn4>
- <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
+        Wed, 26 Jul 2023 12:46:34 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911FF2709
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:30 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8b2b60731so38263175ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690389990; x=1690994790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=taA43ETpLC9XelDxU6ZtNji2uVvqZo51XsvT9ZpAUOw=;
+        b=FvC2lJyuXYn4qnJaI7+KOVJh0twXla/FlufdsG8n4RSldZ3B7RNlD2x6qoYYHsCG3x
+         Pm7oC1f23sp2xNV1JYhGEZH1MwqJodovINYzrqPWcRjdbjXLL/pIvr2Pp9SRCQnP8IMZ
+         MICt+TtUqRrZ0i4msXhSL1QkKiApKuJITU6r2d5O4E2s7W336QWhVYaSnzYrCQCp+upU
+         VOtDFCMAZxrFpnicGTO3V20XHn+DhAKyBc6jkk0r77Oj9sfUCx+LrqJIQA7aoDMJawSx
+         3JDBCHjNDpL2BM4b2hXKHYNT6jdo0yunz9m3SDMDdjiNcmFJiZY+eiM+xShQNLu5Gz3t
+         c94Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690389990; x=1690994790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=taA43ETpLC9XelDxU6ZtNji2uVvqZo51XsvT9ZpAUOw=;
+        b=e2afGGy/sD5qkFfuGlD6mlGEkiudvntFTp2HqWw23Rs7HMj6AQ4I2L9XEVt/4X7z/J
+         PSsULLNaqzJQD6v4mk3431DOgb+2S9uA4gXULi/VkB7kXRc6gXfrCHj5ub4WIO1GupzJ
+         oHEuWYu0lhvMhX2152HR0P0VMyjt44EekmfsQhFEWEA2NpqqA4hSPOQYyg+PJl4cSEh4
+         GcGTehJyfIEYfqG120CDl7W1JKQ8uYXRf7tfNF9WhNgGiwZW3qV9K+aFySX1I4MVAEdK
+         50DlVOWIUJBpU4EBgeeL+RQVSuaVwOPlEvbfkj40S9knU+6Jrnp3IHdHgH5aonQvCiPz
+         Rx2Q==
+X-Gm-Message-State: ABy/qLbpOloDyugeAPLcCJMSeM1ig2UJWT+Tm7vnZ6PRJ+BzyZUvvWx+
+        b8bbfAPoBOpWgDBWfQCndGRXAQ==
+X-Google-Smtp-Source: APBJJlH6j0Ww1otYztDyN7R8yPQEX4DMdjE4EaTSbvjzsuEj6+yeD2BZI9v3UPAjEZlsbhq1mBWpeg==
+X-Received: by 2002:a17:903:2308:b0:1b8:aef2:773e with SMTP id d8-20020a170903230800b001b8aef2773emr2582222plh.46.1690389989599;
+        Wed, 26 Jul 2023 09:46:29 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902f54500b001bb6c5ff4edsm11628870plf.173.2023.07.26.09.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 09:46:29 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@rivosinc.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: [PATCH v7 0/4] RISC-V: mm: Make SV48 the default address space
+Date:   Wed, 26 Jul 2023 09:45:54 -0700
+Message-ID: <20230726164620.717288-1-charlie@rivosinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 26 2023, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Jul 26, 2023 at 1:57 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > > @@ -1143,7 +1208,14 @@ void i2c_hid_core_remove(struct i2c_client *client)
-> > >       struct i2c_hid *ihid = i2c_get_clientdata(client);
-> > >       struct hid_device *hid;
-> > >
-> > > -     i2c_hid_core_power_down(ihid);
-> > > +     /*
-> > > +      * If we're a follower, the act of unfollowing will cause us to be
-> > > +      * powered down. Otherwise we need to manually do it.
-> > > +      */
-> > > +     if (ihid->is_panel_follower)
-> > > +             drm_panel_remove_follower(&ihid->panel_follower);
-> >
-> > That part is concerning, as we are now calling hid_drv->suspend() when removing
-> > the device. It might or not have an impact (I'm not sure of it), but we
-> > are effectively changing the path of commands sent to the device.
-> >
-> > hid-multitouch might call a feature in ->suspend, but the remove makes
-> > that the physical is actually disconnected, so the function will fail,
-> > and I'm not sure what is happening then.
-> 
-> It's not too hard to change this if we're sure we want to. I could
-> change how the panel follower API works, though I'd rather keep it how
-> it is now for symmetry. Thus, if we want to do this I'd probably just
-> set a boolean at the beginning of i2c_hid_core_remove() to avoid the
-> suspend when the panel follower API calls us back.
+Make sv48 the default address space for mmap as some applications
+currently depend on this assumption. Users can now select a
+desired address space using a non-zero hint address to mmap. Previously,
+requesting the default address space from mmap by passing zero as the hint
+address would result in using the largest address space possible. Some
+applications depend on empty bits in the virtual address space, like Go and
+Java, so this patch provides more flexibility for application developers.
 
-I was more thinking on a boolean. No need to overload the API.
+-Charlie
 
-> 
-> That being said, are you sure you want me to do that?
-> 
-> 1. My patch doesn't change the behavior of any existing hardware. It
-> will only do anything for hardware that indicates it needs the panel
-> follower logic. Presumably these people could confirm that the logic
-> is OK for them, though I'll also admit that it's likely not many of
-> them will test the remove() case.
+---
+v7:
+- Changing RLIMIT_STACK inside of an executing program does not trigger
+  arch_pick_mmap_layout(), so rewrite tests to change RLIMIT_STACK from a
+  script before executing tests. RLIMIT_STACK of infinity forces bottomup
+  mmap allocation.
+- Make arch_get_mmap_base macro more readible by extracting out the rnd
+  calculation.
+- Use MMAP_MIN_VA_BITS in TASK_UNMAPPED_BASE to support case when mmap
+  attempts to allocate address smaller than DEFAULT_MAP_WINDOW.
+- Fix incorrect wording in documentation.
 
-Isn't trogdor (patch 10/10) already supported? Though you should be the
-one making tests, so it should be fine ;)
+v6:
+- Rebase onto the correct base
 
-> 
-> 2. Can you give more details about why you say that the function will
-> fail? The first thing that the remove() function will do is to
-> unfollow the panel and that can cause the suspend to happen. At the
-> time this code runs all the normal communications should work and so
-> there should be no problems calling into the suspend code.
+v5:
+- Minor wording change in documentation
+- Change some parenthesis in arch_get_mmap_ macros
+- Added case for addr==0 in arch_get_mmap_ because without this, programs would
+  crash if RLIMIT_STACK was modified before executing the program. This was
+  tested using the libhugetlbfs tests. 
 
-Now that I think about it more, maybe I am too biased by USB where the
-device remove would happened *after* the device has been physically
-unplugged. And this doesn't apply of course in the I2C world.
+v4:
+- Split testcases/document patch into test cases, in-code documentation, and
+  formal documentation patches
+- Modified the mmap_base macro to be more legible and better represent memory
+  layout
+- Fixed documentation to better reflect the implmentation
+- Renamed DEFAULT_VA_BITS to MMAP_VA_BITS
+- Added additional test case for rlimit changes
+---
 
-> 
-> 3. You can correct me if I'm wrong, but I'd actually argue that
-> calling the suspend code during remove actually fixes issues and we
-> should probably do it for the non-panel-follower case as well. I think
-> there are at least two benefits. One benefit is that if the i2c-hid
-> device is on a power rail that can't turn off (either an always-on or
-> a shared power rail) that we'll at least get the device in a low power
-> state before we stop managing it with this driver. The second benefit
-> is that it implicitly disables the interrupt and that fixes a
-> potential crash at remove time(). The crash in the old code I'm
-> imagining is:
-> 
-> a) i2c_hid_core_remove() is called.
-> 
-> b) We try to power down the i2c hid device, which might not do
-> anything if the device is on an always-on rail.
-> 
-> c) We call hid_destroy_device(), which frees the hid device.
-> 
-> d) An interrupt comes in before the call to free_irq() and we try to
-> dispatch it to the already freed hid device and crash.
-> 
-> 
-> If you agree that my reasoning makes sense, I can add a separate patch
-> before this one to suspend during remove.
+Charlie Jenkins (4):
+  RISC-V: mm: Restrict address space for sv39,sv48,sv57
+  RISC-V: mm: Add tests for RISC-V mm
+  RISC-V: mm: Update pgtable comment documentation
+  RISC-V: mm: Document mmap changes
 
-Yep, I agree with you :)
+ Documentation/riscv/vm-layout.rst             | 22 +++++++
+ arch/riscv/include/asm/elf.h                  |  2 +-
+ arch/riscv/include/asm/pgtable.h              | 21 ++++--
+ arch/riscv/include/asm/processor.h            | 47 ++++++++++++--
+ tools/testing/selftests/riscv/Makefile        |  2 +-
+ tools/testing/selftests/riscv/mm/.gitignore   |  2 +
+ tools/testing/selftests/riscv/mm/Makefile     | 15 +++++
+ .../riscv/mm/testcases/mmap_bottomup.c        | 35 ++++++++++
+ .../riscv/mm/testcases/mmap_default.c         | 35 ++++++++++
+ .../selftests/riscv/mm/testcases/mmap_test.h  | 64 +++++++++++++++++++
+ .../selftests/riscv/mm/testcases/run_mmap.sh  | 12 ++++
+ 11 files changed, 244 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/mm/Makefile
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_bottomup.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_default.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_test.h
+ create mode 100755 tools/testing/selftests/riscv/mm/testcases/run_mmap.sh
 
-Adding a separate patch would be nice, yes. Thanks!
+-- 
+2.41.0
 
-Cheers,
-Benjamin
