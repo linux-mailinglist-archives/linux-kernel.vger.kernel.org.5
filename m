@@ -2,112 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AD27632D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131547632DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbjGZJvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
+        id S233705AbjGZJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbjGZJvK (ORCPT
+        with ESMTP id S233737AbjGZJwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:51:10 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18542689
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=P0tMwfIEsQghasQIr74ILSz3V6gVl2gZXyyyBjB8MHs=; b=JqeAjBhQ+UeX4DjC6iXqnjy3Hz
-        aHkAjcDDJTNIsF/c8W5jvaNZJDVYTTjnCun8LPnQWSvQYtpI3hK/P73GCoM8YtBPzhhSsLlUQaBqH
-        laO360LCBCYvb9wKuYDhEtJsT+Ze1sxh9FOauUVwLYAOLNL1F54cRaDz8Pfs+r+v6s1BmXfTyZU1p
-        KfDOmrk/mz0d3qGut/d6lzoCiVERWsQpgJYVVGaIHLg7AoqXt7yT0xdFsNojQYgZLzsf83PI04avf
-        kyJeUQj+SgsaMHBVIbeimkGP2Ml1ZTUebQBkEN9CU1BzbEiZam6jTfBbNwCea1eP/rJaTkAXe2daC
-        3QqEGXuQ==;
-Received: from [192.168.1.4] (port=36991 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qObAH-00059K-1T;
-        Wed, 26 Jul 2023 11:50:41 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 26 Jul 2023 11:50:41 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <olteanv@gmail.com>
-CC:     <andrew@lunn.ch>, <ante.knezic@helmholz.de>, <davem@davemloft.net>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <netdev@vger.kernel.org>, <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Wed, 26 Jul 2023 11:50:40 +0200
-Message-ID: <20230726095040.12690-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20230725172343.qcqmcoygyhcgunmh@skbuf>
-References: <20230725172343.qcqmcoygyhcgunmh@skbuf>
+        Wed, 26 Jul 2023 05:52:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5233A26B9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:52:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EDDC1692;
+        Wed, 26 Jul 2023 02:52:42 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61A1B3F67D;
+        Wed, 26 Jul 2023 02:51:57 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/5] variable-order, large folios for anonymous memory
+Date:   Wed, 26 Jul 2023 10:51:41 +0100
+Message-Id: <20230726095146.2826796-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 20:23:43 +0300 Vladimir Oltean wrote:
-> I'm not sure which way is preferred by PHY maintainers, but it seems to
-> be a useless complication to simulate that you have a struct mdio_device
-> for the other lanes when you don't. It appears more appropriate to just
-> use mdiobus_c45_write(mpcs->mdio.bus, lanes[i]).
-> 
+Hi All,
 
-Agreed.
+This is v4 of a series to implement variable order, large folios for anonymous
+memory. (currently called "LARGE_ANON_FOLIO", previously called "FLEXIBLE_THP").
+The objective of this is to improve performance by allocating larger chunks of
+memory during anonymous page faults:
 
-> There's also the locking question (with the big caveat that we don't
-> know what the register writes do!). There's locking at the bus level,
-> but the MDIO device isn't locked. So phylink on those other PCSes can
-> still do stuff, even in-between the first and the second write to
-> undocumented register 0xf054.
-> 
-> I can speculate that writing 0x400c -> 0x4000 is something like: set
-> RX_RESET | TX_RESET followed by clear RX_RESET | TX_RESET. Is it ok if
-> stuff happens in between these writes - will it stick, or does this
-> logically interact with anything else in any other way? I guess we won't
-> know. I might be a bit closer to being okay with it if you could confirm
-> that some other (unrelated) register write to the PCS does make it
-> through (and can be read back) in between the 2 erratum writes.
+1) Since SW (the kernel) is dealing with larger chunks of memory than base
+   pages, there are efficiency savings to be had; fewer page faults, batched PTE
+   and RMAP manipulation, reduced lru list, etc. In short, we reduce kernel
+   overhead. This should benefit all architectures.
+2) Since we are now mapping physically contiguous chunks of memory, we can take
+   advantage of HW TLB compression techniques. A reduction in TLB pressure
+   speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
+   TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
 
-I was able to confirm this by successfully reading and writing to the 
-SGMII_BMCR register between erratum writes. This did not affect the issue
-that erratum fixes. Unfortunatelly, there is no info about what the
-actuall writing to magic registers does.
+This patch set deals with the SW side of things (1). (2) is being tackled in a
+separate series. The new behaviour is hidden behind a new Kconfig switch,
+LARGE_ANON_FOLIO, which is disabled by default. Although the eventual aim is to
+enable it by default.
 
->>  static int mv88e639x_sgmii_pcs_post_config(struct phylink_pcs *pcs,
->>  	                                   phy_interface_t interface)
->>  {
->>  	struct mv88e639x_pcs *mpcs = sgmii_pcs_to_mv88e639x_pcs(pcs);
->> +	struct mv88e6xxx_chip *chip = mpcs->chip;
->>  
->>  	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
->>  
->> +	if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
->> +	    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
->> +	        mv88e6390_erratum_3_14(mpcs);
->
->You could at least print an error if a write failure occurred, so that
->it doesn't go completely unnoticed.
+The "arm64: mm: Override arch_wants_pte_order()" patch is for arm64 to
+explicitly override the default arch_wants_pte_order() and is intended as an
+example. If this series is accepted I suggest ignoring this patch which I will
+take through the arm64 tree separately. Neither has any build dependency on the
+other.
 
-Ok, I was simply following the above notion (we don't check or print 
-errors when powering on the serdes lane) but I agree with your point and 
-will adapt the patch for the next version.
+My hope is that we are pretty much there with the changes at this point.
+Although they should not be merged until the prerequisites are complete. These
+are in progress and tracked at [4].
+
+The patches are based on top of v6.5-rc3. I have a branch at [5].
+
+
+Testing
+-------
+
+This version adds patches to mm selftests so that the cow tests explicitly test
+large anon folios, in the same way that thp is tested. When enabled you should
+see something similar at the start of the test suite:
+
+  # [INFO] detected large anon folio size: 64 KiB
+
+Then the following results are expected. The fails and skips are due to existing
+issues:
+
+  # Totals: pass:263 fail:16 xfail:0 xpass:0 skip:29 error:0
+
+Existing mm selftests reveal 1 regression in khugepaged tests when
+LARGE_ANON_FOLIO is enabled:
+
+  Run test: collapse_max_ptes_none (khugepaged:anon)
+  Maybe collapse with max_ptes_none exceeded.... Fail
+  Unexpected huge page
+
+I believe this is because khugepaged currently skips non-order-0 pages when
+looking for collapse opportunities and should get fixed with the help of
+DavidH's work to create a mechanism to precisely determine shared vs exclusive
+pages.
+
+
+Changes since v3 [3]
+--------------------
+
+  - Renamed feature from FLEXIBLE_THP to LARGE_ANON_FOLIO.
+  - Removed `flexthp_unhinted_max` boot parameter. Discussion concluded that a
+    sysctl is preferable but we will wait until real workload needs it.
+  - Fixed uninitialized `addr` on read fault path in do_anonymous_page().
+  - Added mm selftests for large anon folios in cow test suite.
+
+
+Changes since v2 [2]
+--------------------
+
+  - Dropped commit "Allow deferred splitting of arbitrary large anon folios"
+      - Huang, Ying suggested the "batch zap" work (which I dropped from this
+        series after v1) is a prerequisite for merging FLXEIBLE_THP, so I've
+        moved the deferred split patch to a separate series along with the batch
+        zap changes. I plan to submit this series early next week.
+  - Changed folio order fallback policy
+      - We no longer iterate from preferred to 0 looking for acceptable policy
+      - Instead we iterate through preferred, PAGE_ALLOC_COSTLY_ORDER and 0 only
+  - Removed vma parameter from arch_wants_pte_order()
+  - Added command line parameter `flexthp_unhinted_max`
+      - clamps preferred order when vma hasn't explicitly opted-in to THP
+  - Never allocate large folio for MADV_NOHUGEPAGE vma (or when THP is disabled
+    for process or system).
+  - Simplified implementation and integration with do_anonymous_page()
+  - Removed dependency on set_ptes()
+
+
+Changes since v1 [1]
+--------------------
+
+  - removed changes to arch-dependent vma_alloc_zeroed_movable_folio()
+  - replaced with arch-independent alloc_anon_folio()
+      - follows THP allocation approach
+  - no longer retry with intermediate orders if allocation fails
+      - fallback directly to order-0
+  - remove folio_add_new_anon_rmap_range() patch
+      - instead add its new functionality to folio_add_new_anon_rmap()
+  - remove batch-zap pte mappings optimization patch
+      - remove enabler folio_remove_rmap_range() patch too
+      - These offer real perf improvement so will submit separately
+  - simplify Kconfig
+      - single FLEXIBLE_THP option, which is independent of arch
+      - depends on TRANSPARENT_HUGEPAGE
+      - when enabled default to max anon folio size of 64K unless arch
+        explicitly overrides
+  - simplify changes to do_anonymous_page():
+      - no more retry loop
+
+
+Performance
+-----------
+
+Kernel compilation with 8 jobs:
+| kernel                     |   real-time |   kern-time |   user-time |
+|:---------------------------|------------:|------------:|------------:|
+| baseline-v6.5-rc3          |        0.0% |        0.0% |        0.0% |
+| anonfolio-v4               |       -4.9% |      -38.2% |       -0.7% |
+
+Kernel compilation with 80 jobs:
+| kernel                     |   real-time |   kern-time |   user-time |
+|:---------------------------|------------:|------------:|------------:|
+| baseline-v6.5-rc3          |        0.0% |        0.0% |        0.0% |
+| anonfolio-v4               |       -5.1% |      -42.3% |       -0.4% |
+
+Speedometer:
+| kernel                     |   runs_per_min |
+|:---------------------------|---------------:|
+| baseline-v6.5-rc3          |           0.0% |
+| anonfolio-v4               |           0.6% |
+
+
+[1] https://lore.kernel.org/linux-mm/20230626171430.3167004-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20230703135330.1865927-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/f8d47176-03a8-99bf-a813-b5942830fd73@arm.com/
+[5] https://gitlab.arm.com/linux-arm/linux-rr/-/tree/features/granule_perf/anonfolio-for_lkml_v4
+
+Thanks,
+Ryan
+
+
+Ryan Roberts (5):
+  mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+  mm: LARGE_ANON_FOLIO for improved performance
+  arm64: mm: Override arch_wants_pte_order()
+  selftests/mm/cow: Generalize do_run_with_thp() helper
+  selftests/mm/cow: Add large anon folio tests
+
+ arch/arm64/include/asm/pgtable.h |   6 +
+ include/linux/pgtable.h          |  13 ++
+ mm/Kconfig                       |  10 ++
+ mm/memory.c                      | 166 +++++++++++++++++++---
+ mm/rmap.c                        |  27 +++-
+ tools/testing/selftests/mm/cow.c | 229 ++++++++++++++++++++++---------
+ 6 files changed, 365 insertions(+), 86 deletions(-)
+
+--
+2.25.1
 
