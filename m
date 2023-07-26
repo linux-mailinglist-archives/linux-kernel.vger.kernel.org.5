@@ -2,62 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F153B763F14
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D038763F1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjGZSzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
+        id S232196AbjGZS4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbjGZSzl (ORCPT
+        with ESMTP id S231255AbjGZS41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:55:41 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFF22720
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1690397731;
-        bh=GoAWwHa/TyZ/4FOOmKYbnXSi58WIxY4Ka+P9O0yMH+E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=S6S5IXH9NmKzROLRovAketUjf89cg1ZfVd/go/bWKjYYzm3u2fJ+tdFhoLEKH/sDK
-         /CyJ/ZeOAO2b5XxsXrURuNzf6VOfKiEPJFLy88zyR4MI6/8jQan3ZuDqzU+sp3a2Mi
-         XdldMYoLglWNZFdc5kaMjhWRFOOKc58JSo2GvadEjcunvjhZda/KE3D7t75+0lIKrq
-         2W2wPHX98wStavLU6u9QP+nqV5pBoBehjnnz1PTBUzrIpt7pyGAPcSBOtbo8yCTM3M
-         agGHYeZPVIM7LoBuqHzuetVK1XP+RIVxLzzbC9yEYn4hJ59K3e025+YrkzjvvR8ng+
-         KRFMT+UjngWzA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RB34g3jX4z1K6L;
-        Wed, 26 Jul 2023 14:55:31 -0400 (EDT)
-Message-ID: <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
-Date:   Wed, 26 Jul 2023 14:56:19 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
+        Wed, 26 Jul 2023 14:56:27 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B95D270B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:56:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q10sutV6uriCtmvM/3bDuvu2gHhI0oDlDofIs209kFoF10aLfpGS9UjWBPVGWjtuA3FMRdKBjwPd1prAN2qKDNDOH/K2w/umZEaBSv8N1nlvPkkxE7dq78dlNpmqAQ2XdLjf/kbJlAko27XWvxoA/CXm2K3PvEomatkWp8YYrvNr8JKx492ND002ef/Kz54VOv8gh8BYGI21bQTbgmqQr+4JrOsxNZXEGj+0npKibTCmjhGT6vQ2YHESZHG0FKMO6VAJjukJEic1AjIVNRyJIzk07Ck+Bxgpt4VdqJNedBeNALPAKak+VQCAC6fcOhp/OkWzqB5CpxY7RB0nWbPY7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O8ECMQOy06vQggBjx42CVhKVaN0RHrfR4iDLzncKNh8=;
+ b=AzHbkkzvLvTX+Z7Rn2sJA4A9xJdzDymbCkOD+hoaJF1BTvuMytr5PZLeOBwCv57RXWgUIMuOlrBpRi/oR9I1ARokif74s1HbYyrJaz8C5GthzTcrU5UFM6Ubt95s7+HIK7j6x21GV+jOeOUavlzhjJ6NSEoYVm9ew9KczXgcLzKGB0webxwztP+J4B1v4U9cayGBnx1iPj50E9grFS3A93OaZwi6Bx6N7LBdXeV7soJj2uVosVFtKPkrDzwJxuJu5t/yxBYiG686Si3OPIkPJvMWJkcJ9iiIOLDYHF3np1q2lW2LAkvfB0M1038m25oto2Tjx2hwbYzHPiuvX9zqdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O8ECMQOy06vQggBjx42CVhKVaN0RHrfR4iDLzncKNh8=;
+ b=LZ9pnSjQnKKq0W6N8wEHDHNxt8hpafvUs6qq7C82ExuN+eeKMV7Lx6tWUYYjgLsYdMcyMWEIatf9GBu1BjW7InGIK57z3FYc+AeE0jDCgGInX6JLUnBvUiGmb7AXTmaWsmoFADnZibSZCqUx4D4LCUbcXkt4WbHxQVOp5D8QFK6ZhGULeq//VvLE+I0ULJKNoxDuJQVMyWtsyoQfRpgGE5hl2jmQNpg9dNA7tY3BRhFcGUNAKsusIeRm17lzT8WKPdM74N58TfuxQIp+QIWgeI736etc2PRtSO+18mlCCd5n9QSn6Mk2071w91VTuN2B+ZlFOy9io+W7ZEwmE6GCdA==
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
+ by CH0PR12MB5203.namprd12.prod.outlook.com (2603:10b6:610:ba::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
+ 2023 18:56:24 +0000
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::40dc:9f89:895c:8667]) by DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::40dc:9f89:895c:8667%4]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
+ 18:56:24 +0000
+From:   Dragos Tatulea <dtatulea@nvidia.com>
+To:     "mst@redhat.com" <mst@redhat.com>
+CC:     Parav Pandit <parav@nvidia.com>,
+        "linma@zju.edu.cn" <linma@zju.edu.cn>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 0/2] vdpa: Enable strict validation for netlink ops
+Thread-Topic: [PATCH 0/2] vdpa: Enable strict validation for netlink ops
+Thread-Index: AQHZv+9e5mifEKOj4EGSlYbK7Ha8O6/MYG+AgAAFcIA=
+Date:   Wed, 26 Jul 2023 18:56:24 +0000
+Message-ID: <8a97e0d439d74373605b00dcaef91108ced9e5ee.camel@nvidia.com>
+References: <20230726183054.10761-1-dtatulea@nvidia.com>
+         <20230726143640-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230726143640-mutt-send-email-mst@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
- <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
- <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
- <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|CH0PR12MB5203:EE_
+x-ms-office365-filtering-correlation-id: 71ffd9b8-ff75-40ca-4d00-08db8e0a0251
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sFZWFz0zDrNedLXzABLY0oE98WxjEC/xyv5vpHvbEkQsV6z7rIpeHnE2Szc5e8aUwP2/SO6dsQO7dq8QOZQNQQIMNb/cChUmNwneqvpRoCO9VkpyWF5jJiI44muC5pu4eM1meRYZaCS6oUlqCFH76Ro+q/WgntLiTLzNtb1aF2rQh9QaGzil5vyclFJBIH9UTp0pjOaPJoYWE+6MtjWOpEiueOyB5walfKZPH0qNEX363Qq0Hh8Y64nOMu2vJnfOu7Bodv7/CDqZnqkTSF24evHnlS9vGKcNII41XOdo7l3ktvPWO4bFrp+p/5gjMhG96+FTdpnwto/fgmSb1FaV9Q9m4fv0mcv0Ihl2iIgiftSyXRXROqNOdMFPFRT+0CU5cwG/g55KAslSFLxs52MmoMhIq8aUT3rZ33q1/IQ5oH3lYNL4i7ZfzWYvGp/ViuUa0ksY/qtIVRYWxfS5cb6U56+xwxtJcuAUPPRqpczN8oGanJK4HC0oO5QUxmVn4fOX7AwRbUbvAdApsdE2BsB+RXjkePJ8kYUl0oz6OPfkba5Em43MYJ0W7ijAAJgRw0z273tN6xAsgChPR6lKXa0IO4tHXm2W7VP5sfYcp9xlKcSTbPi1diJVfWZfnasgX21HcVd8x+FPe816HPvcKPBRt9pgDv7gBlsR5wDmaWuFTZY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(346002)(136003)(366004)(376002)(451199021)(41300700001)(71200400001)(38100700002)(478600001)(91956017)(6512007)(86362001)(966005)(36756003)(4326008)(8676002)(8936002)(6916009)(76116006)(186003)(316002)(66446008)(66476007)(66946007)(66556008)(64756008)(6506007)(122000001)(5660300002)(2906002)(2616005)(83380400001)(54906003)(38070700005)(6486002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZFh2NllRWlFkR2VqTTNnRjUzbDNVMjJ6bDMyRTNnYzZEYkJQV05wVWhvNjdL?=
+ =?utf-8?B?TU5HTVcrUHBmakJyRTJ4czZvWjVTdEJRRHNjTEhzRFNwMWpUUGZiNVZKOU54?=
+ =?utf-8?B?bE4wbmRENHd0Nm56RytxOUI2VkY3N1ExdlhKSkJ6MHlFUHl3Vk5PRElCdlBm?=
+ =?utf-8?B?K09OOFBqL1ZndlB3cVdlcDErdjBEV3RXTExVcTFnOUdiNklUNStHSEROTjMw?=
+ =?utf-8?B?TFNOOG5TcDR6cFlCdkxrZS9NUkpNWUhlUU1yUUd3VXE1YXBlbU5OQmRKUVRG?=
+ =?utf-8?B?SUsxUUFFMDdhTEZQdVozNVBCY0xMTzcwUHlKOUk3SU5WNklKT1g2eWd0YUlj?=
+ =?utf-8?B?QWFBeGQyOGdHN3JIWFA3YVd2Z3NCYnZwUE51OStudFduZFQwTVZoZ1BNUy9Q?=
+ =?utf-8?B?SmlMMVF3cGpEeEhVYXRqdnRoczQwMkY0N1ZWVk5WRklORkNENElJYXl4QUdT?=
+ =?utf-8?B?aEhSU1RSOHZpd0NPcUloQS9WU1kzL0JFZXFwRVFHa3pVdGNtMUxvUEZ2a3Bn?=
+ =?utf-8?B?STRBNC8vRW8wOVY4akxGSitWdldoRHpsNnVCUTYyUTladzdGcUlLZ2liSytG?=
+ =?utf-8?B?clhHYjRtcjJMNmtFd2tDVW5RVkQ1UEtmanlMVjRSUnJkT29XcHRHNFE3OCtL?=
+ =?utf-8?B?NnVmK0RZbWcvdDJseFdHeDRVNWRQeHJJUlhGQlYzS0YyeXNKeklWZndGb3hx?=
+ =?utf-8?B?T2dHQzloY0drWUxhK2pINUY3UFc2MC9qUDNnYTNkZGViMEZ2VXpGTCtFTU9K?=
+ =?utf-8?B?Y1ZEb3FiSVZJZnFRYmVTVXJPYTk2R2VJbkxWenE5dW9paDVCamlPWDkyZnhJ?=
+ =?utf-8?B?UHQvZWNXeisrUWY0VWpmeXI3dTdEb0t5UlRWbEZyemI5VFFqYUwzVHBOT05E?=
+ =?utf-8?B?MVVQSHgwb2U2cTlEdm1WUXVtQWVQU3NXR0pmMVRad0NtWjNzYkRnbTdqU0dn?=
+ =?utf-8?B?Z092d2pCZGlrZVVZQWxSNHM1WWp5UUpiNDZyQlRZSDc1TTBPMnAzSXFWUmd0?=
+ =?utf-8?B?Tkw2Z2FtdUMzSWtBYThWZXc5Q3RzRGRBS2tBbVpjazNmaVQ3aStkcllrY0hC?=
+ =?utf-8?B?Y2hpNkEvTW9XQXp0L0c0TWEwc1IyVW5EYXRDSXBadmxsVDRLaHhCRkVyYWkz?=
+ =?utf-8?B?aW43ZEI2dVJkMGpCb0lIMWJZWUhFby9qUFViS1FVTDh4cDNNWTRtQ0xjTktl?=
+ =?utf-8?B?dkNOenpGR1ZpS0ppUHVoN1BQVEJCQ3JrL2lIT1MwU09BOHo2aVFybmtoVHR0?=
+ =?utf-8?B?RFlGUXBISXVpQTBpaVU2aWczZm91WXpyWEJtRjhXcVdNSUx6Y1hSdUE0ZXQz?=
+ =?utf-8?B?eUc5V0FhSTdwZmRSc0VxbjdJNVp4b0F4QWNsMmw1Mzh6SU5HVTBqenQ5V2pm?=
+ =?utf-8?B?cGNjNWNCVkhaTzFFMm9nYk83QW1aQU9nU0dvbHBVN3FtN2piSlJyVFE1aGVa?=
+ =?utf-8?B?c21QbVd3ekNNdml3WUg2dmdqZGtrK1FCaWlEaGhjR2JUb3ErZ2trQ2MxUWJH?=
+ =?utf-8?B?dGZ0V1hJbit2QndkczNpbWxVNHRhT2JUSTkxcm8xNHdmS0FkRnhWK21EQlp4?=
+ =?utf-8?B?eklHeXJYTldaY3FwRWdTNXdIQUVaYzJZcmwvN1haMTlQUlBsNXdwNGNsUnJ2?=
+ =?utf-8?B?dUNlYzViMWpEVHdGUVhUUlhGbzlIYWV6QUVlYTBaYlJNMEptNHJCMHBOaHIw?=
+ =?utf-8?B?ZVJFaXoxU1Frd3NuZWViZ0xPN2YrRytwZTNUNWg0RU12QU1KTk1QTEUrbklp?=
+ =?utf-8?B?czlmZmp5VTBhWlNNV3YxYnBlMHdHRVZwVlNDWVc1L0NHYUFpUm54K0lWSnd2?=
+ =?utf-8?B?NER6RE1XUDhDN2djbE5aTXliRGJrb1RiUW1sQkZUS1FPQXBJUTUvcGxrUEJO?=
+ =?utf-8?B?VytnV0w2WHdBaEJXaWw0SENWaS9LV1pyZWJLVUV4dmVLWk5RczJVS2ZiTDhI?=
+ =?utf-8?B?cmxSQmNWNjJYbkQ0Z0FWdkR5RW8yaDc0dVFRSkJGVzNmZFB0Y2VWN3JoTGFV?=
+ =?utf-8?B?MUY3WkhLTkFYZWxrd2k3Y2MwbXBpRDlzSDNnaEtacDJualVsR1N5V1BycG5t?=
+ =?utf-8?B?R0pRcGlWQkR0WEdzY0hoMFA5NElDWURIWTh3ZitQSk1tNHdBMjBHR1JJN2Mx?=
+ =?utf-8?B?R0hKdU15V3VCMmNrQzVwdGFFUG1JWVdCWjkxaE4rdnc0STU3Y0wrOGcxOWRQ?=
+ =?utf-8?Q?oy44SgcKEitgZWiX2kQouP0nUMNy1HX4xCp6WzcGdUo5?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <95EDBA25B6680F4DADF99FF983FD1D6A@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71ffd9b8-ff75-40ca-4d00-08db8e0a0251
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 18:56:24.2644
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lhskGuJwX6vLnYIxBo5JJvIK/vNCOpnFW9/+shTggqlusjkTgNLRT/Ep2tt7SSRdq7QHHTB3uYqVoGPp+h78xQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5203
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,216 +135,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 13:40, Shrikanth Hegde wrote:
-> 
-> 
-> On 7/26/23 7:37 PM, Mathieu Desnoyers wrote:
->> On 7/26/23 04:04, Shrikanth Hegde wrote:
->>>
->>>
->>> On 7/26/23 1:00 AM, Mathieu Desnoyers wrote:
->>>> Allow select_task_rq to consider a cpu as idle for 1ms after that cpu
->>>> has exited the idle loop.
->>>>
->>>> This speeds up the following hackbench workload on a 192 cores AMD EPYC
->>>> 9654 96-Core Processor (over 2 sockets):
->>>>
->>>> hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
->>>>
->>>> from 49s to 34s. (30% speedup)
->>>>
->>>> My working hypothesis for why this helps is: queuing more than a single
->>>> task on the runqueue of a cpu which just exited idle rather than
->>>> spreading work over other idle cpus helps power efficiency on systems
->>>> with large number of cores.
->>>>
->>>> This was developed as part of the investigation into a weird regression
->>>> reported by AMD where adding a raw spinlock in the scheduler context
->>>> switch accelerated hackbench.
-> 
-> Do you have SMT here? What is the system utilization when you are running
-> this workload?
-
-Yes, SMT is enabled, which brings the number of logical cpus to 384.
-
-CPU utilization (through htop):
-
-* 6.4.4:                                           27500%
-* 6.4.4 with the extend-idle+nr_running<=4 patch:  30500%
-
-> 
->>>>
->>>> It turned out that changing this raw spinlock for a loop of 10000x
->>>> cpu_relax within do_idle() had similar benefits.
->>>>
->>>> This patch achieve a similar effect without the busy-waiting by
->>>> introducing a runqueue state sampling the sched_clock() when exiting
->>>> idle, which allows select_task_rq to consider "as idle" a cpu which has
->>>> recently exited idle.
->>>>
->>>> This patch should be considered "food for thoughts", and I would be glad
->>>> to hear feedback on whether it causes regressions on _other_ workloads,
->>>> and whether it helps with the hackbench workload on large Intel system
->>>> as well.
->>>>
->>>> Link:
->>>> https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
->>>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>> Cc: Ingo Molnar <mingo@redhat.com>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Cc: Valentin Schneider <vschneid@redhat.com>
->>>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>>> Cc: Ben Segall <bsegall@google.com>
->>>> Cc: Mel Gorman <mgorman@suse.de>
->>>> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->>>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->>>> Cc: Juri Lelli <juri.lelli@redhat.com>
->>>> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
->>>> Cc: Aaron Lu <aaron.lu@intel.com>
->>>> Cc: x86@kernel.org
->>>> ---
->>>>    kernel/sched/core.c  | 4 ++++
->>>>    kernel/sched/sched.h | 3 +++
->>>>    2 files changed, 7 insertions(+)
->>>>
->>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->>>> index a68d1276bab0..d40e3a0a5ced 100644
->>>> --- a/kernel/sched/core.c
->>>> +++ b/kernel/sched/core.c
->>>> @@ -6769,6 +6769,7 @@ void __sched schedule_idle(void)
->>>>         * TASK_RUNNING state.
->>>>         */
->>>>        WARN_ON_ONCE(current->__state);
->>>> +    WRITE_ONCE(this_rq()->idle_end_time, sched_clock());
->>>>        do {
->>>>            __schedule(SM_NONE);
->>>>        } while (need_resched());
->>>> @@ -7300,6 +7301,9 @@ int idle_cpu(int cpu)
->>>>    {
->>>>        struct rq *rq = cpu_rq(cpu);
->>>>    +    if (sched_clock() < READ_ONCE(rq->idle_end_time) +
->>>> IDLE_CPU_DELAY_NS)
->>>
->>>
->>> Wouldn't this hurt the latency badly? Specially on a loaded system with
->>> a workload that does a lot of wakeup.
->>
->> Good point !
->>
->> Can you try your benchmark replacing the if () statement above by:
->>
->> +       if (sched_clock() < READ_ONCE(rq->idle_end_time) +
->> IDLE_CPU_DELAY_NS &&
->> +           READ_ONCE(rq->nr_running) <= 4)
->> +               return 1;
-> 
-> 
-> Tried with this change. I think it does help in reducing latency compared to
-> earlier specially till 95th percentile.
-
-For the records, I also tried with nr_running <= 2 and still had decent performance
-(32s with nr_running <= 2 instead of 30s for nr_running <= 4). It did drop with
-nr_running <= 1 (40s). nr_running <= 5 was similar to 4, and performances start
-degrading with nr_running <= 8 (31s).
-
-So it might be interesting to measure the latency with nr_running <= 2 as well.
-Perhaps nr_running <= 2 would be a good compromise between throughput and tail
-latency.
-
->                                                                                  
->                  6.5-rc3      6.5-rc3+RFC_Patch     6.5-rc3_RFC_Patch
->                                                       + nr<4
-> 4 Groups
-> 50.0th:          18.00                18.50           18.50
-> 75.0th:          21.50                26.00           23.50
-> 90.0th:          56.00                940.50          501.00
-> 95.0th:          678.00               1896.00         1392.00
-> 99.0th:          2484.00              3756.00         3708.00
-> 99.5th:          3224.00              4616.00         5088.00
-> 99.9th:          4960.00              6824.00         8068.00
-> 8 Groups
-> 50.0th:          23.50                25.50           23.00
-> 75.0th:          30.50                421.50          30.50
-> 90.0th:          443.50               1722.00         741.00
-> 95.0th:          1410.00              2736.00         1670.00
-> 99.0th:          3942.00              5496.00         4032.00
-> 99.5th:          5232.00              7016.00         5064.00
-> 99.9th:          7996.00              8896.00         8012.00
-> 16 Groups
-> 50.0th:          33.50                41.50           32.50
-> 75.0th:          49.00                752.00          47.00
-> 90.0th:          1067.50              2332.00         994.50
-> 95.0th:          2093.00              3468.00         2117.00
-> 99.0th:          5048.00              6728.00         5568.00
-> 99.5th:          6760.00              7624.00         6960.00
-> 99.9th:          8592.00              9504.00         11104.00
-> 32 Groups
-> 50.0th:          60.00                79.00           53.00
-> 75.0th:          456.50               1712.00         209.50
-> 90.0th:          2788.00              3996.00         2752.00
-> 95.0th:          4544.00              5768.00         5024.00
-> 99.0th:          8444.00              9104.00         10352.00
-> 99.5th:          9168.00              9808.00         12720.00
-> 99.9th:          11984.00             12448.00        17624.00
-
-[...]
-
->>>>    @@ -1010,6 +1012,7 @@ struct rq {
->>>>          struct task_struct __rcu    *curr;
->>>>        struct task_struct    *idle;
->>>> +    u64            idle_end_time;
-> 
-> There is clock_idle already in the rq. Can that be used for the same?
-
-Good point! And I'll change my use of "sched_clock()" in idle_cpu() for a
-proper "sched_clock_cpu(cpu_of(rq))", which will work better on systems
-without constant tsc.
-
-The updated patch:
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a68d1276bab0..1c7d5bd2968b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7300,6 +7300,10 @@ int idle_cpu(int cpu)
-  {
-  	struct rq *rq = cpu_rq(cpu);
-  
-+	if (READ_ONCE(rq->nr_running) <= IDLE_CPU_DELAY_MAX_RUNNING &&
-+	    sched_clock_cpu(cpu_of(rq)) < READ_ONCE(rq->clock_idle) + IDLE_CPU_DELAY_NS)
-+		return 1;
-+
-  	if (rq->curr != rq->idle)
-  		return 0;
-  
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 81ac605b9cd5..57a49a5524f0 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -97,6 +97,9 @@
-  # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
-  #endif
-  
-+#define IDLE_CPU_DELAY_NS		1000000		/* 1ms */
-+#define IDLE_CPU_DELAY_MAX_RUNNING	4
-+
-  struct rq;
-  struct cpuidle_state;
-
-And using it now brings the hackbench wall time at 28s :)
-
-Thanks,
-
-Mathieu
-
-> 
->>>>        struct task_struct    *stop;
->>>>        unsigned long        next_balance;
->>>>        struct mm_struct    *prev_mm;
->>
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+T24gV2VkLCAyMDIzLTA3LTI2IGF0IDE0OjM2IC0wNDAwLCBNaWNoYWVsIFMuIFRzaXJraW4gd3Jv
+dGU6DQo+IE9uIFdlZCwgSnVsIDI2LCAyMDIzIGF0IDA5OjMwOjQ4UE0gKzAzMDAsIERyYWdvcyBU
+YXR1bGVhIHdyb3RlOg0KPiA+IFRoZSBvcmlnaW5hbCBwYXRjaCBmcm9tIExpbiBNYSBlbmFibGVz
+IHRoZSB2ZHBhIGRyaXZlciB0byB1c2UgdmFsaWRhdGlvbg0KPiA+IG5ldGxpbmsgb3BzLg0KPiA+
+IA0KPiA+IFRoZSBzZWNvbmQgcGF0Y2ggc2ltcGx5IGRpc2FibGVzIHRoZSB2YWxpZGF0aW9uIHNr
+aXAgd2hpY2ggaXMgbm8gbG9uZ2VyDQo+ID4gbmVjY2VzYXJ5LiBQYXRjaHNldCBzdGFydGVkIG9m
+IGZyb20gdGhpcyBkaXNjdXNzaW9uIFswXS4NCj4gPiANCj4gPiBbMF0NCj4gPiBodHRwczovL2xv
+cmUua2VybmVsLm9yZy92aXJ0dWFsaXphdGlvbi8yMDIzMDcyNjA3NDcxMC1tdXR0LXNlbmQtZW1h
+aWwtbXN0QGtlcm5lbC5vcmcvVC8jdA0KPiANCj4gQ2Mgc3RhYmxlIHdpdGggYXQgbGVhc3QgMS8y
+ID8NCj4gDQpTZW50IGEgdjIgd2l0aCBzdGFibGUgaW4gY2MuIEJ1dCBsb29rcyBsaWtlIDEvMiBi
+cmVha3MgdGhlICJmaXggb25lIHRoaW5nIG9ubHkiDQpydWxlIGR1ZSB0byB0aGUgbWFueSBGaXhl
+cyB0YWdzIEkgZ3Vlc3MuLi4NCg0KPiA+IERyYWdvcyBUYXR1bGVhICgxKToNCj4gPiDCoCB2ZHBh
+OiBFbmFibGUgc3RyaWN0IHZhbGlkYXRpb24gZm9yIG5ldGxpbmtzIG9wcw0KPiA+IA0KPiA+IExp
+biBNYSAoMSk6DQo+ID4gwqAgdmRwYTogQ29tcGxlbWVudCB2ZHBhX25sX3BvbGljeSBmb3Igbmxh
+dHRyIGxlbmd0aCBjaGVjaw0KPiA+IA0KPiA+IMKgZHJpdmVycy92ZHBhL3ZkcGEuYyB8IDkgKysr
+LS0tLS0tDQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9u
+cygtKQ0KPiA+IA0KPiA+IC0tIA0KPiA+IDIuNDEuMA0KPiANCg0K
