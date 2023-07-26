@@ -2,180 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95468763CF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFADC763CD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbjGZQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        id S229822AbjGZQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbjGZQt6 (ORCPT
+        with ESMTP id S231684AbjGZQqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:49:58 -0400
-Received: from aer-iport-2.cisco.com (aer-iport-2.cisco.com [173.38.203.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E121A8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4334; q=dns/txt; s=iport;
-  t=1690390196; x=1691599796;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7RIRVvP4MKCFvgB/74OSuv2zzERdm/ln1FIu9qAS8CY=;
-  b=J8CXlfxeGrGUyHEZfUiAYVSy+smmkMJo4tSdKQ5vpwRE2iUizMtqTVMZ
-   8ZHrCDxtW54z5C8T+nwsxC7e9ifhae3WdSvG9wR8enm+ljdrJdPjbFMxv
-   MLhEV3oryYPySYuAAPqnol6PQQbU8DSmUkkyB3ZLmN0SU+mNB8jv5YTuW
-   U=;
-X-IronPort-AV: E=Sophos;i="6.01,232,1684800000"; 
-   d="scan'208";a="8452952"
-Received: from aer-iport-nat.cisco.com (HELO aer-core-7.cisco.com) ([173.38.203.22])
-  by aer-iport-2.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 16:46:27 +0000
-Received: from archlinux-cisco.cisco.com (dhcp-10-61-98-211.cisco.com [10.61.98.211])
-        (authenticated bits=0)
-        by aer-core-7.cisco.com (8.15.2/8.15.2) with ESMTPSA id 36QGjqU2022602
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 26 Jul 2023 16:46:27 GMT
-From:   Ariel Miculas <amiculas@cisco.com>
-To:     rust-for-linux@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tycho@tycho.pizza, brauner@kernel.org, viro@zeniv.linux.org.uk,
-        ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
-        Ariel Miculas <amiculas@cisco.com>
-Subject: [RFC PATCH v2 10/10] rust: puzzlefs: add oci_root_dir and image_manifest filesystem parameters
-Date:   Wed, 26 Jul 2023 19:45:34 +0300
-Message-ID: <20230726164535.230515-11-amiculas@cisco.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726164535.230515-1-amiculas@cisco.com>
-References: <20230726164535.230515-1-amiculas@cisco.com>
+        Wed, 26 Jul 2023 12:46:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B282736;
+        Wed, 26 Jul 2023 09:45:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B4861BCE;
+        Wed, 26 Jul 2023 16:45:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3BA1C433C8;
+        Wed, 26 Jul 2023 16:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690389956;
+        bh=jZXU5ruoejJhbuBwYdY1ZLLXNDtD+W4XvI24g/fO+KE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W2GX0KSPedlzHVDnCDMF579Ei8TNx3SeQuZGttRTDbua0P/7iPBHdQrodkKvKz53q
+         ko95RC5W4SGMm2SMMHVOTaobkjO24mJ6Ypy4bSuugKBy7qT+nsdq5DrgpsI52CPR2L
+         uwNwruMz9AK4peZEO7k6wY+Iv2Gn482iFMcPojVDYrZp2ivX0pZlrCfk4eMa0fWVIl
+         ikzgZSI8G2YAzFObXRsuw7mu9/Ak1aC4V5gzFBUsLntUj3NDhREmvdADY2S83IWzai
+         aQM5dMHQuwMgCvkzilvUWxjVyoXqGRdfVX3dIKpw5tgyNoqVMnn6Fzsfz7sZNRBNac
+         4C9OxIis2Sv9A==
+Date:   Wed, 26 Jul 2023 18:45:48 +0200
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, cros-qcom-dts-watchers@chromium.org,
+        linux-arm-msm@vger.kernel.org,
+        yangcong5@huaqin.corp-partner.google.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Chris Morgan <macroalpha82@gmail.com>,
+        linux-input@vger.kernel.org, hsinyi@google.com
+Subject: Re: [PATCH v3 08/10] HID: i2c-hid: Support being a panel follower
+Message-ID: <bcshx6a3twlvvcwwzndep6gwczlppou3llwqyle6hmp26v57tk@7erwnkxfngse>
+References: <20230725203545.2260506-1-dianders@chromium.org>
+ <20230725133443.v3.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid>
+ <rorhwk3jx72twmqnxqb45uhm7azxxfirvferwyznbhbfmdf7ja@6k6ebhehmsn4>
+ <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-User: amiculas
-X-Outbound-SMTP-Client: 10.61.98.211, dhcp-10-61-98-211.cisco.com
-X-Outbound-Node: aer-core-7.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAD=FV=VX=ACR3K+GYAvP8J4ebP4GtTpXQmX21NkJ4BJ7vN+o8w@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These parameters are passed when mounting puzzlefs using '-o' option of
-mount:
--o oci_root_dir="/path/to/oci/dir"
--o image_manifest="root_hash_of_image_manifest"
+On Jul 26 2023, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Jul 26, 2023 at 1:57 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
+> >
+> > > @@ -1143,7 +1208,14 @@ void i2c_hid_core_remove(struct i2c_client *client)
+> > >       struct i2c_hid *ihid = i2c_get_clientdata(client);
+> > >       struct hid_device *hid;
+> > >
+> > > -     i2c_hid_core_power_down(ihid);
+> > > +     /*
+> > > +      * If we're a follower, the act of unfollowing will cause us to be
+> > > +      * powered down. Otherwise we need to manually do it.
+> > > +      */
+> > > +     if (ihid->is_panel_follower)
+> > > +             drm_panel_remove_follower(&ihid->panel_follower);
+> >
+> > That part is concerning, as we are now calling hid_drv->suspend() when removing
+> > the device. It might or not have an impact (I'm not sure of it), but we
+> > are effectively changing the path of commands sent to the device.
+> >
+> > hid-multitouch might call a feature in ->suspend, but the remove makes
+> > that the physical is actually disconnected, so the function will fail,
+> > and I'm not sure what is happening then.
+> 
+> It's not too hard to change this if we're sure we want to. I could
+> change how the panel follower API works, though I'd rather keep it how
+> it is now for symmetry. Thus, if we want to do this I'd probably just
+> set a boolean at the beginning of i2c_hid_core_remove() to avoid the
+> suspend when the panel follower API calls us back.
 
-For a particular manifest in the manifests array in index.json (located
-in the oci_root_dir), the root hash of the image manifest is found in
-the digest field.
+I was more thinking on a boolean. No need to overload the API.
 
-It would be nicer if we could pass the tag, but we don't support json
-deserialization.
+> 
+> That being said, are you sure you want me to do that?
+> 
+> 1. My patch doesn't change the behavior of any existing hardware. It
+> will only do anything for hardware that indicates it needs the panel
+> follower logic. Presumably these people could confirm that the logic
+> is OK for them, though I'll also admit that it's likely not many of
+> them will test the remove() case.
 
-Example of mount:
-mount -t puzzlefs -o oci_root_dir="/home/puzzlefs_oci" -o \
-image_manifest="2d6602d678140540dc7e96de652a76a8b16e8aca190bae141297bcffdcae901b" \
-none /mnt
+Isn't trogdor (patch 10/10) already supported? Though you should be the
+one making tests, so it should be fine ;)
 
-Signed-off-by: Ariel Miculas <amiculas@cisco.com>
----
- samples/rust/puzzlefs.rs | 63 ++++++++++++++++++++++++++--------------
- 1 file changed, 41 insertions(+), 22 deletions(-)
+> 
+> 2. Can you give more details about why you say that the function will
+> fail? The first thing that the remove() function will do is to
+> unfollow the panel and that can cause the suspend to happen. At the
+> time this code runs all the normal communications should work and so
+> there should be no problems calling into the suspend code.
 
-diff --git a/samples/rust/puzzlefs.rs b/samples/rust/puzzlefs.rs
-index dad7ecc76eca..4e9a8aedf0c1 100644
---- a/samples/rust/puzzlefs.rs
-+++ b/samples/rust/puzzlefs.rs
-@@ -7,6 +7,7 @@
- use kernel::{
-     c_str, file, fs,
-     io_buffer::IoBufferWriter,
-+    str::CString,
-     sync::{Arc, ArcBorrow},
- };
- 
-@@ -31,27 +32,29 @@ struct PuzzlefsInfo {
-     puzzlefs: Arc<PuzzleFS>,
- }
- 
-+#[derive(Default)]
-+struct PuzzleFsParams {
-+    oci_root_dir: Option<CString>,
-+    image_manifest: Option<CString>,
-+}
-+
- #[vtable]
- impl fs::Context<Self> for PuzzleFsModule {
--    type Data = ();
--
--    kernel::define_fs_params! {(),
--        {flag, "flag", |_, v| { pr_info!("flag passed-in: {v}\n"); Ok(()) } },
--        {flag_no, "flagno", |_, v| { pr_info!("flagno passed-in: {v}\n"); Ok(()) } },
--        {bool, "bool", |_, v| { pr_info!("bool passed-in: {v}\n"); Ok(()) } },
--        {u32, "u32", |_, v| { pr_info!("u32 passed-in: {v}\n"); Ok(()) } },
--        {u32oct, "u32oct", |_, v| { pr_info!("u32oct passed-in: {v}\n"); Ok(()) } },
--        {u32hex, "u32hex", |_, v| { pr_info!("u32hex passed-in: {v}\n"); Ok(()) } },
--        {s32, "s32", |_, v| { pr_info!("s32 passed-in: {v}\n"); Ok(()) } },
--        {u64, "u64", |_, v| { pr_info!("u64 passed-in: {v}\n"); Ok(()) } },
--        {string, "string", |_, v| { pr_info!("string passed-in: {v}\n"); Ok(()) } },
--        {enum, "enum", [("first", 10), ("second", 20)], |_, v| {
--            pr_info!("enum passed-in: {v}\n"); Ok(()) }
--        },
-+    type Data = Box<PuzzleFsParams>;
-+
-+    kernel::define_fs_params! {Box<PuzzleFsParams>,
-+        {string, "oci_root_dir", |s, v| {
-+                                      s.oci_root_dir = Some(CString::try_from_fmt(format_args!("{v}"))?);
-+                                      Ok(())
-+                                  }},
-+        {string, "image_manifest", |s, v| {
-+                                      s.image_manifest = Some(CString::try_from_fmt(format_args!("{v}"))?);
-+                                      Ok(())
-+                                  }},
-     }
- 
--    fn try_new() -> Result {
--        Ok(())
-+    fn try_new() -> Result<Self::Data> {
-+        Ok(Box::try_new(PuzzleFsParams::default())?)
-     }
- }
- 
-@@ -136,11 +139,27 @@ impl fs::Type for PuzzleFsModule {
-     const FLAGS: i32 = fs::flags::USERNS_MOUNT;
-     const DCACHE_BASED: bool = true;
- 
--    fn fill_super(_data: (), sb: fs::NewSuperBlock<'_, Self>) -> Result<&fs::SuperBlock<Self>> {
--        let puzzlefs = PuzzleFS::open(
--            c_str!("/home/puzzlefs_oci"),
--            c_str!("2d6602d678140540dc7e96de652a76a8b16e8aca190bae141297bcffdcae901b"),
--        );
-+    fn fill_super(
-+        data: Box<PuzzleFsParams>,
-+        sb: fs::NewSuperBlock<'_, Self>,
-+    ) -> Result<&fs::SuperBlock<Self>> {
-+        let oci_root_dir = match data.oci_root_dir {
-+            Some(val) => val,
-+            None => {
-+                pr_err!("missing oci_root_dir parameter!\n");
-+                return Err(ENOTSUPP);
-+            }
-+        };
-+
-+        let image_manifest = match data.image_manifest {
-+            Some(val) => val,
-+            None => {
-+                pr_err!("missing image_manifest parameter!\n");
-+                return Err(ENOTSUPP);
-+            }
-+        };
-+
-+        let puzzlefs = PuzzleFS::open(&oci_root_dir, &image_manifest);
- 
-         if let Err(ref e) = puzzlefs {
-             pr_info!("error opening puzzlefs {e}\n");
--- 
-2.41.0
+Now that I think about it more, maybe I am too biased by USB where the
+device remove would happened *after* the device has been physically
+unplugged. And this doesn't apply of course in the I2C world.
 
+> 
+> 3. You can correct me if I'm wrong, but I'd actually argue that
+> calling the suspend code during remove actually fixes issues and we
+> should probably do it for the non-panel-follower case as well. I think
+> there are at least two benefits. One benefit is that if the i2c-hid
+> device is on a power rail that can't turn off (either an always-on or
+> a shared power rail) that we'll at least get the device in a low power
+> state before we stop managing it with this driver. The second benefit
+> is that it implicitly disables the interrupt and that fixes a
+> potential crash at remove time(). The crash in the old code I'm
+> imagining is:
+> 
+> a) i2c_hid_core_remove() is called.
+> 
+> b) We try to power down the i2c hid device, which might not do
+> anything if the device is on an always-on rail.
+> 
+> c) We call hid_destroy_device(), which frees the hid device.
+> 
+> d) An interrupt comes in before the call to free_irq() and we try to
+> dispatch it to the already freed hid device and crash.
+> 
+> 
+> If you agree that my reasoning makes sense, I can add a separate patch
+> before this one to suspend during remove.
+
+Yep, I agree with you :)
+
+Adding a separate patch would be nice, yes. Thanks!
+
+Cheers,
+Benjamin
