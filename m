@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCA0762DEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E12762DDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjGZHiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        id S231882AbjGZHg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbjGZHht (ORCPT
+        with ESMTP id S229568AbjGZHfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:37:49 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CE449A;
-        Wed, 26 Jul 2023 00:35:47 -0700 (PDT)
-Received: from kwepemm600016.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9lwZ58g1ztRpc;
-        Wed, 26 Jul 2023 15:32:30 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by kwepemm600016.china.huawei.com
- (7.193.23.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
- 2023 15:35:44 +0800
-From:   liubo <liubo254@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <liubo254@huawei.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hughd@google.com>,
-        <peterx@redhat.com>, <willy@infradead.org>
-Subject: [PATCH] smaps: Fix the abnormal memory statistics obtained through /proc/pid/smaps
-Date:   Wed, 26 Jul 2023 15:34:09 +0800
-Message-ID: <20230726073409.631838-1-liubo254@huawei.com>
-X-Mailer: git-send-email 2.23.0
+        Wed, 26 Jul 2023 03:35:37 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FB30EB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:34:19 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5222bc916acso4132098a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:34:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690356857; x=1690961657;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X+2Iliu7olik+NE8AfcvBGi3cE5KanWV2uC3MeiDPS0=;
+        b=KlbDSOyYOBAThy3vB3vgl/3WnwAqdpLGHR77DAe4G0S14mkuzuFvWUPp9oZx7cx/OT
+         P0lMKSm380e+eVPZjLbuFlR+a9eyRKKPUwtPMw9MsKE8ljq4ElNQhrSbLEGO0jTNxKrw
+         ZnRGBCi6omqYmQyhFU0VuJ7VwgrlCaYvSWi9gKwAgVmKvFDNMtEtnGeVvN04827uwu4q
+         Ho1fQQJv4ucUZoc6ZUXFLXHyBBGw5zIAj6PmafAN/HMBtTVrRysoS9JSYaYCU1vAmHNc
+         x7bj43PSH4rTLxRfkyxaLSvxHVwthO6XswOuLLxw1eZTk3HhexY+Si+DRP7d4XZJnXOd
+         lpAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690356857; x=1690961657;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X+2Iliu7olik+NE8AfcvBGi3cE5KanWV2uC3MeiDPS0=;
+        b=lmRVXB4YrnHy6MVSAZpIua0LqZcePiCMGWBzJOXuUJtOCojBxIXH+Rt1irhhhszMYh
+         MfSu/7lFr1Jf6+Fbu1YHV4bXU1DyZrik1cRUGljUWZ8Li003DwvzAn6tOPNL73y2PB4+
+         detfCdu5dJCYpXyeOAG21VSuDk0ffBsdoFqn4ilyxTq2bBFX5ENLX9PwEV1gBWsLyMfc
+         FHFHi15PHvEeWe03GwrSn6lm/V+Z8l+bHtG0BjxdcSphwDu5dht+873qtOc+s9GuHQ4l
+         Tr2Ve7MNMX4r1Iy/A3z91RWULKxU9Xuy3219vVJeRp9lN5+H2ExJd1yjJpQYEKTmf5jx
+         HukA==
+X-Gm-Message-State: ABy/qLYhjYdgYXzwxtjh3B270e/vlzdb6vkHy2Du4tzYzb+qceW5zAHA
+        P9+CBnvGjmCGmW1eunVg38OMRA==
+X-Google-Smtp-Source: APBJJlGR74zoKSYMwGskCgm5We2h4GhUdIEQdlH5TbM9FGnhgnA8mXhCNaiYrij4RkXzRuiIheq8iQ==
+X-Received: by 2002:aa7:da0b:0:b0:522:2111:1063 with SMTP id r11-20020aa7da0b000000b0052221111063mr815433eds.18.1690356857657;
+        Wed, 26 Jul 2023 00:34:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id d14-20020aa7d5ce000000b00521cb435d54sm8575934eds.37.2023.07.26.00.34.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 00:34:17 -0700 (PDT)
+Message-ID: <d9cb0908-4074-2f01-efaf-cdd863a039f2@linaro.org>
+Date:   Wed, 26 Jul 2023 09:34:15 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        =?UTF-8?Q?Andr=c3=a9_Apitzsch?= <git@apitzsch.eu>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
+ <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
+ <877c6d2c-430f-b1fb-4267-18be5d7256dc@linaro.org>
+ <d51dee67-02f4-1256-877f-61629c04b08f@linaro.org>
+ <a90461fa-8319-5b87-397f-53ba169a3d31@linaro.org>
+ <1717ccb1-46b3-8ac3-2c09-9558bd12cc40@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1717ccb1-46b3-8ac3-2c09-9558bd12cc40@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 474098edac26 ("mm/gup: replace FOLL_NUMA by
-gup_can_follow_protnone()"), FOLL_NUMA was removed and replaced by
-the gup_can_follow_protnone interface.
+On 25/07/2023 12:03, Konrad Dybcio wrote:
+> On 25.07.2023 11:43, Krzysztof Kozlowski wrote:
+>> On 25/07/2023 10:13, Konrad Dybcio wrote:
+>>> On 25.07.2023 07:46, Krzysztof Kozlowski wrote:
+>>>> On 24/07/2023 22:52, André Apitzsch wrote:
+>>>>> Add a compatible for BQ Aquaris M5 (Longcheer L9100).
+>>>>>
+>>>>> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>>
+>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>
+>>>>
+>>>> ---
+>>>>
+>>>> This is an automated instruction, just in case, because many review tags
+>>>> are being ignored. If you do not know the process, here is a short
+>>>> explanation:
+>>>>
+>>>> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+>>>> versions, under or above your Signed-off-by tag. Tag is "received", when
+>>>> provided in a message replied to you on the mailing list. Tools like b4
+>>>> can help here. However, there's no need to repost patches *only* to add
+>>>> the tags. The upstream maintainer will do that for acks received on the
+>>>> version they apply.
+>>>>
+>>>> https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
+>>> Krzysztof, update your bot to paste this link with s/v5.17/latest/g
+>>
+>> Is there any difference? :) I would need to update links in all my
+>> templates and re-check the links...
+> Don't know, but the keyword "latest" in the link always points to the..
+> latest available release
 
-However, for the case where the user-mode process uses transparent
-huge pages, when analyzing the memory usage through
-/proc/pid/smaps_rollup, the obtained memory usage is not consistent
-with the RSS in /proc/pid/status.
+And how do you update the line marker in "latest" version, so it points
+to exact line I want? I could switch to latest kernel doc and point to
+chapters, but then not to specific lines.
 
-Related examples are as follows:
-cat /proc/15427/status
-VmRSS:  20973024 kB
-RssAnon:        20971616 kB
-RssFile:            1408 kB
-RssShmem:              0 kB
-
-cat /proc/15427/smaps_rollup
-00400000-7ffcc372d000 ---p 00000000 00:00 0 [rollup]
-Rss:            14419432 kB
-Pss:            14418079 kB
-Pss_Dirty:      14418016 kB
-Pss_Anon:       14418016 kB
-Pss_File:             63 kB
-Pss_Shmem:             0 kB
-Anonymous:      14418016 kB
-LazyFree:              0 kB
-AnonHugePages:  14417920 kB
-
-The root cause is that the traversal In the page table, the number of
-pages obtained by smaps_pmd_entry does not include the pages
-corresponding to PROTNONE,resulting in a different situation.
-
-Therefore, when obtaining pages through the follow_trans_huge_pmd
-interface, add the FOLL_FORCE flag to count the pages corresponding to
-PROTNONE to solve the above problem.
-
-Signed-off-by: liubo <liubo254@huawei.com>
-Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
----
- fs/proc/task_mmu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index c1e6531cb02a..ed08f9b869e2 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -571,8 +571,10 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long addr,
- 	bool migration = false;
- 
- 	if (pmd_present(*pmd)) {
--		/* FOLL_DUMP will return -EFAULT on huge zero page */
--		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
-+		/* FOLL_DUMP will return -EFAULT on huge zero page
-+		 * FOLL_FORCE follow a PROT_NONE mapped page
-+		 */
-+		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP | FOLL_FORCE);
- 	} else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd))) {
- 		swp_entry_t entry = pmd_to_swp_entry(*pmd);
- 
--- 
-2.27.0
+Best regards,
+Krzysztof
 
