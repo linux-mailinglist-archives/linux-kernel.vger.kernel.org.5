@@ -2,67 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904CB7627F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73157627F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjGZBGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S231183AbjGZBHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGZBGd (ORCPT
+        with ESMTP id S229746AbjGZBHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:06:33 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8276212D;
-        Tue, 25 Jul 2023 18:06:30 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R9bJ920w8zLnxc;
-        Wed, 26 Jul 2023 09:03:53 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 09:06:27 +0800
-Subject: Re: [PATCH] cgroup: minor cleanup for cgroup_local_stat_show()
-To:     Tejun Heo <tj@kernel.org>
-CC:     <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230723031932.3152951-1-linmiaohe@huawei.com>
- <ZMBERCXR27X_gRAt@slm.duckdns.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <ec3df402-7681-3d0c-b9ce-d50eb7383b1e@huawei.com>
-Date:   Wed, 26 Jul 2023 09:06:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 25 Jul 2023 21:07:10 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC159212D
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:07:08 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-4452fe640fbso1329863137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690333628; x=1690938428;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BdwBWxmoC8jWTGG50vXsFsrbHYhobVYe8zMui4535MQ=;
+        b=XA63LcB9VKrUs3pNggkpMfJamzRch4vGpdmmh6PwlAH3APOY7XGBx0fy8etlhxP1lz
+         Q52+dLUQNIc/9qZ06aIc2H1T3NnY9UtzyAXLAl/zzzu6XeiBtdBEhggxvBYqcUs3hDPe
+         0oaywFZ21cnoBDtVPm9np78YHPOHUZk+HDBO0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690333628; x=1690938428;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BdwBWxmoC8jWTGG50vXsFsrbHYhobVYe8zMui4535MQ=;
+        b=FUgPSo6ociIE8Fdq1bJjYeSRV8pdeOtofRL7Tf7JZB5HGD7B6DnGdIrBTbh1sG7LgN
+         7ZXZlOQpbjuyZUU0pilLfVRpVPCuROfO7ZSCCpf3tBxIuVFZO2qlAc64D2EdoWGI2Zxt
+         VQgPTjSfds3ZMYTXjmxvBLBuMftpZijC0EJj9cmfPslU9qX2wMZlL1wTVdJ6J/IC0uNf
+         3v3YQjHuk1fn3pdl23n9HN9i4txvCDzL3ZEI/+Q2Kc6EZX+pAAkYvFwwzOdFahgdAb2Y
+         f+6gJEZWFMuKEuB//yiLHrkawnjwtac+5xUw5+b2dSBFSH70CmD2zve21JGydOvDqo1X
+         mKAQ==
+X-Gm-Message-State: ABy/qLZ9nPiXBbhGu3FbKT2Q6FsJ73jQb2S9dHPbxbLI6o8JuC0vMC0G
+        mqX6HI44A9QK9XVmFC8H5GqwBg==
+X-Google-Smtp-Source: APBJJlHg6hZeDGvlQaspCRybUMZ7BXtzCybEQyrhLiY03Jvht5I5Hk0u379XAnTpp5OJ3bfjj12Jsg==
+X-Received: by 2002:a05:6102:282e:b0:443:7572:598b with SMTP id ba14-20020a056102282e00b004437572598bmr275284vsb.13.1690333627937;
+        Tue, 25 Jul 2023 18:07:07 -0700 (PDT)
+Received: from debian.debian ([140.141.197.139])
+        by smtp.gmail.com with ESMTPSA id e7-20020a0ce3c7000000b0063757aea986sm4710610qvl.28.2023.07.25.18.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 18:07:07 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 18:07:04 -0700
+From:   Yan Zhai <yan@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Yan Zhai <yan@cloudflare.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@cloudflare.com, Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH v4 bpf 0/2] bpf: return proper error codes for lwt redirect
+Message-ID: <cover.1690332693.git.yan@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <ZMBERCXR27X_gRAt@slm.duckdns.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/26 5:53, Tejun Heo wrote:
-> On Sun, Jul 23, 2023 at 11:19:32AM +0800, Miaohe Lin wrote:
->> Make it under CONFIG_CGROUP_SCHED to rid of __maybe_unused annotation.
->> Also put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED as it's only
->> called when CONFIG_CGROUP_SCHED. No functional change intended.
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Patch doesn't apply to cgroup/for-6.6. Can you please respin?
+lwt xmit hook does not expect positive return values in function
+ip_finish_output2 and ip6_finish_output2. However, BPF redirect programs
+can return positive values such like NET_XMIT_DROP, NET_RX_DROP, and etc
+as errors. Such return values can panic the kernel unexpectedly:
 
-Sure. Will resend the patch based on cgroup/for-6.6.
+https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
 
-Thanks.
+This patch fixes the return values from BPF redirect, so the error
+handling would be consistent at xmit hook. It also adds a few test cases
+to prevent future regressions.
 
+v3: https://lore.kernel.org/bpf/cover.1690255889.git.yan@cloudflare.com/ 
+v2: https://lore.kernel.org/netdev/ZLdY6JkWRccunvu0@debian.debian/ 
+v1: https://lore.kernel.org/bpf/ZLbYdpWC8zt9EJtq@debian.debian/
+
+changes since v3:
+  * minor change in commit message and changelogs
+  * tested by Jakub Sitnicki
+
+changes since v2:
+  * subject name changed
+  * also covered redirect to ingress case
+  * added selftests
+
+changes since v1:
+  * minor code style changes
+
+Yan Zhai (2):
+  bpf: fix skb_do_redirect return values
+  bpf: selftests: add lwt redirect regression test cases
+
+ include/linux/netdevice.h                     |   2 +
+ net/core/filter.c                             |   9 +-
+ tools/testing/selftests/bpf/Makefile          |   1 +
+ .../selftests/bpf/progs/test_lwt_redirect.c   |  66 +++++++
+ .../selftests/bpf/test_lwt_redirect.sh        | 174 ++++++++++++++++++
+ 5 files changed, 250 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_redirect.c
+ create mode 100755 tools/testing/selftests/bpf/test_lwt_redirect.sh
+
+-- 
+2.30.2
 
