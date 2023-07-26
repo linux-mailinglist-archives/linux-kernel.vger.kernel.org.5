@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAA77640F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285677640F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 23:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjGZVKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 17:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S231299AbjGZVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 17:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjGZVKs (ORCPT
+        with ESMTP id S229989AbjGZVKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 17:10:48 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0651BFB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:10:46 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so4643a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 14:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690405845; x=1691010645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qwlPGFA6Wt4wHaQbg7XU0SaMv13PMQh8DDGdrKpf/oA=;
-        b=eLu+gNofp9wRbALE2bkVYGmwGJxPl36LCy1T4+1JgQnamYSfKJ9xDY86bimfkqoGIQ
-         zvgmsb7odQAULMETzbuIwLSJWIQ/Fwquxp67SYVP8fIfPzevZLwU33RjsCF5loWfigIi
-         D8J4p2w/m17TwgF7ZjEcVORxUQWSKgUpBlnqLCLO4uiCN/AITyww9rYNx7N4V3GnnYo0
-         HquyCXm2Odan4UPZidq5GwLDJdEDg9GXDQmUCnqz6MGT0lKOyrxtKU8w/LD8/mwZSugI
-         gH5NOFaIeUr6rA5zO0GBlWhk+rwHe8158VQtUck3GyvOBRGBVJ8hg9PlIx1e1hVSXqyV
-         yI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690405845; x=1691010645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qwlPGFA6Wt4wHaQbg7XU0SaMv13PMQh8DDGdrKpf/oA=;
-        b=G8clbRUXD0qoMoXW/Duq2+DP9xolH+xoJH68EB/2K5g0oePLyLb0Io9iw9EqflIT2p
-         a+y8T3mr0qNbzk/rSRqhejSwi3ei3Qac7Da1aGvyY2BMAQ1+2wCTs5b7ER6xMcZTLSBv
-         tdDKoOnOexXzqWlVearFqA2ukjUB8cAqS0hWyhy8NBIQaoXibnZ2lQqmKJpnX+uJSmwC
-         jBeoRaQiYUntY9I1gyu3jXYjsD25hguhE+Fo1zRc+533qTZVw65DVktVcI4Wco+rtPTM
-         JAiUEMp0cZpCVbDMJLjtYYiEfE2J34NV/sSgMCMLz0rVeTg88ahmaGAXReXnRqtFZYtH
-         Wv0w==
-X-Gm-Message-State: ABy/qLZ6l2D4wDef3Tj/RQknZbx9/A5YErgRm5L9r+vtuQLPjbxkC+EW
-        c7D48wXTH5Rx7mCD76Ln1jzILKDTjkYgfPFL8325ow==
-X-Google-Smtp-Source: APBJJlHivbRzuJT8P6p6jbxegWClyIOonCFtye/wSfmGogOINZRhaBvz2SCuEPMI1MLUCqxE5bFrkaSD3dQXAy/1y34=
-X-Received: by 2002:a50:d797:0:b0:522:4741:d992 with SMTP id
- w23-20020a50d797000000b005224741d992mr34619edi.4.1690405844799; Wed, 26 Jul
- 2023 14:10:44 -0700 (PDT)
+        Wed, 26 Jul 2023 17:10:53 -0400
+Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD141BE2;
+        Wed, 26 Jul 2023 14:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
+        MIME-Version:Date:Message-ID:content-disposition;
+        bh=GdQIbfATFxwt8LtDtqP230uJEWFrpPIrlWDHw9xXrWA=; b=rAIfnk+5U2VYLw+CBHnDr6b1D/
+        6B7I34rWocwCB55qJoKrqOhG9XIOJdaf1/niPN+luHvEAQTf4kCdB5UqRa/3o/FG8Yc2XIXpKAqRl
+        Sj1I1Fyf+gMcDFcN4F4Vd5y6BzxIpn1VuEvxIwYZ1abqOboUOkqY0hoPj3YjJFytRXZzt3bnKgd79
+        r0Yg632YO5WGwZ5QLszWKqJDoMrWQ2I6tDU+xKUIwUo6Y0rMl8Ku6lVH/OjXIs9zzFGJSx9+dw9Zo
+        2T4pvjlr+Q1iWCP6DnPaXf+dmtxTvuxIj2buhLCOa/00hfZH+F8HhQZ2DDb4TYRCLhw28tLBxfnud
+        X0DgvZNg==;
+Received: from d75-158-34-12.abhsia.telus.net ([75.158.34.12] helo=[192.168.11.155])
+        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <logang@deltatee.com>)
+        id 1qOlmN-00B8uv-PH; Wed, 26 Jul 2023 15:10:45 -0600
+Message-ID: <0e4caa6c-d5bd-61e7-2ef6-300973cd2db6@deltatee.com>
+Date:   Wed, 26 Jul 2023 15:10:43 -0600
 MIME-Version: 1.0
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com> <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com> <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com> <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com> <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com> <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
- <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com> <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
- <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com>
-In-Reply-To: <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com>
-From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-Date:   Wed, 26 Jul 2023 23:10:33 +0200
-Message-ID: <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
-Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chengfeng Ye <dg573847474@gmail.com>, vkoul@kernel.org,
+        Yunbo Yu <yuyunbo519@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230726104827.60382-1-dg573847474@gmail.com>
+ <9378e69f-2bd4-9d8d-c736-b8799f6ebecc@deltatee.com>
+ <ecf68b20-0a07-18bb-42a8-e622054b01f8@wanadoo.fr>
+From:   Logan Gunthorpe <logang@deltatee.com>
+In-Reply-To: <ecf68b20-0a07-18bb-42a8-e622054b01f8@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 75.158.34.12
+X-SA-Exim-Rcpt-To: christophe.jaillet@wanadoo.fr, dg573847474@gmail.com, vkoul@kernel.org, yuyunbo519@gmail.com, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] dmaengine: plx_dma: Fix potential deadlock on
+ &plxdev->ring_lock
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 10:34, Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
-> On 7/25/23 11:05=E2=80=AFPM, Micha=C5=82 Miros=C5=82aw wrote:
-> > On Tue, 25 Jul 2023 at 11:11, Muhammad Usama Anjum
-> > <usama.anjum@collabora.com> wrote:
-> >>
-> >> ----
-> >> Michal please post your thoughts before I post this as v26.
-> >> ----
-> > [...]
-> >
-> > Looks ok - minor things below.
-> >
-> > 1. I'd change the _WPASYNC things to something better, if this can
-> > also work with "normal" UFFD WP.
-> Yeah, but we don't have any use case where UFFD WP is required. It can be
-> easily added later when user case arrives. Also UFFD WP sends messages to
-> userspace. User can easily do the bookkeeping in userspace as performance
-> isn't a concern there.
 
-We shouldn't name the flags based on the use case but based on what
-they actually do. So if this checks UFFD registration for WP, then
-maybe PAGE_IS_WPALLOWED or something better describing the trait it
-matches?
 
-> > 2. For the address tagging part I'd prefer someone who knows how this
-> > is used take a look. We're ignoring the tag (but clear it on return in
-> > ->start) - so it doesn't matter for the ioctl() itself.
-> I've added Kirill if he can give his thoughts about tagged memory.
->
-> Right now we are removing the tags from all 3 pointers (start, end, vec)
-> before using the pointers on kernel side. But we are overwriting and
-> writing the walk ending address in start which user can read/use.
->
-> I think we shouldn't over-write the start (and its tag) and instead retur=
-n
-> the ending walk address in new variable, walk_end.
+On 2023-07-26 15:00, Christophe JAILLET wrote:
+> Le 26/07/2023 à 17:57, Logan Gunthorpe a écrit :
+>>
+>>
+>> On 2023-07-26 04:48, Chengfeng Ye wrote:
+>>> As plx_dma_process_desc() is invoked by both tasklet plx_dma_desc_task()
+>>> under softirq context and plx_dma_tx_status() callback that executed
+>>> under
+>>> process context, the lock aquicision of &plxdev->ring_lock inside
+>>> plx_dma_process_desc() should disable irq otherwise deadlock could
+>>> happen
+>>> if the irq preempts the execution of process context code while the lock
+>>> is held in process context on the same CPU.
+>>>
+>>> Possible deadlock scenario:
+>>> plx_dma_tx_status()
+>>>      -> plx_dma_process_desc()
+>>>      -> spin_lock(&plxdev->ring_lock)
+>>>          <tasklet softirq>
+>>>          -> plx_dma_desc_task()
+>>>          -> plx_dma_process_desc()
+>>>          -> spin_lock(&plxdev->ring_lock) (deadlock here)
+>>>
+>>> This flaw was found by an experimental static analysis tool I am
+>>> developing
+>>> for irq-related deadlock.
+>>>
+>>> The tentative patch fixes the potential deadlock by
+>>> spin_lock_irqsave() in
+>>> plx_dma_process_desc() to disable irq while lock is held.
+>>>
+>>> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+>>
+>> Makes sense. Thanks!
+>>
+>> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+>>
+>> Logan
+>>
+> 
+> Hi,
+> 
+> as explained in another reply [1], would spin_lock_bh() be enough in
+> such a case?
 
-The overwrite of `start` is making the ioctl restart (continuation)
-easier to handle. I prefer the current way, but it's not a strong
-opinion.
+The driver originally used spin_lock_bh(). It was removed by Yunbo Yu in
+2022 who said that it was unnecessary to be used with a tasklet:
 
-> > 3. BTW, One of the uses is the GetWriteWatch and I wonder how it
-> > behaves on HugeTLB (MEM_LARGE_PAGES allocation)? Shouldn't it return a
-> > list of huge pages and write *lpdwGranularity =3D HPAGE_SIZE?
-> Wine/Proton doesn't used hugetlb by default. Hugetlb isn't enabled by
-> default on Debian as well. For GetWriteWatch() we don't care about the
-> hugetlb at all. We have added hugetlb's implementation to complete the
-> feature and leave out something.
+1d05a0bdb420 ("dmaengine: plx_dma: Move spin_lock_bh() to spin_lock() ")
 
-How is GetWriteWatch() working when passed a VirtualAlloc(...,
-MEM_LARGE_PAGES|MEM_WRITE_WATCH...)-allocated range? Does it still
-report 4K pages?
-This is only a problem when using max_pages: a hugetlb range might
-need counting and reporting huge pages and not 4K parts.
+If spin_lock_bh() is correct (which is what I originally thought when I
+wrote the driver, though I'm a bit confused now) then I guess that
+Yunbo's change was just incorrect. It sounded sensible at the time, but
+it looks like there are two call sites of plx_dma_desc_task(): one in
+the tasklet and one not in the tasklet. The one not in the tasklet needs
+to use the bh version.
 
-Best Regards
-Micha=C5=82 Miros=C5=82aw
+So perhaps we should just revert 1d05a0bdb420?
+
+Logan
