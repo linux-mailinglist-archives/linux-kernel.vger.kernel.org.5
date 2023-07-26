@@ -2,171 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F03763701
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD27476370F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjGZNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        id S232163AbjGZNHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbjGZNBf (ORCPT
+        with ESMTP id S230405AbjGZNHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:01:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9FD26BD;
-        Wed, 26 Jul 2023 06:01:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 699A26173F;
-        Wed, 26 Jul 2023 13:01:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76D0C433C8;
-        Wed, 26 Jul 2023 13:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690376485;
-        bh=CcGORqTI9ZQHAZplK151N2vLhAMfOhssOSPkNJphVGw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pbc+uSu8VD3m5STq3XL048/uvTncN+tUJZ6Zhe/8MbtHzpfZS3Vjt1mel+Qq44uv9
-         T43JoBLDSZaziybKP954o38v0ix4aSQMH9cLXnuRFwgxWvUZQjh1WfrLbUkXodqz4c
-         Hn3Wdwgkpuc6M66PWQ4m4uaHqR/aBNyzNUVwWgk7modCyi8saqnb1/fwcvvBlKgPNA
-         ysBplL4MGi69v6KwrlSDsmdB7AxG4sG9Vm/8UjpdHBCPtA8CipAdxsyD4AqAb82XQe
-         EKcVaZfeKW1i+addyIzssh0iIbScYejmc0mCiZrekGg9MglzIL5QKBzThgxHg+hvoc
-         kCFzUOSAWyXYQ==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v3 9/9] Documentation: tracing: Update fprobe event example with BTF field
-Date:   Wed, 26 Jul 2023 22:01:21 +0900
-Message-Id: <169037648115.607919.18187565150152698053.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169037639315.607919.2613476171148037242.stgit@devnote2>
-References: <169037639315.607919.2613476171148037242.stgit@devnote2>
-User-Agent: StGit/0.19
+        Wed, 26 Jul 2023 09:07:04 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB58E1FC4;
+        Wed, 26 Jul 2023 06:07:03 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id e9e14a558f8ab-348cd23610cso14675225ab.1;
+        Wed, 26 Jul 2023 06:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690376823; x=1690981623;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PZpGAyDHs3utSJykCSPcJtGLzKU6c3SzT+TtskGDTx8=;
+        b=PcTBDrgloMYBZKmXxheIhSpiCZtwzRxE0p6RyX/gucG1H5wWcAAhfpoo430k3SZnk9
+         PgXzafJhfUMnaeWV0Te9TVYqeS8jPL6t2D/07H+OZuS5SCF1z764nf6S4QX+YdkV6wkO
+         h060Q90E3HZJKWQ31OYPNVV0xoRPjjA2f1d2Qed8PYn7IariQqJVu0EMgE6QdtO3pSLv
+         Zs4LvObvRdxsftU2RA9u4A5+KD+PI1alARJ4Go7XEDVBfFluBAIocLeu+/LrR2pFWQNr
+         5k7Qs6yEzqtJgNTgi7B1H9AII2SI8g0/TYEEoKcgBLLHLTr1yIMkrB1c5uVVedAzvkm7
+         2tsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690376823; x=1690981623;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PZpGAyDHs3utSJykCSPcJtGLzKU6c3SzT+TtskGDTx8=;
+        b=E6nvqGd5at3tzRPo8JsWvKQCE08Ogi3i9iqf7h6lecyXPFg3ka3xGmXGWVwrbbye3r
+         p+ovf4gy63YhOZq0NwMZRNe64QKQLg+nyULNxjI+8qqvzQsDNQYJoartuI9GCpPpersV
+         WsYEX1ihuVUFyeL2BH2zzQlPXY2vBx6VGyDpL/nmCT9ZkrfXyGURSZIXuIB9o+pX7qSG
+         ZMDQksNgF0c3XRP9S7S0NQRAvOIpwrjeBKmN36ZkE8NB+HOklr8F+e0vk49/SI3XoQG2
+         uqpsYVJsuVqplRX0aC/2LZjbCGRE72q9HVWWBJY6CAsBw8Ockd7o93UVBwHjPdSrt09m
+         DteQ==
+X-Gm-Message-State: ABy/qLbpbpMazGcV+OFBD6RTn700MhHCSMpDahC2pkISUq6JvJcchF3O
+        W3E5+eHT+eTo/6X+4o1SWraQOQ+hJjMPeQ==
+X-Google-Smtp-Source: APBJJlHQxJa6dfaPFhn4cNwidJ42nM2kAsqjRX5P42Ca+9d3wJMfY+AopEuetxbnSjx1vUqd8Uio4A==
+X-Received: by 2002:a05:6e02:156b:b0:347:7399:e9c1 with SMTP id k11-20020a056e02156b00b003477399e9c1mr2031355ilu.14.1690376823085;
+        Wed, 26 Jul 2023 06:07:03 -0700 (PDT)
+Received: from ws-565760.systec.local ([212.185.67.148])
+        by smtp.gmail.com with ESMTPSA id q7-20020a92d407000000b0034881250ac8sm4399077ilm.28.2023.07.26.06.07.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 06:07:02 -0700 (PDT)
+From:   werneazc@gmail.com
+X-Google-Original-From: andre.werner@systec-electronic.com
+To:     jdelvare@suse.com, linux@roeck-us.net,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] hwmon: (hs3001) Fix unused variable compiler warning
+Date:   Wed, 26 Jul 2023 15:06:02 +0200
+Message-ID: <20230726130648.23056-1-andre.werner@systec-electronic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <11620112-ffe4-8df1-6b38-0f3082c5d16f@linaro.org>
+References: <11620112-ffe4-8df1-6b38-0f3082c5d16f@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From: Andre Werner <andre.werner@systec-electronic.com>
 
-Update fprobe event example with BTF data structure field specification.
+Delete unused variable in drivers probe function.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307261819.VMDuxZOM-lkp@intel.com/
+Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
 ---
- Changes in v2:
-  - Remove 'retval' and use '$retval'.
- Changes in v3:
-  - Add description about mixture of '.' and '->' usage.
+v2: Delete blank line between tags in commit message.
 ---
- Documentation/trace/fprobetrace.rst |   64 +++++++++++++++++++++++++----------
- 1 file changed, 46 insertions(+), 18 deletions(-)
+ drivers/hwmon/hs3001.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-index 7297f9478459..8e9bebcf0a2e 100644
---- a/Documentation/trace/fprobetrace.rst
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -79,9 +79,9 @@ automatically set by the given name. ::
-  f:fprobes/myprobe vfs_read count=count pos=pos
+diff --git a/drivers/hwmon/hs3001.c b/drivers/hwmon/hs3001.c
+index 17c3455922eb..9972f6bbb22a 100644
+--- a/drivers/hwmon/hs3001.c
++++ b/drivers/hwmon/hs3001.c
+@@ -193,7 +193,6 @@ static int hs3001_probe(struct i2c_client *client)
+ 	struct hs3001_data *data;
+ 	struct device *hwmon_dev;
+ 	struct device *dev = &client->dev;
+-	int ret;
  
- It also chooses the fetch type from BTF information. For example, in the above
--example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
--are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
--below ::
-+example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
-+both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
-+print-format as below ::
- 
-  # cat events/fprobes/myprobe/format
-  name: myprobe
-@@ -105,9 +105,47 @@ is expanded to all function arguments of the function or the tracepoint. ::
-  # cat dynamic_events
-  f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
- 
--BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
--automatically picked from the BTF. If the function returns ``void``, ``$retval``
--is rejected.
-+BTF also affects the ``$retval``. If user doesn't set any type, the retval
-+type is automatically picked from the BTF. If the function returns ``void``,
-+``$retval`` is rejected.
-+
-+You can access the data fields of a data structure using allow operator ``->``
-+(for pointer type) and dot operator ``.`` (for data structure type.)::
-+
-+# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
-+
-+The field access operators, ``->`` and ``.`` can be combined for accessing deeper
-+members and other structure members pointed by the member. e.g. ``foo->bar.baz->qux``
-+If there is non-name union member, you can directly access it as the C code does.
-+For example::
-+
-+ struct {
-+	union {
-+	int a;
-+	int b;
-+	};
-+ } *foo;
-+
-+To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
-+
-+This data field access is available for the return value via ``$retval``,
-+e.g. ``$retval->name``.
-+
-+For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
-+behavior. If these are used for BTF argument or field, it checks whether
-+the BTF type of the argument or the data field is ``char *`` or ``char []``,
-+or not.  If not, it rejects applying the string types. Also, with the BTF
-+support, you don't need a memory dereference operator (``+0(PTR)``) for
-+accessing the string pointed by a ``PTR``. It automatically adds the memory
-+dereference operator according to the BTF type. e.g. ::
-+
-+# echo 't sched_switch prev->comm:string' >> dynamic_events
-+# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
-+
-+The ``prev->comm`` is an embedded char array in the data structure, and
-+``$retval->name`` is a char pointer in the data structure. But in both
-+cases, you can use ``:string`` type to get the string.
-+
- 
- Usage examples
- --------------
-@@ -161,10 +199,10 @@ parameters. This means you can access any field values in the task
- structure pointed by the ``prev`` and ``next`` arguments.
- 
- For example, usually ``task_struct::start_time`` is not traced, but with this
--traceprobe event, you can trace it as below.
-+traceprobe event, you can trace that field as below.
- ::
- 
--  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
-+  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
-   # head -n 20 trace | tail
-  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-  #              | |         |   |||||     |         |
-@@ -176,13 +214,3 @@ traceprobe event, you can trace it as below.
-            <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
-       kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
-            <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
--
--Currently, to find the offset of a specific field in the data structure,
--you need to build kernel with debuginfo and run `perf probe` command with
--`-D` option. e.g.
--::
--
-- # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
-- p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
--
--And replace the ``%cx`` with the ``next``.
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+ 		return -EOPNOTSUPP;
+-- 
+2.41.0
 
