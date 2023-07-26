@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFA97632B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB777632B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjGZJrW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 05:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        id S233419AbjGZJrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbjGZJrU (ORCPT
+        with ESMTP id S233187AbjGZJrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:47:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727FEBC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:47:18 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-287-FtAxNye8P7C75kYr0fZLXg-1; Wed, 26 Jul 2023 10:47:15 +0100
-X-MC-Unique: FtAxNye8P7C75kYr0fZLXg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 26 Jul
- 2023 10:47:13 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 26 Jul 2023 10:47:13 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'kernel test robot' <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-CC:     "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "Linux Memory Management List" <linux-mm@kvack.org>
-Subject: RE: [PATCH next 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Topic: [PATCH next 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Index: Adm+2wKUQ5yQ6t/FR+W/hRy2DuErJQAJNLOAAClusXA=
-Date:   Wed, 26 Jul 2023 09:47:13 +0000
-Message-ID: <39d5316ee16e4588af888d68b77fdba1@AcuMS.aculab.com>
-References: <454f967d452548a9acfa7c0a0872507e@AcuMS.aculab.com>
- <202307252241.W1SwUDKu-lkp@intel.com>
-In-Reply-To: <202307252241.W1SwUDKu-lkp@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 26 Jul 2023 05:47:22 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980DA97
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:47:21 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e28b299adso10225025a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690364840; x=1690969640;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SA+LrDZVXjl3Ko1/5ZEQ5q1ItzWI0k+gmeih9nujT5o=;
+        b=Vv3advpFuMimlnJzdS5XUW8wEwN27EZl7SYV+iu7pMjcqoLxF2a4MmDWcQTnHStOgO
+         +YfPSEV7uYXWhDmx5yKqgTurflU2cy6SqWNu9os8RESG0urBQcAKIlvXi/Yam/LhvRUQ
+         KIYnSrxEj9AtM8h3a0SQlJK2QeJqHP0r5inlby45w6jH8jX/QiCXu8h5lQWs19cv3yXP
+         Kg/PafU1qecrsMSt8/LUdpoBF9nUVS8aSUIzME3nA6i3aeVyqkqskRBnG/gzxeP0x2LC
+         HgpOFJ80ys+hMqfaFzoUc1DVTuhaiYYwlRdlrwp19gQGOFHEjzfJ2xokVRCRO5zZCkHh
+         M2WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690364840; x=1690969640;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SA+LrDZVXjl3Ko1/5ZEQ5q1ItzWI0k+gmeih9nujT5o=;
+        b=hbKX2m7/thejncxTzq8cuOBGsMJkY3UofscSfBx2qvv4+p9FlahAv6dxQUAeoH2i1k
+         3E3ccal9XX8tZ8pVRQFWTtkpxxiialXaUBJKXML5CI370lIo9EPrnBn861Skfb5gFt8Z
+         tejCcvveDVY0I8vYUVpcumy3/WStz+j/B99GNkU07L0hGgmjdK/OqjuwZrx0KdS2/gMz
+         AIiB2uv/tNoe7084Fa40nXmVUDZFu8Zy9XMQSzFjhbIZbWVpT/rRo6ljJWubxC7xmvXH
+         djQ3DbU/s+riJbOy6Esvhp4J/2bR07gRtNxuKMJB0+kPVZbjkMB7zdqWv6VKrouTTTa/
+         /e2Q==
+X-Gm-Message-State: ABy/qLb/QZUrF0NLYjDQPbqGi4n1Da5EZRV+vImYuz6dxooYJKBJxyPA
+        yPApP8/SqN87BKpfC+0zXcvnnQ==
+X-Google-Smtp-Source: APBJJlGgdy/mQ9wqC1FbD8YlIGrD/bhaJNJANhLq7Txal+3r2Fqm5ERHoirCQj3TFD2zgNEo2rvzNA==
+X-Received: by 2002:aa7:d498:0:b0:522:3ebc:84b8 with SMTP id b24-20020aa7d498000000b005223ebc84b8mr1113214edr.12.1690364840059;
+        Wed, 26 Jul 2023 02:47:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u26-20020aa7db9a000000b00521d2f7459fsm8594295edt.49.2023.07.26.02.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:47:19 -0700 (PDT)
+Message-ID: <cb272650-e829-7528-de6d-f99fef2d7f81@linaro.org>
+Date:   Wed, 26 Jul 2023 11:47:18 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] AMR: dts: renesas: r8a7740-armadillo: switch to
+ enable-gpios
 Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230726070241.103545-1-krzysztof.kozlowski@linaro.org>
+ <CAMuHMdWfwTyJoLyGs=8gPt4jT-3nc0ywA_NNGr6r+4+cD=Lygg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAMuHMdWfwTyJoLyGs=8gPt4jT-3nc0ywA_NNGr6r+4+cD=Lygg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot
-> Sent: 25 July 2023 15:57
-...
-> >> mm/mm_init.c:908:14: error: static_assert expression is not an integral constant expression
->            start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-..
->    include/linux/minmax.h:45:17: note: expanded from macro '__clamp_once'
->                    static_assert(!__is_constexpr((lo) > (hi)) || (lo) <= (hi),
+On 26/07/2023 11:11, Geert Uytterhoeven wrote:
+> On Wed, Jul 26, 2023 at 9:02 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>> The recommended name for enable GPIOs property in regulator-gpio is
+>> "enable-gpios".  This is also required by bindings:
+>>
+>>   r8a7740-armadillo800eva.dtb: regulator-vccq-sdhi0: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v6.6.
 
-That didn't fail in my test builds.
-The compiler I was using must short-circuited the ||.
-I'll substitute a 'choose_expr' in v2.
+I think I made typo in subject prefix:
+AMR -> ARM
 
-	David
+Can you fix it while applying?
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Best regards,
+Krzysztof
 
