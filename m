@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FD7763463
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F97763469
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbjGZK6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S233081AbjGZK7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjGZK6X (ORCPT
+        with ESMTP id S234053AbjGZK7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:58:23 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AECE42
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:58:22 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31759e6a4a1so3076813f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:58:22 -0700 (PDT)
+        Wed, 26 Jul 2023 06:59:05 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45675212D;
+        Wed, 26 Jul 2023 03:59:03 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31768ce2e81so2077080f8f.1;
+        Wed, 26 Jul 2023 03:59:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690369101; x=1690973901;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=69jj580P1DSe8cr6wdR9bzkleON+onBpdSJQbX0RqQQ=;
-        b=abCtLTAHxzLZQx3yZP7Jwy4wSL5/u0dolDfq845g7zh8r+qohhm8WyQ+I08DytVAGW
-         ov2RCtlAbso2q1msLc44f4Pn2L4C5m4OhY/FW+ucsvoB1+dYUb91WvHy+R+wdv67Hf99
-         VBFCnBwPuVvzZ14c8i5mauC35jRBgiU7bRl3jo52k8wT5YXoSarMnQbycr5BopNVsxeQ
-         BmDlAe2ugU2cpcJWzqTLcpMks9xh/dyZZ5aAUFuKqteDD7iRu7C0mZeBL17G+KpOTtgt
-         2DEn4g5qMf3a6AKY7IRjhPtr9qEuNY3RHTNaW2qC8xRijyBvzM/cPoWyu0lT7cQ80ceb
-         ntMg==
+        d=gmail.com; s=20221208; t=1690369142; x=1690973942;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=S+nKQ3sirP3HDfMdOhfcrJ3FXH/RL38AgDUVvGDTOt4=;
+        b=M7VA46+nGi21oCzVEYji66II0o3eN2zeqAMEdq/AfgudqPphOeAi18h8PoAdofQlRY
+         Z2m6jG4PxKMJEEwpB/Ph7yPwFscmkqJcFt5Otm/6VJbjIbjlNGOwYRMoQlufpDLjij2w
+         bMiDsbDh68EccUMmaYp6EUGj5l7Y601KKSI0lpwxogu0NGxoKa3ak1o+cv0RLlOcTRWW
+         7FXt9ADVN+7OhVsmoRFFbNN1legBOtRaYPQ4baC4WoTJJj9Px2lW26InLosSGmm62F+t
+         0mps4n6853tZ54r1mrItLEs4hndELqKCxzUL6WWkwGRmtZkevB+pt/e0DuMSk6FXkY6w
+         KXvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690369101; x=1690973901;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=69jj580P1DSe8cr6wdR9bzkleON+onBpdSJQbX0RqQQ=;
-        b=chQvONZVB9cHIw0bwKMsYNByJ5AoPZ1TKSxdB0KPlFv9ad78JAiKeU1hV3J9hMsker
-         jFUF4Oy79cy3mXAlpK0pdALj6oM0sJ0JFdtdUevtd4waa84oo/GNtmsVN7rTvdErRdTi
-         /yNVNe1MdEZjxrrX8IINpKhKri4IGa1B0FRQ/OYjnsD1i4iLYg9U4q2WGfoZ+2SfatGi
-         XDJGP/tudBddp2WgfU7unKrX4Oy20rxM/eli3j8Z9CHx8S+a2FOtvevDi1sOH1J7W84N
-         T1yF9S40v6yLiBxJwWU5uN4bhJvcoJj4TLRKRN/kPcLGYcS2gqoa6QwdHKO4HsbzJGIW
-         QxaQ==
-X-Gm-Message-State: ABy/qLZdJNwtKKfJ30W+D0Sta1EYV354UfY6Idr+xKHtCpJzjx6FfQ1p
-        AZcyH9V5lcorytWVHfUk+9rcag==
-X-Google-Smtp-Source: APBJJlFuFExWjA3/qcQB/qgB2FxAoydz5gV11+BnboLGZNTKevsjTGJMa3597JykIshfwxKFQJTPDA==
-X-Received: by 2002:a5d:4450:0:b0:317:70cb:4f58 with SMTP id x16-20020a5d4450000000b0031770cb4f58mr997310wrr.63.1690369101230;
-        Wed, 26 Jul 2023 03:58:21 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id r15-20020adff70f000000b003143ba62cf4sm19225643wrp.86.2023.07.26.03.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 03:58:20 -0700 (PDT)
-Message-ID: <d939d08d-9e5a-b620-5d4f-cc805bcc76b7@linaro.org>
-Date:   Wed, 26 Jul 2023 11:58:19 +0100
+        d=1e100.net; s=20221208; t=1690369142; x=1690973942;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S+nKQ3sirP3HDfMdOhfcrJ3FXH/RL38AgDUVvGDTOt4=;
+        b=HEHeMiB5TdTEsHKEh8DiiRzDC8bEdNO7Uywv/+trh0Jb/0cr9uVjVSQC+Xkzn+4Eyn
+         /fo88Ln36ic4ushJeQKGv/SlR0g1GbYUialeIRqAqXMw6zeaTudpUpPe49lWn1SD1p49
+         hYlKilkCmcaVNlO+FQp6ceqEveh+n+AZmilZYRwzC4bvBDSfauMPbXBWg5K8oJGfEPQz
+         clHYlTFXTe6Lxxvp9QFxGLZ1Te+IaaO8ca7mtOq5gTZmn6T0SOUQlzXhJgfZMYoG1rZa
+         FWKji7mIwPGkDNjw0NHT1qLgGooW/IAOU5LDklQCVof6PFHyGb0a3jvJEAuZZD7BJzCV
+         OiTQ==
+X-Gm-Message-State: ABy/qLalXTeMB3QmzA0mzBhBdmPmNdNCfZusC0Mg1mCDek0zdpeVY0MP
+        2Mi06oyzgMcXiWCbEl6R+rxRgrCxBv5sYEFpzWmGG6wC2gicsQ==
+X-Google-Smtp-Source: APBJJlGHt3PHSFAkS/QojrLgrSkfDRMoxrFjYxhdrv3UE2/+E6kZ0JHy69jUBnSMOjrKGDuVznxb2E8Flymgo2Izh1Y=
+X-Received: by 2002:adf:dc8c:0:b0:313:ee73:cc9a with SMTP id
+ r12-20020adfdc8c000000b00313ee73cc9amr1164733wrj.70.1690369141464; Wed, 26
+ Jul 2023 03:59:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v7 3/6] media: starfive: camss: Add basic driver
-Content-Language: en-US
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-4-jack.zhu@starfivetech.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230619112838.19797-4-jack.zhu@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230726104827.60382-1-dg573847474@gmail.com>
+In-Reply-To: <20230726104827.60382-1-dg573847474@gmail.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Wed, 26 Jul 2023 18:58:50 +0800
+Message-ID: <CAAo+4rXG8ZLxD1+g_319XJf0e_p2jZZ1COzUCjo00HLfbv0C8g@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: plx_dma: Fix potential deadlock on &plxdev->ring_lock
+To:     logang@deltatee.com, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/2023 12:28, Jack Zhu wrote:
-> Add basic platform driver for StarFive Camera Subsystem.
-
-Another nit here.
-
-"Add basic driver" isn't a great title. Recommend "Add core driver".
-
-Basic implies a thing that will be added to or improved upon but, this 
-code here is your "core" interface where you do your probing and 
-resource parsing/allocation etc.
-
-Use "core" not "basic" to describe this.
-
----
-bod
-
+Fixes: 1d05a0bdb420 ("dmaengine: plx_dma: Move spin_lock_bh() to spin_lock() ")
