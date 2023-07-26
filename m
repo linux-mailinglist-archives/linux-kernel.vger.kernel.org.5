@@ -2,135 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D367B7638D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABCF7638D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbjGZOQg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 10:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
+        id S234028AbjGZOQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbjGZOQQ (ORCPT
+        with ESMTP id S233740AbjGZOQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:16:16 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A202D42
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:06 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6b9c9944da8so5618300a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:06 -0700 (PDT)
+        Wed, 26 Jul 2023 10:16:18 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D9330ED
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:11 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7680e3910dfso689072185a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690380899; x=1690985699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pkT7MMdb9UBp/NLJEI4W0DlkPyX5NSU+s0eXsj5hKk4=;
+        b=ArqoWPeAyncX4vD74ueZ5Js2tYqx0nA4v2zayia01BhK4FXcrSsDaORXb7e/OUEIip
+         4koEGH7ywBK8hSNYR0G2pR0BpUajVfz4DXKEiEwAcPq0Fm3UubKlGIOQv3zTmxpvbuCN
+         KxbB2jgQ59Oa+0WN0ov8gk9koKANE2QuzG75Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690380858; x=1690985658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hYmXF6+fhXjo5iXeYGhM12iR95vAqcFzUbgaNOIrO3o=;
-        b=ARCVNh9u84aWPUOC95raEa3iUzmQ9tpqsM6QnlQRsG+yO+MEF0KJHS3G47IfJnqBGo
-         WYgxite+YQxJz5U0J8sUh1HDA/4wWEV0ueJGvf976FNroIWflWGDzWXpMNQqjTRQ8NlH
-         5JcWp+0OOUqFy/vVU3ZBGME3Vnmm/MGCi0lIo5LKJ1qrnpQPIgULVfsharpkRyYMjuGJ
-         sqsNRVfI701Y3t90QX50q+RK7BjyL5wbP4tir7Xl2BSopN2FhPyVG3ZNelnN8uGckZyY
-         CqxScExsoEB7YLvhrTE/aHmWshF64SRj5pf7DS9kyOGogtiqiBGscjaMdn7fvw7K5Xb0
-         QY/w==
-X-Gm-Message-State: ABy/qLZbRhlUObcPdHmuewVnSe9ZSCrkIy9iIjBz6+IeHR7AREChDkC3
-        VFMYIqcmFvzdis3mrggfv6A/bo/IJLQxJQ==
-X-Google-Smtp-Source: APBJJlEv2QIOCdbp+Cs87QsJXehkB+z5hXs71D1N0BoIoR5rzBOHygqpFE4JyiWuStiGWiKRJf/8uA==
-X-Received: by 2002:a05:6358:7e12:b0:135:a5fe:53e1 with SMTP id o18-20020a0563587e1200b00135a5fe53e1mr2165108rwm.14.1690380857982;
-        Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id y1-20020a056902052100b00d0fe6cb4741sm1668367ybs.25.2023.07.26.07.14.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-c11e2b31b95so7149362276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:14:17 -0700 (PDT)
-X-Received: by 2002:a25:828c:0:b0:d0b:5a37:1aa0 with SMTP id
- r12-20020a25828c000000b00d0b5a371aa0mr1586828ybk.36.1690380856985; Wed, 26
- Jul 2023 07:14:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690380899; x=1690985699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pkT7MMdb9UBp/NLJEI4W0DlkPyX5NSU+s0eXsj5hKk4=;
+        b=SKbgVy+nA06g2Kr1C4vL11CFkeDT5ueQLeq3xDcMpdutDmGKv4rhVzGDZS4mwcfFun
+         p+bczsPdfXI/BNHPg93T2CJjjZTzKXsQ5dqTKxPp+7/YdyECLn3qOZXBD7gbFiTK7YAQ
+         lm7cvOVcDe9PIqD5ZQeQGrebvN30R0vWUunu7+4GEdw/8Pdnd+RmUAImwhYSNLFSaeuJ
+         a/+NunbMkVi4tPo/kgBhmFrj6yKgCDvA5QA8OY0NF4mi7umKJ/HF2dR79/MJeqCnfHTk
+         O+V1wCjl9yZxLFlFR+rzj6Trcee/UlUopJf+1OLzQdlD/+WVNS8mJWZ1+iuI0ixkZ4yh
+         Cw/w==
+X-Gm-Message-State: ABy/qLbF4pRTtrGNrdmZIBggfr6+9GcWU0p3+pcHXMMN6FCsZroaTYfJ
+        K9fHz8ckk7SCTyXIMieUE3RuNQ==
+X-Google-Smtp-Source: APBJJlHDKfiHrxrJlUQB/01vzgVpNRZ51nZL7np3HYytRP6PbdM40X7VtRY//Id8IKHB1T0qoHBLPQ==
+X-Received: by 2002:a05:620a:2a01:b0:76c:4d4c:7942 with SMTP id o1-20020a05620a2a0100b0076c4d4c7942mr2763882qkp.21.1690380899352;
+        Wed, 26 Jul 2023 07:14:59 -0700 (PDT)
+Received: from debian.debian ([140.141.197.139])
+        by smtp.gmail.com with ESMTPSA id t4-20020a05620a004400b00767c8308329sm1160072qkt.25.2023.07.26.07.14.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 07:14:58 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 07:14:56 -0700
+From:   Yan Zhai <yan@cloudflare.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+        Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+Message-ID: <ZMEqYOOBc1ZNcEER@debian.debian>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+ <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
 MIME-Version: 1.0
-References: <20230721070955.1170974-1-javierm@redhat.com> <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
- <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
- <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
- <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
- <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
-In-Reply-To: <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Jul 2023 16:14:04 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX54sYfv2HJQZxMD_O2XT_nmuoQEE2iTbWkJ9-QvfAWYQ@mail.gmail.com>
-Message-ID: <CAMuHMdX54sYfv2HJQZxMD_O2XT_nmuoQEE2iTbWkJ9-QvfAWYQ@mail.gmail.com>
-Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
- .atomic_check callback
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On Wed, Jul 26, 2023 at 04:39:08PM +0300, Dan Carpenter wrote:
+> I'm not positive I understand the code in ip_finish_output2().  I think
+> instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
+> != LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
+> LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
+> instead?
+> 
+I considered about changing lwt side logic. But it would bring larger
+impact since there are multiple types of encaps on this hook, not just
+bpf redirect. Changing bpf return values is a minimum change on the
+other hand. In addition, returning value of NET_RX_DROP and
+NET_XMIT_CN are the same, so if we don't do something in bpf redirect,
+there is no way to distinguish them later: the former is considered as
+an error, while "CN" is considered as non-error.
 
-On Wed, Jul 26, 2023 at 3:54 PM Maxime Ripard <mripard@kernel.org> wrote:
-> On Wed, Jul 26, 2023 at 02:33:06PM +0200, Geert Uytterhoeven wrote:
-> > > >> Also, Javier pointed me to a discussion you had on IRC about using devm
-> > > >> allocation here. We can't really do that. KMS devices are only freed
-> > > >> once the last userspace application closes its fd to the device file, so
-> > > >> you have an unbounded window during which the driver is still callable
-> > > >> by userspace (and thus can still trigger an atomic commit) but the
-> > > >> buffer would have been freed for a while.
-> > > >
-> > > > It should still be safe for (at least) the data_array buffer. That
-> > > > buffer is only used to store pixels in hardware format, and immediately
-> > > > send them to the hardware.  If this can be called that late, it will
-> > > > fail horribly, as you can no longer talk to the hardware at that point
-> > > > (as ssd130x is an i2c driver, it might actually work; but a DRM driver
-> > > >  that calls devm_platform_ioremap_resource() will crash when writing
-> > > >  to its MMIO registers)?!?
-> > >
-> > > At the very least the SPI driver will fail since the GPIO that is used to
-> > > toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
-> > > the regulator, backlight device, etc.
-> > >
-> > > But in any case, as mentioned it is only relevant if the data_array buffer
-> > > is allocated at probe time, and from Maxime's explanation is more correct
-> > > to do it in the .atomic_check handler.
-> >
-> > You need (at least) data_array for clear_screen, too, which is called
-> > from .atomic_disable().
->
-> I'm not sure I get what your concern is?
->
-> Even if we entirely disable the plane, the state will not have been
-> destroyed yet so you still have at least access to the data_array from
-> the old state.
+> Also there seems to be a leak in lwtunnel_xmit().  Should that return
+> LWTUNNEL_XMIT_CONTINUE or should it call kfree_skb() before returning?
+> 
+> Something like the following?
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 11652e464f5d..375790b672bc 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -112,6 +112,9 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
+>  #define NET_XMIT_CN		0x02	/* congestion notification	*/
+>  #define NET_XMIT_MASK		0x0f	/* qdisc flags in net/sch_generic.h */
+>  
+> +#define LWTUNNEL_XMIT_DONE NET_XMIT_SUCCESS
+> +#define LWTUNNEL_XMIT_CONTINUE 0x3
+> +
+>  /* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
+>   * indicates that the device will soon be dropping packets, or already drops
+>   * some packets of the same priority; prompting us to send less aggressively. */
+> diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
+> index 6f15e6fa154e..8ab032ee04d0 100644
+> --- a/include/net/lwtunnel.h
+> +++ b/include/net/lwtunnel.h
+> @@ -16,12 +16,6 @@
+>  #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
+>  #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
+>  
+> -enum {
+> -	LWTUNNEL_XMIT_DONE,
+> -	LWTUNNEL_XMIT_CONTINUE,
+> -};
+> -
+> -
+>  struct lwtunnel_state {
+>  	__u16		type;
+>  	__u16		flags;
+> diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
+> index 711cd3b4347a..732415d1287d 100644
+> --- a/net/core/lwtunnel.c
+> +++ b/net/core/lwtunnel.c
+> @@ -371,7 +371,7 @@ int lwtunnel_xmit(struct sk_buff *skb)
+>  
+>  	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+>  	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+> -		return 0;
+> +		return LWTUNNEL_XMIT_CONTINUE;
 
-Currently, clearing the screen is done from the plane's .atomic_disable()
-callback, so the plane's state should be fine.
+You are correct this path would leak skb. Return continue (or drop)
+would avoid the leak. Personally I'd prefer drop instead to signal the
+error setup. Since this is a separate issue, do you want to send a
+separate patch on this? Or I am happy to do it if you prefer.
 
-But IIUIC, DRM allows the user to enable/disable the display without
-creating any plane first, so clearing should be handled in the CRTC's
-.atomic_disable() callback instead? Then, would we still have access
-to valid plane state?
+>  
+>  	ret = -EOPNOTSUPP;
+>  	rcu_read_lock();
+> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> index 6e70839257f7..4be50a211b14 100644
+> --- a/net/ipv4/ip_output.c
+> +++ b/net/ipv4/ip_output.c
+> @@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+>  	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+>  		int res = lwtunnel_xmit(skb);
+>  
+> -		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
+> +		if (res != LWTUNNEL_XMIT_CONTINUE)
+>  			return res;
 
-Thanks!
+Unfortunately we cannot return res directly here when res > 0. This is
+the final reason why I didn't patch here. Return values here can be
+propagated back to sendmsg syscall, so returning a positive value
+would break the syscall convention.
 
-Gr{oetje,eeting}s,
 
-                        Geert
+best,
+Yan
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>  	}
+>  
+> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> index 1e8c90e97608..016b0a513259 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -113,7 +113,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+>  	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+>  		int res = lwtunnel_xmit(skb);
+>  
+> -		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
+> +		if (res != LWTUNNEL_XMIT_CONTINUE)
+>  			return res;
+>  	}
+>  
