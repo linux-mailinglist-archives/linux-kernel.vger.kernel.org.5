@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4769D763225
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB10A763231
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbjGZJbS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 05:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        id S232537AbjGZJbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbjGZJaj (ORCPT
+        with ESMTP id S232387AbjGZJbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:30:39 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3049B97
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:29:20 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-278-BHox4q11P9-e6xJhB7caqw-1; Wed, 26 Jul 2023 10:29:17 +0100
-X-MC-Unique: BHox4q11P9-e6xJhB7caqw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 26 Jul
- 2023 10:29:15 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 26 Jul 2023 10:29:15 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'kernel test robot' <lkp@intel.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "Linux Memory Management List" <linux-mm@kvack.org>
-Subject: RE: [PATCH next resend 5/5] minmax: Relax check to allow comparison
- between int and small unsigned constants.
-Thread-Topic: [PATCH next resend 5/5] minmax: Relax check to allow comparison
- between int and small unsigned constants.
-Thread-Index: Adm+7rJ87D8nFkT9Rp6d+7ZLnF7rBgAODzmAAB8QSKA=
-Date:   Wed, 26 Jul 2023 09:29:15 +0000
-Message-ID: <4520ae6dc8b447cbaa77be0cdea79986@AcuMS.aculab.com>
-References: <48c2cd0407f14859919d4fcbe526234a@AcuMS.aculab.com>
- <202307260303.3ftEpZRU-lkp@intel.com>
-In-Reply-To: <202307260303.3ftEpZRU-lkp@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 26 Jul 2023 05:31:34 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798F2D43;
+        Wed, 26 Jul 2023 02:30:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690363808; x=1721899808;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VW/0RWz6OcJOAZAaREALwLaePcsp+WLwKLmTB+u9ah0=;
+  b=OMM1IKZ7w4vxeV6K1n0rO4Jkl4IdV9U6kaaBEZgs0GYq+A30GoyS1FGJ
+   TXmRvc9wT1wtKz4E8Lta5Xfbq7/rK8TriG8m2T6umUeOmmFJTl4k32QHY
+   b//GaGibOY1hlQeybMO+d4K8hpVDYRdFPndbhCYy95YqWurj/hvjQyXVZ
+   RXV7rhcE97k9J1MYTnxnu3YOhD7pl2c6950mrwa14aAJI4PVEzixxUe18
+   1G639Hlytg5OoVH4SMMd8hfmfhfcUWhtJAuaL/A/g2bUVsIvbUw5Y+bqy
+   vYM0Abyp8HC6ou3ZRoWBlaElHiulXSwotz7Tfy+ExRV3/Y8DJxbsOPBt6
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="asc'?scan'208";a="222289979"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 02:30:05 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 26 Jul 2023 02:30:04 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 26 Jul 2023 02:30:01 -0700
+Date:   Wed, 26 Jul 2023 10:29:27 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+Message-ID: <20230726-preheated-carried-ac1a34bd7a4d@wendy>
+References: <20230725104514.821564989@linuxfoundation.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="abJNtELWpQ4Opme6"
+Content-Disposition: inline
+In-Reply-To: <20230725104514.821564989@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
-> Sent: 25 July 2023 20:37
-> 
-...
->    drivers/gpu/drm/drm_modes.c: In function 'drm_mode_parse_command_line_for_connector':
-> >> include/linux/minmax.h:23:22: warning: ordered comparison of pointer with integer zero [-Wextra]
->       23 |                 ((x) >= 0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
->          |                      ^~
-...
->    drivers/gpu/drm/drm_modes.c:2474:29: note: in expansion of macro 'max'
->     2474 |                 extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
->          |                             ^~~
+--abJNtELWpQ4Opme6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There are a handful of annoying uses of min/max with pointers.
-I'll fix this in v2 by adding a cast to the 0.
-(I was expecting an error for unsigned types.)
+On Tue, Jul 25, 2023 at 12:42:47PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.7 release.
+> There are 227 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-	David
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks,
+Conor.
 
+--abJNtELWpQ4Opme6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDndwAKCRB4tDGHoIJi
+0g9/AP0SMHkzqogQdYkeeBflvBCt2FWwRe8w/lFrXn/a38pq0AEAj7dkaHrDxhAN
+FIThd1J2wavJkGHq3MEHsN6LzE6V7QM=
+=+gnl
+-----END PGP SIGNATURE-----
+
+--abJNtELWpQ4Opme6--
