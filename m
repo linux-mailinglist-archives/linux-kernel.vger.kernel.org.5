@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65DE763DDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973C9763DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjGZRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S231703AbjGZRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGZRp6 (ORCPT
+        with ESMTP id S231362AbjGZRqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:45:58 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F712697;
-        Wed, 26 Jul 2023 10:45:55 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 6C7493200958;
-        Wed, 26 Jul 2023 13:45:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 26 Jul 2023 13:45:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1690393552; x=1690479952; bh=6+
-        BtwAiVSxh1iYhM2LPLsKH6+zDmGG6P7lMP2V1Zi70=; b=Qmd4H+Br8tMw1XghlU
-        Nlz7bHPXrAx6O7RV5E6WKRL6rQQP51jw9IPDGgQwag+n2TQEAtFZeu+B4DkVRixu
-        knbljF++UyO50c9qQcu39POEQdRSvN7SSKrqiRYeb9C7kJAjmG2fFMYqkuhu4GiD
-        6VCz+CUcl2MUy+kMtmsZhZ5ifKaav7aJaGHf56Yn82fgUkEAzFjgak/wYvduI1sG
-        6IF0ct+HP96ffssE6OE1JGDPOr25oJtN13dEqt4NBL53rvwAC2j2aDKigCuLANHh
-        qmagOEN2ZyXd09Lq5nVCQbFaExvslxhr1v8z9FdOAR9NaHTjync2HAoe4yGmNKnB
-        AZ2w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690393552; x=1690479952; bh=6+BtwAiVSxh1i
-        YhM2LPLsKH6+zDmGG6P7lMP2V1Zi70=; b=rDnqFY0bc6eP7jdogZERouKz7ECYX
-        6nCbYyW334nUrGDCwxfK7/t5D6yySDQAmtx4tZu5+0F8dqDdh4YgaVnuHhHHpvRv
-        73SZ0NmZRL0fQmLeuEcMaZisoC4N+/Yx+OyTqT625Le6AZqzIGUCEAxAiO37HmA+
-        V007MCKdZ+uMeFf+HS0YTyOZY41MFohQV/7Si/H9ITky/9F9WHX9RVz7AB3ntGJJ
-        h5JOpBGdJ2K4jjiqu5HQTyPL93LnAUhe7xSV1O6h0l9s5KN5hCknYIVymL4wERnT
-        72mJzFjvbKnSkDnHeN900WH0UYs/v5mviuONbcPLyBhBxLlMbXtle5yjQ==
-X-ME-Sender: <xms:0FvBZC0Tryiu1D6O4NZbVVbVzDLWI1bD1Z4-AqT3CmXiTH9DQQ7JIA>
-    <xme:0FvBZFG0N5nR_MVs_OL-pvmicF_iP3pEiteKryyMhJDDowCACQwNcD37H3bphf0mu
-    RVjmdYPY8RmP8t7WA>
-X-ME-Received: <xmr:0FvBZK7kxLgOSa_vrT3uuwJqKJ_M38nXYdrha9UV3p4mGcDCfRHElIP6L6i9CzU_z2JUe7MZ5Hl2pqfpg6dBEHVJJfyT84iCFAGbbFvHPOEF0Gb6TkOiMqgXoHW1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepvdfffeevhfetveffgeeiteefhfdtvdffjeevhfeuteegleduheetvedu
-    ieettddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:0FvBZD0elYr1hQwUGBen7BvOVriKMtEmoAFtRr5poakX9SUE7dz-pQ>
-    <xmx:0FvBZFFyKP3XOu7msWLMIV8gYPAE-RIJoXY3I5o9WlioId0J5vQRlw>
-    <xmx:0FvBZM8OgEJ2xjxfOjgaF7kcJSMl_vJ2gXKsLuCdPG7miNwX7vKO7g>
-    <xmx:0FvBZD8JXMKwcfwFm9JcCrLET6MyEpTBP1XchL84iDs0O9I04wlMIQ>
-Feedback-ID: id4a34324:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 26 Jul 2023 13:45:51 -0400 (EDT)
-Date:   Wed, 26 Jul 2023 10:45:49 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Matteo Rizzo <matteorizzo@google.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
-        corbet@lwn.net, akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        jmoyer@redhat.com, krisman@suse.de
-Subject: Re: [PATCH v3 1/1] io_uring: add a sysctl to disable io_uring
- system-wide
-Message-ID: <20230726174549.cg4jgx2d33fom4rb@awork3.anarazel.de>
-References: <20230630151003.3622786-1-matteorizzo@google.com>
- <20230630151003.3622786-2-matteorizzo@google.com>
+        Wed, 26 Jul 2023 13:46:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B9D26A1;
+        Wed, 26 Jul 2023 10:46:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F7CF61C2A;
+        Wed, 26 Jul 2023 17:46:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3BBCC433C8;
+        Wed, 26 Jul 2023 17:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690393564;
+        bh=1Y8GOeOm2cAylzoE00OZE5hDS7/QUx8+5O70+x/n2n4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=GLqLRQSpwpSb/thnyBrW3e6LAtjKM3AeFr5Q6ebOrmHKFZ+5l6lB1qqm1p6us0ko4
+         K/Vtq69+STMaHlkpoZLAWYRJt2Nswkmg8wq1cnWKMvR5QGaEjJnekk63iHq5nJfMQY
+         RhSi63yHmuXWcUWn9OdMFUOiJSTKZVN0UNZV4g06VOWcw6ehd83YtPYtj71E7Y5mUi
+         x/FTwRoHtsfsWHIrgw+MNkqGTamOv0mG2oJwdbbIB/gTYm+45Hb37yL7oPaE5eOHot
+         aVdikjvzEQDZmHDbKisvpsB/Zg5HgX7mxOhwZoZJ8qYfiHUG0C8eB6oMXUcvuSSBNz
+         DngKjsYOHRJHg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Saravanan Sekar <sravanhome@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Robin Gong <yibin.gong@nxp.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Pascal Paillet <p.paillet@foss.st.com>,
+        - <patches@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230726074940.121040-1-krzysztof.kozlowski@linaro.org>
+References: <20230726074940.121040-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] regulator: dt-bindings: add missing
+ unevaluatedProperties for each regulator
+Message-Id: <169039356041.105646.13098207329490634827.b4-ty@kernel.org>
+Date:   Wed, 26 Jul 2023 18:46:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230630151003.3622786-2-matteorizzo@google.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,26 +73,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 26 Jul 2023 09:49:40 +0200, Krzysztof Kozlowski wrote:
+> Each regulator node, which references common regulator.yaml schema,
+> should disallow additional or unevaluated properties.  Otherwise
+> mistakes in properties will go unnoticed.
+> 
+> 
 
-On 2023-06-30 15:10:03 +0000, Matteo Rizzo wrote:
-> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1,
-> or 2. When 0 (the default), all processes are allowed to create io_uring
-> instances, which is the current behavior. When 1, all calls to
-> io_uring_setup fail with -EPERM unless the calling process has
-> CAP_SYS_ADMIN. When 2, calls to io_uring_setup fail with -EPERM
-> regardless of privilege.
+Applied to
 
-Hm, is there a chance that instead of requiring CAP_SYS_ADMIN, a certain group
-could be required (similar to hugetlb_shm_group)? Requiring CAP_SYS_ADMIN
-could have the unintended consequence of io_uring requiring tasks being run
-with more privileges than needed... Or some other more granular way of
-granting the right to use io_uring?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-ISTM that it'd be nice if e.g. a systemd service specification could allow
-some services to use io_uring, without allowing it for everyone, or requiring
-to run services effectively as root.
+Thanks!
 
-Greetings,
+[1/1] regulator: dt-bindings: add missing unevaluatedProperties for each regulator
+      commit: d2d54819779e1ec0d7908ec98220fa54e72adc48
 
-Andres Freund
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
