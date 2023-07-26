@@ -2,268 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033CC762EFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E03B762F02
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbjGZIB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        id S229822AbjGZIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjGZIBC (ORCPT
+        with ESMTP id S232127AbjGZIBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:01:02 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B491C196;
-        Wed, 26 Jul 2023 00:52:53 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 800F6100006;
-        Wed, 26 Jul 2023 10:52:50 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 800F6100006
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690357970;
-        bh=vTUqR02g7CyzGcKZgu+ckB967aCBxpLWQ1Cp4fR5GdI=;
-        h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-        b=pcG+Peusb9E7FOmULN3LDYHt7fYVVlcAsgLW8ggdEqWHTiBjoOaw2BO9n+Hf7uWSK
-         5gavGbOwHqAv2oNew4cLJA7pTNW3hHANNoHySLymoHWmQfsGmj4xdz+jh6P++jTYXW
-         cXxYFgov4JCOVGddTQc8PU4JinFOG0t/HiteN5SjU8pmUb4j+RwJunFnc5Q/GOwwSn
-         GWxSXNsvDW/H5sTbQ7dvw9xeM6Xs+2QbnwHU2SJl49x2m1fhS9kTTkqavlfRhhLjUw
-         xeDl0/bgLvLcjY+MdKFteQzfMpQ/60Uq7KF2jqnzq7ooq88frKaWQE0puMS7VfWNgD
-         rlnRK89r5r17A==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 26 Jul 2023 10:52:50 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 10:52:43 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([::1]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::80e5:bab:4999:4480%7]) with mapi id
- 15.02.1118.030; Wed, 26 Jul 2023 10:52:43 +0300
-From:   Alexey Romanov <AVRomanov@sberdevices.ru>
-To:     Martin Kaiser <lists@kaiser.cx>
-CC:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "olivia@selenic.com" <olivia@selenic.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-        "martin.blumenstingl@googlemail.com" 
-        <martin.blumenstingl@googlemail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v1 1/3] drivers: rng: add check status bit feature
-Thread-Topic: [PATCH v1 1/3] drivers: rng: add check status bit feature
-Thread-Index: AQHZvwIhgAdKkj3BKkSqydzslBnXI6/KtJqAgADHaIA=
-Date:   Wed, 26 Jul 2023 07:52:43 +0000
-Message-ID: <20230726075243.f37sjcurmog3eunh@cab-wsm-0029881>
-References: <20230725141252.98848-1-avromanov@sberdevices.ru>
- <20230725141252.98848-2-avromanov@sberdevices.ru>
- <20230725195901.n2klvgz7outqaatk@viti.kaiser.cx>
-In-Reply-To: <20230725195901.n2klvgz7outqaatk@viti.kaiser.cx>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.18.93]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5A8C49A7B982AD4AA50B334FB89BE21D@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+        Wed, 26 Jul 2023 04:01:11 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7EE1736
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:53:04 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbd33a57dcso64401265e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690357983; x=1690962783;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgxURezd7xMpovKkYbI4YVARAnRubfgjmfxqjMPofjs=;
+        b=mCwxsEugZ2gi+GfhkMp1Rf0WSVBgVWptoYqELSfEOpfShmJlBgIkW8HkBwj/Hf6oYL
+         EUzl3zlHpnBx+hkNPFe4X2jPEhjfKBIpqMaIycAy8vIq3F66Bh0pF/RGsUuMWoe+Yj4V
+         lwffuXENYQuTAssxHsKsh8q4Gd7DOowl4uT+Qb0oPj6lnz1fZR440kmWMwQVd0ARme3T
+         ZjPj2ZTV7fIFogPzTxbsvK1UbFq3S3e3ZBV5kGlyBJZLGPBrpH52G8/RBh0yzjqXl2nG
+         cFo8KpGIU++aA1LF57bYJ5gGYsubWuY8yAQrOx7iloC3XxA3iQjXBTiKBZ92ghdi0/Os
+         jteQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690357983; x=1690962783;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DgxURezd7xMpovKkYbI4YVARAnRubfgjmfxqjMPofjs=;
+        b=lQHevveEMw/2SV1EPL+F37wzAiwtVoW0WySUMgPt3NeBk0HDfHvo5AfrsrbN2HNTrS
+         p72IWWw7NIbBklHBsW/w+QDwZY2lzcXsK5nH/ztTLyzKQCE2vdRNWJCZPqDnx45UFYz6
+         K5PP0V/XGNZIUqaj/ZHyWu5Xh3jaweYLOhD9BZ3wX/Jy08m4bSWuxfA1rGGi18ghZt1O
+         appq1JmJh4WsfZYOoklqXQ2vrIELr4NxbXxemWST/WOy9inPHFLf7rjHf1+GjR9eYv1c
+         2ScmrdEYUJPs8TGzYAm5xnYea1gcIOmto4Lp9XHnWSJ9qzw7MTv6uk+uTpGV0NWc4fFD
+         r+yA==
+X-Gm-Message-State: ABy/qLai72g9maT2GRvsgcd6vqiT35GifJM4uRjW5vq80d17dBUnr6/U
+        eO+mCxGzyf4B3G3xHjosL8Lbmg==
+X-Google-Smtp-Source: APBJJlG3IXSeYkqjgloD5M6PeUC36krV2b13mFZ5oQZcQJXiXIYN9wDPBgpkZnTZqk30LWC35BHCwg==
+X-Received: by 2002:a05:600c:22d0:b0:3fb:40ff:1cbc with SMTP id 16-20020a05600c22d000b003fb40ff1cbcmr735273wmg.10.1690357983296;
+        Wed, 26 Jul 2023 00:53:03 -0700 (PDT)
+Received: from 1.. ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id h14-20020a05600c260e00b003fbca942499sm1264346wma.14.2023.07.26.00.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 00:53:02 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
+        michael@walle.cc
+Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v4 00/11] mtd: spi-nor: spansion: Add support for Infineon S28HS02GT
+Date:   Wed, 26 Jul 2023 10:52:46 +0300
+Message-Id: <20230726075257.12985-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVRomanov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Track_E25351}, {Tracking_internal2}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3880; i=tudor.ambarus@linaro.org; h=from:subject; bh=/afqJeKLuNtYmKNVMU+5YdXP5HjD85fu5MdBIhF0KIQ=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkwNDXyjz2ZW61Y78YBxsxTSQ7jMorODT6SViTC XymyVPTeKOJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZMDQ1wAKCRBLVU9HpY0U 6az8B/9l9tM7+8Os/Fxqz+s0eKdlLTjhhVKYIuGr9JQ+UQ+lF4xQmZcW8v7FYJlV/1DncVP6sXH XKB9uAmdOqQAUkNa26kdtC02xfFeCO5CRGCRoW2yPH//vKCebNvsFRHfShD0+Aa9eOcVZCl9JtX e4n+SgvGIgdpiN3UDqXzi57gGBTj6owyTzaL/dueJH5fmn5hbhu6DEHENZz4PE6InM2K9SHrQm9 bv6V2c0m/0VwAGUnCcxxQXXV7lz4hKhkY+zgeNPAPOJL9GhioGoZ/rd3ZpHHrff4vDhID3vGXA3 WqVJMxrEtiVipDGGSIPvol0sX1oRUd0Uf4+TorjJfhvgKT2b
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+v4:
+- define vreg_offset for S25FS256T in the post_sfdp hook. The goal
+is to use the same code base for both single and multi chip package
+flashes.
+- get rid of SPINOR_REG_CYPRESS_CFR{1,3,5}V as they are no longer used
 
-On Tue, Jul 25, 2023 at 09:59:01PM +0200, Martin Kaiser wrote:
-> Alexey Romanov (avromanov@sberdevices.ru) wrote:
->=20
-> > For some Amlogic SOC's, mechanism to obtain random number
-> > has been changed. For example, S4 now uses status bit waiting algo.
->=20
-> > Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
-> > ---
-> >  drivers/char/hw_random/meson-rng.c | 77 ++++++++++++++++++++++++++++--
-> >  1 file changed, 74 insertions(+), 3 deletions(-)
->=20
-> > diff --git a/drivers/char/hw_random/meson-rng.c b/drivers/char/hw_rando=
-m/meson-rng.c
-> > index a4eb8e35f13d..c6d7349630a1 100644
-> > --- a/drivers/char/hw_random/meson-rng.c
-> > +++ b/drivers/char/hw_random/meson-rng.c
-> > @@ -14,19 +14,65 @@
-> >  #include <linux/of.h>
-> >  #include <linux/clk.h>
->=20
-> > -#define RNG_DATA 0x00
-> > +struct meson_rng_priv {
-> > +	bool check_status_bit;
-> > +	unsigned int data_offset;
-> > +	unsigned int cfg_offset;
-> > +};
->=20
-> >  struct meson_rng_data {
-> >  	void __iomem *base;
-> >  	struct hwrng rng;
-> > +	struct device *dev;
-> > +	const struct meson_rng_priv *priv;
-> >  };
->=20
-> > +#define RUN_BIT			0
-> > +#define SEED_READY_STS_BIT	31
-> > +#define RETRY_CNT		100
-> > +
-> > +static int meson_rng_wait_status(void __iomem *cfg_addr, int bit)
-> > +{
-> > +	u32 status;
-> > +	u32 cnt =3D 0;
-> > +
-> > +	do {
-> > +		status =3D readl_relaxed(cfg_addr) & BIT(bit);
-> > +		cpu_relax();
-> > +	} while (status && (cnt++ < RETRY_CNT));
-> > +
->=20
-> Could you use readl_relaxed_poll_timeout here instead of open coding the
-> loop?
+---
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s28hs02gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+345b1c
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080106fe00000114000100ff84000102500100ff050001055801
+00ff8700011c6c0100ff88000106dc0100ff81000118040200ff0a000104
+f40100ffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffff7218affffffff7f000000000000
+0000eeffffffffff0000ffff00000c2100ff00ff12dc23faff8b82e7ffec
+ec2319497ab07ab0f766805c000000fff910c0a0000000000000bc020000
+0000ffff7e7e41120ffe21ffffdc00ee800b7171656500b0ff9600000000
+0c551ca20000800000000000c0ccfffb88fbfffb00650090066500b10065
+009600650095716503d0716503d0a46bfb0290a579a20040288e0000ff00
+0000ff0071650690716506900000000000000000716506d1716506d17165
+0691716506910000ff000000ff00716505d5716505d50000a01500008008
+000000080000801000000010000080180000001800000601000000008000
+710600030600fc65ff0804008000fc65ff0402008000fc65ff0804008008
+fd65ff0402008008fe0202fff1ff0100f8ff0100f8fffb0ffe0902fff8ff
+fb0ff8ff0100f1ff0100fe0104fff1ff0100f8ff0100f8fff70ff8ff0100
+f1ff0100ff0a00fff8ffff0f                                    
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+6193b9729008b80b9a2b4bb3ce06a91d  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.234679 seconds, 25.6MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+3020d73d4d0e570449faacfbadf134e074ced30e  qspi_test
+3020d73d4d0e570449faacfbadf134e074ced30e  qspi_read
 
-At first I also thought about this API. But later I came to the
-conclusion that it is inappropriate here:
+Takahiro Kuwano (8):
+  mtd: spi-nor: spansion: use CLPEF as an alternative to CLSR
+  mtd: spi-nor: spansion: preserve CFR2V[7] when writing MEMLAT
+  mtd: spi-nor: spansion: prepare octal dtr methods for multi chip
+    support
+  mtd: spi-nor: spansion: switch set_octal_dtr method to use vreg_offset
+  mtd: spi-nor: spansion: switch h28hx's ready() to use vreg_offset
+  mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
+  mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP
+  mtd: spi-nor: spansion: add support for S28HS02GT
 
-1. We can't call rng_read from an atomic context.
-2. RNG for me looks like a very lightweight primitive to me that=20
-should work quiclky.
+Tudor Ambarus (3):
+  mtd: spi-nor: spansion: let SFDP determine the flash and sector size
+  mtd: spi-nor: spansion: switch s25hx_t to use vreg_offset for
+    quad_enable()
+  mtd: spi-nor: spansion: switch cypress_nor_get_page_size() to use
+    vreg_offset
 
-But, now I looked again at the API and realized that we can use=20
-readl_relaxed_poll_timeout_atomic() instead of
-readl_relaxed_poll_timeout(). What do you think?
+ drivers/mtd/spi-nor/atmel.c     |   8 +-
+ drivers/mtd/spi-nor/core.c      |  23 ++-
+ drivers/mtd/spi-nor/core.h      |   4 +-
+ drivers/mtd/spi-nor/issi.c      |   4 +-
+ drivers/mtd/spi-nor/macronix.c  |   4 +-
+ drivers/mtd/spi-nor/micron-st.c |   4 +-
+ drivers/mtd/spi-nor/spansion.c  | 306 +++++++++++++++++++++-----------
+ drivers/mtd/spi-nor/sst.c       |   8 +-
+ drivers/mtd/spi-nor/winbond.c   |   4 +-
+ drivers/mtd/spi-nor/xilinx.c    |   4 +-
+ 10 files changed, 245 insertions(+), 124 deletions(-)
 
->=20
-> > +	if (status)
-> > +		return -EBUSY;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bo=
-ol wait)
-> >  {
-> >  	struct meson_rng_data *data =3D
-> >  			container_of(rng, struct meson_rng_data, rng);
-> > +	const struct meson_rng_priv *priv =3D data->priv;
-> > +
-> > +	if (priv->check_status_bit) {
-> > +		void __iomem *cfg_addr =3D data->base + priv->cfg_offset;
-> > +		int err;
-> > +
-> > +		writel_relaxed(readl_relaxed(cfg_addr) | BIT(SEED_READY_STS_BIT), cf=
-g_addr);
->=20
-> > -	*(u32 *)buf =3D readl_relaxed(data->base + RNG_DATA);
-> > +		err =3D meson_rng_wait_status(cfg_addr, SEED_READY_STS_BIT);
-> > +		if (err) {
-> > +			dev_err(data->dev, "Seed isn't ready, try again\n");
-> > +			return err;
-> > +		}
-> > +
-> > +		err =3D meson_rng_wait_status(cfg_addr, RUN_BIT);
-> > +		if (err) {
-> > +			dev_err(data->dev, "Can't get random number, try again\n");
-> > +			return err;
-> > +		}
-> > +	}
-> > +
-> > +	*(u32 *)buf =3D readl_relaxed(data->base + priv->data_offset);
->=20
-> >  	return sizeof(u32);
-> >  }
-> > @@ -41,6 +87,10 @@ static int meson_rng_probe(struct platform_device *p=
-dev)
-> >  	if (!data)
-> >  		return -ENOMEM;
->=20
-> > +	data->priv =3D device_get_match_data(&pdev->dev);
-> > +	if (!data->priv)
-> > +		return -ENODEV;
-> > +
-> >  	data->base =3D devm_platform_ioremap_resource(pdev, 0);
-> >  	if (IS_ERR(data->base))
-> >  		return PTR_ERR(data->base);
-> > @@ -53,11 +103,32 @@ static int meson_rng_probe(struct platform_device =
-*pdev)
-> >  	data->rng.name =3D pdev->name;
-> >  	data->rng.read =3D meson_rng_read;
->=20
-> > +	data->dev =3D &pdev->dev;
-> > +
-> >  	return devm_hwrng_register(dev, &data->rng);
-> >  }
->=20
-> > +static const struct meson_rng_priv meson_rng_priv =3D {
-> > +	.check_status_bit =3D false,
-> > +	.data_offset =3D 0x0,
-> > +	.cfg_offset =3D 0x0,
-> > +};
-> > +
-> > +static const struct meson_rng_priv meson_rng_priv_s4 =3D {
-> > +	.check_status_bit =3D true,
-> > +	.data_offset =3D 0x8,
-> > +	.cfg_offset =3D 0x0,
-> > +};
-> > +
-> >  static const struct of_device_id meson_rng_of_match[] =3D {
-> > -	{ .compatible =3D "amlogic,meson-rng", },
-> > +	{
-> > +		.compatible =3D "amlogic,meson-rng",
-> > +		.data =3D (void *)&meson_rng_priv,
-> > +	},
-> > +	{
-> > +		.compatible =3D "amlogic,meson-rng-s4",
-> > +		.data =3D (void *)&meson_rng_priv_s4,
-> > +	},
-> >  	{},
-> >  };
-> >  MODULE_DEVICE_TABLE(of, meson_rng_of_match);
-> > --=20
-> > 2.38.1
->=20
+-- 
+2.34.1
 
---=20
-Thank you,
-Alexey=
