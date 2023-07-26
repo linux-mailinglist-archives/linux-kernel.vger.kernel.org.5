@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F0176409D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5C87640B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjGZUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        id S229866AbjGZUml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbjGZUi6 (ORCPT
+        with ESMTP id S229510AbjGZUmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:38:58 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B8B2701
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:38:54 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9ef9b1920so318226a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:38:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690403934; x=1691008734;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A8/T6DJX/3wv1BC8DhRFtQNRzsSzmfoIuUvWC3HeVoI=;
-        b=HHJieX5TXFBi00otkt5K7UlQ2xWrwAuMuL5JFQT3skfgyTq4JL51Wiu58KdW458YpH
-         dUFN9d7hJQlEn/7lKqXhsVcE/GUYChZWHLgrdQkiG1JjSIQ61c2WKXWNbyPkbW8g1Jnv
-         yp+jusq8knB+3KtW5g9JAdEzwXXbn0OIycVQ4NI2BtCzSFh2Lp1AywD/trBN5XnbPwMz
-         6KAqTVM8VDBOAjQ3alamIZnD2zYPgSFyG9jp+yVfJQQVsP70Y9yfppmJJzB1FOzZ95mS
-         2ApqBqbmjAq2niDnJI8YZ5TCZOMB21Imd/WA2kFUB4YBneGX3a262QC3plGVRgrTcSEi
-         CJ9A==
-X-Gm-Message-State: ABy/qLZvEkOkCuO0ODUR/7pOcivPl7F6FAgjmSmXyJXYrDdJRm5iJaVw
-        SFDeDIPlauJz1B8PVMSi10QQq5sM4dEiILUr3jSRUD1QTh75
-X-Google-Smtp-Source: APBJJlGdJHXoNxgmq9ObjtPT/NLsIT7+Lda0f4Gws9gtz2pu+1cHJ9AjIhw4YlfXSucl86UHvr0WCk1zlcO5XANSCBhBc36Ps9RO
+        Wed, 26 Jul 2023 16:42:39 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE4212F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=OZA55SnNbAmvZEmnAh3o1Vey5rx64nx3FOwYsy8KhWI=;
+  b=uCEDxfvQKI+OZ89DzhponjbY3VXv/Yryua8IgoxBZ9UIaendxM9D4OwW
+   /3hyo6rHOZX3mmqNZc3Ek+iDJgWSyKbZ3hN/Veb92iLre72eWFOy7w/8T
+   VUfzwM7DNGiP4hVKDO4iEuPMWGznDh7sQkb8XLv3Ut6S3bC2a6BuOQk5E
+   Q=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.01,232,1684792800"; 
+   d="scan'208";a="119229647"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:42:35 +0200
+Date:   Wed, 26 Jul 2023 22:42:34 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sean Christopherson <seanjc@google.com>
+cc:     Nicolas Palix <nicolas.palix@imag.fr>,
+        linux-kernel@vger.kernel.org, cocci@inria.fr,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2] Revert "debugfs, coccinelle: check for obsolete
+ DEFINE_SIMPLE_ATTRIBUTE() usage"
+In-Reply-To: <20230726202920.507756-1-seanjc@google.com>
+Message-ID: <alpine.DEB.2.22.394.2307262242160.3129@hadrien>
+References: <20230726202920.507756-1-seanjc@google.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:d8b2:b0:1bb:84d0:5b8d with SMTP id
- dv50-20020a056870d8b200b001bb84d05b8dmr826402oab.6.1690403934002; Wed, 26 Jul
- 2023 13:38:54 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 13:38:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000036333060169d6a8@google.com>
-Subject: [syzbot] Monthly serial report (Jul 2023)
-From:   syzbot <syzbot+list2f20ebac1d924d54d3c4@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,34 +56,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello serial maintainers/developers,
 
-This is a 31-day syzbot report for the serial subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/serial
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 3 issues are still open and 4 have been fixed so far.
+On Wed, 26 Jul 2023, Sean Christopherson wrote:
 
-Some of the still happening issues:
+> Remove coccinelle's recommendation to use DEFINE_DEBUGFS_ATTRIBUTE()
+> instead of DEFINE_SIMPLE_ATTRIBUTE().  Regardless of whether or not the
+> "significant overhead" incurred by debugfs_create_file() is actually
+> meaningful, warnings from the script have led to a rash of low-quality
+> patches that have sowed confusion and consumed maintainer time for little
+> to no benefit.  There have been no less than four attempts to "fix" KVM,
+> and a quick search on lore shows that KVM is not alone.
+>
+> This reverts commit 5103068eaca290f890a30aae70085fac44cecaf6.
 
-Ref Crashes Repro Title
-<1> 591     Yes   KMSAN: uninit-value in n_tty_receive_buf_common (2)
-                  https://syzkaller.appspot.com/bug?extid=b68d24ad0de64bdba684
-<2> 49      Yes   BUG: soft lockup in tx
-                  https://syzkaller.appspot.com/bug?extid=5e87db90e68fbc4707c6
-<3> 15      Yes   general protection fault in serial8250_tx_chars
-                  https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
+Applied.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+>
+> Link: https://lore.kernel.org/all/87tu2nbnz3.fsf@mpe.ellerman.id.au
+> Link: https://lore.kernel.org/all/c0b98151-16b6-6d8f-1765-0f7d46682d60@redhat.com
+> Link: https://lkml.kernel.org/r/20230706072954.4881-1-duminjie%40vivo.com
+> Link: https://lore.kernel.org/all/Y2FsbufV00jbyF0B@google.com
+> Link: https://lore.kernel.org/all/Y2ENJJ1YiSg5oHiy@orome
+> Link: https://lore.kernel.org/all/7560b350e7b23786ce712118a9a504356ff1cca4.camel@kernel.org
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>
+> v2: Fix a copy+paste goof in the changelog, add Greg's Ack.
+>
+>  .../api/debugfs/debugfs_simple_attr.cocci     | 68 -------------------
+>  1 file changed, 68 deletions(-)
+>  delete mode 100644 scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+>
+> diff --git a/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci b/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+> deleted file mode 100644
+> index 7c312310547c..000000000000
+> --- a/scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
+> +++ /dev/null
+> @@ -1,68 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/// Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE
+> -/// for debugfs files.
+> -///
+> -//# Rationale: DEFINE_SIMPLE_ATTRIBUTE + debugfs_create_file()
+> -//# imposes some significant overhead as compared to
+> -//# DEFINE_DEBUGFS_ATTRIBUTE + debugfs_create_file_unsafe().
+> -//
+> -// Copyright (C): 2016 Nicolai Stange
+> -// Options: --no-includes
+> -//
+> -
+> -virtual context
+> -virtual patch
+> -virtual org
+> -virtual report
+> -
+> -@dsa@
+> -declarer name DEFINE_SIMPLE_ATTRIBUTE;
+> -identifier dsa_fops;
+> -expression dsa_get, dsa_set, dsa_fmt;
+> -position p;
+> -@@
+> -DEFINE_SIMPLE_ATTRIBUTE@p(dsa_fops, dsa_get, dsa_set, dsa_fmt);
+> -
+> -@dcf@
+> -expression name, mode, parent, data;
+> -identifier dsa.dsa_fops;
+> -@@
+> -debugfs_create_file(name, mode, parent, data, &dsa_fops)
+> -
+> -
+> -@context_dsa depends on context && dcf@
+> -declarer name DEFINE_DEBUGFS_ATTRIBUTE;
+> -identifier dsa.dsa_fops;
+> -expression dsa.dsa_get, dsa.dsa_set, dsa.dsa_fmt;
+> -@@
+> -* DEFINE_SIMPLE_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
+> -
+> -
+> -@patch_dcf depends on patch expression@
+> -expression name, mode, parent, data;
+> -identifier dsa.dsa_fops;
+> -@@
+> -- debugfs_create_file(name, mode, parent, data, &dsa_fops)
+> -+ debugfs_create_file_unsafe(name, mode, parent, data, &dsa_fops)
+> -
+> -@patch_dsa depends on patch_dcf && patch@
+> -identifier dsa.dsa_fops;
+> -expression dsa.dsa_get, dsa.dsa_set, dsa.dsa_fmt;
+> -@@
+> -- DEFINE_SIMPLE_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
+> -+ DEFINE_DEBUGFS_ATTRIBUTE(dsa_fops, dsa_get, dsa_set, dsa_fmt);
+> -
+> -
+> -@script:python depends on org && dcf@
+> -fops << dsa.dsa_fops;
+> -p << dsa.p;
+> -@@
+> -msg="%s should be defined with DEFINE_DEBUGFS_ATTRIBUTE" % (fops)
+> -coccilib.org.print_todo(p[0], msg)
+> -
+> -@script:python depends on report && dcf@
+> -fops << dsa.dsa_fops;
+> -p << dsa.p;
+> -@@
+> -msg="WARNING: %s should be defined with DEFINE_DEBUGFS_ATTRIBUTE" % (fops)
+> -coccilib.report.print_report(p[0], msg)
+>
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
+>
