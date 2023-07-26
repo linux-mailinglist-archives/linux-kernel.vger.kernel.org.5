@@ -2,322 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08967762A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A2B762A35
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbjGZE1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 00:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        id S231405AbjGZERo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 00:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbjGZE1P (ORCPT
+        with ESMTP id S231887AbjGZERP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 00:27:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF12C49F4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690345261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jd3Ayh8DN133HPzYKMvS4hrOB9t+N5s98/iIQZ50pSY=;
-        b=W5+tayqHJDhwg3STdw0mXoY/CfK+NMHmA4U8Svrh5W2fDRMHVpoucPw7nxumYRejSMKeRe
-        XZuu0DOc8XmSVoUvsWN1DBsVh5yMz+D7nU3c9qme4KWju/42AkLtw+ljWG3gJGr/3Unmqf
-        SF1JVBSqOeYz5JLXaAZTioxYHf0YM5o=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-278-wqWocSaNNhKiiXZ8Z5nnjw-1; Wed, 26 Jul 2023 00:07:06 -0400
-X-MC-Unique: wqWocSaNNhKiiXZ8Z5nnjw-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-67167ad515aso753766b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 21:07:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690344425; x=1690949225;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jd3Ayh8DN133HPzYKMvS4hrOB9t+N5s98/iIQZ50pSY=;
-        b=eoTi2R0z3Iz0ffpD3KZJs3Z61FmidIB+Ad5hDC53WMjrdT3nCpr4Aid9tQQ+B6wyVN
-         elOPYYNF3I9G2vVA4baOYfGWnlMX8MF9390SQ25uMEJl+RrvIOY0jrdzAW/6MBDd8J/2
-         HOfh3iLt62y6jvw9tH9FWflwyKdtyWCUprIVzzP7Ztift0AKOtB/d6uPp3Gz9ImVgz5b
-         hvk+1vPfmur3Aw3s+O0owSqgYc4QwlhOsnJzS6nwb1B4SgQPcPNmndvRdzv5fgwsOuTO
-         FMlzRpH6v68sXGDAwrXe1u4JEjMn+I1rPBXlTAiR+Bdrd0xgLrSr64DMAumnUrz3bWJj
-         DoUg==
-X-Gm-Message-State: ABy/qLbTdHdXQQsRGmHPYE/3cJr/dTLdh6z1enMJ/kIyeXAvp2ZgKd81
-        L56VqV1ZbvhQKyXetzRbXqrALug2a5iHG0njE4bdT3lYGhm8+Yom6zpGXgR2wvEfviJDwkTe8AH
-        15gOXFUOwbIShcZ9Rs+uxIOYN
-X-Received: by 2002:a05:6a21:998e:b0:13a:3649:dc1a with SMTP id ve14-20020a056a21998e00b0013a3649dc1amr1214731pzb.0.1690344425265;
-        Tue, 25 Jul 2023 21:07:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHleYbAwzuemeXRJ1zvnZsyP8kzTsFzjwsO8Pk5jpHvjhbkv06p3/Mm3PthC+5aKlT4RtEFvA==
-X-Received: by 2002:a05:6a21:998e:b0:13a:3649:dc1a with SMTP id ve14-20020a056a21998e00b0013a3649dc1amr1214709pzb.0.1690344424918;
-        Tue, 25 Jul 2023 21:07:04 -0700 (PDT)
-Received: from [10.72.112.95] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id a13-20020aa7864d000000b006862e7f4648sm10736311pfo.99.2023.07.25.21.06.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 21:07:04 -0700 (PDT)
-Message-ID: <bd054dfa-915d-e231-b480-06401622ebde@redhat.com>
-Date:   Wed, 26 Jul 2023 12:06:57 +0800
+        Wed, 26 Jul 2023 00:17:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C17855AB;
+        Tue, 25 Jul 2023 21:11:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A6BB611BF;
+        Wed, 26 Jul 2023 04:09:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBD6BC433C8;
+        Wed, 26 Jul 2023 04:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690344581;
+        bh=ku1nE39/TTrl/Uk7uhUIacdlmfCDkaxNE1UEjYekZco=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cl+tt96BUc+4oGpCAUspkgwUXGcWQm+hGLkPXiAiOsfTtS0+PC7Ud9PZRw61XFN+D
+         GMijLReeVQfeloe6NBB/+zZwnr48Lbnw93ky0jOb8QZXMLnn6+DwV0KrmFe3FyQdLB
+         d2oo+rZlkkJ+VQbsKbyMPiol/qZUrZyVhn6LWph1ZeLzx1Kl5az4CsIY6aIfO93jt3
+         LatHN1gFnRd5I0hM3uuAe0okMGec7W8vwCzc2z/7UzLWXVUHPAxoZqM5xmlux00dyr
+         yEoeCJUdfW3CZlrgZTUJijb8VycOMcuaNC/AqqHxtFQkuLJ9FWCZZgWS7nc8J1Va9J
+         5kRmmN2VYjkmg==
+Date:   Tue, 25 Jul 2023 21:09:39 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v11 06/10] net: ti: icssg-prueth: Add ICSSG ethernet
+ driver
+Message-ID: <20230725210939.56d77726@kernel.org>
+In-Reply-To: <20230724112934.2637802-7-danishanwar@ti.com>
+References: <20230724112934.2637802-1-danishanwar@ti.com>
+        <20230724112934.2637802-7-danishanwar@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for
- unmap
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230722022251.3446223-1-rananta@google.com>
- <20230722022251.3446223-13-rananta@google.com>
- <0841aca6-2824-6a1b-a568-119f8bd220de@redhat.com>
- <CAJHc60znT5ThqKE3TgTW-0Us3oNv8+KF=81TSK0PbG3tTyJLFQ@mail.gmail.com>
- <7ea9e7a0-508d-0f00-09ae-ae468f111437@redhat.com>
- <CAJHc60xaygC8tX8yFnoFM9YqWg8iE6r5d+kugGwO5KZxDtG3rQ@mail.gmail.com>
-Content-Language: en-US
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <CAJHc60xaygC8tX8yFnoFM9YqWg8iE6r5d+kugGwO5KZxDtG3rQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
+On Mon, 24 Jul 2023 16:59:30 +0530 MD Danish Anwar wrote:
+>  drivers/net/ethernet/ti/Kconfig        |   13 +
+>  drivers/net/ethernet/ti/Makefile       |    3 +
+>  drivers/net/ethernet/ti/icssg_prueth.c | 1831 ++++++++++++++++++++++++
+>  drivers/net/ethernet/ti/icssg_prueth.h |   48 +
 
-On 7/26/23 01:23, Raghavendra Rao Ananta wrote:
-> Hi Shaoqin,
-> 
-> On Mon, Jul 24, 2023 at 7:32 PM Shaoqin Huang <shahuang@redhat.com> wrote:
->>
->>
->>
->> On 7/25/23 00:47, Raghavendra Rao Ananta wrote:
->>> On Mon, Jul 24, 2023 at 2:35 AM Shaoqin Huang <shahuang@redhat.com> wrote:
->>>>
->>>> Hi Raghavendra,
->>>>
->>>> On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
->>>>> The current implementation of the stage-2 unmap walker traverses
->>>>> the given range and, as a part of break-before-make, performs
->>>>> TLB invalidations with a DSB for every PTE. A multitude of this
->>>>> combination could cause a performance bottleneck on some systems.
->>>>>
->>>>> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
->>>>> invalidations until the entire walk is finished, and then
->>>>> use range-based instructions to invalidate the TLBs in one go.
->>>>> Condition deferred TLB invalidation on the system supporting FWB,
->>>>> as the optimization is entirely pointless when the unmap walker
->>>>> needs to perform CMOs.
->>>>>
->>>>> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
->>>>> now serves the stage-2 unmap walker specifically, rather than
->>>>> acting generic.
->>>>>
->>>>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
->>>>> ---
->>>>>     arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
->>>>>     1 file changed, 58 insertions(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>>>> index 5ef098af1736..cf88933a2ea0 100644
->>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>>> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgtable_visit_ctx *ctx, kvm_pte_t n
->>>>>         smp_store_release(ctx->ptep, new);
->>>>>     }
->>>>>
->>>>> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, struct kvm_s2_mmu *mmu,
->>>>> -                        struct kvm_pgtable_mm_ops *mm_ops)
->>>>> +struct stage2_unmap_data {
->>>>> +     struct kvm_pgtable *pgt;
->>>>> +     bool defer_tlb_flush_init;
->>>>> +};
->>>>> +
->>>>> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
->>>>> +{
->>>>> +     /*
->>>>> +      * If FEAT_TLBIRANGE is implemented, defer the individual
->>>>> +      * TLB invalidations until the entire walk is finished, and
->>>>> +      * then use the range-based TLBI instructions to do the
->>>>> +      * invalidations. Condition deferred TLB invalidation on the
->>>>> +      * system supporting FWB, as the optimization is entirely
->>>>> +      * pointless when the unmap walker needs to perform CMOs.
->>>>> +      */
->>>>> +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
->>>>> +}
->>>>> +
->>>>> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unmap_data)
->>>>> +{
->>>>> +     bool defer_tlb_flush = __stage2_unmap_defer_tlb_flush(unmap_data->pgt);
->>>>> +
->>>>> +     /*
->>>>> +      * Since __stage2_unmap_defer_tlb_flush() is based on alternative
->>>>> +      * patching and the TLBIs' operations behavior depend on this,
->>>>> +      * track if there's any change in the state during the unmap sequence.
->>>>> +      */
->>>>> +     WARN_ON(unmap_data->defer_tlb_flush_init != defer_tlb_flush);
->>>>> +     return defer_tlb_flush;
->>>>> +}
->>>>> +
->>>>> +static void stage2_unmap_put_pte(const struct kvm_pgtable_visit_ctx *ctx,
->>>>> +                             struct kvm_s2_mmu *mmu,
->>>>> +                             struct kvm_pgtable_mm_ops *mm_ops)
->>>>>     {
->>>>> +     struct stage2_unmap_data *unmap_data = ctx->arg;
->>>>> +
->>>>>         /*
->>>>> -      * Clear the existing PTE, and perform break-before-make with
->>>>> -      * TLB maintenance if it was valid.
->>>>> +      * Clear the existing PTE, and perform break-before-make if it was
->>>>> +      * valid. Depending on the system support, the TLB maintenance for
->>>>> +      * the same can be deferred until the entire unmap is completed.
->>>>>          */
->>>>>         if (kvm_pte_valid(ctx->old)) {
->>>>>                 kvm_clear_pte(ctx->ptep);
->>>>> -             kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, ctx->addr, ctx->level);
->>>>> +
->>>>> +             if (!stage2_unmap_defer_tlb_flush(unmap_data))
->>>> Why not directly check (unmap_data->defer_tlb_flush_init) here?
->>>>
->>> (Re-sending the reply as the previous one was formatted as HTML and
->>> was blocked by many lists)
->>>
->>> No particular reason per say, but I was just going with the logic of
->>> determining if we need to defer the flush and the WARN_ON() parts
->>> separate.
->>> Any advantage if we directly check in stage2_unmap_put_pte() that I
->>> missed or is this purely for readability?
->>
->> Hi Raghavendra,
->>
->> I just wondering if before the stage2 walk, we want to defer the tlb
->> flush, but if when walk the stage2, the stage2_unmap_defer_tlb_flush()
->> trigger the WARN_ON() and return don't defer the tlb flush, it will
->> flush the ctx->addr's tlb. But before the WARN_ON() triggered, these tlb
->> will not be flushed, since when walk stage2 done in the
->> kvm_pgtable_stage2_unmap(), the stage2_unmap_defer_tlb_flush() still
->> trigger the WARN_ON() and don't use the tlb range-based flush. Thus some
->> of the tlb are not flushed.
->>
-> Excellent point!
->> If we directly check the (unmap_data->defer_tlb_flush_init), this isn't
->> change during walking the stage2, so the WARN_ON() should only trigger
->> in kvm_pgtable_stage2_unmap()->stage2_unmap_defer_tlb_flush().
->>
->> I'm not sure if it's right since I just think once we set up use the
->> TLBI range-based flush, the result of the
->> __stage2_unmap_defer_tlb_flush() shouldn't change. Otherwise there must
->> have some stale TLB entry.
->>
-> One solution that I can think of is, if the code triggers the
-> WARN_ON(), we flush the entire VM's TLB using
-> kvm_call_hyp(__kvm_tlb_flush_vmid) after the entire walk is finished.
-> In this special/rare situation, it'll be a little expensive, but we
-> will at least be correct, leaving no stale TLBs behind. WDYT?
-> 
+Please create a sub-directory for the driver.
 
-I think it will be good to have this handling.
+> +static int prueth_ndev_add_tx_napi(struct prueth_emac *emac)
+> +{
+> +	struct prueth *prueth = emac->prueth;
+> +	int i, ret;
+> +
+> +	for (i = 0; i < emac->tx_ch_num; i++) {
+> +		struct prueth_tx_chn *tx_chn = &emac->tx_chns[i];
+> +
+> +		netif_napi_add_tx_weight(emac->ndev, &tx_chn->napi_tx,
+> +					 emac_napi_tx_poll, NAPI_POLL_WEIGHT);
 
-Thanks,
-Shaoqin
+Skip specifying weight, please.
 
-> Thank you.
-> Raghavendra
->> Thanks,
->> Shaoqin
->>
->>>
->>>>> +                     kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
->>>>> +                                     ctx->addr, ctx->level);
->>>> Small indent hint. The ctx->addr can align with __kvm_tlb_flush_vmid_ipa.
->>>>
->>> Ah, yes. I'll adjust this if I send out a v8.
->>>
->>> Thank you.
->>> Raghavendra
->>>> Thanks,
->>>> Shaoqin
->>>>>         }
->>>>>
->>>>>         mm_ops->put_page(ctx->ptep);
->>>>> @@ -1070,7 +1108,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
->>>>>     static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>>>                                enum kvm_pgtable_walk_flags visit)
->>>>>     {
->>>>> -     struct kvm_pgtable *pgt = ctx->arg;
->>>>> +     struct stage2_unmap_data *unmap_data = ctx->arg;
->>>>> +     struct kvm_pgtable *pgt = unmap_data->pgt;
->>>>>         struct kvm_s2_mmu *mmu = pgt->mmu;
->>>>>         struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
->>>>>         kvm_pte_t *childp = NULL;
->>>>> @@ -1098,7 +1137,7 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>>>          * block entry and rely on the remaining portions being faulted
->>>>>          * back lazily.
->>>>>          */
->>>>> -     stage2_put_pte(ctx, mmu, mm_ops);
->>>>> +     stage2_unmap_put_pte(ctx, mmu, mm_ops);
->>>>>
->>>>>         if (need_flush && mm_ops->dcache_clean_inval_poc)
->>>>>                 mm_ops->dcache_clean_inval_poc(kvm_pte_follow(ctx->old, mm_ops),
->>>>> @@ -1112,13 +1151,23 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->>>>>
->>>>>     int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size)
->>>>>     {
->>>>> +     int ret;
->>>>> +     struct stage2_unmap_data unmap_data = {
->>>>> +             .pgt = pgt,
->>>>> +             .defer_tlb_flush_init = __stage2_unmap_defer_tlb_flush(pgt),
->>>>> +     };
->>>>>         struct kvm_pgtable_walker walker = {
->>>>>                 .cb     = stage2_unmap_walker,
->>>>> -             .arg    = pgt,
->>>>> +             .arg    = &unmap_data,
->>>>>                 .flags  = KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_TABLE_POST,
->>>>>         };
->>>>>
->>>>> -     return kvm_pgtable_walk(pgt, addr, size, &walker);
->>>>> +     ret = kvm_pgtable_walk(pgt, addr, size, &walker);
->>>>> +     if (stage2_unmap_defer_tlb_flush(&unmap_data))
->>>>> +             /* Perform the deferred TLB invalidations */
->>>>> +             kvm_tlb_flush_vmid_range(pgt->mmu, addr, size);
->>>>> +
->>>>> +     return ret;
->>>>>     }
->>>>>
->>>>>     struct stage2_attr_data {
->>>>
->>>> --
->>>> Shaoqin
->>>>
->>>
->>
->> --
->> Shaoqin
->>
-> 
+> +/**
+> + * emac_ndo_start_xmit - EMAC Transmit function
+> + * @skb: SKB pointer
+> + * @ndev: EMAC network adapter
+> + *
+> + * Called by the system to transmit a packet  - we queue the packet in
+> + * EMAC hardware transmit queue
+> + * Doesn't wait for completion we'll check for TX completion in
+> + * emac_tx_complete_packets().
+> + *
+> + * Return: enum netdev_tx
+> + */
+> +static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> +{
+> +	struct cppi5_host_desc_t *first_desc, *next_desc, *cur_desc;
+> +	struct prueth_emac *emac = netdev_priv(ndev);
+> +	struct netdev_queue *netif_txq;
+> +	struct prueth_tx_chn *tx_chn;
+> +	dma_addr_t desc_dma, buf_dma;
+> +	int i, ret = 0, q_idx;
+> +	void **swdata;
+> +	u32 pkt_len;
+> +	u32 *epib;
+> +
+> +	pkt_len = skb_headlen(skb);
+> +	q_idx = skb_get_queue_mapping(skb);
+> +
+> +	tx_chn = &emac->tx_chns[q_idx];
+> +	netif_txq = netdev_get_tx_queue(ndev, q_idx);
+> +
+> +	/* Map the linear buffer */
+> +	buf_dma = dma_map_single(tx_chn->dma_dev, skb->data, pkt_len, DMA_TO_DEVICE);
+> +	if (dma_mapping_error(tx_chn->dma_dev, buf_dma)) {
+> +		netdev_err(ndev, "tx: failed to map skb buffer\n");
+> +		ret = NETDEV_TX_BUSY;
 
+Drop it if it can't be mapped and return OK. What's going to re-enable
+the queue in this case?
+
+> +		goto drop_stop_q;
+> +	}
+> +
+> +	first_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
+> +	if (!first_desc) {
+> +		netdev_dbg(ndev, "tx: failed to allocate descriptor\n");
+> +		dma_unmap_single(tx_chn->dma_dev, buf_dma, pkt_len, DMA_TO_DEVICE);
+> +		ret = NETDEV_TX_BUSY;
+> +		goto drop_stop_q_busy;
+> +	}
+> +
+> +	cppi5_hdesc_init(first_desc, CPPI5_INFO0_HDESC_EPIB_PRESENT,
+> +			 PRUETH_NAV_PS_DATA_SIZE);
+> +	cppi5_hdesc_set_pkttype(first_desc, 0);
+> +	epib = first_desc->epib;
+> +	epib[0] = 0;
+> +	epib[1] = 0;
+> +
+> +	/* set dst tag to indicate internal qid at the firmware which is at
+> +	 * bit8..bit15. bit0..bit7 indicates port num for directed
+> +	 * packets in case of switch mode operation
+> +	 */
+> +	cppi5_desc_set_tags_ids(&first_desc->hdr, 0, (emac->port_id | (q_idx << 8)));
+> +	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
+> +	cppi5_hdesc_attach_buf(first_desc, buf_dma, pkt_len, buf_dma, pkt_len);
+> +	swdata = cppi5_hdesc_get_swdata(first_desc);
+> +	*swdata = skb;
+> +
+> +	if (!skb_is_nonlinear(skb))
+> +		goto tx_push;
+
+Why the goto? The loop won't be entered.
+
+> +	/* Handle the case where skb is fragmented in pages */
+> +	cur_desc = first_desc;
+> +	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+> +		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+> +		u32 frag_size = skb_frag_size(frag);
+> +
+> +		next_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
+> +		if (!next_desc) {
+> +			netdev_err(ndev,
+> +				   "tx: failed to allocate frag. descriptor\n");
+> +			ret = NETDEV_TX_BUSY;
+> +			goto drop_free_descs;
+> +		}
+> +
+> +		buf_dma = skb_frag_dma_map(tx_chn->dma_dev, frag, 0, frag_size,
+> +					   DMA_TO_DEVICE);
+> +		if (dma_mapping_error(tx_chn->dma_dev, buf_dma)) {
+> +			netdev_err(ndev, "tx: Failed to map skb page\n");
+> +			k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
+> +			ret = NETDEV_TX_BUSY;
+> +			goto drop_free_descs;
+
+this label frees the skb, you can't return BUSY
+
+> +		}
+> +
+> +		cppi5_hdesc_reset_hbdesc(next_desc);
+> +		k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
+> +		cppi5_hdesc_attach_buf(next_desc,
+> +				       buf_dma, frag_size, buf_dma, frag_size);
+> +
+> +		desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool,
+> +						      next_desc);
+> +		k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &desc_dma);
+> +		cppi5_hdesc_link_hbdesc(cur_desc, desc_dma);
+> +
+> +		pkt_len += frag_size;
+> +		cur_desc = next_desc;
+> +	}
+> +	WARN_ON(pkt_len != skb->len);
+
+WARN_ON_ONCE() if at all
+
+> +
+> +tx_push:
+> +	/* report bql before sending packet */
+> +	netdev_tx_sent_queue(netif_txq, pkt_len);
+> +
+> +	cppi5_hdesc_set_pktlen(first_desc, pkt_len);
+> +	desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, first_desc);
+> +	/* cppi5_desc_dump(first_desc, 64); */
+> +
+> +	skb_tx_timestamp(skb);  /* SW timestamp if SKBTX_IN_PROGRESS not set */
+> +	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
+> +	if (ret) {
+> +		netdev_err(ndev, "tx: push failed: %d\n", ret);
+> +		goto drop_free_descs;
+> +	}
+> +
+> +	if (k3_cppi_desc_pool_avail(tx_chn->desc_pool) < MAX_SKB_FRAGS) {
+> +		netif_tx_stop_queue(netif_txq);
+> +		/* Barrier, so that stop_queue visible to other cpus */
+> +		smp_mb__after_atomic();
+> +
+> +		if (k3_cppi_desc_pool_avail(tx_chn->desc_pool) >=
+> +		    MAX_SKB_FRAGS)
+
+MAX_FRAGS + 1?
+
+> +			netif_tx_wake_queue(netif_txq);
+> +	}
+> +
+> +	return NETDEV_TX_OK;
+
+
+> +static int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
+> +{
+> +	struct prueth_emac *emac = prueth_napi_to_emac(napi_rx);
+> +	int rx_flow = PRUETH_RX_FLOW_DATA;
+> +	int flow = PRUETH_MAX_RX_FLOWS;
+> +	int num_rx = 0;
+> +	int cur_budget;
+> +	int ret;
+> +
+> +	while (flow--) {
+> +		cur_budget = budget - num_rx;
+> +
+> +		while (cur_budget--) {
+> +			ret = emac_rx_packet(emac, flow);
+> +			if (ret)
+> +				break;
+> +			num_rx++;
+> +		}
+> +
+> +		if (num_rx >= budget)
+> +			break;
+> +	}
+> +
+> +	if (num_rx < budget) {
+> +		napi_complete(napi_rx);
+
+Prefer using napi_complete_done()
+
+> +		enable_irq(emac->rx_chns.irq[rx_flow]);
+> +	}
+> +
+> +	return num_rx;
+> +}
+
+> +static void emac_ndo_tx_timeout(struct net_device *ndev, unsigned int txqueue)
+> +{
+> +	struct prueth_emac *emac = netdev_priv(ndev);
+> +
+> +	if (netif_msg_tx_err(emac))
+> +		netdev_err(ndev, "xmit timeout");
+
+Core already prints something, you can drop this.
+
+> +	ndev->stats.tx_errors++;
+> +}
+
+> +static void emac_ndo_set_rx_mode_work(struct work_struct *work)
+> +{
+> +	struct prueth_emac *emac = container_of(work, struct prueth_emac, rx_mode_work);
+> +	struct net_device *ndev = emac->ndev;
+> +	bool promisc, allmulti;
+> +
+> +	if (!netif_running(ndev))
+> +		return;
+> +
+> +	promisc = ndev->flags & IFF_PROMISC;
+> +	allmulti = ndev->flags & IFF_ALLMULTI;
+> +	emac_set_port_state(emac, ICSSG_EMAC_PORT_UC_FLOODING_DISABLE);
+> +	emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_DISABLE);
+> +
+> +	if (promisc) {
+> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_UC_FLOODING_ENABLE);
+> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
+> +		return;
+> +	}
+> +
+> +	if (allmulti) {
+> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
+> +		return;
+> +	}
+> +
+> +	if (!netdev_mc_empty(ndev)) {
+> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
+> +		return;
+> +	}
+> +}
+
+There's no need for locking in this work?
+
+> +	netif_napi_add(ndev, &emac->napi_rx,
+> +		       emac_napi_rx_poll);
+
+nit: fits on a line
+
+> +static struct platform_driver prueth_driver = {
+> +	.probe = prueth_probe,
+> +	.remove = prueth_remove,
+
+Please use .remove_new (which has a void return).
 -- 
-Shaoqin
-
+pw-bot: cr
