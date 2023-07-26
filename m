@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C52763238
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D442E763243
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjGZJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        id S231946AbjGZJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbjGZJcF (ORCPT
+        with ESMTP id S233735AbjGZJdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:32:05 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715A1BE8;
-        Wed, 26 Jul 2023 02:31:02 -0700 (PDT)
-Received: from dggpemm500016.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R9pXH4mt8z1GDFR;
-        Wed, 26 Jul 2023 17:30:07 +0800 (CST)
-Received: from [10.67.108.26] (10.67.108.26) by dggpemm500016.china.huawei.com
- (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
- 2023 17:31:00 +0800
-Message-ID: <43731b35-c076-6d01-ad83-764fb2e9a8f0@huawei.com>
-Date:   Wed, 26 Jul 2023 17:30:49 +0800
+        Wed, 26 Jul 2023 05:33:08 -0400
+Received: from out-60.mta0.migadu.com (out-60.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62952127
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:31:43 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690363901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C9JATXkXZaN7f0jrXVOoaEMLIPnzZ4EB9BwhBVu88/k=;
+        b=BJaw31GHkPVMB5J3bFLk7nCWUXBih3Evut0vs64rGABml16vhPPP+VTCvSpnvcgPtpNdnt
+        lUE24RniQLpCmG5kFgpHNW+1PDmB/qhB9l9vhPT5YKqpl2p08nrVkD19PS1VqQI3/KFSOu
+        LvMc1Yox7zbU5EqPQ+5oAKbHUZVLA0E=
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH -next v8 0/2] support allocating crashkernel above 4G
- explicitly on riscv
-Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-CC:     Conor Dooley <conor@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <guoren@kernel.org>, <heiko@sntech.de>,
-        <bjorn@rivosinc.com>, <alex@ghiti.fr>, <akpm@linux-foundation.org>,
-        <atishp@rivosinc.com>, <bhe@redhat.com>,
-        <thunder.leizhen@huawei.com>, <horms@kernel.org>
-References: <20230725214413.2488159-1-chenjiahao16@huawei.com>
- <20230725-judiciary-auction-ef50be622175@spud>
- <96245a6f-cff1-9f2a-1217-4109d9a19291@huawei.com>
- <20230726-affix-employed-319aada685e7@wendy>
-From:   "chenjiahao (C)" <chenjiahao16@huawei.com>
-In-Reply-To: <20230726-affix-employed-319aada685e7@wendy>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.108.26]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500016.china.huawei.com (7.185.36.25)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 43/47] mm: shrinker: add a secondary array for
+ shrinker_info::{map, nr_deferred}
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-44-zhengqi.arch@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:30:53 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B421DD89-09B5-4488-BEC1-D6F88C6DE75A@linux.dev>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-44-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,34 +72,61 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/7/26 14:45, Conor Dooley wrote:
-> On Wed, Jul 26, 2023 at 10:20:00AM +0800, chenjiahao (C) wrote:
->> On 2023/7/26 5:48, Conor Dooley wrote:
->>> Hey,
->>>
->>> Your $subject says -next, but the patch failed to apply to
->>> riscv/for-next. What was the base for this patchset?
->>>
->>> Thanks,
->>> Conor.
->> Hi,
->>
->> My patchset was tested on current linux-next HEAD
->> (commit ID: 1e25dd777248, tag: next-20230725) and
->> it seems all ok.
->> Could you try applying with the base above, or
->> is there any problem with that base?
-> There's some difference between linux-next and riscv/for-next that
-> prevents the patchwork automation from applying the patches.
 
-Oh, I see. There is definitely a difference, since linux-next applied
-a bugfix patch b690e266dae2 ("riscv: mm: fix truncation warning on RV32")
-recently, whereas riscv/for-next didn't. I have worked on a wrong base
-and thanks for reminding :)
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> =
+wrote:
+>=20
+> Currently, we maintain two linear arrays per node per memcg, which are
+> shrinker_info::map and shrinker_info::nr_deferred. And we need to =
+resize
+> them when the shrinker_nr_max is exceeded, that is, allocate a new =
+array,
+> and then copy the old array to the new array, and finally free the old
+> array by RCU.
+>=20
+> For shrinker_info::map, we do set_bit() under the RCU lock, so we may =
+set
+> the value into the old map which is about to be freed. This may cause =
+the
+> value set to be lost. The current solution is not to copy the old map =
+when
+> resizing, but to set all the corresponding bits in the new map to 1. =
+This
+> solves the data loss problem, but bring the overhead of more pointless
+> loops while doing memcg slab shrink.
+>=20
+> For shrinker_info::nr_deferred, we will only modify it under the read =
+lock
+> of shrinker_rwsem, so it will not run concurrently with the resizing. =
+But
+> after we make memcg slab shrink lockless, there will be the same data =
+loss
+> problem as shrinker_info::map, and we can't work around it like the =
+map.
+>=20
+> For such resizable arrays, the most straightforward idea is to change =
+it
+> to xarray, like we did for list_lru [1]. We need to do xa_store() in =
+the
+> list_lru_add()-->set_shrinker_bit(), but this will cause memory
+> allocation, and the list_lru_add() doesn't accept failure. A possible
+> solution is to pre-allocate, but the location of pre-allocation is not
+> well determined.
+>=20
+> Therefore, this commit chooses to introduce a secondary array for
+> shrinker_info::{map, nr_deferred}, so that we only need to copy this
+> secondary array every time the size is resized. Then even if we get =
+the
+> old secondary array under the RCU lock, the found map and nr_deferred =
+are
+> also true, so no data is lost.
+>=20
+> [1]. =
+https://lore.kernel.org/all/20220228122126.37293-13-songmuchun@bytedance.c=
+om/
+>=20
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-I will rebase onto riscv/for-next and post my v9 pathset soon, please
-check over there.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Thanks,
-Jiahao
 
