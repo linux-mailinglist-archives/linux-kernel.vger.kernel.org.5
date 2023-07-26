@@ -2,307 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E767627B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2826F7627BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 02:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjGZAXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 20:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        id S231338AbjGZA3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 20:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjGZAXp (ORCPT
+        with ESMTP id S229851AbjGZA3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 20:23:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBC41A8;
-        Tue, 25 Jul 2023 17:23:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9E0F61935;
-        Wed, 26 Jul 2023 00:23:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 138F5C433C7;
-        Wed, 26 Jul 2023 00:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690331023;
-        bh=n8uJXeLuOskMOSTFvxFIlIysin1FQNq5sN6Yig5KJJM=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=jV627cONptCuFZwZrq5vMcQjX1OSp8wmOlqA2sDDdyenGHxdLfdwB2aMp9XDV/aop
-         d0Wrw0e6HefzRPJ3ilyrJ0FUdTb8HoBgFxiVCrYpo/2Aoai9p8pBKsJykRLeUDF5zc
-         fEuCFpOBelgd15IZPGAF6m0UlebRcIM6/PWiBHmIPaGVB4grhhaieDtfxsVJjwzlZD
-         r8xHatJFgEov/rQBko1xbzzMgJ2KxXDb2LHioK3YbIk7xe4wVVVJIp37nRl/fiy+B/
-         OAHG4bRuQqrUChFU9ZnkDvO5GZ8NAEEkDCKKkSthM9bI54qIOCN8G7vbFnlB5dZo4B
-         pCHf7GCE4YXEQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id F3EF8EB64DD;
-        Wed, 26 Jul 2023 00:23:42 +0000 (UTC)
-From:   Mitchell Levy via B4 Relay 
-        <devnull+levymitchell0.gmail.com@kernel.org>
-Date:   Wed, 26 Jul 2023 00:23:31 +0000
-Subject: [PATCH] hv_balloon: Update the balloon driver to use the SBRM API
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230726-master-v1-1-b2ce6a4538db@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAIJnwGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyNT3dzE4pLUIt2kpOQUSyMDU3NTiyQloOKCotS0zAqwQdGxtbUAcXR
- m81gAAAA=
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikelly@microsoft.com, peterz@infradead.org,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690331022; l=7710;
- i=levymitchell0@gmail.com; s=20230725; h=from:subject:message-id;
- bh=84uGYvJcj5OV/bgfkKqlgiyUtrhDwWgEQj+Xrg0YrbI=;
- b=BD5lgOcxZEQ142ZfkGpO3DuyzHnugCgXqED3QlEpvQ8EGyB3Hb629rgO6ebbbP9C8XgIh4FC3
- uam7fNanBfgDV6LNQ6LINu2kpzcBU7M1DU1TzddZ3XXjORIkxVGdVRs
-X-Developer-Key: i=levymitchell0@gmail.com; a=ed25519;
- pk=o3BLKQtTK7QMnUiW3/7p5JcITesvc3qL/w+Tz19oYeE=
-X-Endpoint-Received: by B4 Relay for levymitchell0@gmail.com/20230725 with auth_id=69
-X-Original-From: Mitchell Levy <levymitchell0@gmail.com>
-Reply-To: <levymitchell0@gmail.com>
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 25 Jul 2023 20:29:09 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B80187
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 17:29:08 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563db371f05so430326a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 17:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690331347; x=1690936147;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=7QpFC+Zfznw7OuSoMTX/p95YGjjcDJJg9+gPDx/lb2H54TbG4P5Xa38VofAHZ96p5N
+         WGUnLkUGGy6jflqxk1QGNzIxkgCyi0qcS503qbf3kmf2Osp+DhoFvPJ3zE3HC7GNXRoR
+         qHtDp6mrJj2ficxwEFSYIvgtTB+VlIPeYxj3TjWiql22oMoo6JLSKtbgzsebTZPKkRCb
+         4hjak/PvPMZkFVbl7VHvtgtCnJMjHm/C4ncehq5A8A08ogRorMCC8hQWg5fFexWSJOk/
+         JLz4R0/nmXkILVg1tEt6MIWVNCc2H/fUTvrC0td8R3QbxtptmuESdyZXh949JYq4vTSY
+         h4tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690331347; x=1690936147;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=GVhuPvsdWbXftRsqYoQAItQO7qDEwS5MzFOes/ewcWlihorMhDdU+i6dMWZL+KSFzM
+         6nI8dzRrF9SzVtHT8CKrI+whutpOhhTJC4k8JaoQhYn1SP/QGPYQcLF7IHi/J8R+h5Nn
+         Zy/FZelvmV/nA6ObF9ME3i1IJGZvgR5Id+G6WLCLRq7zDRBk9Xe/J99NB50rsYoup0B+
+         L93oLcm23uRNl+QG2VH5fuRKp1OQPVnpvs1tkO/iQCeattM4lDz4D4eQPAUv1xxto+ol
+         SuCaWGs6cPM2hmFU7cj69kVSJnqw4fYaUUOmpamc1Y2/IFLi8n5/IQt2WJhYooHBv2/P
+         MeMQ==
+X-Gm-Message-State: ABy/qLYbeTj2JP1XJtydjlhfo23+A+3hoGlXb4kO3U4QyNIdtFhURn6o
+        PamiN3BFj8PywIRi27ncCs+090G0HOc/4GJ9
+X-Google-Smtp-Source: APBJJlEahJM5c6A1lc+edA5YJwpBXCCsUtNGtY9GtXBfRzCxHEEgayz8OzQBOKHM5UTLc1KJK0cwjsVUdLiWrEwJ
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a63:7411:0:b0:563:4869:f54d with SMTP
+ id p17-20020a637411000000b005634869f54dmr2890pgc.11.1690331347454; Tue, 25
+ Jul 2023 17:29:07 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 00:29:03 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230726002904.655377-1-yosryahmed@google.com>
+Subject: [PATCH] mm: memcg: use rstat for non-hierarchical stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mitchell Levy <levymitchell0@gmail.com>
+Currently, memcg uses rstat to maintain hierarchical stats. The rstat
+framework keeps track of which cgroups have updates on which cpus.
 
+For non-hierarchical stats, as memcg moved to rstat, they are no longer
+readily available as counters. Instead, the percpu counters for a given
+stat need to be summed to get the non-hierarchical stat value. This
+causes a performance regression when reading non-hierarchical stats on
+kernels where memcg moved to using rstat. This is especially visible
+when reading memory.stat on cgroup v1. There are also some code paths
+internal to the kernel that read such non-hierarchical stats.
 
+It is inefficient to iterate and sum counters in all cpus when the rstat
+framework knows exactly when a percpu counter has an update. Instead,
+maintain cpu-aggregated non-hierarchical counters for each stat. During
+an rstat flush, keep those updated as well. When reading
+non-hierarchical stats, we no longer need to iterate cpus, we just need
+to read the maintainer counters, similar to hierarchical stats.
 
+A caveat is that we now a stats flush before reading
+local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
+or memcg_events_local(), where we previously only needed a flush to
+read hierarchical stats. Most contexts reading non-hierarchical stats
+are already doing a flush, add a flush to the only missing context in
+count_shadow_nodes().
+
+With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+machine with 256 cpus on cgroup v1:
+ # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+ # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+ real	 0m0.125s
+ user	 0m0.005s
+ sys	 0m0.120s
+
+After:
+ real	 0m0.032s
+ user	 0m0.005s
+ sys	 0m0.027s
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
-This patch is intended as a proof-of-concept for the new SBRM
-machinery[1]. For some brief background, the idea behind SBRM is using
-the __cleanup__ attribute to automatically unlock locks (or otherwise
-release resources) when they go out of scope, similar to C++ style RAII.
-This promises some benefits such as making code simpler (particularly
-where you have lots of goto fail; type constructs) as well as reducing
-the surface area for certain kinds of bugs.
+ include/linux/memcontrol.h |  7 ++++---
+ mm/memcontrol.c            | 32 +++++++++++++++++++-------------
+ mm/workingset.c            |  1 +
+ 3 files changed, 24 insertions(+), 16 deletions(-)
 
-The changes in this patch should not result in any difference in how the
-code actually runs (i.e., it's purely an exercise in this new syntax
-sugar). In one instance SBRM was not appropriate, so I left that part
-alone, but all other locking/unlocking is handled automatically in this
-patch.
-
-Link: https://lore.kernel.org/all/20230626125726.GU4253@hirez.programming.kicks-ass.net/ [1]
-
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
----
- drivers/hv/hv_balloon.c | 82 +++++++++++++++++++++++--------------------------
- 1 file changed, 38 insertions(+), 44 deletions(-)
-
-diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-index dffcc894f117..2812601e84da 100644
---- a/drivers/hv/hv_balloon.c
-+++ b/drivers/hv/hv_balloon.c
-@@ -8,6 +8,7 @@
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5818af8eca5a..a9f2861a57a5 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -112,6 +112,9 @@ struct lruvec_stats {
+ 	/* Aggregated (CPU and subtree) state */
+ 	long state[NR_VM_NODE_STAT_ITEMS];
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/cleanup.h>
- #include <linux/kernel.h>
- #include <linux/jiffies.h>
- #include <linux/mman.h>
-@@ -646,7 +647,7 @@ static int hv_memory_notifier(struct notifier_block *nb, unsigned long val,
- 			      void *v)
++	/* Non-hierarchical (CPU aggregated) state */
++	long state_local[NR_VM_NODE_STAT_ITEMS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long state_pending[NR_VM_NODE_STAT_ITEMS];
+ };
+@@ -1020,14 +1023,12 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
  {
- 	struct memory_notify *mem = (struct memory_notify *)v;
--	unsigned long flags, pfn_count;
-+	unsigned long pfn_count;
+ 	struct mem_cgroup_per_node *pn;
+ 	long x = 0;
+-	int cpu;
  
- 	switch (val) {
- 	case MEM_ONLINE:
-@@ -655,21 +656,22 @@ static int hv_memory_notifier(struct notifier_block *nb, unsigned long val,
- 		break;
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
  
- 	case MEM_OFFLINE:
--		spin_lock_irqsave(&dm_device.ha_lock, flags);
--		pfn_count = hv_page_offline_check(mem->start_pfn,
--						  mem->nr_pages);
--		if (pfn_count <= dm_device.num_pages_onlined) {
--			dm_device.num_pages_onlined -= pfn_count;
--		} else {
--			/*
--			 * We're offlining more pages than we managed to online.
--			 * This is unexpected. In any case don't let
--			 * num_pages_onlined wrap around zero.
--			 */
--			WARN_ON_ONCE(1);
--			dm_device.num_pages_onlined = 0;
-+		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
-+			pfn_count = hv_page_offline_check(mem->start_pfn,
-+							  mem->nr_pages);
-+			if (pfn_count <= dm_device.num_pages_onlined) {
-+				dm_device.num_pages_onlined -= pfn_count;
-+			} else {
-+				/*
-+				 * We're offlining more pages than we
-+				 * managed to online. This is
-+				 * unexpected. In any case don't let
-+				 * num_pages_onlined wrap around zero.
-+				 */
-+				WARN_ON_ONCE(1);
-+				dm_device.num_pages_onlined = 0;
-+			}
- 		}
--		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
- 		break;
- 	case MEM_GOING_ONLINE:
- 	case MEM_GOING_OFFLINE:
-@@ -721,24 +723,23 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
- 	unsigned long start_pfn;
- 	unsigned long processed_pfn;
- 	unsigned long total_pfn = pfn_count;
--	unsigned long flags;
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
++	x = READ_ONCE(pn->lruvec_stats.state_local[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..90a22637818e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -742,6 +742,10 @@ struct memcg_vmstats {
+ 	long			state[MEMCG_NR_STAT];
+ 	unsigned long		events[NR_MEMCG_EVENTS];
  
- 	for (i = 0; i < (size/HA_CHUNK); i++) {
- 		start_pfn = start + (i * HA_CHUNK);
- 
--		spin_lock_irqsave(&dm_device.ha_lock, flags);
--		has->ha_end_pfn +=  HA_CHUNK;
-+		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
-+			has->ha_end_pfn +=  HA_CHUNK;
- 
--		if (total_pfn > HA_CHUNK) {
--			processed_pfn = HA_CHUNK;
--			total_pfn -= HA_CHUNK;
--		} else {
--			processed_pfn = total_pfn;
--			total_pfn = 0;
--		}
-+			if (total_pfn > HA_CHUNK) {
-+				processed_pfn = HA_CHUNK;
-+				total_pfn -= HA_CHUNK;
-+			} else {
-+				processed_pfn = total_pfn;
-+				total_pfn = 0;
-+			}
- 
--		has->covered_end_pfn +=  processed_pfn;
--		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
-+			has->covered_end_pfn +=  processed_pfn;
-+		}
- 
- 		reinit_completion(&dm_device.ol_waitevent);
- 
-@@ -758,10 +759,10 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
- 				 */
- 				do_hot_add = false;
- 			}
--			spin_lock_irqsave(&dm_device.ha_lock, flags);
--			has->ha_end_pfn -= HA_CHUNK;
--			has->covered_end_pfn -=  processed_pfn;
--			spin_unlock_irqrestore(&dm_device.ha_lock, flags);
-+			scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
-+				has->ha_end_pfn -= HA_CHUNK;
-+				has->covered_end_pfn -=  processed_pfn;
-+			}
- 			break;
- 		}
- 
-@@ -781,10 +782,9 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
- static void hv_online_page(struct page *pg, unsigned int order)
++	/* Non-hierarchical (CPU aggregated) page state & events */
++	long			state_local[MEMCG_NR_STAT];
++	unsigned long		events_local[NR_MEMCG_EVENTS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long			state_pending[MEMCG_NR_STAT];
+ 	unsigned long		events_pending[NR_MEMCG_EVENTS];
+@@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
  {
- 	struct hv_hotadd_state *has;
--	unsigned long flags;
- 	unsigned long pfn = page_to_pfn(pg);
+-	long x = 0;
+-	int cpu;
++	long x = READ_ONCE(memcg->vmstats->state_local[idx]);
  
--	spin_lock_irqsave(&dm_device.ha_lock, flags);
-+	guard(spinlock_irqsave)(&dm_device.ha_lock);
- 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
- 		/* The page belongs to a different HAS. */
- 		if ((pfn < has->start_pfn) ||
-@@ -794,7 +794,6 @@ static void hv_online_page(struct page *pg, unsigned int order)
- 		hv_bring_pgs_online(has, pfn, 1UL << order);
- 		break;
- 	}
--	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
- }
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
  
- static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
-@@ -803,9 +802,8 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
- 	struct hv_hotadd_gap *gap;
- 	unsigned long residual, new_inc;
- 	int ret = 0;
--	unsigned long flags;
- 
--	spin_lock_irqsave(&dm_device.ha_lock, flags);
-+	guard(spinlock_irqsave)(&dm_device.ha_lock);
- 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
- 		/*
- 		 * If the pfn range we are dealing with is not in the current
-@@ -852,7 +850,6 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
- 		ret = 1;
- 		break;
- 	}
--	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
- 
- 	return ret;
- }
-@@ -947,7 +944,6 @@ static unsigned long process_hot_add(unsigned long pg_start,
+ static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
  {
- 	struct hv_hotadd_state *ha_region = NULL;
- 	int covered;
--	unsigned long flags;
+-	long x = 0;
+-	int cpu;
+ 	int index = memcg_events_index(event);
  
- 	if (pfn_cnt == 0)
+ 	if (index < 0)
  		return 0;
-@@ -979,9 +975,9 @@ static unsigned long process_hot_add(unsigned long pg_start,
- 		ha_region->covered_end_pfn = pg_start;
- 		ha_region->end_pfn = rg_start + rg_size;
  
--		spin_lock_irqsave(&dm_device.ha_lock, flags);
--		list_add_tail(&ha_region->list, &dm_device.ha_region_list);
--		spin_unlock_irqrestore(&dm_device.ha_lock, flags);
-+		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
-+			list_add_tail(&ha_region->list, &dm_device.ha_region_list);
-+		}
- 	}
- 
- do_pg_range:
-@@ -2047,7 +2043,6 @@ static void balloon_remove(struct hv_device *dev)
- 	struct hv_dynmem_device *dm = hv_get_drvdata(dev);
- 	struct hv_hotadd_state *has, *tmp;
- 	struct hv_hotadd_gap *gap, *tmp_gap;
--	unsigned long flags;
- 
- 	if (dm->num_pages_ballooned != 0)
- 		pr_warn("Ballooned pages: %d\n", dm->num_pages_ballooned);
-@@ -2073,7 +2068,7 @@ static void balloon_remove(struct hv_device *dev)
- #endif
- 	}
- 
--	spin_lock_irqsave(&dm_device.ha_lock, flags);
-+	guard(spinlock_irqsave)(&dm_device.ha_lock);
- 	list_for_each_entry_safe(has, tmp, &dm->ha_region_list, list) {
- 		list_for_each_entry_safe(gap, tmp_gap, &has->gap_list, list) {
- 			list_del(&gap->list);
-@@ -2082,7 +2077,6 @@ static void balloon_remove(struct hv_device *dev)
- 		list_del(&has->list);
- 		kfree(has);
- 	}
--	spin_unlock_irqrestore(&dm_device.ha_lock, flags);
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->events[index], cpu);
+-	return x;
++	return READ_ONCE(memcg->vmstats->events_local[index]);
  }
  
- static int balloon_suspend(struct hv_device *hv_dev)
-
----
-base-commit: 3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
-change-id: 20230725-master-bbcd9205758b
-
-Best regards,
+ static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
+@@ -5526,7 +5523,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+-	long delta, v;
++	long delta, delta_cpu, v;
+ 	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+@@ -5542,9 +5539,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			memcg->vmstats->state_pending[i] = 0;
+ 
+ 		/* Add CPU changes on this level since the last flush */
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->state[i]);
+ 		if (v != statc->state_prev[i]) {
+-			delta += v - statc->state_prev[i];
++			delta_cpu = v - statc->state_prev[i];
++			delta += delta_cpu;
+ 			statc->state_prev[i] = v;
+ 		}
+ 
+@@ -5553,6 +5552,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 
+ 		/* Aggregate counts on this level and propagate upwards */
+ 		memcg->vmstats->state[i] += delta;
++		memcg->vmstats->state_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->state_pending[i] += delta;
+ 	}
+@@ -5562,9 +5562,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (delta)
+ 			memcg->vmstats->events_pending[i] = 0;
+ 
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->events[i]);
+ 		if (v != statc->events_prev[i]) {
+-			delta += v - statc->events_prev[i];
++			delta_cpu = v - statc->events_prev[i];
++			delta += delta_cpu;
+ 			statc->events_prev[i] = v;
+ 		}
+ 
+@@ -5572,6 +5574,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			continue;
+ 
+ 		memcg->vmstats->events[i] += delta;
++		memcg->vmstats->events_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->events_pending[i] += delta;
+ 	}
+@@ -5591,9 +5594,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			if (delta)
+ 				pn->lruvec_stats.state_pending[i] = 0;
+ 
++			delta_cpu = 0;
+ 			v = READ_ONCE(lstatc->state[i]);
+ 			if (v != lstatc->state_prev[i]) {
+-				delta += v - lstatc->state_prev[i];
++				delta_cpu = v - lstatc->state_prev[i];
++				delta += delta_cpu;
+ 				lstatc->state_prev[i] = v;
+ 			}
+ 
+@@ -5601,6 +5606,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 				continue;
+ 
+ 			pn->lruvec_stats.state[i] += delta;
++			pn->lruvec_stats.state_local[i] += delta_cpu;
+ 			if (ppn)
+ 				ppn->lruvec_stats.state_pending[i] += delta;
+ 		}
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 4686ae363000..da58a26d0d4d 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
+ 
++		mem_cgroup_flush_stats();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
 -- 
-Mitchell Levy <levymitchell0@gmail.com>
+2.41.0.255.g8b1d071c50-goog
 
