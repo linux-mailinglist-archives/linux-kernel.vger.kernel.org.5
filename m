@@ -2,138 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A35763371
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FA676337B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbjGZKZT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 06:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        id S233809AbjGZK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbjGZKZR (ORCPT
+        with ESMTP id S233800AbjGZK0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:25:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EDCE7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:25:15 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-239-fUxCrhtrNSu2GVWHIquJNA-1; Wed, 26 Jul 2023 11:25:13 +0100
-X-MC-Unique: fUxCrhtrNSu2GVWHIquJNA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 26 Jul
- 2023 11:25:11 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 26 Jul 2023 11:25:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marc Zyngier' <maz@kernel.org>
-CC:     'kernel test robot' <lkp@intel.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        Rob Herring <robh@kernel.org>
-Subject: RE: [PATCH next resend 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Topic: [PATCH next resend 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Index: Adm+7j8pPhAgcq+TRICTXJcSfHQLRAAL9FKAACBy3mD///zQgP//50cA
-Date:   Wed, 26 Jul 2023 10:25:11 +0000
-Message-ID: <4d15014d6b4f434786d50bc4f2199f23@AcuMS.aculab.com>
-References: <a09512c8526b46759669d0b879144563@AcuMS.aculab.com>
-        <202307260256.nzImScXA-lkp@intel.com>
-        <6bed42e871e74e898b400a404ec6d142@AcuMS.aculab.com>
- <86ila7t30q.wl-maz@kernel.org>
-In-Reply-To: <86ila7t30q.wl-maz@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 26 Jul 2023 06:26:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC09212D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690367130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6NrkSvDdE4cdjpoTJxD+Lnito5LDpS0282P7ZLa36EE=;
+        b=R2TWdPewKP10KWNQWVBtXPSZgHLKfZS+FK2+9KKR7HnNvKQvaMA6GKmkp0rq/u6v1Oz073
+        9tV8mm0H0gElNeM2RfqNKLjLo0OcjJYj8iiMlfHD/scE9rKy9m6OjZOQcoHLHVbq4thsCn
+        rQw24ti5UE3/gMSOo6ejeeBDnuR2npc=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-597-jrcLmOGXMXWtWFE-eZtxUw-1; Wed, 26 Jul 2023 06:25:24 -0400
+X-MC-Unique: jrcLmOGXMXWtWFE-eZtxUw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E81B1C31C49;
+        Wed, 26 Jul 2023 10:25:23 +0000 (UTC)
+Received: from localhost (ovpn-12-99.pek2.redhat.com [10.72.12.99])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E202646A3A7;
+        Wed, 26 Jul 2023 10:25:22 +0000 (UTC)
+Date:   Wed, 26 Jul 2023 18:25:19 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Chen Jiahao <chenjiahao16@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        conor.dooley@microchip.com, guoren@kernel.org, heiko@sntech.de,
+        bjorn@rivosinc.com, alex@ghiti.fr, akpm@linux-foundation.org,
+        atishp@rivosinc.com, thunder.leizhen@huawei.com, horms@kernel.org
+Subject: Re: [PATCH -next v9 2/2] docs: kdump: Update the crashkernel
+ description for riscv
+Message-ID: <ZMD0jxzH0jmFLTd8@MiWiFi-R3L-srv>
+References: <20230726175000.2536220-1-chenjiahao16@huawei.com>
+ <20230726175000.2536220-3-chenjiahao16@huawei.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726175000.2536220-3-chenjiahao16@huawei.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier
-> Sent: 26 July 2023 10:51
+On 07/26/23 at 05:50pm, Chen Jiahao wrote:
+> Now "crashkernel=" parameter on riscv has been updated to support
+> crashkernel=X,[high,low]. Through which we can reserve memory region
+> above/within 32bit addressible DMA zone.
 > 
-> On Wed, 26 Jul 2023 10:19:48 +0100,
-> David Laight <David.Laight@ACULAB.COM> wrote:
-> >
-> > > From: kernel test robot <lkp@intel.com>
-> > > Sent: 25 July 2023 19:33
-> > ...
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > > >> drivers/irqchip/irq-mips-cpu.c:288:1: error: call to undeclared function '__typecheck'; ISO C99
-> and
-> > > later do not support implicit function declarations [-Wimplicit-function-declaration]
-> > >      288 | IRQCHIP_DECLARE(cpu_intc, "mti,cpu-interrupt-controller", mips_cpu_irq_of_init);
-> > >          | ^
-> > >    include/linux/irqchip.h:37:38: note: expanded from macro 'IRQCHIP_DECLARE'
-> > >       37 |         OF_DECLARE_2(irqchip, name, compat, typecheck_irq_init_cb(fn))
-> > >          |                                             ^
-> > >    include/linux/irqchip.h:24:3: note: expanded from macro 'typecheck_irq_init_cb'
-> > >       24 |         (__typecheck(typecheck_irq_init_cb, &fn) ? fn : fn)
-> > >          |          ^
-> > > >> drivers/irqchip/irq-mips-cpu.c:288:1: error: initializer element is not a compile-time constant
-> > >      288 | IRQCHIP_DECLARE(cpu_intc, "mti,cpu-interrupt-controller", mips_cpu_irq_of_init);
-> > >          | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >    include/linux/irqchip.h:37:2: note: expanded from macro 'IRQCHIP_DECLARE'
-> > >       37 |         OF_DECLARE_2(irqchip, name, compat, typecheck_irq_init_cb(fn))
-> > >          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >    include/linux/of.h:1493:3: note: expanded from macro 'OF_DECLARE_2'
-> > >     1493 |                 _OF_DECLARE(table, name, compat, fn, of_init_fn_2)
-> > >          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >    include/linux/of.h:1481:2: note: expanded from macro '_OF_DECLARE'
-> > >     1481 |         _OF_DECLARE_STUB(table, name, compat, fn, fn_type)
-> > >          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >    include/linux/of.h:1470:16: note: expanded from macro '_OF_DECLARE_STUB'
-> > >     1470 |                      .data = (fn == (fn_type)NULL) ? fn : fn }
-> > >          |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > It looks like irqchip.h is using __typecheck() which is really
-> > an internal part of the implementation of min() and max().
-> > The patched version doesn't use it - hence the build fail.
-> > I can re-instate it, but this all looks wrong to me.
+> Here update the parameter description accordingly.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
 > 
-> Please see f1985002839a ("irqchip: Provide stronger type checking for
-> IRQCHIP_MATCH/IRQCHIP_DECLARE") for the rationale.
+> Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
+> Reviewed-by: Guo Ren <guoren@kernel.org>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
 > 
-> Given that this has uncovered a number of bugs, I'm not letting this
-> go without an equivalent replacement.
-..
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1457995fd41..bd519749968f 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -862,7 +862,7 @@
+>  			memory region [offset, offset + size] for that kernel
+>  			image. If '@offset' is omitted, then a suitable offset
+>  			is selected automatically.
+> -			[KNL, X86-64, ARM64] Select a region under 4G first, and
+> +			[KNL, X86-64, ARM64, RISCV] Select a region under 4G first, and
+>  			fall back to reserve region above 4G when '@offset'
+>  			hasn't been specified.
+>  			See Documentation/admin-guide/kdump/kdump.rst for further details.
+> @@ -875,14 +875,14 @@
+>  			Documentation/admin-guide/kdump/kdump.rst for an example.
+>  
+>  	crashkernel=size[KMG],high
+> -			[KNL, X86-64, ARM64] range could be above 4G. Allow kernel
+> -			to allocate physical memory region from top, so could
+> -			be above 4G if system have more than 4G ram installed.
+> -			Otherwise memory region will be allocated below 4G, if
+> -			available.
+> +			[KNL, X86-64, ARM64, RISCV] range could be above 4G.
+> +			Allow kernel to allocate physical memory region from top,
+> +			so could be above 4G if system have more than 4G ram
+> +			installed. Otherwise memory region will be allocated
+> +			below 4G, if available.
+>  			It will be ignored if crashkernel=X is specified.
+>  	crashkernel=size[KMG],low
+> -			[KNL, X86-64, ARM64] range under 4G. When crashkernel=X,high
+> +			[KNL, X86-64, ARM64, RISCV] range under 4G. When crashkernel=X,high
+>  			is passed, kernel could allocate physical memory region
+>  			above 4G, that cause second kernel crash on system
+>  			that require some amount of low memory, e.g. swiotlb
+> @@ -893,6 +893,7 @@
+>  			size is	platform dependent.
+>  			  --> x86: max(swiotlb_size_or_default() + 8MiB, 256MiB)
+>  			  --> arm64: 128MiB
+> +			  --> riscv: 128MiB
+>  			This one lets the user specify own low range under 4G
+>  			for second kernel instead.
+>  			0: to disable low allocation.
+> -- 
+> 2.34.1
 > 
-> They are used in different contexts. See IRQCHIP_MATCH().
-
-Ah, I was seeing the error in the expansion of IRQCHIP_DECLARE()
-which is doing the type check twice.
-It can just pass 'fn'.
-
-The cast NULL check does work.
-So IRQCHIP_MATCH() can use the simpler 'fn = (fn_type)NULL ? fn : fn' test
-that _OF_DECLARE_STUB() uses.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
