@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BD8763B0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C2D763B14
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjGZP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
+        id S233960AbjGZPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbjGZP35 (ORCPT
+        with ESMTP id S232934AbjGZPaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:29:57 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853FB2136;
-        Wed, 26 Jul 2023 08:29:53 -0700 (PDT)
-X-QQ-mid: bizesmtp63t1690385383t5iif69s
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 26 Jul 2023 23:29:42 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: J5JfekO1WsiL3ug9fgDy4ITrNZ0Fco01rrnYx6BE0VpZMg43YoQewkRlQLBJn
-        hmjsVReJmsufwSNs1hcQEemS4Gi3UmrZjM2f332VOw0ctbp2I3bQ+11jvuvtO4kgHhB1Bb4
-        dgGHIEGSE1tH1ti5KfpuC1PJsLVA/YVixLnj6aMYZ6bf0vgvAsv1gLDot4aVJxN2aa9fLYE
-        D6+rvyZuIvWtkwPdlPTQepiwz9uEs22TuKaaByxV6pg93K+XJ9rbwzWtaI9m8I1BFDibKhC
-        7AWSr78gfaqfy5Y9MO3W7CAKq/11Z9jdzhX8g/dEApdrCur/O2zk/h5CKHGRV66cIvNu5CJ
-        gA75ep7cyJr+vfuVIyd/on06QRLMAMKwr89tP9wp2mTul2iE2UJZCTmuVdM5dw35aNaqmQg
-        ei5hA+tkEb8=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4160635926283433686
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de
-Subject: [PATCH v2 5/7] selftests/nolibc: add test support for ppc
-Date:   Wed, 26 Jul 2023 23:29:38 +0800
-Message-Id: <20230726152938.251649-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <55603bb4aecb20561e63f9ab10563c0c470300b1.1690373704.git.falcon@tinylab.org>
-References: <55603bb4aecb20561e63f9ab10563c0c470300b1.1690373704.git.falcon@tinylab.org>
+        Wed, 26 Jul 2023 11:30:08 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A0268B;
+        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-58451ecf223so5360817b3.1;
+        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690385403; x=1690990203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
+        b=IfQOikjTb54JcoQOnhR/3Fq0FlEKu8EnycAFmIQLw1zLeRNxqDoNAwmyVIhZkPF/QT
+         +JKHfyxiDvW04jhJpcOFcj0C2PKdMmWCrunMR2AzxG0XfyRJJBMCaQhTRoLGmYm3IYXd
+         lGIO55xgdc1kvjTJ6XJE1yNt1XIOO0MtUoCMwigMn0OAQWsmSvhujLJ15v6B0t2yd6pw
+         X0MidQmtlMJG6RVSarnypuX/llFdlPvZ6IDlkQkBN9OSZUjnDHzhCWSbuvBlNcp7FRAP
+         sfVGXpcdfaxj9zK9FMZMTyJODEA5x5SDojiVCcamwVuuOafYQuYqurs6a8cIWKqW1bCF
+         zRVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690385403; x=1690990203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
+        b=G2ESgXcmeAZgIp9K1GKDJJ4qF4wwuf8kt8xqhwzMHznmcIXejYoiVFyGei4yfHc4NP
+         LvISr7TtR2akSqwbWIdDQcsjcsxhBZqlxFJu3iqxPQEmyBJ7ozuLlsAUaSPEFj2rpVRr
+         EVjyndX54eSzOvZB+Cje+L8xP+RvJYWrjfLE3f7KBPfNbkEKFTfacBP1KvRY7t+hzg17
+         LHKwGeB3vRZdyNPN5KN+uaimZutbcoSwh8C6q1KW12rl81nF48mRItwaYli8V1anOsiL
+         ShTH38TKExzEhsJcyRsSG9S2zA5iUYJpKuEc0Sj8qUKCtJj1tYEx11k/YdGAv2hVYirD
+         Sd4w==
+X-Gm-Message-State: ABy/qLbGFRo5doVjFaOdHucpLh5kj+CwB0sICi/+ZOkJSGHjk16zXged
+        L3y3N2+YKJ+Y2itt3G4Xm8iW6qPl8PYTb/aBdxI=
+X-Google-Smtp-Source: APBJJlH9c/Cm1Gn1k/bqGcIifEtT5WA6JYO4NWDRh17eGkNuN//LPGYMjb5PrsKWtVwk5jtZLub4b2CzwC+F8JFg/Zw=
+X-Received: by 2002:a81:a151:0:b0:584:5e7e:40c1 with SMTP id
+ y78-20020a81a151000000b005845e7e40c1mr533351ywg.28.1690385402927; Wed, 26 Jul
+ 2023 08:30:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <4919.1690365747@warthog.procyon.org.uk>
+In-Reply-To: <4919.1690365747@warthog.procyon.org.uk>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Wed, 26 Jul 2023 23:29:51 +0800
+Message-ID: <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
+Subject: Re: [dm-devel] Processes hung in "D" state in ext4, mm, md and dmcrypt
+To:     David Howells <dhowells@redhat.com>,
+        linux-block <linux-block@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-ext4@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,89 +75,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+On Wed, Jul 26, 2023 at 6:02=E2=80=AFPM David Howells <dhowells@redhat.com>=
+ wrote:
+>
+> Hi,
+>
+> With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm se=
+eing
+> a bunch of processes getting stuck in the D state on my desktop after a f=
+ew
+> hours of reading email and compiling stuff.  It's happened every day this=
+ week
+> so far and I managed to grab stack traces of the stuck processes this mor=
+ning
+> (see attached).
+>
+> There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a =
+raid1
+> array with two partitions with an ext4 partition on it.  md2 is similar b=
+ut
+> it's dm-crypted and ext4 is on top of that.
+>
+...
 
-I'm very sorry, the extra configs/powerpc.config file is missing in this
-patch, perhaps a failed rebase introduced this issue.
+> =3D=3D=3D117547=3D=3D=3D
+>     PID TTY      STAT   TIME COMMAND
+>  117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
+> [<0>] blk_mq_get_tag+0x11e/0x2b0
+> [<0>] __blk_mq_alloc_requests+0x1bc/0x350
+> [<0>] blk_mq_submit_bio+0x2c7/0x680
+> [<0>] __submit_bio+0x8b/0x170
+> [<0>] submit_bio_noacct_nocheck+0x159/0x370
+> [<0>] __block_write_full_folio+0x1e1/0x400
+> [<0>] writepage_cb+0x1a/0x70
+> [<0>] write_cache_pages+0x144/0x3b0
+> [<0>] do_writepages+0x164/0x1e0
+> [<0>] __writeback_single_inode+0x3d/0x360
+> [<0>] writeback_sb_inodes+0x1ed/0x4b0
+> [<0>] __writeback_inodes_wb+0x4c/0xf0
+> [<0>] wb_writeback+0x298/0x310
+> [<0>] wb_workfn+0x35b/0x510
+> [<0>] process_one_work+0x1de/0x3f0
+> [<0>] worker_thread+0x51/0x390
+> [<0>] kthread+0xe5/0x120
+> [<0>] ret_from_fork+0x31/0x50
+> [<0>] ret_from_fork_asm+0x1b/0x30
 
-Please don't merge it, to avoid manually merge another addtional patch, if no
-other issues in this v2 series, I will send v3 immediately, just wait for your
-feedbacks, no hurry.
+BTW, -rc3 fixes one similar issue on the above code path, so please try -rc=
+3.
 
-Best regards,
-Zhangjin
+106397376c03 sbitmap: fix batching wakeup
 
-> The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
-> powerpc kernel.
-> 
-> The pmac32_defconfig is used with extra PMACZILOG console options to
-> enable normal print.
-> 
-> Note, zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
-> overlapping" error, so, vmlinux is used instead.
-> 
-> Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-> ppc variant for 32-bit PowerPC and use it as the default variant of
-> powerpc architecture.
-> 
-> Users can pass ARCH=powerpc or ARCH=ppc to test 32-bit PowerPC.
-> 
-> [1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
-> 
-> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> ---
->  tools/testing/selftests/nolibc/Makefile | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> index f04ec1cc132b..0e9abb7f3d4f 100644
-> --- a/tools/testing/selftests/nolibc/Makefile
-> +++ b/tools/testing/selftests/nolibc/Makefile
-> @@ -16,10 +16,12 @@ endif
->  
->  # XARCH is used to save user-input ARCH variant
->  # allow configure default variant for target ARCH
-> +XARCH_powerpc    = ppc
->  XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
->  
->  # ARCH is supported by kernel
->  # map from user-input variant to kernel-supported
-> +ARCH_ppc         = powerpc
->  override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
->  
->  # kernel image names by architecture
-> @@ -29,6 +31,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
->  IMAGE_arm64      = arch/arm64/boot/Image
->  IMAGE_arm        = arch/arm/boot/zImage
->  IMAGE_mips       = vmlinuz
-> +IMAGE_ppc        = vmlinux
->  IMAGE_riscv      = arch/riscv/boot/Image
->  IMAGE_s390       = arch/s390/boot/bzImage
->  IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-> @@ -42,6 +45,7 @@ DEFCONFIG_x86        = defconfig
->  DEFCONFIG_arm64      = defconfig
->  DEFCONFIG_arm        = multi_v7_defconfig
->  DEFCONFIG_mips       = malta_defconfig
-> +DEFCONFIG_ppc        = pmac32_defconfig
->  DEFCONFIG_riscv      = defconfig
->  DEFCONFIG_s390       = defconfig
->  DEFCONFIG_loongarch  = defconfig
-> @@ -60,6 +64,7 @@ QEMU_ARCH_x86        = x86_64
->  QEMU_ARCH_arm64      = aarch64
->  QEMU_ARCH_arm        = arm
->  QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
-> +QEMU_ARCH_ppc        = ppc
->  QEMU_ARCH_riscv      = riscv64
->  QEMU_ARCH_s390       = s390x
->  QEMU_ARCH_loongarch  = loongarch64
-> @@ -72,6 +77,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
->  QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-> +QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-> -- 
-> 2.25.1
+Thanks,
+Ming Lei
