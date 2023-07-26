@@ -2,237 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE47762B8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94584762B94
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjGZGgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S231574AbjGZGhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbjGZGgS (ORCPT
+        with ESMTP id S231886AbjGZGhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:36:18 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF10211C
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:36:16 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522462d8416so2376934a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690353374; x=1690958174;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u7hyD6FB7jSwhDfnPQjFPKkm7jWq+dVGaGrUKrMFbUQ=;
-        b=UQv6w9GnbHOfHwGKQNTV0pEDu732yLDFTXHSoANqxUrtcGoZ9F3vJR1TfarmrVKCPU
-         3IgDT+2yDRkuxX08/4OzWWI/bgRnjsKlq/ao9PsxuKU4JqOawskNP2BJLSxjM3EAS6Ec
-         fpnSGL+anpMFloGvFDm4XmcQxeAiEHI0yLYgIDNgueSNvIH331kGnjbLpDkF82PnQsma
-         HtmuQDz1UaGguDsGe9OJ8cgSUa44nQHxTt83FPxOIHkjv5ybDR0i+ngfOrhhOAidJXR5
-         R7U2UexBw3HwFbtj/FyZsoZA6MnskTrNachvw2W2MJxrfF+ntCW7umBXFhuQrBotp/h9
-         Ac3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690353374; x=1690958174;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u7hyD6FB7jSwhDfnPQjFPKkm7jWq+dVGaGrUKrMFbUQ=;
-        b=IYN6uxMewz+8LFxDaxloExMwJp4cE6NCmGRYRjCbTPNBGvRQy6B2C13hz5ONfMWfy5
-         3Urgn3MMUGJfXKJUquolz9YeeXttRsiv6nhpJC1YoReTTi8eNrDiSTYYgdeh7khVDv9f
-         XbZAHb2PRo2EjEE7fOoYh6IGHfVwI6Ti2gmY847tKzx7JCGs01Flw8uv2QyWk4ijix8F
-         NzwtV8iyFzjz6auQUTQox3ZNmY8EtCAtXCMMAYHoCHCRcR+gzGpq9+OeHG6rjYP/e7R8
-         SSMTZrdh02nxPz6wkPyeuxV7+znLKFEMWO6al+dlfQTAGqiKUErMtfxtPYFlbR8O+A17
-         K8lg==
-X-Gm-Message-State: ABy/qLa70QSTs3wUW07nUEJoPdIm37fU1DrnGPsBrHTHmddU7rG2B2BN
-        KYdFXTiLXT3VbsqFMkUcraA4Cg==
-X-Google-Smtp-Source: APBJJlGNUorNqE2DstQnFDWhicb5Jae+iN7Cjh5GOWyBur4yWaC85W7KTpb5LbBqaIdHGkSMDiPwLg==
-X-Received: by 2002:aa7:cd48:0:b0:522:5591:d748 with SMTP id v8-20020aa7cd48000000b005225591d748mr681596edw.15.1690353374542;
-        Tue, 25 Jul 2023 23:36:14 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id t24-20020aa7d718000000b0051de20c59d7sm8336270edq.15.2023.07.25.23.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 23:36:14 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        pascal Paillet <p.paillet@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 2/2] dt-bindings: mfd: stericsson,db8500-prcmu: Add missing unevaluatedProperties for each regulator
-Date:   Wed, 26 Jul 2023 08:36:10 +0200
-Message-Id: <20230726063610.5394-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230726063610.5394-1-krzysztof.kozlowski@linaro.org>
-References: <20230726063610.5394-1-krzysztof.kozlowski@linaro.org>
+        Wed, 26 Jul 2023 02:37:14 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032832113;
+        Tue, 25 Jul 2023 23:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690353427;
+        bh=WC42Jc1mJ8UlGXI9HmCs7ztjCqsAjOjp2m88mWCoWO4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P+VatdpECOeurkE3yIPU2cQScPGroWkNnFpN4tTWy6gh9VtFjzr07JtA6fvr0ErWR
+         +ruNeE7o02cP3vD8S4QSnv80iizQGOwzLFmsA5KfrunHl2QoEwoAVeccFHXZ15pLuJ
+         +fkgpgea4jZt6TcwxnEzJi0ZMbmrzv1cjedGzHLkXEMmnIE/7rFiEa1xW/0jp6n2xC
+         rw+TV/lIne8Ox1FaQExRmmSZZp/E15tvs4JshSEouyU6EKV0asWhUNK1sCEc7YltWz
+         sWByYq6PRyLQ/HUpZqH66aPW3SdjW7YgeoYMXJ2VytfoJBjzaSBZlra5/oP03KHMjJ
+         +WcIygtRoHYGQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R9khg1ZMdz4wy4;
+        Wed, 26 Jul 2023 16:37:07 +1000 (AEST)
+Date:   Wed, 26 Jul 2023 16:37:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rcu tree
+Message-ID: <20230726163705.3ade6aa6@canb.auug.org.au>
+In-Reply-To: <adba817d-a02b-49fb-bf3d-a22779303764@paulmck-laptop>
+References: <20230726123230.525202b4@canb.auug.org.au>
+        <1c8c257e-55e3-4de9-b2c8-1421c11df664@paulmck-laptop>
+        <adba817d-a02b-49fb-bf3d-a22779303764@paulmck-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/8uVI3W=y2xElus3Vmk7tzQv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each regulator node, which references common regulator.yaml schema,
-should disallow additional or unevaluated properties.  Otherwise
-mistakes in properties will go unnoticed.
+--Sig_/8uVI3W=y2xElus3Vmk7tzQv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Hi Paul,
 
----
+On Tue, 25 Jul 2023 20:48:13 -0700 "Paul E. McKenney" <paulmck@kernel.org> =
+wrote:
+>
+> Does the following incremental diff (to be squashed into the original) he=
+lp?
+>=20
+> 							Thanx, Paul
+>=20
+> ------------------------------------------------------------------------
+>=20
+> diff --git a/init/main.c b/init/main.c
+> index c946ab87783a..981170da0b1c 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
+>  void (*__initdata late_time_init)(void);
+> =20
+>  /* Untouched command line saved by arch-specific code. */
+> -char __initdata boot_command_line[COMMAND_LINE_SIZE];
+> +char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
+>  /* Untouched saved command line (eg. for /proc) */
+>  char *saved_command_line __ro_after_init;
+>  unsigned int saved_command_line_len __ro_after_init;
 
-Changes in v2:
-1. None
----
- .../bindings/mfd/stericsson,db8500-prcmu.yaml | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+I needed the following (only tested x86_64 allmodconfig build):
 
-diff --git a/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml b/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
-index 1d4d88f7e82d..678a6c0fd7d6 100644
---- a/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
-+++ b/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
-@@ -72,44 +72,52 @@ properties:
-           main voltage domain for the chip.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_varm:
-         description: The voltage for the ARM Cortex A-9 CPU.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vmodem:
-         description: The voltage for the modem subsystem.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vpll:
-         description: The voltage for the phase locked loop clocks.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vsmps1:
-         description: Also known as VIO12, is a step-down voltage regulator
-           for 1.2V I/O. SMPS means System Management Power Source.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vsmps2:
-         description: Also known as VIO18, is a step-down voltage regulator
-           for 1.8V I/O. SMPS means System Management Power Source.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vsmps3:
-         description: This is a step-down voltage regulator
-           for 0.87 thru 1.875V I/O. SMPS means System Management Power Source.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_vrf1:
-         description: RF transciever voltage regulator.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sva_mmdsp:
-         description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
-@@ -117,18 +125,21 @@ properties:
-           for video encoding and decoding.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sva_mmdsp_ret:
-         description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
-           voltage regulator for retention mode.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sva_pipe:
-         description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
-           voltage regulator for the data pipe.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sia_mmdsp:
-         description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
-@@ -136,18 +147,21 @@ properties:
-           for image encoding and decoding.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sia_mmdsp_ret:
-         description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
-           voltage regulator for retention mode.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sia_pipe:
-         description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
-           voltage regulator for the data pipe.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_sga:
-         description: Smart Graphics Accelerator (SGA) voltage regulator.
-@@ -155,6 +169,7 @@ properties:
-           accelerator block.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_b2r2_mcde:
-         description: Blit Blend Rotate and Rescale (B2R2), and Multi-Channel
-@@ -162,28 +177,33 @@ properties:
-           blocks.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_esram12:
-         description: Embedded Static RAM (ESRAM) 1 and 2 voltage regulator.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_esram12_ret:
-         description: Embedded Static RAM (ESRAM) 1 and 2 voltage regulator for
-           retention mode.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_esram34:
-         description: Embedded Static RAM (ESRAM) 3 and 4 voltage regulator.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-       db8500_esram34_ret:
-         description: Embedded Static RAM (ESRAM) 3 and 4 voltage regulator for
-           retention mode.
-         type: object
-         $ref: ../regulator/regulator.yaml#
-+        unevaluatedProperties: false
- 
-     required:
-       - compatible
--- 
-2.34.1
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 9a5973324072..e3ce68988e1b 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -112,6 +112,9 @@
+ #define __REFCONST       .section       ".ref.rodata", "a"
+=20
+ #ifndef __ASSEMBLY__
++
++#include <linux/cache.h>
++
+ /*
+  * Used for initialization calls..
+  */
+@@ -143,7 +146,7 @@ struct file_system_type;
+=20
+ /* Defined in init/main.c */
+ extern int do_one_initcall(initcall_t fn);
+-extern char __initdata boot_command_line[];
++extern char boot_command_line[] __ro_after_init;
+ extern char *saved_command_line;
+ extern unsigned int saved_command_line_len;
+ extern unsigned int reset_devices;
+diff --git a/init/main.c b/init/main.c
+index c946ab87783a..981170da0b1c 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
+ void (*__initdata late_time_init)(void);
+=20
+ /* Untouched command line saved by arch-specific code. */
+-char __initdata boot_command_line[COMMAND_LINE_SIZE];
++char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
+ /* Untouched saved command line (eg. for /proc) */
+ char *saved_command_line __ro_after_init;
+ unsigned int saved_command_line_len __ro_after_init;
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/8uVI3W=y2xElus3Vmk7tzQv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTAvxEACgkQAVBC80lX
+0GzAhAf+MyI1kFZ7Cl/K/6n76b+E8QLOnpVL+mOvDBbyy1OgKEmQjjzUXovp9MdY
+EWp9wRZPGBrWZb52fDqoXEnEEDNFWrr5/TAokDUlMWiCVSdcbks13OxnIEhHGJ9u
+DeX8jGV/29fgWCI3Olkjo+5P7fLI2E4cA1hLVbdo5smj7Ev3q3VCDDTMfPwJpwm1
+dwXNE5nRwBveXNBsNwmgEBuZ16nemStSk6xpqTFGdQFx2xuq1MoJSgVA2QAJ2lv8
+f9xRVr/GyojszHXK2EFi1q6D9wGwGL0chp4TE6OhFfEa7N/eNZwzeBOeFwYvvcLL
+4Gfbbg+QowbV0QY2rZDEpO6srt74jA==
+=gnio
+-----END PGP SIGNATURE-----
+
+--Sig_/8uVI3W=y2xElus3Vmk7tzQv--
