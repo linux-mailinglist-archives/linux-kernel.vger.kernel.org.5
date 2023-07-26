@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2B47633DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7992F7633DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjGZKdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        id S233919AbjGZKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjGZKdO (ORCPT
+        with ESMTP id S233981AbjGZKdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:33:14 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DC42126;
-        Wed, 26 Jul 2023 03:33:12 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7mv1w023788;
-        Wed, 26 Jul 2023 12:32:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=9yD7Nv7FYCjZKupHugyp8v0ln3IVhj6t3qswQoubo9I=;
- b=rBYW43mlRrhhdX9YMbXL6MMRxpbClCpyZo8hKb2ZeqvJnN4hLiJ2zeBKq1nRYtvi538r
- wZRLFFB+hcO6jGWBE42hoauMRye1r0di2ci68xHmuXMBhqPc9es8J2VAp8e/Xn9KPSte
- l8ORxx9XceUspSSRZ487Vufjk+kxD0ko5guDlsgfccvfgAJ155tYfRqh+OhAicoocP+x
- itOth/GA8OgZa/04xw6Sqt8HEcnfENZuQBt6mj3giT0jhnaxxpZXbOdb1bLXv7yoxEEu
- Ej29kl9hMVZKhi1F/gCpeDX96ei7fWdwUQwULwbKeZsSUoCDj08qQyAZzARRd4+m3C0B Bg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2ye8h9ag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 12:32:35 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 22EAF10002A;
-        Wed, 26 Jul 2023 12:32:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EFB91216ED5;
-        Wed, 26 Jul 2023 12:32:33 +0200 (CEST)
-Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 12:32:31 +0200
-Message-ID: <46d4b5d2-55ca-0af3-bb02-7d49d9d2d4fa@foss.st.com>
-Date:   Wed, 26 Jul 2023 12:32:31 +0200
+        Wed, 26 Jul 2023 06:33:16 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2138.outbound.protection.outlook.com [40.107.212.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4C52126;
+        Wed, 26 Jul 2023 03:33:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TtOrrbfjommzzF4PgJPfS/CGBbrI9OryC8da+/kng5qxi4WZN7yoM8O0v7OPJXxPVv+La5Ul0xb55wiBg6lVVMKwTRx4FXKXdZxmpDxOGbmSf5QA7TNFUwkS1nLQKHiu2n2qfHont+kznjS2uOcn1qc4i8AspuS49j3JLWBhGd/jvB0UjAF1MnY+ISMskEJyMIlewSQ0BlEfdbTDzR6sV3HGMAyLIDJPL7QC4Ay9Fj+qM3Tu6QTIvL8l1tZyaWfV0NFJtWn6qlleYhHweO2M0J3KobLArXm0e+02HGWngg1gd6n8QUwHVuocs1jqh3eG+BuExANBSIvuopLG2M3Gxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jqkMUatlcPXvZB3kf7JWcwNcqa8mMAMOaV13DHWEFXY=;
+ b=AvH+IaYxwKQHB50zktb94UJtlQRP3IMQwXT5Ca/9LsAZya6ob0wL8TpmvuIoA0gGV6ECSBN1/JRE9vswSat+jSetLPn91ExlPX/EucZ/z5EaEoPV9VDupW7FW3pM4OzknFB9jHFWdfw+lFFt0KvUcrhSrFI5n82d2DGM28GPdAywheFUmbM0hW8WeYBg+SOYtfJb+K/8Z887Zd6ZlHg9g7XQVxyo/LCvOutMLAQmffBmQ+LC8jw3mKylNbGLtEqhkn5/C+4watoEtG3HUXB0tY3Dc9gCM18xk4Hky0C9g8srRTJjWxACQWg9a+QurBWfDMB2UCnmidxXMfujKe5SEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jqkMUatlcPXvZB3kf7JWcwNcqa8mMAMOaV13DHWEFXY=;
+ b=SlVZ0nXVM0PDbKxt3P36dvJphyvgzER21iLBG5itRrs7vOAzosDqvXDxNUNp41mgynRGcsIFbFh8h6DoHxGEQhhLouzOVlqyg4TRZ+5Z9lqhEvW2bxDp+Yz7E9xn5I7t9kk/42C8fC1dnl7ZWsFod0ZZoK/61spHk6bkHYA1/Jw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SA0PR13MB4064.namprd13.prod.outlook.com (2603:10b6:806:72::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
+ 2023 10:33:13 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
+ 10:33:13 +0000
+Date:   Wed, 26 Jul 2023 12:33:06 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Howard Chung <howardchung@google.com>
+Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        Archie Pusaka <apusaka@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
+Message-ID: <ZMD2YqAJ9+2i5ZvH@corigine.com>
+References: <20230724111206.3067352-1-howardchung@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724111206.3067352-1-howardchung@google.com>
+X-ClientProxiedBy: AM0P190CA0029.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::39) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 07/11] bus: rifsc: introduce RIFSC firewall controller
- driver
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-CC:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <vkoul@kernel.org>, <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
- <20230725164104.273965-8-gatien.chevallier@foss.st.com>
- <ZMD027pTNT/HCLe6@corigine.com>
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <ZMD027pTNT/HCLe6@corigine.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.121]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_04,2023-07-25_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SA0PR13MB4064:EE_
+X-MS-Office365-Filtering-Correlation-Id: 258e5a45-046e-4ae9-3a7e-08db8dc3b73b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZXYj9BeNaqW6MmAQ+pqL58WOMF5UfJiqj+daQ2N8ZWzWHIr4OvKXrOpGJW4dw4Pb/knBweUVT7F1+k6Y+L9t2/KZN9C4Fbr7ZynLDGB+O2A1YUXov3LHmqcrAFr2+PRtaWvdTp7emST9lVXa35aXzIw+YW2hNC9mybllvAuae6Uk7GKmxKwKmz4fRuS6gl3QOEwcTSOOiyuGQBcZUnSAiBt+/KYisKxpAFhXQycSsgXikHGbkG80X8bE7/a1g9GpXeb8OathtSMC/h7IEts7m4Y83S9ESkoLVpYsEP9xkKJooMw/cVHQ0TMLXaZLx5eKH9Ov63rvFG1hZv4XuB5E5H6BzPwEnYkopv2raqMaKyTRzP6Gehe6Mmsq/HEDQ8owPuL/QCwkj66IEkKiJ2jjXiHOWV2iGkjQ7HljWa4WQpxW3erxnDtM47O5vfSJ71VRIpbObv6AndkVzfC19NnX1W9pXj+/H+EK++RPHdaxtjW8QnxbJz/UlcUM9eHka08FyeqZT88xRBW1PXl0MiPub+JcwOmUeq8cTHEeADCZH97/cdYyTm2dw+PP66kPmP901xf2vVuaBdFYjtCOG0DUVAxQU/w/OBmkZdz9Z/o8s6fcOSo3cyHl6O3SmUqHMAg6G7jK3cB6J3mPSlcOs5EUteYI341lvDO83kt4AiCz2/U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(136003)(39850400004)(346002)(376002)(451199021)(83380400001)(6506007)(186003)(41300700001)(316002)(2616005)(6512007)(6486002)(6666004)(478600001)(38100700002)(54906003)(4326008)(44832011)(66476007)(66556008)(66946007)(8936002)(8676002)(7416002)(6916009)(86362001)(5660300002)(4744005)(36756003)(2906002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?evleGRBosSUBWWSSeZJTaVNnuDuGtBAh9wJLN/2cS5MGqn2ynDGcBIfNyDWk?=
+ =?us-ascii?Q?25nCVldA+wno3kYHCuaO9wg1gXzYhL1MnLHz0iGPTHRUM/VsxNCQoDfTj+mg?=
+ =?us-ascii?Q?2AzvrampzqfeVawJIIMbJucrKpPh6RQVzSMROvHRBsSbnOAM5CbAMcmwA6ZF?=
+ =?us-ascii?Q?mWGlLffwSpdg4mTQBAy6/sqxP3I/VwrndUi4aslkdoDV5iUskWAvSqmsVsDv?=
+ =?us-ascii?Q?TCLTCSUXjcLIBGLu9q5+ZhoufEsAVvS5qa/SC1WPx5DvBqEUQ9mAlX/o9kpD?=
+ =?us-ascii?Q?AwqblHtfN2Q3o13OH/p+JhNa3h0lAea2NJ8akih/Zod5Lsuh6ET9oKz8qU2m?=
+ =?us-ascii?Q?5iDA4TgpzNK+z6i7VPTtC5kuMye8dGlqOQ2Rp6cSlinftEesJUC7egw3yPnX?=
+ =?us-ascii?Q?zJElwUVnjHvbIL5AW+pJnljDIIB4fOaxr89ptuMHePTRmuEix7i8VwI+6nDy?=
+ =?us-ascii?Q?3AExweEUbNoALUsww0rkPek4VsF3asBx9qAeaE5ROLXsb5R14AeR+WXGNMVQ?=
+ =?us-ascii?Q?DHGMQDmvBOlqMvTwoqJTu19soE8gN1RRl85lvKr2Wa7iilfYGMc2qKMFeYLP?=
+ =?us-ascii?Q?JjWIhciupl9xZrAP3stSmr7tc0kkwYkTCOm+jI4E+UGgLbcdUzdd1RRXfXEm?=
+ =?us-ascii?Q?J3iodo035BTsjh3NahUtt/LsJYXoVab/mDWewxpCKymTtjrnZm3pxnKcACvC?=
+ =?us-ascii?Q?aq8q8F8ittrnCS4X9ymuCX4mcWgXC2jMzSdttP+3vejThI/LXf+o86QFAGg0?=
+ =?us-ascii?Q?Z/6CDE1OReQzI7zsGNSkQayjtQCH7II4mwFyprbGFl54lwrvZz2gyJYTE4Nn?=
+ =?us-ascii?Q?iW4iIOUUSi3FJaVS/+HCegmNUOMD7VwVDOruF4B80hYhKCivwsv7CTA9DvZx?=
+ =?us-ascii?Q?zFMTQyE/ajyYSewEq9uXTPZy/W/qU7jDZ/ZAH9ehR5k7gbm1vT7XKSHXavKx?=
+ =?us-ascii?Q?UoxNrzmoOtzhiGJVwLq6kIa3M9XMFWfKoAr6ktKkSkI/qNzzBZEVHuXXYlRz?=
+ =?us-ascii?Q?JBKezUoKvjAvlOp+Z0+CB5SToaMqd/qZPrsvTn3SnUDBWWSQT7RYLCR7mUP6?=
+ =?us-ascii?Q?JElGCx21fvU9sXl92s0NQnRnNpDEqvOOtFRRhArAtbDVEXDOMKH9QtZZayO4?=
+ =?us-ascii?Q?UERF545UFXyK9d7sb0XZLTfVSi533xYaedihUNzqOZJGKu/pJlvwI7PjkXhS?=
+ =?us-ascii?Q?lyj0DU3BIJofRC2Y1uj5uiwoy4PFuiLmNQbFcJZrH9AZRGTC8Exl75e/mDOw?=
+ =?us-ascii?Q?6YD8PnPhbEQXhc3wVmbCN0zf5WtBIFvGvGcwrWXQ/NjzsAP36LwAU238uLfv?=
+ =?us-ascii?Q?Q2wMf0KZwDmBKExsa8UKAbbqRTHzpNcKqKID9pUf3pVosXKVj5WeX5HUNkqS?=
+ =?us-ascii?Q?HzSCwwW5O0wwyiNEsJ3B4u8oxvON2bujeg+rPn8sp2r48+FgHtaUngZ/MUYP?=
+ =?us-ascii?Q?Zej8TlmtAe/beZa/Z9W3ovchWd9p67jrScDXuCwNdHfWdSLVDW7IZDiLUPlU?=
+ =?us-ascii?Q?9/qTfoH0SNJPJdMc5Kvbkr08FLCzpjr0OXU2ZkEXZ+AyK3z5Y9CZ8ZdBFGZM?=
+ =?us-ascii?Q?L26W+67q9proMg3+kPiLrbhfFxJaWtyi6QmtLMwLG/0SHg9f59qCmzV71vNW?=
+ =?us-ascii?Q?GutDU5/cR2ubDunhQ7DQABTaze9LBddeYnbu9hclFm0gp4lqwdijMcnR1HnC?=
+ =?us-ascii?Q?C86gBA=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 258e5a45-046e-4ae9-3a7e-08db8dc3b73b
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 10:33:13.6512
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s+T5YzxTZmJNLqSQdy54NW5g97QI96JrQKDSTic77hIfCifLmKtP18F1U6HBuPUB2Mep54hR1Oe3WEMdjMNSA97dbW1hIY8xeTrbZDHaJF0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR13MB4064
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 24, 2023 at 07:12:04PM +0800, Howard Chung wrote:
+> For some controllers, it is known that when the HCI disconnect and HCI
+> Reset are too close to each other, the LMP disconnect command might not
+> been sent out yet and the command will be dropped by the controoler when
 
+nit: controoler -> controller
 
-On 7/26/23 12:26, Simon Horman wrote:
-> On Tue, Jul 25, 2023 at 06:41:00PM +0200, Gatien Chevallier wrote:
-> 
-> ...
-> 
->> diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
-> 
-> ...
-> 
->> +static int stm32_rif_acquire_semaphore(struct stm32_firewall_controller *stm32_firewall_controller,
->> +				       int id)
->> +{
->> +	void __iomem *addr = stm32_firewall_controller->mmio + RIFSC_RISC_PER0_SEMCR + 0x8 * id;
->> +
->> +	__set_bit(SEMCR_MUTEX, addr);
-> 
-> Hi Gatien,
-> 
-> Sparse seem a bit unhappy about this.
-> 
->   .../stm32_rifsc.c:83:9: warning: cast removes address space '__iomem' of expression
->   .../stm32_rifsc.c:83:9: warning: incorrect type in argument 2 (different address spaces)
->   .../stm32_rifsc.c:83:9:    expected unsigned long volatile *addr
->   .../stm32_rifsc.c:83:9:    got void [noderef] __iomem *addr
->   .../stm32_rifsc.c:83:9: warning: incorrect type in argument 2 (different address spaces)
->   .../stm32_rifsc.c:83:9:    expected unsigned long volatile *addr
->   .../stm32_rifsc.c:83:9:    got void [noderef] __iomem *addr
-> 
-> But it's not immediately apparent to me what a good solution is.
-> 
-
-Hi Simon,
-
-This is indeed incorrect, set_bit is used to modify bit fields, not
-writing to a register. I'll change to writel, as in
-stm32_rif_release_semaphore(). Thank you for pointing this out.
-
-Best regards,
-Gatien
->> +
->> +	/* Check that CID1 has the semaphore */
->> +	if (stm32_rifsc_is_semaphore_available(addr) ||
->> +	    FIELD_GET(RIFSC_RISC_SCID_MASK, readl(addr)) != RIF_CID1)
->> +		return -EACCES;
->> +
->> +	return 0;
->> +}
-> 
-> ...
+...
