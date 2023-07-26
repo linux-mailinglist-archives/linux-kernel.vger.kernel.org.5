@@ -2,182 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD08B7631CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE2A7631C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbjGZJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S232690AbjGZJYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjGZJXn (ORCPT
+        with ESMTP id S232897AbjGZJXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:23:43 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19BA2D56
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-77dcff76e35so80533039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690363264; x=1690968064;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7Vnbbe8QuBX5IRYOyrvoqHk8WWyxAnIOQvNq7rt3Y5Y=;
-        b=kMv6YWq3e1+EWrbASVGI+G088ii73Fem/3I6VWvBzdurPzbdbS5fA2RHQQMLz4AOt4
-         QngIWAV+s2uZUHK0vckMw0bfgtFV0R5eMbZlIk8/4w/wEVCJ5y5HwXF0DUiZjpzQho8t
-         GXjQcaARWKdDQm6TOuzP1j52qtjLaAhVczvWaaLuobF1qPY5atrskgUIXJQL3lYTey8z
-         3gvyQ55zN42zfh91LApyOvBpv3V6BxPnFobMIvKLNhs41DtS3MI2Zhwie6ylRR2RxuF8
-         50dWB5Tz79PFVi03oGgeTfo0ercw9F6h7q/ECB9SYkDgRGeW/OcVP5UyZnJ2fh3Kr582
-         LeCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363264; x=1690968064;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Vnbbe8QuBX5IRYOyrvoqHk8WWyxAnIOQvNq7rt3Y5Y=;
-        b=FD0SG2fr6xV/5QoolVEO6CUOeEpnaxawsZwrmtZRAiyaZsDslzKi6eew9cRX9cM05Y
-         9gAgntYvWHiyi2XRzmSoWuXhbpWwwiI/OH7uiLM6dWqSCB96lSzP9NK28I1j3yzzaWGp
-         gZSj90Dtse/W//wLhG3Jqr8klq//Um1ni0bpy3gMhrDGBa0PjTM1kpx9+4wQhlaNeSeP
-         sTYCr+Hkqzmg4KcTHhjUx5yA+H/YoC4MMf/rFgFYrizJm9DJ5KL7R7jbmHSZhQe/JsA/
-         vSW7yHIZOAj2G1cOKRX30K9U3mF6+x+wMhpIS9Cb1Q0//8ev2MpJza2d7ZY6yeLwqW1e
-         jUFA==
-X-Gm-Message-State: ABy/qLZjnS8723zaqv8KjMUna0zaWAfEU3afpYZOMRoYPYRfqftwkO/U
-        YwR032gRtFfjHsKj4sZ6JIYl0w==
-X-Google-Smtp-Source: APBJJlFD+0JL20cmcfz8xSZcxHSPSuKA9am5rBHzXLXGZAWVolxxOeef+bBAtrNC9deWoQ1MX3gUWg==
-X-Received: by 2002:a6b:3b44:0:b0:787:1926:54ed with SMTP id i65-20020a6b3b44000000b00787192654edmr1450699ioa.1.1690363264233;
-        Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j1-20020a63b601000000b005638a70110bsm9005279pgf.65.2023.07.26.02.20.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:21:03 -0700 (PDT)
-Message-ID: <0caf10e8-e54b-3c1b-7df5-d95adc757ba7@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:20:49 +0800
+        Wed, 26 Jul 2023 05:23:37 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF7130EE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:21:33 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qOai0-0007bE-Sl; Wed, 26 Jul 2023 11:21:28 +0200
+Message-ID: <ae1ad814-5613-704e-b0b1-4f1fc4bead44@leemhuis.info>
+Date:   Wed, 26 Jul 2023 11:21:27 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
- <ZMDKjBCZH6+OP5gW@dread.disaster.area>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZMDKjBCZH6+OP5gW@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Fwd: ath11k: QCN9074: ce desc not available for wmi command
+Content-Language: en-US, de-DE
+To:     Manikanta Pubbisetty <quic_mpubbise@quicinc.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Atheros 11K <ath11k@lists.infradead.org>
+References: <1326a6e4-758d-3344-d90c-8a126748b034@gmail.com>
+ <6a0c3aa0-86a8-8c06-81df-2d7085946cf5@leemhuis.info>
+ <16885654-09f0-c139-cc9b-c6c4d666932e@quicinc.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <16885654-09f0-c139-cc9b-c6c4d666932e@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690363293;33dfbb81;
+X-HE-SMSGID: 1qOai0-0007bE-Sl
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On 25.07.23 11:17, Manikanta Pubbisetty wrote:
+> On 6/26/2023 6:19 PM, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>
+>> Hmmm, there afaics was no real progress and not even a single reply from
+>> a developer (neither here or in bugzilla) since the issue was reported
+>> ~10 days ago. :-/
 
-On 2023/7/26 15:26, Dave Chinner wrote:
-> On Mon, Jul 24, 2023 at 05:43:10PM +0800, Qi Zheng wrote:
->> Currently, the shrinker instances can be divided into the following three
->> types:
->>
->> a) global shrinker instance statically defined in the kernel, such as
->>     workingset_shadow_shrinker.
->>
->> b) global shrinker instance statically defined in the kernel modules, such
->>     as mmu_shrinker in x86.
->>
->> c) shrinker instance embedded in other structures.
->>
->> For case a, the memory of shrinker instance is never freed. For case b,
->> the memory of shrinker instance will be freed after synchronize_rcu() when
->> the module is unloaded. For case c, the memory of shrinker instance will
->> be freed along with the structure it is embedded in.
->>
->> In preparation for implementing lockless slab shrink, we need to
->> dynamically allocate those shrinker instances in case c, then the memory
->> can be dynamically freed alone by calling kfree_rcu().
->>
->> So this commit adds the following new APIs for dynamically allocating
->> shrinker, and add a private_data field to struct shrinker to record and
->> get the original embedded structure.
->>
->> 1. shrinker_alloc()
->>
->> Used to allocate shrinker instance itself and related memory, it will
->> return a pointer to the shrinker instance on success and NULL on failure.
->>
->> 2. shrinker_free_non_registered()
->>
->> Used to destroy the non-registered shrinker instance.
-> 
-> This is a bit nasty
-> 
->>
->> 3. shrinker_register()
->>
->> Used to register the shrinker instance, which is same as the current
->> register_shrinker_prepared().
->>
->> 4. shrinker_unregister()
-> 
-> rename this "shrinker_free()" and key the two different freeing
-> cases on the SHRINKER_REGISTERED bit rather than mostly duplicating
-> the two.
+BTW: Kalle, many thx for picking this up and posting & applying the revert!
 
-OK, will do in the next version.
+>> Manikanta, did you maybe just miss that this is caused by change of
+>> yours (and thus is something you should look into)?
+> 
+> Extremely sorry for having this missed [...]
+> 
+> Hi Sanjay, [...]
 
-> 
-> void shrinker_free(struct shrinker *shrinker)
-> {
-> 	struct dentry *debugfs_entry = NULL;
-> 	int debugfs_id;
-> 
-> 	if (!shrinker)
-> 		return;
-> 
-> 	down_write(&shrinker_rwsem);
-> 	if (shrinker->flags & SHRINKER_REGISTERED) {
-> 		list_del(&shrinker->list);
-> 		debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
-> 	} else if (IS_ENABLED(CONFIG_SHRINKER_DEBUG)) {
-> 		kfree_const(shrinker->name);
-> 	}
-> 
-> 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> 		unregister_memcg_shrinker(shrinker);
-> 	up_write(&shrinker_rwsem);
-> 
-> 	if (debugfs_entry)
-> 		shrinker_debugfs_remove(debugfs_entry, debugfs_id);
-> 
-> 	kfree(shrinker->nr_deferred);
-> 	kfree(shrinker);
-> }
-> EXPORT_SYMBOL_GPL(shrinker_free);
+FWIW, Bagas Sanjaya just forwarded the report and the reporter is not
+CCed afaics (bugzilla privacy policy does not allow this, which
+complicates things a lot :-/ ). You have to use bugzilla to reach the
+reporter: https://bugzilla.kernel.org/show_bug.cgi?id=217536
 
-Ah, I will change all new APIs to use EXPORT_SYMBOL_GPL().
+Bagas Sanjaya: wondering if you should make that "I'm just forwarding"
+aspect more obvious in your mails. And it afaics would also be good to
+mentioned the author of the culprit quite early in your mails, as there
+is a risk that people will miss that aspect otherwise.
 
-Thanks,
-Qi
-
-> 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
