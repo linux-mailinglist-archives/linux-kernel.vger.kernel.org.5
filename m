@@ -2,166 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC01076320F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A416A76320E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbjGZJ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
+        id S232070AbjGZJ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjGZJ31 (ORCPT
+        with ESMTP id S232210AbjGZJ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:29:27 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CE910F9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690363689; x=1721899689;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sWI8BN0I0gaWnWPq+rnd1lL/hQZJEhkF2KexTcF60WY=;
-  b=wCFD3vMLJ/CWmdnIW4g7dUakPs3vp3brtvZqvmDGLqM1vBAbCsj7iLNS
-   sPvr/cn2mb2KWjricEB7i9np+xkAtDrj8XNmcwD3vgJo+3pzB9JQN7LTM
-   AJj9ukGb+28h3nB75Ruq1KkL2iH5z6nKy6qjYRsKQv79ImhKijMAcpAyR
-   a1apYISC5m9IKU9kQyPnSWe3z76nw4T9/aqFqh+O/tR9efAOzoFTKuMwz
-   W0wBTM0lCXDoG7nBKVXljoI5H0/lK9NQlIQ5Kg5LWgCSYQssD69tU58rp
-   MpQt+ApoFHYCmyQMzlRQ3PdTK1qCEKPYmrnKhZZ2Uslok7BQ1h/QLiYqa
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="asc'?scan'208";a="225284568"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 02:28:09 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 26 Jul 2023 02:28:08 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 26 Jul 2023 02:28:07 -0700
-Date:   Wed, 26 Jul 2023 10:27:33 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     wang_yang <wang_yang6662023@163.com>
-CC:     <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Wang Yang <yangwang@nj.iscas.ac.cn>
-Subject: Re: [PATCH] RISC-V: Use GCC __builtin_prefetch() to implement
- prefetch()
-Message-ID: <20230726-washing-scoreless-12f0cca83365@wendy>
-References: <20230726074732.32981-1-wang_yang6662023@163.com>
+        Wed, 26 Jul 2023 05:29:25 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6CD171D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:28:01 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6864c144897so1488704b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690363681; x=1690968481;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3q/836hkNQMpcz/8YX2aFfQHacV0FqcsnRX2KDKmGK4=;
+        b=VrX61tolI6lx5cf13TzjBUi7Jr7lyRI0PErux25Ugwzya6Gr7la8Z5mF2+cskv3TWz
+         UBVd0Z5Poj3PRTux8odPv45l8gQzAXnTFOr3Tf8UDx7d9uUEKzN37AEVIKYy6agrhmgA
+         YruSiWL83SB/lZ95d/ocS5Ez1ClN1w8sLcjpu26a2KNj8aWhEC89NaIXAD4IQeJcJzfH
+         uYL7oLGt6F17I0XKTtTRSbeLX7ktBDSzYJstMwVG/599hz7kBf24kzbOMqBXrGbap2ZR
+         iYE22Dihl4RYEd6b6MxzHd9sXrRhtrB75dhklT8m88pkRrstmkcW4eCpJX3cURQ8vJOi
+         rydw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690363681; x=1690968481;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3q/836hkNQMpcz/8YX2aFfQHacV0FqcsnRX2KDKmGK4=;
+        b=Tg9o1KtstUYOVUhtQBA+yQhzK1jaE1PSoHCQqXW/tl87keE/PcdX6nt0xQOj9PSi4C
+         0QljVv53+0EkLDGISCV47pP71l/ln+LVZtr0+O3hTIJfsXLMVdqOwEmS3RrAiO1f775x
+         lOTFgMivRC91fW8pJBm4zHFp3UnZGENDQrCjypJruAOkux/7ptwTKYkYwZk18WdDtZsP
+         T5x8xWEHzBqsNGKbcQqZ8M9Cl0M79vKhhmXAOvjiwFPLNPjiW3Jj508xIyE19rjj3Q/x
+         0PCF6Uqs4G5Z+lB4fzOwXwEuAacNqccpaIgQaadPX8R6R6o4wHYS6LooaBYvoyIk1Ziu
+         l42w==
+X-Gm-Message-State: ABy/qLZyaL+JFuQJhhQBszndHmHWR6fyBVds+s7P15v/LXBaLb6ka1mB
+        Gzuf/AoY7jQYuj8cuAE+PfQGXA==
+X-Google-Smtp-Source: APBJJlFbGXVT1jvZWB8OqMMjwV1wWa8tPHrXXzsgQ/SF73jQ8jhDFJz/C4eSTJgkpJW81UF91auuJQ==
+X-Received: by 2002:a05:6a20:3c90:b0:134:d4d3:f0a5 with SMTP id b16-20020a056a203c9000b00134d4d3f0a5mr1941746pzj.2.1690363681365;
+        Wed, 26 Jul 2023 02:28:01 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id l73-20020a633e4c000000b00563da87a52dsm1901427pga.40.2023.07.26.02.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:28:01 -0700 (PDT)
+Message-ID: <665ccd89-8434-fc45-4813-c6412ef80c10@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:27:47 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7z2nzsGN1jDIioBs"
-Content-Disposition: inline
-In-Reply-To: <20230726074732.32981-1-wang_yang6662023@163.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 19/47] mm: thp: dynamically allocate the thp-related
+ shrinkers
+Content-Language: en-US
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-20-zhengqi.arch@bytedance.com>
+ <d41d09bc-7c1c-f708-ecfa-ffac59bf58ad@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <d41d09bc-7c1c-f708-ecfa-ffac59bf58ad@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---7z2nzsGN1jDIioBs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hey,
 
-On Wed, Jul 26, 2023 at 03:47:32PM +0800, wang_yang wrote:
->  GCC's __builtin_prefetch() was introduced a long time ago, all supported=
- GCC
->  versions have it.So this patch is to use it for implementing the prefetc=
-h.
->=20
->  RISC-V Cache Management Operation instructions has been supported by GCC=
- last
->  year.you can refer to
->  https://github.com/gcc-mirror/gcc/commit/3df3ca9014f94fe4af07444fea19b4a=
-b29ba8e73
+On 2023/7/26 15:10, Muchun Song wrote:
+> 
+> 
+> On 2023/7/24 17:43, Qi Zheng wrote:
+>> Use new APIs to dynamically allocate the thp-zero and thp-deferred_split
+>> shrinkers.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   mm/huge_memory.c | 69 +++++++++++++++++++++++++++++++-----------------
+>>   1 file changed, 45 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 8c94b34024a2..4db5a1834d81 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -65,7 +65,11 @@ unsigned long transparent_hugepage_flags 
+>> __read_mostly =
+>>       (1<<TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG)|
+>>       (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG);
+>> -static struct shrinker deferred_split_shrinker;
+>> +static struct shrinker *deferred_split_shrinker;
+>> +static unsigned long deferred_split_count(struct shrinker *shrink,
+>> +                      struct shrink_control *sc);
+>> +static unsigned long deferred_split_scan(struct shrinker *shrink,
+>> +                     struct shrink_control *sc);
+>>   static atomic_t huge_zero_refcount;
+>>   struct page *huge_zero_page __read_mostly;
+>> @@ -229,11 +233,7 @@ static unsigned long 
+>> shrink_huge_zero_page_scan(struct shrinker *shrink,
+>>       return 0;
+>>   }
+>> -static struct shrinker huge_zero_page_shrinker = {
+>> -    .count_objects = shrink_huge_zero_page_count,
+>> -    .scan_objects = shrink_huge_zero_page_scan,
+>> -    .seeks = DEFAULT_SEEKS,
+>> -};
+>> +static struct shrinker *huge_zero_page_shrinker;
+> 
+> Same as patch #17.
 
-This should be in a Link: tag.
+OK, will do.
 
->  It is worth noting that CPU based on RISC-V should support Zicbop extens=
-ion.
+> 
+>>   #ifdef CONFIG_SYSFS
+>>   static ssize_t enabled_show(struct kobject *kobj,
+>> @@ -454,6 +454,40 @@ static inline void hugepage_exit_sysfs(struct 
+>> kobject *hugepage_kobj)
+>>   }
+>>   #endif /* CONFIG_SYSFS */
+>> +static int thp_shrinker_init(void)
+> 
+> Better to declare it as __init.
 
-How do you intend determining whether the CPU supports Zicbop?
+Will do.
 
->  This has been already done on other architectures (see the commit:
->  https://github.com/torvalds/linux/commit/0453fb3c528c5eb3483441a466b24a4=
-cb409eec5).
+> 
+>> +{
+>> +    huge_zero_page_shrinker = shrinker_alloc(0, "thp-zero");
+>> +    if (!huge_zero_page_shrinker)
+>> +        return -ENOMEM;
+>> +
+>> +    deferred_split_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
+>> +                         SHRINKER_MEMCG_AWARE |
+>> +                         SHRINKER_NONSLAB,
+>> +                         "thp-deferred_split");
+>> +    if (!deferred_split_shrinker) {
+>> +        shrinker_free_non_registered(huge_zero_page_shrinker);
+>> +        return -ENOMEM;
+>> +    }
+>> +
+>> +    huge_zero_page_shrinker->count_objects = 
+>> shrink_huge_zero_page_count;
+>> +    huge_zero_page_shrinker->scan_objects = shrink_huge_zero_page_scan;
+>> +    huge_zero_page_shrinker->seeks = DEFAULT_SEEKS;
+>> +    shrinker_register(huge_zero_page_shrinker);
+>> +
+>> +    deferred_split_shrinker->count_objects = deferred_split_count;
+>> +    deferred_split_shrinker->scan_objects = deferred_split_scan;
+>> +    deferred_split_shrinker->seeks = DEFAULT_SEEKS;
+>> +    shrinker_register(deferred_split_shrinker);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static void thp_shrinker_exit(void)
+> 
+> Same as here.
 
-That's not how to describe commits, please see how that is done
-elsewhere in the git history.
+Will do.
 
->=20
-> Signed-off-by: Wang Yang <yangwang@nj.iscas.ac.cn>
-
-WARNING: Possible unwrapped commit description (prefer a maximum 75 chars p=
-er line)
-#6:=20
- GCC's __builtin_prefetch() was introduced a long time ago, all supported G=
-CC
-
-ERROR: Missing Signed-off-by: line by nominal patch author 'wang_yang <wang=
-_yang6662023@163.com>'
-
-> ---
->  arch/riscv/include/asm/processor.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index c950a8d9edef..f16d4c85ca5b 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -70,6 +70,17 @@ extern void start_thread(struct pt_regs *regs,
-> =20
->  extern unsigned long __get_wchan(struct task_struct *p);
-> =20
-> +#define ARCH_HAS_PREFETCH
-> +static inline void prefetch(const void *ptr)
-> +{
-> +	__builtin_prefetch(ptr, 0, 3);
-
-As far as I can tell, this does not do anything and will be removed by
-the compiler. Please take a look at how other extensions are implemented.
-
-Also, why 3? (Your answer should be in the commit message)
-
-Thanks,
-Conor.
-
-> +}
-> +
-> +#define ARCH_HAS_PREFETCHW
-> +static inline void prefetchw(const void *ptr)
-> +{
-> +	__builtin_prefetch(ptr, 1, 3);
-> +}
-> =20
->  static inline void wait_for_interrupt(void)
->  {
-> --=20
-> 2.34.1
->=20
-
---7z2nzsGN1jDIioBs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDnBQAKCRB4tDGHoIJi
-0im4AP4zuaPEjwNldgorLZ7XQnAcFueQvdQrx0h7e6ZAN6oYzwD/eO+uxgIz3j5r
-iG/Dye9EddOEg2EZ5jMAWCkWn+jHFgk=
-=kzQ1
------END PGP SIGNATURE-----
-
---7z2nzsGN1jDIioBs--
+> 
+>> +{
+>> +    shrinker_unregister(huge_zero_page_shrinker);
+>> +    shrinker_unregister(deferred_split_shrinker);
+>> +}
+>> +
+>>   static int __init hugepage_init(void)
+>>   {
+>>       int err;
+>> @@ -482,12 +516,9 @@ static int __init hugepage_init(void)
+>>       if (err)
+>>           goto err_slab;
+>> -    err = register_shrinker(&huge_zero_page_shrinker, "thp-zero");
+>> -    if (err)
+>> -        goto err_hzp_shrinker;
+>> -    err = register_shrinker(&deferred_split_shrinker, 
+>> "thp-deferred_split");
+>> +    err = thp_shrinker_init();
+>>       if (err)
+>> -        goto err_split_shrinker;
+>> +        goto err_shrinker;
+>>       /*
+>>        * By default disable transparent hugepages on smaller systems,
+>> @@ -505,10 +536,8 @@ static int __init hugepage_init(void)
+>>       return 0;
+>>   err_khugepaged:
+>> -    unregister_shrinker(&deferred_split_shrinker);
+>> -err_split_shrinker:
+>> -    unregister_shrinker(&huge_zero_page_shrinker);
+>> -err_hzp_shrinker:
+>> +    thp_shrinker_exit();
+>> +err_shrinker:
+>>       khugepaged_destroy();
+>>   err_slab:
+>>       hugepage_exit_sysfs(hugepage_kobj);
+>> @@ -2851,7 +2880,7 @@ void deferred_split_folio(struct folio *folio)
+>>   #ifdef CONFIG_MEMCG
+>>           if (memcg)
+>>               set_shrinker_bit(memcg, folio_nid(folio),
+>> -                     deferred_split_shrinker.id);
+>> +                     deferred_split_shrinker->id);
+>>   #endif
+>>       }
+>>       spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>> @@ -2925,14 +2954,6 @@ static unsigned long deferred_split_scan(struct 
+>> shrinker *shrink,
+>>       return split;
+>>   }
+>> -static struct shrinker deferred_split_shrinker = {
+>> -    .count_objects = deferred_split_count,
+>> -    .scan_objects = deferred_split_scan,
+>> -    .seeks = DEFAULT_SEEKS,
+>> -    .flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE |
+>> -         SHRINKER_NONSLAB,
+>> -};
+>> -
+>>   #ifdef CONFIG_DEBUG_FS
+>>   static void split_huge_pages_all(void)
+>>   {
+> 
