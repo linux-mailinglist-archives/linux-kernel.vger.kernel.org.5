@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB832762CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7564762CEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbjGZHOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
+        id S232340AbjGZHPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjGZHNi (ORCPT
+        with ESMTP id S232281AbjGZHOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:13:38 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06CC559E;
-        Wed, 26 Jul 2023 00:09:49 -0700 (PDT)
-X-UUID: 48d18b7fbb5e4399a646d23469c1a346-20230726
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:308e6581-c474-4014-b1a3-53283994d9aa,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-INFO: VERSION:1.1.28,REQID:308e6581-c474-4014-b1a3-53283994d9aa,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-META: VersionHash:176cd25,CLOUDID:2dd756d2-cd77-4e67-bbfd-aa4eaace762f,B
-        ulkID:230726150927DGBQ9DXH,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|102,
-        TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 48d18b7fbb5e4399a646d23469c1a346-20230726
-X-User: guodongtai@kylinos.cn
-Received: from localhost.localdomain [(39.156.73.12)] by mailgw
-        (envelope-from <guodongtai@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 586468305; Wed, 26 Jul 2023 15:09:24 +0800
-From:   George Guo <guodongtai@kylinos.cn>
-To:     masahiroy@kernel.org, ndesaulniers@google.com, nathan@kernel.org,
-        nicolas@fjasle.eu
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] samples/bpf: Update sockex2: get the expected output results
-Date:   Wed, 26 Jul 2023 15:09:55 +0800
-Message-Id: <20230726070955.178288-1-guodongtai@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Wed, 26 Jul 2023 03:14:25 -0400
+Received: from out-30.mta0.migadu.com (out-30.mta0.migadu.com [IPv6:2001:41d0:1004:224b::1e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F7D30D3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:10:51 -0700 (PDT)
+Message-ID: <d41d09bc-7c1c-f708-ecfa-ffac59bf58ad@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690355449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jvc7jyiFGsEgqDLQ8SvDwKCvjECMcl21zak/YPsttTU=;
+        b=MJNzwcgKcI8WMs1vcHIk9odpFzXJXYJZkCEqMlLlvbf0FvKHK96bLJs5XTXQyUPcTsHXLS
+        nIqAIZhilsKlD4q7ONNAKGG+YEnzT1SMJk3OhEOossreA6CsEZNAbhHhb/1A0W8D/Gm3Q3
+        yKiIjz335Q++bI56PmpRINRM4YbGaI0=
+Date:   Wed, 26 Jul 2023 15:10:21 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Subject: Re: [PATCH v2 19/47] mm: thp: dynamically allocate the thp-related
+ shrinkers
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-20-zhengqi.arch@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-20-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,79 +66,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running "ping -4 -c5 localhost" only shows 4 times prints not 5:
 
-$ sudo ./samples/bpf/sockex2
-ip 127.0.0.1 bytes 392 packets 4
-ip 127.0.0.1 bytes 784 packets 8
-ip 127.0.0.1 bytes 1176 packets 12
-ip 127.0.0.1 bytes 1568 packets 16
 
-debug it with num prints:
-$ sudo ./samples/bpf/sockex2
-num = 1: ip 127.0.0.1 bytes 392 packets 4
-num = 2: ip 127.0.0.1 bytes 784 packets 8
-num = 3: ip 127.0.0.1 bytes 1176 packets 12
-num = 4: ip 127.0.0.1 bytes 1568 packets 16
+On 2023/7/24 17:43, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the thp-zero and thp-deferred_split
+> shrinkers.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>   mm/huge_memory.c | 69 +++++++++++++++++++++++++++++++-----------------
+>   1 file changed, 45 insertions(+), 24 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 8c94b34024a2..4db5a1834d81 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -65,7 +65,11 @@ unsigned long transparent_hugepage_flags __read_mostly =
+>   	(1<<TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG)|
+>   	(1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG);
+>   
+> -static struct shrinker deferred_split_shrinker;
+> +static struct shrinker *deferred_split_shrinker;
+> +static unsigned long deferred_split_count(struct shrinker *shrink,
+> +					  struct shrink_control *sc);
+> +static unsigned long deferred_split_scan(struct shrinker *shrink,
+> +					 struct shrink_control *sc);
+>   
+>   static atomic_t huge_zero_refcount;
+>   struct page *huge_zero_page __read_mostly;
+> @@ -229,11 +233,7 @@ static unsigned long shrink_huge_zero_page_scan(struct shrinker *shrink,
+>   	return 0;
+>   }
+>   
+> -static struct shrinker huge_zero_page_shrinker = {
+> -	.count_objects = shrink_huge_zero_page_count,
+> -	.scan_objects = shrink_huge_zero_page_scan,
+> -	.seeks = DEFAULT_SEEKS,
+> -};
+> +static struct shrinker *huge_zero_page_shrinker;
 
-The reason is that we check it faster, just put sleep(1) before check
-while(bpf_map_get_next_key(map_fd, &key, &next_key) == 0).
-Now we get the expected results:
+Same as patch #17.
 
-$ sudo ./samples/bpf/sockex2
-num = 0: ip 127.0.0.1 bytes 392 packets 4
-num = 1: ip 127.0.0.1 bytes 784 packets 8
-num = 2: ip 127.0.0.1 bytes 1176 packets 12
-num = 3: ip 127.0.0.1 bytes 1568 packets 16
-num = 4: ip 127.0.0.1 bytes 1960 packets 20
+>   
+>   #ifdef CONFIG_SYSFS
+>   static ssize_t enabled_show(struct kobject *kobj,
+> @@ -454,6 +454,40 @@ static inline void hugepage_exit_sysfs(struct kobject *hugepage_kobj)
+>   }
+>   #endif /* CONFIG_SYSFS */
+>   
+> +static int thp_shrinker_init(void)
 
-Signed-off-by: George Guo <guodongtai@kylinos.cn>
----
- samples/bpf/sockex2_user.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Better to declare it as __init.
 
-diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
-index 2c18471336f0..84bf1ab77649 100644
---- a/samples/bpf/sockex2_user.c
-+++ b/samples/bpf/sockex2_user.c
-@@ -18,8 +18,8 @@ int main(int ac, char **argv)
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	int map_fd, prog_fd;
--	char filename[256];
--	int i, sock, err;
-+	char filename[256], command[64];
-+	int i, sock, err, num = 5;
- 	FILE *f;
- 
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-@@ -42,21 +42,22 @@ int main(int ac, char **argv)
- 	assert(setsockopt(sock, SOL_SOCKET, SO_ATTACH_BPF, &prog_fd,
- 			  sizeof(prog_fd)) == 0);
- 
--	f = popen("ping -4 -c5 localhost", "r");
-+	snprintf(command, sizeof(command), "ping -4 -c%d localhost", num);
-+	f = popen(command, "r");
- 	(void) f;
- 
--	for (i = 0; i < 5; i++) {
-+	for (i = 0; i < num; i++) {
- 		int key = 0, next_key;
- 		struct pair value;
- 
-+		sleep(1);
- 		while (bpf_map_get_next_key(map_fd, &key, &next_key) == 0) {
- 			bpf_map_lookup_elem(map_fd, &next_key, &value);
--			printf("ip %s bytes %lld packets %lld\n",
-+			printf("num = %d: ip %s bytes %lld packets %lld\n", i,
- 			       inet_ntoa((struct in_addr){htonl(next_key)}),
- 			       value.bytes, value.packets);
- 			key = next_key;
- 		}
--		sleep(1);
- 	}
- 	return 0;
- }
--- 
-2.34.1
+> +{
+> +	huge_zero_page_shrinker = shrinker_alloc(0, "thp-zero");
+> +	if (!huge_zero_page_shrinker)
+> +		return -ENOMEM;
+> +
+> +	deferred_split_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
+> +						 SHRINKER_MEMCG_AWARE |
+> +						 SHRINKER_NONSLAB,
+> +						 "thp-deferred_split");
+> +	if (!deferred_split_shrinker) {
+> +		shrinker_free_non_registered(huge_zero_page_shrinker);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	huge_zero_page_shrinker->count_objects = shrink_huge_zero_page_count;
+> +	huge_zero_page_shrinker->scan_objects = shrink_huge_zero_page_scan;
+> +	huge_zero_page_shrinker->seeks = DEFAULT_SEEKS;
+> +	shrinker_register(huge_zero_page_shrinker);
+> +
+> +	deferred_split_shrinker->count_objects = deferred_split_count;
+> +	deferred_split_shrinker->scan_objects = deferred_split_scan;
+> +	deferred_split_shrinker->seeks = DEFAULT_SEEKS;
+> +	shrinker_register(deferred_split_shrinker);
+> +
+> +	return 0;
+> +}
+> +
+> +static void thp_shrinker_exit(void)
+
+Same as here.
+
+> +{
+> +	shrinker_unregister(huge_zero_page_shrinker);
+> +	shrinker_unregister(deferred_split_shrinker);
+> +}
+> +
+>   static int __init hugepage_init(void)
+>   {
+>   	int err;
+> @@ -482,12 +516,9 @@ static int __init hugepage_init(void)
+>   	if (err)
+>   		goto err_slab;
+>   
+> -	err = register_shrinker(&huge_zero_page_shrinker, "thp-zero");
+> -	if (err)
+> -		goto err_hzp_shrinker;
+> -	err = register_shrinker(&deferred_split_shrinker, "thp-deferred_split");
+> +	err = thp_shrinker_init();
+>   	if (err)
+> -		goto err_split_shrinker;
+> +		goto err_shrinker;
+>   
+>   	/*
+>   	 * By default disable transparent hugepages on smaller systems,
+> @@ -505,10 +536,8 @@ static int __init hugepage_init(void)
+>   
+>   	return 0;
+>   err_khugepaged:
+> -	unregister_shrinker(&deferred_split_shrinker);
+> -err_split_shrinker:
+> -	unregister_shrinker(&huge_zero_page_shrinker);
+> -err_hzp_shrinker:
+> +	thp_shrinker_exit();
+> +err_shrinker:
+>   	khugepaged_destroy();
+>   err_slab:
+>   	hugepage_exit_sysfs(hugepage_kobj);
+> @@ -2851,7 +2880,7 @@ void deferred_split_folio(struct folio *folio)
+>   #ifdef CONFIG_MEMCG
+>   		if (memcg)
+>   			set_shrinker_bit(memcg, folio_nid(folio),
+> -					 deferred_split_shrinker.id);
+> +					 deferred_split_shrinker->id);
+>   #endif
+>   	}
+>   	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+> @@ -2925,14 +2954,6 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>   	return split;
+>   }
+>   
+> -static struct shrinker deferred_split_shrinker = {
+> -	.count_objects = deferred_split_count,
+> -	.scan_objects = deferred_split_scan,
+> -	.seeks = DEFAULT_SEEKS,
+> -	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE |
+> -		 SHRINKER_NONSLAB,
+> -};
+> -
+>   #ifdef CONFIG_DEBUG_FS
+>   static void split_huge_pages_all(void)
+>   {
 
