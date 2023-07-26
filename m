@@ -2,189 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A8F76289E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583697628A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjGZCKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        id S230229AbjGZCOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGZCKx (ORCPT
+        with ESMTP id S229506AbjGZCOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:10:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14B92116
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690337407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i7bDIq1bzY465BO1ikbOzMcgPMOtP/SRoAEj7PnPWEQ=;
-        b=fZOgCJbpImPyXEpNKAn5OlLEpeaOdYdfho6V05n9UVM5S+6DJZWvktjtnOt+5LmSXVRowQ
-        FvdpQNdhL33PC5A04SPjVoLH5UVQ5quVoajVp9dm82d1rYltqgndY3wTbFnCQie8DS2YpO
-        WVySq3qEUGSX6IEXrqyZ6cypOl5dK9k=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-MJ7YTbN8PqiGaj7xcMuzDA-1; Tue, 25 Jul 2023 22:10:06 -0400
-X-MC-Unique: MJ7YTbN8PqiGaj7xcMuzDA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b988ba1137so25877301fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:10:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690337405; x=1690942205;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i7bDIq1bzY465BO1ikbOzMcgPMOtP/SRoAEj7PnPWEQ=;
-        b=LMTrCHruIXaYwChddtLCNOsyU65uZA3lddiCV+Ec2d+jxfLL5SUddGIUyoNeT8Zu9p
-         k9QDKyFIASvwT3lkz8qtPp1/JfxRQbP62QedLpYBu6kzagPnf+TA+9sD9AfwugH5tH/N
-         czQdAtkjYuqps1Ukqo9LssObF9LxOpsBh1aEpGLiLevo+IZSnuIHC+87Nh81MpW4C0Pp
-         Z+I+IMUwFfyqVPROVLEJZr5CfnnEA/S+eBXaNFNvIBjlvbS4Wz6k1TW+8uTSBEMCi/TC
-         Jam8HBGHU5AAU9vQumlUtFnMIhR2P3afh7b3FfsN/bLMlDEXKufv21mqDPLZazpWPPoY
-         DcYg==
-X-Gm-Message-State: ABy/qLYIGuH4WvjR0y5ERIorQoZm/2BIRdqDm9v1EfYtmKZtDDEyEvOx
-        GYYrkVGqXqFe5kREDt6djDiYJXzi14k+5TTJ9HeQjNNgEiP++wDwudgKbDRN4CVV26+1HaTT9Is
-        P1R4Vp+BWND7uiS0Gn1jOKace1SHCj4fWXp4Fmx+W
-X-Received: by 2002:a2e:740c:0:b0:2b6:df15:f6c3 with SMTP id p12-20020a2e740c000000b002b6df15f6c3mr421211ljc.39.1690337404997;
-        Tue, 25 Jul 2023 19:10:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH5n0NZmMcxmIedZTS/miupPMCrGyzDqyGwVRWakUfxzh5EJlfkOl2hIJP2qoGZ5X8BPBLEKYFInjxlohQV8V4=
-X-Received: by 2002:a2e:740c:0:b0:2b6:df15:f6c3 with SMTP id
- p12-20020a2e740c000000b002b6df15f6c3mr421200ljc.39.1690337404691; Tue, 25 Jul
- 2023 19:10:04 -0700 (PDT)
+        Tue, 25 Jul 2023 22:14:01 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A5912E;
+        Tue, 25 Jul 2023 19:13:59 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PJIXXU020077;
+        Wed, 26 Jul 2023 02:13:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=EBRGOUiVAVAMfYbG0jXDZFECVVJqqII476paP4DXAow=;
+ b=K1+1Y1/AcZggcIwJ5I9vGuBuyFW6GSCi6o5RcZ0sCSI160yg7cikR67iMouP+E2tjq9B
+ A+7kaT1bJ4gcVol6HbpNOWN9rpb6Jtv921qwhZrJvEoalKHqn4RS6oPt8/hyRYs4V+Gl
+ D2JqDvJamy+hHFFLvm51Ass8/UJIP2mlgva/O7oOyHM18CcteDqeaTZA9Rshcz5Io0X0
+ h/j+4inufGU/nLv3/gJDR0w/f4HgchFs/3MMSWoV4UXmeyAlEmAhjyzSXcvbgd2Tt4o6
+ hhKL/cMRL8919AfBu9Iar+P8CRbSEItt5hg8miXWTmMUOMX9U4YxpA7Ru699mosFYAVs sw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s05hdxdxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jul 2023 02:13:45 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q0FLYe033436;
+        Wed, 26 Jul 2023 02:13:44 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s05jbum2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jul 2023 02:13:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UfOi9EqNGxTUuQkGcxkN8wQ8BkHheYvc1ekPmHEIAzZvn3YvAffSL6y4hKlZbSWjb12FkElOmcvQPtH51CaMSS2dKYH3nExTGqPLVP5bcvl3VRMXcKDaRTxjzBB/Tjw4bQNpr1nKR5JTqE+nfP1AlTwubtLtayu+un4z/QvTQEDA7rA+bk2ZIfgKl+j4/26oZWG7B94MUbl7+8eY2bx+I449Qq9XzghUAhysGx4GKbi36qsDdnP/xXQ+0V4rUL81qLKFXgKVChVutA6H/Yq9eOIbJV6HS+7x6Omk/V/81eei5LsCDddDCrc2LN2AsxGI6KVs99l9XsKDq5836pN35w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EBRGOUiVAVAMfYbG0jXDZFECVVJqqII476paP4DXAow=;
+ b=AJrSxaG+ccy4GlkNWnIkFIUEaRVxKE9I7qJLHnJCnJA9asjoUlhTjRgIRsiYMcQfiByejuGb1ZWRRaczICrA5uij4qoo+2Dkk9c+gFPNCTAWhVUmE3jiSQQzI4Pp6F8lUaot1JTZVTXJd05eo8WKmeWXfV4pMJaLlxTNw+/sPZ30VdD+rLvY2dN8pm2V1BC51VrY2hSLdxuB6a0Y4r+zsOBx4YDvjQMf9fY3VzgzOV80KtBdkaha0E0nqzR1a6wEEQZD+BIjsNf0Y2c5kmJpVp+5FdOADWJLjHiFlpO/LkmmDtAYtLp9Q9BT26lIT61dXZNxuLACMywSN9QZnzUaMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBRGOUiVAVAMfYbG0jXDZFECVVJqqII476paP4DXAow=;
+ b=JIlsoh65r4MZkDeMgJbV6ETxawwzfTONmWYEhDf3VK8zOuX3ooIfCXkeMrDBYrT2+53kNDOtwlqTAXyJC/Ks21LU0+KrVeemc4CZLGWIocWIxFRRC+GzBNXb4KmwK2mneNX40w4QjJW0pq/2C8ilbJ/7PQQmPMj82K13x5ch6ZY=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SJ0PR10MB4590.namprd10.prod.outlook.com (2603:10b6:a03:2d1::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
+ 2023 02:13:42 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2dff:95b6:e767:d012]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2dff:95b6:e767:d012%4]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 02:13:42 +0000
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Can Guo <quic_cang@quicinc.com>,
+        Ziqi Chen <quic_ziqichen@quicinc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the scsi-mkp tree
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1fs5bxvwt.fsf@ca-mkp.ca.oracle.com>
+References: <20230724140454.71047ed4@canb.auug.org.au>
+Date:   Tue, 25 Jul 2023 22:13:40 -0400
+In-Reply-To: <20230724140454.71047ed4@canb.auug.org.au> (Stephen Rothwell's
+        message of "Mon, 24 Jul 2023 14:04:54 +1000")
+Content-Type: text/plain
+X-ClientProxiedBy: SA1P222CA0077.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:2c1::24) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20230725155403.796-1-andrew.kanner@gmail.com>
-In-Reply-To: <20230725155403.796-1-andrew.kanner@gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 26 Jul 2023 10:09:53 +0800
-Message-ID: <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
-Subject: Re: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp
- size limits
-To:     Andrew Kanner <andrew.kanner@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org, brouer@redhat.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SJ0PR10MB4590:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67643db8-bfca-4809-b42b-08db8d7def19
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aY+lQE1PXLJM22kcJBdvESmn+b3R13BrPbTIWSVdNUf71MsSys27YlLRY5WjILTlunks+Ak2UawDDZXX05thvVup/DcmLqU64yfONEdsGB/sku+9ZwJwY1jjE0qRvoxyC/YXF+ZdwrwWt0RTGo96YhneRZGG5Qhv8c9/Kb2sdEaS4Rb9vJUO8gbqtNerOybO2jN/u5pdU4HjdOvMvI4dTYUG6PubczugdWCPk/AkF28/tSR7GX43Pk3cWarfz2GWkKEHVi2CL3JUa7v3k+hGZgJxo4f/XqA5oCrK4OGkwqnphpVkJJzC/PTzNdPD0ZNsWy9kwqG42aP8GHSLCQmZllkmu2naolCy8j4RqRCkpYM/9CkmCfoU6gDd0LOOESQOg978UrxPnh5JSF6utJQOsL0GXSwlus/0t+ta5h3NO2BG89YENyyZ/AtoAry16bj0ttXgAFsq0//4YOUZj2Yvq7lWckgT4v+6KNjDlTqUGmEdUacsMYqSbLUeHVksWziGfX/l0XHzw5NcXQ0wRvsOpw2B6xFayNF4maz7Pz2XyZ8Bl/2pPSiWH4Rv/ZfByC9m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(136003)(346002)(366004)(396003)(451199021)(41300700001)(4744005)(2906002)(316002)(8676002)(5660300002)(8936002)(86362001)(54906003)(478600001)(26005)(6506007)(186003)(6512007)(36916002)(6486002)(38100700002)(66476007)(66946007)(66556008)(6916009)(4326008)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XOjJtoSRNhQGVmKetc169RCqn4HPwyZRTB/c540z2uuVt0E8MkXtsnvXDhdt?=
+ =?us-ascii?Q?wDX9XQyPS9YewXuWDqx52LkoQMeYDNFJfJkwo1pxtIsGeZIo0yW8E27vLvQm?=
+ =?us-ascii?Q?67UuWH5EV09kzikjodCkKURmvONxaI7Vo7m7lhrrkVFevf9G3b6n28b1lqpq?=
+ =?us-ascii?Q?JLmbTB00ilFCYSha1VRfUjCrhWRmVBtGciod1t9ZiphATqLoY3pmxpWhF3O9?=
+ =?us-ascii?Q?TARaYed7vEQg8JApuB1WxjqckuF75PxShV5JVxUkL9k2YZf5+GdJulRfptjh?=
+ =?us-ascii?Q?9+tsHSuXiATjo5RkHGAbPIR1z2NCyInEL6gkwi3WsOvhOO5PwtX4OjD1VCmp?=
+ =?us-ascii?Q?H58dFbO1ZsRYWePyxKijLUca+CL3JEJTXncehpQf9XyZ+xmB5GHBUBpMnVvS?=
+ =?us-ascii?Q?od+9csyQ8HGH5KkuRmjilW6FTp/7AjcJVQCyS7tgECMkKAm0JFg2T9CPUXe3?=
+ =?us-ascii?Q?Pzi/ad3L0ig2o11ZAeQR46Dnbdqy3NGU+HF9waLdFc2vQm/VviO46uT2idje?=
+ =?us-ascii?Q?IGeUzQuovoux0KCGbomR+91isNJuVft1rxMb9FDcez2CnKoML+SGrycyIs+o?=
+ =?us-ascii?Q?hLT2Yu9u/o39nNpJpmB6P+PrqwyoP6upNuhgopPy90ejPgMnPtMd/rzY9F6e?=
+ =?us-ascii?Q?5xDGb5hqt0J7wFSK9mSd81fipVuTH42wlB/F7dcMjBJa7Yn6bWluABWkiikr?=
+ =?us-ascii?Q?R3sRMbIqB23yf3EFW4Mpk00iaXitC8pkq9EDPJXvnU3kvN465i16NGKKl2jF?=
+ =?us-ascii?Q?293eg+GLE+fFybepxTXhZIcRrR8FOdCLsHruIUAjMKtfUOaDv7mc1SvAIR5U?=
+ =?us-ascii?Q?SQIIdlZeYDOiaDKucjmuScYRE/BVH2pvkpuYbani/hp7gTMW78tOBNyuaBZW?=
+ =?us-ascii?Q?k82gTAFV1p6opNuvpNMaNLMWahmDjIjjdMZpNOzl03m3FEvXzmldfDfe2IWe?=
+ =?us-ascii?Q?la3amaPIZT8rVRMAn6wFq9fRcmcaYZbD8KY57gwFalYUW5M7CPhn0A20HMJU?=
+ =?us-ascii?Q?KjjDMktmRjuqKpqEeN2KcRlJQayYfTf8EErFhcX5+PXO361mqLwSOaz9sl2E?=
+ =?us-ascii?Q?0E3jk3CPbCIx9N/9/skYnm6gTtR4wInsdg6arjldTSgNJbHRt1UuMYEnVAD0?=
+ =?us-ascii?Q?5r7bKuLYh0/HXsnYHcu+r0rrDSUtZRkqIMNnNA8qsVIwi0Fvglqry+B6SSFQ?=
+ =?us-ascii?Q?8t3vbNIqzziDnnut4lJvuwvnVtChxEUkV/7yhxF9Eog7Q077KKwdpUPY2/PI?=
+ =?us-ascii?Q?tSV2SzpsWkt3YXKovfXPZw+1LZARV5bFuoNm9sRBBAA01fVcVTPDc4aamWlP?=
+ =?us-ascii?Q?pM8etUeNgGJZkL9Dr0++cW/IGPjubckhg3IehULWbhED4tKgZ3AYELFqRAtq?=
+ =?us-ascii?Q?6WlTy9mM+EPmmwghTtaHAPBl/I0Le3zTIuhOw7XrMZ8tA1fp8Mo9+rwn1p+D?=
+ =?us-ascii?Q?z5SfVYsdKwmFnBE6jXV6oZzPDHHfL2XfUgfWhmxGq0W/hAlCr2TbXGtQCNtR?=
+ =?us-ascii?Q?bDBOWPxRxhZpaXd4HD6mRQL7sNcCfLxcHncSbeJFbN5DC0nS9rqJyTt0Nuw4?=
+ =?us-ascii?Q?puuF5ov2BUF5qw4nkkq9zHMLnVIGQOZec8FbmIalg5SQ0cN3LsrPlGBZkBUW?=
+ =?us-ascii?Q?Fg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: JLPPJWi8GgU1byXwhVSuiFRv+bGuvYhTErL6/7WeVLUYa+fKWER9EfECNx6d69iVw3+S6z/t5fNXQsX7gTpB3T3e4Lhmt534akqSCUn5wv8RmRj7kdTjxSIalgN4PE4s67KwfYfdm5o12p3KtiVjBL8jutke55zozb1EoOoousIB9YO9FhBVphycKEghqiEizwkwFYrZaR7gtHmWVqSPZXx04fZCH6aJxBpSA+n6lMHisVad8Ekc/viFqJb79IRJKiiYhAstrjDC3OGRIIm2h05Yq9yyfu35HVg8jBXqV03GRFSdFElZ+6y4XmWxRtsCCL9MC8aFScAe20vt6KZkbKOsPc1ekOei5XCE7KOy8YK+ruSxfjXELV4Grm3uijcyS7P8vG2UvRApCkS1SoMpCLWc8VxfZHIwJR/YLrwX0bux2VlLUB7BuHLpowMMV476Hj1giegbTfjvh+w0+DQVMdoaYt2D8Bn9quLrzhhBdSg8xBOpI/b0ABxVoynM0/z4sXh5pYmd8FnxPMUkeoenD+MYVQzp5NienbjbG396ZqbZI0N/BcGl7GTe7CpvZyYJuo1XWnhHxn96mIWARNfEMy+ZdgM6doU+EzNku5klyFlacIzlSn/C5OR3XZH3i6iUNcqr4AodGTYbwdjx9dQ7DpL8RP8dNrwwKdwjlkpMjogFapr2d3DdRWcQxEiN8hKIsqX/C/GtdD4tkgJawnPi98iYa8CP1U7fqotMGarOLdG9kzA8hSUehN9ptmmTa5nmq6QeiImxQS2ihFFOcAyxt/pIEfz+FR2xgSFAENE3jCSci+Etxvlq8Barh1OHX1q8xFE/nuHaIBBJa5A0w/DsSQ==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67643db8-bfca-4809-b42b-08db8d7def19
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 02:13:42.7477
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rUgpBHt0hW51YWnQRnkGS0k5vsa7BHQeHu5MHoOQ3hxRV8XfGsaTqPOdEVIsddrvJakd8epGVeH/2LKeSc4127q2OQ+QR+KX7YZpEnPZquw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4590
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307260017
+X-Proofpoint-ORIG-GUID: CO-NUDwVQ1dmHkQ9bR3tiw5mIC6Vcz9W
+X-Proofpoint-GUID: CO-NUDwVQ1dmHkQ9bR3tiw5mIC6Vcz9W
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:54=E2=80=AFPM Andrew Kanner <andrew.kanner@gmail=
-.com> wrote:
->
-> Syzkaller reported the following issue:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Too BIG xdp->frame_sz =3D 131072
-> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
->   ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
-> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
->   bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
-> ...
-> Call Trace:
->  <TASK>
->  bpf_prog_4add87e5301a4105+0x1a/0x1c
->  __bpf_prog_run include/linux/filter.h:600 [inline]
->  bpf_prog_run_xdp include/linux/filter.h:775 [inline]
->  bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
->  netif_receive_generic_xdp net/core/dev.c:4807 [inline]
->  do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
->  tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
->  tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
->  call_write_iter include/linux/fs.h:1871 [inline]
->  new_sync_write fs/read_write.c:491 [inline]
->  vfs_write+0x650/0xe40 fs/read_write.c:584
->  ksys_write+0x12f/0x250 fs/read_write.c:637
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
-> ("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But
-> tun_get_user() still provides an execution path with do_xdp_generic()
-> and exceed XDP limits for packet size.
->
-> Using the syzkaller repro with reduced packet size it was also
-> discovered that XDP_PACKET_HEADROOM is not checked in
-> tun_can_build_skb(), although pad may be incremented in
-> tun_build_skb().
->
-> If we move the limit check from tun_can_build_skb() to tun_build_skb()
-> we will make xdp to be used only in tun_build_skb(), without falling
-> in tun_alloc_skb(), etc. And moreover we will drop the packet which
-> can't be processed in tun_build_skb().
->
-> Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail=
-.com
-> Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.c=
-om/T/
-> Link: https://syzkaller.appspot.com/bug?id=3D5335c7c62bfff89bbb1c8f14cdab=
-ebe91909060f
-> Fixes: 7df13219d757 ("tun: reserve extra headroom only when XDP is set")
-> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
-> ---
->
-> Notes:
->     V2 -> V3:
->     * attach the forgotten changelog
->     V1 -> V2:
->     * merged 2 patches in 1, fixing both issues: WARN_ON_ONCE with
->       syzkaller repro and missing XDP_PACKET_HEADROOM in pad
->     * changed the title and description of the execution path, suggested
->       by Jason Wang <jasowang@redhat.com>
->     * move the limit check from tun_can_build_skb() to tun_build_skb() to
->       remove duplication and locking issue, and also drop the packet in
->       case of a failed check - noted by Jason Wang <jasowang@redhat.com>
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Stephen,
 
-Thanks
+> After merging the scsi-mkp tree, today's linux-next build (arm64
+> defconfig) produced this warning:
+>
+> drivers/ufs/host/ufs-qcom.c: In function 'ufs_qcom_mcq_esi_handler':
+> drivers/ufs/host/ufs-qcom.c:1652:31: warning: unused variable 'host' [-Wunused-variable]
+>  1652 |         struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>       |                               ^~~~
+>
+> Introduced by commit
+>
+>   8f2b78652d05 ("scsi: ufs: qcom: Get queue ID from MSI index in ESI handler")
 
->
->  drivers/net/tun.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index d75456adc62a..7c2b05ce0421 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1594,10 +1594,6 @@ static bool tun_can_build_skb(struct tun_struct *t=
-un, struct tun_file *tfile,
->         if (zerocopy)
->                 return false;
->
-> -       if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
-> -           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
-> -               return false;
-> -
->         return true;
->  }
->
-> @@ -1673,6 +1669,9 @@ static struct sk_buff *tun_build_skb(struct tun_str=
-uct *tun,
->         buflen +=3D SKB_DATA_ALIGN(len + pad);
->         rcu_read_unlock();
->
-> +       if (buflen > PAGE_SIZE)
-> +               return ERR_PTR(-EFAULT);
-> +
->         alloc_frag->offset =3D ALIGN((u64)alloc_frag->offset, SMP_CACHE_B=
-YTES);
->         if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL=
-)))
->                 return ERR_PTR(-ENOMEM);
-> --
-> 2.39.3
->
+Now fixed up, thanks!
 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
