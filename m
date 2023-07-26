@@ -2,117 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461E27637BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AB37637C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbjGZNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S234089AbjGZNjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbjGZNiM (ORCPT
+        with ESMTP id S231755AbjGZNi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:38:12 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B480F118;
-        Wed, 26 Jul 2023 06:38:11 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QCEbXL029223;
-        Wed, 26 Jul 2023 13:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=xr58Ttl/tZUIt/Rk6PYHYfdDG34LXOshnBUPuif6OfI=;
- b=NSuMPOS7BAsFYtk1ChGXugYPGq7CN+Qyk8bNuhD3EviojnhtvdirdiUohEN9MNcuCQ08
- hnZpdFc18kkQOqIbF/lQLXiv66c1Ih7xRtT1u+AHwajUOEftYHwAB47axL4pHbdE/DLL
- N9uRB4x46KftNGZA0kwJDJ1oiD9En6HYh3RahKtfXgO9ns+C0Y8HSduT4ikgLCiMNDh/
- yZdfixn2zLZlq37A39Z8rJQT0Om2rLpsVzo23lBM4tPQHwqg/jbeSujzvHqGwLzm7ZVS
- 0sS8RiC6j6bAcaIkmMxXiLiDLLNwof2ZrLbGzzW4j13IB2ayrLWkhsSQVE6Mnh2DGu3r qg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2v4tgyvf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 13:38:07 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36QDc6ZI003783
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 13:38:06 GMT
-Received: from [10.50.21.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
- 2023 06:38:03 -0700
-Message-ID: <c0b314db-bd29-7211-2a70-667405eb5bd0@quicinc.com>
-Date:   Wed, 26 Jul 2023 19:08:00 +0530
+        Wed, 26 Jul 2023 09:38:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4C61739
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:38:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690378696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n8Z700vzR7baDs8b/e0kEl1jWEWNlBZFJe5eJ9LWL2M=;
+        b=cYKxX+f5W8GUBF/bVF+A9Se010HvytxlKcOf0y68e2N/F8OE1NI+wt2gjdQl0vBTJD0/jJ
+        IvYIFC5W8AcyrgYfqZSVITssoEt8EswqUuIJtuDadQcAspDSCa/l3q2cOS4WuXSN+cv080
+        TIGaEi5PrzUzo3ZsEOHyLEVblg/pJlo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-570-n9PMkH6JMPWruumNVNZWOQ-1; Wed, 26 Jul 2023 09:38:15 -0400
+X-MC-Unique: n9PMkH6JMPWruumNVNZWOQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3172a94b274so3361205f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690378694; x=1690983494;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n8Z700vzR7baDs8b/e0kEl1jWEWNlBZFJe5eJ9LWL2M=;
+        b=jtksZEyfaBjZPh6Uybfr0O6Y2qtff1NJez0hDdEVChTN1MMb7rhTRg8Qj8teLXAJnA
+         u14Scd4P/cadfyTwAnGrzSjMKpFGO8cCt1lU1/XGImj86HTG7r+c3cJ6Us8CxNjCywbf
+         GM4LPXQAbKgujnimv9e72l9mon0hxkjhquPTDyGnDOPAyxeSf9UNClIH6jzPobj2BQRi
+         XOdaVhIFrOrnd1F+vLqug6RriSeYr0hS0v/2QnKs9tSVZS5+gs5dm4uXNWgX9jJzRG+T
+         QbrIpyKdXrceeaJtvfrchw1F6ACzgeiBq966CxJNydQ4brpHMnfE+/M70Q4OFaRsNjcD
+         W0pA==
+X-Gm-Message-State: ABy/qLaRcY+qLsWlFptTRPKJ64jJmhm2J6cEAtAEAYZGiJX3bwhYaQcE
+        ZWsspz5iWoup6YvTwY07h/+ve5YJy8RTDLRT3yFEUxQF5+hyDPSafwpxITxbcRqJJbwN3J5iL1g
+        G5gAr5SLUuVRPwxQdktGlxBEq
+X-Received: by 2002:a5d:468b:0:b0:317:59c8:17bc with SMTP id u11-20020a5d468b000000b0031759c817bcmr1262943wrq.15.1690378694086;
+        Wed, 26 Jul 2023 06:38:14 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFW6fWGnz4rPcAEd3A5rxFde+FjwCaa7dB2oKhB0S6J5Gte5BzfN0mtzCoUlg3SX0ZdBK9MJw==
+X-Received: by 2002:a5d:468b:0:b0:317:59c8:17bc with SMTP id u11-20020a5d468b000000b0031759c817bcmr1262918wrq.15.1690378693599;
+        Wed, 26 Jul 2023 06:38:13 -0700 (PDT)
+Received: from [192.168.3.108] (p5b0c6c57.dip0.t-ipconnect.de. [91.12.108.87])
+        by smtp.gmail.com with ESMTPSA id k11-20020adfd84b000000b0031773e3cf46sm2867991wrl.61.2023.07.26.06.38.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 06:38:13 -0700 (PDT)
+Message-ID: <416eca24-6baf-69d9-21a2-c434a9744596@redhat.com>
+Date:   Wed, 26 Jul 2023 15:38:11 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH][next] accel/qaic: remove redundant assignment to pointer
- pexec
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Carl Vanderlip <quic_carlv@quicinc.com>,
-        "Oded Gabbay" <ogabbay@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230725114037.36806-1-colin.i.king@gmail.com>
- <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] crypto, cifs: Fix error handling in extract_iter_to_sg()
 Content-Language: en-US
-From:   Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-In-Reply-To: <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: gNn-ja2ju0Xs11dqy647vzHtwKvYu086
-X-Proofpoint-GUID: gNn-ja2ju0Xs11dqy647vzHtwKvYu086
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_06,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 mlxscore=0 bulkscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307260120
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steve French <sfrench@samba.org>
+Cc:     akpm@linux-foundation.org, Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20571.1690369076@warthog.procyon.org.uk>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20571.1690369076@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/26/2023 8:30 AM, Jeffrey Hugo wrote:
-> On 7/25/2023 5:40 AM, Colin Ian King wrote:
->> Pointer pexec is being assigned a value however it is never read. The
->> assignment is redundant and can be removed.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
->> ---
->>   drivers/accel/qaic/qaic_data.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/accel/qaic/qaic_data.c 
->> b/drivers/accel/qaic/qaic_data.c
->> index e9a1cb779b30..8a6cb14f490e 100644
->> --- a/drivers/accel/qaic/qaic_data.c
->> +++ b/drivers/accel/qaic/qaic_data.c
->> @@ -1320,7 +1320,6 @@ static int __qaic_execute_bo_ioctl(struct 
->> drm_device *dev, void *data, struct dr
->>       user_data = u64_to_user_ptr(args->data);
->>       exec = kcalloc(args->hdr.count, size, GFP_KERNEL);
->> -    pexec = (struct qaic_partial_execute_entry *)exec;
->>       if (!exec)
->>           return -ENOMEM;
+On 26.07.23 12:57, David Howells wrote:
+>      
+> Fix error handling in extract_iter_to_sg().  Pages need to be unpinned, not
+> put in extract_user_to_sg() when handling IOVEC/UBUF sources.
 > 
-> It does look like pexec is not used in this function after it was 
-> refactored.  Shouldn't the declaration at the beginning of the function 
-> also be removed?
+> The bug may result in a warning like the following:
+> 
+>    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:27 [inline]
+>    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+>    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 raw_atomic_add include/linux/atomic/atomic-arch-fallback.h:537 [inline]
+>    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 atomic_add include/linux/atomic/atomic-instrumented.h:105 [inline]
+>    WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 try_grab_page+0x108/0x160 mm/gup.c:252
+>    ...
+>    pc : try_grab_page+0x108/0x160 mm/gup.c:229
+>    lr : follow_page_pte+0x174/0x3e4 mm/gup.c:651
+>    ...
+>    Call trace:
+>     __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:27 [inline]
+>     arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+>     raw_atomic_add include/linux/atomic/atomic-arch-fallback.h:537 [inline]
+>     atomic_add include/linux/atomic/atomic-instrumented.h:105 [inline]
+>     try_grab_page+0x108/0x160 mm/gup.c:252
+>     follow_pmd_mask mm/gup.c:734 [inline]
+>     follow_pud_mask mm/gup.c:765 [inline]
+>     follow_p4d_mask mm/gup.c:782 [inline]
+>     follow_page_mask+0x12c/0x2e4 mm/gup.c:839
+>     __get_user_pages+0x174/0x30c mm/gup.c:1217
+>     __get_user_pages_locked mm/gup.c:1448 [inline]
+>     __gup_longterm_locked+0x94/0x8f4 mm/gup.c:2142
+>     internal_get_user_pages_fast+0x970/0xb60 mm/gup.c:3140
+>     pin_user_pages_fast+0x4c/0x60 mm/gup.c:3246
+>     iov_iter_extract_user_pages lib/iov_iter.c:1768 [inline]
+>     iov_iter_extract_pages+0xc8/0x54c lib/iov_iter.c:1831
+>     extract_user_to_sg lib/scatterlist.c:1123 [inline]
+>     extract_iter_to_sg lib/scatterlist.c:1349 [inline]
+>     extract_iter_to_sg+0x26c/0x6fc lib/scatterlist.c:1339
+>     hash_sendmsg+0xc0/0x43c crypto/algif_hash.c:117
+>     sock_sendmsg_nosec net/socket.c:725 [inline]
+>     sock_sendmsg+0x54/0x60 net/socket.c:748
+>     ____sys_sendmsg+0x270/0x2ac net/socket.c:2494
+>     ___sys_sendmsg+0x80/0xdc net/socket.c:2548
+>     __sys_sendmsg+0x68/0xc4 net/socket.c:2577
+>     __do_sys_sendmsg net/socket.c:2586 [inline]
+>     __se_sys_sendmsg net/socket.c:2584 [inline]
+>     __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2584
+>     __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+>     invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:52
+>     el0_svc_common.constprop.0+0x44/0xe4 arch/arm64/kernel/syscall.c:142
+>     do_el0_svc+0x38/0xa4 arch/arm64/kernel/syscall.c:191
+>     el0_svc+0x2c/0xb0 arch/arm64/kernel/entry-common.c:647
+>     el0t_64_sync_handler+0xc0/0xc4 arch/arm64/kernel/entry-common.c:665
+>     el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:591
+> 
+> Fixes: 018584697533 ("netfs: Add a function to extract an iterator into a scatterlist")
+> Reported-by: syzbot+9b82859567f2e50c123e@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-mm/000000000000273d0105ff97bf56@google.com/
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Sven Schnelle <svens@linux.ibm.com>
+> cc: akpm@linux-foundation.org
+> cc: Herbert Xu <herbert@gondor.apana.org.au>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: Steve French <sfrench@samba.org>
+> cc: Shyam Prasad N <nspmangalore@gmail.com>
+> cc: Rohith Surabattula <rohiths.msft@gmail.com>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: Herbert Xu <herbert@gondor.apana.org.au>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: Eric Dumazet <edumazet@google.com>
+> cc: Jakub Kicinski <kuba@kernel.org>
+> cc: Paolo Abeni <pabeni@redhat.com>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: linux-mm@kvack.org
+> cc: linux-crypto@vger.kernel.org
+> cc: linux-cachefs@redhat.com
+> cc: linux-cifs@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: netdev@vger.kernel.org
+> ---
+>   lib/scatterlist.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+> index e86231a44c3d..c65566b4dc66 100644
+> --- a/lib/scatterlist.c
+> +++ b/lib/scatterlist.c
+> @@ -1148,7 +1148,7 @@ static ssize_t extract_user_to_sg(struct iov_iter *iter,
+>   
+>   failed:
+>   	while (sgtable->nents > sgtable->orig_nents)
+> -		put_page(sg_page(&sgtable->sgl[--sgtable->nents]));
+> +		unpin_user_page(sg_page(&sgtable->sgl[--sgtable->nents]));
+>   	return res;
+>   }
+>   
+> 
 
-Yeah we should remove the declaration as well. Although it is used some 
-where to calculate its size i.e. sizeof(*pexec). We need to directly use 
-the type in sizeof() i.e. sizeof(struct qaic_partial_execute_entry).
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
