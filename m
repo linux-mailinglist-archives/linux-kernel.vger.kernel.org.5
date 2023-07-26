@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBE676292C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A47B76292F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjGZDSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        id S230486AbjGZDT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjGZDSw (ORCPT
+        with ESMTP id S229489AbjGZDTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:18:52 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5651C121
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:18:51 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba04b9df3so22917475ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690341531; x=1690946331;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+54frm2BF9b0x4h3VLTQtdsqR6hdRnwcDLw7C242SeA=;
-        b=FGGVTLYwPeR+WMnjwMI4toEthyhRuGbvyo0laNbwGyrJG0Rpc76WpioCPzaTOgNkjp
-         oBPVZE33eucPSlzkjVJSs/g06TVbmFgkVHZ+4PeLrOsjBfcdVDgjJsYrHrCIdd0iunPR
-         gNSyLeJ2KuvmbCAQDbUxpamCavfrGexiS+w3Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690341531; x=1690946331;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+54frm2BF9b0x4h3VLTQtdsqR6hdRnwcDLw7C242SeA=;
-        b=iNz+ka9X5FDJaq/lwvd9W7gd3GmaQj8nBlCXOXwp+tILiJKIjvVKb5TCigRxkYkfZP
-         gzfUPMHwKKMJueUeiA/BJCeRZ4JxDoEKqyA/tnLOJAm2wY2xvtvyUR4DA4aC3S7Rhbw3
-         fbxo3TA3LEdS4Jcl9RnIqVQmtL9i6sAgGn+T2DhtnOuoNgZ6a3XByFd869fwnKuq8IEx
-         ieKF2ptbhHT8+UE8Hd0VhDLhdo8sqLkWszmKcxzIHUewGL7Q0puZTYA2BYdLwdSqgip7
-         hkkqTf4cDLXQFlokfazT/oARz7JVuHT31vH5AdkqGFwXw0FB3AWlvKyhhIceazhcwwsM
-         ygSQ==
-X-Gm-Message-State: ABy/qLbCI4eyH3RnInAkTXAW7kqwtazsQ5QBmnUVLsx6/mXJkdhewtex
-        o0cohYqCsDDPrcxp1pUvRK03oA==
-X-Google-Smtp-Source: APBJJlGwD2Cnl6vJMPdr7RWlX1wYQngr8hUuDiRtzOr9laitJN5WR9+Qb8PAnqB/EQPwGUwUOj2fww==
-X-Received: by 2002:a17:902:e744:b0:1b8:3e15:40e8 with SMTP id p4-20020a170902e74400b001b83e1540e8mr919513plf.56.1690341530878;
-        Tue, 25 Jul 2023 20:18:50 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:a2a4:d590:6375:66ba])
-        by smtp.gmail.com with ESMTPSA id p21-20020a170902ead500b001b8af7f632asm4039466pld.176.2023.07.25.20.18.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 20:18:50 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 12:18:46 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Andrew Yang <andrew.yang@mediatek.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        wsd_upstream@mediatek.com, casper.li@mediatek.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] zsmalloc: Fix races between modifications of fullness
- and isolated
-Message-ID: <20230726031846.GJ955071@google.com>
-References: <20230721063705.11455-1-andrew.yang@mediatek.com>
+        Tue, 25 Jul 2023 23:19:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269E8121;
+        Tue, 25 Jul 2023 20:19:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ADC4261193;
+        Wed, 26 Jul 2023 03:19:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA1CC433C8;
+        Wed, 26 Jul 2023 03:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690341594;
+        bh=BltmyiPPQL6jRY2ec5NbwR1NWR52L0x3e86Gyw3VwFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sRLJWeKnY5Prjmq6rcAVuByDIv+Vu2t4hA62N6jiPmR4xRcbYY5hc/8pQvMfPfBqo
+         9yVaIqQt2dCaQ4L41jLXV/MYSNF7z3xNws13KgC5yz6QE1XADxdbn+aW510JW8Pkp8
+         0mwZXCTrF28FkbS3L2VmOV0Q2w0YTMVg6mvLCU/5qET9LlBQohkw0tiu34VicLz73B
+         tQzAcseuNpD7J5VFFMljXkAMkH6Y6zM660NHMFnGvB2NyYThXJ3ByPU6azy1wyV+bd
+         Sr4UhK9K4fIvCGaYQZhVwA2JMf2KTgeoyweTffKH2cP/Ia77ekFwlKZLeM3S19crKB
+         yMHY8vESxt8Nw==
+Date:   Tue, 25 Jul 2023 20:19:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zheng Wang <zyytlz.wz@163.com>
+Cc:     s.shtylyov@omp.ru, lee@kernel.org, linyunsheng@huawei.com,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        richardcochran@gmail.com, p.zabel@pengutronix.de,
+        geert+renesas@glider.be, magnus.damm@gmail.com,
+        yoshihiro.shimoda.uh@renesas.com, biju.das.jz@bp.renesas.com,
+        wsa+renesas@sang-engineering.com, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hackerzheng666@gmail.com, 1395428693sheep@gmail.com,
+        alex000young@gmail.com
+Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
+Message-ID: <20230725201952.2f23bb3b@kernel.org>
+In-Reply-To: <20230725030026.1664873-1-zyytlz.wz@163.com>
+References: <20230725030026.1664873-1-zyytlz.wz@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721063705.11455-1-andrew.yang@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/21 14:37), Andrew Yang wrote:
-> 
-> Since fullness and isolated share the same unsigned int,
-> modifications of them should be protected by the same lock.
-> 
-> Signed-off-by: Andrew Yang <andrew.yang@mediatek.com>
-> Fixes: c4549b871102 ("zsmalloc: remove zspage isolation for migration")
+On Tue, 25 Jul 2023 11:00:26 +0800 Zheng Wang wrote:
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 4d6b3b7d6abb..ce2da5101e51 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2885,6 +2885,9 @@ static int ravb_remove(struct platform_device *pdev)
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	const struct ravb_hw_info *info = priv->info;
+>  
+> +	netif_carrier_off(ndev);
+> +	netif_tx_disable(ndev);
+> +	cancel_work_sync(&priv->work);
 
-Have you observed issues in real life? That commit is more than a year
-and a half old, so I wonder.
-
-> @@ -1858,8 +1860,8 @@ static int zs_page_migrate(struct page *newpage, struct page *page,
->  	 * Since we complete the data copy and set up new zspage structure,
->  	 * it's okay to release the pool's lock.
->  	 */
-
-This comment should be moved too, because this is not where we unlock the
-pool anymore.
-
-> -	spin_unlock(&pool->lock);
->  	dec_zspage_isolation(zspage);
-> +	spin_unlock(&pool->lock);
->  	migrate_write_unlock(zspage);
+Still racy, the carrier can come back up after canceling the work.
+But whatever, this is a non-issue in the first place.
+The fact that ravb_tx_timeout_work doesn't take any locks seems much
+more suspicious.
