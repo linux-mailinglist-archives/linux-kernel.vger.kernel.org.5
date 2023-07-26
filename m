@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E1976423A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 00:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9909876423E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 00:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbjGZWk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 18:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
+        id S230379AbjGZWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 18:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjGZWkZ (ORCPT
+        with ESMTP id S229866AbjGZWnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 18:40:25 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FD42680
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 15:40:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66c729f5618so357438b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 15:40:24 -0700 (PDT)
+        Wed, 26 Jul 2023 18:43:20 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28084270F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 15:43:19 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bbd2761f1bso2468965ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 15:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690411224; x=1691016024;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9caknxSMLJ8/I6yMwEAauRGM8KCY4LpGz9gaodd75Y4=;
-        b=z9E4wYAl7Kbyd0MpW30QeQz71g8gC1KvQPuBLAlk4L7sx45+1e+yocHJ9W5oLLhO36
-         FN3OSyDOAdoEOLn/6d4XHlejXbW0vSu1JFhGFBkeGHsvEAaP5K6+ELq7sLl6WQEkXIEU
-         gpisYolH4vdNjHhmeUFwoGGH1GQQ+eaADPEpMiPf431fMk2khFcowQDrDoOHjEcIBkp9
-         OaOrMnDy3//QThWP9jmzlrnkDA7Y7GAg4pDQ4aLZgy7vgw02IPrqYHwn1to1/dLhMjTi
-         jfhodLf3dzMfCZ215I4dDfuhux2j7dpO5N/kAZQESLod08LD49TTNJCLNJ0clsEy/0Bl
-         k2Hw==
+        d=chromium.org; s=google; t=1690411398; x=1691016198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MaG/2UBeePq8inaENT+NwKjpjU5MiahEk7iN9th9S0Y=;
+        b=ko8WGR+/taNUp8J6OqypMcS4PobhQCefoY9ZnAMyqN+swRHLtYzA3J3I6EFZHH5JLf
+         2ScAKum79L0DXHoNKzy90xTh8rpFYEVm3NZAzExvQsBq6s4uVgOCVHJVgTmMPpxSLI4p
+         6/R7YD7r11qvwTQRy55tAwQB/oLhjaO8JkmQA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690411224; x=1691016024;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9caknxSMLJ8/I6yMwEAauRGM8KCY4LpGz9gaodd75Y4=;
-        b=PbO7kvUVCOF878xB9MQkiPieylZYd32u0B1rnw9PEBRMgdPkQojBRrunF7KsCzvfU6
-         9FK0Ju4R29pZF19PZp2lBijqoSljKs+KtyFBF/HrHK4PeBgWmhayaFnCeyqOGLdVGfnl
-         xJMm+SUHT7jNzVcBGb1JDP8YyaxACP2r0r3aPtcf5229G2Bc3qB7cFZsoDTdyWbyTRBo
-         SOi/0ttA3zy3Z1B7ND1MHqnRdiBYa3/d0ChjoxuIEG7qwHg8O39ivlyuSqtgsswTWXes
-         8JLs7XkVI8a3Izl+ucxHRAQmrhqydaAxPdvQZzRZ5EvP5RL77mrPHrJyTLqwhMigoBjC
-         Sclg==
-X-Gm-Message-State: ABy/qLZo3kHjnstsmy2fc+huo6Kp7z+jjUwzV5uAnv2dtR5YaRY4MOS1
-        o50JxzdgbNlGq9nRemccZeGcEL7OcXSTB7gaF0/+QuQe
-X-Google-Smtp-Source: APBJJlELtzA6yQFjcOkGA+IAseqrN3tDU/89TVRlDOYX3rh6eyHu5Q+Cam0M5MOKnrjt0RfM4YUbDQ==
-X-Received: by 2002:a17:90b:885:b0:268:4142:2ee1 with SMTP id bj5-20020a17090b088500b0026841422ee1mr3073258pjb.11.1690411224265;
-        Wed, 26 Jul 2023 15:40:24 -0700 (PDT)
-Received: from localhost ([75.172.135.98])
-        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00262eccfa29fsm1673297pjb.33.2023.07.26.15.40.23
+        d=1e100.net; s=20221208; t=1690411398; x=1691016198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MaG/2UBeePq8inaENT+NwKjpjU5MiahEk7iN9th9S0Y=;
+        b=mIfB9KnDc9vJQ6q+UcUfmkEe5YwsGHpqScGsfFm7Pm4NU8BN1SM6wBmp2AUI5hF7xN
+         /u/KZHg+aicYFGuZpHIqcHT/rj0VdqS0BSinTeFqmU3/02TEaJ8v1Zr3y/R/nUtlvhHx
+         WG0/d332Jrel/EkDTGN/P8+JnrqALEjUFRUCpvjbWsM2TPYRAWDrJJ4f1PLt2Z0160Dw
+         Iycorq1MhO3ArTZbgOyYrC5r0Fv8I8FqFJ5988Bpp+xzUzvTHFv3K0HbNTvPFKQgHsuM
+         vU93JQTcoTz8wA00eXB2sN9ewcj0TM1zzmmvTeDktFMuJjSgCSVCA/0wKrVn/YHuxhzF
+         sbNA==
+X-Gm-Message-State: ABy/qLbwwRy8kFnCz9I1cRHmsmaKtaz/e2jIxNpsSIfFqOTq8lqgaFVl
+        Li+1qUztVFzveBLycAJJBuiR1Q==
+X-Google-Smtp-Source: APBJJlGmY/8Zc8HCO/n+aNXSXQHmPYUwpxTdy/8NUuT8Ni2Oa94ClFZfeWl7lqC5TYAI00z5wRGgcQ==
+X-Received: by 2002:a17:903:442:b0:1bb:98de:251e with SMTP id iw2-20020a170903044200b001bb98de251emr3120883plb.56.1690411398639;
+        Wed, 26 Jul 2023 15:43:18 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n15-20020a170902d2cf00b001b54a88e6adsm39153plc.309.2023.07.26.15.43.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 15:40:23 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>
-Subject: Re: [PATCH V2 3/4] soc: c3: Add support for power domains controller
-In-Reply-To: <20230707003710.2667989-4-xianwei.zhao@amlogic.com>
-References: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
- <20230707003710.2667989-4-xianwei.zhao@amlogic.com>
-Date:   Wed, 26 Jul 2023 15:40:23 -0700
-Message-ID: <7ha5vii9ew.fsf@baylibre.com>
+        Wed, 26 Jul 2023 15:43:18 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 15:43:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Petr Mladek <pmladek@suse.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH] [v3] kallsyms: rework symbol lookup return codes
+Message-ID: <202307261536.797610DC@keescook>
+References: <20230726141333.3992790-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726141333.3992790-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xianwei Zhao <xianwei.zhao@amlogic.com> writes:
+On Wed, Jul 26, 2023 at 04:12:23PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Building with W=1 in some configurations produces a false positive
+> warning for kallsyms:
+> 
+> kernel/kallsyms.c: In function '__sprint_symbol.isra':
+> kernel/kallsyms.c:503:17: error: 'strcpy' source argument is the same as destination [-Werror=restrict]
+>   503 |                 strcpy(buffer, name);
+>       |                 ^~~~~~~~~~~~~~~~~~~~
+> 
+> This originally showed up while building with -O3, but later started
+> happening in other configurations as well, depending on inlining
+> decisions. The underlying issue is that the local 'name' variable is
+> always initialized to the be the same as 'buffer' in the called functions
+> that fill the buffer, which gcc notices while inlining, though it could
+> see that the address check always skips the copy.
+> 
+> The calling conventions here are rather unusual, as all of the internal
+> lookup functions (bpf_address_lookup, ftrace_mod_address_lookup,
+> ftrace_func_address_lookup, module_address_lookup and
+> kallsyms_lookup_buildid) already use the provided buffer and either return
+> the address of that buffer to indicate success, or NULL for failure,
+> but the callers are written to also expect an arbitrary other buffer
+> to be returned.
+> 
+> Rework the calling conventions to return the length of the filled buffer
+> instead of its address, which is simpler and easier to follow as well
+> as avoiding the warning. Leave only the kallsyms_lookup() calling conventions
+> unchanged, since that is called from 16 different functions and
+> adapting this would be a much bigger change.
+> 
+> Link: https://lore.kernel.org/all/20200107214042.855757-1-arnd@arndb.de/
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v3: use strscpy() instead of strlcpy()
 
-> Add support for C3 Power controller. C3 power control
-> registers are in secure domain, and should be accessed by SMC.
->
-> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
-> ---
-> V1 -> V2: Fixed some formatting.
-> ---
->  drivers/soc/amlogic/meson-secure-pwrc.c | 26 +++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/drivers/soc/amlogic/meson-secure-pwrc.c b/drivers/soc/amlogic/meson-secure-pwrc.c
-> index c11d65a3e3d9..a1ffebf70de3 100644
-> --- a/drivers/soc/amlogic/meson-secure-pwrc.c
-> +++ b/drivers/soc/amlogic/meson-secure-pwrc.c
-> @@ -11,6 +11,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_domain.h>
->  #include <dt-bindings/power/meson-a1-power.h>
-> +#include <dt-bindings/power/amlogic,c3-pwrc.h>
->  #include <dt-bindings/power/meson-s4-power.h>
->  #include <linux/arm-smccc.h>
->  #include <linux/firmware/meson/meson_sm.h>
-> @@ -120,6 +121,22 @@ static struct meson_secure_pwrc_domain_desc a1_pwrc_domains[] = {
->  	SEC_PD(RSA,	0),
->  };
+Thank you! :) (Though see my notes below...)
+
+> [...]
+> @@ -344,13 +345,12 @@ const char *module_address_lookup(unsigned long addr,
+>  #endif
+>  		}
 >  
-> +static struct meson_secure_pwrc_domain_desc c3_pwrc_domains[] = {
-> +	SEC_PD(C3_NNA,	0),
-> +	SEC_PD(C3_AUDIO,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_SDIOA,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_EMMC,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_USB_COMB, GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_SDCARD,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_ETH,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_GE2D,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_CVE,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_GDC_WRAP,	GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_ISP_TOP,		GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_MIPI_ISP_WRAP, GENPD_FLAG_ALWAYS_ON),
-> +	SEC_PD(C3_VCODEC,	0),
-> +};
+> -		ret = find_kallsyms_symbol(mod, addr, size, offset);
+> -	}
+> -	/* Make a copy in here where it's safe */
+> -	if (ret) {
+> -		strncpy(namebuf, ret, KSYM_NAME_LEN - 1);
 
-All of these domains being hard-coded to ALWAYS_ON looks suspicious, and
-can also be an indicator that the drivers for these domains are not
-(properly) using runtime PM, or not connected to the correct domains the DT.
+This -1 was to keep the buffer NUL-terminated.
 
-Similar to the tables for s4 and a1 in this same file, please describe
-the reason that each of these domains needs to be hard coded to be
-always on.
+> -		ret = namebuf;
+> +		sym = find_kallsyms_symbol(mod, addr, size, offset);
+> +
+> +		if (sym)
+> +			ret = strscpy(namebuf, sym, KSYM_NAME_LEN - 1);
 
-Thanks,
+This strscpy should use KSYM_NAME_LEN without the "- 1".
 
-Kevin
+>  	}
+> +
+>  	preempt_enable();
+>  
+
+-Kees
+
+-- 
+Kees Cook
