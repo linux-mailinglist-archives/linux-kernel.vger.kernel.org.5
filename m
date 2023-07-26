@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9D7763E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B81763E05
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjGZR6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        id S230296AbjGZSAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbjGZR6m (ORCPT
+        with ESMTP id S229801AbjGZSAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:58:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD302688;
-        Wed, 26 Jul 2023 10:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YPmagiFQ/MeFHRjwmSRL0hWWXD4WhK730BMoQ57Tcfs=; b=kixqBCkSocxZEhHc2Sl4YQ3j/W
-        6MHhYsaeGcAEFz3Ikfkl0tpJZeVVuCe/BiTxlYG3dJ8HcvJ/T2vdQAQ5gIBhR2n6UhgaBfMrG4PI3
-        Z5Id/jv1a75gsjOtDXpt/LD7O15Touqa7NqiEPt/l8zBxXGlzsYO+bCoXjnUd4LyKsNR8uZGhhZRg
-        +OyiKfgZbY7fbFXMfGEJdwxH3fx8IGSflQLhVMJDAioTezH4kPOYHszoYxlRVTrC6/MqPhn7X667m
-        QRhIOcxcm6QRQ5XuiNwXgc2BldKLdF/obVnyC8UpbIg6DWBIlRNSJNh4WSktu5vL21AXLcVy8pPM7
-        x0bCwxMw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOimM-00BE8R-2H;
-        Wed, 26 Jul 2023 17:58:30 +0000
-Date:   Wed, 26 Jul 2023 10:58:30 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, willy@infradead.org,
-        josh@joshtriplett.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 06/14] sysctl: Add size to register_sysctl
-Message-ID: <ZMFexmOcfyORkRRs@bombadil.infradead.org>
-References: <20230726140635.2059334-1-j.granados@samsung.com>
- <CGME20230726140659eucas1p2c3cd9f57dd13c71ddeb78d2480587e72@eucas1p2.samsung.com>
- <20230726140635.2059334-7-j.granados@samsung.com>
+        Wed, 26 Jul 2023 14:00:03 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827A3212F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:00:01 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99454855de1so1023253866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690394399; x=1690999199;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bGK72/2uFFAFURzSmoidnNrT7qXYHkSsD+/Ej2DNnKc=;
+        b=U5lXIfUUGy5e/4L7t9jOX9ORyZWME7szPi9/JKMXUJwaj9/BvVhJA8vwZL09B9v85B
+         2CHK7NsPryrMaAlMhOvM4WkmaEDQbO0cabecWvCRmdsDz8qgtrq1y2XXOKzwYknbEBH+
+         x7+MNQ7j8rVSeJnd/vsdU6wNuqwejo2xLQGK0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690394399; x=1690999199;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bGK72/2uFFAFURzSmoidnNrT7qXYHkSsD+/Ej2DNnKc=;
+        b=E1tmPHglVRu3EirlKpKa1eI+zqxIDlS4HhYC4DtPsfdGrIoJM24Dk/jI2zThDjBlzS
+         Ope2V1Tl/nX9XkYdPd8m+Tko6Tl5clitrW1jGsBUn9ZoowBiCvF6MlW0UCDDTz5grZjf
+         X2+G5+WVSX5vrm9NpZ+uGTh1Q6jRAHUh4xF2lj1iALLd18lTriFECMO4qKyEY4PbKqnP
+         SywCkgiKoTbHttwrjDRKMZxiqap2QL+uRzf3H1xHrNkPA6UTVc5T8Q+DYpicgWraKm65
+         sdeOJj4YdajY+805BQWcjZE256JCYvaACoXp4rdMIvYeVC0OfXacqrnkkDm1oTY7xUkM
+         dVMQ==
+X-Gm-Message-State: ABy/qLa8iaE5tdcd01277aSL8csfY9Aph2bLlMOResN1kUxTjoe3+WSm
+        mrFGnYGemytduJIybzdNTKc48mb1nJaVYCpS/9nNjeEu
+X-Google-Smtp-Source: APBJJlFHex4hFOIOOvEV5EqmdGAS3Qi8OfCPydg9+t9KvNVepr7aD+zO309vkr0LfyN7YfEdG2e2lA==
+X-Received: by 2002:a17:906:8251:b0:99b:5ba6:f2cf with SMTP id f17-20020a170906825100b0099b5ba6f2cfmr2395086ejx.26.1690394399697;
+        Wed, 26 Jul 2023 10:59:59 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id se13-20020a170906ce4d00b0099bce4ae3bfsm613885ejb.48.2023.07.26.10.59.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 10:59:58 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5227e5d9d96so50894a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:59:58 -0700 (PDT)
+X-Received: by 2002:a05:6402:683:b0:522:2b76:1985 with SMTP id
+ f3-20020a056402068300b005222b761985mr2046463edy.2.1690394398336; Wed, 26 Jul
+ 2023 10:59:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726140635.2059334-7-j.granados@samsung.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <8d063a26-43f5-0bb7-3203-c6a04dc159f8@proxmox.com>
+ <CAHk-=whKBx_UUKagfyF72EJrpqNCupF4yeoPgapjEBe1bynGcw@mail.gmail.com> <cc502fe7-716b-8114-c9e6-439e3b9cf0f6@proxmox.com>
+In-Reply-To: <cc502fe7-716b-8114-c9e6-439e3b9cf0f6@proxmox.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 26 Jul 2023 10:59:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wivat-bcWsGnQOd3=ODx0zFnc7R82tiee=fSU+DF4tD5g@mail.gmail.com>
+Message-ID: <CAHk-=wivat-bcWsGnQOd3=ODx0zFnc7R82tiee=fSU+DF4tD5g@mail.gmail.com>
+Subject: Re: segfaults of processes while being killed after commit "mm: make
+ the page fault mmap locking killable"
+To:     Fiona Ebner <f.ebner@proxmox.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, akpm@linux-foundation.org,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Wolfgang Bumiller <w.bumiller@proxmox.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:06:26PM +0200, Joel Granados wrote:
-> In order to remove the end element from the ctl_table struct arrays, we
-> replace the register_syctl function with a macro that will add the
-> ARRAY_SIZE to the new register_sysctl_sz function. In this way the
-> callers that are already using an array of ctl_table structs do not have
-> to change. We *do* change the callers that pass the ctl_table array as a
-> pointer.
+On Wed, 26 Jul 2023 at 01:19, Fiona Ebner <f.ebner@proxmox.com> wrote:
+>
+> Checking the status from waitpid, it does show that the process was
+> terminated by signal 9, even if the segfault was logged.
 
-Thanks for doing this and this series!
+Thanks for verifying. That's what I thought, and I had just entirely
+forgotten about the logging of failed page faults.
 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index 0495c858989f..b1168ae281c9 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -215,6 +215,9 @@ struct ctl_path {
->  	const char *procname;
->  };
->  
-> +#define register_sysctl(path, table)	\
-> +	register_sysctl_sz(path, table, ARRAY_SIZE(table))
-> +
->  #ifdef CONFIG_SYSCTL
+This whole "fatal signals during IO can also cause a failed page
+fault" has been true for a long long time, but because it's done later
+by the actual VM code, there we actually end up going through
+"fault_signal_pending()" and suppressing the logging of the page fault
+failure that way.
 
-Wasn't it Greg who had suggested this? Maybe add Suggested-by with him
-on it.
+> > But before we revert it, would you mind trying out the attached
+> > trivial patch instead?
+>
+> The patch works for me too :) (after adding the missing tsk argument
+> like Thomas pointed out)
 
-Also, your cover letter and first few patches are not CC'd to the netdev
-list or others. What you want to do is collect all the email addresses
-for this small patch series and add them to who you email for your
-entire series, otherwise at times they won't be able to properly review
-or understand the exact context of the changes. You want folks to do less
-work to review, not more.
+So it turns out that not only did I forget the argument, I decided
+that I put that test for fatal signals in the wrong place.
 
-So please resend and add others to the other patches.
+The patch obviously does fix the problem on x86, and we could do the
+same thing for all the other architectures that do this signal
+logging.
 
-  Luis
+But there's actually a much better place to put the fatal signal
+check, which will take care of all architectures: just do it in the
+'unhandled_signal()' function.
+
+So I fixed the missing argument, and moved the test to a different
+place, but I still added your (and Thomas') "Tested-by:" even if you
+ended up testing something that was a bit different.
+
+Oleg, I took your Acked-by too. Despite the final patch being somewhat
+different. Holler if you see something objectionable.
+
+It's commit 5f0bc0b042fc ("mm: suppress mm fault logging if fatal
+signal already pending") in my tree now.
+
+And because it's a bit different from what you already tested, it
+would be lovely to just get a confirmation that I didn't screw
+anything up when I decided I needed to make a fix that covers more
+than just x86.
+
+Thanks,
+                     Linus
