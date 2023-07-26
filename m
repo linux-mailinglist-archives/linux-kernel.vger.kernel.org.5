@@ -2,122 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E53A7635E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8927635EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjGZMMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S233175AbjGZMNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbjGZMMv (ORCPT
+        with ESMTP id S233804AbjGZMNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:12:51 -0400
+        Wed, 26 Jul 2023 08:13:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF2D10F6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:12:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B0D1739;
+        Wed, 26 Jul 2023 05:12:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59B4561ACC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:12:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3B2C433C7;
-        Wed, 26 Jul 2023 12:12:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CC1A61ACC;
+        Wed, 26 Jul 2023 12:12:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73356C433C8;
+        Wed, 26 Jul 2023 12:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690373569;
-        bh=wrRT7NFd9Bvr4h7xBlJXhSHiN/+ljJthxlmIl+sdp2k=;
-        h=From:Date:Subject:To:Cc:From;
-        b=grI3BXVfYuZj5jhxCge8NKby94n2FQl3YTK24XIbikbudu53Q4eYR14zRZbcXd34B
-         84nHSdlLomsuo6wD+OTYdlc2V56iGiQiBjQWuRgd0s/K/oHn5UFDTTUROW0mFMCsNG
-         G5YIz/9YeK81A7z2JX6DhPBkrQcD1XqV/vVBRGf2Hju0FkbP5+zlctqAoHT07mUY+m
-         ME0lTHj0C4tqJ+eWKw5bxXAWr7Z3pu7JYTj/0Tjz5XwzHrLtj+pJlKDXDjk7RkKzl2
-         AtgK1DUvs2IQg10ck/uGiLWJV+7iQc+LpKoW4sqwzW+ccmUS9fB1Y7aW76FNwvbi8U
-         ldVTMRIf5GPcw==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Wed, 26 Jul 2023 13:12:26 +0100
-Subject: [PATCH] arm64/sme: Set new vector length before reallocating
-MIME-Version: 1.0
+        s=k20201202; t=1690373578;
+        bh=Ke8AONnAOWupVgvu9a1rrtccA5xWjVMePJQxM8Ht3Kc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=gYrqFr8wvj2MJmmwmwf8M6I8rekTV9+bxmW2rqLD55Qm7Z/X+3fqo2oPfopkxdlCi
+         n241AQBCMxM7eFrih3i3Sbv5AKj0bq28ozziIAExFd7E/RXMMNS1aKn+yJARtnBmU4
+         FfN14X79faCpLGre6x+vnvwoxjIsG/L/ooLw+V13rcjVx7tIPmq/1O2zG9aawBpzTf
+         uhcvPI4MEqZ0fNFaHRBAISQWggi8tN88wV4MzFoUqwVN0pOsQ3BgyiTak4/MrtL+0t
+         6GpQd+/9rUTZVGi45edSMIe9j4qSBoulHPW7gK71wysfs2CSJoMHtELswVidt7IBP2
+         x+DypAIC/tqTg==
+Received: (nullmailer pid 1182938 invoked by uid 1000);
+        Wed, 26 Jul 2023 12:12:54 -0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230726-arm64-fix-sme-fix-v1-1-7752ec58af27@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAKkNwWQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyMz3cSiXDMT3bTMCt3i3FQwnWJgZGJmaGxqkGpgpgTUV1CUChQGmxk
- dW1sLANpoOjBjAAAA
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1953; i=broonie@kernel.org;
- h=from:subject:message-id; bh=wrRT7NFd9Bvr4h7xBlJXhSHiN/+ljJthxlmIl+sdp2k=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkwQ28nT3oB11vx/d16fqseVTVUqaRsgrKAtmNy
- 7sVPEzG89eJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMENvAAKCRAk1otyXVSH
- 0I6iCACDyTJUice6NN3V4UbafqIBKJvRShR9TOXwtyNBAMs9qbt8MFZmV55YzspCkfwf5l8Dhth
- vGDCx5PDl8FrsctTwa8RtjLos6eNCUFcuMHoQRJ9vRURjIjccUSdzRxwYmAjj8uneKEaixZvx2L
- Mx5R2lwmC21SbxNo3Ocgil663++UgQvvJ77LW2qY7ZfPumBTF3mydC6E7tf5c8P1CLmwIGBPbDq
- rv9vy7dkmX1t7UnGxRCfumZOYMfXDSUa/7hq3x8E1lwDtjGPAtALRsC5Gz3JoONVFANgzRBEdv1
- 3Jwy8wLbX5SD9YOK/z3q+jKhWd6FkQUfDs1Ew9VpulouyAjA
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     linux-mmc@vger.kernel.org, gregkh@linuxfoundation.org,
+        lee@kernel.org, catalin.marinas@arm.com, jic23@kernel.org,
+        hugues.fruchet@foss.st.com, richardcochran@gmail.com,
+        will@kernel.org, arnd@kernel.org, davem@davemloft.net,
+        Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Oleksii_Moisieiev@epam.com, linux-phy@lists.infradead.org,
+        linux-crypto@vger.kernel.org, kuba@kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        vkoul@kernel.org, linux-arm-kernel@lists.infradead.org,
+        edumazet@google.com, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        herbert@gondor.apana.org.au, linux-i2c@vger.kernel.org,
+        alexandre.torgue@foss.st.com, mchehab@kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, netdev@vger.kernel.org,
+        andi.shyti@kernel.org, olivier.moysan@foss.st.com,
+        linux-serial@vger.kernel.org, pabeni@redhat.com,
+        arnaud.pouliquen@foss.st.com, dmaengine@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-media@vger.kernel.org,
+        conor+dt@kernel.org, fabrice.gasnier@foss.st.com
+In-Reply-To: <20230726083810.232100-2-gatien.chevallier@foss.st.com>
+References: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
+ <20230726083810.232100-2-gatien.chevallier@foss.st.com>
+Message-Id: <169037357425.1182922.8121576517266921442.robh@kernel.org>
+Subject: Re: [IGNORE][PATCH v3 01/11] dt-bindings: Document common device
+ controller bindings
+Date:   Wed, 26 Jul 2023 06:12:54 -0600
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As part of fixing the allocation of the buffer for SVE state when changing
-SME vector length we introduced an immediate reallocation of the SVE state,
-this is also done when changing the SVE vector length for consistency.
-Unfortunately this reallocation is done prior to writing the new vector
-length to the task struct, meaning the allocation is done with the old
-vector length and can lead to memory corruption due to an undersized buffer
-being used.
 
-Move the update of the vector length before the allocation to ensure that
-the new vector length is taken into account.
+On Wed, 26 Jul 2023 10:38:00 +0200, Gatien Chevallier wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+> 
+> Introducing of the common device controller bindings for the controller
+> provider and consumer devices. Those bindings are intended to allow
+> divided system on chip into muliple domains, that can be used to
+> configure hardware permissions.
+> 
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> ---
+>  .../feature-domain-controller.yaml            | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+> 
 
-For some reason this isn't triggering any problems when running tests on
-the arm64 fixes branch (even after repeated tries) but is triggering
-issues very often after merge into mainline.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Fixes: d4d5be94a878 ("arm64/fpsimd: Ensure SME storage is allocated after SVE VL changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- arch/arm64/kernel/fpsimd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+yamllint warnings/errors:
 
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 89d54a5242d1..c19092642920 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -917,6 +917,8 @@ int vec_set_vector_length(struct task_struct *task, enum vec_type type,
- 	if (task == current)
- 		put_cpu_fpsimd_context();
- 
-+	task_set_vl(task, type, vl);
-+
- 	/*
- 	 * Free the changed states if they are not in use, SME will be
- 	 * reallocated to the correct size on next use and we just
-@@ -931,8 +933,6 @@ int vec_set_vector_length(struct task_struct *task, enum vec_type type,
- 	if (free_sme)
- 		sme_free(task);
- 
--	task_set_vl(task, type, vl);
--
- out:
- 	update_tsk_thread_flag(task, vec_vl_inherit_flag(type),
- 			       flags & PR_SVE_VL_INHERIT);
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml: title: 'Generic Domain Controller bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
+	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
 
----
-base-commit: d4d5be94a87872421ea2569044092535aff0b886
-change-id: 20230726-arm64-fix-sme-fix-d02461350e06
+doc reference errors (make refcheckdocs):
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230726083810.232100-2-gatien.chevallier@foss.st.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
