@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFCD763F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E04E763F85
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbjGZT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S231713AbjGZT2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbjGZT33 (ORCPT
+        with ESMTP id S229868AbjGZT2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:29:29 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092ED2D7D;
-        Wed, 26 Jul 2023 12:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690399758; x=1721935758;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WeEGqpvtDT+7iTCOG+Fl7R/2EclFppBGdUDQfhYalbc=;
-  b=ClWDwPoz4E4GQFMuS3IEKstdtzrMTtD/al7oJa17ln5F8GsMTT2F/caB
-   Rm6u7F9fCdVzXTnmDhT+GgkFpJ/h84qB2eMQlEsYi2+ViBQXck4mmhZXg
-   oe72QfaIA2rHTif18jkIWPnm+vwAc7q5LObld6t1Nq3syhDY6yen3EM2Z
-   EGhr65kFdwXVM0HqYSV+ktrZyywRXbL99OPyYHYskal7oDTgcFp0BrxrY
-   fNuN5EXnCr8I/0AGYbqI9is008ByLPYZO5nkKcXqJpWRU5mSi9K4a97Yj
-   ae2joG3aF9VuNsbkfobWUZ4Xwyuk9bmtlDtj4vAIbjiiXJbPb0/fiVVlw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371722808"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="371722808"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900554813"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="900554813"
-Received: from wfryca-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.133.1])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:29:14 -0700
-From:   Iwona Winiarska <iwona.winiarska@intel.com>
-To:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v2 4/4] arm64: dts: nuvoton: Add PECI controller node
-Date:   Wed, 26 Jul 2023 21:27:40 +0200
-Message-Id: <20230726192740.1383740-5-iwona.winiarska@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230726192740.1383740-1-iwona.winiarska@intel.com>
-References: <20230726192740.1383740-1-iwona.winiarska@intel.com>
+        Wed, 26 Jul 2023 15:28:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4818EFE;
+        Wed, 26 Jul 2023 12:28:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DAD5561C9A;
+        Wed, 26 Jul 2023 19:27:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E606EC433C8;
+        Wed, 26 Jul 2023 19:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690399678;
+        bh=F7Dod8/nvUA0tq0PCrFVeNauL6pXHKi/K+D/3mDf+Kk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2MmS470dbMJnDxmAM2gHkqoof8mpjP05HKaqd+FAk8g/e9KuqxYDrFRP3VDijSLrP
+         CMi/B3ijrjBqhbbofNfnruBkFepKbiuCbXBQZk2fF64Cxt4a1Hex3vqobOSoAALNqv
+         18F0FHQDiBentOHsEEaJB+3UAskjBKpXQfhyhAlk=
+Date:   Wed, 26 Jul 2023 21:27:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>, Lin Ma <linma@zju.edu.cn>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] vdpa: Enable strict validation for netlinks ops
+Message-ID: <2023072650-flight-reshuffle-65a0@gregkh>
+References: <20230726185104.12479-1-dtatulea@nvidia.com>
+ <20230726185104.12479-3-dtatulea@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726185104.12479-3-dtatulea@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,33 +57,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PECI controller node with all required information.
+On Wed, Jul 26, 2023 at 09:49:44PM +0300, Dragos Tatulea wrote:
+> The previous patch added the missing nla policies that were required for
+> validation to work.
+> 
+> Now strict validation on netlink ops can be enabled. This patch does it.
+> 
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> ---
+>  drivers/vdpa/vdpa.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> index f2f654fd84e5..a7612e0783b3 100644
+> --- a/drivers/vdpa/vdpa.c
+> +++ b/drivers/vdpa/vdpa.c
+> @@ -1257,37 +1257,31 @@ static const struct nla_policy vdpa_nl_policy[VDPA_ATTR_MAX + 1] = {
+>  static const struct genl_ops vdpa_nl_ops[] = {
+>  	{
+>  		.cmd = VDPA_CMD_MGMTDEV_GET,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_mgmtdev_get_doit,
+>  		.dumpit = vdpa_nl_cmd_mgmtdev_get_dumpit,
+>  	},
+>  	{
+>  		.cmd = VDPA_CMD_DEV_NEW,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_dev_add_set_doit,
+>  		.flags = GENL_ADMIN_PERM,
+>  	},
+>  	{
+>  		.cmd = VDPA_CMD_DEV_DEL,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_dev_del_set_doit,
+>  		.flags = GENL_ADMIN_PERM,
+>  	},
+>  	{
+>  		.cmd = VDPA_CMD_DEV_GET,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_dev_get_doit,
+>  		.dumpit = vdpa_nl_cmd_dev_get_dumpit,
+>  	},
+>  	{
+>  		.cmd = VDPA_CMD_DEV_CONFIG_GET,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_dev_config_get_doit,
+>  		.dumpit = vdpa_nl_cmd_dev_config_get_dumpit,
+>  	},
+>  	{
+>  		.cmd = VDPA_CMD_DEV_VSTATS_GET,
+> -		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+>  		.doit = vdpa_nl_cmd_dev_stats_get_doit,
+>  		.flags = GENL_ADMIN_PERM,
+>  	},
+> -- 
+> 2.41.0
+> 
 
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
----
- arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+<formletter>
 
-diff --git a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-index aa7aac8c3774..b8326bbe9fde 100644
---- a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-+++ b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-@@ -68,6 +68,15 @@ apb {
- 			ranges = <0x0 0x0 0xf0000000 0x00300000>,
- 				<0xfff00000 0x0 0xfff00000 0x00016000>;
- 
-+			peci0: peci-controller@100000 {
-+				compatible = "nuvoton,npcm845-peci";
-+				reg = <0x100000 0x1000>;
-+				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk NPCM8XX_CLK_APB3>;
-+				cmd-timeout-ms = <1000>;
-+				status = "disabled";
-+			};
-+
- 			timer0: timer@8000 {
- 				compatible = "nuvoton,npcm845-timer";
- 				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.40.1
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
+</formletter>
