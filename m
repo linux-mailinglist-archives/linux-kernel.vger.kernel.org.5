@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E9976288A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649F4762891
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjGZCGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
+        id S230112AbjGZCJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGZCGg (ORCPT
+        with ESMTP id S229740AbjGZCI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 22:06:36 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A98726BC;
-        Tue, 25 Jul 2023 19:06:20 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36PJIsws025954;
-        Wed, 26 Jul 2023 02:05:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=vja+h4kgYnLXSV5n1ENT5Phr4WPGiPXDy45bvkSMVDE=;
- b=kljZzj0XeNgEuDIPJpp7EsNcJOf2i5XfNHuNzwLIO0/13lNd7kPJy0P7fGHumwQStq4D
- CPRJ4RLb1WtqsRmK3qSiFmh4iePLo+6qrg5go/I7rKFonnvrKGPFvnPHfbWd8BX4vuo3
- KxZ7kzHf39wqo1eM6llezZ+FSz2ujNUcdZFUxT9hyFe22dXNWMNdLAJW/UJJ9EWbSYOl
- tiie0e09xprojzvtrl+xQMhQvDIFLUFHXqTZZ6tFp4rtWbQmZAb4/LS7fsqb/xy8F4zN
- SbGkMRYW40WwJA50NoK6fcZJbP7ambdDL7uqat+ahfxPQZIKFooZLK9Igg8pdtr2Wgo7 LA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s075d6fvx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 02:05:20 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q0G7pp023017;
-        Wed, 26 Jul 2023 02:05:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s05j5jd61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 02:05:19 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q253Nl038905;
-        Wed, 26 Jul 2023 02:05:19 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3s05j5jcwf-11;
-        Wed, 26 Jul 2023 02:05:19 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ufs: Explicitly include correct DT includes
-Date:   Tue, 25 Jul 2023 22:04:56 -0400
-Message-Id: <169033702311.2256288.15687854020810021082.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230714175018.4064957-1-robh@kernel.org>
-References: <20230714175018.4064957-1-robh@kernel.org>
+        Tue, 25 Jul 2023 22:08:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A091212B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690337292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=95LJOf0z/Eno4OCFcFMWl++emGtMZCHYgwGRjUbJaTM=;
+        b=KvXcXBtt6HwDJEYFMoTGobwo6CAa3Z3vLbiZ6ffGqMcgq9ficLAuM1OSUkn9DItOoWtPmz
+        6yNPh2qZoBShfKLPj4pT30fT8khuxd1eoyTI9xcJKQmVdeNZwhF1BWjhQvVqvdT6OidBfg
+        28Hq/5Dsvb1n/z3One/UF1Oj0cOh1UI=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-489-7Ry0njhnO4ODIFCvntGHMg-1; Tue, 25 Jul 2023 22:08:10 -0400
+X-MC-Unique: 7Ry0njhnO4ODIFCvntGHMg-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bb83eb84e5so33573345ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690337290; x=1690942090;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=95LJOf0z/Eno4OCFcFMWl++emGtMZCHYgwGRjUbJaTM=;
+        b=DbwG8r/5awR+Sqvll2GATORTVvsDwz7YhUGrgycH+gk0rkIqqBjkha+EQ14K7Q6TTI
+         wUsEYxzn8ORsJ0t6oUqazK5S6tGpbWcXt1l9YVw/eNO2QhYdKaaG4/HzBKQblZXOs4IX
+         tvHGINXdZlyw72LF+YDRllU1j/lFP3tt1Khz6R50RaP9UlOqd+Y/280oEjb3OOs3l2KG
+         75+gUfi5UcsaBpEjuD++OpaDOp6dj40FsswQYoF0czzHhfQiSr+mDKAnGHwhUn1Mw62A
+         qMOL0JOyvCJGeTXh3pGtrw9HyD3HPpCOiMGOZ44hglANHmR4q4OSd7eJW1xjACqL+85N
+         +/sw==
+X-Gm-Message-State: ABy/qLYyDF6+t/cU9lZ40rVis5afHjq75/yV2JMw6KkDtLpJFWclOIaj
+        rZZVq6Tg+ab8eG9rxcjAQXN66To9LdQgyNBhKO9qTP6ykRAamiAye5MJbE5ODGnMFMScSf/qNf7
+        yb9T7V1pCQhJdMeUopETPMudo
+X-Received: by 2002:a17:902:ce81:b0:1b8:adc:7c3d with SMTP id f1-20020a170902ce8100b001b80adc7c3dmr1085525plg.40.1690337289914;
+        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFME03RuiNFMjrYDkMFSyzXe5DoUsVifAoxnjrckHRpcYIqgyVS/r0ZzVYgv+QZMxRzMOzqxA==
+X-Received: by 2002:a17:902:ce81:b0:1b8:adc:7c3d with SMTP id f1-20020a170902ce8100b001b80adc7c3dmr1085513plg.40.1690337289554;
+        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
+Received: from localhost ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id q8-20020a170902788800b001b9fef7f454sm11760512pll.73.2023.07.25.19.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
+From:   Coiby Xu <coxu@redhat.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] ima: require signed IMA policy when UEFI secure boot is enabled
+Date:   Wed, 26 Jul 2023 10:08:05 +0800
+Message-ID: <20230726020806.926734-1-coxu@redhat.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230703115442.129725-1-coxu@redhat.com>
+References: <20230703115442.129725-1-coxu@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
- phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=773
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307260016
-X-Proofpoint-ORIG-GUID: 7TAvwxd8Z-sacMXHooFB4wftkVDRj9xp
-X-Proofpoint-GUID: 7TAvwxd8Z-sacMXHooFB4wftkVDRj9xp
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,23 +83,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 11:50:18 -0600, Rob Herring wrote:
+With commit 099f26f22f58 ("integrity: machine keyring CA
+configuration"), users are able to add custom IMA CA keys via
+MOK.  This allows users to sign their own IMA polices without
+recompiling the kernel. For the sake of security, mandate signed IMA
+policy when UEFI secure boot is enabled.
 
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> [...]
+Note this change may affect existing users/tests i.e users won't be able
+to load an unsigned IMA policy when the IMA architecture specific policy
+is configured and UEFI secure boot is enabled.
 
-Applied to 6.6/scsi-queue, thanks!
+Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Coiby Xu <coxu@redhat.com>
+---
+v2
+ - improve commit message [Mimi]
+  - explicitly mention the dependent commit
+  - add a note that the change will affect user space
+ - remove "/* CONFIG_INTEGRITY_MACHINE_KEYRING .. */" to improve code
+   readability
+---
+ security/integrity/ima/ima_efi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-[1/1] ufs: Explicitly include correct DT includes
-      https://git.kernel.org/mkp/scsi/c/c2ab666072bc
-
+diff --git a/security/integrity/ima/ima_efi.c b/security/integrity/ima/ima_efi.c
+index 9db66fe310d4..138029bfcce1 100644
+--- a/security/integrity/ima/ima_efi.c
++++ b/security/integrity/ima/ima_efi.c
+@@ -57,6 +57,9 @@ static const char * const sb_arch_rules[] = {
+ 	"measure func=KEXEC_KERNEL_CHECK",
+ #if !IS_ENABLED(CONFIG_MODULE_SIG)
+ 	"appraise func=MODULE_CHECK appraise_type=imasig",
++#endif
++#if IS_ENABLED(CONFIG_INTEGRITY_MACHINE_KEYRING) && IS_ENABLED(CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY)
++	"appraise func=POLICY_CHECK appraise_type=imasig",
+ #endif
+ 	"measure func=MODULE_CHECK",
+ 	NULL
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.41.0
+
