@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 099E2763F5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612E4763F62
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjGZTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S232183AbjGZTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjGZTQu (ORCPT
+        with ESMTP id S230143AbjGZTR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:16:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A78C1FF0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:16:49 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOk06-0008V4-Rl; Wed, 26 Jul 2023 21:16:46 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOk05-002JRn-U7; Wed, 26 Jul 2023 21:16:45 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOk05-0081Jk-1G; Wed, 26 Jul 2023 21:16:45 +0200
-Date:   Wed, 26 Jul 2023 21:16:43 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] w1: ds2482: Switch back to use struct i2c_driver's
- .probe()
-Message-ID: <20230726191643.ex6cckrwnlx5bgz6@pengutronix.de>
-References: <20230612072807.839689-1-u.kleine-koenig@pengutronix.de>
- <6d76105f-daa1-1cd0-35b3-1727aa967bcc@linaro.org>
- <20230613070237.srqd3sy2c3lp7u5p@pengutronix.de>
- <dcc99c16-3807-1f81-03b8-86095f08258e@linaro.org>
- <20230720085253.arndjzqyhlbiioyy@pengutronix.de>
- <6b38bf1f-600c-e6e9-ebf7-c27a06fffed1@linaro.org>
+        Wed, 26 Jul 2023 15:17:29 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1011FF0;
+        Wed, 26 Jul 2023 12:17:28 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QJHBgL036759;
+        Wed, 26 Jul 2023 14:17:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690399032;
+        bh=30OZa93bnPYjdB9Z7EidvFI/Njos2YOm2OYVk4nEI7c=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=YZ/rlcEvVA9x5o4LeNzlCg0iFYBPJaFJsdk4+todPcTAog36yFDh2djn2CQHi/TsK
+         f141/Rn+Gox1JZYZynp5Z2digCZC0DWtjTvVCjJNDCLv2okaJ8ZYi1mnMHszLRYivx
+         nlRYyey7Ewzk8X4tjNSfDi48IYZtaZMU/odJLRB4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QJHBua111636
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 14:17:11 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 14:17:11 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 14:17:11 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QJHBJx010864;
+        Wed, 26 Jul 2023 14:17:11 -0500
+Date:   Wed, 26 Jul 2023 14:17:11 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Tony Lindgren <tony@atomide.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vibhore Vardhan <vibhore@ti.com>, Dhruva Gole <d-gole@ti.com>,
+        <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 5/5] dt-bindings: cpufreq: Convert ti-cpufreq.txt to yaml
+ binding
+Message-ID: <20230726191711.nsrs6n3zbubzad7j@maternal>
+References: <20230724153911.1376830-1-nm@ti.com>
+ <20230724153911.1376830-6-nm@ti.com>
+ <20230726171436.GA1609063-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="255rtgoxmoh34m77"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <6b38bf1f-600c-e6e9-ebf7-c27a06fffed1@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230726171436.GA1609063-robh@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11:14-20230726, Rob Herring wrote:
+> > diff --git a/Documentation/devicetree/bindings/opp/opp-v2-ti-cpu.yaml b/Documentation/devicetree/bindings/opp/opp-v2-ti-cpu.yaml
+> > new file mode 100644
+> > index 000000000000..758f6da619a8
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/opp/opp-v2-ti-cpu.yaml
+> 
+> Filename matching the compatible.
 
---255rtgoxmoh34m77
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+operating-points-v2-ti-cpu.yaml, OK
 
-Hello Krzysztof,
+> 
+> > @@ -0,0 +1,88 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/opp/opp-v2-ti-cpu.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: TI CPU OPP
+> > +
+> > +description: |
+> 
+> Don't need '|'.
 
-On Wed, Jul 26, 2023 at 10:21:39AM +0200, Krzysztof Kozlowski wrote:
-> On 20/07/2023 10:52, Uwe Kleine-K=F6nig wrote:
-> > On Tue, Jun 13, 2023 at 10:06:46AM +0200, Krzysztof Kozlowski wrote:
-> >> On 13/06/2023 09:02, Uwe Kleine-K=F6nig wrote:
-> >>> Assuming there are only less than 10 patches remaining on top of
-> >>> v6.5-rc1, I intend to create a pull request for Wolfram with the
-> >>> remaining bits and a patch doing
-> >>
-> >> Sure, go ahead:
-> >>
-> >> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >=20
-> > Thanks, but this didn't happen because I missed a few introductions of
-> > new .probe_new. My plan was rescheduled to one merge window later. So if
-> > you want to take this for v6.6-rc1 that would be great.
->=20
-> I don't have anything in w1 queue, so it would be easier if you take it
-> with the rest.
+OK
 
-OK, will do.
+> 
+[..]
 
-Thanks
-Uwe
+> > +
+> > +examples:
+> > +  - |
+> > +    cpu0_opp_table: opp-table {
+> 
+> Drop unused labels
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Uggh.. yep, thanks.
 
---255rtgoxmoh34m77
-Content-Type: application/pgp-signature; name="signature.asc"
+[...]
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTBcRoACgkQj4D7WH0S
-/k7UnQf9GzYYX1vMwlQhlqgTTPGvGCvBmDC2yE29X3l/tibDVAWVNsUqneb89DF9
-sjA3pT30BquyJU8gMZwDu2utsiQvkYz7wCL9ZudsSJaerWTxwHNVCT3aSiFgetex
-qAztPjl56MZ17VgLYHCdAtC2lFcJVSt6M8aJq7wkztRpgAX4xZjzcD1YowUIu+L3
-Cq/kMwqm05njYgcNgbIibeVP2Di3gsLqlwXtDdd57iBzed3l+SzLCsBn0fHSURiE
-wxR62xVMRBIfdtOExB5G9XnacuSj0ZD72M3jraAIKfHKRyA/aiWHWzCyhO4c0b1i
-Gcu6oYbHBU/+ViMrrl/wDnAh0L0M/g==
-=e8SN
------END PGP SIGNATURE-----
-
---255rtgoxmoh34m77--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
