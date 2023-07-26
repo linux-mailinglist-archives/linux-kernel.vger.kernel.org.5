@@ -2,155 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1BF76302A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FD176302D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjGZIpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S233365AbjGZIpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbjGZIob (ORCPT
+        with ESMTP id S233356AbjGZIok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:44:31 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE1F6EA0;
-        Wed, 26 Jul 2023 01:34:36 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.24])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 26 Jul 2023 04:44:40 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43AB9006;
+        Wed, 26 Jul 2023 01:34:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0A24F6606FCD;
-        Wed, 26 Jul 2023 09:34:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690360474;
-        bh=kbyHAewU6qDnSTSEyCglZNTxAWdvBGgIOe5Sk6F5sTk=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=h9vI4xVfSTcEGbDHFnNp1CkGPb9ffa35OppZjK5mAmcVidyByB2rlTvL5Zkh7i8oO
-         rNof11swMdDQ6XoZmgXX9hkBQELBwhGG98hwt9vvJnulV1RvhlgTcqn1btp9/t5u6O
-         T7cHg9go9dgQa+c7vZTN3miRAntkp2ZZYsnIkGMMMIaRy+kdpvj+aBCiOfFidy3kB+
-         yVnR/o1QbDrw05pt0FqkJ/LRMk3KT8T1mauAs1bdfW/Nl8beRFvqFMbe9LV0ghm3Qb
-         RxLsslpnJtnsWF2tWh7eU+vg4oVbzPSvp6OfMZRRcEYNpeNh9cJNWPwzQWntK2bjvF
-         v4VrM6r9ucckQ==
-Message-ID: <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com>
-Date:   Wed, 26 Jul 2023 13:34:19 +0500
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 611BE1F74A;
+        Wed, 26 Jul 2023 08:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1690360492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DNObAGqTS+qyReybr3pgmWoo5MjVeKr0FgRCIVXTNVg=;
+        b=cucQRRFtX/YdI8s3iveG5mtAm17SVAuCZTNki8YYp08DO6U850fCw6mNG0Pzn9lZRhUdgQ
+        xoNUBewQI8ZtbVeVsNou/SAA0o6gyzPoJp3o+ANxm+dC8xPQLr3ZeZXMp+hC8tbajd6003
+        nHLVoecxudbnBiY2ZFZ7V5zu/IW5Xvk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1690360492;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DNObAGqTS+qyReybr3pgmWoo5MjVeKr0FgRCIVXTNVg=;
+        b=BLEvISpBgYWpb5n3MxBk+24/JnmgE4Uzplh0NUj5fLr65tA+65i7STt4qE6EG3rwit97fm
+        9PZRn8DMKGZtkfDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2548F139BD;
+        Wed, 26 Jul 2023 08:34:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id REZgCKzawGRPSQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 26 Jul 2023 08:34:52 +0000
+Message-ID: <89363892-2752-5b6e-d084-79f54d7e455b@suse.cz>
+Date:   Wed, 26 Jul 2023 10:34:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+Subject: Re: [PATCH v2] mm/slub: disable slab merging in the default
+ configuration
+To:     David Rientjes <rientjes@google.com>,
+        Julian Pidancet <julian.pidancet@oracle.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        "Lameter, Christopher" <cl@os.amperecomputing.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Rafael Aquini <aquini@redhat.com>
+References: <20230629221910.359711-1-julian.pidancet@oracle.com>
+ <38083ed2-333b-e245-44e4-2f355e4f9249@google.com>
+ <CTSGWINSM18Q.3HQ1DN27GNA1R@imme>
+ <8813897d-4a52-37a0-fe44-a9157716be9b@google.com>
+ <17349901-df3a-494e-fa71-2584d92526b5@google.com>
+ <3bcfa538-4474-09b7-1812-b4260b09256a@google.com>
+ <7b6b07b3-d8a1-b24f-1df2-bf6080bc5516@google.com>
+ <CU5AB77A9U99.1G4IRUW6DZPJP@imme>
+ <b9e451a6-087d-4fb6-521b-bb8962da1f5c@google.com>
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
- <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com>
- <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com>
- <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
- <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com>
- <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
- <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com>
- <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <b9e451a6-087d-4fb6-521b-bb8962da1f5c@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 11:05 PM, Michał Mirosław wrote:
-> On Tue, 25 Jul 2023 at 11:11, Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> ----
->> Michal please post your thoughts before I post this as v26.
->> ----
-> [...]
+On 7/26/23 01:25, David Rientjes wrote:
+> On Tue, 18 Jul 2023, Julian Pidancet wrote:
 > 
-> Looks ok - minor things below.
+>> Hi David,
+>> 
+>> Many thanks for running all these tests. The amount of attention you've
+>> given this change is simply amazing. I wish I could have been able to
+>> assist you by doing more tests, but I've been lacking the necessary
+>> resources to do so.
+>> 
+>> I'm as surprised as you are regarding the skylake regression. 20% is
+>> quite a large number, but perhaps it's less worrying than it looks given
+>> that benchmarks are usually very different from real-world workloads?
+>> 
 > 
-> 1. I'd change the _WPASYNC things to something better, if this can
-> also work with "normal" UFFD WP.
-Yeah, but we don't have any use case where UFFD WP is required. It can be
-easily added later when user case arrives. Also UFFD WP sends messages to
-userspace. User can easily do the bookkeeping in userspace as performance
-isn't a concern there.
+> I'm not an expert on context_switch1_per_thread_ops so I can't infere 
+> which workloads would be most affected by such a regression other than to 
+> point out that -18% is quite substantial.
 
+It might turn out that this regression is accidental in that merging happens
+to result in a better caching that benefits the particular skylake cache
+hierarchy (but not others), because the workload happens to use two
+different classes of objects that are compatible for merging, and uses them
+with identical lifetime.
+
+But that would be arguably still a corner case and not something to result
+in a hard go/no-go for the change, as similar corner cases would likely
+exist that would benefit from not merging.
+
+But it's possible the reason for the regression is something less expectable
+than the above hypotehsis, so indeed we should investigate first.
+
+> I'm still hoping to run some benchmarks with 64KB page sizes as Christoph 
+> suggested, I should be able to do this with arm64.
 > 
-> 2. For the address tagging part I'd prefer someone who knows how this
-> is used take a look. We're ignoring the tag (but clear it on return in
-> ->start) - so it doesn't matter for the ioctl() itself.
-I've added Kirill if he can give his thoughts about tagged memory.
-
-Right now we are removing the tags from all 3 pointers (start, end, vec)
-before using the pointers on kernel side. But we are overwriting and
-writing the walk ending address in start which user can read/use.
-
-I think we shouldn't over-write the start (and its tag) and instead return
-the ending walk address in new variable, walk_end.
-
+> It's ceratinly good news that the overall memory footprint doesn't change 
+> much with this change.
 > 
-> 3. BTW, One of the uses is the GetWriteWatch and I wonder how it
-> behaves on HugeTLB (MEM_LARGE_PAGES allocation)? Shouldn't it return a
-> list of huge pages and write *lpdwGranularity = HPAGE_SIZE?
-Wine/Proton doesn't used hugetlb by default. Hugetlb isn't enabled by
-default on Debian as well. For GetWriteWatch() we don't care about the
-hugetlb at all. We have added hugetlb's implementation to complete the
-feature and leave out something.
-
-Also GetWriteWatch() implementation wouldn't require THP support as well
-because you start to get 2MB of memory dirty even when only 4kB of memory
-shouldn't have been dirty.
-
+>> As Kees Cook was suggesting in his own reply, have you given a thought
+>> about including this change in -next and see if there are regressions
+>> showing up in CI performance tests results?
+>> 
 > 
-> 4. The docs and commit messages need some rewording due to the changes
-> in the API.
-Yeah, I've updated the doc. I'll update the commit message as well.
-
+> I assume that anything we can run with CI performance tests can also be 
+> run without merging into -next?
 > 
-> Other than that:
+> The performance degradation is substantial for a microbenchmark, I'd like 
+> to complete the picture on other benchmarks and do a complete analysis 
+> with 64KB page sizes since I think the concern Christoph mentions could be 
+> quite real.  We just don't have the data yet to make an informed 
+> assessment of it.  Certainly would welcome any help that others would like 
+> to provide for running benchmarks with this change as well :P
 > 
-> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Once we have a complete picture, we might also want to discuss what we are 
+> hoping to achieve with such a change.  I was very supportive of it prior 
+> to the -18% benchmark result.  But if most users are simply using whatever 
+> their distro defaults to and other users may already be opting into this 
+> either by the kernel command line or .config, it's hard to determine 
+> exactly the set of users that would be affected by this change.  Suddenly 
+> causing a -18% regression overnight for this would be surprising for them.
 
--- 
-BR,
-Muhammad Usama Anjum
+What I'd hope to achieve is that if we find out that the differences of
+merging/not-merging are negligible (modulo corner cases) for both
+performance and memory, we'd not only change the default, but even make
+merging more exceptional. It should still be done under SLUB_TINY, and maybe
+we can keep the slab_merge boot option, but that's it?
+
+Because in case they are comparable, not merging has indeed benefits -
+/proc/slabinfo accounting is not misleading, so in case a bug is reported,
+it's not neccessary to reboot with nomerge to get the real picture, then
+there are the security benefits mentioned etc.
