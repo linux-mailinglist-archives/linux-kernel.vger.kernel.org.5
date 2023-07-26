@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AB8762BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EDA762BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbjGZGo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S229779AbjGZGpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjGZGoJ (ORCPT
+        with ESMTP id S232086AbjGZGpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:44:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A77F1BF8;
-        Tue, 25 Jul 2023 23:44:06 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9kml400PzCrWH;
-        Wed, 26 Jul 2023 14:40:39 +0800 (CST)
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 14:44:01 +0800
-Subject: Re: [PATCH] USB:bugfix a controller halt error
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230721100015.27124-1-liulongfang@huawei.com>
- <2023072153-module-wannabe-5637@gregkh>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <bc2cd818-c7ad-9061-29ce-f5390d44d8ab@huawei.com>
-Date:   Wed, 26 Jul 2023 14:44:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 26 Jul 2023 02:45:17 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59581F3;
+        Tue, 25 Jul 2023 23:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690353916; x=1721889916;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=E0NopSXKtSx71VotkiqKSZjtHpk8QWrhSGVmlfa96+E=;
+  b=ntNCWJTkjM7tAJfNSiPxtAW8oETSzeIq25uTQQ3ZjZfMnb3056+Oi5pW
+   VHupPV1gFhklEFE1dxsDVagQPOhrhwvCmTf88nK1kirUyB5iFwS7KE5mB
+   sv0XCcnT0KFbSthZndembi70qICWI5yL6voMzxpGAF6WOOKwfsYS807P6
+   0w9muOvS5BFNAplb0wEWgI66L+80lvpjAf1xLF63b7KT1FEkyKDNXEMFD
+   3xUo1mDYN3Y9q37gS5KgUsX17ax1xCN0ZihFJ6rUhZUo4pDZ6JWb5GmLJ
+   faR30CiEW4IH3GOfjSTkyaEyJ+kpdxYpwApUU12R6VXvj2QdBzOx9jRQA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="348205567"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="348205567"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 23:45:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="900282908"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="900282908"
+Received: from igosu-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.75])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 23:45:12 -0700
+Message-ID: <382abd40-94c3-bd2a-a3a7-4fdaa195c781@intel.com>
+Date:   Wed, 26 Jul 2023 09:45:08 +0300
 MIME-Version: 1.0
-In-Reply-To: <2023072153-module-wannabe-5637@gregkh>
-Content-Type: text/plain; charset="gbk"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 33/61] mmc: sdhci-of-aspeed: remove unneeded variables
+Content-Language: en-US
+To:     Yangtao Li <frank.li@vivo.com>, Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>
+Cc:     linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230726040041.26267-1-frank.li@vivo.com>
+ <20230726040041.26267-33-frank.li@vivo.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230726040041.26267-33-frank.li@vivo.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/21 19:08, Greg KH Wrote:
-> On Fri, Jul 21, 2023 at 06:00:15PM +0800, liulongfang wrote:
->> On systems that use ECC memory. The ECC error of the memory will
->> cause the USB controller to halt. It causes the usb_control_msg()
->> operation to fail.
+On 26/07/23 07:00, Yangtao Li wrote:
+> The variable 'dead' is redundant, let's remove it.
 > 
-> Why does ECC memory matter here?
->
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
-This is a test conducted under a special test scenario.
-ECC memory errors are caused by some test tools.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
->> At this point, the returned buffer data is an abnormal value, and
->> continuing to use it will lead to incorrect results.
->>
->> Therefore, it is necessary to judge the return value and exit.
->>
->> Signed-off-by: liulongfang <liulongfang@huawei.com>
->> ---
->>  drivers/usb/core/hub.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
->> index a739403a9e45..6a43198be263 100644
->> --- a/drivers/usb/core/hub.c
->> +++ b/drivers/usb/core/hub.c
->> @@ -4891,6 +4891,16 @@ hub_port_init(struct usb_hub *hub, struct usb_device *udev, int port1,
->>  					USB_DT_DEVICE << 8, 0,
->>  					buf, GET_DESCRIPTOR_BUFSIZE,
->>  					initial_descriptor_timeout);
->> +				/* On systems that use ECC memory, ECC errors can
->> +				 * cause the USB controller to halt.
->> +				 * It causes this operation to fail. At this time,
->> +				 * the buf data is an abnormal value and needs to be exited.
->> +				 */
->> +				if (r < 0) {
->> +					kfree(buf);
->> +					goto fail;
->> +				}
+> ---
+>  drivers/mmc/host/sdhci-of-aspeed.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Are you sure this is correct?  How was this tested?  Seems to me that
-> this will still return "success" if this code path ever happens, what am
+> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+> index 25b4073f698b..b4867bb4a564 100644
+> --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> @@ -454,12 +454,11 @@ static int aspeed_sdhci_remove(struct platform_device *pdev)
+>  {
+>  	struct sdhci_pltfm_host *pltfm_host;
+>  	struct sdhci_host *host;
+> -	int dead = 0;
+>  
+>  	host = platform_get_drvdata(pdev);
+>  	pltfm_host = sdhci_priv(host);
+>  
+> -	sdhci_remove_host(host, dead);
+> +	sdhci_remove_host(host, 0);
+>  
+>  	clk_disable_unprepare(pltfm_host->clk);
+>  
 
-You are right. I made a patch error here. The code modification should be like this:
-if (r < 0) {
-	retval = r;
-	kfree(buf);
-	goto fail;
-}
-
-thanks,
-
-Longfang.
-> I missing?
-> 
-> thanks,
-> 
-> greg k-h
-> .
-> 
