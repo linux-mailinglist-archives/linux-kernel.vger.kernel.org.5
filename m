@@ -2,186 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8FD763497
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B846A76349C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbjGZLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S231783AbjGZLPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbjGZLM5 (ORCPT
+        with ESMTP id S230060AbjGZLPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:12:57 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D119B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:12:55 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-c5ffb6cda23so7202265276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690369974; x=1690974774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZC3AR3+9slbh/4XbZH2z2i5m6IqJXybcbNCnztjWWm4=;
-        b=GIKp7cxeKp4zmEz2mQN94gHbvPxItEqza6KBeYXLugORmRYcLv1CWod7hbvJstboIE
-         vdlhucLz9Nc/5F+paWv3OhNx6UH3ba0RZBXJLlDquQ0UZbxvouGn7q6YWYtTc2yYblFN
-         alhR9KB47Get+0nnNmVUMvWDWk22w4ehhNi4PC4AIDmz3WDbiWYhmlLco4oOVQwtcJ0t
-         fHQCjRTYj3MdDUuTtRaAPoo6lZYv/L9WLJ9B0FofS2x563l1EZD+8svWHfeBhIqnXUOP
-         npO0BMqSN8Zi4KvSMwa4Yo1UhZEffezUycW8ODgBHD8Nz0n/RP3vDiy+0R+3WZhbvwAE
-         4Q3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690369974; x=1690974774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZC3AR3+9slbh/4XbZH2z2i5m6IqJXybcbNCnztjWWm4=;
-        b=ErbNo5mw9m8xzzyV1QgOp1/0atpeB61z1ptIRQMeGXMlgztDzKIpi6qKjAW8drcGSV
-         9LWtYPRW8qyBkt4fP/uU6CxEacxm9D218QBvgU3W3kRL80FwQCT5UQYk1PgTREPUk6aA
-         GS/VZ/pqn7GhR7/4YHhkAndVdZAZJyVMP9K4ty09u2PYo9SgfRDjZSfujBxbGgL5Cdpv
-         fbxTFYJI9bbehoS2QJhM4ZOLVo8gZd3wCs5SqFFGzdQuURjBXilCaTDfZ3vG6o8Ru9fE
-         pIQgIIRK3UNCe0PkUI+g+bQzlLtCwt7SillKI+LVYJJVYb7ip7Dniwg2USTvI1+QrjRS
-         89bQ==
-X-Gm-Message-State: ABy/qLbrmxsSO3DX8SdvgXSR1XQwfD0qLyTTO97ZucaZFaPvaOW2Qb8O
-        NZuliGwlzc5nlgIwEAcGCGU2Ajrjy23DRh46t8dM5w==
-X-Google-Smtp-Source: APBJJlGLdZHOcJAENAqLfGiqi/72oSkGaPDVZwRn15fbhmiMArFKWA4P9ndHJR4qlDNh2XztdXFdHxu4C2CClhB66Sk=
-X-Received: by 2002:a81:69c2:0:b0:584:1a4d:bbfa with SMTP id
- e185-20020a8169c2000000b005841a4dbbfamr1741114ywc.29.1690369974370; Wed, 26
- Jul 2023 04:12:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230713141738.23970-1-ulf.hansson@linaro.org>
- <20230713141738.23970-9-ulf.hansson@linaro.org> <20230719151716.qhobfnclrjf4yqkg@bogus>
- <CAPDyKFpjMWOAbV+b2DcxDWqvRDQCbSC6Ti+KGGPWJoC4Ghp7=w@mail.gmail.com>
- <20230721115535.mx46dg56pxjnzbuv@bogus> <20230721143304.GA1092306-robh@kernel.org>
- <20230721183817.34lgb42nlnsvqx4s@bogus>
-In-Reply-To: <20230721183817.34lgb42nlnsvqx4s@bogus>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 26 Jul 2023 13:12:18 +0200
-Message-ID: <CAPDyKFqsaz=hruktv+sPQz-ttOtWa9O_Jvp2iLnpxQqX2r7yBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/11] dt-bindings: firmware: arm,scmi: Extend bindings
- for protocol@13
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Wed, 26 Jul 2023 07:15:02 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1709197
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:15:01 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QBCMFc004325;
+        Wed, 26 Jul 2023 11:14:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-transfer-encoding
+ : mime-version; s=pp1; bh=VsW19Z3EE6UAc3/wbvBMuusEpnSQoHb6PLgWAvcMsLs=;
+ b=Xt56vqIOoXJzLcCuTQW0krghA8IgFeBno4AqlJ85vCvTCaCwMN6LNSVHq3InQIZ6RtJ2
+ vBfoYuOiOjX3t3oelxuAYVowp2QgSoxIqzbFPpbZ+kqp4GE4B/i0EWebj2Lp9DVdPS6j
+ SL55+DF8YiicZHnylLc72SX+rqYj7lfNLrtk2gfwHrCXUhZ76Ud2AIhmoLnuGcCVj0c6
+ rnROIO2hfMc5GlIperkhcaREOf6R40oyCG6U3y0r1wO14GRu9q4jW6CVu4EjzvFGMPPV
+ Hl8PcBhtRG/JOseB67ck8ruLFc0sduSwH/BqfuVELvWApXSK86aJG1k1K1If4vJkfRZ4 9g== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s32de81my-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 11:14:38 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36QA95wx014370;
+        Wed, 26 Jul 2023 11:14:37 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0sty4h34-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 11:14:37 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36QBEYmh16908838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jul 2023 11:14:34 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39F1220043;
+        Wed, 26 Jul 2023 11:14:34 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00F7F20040;
+        Wed, 26 Jul 2023 11:14:34 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 26 Jul 2023 11:14:33 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [RFC] iommu/virtio: Use single flush queue (EXPERIMENTAL)
+Date:   Wed, 26 Jul 2023 13:14:33 +0200
+Message-Id: <20230726111433.1105665-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
+References: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K9nDAre1-s-XX4i1RCjeHzfJAkHrr2Wd
+X-Proofpoint-ORIG-GUID: K9nDAre1-s-XX4i1RCjeHzfJAkHrr2Wd
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_04,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 clxscore=1011 mlxscore=0
+ impostorscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307260097
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 at 20:38, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Fri, Jul 21, 2023 at 08:33:04AM -0600, Rob Herring wrote:
-> > On Fri, Jul 21, 2023 at 12:55:35PM +0100, Sudeep Holla wrote:
-> > > On Fri, Jul 21, 2023 at 01:42:43PM +0200, Ulf Hansson wrote:
-> > > > On Wed, 19 Jul 2023 at 17:17, Sudeep Holla <sudeep.holla@arm.com> w=
-rote:
-> > > > >
-> > > > > On Thu, Jul 13, 2023 at 04:17:35PM +0200, Ulf Hansson wrote:
-> > > > > > The protocol@13 node is describing the performance scaling opti=
-on for the
-> > > > > > ARM SCMI interface, as a clock provider. This is unnecessary li=
-miting, as
-> > > > > > performance scaling is in many cases not limited to switching a=
- clock's
-> > > > > > frequency.
-> > > > > >
-> > > > > > Therefore, let's extend the binding so the interface can be mod=
-elled as a
-> > > > > > generic performance domaintoo. The common way to describe this,=
- is to use
-> > > > > > the "power-domain" DT bindings, so let's use that.
-> > > > > >
-> > > > >
-> > > > > One thing I forgot to ask earlier is how we can manage different =
-domain IDs
-> > > > > for perf and power domains which is the case with current SCMI pl=
-atforms as
-> > > > > the spec never mandated or can ever mandate the perf and power do=
-mains IDs
-> > > > > to match. They need not be same anyways.
-> > > >
-> > > > Based upon what you describe above, I have modelled the perf-domain
-> > > > and the power-domain as two separate power-domain providers.
-> > > >
-> > > > A consumer device being hooked up to both domains, would specify th=
-e
-> > > > domain IDs in the second power-domain-cell, along the lines of the
-> > > > below. Then we would use power-domain-names to specify what each
-> > > > power-domain represents.
-> > > >
-> > > > power-domains =3D <&scmi_pd 2>, <&scmi_dvfs 4>;
-> > > > power-domain-names =3D "power", "perf";
-> > > >
-> > > > I hope this makes it clearer!?
-> > >
-> > > Yes it make is clear definitely, but it does change the definition of=
- the
-> > > generic binding of the "power-domains" property now. I am interesting=
- in
-> > > the feedback from the binding maintainers with respect to that. Or is=
- it
-> > > already present ? IIUC, the ones supported already are generally both
-> > > power and performance providers. May be it doesn't matter much, just
-> > > wanted to explicit ask and confirm those details.
-> >
-> > I commented on v1.
-> >
-> > Looks like abuse of "power-domains" to me, but nothing new really.
-> > Please define when to use a power domain vs. a perf domain and don't
-> > leave it up to the whims of the platform. Maybe perf domains was a
-> > mistake and they should be deprecated?
-> >
->
-> Just a thought here, instead of deprecating it I was thinking if possible
-> to keep the power-domains and performance-domains separate and just exten=
-d
-> the genpd to handle the latter. There by we are not mixing up and creatin=
-g
-> confusions that need more specific definitions in the binding(which is no=
-t
-> a big deal) but platforms getting it wrong inspite of that is a big probl=
-em.
-> Keep it separate makes it more aligned to the hardware and doesn't dilute
-> the definitions and probably avoids any possible mistakes due to that.
->
-> Sorry Ulf I am just not yet convinced to mix them up yet =F0=9F=98=89 and=
- wish you
-> don't convince me to. Let me know why the above suggestion won't work.
+Just like on paged s390 guests with their virtual IOMMU, syncing
+mappings via virtio-iommu is quite expensive. It can thus benefit from
+queueing unmapped IOVAs and flushing them in batches but less so from
+parallel flushes which is what the shadow_on_flush flag introduced for
+s390 tunes dma-iommu to do.
 
-The main point I think we need to consider too, is that on some
-platforms, the power-domain and the performance-domain are managed
-together by the FW. It is not really two separate things and hence it
-would not quite be correct to describe it as two different types of
-providers in DT.
+For this to work .flush_iotlb_all is implemented. Furthermore
+.iotlb_sync_map is also implemented and used to pull the sync out of the
+mapping operation for some additional batching and performance gain.
 
-If we should follow your suggestion above, to use the
-performance-domain bindings, then I think we need an additional new
-binding to cover the above mentioned case too. This would lead us into
-having one binding for the power-domain, another for the
-performance-domain and a third for the power+performance-domain.
+In a basic test with NVMe pass-through to a KVM guest on a Ryzen 3900X
+these changes together lead to about 19% more IOPS in a fio test and
+slightly more bandwidth too.
 
-In my opinion this sounds quite like a mess. I would rather keep using
-the power-domain bindings for all these cases. Of course, it's a bit
-of a stretch too, but I think it should be less confusing in the end,
-assuming we extend/clarify the description of the power-domain
-bindings, of course.
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+Note:
+The idea of using the single flush queue scheme from my series "iommu/dma: s390
+DMA API conversion and optimized IOTLB flushing"[0] for virtio-iommu was already
+mentioned in the cover letter. I now wanted to explore this with this patch
+which may also serve as a test vehicle for the single flush queue scheme usable
+on non-s390.
 
-Did that convince you? :-)
+Besides limited testing, this is marked experimental mainly because the use of
+queuing needs to be a concious decision as it allows continued access to
+unmapped pages for up to a second with the currently proposed single flush
+queue mechanism. Also it might make sense to split this patch to do the
+introduction and use of .iotlb_sync_map separately but as a test vehicle
+I found it easier to consume as a single patch.
 
-Kind regards
-Uffe
+[0]: https://lore.kernel.org/linux-iommu/20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com/
+
+ drivers/iommu/virtio-iommu.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 3551ed057774..f29eb4ce2b88 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -843,7 +843,7 @@ static int viommu_map_pages(struct iommu_domain *domain, unsigned long iova,
+ 			.flags		= cpu_to_le32(flags),
+ 		};
+ 
+-		ret = viommu_send_req_sync(vdomain->viommu, &map, sizeof(map));
++		ret = viommu_add_req(vdomain->viommu, &map, sizeof(map));
+ 		if (ret) {
+ 			viommu_del_mappings(vdomain, iova, end);
+ 			return ret;
+@@ -909,6 +909,27 @@ static void viommu_iotlb_sync(struct iommu_domain *domain,
+ {
+ 	struct viommu_domain *vdomain = to_viommu_domain(domain);
+ 
++	if (!vdomain->nr_endpoints)
++		return;
++	viommu_sync_req(vdomain->viommu);
++}
++
++static int viommu_iotlb_sync_map(struct iommu_domain *domain,
++				 unsigned long iova, size_t size)
++{
++	struct viommu_domain *vdomain = to_viommu_domain(domain);
++
++	if (!vdomain->nr_endpoints)
++		return 0;
++	return viommu_sync_req(vdomain->viommu);
++}
++
++static void viommu_flush_iotlb_all(struct iommu_domain *domain)
++{
++	struct viommu_domain *vdomain = to_viommu_domain(domain);
++
++	if (!vdomain->nr_endpoints)
++		return;
+ 	viommu_sync_req(vdomain->viommu);
+ }
+ 
+@@ -991,6 +1012,7 @@ static struct iommu_device *viommu_probe_device(struct device *dev)
+ 		if (ret)
+ 			goto err_free_dev;
+ 	}
++	dev->iommu->shadow_on_flush = 1;
+ 
+ 	return &viommu->iommu;
+ 
+@@ -1037,6 +1059,8 @@ static bool viommu_capable(struct device *dev, enum iommu_cap cap)
+ 	switch (cap) {
+ 	case IOMMU_CAP_CACHE_COHERENCY:
+ 		return true;
++	case IOMMU_CAP_DEFERRED_FLUSH:
++		return true;
+ 	default:
+ 		return false;
+ 	}
+@@ -1057,7 +1081,9 @@ static struct iommu_ops viommu_ops = {
+ 		.map_pages		= viommu_map_pages,
+ 		.unmap_pages		= viommu_unmap_pages,
+ 		.iova_to_phys		= viommu_iova_to_phys,
++		.flush_iotlb_all	= viommu_flush_iotlb_all,
+ 		.iotlb_sync		= viommu_iotlb_sync,
++		.iotlb_sync_map		= viommu_iotlb_sync_map,
+ 		.free			= viommu_domain_free,
+ 	}
+ };
+
+base-commit: 5514392fe77cd45b0d33bf239f13ba594a6759e5
+-- 
+2.39.2
+
