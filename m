@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F6F762DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCA0762DEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbjGZHgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
+        id S230460AbjGZHiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbjGZHf0 (ORCPT
+        with ESMTP id S232550AbjGZHht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:35:26 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C807230E5;
-        Wed, 26 Jul 2023 00:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1690356834; bh=XcZL0UiYpctgNqxRKPIYWTpapEbyjnHQl0vSOz4L+S8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sOFrT84lpq+9LFYaPO2jYEMW81bGQf13vrHET4eYePr+RwYlbrJSUcH9eaexSChJQ
-         4wSQirGWca2fWQHRgQJEUVD5B45iQFYUA2hbyUXlbRRpH++ZHJyzMejXyP2QkjprAj
-         Egqz3rcEluWWukUlPtXMQj1BRiwDvlHYga7QDbVw=
-Received: from [100.100.34.13] (unknown [220.248.53.61])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 2B45D60112;
-        Wed, 26 Jul 2023 15:33:54 +0800 (CST)
-Message-ID: <504c5fc7-57d3-f36a-b9e7-801d7e40bc60@xen0n.name>
-Date:   Wed, 26 Jul 2023 15:33:53 +0800
+        Wed, 26 Jul 2023 03:37:49 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CE449A;
+        Wed, 26 Jul 2023 00:35:47 -0700 (PDT)
+Received: from kwepemm600016.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9lwZ58g1ztRpc;
+        Wed, 26 Jul 2023 15:32:30 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by kwepemm600016.china.huawei.com
+ (7.193.23.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
+ 2023 15:35:44 +0800
+From:   liubo <liubo254@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <liubo254@huawei.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hughd@google.com>,
+        <peterx@redhat.com>, <willy@infradead.org>
+Subject: [PATCH] smaps: Fix the abnormal memory statistics obtained through /proc/pid/smaps
+Date:   Wed, 26 Jul 2023 15:34:09 +0800
+Message-ID: <20230726073409.631838-1-liubo254@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] LoongArch: eBPF: Restrict bpf_probe_read{, str}() only to
- archs where they work
-Content-Language: en-US
-To:     zhaochenguang <zhaochenguang@kylinos.cn>, chenhuacai@kernel.org
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230726062902.566312-1-zhaochenguang@kylinos.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20230726062902.566312-1-zhaochenguang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/26 14:29, zhaochenguang wrote:
-> When we run nettrace on LoongArch, there is a problem that
-> ERROR: failed to load kprobe-based eBPF
-> ERROR: failed to load kprobe-based bpf
-> 
-> Because ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE dose not exist,
-> so we enable it.
-> 
-> The patch reference upstream id 0ebeea8ca8a4d1d453ad299aef0507dab04f6e8d.
+In commit 474098edac26 ("mm/gup: replace FOLL_NUMA by
+gup_can_follow_protnone()"), FOLL_NUMA was removed and replaced by
+the gup_can_follow_protnone interface.
 
-The description is a bit hard to follow. Rephrasing a bit:
+However, for the case where the user-mode process uses transparent
+huge pages, when analyzing the memory usage through
+/proc/pid/smaps_rollup, the obtained memory usage is not consistent
+with the RSS in /proc/pid/status.
 
-"Currently nettrace does not work on LoongArch due to missing 
-bpf_probe_read{,str}() support, with the error message:
+Related examples are as follows:
+cat /proc/15427/status
+VmRSS:  20973024 kB
+RssAnon:        20971616 kB
+RssFile:            1408 kB
+RssShmem:              0 kB
 
-     ERROR: failed to load kprobe-based eBPF
-     ERROR: failed to load kprobe-based bpf
+cat /proc/15427/smaps_rollup
+00400000-7ffcc372d000 ---p 00000000 00:00 0 [rollup]
+Rss:            14419432 kB
+Pss:            14418079 kB
+Pss_Dirty:      14418016 kB
+Pss_Anon:       14418016 kB
+Pss_File:             63 kB
+Pss_Shmem:             0 kB
+Anonymous:      14418016 kB
+LazyFree:              0 kB
+AnonHugePages:  14417920 kB
 
-According to commit 0ebeea8ca8a4d ("bpf: Restrict bpf_probe_read{, 
-str}() only to archs where they work"), we only need to select 
-CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE to add said support, 
-because LoongArch does have non-overlapping address ranges for kernel 
-and userspace."
+The root cause is that the traversal In the page table, the number of
+pages obtained by smaps_pmd_entry does not include the pages
+corresponding to PROTNONE,resulting in a different situation.
 
-Also, the patch subject does not make sense. Looking at precedents such 
-as commit 66633abd0642f ("MIPS/bpf: Enable bpf_probe_read{, str}() on 
-MIPS again") and commit d195b1d1d1196 ("powerpc/bpf: Enable 
-bpf_probe_read{, str}() on powerpc again"), we can instead re-title the 
-commit as "LoongArch/bpf: Enable bpf_probe_read{, str}() on LoongArch". 
-(No "again" because commit 0ebeea8ca8a4d actually predated the LoongArch 
-port.)
+Therefore, when obtaining pages through the follow_trans_huge_pmd
+interface, add the FOLL_FORCE flag to count the pages corresponding to
+PROTNONE to solve the above problem.
 
-> 
-> Signed-off-by: zhaochenguang <zhaochenguang@kylinos.cn>
-> ---
->   arch/loongarch/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index 903096bd87f8..4a156875e9cc 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -11,6 +11,7 @@ config LOONGARCH
->   	select ARCH_ENABLE_MEMORY_HOTREMOVE
->   	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+Signed-off-by: liubo <liubo254@huawei.com>
+Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
+---
+ fs/proc/task_mmu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Please keep the list in alphabetical order by moving this one line above.
-
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->   	select ARCH_INLINE_READ_LOCK if !PREEMPTION
->   	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
-
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index c1e6531cb02a..ed08f9b869e2 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -571,8 +571,10 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long addr,
+ 	bool migration = false;
+ 
+ 	if (pmd_present(*pmd)) {
+-		/* FOLL_DUMP will return -EFAULT on huge zero page */
+-		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
++		/* FOLL_DUMP will return -EFAULT on huge zero page
++		 * FOLL_FORCE follow a PROT_NONE mapped page
++		 */
++		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP | FOLL_FORCE);
+ 	} else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd))) {
+ 		swp_entry_t entry = pmd_to_swp_entry(*pmd);
+ 
 -- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+2.27.0
 
