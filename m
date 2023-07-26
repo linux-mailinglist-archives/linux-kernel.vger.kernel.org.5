@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4193763985
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76136763988
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjGZOsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S233262AbjGZOsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbjGZOsF (ORCPT
+        with ESMTP id S233184AbjGZOsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:48:05 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4CFC1;
-        Wed, 26 Jul 2023 07:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690382884; x=1721918884;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Fisp1pqwrXvmilLJn8Jc8iKZWR5fMT5EJL+/r3rqXOk=;
-  b=ZhKf4d6N73gg/s1+hexxAWhgGfFi4mXDnYM588AGf36OPuooNC03bh7E
-   LPqjYkA6fdohRPTMznlRH7bfolFNxo/UUMgp30SJarI6GxZXjzR+pVca8
-   wi2gZYGoxaMZWG5yyx2qQIUJIrVwlu+J62s7udAplwe5q1wuFtQd+3PrH
-   yX+tqaJWxQfGGk67+oyWSR15v0cVs8ivytg67R53wmC5lwMcAdLcXFFJg
-   ACLL5s/7kYfcDceslY1xBsZHwYRTvnWbeL50iaZDFARujC9qLakJl+mbT
-   f35T99zRiL9sCyOyrkPk3/pq/iHAxDyQrn0C3wAb3uOycq3Kr9Zv+SosZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="365492642"
-X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="365492642"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 07:48:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="869899604"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Jul 2023 07:48:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qOfo0-00BXM2-1s;
-        Wed, 26 Jul 2023 17:48:00 +0300
-Date:   Wed, 26 Jul 2023 17:48:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>
-Subject: Re: [PATCH v1 3/9] i2c: designware: Align dw_i2c_of_configure() with
- i2c_dw_acpi_configure()
-Message-ID: <ZMEyIErSl+dSyE4d@smile.fi.intel.com>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
- <20230725143023.86325-4-andriy.shevchenko@linux.intel.com>
- <20230725214836.dbussnrimoykudyw@intel.intel>
+        Wed, 26 Jul 2023 10:48:36 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E131FD5;
+        Wed, 26 Jul 2023 07:48:32 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1690382901tdqnmwb9
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 22:48:20 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: PS/N6jJLnDbWPzOemGr4bNmLGhOlX8aAHcyd+lhmPOqpMTHAYgJ0sP+uX6rbD
+        RU2EPCx7QW/LeX1uDe7xJp+tu3TGz3E+j6x9+p/w7djS4qrd5CMs4nB07UBDchlnYvYkCDz
+        J8yU/f1u0goeJBi8sod/tpVuZmTDaWQ7RK+pc6hEmoL+S3opG/qONZ8C6NKYTjmQln2PqRN
+        r4VNW5A8CSbXVgq5BTBk4PL6HOGX8cLlyWAmC1q4J/v/blS+mCdiDNOGlS6CDI2T6H+9Qk5
+        9tYb8TP2+ufpWkFhQR3G8qGwNcmGA2/tzWGf0IHYNkGTlNV/yJQi7zcqWPCNix4Uj4IhyqB
+        ncWNOd5Ogfmfd8j+LqN7Fuyb81D2Fg5CahmVVmFJtbItIzyw6uyMoKxiZmytg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 18036633287261470269
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: [PATCH v2 0/7] tools/nolibc: add 32/64-bit powerpc support
+Date:   Wed, 26 Jul 2023 22:48:11 +0800
+Message-Id: <cover.1690373704.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725214836.dbussnrimoykudyw@intel.intel>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:48:36PM +0200, Andi Shyti wrote:
-> On Tue, Jul 25, 2023 at 05:30:17PM +0300, Andy Shevchenko wrote:
+Hi, Willy, Thomas
 
-...
+The suggestions of v1 nolibc powerpc patchset [1] from you have been applied,
+here is v2.
 
-> > +static void i2c_dw_of_configure(struct dw_i2c_dev *dev)
-> > +{
-> > +	if (dev_of_node(dev->dev))
-> > +		i2c_dw_of_do_configure(dev, dev->dev);
-> 
-> You could add this check above and avoid this micro-if-functions.
-> 
-> 	if (!dev_of_node(dev->dev))
-> 		return;
-> 
-> up to you...
+Testing results:
 
-Have you had a chance to look into patch 7? Maybe you can come up with some
-advice or ideas on how to make the series better...
+- run with tinyconfig
 
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+     arch/board | result
+    ------------|------------
+    ppc/g3beige | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
+    ppc/ppce500 | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
+ppc64le/pseries | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
+ppc64le/powernv | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
+  ppc64/pseries | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
+  ppc64/powernv | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
 
-Thank you!
+- run-user
 
-> >  }
+    (Tested with -Os, -O0 and -O2)
+
+    // for 32-bit PowerPC
+    $ for arch in powerpc ppc; do make run-user ARCH=$arch CROSS_COMPILE=powerpc-linux-gnu- ; done | grep status
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+
+    // for 64-bit big-endian PowerPC and 64-bit little-endian PowerPC
+    $ for arch in ppc64 ppc64le; do make run-user ARCH=$arch CROSS_COMPILE=powerpc64le-linux-gnu- ; done | grep status
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+
+Changes from v1 --> v2:
+
+- tools/nolibc: add support for powerpc
+
+    Add missing arch-powerpc.h lines to arch.h
+
+    Align with the other arch-<ARCH>.h, naming the variables
+    with more meaningful words, such as _ret, _num, _arg1 ...
+
+    Clean up the syscall instructions
+
+    No line from musl now.
+
+    Suggestons from Thomas
+
+* tools/nolibc: add support for pppc64
+
+    No change
+
+* selftests/nolibc: add extra configs customize support
+
+    To reduce complexity, merge the commands from the new extraconfig
+    target to defconfig target and drop the extconfig target completely.
+
+    Derived from Willy's suggestion of the tinyconfig patchset
+
+* selftests/nolibc: add XARCH and ARCH mapping support
+
+    To reduce complexity, let's use XARCH internally and only reserve
+    ARCH as the input variable.
+
+    Derived from Willy's suggestion
+
+* selftests/nolibc: add test support for powerpc
+
+    Add ppc as the default 32-bit variant for powerpc target, allow pass
+    ARCH=ppc or ARCH=powerpc to test 32-bit powerpc
+    
+    Derived from Willy's suggestion
+
+* selftests/nolibc: add test support for pppc64le
+
+    Rename powerpc64le to ppc64le
+
+    Suggestion from Willy
+
+* selftests/nolibc: add test support for pppc64
+
+    Rename powerpc64 to ppc64
+
+    Suggestion from Willy
+
+Best regards,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/cover.1689713175.git.falcon@tinylab.org/
+
+Zhangjin Wu (7):
+  tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+  selftests/nolibc: add extra configs customize support
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add test support for ppc
+  selftests/nolibc: add test support for ppc64le
+  selftests/nolibc: add test support for ppc64
+
+ tools/include/nolibc/arch-powerpc.h     | 202 ++++++++++++++++++++++++
+ tools/include/nolibc/arch.h             |   2 +
+ tools/testing/selftests/nolibc/Makefile |  48 +++++-
+ 3 files changed, 244 insertions(+), 8 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
