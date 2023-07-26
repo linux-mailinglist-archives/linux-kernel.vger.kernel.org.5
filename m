@@ -2,57 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4A7763FA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887CF763FA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbjGZTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        id S231966AbjGZTbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjGZTat (ORCPT
+        with ESMTP id S229480AbjGZTbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:30:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C7010DB;
-        Wed, 26 Jul 2023 12:30:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 26 Jul 2023 15:31:01 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52C3272A;
+        Wed, 26 Jul 2023 12:30:59 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36D6861CB1;
-        Wed, 26 Jul 2023 19:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBEC3C433C8;
-        Wed, 26 Jul 2023 19:30:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1690399847;
-        bh=RV8tXL7RQ7wnolCqR1y4PyPALTKooCyEOhzhJRXcm/I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SVgBXvcrYNhex0+1z06NCyli0sUblvDQ90P7N/xe5kJ0+Q0OeP9lBlMuWohBd599E
-         X0HwNQlpDq4CCkcsveKBraRfvaJNSyGF5bPHYv15pSAWcbsia2p99BVqHMVZ9ZvqOY
-         0doZpYRXWnSGvBupT8LtftvO3Yru9jMJIrV7gPkQ=
-Date:   Wed, 26 Jul 2023 12:30:46 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ming Lei <tom.leiming@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-ext4@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: [dm-devel] Processes hung in "D" state in ext4, mm, md and
- dmcrypt
-Message-Id: <20230726123046.a001b6963da19ca883045271@linux-foundation.org>
-In-Reply-To: <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-References: <4919.1690365747@warthog.procyon.org.uk>
-        <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        by ms.lwn.net (Postfix) with ESMTPSA id 651D9359;
+        Wed, 26 Jul 2023 19:30:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 651D9359
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1690399859; bh=dsJxPvwqZe8zXKEvc6QkO8wpGMltaVf8thuTWXhtQZY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pOA0IJm98VuGV4JWI8+ZqgCAVwc+3pavlc2hyQ+JIgjbi3ghYoupHOGb+qi+r4KLE
+         hobSQ7kPcO/f8pyIrwcF1xkQtWKs1ii3kPfxTbOgJKK4FqvOKGxa5ay+/Q3Fl2sN7L
+         /I2TOBdbHuH7piNx2uMQBypYOztK9208QJZVYDwWOnfaqdXxp4Bz1DBnSu9z4ujsom
+         5pCSuj31iV5sPEp6GlM/dutCL1o/Zd3eo7b0qUdYiJb0AsxiiAs7xdWCfsw6kbrTPv
+         Z+3A15zxXib/TZPpnwy2nYOvfY9Xowep4tvfxyT32i7eVzuuADDItkhsDGAx113UnM
+         16yPUiPG2AGWw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Costa Shulyupin <costa.shul@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Cc:     Costa Shulyupin <costa.shul@redhat.com>
+Subject: Re: [RFC PATCH v2] docs: rework "Working with the development
+ community"
+In-Reply-To: <20230726184939.3118350-1-costa.shul@redhat.com>
+References: <87ila9atuk.fsf@meer.lwn.net>
+ <20230726184939.3118350-1-costa.shul@redhat.com>
+Date:   Wed, 26 Jul 2023 13:30:58 -0600
+Message-ID: <87edku8o7h.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,56 +53,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 23:29:51 +0800 Ming Lei <tom.leiming@gmail.com> wrote:
+Costa Shulyupin <costa.shul@redhat.com> writes:
 
-> On Wed, Jul 26, 2023 at 6:02 PM David Howells <dhowells@redhat.com> wrote:
-> >
-> > Hi,
-> >
-> > With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm seeing
-> > a bunch of processes getting stuck in the D state on my desktop after a few
-> > hours of reading email and compiling stuff.  It's happened every day this week
-> > so far and I managed to grab stack traces of the stuck processes this morning
-> > (see attached).
-> >
-> > There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a raid1
-> > array with two partitions with an ext4 partition on it.  md2 is similar but
-> > it's dm-crypted and ext4 is on top of that.
-> >
-> ...
-> 
-> > ===117547===
-> >     PID TTY      STAT   TIME COMMAND
-> >  117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
-> > [<0>] blk_mq_get_tag+0x11e/0x2b0
-> > [<0>] __blk_mq_alloc_requests+0x1bc/0x350
-> > [<0>] blk_mq_submit_bio+0x2c7/0x680
-> > [<0>] __submit_bio+0x8b/0x170
-> > [<0>] submit_bio_noacct_nocheck+0x159/0x370
-> > [<0>] __block_write_full_folio+0x1e1/0x400
-> > [<0>] writepage_cb+0x1a/0x70
-> > [<0>] write_cache_pages+0x144/0x3b0
-> > [<0>] do_writepages+0x164/0x1e0
-> > [<0>] __writeback_single_inode+0x3d/0x360
-> > [<0>] writeback_sb_inodes+0x1ed/0x4b0
-> > [<0>] __writeback_inodes_wb+0x4c/0xf0
-> > [<0>] wb_writeback+0x298/0x310
-> > [<0>] wb_workfn+0x35b/0x510
-> > [<0>] process_one_work+0x1de/0x3f0
-> > [<0>] worker_thread+0x51/0x390
-> > [<0>] kthread+0xe5/0x120
-> > [<0>] ret_from_fork+0x31/0x50
-> > [<0>] ret_from_fork_asm+0x1b/0x30
-> 
-> BTW, -rc3 fixes one similar issue on the above code path, so please try -rc3.
-> 
-> 106397376c03 sbitmap: fix batching wakeup
+> Mission: Make the documentation more readable, organized and maintainable.
+>
+> NB: no information content is lost of changed on the rendered top page.
+>
+> This patch demonstrates rework of the only the first section
+> of the top page for review. The proposal is to rework all sections.
+>
+> Summary of changes:
+> - Heading "Working with the development community" is converted into
+>   branch of toctree and visually moved after the text
+>   "The essential guides for interacting ..."
+> - toctree list is split into separated file. Please don't worry, the
+>   content of the list is incorporated to the top page because of
+>   `:maxdepth: 2`
+> - vertical bar '|' add empty line for better visual distribution
 
-That patch really needs a Fixes:, please.  And consideration for a
--stable backport.
+I will repeat.  I do not support carving useful stuff out of the front
+page in this way.  The front page does not exist just to make a
+nice-looking sidebar.
 
-Looking at what has changed recently in sbitmap, it seems unlikely that
-106397376c03 fixes an issue that just appeared in 6.5-rcX.  But maybe
-the issue you have identified has recently become easier to hit; we'll
-see.
+> Technical explanations:
+> Template {{ toctree(maxdepth=3) }} in
+> Documentation/sphinx/templates/kernel-toc.html
+> uses directives toctree and doesn't use sections on the top page
+> Documentation/index.rst
+> to generate expandable toc on the sidebar.
+>
+> BTW, other template {{ toc }} uses only sections, and doesn't
+> use directives toctree.
 
+*This* is where the problem lies.  I have started looking at it again,
+but digging deep into the Sphinx code can be painful at times.
+
+jon
