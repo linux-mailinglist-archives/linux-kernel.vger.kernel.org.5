@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8FC763912
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569D7763916
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbjGZO1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S234485AbjGZO2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjGZO1p (ORCPT
+        with ESMTP id S229984AbjGZO2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:27:45 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 7A5A810A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:27:44 -0700 (PDT)
-Received: (qmail 1924318 invoked by uid 1000); 26 Jul 2023 10:27:43 -0400
-Date:   Wed, 26 Jul 2023 10:27:43 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/30] usb: ohci-at91: Use
- devm_platform_get_and_ioremap_resource()
-Message-ID: <2ab38659-a25b-43a8-934a-5d44533a51c2@rowland.harvard.edu>
-References: <20230726113816.888-1-frank.li@vivo.com>
- <20230726113816.888-3-frank.li@vivo.com>
+        Wed, 26 Jul 2023 10:28:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971D8B4;
+        Wed, 26 Jul 2023 07:28:30 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R9x4k4mbpztRRn;
+        Wed, 26 Jul 2023 22:25:10 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
+ 2023 22:28:24 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <yuehaibing@huawei.com>
+CC:     <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] Bluetooth: Remove unused declaration amp_read_loc_info()
+Date:   Wed, 26 Jul 2023 22:28:17 +0800
+Message-ID: <20230726142817.20504-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726113816.888-3-frank.li@vivo.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 07:37:49PM +0800, Yangtao Li wrote:
-> Convert platform_get_resource(), devm_ioremap_resource() to a single
-> call to devm_platform_get_and_ioremap_resource(), as this is exactly
-> what this function does.
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  drivers/usb/host/ohci-at91.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
-> index b9ce8d80f20b..f957d008f360 100644
-> --- a/drivers/usb/host/ohci-at91.c
-> +++ b/drivers/usb/host/ohci-at91.c
-> @@ -200,8 +200,7 @@ static int usb_hcd_at91_probe(const struct hc_driver *driver,
->  		return -ENOMEM;
->  	ohci_at91 = hcd_to_ohci_at91_priv(hcd);
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	hcd->regs = devm_ioremap_resource(dev, res);
-> +	hcd->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->  	if (IS_ERR(hcd->regs)) {
->  		retval = PTR_ERR(hcd->regs);
->  		goto err;
+This is never used, so remove it.
 
-Did you try to test-compile this change (and all the similar ones in 
-this series)?  If you did, you would have gotten a warning about res 
-being used without being initialized.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/bluetooth/amp.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Alan Stern
+diff --git a/net/bluetooth/amp.h b/net/bluetooth/amp.h
+index 832764dfbfb3..97c87abd129f 100644
+--- a/net/bluetooth/amp.h
++++ b/net/bluetooth/amp.h
+@@ -28,7 +28,6 @@ struct hci_conn *phylink_add(struct hci_dev *hdev, struct amp_mgr *mgr,
+ 
+ int phylink_gen_key(struct hci_conn *hcon, u8 *data, u8 *len, u8 *type);
+ 
+-void amp_read_loc_info(struct hci_dev *hdev, struct amp_mgr *mgr);
+ void amp_read_loc_assoc_frag(struct hci_dev *hdev, u8 phy_handle);
+ void amp_read_loc_assoc(struct hci_dev *hdev, struct amp_mgr *mgr);
+ void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
+-- 
+2.34.1
+
