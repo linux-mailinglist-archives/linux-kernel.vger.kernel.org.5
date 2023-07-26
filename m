@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A35763766
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E0D76376F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjGZNWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        id S233988AbjGZNWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbjGZNWF (ORCPT
+        with ESMTP id S233965AbjGZNWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:22:05 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6E4128;
-        Wed, 26 Jul 2023 06:22:04 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so1204795e87.2;
-        Wed, 26 Jul 2023 06:22:04 -0700 (PDT)
+        Wed, 26 Jul 2023 09:22:30 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBE32716
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:22:25 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9ab1725bbso26137191fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690377723; x=1690982523;
+        d=linaro.org; s=google; t=1690377744; x=1690982544;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YPWzpufJv6n62uslZTbP65dBXeCecv6//7U8vz226A4=;
-        b=ewpF9oz+uxhIZKk+HzUv370fc6StqAv+3SfLkcmwF3t5VfkJFS3RbGlFqoCCyoynRc
-         W8tOXEg1WJzADL8UXDNNoyqdobUJ9cpKVE0SNXiBf7ZlFgMJcEkt17f+vqVi++vFoysW
-         0wXqYnl2qvhmh6/BVHYZ+WHProF1bCivgcoLiUa4EtjPkZhZMS8ABJY1CQHWFmbm6eHD
-         lP77rpRYF/5JIePlt61ThEqkGf+tmcFnHh6kDyBe7X7D7qVqmdvYc7l9sNgDtISlllIA
-         9W1DRoTQnLozR2kCMMkmo7/9Ivuv2Iwkt/PoMNWJ3Wg1tGqMhoBEsBf+CtpmJfIbV8kO
-         nFvg==
+        bh=RNBj29jr4jl10Xi2/aZroQsmuwBmNBwOZzK39VygtuU=;
+        b=ZR7ItMsoA1A/Nf0sOAsNBK3BvkceyjN/sL6fBQtaSZAld48YYK29eLHJpLbOmYcO4N
+         dYwufolsoOqxG66gXyatccol9XCFhslUJtN1fSKS7Ig5Kau5SMVFE7RX4yg5Rr4WodvW
+         KGP5UDr+Anz0VQpD54p7Qveowg/GfBiANDGM4tvbiskCVcrN2Ayh2uU5VmTDPv4ac5wh
+         wcczHEKlYM7+fs6dv2GFmLWJlAaieMsDTw3DWr/Yz6IprmyjYryQs6+CCKCZy1hgZmch
+         9OcYz90i81pg25VCT++Zf0XNmTEBd2fezyDACkORNjUdmjCl6szBneV8zsIq5EvQsgSr
+         1QLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690377723; x=1690982523;
+        d=1e100.net; s=20221208; t=1690377744; x=1690982544;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YPWzpufJv6n62uslZTbP65dBXeCecv6//7U8vz226A4=;
-        b=MkM/t4TG/u3r5Pn404M+whZg813p4chZQ1s3hdcYDfV5UUovbvpwCbfIHITbxoBSaQ
-         tjOPmR29tn+nT2NwZPjtGHgG5wbymP//GB0bBEQkzvPVJLakRDt/6rGOnLBn/GKh4ptS
-         EBYM67H4hBpvI76XpIbilDFi2gL3d45mMkqegyodPQWUORaiIXblBZK1RDOKd6NdYJ4x
-         LIlJE9xw+vEKc+tRfq1cdde/xtnFm0+Aqz20kZqupkl/7eH2KjKt2/TeJbThjtzxjFul
-         nYaIGmepvdwaTSissRtzU3eHXm7Cb3eQxxJpmy/AOWec31/4qjobrUurNLq/u0bou03y
-         575w==
-X-Gm-Message-State: ABy/qLZ5+XFStFqDD8yX90EaLTgETALghSLFtnn4PKTHOjWFt+piLRvo
-        R5iZuNNQNFodBQOd9KAUXKU=
-X-Google-Smtp-Source: APBJJlGrVtjZgA1ReJiDb3S0p0zyLFY5w1xsxsReaY7BnpGYnv56qAkNuEZZeM3E1fI6AMEfVisIOw==
-X-Received: by 2002:a19:e05d:0:b0:4fc:6e21:ff53 with SMTP id g29-20020a19e05d000000b004fc6e21ff53mr1406574lfj.11.1690377722464;
-        Wed, 26 Jul 2023 06:22:02 -0700 (PDT)
-Received: from skbuf ([188.25.175.105])
-        by smtp.gmail.com with ESMTPSA id u2-20020a5d4342000000b003141f96ed36sm19868392wrr.0.2023.07.26.06.22.00
+        bh=RNBj29jr4jl10Xi2/aZroQsmuwBmNBwOZzK39VygtuU=;
+        b=kE4AIDFO4E9waI/jlGnFxc+gUlabs7uTn7mNAbxqv9hLYQNA5BAa4X/fQg2F4NPgTa
+         Qb73vBgTslMGL1PElzLNx3vsj2RykTpuMKcyod63+abn0lNeV+JXJaQbzBiMVjQEsYZA
+         VzxAs4HwHtzS48j9TjrkOxBCmap2MSCnxZ2e4kGVcZZbvevRXKAUUq4eCHs5FRrmCBOE
+         vtih/X6iDnyEH0J1+45rRDh/TWSJUBb6z7qj1yp7htkRwX/0UOLggn//HhCBzjJgeV5c
+         rZX1eKQ3TViQ6msAUCfvj+E7qW6Nn5Khsqiv6LgykPD7s6jGfy+4HvA9H6B5Ba5CtU8W
+         l4WQ==
+X-Gm-Message-State: ABy/qLYyNwy6wxZAcKbyrfjd6I2SNECgVXCUj1frMBvDK8vSSmZaFH0H
+        dYie0l0K7vRvNsFIvD1HlepVFw==
+X-Google-Smtp-Source: APBJJlFMUTV8xO+xbHIIv/bIIICqq09UIEpnnxDWYTvm3DUYUWAby+Rd3s59OPhDm1XNqeKodSv6yA==
+X-Received: by 2002:a2e:9805:0:b0:2b6:fe55:7318 with SMTP id a5-20020a2e9805000000b002b6fe557318mr1472225ljj.12.1690377743727;
+        Wed, 26 Jul 2023 06:22:23 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y7-20020a1c4b07000000b003fc0505be19sm1939327wma.37.2023.07.26.06.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 06:22:02 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 16:21:59 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        Wed, 26 Jul 2023 06:22:23 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 16:22:20 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        George McCollister <george.mccollister@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] net: dsa: Explicitly include correct DT includes
-Message-ID: <20230726132159.rni7zc5ayu67tkxv@skbuf>
-References: <20230724211859.805481-1-robh@kernel.org>
- <20230724211859.805481-1-robh@kernel.org>
+        Hao Luo <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jordan Griege <jgriege@cloudflare.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, kernel-team@cloudflare.com,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v4 bpf 2/2] bpf: selftests: add lwt redirect regression
+ test cases
+Message-ID: <b0a4c52b-427d-462f-93a9-d94a294cedcf@kadam.mountain>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
+ <3ec61192-c65c-62cc-d073-d6111b08e690@web.de>
+ <CAO3-PbraNcfQnqHUG_992vssuA795RxtexYsMdEo=k9zp-XHog@mail.gmail.com>
+ <ZMD1sFTW8SFiex+x@debian.debian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724211859.805481-1-robh@kernel.org>
- <20230724211859.805481-1-robh@kernel.org>
+In-Reply-To: <ZMD1sFTW8SFiex+x@debian.debian>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 03:18:58PM -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+Was Markus unbanned from vger?  How are we recieving these emails?
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+regards,
+dan carpenter
+
