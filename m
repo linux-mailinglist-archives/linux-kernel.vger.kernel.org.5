@@ -2,240 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6E5763E80
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372F8763E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjGZSaS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S231897AbjGZSaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjGZSaQ (ORCPT
+        with ESMTP id S229562AbjGZSah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:30:16 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5CF2691
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:30:14 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-565e64ed9f7so21601eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:30:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690396214; x=1691001014;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OvIkRBDpDbomm0vewFfB+qjB/OZ+LQfJITQW3aeUUuc=;
-        b=BG3mmNFYNKYi7Nv7GCqJgZI5cUAT42bxBcruEwLbx5UNSzvhJhL/Ym8LW8snZDcukK
-         JiG7kwraQ/1tjCuDs8VKBsVbxsnxUXbUnIXkMLvqZsc/0/1F6lshtbBm1OYAMzcjZoKp
-         oMDG3pbY69Xc4DDLpEIN47ZnI0pBKo13SgscJr0CqLZsz/AWVrgFBwACuSOdJjcnx30i
-         +tF2r19fyW92NJNC5U/TS+6EvIAVeQ0JZj6dGXSvU+eImT8HbBZ5VJ/X5lFSyk2KVLuy
-         8oW/UvlCyTovYwsKzNVleLCDouCe+RdsZbO7daW52M7919Wz5gsvJwcVpc2woWxUW7+j
-         QVCA==
-X-Gm-Message-State: ABy/qLbv0HpSPU2WwWDgkgofJGRnQ/7nMML/0qtwkZ8Ec7QHAgfUb1/C
-        ljZ88mliyW/+n0lWcwzI56hXOraeLvwyi6kJ91A=
-X-Google-Smtp-Source: APBJJlHDFlfO+R07dbFZFu05HRmq3VOuY8llk44njGyMt8E+eG4MwdzRD2eWdmL8V6+lSA9IUMmBW6a66FMEvCHx5wg=
-X-Received: by 2002:a05:6820:623:b0:565:a7bd:3927 with SMTP id
- e35-20020a056820062300b00565a7bd3927mr2347043oow.0.1690396213639; Wed, 26 Jul
- 2023 11:30:13 -0700 (PDT)
+        Wed, 26 Jul 2023 14:30:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8462926BB;
+        Wed, 26 Jul 2023 11:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=mzVsJrG0gE0klDOerZJOODxVbBgujc+wV5trrlssUd4=; b=BNaC7DKnbIUyv0Zyc3uTSHKjc3
+        z/yB9RC0260AU6ytrL7L0FWXil+CLLM2LAnpLHghxt6keoF57C1UqmZ1i5vc2JmmX2sevTWor576R
+        3ZpWC0MZAeR73mYcaNEFNBicDT/DYQ5NSbET3MHqpJ+MPnEUwwUJoYLgOrTR+Dw5uyPmu4DOSvIYh
+        TmeSeH4Va+1xIRJp03mP8h+kzdJnUgNPQMGUMNPlMcVQnfY/3bXxI2SzGIAWbcg+H4GlZuYKlXabb
+        HQ+gETQw3H5v9kzXVHN5hBd9oCJE+yPTRzSKgHgYRYcepHpCFLO1S9WHT9wPwFTTZs+Egiyzk0vaS
+        MbreCYJA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOjHJ-00BHUf-1o;
+        Wed, 26 Jul 2023 18:30:29 +0000
+Date:   Wed, 26 Jul 2023 11:30:29 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Allen Webb <allenwebb@google.com>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Alessandro Carminati <alessandro.carminati@gmail.com>
+Cc:     "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, christophe.leroy@csgroup.eu
+Subject: Re: [PATCH v10 08/11] build: Add modules.builtin.alias
+Message-ID: <ZMFmRdqZDu/z1WxL@bombadil.infradead.org>
+References: <20221219204619.2205248-1-allenwebb@google.com>
+ <20230406190030.968972-1-allenwebb@google.com>
+ <20230406190030.968972-9-allenwebb@google.com>
+ <ZG22iPLED+SJsEFa@bombadil.infradead.org>
+ <CAJzde04MmfyGeAzQ_7FW-0sATk7TT-MkxCbNPSzb-94wK6nhkA@mail.gmail.com>
 MIME-Version: 1.0
-References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
- <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
- <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de> <ZL2Z8InSLmI5GU9L@localhost.localdomain>
- <CAJZ5v0ib=j+DHVE1mKCZaoyZ_CHVkA9f90v8b8wSA+3TEG1kHg@mail.gmail.com>
- <8857d035-1c1a-27dd-35cf-7ff68bbf3119@linutronix.de> <CAJZ5v0gJj_xGHcABCDoX2t8aR+9kXr7fvRFF+5KBO5MJz9kFWQ@mail.gmail.com>
- <20230725222851.GC3784071@hirez.programming.kicks-ass.net> <f84ecbee-cb2a-d574-422-b357f0d4ca2@linutronix.de>
-In-Reply-To: <f84ecbee-cb2a-d574-422-b357f0d4ca2@linutronix.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Jul 2023 20:30:01 +0200
-Message-ID: <CAJZ5v0hLprrBhfqMRUhStvmm3D_xaSLxmNOYB4sfhLSzLYeR-w@mail.gmail.com>
-Subject: Re: Stopping the tick on a fully loaded system
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJzde04MmfyGeAzQ_7FW-0sATk7TT-MkxCbNPSzb-94wK6nhkA@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 6:40 PM Anna-Maria Behnsen
-<anna-maria@linutronix.de> wrote:
->
-> Hi,
->
-> On Wed, 26 Jul 2023, Peter Zijlstra wrote:
->
-> > On Tue, Jul 25, 2023 at 04:27:56PM +0200, Rafael J. Wysocki wrote:
-> > > On Tue, Jul 25, 2023 at 3:07 PM Anna-Maria Behnsen
+Please cc Alexander and Alessandro in future patch series as well,
+as they could likley be interested in your work too.
+
+On Wed, Jul 19, 2023 at 02:51:48PM -0500, Allen Webb wrote:
+> I finally got a chance to go through the comments and work on a
+> follow-up to this series, but it probably makes sense to get this
+> sorted ahead of the follow-up (if possible).
+> 
+> On Wed, May 24, 2023 at 2:02 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
 > >
-> > > >                         100% load               50% load                25% load
-> > > >                         (top: ~2% idle)         (top: ~49% idle)        (top: ~74% idle;
-> > > >                                                                         33 CPUs are completely idle)
-> > > >                         ---------------         ----------------        ----------------------------
-> > > > Idle Total              1658703 100%            3150522 100%            2377035 100%
-> > > > x >= 4ms                2504    0.15%           2       0.00%           53      0.00%
-> > > > 4ms> x >= 2ms           390     0.02%           0       0.00%           4563    0.19%
-> > > > 2ms > x >= 1ms          62      0.00%           1       0.00%           54      0.00%
-> > > > 1ms > x >= 500us        67      0.00%           6       0.00%           2       0.00%
-> > > > 500us > x >= 250us      93      0.01%           39      0.00%           11      0.00%
-> > > > 250us > x >=100us       280     0.02%           1145    0.04%           633     0.03%
-> > > > 100us > x >= 50us       942     0.06%           30722   0.98%           13347   0.56%
-> > > > 50us > x >= 25us        26728   1.61%           310932  9.87%           106083  4.46%
-> > > > 25us > x >= 10us        825920  49.79%          2320683 73.66%          1722505 72.46%
-> > > > 10us > x > 5us          795197  47.94%          442991  14.06%          506008  21.29%
-> > > > 5us > x                 6520    0.39%           43994   1.40%           23645   0.99%
-> > > >
-> > > >
-> > > > 99% of the tick stops only have an idle period shorter than 50us (50us is
-> > > > 1,25% of a tick length).
+> > On Thu, Apr 06, 2023 at 02:00:27PM -0500, Allen Webb wrote:
+> > > Generate modules.builtin.alias using modpost and install it with the
+> > > modules.
+> >
+> > Why? This is probably one of the more important commits and the
+> > commit log is pretty slim.
+> >
+> > > Signed-off-by: Allen Webb <allenwebb@google.com>
+> > > ---
+> > >  .gitignore               |  1 +
+> > >  Makefile                 |  1 +
+> > >  scripts/Makefile.modpost | 15 +++++++++++++++
+> > >  3 files changed, 17 insertions(+)
 > > >
-> > > Well, this just means that the governor predicts overly long idle
-> > > durations quite often under this workload.
+> > > diff --git a/.gitignore b/.gitignore
+> > > index 13a7f08a3d73..ddaa622bddac 100644
+> > > --- a/.gitignore
+> > > +++ b/.gitignore
+> > > @@ -71,6 +71,7 @@ modules.order
+> > >  /System.map
+> > >  /Module.markers
+> > >  /modules.builtin
+> > > +/modules.builtin.alias
+> > >  /modules.builtin.modinfo
+> > >  /modules.nsdeps
 > > >
-> > > The governor's decision on whether or not to stop the tick is based on
-> > > its idle duration prediction.  If it overshoots, that's how it goes.
+> > > diff --git a/Makefile b/Makefile
+> > > index a2c310df2145..43dcc1ea5fcf 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -1578,6 +1578,7 @@ __modinst_pre:
+> > >       fi
+> > >       @sed 's:^\(.*\)\.o$$:kernel/\1.ko:' modules.order > $(MODLIB)/modules.order
+> > >       @cp -f modules.builtin $(MODLIB)/
+> > > +     @cp -f modules.builtin.alias $(MODLIB)/
+> > >       @cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+> > >
+> > >  endif # CONFIG_MODULES
+> > > diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> > > index 0980c58d8afc..e3ecc17a7a19 100644
+> > > --- a/scripts/Makefile.modpost
+> > > +++ b/scripts/Makefile.modpost
+> > > @@ -15,6 +15,7 @@
+> > >  # 2) modpost is then used to
+> > >  # 3)  create one <module>.mod.c file per module
+> > >  # 4)  create one Module.symvers file with CRC for all exported symbols
+> > > +# 5)  create modules.builtin.alias the aliases for built-in modules
 > >
-> > This is abysmal; IIRC TEO tracks a density function in C state buckets
-> > and if it finds it's more likely to be shorter than 'predicted' by the
-> > timer it should pick something shallower.
+> > Does everyone want that file?
+> 
+> Not everyone needs it so we could exclude it, but the cost of adding
+> it isn't that high. I am fine with putting it behind a config, though
+> we would need to decide whether to have it default on/off.
+
+We didn't know the cost until I asked, it was the point of asking.
+Perhaps Nick, Alessandro or Alexander could use it too later.
+
+> > >  # Step 3 is used to place certain information in the module's ELF
+> > >  # section, including information such as:
+> > > @@ -63,6 +64,20 @@ modpost-args += -T $(MODORDER)
+> > >  modpost-deps += $(MODORDER)
+> > >  endif
+> > >
+> > > +ifneq ($(wildcard vmlinux.o),)
+> > > +output-builtin.alias := modules.builtin.alias
+> > > +modpost-args += -b .modules.builtin.alias.in
+> > > +.modules.builtin.alias.in: $(output-symdump)
+> > > +     @# Building $(output-symdump) generates .modules.builtin.alias.in as a
+> > > +     @# side effect.
+> > > +     @[ -e $@ ] || $(MODPOST) -b .modules.builtin.alias.in vmlinux.o
 > >
-> > Given we have this density function, picking something that's <1% likely
-> > is insane. In fact, it seems to suggest the whole pick-alternative thing
-> > is utterly broken.
+> > Does using -b create a delay in builds ? What is the effect on build
+> > time on a typical 4-core or 8-core build? Does everyone want it?
+> 
+> Here is some data I collected related to build time and memory usage impact:
+> 
+> Without builtin.alias:
+> TIME="real %e\nuser %U\nsys %S\nres-max %M" time scripts/mod/modpost
+> -E -o Module.symvers -T modules.order
+> ERROR: modpost: "__x86_return_thunk"
+> [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "kernel_fpu_end" [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "hchacha_block_generic"
+> [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "boot_cpu_data" [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "static_key_enable" [arch/x86/crypto/chacha-x86_64.ko]
+> undefined!
+> ERROR: modpost: "cpu_has_xfeatures" [arch/x86/crypto/chacha-x86_64.ko]
+> undefined!
+> ERROR: modpost: "crypto_register_skciphers"
+> [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "crypto_unregister_skciphers"
+> [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "__stack_chk_fail" [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> ERROR: modpost: "memset" [arch/x86/crypto/chacha-x86_64.ko] undefined!
+> WARNING: modpost: suppressed 17432 unresolved symbol warnings because
+> there were too many)
+> Command exited with non-zero status 1
+> real 0.44
+> user 0.43
+> sys 0.01
+> res-max 4896
+> 
+> With builtin.alias:
+> TIME="real %e\nuser %U\nsys %S\nres-max %M" time scripts/mod/modpost
+> -E -o Module.symvers -T modules.order -b .modules.builtin.alias.in
+> vmlinux.o
+> real 1.43
+> user 1.38
+> sys 0.05
+> res-max 51920
+> 
+> Notice that modpost only uses a single core, so multicore isn't really
+> as much of a factor here. While it more than triples the time required
+> for the modpost operation the difference is only about one second of
+> CPU time. The memory usage is much larger when generating
+> modules.builtin.alias because of the size of vmlinux.o.
+
+The modpost impact time of about 1 second for a type of config you used
+should be described in your commit log and or kconfig entry to enable
+this.
+
+> My biggest performance related concern is actually the size difference
+> of vmlinux caused by the modules.h changes, but it looks like that is
+> negligible (24KiB):
+
+And this size too.
+
+24 KiB is not that small, so I'd prefer we kconfig'ize it for now and
+have those who need it to select it. If we later all want it, we can
+default to yes but for now default to no. The default today by
+kconfig is to no so an empty default is fine.
+
+> Without builtin.alias:
+> du vmlinux.o
+> 663048  vmlinux.o
+> 
+> With builtin.alias:
+> du vmlinux.o
+> 663072  vmlinux.o
+
+What type of configuration was used? allyesconfig?
+
 > >
->
-> When I tried to understand the cstates, I noticed cstates have been
-> disabled on the zen3 machine I used for testing - I'm sorry, pilot error.
->
-> So the numbers above are caused by calling tick_nohz_idle_stop_tick()
-> unconditionally in cpuidle_idle_call() when cpuidle_not_available() is
-> true.
->
-> The regression Gautham observed was then caused by tons of
-> tick_nohz_next_event() calls, which are more expensive with the current
-> implementation of the timer migration hierarchy (if he tested with cstates
-> enabled...).
->
-> Nevertheless, I rerun the tests on current upstream with cstates enabled on
-> zen3 machine and on a SKL-X with governor teo, menu and ladder and
-> generated the following numbers (100% load):
->
-> Zen3:
->                         teo                     menu                    ladder
->                         ------------------      ------------------      ------------------
-> Idle Total              2533    100.00%         5123    100.00%         1333746 100.00%
-> x >= 4ms                1458    57.56%          2764    53.95%          2304    0.17%
-> 4ms> x >= 2ms           91      3.59%           95      1.85%           98      0.01%
-> 2ms > x >= 1ms          56      2.21%           66      1.29%           57      0.00%
-> 1ms > x >= 500us        64      2.53%           74      1.44%           61      0.00%
-> 500us > x >= 250us      73      2.88%           39      0.76%           69      0.01%
-> 250us > x >=100us       76      3.00%           88      1.72%           502     0.04%
-> 100us > x >= 50us       33      1.30%           104     2.03%           3976    0.30%
-> 50us > x >= 25us        39      1.54%           289     5.64%           64463   4.83%
-> 25us > x >= 10us        199     7.86%           830     16.20%          1245946 93.42%
-> 10us > x > 5us          156     6.16%           231     4.51%           9452    0.71%
-> 5us > x                 288     11.37%          543     10.60%          6818    0.51%
->
-> tick_nohz_next_event()
-> total count             8839790                 2113357                 1363896
->
->
->
-> SKL-X:
->                         teo                     menu                    ladder
->                         ------------------      ------------------      ------------------
-> Idle Total              2388    100.00%         2047    100.00%         693514  100.00%
-> x >= 4ms                2047    85.72%          1347    65.80%          1141    0.16%
-> 4ms> x >= 2ms           29      1.21%           47      2.30%           18      0.00%
-> 2ms > x >= 1ms          20      0.84%           9       0.44%           10      0.00%
-> 1ms > x >= 500us        21      0.88%           17      0.83%           10      0.00%
-> 500us > x >= 250us      15      0.63%           26      1.27%           9       0.00%
-> 250us > x >=100us       67      2.81%           39      1.91%           24      0.00%
-> 100us > x >= 50us       18      0.75%           26      1.27%           17      0.00%
-> 50us > x >= 25us        15      0.63%           28      1.37%           2141    0.31%
-> 25us > x >= 10us        31      1.30%           61      2.98%           108208  15.60%
-> 10us > x > 5us          37      1.55%           195     9.53%           242809  35.01%
-> 5us > x                 88      3.69%           252     12.31%          339127  48.90%
->
-> tick_nohz_next_event()
-> total count             2317973                 2481724                 701069
+> > Should we add a new option which lets people decide if they want this
+> > at build time or not?
+> 
+> I don't feel strongly that there should or should not be a config for
+> this. On the side for a config the extra second of CPU time and space
+> taken up by the modules.builtin.alias file would add up across all the
+> builds and machines, so removing it where it isn't used would help
+> mitigate that. On the flip side if it isn't used widely enough, it is
+> more likely that breakages are missed until someone who actually uses
+> it notices.
+> 
+> Please let me know if you feel strongly either way given the data.
 
-This looks better indeed.  What's the HZ value?
+For now I'd prefer a kconfig option, it's easy to default to y later,
+but saving 64 KiB seems like a desirable thing for some folks.
 
-> With this (and hopefully without another pilot error), I see the following
-> 'open points' where improvement or more thoughts might be good:
->
-> - Without cstates enabled, it is possible to change the cpuidle governors
->   even if they do not have an impact on idle behavior but at the first
->   glance it looks like cpuidle governors are used. Is this behavior
->   intended?
-
-Not really intended and it can be improved.  I guess it's this way,
-because there were no complaints. :-)
-
-> - When there is no cpuidle driver, tick_nohz_idle_stop_tick() is called
->   unconditionally - is there the possibility to make an easy check whether
->   the CPU is loaded?
-
-PELT could be asked like in the teo governor.  Or it may be a better
-idea to simply never stop the tick in that case (the default idle
-state is going to be shallow anyway, so running the tick shouldn't
-matter from the energy POV).
-
-> - The governors teo and menu do the tick_nohz_next_event() check even if
->   the CPU is fully loaded and but the check is not for free.
-
-Let me have a loot at teo in that respect.
-
-The problem is when tick_nohz_get_sleep_length() should not be called.
-The easy case is when the governor would select the shallowest idle
-state without taking it into account, but what about the deeper ones?
-I guess this depends on the exit latency of the current candidate idle
-state, but what exit latency would be low enough?  I guess 2 us would
-be fine, but what about 10 us, or even 20 us for that matter?
-
-> - timer bases are marked idle in tick_nohz_next_event() when the next
->   expiry is more than a tick away. But when the tick can not be stopped,
->   because CPU is loaded and timer base is alreay marked idle, a remote
->   timer enqueue before clearing timer base idle information will lead to a
->   IPI which is also expensive.
->
->   It might be worth a try to do only a (maybe leaner) check for the next
->   timer in tick_nohz_next_event() and do the actual idle dance in
->   tick_nohz_stop_tick(). When a timer is enqueued remote between
->   tick_nohz_next_event() and tick_nohz_stop_tick() call, there is no need
->   for an IPI - CPU might be prevented from stopping the tick. This is also
->   the case at the moment and only solved by an IPI after tick is already
->   stopped.
->
->   With regard to the timer migration hierarchy, there might be the
->   possibility to do also a quick check in tick_nohz_next_event() and do the
->   final tmigr_cpu_deactivate() thing when stopping the tick and marking the
->   timer bases idle. So no lock ordering change would be required here...
->
-> - Side note: When testing 'ladder' on SKL-X machine there was a strange
->   pattern: All CPUs on the second socket, stopped the tick quite often
->   (~12000) and all of the idle durations were below 50us. All CPUs on the
->   first socket stopped the tick max ~100 times and most of the idle
->   durations were longer than 4ms (HZ=250).
-
-I don't really have a quick explanation for that.  It's probably due
-to the work distribution pattern.
-
-Not that I think that ladder is interesting any more, TBH.
+  Luis
