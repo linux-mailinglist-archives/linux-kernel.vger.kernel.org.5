@@ -2,142 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAB576345B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FB0763465
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbjGZK4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
+        id S233231AbjGZK6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjGZKz7 (ORCPT
+        with ESMTP id S230480AbjGZK6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:55:59 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F71113D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:55:57 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso55844705e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690368955; x=1690973755;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iegk/2TKL5Rj456XBjxdhlF2YFlmLFdSyPtT2uk62mo=;
-        b=CW3jL5pMUrmOUizoS1E9Hcsvtp4BD/g7xIZqvjeEkiUm4QBhFwTSenULu7s0INr9iJ
-         zQysgQPFzzAVrqets21G+KcdMXNDWvaj9TwVMnDuA/v4sGB1JgcKYEF4cErb4lNceJ+2
-         YVE6eDM18TkSiSu4iJfWA/Ku+F+wohEkxQgbqJuieY0qLQv1e8ZYLf/FY/BaKem8B936
-         PdG2Z39Rxp+xEfrzkebV4lh0v083vpRRmnFRTIW+Kyfr+rB3xFJLS1yHpobQYxZbtkhC
-         rywe5ncdgxjclxQMKOK0X5tJhU/o+KgtRF2F4GQhNwTe3EUKY1Gt4rriLeBpkloQS8X/
-         wCFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690368955; x=1690973755;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iegk/2TKL5Rj456XBjxdhlF2YFlmLFdSyPtT2uk62mo=;
-        b=HCcbLOTi2MhWPTtADWww5oRfezXNldyqvnUn7a+GmhHah8idTWealudtWzUaNwAesH
-         Jmj6jpgxOXuOB29YkmtiXoLtbFv07pXU2P7AemHnJccHu3TIhkJn052HqG4i2i66kPeJ
-         ORmpN4/tLPclI9ZE2QsE5hWZSoqw1dS+/BqyXJT7xC23E5+dUZMEXZdYnlpObU0A3BeS
-         Fjo79NSnftB7v3xDy1kHb4nzJhT0mVBPq+4y/wJb3Bt/vDTxJeakHJIAjrBLcIfIKwpg
-         +DXc1ZVqePKinDMhVc0d2H+N6h9mClxWblIBBN4g580iyMkEjdNv1snRIH2JqInso3V4
-         bN5g==
-X-Gm-Message-State: ABy/qLYsVAWTK8+dO0CQByZ9MKbFvx+spTNDhFLR24scad48f2QrvhuQ
-        9nCVGUHuxny8WzUSuMaxOL74rg==
-X-Google-Smtp-Source: APBJJlG6UyprMnFMQm4Ei76lg009+z+sJ9pxlVFtN/IZb2oMNBA6ouM38riQicLc05GMonaqkYMTWw==
-X-Received: by 2002:a5d:558e:0:b0:313:e9f6:3378 with SMTP id i14-20020a5d558e000000b00313e9f63378mr1003950wrv.4.1690368955338;
-        Wed, 26 Jul 2023 03:55:55 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id o26-20020a5d58da000000b0030ae499da59sm19353583wrf.111.2023.07.26.03.55.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 03:55:54 -0700 (PDT)
-Message-ID: <eb8ff364-1c49-28b4-242d-168828ca7094@linaro.org>
-Date:   Wed, 26 Jul 2023 11:55:53 +0100
+        Wed, 26 Jul 2023 06:58:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002DF1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690369084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jGubfG0J6/LbJU8ZklZwV88L9biaQyHs5qooncbU0FI=;
+        b=E6xkEtAimg/2Eu7hWj8ssUd5LebA3rC/z/sm6zcjIwoQknuydLBXxhUyTqXqffTMeHgcfb
+        VcWpj72sFpGK2P3ldLL56T6tYiVovtRnJgU20jQR8oQ1pWcLMLQyc1DXDGNKsVfEHAgCRu
+        TK1wpi3j6OgJ2xitoX1C33k7jd48uRg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-206-dqoDG2KSNXWgfEIc4HVvzQ-1; Wed, 26 Jul 2023 06:58:00 -0400
+X-MC-Unique: dqoDG2KSNXWgfEIc4HVvzQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7327F801CF3;
+        Wed, 26 Jul 2023 10:57:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA5BE2166B25;
+        Wed, 26 Jul 2023 10:57:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steve French <sfrench@samba.org>
+cc:     dhowells@redhat.com, akpm@linux-foundation.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto, cifs: Fix error handling in extract_iter_to_sg()
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v7 3/6] media: starfive: camss: Add basic driver
-Content-Language: en-US
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-4-jack.zhu@starfivetech.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230619112838.19797-4-jack.zhu@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <20570.1690369076.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 26 Jul 2023 11:57:56 +0100
+Message-ID: <20571.1690369076@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/2023 12:28, Jack Zhu wrote:
+    =
 
-> +static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
-> +{
-> +	struct device *dev = stfcamss->dev;
-> +	struct device_node *node = NULL;
-> +	int ret, num_subdevs = 0;
-> +
-> +	for_each_endpoint_of_node(dev->of_node, node) {
-> +		struct stfcamss_async_subdev *csd;
-> +
-> +		if (!of_device_is_available(node))
-> +			continue;
-> +
-> +		csd = v4l2_async_nf_add_fwnode_remote(&stfcamss->notifier,
-> +						      of_fwnode_handle(node),
-> +						      struct stfcamss_async_subdev);
-> +		if (IS_ERR(csd)) {
-> +			ret = PTR_ERR(csd);
-> +			goto err_cleanup;
-> +		}
-> +
-> +		ret = stfcamss_of_parse_endpoint_node(dev, node, csd);
-> +		if (ret < 0)
-> +			goto err_cleanup;
-> +
-> +		num_subdevs++;
-> +	}
-> +
-> +	return num_subdevs;
-> +
-> +err_cleanup:
-> +	of_node_put(node);
+Fix error handling in extract_iter_to_sg().  Pages need to be unpinned, no=
+t
+put in extract_user_to_sg() when handling IOVEC/UBUF sources.
 
-Where is the _get() for this and if you are releasing it on the error 
-path when is the _get() released on the non-error path ?
+The bug may result in a warning like the following:
 
-> +	return ret;
-> +}
-> +
-> +static int stfcamss_subdev_notifier_bound(struct v4l2_async_notifier *async,
-> +					  struct v4l2_subdev *subdev,
-> +					  struct v4l2_async_subdev *asd)
-> +{
-> +	struct media_pad *pad[STF_PADS_NUM];
-> +	unsigned int i, pad_num = 0;
-> +
-> +	for (i = 0; i < pad_num; ++i) {
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 __lse_atomic_add arch/arm64/i=
+nclude/asm/atomic_lse.h:27 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 arch_atomic_add arch/arm64/in=
+clude/asm/atomic.h:28 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 raw_atomic_add include/linux/=
+atomic/atomic-arch-fallback.h:537 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 atomic_add include/linux/atom=
+ic/atomic-instrumented.h:105 [inline]
+  WARNING: CPU: 1 PID: 20384 at mm/gup.c:229 try_grab_page+0x108/0x160 mm/=
+gup.c:252
+  ...
+  pc : try_grab_page+0x108/0x160 mm/gup.c:229
+  lr : follow_page_pte+0x174/0x3e4 mm/gup.c:651
+  ...
+  Call trace:
+   __lse_atomic_add arch/arm64/include/asm/atomic_lse.h:27 [inline]
+   arch_atomic_add arch/arm64/include/asm/atomic.h:28 [inline]
+   raw_atomic_add include/linux/atomic/atomic-arch-fallback.h:537 [inline]
+   atomic_add include/linux/atomic/atomic-instrumented.h:105 [inline]
+   try_grab_page+0x108/0x160 mm/gup.c:252
+   follow_pmd_mask mm/gup.c:734 [inline]
+   follow_pud_mask mm/gup.c:765 [inline]
+   follow_p4d_mask mm/gup.c:782 [inline]
+   follow_page_mask+0x12c/0x2e4 mm/gup.c:839
+   __get_user_pages+0x174/0x30c mm/gup.c:1217
+   __get_user_pages_locked mm/gup.c:1448 [inline]
+   __gup_longterm_locked+0x94/0x8f4 mm/gup.c:2142
+   internal_get_user_pages_fast+0x970/0xb60 mm/gup.c:3140
+   pin_user_pages_fast+0x4c/0x60 mm/gup.c:3246
+   iov_iter_extract_user_pages lib/iov_iter.c:1768 [inline]
+   iov_iter_extract_pages+0xc8/0x54c lib/iov_iter.c:1831
+   extract_user_to_sg lib/scatterlist.c:1123 [inline]
+   extract_iter_to_sg lib/scatterlist.c:1349 [inline]
+   extract_iter_to_sg+0x26c/0x6fc lib/scatterlist.c:1339
+   hash_sendmsg+0xc0/0x43c crypto/algif_hash.c:117
+   sock_sendmsg_nosec net/socket.c:725 [inline]
+   sock_sendmsg+0x54/0x60 net/socket.c:748
+   ____sys_sendmsg+0x270/0x2ac net/socket.c:2494
+   ___sys_sendmsg+0x80/0xdc net/socket.c:2548
+   __sys_sendmsg+0x68/0xc4 net/socket.c:2577
+   __do_sys_sendmsg net/socket.c:2586 [inline]
+   __se_sys_sendmsg net/socket.c:2584 [inline]
+   __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2584
+   __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+   invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:52
+   el0_svc_common.constprop.0+0x44/0xe4 arch/arm64/kernel/syscall.c:142
+   do_el0_svc+0x38/0xa4 arch/arm64/kernel/syscall.c:191
+   el0_svc+0x2c/0xb0 arch/arm64/kernel/entry-common.c:647
+   el0t_64_sync_handler+0xc0/0xc4 arch/arm64/kernel/entry-common.c:665
+   el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:591
 
-Does this loop ever run ?
-I don't see how it can..
-
+Fixes: 018584697533 ("netfs: Add a function to extract an iterator into a =
+scatterlist")
+Reported-by: syzbot+9b82859567f2e50c123e@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-mm/000000000000273d0105ff97bf56@google=
+.com/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Sven Schnelle <svens@linux.ibm.com>
+cc: akpm@linux-foundation.org
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: Steve French <sfrench@samba.org>
+cc: Shyam Prasad N <nspmangalore@gmail.com>
+cc: Rohith Surabattula <rohiths.msft@gmail.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-mm@kvack.org
+cc: linux-crypto@vger.kernel.org
+cc: linux-cachefs@redhat.com
+cc: linux-cifs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: netdev@vger.kernel.org
 ---
-bod
+ lib/scatterlist.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index e86231a44c3d..c65566b4dc66 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -1148,7 +1148,7 @@ static ssize_t extract_user_to_sg(struct iov_iter *i=
+ter,
+ =
+
+ failed:
+ 	while (sgtable->nents > sgtable->orig_nents)
+-		put_page(sg_page(&sgtable->sgl[--sgtable->nents]));
++		unpin_user_page(sg_page(&sgtable->sgl[--sgtable->nents]));
+ 	return res;
+ }
+ =
+
