@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEB8763B44
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17035763B49
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbjGZPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        id S234376AbjGZPjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbjGZPjS (ORCPT
+        with ESMTP id S234333AbjGZPjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:39:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4504A1B0;
-        Wed, 26 Jul 2023 08:39:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD6CC61B5D;
-        Wed, 26 Jul 2023 15:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EA2EC433C7;
-        Wed, 26 Jul 2023 15:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690385957;
-        bh=mIOGi0gBMHEqkGdNbDH6LW1lZ3Ao6lr4wjejxd0zmN4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rKGZlp8LCfTHU4nOTm5q1zIvNpqloNGZQT5n5WzPRJ02MVLq4ePApKs/YcHVrX+er
-         KZ4/TCKkW1ETlfevpKlFrhg39pu0ZZ7roInTfdqAXsyrQE/yWMhiY8GVKqOoDWWiw0
-         VPKwLJmW++zUTqwR3/16foXuKSOpXnIamtITS0RvoRuqM+obd2mOuKwpUrSTmQ/77K
-         2wXRQkuq/RFwGkjunUqBUrXwfjnyZezX9sZ/tGD50YMPTJmyL71g62GrVMudd8mBY1
-         9S2EevaUtdF0zxMdl37QDa1Gg+xQvDPbBtfUc/Auv5ypPDvrsadTPIB8eF2sMiAoot
-         wEzY0euh6PYfw==
-Date:   Wed, 26 Jul 2023 08:39:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Md Danish Anwar <a0501179@ti.com>
-Cc:     MD Danish Anwar <danishanwar@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v11 07/10] net: ti: icssg-prueth: Add
- ICSSG Stats
-Message-ID: <20230726083915.1323c501@kernel.org>
-In-Reply-To: <296b0e98-4012-09f6-84cd-6f87a85f095f@ti.com>
-References: <20230724112934.2637802-1-danishanwar@ti.com>
-        <20230724112934.2637802-8-danishanwar@ti.com>
-        <20230725205014.04e4bba3@kernel.org>
-        <296b0e98-4012-09f6-84cd-6f87a85f095f@ti.com>
+        Wed, 26 Jul 2023 11:39:51 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4611B0;
+        Wed, 26 Jul 2023 08:39:47 -0700 (PDT)
+X-QQ-mid: bizesmtp66t1690385976t7iihfqr
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 23:39:35 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: 5CNn+SP0K2tQLkLI/cB/7TfAh0HH7fuHBPafOFaqQnjr3ys+wr1X4G4JaRvR3
+        qPhRkkyyBgrAbZmDj01gVf2L2n+yDdZ+0WmHnYX8TidhXLfBFqjQH31IeTrcQFqKUJ01ef8
+        TRVG8Dcm/GIJKfkP8eQG737aDgDu3wrz7B+JpJovDb1TzhgQtLn95kLwxpa52sPZ34mts8/
+        fBDhlKnpUNm7i3QiVPiNrgc9VWjbKCaxsaGL/qJBE1oD7dtFLn2EkNY7DpXy78wSaw//3pE
+        01G2Wl7jsxwndshWM7nYirSptn/dK+43F3FetgHMHXCkYmH1wJoMMZVO1TTCIKAafyruU5d
+        nMC0Hqiz831rW2AAzKr+8S8nUBm1ycYGn6Jzzxqga0rYWrR5MMX8yvsAymbqWZbZk12CfH4
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 17309130325439017752
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     falcon@tinylab.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        thomas@t-8ch.de, w@1wt.eu
+Subject: [PATCH v2 4/7] selftests/nolibc: add XARCH and ARCH mapping support
+Date:   Wed, 26 Jul 2023 23:39:35 +0800
+Message-Id: <20230726153935.252238-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <4260bf6df7417ba5395e7a1f71609690bbd11b17.1690373704.git.falcon@tinylab.org>
+References: <4260bf6df7417ba5395e7a1f71609690bbd11b17.1690373704.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 16:06:06 +0530 Md Danish Anwar wrote:
-> > Are the bucket sizes configurable? Can we set the bucket sizes
-> > to standard RMON ones and use ethtool RMON stats?  
-> 
-> The bucket sizes are not configurable. Bucket size is read from hardware and is
-> fixed. I don't think we can configure bucket size and use ethtool RMON stats.
-> It's better to dump bucket sizes via ethtool -S.
+> [...]
+> Suggested-by: Willy Tarreau <w@1wt.eu>
+> Link: https://lore.kernel.org/lkml/20230702171715.GD16233@1wt.eu/
+> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> ---
+>  tools/testing/selftests/nolibc/Makefile | 27 ++++++++++++++++---------
+>  1 file changed, 18 insertions(+), 9 deletions(-)
+>  
+> [...]
+>  REPORT  ?= awk '/\[OK\][\r]*$$/{p++} /\[FAIL\][\r]*$$/{if (!f) printf("\n"); f++; print;} /\[SKIPPED\][\r]*$$/{s++} \
+> @@ -102,7 +110,7 @@ help:
+>  	@echo "  run-user     runs the executable under QEMU (uses \$$ARCH, \$$TEST)"
+>  	@echo "  initramfs    prepare the initramfs with nolibc-test"
+>  	@echo "  defconfig    create a fresh new default config (uses \$$ARCH)"
+> -	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$ARCH)"
+> +	@echo "  kernel       (re)build the kernel with the initramfs (uses $$ARCH)"
 
-The buckets in the ethtool API are up to the device to define.
-Driver returns bucket ranges via struct ethtool_rmon_hist_range
-from struct ethtool_ops::get_rmon_stats.
+and a wrongly removed '\' here.
+
+Thanks,
+Zhangjin
+
+>  	@echo "  run          runs the kernel in QEMU after building it (uses \$$ARCH, \$$TEST)"
+>  	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$ARCH, \$$TEST)"
+>  	@echo "  clean        clean the sysroot, initramfs, build and output files"
+> @@ -111,12 +119,13 @@ help:
+>  	@echo ""
+>  	@echo "Currently using the following variables:"
+>  	@echo "  ARCH          = $(ARCH)"
+> +	@echo "  XARCH         = $(XARCH)"
+>  	@echo "  CROSS_COMPILE = $(CROSS_COMPILE)"
+>  	@echo "  CC            = $(CC)"
+>  	@echo "  OUTPUT        = $(OUTPUT)"
+>  	@echo "  TEST          = $(TEST)"
+> -	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$ARCH]"
+> -	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$ARCH]"
+> +	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$XARCH]"
+> +	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$XARCH]"
+>  	@echo ""
+>  
+>  all: run
+> -- 
+> 2.25.1
