@@ -2,70 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9C0763706
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F03763701
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbjGZNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
+        id S233876AbjGZNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbjGZNCb (ORCPT
+        with ESMTP id S233798AbjGZNBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:02:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C162D79
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690376493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lvJT1Nrqg3NuKZyozBDgNxTT7my/YGr0ImgVXCIWT+Q=;
-        b=DpFfzCut87YQxjMA3fKPlDlzCg4d45VwHbdd3fOc22qVQ0HaeT6RLiQ6VIoXvpr7rB0ulJ
-        nxLHT6kS0LJh5MB+IsaaicqAkP6AEQCuXjJwSueD8S0PXxZHg6cdq9yIF+xNJ8sJOjdUKA
-        BLlErdkIe3UH5cXJTVziQEP6HjJmYr8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-278-mUCV0oISO9O_7Sy7Qq9tpg-1; Wed, 26 Jul 2023 09:01:23 -0400
-X-MC-Unique: mUCV0oISO9O_7Sy7Qq9tpg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 26 Jul 2023 09:01:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9FD26BD;
+        Wed, 26 Jul 2023 06:01:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A782A8870D8;
-        Wed, 26 Jul 2023 13:01:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 53148492CAC;
-        Wed, 26 Jul 2023 13:01:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0000000000000cb2c305fdeb8e30@google.com>
-References: <0000000000000cb2c305fdeb8e30@google.com>
-To:     syzbot <syzbot+e79818f5c12416aba9de@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [crypto?] general protection fault in cryptd_hash_export
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 699A26173F;
+        Wed, 26 Jul 2023 13:01:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76D0C433C8;
+        Wed, 26 Jul 2023 13:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690376485;
+        bh=CcGORqTI9ZQHAZplK151N2vLhAMfOhssOSPkNJphVGw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Pbc+uSu8VD3m5STq3XL048/uvTncN+tUJZ6Zhe/8MbtHzpfZS3Vjt1mel+Qq44uv9
+         T43JoBLDSZaziybKP954o38v0ix4aSQMH9cLXnuRFwgxWvUZQjh1WfrLbUkXodqz4c
+         Hn3Wdwgkpuc6M66PWQ4m4uaHqR/aBNyzNUVwWgk7modCyi8saqnb1/fwcvvBlKgPNA
+         ysBplL4MGi69v6KwrlSDsmdB7AxG4sG9Vm/8UjpdHBCPtA8CipAdxsyD4AqAb82XQe
+         EKcVaZfeKW1i+addyIzssh0iIbScYejmc0mCiZrekGg9MglzIL5QKBzThgxHg+hvoc
+         kCFzUOSAWyXYQ==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     linux-trace-kernel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH v3 9/9] Documentation: tracing: Update fprobe event example with BTF field
+Date:   Wed, 26 Jul 2023 22:01:21 +0900
+Message-Id: <169037648115.607919.18187565150152698053.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <169037639315.607919.2613476171148037242.stgit@devnote2>
+References: <169037639315.607919.2613476171148037242.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8976.1690376471.1@warthog.procyon.org.uk>
-Date:   Wed, 26 Jul 2023 14:01:11 +0100
-Message-ID: <8977.1690376471@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: crypto: af_alg/hash: Fix recvmsg() after sendmsg(MSG_MORE)
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Update fprobe event example with BTF data structure field specification.
+
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ Changes in v2:
+  - Remove 'retval' and use '$retval'.
+ Changes in v3:
+  - Add description about mixture of '.' and '->' usage.
+---
+ Documentation/trace/fprobetrace.rst |   64 +++++++++++++++++++++++++----------
+ 1 file changed, 46 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
+index 7297f9478459..8e9bebcf0a2e 100644
+--- a/Documentation/trace/fprobetrace.rst
++++ b/Documentation/trace/fprobetrace.rst
+@@ -79,9 +79,9 @@ automatically set by the given name. ::
+  f:fprobes/myprobe vfs_read count=count pos=pos
+ 
+ It also chooses the fetch type from BTF information. For example, in the above
+-example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
+-are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
+-below ::
++example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
++both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
++print-format as below ::
+ 
+  # cat events/fprobes/myprobe/format
+  name: myprobe
+@@ -105,9 +105,47 @@ is expanded to all function arguments of the function or the tracepoint. ::
+  # cat dynamic_events
+  f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
+ 
+-BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
+-automatically picked from the BTF. If the function returns ``void``, ``$retval``
+-is rejected.
++BTF also affects the ``$retval``. If user doesn't set any type, the retval
++type is automatically picked from the BTF. If the function returns ``void``,
++``$retval`` is rejected.
++
++You can access the data fields of a data structure using allow operator ``->``
++(for pointer type) and dot operator ``.`` (for data structure type.)::
++
++# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
++
++The field access operators, ``->`` and ``.`` can be combined for accessing deeper
++members and other structure members pointed by the member. e.g. ``foo->bar.baz->qux``
++If there is non-name union member, you can directly access it as the C code does.
++For example::
++
++ struct {
++	union {
++	int a;
++	int b;
++	};
++ } *foo;
++
++To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
++
++This data field access is available for the return value via ``$retval``,
++e.g. ``$retval->name``.
++
++For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
++behavior. If these are used for BTF argument or field, it checks whether
++the BTF type of the argument or the data field is ``char *`` or ``char []``,
++or not.  If not, it rejects applying the string types. Also, with the BTF
++support, you don't need a memory dereference operator (``+0(PTR)``) for
++accessing the string pointed by a ``PTR``. It automatically adds the memory
++dereference operator according to the BTF type. e.g. ::
++
++# echo 't sched_switch prev->comm:string' >> dynamic_events
++# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
++
++The ``prev->comm`` is an embedded char array in the data structure, and
++``$retval->name`` is a char pointer in the data structure. But in both
++cases, you can use ``:string`` type to get the string.
++
+ 
+ Usage examples
+ --------------
+@@ -161,10 +199,10 @@ parameters. This means you can access any field values in the task
+ structure pointed by the ``prev`` and ``next`` arguments.
+ 
+ For example, usually ``task_struct::start_time`` is not traced, but with this
+-traceprobe event, you can trace it as below.
++traceprobe event, you can trace that field as below.
+ ::
+ 
+-  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
++  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
+   # head -n 20 trace | tail
+  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+  #              | |         |   |||||     |         |
+@@ -176,13 +214,3 @@ traceprobe event, you can trace it as below.
+            <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+       kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
+            <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+-
+-Currently, to find the offset of a specific field in the data structure,
+-you need to build kernel with debuginfo and run `perf probe` command with
+-`-D` option. e.g.
+-::
+-
+- # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
+- p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
+-
+-And replace the ``%cx`` with the ``next``.
 
