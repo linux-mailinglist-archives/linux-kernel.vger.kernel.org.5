@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ED8762B20
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B768762B25
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjGZGI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S231186AbjGZGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231854AbjGZGIV (ORCPT
+        with ESMTP id S229522AbjGZGLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:08:21 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD24F5;
-        Tue, 25 Jul 2023 23:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1690351695;
-        bh=v6O6SwuFgKs/SoAmzquypRykV9tYHTJm4FpBMJUzSEE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=mFk3L4cgyTnJpqynGlSNzeDFNoOCUL/3sdUHZ4Rhvu53gpH6h8NI0eTBLvnEL4I0O
-         H1Z4MAbVmWA98KZ3ix74euVOo+O264gX8M7xOzgv1nvm8qgKWrUNmnMY/BiIl+qNak
-         rEeb2hZXTr3X2lnn7+R7oQ/cc9EIiWwHW4y0knWk=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Wed, 26 Jul 2023 08:08:13 +0200
-Subject: [PATCH] selftests/nolibc: avoid buffer underrun in space printing
+        Wed, 26 Jul 2023 02:11:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F165AC0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:11:03 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qOXjP-00073w-Ss; Wed, 26 Jul 2023 08:10:43 +0200
+Message-ID: <09a2d767-d781-eba2-028f-a949f1128fbd@pengutronix.de>
+Date:   Wed, 26 Jul 2023 08:10:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230726-nolibc-result-width-v1-1-d1d2dc21844e@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAEy4wGQC/x3MTQqAIBBA4avErBswk4KuEi1SxxwIC+0PwrsnL
- b/Fey8kikwJhuqFSBcn3kJBU1dg/BwWQrbFIIVsRS87DNvK2mCkdK4H3mwPj41TWmjlWjMLKOU
- eyfHzX8cp5w+ybX56ZQAAAA==
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
-        Zhangjin Wu <falcon@tinylab.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690351694; l=1238;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=v6O6SwuFgKs/SoAmzquypRykV9tYHTJm4FpBMJUzSEE=;
- b=RnPYAT0THCDr3pSIkFnyurroxKZQEZoV6fHlvEF71L/l3netZuAt2yUhzZhUzYBChtfpsy2dl
- whqCv19sqPTDt+DVSrBPtGM5DiopPoKOAJqZU1JRTMV9p3FYslsqPqN
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
+To:     Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
+References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+ <20230725200606.5264b59c@kernel.org> <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
+Content-Language: en-US, de-DE
+From:   Johannes Zink <j.zink@pengutronix.de>
+In-Reply-To: <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the test description is longer than the status alignment the
-parameter 'n' to putcharn() would lead to a signed underflow that then
-gets converted to a very large unsigned value.
-This in turn leads out-of-bound writes in memset() crashing the
-application.
+Hi Richard,
 
-The failure case of EXPECT_PTRER() used in "mmap_bad" exhibits this
-exact behavior.
+On 7/26/23 05:22, Richard Cochran wrote:
+> On Tue, Jul 25, 2023 at 08:06:06PM -0700, Jakub Kicinski wrote:
+> 
+>> any opinion on this one?
+> 
+> Yeah, I saw it, but I can't get excited about drivers trying to
+> correct delays.  I don't think this can be done automatically in a
+> reliable way, and so I expect that the few end users who are really
+> getting into the microseconds and nanoseconds will calibrate their
+> systems end to end, maybe even patching out this driver nonsense in
+> their kernels.
+> 
 
-Fixes: 8a27526f49f9 ("selftests/nolibc: add EXPECT_PTREQ, EXPECT_PTRNE and EXPECT_PTRER")
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- tools/testing/selftests/nolibc/nolibc-test.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks for your reading and commenting on my patch. As the commit message 
+elaborates, the Patch corrects for the MAC-internal delays (this is neither PHY 
+delays nor cable delays), that arise from the timestamps not being taken at the 
+packet egress, but at an internal point in the MAC. The compensation values are 
+read from internal registers of the hardware since these values depend on the 
+actual operational mode of the MAC and on the MII link. I have done extensive 
+testing, and as far as my results are concerned, this is reliable at least on 
+the i.MX8MP Hardware I can access for testing. I would actually like correct 
+this on other MACs too, but they are often poorly documented. I have to admit 
+that the DWMAC is one of the first hardwares I encountered with proper 
+documentation. The driver admittedly still has room for improvements - so here 
+we go...
 
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 03b1d30f5507..9b76603e4ce3 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -151,7 +151,8 @@ static void result(int llen, enum RESULT r)
- 	else
- 		msg = "[FAIL]";
- 
--	putcharn(' ', 64 - llen);
-+	if (llen < 64)
-+		putcharn(' ', 64 - llen);
- 	puts(msg);
- }
- 
+Nevertheless, there is still PHY delays to be corrected for, but I need to 
+extend the PHY framework for querying the clause 45 registers to account for 
+the PHY delays (which are even a larger factor of). I plan to send another 
+series fixing this, but this still needs some cleanup being done.
 
----
-base-commit: dfef4fc45d5713eb23d87f0863aff9c33bd4bfaf
-change-id: 20230726-nolibc-result-width-1f4b0b4f3ca0
+Also on a side-note, "driver nonsense" sounds a bit harsh from someone always 
+insisting that one should not compensate for bad drivers in the userspace stack 
+and instead fixing driver and hardware issues in the kernel, don't you think?
 
-Best regards,
+> Having said that, I won't stand in the way of such driver stuff.
+> After all, who cares about a few microseconds time error one way or
+> the other?
+
+I do, and so does my customer. If you want to reach sub-microsecond accuracy 
+with a linuxptp setup (which is absolutely feasible on COTS hardware), you have 
+to take these things into account. I did quite extensive tests, and measuring 
+the peer delay as precisely as possible is one of the key steps in getting 
+offsets down between physical nodes. As I use the PHCs to recover clocks with 
+as low phase offset as possible, the peer delays matter, as they add phase 
+error. At the moment, this patch reduces the offset of approx 150ns to <50ns in 
+a real world application, which is not so bad for a few lines of code, i guess...
+
+I don't want to kick off a lengthy discussion here (especially since Jakub 
+already picked the patch to next), but maybe this mail can help for 
+clarification in the future, when the next poor soul does work on the hwtstamps 
+in the dwmac.
+
+Thanks, also for keeping linuxptp going,
+Johannes
+
+> 
+> Thanks,
+> Richard
+> 
+> 
+
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+Pengutronix e.K.                | Johannes Zink                  |
+Steuerwalder Str. 21            | https://www.pengutronix.de/    |
+31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
