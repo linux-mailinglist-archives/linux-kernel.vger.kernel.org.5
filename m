@@ -2,205 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0C0762810
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F9A762812
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjGZBRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        id S230119AbjGZBSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGZBRe (ORCPT
+        with ESMTP id S229483AbjGZBSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:17:34 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BB1212D;
-        Tue, 25 Jul 2023 18:17:31 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so91786601fa.2;
-        Tue, 25 Jul 2023 18:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690334250; x=1690939050;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AEjI6egyxi9u1ADPXuzcHhehfkVm87hXX6VHMBuwIsI=;
-        b=oDD4iFsVrv8jnWE057VUgfWbQlc4DL6kmzAsP4WSrvt3268tdn+UYiQUY/qgFknmGL
-         3QVnj6awcXC+CM9h083T6h+ozpOfXoe/rOHjeg6SMTgZLFaNTIioGA9LslTo7NRMQUuC
-         eKuiB22kkSe/gy7KRZvYxW00c7q/6IFBVMz76sWFJjWhuP1d6tb6jjBMR1ppA46LFxB2
-         HinAk7q7gIIkerWWX/sq3jTg2kPITQz5G3/EiBRgTm4kWxelcn4Ra45m8/8IOWTpckh5
-         zw1ZODBr7V9MH8cnxvHezsjSh9I6RHgH4KlfmrekAwKRwjQ8WT2nP1q7vNJrua/h0Auc
-         7/cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690334250; x=1690939050;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AEjI6egyxi9u1ADPXuzcHhehfkVm87hXX6VHMBuwIsI=;
-        b=QckaaOWjuAlY/FEG3sks9djW6VWo73EmfQAYfLxTkb9uJra/kZOtN10FT5fjoy05+o
-         rGNfssQuGF4shBrex4Dn/oJ5lp9MJjiez7rIZqUXu0uTyZChiuO9LJn63rTGxoc3yhMw
-         LwQwOgVE0AEyXatt7c5ELLOKAwOtf0JoH8JxQm0NA9Qau+WQozIvd3GheNab23UHxNdO
-         NJzR8LksUnxUsDRE0J9dJaMcJhPWy67y0FhYyAzqoZYhS7N31tFVhr4j893PV4e5pIac
-         V7dRC8D5ppESJyeq82rDHwBWgMby981szDDAH72QST1S5KuoKJlDWYRz0fbTLR4+OkmT
-         ZJ6A==
-X-Gm-Message-State: ABy/qLYyyeEPXTldPGBhj9wdtzSDpB7C5dPo/ZjRwsWNvpxevjcnMniY
-        DZ2hvZ0b01kV+oXGp1CIQzKCgtWk81sgXnWQInw=
-X-Google-Smtp-Source: APBJJlGXi8CmqDI19BM+v2OBqqoutBJ+ULI8h/HZwAJ56aNGXbBV0H91SM2VTLCSn2uRBq2rmN7+Hx+VCsmvFHGhusA=
-X-Received: by 2002:a2e:918a:0:b0:2b9:35ae:c9ac with SMTP id
- f10-20020a2e918a000000b002b935aec9acmr315516ljg.2.1690334249480; Tue, 25 Jul
- 2023 18:17:29 -0700 (PDT)
+        Tue, 25 Jul 2023 21:18:05 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499162698;
+        Tue, 25 Jul 2023 18:18:02 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9bZf5rDpzVjf2;
+        Wed, 26 Jul 2023 09:16:26 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 09:17:59 +0800
+Message-ID: <d59c7b0e-2887-4823-c524-0ab001d8ef95@huawei.com>
+Date:   Wed, 26 Jul 2023 09:17:59 +0800
 MIME-Version: 1.0
-References: <cover.1690273969.git.haibo1.xu@intel.com> <1f25f27d1316bc91e1e31cd3d50a1d20f696759a.1690273969.git.haibo1.xu@intel.com>
- <CAJve8okJ-HYpsOrqH4Zvn7OBtwXWa4JumC+ZsMfHKB-deVYd2A@mail.gmail.com> <20230725-f5cf47c63abd8673d22b4936@orel>
-In-Reply-To: <20230725-f5cf47c63abd8673d22b4936@orel>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Wed, 26 Jul 2023 09:17:18 +0800
-Message-ID: <CAJve8ony79xS2qPtdex+tSSEP2uTebzBRExUob9kOiwxpC7PEg@mail.gmail.com>
-Subject: Re: [PATCH v6 06/13] KVM: arm64: selftests: Split get-reg-list test code
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>, maz@kernel.org,
-        oliver.upton@linux.dev, seanjc@google.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 1/3] ext4: add two helper functions
+ extent_logical_end() and pa_logical_end()
+Content-Language: en-US
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <871qgvdhnd.fsf@doe.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <871qgvdhnd.fsf@doe.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 8:44=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
+On 2023/7/26 1:29, Ritesh Harjani (IBM) wrote:
+> Baokun Li <libaokun1@huawei.com> writes:
 >
-> On Tue, Jul 25, 2023 at 04:50:36PM +0800, Haibo Xu wrote:
-> > On Tue, Jul 25, 2023 at 4:37=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> =
-wrote:
-> > >
-> > > From: Andrew Jones <ajones@ventanamicro.com>
-> > >
-> > > Split the arch-neutral test code out of aarch64/get-reg-list.c into
-> > > get-reg-list.c. To do this we invent a new make variable
-> > > $(SPLIT_TESTS) which expects common parts to be in the KVM selftests
-> > > root and the counterparts to have the same name, but be in
-> > > $(ARCH_DIR).
-> > >
-> > > There's still some work to be done to de-aarch64 the common
-> > > get-reg-list.c, but we leave that to the next patch to avoid
-> > > modifying too much code while moving it.
-> > >
-> > > Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
-> > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > > ---
-> > >  tools/testing/selftests/kvm/Makefile          |  12 +-
-> > >  .../selftests/kvm/aarch64/get-reg-list.c      | 367 +---------------=
--
-> > >  tools/testing/selftests/kvm/get-reg-list.c    | 377 ++++++++++++++++=
-++
-> > >  3 files changed, 398 insertions(+), 358 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/kvm/get-reg-list.c
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/sel=
-ftests/kvm/Makefile
-> > > index c692cc86e7da..95f180e711d5 100644
-> > > --- a/tools/testing/selftests/kvm/Makefile
-> > > +++ b/tools/testing/selftests/kvm/Makefile
-> > > @@ -140,7 +140,6 @@ TEST_GEN_PROGS_EXTENDED_x86_64 +=3D x86_64/nx_hug=
-e_pages_test
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/aarch32_id_regs
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/arch_timer
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/debug-exceptions
-> > > -TEST_GEN_PROGS_aarch64 +=3D aarch64/get-reg-list
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/hypercalls
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/page_fault_test
-> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/psci_test
-> > > @@ -152,6 +151,7 @@ TEST_GEN_PROGS_aarch64 +=3D access_tracking_perf_=
-test
-> > >  TEST_GEN_PROGS_aarch64 +=3D demand_paging_test
-> > >  TEST_GEN_PROGS_aarch64 +=3D dirty_log_test
-> > >  TEST_GEN_PROGS_aarch64 +=3D dirty_log_perf_test
-> > > +TEST_GEN_PROGS_aarch64 +=3D get-reg-list
-> > >  TEST_GEN_PROGS_aarch64 +=3D kvm_create_max_vcpus
-> > >  TEST_GEN_PROGS_aarch64 +=3D kvm_page_table_test
-> > >  TEST_GEN_PROGS_aarch64 +=3D memslot_modification_stress_test
-> > > @@ -181,6 +181,8 @@ TEST_GEN_PROGS_riscv +=3D kvm_page_table_test
-> > >  TEST_GEN_PROGS_riscv +=3D set_memory_region_test
-> > >  TEST_GEN_PROGS_riscv +=3D kvm_binary_stats_test
-> > >
-> > > +SPLIT_TESTS +=3D get-reg-list
-> > > +
-> > >  TEST_PROGS +=3D $(TEST_PROGS_$(ARCH_DIR))
-> > >  TEST_GEN_PROGS +=3D $(TEST_GEN_PROGS_$(ARCH_DIR))
-> > >  TEST_GEN_PROGS_EXTENDED +=3D $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
-> > > @@ -228,11 +230,14 @@ LIBKVM_C_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o=
-, $(LIBKVM_C))
-> > >  LIBKVM_S_OBJ :=3D $(patsubst %.S, $(OUTPUT)/%.o, $(LIBKVM_S))
-> > >  LIBKVM_STRING_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_STRIN=
-G))
-> > >  LIBKVM_OBJS =3D $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ) $(LIBKVM_STRING_OBJ)
-> > > +SPLIT_TESTS_TARGETS :=3D $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
-> > > +SPLIT_TESTS_OBJS :=3D $(patsubst %, $(ARCH_DIR)/%.o, $(SPLIT_TESTS))
-> > >
-> > >  TEST_GEN_OBJ =3D $(patsubst %, %.o, $(TEST_GEN_PROGS))
-> > >  TEST_GEN_OBJ +=3D $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
-> > >  TEST_DEP_FILES =3D $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
-> > >  TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(LIBKVM_OBJS))
-> > > +TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
-> > >  -include $(TEST_DEP_FILES)
-> > >
-> > >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
-> > > @@ -240,7 +245,10 @@ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %:=
- %.o
-> > >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
-> > >         $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
-> > >
-> > > -EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) cs=
-cope.*
-> > > +$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
-> > > +       $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LD=
-LIBS) -o $@
-> > > +
-> > > +EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(=
-SPLIT_TESTS_OBJS) cscope.*
-> > >
-> > >  x :=3D $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ)=
-)))
-> > >  $(LIBKVM_C_OBJ): $(OUTPUT)/%.o: %.c
-> >
-> > Hi @Andrew Jones,
-> >
-> > After rebasing to v6.5-rc3, some changes are needed to the SPLIT_TESTS
-> > target, or the make would fail.
-> > Please help have a look.
-> >
+>> When we use lstart + len to calculate the end of free extent or prealloc
+>> space, it may exceed the maximum value of 4294967295(0xffffffff) supported
+>> by ext4_lblk_t and cause overflow, which may lead to various problems.
+>>
+>> Therefore, we add two helper functions, extent_logical_end() and
+>> pa_logical_end(), to limit the type of end to loff_t, and also convert
+>> lstart to loff_t for calculation to avoid overflow.
+> Sure. extent_logical_end() is not as bad after dropping the third param.
+> Thanks for addressing review comments and identifying overflow issues :)
 >
-> I took a look and then remembered why I hate looking at Makefiles... I
-> guess it's fine, but it's a pity we need to repeat the $(CC) line.
+> Looks good to me. Feel free to add:
 >
-
-Yes, I can't figure out a way to avoid the repeat $(CC) line.
-Let's see whether there is any suggestion from the community that can
-optimize this.
-
-> Thanks,
-> drew
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>
+Thank you very much for your patient review! 😊
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c |  9 +++------
+>>   fs/ext4/mballoc.h | 14 ++++++++++++++
+>>   2 files changed, 17 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 21b903fe546e..4cb13b3e41b3 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -4432,7 +4432,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>>   
+>>   	/* first, let's learn actual file size
+>>   	 * given current request is allocated */
+>> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
+>> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
+>>   	size = size << bsbits;
+>>   	if (size < i_size_read(ac->ac_inode))
+>>   		size = i_size_read(ac->ac_inode);
+>> @@ -4766,7 +4766,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+>>   	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+>>   	struct ext4_locality_group *lg;
+>>   	struct ext4_prealloc_space *tmp_pa = NULL, *cpa = NULL;
+>> -	loff_t tmp_pa_end;
+>>   	struct rb_node *iter;
+>>   	ext4_fsblk_t goal_block;
+>>   
+>> @@ -4862,9 +4861,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+>>   	 * pa can possibly satisfy the request hence check if it overlaps
+>>   	 * original logical start and stop searching if it doesn't.
+>>   	 */
+>> -	tmp_pa_end = (loff_t)tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
+>> -
+>> -	if (ac->ac_o_ex.fe_logical >= tmp_pa_end) {
+>> +	if (ac->ac_o_ex.fe_logical >= pa_logical_end(sbi, tmp_pa)) {
+>>   		spin_unlock(&tmp_pa->pa_lock);
+>>   		goto try_group_pa;
+>>   	}
+>> @@ -5769,7 +5766,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
+>>   
+>>   	group_pa_eligible = sbi->s_mb_group_prealloc > 0;
+>>   	inode_pa_eligible = true;
+>> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
+>> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
+>>   	isize = (i_size_read(ac->ac_inode) + ac->ac_sb->s_blocksize - 1)
+>>   		>> bsbits;
+>>   
+>> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+>> index df6b5e7c2274..d7aeb5da7d86 100644
+>> --- a/fs/ext4/mballoc.h
+>> +++ b/fs/ext4/mballoc.h
+>> @@ -233,6 +233,20 @@ static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
+>>   		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
+>>   }
+>>   
+>> +static inline loff_t extent_logical_end(struct ext4_sb_info *sbi,
+>> +					struct ext4_free_extent *fex)
+>> +{
+>> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
+>> +	return (loff_t)fex->fe_logical + EXT4_C2B(sbi, fex->fe_len);
+>> +}
+>> +
+>> +static inline loff_t pa_logical_end(struct ext4_sb_info *sbi,
+>> +				    struct ext4_prealloc_space *pa)
+>> +{
+>> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
+>> +	return (loff_t)pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
+>> +}
+>> +
+>>   typedef int (*ext4_mballoc_query_range_fn)(
+>>   	struct super_block		*sb,
+>>   	ext4_group_t			agno,
+>> -- 
+>> 2.31.1
+Cheers!
+-- 
+With Best Regards,
+Baokun Li
+.
