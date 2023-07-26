@@ -2,82 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D138B763A94
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55197763A76
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbjGZPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        id S234786AbjGZPK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235088AbjGZPNT (ORCPT
+        with ESMTP id S233822AbjGZPKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:13:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F057530F4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690384209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A+RJ9bjdJOKdVlmB8tH5nWBvWZOXyXeNxJfoIL0LKjo=;
-        b=ZxKmBNZaW3Q2ww6eSRy3WHN+E6NqsbDSKJeIyh9i6eWrJQem0P9J4es8fGXfurJd0VANP3
-        g1f4plHuotZxLfT2M2In2TdAgNhIUvtdyGu6xY9LRsCdbpZU8ZJYkTcjqTIs1/KjTFBh5d
-        mhCKwFEmIk7i34YMr7R1RyvUYLKrz6w=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-561-vkyNeiwRM4eA3JvU8t_DXw-1; Wed, 26 Jul 2023 11:09:42 -0400
-X-MC-Unique: vkyNeiwRM4eA3JvU8t_DXw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D80261C05AA7;
-        Wed, 26 Jul 2023 15:09:28 +0000 (UTC)
-Received: from [192.168.37.1] (unknown [10.22.50.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7F408145414B;
-        Wed, 26 Jul 2023 15:09:27 +0000 (UTC)
-From:   Benjamin Coddington <bcodding@redhat.com>
-To:     Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH] NFSv4: fix out path in __nfs4_get_acl_uncached
-Date:   Wed, 26 Jul 2023 11:09:26 -0400
-Message-ID: <BC2D2754-5E16-408E-AC74-E1DD34821620@redhat.com>
-In-Reply-To: <20230725115933.23784-1-pchelkin@ispras.ru>
-References: <20230725115933.23784-1-pchelkin@ispras.ru>
+        Wed, 26 Jul 2023 11:10:55 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234D52D6A
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:10:31 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so92715e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690384196; x=1690988996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iIDJxMvMWjb2ZMMRY6z7HMerL44iWnloZy3fk6uRKdA=;
+        b=ktKWWOJ8yocg1qv8xqc3iCGL70fZ/tYfna1yJPbQOuK6JxGIDXdlBti53QNDgeBEUz
+         rSGkbQvXx4lN2Gpg9mGCmY3i6rW9/i8sSoH2pEzQL+3Kmkeid0hRW7ZwzhJWsWrOQcme
+         GLvrxJyMkoCEROI/EnzJbFNctkNug78GmCn0co/3ABbv3tyrxylcPlrhNauTdmBACxIx
+         dG7RS1gcQAuewYCEcLEnGOVTo/Ql9pWOCiE75xYxvVBwu+3In3fiByOtDCDO30nwilkw
+         DxqtHYNFPm0rkqok5lpkSuhx3lp7BSkVqfrKsNULPiL+yyXx8vYmk1ROuOhq1rjCwmbd
+         EcpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690384196; x=1690988996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iIDJxMvMWjb2ZMMRY6z7HMerL44iWnloZy3fk6uRKdA=;
+        b=kUJAOwRlwCcgN1JLDY4jRiWXM7MvBwnQMdwugS15seBxJ1pKeq6TIRoRKspoJajZ/B
+         hmI0T3qYVYRVUcAFU+gBxq/s3PwynA79JaOeWqTYNkIsJQ0TBlqlKcGnVyxoxduTp08n
+         w76mFmLCEYvg+z1NfsO6+j1quUjJgv20jzBWH6GpkRoyfrBkycZLr8cfwfo48KJlKYOM
+         FK8Qx6dU2lmMo44r0pDrnciJWhi83lakOoKKhd/qHFnuBFCAvG9l42Cf71SYXsy8pXcw
+         5J1nO8X3isZKMNysYRC4rB++jpDSmVsBduv5DEO8jDVTwGxYvBft6pn793GSf49NGHkT
+         1fxg==
+X-Gm-Message-State: ABy/qLaJhAwE81Q4Div16gDXHc8L2A4ipfVQI8i/+kLyr6p1Md+VHd9r
+        NuI04rNVsyyzdLxouIWKIleKcY7tK/ari703s3BSzg==
+X-Google-Smtp-Source: APBJJlFMrYG0fRVa96eL8vMcZWqP86Lvlb0UCs77E7/dASW1i+z4fcEOahx9NSDW9VqWJCbeZZqWfRHs/dBtvIHo8UM=
+X-Received: by 2002:a05:600c:8612:b0:3f4:2736:b5eb with SMTP id
+ ha18-20020a05600c861200b003f42736b5ebmr211152wmb.1.1690384195813; Wed, 26 Jul
+ 2023 08:09:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <0000000000002b5e2405f14e860f@google.com> <0000000000009655cc060165265f@google.com>
+In-Reply-To: <0000000000009655cc060165265f@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 26 Jul 2023 17:09:43 +0200
+Message-ID: <CANp29Y7UVO8QGJUC-WB=CT_MKJVUzpJ2pH+e6WAcwqX_4FPgpA@mail.gmail.com>
+Subject: Re: [syzbot] [gfs2?] KASAN: use-after-free Read in qd_unlock (2)
+To:     syzbot <syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com>
+Cc:     agruenba@redhat.com, andersson@kernel.org,
+        cluster-devel@redhat.com, dmitry.baryshkov@linaro.org,
+        eadavis@sina.com, konrad.dybcio@linaro.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 Jul 2023, at 7:59, Fedor Pchelkin wrote:
-
-> Another highly rare error case when a page allocating loop (inside
-> __nfs4_get_acl_uncached, this time) is not properly unwound on error.
-> Since pages array is allocated being uninitialized, need to free only
-> lower array indices. NULL checks were useful before commit 62a1573fcf84
-> ("NFSv4 fix acl retrieval over krb5i/krb5p mounts") when the array had
-> been initialized to zero on stack.
+On Wed, Jul 26, 2023 at 5:03=E2=80=AFPM syzbot
+<syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com> wrote:
 >
-> Found by Linux Verification Center (linuxtesting.org).
+> syzbot suspects this issue was fixed by commit:
 >
-> Fixes: 62a1573fcf84 ("NFSv4 fix acl retrieval over krb5i/krb5p mounts")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> commit 41a37d157a613444c97e8f71a5fb2a21116b70d7
+> Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Date:   Mon Dec 26 04:21:51 2022 +0000
+>
+>     arm64: dts: qcom: qcs404: use symbol names for PCIe resets
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17b48111a8=
+0000
+> start commit:   [unknown]
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dfe56f7d193926=
+860
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D3f6a670108ce433=
+56017
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1209f878c80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D111a48ab48000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
 
-Nice one.
+No, it's quite unlikely.
 
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
-
+>
+> #syz fix: arm64: dts: qcom: qcs404: use symbol names for PCIe resets
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/0000000000009655cc060165265f%40google.com.
