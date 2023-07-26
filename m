@@ -2,154 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F712763934
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F277763938
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbjGZOdl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 10:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S233883AbjGZOeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbjGZOdj (ORCPT
+        with ESMTP id S231929AbjGZOeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:33:39 -0400
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991E3196;
-        Wed, 26 Jul 2023 07:33:38 -0700 (PDT)
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb701d39ddso517751fac.0;
-        Wed, 26 Jul 2023 07:33:38 -0700 (PDT)
+        Wed, 26 Jul 2023 10:34:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10990E7E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690382011;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2wDJZYchIVkh7r/YkUh+Rl0n+teRoHYZgfwVCEQ3SPM=;
+        b=YjbGRxC9si92zevQYcfgaSW5e3xrskg97qCpo6TzO8H6juFCBY7prx1LsjKR+jmNwmY4XC
+        B0Ry7ZZSNMiFVTsKz2QIUOnftSM8c7yTPHzAWPQjwHUlLksZcUqxTisLjYDYzlJy6Vy/V9
+        IswMuFuUVv5AW4I+70FCHnIS8ibLXtA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-277-gRtwAuPbNuSXZzAE-zoxYQ-1; Wed, 26 Jul 2023 10:33:30 -0400
+X-MC-Unique: gRtwAuPbNuSXZzAE-zoxYQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bb3a2c781so126716666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:33:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690382018; x=1690986818;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Updrikr1bw98x36EK4C9daMQvPB+rcMs3qVutcNNDGw=;
-        b=EJf3qEdYeuJGq2W/QKDoJ1ndON9Xz6zUY+rdz4gZ8qz7zcKrYeZo8Qh2gUKdhGeoqq
-         mtto56LbU3c7L4CabJNpfm/ux7GaYxJECFkkPuZ68r+Hs7o/GcbcZpsSxbi0aT7Q4nM9
-         UkcAc3ZflFEu79SIQoRlffxiLFN2/3nO+jixNpmVdn41LYvEGUZyQB3cEyAcMP/pQi3D
-         txzcooD8CKo9VeqPTMcsT3ICAC4y4jCR8iUqW8FPEMLbjiuvlfE7xUiDC3cK3TJZnpjl
-         FvUewicOWJPVdAD6XzFWYWhFLW2fFcX7MQQgihUuGycuM6sH+htaEIrusTioIjCi/ddq
-         +Idg==
-X-Gm-Message-State: ABy/qLZRDodPUPtJl17zKWqRbUJmLJ544lziY4UmNwEYymKUfaDSq0YQ
-        FnmZQFlSMzJhblfSQDbu5H5aMAQlbJi4JdHiYKc=
-X-Google-Smtp-Source: APBJJlGL7alqSLyJJMLIJRTAZiW23Xy5V5TqymN7uiXU59nGkFA6ViiFrYqec8vKpUHT6TD3aKfI9ZtM9W8xeZ+sucA=
-X-Received: by 2002:a05:6870:eca3:b0:1b3:8cfd:fecf with SMTP id
- eo35-20020a056870eca300b001b38cfdfecfmr2327521oab.0.1690382017821; Wed, 26
- Jul 2023 07:33:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690382009; x=1690986809;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2wDJZYchIVkh7r/YkUh+Rl0n+teRoHYZgfwVCEQ3SPM=;
+        b=MD9XJ3a/aJLGX4Rr5ACIonM38QWAgty/Im0yjrw3OoyR/+cuVuTYvn4MKXGg2ATVMJ
+         Mm94GUJ760ZzSyH4DPBw8jpNlMku2I/bWhDFvcUVu7XSfR7HGMv5M7sPAtW9rFuKmylP
+         mpb0lg5elRj1zDD3aihhKC6ep2mOAaHt8U2QeflT8A/59FJCkKjZfm8Houx3wRKUuyD9
+         EzDBm/YEBbeO/SW6j0djHjt9aYsqmHalDsg6wyjeEWB10a+GE2N5BVJqGVammxb/dYHv
+         3HhKnv7lkKbgnudjKuCIKtYFRuhoGE1dUJODHnTnNrjm749Noo1jUDeOhqe6urOOu+2J
+         6Orw==
+X-Gm-Message-State: ABy/qLb2IYOQWGTXvUFiemBBt8B/bK8c3bpOwars34uM8eIuhfNh1rzj
+        m9mUdj8Y9n07U8pExYu0S2/gphgFW0fjYNXDR7hvful53QaKYFO/KqpZSAUNYzj1h405mKd5x63
+        Pafa8lwDznwFunDdAGdtSZ7gG
+X-Received: by 2002:a17:907:b1a:b0:96f:d780:5734 with SMTP id h26-20020a1709070b1a00b0096fd7805734mr1771762ejl.65.1690382008869;
+        Wed, 26 Jul 2023 07:33:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHQ7Jl1vFcoJO5H3B3T2jHjkZsTJJQ9AZIMD7NmPJVqhhhgbo++OMGJO7db6cml3nWvZ4siLQ==
+X-Received: by 2002:a17:907:b1a:b0:96f:d780:5734 with SMTP id h26-20020a1709070b1a00b0096fd7805734mr1771748ejl.65.1690382008528;
+        Wed, 26 Jul 2023 07:33:28 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id o19-20020a17090608d300b0098d2f703408sm9648295eje.118.2023.07.26.07.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 07:33:28 -0700 (PDT)
+Message-ID: <5fdc06b2-22bc-1470-e60c-1e388774ee4b@redhat.com>
+Date:   Wed, 26 Jul 2023 16:33:27 +0200
 MIME-Version: 1.0
-References: <20230710062500.45147-1-anshuman.khandual@arm.com>
- <20230710062500.45147-7-anshuman.khandual@arm.com> <38f0c8f3-5fb3-a18a-456d-867da2998786@arm.com>
- <ac77142d-964b-691d-ea15-105a523d9738@arm.com> <46a3d6d3-f14e-efde-83eb-5952f313f909@arm.com>
- <abbcf3c8-fbd9-727e-780b-74aaf5ae8ec1@os.amperecomputing.com>
-In-Reply-To: <abbcf3c8-fbd9-727e-780b-74aaf5ae8ec1@os.amperecomputing.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Jul 2023 16:33:26 +0200
-Message-ID: <CAJZ5v0iy9QfSRuy_kNNZarJZyO35GN25Td39GGN=kNbr0-fuBA@mail.gmail.com>
-Subject: Re: acpi: Remove ETM from AMBA scan list (was Re: [PATCH V6 6/6]
- coresight: etm4x: Add ACPI support in platform driver)
-To:     Steve Clevenger OS <scclevenger@os.amperecomputing.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Ganapatrao Kulkarni OS <gankulkarni@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] usb: dwc3: pci: skip BYT GPIO lookup table for hardwired
+ phy
+Content-Language: en-US, nl
+To:     Gratian Crisan <gratian.crisan@ni.com>, Thinh.Nguyen@synopsys.com,
+        gregkh@linuxfoundation.org, felipe.balbi@linux.intel.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gratian@gmail.com
+References: <20230717170552.466914-1-gratian.crisan@ni.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230717170552.466914-1-gratian.crisan@ni.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:18 PM Steve Clevenger OS
-<scclevenger@os.amperecomputing.com> wrote:
->
->
-> Hi Rafael, Len,
->
-> On 7/24/2023 9:25 AM, Suzuki K Poulose wrote:
-> > Hi Rafael/Len
-> >
-> > On 19/07/2023 11:11, Suzuki K Poulose wrote:
-> >> Rafael, Len
-> >>
-> >> Ping (packets 6, lost 100%).
-> >>
-> >>
-> >> On 10/07/2023 17:40, Suzuki K Poulose wrote:
-> >>> Rafael, Len
-> >>>
-> >>> On 10/07/2023 07:25, Anshuman Khandual wrote:
-> >>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >>>>
-> >>>> Drop ETM4X ACPI ID from the AMBA ACPI device list, and instead just
-> >>>> move it
-> >>>> inside the new ACPI devices list detected and used via platform driver.
-> >>>>
-> >>>> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> >>>> Cc: Len Brown <lenb@kernel.org>
-> >>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >>>> Cc: Mike Leach <mike.leach@linaro.org>
-> >>>> Cc: Leo Yan <leo.yan@linaro.org>
-> >>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> >>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> >>>> Cc: linux-acpi@vger.kernel.org
-> >>>> Cc: coresight@lists.linaro.org
-> >>>> Cc: linux-arm-kernel@lists.infradead.org
-> >>>> Cc: linux-kernel@vger.kernel.org
-> >>>> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com> (for ACPI specific
-> >>>> changes)
-> >>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >>>
-> >>> We would like to queue this via coresight tree. The acpi_amba bits have
-> >>> been reviewed by Sudeep. Please could you give us an Ack, if you are
-> >>> happy with the proposal ?
-> >>>
-> >
-> > Please could one of you respond to this patch ? We are blocked on your
-> > Ack for queuing this. There are machines out there, which rely on this
-> > patch to use Arm self-hosted tracing based on CoreSight.
-> >
-> > Kind regards
-> > Suzuki
->
-> Ampere Computing AmpereOne machines rely on this patch series to enable
-> System Register Access to the ETMv4. Ampere removed the ETM MMIO
-> descriptions from our CoreSight ACPI to use this.
->
-> Suzuki's e-mail requests for review/Ack of this patch thread date back
-> to May 30.
+Hi,
 
-I've just talked to Suzuki about this:
+On 7/17/23 19:05, Gratian Crisan wrote:
+> Hardware based on the Bay Trail / BYT SoCs require an external ULPI phy for
+> USB device-mode. The phy chip usually has its 'reset' and 'chip select'
+> lines connected to GPIOs described by ACPI fwnodes in the DSDT table.
+> 
+> Because of hardware with missing ACPI resources for the 'reset' and 'chip
+> select' GPIOs commit 5741022cbdf3 ("usb: dwc3: pci: Add GPIO lookup table
+> on platforms without ACPI GPIO resources") introduced a fallback
+> gpiod_lookup_table with hard-coded mappings for Bay Trail devices.
+> 
+> However there are existing Bay Trail based devices, like the National
+> Instruments cRIO-903x series, where the phy chip has its 'reset' and
+> 'chip-select' lines always asserted in hardware via resistor pull-ups. On
+> this hardware the phy chip is always enabled and the ACPI dsdt table is
+> missing information not only for the 'chip-select' and 'reset' lines but
+> also for the BYT GPIO controller itself "INT33FC".
+> 
+> With the introduction of the gpiod_lookup_table initializing the USB
+> device-mode on these hardware now errors out. The error comes from the
+> gpiod_get_optional() calls in dwc3_pci_quirks() which will now return an
+> -ENOENT error due to the missing ACPI entry for the INT33FC gpio controller
+> used in the aforementioned table.
+> 
+> This hardware used to work before because gpiod_get_optional() will return
+> NULL instead of -ENOENT if no GPIO has been assigned to the requested
+> function. The dwc3_pci_quirks() code for setting the 'cs' and 'reset' GPIOs
+> was then skipped (due to the NULL return). This is the correct behavior in
+> cases where the phy chip is hardwired and there are no GPIOs to control.
+> 
+> Since the gpiod_lookup_table relies on the presence of INT33FC fwnode
+> in ACPI tables only add the table if we know the entry for the INT33FC
+> gpio controller is present. Additionally check the 'cs' gpio handle is
+> not NULL before using it (like we do for the 'reset' line). This
+> allows Bay Trail based devices with hardwired dwc3 ULPI phys to
+> continue working.
+> 
+> Fixes: 5741022cbdf3 ("usb: dwc3: pci: Add GPIO lookup table on platforms without ACPI GPIO resources")
+> Signed-off-by: Gratian Crisan <gratian.crisan@ni.com>
+> ---
+>  drivers/usb/dwc3/dwc3-pci.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+> index 44a04c9b2073..780984b07437 100644
+> --- a/drivers/usb/dwc3/dwc3-pci.c
+> +++ b/drivers/usb/dwc3/dwc3-pci.c
+> @@ -233,10 +233,12 @@ static int dwc3_pci_quirks(struct dwc3_pci *dwc,
+>  
+>  			/*
+>  			 * A lot of BYT devices lack ACPI resource entries for
+> -			 * the GPIOs, add a fallback mapping to the reference
+> +			 * the GPIOs. If the ACPI entry for the GPIO controller
+> +			 * is present add a fallback mapping to the reference
+>  			 * design GPIOs which all boards seem to use.
+>  			 */
+> -			gpiod_add_lookup_table(&platform_bytcr_gpios);
+> +			if (acpi_dev_present("INT33FC", NULL, -1))
+> +				gpiod_add_lookup_table(&platform_bytcr_gpios);
+>  
+>  			/*
+>  			 * These GPIOs will turn on the USB2 PHY. Note that we have to
 
-https://lore.kernel.org/linux-acpi/20230726140515.368981-1-suzuki.poulose@arm.com
+Thanks this change looks good to me.
 
-This patch has received a Reviewed-by from Sudeep which for all
-purposes should be sufficient for any ARM-related ACPI material that
-doesn't affect any other architectures.  An ACK from me (or Len for
-that matter) would not make any real difference from the technical
-perspective.
+> @@ -247,8 +249,10 @@ static int dwc3_pci_quirks(struct dwc3_pci *dwc,
+>  			if (IS_ERR(gpio))
+>  				return PTR_ERR(gpio);
+>  
+> -			gpiod_set_value_cansleep(gpio, 1);
+> -			gpiod_put(gpio);
+> +			if (gpio) {
+> +				gpiod_set_value_cansleep(gpio, 1);
+> +				gpiod_put(gpio);
+> +			}
+>  
+>  			gpio = gpiod_get_optional(&pdev->dev, "reset", GPIOD_OUT_LOW);
+>  			if (IS_ERR(gpio))
 
-I would appreciate assigning an official ARM maintainer to acpi_amba.c
-so as to avoid such unnecessary delays in the future.
+But this is not necessary both gpiod_set_value_cansleep() and gpiod_put() handle being called with NULL gracefully (so they handle NULL returned by gpiod_get_optional() without issues) .
+
+Can you please post a version 2 of this patch dropping this unnecessary change?
+
+Regards,
+
+Hans
+
+
