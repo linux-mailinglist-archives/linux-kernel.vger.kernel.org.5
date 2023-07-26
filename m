@@ -2,152 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310E17639BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD50A7639B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbjGZO6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S234280AbjGZO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbjGZO6i (ORCPT
+        with ESMTP id S234255AbjGZO6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:58:38 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52322109;
-        Wed, 26 Jul 2023 07:58:34 -0700 (PDT)
-X-QQ-mid: bizesmtp80t1690383504t6indi1o
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 26 Jul 2023 22:58:23 +0800 (CST)
-X-QQ-SSF: 00200000000000D0X000000A0000000
-X-QQ-FEAT: 3M0okmaRx3gx1YD2Y2f418atJWwTGw4XT79+ZSinD1pcTvQdp5vp8yaZAPG+u
-        1dIO2RbMGkkhE3rpPrhTRe8MgIaCw8FPcA7QKZA+3UoqASQn50CYyKkYfKj8corHE2bYiJ4
-        eZ5R32XDCRLR9jJRb7Lpk5WsLdMhTcjw8Pf44ZYWJRfBUWXXjwUkj/viXBJmwL7i9WxornL
-        VG6ITcNFaZOYzjgScvBG55cKoGz0B67RU1ySgAhU8t4w73cvXq/n2VioN83mwCEeaEvoGci
-        vv7KwRuaFtHXrCaIVA9YNeRT7opgR2ixS1w+vAf96+EM1+yhBMQW2sP4OMxC8aOaC0/oxbm
-        FZehGxrsrPsSk/QtgDnXG2VROmYHV6dXBAD4Siw1707Ovyf/+UQr0mZmbCKu4brxTRMwMu8
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18102331507296563561
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v2 7/7] selftests/nolibc: add test support for ppc64
-Date:   Wed, 26 Jul 2023 22:58:18 +0800
-Message-Id: <b7368dbb0b41c5dca1dade08ed300f30b4d541f0.1690373704.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690373704.git.falcon@tinylab.org>
-References: <cover.1690373704.git.falcon@tinylab.org>
+        Wed, 26 Jul 2023 10:58:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B029D213A;
+        Wed, 26 Jul 2023 07:58:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CED961B0A;
+        Wed, 26 Jul 2023 14:58:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8F4C433C8;
+        Wed, 26 Jul 2023 14:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690383506;
+        bh=4wMA1U2sdxtxKn5ja+QnGHFus2ehfX1ZdTdGr8xna5w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B8eTAymE5naWz+UXKsHwpimf+fkMywUqd5m5Rh3GM5KXDmvJffZChnvljLzkaS1uG
+         dUx5CBAhuB8i6XXMpAY+yDOw2Hz3MZVvqe5N4t0xDSgTQOGaZgIKO10IQ7dVsZXYUS
+         gRyxHgDjdFs6yPGLen+wSNI8jcCOXRsiyajBW3mSnFiwKw5fJcljgvfpqDRVwGy3YW
+         CAEBGG4ts+mVR5+Ua+9Z6j+Euu7tOLzPAVFjnq6yl3jEayfgw72Jj4SmczvPSWMNZk
+         f7Q8iLn0LStCkC5aphMylprtHnocRGrXUn4QLkUYZxfabCW1lLDbEd7Wu1rTrStqug
+         m8lNAoQA9prhA==
+Date:   Wed, 26 Jul 2023 16:58:23 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     carlos.song@nxp.com
+Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, xiaoning.wang@nxp.com,
+        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] i2c: imx-lpi2c: return -EINVAL when i2c peripheral
+ clk doesn't work
+Message-ID: <20230726145823.y67dylomsgblaaww@intel.intel>
+References: <20230726092238.3424116-1-carlos.song@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726092238.3424116-1-carlos.song@nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here adds test support for big endian 64-bit PowerPC.
+Hi Carlos,
 
-The powernv machine of qemu-system-ppc64 is used with
-powernv_be_defconfig.
+On Wed, Jul 26, 2023 at 05:22:38PM +0800, carlos.song@nxp.com wrote:
+> From: Carlos Song <carlos.song@nxp.com>
+> 
+> On MX8X platforms, the default clock rate is 0 if without explicit
+> clock setting in dts nodes. I2c can't work when i2c peripheral clk
+> rate is 0.
+> 
+> Add a i2c peripheral clk rate check before configuring the clock
+> register. When i2c peripheral clk rate is 0 and directly return
+> -EINVAL.
+> 
+> Signed-off-by: Carlos Song <carlos.song@nxp.com>
 
-As the document [1] shows:
+you are missing here:
 
-  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
-  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
-  used as an hypervisor OS, running KVM guests, or simply as a host OS.
+Acked-by: Dong Aisheng <Aisheng.dong@nxp.com>
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc64 variant for big endian 64-bit PowerPC, users can pass ARCH=ppc64
-to test it.
+You can also add:
 
-Notes,
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
 
-- differs from little endian 64-bit PowerPC, vmlinux is used instead of
-  zImage, because big endian zImage [2] only boot on qemu with x-vof=on
-  (added from qemu v7.0) and a fixup patch [3] for qemu v7.0.51:
+(no need to resend)
 
-- since the VSX support may be disabled in kernel side, to avoid
-  "illegal instruction" errors due to missing VSX kernel support, let's
-  simply let compiler not generate vector/scalar (VSX) instructions via
-  the '-mno-vsx' option.
-
-- as 'man gcc' shows, '-mmultiple' is used to generate code that uses
-  the load multiple word instructions and the store multiple word
-  instructions. those instructions do not work when the processor is in
-  little-endian mode (except PPC740/PPC750), so, we only enable it
-  for big endian powerpc.
-
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
-[2]: https://github.com/linuxppc/issues/issues/402
-[3]: https://lore.kernel.org/qemu-devel/20220504065536.3534488-1-aik@ozlabs.ru/
-
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index cd46b97983a4..b751e9fdf30d 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -22,6 +22,7 @@ XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
- # ARCH is supported by kernel
- # map from user-input variant to kernel-supported
- ARCH_ppc         = powerpc
-+ARCH_ppc64       = powerpc
- ARCH_ppc64le     = powerpc
- override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
-@@ -33,6 +34,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
- IMAGE_ppc        = vmlinux
-+IMAGE_ppc64      = vmlinux
- IMAGE_ppc64le    = arch/powerpc/boot/zImage
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
-@@ -48,6 +50,7 @@ DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
- DEFCONFIG_ppc        = pmac32_defconfig
-+DEFCONFIG_ppc64      = powernv_be_defconfig
- DEFCONFIG_ppc64le    = powernv_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
-@@ -68,6 +71,7 @@ QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
- QEMU_ARCH_ppc        = ppc
-+QEMU_ARCH_ppc64      = ppc64
- QEMU_ARCH_ppc64le    = ppc64le
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
-@@ -82,6 +86,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc64      = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -98,6 +103,7 @@ else
- Q=@
- endif
- 
-+CFLAGS_ppc64 = -m64 -mbig-endian -Wl,-EB,-melf64ppc -mmultiple -mno-vsx
- CFLAGS_ppc64le = -m64 -mlittle-endian -Wl,-EL,-melf64ppc -mno-vsx
- CFLAGS_s390 = -m64
- CFLAGS_mips = -EL
--- 
-2.25.1
-
+Thanks!
+Andi
