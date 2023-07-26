@@ -2,123 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BD3762806
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0C0762810
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjGZBKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S229899AbjGZBRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjGZBKi (ORCPT
+        with ESMTP id S229483AbjGZBRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:10:38 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2CF212D;
-        Tue, 25 Jul 2023 18:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690333830;
-        bh=x81De0pyPq/SqFSFmk4EAkh9ZgAg19r+n3E+hX4bWn8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XXI+kGZcIIAiMbkcPVwkd8Ri5HUoisUR4qXDrU0ZSdooBCn3+qisR/r1z8y342fBL
-         2yueWtURHxa1ylTeX2ee9qP48kFz7lwhHnAY5VNiGLEpmAHVoiXnPrA+MKVXwm1TsT
-         1RtfyKeWxRNgFtLdn8v5yVIVGfRbYMtoYp/SYZaxlS0oyVewmyPRCxYfAsL1yXpadr
-         EGLot4+l5az9FOujR3SbqKdI65mHpk7Gj3s+VQL1AgKtOTVlbcuivjNInUUGFd0qKN
-         qspHULOZHDksHu+Rgp/w8Vr/tdzPCGg8jOCBVVvmsdov3zZh+GFDjYW95Z9+YKTS6h
-         H8u216zxuEZ8g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R9bRn1dQYz4wZs;
-        Wed, 26 Jul 2023 11:10:29 +1000 (AEST)
-Date:   Wed, 26 Jul 2023 11:10:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Dave Airlie <airlied@redhat.com>
-Cc:     DRI <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Subject: linux-next: manual merge of the amdgpu tree with the drm tree
-Message-ID: <20230726111018.6a023a7d@canb.auug.org.au>
+        Tue, 25 Jul 2023 21:17:34 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BB1212D;
+        Tue, 25 Jul 2023 18:17:31 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so91786601fa.2;
+        Tue, 25 Jul 2023 18:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690334250; x=1690939050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AEjI6egyxi9u1ADPXuzcHhehfkVm87hXX6VHMBuwIsI=;
+        b=oDD4iFsVrv8jnWE057VUgfWbQlc4DL6kmzAsP4WSrvt3268tdn+UYiQUY/qgFknmGL
+         3QVnj6awcXC+CM9h083T6h+ozpOfXoe/rOHjeg6SMTgZLFaNTIioGA9LslTo7NRMQUuC
+         eKuiB22kkSe/gy7KRZvYxW00c7q/6IFBVMz76sWFJjWhuP1d6tb6jjBMR1ppA46LFxB2
+         HinAk7q7gIIkerWWX/sq3jTg2kPITQz5G3/EiBRgTm4kWxelcn4Ra45m8/8IOWTpckh5
+         zw1ZODBr7V9MH8cnxvHezsjSh9I6RHgH4KlfmrekAwKRwjQ8WT2nP1q7vNJrua/h0Auc
+         7/cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690334250; x=1690939050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AEjI6egyxi9u1ADPXuzcHhehfkVm87hXX6VHMBuwIsI=;
+        b=QckaaOWjuAlY/FEG3sks9djW6VWo73EmfQAYfLxTkb9uJra/kZOtN10FT5fjoy05+o
+         rGNfssQuGF4shBrex4Dn/oJ5lp9MJjiez7rIZqUXu0uTyZChiuO9LJn63rTGxoc3yhMw
+         LwQwOgVE0AEyXatt7c5ELLOKAwOtf0JoH8JxQm0NA9Qau+WQozIvd3GheNab23UHxNdO
+         NJzR8LksUnxUsDRE0J9dJaMcJhPWy67y0FhYyAzqoZYhS7N31tFVhr4j893PV4e5pIac
+         V7dRC8D5ppESJyeq82rDHwBWgMby981szDDAH72QST1S5KuoKJlDWYRz0fbTLR4+OkmT
+         ZJ6A==
+X-Gm-Message-State: ABy/qLYyyeEPXTldPGBhj9wdtzSDpB7C5dPo/ZjRwsWNvpxevjcnMniY
+        DZ2hvZ0b01kV+oXGp1CIQzKCgtWk81sgXnWQInw=
+X-Google-Smtp-Source: APBJJlGXi8CmqDI19BM+v2OBqqoutBJ+ULI8h/HZwAJ56aNGXbBV0H91SM2VTLCSn2uRBq2rmN7+Hx+VCsmvFHGhusA=
+X-Received: by 2002:a2e:918a:0:b0:2b9:35ae:c9ac with SMTP id
+ f10-20020a2e918a000000b002b935aec9acmr315516ljg.2.1690334249480; Tue, 25 Jul
+ 2023 18:17:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GcJb70x6Xj5jHq4d7Cvw41N";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <cover.1690273969.git.haibo1.xu@intel.com> <1f25f27d1316bc91e1e31cd3d50a1d20f696759a.1690273969.git.haibo1.xu@intel.com>
+ <CAJve8okJ-HYpsOrqH4Zvn7OBtwXWa4JumC+ZsMfHKB-deVYd2A@mail.gmail.com> <20230725-f5cf47c63abd8673d22b4936@orel>
+In-Reply-To: <20230725-f5cf47c63abd8673d22b4936@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 26 Jul 2023 09:17:18 +0800
+Message-ID: <CAJve8ony79xS2qPtdex+tSSEP2uTebzBRExUob9kOiwxpC7PEg@mail.gmail.com>
+Subject: Re: [PATCH v6 06/13] KVM: arm64: selftests: Split get-reg-list test code
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>, maz@kernel.org,
+        oliver.upton@linux.dev, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GcJb70x6Xj5jHq4d7Cvw41N
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 25, 2023 at 8:44=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Tue, Jul 25, 2023 at 04:50:36PM +0800, Haibo Xu wrote:
+> > On Tue, Jul 25, 2023 at 4:37=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> =
+wrote:
+> > >
+> > > From: Andrew Jones <ajones@ventanamicro.com>
+> > >
+> > > Split the arch-neutral test code out of aarch64/get-reg-list.c into
+> > > get-reg-list.c. To do this we invent a new make variable
+> > > $(SPLIT_TESTS) which expects common parts to be in the KVM selftests
+> > > root and the counterparts to have the same name, but be in
+> > > $(ARCH_DIR).
+> > >
+> > > There's still some work to be done to de-aarch64 the common
+> > > get-reg-list.c, but we leave that to the next patch to avoid
+> > > modifying too much code while moving it.
+> > >
+> > > Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+> > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile          |  12 +-
+> > >  .../selftests/kvm/aarch64/get-reg-list.c      | 367 +---------------=
+-
+> > >  tools/testing/selftests/kvm/get-reg-list.c    | 377 ++++++++++++++++=
+++
+> > >  3 files changed, 398 insertions(+), 358 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/kvm/get-reg-list.c
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/sel=
+ftests/kvm/Makefile
+> > > index c692cc86e7da..95f180e711d5 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -140,7 +140,6 @@ TEST_GEN_PROGS_EXTENDED_x86_64 +=3D x86_64/nx_hug=
+e_pages_test
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/aarch32_id_regs
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/arch_timer
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/debug-exceptions
+> > > -TEST_GEN_PROGS_aarch64 +=3D aarch64/get-reg-list
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/hypercalls
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/page_fault_test
+> > >  TEST_GEN_PROGS_aarch64 +=3D aarch64/psci_test
+> > > @@ -152,6 +151,7 @@ TEST_GEN_PROGS_aarch64 +=3D access_tracking_perf_=
+test
+> > >  TEST_GEN_PROGS_aarch64 +=3D demand_paging_test
+> > >  TEST_GEN_PROGS_aarch64 +=3D dirty_log_test
+> > >  TEST_GEN_PROGS_aarch64 +=3D dirty_log_perf_test
+> > > +TEST_GEN_PROGS_aarch64 +=3D get-reg-list
+> > >  TEST_GEN_PROGS_aarch64 +=3D kvm_create_max_vcpus
+> > >  TEST_GEN_PROGS_aarch64 +=3D kvm_page_table_test
+> > >  TEST_GEN_PROGS_aarch64 +=3D memslot_modification_stress_test
+> > > @@ -181,6 +181,8 @@ TEST_GEN_PROGS_riscv +=3D kvm_page_table_test
+> > >  TEST_GEN_PROGS_riscv +=3D set_memory_region_test
+> > >  TEST_GEN_PROGS_riscv +=3D kvm_binary_stats_test
+> > >
+> > > +SPLIT_TESTS +=3D get-reg-list
+> > > +
+> > >  TEST_PROGS +=3D $(TEST_PROGS_$(ARCH_DIR))
+> > >  TEST_GEN_PROGS +=3D $(TEST_GEN_PROGS_$(ARCH_DIR))
+> > >  TEST_GEN_PROGS_EXTENDED +=3D $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
+> > > @@ -228,11 +230,14 @@ LIBKVM_C_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o=
+, $(LIBKVM_C))
+> > >  LIBKVM_S_OBJ :=3D $(patsubst %.S, $(OUTPUT)/%.o, $(LIBKVM_S))
+> > >  LIBKVM_STRING_OBJ :=3D $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_STRIN=
+G))
+> > >  LIBKVM_OBJS =3D $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ) $(LIBKVM_STRING_OBJ)
+> > > +SPLIT_TESTS_TARGETS :=3D $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
+> > > +SPLIT_TESTS_OBJS :=3D $(patsubst %, $(ARCH_DIR)/%.o, $(SPLIT_TESTS))
+> > >
+> > >  TEST_GEN_OBJ =3D $(patsubst %, %.o, $(TEST_GEN_PROGS))
+> > >  TEST_GEN_OBJ +=3D $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
+> > >  TEST_DEP_FILES =3D $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
+> > >  TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(LIBKVM_OBJS))
+> > > +TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
+> > >  -include $(TEST_DEP_FILES)
+> > >
+> > >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> > > @@ -240,7 +245,10 @@ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %:=
+ %.o
+> > >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+> > >         $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+> > >
+> > > -EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) cs=
+cope.*
+> > > +$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
+> > > +       $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LD=
+LIBS) -o $@
+> > > +
+> > > +EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(=
+SPLIT_TESTS_OBJS) cscope.*
+> > >
+> > >  x :=3D $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ)=
+)))
+> > >  $(LIBKVM_C_OBJ): $(OUTPUT)/%.o: %.c
+> >
+> > Hi @Andrew Jones,
+> >
+> > After rebasing to v6.5-rc3, some changes are needed to the SPLIT_TESTS
+> > target, or the make would fail.
+> > Please help have a look.
+> >
+>
+> I took a look and then remembered why I hate looking at Makefiles... I
+> guess it's fine, but it's a pity we need to repeat the $(CC) line.
+>
 
-Hi all,
+Yes, I can't figure out a way to avoid the repeat $(CC) line.
+Let's see whether there is any suggestion from the community that can
+optimize this.
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
-
-  drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-
-between commit:
-
-  8a206685d36f ("drm/amdgpu: use drm_exec for GEM and CSA handling v2")
-
-from the drm tree and commit:
-
-  30953c4d000b ("drm/amdgpu: Fix style issues in amdgpu_gem.c")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index 7da871972a8e,992dfd3de49c..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@@ -226,9 -229,6 +225,9 @@@ static void amdgpu_gem_object_close(str
-  		goto out_unlock;
- =20
-  	r =3D amdgpu_vm_clear_freed(adev, vm, &fence);
- +	if (unlikely(r < 0))
-- 		dev_err(adev->dev, "failed to clear page "
-- 			"tables on GEM object close (%ld)\n", r);
-++		dev_err(adev->dev, "failed to clear page tables on GEM object close (%l=
-d)\n",
-++			r);
-  	if (r || !fence)
-  		goto out_unlock;
- =20
-
---Sig_/GcJb70x6Xj5jHq4d7Cvw41N
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTAcnoACgkQAVBC80lX
-0GzdbAgAgDrIqg6GLxXBvoD801tI5aVqEARno9PYvGQtHs9Udzhu6k7B8yiMfswn
-xnovXnIyBf2OTzgzawjbN8pdAG2UC2bXQjZvOCykQutIqHRRBVJ/nLbNMd2bIdGG
-1d9emDP5uFhf9vDldFkQfDqvvQEomE+hhlRJGG72W4FOg4j834X7JFFZmOsCN6sM
-hsokD/iHbfFSdSqlZbSyGAZjdyXDfnaz1Wj1fDjLeeEkHi+sXKQtnMMDd7TSviEn
-DXplwdQ48lpQD5baOMsCtQB3z7X/ahg1hmwxG7Z/3s2/wb5EgxT6p+1ay49YXfzN
-757MBtlRPIkFp08pneBd6rjPVkcYZw==
-=tN22
------END PGP SIGNATURE-----
-
---Sig_/GcJb70x6Xj5jHq4d7Cvw41N--
+> Thanks,
+> drew
