@@ -2,186 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D33E763662
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803BF763664
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbjGZMdY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 08:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
+        id S233251AbjGZMea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjGZMdW (ORCPT
+        with ESMTP id S231460AbjGZMe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:33:22 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A10F1BF8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:33:21 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-583f036d50bso41301567b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:33:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690374800; x=1690979600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9LHJHUg6BbctGmVEztBEPwgY6VD1uKA+BUZbOC1niEM=;
-        b=TKO/Y+kYCLtqhEHyI96aaS72OqNS+5tZtHV4yJfEbVKMq3RxxvEKpaVg5603h9H7mW
-         9k3pxAtS1296VJnpRhBNoRNyUWs+c1zUlPxG8m90rGE352mry/C4nDtZ0iiXXON+wnQM
-         kbBMcKc4Ua1iQShERr+F+Gf674fWIIYTn8oPWSUPAYqtTgjZfXu8mnwIeCaJ4XNJr70f
-         4wpL7KVrW/IbiwwtpxFrKnHtv5mA2BmICQ8Qj/QrIhuYJl2mnIpSxubbuQMEjYSj8kyP
-         +88pUmTcBQpAhcwd+Kdv5EFSi0SXpPN5irUHflPinEfFIVVPflASMEJ/TpkOi9hXcE18
-         bNdQ==
-X-Gm-Message-State: ABy/qLaSlwRE9CiyeNq3ad1BntzsBf3iVz9PekS9kFIJDe30h8h1hcem
-        hjj2NveNqufpyw0Atsrl5750+cZ9MZ1p0Q==
-X-Google-Smtp-Source: APBJJlHOwB9BNYZvI1zCq8mf0LL/C9S7RHRFTUcPg4ON9zeAX6Bm313O9D3hIJl+c1vC5I+ldsuDsA==
-X-Received: by 2002:a81:54d5:0:b0:576:a0b8:eb06 with SMTP id i204-20020a8154d5000000b00576a0b8eb06mr1727186ywb.52.1690374799898;
-        Wed, 26 Jul 2023 05:33:19 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id i132-20020a81548a000000b005771872a8dbsm4143788ywb.132.2023.07.26.05.33.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 05:33:18 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so7350418276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:33:18 -0700 (PDT)
-X-Received: by 2002:a25:9c08:0:b0:c76:173c:6718 with SMTP id
- c8-20020a259c08000000b00c76173c6718mr1840007ybo.1.1690374798490; Wed, 26 Jul
- 2023 05:33:18 -0700 (PDT)
+        Wed, 26 Jul 2023 08:34:29 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFC01BF8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690374868; x=1721910868;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=w29lViVVWh93yAhWfMgQLPne+qNTAAPnp+PikDVun/A=;
+  b=XeskO17c+HlnLLJGbhfxj6DSt9wYkkokIv+99GXHhtAgNbZHLo3XPnzf
+   Aed1IHG8BOz2O52iu0PkPIiQn+RfHezbpJ/qsrVqk/I1CAAPwEAX13OZx
+   qv06h6V86C/RcAxrlpq9j5XQXNQQHPHrBeL6mhlJ4Z/r+mu/pWgz66M3J
+   BswA3gzZ3oFpidWqd6SdQ6t4SMWvt+iPR/Exdrn7X9vKHU1oLIHlQxbY7
+   CFry0xAe811+nk3woSTP/y/s5XIsc0jKO+/fxH3KrnoFvN81iqz7rViHo
+   68JdFYshSUzsAlbSIGWSaNLAF7KIMATPH0nuPIvGinJyfyh9sMABKGRxR
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="asc'?scan'208";a="222314247"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 05:34:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 26 Jul 2023 05:34:26 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 26 Jul 2023 05:34:25 -0700
+Date:   Wed, 26 Jul 2023 13:33:50 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Joel Stanley <joel@jms.id.au>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] soc: starfive: remove stale Makefile entry
+Message-ID: <20230726-target-flashy-b9033ea36ae4@wendy>
+References: <20230726121724.3701240-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20230721070955.1170974-1-javierm@redhat.com> <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
- <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
- <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com> <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Jul 2023 14:33:06 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
-Message-ID: <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
-Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
- .atomic_check callback
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gXVSTWIiPan783iD"
+Content-Disposition: inline
+In-Reply-To: <20230726121724.3701240-1-arnd@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+--gXVSTWIiPan783iD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 26, 2023 at 2:22 PM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> > On Wed, Jul 26, 2023 at 12:00 PM Maxime Ripard <mripard@kernel.org> wrote:
-> >> On Tue, Jul 25, 2023 at 09:21:52PM +0200, Geert Uytterhoeven wrote:
-> >> > > --- a/drivers/gpu/drm/solomon/ssd130x.c
-> >> > > +++ b/drivers/gpu/drm/solomon/ssd130x.c
-> >> > > @@ -141,12 +141,26 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
-> >> > >  };
-> >> > >  EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
-> >> > >
-> >> > > +struct ssd130x_plane_state {
-> >> > > +       struct drm_plane_state base;
-> >> > > +       /* Intermediate buffer to convert pixels from XRGB8888 to R1 */
-> >> > > +       u8 *buffer;
-> >> > > +       /* Buffer that contains R1 pixels to be written to the panel */
-> >> > > +       u8 *data_array;
-> >> >
-> >> > The second buffer actually contains pixels in hardware format.
-> >> > For now that is a transposed buffer of R1 pixels, but that will change
-> >> > when you will add support for greyscale displays.
-> >> >
-> >> > So I'd write "hardware format" instead of R1 for both.
-> >> >
-> >> > BTW, I still think data_array should be allocated during probing,
-> >> > as it is related to the hardware, not to a plane.
-> >>
-> >> I somewhat disagree.
-> >>
-> >> If I understood right during our discussion with Javier, the buffer size
-> >> derives from the mode size (height and width).
-> >>
-> >> In KMS, the mode is tied to the KMS state, and thus you can expect the
-> >> mode to change every state commit. So the more logical thing to do is to
-> >> tie the buffer size (and thus the buffer pointer) to the state since
-> >> it's only valid for that particular state for all we know.
-> >>
-> >> Of course, our case is allows use to simplify things since it's a fixed
-> >> mode, but one of Javier's goal with this driver was to provide a good
-> >> example we can refer people to, so I think it's worth keeping.
-> >
-> > The second buffer (containing the hardware format) has a size that
-> > depends on the full screen size, not the current mode (I believe that's
-> > also the size of the frame buffer backing the plane?).  So its size is
-> > fixed.
-> >
->
-> Yes, is fixed. But Maxime's point is that this is a characteristic of this
-> particular device and even when the display resolution can't be changed,
-> the correct thing to do is to keep all state related to the mode (even the
-> buffer used to store the hardware pixels that are written to the display)
->
-> > Given the allocations are now done based on plane state, I think the
-> > first buffer should be sized according to the frame buffer backing
-> > the plane? Currently it uses the full screen size, too (cfr. below).
-> >
->
-> But can the mode even be changed if ssd130x_connector_helper_get_modes()
-> just adds a single display mode with mode->hdisplay == ssd130x->width and
-> mode->vdisplay == ssd130x->height.
+On Wed, Jul 26, 2023 at 02:17:14PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> After the only starfive driver was moved out to the genpd subsystem, we g=
+et
+> a build failure:
+>=20
+> scripts/Makefile.build:41: drivers/soc/starfive/Makefile: No such file or=
+ directory
+>=20
+> Fixes: f3fb16291f486 ("soc: starfive: Move the power-domain driver to the=
+ genpd dir")
 
-No, the mode cannot be changed.
+> Reported=3Dby: kernel test robot <lkp@intel.com
 
-At first, I thought you could still create a smaller frame buffer,
-and attach that to the (single, thus primary) plane, but it turns out
-I was wrong[*], so you can ignore that.
+There's a - & a missing > in this tag.
+Otherwise,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-[*] ssd130x_primary_plane_helper_atomic_check() calls
-    drm_plane_helper_atomic_check(), which calls
-    drm_atomic_helper_check_plane_state() with can_position = false.
-    As the position of planes is actually a software thing on ssd130x,
-    positioning support could be added later, though...
+Reminds me, I need to also send a patch moving the Kconfig entry &
+delete the directory and MAINTAINERS entry.
 
-> >> Also, Javier pointed me to a discussion you had on IRC about using devm
-> >> allocation here. We can't really do that. KMS devices are only freed
-> >> once the last userspace application closes its fd to the device file, so
-> >> you have an unbounded window during which the driver is still callable
-> >> by userspace (and thus can still trigger an atomic commit) but the
-> >> buffer would have been freed for a while.
-> >
-> > It should still be safe for (at least) the data_array buffer. That
-> > buffer is only used to store pixels in hardware format, and immediately
-> > send them to the hardware.  If this can be called that late, it will
-> > fail horribly, as you can no longer talk to the hardware at that point
-> > (as ssd130x is an i2c driver, it might actually work; but a DRM driver
-> >  that calls devm_platform_ioremap_resource() will crash when writing
-> >  to its MMIO registers)?!?
->
-> At the very least the SPI driver will fail since the GPIO that is used to
-> toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
-> the regulator, backlight device, etc.
->
-> But in any case, as mentioned it is only relevant if the data_array buffer
-> is allocated at probe time, and from Maxime's explanation is more correct
-> to do it in the .atomic_check handler.
+Thanks,
+Conor.
 
-You need (at least) data_array for clear_screen, too, which is called
-from .atomic_disable().
+--gXVSTWIiPan783iD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Gr{oetje,eeting}s,
+-----BEGIN PGP SIGNATURE-----
 
-                        Geert
+iHQEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMESrgAKCRB4tDGHoIJi
+0hG/APi7RD4ltJa59IyiS5HgQzpoPOPwKwklVaw8IEhW9rUGAP4x2TY3Th/Q6kuh
+8bA26LSSvdug7PW5jGR6o13ys97KAg==
+=uy78
+-----END PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--gXVSTWIiPan783iD--
