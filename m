@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEA9762BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD80762BFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjGZGyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        id S231671AbjGZGyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjGZGya (ORCPT
+        with ESMTP id S229522AbjGZGya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Jul 2023 02:54:30 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BEB2132;
-        Tue, 25 Jul 2023 23:54:28 -0700 (PDT)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C4A1BFB;
+        Tue, 25 Jul 2023 23:54:27 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6sDwY007939;
-        Wed, 26 Jul 2023 01:54:13 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6sGqR125642;
+        Wed, 26 Jul 2023 01:54:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690354453;
-        bh=FrEx/bOy1/gQCYi00Le6XUiLNro3I286bRzQgqiu9Ow=;
-        h=From:To:CC:Subject:Date;
-        b=KICg53Ni88yq3/DUil+WOL5Y/I+Oi9XZ8ylCdTk2/Uy5MixyqV2eljfiMqdgLA1mW
-         ReeMRKJt3enY5SLFelny3ylQvajqJCPQALgSsy3oSLuRwILOQzW8yVyzp3CZhAOew3
-         Wxe9eKZ8aP7peyMSkB8JGxgIC5d27oXclIZfFhNA=
+        s=ti-com-17Q1; t=1690354457;
+        bh=HYvKSPC1lxV1Pgg9D+hvA9yuxZNj88tDZChJC8z98I0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=MzFLxiLwX/BY8wc3aN29H1LdMzhPU2ipEw93MwpKbYKPg6d5G0p0PiC9XMVDgLdo9
+         2RtNKO6gkj8UK4B5VlLWFFJH0H4FNUj/Af4+F9saxPxsXe5HcHMhrvMW8LNU5I/Muh
+         7RmRiD4wi26GmyxgjIGE1LXJdwg8uQPFTJP8ydn4=
 Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36Q6sCvB048105
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36Q6sGkG048126
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Jul 2023 01:54:13 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE112.ent.ti.com
+        Wed, 26 Jul 2023 01:54:16 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
  (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
- Jul 2023 01:54:12 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 01:54:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 26 Jul 2023 01:54:12 -0500
+ Frontend Transport; Wed, 26 Jul 2023 01:54:16 -0500
 Received: from uda0492258.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6s8Td013490;
-        Wed, 26 Jul 2023 01:54:09 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6s8Te013490;
+        Wed, 26 Jul 2023 01:54:13 -0500
 From:   Siddharth Vadapalli <s-vadapalli@ti.com>
 To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -47,70 +47,125 @@ To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
 CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
         <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v3 0/2] Add MAIN CPSW2G DT support for J721S2
-Date:   Wed, 26 Jul 2023 12:24:05 +0530
-Message-ID: <20230726065407.378455-1-s-vadapalli@ti.com>
+Subject: [PATCH v3 1/2] arm64: dts: ti: k3-j721s2-main: Add main CPSW2G devicetree node
+Date:   Wed, 26 Jul 2023 12:24:06 +0530
+Message-ID: <20230726065407.378455-2-s-vadapalli@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230726065407.378455-1-s-vadapalli@ti.com>
+References: <20230726065407.378455-1-s-vadapalli@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-This series adds devicetree node for MAIN CPSW2G instance of CPSW
-Ethernet Switch on TI's J721S2 SoC. Also, a devicetree overlay is added
-in order to enable MAIN CPSW2G in RGMII-RXID mode using the GESI
-Expansion Board connected to the J7 Common-Processor-Board.
+TI's J721S2 SoC has a MAIN CPSW2G instance of the CPSW Ethernet Switch.
+Add devicetree node for it.
 
-Regards,
-Siddharth.
-
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
 ---
-NOTE: This series is based on linux-next tagged next-20230725.
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 69 ++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-v2:
-https://lore.kernel.org/r/20230710094328.1359377-1-s-vadapalli@ti.com/
-Changes since v2:
-- Collect Reviewed-by tag from Ravi Gunasekaran <r-gunasekaran@ti.com>.
-- Rename main_cpsw_mdio_pins_default and rgmii1_pins_default to:
-  main_cpsw_mdio_default_pins and rgmii1_default_pins respectively.
-- Rename main-cpsw-mdio-pins-default and rgmii1-pins-default to:
-  main-cpsw-mdio-default-pins and rgmii1-default-pins respectively.
-- The above changes are performed to follow the updated json-schema
-  patch at:
-  https://lore.kernel.org/all/169021456020.3622493.10284534202541859578.robh@kernel.org/
-- Rebase series on next-20230725.
-
-v1:
-https://lore.kernel.org/r/20230529104913.560045-1-s-vadapalli@ti.com/
-Changes since v1:
-- Rebase series on next-20230710.
-
-RFC:
-https://lore.kernel.org/r/20230426105718.118806-1-s-vadapalli@ti.com/
-Changes since RFC:
-- Add GESI board product link in the device-tree overlay file.
-
-Kishon Vijay Abraham I (2):
-  arm64: dts: ti: k3-j721s2-main: Add main CPSW2G devicetree node
-  arm64: dts: ti: k3-j721s2: Add overlay to enable main CPSW2G with GESI
-
- arch/arm64/boot/dts/ti/Makefile               |  2 +
- .../dts/ti/k3-j721s2-evm-gesi-exp-board.dtso  | 85 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 69 +++++++++++++++
- 3 files changed, 156 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+index ed79ab3a3271..4d0d27e7ca1b 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+@@ -51,6 +51,12 @@ usb_serdes_mux: mux-controller@0 {
+ 			mux-reg-masks = <0x0 0x8000000>; /* USB0 to SERDES0 lane 1/3 mux */
+ 		};
+ 
++		phy_gmii_sel_cpsw: phy@34 {
++			compatible = "ti,am654-phy-gmii-sel";
++			reg = <0x34 0x4>;
++			#phy-cells = <1>;
++		};
++
+ 		serdes_ln_ctrl: mux-controller@80 {
+ 			compatible = "mmio-mux";
+ 			reg = <0x80 0x10>;
+@@ -1039,6 +1045,69 @@ cpts@310d0000 {
+ 		};
+ 	};
+ 
++	main_cpsw: ethernet@c200000 {
++		compatible = "ti,j721e-cpsw-nuss";
++		reg = <0x00 0xc200000 0x00 0x200000>;
++		reg-names = "cpsw_nuss";
++		ranges = <0x0 0x0 0x0 0xc200000 0x0 0x200000>;
++		#address-cells = <2>;
++		#size-cells = <2>;
++		dma-coherent;
++		clocks = <&k3_clks 28 28>;
++		clock-names = "fck";
++		power-domains = <&k3_pds 28 TI_SCI_PD_EXCLUSIVE>;
++
++		dmas = <&main_udmap 0xc640>,
++		       <&main_udmap 0xc641>,
++		       <&main_udmap 0xc642>,
++		       <&main_udmap 0xc643>,
++		       <&main_udmap 0xc644>,
++		       <&main_udmap 0xc645>,
++		       <&main_udmap 0xc646>,
++		       <&main_udmap 0xc647>,
++		       <&main_udmap 0x4640>;
++		dma-names = "tx0", "tx1", "tx2", "tx3",
++			    "tx4", "tx5", "tx6", "tx7",
++			    "rx";
++
++		status = "disabled";
++
++		ethernet-ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			main_cpsw_port1: port@1 {
++				reg = <1>;
++				ti,mac-only;
++				label = "port1";
++				phys = <&phy_gmii_sel_cpsw 1>;
++				status = "disabled";
++			};
++		};
++
++		main_cpsw_mdio: mdio@f00 {
++			compatible = "ti,cpsw-mdio","ti,davinci_mdio";
++			reg = <0x00 0xf00 0x00 0x100>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			clocks = <&k3_clks 28 28>;
++			clock-names = "fck";
++			bus_freq = <1000000>;
++			status = "disabled";
++		};
++
++		cpts@3d000 {
++			compatible = "ti,am65-cpts";
++			reg = <0x00 0x3d000 0x00 0x400>;
++			clocks = <&k3_clks 28 3>;
++			clock-names = "cpts";
++			interrupts-extended = <&gic500 GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "cpts";
++			ti,cpts-ext-ts-inputs = <4>;
++			ti,cpts-periodic-outputs = <2>;
++		};
++	};
++
+ 	usbss0: cdns-usb@4104000 {
+ 		compatible = "ti,j721e-usb";
+ 		reg = <0x00 0x04104000 0x00 0x100>;
 -- 
 2.34.1
 
