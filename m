@@ -2,69 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9299276400F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00EF764018
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGZT5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
+        id S229603AbjGZUDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjGZT5f (ORCPT
+        with ESMTP id S229815AbjGZUDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:57:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D51826AE
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 12:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690401408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mEpXvvU90l0RthnJ6+S/VSU0zkOQwcnlRrI1p7pRhb8=;
-        b=MAWCoHEYEXAJL8+oiZpegYTnF7237W3Xzp7DE8VQOx3cpATNwkM0weMDpCVa15D9WD6Myg
-        Rn5t82uFSRjU4vudwNbFEKAFzUpqBAIcTxMFq/7wHtTMVT5GWtgF1x21G9S01PL+M1+vqi
-        AqEj5As7ZBDC9o27Jt5Z5GFvN/NoeGg=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-115-sAGTV80hP06kYxAGLDLjHg-1; Wed, 26 Jul 2023 15:56:42 -0400
-X-MC-Unique: sAGTV80hP06kYxAGLDLjHg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 26 Jul 2023 16:03:07 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772C01BF6;
+        Wed, 26 Jul 2023 13:03:00 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:10:580::7a9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCA8D1C0904A;
-        Wed, 26 Jul 2023 19:56:41 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26A082166B25;
-        Wed, 26 Jul 2023 19:56:40 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Andres Freund <andres@anarazel.de>
-Cc:     Matteo Rizzo <matteorizzo@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        axboe@kernel.dk, asml.silence@gmail.com, corbet@lwn.net,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        krisman@suse.de
-Subject: Re: [PATCH v3 1/1] io_uring: add a sysctl to disable io_uring system-wide
-References: <20230630151003.3622786-1-matteorizzo@google.com>
-        <20230630151003.3622786-2-matteorizzo@google.com>
-        <20230726174549.cg4jgx2d33fom4rb@awork3.anarazel.de>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 26 Jul 2023 16:02:26 -0400
-In-Reply-To: <20230726174549.cg4jgx2d33fom4rb@awork3.anarazel.de> (Andres
-        Freund's message of "Wed, 26 Jul 2023 10:45:49 -0700")
-Message-ID: <x49fs5awiel.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 05E8F6605835;
+        Wed, 26 Jul 2023 21:02:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690401779;
+        bh=gearTXn/NA1vf3XwUpplsDwpHaVmvkzNdWyDMsuqeZo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UJ7rpORaK+nEzKWJekZChGytRWr5gox773JXYZpmRVnbWU9+ghrzyRBbx1Hsx0GV2
+         XwPOXowfw3cXxEzN3ZDJek7mUUkh+kJHIdG9QkLxxvs7ng+65UB3eJwpWh6b67l5wh
+         V1MlukVZ6V8D7oRxEKws80RLD2k/c86JUlFKXrcaq9zwoib55tHhlV50sKU9LR+lZD
+         HEhwVGbSRxwETxb2W7ItX+tA2CMQ9YyPJjxbdtsrhBOmdjnn65d9RsgN/RNLxJLHod
+         Wqmu5hUFHMI0Vu86d4IznJkx/DykGVMgg6+uJwgj+oJVfwmvNmBAvGkkp+kg0SrR8w
+         +S+lTwQsKju5A==
+Message-ID: <4afabd718f632965314794946d4b31cec739a3d6.camel@collabora.com>
+Subject: Re: Stateless Encoding uAPI Discussion and Proposal
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Michael Grzeschik <mgr@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Date:   Wed, 26 Jul 2023 16:02:49 -0400
+In-Reply-To: <ZL-RWOfUYh5VbUo1@aptenodytes>
+References: <ZK2NiQd1KnraAr20@aptenodytes>
+         <20230721181951.GL12001@pengutronix.de>
+         <c6a222be5eee962581cf5dcb9a1473cf45ff303c.camel@collabora.com>
+         <ZL-RWOfUYh5VbUo1@aptenodytes>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,36 +66,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andres,
+Le mardi 25 juillet 2023 =C3=A0 11:09 +0200, Paul Kocialkowski a =C3=A9crit=
+=C2=A0:
+> Hi Nicolas,
+>=20
+> On Mon 24 Jul 23, 10:03, Nicolas Dufresne wrote:
+> > Le vendredi 21 juillet 2023 =C3=A0 20:19 +0200, Michael Grzeschik a =C3=
+=A9crit=C2=A0:
+> > > > As a result, we cannot expect that any given encoder is able to pro=
+duce frames
+> > > > for any set of headers. Reporting related constraints and limitatio=
+ns (beyond
+> > > > profile/level) seems quite difficult and error-prone.
+> > > >=20
+> > > > So it seems that keeping header generation in-kernel only (close to=
+ where the
+> > > > hardware is actually configured) is the safest approach.
+> > >=20
+> > > For the case with the rkvenc, the headers are also not created by the
+> > > kernel driver. Instead we use the gst_h264_bit_writer_sps/pps functio=
+ns
+> > > that are part of the codecparsers module.
+> >=20
+> > One level of granularity we can add is split headers (like SPS/PPS) and
+> > slice/frame headers.
+>=20
+> Do you mean asking the driver to return a buffer with only SPS/PPS and th=
+en
+> return another buffer with the slice/frame header?
+>=20
+> Looks like there's already a control for it: V4L2_CID_MPEG_VIDEO_HEADER_M=
+ODE
+> which takes either
+> - V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE: looks like what you're suggesting
+> - V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME: usual case
+>=20
+> So that could certainly be supported to easily allow userspace to stuff e=
+xtra
+> NALUs in-between.
 
-Andres Freund <andres@anarazel.de> writes:
+Good point, indeed.
 
-> Hi,
->
-> On 2023-06-30 15:10:03 +0000, Matteo Rizzo wrote:
->> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1,
->> or 2. When 0 (the default), all processes are allowed to create io_uring
->> instances, which is the current behavior. When 1, all calls to
->> io_uring_setup fail with -EPERM unless the calling process has
->> CAP_SYS_ADMIN. When 2, calls to io_uring_setup fail with -EPERM
->> regardless of privilege.
->
-> Hm, is there a chance that instead of requiring CAP_SYS_ADMIN, a certain group
-> could be required (similar to hugetlb_shm_group)? Requiring CAP_SYS_ADMIN
-> could have the unintended consequence of io_uring requiring tasks being run
-> with more privileges than needed... Or some other more granular way of
-> granting the right to use io_uring?
+>=20
+> > It remains that in some cases, like HEVC, when the slice
+> > header is byte aligned, it can be nice to be able to handle it at appli=
+cation
+> > side in order to avoid limiting SVC support (and other creative feature=
+s) by our
+> > API/abstraction limitations.
+>=20
+> Do you see something in the headers that we expect the kernel to generate=
+ that
+> would need specific changes to support features like SVC?
 
-That's fine with me, so long as there is still an option to completely
-disable io_uring.
+Getting the kernel to set the layer IDs, unless we have a full SVC configur=
+ation
+would just be extra indirections. That being said, if we mention HEVC, thes=
+e IDs
+can be modified in-place as they use a fixed number of bytes. If you can sp=
+lit
+the headers appart, generating per layer headers in application makes a lot=
+ of
+sense.
 
-> ISTM that it'd be nice if e.g. a systemd service specification could allow
-> some services to use io_uring, without allowing it for everyone, or requiring
-> to run services effectively as root.
+Traditionally, slice headers are made by stateless accelerators, but not th=
+e
+SPS/PPS and friend.
 
-Do you have a proposal for how that would work?  Why is this preferable
-to using a group?
+>=20
+> From what I can see there's a svc_extension_flag that's only set for spec=
+ific
+> NALUs (prefix_nal_unit/lice_layer_extension) so these could be inserted b=
+y
+> userspace.
+>=20
+> Also I'm not very knowledgeable about SVC so it's not very clear to me if=
+ it's
+> possible to take an encoder that doesn't support SVC and turn the resulti=
+ng
+> stream into something SVC-ready by adding extra NAL units or if the encod=
+er
+> should be a lot more involved.
 
-Cheers,
-Jeff
+You can use any encoders to create a temporal SVC. Its only about the
+referencing pattern, made so you can reduce the framerate (dividing by 2
+usually).
+
+For spatial layer, the encoders need scaling capabilities. I'm not totally =
+sure
+how multi-view work, but this is most likely just using left eye as referen=
+ce
+(not having an I frame ever for the second eye).
+
+>=20
+> Also do you know if we have stateful codecs supporting SVC?
+
+We don't at the moment, they all produce headers with layer id hardcoded to=
+ 0 as
+far as I'm aware. The general plan (if it had continued) might have been to
+offer a memu based control, and drivers could offer from a list of preset S=
+VC
+pattern. Mimicking what browsers needs:
+
+https://www.w3.org/TR/webrtc-svc/
+
+>=20
+> > I think a certain level of "per CODEC" reasoning is
+> > also needed. Just like, I would not want to have to ask the kernel to g=
+enerate
+> > user data SEI and other in-band data.
+>=20
+> Yeah it looks like there is definitely a need for adding extra NALUs from
+> userspace without passing that data to the kernel.
+>=20
+> Cheers,
+>=20
+> Paul
+>=20
 
