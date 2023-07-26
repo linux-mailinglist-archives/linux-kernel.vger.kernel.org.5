@@ -2,161 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2436A763D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5F7763CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbjGZQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        id S231911AbjGZQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjGZQ45 (ORCPT
+        with ESMTP id S231372AbjGZQyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:56:57 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9EC211F;
-        Wed, 26 Jul 2023 09:56:54 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [114.249.159.178])
-        by APP-05 (Coremail) with SMTP id zQCowADHzRVcTsFkA0TYDg--.58489S2;
-        Thu, 27 Jul 2023 00:48:28 +0800 (CST)
-Message-ID: <2009e6c8-74b7-376b-5654-76d771939105@iscas.ac.cn>
-Date:   Thu, 27 Jul 2023 00:48:28 +0800
+        Wed, 26 Jul 2023 12:54:11 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6692122;
+        Wed, 26 Jul 2023 09:54:10 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8E4515C0198;
+        Wed, 26 Jul 2023 12:54:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 26 Jul 2023 12:54:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        invisiblethingslab.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1690390449; x=1690476849; bh=ZSGL4tfDeh
+        02pkZ94/2tVJRMmAk+Vt00ZLy1MQBP55Y=; b=pYszA4HxujdUCNeHbCaGgqeAQO
+        7OxCMPtp39OADgyPrJ6IGJ3WDJaUUCQkw8W4IeToBQ6U4npachIhLOcYUEccTkHl
+        qwxZYsglorioRcl0KRpIUKpXyip8suW05TtFMYr1bMH+QKswOV4d9LwXFvry/Xqg
+        3oGtzYH6hzJsEQMNzoghVgTZbVv5cXGYVVBFzbpOnwwA/OILuUYNbEc0j8Efosv4
+        9uyrpqIPgliYk7JCXuYe8+oaUI3ZpqLm3gMS5amW6wQbBYkNgv2zKepmA9xW4uIA
+        9x7mlKYcI/Ut2b66V4Iyh7mb65OBOckVpOgTewFszt3A6YWEbnJnJU/utLfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1690390449; x=
+        1690476849; bh=ZSGL4tfDeh02pkZ94/2tVJRMmAk+Vt00ZLy1MQBP55Y=; b=p
+        6FSQOuj/2H3hSBngWtVOKyF58NPGfdIzkHe6K93sZ3hfbatPDPmekGd2XGMw5Ah9
+        3gW25iltNtEqN1Box5KAUKiZ+4MHJxflrNs/41tqdzMPmO60q3wmDwTTZnIdR5uw
+        Vk+PPTPEHATApmQN8Tq/vdpvUx+nPf11G0pPsKRym/fJ2l3lZfg0ZqvGF6Z6XTtg
+        NLxi/VAz3s8Tee8l05WxbQvqPPuhFYMWdHlV9MTNQZopu1SKZ9bUtPRTbFD1gHgn
+        r02JTsH9aMaD+mBvaoJHFXdlcafXRZzBa9GPodVTznA88drZPOO/OidmXIJ4LxUM
+        L4iUUdL27Um39/kAps+Qg==
+X-ME-Sender: <xms:sU_BZDVanUH1yxDKB6VmX3u-TXXoyxnMdmkrbZ5tFPl4usVaxA_VTg>
+    <xme:sU_BZLki3bVKhpGN6QQuXJgCS8krimxJhOyLwUPlkviarwwgJ9I2aEAlL4YARhBfi
+    r9L0C3Frfa_FdY>
+X-ME-Received: <xmr:sU_BZPZWRoRDmNl96z1D2Kl0ydEC3gzDR2om4Pn6Mn6UNbD-ORKbbM34bd9aZGG3lubCRSqXH-s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgddutdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgvmhhi
+    ucforghrihgvucfqsggvnhhouhhruceouggvmhhisehinhhvihhsihgslhgvthhhihhngh
+    hslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepgefhffegieektedtgfffvdfhhfdt
+    veeiieeuffduvdehieehjeekhfelieehkeelnecuffhomhgrihhnpehquhgsvghsqdhosh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    peguvghmihesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:sU_BZOV2v0ctPrKU6GoLv_zHGVZq5Zp0SlKSNGomctJo6_eWv_muyA>
+    <xmx:sU_BZNkht_7Ir8BBPzKzBddfkdmBcXTmWsPqS_Imo8MMQ6ttIwVfVw>
+    <xmx:sU_BZLf7VN-6yIGWIZglx92ys71yADS85Ww7VdyGX2cggU-IHARG5Q>
+    <xmx:sU_BZGD08CUwH15ywy98aCsXj9BdYpf1yKfWakXHMXnutqeuv3OXUA>
+Feedback-ID: iac594737:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 12:54:08 -0400 (EDT)
+From:   Demi Marie Obenour <demi@invisiblethingslab.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     Demi Marie Obenour <demi@invisiblethingslab.com>,
+        Xen developer discussion <xen-devel@lists.xenproject.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH v4] xen: speed up grant-table reclaim
+Date:   Wed, 26 Jul 2023 12:52:41 -0400
+Message-ID: <20230726165354.1252-1-demi@invisiblethingslab.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230627172216.1359-1-demi@invisiblethingslab.com>
+References: <20230627172216.1359-1-demi@invisiblethingslab.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Subject: Re: [PATCH] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org
-References: <20230725170405.251011-1-xingmingzheng@iscas.ac.cn>
- <20230725172344.GA1445373@dev-arch.thelio-3990X>
-Content-Language: en-US
-Organization: ISCAS
-In-Reply-To: <20230725172344.GA1445373@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: zQCowADHzRVcTsFkA0TYDg--.58489S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF45ZF1kAFyrJrWrtFWkJFb_yoWrCrW3pa
-        9xCFn8Crs5Xr4xCwnFy34UWw1FvrZ5Gr43Wr15G34UKrZxXFykKr92kw4agFyDZFs3Cw4j
-        vr1S9Fy5Ww1DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07beAp5UUUUU=
-X-Originating-IP: [114.249.159.178]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCgkECmTBJBdgYQACsY
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 01:23, Nathan Chancellor wrote:
-> Hi Mingzheng,
->
-> Thanks for the patch!
->
-> On Wed, Jul 26, 2023 at 01:04:05AM +0800, Mingzheng Xing wrote:
->> When compiling the kernel with the toolchain composed of GCC >= 12.1.0 and
->> binutils < 2.38, default ISA spec used when building binutils and GCC, the
->> following build failure will appear because the
->> CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI is not turned on.
->> (i.e, gcc-12.1.0 and binutils-2.36, or gcc-12.3.0 and binutils-2.37, use
->> default ISA spec.)
->>
->>    CC      arch/riscv/kernel/vdso/vgettimeofday.o
->>    <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h: Assembler messages:
->>    <<BUILDDIR>>/arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
-> The gift that keeps on giving :/
-Yeah, but things will get better :)
->> Binutils has updated the default ISA spec version, and the community has
->> responded well to this[1][2][3], but it appears that this is not over yet.
->>
->> We also need to consider the situation of binutils < 2.38 but
->> GCC >= 12.1.0, since the combination between different versions of GCC and
->> binutils is not unique, which is to some extent flexible. GCC release
->> 12.1.0 updated the default ISA spec version in GCC commit[4].
-> I suspect this combination is not too common because binutils 2.38 came
-> out before GCC 12.1.0 but as you note, it is obviously possible. What
-> toolchain has this combination in the wild, which would be helpful for
-> documentation purposes?
-Actually, this issue was discovered during the upgrade of the distribution
-openEuler for RISC-V. It is a temporary phenomenon caused by
-inconsistent upgrade speeds of packages such as GCC and binutils.
- From my limited understanding, GCC and binutils are not strictly
-version-bound in some other distributions, so I can't rule out this issue
-happening in other scenarios. But once it happens it can cause problems
-with compiling the kernel.
->> For more information, please refer to:
->>
->> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
->> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang and binutils")
->>
->> [1]:https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/aE1ZeHHCYf4
->> [2]:https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.org
->> [3]:https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
->> [4]:https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
->>
->> Signed-off-by: Mingzheng Xing<xingmingzheng@iscas.ac.cn>
->> ---
->>   arch/riscv/Kconfig | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index 4c07b9189c86..b49cea30f6cc 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -570,11 +570,15 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
->>   config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->>   	def_bool y
->>   	#https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
->> -	depends on AS_IS_GNU && AS_VERSION >= 23800
->> +	#https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
->> +	depends on CC_IS_GCC && GCC_VERSION >= 120100 || \
->> +		   AS_IS_GNU && AS_VERSION >= 23800
-> GCC_VERSION will be 0 for clang, so you don't need the CC_IS_GCC check.
-> With that change, this should be able to stay on one line:
->
->      depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
-OK, I'll change it in v2.
+When a grant entry is still in use by the remote domain, Linux must put
+it on a deferred list.  Normally, this list is very short, because
+the PV network and block protocols expect the backend to unmap the grant
+first.  However, Qubes OS's GUI protocol is subject to the constraints
+of the X Window System, and as such winds up with the frontend unmapping
+the window first.  As a result, the list can grow very large, resulting
+in a massive memory leak and eventual VM freeze.
 
-Thanks,
-Mingzheng.
->>   	help
->>   	  Newer binutils versions default to ISA spec version 20191213 which
->>   	  moves some instructions from the I extension to the Zicsr and Zifencei
->>   	  extensions.
->> +	  Similarly, GCC release 12.1.0 has changed the default ISA spec version to
->> +	  20191213, so the above situation requires this option to be enabled.
->>   
->>   config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
->>   	def_bool y
->> -- 
->> 2.34.1
->>
-> Cheers,
-> Nathan
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+To partially solve this problem, make the number of entries that the VM
+will attempt to free at each iteration tunable.  The default is still
+10, but it can be overridden via a module parameter.
 
+This is Cc: stable because (when combined with appropriate userspace
+changes) it fixes a severe performance and stability problem for Qubes
+OS users.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
+---
+ Documentation/ABI/testing/sysfs-module | 11 +++++++
+ drivers/xen/grant-table.c              | 40 +++++++++++++++++++-------
+ 2 files changed, 40 insertions(+), 11 deletions(-)
+
+Changes since v3:
+- do not mention Kconfig in the commit message.
+- add entry to Documentation/ABI for the new sysfs entry.
+
+Changes since v2:
+- use atomic_inc_return(x) and atomic_dec_return(x) instead of
+  atomic_add_return(1, x) and atomic_sub_return(1, x) respectively.
+- move module_param macro closer to the definition of
+  free_per_iteration.
+- add blank line between declarations and statements.
+
+Changes since v1:
+- drop setting default via Kconfig
+
+diff --git a/Documentation/ABI/testing/sysfs-module b/Documentation/ABI/testing/sysfs-module
+index 08886367d0470e8d8922703a7d5174077801c2a8..62addab47d0c5908d26ec2f5d07db5ce21833566 100644
+--- a/Documentation/ABI/testing/sysfs-module
++++ b/Documentation/ABI/testing/sysfs-module
+@@ -60,3 +60,14 @@ Description:	Module taint flags:
+ 			C   staging driver module
+ 			E   unsigned module
+ 			==  =====================
++
++What:		/sys/module/grant_table/parameters/free_per_iteration
++Date:		July 2023
++KernelVersion:	6.5 but backported to all supported stable branches
++Contact:	Xen developer discussion <xen-devel@lists.xenproject.org>
++Description:	Read and write number of grant entries to attempt to free per iteration.
++
++		Note: Future versions of Xen and Linux may provide a better
++		interface for controlling the rate of deferred grant reclaim
++		or may not need it at all.
++Users:		Qubes OS (https://www.qubes-os.org)
+diff --git a/drivers/xen/grant-table.c b/drivers/xen/grant-table.c
+index e1ec725c2819d4d5dede063eb00d86a6d52944c0..f13c3b76ad1eb7110e2a2981e9fa4e504174e431 100644
+--- a/drivers/xen/grant-table.c
++++ b/drivers/xen/grant-table.c
+@@ -498,14 +498,21 @@ static LIST_HEAD(deferred_list);
+ static void gnttab_handle_deferred(struct timer_list *);
+ static DEFINE_TIMER(deferred_timer, gnttab_handle_deferred);
+ 
++static atomic64_t deferred_count;
++static atomic64_t leaked_count;
++static unsigned int free_per_iteration = 10;
++module_param(free_per_iteration, uint, 0600);
++
+ static void gnttab_handle_deferred(struct timer_list *unused)
+ {
+-	unsigned int nr = 10;
++	unsigned int nr = READ_ONCE(free_per_iteration);
++	const bool ignore_limit = nr == 0;
+ 	struct deferred_entry *first = NULL;
+ 	unsigned long flags;
++	size_t freed = 0;
+ 
+ 	spin_lock_irqsave(&gnttab_list_lock, flags);
+-	while (nr--) {
++	while ((ignore_limit || nr--) && !list_empty(&deferred_list)) {
+ 		struct deferred_entry *entry
+ 			= list_first_entry(&deferred_list,
+ 					   struct deferred_entry, list);
+@@ -515,10 +522,14 @@ static void gnttab_handle_deferred(struct timer_list *unused)
+ 		list_del(&entry->list);
+ 		spin_unlock_irqrestore(&gnttab_list_lock, flags);
+ 		if (_gnttab_end_foreign_access_ref(entry->ref)) {
++			uint64_t ret = atomic64_dec_return(&deferred_count);
++
+ 			put_free_entry(entry->ref);
+-			pr_debug("freeing g.e. %#x (pfn %#lx)\n",
+-				 entry->ref, page_to_pfn(entry->page));
++			pr_debug("freeing g.e. %#x (pfn %#lx), %llu remaining\n",
++				 entry->ref, page_to_pfn(entry->page),
++				 (unsigned long long)ret);
+ 			put_page(entry->page);
++			freed++;
+ 			kfree(entry);
+ 			entry = NULL;
+ 		} else {
+@@ -530,21 +541,22 @@ static void gnttab_handle_deferred(struct timer_list *unused)
+ 		spin_lock_irqsave(&gnttab_list_lock, flags);
+ 		if (entry)
+ 			list_add_tail(&entry->list, &deferred_list);
+-		else if (list_empty(&deferred_list))
+-			break;
+ 	}
+-	if (!list_empty(&deferred_list) && !timer_pending(&deferred_timer)) {
++	if (list_empty(&deferred_list))
++		WARN_ON(atomic64_read(&deferred_count));
++	else if (!timer_pending(&deferred_timer)) {
+ 		deferred_timer.expires = jiffies + HZ;
+ 		add_timer(&deferred_timer);
+ 	}
+ 	spin_unlock_irqrestore(&gnttab_list_lock, flags);
++	pr_debug("Freed %zu references", freed);
+ }
+ 
+ static void gnttab_add_deferred(grant_ref_t ref, struct page *page)
+ {
+ 	struct deferred_entry *entry;
+ 	gfp_t gfp = (in_atomic() || irqs_disabled()) ? GFP_ATOMIC : GFP_KERNEL;
+-	const char *what = KERN_WARNING "leaking";
++	uint64_t leaked, deferred;
+ 
+ 	entry = kmalloc(sizeof(*entry), gfp);
+ 	if (!page) {
+@@ -567,10 +579,16 @@ static void gnttab_add_deferred(grant_ref_t ref, struct page *page)
+ 			add_timer(&deferred_timer);
+ 		}
+ 		spin_unlock_irqrestore(&gnttab_list_lock, flags);
+-		what = KERN_DEBUG "deferring";
++		deferred = atomic64_inc_return(&deferred_count);
++		leaked = atomic64_read(&leaked_count);
++		pr_debug("deferring g.e. %#x (pfn %#lx) (total deferred %llu, total leaked %llu)\n",
++			 ref, page ? page_to_pfn(page) : -1, deferred, leaked);
++	} else {
++		deferred = atomic64_read(&deferred_count);
++		leaked = atomic64_inc_return(&leaked_count);
++		pr_warn("leaking g.e. %#x (pfn %#lx) (total deferred %llu, total leaked %llu)\n",
++			ref, page ? page_to_pfn(page) : -1, deferred, leaked);
+ 	}
+-	printk("%s g.e. %#x (pfn %#lx)\n",
+-	       what, ref, page ? page_to_pfn(page) : -1);
+ }
+ 
+ int gnttab_try_end_foreign_access(grant_ref_t ref)
+-- 
+Sincerely,
+Demi Marie Obenour (she/her/hers)
+Invisible Things Lab
