@@ -2,51 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DB9762BDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF644762BE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbjGZGri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        id S231744AbjGZGt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbjGZGrg (ORCPT
+        with ESMTP id S231955AbjGZGtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:47:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E150E1990
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:47:35 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYJ1-0002sS-0v; Wed, 26 Jul 2023 08:47:31 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYIz-002Auo-TH; Wed, 26 Jul 2023 08:47:29 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYIz-007ra7-3f; Wed, 26 Jul 2023 08:47:29 +0200
-Date:   Wed, 26 Jul 2023 08:47:26 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 16/61] mmc: rtsx_pci: Drop if block with always false
- condition
-Message-ID: <20230726064726.e6yfpt44a3yf4sd3@pengutronix.de>
-References: <20230726040041.26267-1-frank.li@vivo.com>
- <20230726040041.26267-16-frank.li@vivo.com>
+        Wed, 26 Jul 2023 02:49:22 -0400
+Received: from out-2.mta0.migadu.com (out-2.mta0.migadu.com [IPv6:2001:41d0:1004:224b::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6F21BF8
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:49:20 -0700 (PDT)
+Message-ID: <e7204276-9de5-17eb-90ae-e51657d73ef4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690354158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=07kRInGgcVMiksfMsun8p4HGvWms170mUSINrsZDIPU=;
+        b=SItOX2s1O2xRbklfqsU1E20kPvGPKi6lNjfeuPsz787gwDukUtasKQC+RRJ78xAQZyjij6
+        0JlhE8ny7YCW/WIa1zfjcf/R7sJjT11NiI0YLFw4BmC6xi+4P258FcCDYig5b0NazpkEtw
+        pJl7w1nj4tDpMcmLDY8eVxmHbXISOTw=
+Date:   Wed, 26 Jul 2023 14:49:05 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gztxvgx5brqqel3h"
-Content-Disposition: inline
-In-Reply-To: <20230726040041.26267-16-frank.li@vivo.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Subject: Re: [PATCH v2 11/47] gfs2: dynamically allocate the gfs2-qd shrinker
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-12-zhengqi.arch@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-12-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,42 +66,101 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gztxvgx5brqqel3h
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 26, 2023 at 11:59:56AM +0800, Yangtao Li wrote:
-> rtsx_pci_sdmmc_drv_remove() is only called for a device after
-> rtsx_pci_sdmmc_drv_probe() returned 0. In that case platform_set_drvdata()
-> was called with a non-NULL value and so platform_get_drvdata()
-> won't return NULL.
->=20
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+On 2023/7/24 17:43, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the gfs2-qd shrinker.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>   fs/gfs2/main.c  |  6 +++---
+>   fs/gfs2/quota.c | 26 ++++++++++++++++++++------
+>   fs/gfs2/quota.h |  3 ++-
+>   3 files changed, 25 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/gfs2/main.c b/fs/gfs2/main.c
+> index afcb32854f14..e47b1cc79f59 100644
+> --- a/fs/gfs2/main.c
+> +++ b/fs/gfs2/main.c
+> @@ -147,7 +147,7 @@ static int __init init_gfs2_fs(void)
+>   	if (!gfs2_trans_cachep)
+>   		goto fail_cachep8;
+>   
+> -	error = register_shrinker(&gfs2_qd_shrinker, "gfs2-qd");
+> +	error = gfs2_qd_shrinker_init();
+>   	if (error)
+>   		goto fail_shrinker;
+>   
+> @@ -196,7 +196,7 @@ static int __init init_gfs2_fs(void)
+>   fail_wq2:
+>   	destroy_workqueue(gfs_recovery_wq);
+>   fail_wq1:
+> -	unregister_shrinker(&gfs2_qd_shrinker);
+> +	gfs2_qd_shrinker_exit();
+>   fail_shrinker:
+>   	kmem_cache_destroy(gfs2_trans_cachep);
+>   fail_cachep8:
+> @@ -229,7 +229,7 @@ static int __init init_gfs2_fs(void)
+>   
+>   static void __exit exit_gfs2_fs(void)
+>   {
+> -	unregister_shrinker(&gfs2_qd_shrinker);
+> +	gfs2_qd_shrinker_exit();
+>   	gfs2_glock_exit();
+>   	gfs2_unregister_debugfs();
+>   	unregister_filesystem(&gfs2_fs_type);
+> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+> index 704192b73605..bc9883cea847 100644
+> --- a/fs/gfs2/quota.c
+> +++ b/fs/gfs2/quota.c
+> @@ -186,13 +186,27 @@ static unsigned long gfs2_qd_shrink_count(struct shrinker *shrink,
+>   	return vfs_pressure_ratio(list_lru_shrink_count(&gfs2_qd_lru, sc));
+>   }
+>   
+> -struct shrinker gfs2_qd_shrinker = {
+> -	.count_objects = gfs2_qd_shrink_count,
+> -	.scan_objects = gfs2_qd_shrink_scan,
+> -	.seeks = DEFAULT_SEEKS,
+> -	.flags = SHRINKER_NUMA_AWARE,
+> -};
+> +static struct shrinker *gfs2_qd_shrinker;
+> +
+> +int gfs2_qd_shrinker_init(void)
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+It's better to declare this as __init.
 
-Best regards
-Uwe
+> +{
+> +	gfs2_qd_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "gfs2-qd");
+> +	if (!gfs2_qd_shrinker)
+> +		return -ENOMEM;
+> +
+> +	gfs2_qd_shrinker->count_objects = gfs2_qd_shrink_count;
+> +	gfs2_qd_shrinker->scan_objects = gfs2_qd_shrink_scan;
+> +	gfs2_qd_shrinker->seeks = DEFAULT_SEEKS;
+> +
+> +	shrinker_register(gfs2_qd_shrinker);
+>   
+> +	return 0;
+> +}
+> +
+> +void gfs2_qd_shrinker_exit(void)
+> +{
+> +	shrinker_unregister(gfs2_qd_shrinker);
+> +}
+>   
+>   static u64 qd2index(struct gfs2_quota_data *qd)
+>   {
+> diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
+> index 21ada332d555..f9cb863373f7 100644
+> --- a/fs/gfs2/quota.h
+> +++ b/fs/gfs2/quota.h
+> @@ -59,7 +59,8 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip,
+>   }
+>   
+>   extern const struct quotactl_ops gfs2_quotactl_ops;
+> -extern struct shrinker gfs2_qd_shrinker;
+> +int gfs2_qd_shrinker_init(void);
+> +void gfs2_qd_shrinker_exit(void);
+>   extern struct list_lru gfs2_qd_lru;
+>   extern void __init gfs2_quota_hash_init(void);
+>   
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---gztxvgx5brqqel3h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTAwX0ACgkQj4D7WH0S
-/k7WqQgAtYh1/RV7jJB6VdbpsIrL9lXg03+aH6VjUrt52Qnge8rrBPOzS5qBOcru
-8C0uHAvR3WVtM3detklGBSNjoBGcR1JxF5RHNcn3n45pLSwcOIUKp38Qg1jF7ah8
-Ss7RtaeEOGzmqlEpsL1u28+56H3xagbDBMY9I2+LlOOz2FcuVT21hdSCSsVzLRdF
-nqIpNh2kJ5NUsmdjunGo/DiwlDlcy26H7ore4jKRBKhJYUXPiD9VAhCLCpjwDkTB
-U1j/19EjgiOhQMD3OCJIU9BSZgc0B54xgtjxmbjo6oy80P5RbhCxFIgqZ6VozHrZ
-LiNxVf4/ruU2uwzcOV88KprQ6NoU7A==
-=zNah
------END PGP SIGNATURE-----
-
---gztxvgx5brqqel3h--
