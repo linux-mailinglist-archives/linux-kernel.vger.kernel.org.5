@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E5F763318
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9200C763320
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbjGZKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
+        id S233003AbjGZKGf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 06:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233007AbjGZKDf (ORCPT
+        with ESMTP id S232807AbjGZKGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:03:35 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCEDC1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=idDRzgK+CuAVwOo84T4Kfcz9Fcy1XpgH5njbuHuJvqw=; b=IPzJ1A2XZvWMYZrnXRo5MDNvMS
-        9XFLUmoz0c2+XNrPFY+e2cgcPhuyZUppO8hVf9dMoOfqB8mdx5kvjhkIeTpvXDfaRTtQxvJmBk0YX
-        43l3ViCyltEOjYC6WiZ3nLPp1ai7VNMAhAjr7rOT6uHu5nDMGoFy1YahM0W0nW/J4Uh9Igj5MQ/Et
-        Kp0l6porWKdkWvwzfDPCcjaGV/oR9QMAh/URywzbImsb8rJAKpT4FYWw8X5If+vD0VHYYmAcoidcg
-        ANMXpResOCPqyOcH2v0lKeiJr3fWSJpEQPSjzGHCiAwkOXKZpWJcvar8s5npB0qsuk6400fPTGDOF
-        FeFF+JpA==;
-Received: from [192.168.1.4] (port=38008 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qObMb-0008Oh-2m;
-        Wed, 26 Jul 2023 12:03:25 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 26 Jul 2023 12:03:25 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <linux@armlinux.org.uk>
-CC:     <andrew@lunn.ch>, <ante.knezic@helmholz.de>, <davem@davemloft.net>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <olteanv@gmail.com>, <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Wed, 26 Jul 2023 12:03:25 +0200
-Message-ID: <20230726100325.20185-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <ZMDtDXG4Xj94F7vw@shell.armlinux.org.uk>
-References: <ZMDtDXG4Xj94F7vw@shell.armlinux.org.uk>
+        Wed, 26 Jul 2023 06:06:31 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E56019A4;
+        Wed, 26 Jul 2023 03:06:23 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 4A41D24E2DD;
+        Wed, 26 Jul 2023 18:06:13 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Jul
+ 2023 18:06:13 +0800
+Received: from ubuntu.localdomain (183.27.99.135) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 26 Jul
+ 2023 18:06:12 +0800
+From:   Minda Chen <minda.chen@starfivetech.com>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: [dt-for-next v1 0/2] Add USB PHY and USB dts node for JH7110
+Date:   Wed, 26 Jul 2023 03:06:07 -0700
+Message-ID: <20230726100609.72550-1-minda.chen@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [183.27.99.135]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 10:53:17 +0100, Russell King (Oracle) wrote:
-> As a longer term goal, I would like to move the pcs drivers out of
-> mv88e6xxx and into drivers/net/pcs, so I want to minimise the use of
-> the "chip" pointer in the drivers. That's why I coded them the way I
-> have, as almost entirely stand-alone implementations that make no use
-> of the hardware accessors provided by the 88e6xxx core.
+Add USB and USB/PCIe PHY dts node for StarFive JH7110. The PHY
+driver is in linux-phy-next tree.
 
-Understood, I will adapt the patch as you proposed.
+Minda Chen (2):
+  riscv: dts: starfive: Add USB and PCIe PHY nodes for JH7110
+  riscv: dts: starfive: Add USB dts node for JH7110
+
+ .../jh7110-starfive-visionfive-2.dtsi         |  5 ++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 53 +++++++++++++++++++
+ 2 files changed, 58 insertions(+)
+
+
+base-commit: f2b539af5718bb63eb9fd913d9d4474bd1e55d07
+-- 
+2.25.1
 
