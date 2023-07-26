@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AC27636D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1194D7636E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjGZMyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S232665AbjGZM5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbjGZMyp (ORCPT
+        with ESMTP id S230229AbjGZM5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:54:45 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD83B19A4;
-        Wed, 26 Jul 2023 05:54:43 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7748ca56133so60676139f.0;
-        Wed, 26 Jul 2023 05:54:43 -0700 (PDT)
+        Wed, 26 Jul 2023 08:57:07 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953D597;
+        Wed, 26 Jul 2023 05:57:03 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bb893e6365so23464565ad.2;
+        Wed, 26 Jul 2023 05:57:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690376083; x=1690980883;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690376223; x=1690981023;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nypF9NHVLOaXJSPHj2PIoRQwBC4E0LVifIvHGKcCHtE=;
-        b=D9g3omdONjBXXMYcUf0O6KEYiak7UGvpRF/zsEY8116/GDMzWPXWRUB5l3mYfkIsXA
-         PlAZZ1qWeprT+28VZ+uDoGEoZnvrY3KzGgjfugbusQxF4KotB3iPkNLXKiJHMlJh0Lh2
-         Hsfe1xi7kwzErrYZwdiL4crpUhjI8EraN02qxKCKmQoPk8IautwMpImnc/idJsTi53OM
-         zxf9bn1OxCVjtwW/pCJjGwU/5/38kVAKarjblXWdWqTcWdCLU/y587mVAnlViSWiIibN
-         lon7aeW0aCjovghlW76tXd/42xSqSIicsR9COdZ/YKN0n0QvhnVg3hS9zAGqzi/ethiG
-         yiNA==
+        bh=5ySvdAORBId7F6tM0o+hWAYYE6qPXhCxs/coJ5dfIDU=;
+        b=plSKqzIj3VTiPf1pRRh7Dx/AN128Sdh2M3LyWi8KBEXvvoPl0Nx8r0bJ6Z+at1W7qS
+         M6UuLVG3Mf+HBdSQEgTLVrr9g4pSQzRKq66GA51BtwLRKAbJn0F6T9QX9hpMeEEWrRNB
+         8eROU9GxSUvEe/BqlqaJi5OJa84+qnxL/bkVgvnQA5GzoaFBcaK7XW0v6ECcOoN3GUKT
+         IAu8qr3WPUoKXCuyiZ2wMYxoJ1Y2GpbtZlI+YOosKc7hdMs6WK549m/UqzpROLNPP+Lk
+         f98XRZirBpLr4eMSNvRFYArhahMD2XpFGEEtwEPtpLMkC/BIcRognyq9y9tDguFMFj6Y
+         rPkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690376083; x=1690980883;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690376223; x=1690981023;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nypF9NHVLOaXJSPHj2PIoRQwBC4E0LVifIvHGKcCHtE=;
-        b=PBfEUcWRlloxcPFgbTUn7GTqns13uphm0iGIZU/GLnsQjFeF5bdJE2B4fWUTwpdhp0
-         dF2EXsLOcesKTxadwoNDD2ZXoOC0r4mDJZIq5nyb3urT80B5He8ZwfGNa/6uOo8gr29A
-         2VanJ5XAdB416vuN+Xvko6sTEzyF9066XcGfEltsD60a5H393ZJHpyVMIY92/4OMuqBu
-         aOCR1/4ceW8A1zi+Egx184DJrRCSYVaB97gRB4oO/1cUohED4wSarGkzOF3YcjZlqDD6
-         Y5Imh0IQW9IswIPqE6AowwS7k148eDpCrzy/vDDCSsRPvctf0mB/b5pYvLvloF/63rTW
-         yjBA==
-X-Gm-Message-State: ABy/qLaRhVLIMZf1OJLbbqXIuPz357u0otK/DWGYfe5sBUDISbp1IezE
-        Qv1nJYVn9SWj4t0h4SRMJ/xMH5w4rb4kCYOtJUc=
-X-Google-Smtp-Source: APBJJlGXQsHeiyQ/2qrgTv0a14/QMTqvV+VTmfjlLFi+S8pP8K0OZL1w3229Nv0NlJuAmedOkhl/7MEHqeBufUu+Dbc=
-X-Received: by 2002:a05:6602:3981:b0:787:16ec:2699 with SMTP id
- bw1-20020a056602398100b0078716ec2699mr1919140iob.2.1690376083097; Wed, 26 Jul
- 2023 05:54:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230726123747.4097755-1-james.hilliard1@gmail.com> <20230726123747.4097755-3-james.hilliard1@gmail.com>
-In-Reply-To: <20230726123747.4097755-3-james.hilliard1@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 26 Jul 2023 09:54:30 -0300
-Message-ID: <CAOMZO5AdCxQsQA946R8Xp9o7SCS=+wco4aGyqJ8P2ENsvpaMmQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/3] ARM: dts: imx6q: Add Variscite MX6 Custom board support
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Pierluigi Passaro <pierluigi.p@variscite.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        bh=5ySvdAORBId7F6tM0o+hWAYYE6qPXhCxs/coJ5dfIDU=;
+        b=bXtqfZ+7AZ4/f6kfEUA498NargIzYnenGgrDm+2ERju0BwcF1+b+WQambBUA+bXexm
+         xI0UKkkqTwcXLhJC5vv8Fdz5CHhM1rW8X31PlQRbIp6nOcDPYTYLWebaTxRDlUWH6koi
+         amCTnwavrVFTlUE+uclFwucNL1ZPyj0SyoCC3dwDcP17q05i56zL2KhzI6tYKTkAZilX
+         IWtWbjtKKnOk7GpDfIMeO72yIteOhfmzZlmc/G+/9VLZgLx/NRadujHjlYALZEFhy3pq
+         VPf4JDynCQKJ89qEiy8nRyQqX3S7FyMrV6s/Dw5yxR2JfJYcrQJIX4IPc5Kp2IezepcU
+         U6ig==
+X-Gm-Message-State: ABy/qLbhAIeHAccKu76JmFuT4xQw+74hsSoZklm43b+zkVCtSzPZFmnV
+        w0dpViMefdMrydnvHWPctLs=
+X-Google-Smtp-Source: APBJJlH6mHo3jfZaGLh7lyBpVf7ybSIoJL1f5lSops/1NB++3TvGV0N+22403rCO+5r2/bvMK04zhg==
+X-Received: by 2002:a17:902:c212:b0:1bb:a056:2c5f with SMTP id 18-20020a170902c21200b001bba0562c5fmr1365382pll.7.1690376222926;
+        Wed, 26 Jul 2023 05:57:02 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id jc11-20020a17090325cb00b001b9bebbc621sm13040647plb.136.2023.07.26.05.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 05:57:02 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     njavali@marvell.com, mrangankar@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] scsi: qedi: Fix potential deadlock on &qedi_percpu->p_work_lock
+Date:   Wed, 26 Jul 2023 12:56:55 +0000
+Message-Id: <20230726125655.4197-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 9:38=E2=80=AFAM James Hilliard
-<james.hilliard1@gmail.com> wrote:
->
-> This patch adds support for the Variscite MX6 SoM Carrier Board.
->
-> This Carrier-Board has the following :
-> - LVDS interface for the VLCD-CAP-GLD-LVDS 7" LCD 800 x 480 touch display
-> - HDMI Connector
-> - USB Host + USB OTG Connector
-> - 10/100/1000 Mbps Ethernet
-> - miniPCI-Express slot
-> - SD Card connector
-> - Audio Headphone/Line In jack connectors
-> - S-ATA
-> - On-board DMIC
-> - RS485 Header
-> - CAN bus header
-> - SPI header
-> - Camera Interfaces header
-> - OnBoard RTC with Coin Backup battery socket
-> - RS232 Debug Header (IDC10)
-> - RS232 DTE
->
-> Product Page : https://www.variscite.com/product/single-board-computers/v=
-ar-mx6customboard
->
-> The dts file based on the ones provided by Variscite on their own
-> kernel, but adapted for mainline.
->
-> Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+As &qedi_percpu->p_work_lock is acquired by hard irq qedi_msix_handler(),
+other acquisition of the same lock under process context should disable
+irq, otherwise deadlock could happen if the irq preempt the execution
+while the lock is held in process context on the same CPU.
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+qedi_cpu_offline() is one such function acquires the lock on process
+context.
+
+[Deadlock Scenario]
+qedi_cpu_offline()
+    ->spin_lock(&p->p_work_lock)
+        <irq>
+        ->qedi_msix_handler()
+        ->edi_process_completions()
+        ->spin_lock_irqsave(&p->p_work_lock, flags); (deadlock here)
+
+This flaw was found by an experimental static analysis tool I am
+developing for irq-related deadlock.
+
+The tentative patch fix the potential deadlock by spin_lock_irqsave()
+under process context.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+---
+ drivers/scsi/qedi/qedi_main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 450522b204d6..77a56a136678 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1976,8 +1976,9 @@ static int qedi_cpu_offline(unsigned int cpu)
+ 	struct qedi_percpu_s *p = this_cpu_ptr(&qedi_percpu);
+ 	struct qedi_work *work, *tmp;
+ 	struct task_struct *thread;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&p->p_work_lock);
++	spin_lock_irqsave(&p->p_work_lock, flags);
+ 	thread = p->iothread;
+ 	p->iothread = NULL;
+ 
+@@ -1988,7 +1989,7 @@ static int qedi_cpu_offline(unsigned int cpu)
+ 			kfree(work);
+ 	}
+ 
+-	spin_unlock_bh(&p->p_work_lock);
++	spin_unlock_irqrestore(&p->p_work_lock, flags);
+ 	if (thread)
+ 		kthread_stop(thread);
+ 	return 0;
+-- 
+2.17.1
+
