@@ -2,227 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069C3763C8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D497763C90
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjGZQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
+        id S231468AbjGZQdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbjGZQcN (ORCPT
+        with ESMTP id S231370AbjGZQdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:32:13 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 65A3E26B9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:32:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0F6814BF;
-        Wed, 26 Jul 2023 09:32:53 -0700 (PDT)
-Received: from [10.57.77.6] (unknown [10.57.77.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 482143F67D;
-        Wed, 26 Jul 2023 09:32:09 -0700 (PDT)
-Message-ID: <188251d8-32c4-846f-8ca9-8a7c635d6172@arm.com>
-Date:   Wed, 26 Jul 2023 17:32:07 +0100
+        Wed, 26 Jul 2023 12:33:14 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F8726AC
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:33:12 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so4544562a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690389190; x=1690993990;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Cd6m0zvmyOqP7EWDic5k2R+RpP5jPlweNd1w6rynyUo=;
+        b=CpCaZKvwgLa6C42nwkcVPITwosYh27rjpvegCGk6j3BfVf/jx7sMu/acak8DDsb8ij
+         B5zoR1Vgn59ztkl3pTwTuFLbemf2uukY7hCunEI3om3zYVMG8xG/hI+rv6brkXc5NvYd
+         xyEtVVG0u8FoTmlDzsvMkc1ViEiV0YlbBnh5CuWWCqPvVmAw+xT7GVct9/8N6gz0l48M
+         Q0x69k1K44236DF5YNYZW9/eOHYE3K3FkjX/z2Se9NbhztCipzvThfnsLEdhnhh/3Ug9
+         sa/TeNROkMrH9augEXqCZSpNPzWSTJElwgetHL9fCxb5rZvzDIarDAnXZSKZCIMMolAw
+         4Ocw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690389190; x=1690993990;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cd6m0zvmyOqP7EWDic5k2R+RpP5jPlweNd1w6rynyUo=;
+        b=iTR00g4RcrS2VsJ8wkpHcSCaomykbb/he9TrAFOOIXZPIXkDHSkAYKJpOPy2uAubl5
+         Kc/ybLYv1xORExK8U0ElA1KrjmWcvmkKR81pVyZfA1wt8prjxhORqrATPQbDrSEVuFSB
+         WGVBOgAwr9RDE5/gZymFaECGmJ5wqPGvd0phtjboRPvrAWyA6kTz1Lj/TuMmPQ5ZT/Kr
+         KFUOGtY2gh0g+GJ1GHu4SnMEUgGwS+/FMrqw3kjX8vBqcLaoR2Ta5aHWWdp5hRMt6Fwv
+         Mgqv4sx/OL8Wd2kASJzZCjGCcBh8TP3tpJlppkCBEj0OU1Hr+u9fhJ/MiVW/npRbmIOr
+         hn2A==
+X-Gm-Message-State: ABy/qLZYcn2ai9ZUpIkTvqneeJDNPZb6d58c09QTb4rCVdT9MbyGGUqk
+        VTJxu6PErf0+ds+S2fQCeC0X3g==
+X-Google-Smtp-Source: APBJJlEHXWRBqhdbOOlxQ84CIcPANQDUd8v8/7MSJsHOzfyyb3Xyjt6sp7ho11ZBjqC2KJeq851+lQ==
+X-Received: by 2002:aa7:d5c7:0:b0:521:d23b:f2c5 with SMTP id d7-20020aa7d5c7000000b00521d23bf2c5mr1891281eds.14.1690389190663;
+        Wed, 26 Jul 2023 09:33:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id a11-20020aa7d90b000000b005222a38c7b2sm4812918edr.48.2023.07.26.09.33.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 09:33:10 -0700 (PDT)
+Message-ID: <b6bddd59-ac78-3f75-828e-cff54766fc72@linaro.org>
+Date:   Wed, 26 Jul 2023 18:33:08 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 3/3] mm: Batch-zap large anonymous folio PTE mappings
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230720112955.643283-1-ryan.roberts@arm.com>
- <20230720112955.643283-4-ryan.roberts@arm.com>
- <20230726161942.GA1123863@dev-arch.thelio-3990X>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230726161942.GA1123863@dev-arch.thelio-3990X>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: media: Add bindings for Imagination E5010
+ JPEG Encoder driver
+Content-Language: en-US
+To:     Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
+        j-luthra@ti.com, b-brnich@ti.com, detheridge@ti.com,
+        p-mantena@ti.com, vijayp@ti.com
+References: <20230726162615.1270075-1-devarsht@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726162615.1270075-1-devarsht@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 17:19, Nathan Chancellor wrote:
-> Hi Ryan,
+On 26/07/2023 18:26, Devarsh Thakkar wrote:
+> Add dt-bindings for Imagination E5010 JPEG Encoder driver which is
+> implemented as stateful V4L2 M2M driver.
 > 
-> On Thu, Jul 20, 2023 at 12:29:55PM +0100, Ryan Roberts wrote:
->> This allows batching the rmap removal with folio_remove_rmap_range(),
->> which means we avoid spuriously adding a partially unmapped folio to the
->> deferred split queue in the common case, which reduces split queue lock
->> contention.
->>
->> Previously each page was removed from the rmap individually with
->> page_remove_rmap(). If the first page belonged to a large folio, this
->> would cause page_remove_rmap() to conclude that the folio was now
->> partially mapped and add the folio to the deferred split queue. But
->> subsequent calls would cause the folio to become fully unmapped, meaning
->> there is no value to adding it to the split queue.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  mm/memory.c | 120 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 120 insertions(+)
->>
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 01f39e8144ef..189b1cfd823d 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -1391,6 +1391,94 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
->>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
->>  }
->>  
->> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
->> +				struct page *anchor, unsigned long anchor_vaddr)
->> +{
->> +	unsigned long offset;
->> +	unsigned long vaddr;
->> +
->> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
->> +	vaddr = anchor_vaddr + offset;
->> +
->> +	if (anchor > page) {
->> +		if (vaddr > anchor_vaddr)
->> +			return 0;
->> +	} else {
->> +		if (vaddr < anchor_vaddr)
->> +			return ULONG_MAX;
->> +	}
->> +
->> +	return vaddr;
->> +}
->> +
->> +static int folio_nr_pages_cont_mapped(struct folio *folio,
->> +				      struct page *page, pte_t *pte,
->> +				      unsigned long addr, unsigned long end)
->> +{
->> +	pte_t ptent;
->> +	int floops;
->> +	int i;
->> +	unsigned long pfn;
->> +	struct page *folio_end;
->> +
->> +	if (!folio_test_large(folio))
->> +		return 1;
->> +
->> +	folio_end = &folio->page + folio_nr_pages(folio);
->> +	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
->> +	floops = (end - addr) >> PAGE_SHIFT;
->> +	pfn = page_to_pfn(page);
->> +	pfn++;
->> +	pte++;
->> +
->> +	for (i = 1; i < floops; i++) {
->> +		ptent = ptep_get(pte);
->> +
->> +		if (!pte_present(ptent) || pte_pfn(ptent) != pfn)
->> +			break;
->> +
->> +		pfn++;
->> +		pte++;
->> +	}
->> +
->> +	return i;
->> +}
->> +
->> +static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
->> +					    struct vm_area_struct *vma,
->> +					    struct folio *folio,
->> +					    struct page *page, pte_t *pte,
->> +					    unsigned long addr, int nr_pages,
->> +					    struct zap_details *details)
->> +{
->> +	struct mm_struct *mm = tlb->mm;
->> +	pte_t ptent;
->> +	bool full;
->> +	int i;
->> +
->> +	for (i = 0; i < nr_pages;) {
->> +		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
->> +		tlb_remove_tlb_entry(tlb, pte, addr);
->> +		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
->> +		full = __tlb_remove_page(tlb, page, 0);
->> +
->> +		if (unlikely(page_mapcount(page) < 1))
->> +			print_bad_pte(vma, addr, ptent, page);
->> +
->> +		i++;
->> +		page++;
->> +		pte++;
->> +		addr += PAGE_SIZE;
->> +
->> +		if (unlikely(full))
->> +			break;
->> +	}
->> +
->> +	folio_remove_rmap_range(folio, page - i, i, vma);
->> +
->> +	return i;
->> +}
->> +
->>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>  				struct vm_area_struct *vma, pmd_t *pmd,
->>  				unsigned long addr, unsigned long end,
->> @@ -1428,6 +1516,38 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>  			page = vm_normal_page(vma, addr, ptent);
->>  			if (unlikely(!should_zap_page(details, page)))
->>  				continue;
->> +
->> +			/*
->> +			 * Batch zap large anonymous folio mappings. This allows
->> +			 * batching the rmap removal, which means we avoid
->> +			 * spuriously adding a partially unmapped folio to the
->> +			 * deferrred split queue in the common case, which
->> +			 * reduces split queue lock contention.
->> +			 */
->> +			if (page && PageAnon(page)) {
->> +				struct folio *folio = page_folio(page);
->> +				int nr_pages_req, nr_pages;
->> +
->> +				nr_pages_req = folio_nr_pages_cont_mapped(
->> +						folio, page, pte, addr, end);
->> +
->> +				nr_pages = try_zap_anon_pte_range(tlb, vma,
->> +						folio, page, pte, addr,
->> +						nr_pages_req, details);
->> +
->> +				rss[mm_counter(page)] -= nr_pages;
->> +				nr_pages--;
->> +				pte += nr_pages;
->> +				addr += nr_pages << PAGE_SHIFT;
->> +
->> +				if (unlikely(nr_pages < nr_pages_req)) {
->> +					force_flush = 1;
->> +					addr += PAGE_SIZE;
->> +					break;
->> +				}
->> +				continue;
->> +			}
->> +
->>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
->>  							tlb->fullmm);
->>  			tlb_remove_tlb_entry(tlb, pte, addr);
->> -- 
->> 2.25.1
->>
+> Co-developed-by: David Huang <d-huang@ti.com>
+> Signed-off-by: David Huang <d-huang@ti.com>
+
+A nit, subject: drop second/last, redundant "bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
+
+Drop also "driver". Bindings are for hardware, not drivers.
+
+Prefix starts with media and then dt-bindings.
+
+
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> ---
+>  .../bindings/media/img,e5010-jpeg-enc.yaml    | 79 +++++++++++++++++++
+>  MAINTAINERS                                   |  5 ++
+>  2 files changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
 > 
-> After this change in -next as commit 904d9713b3b0 ("mm: batch-zap large
-> anonymous folio PTE mappings"), I see the following splats several times
-> when booting Debian's s390x configuration (which I have mirrored at [1])
-> in QEMU (bisect log below):
+> diff --git a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+> new file mode 100644
+> index 000000000000..0060373eace7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Imagination E5010 JPEG Encoder
+> +
+> +maintainers:
+> +  - Devarsh Thakkar <devarsht@ti.com>
+> +
+> +description: |
+> +  The E5010 is a JPEG encoder from Imagination Technologies implemented on
+> +  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YUV422
+> +  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
+> +  8Kx8K resolution.
+> +
+> +properties:
+> +  compatible:
+> +    const: img,e5010-jpeg-enc
 
-Thanks for the bug report and sorry for the inconvenience. I'm going to need a
-little time to figure out a build environment for s390x and get it reproducing.
-Hopefully I can come back to you tomorrow with a fix.
+Your description suggests that this is part of TI SoC. Pretty often
+licensed blocks cannot be used on their own and need some
+customizations. Are you sure your block does not need any customization
+thus no dedicated compatible is needed?
 
-Thanks,
-Ryan
+> +
+> +  reg:
+> +    items:
+> +      - description: The E5010 main register region
+> +      - description: The E5010 mmu register region
+> +
+> +  reg-names:
+> +    items:
+> +      - const: regjasper
+> +      - const: regmmu
+> +
+
+Drop reg from both
+
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 2
+
+You need to specify the items. Also, no variable number of clocks. Why
+would they vary if block is strictly defined?
+
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 2
+
+Instead list the names.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    cbass_main {
+
+That's some weird name. Probably you meant soc. Anyway, underscores are
+not allowed.
+
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +      e5010: e5010@fd20000 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+Drop the label.
+
+> +          compatible = "img,e5010-jpeg-enc";
+> +          reg = <0x00 0xfd20000 0x00 0x100>,
+> +                <0x00 0xfd20200 0x00 0x200>;
+> +          reg-names = "regjasper", "regmmu";
+> +          clocks = <&k3_clks 201 0>;
+> +          clock-names = "core_clk";
+> +          power-domains = <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
+> +          interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+> +      };
+> +    };
+
+
+Best regards,
+Krzysztof
 
