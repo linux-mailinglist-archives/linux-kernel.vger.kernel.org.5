@@ -2,71 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8771776293F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C53762941
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjGZD1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S231162AbjGZD2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGZD1c (ORCPT
+        with ESMTP id S229535AbjGZD2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:27:32 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869772682
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:27:31 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-4036bd4fff1so208751cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690342050; x=1690946850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U6xj4wxFn0rypQoF1PGqlJBlsHAu3fI3DlYhEQlJySM=;
-        b=MC43VpmA9s5GMATDplIXFmcJYSGXim3w1RXDdeAWzYf1BVnVkWEdmq8neZAzx9h9uI
-         afOsinbCBFeIWwnJJZzGKH3JQ62MWlvCycZ1KpNTTBmbfokMx0qjNFrj58EsvO1Fk1Wy
-         Oyejq9HJZ3XwSq3YEkPetcQcLkPqPe4yKyHsA1XK1pWD10eK4V+vfq7k53UGGMqJ9yh1
-         Gt8IidEtFQtMrs4G30Hb204rwjBIzzvJuMgflkzScapjW3QnXxb9BMe3jnoVjq5ScV+n
-         bUwjgZQQ4xeq62+1s49FMyEQF0aRBqShRZ7CZ4BBqqaWXlm6ONAt/hyFirDqEk7g5cqO
-         Fdjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690342050; x=1690946850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U6xj4wxFn0rypQoF1PGqlJBlsHAu3fI3DlYhEQlJySM=;
-        b=H5RscIkmR8lgqg4mWNybNoOyiCDQYFziXnGhl8GZ2LXc+ZcDCm9Ds9mw4sTr72dGQi
-         Q8LI5LV5fvM8hEnsRSdFOpR2a33YtHWZJcQsbtcIbWiLem55WaaGaCWbHACM6e5zAMr2
-         hJZphB1M2vi9Y3p9hVoaviwjUkuiDC3o3R1fEJoFLV+Mco/jTPTSWDMI49T0QmwXgAzP
-         hOpNmcFGPvjgqV4r5s4FPHq5jXwAZfHxDEmd1A8794Ij46oFYqvEAxrra6oGM53J6uFc
-         uzG+a2Lemds75hXQVI3iU+v3nqdDMwua3VzSANjMMWpxZMR9zBCKXTLhwGbR0sAV9kJB
-         UvZQ==
-X-Gm-Message-State: ABy/qLadlBtdI8OM5jpEuR0quuLl9pOKvsbqeK/pJXmgh8rD5wFR0JYU
-        411SkyM3bm06SoVFsBviITVT5SUnF+rLfJpq7/uCEg==
-X-Google-Smtp-Source: APBJJlFdoxX78Vk/RXp8V+I4N+9q9PbH0elQr7zNdlT4hfEMCNNjyi+LpianjrSduzy/W259yQruvpYdAXsXV30pwCg=
-X-Received: by 2002:ac8:7d55:0:b0:403:f3f5:1a8 with SMTP id
- h21-20020ac87d55000000b00403f3f501a8mr412509qtb.12.1690342050506; Tue, 25 Jul
- 2023 20:27:30 -0700 (PDT)
+        Tue, 25 Jul 2023 23:28:40 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E58C213C;
+        Tue, 25 Jul 2023 20:28:39 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 7AFBA80A9;
+        Wed, 26 Jul 2023 03:28:38 +0000 (UTC)
+Date:   Wed, 26 Jul 2023 06:28:37 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
+ name to show controller id
+Message-ID: <20230726032837.GZ5194@atomide.com>
+References: <20230725054216.45696-1-tony@atomide.com>
+ <20230725054216.45696-4-tony@atomide.com>
+ <ZL+QuHE4CztPvBxo@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20230721094043.2506691-1-fengwei.yin@intel.com>
- <20230721094043.2506691-3-fengwei.yin@intel.com> <CAOUHufY2tdO0JNTiY=RzHitR7CB1cM5kA=7bd6nbCUW6KM_OVA@mail.gmail.com>
- <05bc90b6-4954-b945-f0d8-373f565c1248@intel.com>
-In-Reply-To: <05bc90b6-4954-b945-f0d8-373f565c1248@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 25 Jul 2023 21:26:54 -0600
-Message-ID: <CAOUHufYJE40wcT4HTYFJ_7X5=my3OPbMyMBt+QNZdByuL6j58Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/4] madvise: Use notify-able API to clear and
- flush page table entries
-To:     Yin Fengwei <fengwei.yin@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, minchan@kernel.org, willy@infradead.org,
-        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL+QuHE4CztPvBxo@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,89 +48,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 8:49=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com>=
- wrote:
->
->
-> On 7/25/23 13:55, Yu Zhao wrote:
-> > On Fri, Jul 21, 2023 at 3:41=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.=
-com> wrote:
-> >>
-> >> Currently, in function madvise_cold_or_pageout_pte_range(), the
-> >> young bit of pte/pmd is cleared notify subscripter.
-> >>
-> >> Using notify-able API to make sure the subscripter is signaled about
-> >> the young bit clearing.
-> >>
-> >> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-> >> ---
-> >>  mm/madvise.c | 18 ++----------------
-> >>  1 file changed, 2 insertions(+), 16 deletions(-)
-> >>
-> >> diff --git a/mm/madvise.c b/mm/madvise.c
-> >> index f12933ebcc24..b236e201a738 100644
-> >> --- a/mm/madvise.c
-> >> +++ b/mm/madvise.c
-> >> @@ -403,14 +403,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_=
-t *pmd,
-> >>                         return 0;
-> >>                 }
-> >>
-> >> -               if (pmd_young(orig_pmd)) {
-> >> -                       pmdp_invalidate(vma, addr, pmd);
-> >> -                       orig_pmd =3D pmd_mkold(orig_pmd);
-> >> -
-> >> -                       set_pmd_at(mm, addr, pmd, orig_pmd);
-> >> -                       tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
-> >> -               }
-> >> -
-> >> +               pmdp_clear_flush_young_notify(vma, addr, pmd);
-> >>                 folio_clear_referenced(folio);
-> >>                 folio_test_clear_young(folio);
-> >>                 if (folio_test_active(folio))
-> >> @@ -496,14 +489,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_=
-t *pmd,
-> >>
-> >>                 VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
-> >>
-> >> -               if (pte_young(ptent)) {
-> >> -                       ptent =3D ptep_get_and_clear_full(mm, addr, pt=
-e,
-> >> -                                                       tlb->fullmm);
-> >> -                       ptent =3D pte_mkold(ptent);
-> >> -                       set_pte_at(mm, addr, pte, ptent);
-> >> -                       tlb_remove_tlb_entry(tlb, pte, addr);
-> >> -               }
-> >> -
-> >> +               ptep_clear_flush_young_notify(vma, addr, pte);
-> >
-> > These two places are tricky.
-> >
-> > I agree there is a problem here, i.e., we are not consulting the mmu
-> > notifier. In fact, we do pageout on VMs on ChromeOS, and it's been a
-> > known problem to me for a while (not a high priority one).
-> >
-> > tlb_remove_tlb_entry() is batched flush, ptep_clear_flush_young() is
-> > not. But, on x86, we might see a performance improvement since
-> > ptep_clear_flush_young() doesn't flush TLB at all. On ARM, there might
-> > be regressions though.
-> >
-> > I'd go with ptep_clear_young_notify(), but IIRC, Minchan mentioned he
-> > prefers flush. So I'll let him chime in.
-> I am OK with either way even no flush way here is more efficient for
-> arm64. Let's wait for Minchan's comment.
+* Andy Shevchenko <andriy.shevchenko@linux.intel.com> [230725 09:07]:
+> On Tue, Jul 25, 2023 at 08:42:12AM +0300, Tony Lindgren wrote:
+> > We are missing the serial core controller id for the serial core port
+> > name. Let's fix the issue for sane sysfs output, and to avoid issues
+> > addressing serial ports later on.
+> > 
+> > And as we're now showing the controller id, the "ctrl" and "port" prefix
+> > for the DEVNAME become useless, we can just drop them. Let's standardize on
+> > DEVNAME:0 for controller name, where 0 is the controller id. And
+> > DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
+> > 
+> > This makes the sysfs output nicer, on qemu for example:
+> > 
+> > $ ls /sys/bus/serial-base/devices
+> > 00:04:0         serial8250:0    serial8250:0.2
+> > 00:04:0.0       serial8250:0.1  serial8250:0.3
+> 
+> Hmm... Why 0.0 is absent for serial8250?
 
-Yes, and I don't think there would be any "negative" consequences
-without tlb flushes when clearing the A-bit.
+The serial8250:0.0 port was around initially, and then it's preallocated
+slot got taken over by the 00:04:0.0 device. See nr_uarts in 8250_core.c
+for what is going on.
 
-> > If we do end up with ptep_clear_young_notify(), please remove
-> > mmu_gather -- it should have been done in this patch.
->
-> I suppose "remove mmu_gather" means to trigger flush tlb operation in
-> batched way to make sure no stale data in TLB for long time on arm64
-> platform.
+> Btw, what was before this patch there?
 
-In madvise_cold_or_pageout_pte_range(), we only need struct
-mmu_gather *tlb because of tlb_remove_pmd_tlb_entry(), i.e., flushing
-tlb after clearing the A-bit. There is no correction, e.g., potential
-data corruption, involved there.
+# ls /sys/bus/serial-base/devices/
+ctrl.00:04.0       port.00:04.0       port.serial8250.2
+ctrl.serial8250.0  port.serial8250.1  port.serial8250.3
+
+The earlier naming is different format from the DEVNAME:0.0. The sysfs
+output is not usable directly for the users for the port addressing we're
+discussing.
+
+Sorry I did not notice the different format earier, I noticed only when I
+started playing with using the DEVNAME:0.0 style port addressing.
+
+> And maybe ls -l will look more informative?
+
+I've appended qemu output of the ls -l for DEVNAME:0.0 style naming below.
+
+> > Andy, I kept your Reviewed-by although I updated the device naming and
+> > description, does the patch still look OK to you?
+> 
+> Looks okay, but I have a question above.
+
+OK best to get the device names right if we're planning to use them :)
+
+Regards,
+
+Tony
+
+
+8< ------
+ ls -l /sys/bus/serial-base/devices/
+total 0
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 00:04:0 -> ../../../devices/pnp0/00:04/00:04:0
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 00:04:0.0 -> ../../../devices/pnp0/00:04/00:04:0/00:04:0.0
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 serial8250:0 -> ../../../devices/platform/serial8250/serial8250:0
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 serial8250:0.1 -> ../../../devices/platform/serial8250/serial8250:0/serial8250:0.1
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 serial8250:0.2 -> ../../../devices/platform/serial8250/serial8250:0/serial8250:0.2
+lrwxrwxrwx    1 root     root             0 Jul 25 05:21 serial8250:0.3 -> ../../../devices/platform/serial8250/serial8250:0/serial8250:0.3
