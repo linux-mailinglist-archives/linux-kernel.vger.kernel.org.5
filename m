@@ -2,125 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E1E763D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574B0763D9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjGZRX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
+        id S232313AbjGZRZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjGZRX4 (ORCPT
+        with ESMTP id S229524AbjGZRZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:23:56 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86331BEF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:23:55 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 17:23:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spawn.link;
-        s=protonmail2; t=1690392230; x=1690651430;
-        bh=xht0eNWiq91QqwjoETUuyoeUTJAOT+E+Nv0Zqu3eDMI=;
-        h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=ghDddWh5ZraQzHYL5jj/f1p7VdtBQDLUuSYJQyxvWCa0Ib3B2YftOvHSrEL9XgMeb
-         1A2qoRQgFE1E8CZy1wofnPA1fCZHT9mvCxu3B+m+noP8zG/z3eGILA/qOunvJrTuEB
-         j0luuniDPYHXeqsCw3v85R+5Bxh4P7VpuKyg7YQkXvRU0sCZU/4CNiqosbxfhPGgPp
-         eU9nvZNphOBYqnwXDnwl8gLqSdnjv8NOnBZtSxc89Zkcxecy5uTDB+FxZTbgwjYXv8
-         VCYgKavP2RYiqkvcOkQLOvMoLFxSOiSQA7QIywByOm5knjrdJbFpQxAjE5jG6+2xL2
-         b82yPTSdVZMew==
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
-        Jaco Kroon <jaco@uls.co.za>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Antonio SJ Musumeci <trapexit@spawn.link>
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
-Message-ID: <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link>
-In-Reply-To: <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
-References: <20230726105953.843-1-jaco@uls.co.za> <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm> <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za> <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
-Feedback-ID: 55718373:user:proton
+        Wed, 26 Jul 2023 13:25:02 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AC01BC1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 10:25:00 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QHOIjT011371;
+        Wed, 26 Jul 2023 12:24:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690392258;
+        bh=bcQWFHfpn8XeFZdP17ljk8/Th3OXh5aRew0WHRRqwdc=;
+        h=From:To:CC:Subject:Date;
+        b=eNUTPVqdoXakA0V2kOIVA7IaD/1EfIFC+2Pyiq1xpIZoQZeOf5QurORBb7sPwlo2M
+         KCu85tDmwY/jYtqAbjAwSk7fpfOi4jAkuc5TluBtdaRbbduFR9RaoZ/lzfQONx9/5k
+         OW6R9aY0fkkhF81iGSymEkHYYYaOnGCjLf+5k45k=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QHOI8N025113
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 12:24:18 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 12:24:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 12:24:18 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QHODxQ065620;
+        Wed, 26 Jul 2023 12:24:14 -0500
+From:   Udit Kumar <u-kumar1@ti.com>
+To:     <vigneshr@ti.com>, <nm@ti.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <krzysztof.kozlowski@linaro.org>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v3] arm64: defconfig: Enable various configs for TI K3 platforms
+Date:   Wed, 26 Jul 2023 22:54:11 +0530
+Message-ID: <20230726172411.2075066-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UPPERCASE_50_75,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 10:45, Bernd Schubert wrote:
->
-> On 7/26/23 17:26, Jaco Kroon wrote:
->> Hi,
->>
->> On 2023/07/26 15:53, Bernd Schubert wrote:
->>>
->>> On 7/26/23 12:59, Jaco Kroon wrote:
->>>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
->>>> ---
->>>>  =C2=A0 fs/fuse/Kconfig=C2=A0=C2=A0 | 16 ++++++++++++++++
->>>>  =C2=A0 fs/fuse/readdir.c | 42 ++++++++++++++++++++++++---------------=
+Enable TI ECAP, DP83869 driver, OMAP2 Mailbox, K3 remote proc
+SND_SOC_J721E_EVM, MCAN, UFS and RTI driver to be built
+as module.
+
+These configs are supported on below TI platforms
+
+ECAP on am642, am65 iot2050 EVM.
+DP83869 on AM64x EVM.
+OMAP2 Mailbox, K3 remote proc on AM64 on J7200,J721E and J784S4 SOC.
+CONFIG_SND_SOC_J721E_EVM on J721E.
+MCAN on AM68 SK, J721E, J721S2, AM642 AM642-Phyboards
+UFS feature on J721E EVM
+RTI watchdog on AM62, AM62A, AM64, AM65, J721E and J7200 SOC
+
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 ---
->>>>  =C2=A0 2 files changed, 40 insertions(+), 18 deletions(-)
->>>>
->>>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
->>>> index 038ed0b9aaa5..0783f9ee5cd3 100644
->>>> --- a/fs/fuse/Kconfig
->>>> +++ b/fs/fuse/Kconfig
->>>> @@ -18,6 +18,22 @@ config FUSE_FS
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 If you want to develop a u=
-serspace FS, or if you want to use
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a filesystem based on FUSE=
-, answer Y or M.
->>>>  =C2=A0 +config FUSE_READDIR_ORDER
->>>> +=C2=A0=C2=A0=C2=A0 int
->>>> +=C2=A0=C2=A0=C2=A0 range 0 5
->>>> +=C2=A0=C2=A0=C2=A0 default 5
->>>> +=C2=A0=C2=A0=C2=A0 help
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 readdir performance varies=
- greatly depending on the size of
->>>> the read.
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Larger buffers results in =
-larger reads, thus fewer reads and
->>>> higher
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 performance in return.
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 You may want to reduce thi=
-s value on seriously constrained
->>>> memory
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 systems where 128KiB (assu=
-ming 4KiB pages) cache pages is
->>>> not ideal.
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This value reprents the or=
-der of the number of pages to
->>>> allocate (ie,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the shift value).=C2=A0 A =
-value of 0 is thus 1 page (4KiB) where
->>>> 5 is 32
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pages (128KiB).
->>>> +
->>> I like the idea of a larger readdir size, but shouldn't that be a
->>> server/daemon/library decision which size to use, instead of kernel
->>> compile time? So should be part of FUSE_INIT negotiation?
->> Yes sure, but there still needs to be a default.=C2=A0 And one page at a=
- time
->> doesn't cut it.
-> With FUSE_INIT userspace would make that decision, based on what kernel
-> fuse suggests? process_init_reply() already handles other limits - I
-> don't see why readdir max has to be compile time option. Maybe a module
-> option to set the limit?
->
-> Thanks,
-> Bernd
+bloat-o-meter reports after this change
+add/remove: 4/0 grow/shrink: 2/0 up/down: 1592/0 (1592)
+[...]
+Total: Before=27997071, After=27998663, chg +0.01%
 
-I had similar question / comment. This seems to me to be more=20
-appropriately handed by the server via FUSE_INIT.
+Change log:
+Changes in v3:
+ Updated commit message along with including platform list
+ Updated SOB
+Link to v2:
+https://lore.kernel.org/all/20230726133049.2074105-1-u-kumar1@ti.com/
 
-And wouldn't "max" more easily be FUSE_MAX_MAX_PAGES? Is there a reason=20
-not to allow upwards of 256 pages sized readdir buffer?
+Changes in v2:
+ Squashed all patches into one
+link to v1:.
+https://lore.kernel.org/all/20230725105346.1981285-1-u-kumar1@ti.com/
 
+
+ arch/arm64/configs/defconfig | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 6cbf6eb59378..dedf1bd9c29f 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -180,6 +180,8 @@ CONFIG_NET_ACT_GATE=m
+ CONFIG_QRTR_SMD=m
+ CONFIG_QRTR_TUN=m
+ CONFIG_CAN=m
++CONFIG_CAN_M_CAN=m
++CONFIG_CAN_M_CAN_PLATFORM=m
+ CONFIG_BT=m
+ CONFIG_BT_HIDP=m
+ # CONFIG_BT_LE is not set
+@@ -375,6 +377,7 @@ CONFIG_AT803X_PHY=y
+ CONFIG_REALTEK_PHY=y
+ CONFIG_ROCKCHIP_PHY=y
+ CONFIG_DP83867_PHY=y
++CONFIG_DP83869_PHY=m
+ CONFIG_DP83TD510_PHY=y
+ CONFIG_VITESSE_PHY=y
+ CONFIG_CAN_FLEXCAN=m
+@@ -687,6 +690,7 @@ CONFIG_UNIPHIER_WATCHDOG=y
+ CONFIG_PM8916_WATCHDOG=m
+ CONFIG_BCM2835_WDT=y
+ CONFIG_BCM7038_WDT=m
++CONFIG_K3_RTI_WATCHDOG=m
+ CONFIG_MFD_ALTERA_SYSMGR=y
+ CONFIG_MFD_BD9571MWV=y
+ CONFIG_MFD_AXP20X_I2C=y
+@@ -927,6 +931,7 @@ CONFIG_SND_SOC_MSM8916_WCD_ANALOG=m
+ CONFIG_SND_SOC_MSM8916_WCD_DIGITAL=m
+ CONFIG_SND_SOC_PCM3168A_I2C=m
+ CONFIG_SND_SOC_RT5640=m
++CONFIG_SND_SOC_J721E_EVM=m
+ CONFIG_SND_SOC_RT5659=m
+ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
+ CONFIG_SND_SOC_SIMPLE_MUX=m
+@@ -1048,10 +1053,13 @@ CONFIG_MMC_SDHCI_XENON=y
+ CONFIG_MMC_SDHCI_AM654=y
+ CONFIG_MMC_OWL=y
+ CONFIG_SCSI_UFSHCD=y
++CONFIG_SCSI_UFS_BSG=y
+ CONFIG_SCSI_UFSHCD_PLATFORM=y
++CONFIG_SCSI_UFS_CDNS_PLATFORM=m
+ CONFIG_SCSI_UFS_QCOM=m
+ CONFIG_SCSI_UFS_HISI=y
+ CONFIG_SCSI_UFS_RENESAS=m
++CONFIG_SCSI_UFS_TI_J721E=m
+ CONFIG_SCSI_UFS_EXYNOS=y
+ CONFIG_NEW_LEDS=y
+ CONFIG_LEDS_CLASS=y
+@@ -1230,6 +1238,7 @@ CONFIG_TEGRA186_TIMER=y
+ CONFIG_RENESAS_OSTM=y
+ CONFIG_ARM_MHU=y
+ CONFIG_IMX_MBOX=y
++CONFIG_OMAP2PLUS_MBOX=m
+ CONFIG_PLATFORM_MHU=y
+ CONFIG_BCM2835_MBOX=y
+ CONFIG_QCOM_APCS_IPC=y
+@@ -1242,6 +1251,8 @@ CONFIG_MTK_IOMMU=y
+ CONFIG_QCOM_IOMMU=y
+ CONFIG_REMOTEPROC=y
+ CONFIG_IMX_REMOTEPROC=y
++CONFIG_TI_K3_R5_REMOTEPROC=m
++CONFIG_TI_K3_DSP_REMOTEPROC=m
+ CONFIG_MTK_SCP=m
+ CONFIG_QCOM_Q6V5_ADSP=m
+ CONFIG_QCOM_Q6V5_MSS=m
+@@ -1356,6 +1367,7 @@ CONFIG_PWM_SAMSUNG=y
+ CONFIG_PWM_SL28CPLD=m
+ CONFIG_PWM_SUN4I=m
+ CONFIG_PWM_TEGRA=m
++CONFIG_PWM_TIECAP=m
+ CONFIG_PWM_TIEHRPWM=m
+ CONFIG_PWM_VISCONTI=m
+ CONFIG_SL28CPLD_INTC=y
+@@ -1441,6 +1453,7 @@ CONFIG_FPGA_REGION=m
+ CONFIG_OF_FPGA_REGION=m
+ CONFIG_TEE=y
+ CONFIG_OPTEE=y
++CONFIG_MUX_GPIO=m
+ CONFIG_MUX_MMIO=y
+ CONFIG_SLIMBUS=m
+ CONFIG_SLIM_QCOM_CTRL=m
+-- 
+2.34.1
 
