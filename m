@@ -2,204 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F3C76351F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EF576346D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 13:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbjGZLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 07:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
+        id S231823AbjGZLBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 07:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbjGZLhS (ORCPT
+        with ESMTP id S230398AbjGZLBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 07:37:18 -0400
-X-Greylist: delayed 900 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Jul 2023 04:37:16 PDT
-Received: from ida.iewc.co.za (ida.iewc.co.za [154.73.34.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768F51BF6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:37:16 -0700 (PDT)
-Received: from [154.73.32.4] (helo=plastiekpoot)
-        by ida.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jkroon@uls.co.za>)
-        id 1qOcFo-0007AC-D8; Wed, 26 Jul 2023 13:00:28 +0200
-Received: from jkroon by plastiekpoot with local (Exim 4.96)
-        (envelope-from <jkroon@uls.co.za>)
-        id 1qOcFm-0000jk-0m;
-        Wed, 26 Jul 2023 13:00:26 +0200
-From:   Jaco Kroon <jaco@uls.co.za>
-To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jaco Kroon <jaco@uls.co.za>
-Subject: [PATCH] fuse: enable larger read buffers for readdir.
-Date:   Wed, 26 Jul 2023 12:59:37 +0200
-Message-ID: <20230726105953.843-1-jaco@uls.co.za>
-X-Mailer: git-send-email 2.41.0
+        Wed, 26 Jul 2023 07:01:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B94AC
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 04:01:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E859061A6D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:01:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E195C433C7;
+        Wed, 26 Jul 2023 11:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690369308;
+        bh=E9Nptia/LKz60/XHD5d/zhhnmMiksgZ3DAeI9Q4oeaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cHN9Tt5r+ufFlJiEtRTftRJM4y3eXwbo4n8rhYaootGrDHqyk/IqAQBJkXRdMhy+D
+         qTLii4YgzJFefLZfLuWR/NdTpSZR1lMjy8KcSm4L/2TWx6yd5A6Ab8vdG7W9P+Jn0b
+         Msw0zEnXTTXFQ34UfegBqoa+fqxL3A9Cw94S/nnmuN9JT2PsGuKB+GdPmtHO2JC82L
+         FTBQmVPYjXxoSK0r8QnBiwnd9RBiQLXLPsfbxafQu8zkqMSAxEABQDRyJWGNlU+zMU
+         g9juIJUkV42hO4VvCYh8/q3ly25barX0HmBImE1S5sNcf+2H4QWV+ujgX826Ymg0mZ
+         yYP61TSRVid4Q==
+Date:   Wed, 26 Jul 2023 14:01:13 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com
+Subject: Re: [RFC 2/4] mm/memblock: Add hugepage_size member to struct
+ memblock_region
+Message-ID: <20230726110113.GT1901145@kernel.org>
+References: <20230724134644.1299963-1-usama.arif@bytedance.com>
+ <20230724134644.1299963-3-usama.arif@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724134644.1299963-3-usama.arif@bytedance.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jaco Kroon <jaco@uls.co.za>
----
- fs/fuse/Kconfig   | 16 ++++++++++++++++
- fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
- 2 files changed, 40 insertions(+), 18 deletions(-)
+On Mon, Jul 24, 2023 at 02:46:42PM +0100, Usama Arif wrote:
+> This propagates the hugepage size from the memblock APIs
+> (memblock_alloc_try_nid_raw and memblock_alloc_range_nid)
+> so that it can be stored in struct memblock region. This does not
+> introduce any functional change and hugepage_size is not used in
+> this commit. It is just a setup for the next commit where huge_pagesize
+> is used to skip initialization of struct pages that will be freed later
+> when HVO is enabled.
+> 
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> ---
+>  arch/arm64/mm/kasan_init.c                   |  2 +-
+>  arch/powerpc/platforms/pasemi/iommu.c        |  2 +-
+>  arch/powerpc/platforms/pseries/setup.c       |  4 +-
+>  arch/powerpc/sysdev/dart_iommu.c             |  2 +-
+>  include/linux/memblock.h                     |  8 ++-
+>  mm/cma.c                                     |  4 +-
+>  mm/hugetlb.c                                 |  6 +-
+>  mm/memblock.c                                | 60 ++++++++++++--------
+>  mm/mm_init.c                                 |  2 +-
+>  mm/sparse-vmemmap.c                          |  2 +-
+>  tools/testing/memblock/tests/alloc_nid_api.c |  2 +-
+>  11 files changed, 56 insertions(+), 38 deletions(-)
+> 
 
-diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
-index 038ed0b9aaa5..0783f9ee5cd3 100644
---- a/fs/fuse/Kconfig
-+++ b/fs/fuse/Kconfig
-@@ -18,6 +18,22 @@ config FUSE_FS
- 	  If you want to develop a userspace FS, or if you want to use
- 	  a filesystem based on FUSE, answer Y or M.
- 
-+config FUSE_READDIR_ORDER
-+	int
-+	range 0 5
-+	default 5
-+	help
-+		readdir performance varies greatly depending on the size of the read.
-+		Larger buffers results in larger reads, thus fewer reads and higher
-+		performance in return.
-+
-+		You may want to reduce this value on seriously constrained memory
-+		systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
-+
-+		This value reprents the order of the number of pages to allocate (ie,
-+		the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
-+		pages (128KiB).
-+
- config CUSE
- 	tristate "Character device in Userspace support"
- 	depends on FUSE_FS
-diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
-index dc603479b30e..98c62b623240 100644
---- a/fs/fuse/readdir.c
-+++ b/fs/fuse/readdir.c
-@@ -13,6 +13,12 @@
- #include <linux/pagemap.h>
- #include <linux/highmem.h>
- 
-+#define READDIR_PAGES_ORDER		CONFIG_FUSE_READDIR_ORDER
-+#define READDIR_PAGES			(1 << READDIR_PAGES_ORDER)
-+#define READDIR_PAGES_SIZE		(PAGE_SIZE << READDIR_PAGES_ORDER)
-+#define READDIR_PAGES_MASK		(READDIR_PAGES_SIZE - 1)
-+#define READDIR_PAGES_SHIFT		(PAGE_SHIFT + READDIR_PAGES_ORDER)
-+
- static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
- {
- 	struct fuse_conn *fc = get_fuse_conn(dir);
-@@ -52,10 +58,10 @@ static void fuse_add_dirent_to_cache(struct file *file,
- 	}
- 	version = fi->rdc.version;
- 	size = fi->rdc.size;
--	offset = size & ~PAGE_MASK;
--	index = size >> PAGE_SHIFT;
-+	offset = size & ~READDIR_PAGES_MASK;
-+	index = size >> READDIR_PAGES_SHIFT;
- 	/* Dirent doesn't fit in current page?  Jump to next page. */
--	if (offset + reclen > PAGE_SIZE) {
-+	if (offset + reclen > READDIR_PAGES_SIZE) {
- 		index++;
- 		offset = 0;
- 	}
-@@ -83,7 +89,7 @@ static void fuse_add_dirent_to_cache(struct file *file,
- 	}
- 	memcpy(addr + offset, dirent, reclen);
- 	kunmap_local(addr);
--	fi->rdc.size = (index << PAGE_SHIFT) + offset + reclen;
-+	fi->rdc.size = (index << READDIR_PAGES_SHIFT) + offset + reclen;
- 	fi->rdc.pos = dirent->off;
- unlock:
- 	spin_unlock(&fi->rdc.lock);
-@@ -104,7 +110,7 @@ static void fuse_readdir_cache_end(struct file *file, loff_t pos)
- 	}
- 
- 	fi->rdc.cached = true;
--	end = ALIGN(fi->rdc.size, PAGE_SIZE);
-+	end = ALIGN(fi->rdc.size, READDIR_PAGES_SIZE);
- 	spin_unlock(&fi->rdc.lock);
- 
- 	/* truncate unused tail of cache */
-@@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
- 	struct fuse_mount *fm = get_fuse_mount(inode);
- 	struct fuse_io_args ia = {};
- 	struct fuse_args_pages *ap = &ia.ap;
--	struct fuse_page_desc desc = { .length = PAGE_SIZE };
-+	struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
- 	u64 attr_version = 0;
- 	bool locked;
- 
--	page = alloc_page(GFP_KERNEL);
-+	page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
- 	if (!page)
- 		return -ENOMEM;
- 
- 	plus = fuse_use_readdirplus(inode, ctx);
- 	ap->args.out_pages = true;
--	ap->num_pages = 1;
-+	ap->num_pages = READDIR_PAGES;
- 	ap->pages = &page;
- 	ap->descs = &desc;
- 	if (plus) {
- 		attr_version = fuse_get_attr_version(fm->fc);
--		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
-+		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
- 				    FUSE_READDIRPLUS);
- 	} else {
--		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
-+		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
- 				    FUSE_READDIR);
- 	}
- 	locked = fuse_lock_inode(inode);
-@@ -383,7 +389,7 @@ static enum fuse_parse_result fuse_parse_cache(struct fuse_file *ff,
- 					       void *addr, unsigned int size,
- 					       struct dir_context *ctx)
- {
--	unsigned int offset = ff->readdir.cache_off & ~PAGE_MASK;
-+	unsigned int offset = ff->readdir.cache_off & ~READDIR_PAGES_MASK;
- 	enum fuse_parse_result res = FOUND_NONE;
- 
- 	WARN_ON(offset >= size);
-@@ -504,16 +510,16 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
- 
- 	WARN_ON(fi->rdc.size < ff->readdir.cache_off);
- 
--	index = ff->readdir.cache_off >> PAGE_SHIFT;
-+	index = ff->readdir.cache_off >> READDIR_PAGES_SHIFT;
- 
--	if (index == (fi->rdc.size >> PAGE_SHIFT))
--		size = fi->rdc.size & ~PAGE_MASK;
-+	if (index == (fi->rdc.size >> READDIR_PAGES_SHIFT))
-+		size = fi->rdc.size & ~READDIR_PAGES_MASK;
- 	else
--		size = PAGE_SIZE;
-+		size = READDIR_PAGES_SIZE;
- 	spin_unlock(&fi->rdc.lock);
- 
- 	/* EOF? */
--	if ((ff->readdir.cache_off & ~PAGE_MASK) == size)
-+	if ((ff->readdir.cache_off & ~READDIR_PAGES_MASK) == size)
- 		return 0;
- 
- 	page = find_get_page_flags(file->f_mapping, index,
-@@ -559,9 +565,9 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
- 	if (res == FOUND_ALL)
- 		return 0;
- 
--	if (size == PAGE_SIZE) {
-+	if (size == READDIR_PAGES_SIZE) {
- 		/* We hit end of page: skip to next page. */
--		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, PAGE_SIZE);
-+		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, READDIR_PAGES_SIZE);
- 		goto retry;
- 	}
- 
+[ snip ]
+
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index f71ff9f0ec81..bb8019540d73 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -63,6 +63,7 @@ struct memblock_region {
+>  #ifdef CONFIG_NUMA
+>  	int nid;
+>  #endif
+> +	phys_addr_t hugepage_size;
+>  };
+>  
+>  /**
+> @@ -400,7 +401,8 @@ phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
+>  				      phys_addr_t start, phys_addr_t end);
+>  phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
+>  				      phys_addr_t align, phys_addr_t start,
+> -				      phys_addr_t end, int nid, bool exact_nid);
+> +				      phys_addr_t end, int nid, bool exact_nid,
+> +				      phys_addr_t hugepage_size);
+
+Rather than adding yet another parameter to memblock_phys_alloc_range() we
+can have an API that sets a flag on the reserved regions.
+With this the hugetlb reservation code can set a flag when HVO is
+enabled and memmap_init_reserved_pages() will skip regions with this flag
+set.
+
+>  phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
+>  
+>  static __always_inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
+> @@ -415,7 +417,7 @@ void *memblock_alloc_exact_nid_raw(phys_addr_t size, phys_addr_t align,
+>  				 int nid);
+>  void *memblock_alloc_try_nid_raw(phys_addr_t size, phys_addr_t align,
+>  				 phys_addr_t min_addr, phys_addr_t max_addr,
+> -				 int nid);
+> +				 int nid, phys_addr_t hugepage_size);
+>  void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
+>  			     phys_addr_t min_addr, phys_addr_t max_addr,
+>  			     int nid);
+> @@ -431,7 +433,7 @@ static inline void *memblock_alloc_raw(phys_addr_t size,
+>  {
+>  	return memblock_alloc_try_nid_raw(size, align, MEMBLOCK_LOW_LIMIT,
+>  					  MEMBLOCK_ALLOC_ACCESSIBLE,
+> -					  NUMA_NO_NODE);
+> +					  NUMA_NO_NODE, 0);
+>  }
+>  
+>  static inline void *memblock_alloc_from(phys_addr_t size,
+
 -- 
-2.41.0
-
+Sincerely yours,
+Mike.
