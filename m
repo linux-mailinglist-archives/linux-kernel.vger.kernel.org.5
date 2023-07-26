@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5CA763B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3908763B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbjGZPkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
+        id S234561AbjGZPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbjGZPkr (ORCPT
+        with ESMTP id S234477AbjGZPlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:40:47 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2050D2689
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:40:43 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fb7589b187so10822352e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:40:43 -0700 (PDT)
+        Wed, 26 Jul 2023 11:41:12 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F078C213F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:41:10 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so1476378e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690386041; x=1690990841;
+        d=linaro.org; s=google; t=1690386069; x=1690990869;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KplhcUyr+a1N4r+Y/pmyU6xHt5t27rt7tOY6RCWOd88=;
-        b=O55heUCWiODOAdA6MXYGkXM5ZIFZFbNEDUWx1/QfnXEUhImtO+edbK2y3mGrxPNc7D
-         /G40JHGGjzGxKXFVA85sv5rdydmIKt/1LJIzVUbG1WmQdA6yLbQ9VF88i5Axcjem7SSU
-         ETFItO7gti+Y/EnF6vhM16h2rkxRQp8u2to9rulwzGRD6y48XURH9EhNqPCAvtYVpQ6p
-         2I+2BluTQwHaFddUSWIPLBqE9whnq89t8VM/DjYGDgw2RQL8wPbfMczSxpT6iY+N000f
-         KCW+Qqxoktk1zXNzPsPZZw0Bt7WN5oZOHuJpdBw117+3qY4OH79ntLpfHxk5nyJZ0adg
-         WGBQ==
+        bh=lspuiTKxGPl7j3zN6foG0gANrbHRCSknpl5fapbBSQk=;
+        b=EHw23ByepeGBCexOes07Hu/K6F/NlA8JJRWdzYHIKy0ySrnu6K1mrIQz6MhquTdbOu
+         /u35XkOQWKL18HRQPDnk4AvVm9sE+hI2YjPPnUvl0cCgGRnlFKf/K8elEoH1qJa3NbKL
+         rovy2iW1ATOZtkqZk1KZrrr10kFkAKopD+M3W1Dv0mkjaK41gXrttJPHavrrm+wdtHgY
+         8Fp6w11xrnDyNra0wZ42Iq0rvdqyQnPwz+a+MJVre7LOk1HUmFBrZrJEuMYdCNasViF/
+         5Rks3opXZ3A8z+YgxoLRL8BbhaLTiSY/Uwsh0kWcbbeMirAaxHHdAIRHFV3Msyosbuj9
+         mGBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690386041; x=1690990841;
+        d=1e100.net; s=20221208; t=1690386069; x=1690990869;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KplhcUyr+a1N4r+Y/pmyU6xHt5t27rt7tOY6RCWOd88=;
-        b=K5FIHjk+VIliF5IK65elXjpcf0Cmf/MV1GFEZRa37W3mBQBtm2XsFNhfnDflgF9RhQ
-         Qn+a3k86W4p1WmfIdX/KNU/od5Vn96tXTVD8LtEsjCauMU7yRKGmOoZkx3wQZDCPV3ug
-         eiWrn4ZhY1Vuyt5KQe+hwDv+ViNMctO14ooMBEaaN8s5/9xrctj2Bt4kTSbA8qrzdU1E
-         OXy1J6sy7E8nExbJWHBDdqHKnVln3covU0ON7lrXYjBN75ibmUOXLioQD2a5WAuc/0y9
-         o2dlmrP08EJN3HegoR7ZASz6zEakmrmnb/cglf8vLF3X/FrbFkMwDFCo+3P1xJt8Nkcu
-         qL9Q==
-X-Gm-Message-State: ABy/qLZbcSx0SdCvdubRXrj0u+B9S0gceroW/aN1hQRgW++qpJgjjNDx
-        FKBJA6EtxGe9d0mn+hywZ2g/gw==
-X-Google-Smtp-Source: APBJJlGhAJNUZpRYD34/PQXolEbfsK/i7MHHnLRA6vVEoDBbzdAdlCb2T96zve1VTQRDkV3pxITeFQ==
-X-Received: by 2002:a05:6512:15a5:b0:4f8:6e52:68ae with SMTP id bp37-20020a05651215a500b004f86e5268aemr1942920lfb.31.1690386041312;
-        Wed, 26 Jul 2023 08:40:41 -0700 (PDT)
+        bh=lspuiTKxGPl7j3zN6foG0gANrbHRCSknpl5fapbBSQk=;
+        b=kH/Rdl0xgLoG/yK/NdRFEpEZ4GvKPhWkGlq1BS43Ck1Fp07+nYa5PAa9p8i9/mHec3
+         ONvQZfh2ks6PsQ9E5T4qeE9zmbVEty93JWCoLw77IZeR7+K1QoCmcj6vCeU3F4x+bNcR
+         JXOl2S6GNmOXkWrPZhAk3PdNxAnTsK0CcebuboF4ZPskNptEFByGpzTzntGxnxhXcnVg
+         Om9xK5+YV3Ca3odvPNJMI3yFr5IBqK7taQiCmd9wIrERVTb0MTZouWo88Y/iRXos7xRt
+         c3zmgJ2qDpexsdPhzzN6CwYRGDDRuQ7FZ0K7SGjgXnK+Fxs6+a/h4G/mj21JO4haCq2X
+         epPw==
+X-Gm-Message-State: ABy/qLajWvvQyi8DkVb7hJPeWIaf8m36snzHNPU36wBpShfEkA3Cwbqo
+        6iPQ4sm3dCFP6qPhKVc8opocTw==
+X-Google-Smtp-Source: APBJJlH4UGlitOcXYoqLf5xUMxwbnSm6R7p/LxoXekvEVVt6ZRyYjSJYGCNiKNWerSo4/3TNLlefyA==
+X-Received: by 2002:a19:915b:0:b0:4fb:8948:2b8e with SMTP id y27-20020a19915b000000b004fb89482b8emr1797720lfj.8.1690386069331;
+        Wed, 26 Jul 2023 08:41:09 -0700 (PDT)
 Received: from [192.168.1.101] (abxh240.neoplus.adsl.tpnet.pl. [83.9.1.240])
-        by smtp.gmail.com with ESMTPSA id m2-20020a195202000000b004fe0ec5596bsm460666lfb.54.2023.07.26.08.40.39
+        by smtp.gmail.com with ESMTPSA id m2-20020a195202000000b004fe0ec5596bsm460666lfb.54.2023.07.26.08.41.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 08:40:40 -0700 (PDT)
-Message-ID: <2e47ad4b-dd5c-d89f-185f-3465a6efa0e0@linaro.org>
-Date:   Wed, 26 Jul 2023 17:40:38 +0200
+        Wed, 26 Jul 2023 08:41:08 -0700 (PDT)
+Message-ID: <be9e1745-82aa-ece9-c387-fc19e4dd2eae@linaro.org>
+Date:   Wed, 26 Jul 2023 17:41:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 3/7] clk: qcom: gcc-qdu1000: Fix clkref clocks handling
+Subject: Re: [PATCH V4 7/7] clk: qcom: gcc-qdu1000: Update the RCGs ops
 Content-Language: en-US
 To:     Imran Shaik <quic_imrashai@quicinc.com>,
         Andy Gross <agross@kernel.org>,
@@ -73,7 +73,7 @@ Cc:     Bjorn Andersson <andersson@kernel.org>,
         Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
         Ajit Pandey <quic_ajipan@quicinc.com>
 References: <20230719041450.737929-1-quic_imrashai@quicinc.com>
- <20230719041450.737929-4-quic_imrashai@quicinc.com>
+ <20230719041450.737929-8-quic_imrashai@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -110,7 +110,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230719041450.737929-4-quic_imrashai@quicinc.com>
+In-Reply-To: <20230719041450.737929-8-quic_imrashai@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,10 +124,9 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 19.07.2023 06:14, Imran Shaik wrote:
-> Fix the gcc clkref clock ops and update the halt_check as per the
-> latest hw version of QDU1000 and QRU1000 SoCs.
+> Update the clock RCG ops to shared_ops to park them
+> at safe clock(XO) during disable.
 > 
-> Fixes: 1c9efb0bc040 ("clk: qcom: Add QDU1000 and QRU1000 GCC support")
 > Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
 > Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
 > Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
