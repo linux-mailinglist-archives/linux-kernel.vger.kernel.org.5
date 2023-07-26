@@ -2,248 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144ED762FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73160762FC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbjGZIYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S231351AbjGZIZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjGZIX2 (ORCPT
+        with ESMTP id S233152AbjGZIZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:23:28 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBEE72BC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:52 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2680a031283so1983666a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:10:52 -0700 (PDT)
+        Wed, 26 Jul 2023 04:25:04 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B180273B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:14:04 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9338e4695so96244421fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:14:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690359052; x=1690963852;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AgnuXatC2qbxaqbZ65LcEyHnR8tMExq1rwNTS9IK9fs=;
-        b=kHc9/HMqaF9R8G/rXM59e0F3CbnZX/wdeNMwFdC4XbxVCwGzgEppqL5qnyB3vNmNVg
-         c8cJwfifm5dQn0XdItECcYmL7213bc+olR8WIHI+oZFMOk9CMsY7zzqyGkHUyoCUbS5O
-         dEHqxuqR01Hr6wkpXFSSeIiFRl0E2XvoCppdLpSz0jYGs9bX0Vjkjgcf/CoG7h0V+GT0
-         hgH6/mckjlLMtGPSbuo3RnGG1oclyUlcIARBc+DEe60f642YycPhYk3JYCpHJAImiCtD
-         q04bJ/2nn8P7ybfvGd8hRKKdkHJCH61syEN3XyDj2vXfd5qQFV1ojWAT1xwPxp7AAMlx
-         S/qw==
+        d=linaro.org; s=google; t=1690359242; x=1690964042;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jUR+8HTvxKrmvFbKVVHSsJQHXeGbUXJFaikg5YZ0Qg4=;
+        b=hVOpcFpH0o9M+kWMA1us4uHJmwkZz8VJJTOjlCvXtknJP2KTtjeXi51E/MkYtRU26z
+         pOQ+WbXaS2WDw9hRw4aFfOpOxHiGhZV/gVbZ5i+iXQo+GYC9zpPR8f/DsLUFR1942m4W
+         mSYXlvXmTckSyuz8skauGYqxeuptEjQXITktH0nqV+hL5btbA1Jv4yi1x17ftB7Es9Mk
+         wX+olh6QnI8hZCBq4aLBROKcbuec3+jKiE3cnJPFF6NweBrK/2KlrtvxZFxpVtB+m538
+         xM+WJLnmTXDmPUh5m8v12t44j/tvMrUVZPncE0j9SezFIe7P1uR/uU+R7RmnZAS0SxeM
+         ksAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690359052; x=1690963852;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AgnuXatC2qbxaqbZ65LcEyHnR8tMExq1rwNTS9IK9fs=;
-        b=E1CyTe1fmk5AAR8lwHcG4JV4ACgIkyI7hSfFI8kQHbszlchlMFHzU5Wk1b2Qb0+qsU
-         yp9/dqBr+QRMRj5tiU4tHyKzjiQHky5F67Cs7C3As4inKRm6/gT8IHIdgBZlBdnVt6D0
-         hjpEZU0eAlNvaafQ11GLrrsMY4JxaVR8Png3qb8SaOSUk7CXBTspDIyRSaSSfWt3I54j
-         nrL6SwnNcYVcwfN0CXF6ZoS70/T49Byx379U/DUIaHCWyFJrZvXHMQ5EZHmpimpN4F0M
-         DJg1vuzFNkhEL1EsvUX7DitzjZ8qk4vPnBbNmzO+XYMVeTcNLrON/NKWTVpFxPO7foLM
-         97tQ==
-X-Gm-Message-State: ABy/qLYz8t0jJ1apN9yo2XgVzsDYRr3UWcBHEL6g607A071Mb9YV0PFr
-        GdCqaIX0Lk/GDnCuYaDWiuYyrQ==
-X-Google-Smtp-Source: APBJJlE/k5FlCPp9wjkDmS2lNntkmIxAcglpNb71TQX77k742PkAt1Hf8XjFuPAOgyeUv3smQ4YSOQ==
-X-Received: by 2002:a17:90a:6344:b0:263:e423:5939 with SMTP id v4-20020a17090a634400b00263e4235939mr1066813pjs.28.1690359052249;
-        Wed, 26 Jul 2023 01:10:52 -0700 (PDT)
-Received: from GL4FX4PXWL.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id gc17-20020a17090b311100b002680b2d2ab6sm756540pjb.19.2023.07.26.01.10.47
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 26 Jul 2023 01:10:52 -0700 (PDT)
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
-        willy@infradead.org, brauner@kernel.org, surenb@google.com,
-        michael.christie@oracle.com, peterz@infradead.org,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com, avagin@gmail.com
-Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: [PATCH 11/11] fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
-Date:   Wed, 26 Jul 2023 16:09:16 +0800
-Message-Id: <20230726080916.17454-12-zhangpeng.00@bytedance.com>
-X-Mailer: git-send-email 2.37.0 (Apple Git-136)
-In-Reply-To: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
-References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+        d=1e100.net; s=20221208; t=1690359242; x=1690964042;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jUR+8HTvxKrmvFbKVVHSsJQHXeGbUXJFaikg5YZ0Qg4=;
+        b=BT1feAQKHz8lWgZ8O/Y4X2O1q6g5WTAt6VKqrrWAwz3u63q5lmzdUvFqH2SfOOur6m
+         cU7o4ooGw3de4PHdVLEfNpzGdo8wyYbSyAYAiTPHAHP66DPt6XL+njvHmBON4P01XgYk
+         H6+ebyUA1qcq2jD31N6/ibQs4EhJum6qUtjCYwOIlqm+EBj9cGEODVWrBS2pUG3tHHA+
+         IZkup7F93rNIqRWnLWEmJhTm8abkXBLU4pemB943c3Y5pNUa+5dy+nzTZc81cdhTgoyV
+         xr9c0BqXcXzYw1jgRBRFX76SVqJsOV0Iq6BIzKSHgJSanZxoEru+RPT3tX22YdR5EENt
+         juXA==
+X-Gm-Message-State: ABy/qLaBY+MS3q+v2oxXYzsMarfJ907+MStw5O4meetVqEXvnbjxGW7m
+        FjRkBhbdd0pynkHMHiGlRwFtGB/7uB8q/GPv2gV2vw==
+X-Google-Smtp-Source: APBJJlHbi0hdaP/HaNWOatMh0uvG9VNHJEZMEze5ENOxchuWLXB33lHowUBJwFb3Gub9ShI4NkHCaG0qA2Ph84M9JgE=
+X-Received: by 2002:a2e:8914:0:b0:2b5:7dd9:74f5 with SMTP id
+ d20-20020a2e8914000000b002b57dd974f5mr987059lji.21.1690359242501; Wed, 26 Jul
+ 2023 01:14:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+ <20230714170853.866018-3-aleksander.lobakin@intel.com> <ac97825d-6a27-f121-4cee-9d2ee0934ce6@redhat.com>
+ <e48185cb-3057-e778-75c4-d266a249088b@intel.com>
+In-Reply-To: <e48185cb-3057-e778-75c4-d266a249088b@intel.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Wed, 26 Jul 2023 11:13:26 +0300
+Message-ID: <CAC_iWjJ-yfW2Bu-vYQHVw3Y0svkYQNOva3orsv0VzvWyfQkiLw@mail.gmail.com>
+Subject: Re: [PATCH RFC net-next v2 2/7] net: page_pool: place frag_* fields
+ in one cacheline
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, brouer@redhat.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __mt_dup() to duplicate the old maple tree in dup_mmap(), and then
-directly modify the entries of VMAs in the new maple tree, which can
-get better performance. dup_mmap() is used by fork(), so this patch
-optimizes fork(). The optimization effect is proportional to the number
-of VMAs.
+Apologies for the late reply, I was on vacation and start going
+through my email piles...
 
-Due to the introduction of this method, the optimization in
-(maple_tree: add a fast path case in mas_wr_slot_store())[1] no longer
-has an effect here, but it is also an optimization of the maple tree.
+On Tue, 18 Jul 2023 at 16:52, Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
+>
+> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+> Date: Fri, 14 Jul 2023 20:37:39 +0200
+>
+> >
+> >
+> > On 14/07/2023 19.08, Alexander Lobakin wrote:
+> >> On x86_64, frag_* fields of struct page_pool are scattered across two
+> >> cachelines despite the summary size of 24 bytes. The last field,
+> >> ::frag_users, is pushed out to the next one, sharing it with
+> >> ::alloc_stats.
+> >> All three fields are used in pretty much the same places. There are some
+> >> holes and cold members to move around. Move frag_* one block up, placing
+> >> them right after &page_pool_params perfectly at the beginning of CL2.
+> >> This doesn't do any meaningful to the second block, as those are some
+> >> destroy-path cold structures, and doesn't do anything to ::alloc_stats,
+> >> which still starts at 200-byte offset, 8 bytes after CL3 (still fitting
+> >> into 1 cacheline).
+> >> On my setup, this yields 1-2% of Mpps when using PP frags actively.
+> >> When it comes to 32-bit architectures with 32-byte CL: &page_pool_params
+> >> plus ::pad is 44 bytes, the block taken care of is 16 bytes within one
+> >> CL, so there should be at least no regressions from the actual change.
+> >>
+> >> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> >> ---
+> >>   include/net/page_pool.h | 10 +++++-----
+> >>   1 file changed, 5 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> >> index 829dc1f8ba6b..212d72b5cfec 100644
+> >> --- a/include/net/page_pool.h
+> >> +++ b/include/net/page_pool.h
+> >> @@ -130,16 +130,16 @@ static inline u64
+> >> *page_pool_ethtool_stats_get(u64 *data, void *stats)
+> >>   struct page_pool {
+> >>       struct page_pool_params p;
+> >>   +    long frag_users;
+> >> +    struct page *frag_page;
+> >> +    unsigned int frag_offset;
+> >> +    u32 pages_state_hold_cnt;
+> >
+> > I think this is okay, but I want to highlight that:
+> >  - pages_state_hold_cnt and pages_state_release_cnt
+> > need to be kept on separate cache-lines.
+>
+> They're pretty far away from each other. I moved hold_cnt here as well
+> to keep it stacked with frag_offset and avoid introducing 32-bit holes.
 
-There is a unixbench test suite[2] where 'spawn' is used to test fork().
-'spawn' only has 23 VMAs by default, so I tweaked the benchmark code a
-bit to use mmap() to control the number of VMAs. Therefore, the
-performance under different numbers of VMAs can be measured.
+This is to prevent cache line bouncing and/or false sharing right?
+The change seems fine to me as well but mind adding a comment about
+this when you resend?
 
-Insert code like below into 'spawn':
-for (int i = 0; i < 200; ++i) {
-	size_t size = 10 * getpagesize();
-	void *addr;
-
-	if (i & 1) {
-		addr = mmap(NULL, size, PROT_READ,
-			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	} else {
-		addr = mmap(NULL, size, PROT_WRITE,
-			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	}
-	if (addr == MAP_FAILED)
-		...
-}
-
-Based on next-20230721, use 'spawn' under 23, 203, and 4023 VMAs, test
-4 times in 30 seconds each time, and get the following numbers. These
-numbers are the number of fork() successes in 30s (average of the best
-3 out of 4). By the way, based on next-20230725, I reverted [1], and
-tested it together as a comparison. In order to ensure the reliability
-of the test results, these tests were run on a physical machine.
-
-		23VMAs		223VMAs		4023VMAs
-revert [1]:	159104.00	73316.33	6787.00
-
-		+0.77%		+0.42%		+0.28%
-next-20230721:	160321.67	73624.67	6806.33
-
-		+2.77%		+15.42%		+29.86%
-apply this:	164751.67	84980.33	8838.67
-
-It can be seen that the performance improvement is proportional to
-the number of VMAs. With 23 VMAs, performance improves by about 3%,
-with 223 VMAs, performance improves by about 15%, and with 4023 VMAs,
-performance improves by about 30%.
-
-[1] https://lore.kernel.org/lkml/20230628073657.75314-4-zhangpeng.00@bytedance.com/
-[2] https://github.com/kdlucas/byte-unixbench/tree/master
-
-Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
----
- kernel/fork.c | 35 +++++++++++++++++++++++++++--------
- mm/mmap.c     | 14 ++++++++++++--
- 2 files changed, 39 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index f81149739eb9..ef80025b62d6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	int retval;
- 	unsigned long charge = 0;
- 	LIST_HEAD(uf);
--	VMA_ITERATOR(old_vmi, oldmm, 0);
- 	VMA_ITERATOR(vmi, mm, 0);
- 
- 	uprobe_start_dup_mmap();
-@@ -678,17 +677,40 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 		goto out;
- 	khugepaged_fork(mm, oldmm);
- 
--	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
--	if (retval)
-+	/* Use __mt_dup() to efficiently build an identical maple tree. */
-+	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_NOWAIT | __GFP_NOWARN);
-+	if (unlikely(retval))
- 		goto out;
- 
- 	mt_clear_in_rcu(vmi.mas.tree);
--	for_each_vma(old_vmi, mpnt) {
-+	for_each_vma(vmi, mpnt) {
- 		struct file *file;
- 
- 		vma_start_write(mpnt);
- 		if (mpnt->vm_flags & VM_DONTCOPY) {
- 			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
-+
-+			/*
-+			 * Since the new tree is exactly the same as the old one,
-+			 * we need to remove the unneeded VMAs.
-+			 */
-+			mas_store(&vmi.mas, NULL);
-+
-+			/*
-+			 * Even removing an entry may require memory allocation,
-+			 * and if removal fails, we use XA_ZERO_ENTRY to mark
-+			 * from which VMA it failed. The case of encountering
-+			 * XA_ZERO_ENTRY will be handled in exit_mmap().
-+			 */
-+			if (unlikely(mas_is_err(&vmi.mas))) {
-+				retval = xa_err(vmi.mas.node);
-+				mas_reset(&vmi.mas);
-+				if (mas_find(&vmi.mas, ULONG_MAX))
-+					mas_replace_entry(&vmi.mas,
-+							  XA_ZERO_ENTRY);
-+				goto loop_out;
-+			}
-+
- 			continue;
- 		}
- 		charge = 0;
-@@ -750,8 +772,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 			hugetlb_dup_vma_private(tmp);
- 
- 		/* Link the vma into the MT */
--		if (vma_iter_bulk_store(&vmi, tmp))
--			goto fail_nomem_vmi_store;
-+		mas_replace_entry(&vmi.mas, tmp);
- 
- 		mm->map_count++;
- 		if (!(tmp->vm_flags & VM_WIPEONFORK))
-@@ -778,8 +799,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	uprobe_end_dup_mmap();
- 	return retval;
- 
--fail_nomem_vmi_store:
--	unlink_anon_vmas(tmp);
- fail_nomem_anon_vma_fork:
- 	mpol_put(vma_policy(tmp));
- fail_nomem_policy:
-diff --git a/mm/mmap.c b/mm/mmap.c
-index bc91d91261ab..5bfba2fb0e39 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3184,7 +3184,11 @@ void exit_mmap(struct mm_struct *mm)
- 	arch_exit_mmap(mm);
- 
- 	vma = mas_find(&mas, ULONG_MAX);
--	if (!vma) {
-+	/*
-+	 * If dup_mmap() fails to remove a VMA marked VM_DONTCOPY,
-+	 * xa_is_zero(vma) may be true.
-+	 */
-+	if (!vma || xa_is_zero(vma)) {
- 		/* Can happen if dup_mmap() received an OOM */
- 		mmap_read_unlock(mm);
- 		return;
-@@ -3222,7 +3226,13 @@ void exit_mmap(struct mm_struct *mm)
- 		remove_vma(vma, true);
- 		count++;
- 		cond_resched();
--	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
-+		vma = mas_find(&mas, ULONG_MAX);
-+		/*
-+		 * If xa_is_zero(vma) is true, it means that subsequent VMAs
-+		 * donot need to be removed. Can happen if dup_mmap() fails to
-+		 * remove a VMA marked VM_DONTCOPY.
-+		 */
-+	} while (vma != NULL && !xa_is_zero(vma));
- 
- 	BUG_ON(count != mm->map_count);
- 
--- 
-2.20.1
-
+Thanks
+/Ilias
+>
+> >
+> >
+> >> +
+> >>       struct delayed_work release_dw;
+> >>       void (*disconnect)(void *);
+> >>       unsigned long defer_start;
+> >>       unsigned long defer_warn;
+> >>   -    u32 pages_state_hold_cnt;
+> >> -    unsigned int frag_offset;
+> >> -    struct page *frag_page;
+> >> -    long frag_users;
+> >> -
+> >>   #ifdef CONFIG_PAGE_POOL_STATS
+> >>       /* these stats are incremented while in softirq context */
+> >>       struct page_pool_alloc_stats alloc_stats;
+> >
+>
+> Thanks,
+> Olek
