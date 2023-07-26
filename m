@@ -2,161 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4357630C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500D6763100
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbjGZJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
+        id S230491AbjGZJGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjGZJDs (ORCPT
+        with ESMTP id S233244AbjGZJEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:03:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA3B59EF
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690361952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xeRT9Jy7eVenEoTjFFWWmP+a03yBpOH5hVPtQnivUcw=;
-        b=Zznh+HXMDpeFSZHFoUVh3kcRMSjQyAe206Mmyr/4B7wyaZiyZjts0HgPtQ9J+E6de4tN2O
-        SmibCdqonlhsrcPzeNwLdavvms2ollAeunD4IcDI/YeNeUpUto7+dAX1QP0D6PcF1xuGKJ
-        TbSo/3OkUeVLFP5+02gsjKgsAmfHgQU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-553-qra2sYabMXeN53aoYJ1Kbw-1; Wed, 26 Jul 2023 04:59:10 -0400
-X-MC-Unique: qra2sYabMXeN53aoYJ1Kbw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-989249538a1so428215966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:59:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690361945; x=1690966745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xeRT9Jy7eVenEoTjFFWWmP+a03yBpOH5hVPtQnivUcw=;
-        b=DH1DDzBMtAaqQ8cqnbQRDVDilJ/0Z1G5OXbtRglsGoYN6TsN8jQAK2L45KACUjJHxb
-         uNku5tSUia5gIiIRLX5/IPmpK7Rz9wY6KiLZ+s6XnpddwQ81UJySi2TX0fueqVqrEHnW
-         RgiTQQs5GVHQvWn3eNXwv4AlBVGoFOBkaq+oxEx/5y3nIVHf6292cBFfilGMxCYqfAhS
-         EdmzMnxV12YXNHM1bhmDvEgTpwqzXzcLPT22gD48tfKYsUo6kDMXEd19kFflwXxON48U
-         qKJWGgcNpSnypV409WBb1YHijwYm6WHHHoPkHFI9CIduTtJOpx4EOCX9ZyQpsaaTlOu+
-         Y9SA==
-X-Gm-Message-State: ABy/qLZsW4zCn0Eg65+hLzKdvvyDhrbBFMOBp88/n7R7yVFN6pqZX156
-        jtCkz/xWXv4L13F5JWvcGN8jxRhJEPEsI475JE6MRatCAksLo6ZYRWpgGAr8OR73G3OB6lnCCej
-        l2Pn/Wo9royOYSu1qVI8v9UnsjNvX5FEs
-X-Received: by 2002:a17:906:3098:b0:99b:b3a1:437b with SMTP id 24-20020a170906309800b0099bb3a1437bmr1128251ejv.40.1690361945546;
-        Wed, 26 Jul 2023 01:59:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGce74iNdoqahohZBou7UapwNEzH+hZVT14Xqe7CfDrQV51dAMGR6N625plRzskQ5Ljavku+Q==
-X-Received: by 2002:a17:906:3098:b0:99b:b3a1:437b with SMTP id 24-20020a170906309800b0099bb3a1437bmr1128238ejv.40.1690361945266;
-        Wed, 26 Jul 2023 01:59:05 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id a18-20020a1709065f9200b0096f6a131b9fsm9234448eju.23.2023.07.26.01.59.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 01:59:04 -0700 (PDT)
-Message-ID: <4ef7791f-57f3-c27f-f414-9a39e014b86e@redhat.com>
-Date:   Wed, 26 Jul 2023 10:59:03 +0200
+        Wed, 26 Jul 2023 05:04:50 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B054213A;
+        Wed, 26 Jul 2023 02:02:57 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7VXSt007938;
+        Wed, 26 Jul 2023 11:02:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=ovit7dM+DyWt/6Patj4mHOnfPKNp+g/2O5XpZ5R9Woo=;
+ b=PRRi4eEfiiks3woFwZ1r6W6rvzdrHZSpOPPeFzHI+xgMZfoqWMuVFf8usyevsHg+D/AM
+ +dC4f8qqqVx1F+B7ZyKqMJbUVJbL1ciyJ51pFR+2Dga+a/eVlfXrf7kPGw4wJZV+S/j0
+ wmrrMx8fPV/pP5oYBD+YJc+wbP2NQ6WCOx4EWChYR9KSgs/vjIDqykMytEtcy+e+TkLm
+ K9LEj3KxsQ/yyjMtcdmKNDw+42DYsYClwOnE3IV7e+0ewE4kD/lYeVNnaQpY9ZuHVvh+
+ 0ejuBv5UKISNPHgsmvsvkc+dKSO8HNkpSJIBvF8k4PSYGdj9LVOyOZo64ZpqnebGIFRx 9Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2y640q3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 11:02:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A179100069;
+        Wed, 26 Jul 2023 11:01:43 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1F0FD2115E0;
+        Wed, 26 Jul 2023 11:01:43 +0200 (CEST)
+Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
+ 2023 11:01:42 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>,
+        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v3 04/11] dt-bindings: bus: document ETZPC
+Date:   Wed, 26 Jul 2023 11:01:22 +0200
+Message-ID: <20230726090129.233316-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
+References: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform: Explicitly include correct DT includes
-Content-Language: en-US, nl
-To:     Rob Herring <robh@kernel.org>, Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>
-Cc:     devicetree@vger.kernel.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20230714174909.4062739-1-robh@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230714174909.4062739-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.121]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_01,2023-07-25_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Document ETZPC (Extended TrustZone protection controller). ETZPC is a
+firewall controller.
 
-On 7/14/23 19:49, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Changes in V2: 
+	- Corrected errors highlighted by Rob's robot
+	- No longer define the maxItems for the "feature-domains"
+	  property
+	- Fix example (node name, status)
+	- Declare "feature-domain-names" as an optional
+	  property for child nodes
+	- Fix description of "feature-domains" property
+	- Reorder the properties so it matches RIFSC
+	- Add missing "feature-domain-controller" property
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+ .../bindings/bus/st,stm32-etzpc.yaml          | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/platform/chrome/cros_ec.c          | 1 +
->  drivers/platform/mellanox/mlxreg-hotplug.c | 1 -
->  drivers/platform/mellanox/mlxreg-io.c      | 1 -
->  3 files changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
-> index 8b7949220382..5d36fbc75e1b 100644
-> --- a/drivers/platform/chrome/cros_ec.c
-> +++ b/drivers/platform/chrome/cros_ec.c
-> @@ -12,6 +12,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
->  #include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/platform_data/cros_ec_commands.h>
->  #include <linux/platform_data/cros_ec_proto.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/platform/mellanox/mlxreg-hotplug.c b/drivers/platform/mellanox/mlxreg-hotplug.c
-> index b7dcc64cd238..6ddfea0d4c5b 100644
-> --- a/drivers/platform/mellanox/mlxreg-hotplug.c
-> +++ b/drivers/platform/mellanox/mlxreg-hotplug.c
-> @@ -12,7 +12,6 @@
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_data/mlxreg.h>
->  #include <linux/platform_device.h>
->  #include <linux/spinlock.h>
-> diff --git a/drivers/platform/mellanox/mlxreg-io.c b/drivers/platform/mellanox/mlxreg-io.c
-> index ddc08abf398c..83ba037408cd 100644
-> --- a/drivers/platform/mellanox/mlxreg-io.c
-> +++ b/drivers/platform/mellanox/mlxreg-io.c
-> @@ -11,7 +11,6 @@
->  #include <linux/hwmon.h>
->  #include <linux/hwmon-sysfs.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_data/mlxreg.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+new file mode 100644
+index 000000000000..ef5979c0d6f2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/st,stm32-etzpc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 Extended TrustZone protection controller
++
++description: |
++  The ETZPC configures TrustZone security in a SoC having bus masters and
++  devices with programmable-security attributes (securable resources).
++
++maintainers:
++  - Gatien Chevallier <gatien.chevallier@foss.st.com>
++
++properties:
++  compatible:
++    contains:
++      const: st,stm32-etzpc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  ranges: true
++
++  "#feature-domain-cells":
++    const: 1
++
++  feature-domain-controller: true
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    description: Peripherals
++    type: object
++    properties:
++      feature-domains:
++        minItems: 1
++        description:
++          The phandle of the firewall controller of the peripheral and the
++          platform-specific firewall ID of the peripheral.
++
++      feature-domain-names:
++        minItems: 1
++
++    required:
++      - feature-domains
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - feature-domain-controller
++  - "#feature-domain-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    // In this example, the usart2 device refers to rifsc as its domain
++    // controller.
++    // Access rights are verified before creating devices.
++
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/stm32mp13-clks.h>
++    #include <dt-bindings/reset/stm32mp13-resets.h>
++
++    etzpc: bus@5c007000 {
++        compatible = "st,stm32-etzpc";
++        reg = <0x5c007000 0x400>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        feature-domain-controller;
++        #feature-domain-cells = <1>;
++        ranges;
++
++        usart2: serial@4c001000 {
++            compatible = "st,stm32h7-uart";
++            reg = <0x4c001000 0x400>;
++            interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&rcc USART2_K>;
++            resets = <&rcc USART2_R>;
++            wakeup-source;
++            dmas = <&dmamux1 43 0x400 0x5>,
++                    <&dmamux1 44 0x400 0x1>;
++            dma-names = "rx", "tx";
++            feature-domains = <&etzpc 17>;
++        };
++    };
+-- 
+2.25.1
 
