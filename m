@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B972762F7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEC4762F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjGZISG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S232613AbjGZITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjGZIR1 (ORCPT
+        with ESMTP id S232803AbjGZISr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:17:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853D56199;
-        Wed, 26 Jul 2023 01:07:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AD26617FE;
-        Wed, 26 Jul 2023 08:07:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE039C433C7;
-        Wed, 26 Jul 2023 08:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690358828;
-        bh=02/BpPWpwcY6qGVMejurwI2MWG0QRmzw+p5vHPciA24=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Si6mynfF/QLiJ9GIAhKKfRQiDSikeuZ873k10cyiYklhjlNSURbHevhJKwAb+l92S
-         Uf8Kj9aLuzyIeNRdJEPYMETFNTeYV7p1dx2Vzj/Dhtu3ViQam7sFC8KYLXJu3pR/42
-         z52VBElkQ3oAOQwDr5qrKtXFrBhQ9MGMVOlPQOvDKPv/oMiYspXZVkCwbnzcZIWT8a
-         yJ6xNx9UpPdJr/UbbthJW4jj1UAcJzkJy3UJnijsHT3DOx8yCTvAlxetVeb0C+5c9P
-         wfZPGkuZRxqTFUcenD3YoMUSuqJiBBFkMPKCv5urluIJDUJujg9A49V62hu32CLWhE
-         vo4Y0h1mZcXdw==
-Date:   Wed, 26 Jul 2023 10:07:00 +0200
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org, hsinyi@google.com,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        yangcong5@huaqin.corp-partner.google.com,
-        linux-arm-msm@vger.kernel.org,
-        Chris Morgan <macroalpha82@gmail.com>
-Subject: Re: [PATCH v2 08/10] HID: i2c-hid: Support being a panel follower
-Message-ID: <wcilyqbh23xjscsvubxjnkwlctxuvyj5weix2opywkolg7udyb@gad2pmlazxx4>
-References: <20230607215224.2067679-1-dianders@chromium.org>
- <20230607144931.v2.8.Ib1a98309c455cd7e26b931c69993d4fba33bbe15@changeid>
- <y3l4x3kv7jgog3miexati5wbveaynnryzqvj6sc4ul6625f2if@w7nqgojfavfw>
- <CAD=FV=VbdeomBGbWhppY+5TOSwt64GWBHga68OXFwsnO4gg4UA@mail.gmail.com>
- <CAD=FV=UUdc5xi-HoOye-a1Oki3brcX3V1+=zuxQKLAcrd3iTSA@mail.gmail.com>
- <CAD=FV=WmpH6cB0oZOxbL+TUxjLRf3PM+kKvuYRAZSiEhS4o37A@mail.gmail.com>
+        Wed, 26 Jul 2023 04:18:47 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778E730E0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:08:27 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q80BdM032335;
+        Wed, 26 Jul 2023 08:08:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=jpw0ZnOOUpjcp/35VH40grYwUq/U2eV9RmVWmFebxKk=;
+ b=cKGjpbCzJViq71+U3TzZPFIwuxtui3r3C52/AUJ4zowmwxtW1/h8noXWray4+ZMjlLmn
+ J/HrRIkbezapUyhpypFXUeXYOEYCeOrMTNLCW4tiSBaeSJ93a2ubGHPprsvVQF28Ubv1
+ SVvSGb/Gs8xIAtt7EWlQm7iocYn9zwJ+Q5yg49y6ab15yF/TP50M2FvJtakQBXg2O5av
+ tw9zUuPLSMSny7mMTh1WJO4Tq6+t2AHIxzJHgC4ihtM7z3c+aU8L5xuhmSptcFD5Va/Z
+ Nea7A29P3XBn9IYOd/stNVKx29mueCCLIVl5sX/x5gOyMhMqlOcmXd4GhfexpIEDkoAZ IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj0er4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 08:08:16 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q80LnB000378;
+        Wed, 26 Jul 2023 08:07:50 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj0d9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 08:07:49 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q6TESP002639;
+        Wed, 26 Jul 2023 08:07:12 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0txk30tg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 08:07:12 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36Q87A9L55116046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jul 2023 08:07:10 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 287C02004D;
+        Wed, 26 Jul 2023 08:07:10 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E451320040;
+        Wed, 26 Jul 2023 08:07:08 +0000 (GMT)
+Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.ibm.com (unknown [9.204.206.66])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 26 Jul 2023 08:07:08 +0000 (GMT)
+Date:   Wed, 26 Jul 2023 13:37:06 +0530
+From:   Gautam Menghani <Gautam.Menghani@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Gautam Menghani <gautam@linux.ibm.com>, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arch/powerpc: Remove unnecessary endian conversion code
+ in XICS
+Message-ID: <uwmugr3tcx2gwujvit7ve77xtx7n7b4kz4yuo2pwoemx2im7hi@4sqglwnh3c6w>
+References: <20230630055628.17790-1-gautam@linux.ibm.com>
+ <39920b0f-f261-8417-af7a-eef791ad5726@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=WmpH6cB0oZOxbL+TUxjLRf3PM+kKvuYRAZSiEhS4o37A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <39920b0f-f261-8417-af7a-eef791ad5726@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Xb-qKmY1UzHAzWLWxMyBJiOGDJ68_AxJ
+X-Proofpoint-ORIG-GUID: IsRg_ePtkxyBglHCeqg0QWj7fK7Cj_NX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_01,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 spamscore=0 mlxlogscore=921 phishscore=0 clxscore=1011
+ bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307260070
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,147 +93,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 25 2023, Doug Anderson wrote:
-> Hi,
+On Thu, Jul 06, 2023 at 05:50:57PM +1000, Jordan Niethe wrote:
 > 
-> On Mon, Jul 17, 2023 at 11:15 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Benjamin,
-> >
-> > On Mon, Jun 26, 2023 at 3:49 PM Doug Anderson <dianders@chromium.org> wrote:
-> > >
-> > > Benjamin,
-> > >
-> > > On Thu, Jun 8, 2023 at 8:37 AM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > > +static const struct drm_panel_follower_funcs i2c_hid_core_panel_follower_funcs = {
-> > > > > +     .panel_prepared = i2c_hid_core_panel_prepared,
-> > > > > +     .panel_unpreparing = i2c_hid_core_panel_unpreparing,
-> > > > > +};
-> > > >
-> > > > Can we make that above block at least behind a Kconfig?
-> > > >
-> > > > i2c-hid is often used for touchpads, and the notion of drm panel has
-> > > > nothing to do with them. So I'd be more confident if we could disable
-> > > > that code if not required.
-> > >
-> > > Now that other concerns are addressed, I started trying to write up a
-> > > v3 and I found myself writing this as the description of the Kconfig
-> > > entry:
-> > >
-> > > --
-> > > config I2C_HID_SUPPORT_PANEL_FOLLOWER
-> > > bool "Support i2c-hid devices that must be power sequenced with a panel"
-> > >
-> > > Say Y here if you want support for i2c-hid devices that need to
-> > > coordinate power sequencing with a panel. This is typically important
-> > > when you have a panel and a touchscreen that share power rails or
-> > > reset GPIOs. If you say N here then the kernel will not try to honor
-> > > any shared power sequencing for your hardware. In the best case,
-> > > ignoring power sequencing when it's needed will draw extra power. In
-> > > the worst case this will prevent your hardware from functioning or
-> > > could even damage your hardware.
-> > >
-> > > If unsure, say Y.
-> > >
-> > > --
-> > >
-> > > I can certainly go that way, but I just wanted to truly make sure
-> > > that's what we want. Specifically:
-> > >
-> > > 1. If we put the panel follower code behind a Kconfig then we actually
-> > > have no idea if a touchscreen was intended to be a panel follower.
-> > > Specifically the panel follower API is the one that detects the
-> > > connection between the panel and the i2c-hid device, so without being
-> > > able to call the panel follower API we have no idea that an i2c-hid
-> > > device was supposed to be a panel follower.
-> > >
-> > > 2. It is conceivable that power sequencing a device incorrectly could
-> > > truly cause hardware damage.
-> > >
-> > > Together, those points mean that if you turn off the Kconfig entry and
-> > > then try to boot on a device that needed that Kconfig setting that you
-> > > might damage hardware. I can code it up that way if you want, but it
-> > > worries me...
-> > >
-> > >
-> > > Alternatives that I can think of:
-> > >
-> > > a) I could change the panel follower API so that panel followers are
-> > > in charge of detecting the panel that they follow. Today, that looks
-> > > like:
-> > >
-> > >        panel_np = of_parse_phandle(dev->of_node, "panel", 0);
-> > >        if (panel_np)
-> > >                /* It's a panel follower */
-> > >        of_node_put(panel_np);
-> > >
-> > > ...so we could put that code in each touchscreen driver and then fail
-> > > to probe i2c-hid if we detect that we're supposed to be a panel
-> > > follower but the Kconfig is turned off. The above doesn't seem
-> > > massively ideal since it duplicates code. Also, one reason why I put
-> > > that code in drm_panel_add_follower() is that I think this concept
-> > > will eventually be needed even for non-DT cases. I don't know how to
-> > > write the non-DT code right now, though...
-> > >
-> > >
-> > > b) I could open-code detect the panel follower case but leave the
-> > > actual linking to the panel follower API. AKA add to i2c-hid:
-> > >
-> > >        if (of_property_read_bool(dev->of_node, "panel"))
-> > >                /* It's a panel follower */
-> > >
-> > > ...that's a smaller bit of code, but feels like an abstraction
-> > > violation. It also would need to be updated if/when we added support
-> > > for non-DT panel followers.
-> > >
-> > >
-> > > c) I could add a "static inline" implementation of b) to "drm_panel.h".
-> > >
-> > > That sounds great and I started doing it. ...but then realized that it
-> > > means adding to drm_panel.h:
-> > >
-> > > #include <linux/device.h>
-> > > #include <linux/of.h>
-> > >
-> > > ...because otherwise of_property_read_bool() isn't defined and "struct
-> > > device" can't be dereferenced. That might be OK, but it looks as if
-> > > folks have been working hard to avoid things like this in header
-> > > files. Presumably it would get uglier if/when we added the non-DT
-> > > case, as well. That being said, I can give it a shot...
-> > >
-> > > --
-> > >
-> > > At this point, I'm hoping for some advice. How important is it for you
-> > > to have a Kconfig for "I2C_HID_SUPPORT_PANEL_FOLLOWER"?
-> > >
-> > > NOTE: even if I don't add the Kconfig, I could at least create a
-> > > function for registering the panel follower that would get most of the
-> > > panel follower logic out of the probe function. Would that be enough?
-> >
-> > I'd love to send a new version of this patch series, but I'm still
-> > stuck with the above issue. I'm hoping you might have a minute to
-> > provide your thoughts. If I don't hear anything, I'll try a v3 where I
-> > don't have the Kconfig for "I2C_HID_SUPPORT_PANEL_FOLLOWER" but just
-> > try to pull a little more of the code out of the probe function.
 > 
-> To provide breadcrumbs, I posted the v3 which pulls a bit more code
-> out of the probe function but is otherwise largely unchanged. The
-> cover letter for v3 can be found at:
-
-Apologies for the delay. Given that you received feedbacks from other
-folks I wanted things to settle down a little bit before returning to
-this discussion. Sorry.
-
+> On 30/6/23 3:56 pm, Gautam Menghani wrote:
+> > Remove an unnecessary piece of code that does an endianness conversion but
+> > does not use the result. The following warning was reported by Clang's
+> > static analyzer:
+> > 
+> > arch/powerpc/sysdev/xics/ics-opal.c:114:2: warning: Value stored to
+> > 'server' is never read [deadcode.DeadStores]
+> >          server = be16_to_cpu(oserver);
+> > 
+> > As the result of endianness conversion is never used, delete the line
+> > and fix the warning.
+> > 
+> > Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
 > 
-> https://lore.kernel.org/r/20230725203545.2260506-1-dianders@chromium.org/
+> 'server' was used as a parameter to opal_get_xive() in commit 5c7c1e9444d8
+> ("powerpc/powernv: Add OPAL ICS backend") when it was introduced. 'server'
+> was also used in an error message for the call to opal_get_xive().
+> 
+> 'server' was always later set by a call to ics_opal_mangle_server() before
+> being used.
+> 
+> Commit bf8e0f891a32 ("powerpc/powernv: Fix endian issues in OPAL ICS
+> backend") used a new variable 'oserver' as the parameter to opal_get_xive()
+> instead of 'server' for endian correctness. It also removed 'server' from
+> the error message for the call to opal_get_xive().
+> 
+> It was commit bf8e0f891a32 that added the unnecessary conversion and never
+> used the result.
+> 
+> Reviewed-by: Jordan Niethe <jniethe5@gmail.com>
+> 
 
-I like the 8th patch of this series much more. If there is a risk of
-damaging the device, then we should not have the Kconfig to disable it.
+Hello Michael,
 
-I have some comments on that particular patch (v3 8/10), but I; ll reply
-inline.
+Do you have any more questions on this patch or is it good to go?
 
-Cheers,
-Benjamin
+Thanks,
+Gautam
