@@ -2,730 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D562763F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F153B763F14
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjGZS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S229552AbjGZSzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbjGZS4V (ORCPT
+        with ESMTP id S231951AbjGZSzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:56:21 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97B926BB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:56:17 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bcfe28909so3835866b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690397775; x=1691002575;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s9TNH7rN4X9jpMQPTCMF3nIKFqvH8qBSBTAhAKjOMj4=;
-        b=wg8lmXgWMte3pwdxKKPlZRCYxwSSF52uu/3BnHBhIqnPp3BBeCjUkU91c+w+JAq7xk
-         zwUKtBrWU9rdWhxjZVdHGTLotMfTFqx3b4FAAHnrC7sFtOvIIkgSvmyHzktfZrMzBbIL
-         epWcHPl5lUZ/T8li4I+2ZAUcC3WfqmRnJezQvsKmBWgeAa37DJAnCtsYCe5uYZoiT6ZY
-         REdCc1/lSqX3x+vbqA3u4bCgPfXxWsM6lpsUqU36M+6z/fKuYp0N4PFvNSDO8Xm/gRUA
-         PPgxm59uXELgsARLTacPD5DCTImeEni+wl4b+sWGP4SAHPm2ciEv4tmVb2qdEB4hGcAn
-         SuaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690397775; x=1691002575;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9TNH7rN4X9jpMQPTCMF3nIKFqvH8qBSBTAhAKjOMj4=;
-        b=hIIR0ap0Zgf6rqsEJPBlJwNuvivJCCJTIJNoE4ED9hOvlRnts44Ip3ReakQbO3GL5n
-         6OLqN8tQWmHriYMPEm9u2r0c0OIX143K/LJDb4oVf2Em0S3a1irS7OyQsQbrxh6nNZGh
-         /ezxDWG7jgm7YtuY+g4xzil5NKVK8vDJUX2yoAklC6jXlDy1m9lnJyHmq5c6m/Zu7HYw
-         m+8rGuA9pdlaSFo7CJWsvR/jwkmrCKtM4jiHkFU8s16alF2Rr4KlPY4QZYJneXA8bmJ6
-         rB0eoSc5nX/TEXJDgW60u0MDcdZLXTOjUNlW7SfyUtJBwU2ieE90IEd7vYZ9DJQILE4s
-         UFpQ==
-X-Gm-Message-State: ABy/qLaQVZ0MNBO/NdN/AexPnqskIV7cJ44pJSO2I3nW2MWnkfq2cXZf
-        l/Rfb3BUbU/ikPy8GiBf9M1YiA==
-X-Google-Smtp-Source: APBJJlGh2w5f+EQQtrt4UZ96x5E9mC6mEOFaqoZGru1fRrfgLZKS2d0h/3bkDc7eR8ENEr0A5CRxBg==
-X-Received: by 2002:a17:906:310f:b0:99b:431b:a5e9 with SMTP id 15-20020a170906310f00b0099b431ba5e9mr43984ejx.45.1690397775536;
-        Wed, 26 Jul 2023 11:56:15 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id kd7-20020a17090798c700b00992a8a54f32sm9814652ejc.139.2023.07.26.11.56.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 11:56:15 -0700 (PDT)
-Message-ID: <d7380f31-8ac6-7c7b-b2b8-11d497e0de00@linaro.org>
-Date:   Wed, 26 Jul 2023 20:56:13 +0200
+        Wed, 26 Jul 2023 14:55:41 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFF22720
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1690397731;
+        bh=GoAWwHa/TyZ/4FOOmKYbnXSi58WIxY4Ka+P9O0yMH+E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=S6S5IXH9NmKzROLRovAketUjf89cg1ZfVd/go/bWKjYYzm3u2fJ+tdFhoLEKH/sDK
+         /CyJ/ZeOAO2b5XxsXrURuNzf6VOfKiEPJFLy88zyR4MI6/8jQan3ZuDqzU+sp3a2Mi
+         XdldMYoLglWNZFdc5kaMjhWRFOOKc58JSo2GvadEjcunvjhZda/KE3D7t75+0lIKrq
+         2W2wPHX98wStavLU6u9QP+nqV5pBoBehjnnz1PTBUzrIpt7pyGAPcSBOtbo8yCTM3M
+         agGHYeZPVIM7LoBuqHzuetVK1XP+RIVxLzzbC9yEYn4hJ59K3e025+YrkzjvvR8ng+
+         KRFMT+UjngWzA==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RB34g3jX4z1K6L;
+        Wed, 26 Jul 2023 14:55:31 -0400 (EDT)
+Message-ID: <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
+Date:   Wed, 26 Jul 2023 14:56:19 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] ARM: dts: nuvoton: Add Fii Mori system
+Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
 Content-Language: en-US
-To:     Charles Boyer <Charles.Boyer@fii-usa.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Vivekanand Veeracholan <vveerach@google.com>,
-        Lancelot Kao <lancelot.cy.kao@fii-na.com>
-References: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
+ <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
+ <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
+ <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 20:46, Charles Boyer wrote:
-> Add the device tree for Mori BMC, which is an Ampere server platform
-> manufactured by Fii. The device tree is based on Nuvoton NPCM730 SoC.
+On 7/26/23 13:40, Shrikanth Hegde wrote:
 > 
-> Signed-off-by: Charles Boyer <Charles.Boyer@fii-usa.com>
-> ---
->  arch/arm/boot/dts/nuvoton/Makefile            |    1 +
->  .../boot/dts/nuvoton/nuvoton-npcm730-mori.dts | 1491 +++++++++++++++++
-
-Thank you for your patch. There is something to discuss/improve.
-
-
->  2 files changed, 1492 insertions(+)
->  create mode 100644 arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts
 > 
-> diff --git a/arch/arm/boot/dts/nuvoton/Makefile b/arch/arm/boot/dts/nuvoton/Makefile
-> index 89c157dad312..ab74184b0283 100644
-> --- a/arch/arm/boot/dts/nuvoton/Makefile
-> +++ b/arch/arm/boot/dts/nuvoton/Makefile
-> @@ -3,6 +3,7 @@ dtb-$(CONFIG_ARCH_NPCM7XX) += \
->  	nuvoton-npcm730-gsj.dtb \
->  	nuvoton-npcm730-gbs.dtb \
->  	nuvoton-npcm730-kudo.dtb \
-> +	nuvoton-npcm730-mori.dtb \
->  	nuvoton-npcm750-evb.dtb \
->  	nuvoton-npcm750-runbmc-olympus.dtb
->  dtb-$(CONFIG_ARCH_WPCM450) += \
-> diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts b/arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts
-> new file mode 100644
-> index 000000000000..45ef0b29d6ba
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts
-> @@ -0,0 +1,1491 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2023 Fii USA Inc.
-> +
-> +/dts-v1/;
-> +#include "nuvoton-npcm730.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +        model = "Fii mori Board";
-> +        compatible = "fii,mori", "nuvoton,npcm730";
+> On 7/26/23 7:37 PM, Mathieu Desnoyers wrote:
+>> On 7/26/23 04:04, Shrikanth Hegde wrote:
+>>>
+>>>
+>>> On 7/26/23 1:00 AM, Mathieu Desnoyers wrote:
+>>>> Allow select_task_rq to consider a cpu as idle for 1ms after that cpu
+>>>> has exited the idle loop.
+>>>>
+>>>> This speeds up the following hackbench workload on a 192 cores AMD EPYC
+>>>> 9654 96-Core Processor (over 2 sockets):
+>>>>
+>>>> hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+>>>>
+>>>> from 49s to 34s. (30% speedup)
+>>>>
+>>>> My working hypothesis for why this helps is: queuing more than a single
+>>>> task on the runqueue of a cpu which just exited idle rather than
+>>>> spreading work over other idle cpus helps power efficiency on systems
+>>>> with large number of cores.
+>>>>
+>>>> This was developed as part of the investigation into a weird regression
+>>>> reported by AMD where adding a raw spinlock in the scheduler context
+>>>> switch accelerated hackbench.
+> 
+> Do you have SMT here? What is the system utilization when you are running
+> this workload?
 
-Missing bindings patch (don't forget about running checkpatch).
+Yes, SMT is enabled, which brings the number of logical cpus to 384.
 
-> +
-> +        aliases {
-> +                serial0 = &serial0;
+CPU utilization (through htop):
 
-...
+* 6.4.4:                                           27500%
+* 6.4.4 with the extend-idle+nr_running<=4 patch:  30500%
 
-> +
-> +        iio-hwmon {
-> +                compatible = "iio-hwmon";
-> +                io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>,
-> +                        <&adc 4>, <&adc 5>, <&adc 6>, <&adc 7>;
-> +        };
-> +
-> +        leds {
-> +                compatible = "gpio-leds";
-> +                BMC_ALIVE {
+> 
+>>>>
+>>>> It turned out that changing this raw spinlock for a loop of 10000x
+>>>> cpu_relax within do_idle() had similar benefits.
+>>>>
+>>>> This patch achieve a similar effect without the busy-waiting by
+>>>> introducing a runqueue state sampling the sched_clock() when exiting
+>>>> idle, which allows select_task_rq to consider "as idle" a cpu which has
+>>>> recently exited idle.
+>>>>
+>>>> This patch should be considered "food for thoughts", and I would be glad
+>>>> to hear feedback on whether it causes regressions on _other_ workloads,
+>>>> and whether it helps with the hackbench workload on large Intel system
+>>>> as well.
+>>>>
+>>>> Link:
+>>>> https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+>>>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>> Cc: Ingo Molnar <mingo@redhat.com>
+>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>>> Cc: Valentin Schneider <vschneid@redhat.com>
+>>>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>>>> Cc: Ben Segall <bsegall@google.com>
+>>>> Cc: Mel Gorman <mgorman@suse.de>
+>>>> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+>>>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>>>> Cc: Juri Lelli <juri.lelli@redhat.com>
+>>>> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+>>>> Cc: Aaron Lu <aaron.lu@intel.com>
+>>>> Cc: x86@kernel.org
+>>>> ---
+>>>>    kernel/sched/core.c  | 4 ++++
+>>>>    kernel/sched/sched.h | 3 +++
+>>>>    2 files changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>>>> index a68d1276bab0..d40e3a0a5ced 100644
+>>>> --- a/kernel/sched/core.c
+>>>> +++ b/kernel/sched/core.c
+>>>> @@ -6769,6 +6769,7 @@ void __sched schedule_idle(void)
+>>>>         * TASK_RUNNING state.
+>>>>         */
+>>>>        WARN_ON_ONCE(current->__state);
+>>>> +    WRITE_ONCE(this_rq()->idle_end_time, sched_clock());
+>>>>        do {
+>>>>            __schedule(SM_NONE);
+>>>>        } while (need_resched());
+>>>> @@ -7300,6 +7301,9 @@ int idle_cpu(int cpu)
+>>>>    {
+>>>>        struct rq *rq = cpu_rq(cpu);
+>>>>    +    if (sched_clock() < READ_ONCE(rq->idle_end_time) +
+>>>> IDLE_CPU_DELAY_NS)
+>>>
+>>>
+>>> Wouldn't this hurt the latency badly? Specially on a loaded system with
+>>> a workload that does a lot of wakeup.
+>>
+>> Good point !
+>>
+>> Can you try your benchmark replacing the if () statement above by:
+>>
+>> +       if (sched_clock() < READ_ONCE(rq->idle_end_time) +
+>> IDLE_CPU_DELAY_NS &&
+>> +           READ_ONCE(rq->nr_running) <= 4)
+>> +               return 1;
+> 
+> 
+> Tried with this change. I think it does help in reducing latency compared to
+> earlier specially till 95th percentile.
 
-Eh... so many things to say...
+For the records, I also tried with nr_running <= 2 and still had decent performance
+(32s with nr_running <= 2 instead of 30s for nr_running <= 4). It did drop with
+nr_running <= 1 (40s). nr_running <= 5 was similar to 4, and performances start
+degrading with nr_running <= 8 (31s).
 
-1. Please base your work on already upstreamed code, so you will not
-repeat the same errors we already fixed. It can happen though that this
-Nuvoton boards are in terrible shape...
+So it might be interesting to measure the latency with nr_running <= 2 as well.
+Perhaps nr_running <= 2 would be a good compromise between throughput and tail
+latency.
 
-2. Underscores and capital letters are not allowed.
+>                                                                                  
+>                  6.5-rc3      6.5-rc3+RFC_Patch     6.5-rc3_RFC_Patch
+>                                                       + nr<4
+> 4 Groups
+> 50.0th:          18.00                18.50           18.50
+> 75.0th:          21.50                26.00           23.50
+> 90.0th:          56.00                940.50          501.00
+> 95.0th:          678.00               1896.00         1392.00
+> 99.0th:          2484.00              3756.00         3708.00
+> 99.5th:          3224.00              4616.00         5088.00
+> 99.9th:          4960.00              6824.00         8068.00
+> 8 Groups
+> 50.0th:          23.50                25.50           23.00
+> 75.0th:          30.50                421.50          30.50
+> 90.0th:          443.50               1722.00         741.00
+> 95.0th:          1410.00              2736.00         1670.00
+> 99.0th:          3942.00              5496.00         4032.00
+> 99.5th:          5232.00              7016.00         5064.00
+> 99.9th:          7996.00              8896.00         8012.00
+> 16 Groups
+> 50.0th:          33.50                41.50           32.50
+> 75.0th:          49.00                752.00          47.00
+> 90.0th:          1067.50              2332.00         994.50
+> 95.0th:          2093.00              3468.00         2117.00
+> 99.0th:          5048.00              6728.00         5568.00
+> 99.5th:          6760.00              7624.00         6960.00
+> 99.9th:          8592.00              9504.00         11104.00
+> 32 Groups
+> 50.0th:          60.00                79.00           53.00
+> 75.0th:          456.50               1712.00         209.50
+> 90.0th:          2788.00              3996.00         2752.00
+> 95.0th:          4544.00              5768.00         5024.00
+> 99.0th:          8444.00              9104.00         10352.00
+> 99.5th:          9168.00              9808.00         12720.00
+> 99.9th:          11984.00             12448.00        17624.00
 
-3. It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+[...]
 
-> +                        gpios = <&gpio9 4 0>;
+>>>>    @@ -1010,6 +1012,7 @@ struct rq {
+>>>>          struct task_struct __rcu    *curr;
+>>>>        struct task_struct    *idle;
+>>>> +    u64            idle_end_time;
+> 
+> There is clock_idle already in the rq. Can that be used for the same?
 
-Use appropriate defines for flags.
+Good point! And I'll change my use of "sched_clock()" in idle_cpu() for a
+proper "sched_clock_cpu(cpu_of(rq))", which will work better on systems
+without constant tsc.
 
-> +                };
-> +                boot_status_led {
+The updated patch:
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a68d1276bab0..1c7d5bd2968b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7300,6 +7300,10 @@ int idle_cpu(int cpu)
+  {
+  	struct rq *rq = cpu_rq(cpu);
+  
++	if (READ_ONCE(rq->nr_running) <= IDLE_CPU_DELAY_MAX_RUNNING &&
++	    sched_clock_cpu(cpu_of(rq)) < READ_ONCE(rq->clock_idle) + IDLE_CPU_DELAY_NS)
++		return 1;
++
+  	if (rq->curr != rq->idle)
+  		return 0;
+  
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 81ac605b9cd5..57a49a5524f0 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -97,6 +97,9 @@
+  # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
+  #endif
+  
++#define IDLE_CPU_DELAY_NS		1000000		/* 1ms */
++#define IDLE_CPU_DELAY_MAX_RUNNING	4
++
+  struct rq;
+  struct cpuidle_state;
 
-> +                        gpios = <&gpio10 15 0>;
+And using it now brings the hackbench wall time at 28s :)
 
-Define
+Thanks,
 
-> +                };
-> +        };
-> +
-> +        pinctrl: pinctrl@f0800000 {
+Mathieu
 
-Weird placement... but okay...
+> 
+>>>>        struct task_struct    *stop;
+>>>>        unsigned long        next_balance;
+>>>>        struct mm_struct    *prev_mm;
+>>
 
-> +
-> +        ahb {
-> +                udc5: udc@f0835000 {
-> +                        compatible = "nuvoton,npcm750-udc";
-> +                        reg = <0xf0835000 0x1000
-> +                                   0xfffd2800 0x800>;
-
-Aren't these two items?
-
-> +                        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-> +                        status = "okay";
-
-Are you adding new node or overriding? Why board defines compatible for
-SoC component? This is confusing...
-
-> +                        clocks = <&clk NPCM7XX_CLK_SU>;
-> +                        clock-names = "clk_usb_bridge";
-> +                };
-> +        };
-> +
-> +        pcie-slot {
-> +                pcie0: pcie-slot@0 {
-> +                        label = "slot0";
-> +                };
-> +                pcie1: pcie-slot@1 {
-> +                        label = "slot1";
-> +                };
-> +                pcie2: pcie-slot@2 {
-> +                        label = "slot2";
-> +                };
-> +                pcie3: pcie-slot@3 {
-> +                        label = "slot3";
-> +                };
-> +        };
-> +};
-
-Missing blank line.
-
-> +&gmac0 {
-> +        phy-mode = "rgmii-id";
-> +        snps,eee-force-disable;
-> +        status = "okay";
-> +};
-> +
-> +&emc0 {
-> +        phy-mode = "rmii";
-> +        status = "okay";
-> +        fixed-link {
-> +                speed = <100>;
-> +                full-duplex;
-> +        };
-> +};
-> +
-> +&ehci1 {
-> +        status = "okay";
-> +};
-> +
-> +&ohci1 {
-> +        status = "okay";
-> +};
-> +
-> +&aes {
-> +        status = "okay";
-> +};
-> +
-> +&sha {
-> +        status = "okay";
-> +};
-> +
-> +&spi1 {
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&gpio177_pins &gpio176o_pins
-> +                        &gpio175ol_pins>;
-> +        status = "okay";
-> +        jtag_master {
-
-Nope, nope. Don't use reviewers as tools. Use tools for this:
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-`make dtbs W=1`
-
-> +                compatible = "nuvoton,npcm750-jtag-master";
-> +                spi-max-frequency = <25000000>;
-> +                reg = <0>;
-> +
-> +                pinctrl-names = "pspi", "gpio";
-> +                pinctrl-0 = <&pspi1_pins>;
-> +                pinctrl-1 = <&gpio177_pins &gpio176o_pins
-> +                                                &gpio175ol_pins>;
-> +
-> +                tck-gpios = <&gpio5 15 GPIO_ACTIVE_HIGH>;
-> +                tdi-gpios = <&gpio5 16 GPIO_ACTIVE_HIGH>;
-> +                tdo-gpios = <&gpio5 17 GPIO_ACTIVE_HIGH>;
-> +                tms-gpios = <&gpio6 11 GPIO_ACTIVE_HIGH>;
-> +                status = "okay";
-
-okay is by default, why do you need it?
-
-> +        };
-> +};
-> +
-> +&fiu0 {
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&spi0cs1_pins>;
-> +        status = "okay";
-> +        spi-nor@0 {
-> +                compatible = "jedec,spi-nor";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +                reg = <0>;
-> +                spi-max-frequency = <5000000>;
-> +                spi-rx-bus-width = <2>;
-> +                label = "bmc";
-> +                partitions@80000000 {
-> +                        compatible = "fixed-partitions";
-> +                        #address-cells = <1>;
-> +                        #size-cells = <1>;
-> +                        u-boot@0 {
-> +                                label = "u-boot";
-> +                                reg = <0x0000000 0xC0000>;
-> +                                read-only;
-> +                        };
-> +                        image-descriptor@f0000 {
-> +                                label = "image-descriptor";
-> +                                reg = <0xf0000 0x10000>;
-> +                        };
-> +                        hoth-update@100000 {
-> +                                label = "hoth-update";
-> +                                reg = <0x100000 0x100000>;
-> +                        };
-> +                        kernel@200000 {
-> +                                label = "kernel";
-> +                                reg = <0x200000 0x500000>;
-> +                        };
-> +                        rofs@700000 {
-> +                                label = "rofs";
-> +                                reg = <0x700000 0x35f0000>;
-> +                        };
-> +                        rwfs@3cf0000 {
-> +                                label = "rwfs";
-> +                                reg = <0x3cf0000 0x300000>;
-> +                        };
-> +                        hoth-mailbox@3ff0000 {
-> +                                label = "hoth-mailbox";
-> +                                reg = <0x3ff0000 0x10000>;
-> +                        };
-> +                };
-> +        };
-> +};
-> +
-> +&fiu3 {
-> +        pinctrl-0 = <&spi3_pins>;
-> +        status = "okay";
-> +
-> +        spi-nor@0 {
-> +                compatible = "jedec,spi-nor";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +                spi-rx-bus-width = <2>;
-> +                reg = <0>;
-> +                label = "hnor";
-> +        };
-> +};
-> +
-> +// emmc
-> +&sdhci0 {
-> +        status = "okay";
-> +};
-> +// USB
-> +&ehci1 {
-> +        status = "okay";
-> +};
-> +
-> +&ohci1 {
-> +        status = "okay";
-> +};
-> +
-> +&vdma {
-> +        status = "okay";
-> +};
-> +
-> +&pcimbox {
-> +        status = "okay";
-> +};
-> +
-> +&vcd {
-> +        status = "okay";
-> +};
-> +
-> +&ece {
-> +        status = "okay";
-> +};
-> +
-> +&watchdog1 {
-> +        status = "okay";
-> +};
-> +
-> +&rng {
-> +        status = "okay";
-> +};
-> +
-> +&serial0 {
-> +        status = "okay";
-> +};
-> +
-> +&serial1 {
-> +        status = "okay";
-> +};
-> +
-> +&serial2 {
-> +        status = "okay";
-> +};
-> +
-> +&serial3 {
-> +        status = "okay";
-> +};
-> +
-> +&adc {
-> +        #io-channel-cells = <1>;
-> +        status = "okay";
-> +};
-> +
-> +&otp {
-> +        status = "okay";
-> +};
-> +
-> +&i2c0 {
-> +        status = "okay";
-> +        clock-frequency = <400000>;
-> +};
-> +
-> +&i2c1 {
-> +        status = "okay";
-> +        clock-frequency = <400000>;
-> +        i2c-switch@75 {
-> +                compatible = "nxp,pca9548";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0x75>;
-> +                i2c-mux-idle-disconnect;
-> +
-> +                i2c16: i2c@0 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <0>;
-> +                };
-> +                i2c17: i2c@1 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <1>;
-> +                };
-> +                i2c18: i2c@2 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <2>;
-> +                };
-> +                i2c19: i2c@3 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <3>;
-> +
-> +                        cpu@50 {
-
-cpu? Is it really a CPU on I2C bus?
-
-> +                                compatible = "atmel,24c64";
-> +                                reg = <0x50>;
-> +                        };
-> +                };
-> +                i2c20: i2c@4 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <4>;
-> +                };
-> +                i2c21: i2c@5 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <5>;
-> +                };
-> +                i2c22: i2c@6 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <6>;
-> +                };
-> +                i2c23: i2c@7 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <7>;
-> +                };
-> +        };
-
-Here and in all other places - missing blank line after node.
-
-> +        i2c-switch@77 {
-> +                compatible = "nxp,pca9548";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0x77>;
-> +                i2c-mux-idle-disconnect;
-> +
-> +                i2c24: i2c@0 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <0>;
-> +                };
-> +                i2c25: i2c@1 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <1>;
-> +
-> +                        adm1272@1f {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                                compatible = "adi,adm1272";
-> +                                reg = <0x1f>;
-> +                                shunt-resistor-micro-ohms = <333>;
-> +                        };
-> +
-> +                };
-> +                i2c26: i2c@2 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <2>;
-> +                };
-> +                i2c27: i2c@3 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <3>;
-> +                };
-> +                i2c28: i2c@4 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <4>;
-> +                };
-> +                i2c29: i2c@5 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <5>;
-> +                };
-> +                i2c30: i2c@6 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <6>;
-> +                };
-> +                i2c31: i2c@7 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <7>;
-> +                };
-> +        };
-> +};
-> +
-> +&i2c2 {
-> +        status = "okay";
-> +        clock-frequency = <400000>;
-> +        i2c-switch@77 {
-> +                compatible = "nxp,pca9548";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0x77>;
-> +                i2c-mux-idle-disconnect;
-> +
-> +                i2c32: i2c@0 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <0>;
-> +                };
-> +                i2c33: i2c@1 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <1>;
-> +                };
-> +                i2c34: i2c@2 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <2>;
-> +                };
-> +                i2c35: i2c@3 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <3>;
-> +
-> +                        //REAR FAN
-
-Fix the comments to match Linux coding style.
-
-> +                        max31790@2c {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                                compatible = "maxim,max31790";
-> +                                reg = <0x2c>;
-> +                        };
-> +                };
-> +                i2c36: i2c@4 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <4>;
-> +                };
-> +                i2c37: i2c@5 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <5>;
-> +
-> +                        //OUTLET1_T
-> +                        lm75@5c {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                                compatible = "ti,lm75";
-> +                                reg = <0x5c>;
-> +                        };
-> +                };
-> +                i2c38: i2c@6 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <6>;
-> +
-> +                        //INLET1_T
-> +                        lm75@5c {
-> +                                compatible = "ti,lm75";
-> +                                reg = <0x5c>;
-> +                        };
-> +                };
-> +                i2c39: i2c@7 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <7>;
-> +                };
-> +        };
-> +};
-> +
-> +&i2c3 {
-> +        status = "okay";
-> +        clock-frequency = <400000>;
-> +        pcie-slot = &pcie0;
-> +};
-> +
-> +&i2c4 {
-> +        status = "okay";
-> +        clock-frequency = <400000>;
-> +        mbfru@50 {
-> +                compatible = "atmel,24c64";
-> +                reg = <0x50>;
-> +        };
-> +
-> +        i2c-switch@77 {
-> +                compatible = "nxp,pca9548";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0x77>;
-> +                i2c-mux-idle-disconnect;
-> +
-> +                i2c40: i2c@0 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <0>;
-> +
-> +                        //Power Sequencer
-> +                        adm1266@40 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                                compatible = "adi,adm1266";
-> +                                reg = <0x40>;
-> +                        };
-> +                };
-> +                i2c41: i2c@1 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <1>;
-> +                };
-> +                i2c42: i2c@2 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <2>;
-> +
-> +                        //SKM EEPROM
-> +                        skm@55 {
-
-Come on... eeprom
-
-
-> +                                compatible = "atmel,24c64";
-> +                                reg = <0x55>;
-> +                                pagesize = <0x20>;
-> +                        };
-> +                };
-> +                i2c43: i2c@3 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <3>;
-> +
-> +                        gpio10: pca6416@20 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                                compatible = "nxp,pca6416";
-> +                                reg = <0x20>;
-> +                                pinctrl-names = "default";
-> +                                gpio-controller;
-> +                                #gpio-cells = <2>;
-> +                                gpio-line-names =
-> +                                        "P12V_PCIE_PE0_ON", "P12V_PCIE_PE1_ON", "P12V_PCIE_PE2_ON", "P12V_PCIE_PE3_ON", "P13V5_NBM_S0_PGD",
-> +                                        "P12V_EFUSE_ABCD_EN", "P12V_EFUSE_EFGH_EN", "NC_P0_7", "MB_JTAG_MUX_SEL", "JTAG_SCM_MUX_OE_N",
-> +                                        "FM_BMC_IO_CPLD_PROGRAM_N", "FM_BMC_IO_CPLD_HITLESS_N", "FM_IOEXP_DRAM_P12V_EN", "MB_CPLD_INIT",
-> +                                        "NCSI_CX_PRSNT_N", "SYS_BOOT_STATUS_LED";
-> +                        };
-> +                };
-> +                i2c44: i2c@4 {
-> +                        #address-cells = <1>;
-> +                        #size-cells = <0>;
-> +                        reg = <4>;
-> +
-> +                        gpio12: pca6416@21 {
-
-Enough. This DTS should have basic things first cleaned up.
-
-
-
-Best regards,
-Krzysztof
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
