@@ -2,134 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2278C76325E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8212763267
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbjGZJfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S233639AbjGZJgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbjGZJfF (ORCPT
+        with ESMTP id S233502AbjGZJfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:35:05 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CD144BB;
-        Wed, 26 Jul 2023 02:33:48 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7mprC023350;
-        Wed, 26 Jul 2023 11:33:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=/Cq+mWzaYAzM3dk654+FXTT9IrqSv23zfpbnKE8bKxM=;
- b=Q3i1gVoUyXsOG+9S8AzF+qC7KGYRPJp1BCc8yu19RqFYSEYXR+81aMgiqDR45yEeyPqO
- J+U3uov9ofSS5wPMhYZ9+4/I7yoG4y4+8katCpM+tSm+G4l/cyvw4mN5swVzqt2fYz1S
- bfKZRzHV8x7Kom11ShfbZ53EZcJIdyyJN+AiP8cxN5/mICmfx+rToX+nVgHVP8/cnFWf
- epKhxqQqSlw0L+nHtRZGH+rh+T1QQLgWgFQA+vVJ65W56Qod/6jQdjeSkvBm9SME4WcU
- E4hHx370z65KeipWwjPTCZPdxiSvq2f8S2ouOVDcvTyBIP2Gg5qihokSU89pm2KM33oL pg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2ye8gv6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 11:33:18 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A74DF10002A;
-        Wed, 26 Jul 2023 11:33:17 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 90F66212FCB;
-        Wed, 26 Jul 2023 11:33:17 +0200 (CEST)
-Received: from [10.48.1.0] (10.48.1.0) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 11:33:16 +0200
-Message-ID: <a442c999-4120-c945-c671-d5fe2c21522c@foss.st.com>
-Date:   Wed, 26 Jul 2023 11:33:15 +0200
+        Wed, 26 Jul 2023 05:35:31 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AEF4683
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bbbfec0517so1788345ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690364030; x=1690968830;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0oULOTnWb1HIc+jcDQkyDbPD+ewEuK6cRZsxNFZBJHs=;
+        b=QJhhRpaTfMAfucHkCz2d9TS31hpYk30s2kQKv681O+Sl1mLTZQhZq5VKb4l9mXe+gX
+         5Eax6ixoNcCSNY9H6aAkwgnBd/g9cM9X43ylT+UhHbYekfmlgjo/JXqlix6WaCFQ7jVV
+         2D4QfnYhGItzA17GFTgozRmivkdC7H5IwsXEWhmkOBzQK5UpXhnT6Ls+I4I3tsoeozxU
+         24KbqK2Cq3sIWZ8RaqWYBiX9Q9627K0AND5qR2t9+dtM8IjHsDiCPK6lh5ggLgTON/bP
+         sMZVbirBGOz1XlXtXsxmGmw+9U7+KmVQpZdmOnau0hPanAHKCfZx0jR+DbnWSE4a/7ep
+         yq9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690364030; x=1690968830;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0oULOTnWb1HIc+jcDQkyDbPD+ewEuK6cRZsxNFZBJHs=;
+        b=CfxmlXBrtfH6WkFnpVUnJC12llBmG1vyGyTVS8urJYCcEyvISzK6DOCGoeauf/TF3/
+         wFs35IGcvhzb9tfV7+R+bKUEMAiirmPlxnlFN4G32pb6WRMGLe+dLq/h10681LP1rbXd
+         hg/6kQx67FCRObD+UA0b0HpfUIIIPlGKCfrdqhspfD+i2Os4Z30H59YLATlzhmPf1bT4
+         vjylaD+5tf+OgLd3j6DHLnjtVmsdv7VYPOTPTVWBHuQovAVIyDBlmA+2+ZppAxp8izzI
+         QKDQJ+OP4aKlrLTxf2wUwixesRiDIiefO1JMp3Au2Fjw5iAUVVb28TsEvEAoAHsIfMuI
+         JiQQ==
+X-Gm-Message-State: ABy/qLbaWdUTCilaBZ+FDv5+QzAAuctkERJqhGPtbwxf6MkPN33Bd75U
+        3emarRKgIm2HlXScmE15YcTrPw==
+X-Google-Smtp-Source: APBJJlG8LKe8O0SB++JE7Hsj6dMankp6b2TdGG8KZmgQCX7ZvwrXNm6kysx08G1J6PXDjDRRJyafNA==
+X-Received: by 2002:a17:903:32c9:b0:1b8:5827:8763 with SMTP id i9-20020a17090332c900b001b858278763mr2037984plr.4.1690364030014;
+        Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001b89466a5f4sm12582766plc.105.2023.07.26.02.33.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:33:49 -0700 (PDT)
+Message-ID: <0f12022e-5dd2-fb1c-f018-05f8ff0303ae@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:33:36 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4/4] ARM: multi_v7_defconfig: Add SCMI regulator support
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 28/47] bcache: dynamically allocate the md-bcache
+ shrinker
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <p.paillet@foss.st.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Etienne Carriere <etienne.carriere@foss.st.com>
-References: <20230712142432.1885162-1-p.paillet@foss.st.com>
- <20230712142432.1885162-5-p.paillet@foss.st.com>
- <aa05bcd6-140d-d951-2c7f-c09abf7f49f7@linaro.org>
-From:   Patrick DELAUNAY <patrick.delaunay@foss.st.com>
-In-Reply-To: <aa05bcd6-140d-d951-2c7f-c09abf7f49f7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-29-zhengqi.arch@bytedance.com>
+ <4ee26da4-314e-0517-5d9a-31fb107368ef@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <4ee26da4-314e-0517-5d9a-31fb107368ef@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.48.1.0]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_03,2023-07-25_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 7/12/23 21:25, Krzysztof Kozlowski wrote:
-> On 12/07/2023 16:24, p.paillet@foss.st.com wrote:
->> From: Pascal Paillet <p.paillet@foss.st.com>
+
+On 2023/7/26 15:32, Muchun Song wrote:
+> 
+> 
+> On 2023/7/24 17:43, Qi Zheng wrote:
+>> In preparation for implementing lockless slab shrink, use new APIs to
+>> dynamically allocate the md-bcache shrinker, so that it can be freed
+>> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+>> read-side critical section when releasing the struct cache_set.
 >>
->> Enable ARM SCMI regulator support.
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   drivers/md/bcache/bcache.h |  2 +-
+>>   drivers/md/bcache/btree.c  | 27 ++++++++++++++++-----------
+>>   drivers/md/bcache/sysfs.c  |  3 ++-
+>>   3 files changed, 19 insertions(+), 13 deletions(-)
 >>
-> This we see from the diff. Please explain why, e.g. which boards use it.
->
-> Best regards,
-> Krzysztof
+>> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+>> index 5a79bb3c272f..c622bc50f81b 100644
+>> --- a/drivers/md/bcache/bcache.h
+>> +++ b/drivers/md/bcache/bcache.h
+>> @@ -541,7 +541,7 @@ struct cache_set {
+>>       struct bio_set        bio_split;
+>>       /* For the btree cache */
+>> -    struct shrinker        shrink;
+>> +    struct shrinker        *shrink;
+>>       /* For the btree cache and anything allocation related */
+>>       struct mutex        bucket_lock;
+>> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+>> index fd121a61f17c..c176c7fc77d9 100644
+>> --- a/drivers/md/bcache/btree.c
+>> +++ b/drivers/md/bcache/btree.c
+>> @@ -667,7 +667,7 @@ static int mca_reap(struct btree *b, unsigned int 
+>> min_order, bool flush)
+>>   static unsigned long bch_mca_scan(struct shrinker *shrink,
+>>                     struct shrink_control *sc)
+>>   {
+>> -    struct cache_set *c = container_of(shrink, struct cache_set, 
+>> shrink);
+>> +    struct cache_set *c = shrink->private_data;
+>>       struct btree *b, *t;
+>>       unsigned long i, nr = sc->nr_to_scan;
+>>       unsigned long freed = 0;
+>> @@ -734,7 +734,7 @@ static unsigned long bch_mca_scan(struct shrinker 
+>> *shrink,
+>>   static unsigned long bch_mca_count(struct shrinker *shrink,
+>>                      struct shrink_control *sc)
+>>   {
+>> -    struct cache_set *c = container_of(shrink, struct cache_set, 
+>> shrink);
+>> +    struct cache_set *c = shrink->private_data;
+>>       if (c->shrinker_disabled)
+>>           return 0;
+>> @@ -752,8 +752,8 @@ void bch_btree_cache_free(struct cache_set *c)
+>>       closure_init_stack(&cl);
+>> -    if (c->shrink.list.next)
+>> -        unregister_shrinker(&c->shrink);
+>> +    if (c->shrink)
+>> +        shrinker_unregister(c->shrink);
+>>       mutex_lock(&c->bucket_lock);
+>> @@ -828,14 +828,19 @@ int bch_btree_cache_alloc(struct cache_set *c)
+>>           c->verify_data = NULL;
+>>   #endif
+>> -    c->shrink.count_objects = bch_mca_count;
+>> -    c->shrink.scan_objects = bch_mca_scan;
+>> -    c->shrink.seeks = 4;
+>> -    c->shrink.batch = c->btree_pages * 2;
+>> +    c->shrink = shrinker_alloc(0, "md-bcache:%pU", c->set_uuid);
+>> +    if (!c->shrink) {
+>> +        pr_warn("bcache: %s: could not allocate shrinker\n", __func__);
+>> +        return -ENOMEM;
+> 
+> Seems you have cheanged the semantic of this. In the past,
+> it is better to have a shrinker, but now it becomes a mandatory.
+> Right? I don't know if it is acceptable. From my point of view,
+> just do the cleanup, don't change any behaviour.
 
+Oh, should return 0 here, will do.
 
-The STM32MP platforms rely on OP-TEE to boot: Clocks and regulators are 
-handled in
-the secure world by OP-TEE and exported to the non secure world (LINUX)
-thanks to ARM SCMI protocol.
-
-Today it is used in the ARMv7 STMicrolectronics stm32mp boards:
-- for STM32MP13: stm32mp135f-dk
-- the STM32MP15 boards with SCMI variant, introduced by commit 5b7e58313a77
-   ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1)")
-   * stm32mp157c-ev1-scmi
-   * stm32mp157c-ed1-scmi
-   * stm32mp157c-dk2-scmi
-   * stm32mp157a-dk1-scmi
-
-This SCMI server provide access to "secured" resources protected in SoC
-(for example with RCC_SECFGR); the resources need to be available early
-for these board and the  SCMI server is associated with OP-TEE, already
-activated by the commit 24c159793238  ("ARM: multi_v7_defconfig: Add
-OPTEE support").
-
-Regards
-
-Patrick
-
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->
+> 
+>> +    }
+>> +
+>> +    c->shrink->count_objects = bch_mca_count;
+>> +    c->shrink->scan_objects = bch_mca_scan;
+>> +    c->shrink->seeks = 4;
+>> +    c->shrink->batch = c->btree_pages * 2;
+>> +    c->shrink->private_data = c;
+>> -    if (register_shrinker(&c->shrink, "md-bcache:%pU", c->set_uuid))
+>> -        pr_warn("bcache: %s: could not register shrinker\n",
+>> -                __func__);
+>> +    shrinker_register(c->shrink);
+>>       return 0;
+>>   }
+>> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+>> index 0e2c1880f60b..45d8af755de6 100644
+>> --- a/drivers/md/bcache/sysfs.c
+>> +++ b/drivers/md/bcache/sysfs.c
+>> @@ -866,7 +866,8 @@ STORE(__bch_cache_set)
+>>           sc.gfp_mask = GFP_KERNEL;
+>>           sc.nr_to_scan = strtoul_or_return(buf);
+>> -        c->shrink.scan_objects(&c->shrink, &sc);
+>> +        if (c->shrink)
+>> +            c->shrink->scan_objects(c->shrink, &sc);
+>>       }
+>>       sysfs_strtoul_clamp(congested_read_threshold_us,
+> 
