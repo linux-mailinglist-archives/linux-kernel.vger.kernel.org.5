@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8760E763733
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCBE763739
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjGZNLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S233348AbjGZNLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjGZNK5 (ORCPT
+        with ESMTP id S233412AbjGZNLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:10:57 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65981BF2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:10:55 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317715ec496so1350506f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:10:55 -0700 (PDT)
+        Wed, 26 Jul 2023 09:11:50 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A6F1FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:11:49 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b703a0453fso100149091fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1690377054; x=1690981854;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bATIaA6LQXRSZJACQ6TfpjUUXUJadMivsNlfpPDYAoY=;
-        b=nSWbZevUMUYV6zgWbsW1IByr4aLDiUu+v2C9iL0m4qjiZKXn9qpb5jCMykSISS97ep
-         1fXc8vJPyIoSFxoGFrlRV3oG8Q2M5cma+P1TQn/3Prv4RxiSPsWBaEKDA1WbZ2uT+aUO
-         UAaDt6zhyQbd8AuxfKCECAU/8zhwGQS/NdcfHWc2xkSUc2sSL+GFUgxGLYDRWtSGtIIO
-         qOdT25mS5WMwgmrW3NY3FkaNOgmt9bMbtTFHgigIanFoJg4pmU4zbeG5zdFHSeIMJHLn
-         pDLvew4GXmWObHrn35QFRCEemzo6e0w5TiQ1SI9Eoc+gN9W4oS+GDMEV2g/JBFn0A+Ne
-         AiNQ==
+        d=linaro.org; s=google; t=1690377107; x=1690981907;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fceTjpt0I0GGZpZu52Ezsa57vvTP8Gp9bGJwFbhqqGA=;
+        b=hnc/7QYLXegSTTrqPCWDJAMwZzKgKLMN6+Sp2VeHlN51DGhEn5Fkot9WWtEOG44BHa
+         SsaojGGRKewUVbsUEEa40KN/UteJZK+UejhcZ3gGVYDYuTv9+F+SW9wSuFfuvCxYJgQX
+         vpAxWTaxl//FFA532s9j38xlygbcNMyaaWAFyyMOmkg9ZMHsvylF+tPPvi7slPVIIkYF
+         F9nzaUnk3tspmhI8rhU0aSIE6HZYzMPgEjotAEr2A6q6NEwTcQtLp/01LJ6+mfMjFUri
+         Ft/QTR8K9nBHOYTGXd98T9KKWfX6ElC5kSlkgfnON9rusiqEdCEYia1xLskDspLn3oty
+         mxag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690377054; x=1690981854;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bATIaA6LQXRSZJACQ6TfpjUUXUJadMivsNlfpPDYAoY=;
-        b=ZZxLnhGcVQXpE9Fts0BI3CVmUfqPvot32hiw9WxeF0QFHJgD2WiUFrXox2sEFDAKIy
-         5JckIJUG22TBaGtxFJEf70HFF/Dv3gzoOvconSfgMhFmM75zgTbFeI7cI1L/9xOAoIPG
-         w5t4cwfjCq4vjRgn6XY12VGnQwZMVG8/ovECGVxslLuCgPPzGqxOeyXIF2DKIT6VWMHf
-         tN8azd2x0UOv4Tn5u6GYcyETWFUDdANvSC3+81V4s5W0q1or1eQ1wfGsJK1wnLJY2ANX
-         +FLT8CwknujvOz8Q9sDYZZvXwZRmvBcYo5B9bMHU8Q4d5g4d0RbBKhgdqqFDzr4dl9Hb
-         qL0w==
-X-Gm-Message-State: ABy/qLZ9KlOtzp85n+TEJ1QrD/tYLGhi6T5wgYX8IkF9xillWJ1ahzh3
-        7xMXrdfYSnFTUrjFjJ8sJhtVUg==
-X-Google-Smtp-Source: APBJJlEvByG95YVt5n5013sBm/Gdu9d6b97o2ESe3K8JUQsn9Xx3YlYdAF+DPqKaaBf+0F+DZe/B0g==
-X-Received: by 2002:a5d:4f10:0:b0:314:521:ce0a with SMTP id c16-20020a5d4f10000000b003140521ce0amr1485864wru.40.1690377054117;
-        Wed, 26 Jul 2023 06:10:54 -0700 (PDT)
-Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
-        by smtp.gmail.com with ESMTPSA id r5-20020a5d52c5000000b003143bb5ecd5sm19838856wrv.69.2023.07.26.06.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 06:10:53 -0700 (PDT)
-From:   Adam Sindelar <adam@wowsignal.io>
-To:     bpf@vger.kernel.org
-Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v2] libbpf: Expose API to consume one ring at a time
-Date:   Wed, 26 Jul 2023 15:09:46 +0200
-Message-Id: <20230726130944.6873-1-adam@wowsignal.io>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20221208; t=1690377107; x=1690981907;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fceTjpt0I0GGZpZu52Ezsa57vvTP8Gp9bGJwFbhqqGA=;
+        b=W9HDM1GPrJQIyNoX/AQWV2MT/jMTDGq6HR8tC66/DT3OGUXUUXpvOCQgK0pnq49KCA
+         d5npUtDsYX4llsanE0ZoBehcD1oZz4GtslhjjabWgi8XGn/3jXYS/EhkKRZEq+g208Sz
+         JXYcRUl6ONmgDtTmtfi4dZONEfcjq2N2NnA1/epAoOqp5lxHDg2iAq0H0gBNQlGtB4sU
+         b3RQyJ89i7Cwc4hQtmLkNwchcyimdDFcf7ccZHrBVpEi39QJqFjziY19MwmC5zvTbl74
+         90MeKYK4YhK+uDZeiH7AWxKbKu+1qbim8hd9BXTajq8pDPcmuaqDffl4D5qQ5wVQjb/f
+         pSew==
+X-Gm-Message-State: ABy/qLZsMuHJv6ZTEJJBRYgYTBevHmswr0tW2Q/f7SRLGJY354Q7m7qp
+        8Fbi9iCX0I9A5cZd71ZlaWL/xQ==
+X-Google-Smtp-Source: APBJJlG2tXGyjq2mq5mQTNGBeDOefLv6/VRlZq36AOlisG3kUf9aOrXYT8K0yPi5VmKet9j2TnOslA==
+X-Received: by 2002:a2e:9bd4:0:b0:2b9:2e85:2fa0 with SMTP id w20-20020a2e9bd4000000b002b92e852fa0mr1465699ljj.15.1690377107231;
+        Wed, 26 Jul 2023 06:11:47 -0700 (PDT)
+Received: from [192.168.1.101] (abyl59.neoplus.adsl.tpnet.pl. [83.9.31.59])
+        by smtp.gmail.com with ESMTPSA id e18-20020a2e9852000000b002b6d7682050sm4175159ljj.89.2023.07.26.06.11.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 06:11:45 -0700 (PDT)
+Message-ID: <8023c595-5257-4ec3-a7d3-08ca115a0421@linaro.org>
+Date:   Wed, 26 Jul 2023 15:11:43 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ARM: dts: qcom: mdm9615: populate vsdcc fixed regulator
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230725203718.513724-1-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230725203718.513724-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We already provide ring_buffer__epoll_fd to enable use of external
-polling systems. However, the only API available to consume the ring
-buffer is ring_buffer__consume, which always checks all rings. When
-polling for many events, this can be wasteful.
+On 25.07.2023 22:37, Krzysztof Kozlowski wrote:
+> Fixed regulator put under "regulators" node will not be populated,
+> unless simple-bus or something similar is used.  Drop the "regulators"
+> wrapper node to fix this.
+> 
+> Fixes: 2c5e596524e7 ("ARM: dts: Add MDM9615 dtsi")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom/qcom-mdm9615.dtsi | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/qcom/qcom-mdm9615.dtsi b/arch/arm/boot/dts/qcom/qcom-mdm9615.dtsi
+> index b40c52ddf9b4..bfcb4fcf6546 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-mdm9615.dtsi
+> +++ b/arch/arm/boot/dts/qcom/qcom-mdm9615.dtsi
+> @@ -46,14 +46,12 @@ cxo_board {
+>  		};
+>  	};
+>  
+> -	regulators {
+> -		vsdcc_fixed: vsdcc-regulator {
+> -			compatible = "regulator-fixed";
+> -			regulator-name = "SDCC Power";
+Neil, do we know if there's some a/o regulator coming from the SoC
+or something?
 
-Signed-off-by: Adam Sindelar <adam@wowsignal.io>
----
-v0->v1: Added entry to libbpf.map
-
- tools/lib/bpf/libbpf.h   |  1 +
- tools/lib/bpf/libbpf.map |  1 +
- tools/lib/bpf/ringbuf.c  | 15 +++++++++++++++
- 3 files changed, 17 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 55b97b2087540..20ccc65eb3f9d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
- 				ring_buffer_sample_fn sample_cb, void *ctx);
- LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
- LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-+LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
- LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
- 
- struct user_ring_buffer_opts {
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 9c7538dd5835e..42dc418b4672f 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -398,4 +398,5 @@ LIBBPF_1.3.0 {
- 		bpf_prog_detach_opts;
- 		bpf_program__attach_netfilter;
- 		bpf_program__attach_tcx;
-+		ring_buffer__consume_ring;
- } LIBBPF_1.2.0;
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 02199364db136..8d087bfc7d005 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
- 	return res;
- }
- 
-+/* Consume available data from a single RINGBUF map identified by its ID.
-+ * The ring ID is returned in epoll_data by epoll_wait when called with
-+ * ring_buffer__epoll_fd.
-+ */
-+int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
-+{
-+	struct ring *ring;
-+
-+	if (ring_id >= rb->ring_cnt)
-+		return libbpf_err(-EINVAL);
-+
-+	ring = &rb->rings[ring_id];
-+	return ringbuf_process_ring(ring);
-+}
-+
- /* Poll for available data and consume records, if any are available.
-  * Returns number of records consumed (or INT_MAX, whichever is less), or
-  * negative number, if any of the registered callbacks returned error.
--- 
-2.39.2
+Konrad
 
