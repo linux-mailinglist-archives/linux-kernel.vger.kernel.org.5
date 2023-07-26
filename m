@@ -2,116 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD4876382F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D26763826
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjGZN4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
+        id S233705AbjGZN4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbjGZN4j (ORCPT
+        with ESMTP id S231758AbjGZN4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:56:39 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2039.outbound.protection.outlook.com [40.92.98.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D042697;
-        Wed, 26 Jul 2023 06:55:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ofTNULpIWhGlvJ3bpKR3nc+KISkiGSC+9qYz1ZQiUwkmkYB9UH2Bz/vEBS0gOub6Q+oLmsvlt0JlytyCoH6U8+M/mrfrYdQKr+5UzIx3dfltUhRabBMgNe2HhU3vSha+WV8Lz4s/iiBNSvtRw9YPDMOybVjtbHk1WbNI0D6mTGl3ta5ag0YX+ee6kg3r0UJIqNx1npURWhkwJ87WK9zGOcQue+XnblyN6BNJSOBnTMsd1GInMp0YVA9KdBxsCRIt95xinQRKLnQ7+xoV+Cve0gfUTHlTmJoSs1HqasBydHBlVBVA/EsW8Os06Bu7p+Yu1UmDmkrqexztNSSQZ+Y09A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6cQxaTz7g73oz6xbuuUqbQehs/F3w6onjtnuM/ot98Q=;
- b=Cdmlmmttniavquykn6gE0kQTEeXeBmTIwPyIqjsLVa9JGLrJHCrhUFbm5kM2xN3SLhK5wGIYEmShYgvyh6tN5h9DJYBswefsPwO+SMT2Ru6hpnKiPdqL/0m5dm0geRLzYyQJfKJwlmBbYePpXxOw3cWsDOxqBBdsvizRZItpgIN0TMTc5FO0+yec7uj1JMx9sDMlCH+6vefMvaPHYwvyKj6xCaY61WR++/v6tBD8ZnGcIlK5Xr2OsfmwIEPkEwxIrH+cNSmPPp4NN6EsTMAoYJEjrmcthpt3PclngfXHH3T6/fcOUxXhwa/SCWz+CWvozNKIBzqRj9b9EAspthCeSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6cQxaTz7g73oz6xbuuUqbQehs/F3w6onjtnuM/ot98Q=;
- b=n4tY015RC0wf1+nw7BXM8pwfYC4hTnhk6xOlEKz1FAvmv1bHVaWvA9b53iAEJwMEe1pAEL2kyNfp0OTEcURhbXCRxPUpr1bIKywR9W/3jUMTir2w+BCiZng1zncnNU89Z89vhHh35Jc7DIBKahjjnftOYkTEkUHaI5S99mzhdQLXmt5F4TvlmModRHlmi1bnKEiTQSrUKOo7RDBolmUNCsrkrFyWl/99Ic4loiEDdbf8CLSzh0PfcA0BfyK9PqvbwXli/3V5zdqZcRkYDyNyMtubCKatEsvYblo35PlTQvRQDOZHLW250X1eitQ2yelu72kzRRBcKILp9H9GmNSnwg==
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
- by TYCP286MB3724.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3be::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
- 2023 13:55:43 +0000
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f4c2:4b38:d074:f1e9]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f4c2:4b38:d074:f1e9%5]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
- 13:55:43 +0000
-From:   Shiji Yang <yangshiji66@outlook.com>
-To:     daniel@makrotopia.org
-Cc:     angelogioacchino.delregno@collabora.com, ansuelsmth@gmail.com,
-        john@phrozen.org, kvalo@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org,
-        lorenzo@kernel.org, matthias.bgg@gmail.com, nbd@nbd.name,
-        ryder.lee@mediatek.com, sean.wang@mediatek.com,
-        shayne.chen@mediatek.com, Shiji Yang <yangshiji66@outlook.com>
-Subject: Re: [PATCH] wifi: mt76: support per-band MAC addresses from OF child nodes
-Date:   Wed, 26 Jul 2023 21:53:07 +0800
-Message-ID: <TYAP286MB03153BE5014AA32BE048B8B7BC00A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <ZK9mXE00xEHZV4fi@makrotopia.org>
-References: <ZK9mXE00xEHZV4fi@makrotopia.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [VZOMPsTcg2+hanBfxJnwfWTavMFmQcSt]
-X-ClientProxiedBy: TYCP286CA0028.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:263::15) To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:8041::8)
-X-Microsoft-Original-Message-ID: <20230726135306.392-1-yangshiji66@outlook.com>
+        Wed, 26 Jul 2023 09:56:13 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5782716;
+        Wed, 26 Jul 2023 06:54:00 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id A3786320039A;
+        Wed, 26 Jul 2023 09:53:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 26 Jul 2023 09:53:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:content-transfer-encoding:content-type:content-type:date:date
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1690379630; x=1690466030; bh=vcPDkrsGIwFtmpzt098KRroBQefPuWMGKTH
+        AmPms6QE=; b=P9KZyJhTKlj1NQ3Cm0gWoHj/6QLltZp81f74zItfjr7/T+/4wCI
+        GpG3hrgRU83LMTNr5kPTnEg6nZIMMUS3urPY6GEHGXyoONrrJRAmydu6FfHotmy4
+        R8r6phEDHtM6kOzMNcqJnFWNAaFPED+U6oDNzK7cDe1pkYx35+5vOrAn+OQ3ueLK
+        Lm9raHomDna6+R8lwOiYNOYs4j+LlC6RyCQNYEvwMY0vm+ns0ZT86zxmwlp5K6dK
+        wxKDE1mt0kZrW/FHw3/It2LsaTZ472Lzj8GY1izdg8whoSKMEdl91OmrEInWsgS8
+        XyiHz0q7aQkO1Eejmic1SWpqetBYp4+CgTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1690379630; x=
+        1690466030; bh=vcPDkrsGIwFtmpzt098KRroBQefPuWMGKTHAmPms6QE=; b=p
+        bTF2jKsQtHQUJDmARouwsuP/ygVU7gS2EEWiwdrrU4O3P4FX256CNIcr4/KTyTQo
+        6q+FVidaD9Rcu5xi4sRhzgCN1Cl5Vwj7F89MXfmTepxhhKPqmzPdQ+rAmeOh+2mW
+        xwWeznjLoytEbRjIl0OF80+ybdlelftp2ENQwP54SeS1xGd8OMqiTVwelY4lJX8q
+        Ajcf7QDdFQybC+y0rToOo3dvsvBjCsc6i/IlIJPyd3AFlT3Qv4stAzuFx8+Dxrh9
+        bvN7FDWzNoihaHglB6mK/ZfWfRPAZ2CXDRtbQzLvylas0fsiplWIM0WGXNCrIvV3
+        D+pO25u43PxQ61oiOuWUQ==
+X-ME-Sender: <xms:biXBZFE8UPVASSR7VKgNpn0yUlZ3ZM_AvTn7wRZOSRU5LYJe9Er6HQ>
+    <xme:biXBZKWQ_Kl8_5FPvGptHLktM4kwUoSNpztAiAHzHgpz_v6Z8iyFSJZZzsiWsYP9Z
+    zu8lPPceBnBSB6S>
+X-ME-Received: <xmr:biXBZHIs-q-eMqoVmplb3eAYBmuqJ3Dh9WG7fz3lqQpzrvD5SwZHlRyU6SZBtxlP1w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculddutddmnecujfgurhepkfffgggfuffvfhfhjggtgfesthejredttdef
+    jeenucfhrhhomhepuegvrhhnugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusg
+    gvrhhtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeegffdutdegiefg
+    teelleeggeeuueduteefieduvedvueefieejledvjeeuhfefgeenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghr
+    thesfhgrshhtmhgrihhlrdhfmh
+X-ME-Proxy: <xmx:biXBZLHEbsuxV6zW_kktPeE4sC7uAGLyoh-CUXfZqOLry5M0omV9EQ>
+    <xmx:biXBZLWJUDA21Z95rdC45mrxKdGZ6jCaPdmb_MFCBM1y8-ma60MiVA>
+    <xmx:biXBZGPcxVclx20XeyFe3z8At6m8uMP7yyXKvbJfOQJsVAkdsy6h_w>
+    <xmx:biXBZIg43U4BXLIlWFIDcU-_FI9kSWrZOA9aX5gqgdDSXhlJ2lJPrA>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 09:53:49 -0400 (EDT)
+Message-ID: <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
+Date:   Wed, 26 Jul 2023 15:53:47 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|TYCP286MB3724:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9721e24b-70dd-4803-5c86-08db8de000cb
-X-MS-Exchange-SLBlob-MailProps: q6Zzr5Fg03EX4MSurZUzZTQFeLZtFhLusQUcZIfjBDe90lTD8R50MthGcPaV5dqFU35tXsWqHVlwVTM0ANrwM6Iqbdmi45YmrInAP6yicjjdYLEVXC69sKhBuLA3yi3RQQ5i8D7VtbZmW6+VJp12oUFbRgK7sskzYyAsk7oQbqwkV+RJQ0BKnHRWEO96Xdtw+1Bep9XfE1zjfecdLfDqAfpbxvHPBk3UIOQwJg+y879QM8DeW/t//JAUeeh/cHpLm+NJbg852U83FqwVCYqhmzOG8Kcn98fjEvt5ye/mTDUoKgpJ60YyNAKKv9PLazNfsQ9ETvB6zqw1gYI4l5yauPSL9o1Kzp6goDVhc1lL36cQ2OW7uhhDmj5Dw1H5tfif9pAytlM9ewYjFGqIvyATox7TDrkDp7M8MFeH4arRkNKA7ab0bVBS7ZUb2xxIFRu4tavSo1rFcavEUGCZ5XBaK/QeK4matE59LJv/uInqEGM5Fu3z5tm4FKBeFp6SYJUyEDywDTWh41WWvgYxZxYe9fBNmB+HVpQXHzXy2Xyad4freQufpuwEZca95xtvPLFbpN8C2eKQJmBs5scyYuA6ncLdOgyUi6mC2RCAkwfyvIrRbJlnIMd2K9wqaBi4zY8eqC4uKx6AgliXoX+/i5TpUkOMnqEvEsHjf6mEpro9fa+0pQdpIWD/+FgXmzUz5N9k
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3OqgMTSItSS7x5NUqolOgRYHAD1sSglvYUQsF+ge6yv/H55fh+Ly26h2/Fpp8mfRAYwa/L2JPCh2D3M5uTNfb8CJLE2SPIxr1Loc7ZvpJk8YasSTb3YezoBLOA34GU0DmMFec0AgLfmGca1H28v2bnmJro1OIhGHIQM37HWhktt1BvMTxqSUMbYF5k2rlWDNUpIosjC8zE8xOztyqp3TKprYcStMYyH+20DmQTd5Moe7LwJ0DlwijZpSyGKQ6hSXYtwrV+UrPzRRaPnA3Zra6UJzHaBwJrRt69DATsH5Pz9pKOZZzwmKQTaqt4JWfxoJZAzTeolwqgpiOfOkGhOY2rr66968kKhlEcDhUu6hB/KbVuWcn8NfjRY6rJvwJBr9ctP/lc3t9oNv2kOVjbqV/Y9+CLEXEjkE7X+y5qtFWZ6gt7SJZEnjnI2VCSF7YvdgBrNWhgABM803BmhnKBIIhIJcatM8ec4EEkP7cqGrQh+GA3trmfqvk5SBUgOBEnCEJvK9P+oINGy3uQY4N09k0OYkG1dZtuJFKRlwMUHufw5ZIwTTc0df+fVxxXKvj1Ue1DYlEiArb98UixrlMDLSStV5lYxq1sbtnHNH2m4UXYuw/3PgiwfwKnFLCpetoPMy
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zL8ygI1k0WnqLDyuLj0WMwBGTjDJZuLTUVPT1IiR9lFql0sjac5FwNBBGBof?=
- =?us-ascii?Q?h8L47wALCtUaTmDc37eoR4uwVUYg7lB05UGzfHL3K6uD/SivHxqke+5Ey14s?=
- =?us-ascii?Q?jIk+LRO7HFr84FycByq7iJQbw9njqIgEo7fi+fAdZ9WPdq7l2UqZeeWQVj0q?=
- =?us-ascii?Q?fY/oJmf4PA//efF4otkp9ixa2RjL0BiOxz638TeErtxBOOWYvp6ZPWpie1FZ?=
- =?us-ascii?Q?uBcG1jue2YjuU2gZgfLfEYryzGGDOKGEAI9A+V1VbyOQy08tUCfvDzvhmN3R?=
- =?us-ascii?Q?+oAniqjTZ25jj1EbuDf3xIlpSwLwsAyWeToZePcocq5XQIe/FXv+l6c6XJ2R?=
- =?us-ascii?Q?XSCclU/mtva3G3YdTkHlH7rv9U6sbvLocSmW7Wl0V73oC5Uz3ZzfgGk6IvPt?=
- =?us-ascii?Q?SGlIMEWCZByKNVH9EuwKOw9n7DzRm6iT0JRIUfK1vECLkDRK1jxCIKM4/zDN?=
- =?us-ascii?Q?bbhAFJfY4CODk1WtBxFiIAp/tLPT23bXigcH1dqt8O1DRL986pFOP5SP+X8g?=
- =?us-ascii?Q?yUGvTGHJcUhDajm70XQqVj8erZAONe0AzkWsLX5mUPT4ecAn/4Dc6hgp/zPZ?=
- =?us-ascii?Q?ABX/g+r7HnpSW0sqtbA4k0s2PfhTHpYM77ctHgLGCaZB+5SPQU1b6oXxIy4U?=
- =?us-ascii?Q?d5rNQAfwZwwN1kxMo6jtYLBo7sZABz5MdLJNezCXUdVhnhsA9LRteoXRtjcn?=
- =?us-ascii?Q?+bshkd7f6n6sW0xisiIDiSNNRYcNhvzMtvNPID06LZGC7gE5ljQ8kuTncbJH?=
- =?us-ascii?Q?+v249ni9fM6RQY9jSPd+zNK+iMzRA3EmOVBQ6CFD57UC7iTzbxS7e0DkBDC/?=
- =?us-ascii?Q?O1abUkM6rztolAOKsoRj43dkVq5eA0yCyWlVA2xTO0ynlmeAeKQafkbpOMQk?=
- =?us-ascii?Q?1EhjxZ0K0ppI2DhUQaXmXQqnG+cpBhcng7UvqfAaQSu8TW2/llNg9bByPTYY?=
- =?us-ascii?Q?cfGnZ5LJjhBZuw4KKAV3/4iwhSNhYYP6KNm4TZo14qfHqsBT+3lYFt5a7ukj?=
- =?us-ascii?Q?aV7RWZ0VNGcQ56CBwbnkTJUL3m3alLdp8QT4OP6N1kgRFxqC79wrq/AtoSf6?=
- =?us-ascii?Q?9/hkfDVbVAbnoGXZq80KROn7ZA73YoBUuuqLDdThCh4EJf1hayWy+M5wL0ut?=
- =?us-ascii?Q?SELn0ML2FKFKpgM+tO733WG4X1JwluP0oEBmjt9tgnfrX4Eva32odlGWaKf4?=
- =?us-ascii?Q?CV49+/WW75vEpvCKSpJVjXvwvdlyBUYPnf/iqmWKaw/awy56RBpb3/pY4h8?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9721e24b-70dd-4803-5c86-08db8de000cb
-X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 13:55:43.2650
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB3724
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
+Content-Language: en-US
+To:     Jaco Kroon <jaco@uls.co.za>, Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230726105953.843-1-jaco@uls.co.za>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <20230726105953.843-1-jaco@uls.co.za>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks.
-Works well on MT7615D and MT7915D.
 
-Tested-by: Shiji Yang <yangshiji66@outlook.com>
+
+On 7/26/23 12:59, Jaco Kroon wrote:
+> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+> ---
+>   fs/fuse/Kconfig   | 16 ++++++++++++++++
+>   fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
+>   2 files changed, 40 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+> index 038ed0b9aaa5..0783f9ee5cd3 100644
+> --- a/fs/fuse/Kconfig
+> +++ b/fs/fuse/Kconfig
+> @@ -18,6 +18,22 @@ config FUSE_FS
+>   	  If you want to develop a userspace FS, or if you want to use
+>   	  a filesystem based on FUSE, answer Y or M.
+>   
+> +config FUSE_READDIR_ORDER
+> +	int
+> +	range 0 5
+> +	default 5
+> +	help
+> +		readdir performance varies greatly depending on the size of the read.
+> +		Larger buffers results in larger reads, thus fewer reads and higher
+> +		performance in return.
+> +
+> +		You may want to reduce this value on seriously constrained memory
+> +		systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
+> +
+> +		This value reprents the order of the number of pages to allocate (ie,
+> +		the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
+> +		pages (128KiB).
+> +
+
+I like the idea of a larger readdir size, but shouldn't that be a 
+server/daemon/library decision which size to use, instead of kernel 
+compile time? So should be part of FUSE_INIT negotiation?
+
+>   config CUSE
+>   	tristate "Character device in Userspace support"
+>   	depends on FUSE_FS
+> diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
+> index dc603479b30e..98c62b623240 100644
+> --- a/fs/fuse/readdir.c
+> +++ b/fs/fuse/readdir.c
+> @@ -13,6 +13,12 @@
+>   #include <linux/pagemap.h>
+>   #include <linux/highmem.h>
+>   
+> +#define READDIR_PAGES_ORDER		CONFIG_FUSE_READDIR_ORDER
+> +#define READDIR_PAGES			(1 << READDIR_PAGES_ORDER)
+> +#define READDIR_PAGES_SIZE		(PAGE_SIZE << READDIR_PAGES_ORDER)
+> +#define READDIR_PAGES_MASK		(READDIR_PAGES_SIZE - 1)
+> +#define READDIR_PAGES_SHIFT		(PAGE_SHIFT + READDIR_PAGES_ORDER)
+> +
+>   static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
+>   {
+>   	struct fuse_conn *fc = get_fuse_conn(dir);
+> @@ -52,10 +58,10 @@ static void fuse_add_dirent_to_cache(struct file *file,
+>   	}
+>   	version = fi->rdc.version;
+>   	size = fi->rdc.size;
+> -	offset = size & ~PAGE_MASK;
+> -	index = size >> PAGE_SHIFT;
+> +	offset = size & ~READDIR_PAGES_MASK;
+> +	index = size >> READDIR_PAGES_SHIFT;
+>   	/* Dirent doesn't fit in current page?  Jump to next page. */
+> -	if (offset + reclen > PAGE_SIZE) {
+> +	if (offset + reclen > READDIR_PAGES_SIZE) {
+>   		index++;
+>   		offset = 0;
+>   	}
+> @@ -83,7 +89,7 @@ static void fuse_add_dirent_to_cache(struct file *file,
+>   	}
+>   	memcpy(addr + offset, dirent, reclen);
+>   	kunmap_local(addr);
+> -	fi->rdc.size = (index << PAGE_SHIFT) + offset + reclen;
+> +	fi->rdc.size = (index << READDIR_PAGES_SHIFT) + offset + reclen;
+>   	fi->rdc.pos = dirent->off;
+>   unlock:
+>   	spin_unlock(&fi->rdc.lock);
+> @@ -104,7 +110,7 @@ static void fuse_readdir_cache_end(struct file *file, loff_t pos)
+>   	}
+>   
+>   	fi->rdc.cached = true;
+> -	end = ALIGN(fi->rdc.size, PAGE_SIZE);
+> +	end = ALIGN(fi->rdc.size, READDIR_PAGES_SIZE);
+>   	spin_unlock(&fi->rdc.lock);
+>   
+>   	/* truncate unused tail of cache */
+> @@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
+>   	struct fuse_mount *fm = get_fuse_mount(inode);
+>   	struct fuse_io_args ia = {};
+>   	struct fuse_args_pages *ap = &ia.ap;
+> -	struct fuse_page_desc desc = { .length = PAGE_SIZE };
+> +	struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+>   	u64 attr_version = 0;
+>   	bool locked;
+>   
+> -	page = alloc_page(GFP_KERNEL);
+> +	page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+
+I guess that should become folio alloc(), one way or the other. Now I 
+think order 0 was chosen before to avoid risk of allocation failure. I 
+guess it might work to try a large size and to fall back to 0 when that 
+failed. Or fail back to the slower vmalloc.
+
+>   	if (!page)
+>   		return -ENOMEM;
+>   
+>   	plus = fuse_use_readdirplus(inode, ctx);
+>   	ap->args.out_pages = true;
+> -	ap->num_pages = 1;
+> +	ap->num_pages = READDIR_PAGES;
+>   	ap->pages = &page;
+>   	ap->descs = &desc;
+>   	if (plus) {
+>   		attr_version = fuse_get_attr_version(fm->fc);
+> -		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
+> +		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
+>   				    FUSE_READDIRPLUS);
+>   	} else {
+> -		fuse_read_args_fill(&ia, file, ctx->pos, PAGE_SIZE,
+> +		fuse_read_args_fill(&ia, file, ctx->pos, READDIR_PAGES_SIZE,
+>   				    FUSE_READDIR);
+>   	}
+>   	locked = fuse_lock_inode(inode);
+> @@ -383,7 +389,7 @@ static enum fuse_parse_result fuse_parse_cache(struct fuse_file *ff,
+>   					       void *addr, unsigned int size,
+>   					       struct dir_context *ctx)
+>   {
+> -	unsigned int offset = ff->readdir.cache_off & ~PAGE_MASK;
+> +	unsigned int offset = ff->readdir.cache_off & ~READDIR_PAGES_MASK;
+>   	enum fuse_parse_result res = FOUND_NONE;
+>   
+>   	WARN_ON(offset >= size);
+> @@ -504,16 +510,16 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
+>   
+>   	WARN_ON(fi->rdc.size < ff->readdir.cache_off);
+>   
+> -	index = ff->readdir.cache_off >> PAGE_SHIFT;
+> +	index = ff->readdir.cache_off >> READDIR_PAGES_SHIFT;
+>   
+> -	if (index == (fi->rdc.size >> PAGE_SHIFT))
+> -		size = fi->rdc.size & ~PAGE_MASK;
+> +	if (index == (fi->rdc.size >> READDIR_PAGES_SHIFT))
+> +		size = fi->rdc.size & ~READDIR_PAGES_MASK;
+>   	else
+> -		size = PAGE_SIZE;
+> +		size = READDIR_PAGES_SIZE;
+>   	spin_unlock(&fi->rdc.lock);
+>   
+>   	/* EOF? */
+> -	if ((ff->readdir.cache_off & ~PAGE_MASK) == size)
+> +	if ((ff->readdir.cache_off & ~READDIR_PAGES_MASK) == size)
+>   		return 0;
+>   
+>   	page = find_get_page_flags(file->f_mapping, index,
+> @@ -559,9 +565,9 @@ static int fuse_readdir_cached(struct file *file, struct dir_context *ctx)
+>   	if (res == FOUND_ALL)
+>   		return 0;
+>   
+> -	if (size == PAGE_SIZE) {
+> +	if (size == READDIR_PAGES_SIZE) {
+>   		/* We hit end of page: skip to next page. */
+> -		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, PAGE_SIZE);
+> +		ff->readdir.cache_off = ALIGN(ff->readdir.cache_off, READDIR_PAGES_SIZE);
+>   		goto retry;
+>   	}
+>   
+
+Thanks,
+Bernd
