@@ -2,130 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE1A76340B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E1476340D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbjGZKkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S233980AbjGZKkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjGZKkE (ORCPT
+        with ESMTP id S229715AbjGZKke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:40:04 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC511BCB;
-        Wed, 26 Jul 2023 03:40:03 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7VZaZ007966;
-        Wed, 26 Jul 2023 12:39:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=W8GLfB17+jUE7Nw68o8tScgzzDDgHpp5NKWkRxESZlI=;
- b=qLRE5+KmvbKk5B/UW10nGEjBoDKipiB1flNkgDwSQYqmZMZdBpctbst7Vwt4EUF87UAQ
- lGs1OpG9iWa7NPx/eqb8ySrQnjHJTDAhdOqjGv8LVHdxJLHd4/JhOqgzW88/jAn5GpJe
- /9sWA3Z+uL0eH5JViXAbOVXN00Amp02Tix6WttAS9w4R9wAmpstvy5KIJGiwDfWDgPWe
- 7Ll7vUdK2tWD46wDK1zTVYHE+KrDhr1nsi10XJw0x7tkd+qwL727Kpu0HqUADsa0lQkG
- 4pxFNpRPxpJfDasvoPH+WokzK6DrXEtEA/wNoEISShjpOySH6a8QFdhtHwnQ+A4I7C3/ 6g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2y641c6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 12:39:37 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C13A210002A;
-        Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B6D7C21787E;
-        Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
-Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 12:39:34 +0200
-Message-ID: <9f34d34b-911a-c064-9e44-34e030b76786@foss.st.com>
-Date:   Wed, 26 Jul 2023 12:39:31 +0200
+        Wed, 26 Jul 2023 06:40:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F232129
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690367985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KIAYCAlGGZb3z19gVP5w6EtvKL+DEq/jdey/3NnQwh0=;
+        b=A7ErHjFAO7KMumMgY275YeK8U6y/vuxemfz9qg0hkpkQTgy8zsulT3PS07E6O9b1TkVLIy
+        QsDNlaLPVaHrc7hKkcyzhUOdjxA2VjtIwygleegsIHNcviOhdKplL8J6RCLGE+lw3kPf/o
+        POm50w8iOqqkfaJJP7clv0vaOQ0teuM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-zdsUJiNdOLSqcQT5SCaYIw-1; Wed, 26 Jul 2023 06:39:44 -0400
+X-MC-Unique: zdsUJiNdOLSqcQT5SCaYIw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30e6153f0eeso3191002f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:39:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690367983; x=1690972783;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KIAYCAlGGZb3z19gVP5w6EtvKL+DEq/jdey/3NnQwh0=;
+        b=JWuRekUVloVAb9+iN5mIyGJtjeyXZy3eJpEq6bopDQA9nzJqkVbfaNIKgsOWYeMzsU
+         papcl/w/5hIFEwqvl8sLSTArmEpEZ55x7Aw9fNCav7O/BorFLCelYXAsHlL4AlHzHNWH
+         eoVnMiPZUoDH8IwGocYix9lhqzQreRXU94TqBALhl86LqTZzs52CP4ZH3JnIOhuIL54d
+         By1D+EJFgt6OaqoXlNOjTvgDF8lieYC2BrsdMG2rdQL2MOSE9MbiezjSzhid+zvVkcaB
+         56R22tcTBHjWXu9/U4Kl5Nk4+O1HLyfuqByylEJEGtl/GyCnulUBwn1x2erqwcOu9muK
+         d00A==
+X-Gm-Message-State: ABy/qLYn4ZNKnTO7o5XVpHSauK/8VV9nN1zh9TB8lG4yR00cydDVCYu0
+        QyGZPbT3SpnVekuNeKnOY8CCvpftOPZzbwSkEv0/g3R6b1tRiaTq5Zs/FaHohk88S7MqDlAPdNL
+        eSlwy96vLYwd7YyN5V59qGOSO
+X-Received: by 2002:a5d:558e:0:b0:313:e9f6:3378 with SMTP id i14-20020a5d558e000000b00313e9f63378mr980244wrv.4.1690367983083;
+        Wed, 26 Jul 2023 03:39:43 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGYw0N3Y9zgbHazPi+sNQahTHurRsVqsvtu8aXahMO0bwRHNhbqjTQPuqZyr2Jlj6STeU7U7g==
+X-Received: by 2002:a5d:558e:0:b0:313:e9f6:3378 with SMTP id i14-20020a5d558e000000b00313e9f63378mr980230wrv.4.1690367982711;
+        Wed, 26 Jul 2023 03:39:42 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n8-20020adfe348000000b00315af025098sm19403938wrj.46.2023.07.26.03.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 03:39:42 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
+ .atomic_check callback
+In-Reply-To: <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
+References: <20230721070955.1170974-1-javierm@redhat.com>
+ <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
+ <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
+Date:   Wed, 26 Jul 2023 12:39:41 +0200
+Message-ID: <877cqnklci.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 05/11] firewall: introduce stm32_firewall framework
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-CC:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <vkoul@kernel.org>, <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
- <20230725164104.273965-6-gatien.chevallier@foss.st.com>
- <ZMDz1AhlEeZTM/vi@corigine.com>
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <ZMDz1AhlEeZTM/vi@corigine.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.121]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_04,2023-07-25_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Maxime Ripard <mripard@kernel.org> writes:
 
+Hello Maxime,
 
-On 7/26/23 12:22, Simon Horman wrote:
-> On Tue, Jul 25, 2023 at 06:40:58PM +0200, Gatien Chevallier wrote:
-> 
-> ...
-> 
->> diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
-> 
-> ...
-> 
->> +int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller)
->> +{
->> +	struct stm32_firewall_controller *ctrl;
->> +
->> +	pr_info("Registering %s firewall controller\n", firewall_controller->name);
->> +
->> +	if (!firewall_controller)
->> +		return -ENODEV;
-> 
-> HI Gatien,
-> 
-> Sorry, one more on this patch, that I missed before sending my previous
-> email.
-> 
-> firewall_controller is checked for NULL here.
-> But it is already dereferenced on the line above the check.
-> 
-> Flagged by Smatch.
-> 
-> ...
+> On Tue, Jul 25, 2023 at 09:21:52PM +0200, Geert Uytterhoeven wrote:
+>> > --- a/drivers/gpu/drm/solomon/ssd130x.c
+>> > +++ b/drivers/gpu/drm/solomon/ssd130x.c
+>> > @@ -141,12 +141,26 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
+>> >  };
+>> >  EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
+>> >
+>> > +struct ssd130x_plane_state {
+>> > +       struct drm_plane_state base;
+>> > +       /* Intermediate buffer to convert pixels from XRGB8888 to R1 */
+>> > +       u8 *buffer;
+>> > +       /* Buffer that contains R1 pixels to be written to the panel */
+>> > +       u8 *data_array;
+>> 
+>> The second buffer actually contains pixels in hardware format.
+>> For now that is a transposed buffer of R1 pixels, but that will change
+>> when you will add support for greyscale displays.
+>> 
+>> So I'd write "hardware format" instead of R1 for both.
+>>
+>> BTW, I still think data_array should be allocated during probing,
+>> as it is related to the hardware, not to a plane.
+>
+> I somewhat disagree.
+>
+> If I understood right during our discussion with Javier, the buffer size
+> derives from the mode size (height and width).
+>
+> In KMS, the mode is tied to the KMS state, and thus you can expect the
+> mode to change every state commit. So the more logical thing to do is to
+> tie the buffer size (and thus the buffer pointer) to the state since
+> it's only valid for that particular state for all we know.
+>
+> Of course, our case is allows use to simplify things since it's a fixed
+> mode, but one of Javier's goal with this driver was to provide a good
+> example we can refer people to, so I think it's worth keeping.
+>
 
-Indeed, thank you. I will change this for V4
+Yes, that's certainly one of my goals. So I'll just keep it as-is then.
 
+>> > @@ -159,23 +173,23 @@ static int ssd130x_buf_alloc(struct ssd130x_device *ssd130x)
+>> >
+>> >         pitch = drm_format_info_min_pitch(fi, 0, ssd130x->width);
+>> >
+>> > -       ssd130x->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
+>> > -       if (!ssd130x->buffer)
+>> > +       ssd130x_state->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
+>> > +       if (!ssd130x_state->buffer)
+>> >                 return -ENOMEM;
+>> >
+>> > -       ssd130x->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
+>> > -       if (!ssd130x->data_array) {
+>> > -               kfree(ssd130x->buffer);
+>> > +       ssd130x_state->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
+>> > +       if (!ssd130x_state->data_array) {
+>> > +               kfree(ssd130x_state->buffer);
+>> 
+>> Should ssd130x_state->buffer be reset to NULL here?
+>> I.e. if .atomic_check() fails, will .atomic_destroy_state() be called,
+>> leading to a double free?
+>
+> That's a good question.
+>
+> I never really thought of that, but yeah, AFAIK atomic_destroy_state()
+> will be called when atomic_check() fails.
+>
+
+Interesting. I didn't know that. I'll set to NULL and add a comment.
+
+> Which means that it's probably broken in a lot of drivers.
+>
+> Also, Javier pointed me to a discussion you had on IRC about using devm
+> allocation here. We can't really do that. KMS devices are only freed
+> once the last userspace application closes its fd to the device file, so
+> you have an unbounded window during which the driver is still callable
+> by userspace (and thus can still trigger an atomic commit) but the
+> buffer would have been freed for a while.
+>
+> The driver could use a bit more work on that area (by adding
+> drm_dev_enter/drm_dev_exit) but it still creates unnecessary risks to
+> use devm there.
+>
+
+Yes, but that discussion is not relevant anymore anyways if we keep the
+.data_array allocatioin the plane's .atomic_check handler.
+
+>> > +static struct drm_plane_state *ssd130x_primary_plane_duplicate_state(struct drm_plane *plane)
+>> > +{
+>> > +       struct ssd130x_plane_state *old_ssd130x_state;
+>> > +       struct ssd130x_plane_state *ssd130x_state;
+>> > +
+>> > +       if (WARN_ON(!plane->state))
+>> > +               return NULL;
+>> > +
+>> > +       old_ssd130x_state = to_ssd130x_plane_state(plane->state);
+>> > +       ssd130x_state = kmemdup(old_ssd130x_state, sizeof(*ssd130x_state), GFP_KERNEL);
+>> 
+>> I know this is the standard pattern, but the "dup" part is a bit
+>> silly here:
+>>   - The ssd130x-specific parts in ssd130x_plane_state are zeroed below,
+>>   - The base part is copied again in
+>>     __drm_atomic_helper_plane_duplicate_state).
+>> So (for now) you might as well just call kzalloc() ;-)
+>
+> Still if we ever add a field in the state structure, it will be
+> surprising that it's not copied over.
+>
+> The code is there and looks good to me, so I'd rather keep it.
+
+Yes, it's unlikely that this state structure will get other fields but
+still since is the standard patter, we can keep it just for others to use
+it as a reference.
+
+-- 
 Best regards,
-Gatien
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
