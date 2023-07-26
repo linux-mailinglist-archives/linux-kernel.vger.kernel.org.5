@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1038763BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671FE763BE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234191AbjGZP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        id S234150AbjGZQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234981AbjGZP6J (ORCPT
+        with ESMTP id S235009AbjGZP75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:58:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627EFEC;
-        Wed, 26 Jul 2023 08:58:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 010B761B9A;
-        Wed, 26 Jul 2023 15:58:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C9CC433C7;
-        Wed, 26 Jul 2023 15:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387087;
-        bh=5/2WIkH3ivN82XrLHbAGYxs3qOosdEacLmdz4wwgnyE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bMpKP92rCogimOe0Se8nuOkLeik4RglTOco6wRwebCqkqFHRQ+N6hn9QpVY7nda/W
-         XZ1Am0xQy18LCSpruZzgH4bj7pqjZU8kjDLCyrd+oV7PZdpY85+xODMy3zm0aUSyJs
-         jXIyfDnlVvC8/P6G/frmNNMqWKPa0e6z/Vs30xeHAz1MNnQH+O6HWabFH480xpqDVa
-         WkU4RhU4doPKvcDtyJ/X7NwhPWyLvXI+FWE/H79JE9/ELtkksK5cXDNelKUlfLmRVB
-         JXYAw6yYF25Dj6CZFpUZjFK0jps6M7WvRRJZMQoN/vJ+NJBluh9ueIW3sPjQpwKoRn
-         aV7HeJ4a+aRuA==
-Date:   Wed, 26 Jul 2023 10:58:05 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Sajid Dalvi <sdalvi@google.com>,
-        Ajay Agarwal <ajayagarwal@google.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Xiaolei Wang <xiaolei.wang@windriver.com>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] Revert "PCI: dwc: Wait for link up only if link is
- started"
-Message-ID: <20230726155805.GA685773@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMDZoJgBtURn-Vf5@hovoldconsulting.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 26 Jul 2023 11:59:57 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E936E2109
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:59:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d10792c7582so3434713276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690387195; x=1690991995;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1RCz9AGh0t/+COzjYLcha5fkSMq/GNrC4CuEfgGTfc=;
+        b=ypSxifbz+3xr2TyQi3H8IoM4jyz7RGQWDnGcHi1NC0Po8RTEHh8icWGPEeM5z47awl
+         loHCPZy4rtZMbUI9RqdI0QLfF+ad98/C7r2wxAa7ZpGCgkUVuuHTSwwJ1OUjNqHnXY8X
+         84BBat8mly4SBV0f6KqsOvHk8cSJA6wdZ1HsQOFr2IirR9RtsavVXkabaGLdXW2RSaSS
+         UJmT6LqQAsULk7Nz99DvDaEAqSJ5Xa6WPtogY6EBxsD6vOblRb8mRKx+BIAVyZOlnkaE
+         pEMJT5wcLP195pWDDcCypB4wv+dW/iWZkWl4YuLww/x6MLh6go/yMgsbLUu6B2dDA/yw
+         w4bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690387195; x=1690991995;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1RCz9AGh0t/+COzjYLcha5fkSMq/GNrC4CuEfgGTfc=;
+        b=dv6qMB8GaRi59fNZ9GvUaZC9oGLUUJiLcxAhKd4LvGiee3LKbKFZjdUaRlHco0ogzO
+         E+lKcj+ieDTHX4oXHkWS3MEtoEfgRe6BvFdhbsjYoxwz/lVumY0DpsRxG0H3Kkw8dSk/
+         SdzkH8j+4/iu/f//J1728sSDyUVj7mFY6CpJzvcQCWjBoynfjAcOhPoughlcaQp+o/Og
+         Py1yGJgQ8z1AfqfmIywXctbaEOgoKYx7URRRExKa7vsz9o+ev8kf1nvOKwdpaymEE8KU
+         Gt5XiJAvneqKo7sEMI5H13SXhaaIrpEu78ZMR2UWCT86ZkvDRLO1CePOh9LkEPhzO1XM
+         +nKw==
+X-Gm-Message-State: ABy/qLZMAh2Q0jwDuFy2RIxTb7s/XgcRjojwbR3U573QFJYdoZzrvom4
+        jGPLCGlNAnNysSfukfRHFcEClt4DbjE=
+X-Google-Smtp-Source: APBJJlE6mP/UcpH4lPNK9j4UUpMqMy7oSio4zbtJsZXhMStHU1Br/fIarHdKjyAaokfpTf45S20N2ryKLpo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:99c8:0:b0:d1c:e102:95a5 with SMTP id
+ q8-20020a2599c8000000b00d1ce10295a5mr15014ybo.7.1690387195164; Wed, 26 Jul
+ 2023 08:59:55 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 08:59:53 -0700
+In-Reply-To: <ZL4BiQWihfrD0TOJ@yilunxu-OptiPlex-7050>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-9-seanjc@google.com>
+ <ZL4BiQWihfrD0TOJ@yilunxu-OptiPlex-7050>
+Message-ID: <ZMFC+V6Llv1JWLEt@google.com>
+Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,23 +100,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 10:30:24AM +0200, Johan Hovold wrote:
-> On Tue, Jul 25, 2023 at 03:05:15PM -0500, Bjorn Helgaas wrote:
-> ...
-
-> I think that adding the corresponding Reported-by tags and Links after
-> my SoB below should be enough to credit reports that I was not aware of
-> when investigating this.
+On Mon, Jul 24, 2023, Xu Yilun wrote:
+> On 2023-07-18 at 16:44:51 -0700, Sean Christopherson wrote:
+> > @@ -1346,6 +1350,9 @@ static void kvm_destroy_vm(struct kvm *kvm)
+> >  		kvm_free_memslots(kvm, &kvm->__memslots[i][0]);
+> >  		kvm_free_memslots(kvm, &kvm->__memslots[i][1]);
+> >  	}
+> > +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> > +	xa_destroy(&kvm->mem_attr_array);
+> > +#endif
 > 
-> But if you decide to rewrite this paragraph, then please spell out "for
-> example" as I would not use "e.g." outside of parentheses.
-> ...
+> Is it better to make the destruction in reverse order from the creation?
 
-> Looks like you've "sorted" the trailers here instead of keeping the
-> temporal order (which would make it more clear what you added after I
-> posted the patch) and adding each Link after its corresponding
-> Reported-by tag (e.g. as suggested by checkpatch these days).
+Yeah.  It _shoudn't_ matter, but there's no reason not keep things tidy and
+consistent.
 
-Updated as you suggested, thanks.
+> To put xa_destroy(&kvm->mem_attr_array) after cleanup_srcu_struct(&kvm->srcu),
+> or put xa_init(&kvm->mem_attr_array) after init_srcu_struct(&kvm->irq_srcu).
 
-Bjorn
+The former, because init_srcu_struct() can fail (allocates memory), whereas
+xa_init() is a "pure" initialization routine.
+
+> >  	cleanup_srcu_struct(&kvm->irq_srcu);
+> >  	cleanup_srcu_struct(&kvm->srcu);
+> >  	kvm_arch_free_vm(kvm);
+> > @@ -2346,6 +2353,145 @@ static int kvm_vm_ioctl_clear_dirty_log(struct kvm *kvm,
+> >  }
+> >  #endif /* CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT */
+> 
+> [...]
+> 
+> > +static int kvm_vm_ioctl_set_mem_attributes(struct kvm *kvm,
+> > +					   struct kvm_memory_attributes *attrs)
+> > +{
+> > +	gfn_t start, end;
+> > +
+> > +	/* flags is currently not used. */
+> > +	if (attrs->flags)
+> > +		return -EINVAL;
+> > +	if (attrs->attributes & ~kvm_supported_mem_attributes(kvm))
+> > +		return -EINVAL;
+> > +	if (attrs->size == 0 || attrs->address + attrs->size < attrs->address)
+> > +		return -EINVAL;
+> > +	if (!PAGE_ALIGNED(attrs->address) || !PAGE_ALIGNED(attrs->size))
+> > +		return -EINVAL;
+> > +
+> > +	start = attrs->address >> PAGE_SHIFT;
+> > +	end = (attrs->address + attrs->size - 1 + PAGE_SIZE) >> PAGE_SHIFT;
+> 
+> As the attrs->address/size are both garanteed to be non-zero, non-wrap
+> and page aligned in prevous check. Is it OK to simplify the calculation,
+> like:
+> 
+>   end = (attrs->address + attrs->size) >> PAGE_SHIFT;
+
+Yes, that should work.
+
+Chao, am I missing something?  Or did we just end up with unnecessarly convoluted
+code as things evolved?
+
+> > +
+> > +	if (WARN_ON_ONCE(start == end))
+> > +		return -EINVAL;
+> 
+> Also, is this check possible to be hit? Maybe remove it?
+
+It should be impossible to, hence the WARN.  I added the check for two reasons:
+(1) to help document that end is exclusive, and (2) to guard against future bugs.
