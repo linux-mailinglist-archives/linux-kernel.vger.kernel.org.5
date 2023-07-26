@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 082B8764065
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444AB76406A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjGZUSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S229778AbjGZUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjGZUSk (ORCPT
+        with ESMTP id S229595AbjGZUW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:18:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F5D198D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:18:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A3B6661CBE
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:18:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F0FDC433C8;
-        Wed, 26 Jul 2023 20:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1690402719;
-        bh=MMioSWLe0J+F5cA3VOGFUM/YW6sX+D23b5MfVPZqMwg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BAp862XDg5jm4GYl6C/MPJCbU0NcJd6qPBVRi+my42pt/DpGQq+SWl6YIT7fPp2PL
-         HcTDTo7GooY8BqKKq/e9K45b7acdnf/8e4JgzivN0rxkQUcPLhm+263tGJc5Oa2wxs
-         G7HZ6q+3UPSjZyikhKl7/dD9hL3rjG9tai4JLO+c=
-Date:   Wed, 26 Jul 2023 13:18:22 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andrew Yang (=?UTF-8?B?5qWK5pm65by3?=) <Andrew.Yang@mediatek.com>
-Cc:     "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Casper Li (=?UTF-8?B?5p2O5Lit5qau?=) <casper.li@mediatek.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] zsmalloc: Fix races between modifications of fullness
- and isolated
-Message-Id: <20230726131822.22ac039ee4c696ea0726b510@linux-foundation.org>
-In-Reply-To: <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
-References: <20230721063705.11455-1-andrew.yang@mediatek.com>
-        <20230726031846.GJ955071@google.com>
-        <42f1209a686404ffd0f9dff05ed10a8d23383a11.camel@mediatek.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 26 Jul 2023 16:22:26 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D609019AF
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:22:24 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so149892276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690402944; x=1691007744;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wk8YN2z9DygnTN7wIkQ/drKhQeRLfAOWaFSkpwIJ9VA=;
+        b=eM8gatpIFAPsVcHsvCyPq5hyC8MsN3TVlS3mNniSEUN+A8XGjxiS8F6dC4aFmL513/
+         OKqKBd4JNqQZqMKS0xCiGe+t5AXNUTDm2VuHrYqk4zFosWdPFjPIB6URfw5vd93IMKdx
+         lKXXLluLhbwl+YjfsuqRPKzKU2+mG/aerZ1RHkgGlaQ2XngSQ4QWGzUzw8Bk02VhX6BY
+         iemdbo75Y0mm9KaGC6Z479jAT6buL5FMFb75fU2ROzDvErIFsnjLxci0m6st5PC1U67q
+         6FdRgc7HGPP7DF/FaK/f0cWfoJ+ZjAfbcmtP5i/qUasNowuJ11SfJCK8qdGxq6HB8Y5C
+         RWCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690402944; x=1691007744;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wk8YN2z9DygnTN7wIkQ/drKhQeRLfAOWaFSkpwIJ9VA=;
+        b=hB+fM9RcqUw0x7e5vj1xU1Pv0iHxKGnW6O5gDLrUTuTUrsGUq4vbLiZTIaCO1hzE73
+         mledHztCjIBcO0E0DclfXtHIhiH0sYtqG8hrQg66qmS5bO3QvLAO5fMPHpiDb3luwkwT
+         /Cc7trdlq2DTTwLG8ImE7flPvC4Teg0U4ijE0NGjTbgRosykj9Nz2iDeod5oJt8zdGCt
+         mYq0nD96DAbUNtjju5I8kF9Xb9QR8W3+wMD826f+NEIiKEKWijTmkJvpNH+IHU2Z5Rdo
+         Cy1nTtTdL4FftrAOinXQ7/kYNDVJAlrtu27tKU0H0p4Uq46gnaqN/10wVUSGCHVeQM35
+         sbYg==
+X-Gm-Message-State: ABy/qLYAUQpGVVXJ3RgoqlhdIGKYGMwNDzSbji5PuNuWa+fR08U2zYSW
+        Cmk2P7cjvIiSVuuM3zMi1lz8DqQRdDU=
+X-Google-Smtp-Source: APBJJlHa4e7bNU/FXY+wuV4M+6WYSA4uQsVmjVu+paqFG49PZpexPl+XQpMgzwVCSNNiruIZErv3dNdZQXc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:cf48:0:b0:d06:1a77:7d2 with SMTP id
+ f69-20020a25cf48000000b00d061a7707d2mr18632ybg.13.1690402944082; Wed, 26 Jul
+ 2023 13:22:24 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 13:22:22 -0700
+In-Reply-To: <711f74d6-fe15-6bd4-a9b9-c4f178d95bf3@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-2-seanjc@google.com>
+ <711f74d6-fe15-6bd4-a9b9-c4f178d95bf3@redhat.com>
+Message-ID: <ZMGAfvzEkVphWPdZ@google.com>
+Subject: Re: [RFC PATCH v11 01/29] KVM: Wrap kvm_gfn_range.pte in a per-action union
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,29 +100,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 06:59:20 +0000 Andrew Yang (楊智強) <Andrew.Yang@mediatek.com> wrote:
+On Wed, Jul 19, 2023, Paolo Bonzini wrote:
+> On 7/19/23 01:44, Sean Christopherson wrote:
+> > +	BUILD_BUG_ON(sizeof(gfn_range.arg) != sizeof(gfn_range.arg.raw));
+> > +	BUILD_BUG_ON(sizeof(range->arg) != sizeof(range->arg.raw));
+> 
+> I think these should be static assertions near the definition of the
+> structs.  However another possibility is to remove 'raw' and just assign the
+> whole union.
 
-> > Have you observed issues in real life? That commit is more than a
-> > year
-> > and a half old, so I wonder.
-> > 
-> Yes, we encountered many kernel exceptions of
-> VM_BUG_ON(zspage->isolated == 0) in dec_zspage_isolation() and
-> BUG_ON(!pages[1]) in zs_unmap_object() lately.
-> This issue only occurs when migration and reclamation occur at the
-> same time. With our memory stress test, we can reproduce this issue
-> several times a day. We have no idea why no one else encountered
-> this issue. BTW, we switched to the new kernel version with this
-> defect a few months ago.
+Duh, and use a named union.  I think when I first proposed this I forgot that
+a single value would be passed between kvm_hva_range *and* kvm_gfn_range, and so
+created an anonymous union without thinking about the impliciations.
 
-Ah.  It's important that such information be in the changelog!
+A named union is _much_ cleaner.  I'll post a complete version of the below
+snippet as a standalone non-RFC patch.
 
-I have put this info into my copy of the v1 patch's changelog.
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 9d3ac7720da9..9125d0ab642d 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -256,11 +256,15 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
+ #endif
+ 
+ #ifdef KVM_ARCH_WANT_MMU_NOTIFIER
++union kvm_mmu_notifier_arg {
++       pte_t pte;
++};
++
+ struct kvm_gfn_range {
+        struct kvm_memory_slot *slot;
+        gfn_t start;
+        gfn_t end;
+-       pte_t pte;
++       union kvm_mmu_notifier_arg arg;
+        bool may_block;
+ };
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index dfbaafbe3a00..f84ef9399aee 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -526,7 +526,7 @@ typedef void (*on_unlock_fn_t)(struct kvm *kvm);
+ struct kvm_hva_range {
+        unsigned long start;
+        unsigned long end;
+-       pte_t pte;
++       union kvm_mmu_notifier_arg arg;
+        hva_handler_t handler;
+        on_lock_fn_t on_lock;
+        on_unlock_fn_t on_unlock;
+@@ -547,6 +547,8 @@ static void kvm_null_fn(void)
+ }
+ #define IS_KVM_NULL_FN(fn) ((fn) == (void *)kvm_null_fn)
+ 
++static const union kvm_mmu_notifier_arg KVM_NO_ARG;
++
+ /* Iterate over each memslot intersecting [start, last] (inclusive) range */
+ #define kvm_for_each_memslot_in_hva_range(node, slots, start, last)         \
+        for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+@@ -591,7 +593,7 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+                         * bother making these conditional (to avoid writes on
+                         * the second or later invocation of the handler).
+                         */
+-                       gfn_range.pte = range->pte;
++                       gfn_range.arg = range->arg;
+                        gfn_range.may_block = range->may_block;
+ 
+                        /*
 
-I have moved the v1 patch from the mm-unstable branch into
-mm-hotfixes-unstable, so it is staged for merging in this -rc cycle.
-
-I have also added a cc:stable so that the fix gets backported into
-kernels which contain c4549b871102.
-
-I have added a note-to-self that a v2 patch is expected.
