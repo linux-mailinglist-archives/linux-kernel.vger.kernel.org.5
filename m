@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AF7763D14
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1DA763D12
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbjGZQ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        id S229862AbjGZQ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjGZQ6U (ORCPT
+        with ESMTP id S232179AbjGZQ5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:58:20 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B532129
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:58:04 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40550136e54so10791cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690390683; x=1690995483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tzfvgCS/BNqD6Bo4MX9shcAhoORyxOu7oJZa5Qf3hpo=;
-        b=ue6aYiTs7fERCUiActO7TSbwPWas0LVREjRNP/593EaG/LrzvrxWKvwcP3YMAQrBUd
-         rUMd5beDqfMm9mNl7mos80QtZWUkdlbXH0kJs3hRUkasqjMfgkxMN7MnXL0IEw9WaUu7
-         6Of4uYc7kZMeEJFpy3JTA+LsnkOFrKBic4bjxpNRAtnOxDnTWz0npNb1Vs0M0v9Dm29E
-         31R/MvuaElaHV86uOF8RSbv4fPl3I7s5a8D+DqRf0jiRljLg7DBjfSTLmR1JtrQZqtfZ
-         lQRb3r4Bapn+8QAiZIz3VWOoZks8jDjwpEIZ7SknmEFPhb+qwLg4F9ySgxcolV7l0HcY
-         djqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690390683; x=1690995483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tzfvgCS/BNqD6Bo4MX9shcAhoORyxOu7oJZa5Qf3hpo=;
-        b=itYD1DpGol2H9yZhrsTaACKtHgd0bNZruoCy9WyZKapTRndeZGVdHcjCeAEYRBxt//
-         ayycGqsZkgqBS+1ekME8jQ4F8q+0tG7llhy77vwd7b6DdoysWvg9oDp5arAVKlVyOiUT
-         sYr/GGqjDhOuUXAjJ1neBQaP+MknwNkdfoWIMG/fLEk5k2QdIcDkamNp/4FiA/tiVSxu
-         LOXh4gLLQU5iOA68eliEsVOWcHpCBv9Xonyn+kUk/vJCgt6B5Y2ARz7HYSRaHOvKOFW6
-         PjQ18+chTxlYdvQltRdFkanlIoiP4Us9DjOPDBtM8yrj2O+pfXvTUEkwjsJ/mJtpvznv
-         5etA==
-X-Gm-Message-State: ABy/qLY/bMCjEAa6G8YTAT1DbKJsL4IFvNzMD6qrAfqahnunq7kpxtcN
-        Su5b/wxxrkKpsJSxoiWMWMg5zSjLam8dv3/5ZuFTgw==
-X-Google-Smtp-Source: APBJJlH/1mslJPV6KdZSzJRuwAVV5vbX13JACKxHvE8/Yk0gTDpwGHT/JAwaCqfSP41uk2/gyoiPyZp9sdzLXNHe6BE=
-X-Received: by 2002:a05:622a:144b:b0:3f0:af20:1a37 with SMTP id
- v11-20020a05622a144b00b003f0af201a37mr546183qtx.15.1690390683402; Wed, 26 Jul
- 2023 09:58:03 -0700 (PDT)
+        Wed, 26 Jul 2023 12:57:55 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EE89C;
+        Wed, 26 Jul 2023 09:57:53 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A2852660709C;
+        Wed, 26 Jul 2023 17:57:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690390672;
+        bh=GlSb/Bi4XjuFoQXGAU8G64f+6li+1Qu1vQWug/7FS4g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y6BeWLgMrfIcehv5Ih0vL+HDn+bwY/cr2pesUVlIOakGBv2jPOsnhgCHHMoLQfonw
+         5n4dnGMiYpWm+DJEToZmn1iUqHIazQJ+WEd/rw+B+dfxnwttftEpKYYlNEPJ0LMRQZ
+         VElt4B1JoxD92zSWdD+vcjJ+2YsvEIIU1IYifPCyJwU4AIioe/JWHJuzFLZgjqUlev
+         NNQ2KRAiCa7f6K6uLij5Wmpwc3soLAoXy+3WAhTpIhu5OAzqUhSMVL42Ih4y5iQpcu
+         s8ce4GJ9a53q2gZBYUU40Jxg9qfwG1DGNgCWS3jn2WjigPEfwMHdHZMAhSj/Vx29E1
+         Y2VVSGXhTgy8g==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] media: mediatek: vcodec: Consider vdecsys presence in reg range check
+Date:   Wed, 26 Jul 2023 12:57:39 -0400
+Message-ID: <20230726165742.614248-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230712060144.3006358-1-fengwei.yin@intel.com>
- <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com>
- <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com> <3bd7b290-91ad-347f-b1b5-5d45ac566f69@intel.com>
-In-Reply-To: <3bd7b290-91ad-347f-b1b5-5d45ac566f69@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 26 Jul 2023 10:57:27 -0600
-Message-ID: <CAOUHufY_b2skiEXSukpOLnpbzrifFiwxY8HA0W_z9aZbVome4Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
- large folio
-To:     Yin Fengwei <fengwei.yin@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
-        ryan.roberts@arm.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,172 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 6:49=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.com>=
- wrote:
->
->
->
-> On 7/15/23 14:06, Yu Zhao wrote:
-> > On Wed, Jul 12, 2023 at 12:31=E2=80=AFAM Yu Zhao <yuzhao@google.com> wr=
-ote:
-> >>
-> >> On Wed, Jul 12, 2023 at 12:02=E2=80=AFAM Yin Fengwei <fengwei.yin@inte=
-l.com> wrote:
-> >>>
-> >>> Current kernel only lock base size folio during mlock syscall.
-> >>> Add large folio support with following rules:
-> >>>   - Only mlock large folio when it's in VM_LOCKED VMA range
-> >>>
-> >>>   - If there is cow folio, mlock the cow folio as cow folio
-> >>>     is also in VM_LOCKED VMA range.
-> >>>
-> >>>   - munlock will apply to the large folio which is in VMA range
-> >>>     or cross the VMA boundary.
-> >>>
-> >>> The last rule is used to handle the case that the large folio is
-> >>> mlocked, later the VMA is split in the middle of large folio
-> >>> and this large folio become cross VMA boundary.
-> >>>
-> >>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-> >>> ---
-> >>>  mm/mlock.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++++-=
---
-> >>>  1 file changed, 99 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/mm/mlock.c b/mm/mlock.c
-> >>> index 0a0c996c5c214..f49e079066870 100644
-> >>> --- a/mm/mlock.c
-> >>> +++ b/mm/mlock.c
-> >>> @@ -305,6 +305,95 @@ void munlock_folio(struct folio *folio)
-> >>>         local_unlock(&mlock_fbatch.lock);
-> >>>  }
-> >>>
-> >>> +static inline bool should_mlock_folio(struct folio *folio,
-> >>> +                                       struct vm_area_struct *vma)
-> >>> +{
-> >>> +       if (vma->vm_flags & VM_LOCKED)
-> >>> +               return (!folio_test_large(folio) ||
-> >>> +                               folio_within_vma(folio, vma));
-> >>> +
-> >>> +       /*
-> >>> +        * For unlock, allow munlock large folio which is partially
-> >>> +        * mapped to VMA. As it's possible that large folio is
-> >>> +        * mlocked and VMA is split later.
-> >>> +        *
-> >>> +        * During memory pressure, such kind of large folio can
-> >>> +        * be split. And the pages are not in VM_LOCKed VMA
-> >>> +        * can be reclaimed.
-> >>> +        */
-> >>> +
-> >>> +       return true;
-> >>
-> >> Looks good, or just
-> >>
-> >> should_mlock_folio() // or whatever name you see fit, can_mlock_folio(=
-)?
-> >> {
-> >>   return !(vma->vm_flags & VM_LOCKED) || folio_within_vma();
-> >> }
-> >>
-> >>> +}
-> >>> +
-> >>> +static inline unsigned int get_folio_mlock_step(struct folio *folio,
-> >>> +                       pte_t pte, unsigned long addr, unsigned long =
-end)
-> >>> +{
-> >>> +       unsigned int nr;
-> >>> +
-> >>> +       nr =3D folio_pfn(folio) + folio_nr_pages(folio) - pte_pfn(pte=
-);
-> >>> +       return min_t(unsigned int, nr, (end - addr) >> PAGE_SHIFT);
-> >>> +}
-> >>> +
-> >>> +void mlock_folio_range(struct folio *folio, struct vm_area_struct *v=
-ma,
-> >>> +               pte_t *pte, unsigned long addr, unsigned int nr)
-> >>> +{
-> >>> +       struct folio *cow_folio;
-> >>> +       unsigned int step =3D 1;
-> >>> +
-> >>> +       mlock_folio(folio);
-> >>> +       if (nr =3D=3D 1)
-> >>> +               return;
-> >>> +
-> >>> +       for (; nr > 0; pte +=3D step, addr +=3D (step << PAGE_SHIFT),=
- nr -=3D step) {
-> >>> +               pte_t ptent;
-> >>> +
-> >>> +               step =3D 1;
-> >>> +               ptent =3D ptep_get(pte);
-> >>> +
-> >>> +               if (!pte_present(ptent))
-> >>> +                       continue;
-> >>> +
-> >>> +               cow_folio =3D vm_normal_folio(vma, addr, ptent);
-> >>> +               if (!cow_folio || cow_folio =3D=3D folio) {
-> >>> +                       continue;
-> >>> +               }
-> >>> +
-> >>> +               mlock_folio(cow_folio);
-> >>> +               step =3D get_folio_mlock_step(folio, ptent,
-> >>> +                               addr, addr + (nr << PAGE_SHIFT));
-> >>> +       }
-> >>> +}
-> >>> +
-> >>> +void munlock_folio_range(struct folio *folio, struct vm_area_struct =
-*vma,
-> >>> +               pte_t *pte, unsigned long addr, unsigned int nr)
-> >>> +{
-> >>> +       struct folio *cow_folio;
-> >>> +       unsigned int step =3D 1;
-> >>> +
-> >>> +       munlock_folio(folio);
-> >>> +       if (nr =3D=3D 1)
-> >>> +               return;
-> >>> +
-> >>> +       for (; nr > 0; pte +=3D step, addr +=3D (step << PAGE_SHIFT),=
- nr -=3D step) {
-> >>> +               pte_t ptent;
-> >>> +
-> >>> +               step =3D 1;
-> >>> +               ptent =3D ptep_get(pte);
-> >>> +
-> >>> +               if (!pte_present(ptent))
-> >>> +                       continue;
-> >>> +
-> >>> +               cow_folio =3D vm_normal_folio(vma, addr, ptent);
-> >>> +               if (!cow_folio || cow_folio =3D=3D folio) {
-> >>> +                       continue;
-> >>> +               }
-> >>> +
-> >>> +               munlock_folio(cow_folio);
-> >>> +               step =3D get_folio_mlock_step(folio, ptent,
-> >>> +                               addr, addr + (nr << PAGE_SHIFT));
-> >>> +       }
-> >>> +}
-> >>
-> >> I'll finish the above later.
-> >
-> > There is a problem here that I didn't have the time to elaborate: we
-> > can't mlock() a folio that is within the range but not fully mapped
-> > because this folio can be on the deferred split queue. When the split
-> > happens, those unmapped folios (not mapped by this vma but are mapped
-> > into other vmas) will be stranded on the unevictable lru.
-> Checked remap case in past few days, I agree we shouldn't treat a folio
-> in the range but not fully mapped as in_range folio.
->
-> As for remap case, it's possible that the folio is not in deferred split
-> queue. But part of folio is mapped to VM_LOCKED vma and other part of
-> folio is mapped to none VM_LOCKED vma. In this case, page can't be split
-> as it's not in deferred split queue. So page reclaim should be allowed to
-> pick this folio up, split it and reclaim the pages in none VM_LOCKED vma.
-> So we can't mlock such kind of folio.
->
-> The same thing can happen with madvise_cold_or_pageout_pte_range().
-> I will update folio_in_vma() to check the PTE also.
+Commit fe8a33978383 ("media: mediatek: vcodec: Read HW active status
+from syscon") allowed the driver to read the VDEC_SYS io space from a
+syscon instead of from the reg property when reg-names are supplied.
+However as part of that change, a smatch warning was introduced:
 
-Thanks, and I think we should move forward with this series and fix
-the potential mlock race problem separately since it's not caused by
-this series.
+drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c:142 mtk_vcodec_get_reg_bases() error: buffer overflow 'mtk_dec_reg_names' 11 <= 11
 
-WDYT?
+With a correct Devicetree, that is, one that follows the dt-binding, it
+wouldn't be possible to trigger such a buffer overflow. Even so, update
+the range validation of the reg property, so that the smatch warning is
+fixed and if an incorrect Devicetree is ever supplied the code errors
+out instead of causing memory corruption.
+
+Reported-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Closes: https://lore.kernel.org/all/b5fd2dff-14a5-3ad8-9698-d1a50f4516fa@xs4all.nl
+Fixes: fe8a33978383 ("media: mediatek: vcodec: Read HW active status from syscon")
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
+---
+
+Changes in v2:
+- Tidied logic by moving number of maximum regs to separate variable
+- Rebased on top of Hans' for-v6.6i branch
+
+ drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
+index 6cf5f88a3a8e..f5b8c37f32f5 100644
+--- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
++++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_dec_drv.c
+@@ -96,6 +96,7 @@ static int mtk_vcodec_get_reg_bases(struct mtk_vcodec_dev *dev)
+ 	int reg_num, i;
+ 	struct resource *res;
+ 	bool has_vdecsys_reg;
++	int num_max_vdec_regs;
+ 	static const char * const mtk_dec_reg_names[] = {
+ 		"misc",
+ 		"ld",
+@@ -122,10 +123,13 @@ static int mtk_vcodec_get_reg_bases(struct mtk_vcodec_dev *dev)
+ 	else
+ 		has_vdecsys_reg = true;
+ 
++	num_max_vdec_regs = has_vdecsys_reg ? NUM_MAX_VDEC_REG_BASE :
++					      ARRAY_SIZE(mtk_dec_reg_names);
++
+ 	/* Sizeof(u32) * 4 bytes for each register base. */
+ 	reg_num = of_property_count_elems_of_size(pdev->dev.of_node, "reg",
+ 						  sizeof(u32) * 4);
+-	if (reg_num <= 0 || reg_num > NUM_MAX_VDEC_REG_BASE) {
++	if (reg_num <= 0 || reg_num > num_max_vdec_regs) {
+ 		dev_err(&pdev->dev, "Invalid register property size: %d\n", reg_num);
+ 		return -EINVAL;
+ 	}
+-- 
+2.41.0
+
