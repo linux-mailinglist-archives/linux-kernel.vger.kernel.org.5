@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B970F763E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46610763E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbjGZS1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S231631AbjGZS1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjGZS1I (ORCPT
+        with ESMTP id S231698AbjGZS1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:27:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45361BF2;
-        Wed, 26 Jul 2023 11:27:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3970D61C0A;
-        Wed, 26 Jul 2023 18:27:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEA6CC433C8;
-        Wed, 26 Jul 2023 18:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690396026;
-        bh=RcVBAAfHER54k81unBpKdeTFWDOVzzrxeLONyzkog9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cDVhKP/+rOKPV6FWU0V2HVtCg3RJbPgMXWfCOORXqY6xhyTR7cgeIh3lvxz3ERODI
-         gtbMqCMR4SxaeWbb/YIaigOwzCWuVW3NbZXv15KYLqoU3nnDMoUBOCulhgIwdghYnC
-         4/7bgT3VfineLAJMu6zG1WuGRHRN6oo3VZEZMNhgrI24Jw57QxYgp0y71DMGzZgqi5
-         96aE/FWhDYes2iykdB944h7DLs5LYVbWVfDIs8fH/5M7yxnVOeBfGP/D74ESz+xlcP
-         p1y0nFN0laoLzOultlIaNTervCM4VnoUNe37t9Wicxa7u1GLiNyR/q9iGMgQtxrHks
-         JAPxoIkEx1OqA==
-Date:   Wed, 26 Jul 2023 19:27:01 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Huqiang Qin <huqiang.qin@amlogic.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        neil.armstrong@linaro.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: watchdog: Add support for Amlogic-T7
- SoCs
-Message-ID: <20230726-populate-unseeing-0a68fca96e44@spud>
-References: <20230726112146.1127145-1-huqiang.qin@amlogic.com>
- <20230726112146.1127145-2-huqiang.qin@amlogic.com>
+        Wed, 26 Jul 2023 14:27:14 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2A22109
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:27:11 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-314172bac25so93581f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690396030; x=1691000830;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hzqLjK8Xkeivl0wa82o9EWmkTswR7UuotwLLOVNsxDI=;
+        b=XIeExHC3gE95BlPr7LcDASW+2lbz9h6J603EJA7u/73d3JODLmmjMLlEbUbx4I/+q3
+         1f+y0Cxq2PWBooI0+1TmIA+UOOyU2im1uQl05kqLJRB3Dkh6pk5+hvEM3cx2F+5zkjWQ
+         jDyY1pZYFvxQ+AiqaxYDsi3+84ACj0qze363zDYWIZ6atuz0KmLiS/XTzsZmkeD3psAb
+         QohvsTdKueeG8UD2kN5XnsJ0cv1ucAVlANsSih5w7WXcnye5p+QQOq2fME2Nsx3OCzSi
+         ueSgn//FAL5MSXcICy/VI0JNHiebjYd4vd4UQ8GRzMyNjuWayfgv1NArR9oPi7mH2vv+
+         rVDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690396030; x=1691000830;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hzqLjK8Xkeivl0wa82o9EWmkTswR7UuotwLLOVNsxDI=;
+        b=TCrd9msfS5pup/KS/BEeBKCTxbcVziMVjI+Dcwu3D7dClYfxJhMffUmUU60F5LQpTz
+         2VZ8dr5W8Xz9YpbiUMpAZPMR0p78SdBPrjt8DKvgox2cbl1n3HvCQigVPkEyyUad3fQ4
+         Fqsh2slWtJqiyy8u1OTEn+0+cTJce1S6YdyHiMay9478j5kFzwRd1FkA9yHPaG85e/W5
+         1ebCByUEHlebwu0l84QlzJiFXOQAiRj3psj6z1rDOaYJhjXpSyG54gBGBQv0Aub0vFwx
+         /sgptGize1o2ymdYjkgPcVNMR4gLf0qPUjBzstrk+bwNkahsEfMqBIaMLqFOZQU7WSw1
+         Hp1A==
+X-Gm-Message-State: ABy/qLYFxhIA0hNYw6m8kWjoPc1v9Y0oLkyc8u5fU7qVNn5jFR7mqiQJ
+        W/NmwrWVUSE3qiuQmoCGFUCfiA==
+X-Google-Smtp-Source: APBJJlGl9LY0jYBeuOLBKY/QOl/1k5dmLtdC/W/SevHXT9DXZyuU6rQZUTHdpsXNOj0X1NBGoz+fNA==
+X-Received: by 2002:a5d:5142:0:b0:317:3f64:4901 with SMTP id u2-20020a5d5142000000b003173f644901mr1899720wrt.41.1690396030280;
+        Wed, 26 Jul 2023 11:27:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b009929ab17bdfsm9914020eja.168.2023.07.26.11.27.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 11:27:09 -0700 (PDT)
+Message-ID: <7a44e513-2b6b-aed3-3d71-e56bd0be2417@linaro.org>
+Date:   Wed, 26 Jul 2023 20:27:08 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="8r4SD1LFH2QP0ZPP"
-Content-Disposition: inline
-In-Reply-To: <20230726112146.1127145-2-huqiang.qin@amlogic.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] dt-bindings: hwmon: add renesas,isl28022
+Content-Language: en-US
+To:     Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+References: <20230726152235.249569-1-mail@carsten-spiess.de>
+ <20230726152235.249569-3-mail@carsten-spiess.de>
+ <82628237-e087-269e-9673-cf3873fe4b35@linaro.org>
+ <4105d77e-e011-8df7-35bf-bbfca0b640da@roeck-us.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <4105d77e-e011-8df7-35bf-bbfca0b640da@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/07/2023 20:19, Guenter Roeck wrote:
+>>
+>>> +    enum: [1, 2, 4, 8]
+>>> +
+>>> +  average:
+>>> +    description: |
+>>> +      Number of samples to be used to report voltage, current and power values.
+>>> +      defaults to <0> when not set
+>>> +    enum: [0, 1, 2, 4, 8, 16, 32, 64, 128]
+>>
+>> I am sure hwmon has some property for this. Are you sure it is called
+>> "average"?
+>>
+> 
+> Something with samples. adi,power-sample-average is similar. Others
+> use average-samples, qcom,avg-samples, touchscreen-average-samples.
 
---8r4SD1LFH2QP0ZPP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So probably it's a time to come with something generic, e.g.:
+average-samples in some hwmon.yaml
 
-On Wed, Jul 26, 2023 at 07:21:43PM +0800, Huqiang Qin wrote:
-> Update dt-binding document for watchdog of Amlogic-T7 SoCs.
->=20
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+Best regards,
+Krzysztof
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-> ---
->  .../devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml     | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxb=
-b-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-=
-wdt.yaml
-> index f5cc7aa1b93b..443e2e7ab467 100644
-> --- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.y=
-aml
-> +++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.y=
-aml
-> @@ -17,6 +17,7 @@ properties:
->    compatible:
->      enum:
->        - amlogic,meson-gxbb-wdt
-> +      - amlogic,t7-wdt
-> =20
->    reg:
->      maxItems: 1
-> --=20
-> 2.37.1
->=20
-
---8r4SD1LFH2QP0ZPP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMFldQAKCRB4tDGHoIJi
-0o1LAP0a8J+dJl9opDCpcZ0beSBf4iEaQFs/LXYgBm7gxVHrtQD6A95c9IYcyNpT
-GWMMw9jz4bGJ6bsOQ+T4Tg1Bv+wADwI=
-=nTul
------END PGP SIGNATURE-----
-
---8r4SD1LFH2QP0ZPP--
