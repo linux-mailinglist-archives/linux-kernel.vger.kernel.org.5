@@ -2,402 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7B27636B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBFE7636BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 14:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbjGZMuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 08:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S232406AbjGZMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 08:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjGZMuE (ORCPT
+        with ESMTP id S231453AbjGZMuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 08:50:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8B1269A;
-        Wed, 26 Jul 2023 05:49:15 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bba54f7eefso6193645ad.1;
-        Wed, 26 Jul 2023 05:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690375743; x=1690980543;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L5zO22kYApuVh7yTbUSWrRw2xPDNgzGXx9Rkf6A4Dng=;
-        b=nmoBxj08P78rTWITwLmR6rtVOxGbFVQOKLFw3YRlJWrbP2vU0/JgbD/icXI+1y1hqv
-         hYataTDQLl+2IqhjldoKxykDi7lm99L56WJDiZkm1Vl1q2tWELVFvP/Onzs/GWSJO/uA
-         ijCjIzPgBvvE6FYJoJz4KxkvSTCw9ADv5GsrPUkkic/e6B3ZL42g2h6D9y2xCmtSpSG0
-         chvxr3qx0NcnaosMt1mOdlPJ2PUJVWYxDYuamnuQ6VWhmMRZpbprN7Ge+dX8S+FQd4ny
-         fDkECk3gRH0Z90GVNPwLrBPoDbnED/PZTW4R+aTrzZiT/A5XAx9mkQVElSlbQSxH8u69
-         QWkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690375743; x=1690980543;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L5zO22kYApuVh7yTbUSWrRw2xPDNgzGXx9Rkf6A4Dng=;
-        b=cHCcvc25m1RqAQ8gPOXyiDbn+MQiXJWED6mMhNGifBv0hHg+of4VBaaQJ7U6RBIVEA
-         5ohhTi2hHfH4TzT+AVEUt9U/D5ow4h0vs5pqJSg67XQaZyT3M7HRj9jCXPy2DlGBK7mE
-         q3Jw8qfdopZc+MUKggwCDvyQTBGgfk9NPb+YDiLs9/yvNu1amaGeRIXa9EKjZz5b0DgH
-         eLa3dZk1btfnWEB3qgb9LM7hu6PmBwYp4UdETRuHaYmHVhrLAlzFq/E/lwGhbJ/kOFUP
-         WfuW6/Ci0WFkpw1rMjYHeSVtMfwSwfcVAjncSUqyY4vfxmIPq0Js6hJnzhldLiQsNgTw
-         c+Og==
-X-Gm-Message-State: ABy/qLYxBGdgUnTIG7e1MHWCMXJ61xpXjSbXnlBEmhM2mDsR3BmHvlvd
-        41/cm5Kc0glRuWvQeAMXdjg=
-X-Google-Smtp-Source: APBJJlG/3TU6Gbj3j7EauF0TpCQP1E1UTkKXsvWJ+/6V2grTzkYXmRMV+On9r+9dR32B1qte4yYlOQ==
-X-Received: by 2002:a17:902:d4c9:b0:1b8:656f:76e7 with SMTP id o9-20020a170902d4c900b001b8656f76e7mr2619038plg.23.1690375743008;
-        Wed, 26 Jul 2023 05:49:03 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:3:c61d:2003:6c97:8057])
-        by smtp.gmail.com with ESMTPSA id 1-20020a170902c10100b001bba7aab822sm5951176pli.5.2023.07.26.05.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 05:49:02 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, arnd@arndb.de, michael.h.kelley@microsoft.com
-Cc:     Tianyu Lan <tiala@microsoft.com>, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com
-Subject: [PATCH V2] x86/hyperv: Rename hv_isolation_type_snp/en_snp() to isol_type_snp_paravisor/enlightened()
-Date:   Wed, 26 Jul 2023 08:49:00 -0400
-Message-Id: <20230726124900.300258-1-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        Wed, 26 Jul 2023 08:50:44 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904119BE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 05:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690375822; x=1721911822;
+  h=message-id:date:from:subject:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qTqsfvwMNjbLMZZ7ffz8Nd/z+Jr9cW46dhlZXj5NX8k=;
+  b=O3McNTKJ8VpADLuVcRgjcWU/80acbwnBMScZdvLpXOsAXqk83WKr3mk/
+   qaF2ePY/9i6KIhBg+aeNr2IoF8q9ve/X4FSvT5pTEUrST3uEYJSim+L37
+   wFaxyTMl3oZ9xR7YVQcGIDU2e+PV7bAV8x+f4+G8w9+oE4dE0E+FgbxbX
+   2VGY406/bbYnj5WDmZthyGn/FKBuKUIxyIPfPqTM4wYohVlbqOADhTPup
+   HtLCZ+odF9AIafD/k5yP4m3c+tmb96a9e6Z5Db4TvZPzRU8ji1TDM89lf
+   1UC9OE8V5Ahn0aMAu5LbzGotLeQYX4JKQhRZu8picjc2/PDB5s0LvHJDc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="348285527"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="348285527"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 05:49:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900415478"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="900415478"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP; 26 Jul 2023 05:49:49 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 05:49:49 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 05:49:49 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 05:49:49 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 05:49:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dqxO+dtL2IjqRsKAaWyYtw+ClgLAOQTekKvUsde7uh2p2H/sgiA0qnksStJZgo0KPctfIs0eJ25xOIXi5GB/iGDzaoiQLbafIHviWZhKniq1NertmA7PiJUiT3CtqFWFKRchTuLibflzN3d+QJV7prZQDdXo9OyhjG2Zcaox6zKiFRHd8ONbCJgtrtU/m8p295bbtWtz8PX99DM6XZ2mbDvkRayCf5A8epfk7B4yX1oVnpbJiS4xXJ79bNBgDTI9Sq+IhruXNKOGopUdthF7rSXfbofBsFNmRQzuWrILxlWdIV9e+7qv7ZHdAmmGBn2Y47+Bk78xJTqb2dE/by+Siw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DoGxBhCM0tRWl/z/Jkxh6IzcD/uCtC25r6r9hG0QtrI=;
+ b=BkkXNBGpXOl8fse2vgWBEqbIE5tUtMqd7/rR5YT1pGduqG7VAU8sJehSC/lff+aZCP+9OA/26u1m2Psfpj/i/dWL6UaYlgWGQwxe3ZXyvY8Ur8C462WYOqrRastlNLXW6Pqth4d65Fn/puHWVQLx92glxkL4DB6VK2SewsaWmgF6Yzr6RgIew/KnmGj0tSr49kjeMsfJGTZ50cefyQaVIgtctkrK2/YX/IbJ+Zsk1n0nHKGDl+F/HduRV9+xhhSS/+b3VNZwWaEJvGkdBwo44Hso9Gvm7joGIdSDXy8QUBCkYoMWOOq4qUaVB7f1AIbH1Z4dSn+1uzs14teFrEgdpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by DS0PR11MB7928.namprd11.prod.outlook.com (2603:10b6:8:fe::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29; Wed, 26 Jul 2023 12:49:47 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::f4df:c85c:6300:880e]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::f4df:c85c:6300:880e%5]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 12:49:47 +0000
+Message-ID: <3bd7b290-91ad-347f-b1b5-5d45ac566f69@intel.com>
+Date:   Wed, 26 Jul 2023 20:49:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+From:   Yin Fengwei <fengwei.yin@intel.com>
+Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
+ large folio
+To:     Yu Zhao <yuzhao@google.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <david@redhat.com>, <ryan.roberts@arm.com>, <shy828301@gmail.com>
+References: <20230712060144.3006358-1-fengwei.yin@intel.com>
+ <20230712060144.3006358-4-fengwei.yin@intel.com>
+ <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com>
+ <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SI1PR02CA0019.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::15) To CO1PR11MB4820.namprd11.prod.outlook.com
+ (2603:10b6:303:6f::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|DS0PR11MB7928:EE_
+X-MS-Office365-Filtering-Correlation-Id: a11736b4-a5af-4ac1-6a91-08db8dd6cada
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ssCOQN8jUkkmpOq/T58tAoCKBvr7fdZraRjUIyRUH9n0N3kxPU/c+Va+OYA7lijobBjprEM5mbsCIhMpEzrL3YqXQ5Uk/K/G5YRsv9IWMCbc0chh9titdviMMIgqEyB+TR5Y0ecUONrJba0rzCEReSi1bowRy/Gw+eD5+z/BkggP/+0OdKgy9KEuNlITogSliPdQCnjnGAVoEzp/kn36Op0xFyUS9AwRI5xpmd//PwMb3VS1DKXumDdMHW6g2p7FksjObFbuZDx5P6E1BDutJVGj8YzmwI7fkVALw4sIbpYe0++Go4yukQ2rVuLUvcR6SmKKrkTodf5J1nWHpV7sFZ8dIMsKQvt+MIWou+IYx3OGFwCTgTw3TBxecYOBcanydtvcyFvwfk7V9Hseq1Bd499wfrMywh7nXZ9kNvnTnvxEQ7ajvJJ9usGGm3K/mSFJULLUpqQ6mw6mYBARE1VgUG0eMq8K4Oq9VFx8KVi4LYw/nvAzK5i9YtssB2fQww3W5HICC7E+PTzaASuKL2GXW0pSlQpHhY44EDidGZ+lGHPMtaAckyb1G9dKwqwIzqrrwjow3fNHezfZk4U3d/yMnVc4eK+M3uT6F4b0NEy7NyEqU+lzlilH7lfo6qj1/Eruw5YOO2tfyKWaH3m0SQ5tig==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(376002)(136003)(346002)(366004)(451199021)(86362001)(31696002)(36756003)(31686004)(2906002)(478600001)(38100700002)(82960400001)(26005)(186003)(2616005)(6506007)(53546011)(41300700001)(5660300002)(6666004)(6486002)(6512007)(66476007)(66556008)(316002)(66946007)(8676002)(83380400001)(6916009)(4326008)(8936002)(15650500001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWpvT0tpaGEwTUxLbElZWmptcGNhVG4ydm16NlhuTmRpQlpPOE0xeWF0QWNP?=
+ =?utf-8?B?TFk3RENsQnh6MHZsK28zTGJlcnNPeWRNdUlZYlFNVUhmVDQrdDJuV1kxWlBu?=
+ =?utf-8?B?ZG82MTYvRFo1OTVlRmc0MkNsNUJkOU11RHpJZGNKYkZmMTZHd3llNHh3L3pO?=
+ =?utf-8?B?ZDgxdlFkRkhDS1BOekdWdlJJVkNzLzhDVmo2blkwWURTc1lDZ2YxZUZ6S2RT?=
+ =?utf-8?B?RE9HanBOdUdObzdqRDJGQ1YyOVQwbHo3TjFwa0VrenE1bkhBNFpQblptOXg4?=
+ =?utf-8?B?ZytWMGhQQTBPWkthd1YrR2Z3cFFXWU1oOU91eHZWbkZGZFFCUHlNalZ1UzVr?=
+ =?utf-8?B?OXlmNVZ6bmxFQjV5d1IrSFhoN1lnQkY3OXRUZ0U4N3ovMEZuZ0ZTamk3VjR4?=
+ =?utf-8?B?TTZDOXhYNWRKQ3NZTlY4VWk5RDZxNDByUTJGUUhNRXAzNForRVhFUFlFQm9o?=
+ =?utf-8?B?VEErZWNkb1dlYjVhbEtLQXdvSE4wd0NUZlBMU3hFeVBUM3dndDFRQ2RyY2NG?=
+ =?utf-8?B?UXhaZDZJM0RMbnhGeGMwVUhqckZHU3ZlSFE3YlpEc0cyZXcrcDNVbFdISFhT?=
+ =?utf-8?B?N1c3VkdobE5QbmZQWGtEUytxSTRpTmpUSmtLcllWSkdiVHYwWUxQVklpZjE4?=
+ =?utf-8?B?akR3dERNb2U5RkVDRE84Q0w5MzdlZ3Qxcms3bDUxcDl1citseGxGOHJxZXhK?=
+ =?utf-8?B?VXg5ajBlU2RNaFdPUTBhelcvZGpQMFR5a1NsSmd0ZlpiYWJxeTgybVREUmVN?=
+ =?utf-8?B?MzNBUWt3OWxvdXBOcXZhaUNhYVNYNGw3VUlSU2JZRjVoOVhUTDdWbTYxYkYy?=
+ =?utf-8?B?dytESDZLMG1KZk42N2RaLzNLcitVZEZWSnJmMDRRTnlBaXFMVlN3cmxuQVdq?=
+ =?utf-8?B?UTlLVW5xTUVvTkE3K3pKK2VJaXR0dmdCY241aCtrR2xUZXVQYjVzTDlWcVBB?=
+ =?utf-8?B?bkw1OElYWGU2ZGgvTEpqUW5FdC9kRkIvWEJaSkVoTUdaTzRPSmpPUmtxWUZk?=
+ =?utf-8?B?WmhwMDF2MlI2VkNydjBvZU5laEx2bFpjOHczdzBkcGFQMXB4VzhmN1dXVjdx?=
+ =?utf-8?B?ZStlZXBwaHB1YWlZZE1jZEprOTFiZXpzK3ZiS3lnWGswcHUzdzdUN2IyMjd5?=
+ =?utf-8?B?ZW5vRUVRWUI0SS9iSTZoVFZTa3MzM0JDWDVqN25QdTlWMWxHTDhYZHlKR0w2?=
+ =?utf-8?B?ZU8vUkllWERXL0pnQ3Z5T2wyUlFwTU40bnVPS2psMTlDZkVoamk2MDUzNzA5?=
+ =?utf-8?B?Z0RMd2dLcTFjWWFRdnNKTkR0cEd6K0tlc1VJR3BqQ21NVEMrVVFsdzlJeTAw?=
+ =?utf-8?B?N2RraWZYaFFXeWl0NHB5djdDWDJValBrTGpDWUdQR2o2Y3l1a2NnU3lQdEwx?=
+ =?utf-8?B?aXcvcVJzUzl2cmNBWGNiKzE2bW1xbkh5MEUwdjRRV2lHZVpXcjcxTWszV2tH?=
+ =?utf-8?B?US8xK0pJM0NzTGdsNFIyMUljK3E2QUNtLzRNVHBhWkpMQzVNNEhBYkdudmcz?=
+ =?utf-8?B?QUlhdGxISFc5WVRMUVM3RGx6N1ZscGUzNTFtWVhQemNOSlBLTWZyTnZjVlZn?=
+ =?utf-8?B?akU5UklKTWtNd2hkQTMzYnRvZmdVN3k1WUttRzJZdm40aUFRTXQwL0RNZXZ0?=
+ =?utf-8?B?K2ZJK3pkNEY3OERUcjI5UWtwSmk2RjFuVmlwbnhtSlBJeTVEdlRGc2xoMHha?=
+ =?utf-8?B?K1c0bGlnWnVyNStjYy9OT0EwcDlUSmVHN2lJaHQvV05oTmV4Uk1oS1l5MkdB?=
+ =?utf-8?B?dmFpeDRUbjRjcFVEWnFaK0M5TmJKL1J1SUZUc1IrbGlUZms3bFNrWjZWZ1Vh?=
+ =?utf-8?B?TWtKYWViMTlPWWdSNGJFeVMwVWFoZ0Y3UUJabnRSM21mUzYySEpMNlZhVXpr?=
+ =?utf-8?B?Z3BXVlJMYUV5S3JNVEVYU2Y3NlE1UjVEMS8vU3BwMC9GY001VjU0U0lkMjdS?=
+ =?utf-8?B?VGl6bllnTTRId2hLcE8zN1lHVFErTlFIMHlJOTdTZHZQQldKM2hLTWFhRjJk?=
+ =?utf-8?B?MWpQbytXbEtVZzJmWWtVems5V1lnM1dzSFdPNWJtZWtWQmRpRlZlcisxU0I1?=
+ =?utf-8?B?UGhCcTBGd0Y0alJ1emRKd0V2ZUl6QjBaVzA3aGwyUkluNE1OS0oraDJmM2Vx?=
+ =?utf-8?B?NE8xRGtwZkJnNlE1ODhCZTZrd1Y1UzV0WFdqQUg4cms5REZvSXhZdElnYUJs?=
+ =?utf-8?B?ZHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a11736b4-a5af-4ac1-6a91-08db8dd6cada
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 12:49:46.9859
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /nr7yiJm7W40np7Q/q6tldsVdTR0HYvKcdOkyKShWwREAVMH5txlYy0hFlJKRwRFykrg/5o0T8TRSRPhvDZljw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7928
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <tiala@microsoft.com>
 
-Rename hv_isolation_type_snp and hv_isolation_type_en_snp()
-to make them much intuitiver.
 
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Tianyu Lan <tiala@microsoft.com>
----
-This patch is based on the patchset "x86/hyperv: Add AMD sev-snp
-enlightened guest support on hyperv" https://lore.kernel.org/lkml/
-20230718032304.136888-3-ltykernel@gmail.com/T/.
+On 7/15/23 14:06, Yu Zhao wrote:
+> On Wed, Jul 12, 2023 at 12:31 AM Yu Zhao <yuzhao@google.com> wrote:
+>>
+>> On Wed, Jul 12, 2023 at 12:02 AM Yin Fengwei <fengwei.yin@intel.com> wrote:
+>>>
+>>> Current kernel only lock base size folio during mlock syscall.
+>>> Add large folio support with following rules:
+>>>   - Only mlock large folio when it's in VM_LOCKED VMA range
+>>>
+>>>   - If there is cow folio, mlock the cow folio as cow folio
+>>>     is also in VM_LOCKED VMA range.
+>>>
+>>>   - munlock will apply to the large folio which is in VMA range
+>>>     or cross the VMA boundary.
+>>>
+>>> The last rule is used to handle the case that the large folio is
+>>> mlocked, later the VMA is split in the middle of large folio
+>>> and this large folio become cross VMA boundary.
+>>>
+>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+>>> ---
+>>>  mm/mlock.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+>>>  1 file changed, 99 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/mm/mlock.c b/mm/mlock.c
+>>> index 0a0c996c5c214..f49e079066870 100644
+>>> --- a/mm/mlock.c
+>>> +++ b/mm/mlock.c
+>>> @@ -305,6 +305,95 @@ void munlock_folio(struct folio *folio)
+>>>         local_unlock(&mlock_fbatch.lock);
+>>>  }
+>>>
+>>> +static inline bool should_mlock_folio(struct folio *folio,
+>>> +                                       struct vm_area_struct *vma)
+>>> +{
+>>> +       if (vma->vm_flags & VM_LOCKED)
+>>> +               return (!folio_test_large(folio) ||
+>>> +                               folio_within_vma(folio, vma));
+>>> +
+>>> +       /*
+>>> +        * For unlock, allow munlock large folio which is partially
+>>> +        * mapped to VMA. As it's possible that large folio is
+>>> +        * mlocked and VMA is split later.
+>>> +        *
+>>> +        * During memory pressure, such kind of large folio can
+>>> +        * be split. And the pages are not in VM_LOCKed VMA
+>>> +        * can be reclaimed.
+>>> +        */
+>>> +
+>>> +       return true;
+>>
+>> Looks good, or just
+>>
+>> should_mlock_folio() // or whatever name you see fit, can_mlock_folio()?
+>> {
+>>   return !(vma->vm_flags & VM_LOCKED) || folio_within_vma();
+>> }
+>>
+>>> +}
+>>> +
+>>> +static inline unsigned int get_folio_mlock_step(struct folio *folio,
+>>> +                       pte_t pte, unsigned long addr, unsigned long end)
+>>> +{
+>>> +       unsigned int nr;
+>>> +
+>>> +       nr = folio_pfn(folio) + folio_nr_pages(folio) - pte_pfn(pte);
+>>> +       return min_t(unsigned int, nr, (end - addr) >> PAGE_SHIFT);
+>>> +}
+>>> +
+>>> +void mlock_folio_range(struct folio *folio, struct vm_area_struct *vma,
+>>> +               pte_t *pte, unsigned long addr, unsigned int nr)
+>>> +{
+>>> +       struct folio *cow_folio;
+>>> +       unsigned int step = 1;
+>>> +
+>>> +       mlock_folio(folio);
+>>> +       if (nr == 1)
+>>> +               return;
+>>> +
+>>> +       for (; nr > 0; pte += step, addr += (step << PAGE_SHIFT), nr -= step) {
+>>> +               pte_t ptent;
+>>> +
+>>> +               step = 1;
+>>> +               ptent = ptep_get(pte);
+>>> +
+>>> +               if (!pte_present(ptent))
+>>> +                       continue;
+>>> +
+>>> +               cow_folio = vm_normal_folio(vma, addr, ptent);
+>>> +               if (!cow_folio || cow_folio == folio) {
+>>> +                       continue;
+>>> +               }
+>>> +
+>>> +               mlock_folio(cow_folio);
+>>> +               step = get_folio_mlock_step(folio, ptent,
+>>> +                               addr, addr + (nr << PAGE_SHIFT));
+>>> +       }
+>>> +}
+>>> +
+>>> +void munlock_folio_range(struct folio *folio, struct vm_area_struct *vma,
+>>> +               pte_t *pte, unsigned long addr, unsigned int nr)
+>>> +{
+>>> +       struct folio *cow_folio;
+>>> +       unsigned int step = 1;
+>>> +
+>>> +       munlock_folio(folio);
+>>> +       if (nr == 1)
+>>> +               return;
+>>> +
+>>> +       for (; nr > 0; pte += step, addr += (step << PAGE_SHIFT), nr -= step) {
+>>> +               pte_t ptent;
+>>> +
+>>> +               step = 1;
+>>> +               ptent = ptep_get(pte);
+>>> +
+>>> +               if (!pte_present(ptent))
+>>> +                       continue;
+>>> +
+>>> +               cow_folio = vm_normal_folio(vma, addr, ptent);
+>>> +               if (!cow_folio || cow_folio == folio) {
+>>> +                       continue;
+>>> +               }
+>>> +
+>>> +               munlock_folio(cow_folio);
+>>> +               step = get_folio_mlock_step(folio, ptent,
+>>> +                               addr, addr + (nr << PAGE_SHIFT));
+>>> +       }
+>>> +}
+>>
+>> I'll finish the above later.
+> 
+> There is a problem here that I didn't have the time to elaborate: we
+> can't mlock() a folio that is within the range but not fully mapped
+> because this folio can be on the deferred split queue. When the split
+> happens, those unmapped folios (not mapped by this vma but are mapped
+> into other vmas) will be stranded on the unevictable lru.
+Checked remap case in past few days, I agree we shouldn't treat a folio
+in the range but not fully mapped as in_range folio.
 
-Change since v1:
-       Add "hv_" prefix to isol_type_snp_paravisor/enlightened()
----
- arch/x86/hyperv/hv_init.c       |  6 +++---
- arch/x86/hyperv/ivm.c           | 17 +++++++++--------
- arch/x86/include/asm/mshyperv.h |  8 ++++----
- arch/x86/kernel/cpu/mshyperv.c  | 12 ++++++------
- drivers/hv/connection.c         |  2 +-
- drivers/hv/hv.c                 | 16 ++++++++--------
- drivers/hv/hv_common.c          | 10 +++++-----
- include/asm-generic/mshyperv.h  |  4 ++--
- 8 files changed, 38 insertions(+), 37 deletions(-)
+As for remap case, it's possible that the folio is not in deferred split
+queue. But part of folio is mapped to VM_LOCKED vma and other part of
+folio is mapped to none VM_LOCKED vma. In this case, page can't be split
+as it's not in deferred split queue. So page reclaim should be allowed to
+pick this folio up, split it and reclaim the pages in none VM_LOCKED vma.
+So we can't mlock such kind of folio.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index b004370d3b01..3df948c69cff 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -52,7 +52,7 @@ static int hyperv_init_ghcb(void)
- 	void *ghcb_va;
- 	void **ghcb_base;
- 
--	if (!hv_isolation_type_snp())
-+	if (!hv_isol_type_snp_paravisor())
- 		return 0;
- 
- 	if (!hv_ghcb_pg)
-@@ -116,7 +116,7 @@ static int hv_cpu_init(unsigned int cpu)
- 			 * is blocked to run in Confidential VM. So only decrypt assist
- 			 * page in non-root partition here.
- 			 */
--			if (*hvp && hv_isolation_type_en_snp()) {
-+			if (*hvp && hv_isol_type_snp_enlightened()) {
- 				WARN_ON_ONCE(set_memory_decrypted((unsigned long)(*hvp), 1));
- 				memset(*hvp, 0, PAGE_SIZE);
- 			}
-@@ -453,7 +453,7 @@ void __init hyperv_init(void)
- 		goto common_free;
- 	}
- 
--	if (hv_isolation_type_snp()) {
-+	if (hv_isol_type_snp_paravisor()) {
- 		/* Negotiate GHCB Version. */
- 		if (!hv_ghcb_negotiate_protocol())
- 			hv_ghcb_terminate(SEV_TERM_SET_GEN,
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 2eda4e69849d..2548d904e45a 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -591,24 +591,25 @@ bool hv_is_isolation_supported(void)
- 	return hv_get_isolation_type() != HV_ISOLATION_TYPE_NONE;
- }
- 
--DEFINE_STATIC_KEY_FALSE(isolation_type_snp);
-+DEFINE_STATIC_KEY_FALSE(isol_type_snp_paravisor);
- 
- /*
-- * hv_isolation_type_snp - Check system runs in the AMD SEV-SNP based
-+ * hv_isol_type_snp_paravisor - Check system runs in the AMD SEV-SNP based
-  * isolation VM.
-  */
--bool hv_isolation_type_snp(void)
-+bool hv_isol_type_snp_paravisor(void)
- {
--	return static_branch_unlikely(&isolation_type_snp);
-+	return static_branch_unlikely(&isol_type_snp_paravisor);
- }
- 
--DEFINE_STATIC_KEY_FALSE(isolation_type_en_snp);
-+DEFINE_STATIC_KEY_FALSE(isol_type_snp_enlightened);
-+
- /*
-- * hv_isolation_type_en_snp - Check system runs in the AMD SEV-SNP based
-+ * hv_isol_type_snp_enlightened - Check system runs in the AMD SEV-SNP based
-  * isolation enlightened VM.
-  */
--bool hv_isolation_type_en_snp(void)
-+bool hv_isol_type_snp_enlightened(void)
- {
--	return static_branch_unlikely(&isolation_type_en_snp);
-+	return static_branch_unlikely(&isol_type_snp_enlightened);
- }
- 
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index c5a3c29fad01..e543a5a1b007 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -25,8 +25,8 @@
- 
- union hv_ghcb;
- 
--DECLARE_STATIC_KEY_FALSE(isolation_type_snp);
--DECLARE_STATIC_KEY_FALSE(isolation_type_en_snp);
-+DECLARE_STATIC_KEY_FALSE(isol_type_snp_paravisor);
-+DECLARE_STATIC_KEY_FALSE(isol_type_snp_enlightened);
- 
- typedef int (*hyperv_fill_flush_list_func)(
- 		struct hv_guest_mapping_flush_list *flush,
-@@ -46,7 +46,7 @@ extern void *hv_hypercall_pg;
- 
- extern u64 hv_current_partition_id;
- 
--extern bool hv_isolation_type_en_snp(void);
-+extern bool hv_isol_type_snp_enlightened(void);
- 
- extern union hv_ghcb * __percpu *hv_ghcb_pg;
- 
-@@ -268,7 +268,7 @@ static inline void hv_sev_init_mem_and_cpu(void) {}
- static int hv_snp_boot_ap(int cpu, unsigned long start_ip) {}
- #endif
- 
--extern bool hv_isolation_type_snp(void);
-+extern bool hv_isol_type_snp_paravisor(void);
- 
- static inline bool hv_is_synic_reg(unsigned int reg)
- {
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 6ff0b60d30f9..3c61b4b6a5e3 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -66,7 +66,7 @@ u64 hv_get_non_nested_register(unsigned int reg)
- {
- 	u64 value;
- 
--	if (hv_is_synic_reg(reg) && hv_isolation_type_snp())
-+	if (hv_is_synic_reg(reg) && hv_isol_type_snp_paravisor())
- 		hv_ghcb_msr_read(reg, &value);
- 	else
- 		rdmsrl(reg, value);
-@@ -76,7 +76,7 @@ EXPORT_SYMBOL_GPL(hv_get_non_nested_register);
- 
- void hv_set_non_nested_register(unsigned int reg, u64 value)
- {
--	if (hv_is_synic_reg(reg) && hv_isolation_type_snp()) {
-+	if (hv_is_synic_reg(reg) && hv_isol_type_snp_paravisor()) {
- 		hv_ghcb_msr_write(reg, value);
- 
- 		/* Write proxy bit via wrmsl instruction */
-@@ -300,7 +300,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
- 	 *  Override wakeup_secondary_cpu_64 callback for SEV-SNP
- 	 *  enlightened guest.
- 	 */
--	if (hv_isolation_type_en_snp())
-+	if (hv_isol_type_snp_enlightened())
- 		apic->wakeup_secondary_cpu_64 = hv_snp_boot_ap;
- 
- 	if (!hv_root_partition)
-@@ -421,9 +421,9 @@ static void __init ms_hyperv_init_platform(void)
- 
- 
- 		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
--			static_branch_enable(&isolation_type_en_snp);
-+			static_branch_enable(&isol_type_snp_enlightened);
- 		} else if (hv_get_isolation_type() == HV_ISOLATION_TYPE_SNP) {
--			static_branch_enable(&isolation_type_snp);
-+			static_branch_enable(&isol_type_snp_paravisor);
- 		}
- 	}
- 
-@@ -545,7 +545,7 @@ static void __init ms_hyperv_init_platform(void)
- 	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
- 		mark_tsc_unstable("running on Hyper-V");
- 
--	if (hv_isolation_type_en_snp())
-+	if (hv_isol_type_snp_enlightened())
- 		hv_sev_init_mem_and_cpu();
- 
- 	hardlockup_detector_disable();
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index 02b54f85dc60..f86570f3bc1e 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -484,7 +484,7 @@ void vmbus_set_event(struct vmbus_channel *channel)
- 
- 	++channel->sig_events;
- 
--	if (hv_isolation_type_snp())
-+	if (hv_isol_type_snp_paravisor())
- 		hv_ghcb_hypercall(HVCALL_SIGNAL_EVENT, &channel->sig_event,
- 				NULL, sizeof(channel->sig_event));
- 	else
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index ec6e35a0d9bf..3a6e5ecd03d8 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -64,7 +64,7 @@ int hv_post_message(union hv_connection_id connection_id,
- 	aligned_msg->payload_size = payload_size;
- 	memcpy((void *)aligned_msg->payload, payload, payload_size);
- 
--	if (hv_isolation_type_snp())
-+	if (hv_isol_type_snp_paravisor())
- 		status = hv_ghcb_hypercall(HVCALL_POST_MESSAGE,
- 				(void *)aligned_msg, NULL,
- 				sizeof(*aligned_msg));
-@@ -109,7 +109,7 @@ int hv_synic_alloc(void)
- 		 * Synic message and event pages are allocated by paravisor.
- 		 * Skip these pages allocation here.
- 		 */
--		if (!hv_isolation_type_snp() && !hv_root_partition) {
-+		if (!hv_isol_type_snp_paravisor() && !hv_root_partition) {
- 			hv_cpu->synic_message_page =
- 				(void *)get_zeroed_page(GFP_ATOMIC);
- 			if (hv_cpu->synic_message_page == NULL) {
-@@ -125,7 +125,7 @@ int hv_synic_alloc(void)
- 			}
- 		}
- 
--		if (hv_isolation_type_en_snp()) {
-+		if (hv_isol_type_snp_enlightened()) {
- 			ret = set_memory_decrypted((unsigned long)
- 				hv_cpu->synic_message_page, 1);
- 			if (ret) {
-@@ -174,7 +174,7 @@ void hv_synic_free(void)
- 			= per_cpu_ptr(hv_context.cpu_context, cpu);
- 
- 		/* It's better to leak the page if the encryption fails. */
--		if (hv_isolation_type_en_snp()) {
-+		if (hv_isol_type_snp_enlightened()) {
- 			if (hv_cpu->synic_message_page) {
- 				ret = set_memory_encrypted((unsigned long)
- 					hv_cpu->synic_message_page, 1);
-@@ -221,7 +221,7 @@ void hv_synic_enable_regs(unsigned int cpu)
- 	simp.as_uint64 = hv_get_register(HV_REGISTER_SIMP);
- 	simp.simp_enabled = 1;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (hv_isol_type_snp_paravisor() || hv_root_partition) {
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (simp.base_simp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
-@@ -240,7 +240,7 @@ void hv_synic_enable_regs(unsigned int cpu)
- 	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
- 	siefp.siefp_enabled = 1;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (hv_isol_type_snp_paravisor() || hv_root_partition) {
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (siefp.base_siefp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
-@@ -323,7 +323,7 @@ void hv_synic_disable_regs(unsigned int cpu)
- 	 * addresses.
- 	 */
- 	simp.simp_enabled = 0;
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (hv_isol_type_snp_paravisor() || hv_root_partition) {
- 		iounmap(hv_cpu->synic_message_page);
- 		hv_cpu->synic_message_page = NULL;
- 	} else {
-@@ -335,7 +335,7 @@ void hv_synic_disable_regs(unsigned int cpu)
- 	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
- 	siefp.siefp_enabled = 0;
- 
--	if (hv_isolation_type_snp() || hv_root_partition) {
-+	if (hv_isol_type_snp_paravisor() || hv_root_partition) {
- 		iounmap(hv_cpu->synic_event_page);
- 		hv_cpu->synic_event_page = NULL;
- 	} else {
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index 2d43ba2bc925..e205f85709ad 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -381,7 +381,7 @@ int hv_common_cpu_init(unsigned int cpu)
- 			*outputarg = (char *)(*inputarg) + HV_HYP_PAGE_SIZE;
- 		}
- 
--		if (hv_isolation_type_en_snp()) {
-+		if (hv_isol_type_snp_enlightened()) {
- 			ret = set_memory_decrypted((unsigned long)*inputarg, pgcount);
- 			if (ret) {
- 				kfree(*inputarg);
-@@ -509,17 +509,17 @@ bool __weak hv_is_isolation_supported(void)
- }
- EXPORT_SYMBOL_GPL(hv_is_isolation_supported);
- 
--bool __weak hv_isolation_type_snp(void)
-+bool __weak hv_isol_type_snp_paravisor(void)
- {
- 	return false;
- }
--EXPORT_SYMBOL_GPL(hv_isolation_type_snp);
-+EXPORT_SYMBOL_GPL(hv_isol_type_snp_paravisor);
- 
--bool __weak hv_isolation_type_en_snp(void)
-+bool __weak hv_isol_type_snp_enlightened(void)
- {
- 	return false;
- }
--EXPORT_SYMBOL_GPL(hv_isolation_type_en_snp);
-+EXPORT_SYMBOL_GPL(hv_isol_type_snp_enlightened);
- 
- void __weak hv_setup_vmbus_handler(void (*handler)(void))
- {
-diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-index f73a044ecaa7..b8f2b48b640f 100644
---- a/include/asm-generic/mshyperv.h
-+++ b/include/asm-generic/mshyperv.h
-@@ -64,7 +64,7 @@ extern void * __percpu *hyperv_pcpu_output_arg;
- 
- extern u64 hv_do_hypercall(u64 control, void *inputaddr, void *outputaddr);
- extern u64 hv_do_fast_hypercall8(u16 control, u64 input8);
--extern bool hv_isolation_type_snp(void);
-+extern bool hv_isol_type_snp_paravisor(void);
- 
- /* Helper functions that provide a consistent pattern for checking Hyper-V hypercall status. */
- static inline int hv_result(u64 status)
-@@ -279,7 +279,7 @@ bool hv_is_hyperv_initialized(void);
- bool hv_is_hibernation_supported(void);
- enum hv_isolation_type hv_get_isolation_type(void);
- bool hv_is_isolation_supported(void);
--bool hv_isolation_type_snp(void);
-+bool hv_isol_type_snp_paravisor(void);
- u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size);
- void hyperv_cleanup(void);
- bool hv_query_ext_cap(u64 cap_query);
--- 
-2.25.1
+The same thing can happen with madvise_cold_or_pageout_pte_range().
+I will update folio_in_vma() to check the PTE also.
 
+Regards
+Yin, Fengwei
+
+> 
+> For that matter, we can't mlock any large folios that are being
+> shared, unless you want to overengineer it by checking whether all
+> sharing vmas are also mlocked -- mlock is cleared during fork. So the
+> condition for mlocking large anon folios is 1) within range 2) fully
+> mapped 3) not shared (mapcount is 1). The final patch should look like
+> something like this:
+> 
+> -  if (folio_test_large(folio))
+> +  if (folio_pfn(folio) != pte_pfn(ptent))
+> +    continue;
+> +  if (!the_aforementioned_condition())
+> 
+> There is another corner case I forgot to mention: for example, what if
+> a folio spans two (the only two) adjacent mlocked vmas? No need to
+> worry about this since it's not worth optimizing.
