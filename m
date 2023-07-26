@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BB9763DE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65DE763DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 19:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjGZRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 13:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S230342AbjGZRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 13:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbjGZRqs (ORCPT
+        with ESMTP id S229545AbjGZRp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 13:46:48 -0400
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE5F2D7B;
-        Wed, 26 Jul 2023 10:46:40 -0700 (PDT)
-Received: from xmz-huawei.. (unknown [114.249.159.178])
-        by APP-03 (Coremail) with SMTP id rQCowABXd2TfW8Fkh6U1Dg--.53842S2;
-        Thu, 27 Jul 2023 01:46:07 +0800 (CST)
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     Bin Meng <bmeng@tinylab.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        stable@vger.kernel.org, Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Subject: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and binutils
-Date:   Thu, 27 Jul 2023 01:45:24 +0800
-Message-Id: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
+        Wed, 26 Jul 2023 13:45:58 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F712697;
+        Wed, 26 Jul 2023 10:45:55 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 6C7493200958;
+        Wed, 26 Jul 2023 13:45:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 26 Jul 2023 13:45:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1690393552; x=1690479952; bh=6+
+        BtwAiVSxh1iYhM2LPLsKH6+zDmGG6P7lMP2V1Zi70=; b=Qmd4H+Br8tMw1XghlU
+        Nlz7bHPXrAx6O7RV5E6WKRL6rQQP51jw9IPDGgQwag+n2TQEAtFZeu+B4DkVRixu
+        knbljF++UyO50c9qQcu39POEQdRSvN7SSKrqiRYeb9C7kJAjmG2fFMYqkuhu4GiD
+        6VCz+CUcl2MUy+kMtmsZhZ5ifKaav7aJaGHf56Yn82fgUkEAzFjgak/wYvduI1sG
+        6IF0ct+HP96ffssE6OE1JGDPOr25oJtN13dEqt4NBL53rvwAC2j2aDKigCuLANHh
+        qmagOEN2ZyXd09Lq5nVCQbFaExvslxhr1v8z9FdOAR9NaHTjync2HAoe4yGmNKnB
+        AZ2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690393552; x=1690479952; bh=6+BtwAiVSxh1i
+        YhM2LPLsKH6+zDmGG6P7lMP2V1Zi70=; b=rDnqFY0bc6eP7jdogZERouKz7ECYX
+        6nCbYyW334nUrGDCwxfK7/t5D6yySDQAmtx4tZu5+0F8dqDdh4YgaVnuHhHHpvRv
+        73SZ0NmZRL0fQmLeuEcMaZisoC4N+/Yx+OyTqT625Le6AZqzIGUCEAxAiO37HmA+
+        V007MCKdZ+uMeFf+HS0YTyOZY41MFohQV/7Si/H9ITky/9F9WHX9RVz7AB3ntGJJ
+        h5JOpBGdJ2K4jjiqu5HQTyPL93LnAUhe7xSV1O6h0l9s5KN5hCknYIVymL4wERnT
+        72mJzFjvbKnSkDnHeN900WH0UYs/v5mviuONbcPLyBhBxLlMbXtle5yjQ==
+X-ME-Sender: <xms:0FvBZC0Tryiu1D6O4NZbVVbVzDLWI1bD1Z4-AqT3CmXiTH9DQQ7JIA>
+    <xme:0FvBZFG0N5nR_MVs_OL-pvmicF_iP3pEiteKryyMhJDDowCACQwNcD37H3bphf0mu
+    RVjmdYPY8RmP8t7WA>
+X-ME-Received: <xmr:0FvBZK7kxLgOSa_vrT3uuwJqKJ_M38nXYdrha9UV3p4mGcDCfRHElIP6L6i9CzU_z2JUe7MZ5Hl2pqfpg6dBEHVJJfyT84iCFAGbbFvHPOEF0Gb6TkOiMqgXoHW1>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdduudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepvdfffeevhfetveffgeeiteefhfdtvdffjeevhfeuteegleduheetvedu
+    ieettddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:0FvBZD0elYr1hQwUGBen7BvOVriKMtEmoAFtRr5poakX9SUE7dz-pQ>
+    <xmx:0FvBZFFyKP3XOu7msWLMIV8gYPAE-RIJoXY3I5o9WlioId0J5vQRlw>
+    <xmx:0FvBZM8OgEJ2xjxfOjgaF7kcJSMl_vJ2gXKsLuCdPG7miNwX7vKO7g>
+    <xmx:0FvBZD8JXMKwcfwFm9JcCrLET6MyEpTBP1XchL84iDs0O9I04wlMIQ>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jul 2023 13:45:51 -0400 (EDT)
+Date:   Wed, 26 Jul 2023 10:45:49 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Matteo Rizzo <matteorizzo@google.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
+        corbet@lwn.net, akpm@linux-foundation.org, keescook@chromium.org,
+        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
+        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
+        evn@google.com, poprdi@google.com, jordyzomer@google.com,
+        jmoyer@redhat.com, krisman@suse.de
+Subject: Re: [PATCH v3 1/1] io_uring: add a sysctl to disable io_uring
+ system-wide
+Message-ID: <20230726174549.cg4jgx2d33fom4rb@awork3.anarazel.de>
+References: <20230630151003.3622786-1-matteorizzo@google.com>
+ <20230630151003.3622786-2-matteorizzo@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowABXd2TfW8Fkh6U1Dg--.53842S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw1kGry5ZFWrCrWUKryrCrg_yoWrJFWfpr
-        ZxCryUGrs5X3ykGr1fJw4UW34Yyws5J3y8WrW7Kw15u3sxAFy0gr9Yyw42qFyUAFZ7Kw4q
-        9w1S93ZYq3Z0yaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
-        DUUUUU=
-X-Originating-IP: [114.249.159.178]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCQgECmTBJKN66QAAs+
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230630151003.3622786-2-matteorizzo@google.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,78 +91,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Binutils-2.38 and GCC-12.1.0 bump[0] default ISA spec to newer version
-20191213 which moves some instructions from the I extension to the
-Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
-that version, we should turn on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-to cope with the new changes.
+Hi,
 
-The case of clang is special[1][2], where older clang versions (<17) need
-to be rolled back to old ISA spec to fix it. And the less common case,
-since older GCC versions (<11.1.0) did not support zicsr and zifencei
-extension for -march, also requires a fallback to cope with it.
+On 2023-06-30 15:10:03 +0000, Matteo Rizzo wrote:
+> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1,
+> or 2. When 0 (the default), all processes are allowed to create io_uring
+> instances, which is the current behavior. When 1, all calls to
+> io_uring_setup fail with -EPERM unless the calling process has
+> CAP_SYS_ADMIN. When 2, calls to io_uring_setup fail with -EPERM
+> regardless of privilege.
 
-For more information, please refer to:
-commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
-commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang and binutils")
-Link: https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd [0]
-Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.org [1]
-Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org [2]
-Link: https://lore.kernel.org/all/20230725170405.251011-1-xingmingzheng@iscas.ac.cn
-Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
----
+Hm, is there a chance that instead of requiring CAP_SYS_ADMIN, a certain group
+could be required (similar to hugetlb_shm_group)? Requiring CAP_SYS_ADMIN
+could have the unintended consequence of io_uring requiring tasks being run
+with more privileges than needed... Or some other more granular way of
+granting the right to use io_uring?
 
-v2:
-- Update the Kconfig help text and commit message.
-- Add considerations for low version gcc case.
+ISTM that it'd be nice if e.g. a systemd service specification could allow
+some services to use io_uring, without allowing it for everyone, or requiring
+to run services effectively as root.
 
-Sorry for the formatting error on my mailing list reply.
+Greetings,
 
- arch/riscv/Kconfig | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4c07b9189c86..08afd47de157 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -570,24 +570,27 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
- config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
- 	def_bool y
- 	# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
--	depends on AS_IS_GNU && AS_VERSION >= 23800
-+	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
-+	depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
- 	help
--	  Newer binutils versions default to ISA spec version 20191213 which
--	  moves some instructions from the I extension to the Zicsr and Zifencei
--	  extensions.
-+	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
-+	  20191213 which moves some instructions from the I extension to the
-+	  Zicsr and Zifencei extensions.
- 
- config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
- 	def_bool y
- 	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
- 	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
--	depends on CC_IS_CLANG && CLANG_VERSION < 170000
-+	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
-+	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
-+		   (CC_IS_GCC && GCC_VERSION < 110100)
- 	help
--	  Certain versions of clang do not support zicsr and zifencei via -march
--	  but newer versions of binutils require it for the reasons noted in the
--	  help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
-+	  Certain versions of clang (or GCC) do not support zicsr and zifencei via
-+	  -march but newer versions of binutils require it for the reasons noted
-+	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
- 	  option causes an older ISA spec compatible with these older versions
--	  of clang to be passed to GAS, which has the same result as passing zicsr
--	  and zifencei to -march.
-+	  of clang (or GCC) to be passed to GAS, which has the same result as
-+	  passing zicsr and zifencei to -march.
- 
- config FPU
- 	bool "FPU support"
--- 
-2.34.1
-
+Andres Freund
