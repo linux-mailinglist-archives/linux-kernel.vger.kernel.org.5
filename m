@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94709763B98
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1542763B9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbjGZPuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S234818AbjGZPu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbjGZPux (ORCPT
+        with ESMTP id S234033AbjGZPuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:50:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AB5193;
-        Wed, 26 Jul 2023 08:50:52 -0700 (PDT)
+        Wed, 26 Jul 2023 11:50:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC0E193;
+        Wed, 26 Jul 2023 08:50:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5775D61B6C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9110961B96;
+        Wed, 26 Jul 2023 15:50:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CA7AC433C7;
         Wed, 26 Jul 2023 15:50:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D9AC433C8;
-        Wed, 26 Jul 2023 15:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690386651;
-        bh=FBVPvVza7HG5I1VIoHJB6h+yX1R7w7DkdilDfqNT6DU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=maYVcK7N/Vm7jnhc68l/McAk7CYwSeld6XBM85yy8GktdXapsIj0lVxwy91fEnsNM
-         qUHskpQW3xDpoahJa5Ia4h6ay96WSBm/MpB2E3Lwna0++qtXTylHp0/Fk7/om4dIXZ
-         5cDAEF+kcyCYwPw4Czm4VyAnVtOOkJ/lcJLYZhEEevuujEBllPDWuf8uuXmjareC3H
-         b7tO2FiRCA4uc9GitfhSc1qbPSIV0rNdyc2IfN9/vZauIQJctXvxD4/KI2jL1TRKcb
-         P+TuLrNc3bw6tMDq/GipoSv4zIAoTXgbZIHE4bsLnWqj70kdEX5PbT+ULYI9M4II26
-         P0CQC5tiJcQsA==
-Date:   Wed, 26 Jul 2023 08:50:49 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2] page_pool: split types and declarations
- from page_pool.h
-Message-ID: <20230726085049.36b527a4@kernel.org>
-In-Reply-To: <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com>
-References: <20230725131258.31306-1-linyunsheng@huawei.com>
-        <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
-        <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com>
-        <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
-        <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
-        <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com>
+        s=k20201202; t=1690386654;
+        bh=qTUx1ibkNZiv2Ulvi2UjI9je+Gr+m7TlTSI0DAZX4MM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=RQR7tIRDjvAkVF7nwmsvm+XRvECbXqIyhem6BswxnB5RnNw2M369NR83PIWcg4n0i
+         7b0RZKPr2GvGuR6uE4koLC+tOeaOyuikWjIB7eG40tMtMTpglL/VW6wMq5wlEn4Jep
+         X9GTyhBJK4B2P5m5dc6yDV/z+yZ1RrQ5/JK5qdcsqu11Eh6gHBG307Mlv/35Mku4hb
+         6txkqSh/1L8CkTwU9rHQzUXjyULY+qGd9PtogVdVZVNpQuqZaH/sHX2d5RqJ2bLQ/0
+         +iqkakXsRXhbDH70G4/avVkkPs/X9MEhbJbAc7EGxm0EqxXezV1uhey/z/rzqVeGpv
+         Z75dmtAjeVpRA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+In-Reply-To: <20230725110226.1.Ia2f980fc7cd0b831e633391f0bb1272914d8f381@changeid>
+References: <20230725110226.1.Ia2f980fc7cd0b831e633391f0bb1272914d8f381@changeid>
+Subject: Re: [PATCH 1/2] spi: spi-qcom-qspi: Fallback to PIO for xfers that
+ aren't multiples of 4 bytes
+Message-Id: <169038665208.73112.11925690374692993446.b4-ty@kernel.org>
+Date:   Wed, 26 Jul 2023 16:50:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 08:39:43 -0700 Alexander Duyck wrote:
-> > > I suppose the above suggestion is about splitting or naming by
-> > > the user as the discussed in the below thread?
-> > > https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/  
-> >
-> > Actually my suggestion is more about defining boundaries for what is
-> > meant to be used by drivers and what isn't. The stuff you could keep
-> > in net/core/page_pool.h would only be usable by the files in net/core/
-> > whereas the stuff you are keeping in the include/net/ folder is usable
-> > by drivers. It is meant to prevent things like what you were
-> > complaining about with the Mellanox drivers making use of interfaces
-> > you didn't intend them to use.
-
-FWIW moving stuff which is only supposed to be used by core (xdp, skb,
-etc.) to net/core/page_pool.h is a good idea, too. 
-Seems a bit independent from splitting the main header, tho.
-
-> > So for example you could pull out functions like
-> > page_pool_return_skb_page, page_pool_use_xdp_mem,
-> > page_pool_update_nid, and the like and look at relocating them into
-> > the net/core/ folder and thereby prevent abuse of those functions by
-> > drivers.  
+On Tue, 25 Jul 2023 11:02:26 -0700, Douglas Anderson wrote:
+> The Qualcomm QSPI driver appears to require that any reads using DMA
+> are a mutliple of 4 bytes. If this isn't true then the controller will
+> clobber any extra bytes in memory following the last word. Let's
+> detect this and falback to PIO.
 > 
-> Okay, maybe not page_pool_update_nid. It looks like that is already in
-> use in the form of page_pool_nid_changed by drivers..
+> This fixes problems reported by slub_debug=FZPUA, which would complain
+> about "kmalloc Redzone overwritten". One such instance said:
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/2] spi: spi-qcom-qspi: Fallback to PIO for xfers that aren't multiples of 4 bytes
+      commit: 138d73b627c71bf2b2f61502dc6c1137b9656434
+[2/2] spi: spi-qcom-qspi: Add mem_ops to avoid PIO for badly sized reads
+      commit: cc71c42b3dc1085d3e72dfa5603e827b9eb59da1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
