@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F737630AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EFF7630A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjGZJBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
+        id S232849AbjGZI6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjGZJBB (ORCPT
+        with ESMTP id S232773AbjGZI6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:01:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5387B448D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690361745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XtYwhjvqgWz9QjsOakEd2O0h4kwm2uV/DxKMgZHITXQ=;
-        b=gR90ZHTsIFPJbAg2V6QtHYtdEIqf2mztrfr0Mgys9KrMhyuyY0t/FSMznnqYIoC/FdnCJ5
-        UleAVqbAVPU/Q6qM/4fPFnhkhvDrswBoaCVTV7NFetsh8GE+y7msa1LmcZgi2YxDl9X7Ik
-        EcWj1iqRLydknv2UFssVsyJgK70VqtA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-80--kpPVwcUMIqEd3se6Fhlag-1; Wed, 26 Jul 2023 04:55:42 -0400
-X-MC-Unique: -kpPVwcUMIqEd3se6Fhlag-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AE08D803470;
-        Wed, 26 Jul 2023 08:55:41 +0000 (UTC)
-Received: from fedora.. (unknown [10.43.17.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A4754094DC0;
-        Wed, 26 Jul 2023 08:55:40 +0000 (UTC)
-From:   tglozar@redhat.com
-To:     linux-kernel@vger.kernel.org
-Cc:     john.fastabend@gmail.com, jakub@cloudflare.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Tomas Glozar <tglozar@redhat.com>
-Subject: [PATCH RFC net] bpf: sockmap: Remove preempt_disable in sock_map_sk_acquire
-Date:   Wed, 26 Jul 2023 10:50:03 +0200
-Message-ID: <20230726085003.261112-1-tglozar@redhat.com>
+        Wed, 26 Jul 2023 04:58:21 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B416191;
+        Wed, 26 Jul 2023 01:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690361500; x=1721897500;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b849BiVNxFGwobNm6VSbnznl9V2OQQo2IkdXuTzxITA=;
+  b=zzoFWsdXmJS6G4jtldjsfjGK58D9B5/4oXAA7eOwMkpJdXmH1gpDtMe2
+   Auo7RFMB8WA7rr2VLphdVs0CBzHh9VvkaN+sCo+eNz2nMayy3AJ6QK6vp
+   SHb6Qo/kYJj1nLD/ylPDce6eLl/TYUoay/g0Q4P+xhK24QPbn0Z5YJLaB
+   AC9MX/ZaZamIVL4B/+lQATt/WsiprzNjus7gLyxES7NFu1gSmMAeGJd7u
+   viLXT2ZwOdUd9AzlNPeN7sp+/lpxyBewutQY1xdrIwPtyt3gw0hmGByik
+   0Aw9I+VP6G1YW8lSNkE4mQ5WU/2DucHn6JUlMXHfiM/uOJ4QNYxcZ4Sts
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="asc'?scan'208";a="237843909"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jul 2023 01:51:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 26 Jul 2023 01:51:38 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 26 Jul 2023 01:51:37 -0700
+Date:   Wed, 26 Jul 2023 09:51:02 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <mm-commits@vger.kernel.org>, <surenb@google.com>,
+        <willy@infradead.org>, <akpm@linux-foundation.org>
+Subject: Re: +
+ mm-drop-per-vma-lock-when-returning-vm_fault_retry-or-vm_fault_completed-fix.patch
+ added to mm-unstable branch
+Message-ID: <20230726-navy-eatery-76a68523906b@wendy>
+References: <20230725173416.EFD4EC433C9@smtp.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8NCZVmOj36oQD+Pc"
+Content-Disposition: inline
+In-Reply-To: <20230725173416.EFD4EC433C9@smtp.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,49 +68,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Glozar <tglozar@redhat.com>
+--8NCZVmOj36oQD+Pc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
-allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
-GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
-patchset notes for details).
+On Tue, Jul 25, 2023 at 10:34:16AM -0700, Andrew Morton wrote:
+>=20
+> The patch titled
+>      Subject: mm-drop-per-vma-lock-when-returning-vm_fault_retry-or-vm_fa=
+ult_completed-fix
+> has been added to the -mm mm-unstable branch.  Its filename is
+>      mm-drop-per-vma-lock-when-returning-vm_fault_retry-or-vm_fault_compl=
+eted-fix.patch
+>=20
+> This patch will shortly appear at
+>      https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree=
+/patches/mm-drop-per-vma-lock-when-returning-vm_fault_retry-or-vm_fault_com=
+pleted-fix.patch
+>=20
+> This patch will later appear in the mm-unstable branch at
+>     git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+>=20
+> Before you just go and hit "reply", please:
+>    a) Consider who else should be cc'ed
+>    b) Prefer to cc a suitable mailing list as well
+>    c) Ideally: find the original patch on the mailing list and do a
+>       reply-to-all to that, adding suitable additional cc's
+>=20
+> *** Remember to use Documentation/process/submit-checklist.rst when testi=
+ng your code ***
+>=20
+> The -mm tree is included into linux-next via the mm-everything
+> branch at git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+> and is updated there every 2-3 working days
+>=20
+> ------------------------------------------------------
+> From: Matthew Wilcox <willy@infradead.org>
+> Subject: mm-drop-per-vma-lock-when-returning-vm_fault_retry-or-vm_fault_c=
+ompleted-fix
+> Date: Tue, 25 Jul 2023 15:31:17 +0100
+>=20
+> fix riscv
+>=20
+> Link: https://lkml.kernel.org/r/CAJuCfpE6GWEx1rPBmNpUfoD5o-gNFz9-UFywzCE2=
+PbEGBiVz7g@mail.gmail.com
+> Signed-off-by: Matthew Wilcox <willy@infradead.org>
+> Reported-by: Conor Dooley <conor.dooley@microchip.com>
+>   Closes: https://lkml.kernel.org/r/20230725-anaconda-that-ac3f79880af1@w=
+endy
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
-BUG (sleeping function called from invalid context) on RT kernels.
+Things look good in today's next with this fix. Thanks.
 
-preempt_disable was introduced together with lock_sk and rcu_read_lock
-in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
-in parallel") with no comment on why it is necessary.
+--8NCZVmOj36oQD+Pc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Tomas Glozar <tglozar@redhat.com>
----
- net/core/sock_map.c | 2 --
- 1 file changed, 2 deletions(-)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMDedgAKCRB4tDGHoIJi
+0olXAP9bZhMw1QS/0UAlmrKBlSydfVncap53pvewJZAmqv1+sAEAjqxmQw40XWvX
+aCrwvJimhalYmV7xjqL1SfeP1tkZew0=
+=+Cpn
+-----END PGP SIGNATURE-----
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 19538d628714..08ab108206bf 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
- 	__acquires(&sk->sk_lock.slock)
- {
- 	lock_sock(sk);
--	preempt_disable();
- 	rcu_read_lock();
- }
- 
-@@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
- 	__releases(&sk->sk_lock.slock)
- {
- 	rcu_read_unlock();
--	preempt_enable();
- 	release_sock(sk);
- }
- 
-
-base-commit: 22117b3ae6e37d07225653d9ae5ae86b3a54f99c
--- 
-2.39.3
-
+--8NCZVmOj36oQD+Pc--
