@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEC4762F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1B4762F7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjGZITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        id S231912AbjGZIS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbjGZISr (ORCPT
+        with ESMTP id S231684AbjGZIRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:18:47 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778E730E0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:08:27 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q80BdM032335;
-        Wed, 26 Jul 2023 08:08:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=jpw0ZnOOUpjcp/35VH40grYwUq/U2eV9RmVWmFebxKk=;
- b=cKGjpbCzJViq71+U3TzZPFIwuxtui3r3C52/AUJ4zowmwxtW1/h8noXWray4+ZMjlLmn
- J/HrRIkbezapUyhpypFXUeXYOEYCeOrMTNLCW4tiSBaeSJ93a2ubGHPprsvVQF28Ubv1
- SVvSGb/Gs8xIAtt7EWlQm7iocYn9zwJ+Q5yg49y6ab15yF/TP50M2FvJtakQBXg2O5av
- tw9zUuPLSMSny7mMTh1WJO4Tq6+t2AHIxzJHgC4ihtM7z3c+aU8L5xuhmSptcFD5Va/Z
- Nea7A29P3XBn9IYOd/stNVKx29mueCCLIVl5sX/x5gOyMhMqlOcmXd4GhfexpIEDkoAZ IA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj0er4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:08:16 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q80LnB000378;
-        Wed, 26 Jul 2023 08:07:50 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2ykj0d9j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:07:49 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q6TESP002639;
-        Wed, 26 Jul 2023 08:07:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0txk30tg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 08:07:12 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36Q87A9L55116046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 08:07:10 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 287C02004D;
-        Wed, 26 Jul 2023 08:07:10 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E451320040;
-        Wed, 26 Jul 2023 08:07:08 +0000 (GMT)
-Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.ibm.com (unknown [9.204.206.66])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 26 Jul 2023 08:07:08 +0000 (GMT)
-Date:   Wed, 26 Jul 2023 13:37:06 +0530
-From:   Gautam Menghani <Gautam.Menghani@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Gautam Menghani <gautam@linux.ibm.com>, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch/powerpc: Remove unnecessary endian conversion code
- in XICS
-Message-ID: <uwmugr3tcx2gwujvit7ve77xtx7n7b4kz4yuo2pwoemx2im7hi@4sqglwnh3c6w>
-References: <20230630055628.17790-1-gautam@linux.ibm.com>
- <39920b0f-f261-8417-af7a-eef791ad5726@gmail.com>
+        Wed, 26 Jul 2023 04:17:44 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BB1658B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:07:27 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4R9mhn71bVz9slb;
+        Wed, 26 Jul 2023 10:07:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1690358842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xHAU2WtxLXCpVwOzHZxYiWNoKZatMkP5oCbz6WI4SPA=;
+        b=vMEbZRzJAQ3lUXTzas65sGQJH7SiTk2H9+hGxGPfZBgaoNnDDESraZNFpqi+KbbBY3Bn76
+        pg3PEa4GhMsndYsMHpjPfNTK54A1xOPLLgp+dfcWlaWMem0PuTXRoCsFRDHqtxtZcX6Jur
+        Q/HIIU1v8MR3O5Ii0s72NZnFWy8/W/zKsmiKeYGAVbdkmMVb4pNpzZZFxv6TTg92E83vVQ
+        QOPqcNW1EBrlF3HSifSTgscVfHRV1vfMQKlpGoMnGSaZB9gM7YROGdoUXkiU2QdrnLen3Z
+        l5YzlmE1/iDJypA4/AkNcR/1B6s5Rc7/yATifP8rv4TJHBjWZh86d4MpPq/nnw==
+Message-ID: <8eb58a5f-02d0-fadf-1d5a-790b6af2d81e@mailbox.org>
+Date:   Wed, 26 Jul 2023 10:07:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39920b0f-f261-8417-af7a-eef791ad5726@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Xb-qKmY1UzHAzWLWxMyBJiOGDJ68_AxJ
-X-Proofpoint-ORIG-GUID: IsRg_ePtkxyBglHCeqg0QWj7fK7Cj_NX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_01,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxlogscore=921 phishscore=0 clxscore=1011
- bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260070
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
+ Document DRM device reset expectations)
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
+ <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+ <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
+Content-Language: de-CH-frami, en-CA
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-ID: c99f3890bef0434ccc7
+X-MBO-RS-META: 7uaxsifuwngj5cyzfa3ngxf83jx37585
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,44 +70,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 06, 2023 at 05:50:57PM +1000, Jordan Niethe wrote:
+On 7/25/23 15:02, André Almeida wrote:
+> Em 25/07/2023 05:03, Michel Dänzer escreveu:
+>> On 7/25/23 04:55, André Almeida wrote:
+>>> Hi everyone,
+>>>
+>>> It's not clear what we should do about non-robust OpenGL apps after GPU resets, so I'll try to summarize the topic, show some options and my proposal to move forward on that.
+>>>
+>>> Em 27/06/2023 10:23, André Almeida escreveu:
+>>>> +Robustness
+>>>> +----------
+>>>> +
+>>>> +The only way to try to keep an application working after a reset is if it
+>>>> +complies with the robustness aspects of the graphical API that it is using.
+>>>> +
+>>>> +Graphical APIs provide ways to applications to deal with device resets. However,
+>>>> +there is no guarantee that the app will use such features correctly, and the
+>>>> +UMD can implement policies to close the app if it is a repeating offender,
+>>>> +likely in a broken loop. This is done to ensure that it does not keep blocking
+>>>> +the user interface from being correctly displayed. This should be done even if
+>>>> +the app is correct but happens to trigger some bug in the hardware/driver.
+>>>> +
+>>> Depending on the OpenGL version, there are different robustness API available:
+>>>
+>>> - OpenGL ABR extension [0]
+>>> - OpenGL KHR extension [1]
+>>> - OpenGL ES extension  [2]
+>>>
+>>> Apps written in OpenGL should use whatever version is available for them to make the app robust for GPU resets. That usually means calling GetGraphicsResetStatusARB(), checking the status, and if it encounter something different from NO_ERROR, that means that a reset has happened, the context is considered lost and should be recreated. If an app follow this, it will likely succeed recovering a reset.
+>>>
+>>> What should non-robustness apps do then? They certainly will not be notified if a reset happens, and thus can't recover if their context is lost. OpenGL specification does not explicitly define what should be done in such situations[3], and I believe that usually when the spec mandates to close the app, it would explicitly note it.
+>>>
+>>> However, in reality there are different types of device resets, causing different results. A reset can be precise enough to damage only the guilty context, and keep others alive.
+>>>
+>>> Given that, I believe drivers have the following options:
+>>>
+>>> a) Kill all non-robust apps after a reset. This may lead to lose work from innocent applications.
+>>>
+>>> b) Ignore all non-robust apps OpenGL calls. That means that applications would still be alive, but the user interface would be freeze. The user would need to close it manually anyway, but in some corner cases, the app could autosave some work or the user might be able to interact with it using some alternative method (command line?).
+>>>
+>>> c) Kill just the affected non-robust applications. To do that, the driver need to be 100% sure on the impact of its resets.
+>>>
+>>> RadeonSI currently implements a), as can be seen at [4], while Iris implements what I think it's c)[5].
+>>>
+>>> For the user experience point-of-view, c) is clearly the best option, but it's the hardest to archive. There's not much gain on having b) over a), perhaps it could be an optional env var for such corner case applications.
+>>
+>> I disagree on these conclusions.
+>>
+>> c) is certainly better than a), but it's not "clearly the best" in all cases. The OpenGL UMD is not a privileged/special component and is in no position to decide whether or not the process as a whole (only some thread(s) of which may use OpenGL at all) gets to continue running or not.
+>>
 > 
-> 
-> On 30/6/23 3:56 pm, Gautam Menghani wrote:
-> > Remove an unnecessary piece of code that does an endianness conversion but
-> > does not use the result. The following warning was reported by Clang's
-> > static analyzer:
-> > 
-> > arch/powerpc/sysdev/xics/ics-opal.c:114:2: warning: Value stored to
-> > 'server' is never read [deadcode.DeadStores]
-> >          server = be16_to_cpu(oserver);
-> > 
-> > As the result of endianness conversion is never used, delete the line
-> > and fix the warning.
-> > 
-> > Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
-> 
-> 'server' was used as a parameter to opal_get_xive() in commit 5c7c1e9444d8
-> ("powerpc/powernv: Add OPAL ICS backend") when it was introduced. 'server'
-> was also used in an error message for the call to opal_get_xive().
-> 
-> 'server' was always later set by a call to ics_opal_mangle_server() before
-> being used.
-> 
-> Commit bf8e0f891a32 ("powerpc/powernv: Fix endian issues in OPAL ICS
-> backend") used a new variable 'oserver' as the parameter to opal_get_xive()
-> instead of 'server' for endian correctness. It also removed 'server' from
-> the error message for the call to opal_get_xive().
-> 
-> It was commit bf8e0f891a32 that added the unnecessary conversion and never
-> used the result.
-> 
-> Reviewed-by: Jordan Niethe <jniethe5@gmail.com>
-> 
+> Thank you for the feedback. How do you think the documentation should look like for this part?
 
-Hello Michael,
+The initial paragraph about robustness should say "keep OpenGL working" instead of "keep an application working". If an OpenGL context stops working, it doesn't necessarily mean the application stops working altogether.
 
-Do you have any more questions on this patch or is it good to go?
 
-Thanks,
-Gautam
+If the application doesn't use the robustness extensions, your option b) is what should happen by default whenever possible. And it really has to be possible if the robustness extensions are supported.
+
+
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
