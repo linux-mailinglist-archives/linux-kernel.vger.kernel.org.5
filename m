@@ -2,258 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 566F4763845
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252A6763848
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjGZOCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        id S233960AbjGZODb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjGZOCq (ORCPT
+        with ESMTP id S232336AbjGZOD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:02:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E093271C
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:02:35 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bba04b9df3so26769175ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690380155; x=1690984955;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i3qDaq0f1OxJhpdvpNf87CWRe2a484dJSynLBrocNRs=;
-        b=v9O3J2EwmJ+bAwI34M0dzmx7i0AsS29WdmP/9LE1CdEVJ8m1qfm14OJX5SSBCeLnQQ
-         dPk9Zubn6upXSBumweY4mVEtluOVWG9lRFgHRx12/ogmZJq+ZwKeyxPCQwlVudnF5Y3y
-         2Dg/FqDNkBDq97zHSLMmeeC9u3NGuTbLshMKNapnWFb4mKNij6cqIZjBP7WzA2Fs51fk
-         CkxmaErozUkm1H8CBAiVxfGprXEyoQINhvdbsGktKKP9h8Eid/rXZqiW/GHpJO7WA3s3
-         +tIYtIszl6AXy2+DynKpo1+FbXpAuH3DeKluj2kNQzbwn9/Hvk2gjhVCsnrrrKoOdW4/
-         GZ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690380155; x=1690984955;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3qDaq0f1OxJhpdvpNf87CWRe2a484dJSynLBrocNRs=;
-        b=ILxn/ySmAiZeJwPKe8rja5eYAT/S2h6P2kB622XHS+5Hw1rkX2zQ5M3w/hi2ueAejO
-         UGVePqCUMx1HPcuSatWZxE/U53MEWt5bu9ymRzhFHsit9xCYDHWYBBt1JIOokwVe9pK5
-         dDLiXLS1Klw4POPsG24ndaCgb96wopC68FrptCi55a2DSXjv4P923y5FvA5Bd5T/ERHG
-         MIkh4+ycCI9v3RUg7IDsWxDlVhGKWJIxGJ3z0/oTNwO645KRO6rnh21ri6IPnRtb68km
-         pdCjaT3N99G0H9Es6ltSVwKLWCtq2uTvPL0s3UAccHpBDIyR7qkc146kFyVHvg118WNB
-         nROw==
-X-Gm-Message-State: ABy/qLZRpxHFXXl6e3sISzpmn35jvvn6CtML0vR0Wb4TTEhy4F1ePoQC
-        ojYigVij7+JonM/my0mwC/OhDA==
-X-Google-Smtp-Source: APBJJlG7wpvZUVtencQnkDUvyX2MWDqoaSaKUNXQr4fuZuTOSlKZomZWUoQiFIu8sdXB60c9lDmo5Q==
-X-Received: by 2002:a17:902:e885:b0:1b5:5052:5af7 with SMTP id w5-20020a170902e88500b001b550525af7mr2705823plg.8.1690380154815;
-        Wed, 26 Jul 2023 07:02:34 -0700 (PDT)
-Received: from ghost ([2601:c0:ca7f:e7c0:14ff:979a:dd27:29d7])
-        by smtp.gmail.com with ESMTPSA id jw11-20020a170903278b00b001b89d9a58e9sm5832564plb.132.2023.07.26.07.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 07:02:34 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 10:02:30 -0400
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
-Subject: Re: [PATCH v6 1/4] RISC-V: mm: Restrict address space for
- sv39,sv48,sv57
-Message-ID: <ZMEndrCQPOID/HHp@ghost>
-References: <20230714165508.94561-1-charlie@rivosinc.com>
- <20230714165508.94561-2-charlie@rivosinc.com>
- <CAHVXubhpQGYvNdRnU8Obi-6h6okdXYUuo7WGeCU_LbscUbmgjg@mail.gmail.com>
+        Wed, 26 Jul 2023 10:03:29 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2075.outbound.protection.outlook.com [40.107.92.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B3F2698;
+        Wed, 26 Jul 2023 07:03:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kigfaMPBFXE0/eiU7r2X/cevIYC/tqaH6mQ92FI89EJbXgMW1Y97ilTwKhqBq7u+aeea0q3WaR2DKbX65zk5VpwRGSxU03mG4CZAvO3HcXAiLFKN9V4G1GTWlCPGenzBKC08EGF57Xrt3q0vLcIbOTRmKoHvZA0GXSTIWwnvTzbCWTBrU9KCF6PXrbss4pr/TNR0xXeG0DL5OIiO5mP8TfG3YajQZukvJozvEe5lXLWSgfAM2ydxOYCQcqJJqGa3qtUk8Z9lpZSNTScrCImFHaCikJ57sibULii7X9ZTTVDEGi8Ctxg93SLOqFQk8hARBklVVB4SC3OIAssL8zK3KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O16s9mDwXGZepBQKwjqTObxi8BGw6PO073MuYmCbEtE=;
+ b=oVr5HtmBxXQD2YkHEX0tzmMvI2OKRhaT4YOGkLSDkVnCDc9PQm67XR6VmmlrKOqL7xEhm7PbJ41qtOq0h5sPum8ycg26JWlYIhrtnNEzXRf5rwnWbUkah8LO9yZw1Y/Ju0IqbJeKyO9+DHPxiuqFK4JdrG3EXhn6d+s4ojR+GVsq/JpK11veiYXPfArNgCx6cOi99zpeHbm9fMb43FMZ3RD0Xxh9tqiwdP3PhnMmcrYMQeEDrOZb6Uiu6uJy14vv82tUBTYminKTxC/7hNKAJpjC62q3GzpHuOFLSNjxNZPRL/Ws8rFbviOygUXxfd6eosFKDZ9s33sHT1Pb9aImSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O16s9mDwXGZepBQKwjqTObxi8BGw6PO073MuYmCbEtE=;
+ b=RF7TaSwnx6cqiPbLzsG4dYL3/M7fsOMs6SCYTokCMbKognKeAOBXBoPnG80WzHhyOOJHtK8Drp0mctUTlNxH34t1eiaR/sjt+jvOHGdxTQSfnMA9dSH2F4xEXr/4daZxiiM4rmG0GFT06y31xO6PA8C/n1awohC4rf8CRYD8Ehc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by CH3PR12MB9217.namprd12.prod.outlook.com (2603:10b6:610:195::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30; Wed, 26 Jul
+ 2023 14:03:26 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 14:03:26 +0000
+Message-ID: <a9b7df8f-77db-d8dc-efab-9ae7e9ef6922@amd.com>
+Date:   Wed, 26 Jul 2023 09:03:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Question] int3_selftest() generates a #UD instead of a #BP when
+ create a SEV VM
+Content-Language: en-US
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Cc:     linux-coco@lists.linux.dev
+References: <20230726024133.GA434307@L-PF27918B-1352.>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <20230726024133.GA434307@L-PF27918B-1352.>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1P222CA0117.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c5::23) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHVXubhpQGYvNdRnU8Obi-6h6okdXYUuo7WGeCU_LbscUbmgjg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|CH3PR12MB9217:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9cc4c194-8ae5-4ac4-bba5-08db8de114d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RS7VWxRhHYms9FEfYVIIVr52RIs+aILZ/UocFlnUa0QU1x201+ULJXkg4cFIl1SXp21okAXjnOfYiXcNf8KghvfZfG3Ge2D48+aawJZJLi9ev9qLPGJpLVtfgEkoB/fcs3Q/nBxiXSUsoyv3X9cDL0WFE+lV6qasDYOvN8Y950VVo3Z09SZIiSuquhfdGVHS8ESyvh5//Nk1oDIZnXaN6Fw9xqmDnbqKrk8h7QsmgJQDpba3ZMJz4s+WkzeUynbxYGoPv2okg9F2zcCJD6o17IHwuVqJhpo3SjAa4yUGTiKoteWJv7X6ohCGmSRVB/l9/jfZO2C9vUTh9hQT8Fw0jSjGjCtn/yAxycJg/crvzgC/GO0MVVLuV74ACBKBN7foBg2lziUtOC7IBdxV9pr1etYe9NZGRC8z6mIBOKsAnCeUJpjQSeNhjOykdqzWVUrfOWKSLtmXK62dKSDI7XN6g7SPkD1zBoFg3n5FAM+/uRyiAz0Zc9Z9C0w+sK31GhvyNd9YAGJWOMczNYl43g7nMDyKI+TEw7w5mthyn3XeJJpaUFl3Nmkl+GlTXxnqMFmIDEbFH2okCrvxdMKX6n7iHr5Br2M/W+piygUyRP/xmnagIpce1g+rXNXFXYGQxR5Rd2IvHIVBgmWx1QxXX1VbPA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(366004)(136003)(346002)(39860400002)(451199021)(41300700001)(53546011)(186003)(83380400001)(6506007)(26005)(478600001)(6512007)(2906002)(36756003)(6486002)(45080400002)(31696002)(86362001)(5660300002)(66476007)(4326008)(66946007)(66556008)(8676002)(2616005)(8936002)(316002)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHZET0NmZXQ5dUZCZnRLcVg5NC9lMTBvT3pYU2ZTcWQrc0JPRThyQkRaaDJW?=
+ =?utf-8?B?M1d3UUZDNHlBOHJOZEIvL01vOG1kWUlQVERpZTk5U29MS3VSL0Z1YzJmbmo0?=
+ =?utf-8?B?OGZwSnhJWnl1dTJnOWE0V25wckl1ZUZsZVJMNllRZUZ2S2t4bERkbkZvWWd0?=
+ =?utf-8?B?S2lkSjk1QWV1b0tsQXJ6RVlrTWlVN2x4UWZrZWgvYllCc0xJM3J6NStGaHhn?=
+ =?utf-8?B?ZWVqWStjK2M4U25lcmRkNXJHSmZLMGNGd2RUWTJDemN0RW8xVUNMRERoeTZu?=
+ =?utf-8?B?bmZUK0xYRjd1ZnBONGxaNHBseGloNXBncFRlVzllN0ZnYVozNjg0NE1VUE5a?=
+ =?utf-8?B?OE9kWHExK1VKdGVmV2RJSENOaTI0MXhiWFlWK0lVSnFOZ1VqQVdyVkdHU0NE?=
+ =?utf-8?B?cytRdzJoYmY1V0xpckpKdFlKNVlQeUtVOFJqRmZkQWdqZFJlS0lseDF1ZnN3?=
+ =?utf-8?B?UnNJenRCN010emxhRkpJVE1DVUpFZ0RzOG5uaE9nWHRKd3FpcGxYNFEzSkMw?=
+ =?utf-8?B?K1VkNEdNRGZzdW5ybWdxbHBkTWk5b05uUWNZRGdQWGRUZ0t4YVN4VnM1eUda?=
+ =?utf-8?B?c2w3Q1ArcUVQQVAyM1RNYW9QV1pic2VKN0xrQUFBTUNSMm5MYTRDV1daeU50?=
+ =?utf-8?B?aWxWRTVJVnJ1S21CNVp4QzJFTnhnS2twa21TLy9vVFJndDdHQWovNVNTNlRZ?=
+ =?utf-8?B?M0hscGNsdFVmdzIyWElrY2d5YUs5cytvVjFZdDdSN252emxkaVByYlc3MmxV?=
+ =?utf-8?B?RnNjMm56OTdFL3R4VThrajdWeWhuTE54NHB5UHJCRGhmRW5pOEl4TkRBekUx?=
+ =?utf-8?B?dkxUMUd1ci9MbkFlM1M4WndoU0pBakp0N1l1VTZrWnBWQmU4N1JETktibGtR?=
+ =?utf-8?B?dlhHZE9Jdld0d29ocEtsUlI5OUl3L1dVZWZKdFlucExVZEtjLytQNW1qRzE5?=
+ =?utf-8?B?Rkpqc09semJnUUFpT3ptQWVmQ0QzM2NWZlJPak5RTStzeDRmTlRLb2M1L29Q?=
+ =?utf-8?B?aFJhQ2Voc2VFT3VJTXMzUHZEbk9TUE5ia2oxY1pkNFRIN1hjM1JJdlZrSGY4?=
+ =?utf-8?B?RVNuQXJhM0JOYndkb2FvVjlrcGF2d3QyNzdkUzVzYVV4NzBZaUpObkVZMHZD?=
+ =?utf-8?B?Z0pVRXVLSi9JV0s0Rm1YM3NzRTFIeUY2SWRqNy9kTEhUU002SDlHSU03T0U0?=
+ =?utf-8?B?MFlFeFV0VTJRSTdYaFY0ajcxUjM3MlhRbkR4TTZUaGxFTERBOXlZUFFXaXZU?=
+ =?utf-8?B?SmxTckNPdXBDNW1YNFQ5ZTBYWEZobWhnUEkrREN3cXhhRE9qb0s1MFk5MDJJ?=
+ =?utf-8?B?Y3phZ0hWQXlnVEpaQm80S2pOYkRvSGRhdkV3NFFlOHluMzBaMVJUM3p6L1pz?=
+ =?utf-8?B?Vk5TTkQ1YmZkbUxuMldjRzRpaG5yRUV1T3p3VWMrNGRTU1UvSk9yd0VZS1kr?=
+ =?utf-8?B?aEFCUTJqSlhPVmU0cmgrM3dSb0tacndLaE1ac3pvbklmOFVIUXJCeEhPcjM3?=
+ =?utf-8?B?UERZZVdDcVZJVFNPZGtzUkhlTDV5TnFoQzFiWC9iYndNZXlncnpITld2ZlBU?=
+ =?utf-8?B?elhxaGIrdkIyRHdNdGtSYWcvRUJsdm5tSzlEMlpIVG1KRHFwSE1zWGpZcWNO?=
+ =?utf-8?B?WDcrTmhOdngzK3ZjOGFsblZnZVVmbkdTRDNkOFJWc2txclZzS3k3UVlkZTd1?=
+ =?utf-8?B?K2t5Q3Q4U0xINXpscUVzbTRnVFoyRER5TUhsRmo5R0ZjT2hpNTNxektQdUkr?=
+ =?utf-8?B?b29rT0NRb01OanZra0dMQUNqeldjNlZzMlNyeURKTDZOVGpSa2I1aDYva09Z?=
+ =?utf-8?B?RjU0SERSMlBMd2JIQlNyblROT0JFZHJjY24wK2srekltQVd1R0pKVVVpdnNV?=
+ =?utf-8?B?bEw4NC9pWE1xSmpIR1lSUTRlbFBCNmNGNENicVVFK2hUdGdQY0pkdlRpcGNp?=
+ =?utf-8?B?V1QwV0ZFQzJnV1dtNVo0N0EvaTJPdzFOWFNTVFJOT0ZabVhmcHluVzdNd3dE?=
+ =?utf-8?B?Y0FqMW8zYitPNU01WmtsL3Q3WVRQL1RXY2EzaWN2eUc5R3UySGhxWGtwYWwr?=
+ =?utf-8?B?ZzhSbm9WYW9LTmRJeDdwZ25GOHpDcU1vZ3BQT1kwY3ByeEw0QytPRnZ0N2ZN?=
+ =?utf-8?Q?oep8Wg6Oe8PvFu0tGMQYyUg9i?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cc4c194-8ae5-4ac4-bba5-08db8de114d3
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 14:03:26.1257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ynHqz01pKzZ51Cw1RThyDCBUBf2QkuwUquNZgSSkR9abeIP1Amdsd3ogveVv8SWdVk/rfiStIoh7lu2T8QX9eQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9217
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 10:13:54AM +0200, Alexandre Ghiti wrote:
-> On Fri, Jul 14, 2023 at 6:55 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
-> >
-> > Make sv48 the default address space for mmap as some applications
-> > currently depend on this assumption. A hint address passed to mmap will
-> > cause the largest address space that fits entirely into the hint to be
-> > used. If the hint is less than or equal to 1<<38, an sv39 address will
-> > be used. An exception is that if the hint address is 0, then a sv48
-> > address will be used. After an address space is completely full, the next
-> > smallest address space will be used.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/elf.h       |  2 +-
-> >  arch/riscv/include/asm/pgtable.h   | 12 +++++++-
-> >  arch/riscv/include/asm/processor.h | 46 +++++++++++++++++++++++++-----
-> >  3 files changed, 51 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-> > index c24280774caf..5d3368d5585c 100644
-> > --- a/arch/riscv/include/asm/elf.h
-> > +++ b/arch/riscv/include/asm/elf.h
-> > @@ -49,7 +49,7 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
-> >   * the loader.  We need to make sure that it is out of the way of the program
-> >   * that it will "exec", and that there is sufficient room for the brk.
-> >   */
-> > -#define ELF_ET_DYN_BASE                ((TASK_SIZE / 3) * 2)
-> > +#define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) * 2)
-> >
-> >  #ifdef CONFIG_64BIT
-> >  #ifdef CONFIG_COMPAT
-> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> > index 75970ee2bda2..e13f5872bfe9 100644
-> > --- a/arch/riscv/include/asm/pgtable.h
-> > +++ b/arch/riscv/include/asm/pgtable.h
-> > @@ -63,12 +63,22 @@
-> >   * position vmemmap directly below the VMALLOC region.
-> >   */
-> >  #ifdef CONFIG_64BIT
-> > +#define VA_BITS_SV39 39
-> > +#define VA_BITS_SV48 48
-> > +#define VA_BITS_SV57 57
-> > +
-> > +#define VA_USER_SV39 (UL(1) << (VA_BITS_SV39 - 1))
-> > +#define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
-> > +#define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
-> > +
-> >  #define VA_BITS                (pgtable_l5_enabled ? \
-> > -                               57 : (pgtable_l4_enabled ? 48 : 39))
-> > +                               VA_BITS_SV57 : (pgtable_l4_enabled ? VA_BITS_SV48 : VA_BITS_SV39))
-> >  #else
-> >  #define VA_BITS                32
-> >  #endif
-> >
-> > +#define MMAP_VA_BITS ((VA_BITS >= VA_BITS_SV48) ? VA_BITS_SV48 : VA_BITS)
-> > +
-> >  #define VMEMMAP_SHIFT \
-> >         (VA_BITS - PAGE_SHIFT - 1 + STRUCT_PAGE_MAX_SHIFT)
-> >  #define VMEMMAP_SIZE   BIT(VMEMMAP_SHIFT)
-> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > index c950a8d9edef..14a5396eed3d 100644
-> > --- a/arch/riscv/include/asm/processor.h
-> > +++ b/arch/riscv/include/asm/processor.h
-> > @@ -13,20 +13,52 @@
-> >
-> >  #include <asm/ptrace.h>
-> >
-> > -/*
-> > - * This decides where the kernel will search for a free chunk of vm
-> > - * space during mmap's.
-> > - */
-> > -#define TASK_UNMAPPED_BASE     PAGE_ALIGN(TASK_SIZE / 3)
-> > -
-> > -#define STACK_TOP              TASK_SIZE
-> >  #ifdef CONFIG_64BIT
-> > +#define DEFAULT_MAP_WINDOW     (UL(1) << (MMAP_VA_BITS - 1))
-> >  #define STACK_TOP_MAX          TASK_SIZE_64
-> > +
-> > +#define arch_get_mmap_end(addr, len, flags)    \
-> > +({     \
-> > +       unsigned long mmap_end; \
-> > +       if ((addr) >= VA_USER_SV57)     \
-> > +               mmap_end = STACK_TOP_MAX;       \
-> > +       else if ((((addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48))       \
-> > +               mmap_end = VA_USER_SV48;        \
-> > +       else if ((addr) == 0)   \
-> > +               mmap_end = DEFAULT_MAP_WINDOW;  \
-> > +       else    \
-> > +               mmap_end = VA_USER_SV39;        \
-> > +       mmap_end;       \
-> > +})
+On 7/25/23 21:41, Wu Zongyong wrote:
+> Hi,
 > 
-> What about the following instead:
+> I try to boot a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with a
+> firmware written by myself.
 > 
-> #define arch_get_mmap_end(addr, len, flags)    \
-> ({     \
->        unsigned long mmap_end; \
->        if ((addr) >= VA_USER_SV57) \
->           mmap_end = STACK_TOP_MAX; \ // Maybe a comment here that
-> says it returns the max user address of the current mode, not obvious
-> at first sight.
->        else \
->           mmap_end = DEFAULT_MAP_WINDOW; \
->        mmap_end; \
-> })
+> But when the linux kernel executed the int3_selftest(), a #UD generated
+> instead of a #BP.
 > 
-> The only corner case is when sv57 is active, then only a hint greater
-> than VA_USER_SV57 can return a sv57 user address. Otherwise, we just
-> need to return the default mmap end right?
->
-> > +
-> > +#define arch_get_mmap_base(addr, base) \
-> > +({     \
-> > +       unsigned long mmap_base;        \
-> > +       if (((addr) >= VA_USER_SV57) && (VA_BITS >= VA_BITS_SV57))      \
-> > +               mmap_base = (base) + (VA_USER_SV57 - DEFAULT_MAP_WINDOW);       \
-> > +       else if ((((addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48))       \
-> > +               mmap_base = (base) + (VA_USER_SV48 - DEFAULT_MAP_WINDOW);       \
-> > +       else if ((addr) == 0)   \
-> > +               mmap_base = (base);     \
-> > +       else    \
-> > +               mmap_base = (base) + (VA_USER_SV39 - DEFAULT_MAP_WINDOW);       \
-> > +       mmap_base;      \
-> > +})
-> > +
+> The stack is as follows.
 > 
-> From arch_pick_mmap_layout()
-> (https://elixir.bootlin.com/linux/latest/source/mm/util.c#L433), the
-> "base" argument is:
+>      [    0.141804] invalid opcode: 0000 [#1] PREEMPT SMP^M
+>      [    0.141804] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.3.0+ #37^M
+>      [    0.141804] RIP: 0010:int3_selftest_ip+0x0/0x2a^M
+>      [    0.141804] Code: eb bc 66 90 0f 1f 44 00 00 48 83 ec 08 48 c7 c7 90 0d 78 83 c7 44 24 04 00 00 00 00 e8 23 fe ac fd 85 c0 75 22 48 8d 7c 24 04 <cc> 90 90 90 90 83 7c 24 04 01 75 13 48 c7 c7 90 0d 78 83 e8 42 fc^M
+>      [    0.141804] RSP: 0000:ffffffff82803f18 EFLAGS: 00010246^M
+>      [    0.141804] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000007ffffffe^M
+>      [    0.141804] RDX: ffffffff82fd4938 RSI: 0000000000000296 RDI: ffffffff82803f1c^M
+>      [    0.141804] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000fffeffff^M
+>      [    0.141804] R10: ffffffff82803e08 R11: ffffffff82f615a8 R12: 00000000ff062350^M
+>      [    0.141804] R13: 000000001fddc20a R14: 000000000090122c R15: 0000000002000000^M
+>      [    0.141804] FS:  0000000000000000(0000) GS:ffff88801f200000(0000) knlGS:0000000000000000^M
+>      [    0.141804] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+>      [    0.141804] CR2: ffff888004c00000 CR3: 000800000281f000 CR4: 00000000003506f0^M
+>      [    0.141804] Call Trace:^M
+>      [    0.141804]  <TASK>^M
+>      [    0.141804]  alternative_instructions+0xe/0x100^M
+>      [    0.141804]  check_bugs+0xa7/0x110^M
+>      [    0.141804]  start_kernel+0x320/0x430^M
+>      [    0.141804]  secondary_startup_64_no_verify+0xd3/0xdb^M
+>      [    0.141804]  </TASK>^M
+>      [    0.141804] Modules linked in:^M
+>      [    0.141804] ---[ end trace 0000000000000000 ]--
 > 
-> - either STACK_TOP in top-down (more or less some random offset)
-> - or TASK_UNMAPPED_BASE in bottom-up (more or less some random offset)
+> I'm curious how this happend. I cannot find any condition that would
+> cause the int3 instruction generate a #UD according to the AMD's spec.
 > 
-> When bottom-up is the current mode, we should not change the base, so
-> adding (VA_USER_SV57 - DEFAULT_MAP_WINDOW) in the first case is not
-> right for me. When sv48 or sv57 are the active mode,
-> DEFAULT_MAP_WINDOW is equal to VA_USER_SV48 right? So (VA_USER_SV48 -
-> DEFAULT_MAP_WINDOW) is 0, so not useful. And for the last case, when
-> the user asks for a sv39 address whereas the active mode is sv48 or
-> sv57, then  (VA_USER_SV39 - DEFAULT_MAP_WINDOW) is negative and the
-> base is smaller which is not correct.
+> BTW, it worked nomarlly with qemu and ovmf.
+
+Does this happen every time you boot the guest with your firmware? What 
+processor are you running on?
+
+Thanks,
+Tom
+
 > 
-In the bottom-up case mm->mmap_base is directly used instead of
-arch_get_mmap_base so base will not be modified in that case. The math
-here is confusing so I can refactor it. I like your suggestion to
-extract out the rnd value of base with (base) - DEFAULT_MAP_WINDOW since
-base is defined as PAGE_ALIGN(STACK_TOP - gap - rnd) and STACK_TOP is
-DEFAULT_MAP_WINDOW. This (-gap-rnd) value can then directly be used
-instead of redoing the math in each if.
-> In the bottom-up case, we should preserve the base and I think that
-> again, only sv57 is the corner case to deal with.
+> Any suggestion would be appreciated!
 > 
->
-For both this comment and the one above, I think we should allow the
-user to default back to sv38. I talked to Palmer and he would prefer
-allowing selection of sv38. Since there is no overhead, there is no
-need to prevent the user from doing so.
-> >  #else
-> > +#define DEFAULT_MAP_WINDOW     TASK_SIZE
-> >  #define STACK_TOP_MAX          TASK_SIZE
-> >  #endif
-> >  #define STACK_ALIGN            16
-> >
-> > +#define STACK_TOP              DEFAULT_MAP_WINDOW
-> > +
-> > +/*
-> > + * This decides where the kernel will search for a free chunk of vm
-> > + * space during mmap's.
-> > + */
-> > +#define TASK_UNMAPPED_BASE     PAGE_ALIGN(DEFAULT_MAP_WINDOW / 3)
-> > +
-> >  #ifndef __ASSEMBLY__
-> >
-> >  struct task_struct;
-> > --
-> > 2.41.0
-> >
+> Thanks,
+> Wu Zongyong
