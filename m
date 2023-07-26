@@ -2,124 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649F4762891
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA8E76288F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 04:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjGZCJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 22:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        id S229974AbjGZCI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 22:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjGZCI4 (ORCPT
+        with ESMTP id S229737AbjGZCI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Jul 2023 22:08:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A091212B
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690337292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=95LJOf0z/Eno4OCFcFMWl++emGtMZCHYgwGRjUbJaTM=;
-        b=KvXcXBtt6HwDJEYFMoTGobwo6CAa3Z3vLbiZ6ffGqMcgq9ficLAuM1OSUkn9DItOoWtPmz
-        6yNPh2qZoBShfKLPj4pT30fT8khuxd1eoyTI9xcJKQmVdeNZwhF1BWjhQvVqvdT6OidBfg
-        28Hq/5Dsvb1n/z3One/UF1Oj0cOh1UI=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-489-7Ry0njhnO4ODIFCvntGHMg-1; Tue, 25 Jul 2023 22:08:10 -0400
-X-MC-Unique: 7Ry0njhnO4ODIFCvntGHMg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bb83eb84e5so33573345ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:10 -0700 (PDT)
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97BB2126
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:54 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba5563cd6so13916485ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 19:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690337334; x=1690942134;
+        h=cc:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qvzO5xTQNyURF4nL/piskJHmeTo2rL1d+zB5x7OHimk=;
+        b=P3IIEFPbQNJ6ydPAceQ0K37zoFX3b3J2u6B8NX8ZC0LYS9+4qVnufJnJyKV1j69+b0
+         qn00VhJ/cCwEIzq5BPya/R6SuNkeKjW08SKgzDtl3ioaP2hZmq4Vov3Z8E3uB4mVmY0w
+         JbWy8VyAazE9+WN02GeoJjHeOoPa/oR/xEUq17gPUyXhP7z71yvtqB+mbjCK2Oo98JBs
+         eAwzGbMWH02REmapWlwdU8nHEUUSOaSrWkJMC6oBVPDHiBvlBuyFInat74L6zpRdym+4
+         UrJxKrR56Em1fhpdgM7dcYKWeeXxydVjyqk8R3MbFUs3DW6/xbh/D7lhGfMKNqdFPR7D
+         j77Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690337290; x=1690942090;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=95LJOf0z/Eno4OCFcFMWl++emGtMZCHYgwGRjUbJaTM=;
-        b=DbwG8r/5awR+Sqvll2GATORTVvsDwz7YhUGrgycH+gk0rkIqqBjkha+EQ14K7Q6TTI
-         wUsEYxzn8ORsJ0t6oUqazK5S6tGpbWcXt1l9YVw/eNO2QhYdKaaG4/HzBKQblZXOs4IX
-         tvHGINXdZlyw72LF+YDRllU1j/lFP3tt1Khz6R50RaP9UlOqd+Y/280oEjb3OOs3l2KG
-         75+gUfi5UcsaBpEjuD++OpaDOp6dj40FsswQYoF0czzHhfQiSr+mDKAnGHwhUn1Mw62A
-         qMOL0JOyvCJGeTXh3pGtrw9HyD3HPpCOiMGOZ44hglANHmR4q4OSd7eJW1xjACqL+85N
-         +/sw==
-X-Gm-Message-State: ABy/qLYyDF6+t/cU9lZ40rVis5afHjq75/yV2JMw6KkDtLpJFWclOIaj
-        rZZVq6Tg+ab8eG9rxcjAQXN66To9LdQgyNBhKO9qTP6ykRAamiAye5MJbE5ODGnMFMScSf/qNf7
-        yb9T7V1pCQhJdMeUopETPMudo
-X-Received: by 2002:a17:902:ce81:b0:1b8:adc:7c3d with SMTP id f1-20020a170902ce8100b001b80adc7c3dmr1085525plg.40.1690337289914;
-        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFME03RuiNFMjrYDkMFSyzXe5DoUsVifAoxnjrckHRpcYIqgyVS/r0ZzVYgv+QZMxRzMOzqxA==
-X-Received: by 2002:a17:902:ce81:b0:1b8:adc:7c3d with SMTP id f1-20020a170902ce8100b001b80adc7c3dmr1085513plg.40.1690337289554;
-        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
-Received: from localhost ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id q8-20020a170902788800b001b9fef7f454sm11760512pll.73.2023.07.25.19.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 19:08:09 -0700 (PDT)
-From:   Coiby Xu <coxu@redhat.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] ima: require signed IMA policy when UEFI secure boot is enabled
-Date:   Wed, 26 Jul 2023 10:08:05 +0800
-Message-ID: <20230726020806.926734-1-coxu@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230703115442.129725-1-coxu@redhat.com>
-References: <20230703115442.129725-1-coxu@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690337334; x=1690942134;
+        h=cc:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qvzO5xTQNyURF4nL/piskJHmeTo2rL1d+zB5x7OHimk=;
+        b=Tn83WAmigf2BRbojiG/NNoX+b+dKUonu6sFZpDQ7qPns+3ghCFLoSXyiUKa5JHsC/I
+         0geRb0MwStxCwhMu2cdGz08ffa9Oilz426F+Z3257HbZxpvRrx4zpEYrrAF0FVYl4gEw
+         JPdp/AluK+IvnDS0TrzzO7tYIghBNbLAHacsht2suwFTWyI9END1Y+2vRLsDNZ4Mlfy5
+         SuF+ASdilQvjPBpPw2Zse5xL7U7BrT12E4iZg+/rEhCsz0TbTlWqsrLt9dQh+yPmrVOP
+         PCaNRXom7kb+tHHwzmfKLK5k6Y1ssfjEB9zPTxvZmG1u9713C5sKSYocs3OCpLHmBNaQ
+         L94g==
+X-Gm-Message-State: ABy/qLbkPSk2pRxkn+wcFeKzLDvy/skk+lkQZKx9rtqyzT4mlxagCE+0
+        dBlPRc3ZoUuSX9WfBpa5qO/+MiyuAIFwOLg=
+X-Google-Smtp-Source: APBJJlFcGWdyVXRjmhYk8oHznaQ2BZoyJHq53LoLgm0V6/jCQj6VeXM0/pLHHRwvwG+p9kRwiKJeJb2Vn9hTC44=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a17:902:f145:b0:1ae:6895:cb96 with SMTP
+ id d5-20020a170902f14500b001ae6895cb96mr3661plb.5.1690337334001; Tue, 25 Jul
+ 2023 19:08:54 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 02:08:07 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230726020810.1408299-1-rdbabiera@google.com>
+Subject: [PATCH v1] usb: typec: tcpm: set initial svdm version based on pd revision
+From:   RD Babiera <rdbabiera@google.com>
+Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, kyletso@google.com, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        RD Babiera <rdbabiera@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 099f26f22f58 ("integrity: machine keyring CA
-configuration"), users are able to add custom IMA CA keys via
-MOK.  This allows users to sign their own IMA polices without
-recompiling the kernel. For the sake of security, mandate signed IMA
-policy when UEFI secure boot is enabled.
+When sending Discover Identity messages to a Port Partner that uses Power
+Delivery v2 and SVDM v1, we currently send PD v2 messages with SVDM v2.0,
+expecting the port partner to respond with its highest supported SVDM
+version as stated in Section 6.4.4.2.3 in the Power Delivery v3
+specification. However, sending SVDM v2 to some Power Delivery v2 port
+partners results in a NAK whereas sending SVDM v1 does not.
 
-Note this change may affect existing users/tests i.e users won't be able
-to load an unsigned IMA policy when the IMA architecture specific policy
-is configured and UEFI secure boot is enabled.
+NAK messages can be handled by the initiator (PD v3 section 6.4.4.2.5.1),
+and one solution could be to resend Discover Identity on a lower SVDM
+version if possible. But, Section 6.4.4.3 of PD v2 states that "A NAK
+response Should be taken as an indication not to retry that particular
+Command."
 
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Coiby Xu <coxu@redhat.com>
+Instead, we can set the SVDM version to the maximum one supported by the
+negotiated PD revision. When operating in PD v2, this obeys Section
+6.4.4.2.3, which states the SVDM field "Shall be set to zero to indicate
+Version 1.0." In PD v3, the SVDM field "Shall be set to 01b to indicate
+Version 2.0."
+
+Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
+Cc: stable@vger.kernel.org
+Signed-off-by: RD Babiera <rdbabiera@google.com>
 ---
-v2
- - improve commit message [Mimi]
-  - explicitly mention the dependent commit
-  - add a note that the change will affect user space
- - remove "/* CONFIG_INTEGRITY_MACHINE_KEYRING .. */" to improve code
-   readability
----
- security/integrity/ima/ima_efi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/tcpm/tcpm.c | 35 +++++++++++++++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 4 deletions(-)
 
-diff --git a/security/integrity/ima/ima_efi.c b/security/integrity/ima/ima_efi.c
-index 9db66fe310d4..138029bfcce1 100644
---- a/security/integrity/ima/ima_efi.c
-+++ b/security/integrity/ima/ima_efi.c
-@@ -57,6 +57,9 @@ static const char * const sb_arch_rules[] = {
- 	"measure func=KEXEC_KERNEL_CHECK",
- #if !IS_ENABLED(CONFIG_MODULE_SIG)
- 	"appraise func=MODULE_CHECK appraise_type=imasig",
-+#endif
-+#if IS_ENABLED(CONFIG_INTEGRITY_MACHINE_KEYRING) && IS_ENABLED(CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY)
-+	"appraise func=POLICY_CHECK appraise_type=imasig",
- #endif
- 	"measure func=MODULE_CHECK",
- 	NULL
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 829d75ebab42..5b0a428fcf5d 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -3928,6 +3928,31 @@ static enum typec_cc_status tcpm_pwr_opmode_to_rp(enum typec_pwr_opmode opmode)
+ 	}
+ }
+ 
++static void tcpm_set_initial_svdm_version(struct tcpm_port *port)
++{
++	switch (port->negotiated_rev) {
++	case PD_REV30:
++		break;
++	/*
++	 * 6.4.4.2.3 Structured VDM Version
++	 * 2.0 states "At this time, there is only one version (1.0) defined.
++	 * This field Shall be set to zero to indicate Version 1.0."
++	 * 3.0 states "This field Shall be set to 01b to indicate Version 2.0."
++	 * To ensure that we follow the Power Delivery revision we are currently
++	 * operating on, downgrade the SVDM version to the highest one supported
++	 * by the Power Delivery revision.
++	 */
++	case PD_REV20:
++		typec_partner_set_svdm_version(port->partner,
++					       SVDM_VER_1_0);
++		break;
++	default:
++		typec_partner_set_svdm_version(port->partner,
++					       SVDM_VER_1_0);
++		break;
++	}
++}
++
+ static void run_state_machine(struct tcpm_port *port)
+ {
+ 	int ret;
+@@ -4165,9 +4190,10 @@ static void run_state_machine(struct tcpm_port *port)
+ 		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
+ 		 * port->explicit_contract to decide whether to send the command.
+ 		 */
+-		if (port->explicit_contract)
++		if (port->explicit_contract) {
++			tcpm_set_initial_svdm_version(port);
+ 			mod_send_discover_delayed_work(port, 0);
+-		else
++		} else
+ 			port->send_discover = false;
+ 
+ 		/*
+@@ -4455,9 +4481,10 @@ static void run_state_machine(struct tcpm_port *port)
+ 		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
+ 		 * port->explicit_contract.
+ 		 */
+-		if (port->explicit_contract)
++		if (port->explicit_contract) {
++			tcpm_set_initial_svdm_version(port);
+ 			mod_send_discover_delayed_work(port, 0);
+-		else
++		} else
+ 			port->send_discover = false;
+ 
+ 		power_supply_changed(port->psy);
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
-2.41.0
+2.41.0.487.g6d72f3e995-goog
 
