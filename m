@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C191762F07
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CDA762B33
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbjGZIBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        id S231918AbjGZGPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjGZIBN (ORCPT
+        with ESMTP id S231951AbjGZGPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:01:13 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B845E3A81
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:53:07 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc0da5684so69880566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690357986; x=1690962786;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=usiVN6w6Ebhu1ynu6vwx4lPog2bSjYwM+8IhkVyHz/4=;
-        b=IB94gmojOu/wEItAP2pf6CLaskyxBrYWjvz/t9mGWLIIXMKUG8b3Rll/DamQ/Bd+46
-         CfBBHWyMsYA0tmkM2EgAFaixvwFoIAPlfRVc9SrmriuNn858n1Xmxniu3miTz3Yowpw7
-         5f83J214px60uGasJY8IL0c7uVvV+n99FVy7MfZEHnR9dvmBUuLP5s/IICwRkjQ2G8CU
-         hF1icMgjEoutXdcZnLHx870RtBMZbfOTka6XoKUbrawUgtnuoff8sri9d93a/IlaMxdu
-         npZiBpPnRFaGBZTKyZdLmg0gVvxdTnZQwBoACg7ZLiKrhMtek923smUzUDi4ks5+oEXs
-         wOIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690357986; x=1690962786;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=usiVN6w6Ebhu1ynu6vwx4lPog2bSjYwM+8IhkVyHz/4=;
-        b=hW+QX5l7vQJdd3yvxA+TPA17dCnL/snXNISUZInw5AqRm18hUh8z232/uLZvYI3M73
-         whcYxZvxGxcS1QPORku231oxS8emHpAyP0csGL6rW9ppcF0stR+7ogcxnqS9BeuDtZd1
-         r0DesD6aDKPzpOWy3ElcBJAEqjxFEIRodNmUlBIxfFnXT49kOh7LSK+KynwJVCg39Rt7
-         EvEz0eTNxLq94arwAipesAcDjOmG/GbeKzIJWztvWKrz7GTXprXhH0ks9VU8ZsORqly/
-         6LqoDpKUVxcTDrWuyuOJF342dKNWeE/OYbrG3JZGMum9ZwBDzAmP47If3xqJzBwcrzXI
-         UL/A==
-X-Gm-Message-State: ABy/qLZN3Onckm9f0O94iLovUDo1hqZkjz5CjUCKFiizSo9y01ZFUObF
-        ln91ItCPylnI015YMfnI53wofw==
-X-Google-Smtp-Source: APBJJlEhYcqRUbuL+GvFQoytCEAXK4VcxpKrPGWPy6VNJz3mGQDEfO2phn/9t3hy5LvKTm4ApRNzjg==
-X-Received: by 2002:a17:906:5a4e:b0:99b:ce19:b697 with SMTP id my14-20020a1709065a4e00b0099bce19b697mr13485ejc.73.1690357986117;
-        Wed, 26 Jul 2023 00:53:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id z6-20020a170906814600b00993cc1242d4sm9228092ejw.151.2023.07.26.00.53.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 00:53:05 -0700 (PDT)
-Message-ID: <367ea415-6b33-248d-6725-de7330b3984b@linaro.org>
-Date:   Wed, 26 Jul 2023 09:53:03 +0200
+        Wed, 26 Jul 2023 02:15:07 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F177410B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690352099; x=1721888099;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=js5eLjuH8dKH2vHgVoNL1hwwICaDvEgaMk24LXytU+c=;
+  b=FUqkaIOLDSVVPm0P0sG14/AmeZH7JrzolAZ/YNOoz3NGU59bnlt75cRU
+   szfymFtZElkKYRxJ5di/SlyY4LRLpy6aUZVZfJLE8tqsh63c5rzPZIzPs
+   HF/u6Y5e8c1lvTNSM3iMqzseol00660jmwNELu4WHYs7bL6bHNGw1A72o
+   1Wk8jhUTC2kBWLfobm6vdAcPWaZBGptoP+4e0NxAQinW+8mJjQMzlyuwE
+   Q62DUbtoUUIy8M4qmnB3VuWL96R3ZeEyN5NOThLSUfmqBG1XJC6Y5CIs9
+   bsAQm9zXj0TG+teejWF2uRMy0iuY42L3WZnTcMX1Cfvlb6GIgtXipiCWw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="367950236"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="367950236"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 23:14:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="703606278"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="703606278"
+Received: from brentlu-desktop.itwn.intel.com ([10.5.252.92])
+  by orsmga006.jf.intel.com with ESMTP; 25 Jul 2023 23:14:54 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Uday M Bhat <uday.m.bhat@intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        "Dharageswari . R" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 0/2] Intel: sof_rt5682: remove quirk flag
+Date:   Wed, 26 Jul 2023 22:08:46 +0800
+Message-Id: <20230726140848.2267568-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/7] dt-bindings: soc: qcom: Add qcom-pbs bindings
-Content-Language: en-US
-To:     Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
-        lee@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org
-Cc:     luca.weiss@fairphone.com, konrad.dybcio@linaro.org,
-        u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-References: <20230725193423.25047-1-quic_amelende@quicinc.com>
- <20230725193423.25047-2-quic_amelende@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725193423.25047-2-quic_amelende@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 21:34, Anjelique Melendez wrote:
-> Add binding for the Qualcomm Programmable Boot Sequencer device.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  .../bindings/soc/qcom/qcom-pbs.yaml           | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-pbs.yaml
+We add a helper function to detect amplifier number according to device instance
+in ACPI table so the SOF_MAX98390_TWEETER_SPEAKER_PRESENT flag and a dmi quirk
+for 4-amplifier configuration could be safely removed.
 
+Also refactor the max_98390_hw_params() function to use an array to handle the
+TDM parameter.
 
-Again not tested.
+Amplifier number detection and TDM parameter are tested on two Chromebooks. One
+with 2 MAX98390 and one with 4 MAX98390 amplifier.
 
-Also, you missed comments. :(
+V2 Changes:
+- fix some typos in cover letter
+- use for_each_acpi_dev_match() macro to simplify the codec
+- use 'unsign int' for codec number variable
 
-This is a friendly reminder during the review process.
+Brent Lu (2):
+  ASoC: Intel: maxim-common: get codec number from ACPI
+  ASoC: Intel: sof_rt5682: remove SOF_MAX98390_TWEETER_SPEAKER_PRESENT
+    flag
 
-It seems my previous comments were not fully addressed. Maybe my
-feedback got lost between the quotes, maybe you just forgot to apply it.
-Please go back to the previous discussion and either implement all
-requested changes or keep discussing them.
+ sound/soc/intel/boards/sof_maxim_common.c | 171 +++++++++++++---------
+ sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+ sound/soc/intel/boards/sof_rt5682.c       |  37 +----
+ 3 files changed, 112 insertions(+), 117 deletions(-)
 
-Thank you.
-
-
-Best regards,
-Krzysztof
+-- 
+2.34.1
 
