@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76136763988
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817B276398A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbjGZOsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S233306AbjGZOtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjGZOsg (ORCPT
+        with ESMTP id S233184AbjGZOtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:48:36 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E131FD5;
-        Wed, 26 Jul 2023 07:48:32 -0700 (PDT)
-X-QQ-mid: bizesmtp62t1690382901tdqnmwb9
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 26 Jul 2023 22:48:20 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: PS/N6jJLnDbWPzOemGr4bNmLGhOlX8aAHcyd+lhmPOqpMTHAYgJ0sP+uX6rbD
-        RU2EPCx7QW/LeX1uDe7xJp+tu3TGz3E+j6x9+p/w7djS4qrd5CMs4nB07UBDchlnYvYkCDz
-        J8yU/f1u0goeJBi8sod/tpVuZmTDaWQ7RK+pc6hEmoL+S3opG/qONZ8C6NKYTjmQln2PqRN
-        r4VNW5A8CSbXVgq5BTBk4PL6HOGX8cLlyWAmC1q4J/v/blS+mCdiDNOGlS6CDI2T6H+9Qk5
-        9tYb8TP2+ufpWkFhQR3G8qGwNcmGA2/tzWGf0IHYNkGTlNV/yJQi7zcqWPCNix4Uj4IhyqB
-        ncWNOd5Ogfmfd8j+LqN7Fuyb81D2Fg5CahmVVmFJtbItIzyw6uyMoKxiZmytg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18036633287261470269
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: [PATCH v2 0/7] tools/nolibc: add 32/64-bit powerpc support
-Date:   Wed, 26 Jul 2023 22:48:11 +0800
-Message-Id: <cover.1690373704.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 Jul 2023 10:49:19 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04941FCF;
+        Wed, 26 Jul 2023 07:49:18 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 17205440;
+        Wed, 26 Jul 2023 16:48:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690382898;
+        bh=RgG5/0+5domW5jt/7Gb6bcMhhHTNY27l1OiM4TlQ4+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uCV4Limumqzn/BQ6hO4FUR1Uk7CDVhKADUxcoWK/D3dV6ajiP9N5pzNGfpn4d8lIO
+         zKGsdmTGCF19JIh387tHn1XHp8supWKYxn4LO9nLmKRlQZF/uyxWx/asJ+vsYZ0tPe
+         MovvrhdcJIZP6KtBv9m2epEB+zebPUzVrE6l8MgU=
+Date:   Wed, 26 Jul 2023 17:49:23 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Wang Ming <machel@vivo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v2] media: platform: Use dev_err_probe instead of dev_err
+Message-ID: <20230726144923.GA28136@pendragon.ideasonboard.com>
+References: <20230726115208.5463-1-machel@vivo.com>
+ <20230726142835.GA5148@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230726142835.GA5148@pendragon.ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy, Thomas
+On Wed, Jul 26, 2023 at 05:28:37PM +0300, Laurent Pinchart wrote:
+> Hi Wang,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Jul 26, 2023 at 07:51:58PM +0800, Wang Ming wrote:
+> > It is possible that dma_request_chan will return EPROBE_DEFER,
+> > which means that dma->xdev->dev is not ready yet. In this case,
+> > dev_err(dma->xdev->dev), there will be no output. This patch
+> > fixes the bug.
+> 
+> It's not a bug. The existing code works as expected. dev_err_probe() is
+> nicer though, as it records the reason for the probe deferral. Here's a
+> proposal for a better commit message:
+> 
+>   It is possible that dma_request_chan() returns EPROBE_DEFER, in which
+>   case the driver defers probing without printing any message. Use
+>   dev_err_probe() to record the probe deferral cause and ease debugging.
+> 
+> If you're fine with this, there's no need to resubmit, I'll update the
+> commit message locally and merge the patch.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> > Signed-off-by: Wang Ming <machel@vivo.com>
+> > ---
+> >  drivers/media/platform/xilinx/xilinx-dma.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/xilinx/xilinx-dma.c b/drivers/media/platform/xilinx/xilinx-dma.c
+> > index 80d6f5b072ea..16ad39bef6c6 100644
+> > --- a/drivers/media/platform/xilinx/xilinx-dma.c
+> > +++ b/drivers/media/platform/xilinx/xilinx-dma.c
+> > @@ -708,9 +708,8 @@ int xvip_dma_init(struct xvip_composite_device *xdev, struct xvip_dma *dma,
+> >  	snprintf(name, sizeof(name), "port%u", port);
+> >  	dma->dma = dma_request_chan(dma->xdev->dev, name);
+> >  	if (IS_ERR(dma->dma)) {
+> > -		ret = PTR_ERR(dma->dma);
+> > -		if (ret != -EPROBE_DEFER)
+> > -			dev_err(dma->xdev->dev, "no VDMA channel found\n");
+> > +		ret = dev_err_probe(dma->xdev->dev, PTR_ERR(dma->dma),
+> > +			"no VDMA channel found\n");
 
-The suggestions of v1 nolibc powerpc patchset [1] from you have been applied,
-here is v2.
+I forgot to mention that the message should be aligned:
 
-Testing results:
+		ret = dev_err_probe(dma->xdev->dev, PTR_ERR(dma->dma),
+				    "no VDMA channel found\n");
 
-- run with tinyconfig
+I can fix this locally too.
 
-     arch/board | result
-    ------------|------------
-    ppc/g3beige | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-    ppc/ppce500 | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-ppc64le/pseries | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-ppc64le/powernv | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-  ppc64/pseries | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-  ppc64/powernv | 165 test(s): 158 passed,   7 skipped,   0 failed => status: warning.
-
-- run-user
-
-    (Tested with -Os, -O0 and -O2)
-
-    // for 32-bit PowerPC
-    $ for arch in powerpc ppc; do make run-user ARCH=$arch CROSS_COMPILE=powerpc-linux-gnu- ; done | grep status
-    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-
-    // for 64-bit big-endian PowerPC and 64-bit little-endian PowerPC
-    $ for arch in ppc64 ppc64le; do make run-user ARCH=$arch CROSS_COMPILE=powerpc64le-linux-gnu- ; done | grep status
-    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-
-Changes from v1 --> v2:
-
-- tools/nolibc: add support for powerpc
-
-    Add missing arch-powerpc.h lines to arch.h
-
-    Align with the other arch-<ARCH>.h, naming the variables
-    with more meaningful words, such as _ret, _num, _arg1 ...
-
-    Clean up the syscall instructions
-
-    No line from musl now.
-
-    Suggestons from Thomas
-
-* tools/nolibc: add support for pppc64
-
-    No change
-
-* selftests/nolibc: add extra configs customize support
-
-    To reduce complexity, merge the commands from the new extraconfig
-    target to defconfig target and drop the extconfig target completely.
-
-    Derived from Willy's suggestion of the tinyconfig patchset
-
-* selftests/nolibc: add XARCH and ARCH mapping support
-
-    To reduce complexity, let's use XARCH internally and only reserve
-    ARCH as the input variable.
-
-    Derived from Willy's suggestion
-
-* selftests/nolibc: add test support for powerpc
-
-    Add ppc as the default 32-bit variant for powerpc target, allow pass
-    ARCH=ppc or ARCH=powerpc to test 32-bit powerpc
-    
-    Derived from Willy's suggestion
-
-* selftests/nolibc: add test support for pppc64le
-
-    Rename powerpc64le to ppc64le
-
-    Suggestion from Willy
-
-* selftests/nolibc: add test support for pppc64
-
-    Rename powerpc64 to ppc64
-
-    Suggestion from Willy
-
-Best regards,
-Zhangjin
----
-[1]: https://lore.kernel.org/lkml/cover.1689713175.git.falcon@tinylab.org/
-
-Zhangjin Wu (7):
-  tools/nolibc: add support for powerpc
-  tools/nolibc: add support for powerpc64
-  selftests/nolibc: add extra configs customize support
-  selftests/nolibc: add XARCH and ARCH mapping support
-  selftests/nolibc: add test support for ppc
-  selftests/nolibc: add test support for ppc64le
-  selftests/nolibc: add test support for ppc64
-
- tools/include/nolibc/arch-powerpc.h     | 202 ++++++++++++++++++++++++
- tools/include/nolibc/arch.h             |   2 +
- tools/testing/selftests/nolibc/Makefile |  48 +++++-
- 3 files changed, 244 insertions(+), 8 deletions(-)
- create mode 100644 tools/include/nolibc/arch-powerpc.h
+> >  		goto error;
+> >  	}
+> >  
 
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
