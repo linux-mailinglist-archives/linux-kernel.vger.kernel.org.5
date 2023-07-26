@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7992F7633DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7DE7633E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbjGZKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S233906AbjGZKex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233981AbjGZKdQ (ORCPT
+        with ESMTP id S232167AbjGZKev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:33:16 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2138.outbound.protection.outlook.com [40.107.212.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4C52126;
-        Wed, 26 Jul 2023 03:33:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TtOrrbfjommzzF4PgJPfS/CGBbrI9OryC8da+/kng5qxi4WZN7yoM8O0v7OPJXxPVv+La5Ul0xb55wiBg6lVVMKwTRx4FXKXdZxmpDxOGbmSf5QA7TNFUwkS1nLQKHiu2n2qfHont+kznjS2uOcn1qc4i8AspuS49j3JLWBhGd/jvB0UjAF1MnY+ISMskEJyMIlewSQ0BlEfdbTDzR6sV3HGMAyLIDJPL7QC4Ay9Fj+qM3Tu6QTIvL8l1tZyaWfV0NFJtWn6qlleYhHweO2M0J3KobLArXm0e+02HGWngg1gd6n8QUwHVuocs1jqh3eG+BuExANBSIvuopLG2M3Gxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jqkMUatlcPXvZB3kf7JWcwNcqa8mMAMOaV13DHWEFXY=;
- b=AvH+IaYxwKQHB50zktb94UJtlQRP3IMQwXT5Ca/9LsAZya6ob0wL8TpmvuIoA0gGV6ECSBN1/JRE9vswSat+jSetLPn91ExlPX/EucZ/z5EaEoPV9VDupW7FW3pM4OzknFB9jHFWdfw+lFFt0KvUcrhSrFI5n82d2DGM28GPdAywheFUmbM0hW8WeYBg+SOYtfJb+K/8Z887Zd6ZlHg9g7XQVxyo/LCvOutMLAQmffBmQ+LC8jw3mKylNbGLtEqhkn5/C+4watoEtG3HUXB0tY3Dc9gCM18xk4Hky0C9g8srRTJjWxACQWg9a+QurBWfDMB2UCnmidxXMfujKe5SEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+        Wed, 26 Jul 2023 06:34:51 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05909212F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:34:18 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so895372e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:34:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jqkMUatlcPXvZB3kf7JWcwNcqa8mMAMOaV13DHWEFXY=;
- b=SlVZ0nXVM0PDbKxt3P36dvJphyvgzER21iLBG5itRrs7vOAzosDqvXDxNUNp41mgynRGcsIFbFh8h6DoHxGEQhhLouzOVlqyg4TRZ+5Z9lqhEvW2bxDp+Yz7E9xn5I7t9kk/42C8fC1dnl7ZWsFod0ZZoK/61spHk6bkHYA1/Jw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by SA0PR13MB4064.namprd13.prod.outlook.com (2603:10b6:806:72::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
- 2023 10:33:13 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
- 10:33:13 +0000
-Date:   Wed, 26 Jul 2023 12:33:06 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Howard Chung <howardchung@google.com>
-Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        Archie Pusaka <apusaka@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
-Message-ID: <ZMD2YqAJ9+2i5ZvH@corigine.com>
-References: <20230724111206.3067352-1-howardchung@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724111206.3067352-1-howardchung@google.com>
-X-ClientProxiedBy: AM0P190CA0029.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:190::39) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        d=bytedance.com; s=google; t=1690367656; x=1690972456;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6pBhJZIIkh5Y0ZegeYnaNPrsKup8SfYVJ8Ax7qMD0bM=;
+        b=FU9mgCufp8+t0IW6faQAPl5Iyi4wcOnZOizZwNmJU76ZXU7xiOWIITjHX2EIGK1Oal
+         Ei/6g+rsdQ4mETerF5Pv+aR7SpDCp135DImT99F+vRQlDrJPNFcFq/uXLREViUgA4nAs
+         4V/SH5e4kF0nckxnWhIjVwPHlo6zI8uWN4PBph1S5DQXLK3ygU2aFl2/k5v5DPy4ynDN
+         ZYfj36ZAE3iVvhO1/AXnqxpup1RnND1DG5+/LAtbZBvR0wbMIKj5F2W5TVKUzre187RU
+         tlyogaTGkfVgIRxhdyIJi5XTe7+SNuLeS+7+2UF9pEWEjFtOEp8tluS2xZZbLRwF/GlH
+         pfeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690367656; x=1690972456;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6pBhJZIIkh5Y0ZegeYnaNPrsKup8SfYVJ8Ax7qMD0bM=;
+        b=kG2GdYxmazg9URJVyL3/cZ9nbfJWL1oBSjwiVe8JddDmJUz1FC1yhKWsz/sfs7dTpa
+         pkdwY9ASM8CBdw229c2RitJmjcSp9RbCZDSseTW7KmyaEuwnid+d53UBoAKpJOU1k/IP
+         MBUIupdW1DeeGCaHjN6qurmqCozzkbcbKSeOVYazCKJLSIE1vRBNERzyDMCvv+oFhOIg
+         paftcldTl/DrMgB/dEu1QdT2w0JzlhnXWK3aU+lboUzEjTpfGBMdhPEmJ44yJs5dndIV
+         nP+DJ0+TWTk0/1R8gV3n+T9v7Ch/fH1hrtQbY8fMSbs/RjGTHa9uqChalwdrQ3KbVCHU
+         6edQ==
+X-Gm-Message-State: ABy/qLYOGRr+MuPzYJsZl5tl/0NjcSNzxwhg1VmXT5hullTHegqdqHhJ
+        A+CAxs9eIaoOEkz5x7WpVGaxyX16mrG4NwRw5tw=
+X-Google-Smtp-Source: APBJJlGJC+4Vw7ybsGTQvxNelxSmpvS0+CLSLRChw/6Kg32BWyc7brBDAHFPjsTUB/+9mvQi04/Caw==
+X-Received: by 2002:a05:6512:2824:b0:4f9:5196:5ed0 with SMTP id cf36-20020a056512282400b004f951965ed0mr1336227lfb.7.1690367656268;
+        Wed, 26 Jul 2023 03:34:16 -0700 (PDT)
+Received: from ?IPV6:2a02:6b6a:b465:0:2a3c:96a:1b3a:ab94? ([2a02:6b6a:b465:0:2a3c:96a:1b3a:ab94])
+        by smtp.gmail.com with ESMTPSA id 18-20020a05600c235200b003fc07e1908csm1591999wmq.43.2023.07.26.03.34.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 03:34:15 -0700 (PDT)
+Message-ID: <03476b1d-c825-0ab6-73bc-b98419d3dff6@bytedance.com>
+Date:   Wed, 26 Jul 2023 11:34:14 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SA0PR13MB4064:EE_
-X-MS-Office365-Filtering-Correlation-Id: 258e5a45-046e-4ae9-3a7e-08db8dc3b73b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZXYj9BeNaqW6MmAQ+pqL58WOMF5UfJiqj+daQ2N8ZWzWHIr4OvKXrOpGJW4dw4Pb/knBweUVT7F1+k6Y+L9t2/KZN9C4Fbr7ZynLDGB+O2A1YUXov3LHmqcrAFr2+PRtaWvdTp7emST9lVXa35aXzIw+YW2hNC9mybllvAuae6Uk7GKmxKwKmz4fRuS6gl3QOEwcTSOOiyuGQBcZUnSAiBt+/KYisKxpAFhXQycSsgXikHGbkG80X8bE7/a1g9GpXeb8OathtSMC/h7IEts7m4Y83S9ESkoLVpYsEP9xkKJooMw/cVHQ0TMLXaZLx5eKH9Ov63rvFG1hZv4XuB5E5H6BzPwEnYkopv2raqMaKyTRzP6Gehe6Mmsq/HEDQ8owPuL/QCwkj66IEkKiJ2jjXiHOWV2iGkjQ7HljWa4WQpxW3erxnDtM47O5vfSJ71VRIpbObv6AndkVzfC19NnX1W9pXj+/H+EK++RPHdaxtjW8QnxbJz/UlcUM9eHka08FyeqZT88xRBW1PXl0MiPub+JcwOmUeq8cTHEeADCZH97/cdYyTm2dw+PP66kPmP901xf2vVuaBdFYjtCOG0DUVAxQU/w/OBmkZdz9Z/o8s6fcOSo3cyHl6O3SmUqHMAg6G7jK3cB6J3mPSlcOs5EUteYI341lvDO83kt4AiCz2/U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(136003)(39850400004)(346002)(376002)(451199021)(83380400001)(6506007)(186003)(41300700001)(316002)(2616005)(6512007)(6486002)(6666004)(478600001)(38100700002)(54906003)(4326008)(44832011)(66476007)(66556008)(66946007)(8936002)(8676002)(7416002)(6916009)(86362001)(5660300002)(4744005)(36756003)(2906002)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?evleGRBosSUBWWSSeZJTaVNnuDuGtBAh9wJLN/2cS5MGqn2ynDGcBIfNyDWk?=
- =?us-ascii?Q?25nCVldA+wno3kYHCuaO9wg1gXzYhL1MnLHz0iGPTHRUM/VsxNCQoDfTj+mg?=
- =?us-ascii?Q?2AzvrampzqfeVawJIIMbJucrKpPh6RQVzSMROvHRBsSbnOAM5CbAMcmwA6ZF?=
- =?us-ascii?Q?mWGlLffwSpdg4mTQBAy6/sqxP3I/VwrndUi4aslkdoDV5iUskWAvSqmsVsDv?=
- =?us-ascii?Q?TCLTCSUXjcLIBGLu9q5+ZhoufEsAVvS5qa/SC1WPx5DvBqEUQ9mAlX/o9kpD?=
- =?us-ascii?Q?AwqblHtfN2Q3o13OH/p+JhNa3h0lAea2NJ8akih/Zod5Lsuh6ET9oKz8qU2m?=
- =?us-ascii?Q?5iDA4TgpzNK+z6i7VPTtC5kuMye8dGlqOQ2Rp6cSlinftEesJUC7egw3yPnX?=
- =?us-ascii?Q?zJElwUVnjHvbIL5AW+pJnljDIIB4fOaxr89ptuMHePTRmuEix7i8VwI+6nDy?=
- =?us-ascii?Q?3AExweEUbNoALUsww0rkPek4VsF3asBx9qAeaE5ROLXsb5R14AeR+WXGNMVQ?=
- =?us-ascii?Q?DHGMQDmvBOlqMvTwoqJTu19soE8gN1RRl85lvKr2Wa7iilfYGMc2qKMFeYLP?=
- =?us-ascii?Q?JjWIhciupl9xZrAP3stSmr7tc0kkwYkTCOm+jI4E+UGgLbcdUzdd1RRXfXEm?=
- =?us-ascii?Q?J3iodo035BTsjh3NahUtt/LsJYXoVab/mDWewxpCKymTtjrnZm3pxnKcACvC?=
- =?us-ascii?Q?aq8q8F8ittrnCS4X9ymuCX4mcWgXC2jMzSdttP+3vejThI/LXf+o86QFAGg0?=
- =?us-ascii?Q?Z/6CDE1OReQzI7zsGNSkQayjtQCH7II4mwFyprbGFl54lwrvZz2gyJYTE4Nn?=
- =?us-ascii?Q?iW4iIOUUSi3FJaVS/+HCegmNUOMD7VwVDOruF4B80hYhKCivwsv7CTA9DvZx?=
- =?us-ascii?Q?zFMTQyE/ajyYSewEq9uXTPZy/W/qU7jDZ/ZAH9ehR5k7gbm1vT7XKSHXavKx?=
- =?us-ascii?Q?UoxNrzmoOtzhiGJVwLq6kIa3M9XMFWfKoAr6ktKkSkI/qNzzBZEVHuXXYlRz?=
- =?us-ascii?Q?JBKezUoKvjAvlOp+Z0+CB5SToaMqd/qZPrsvTn3SnUDBWWSQT7RYLCR7mUP6?=
- =?us-ascii?Q?JElGCx21fvU9sXl92s0NQnRnNpDEqvOOtFRRhArAtbDVEXDOMKH9QtZZayO4?=
- =?us-ascii?Q?UERF545UFXyK9d7sb0XZLTfVSi533xYaedihUNzqOZJGKu/pJlvwI7PjkXhS?=
- =?us-ascii?Q?lyj0DU3BIJofRC2Y1uj5uiwoy4PFuiLmNQbFcJZrH9AZRGTC8Exl75e/mDOw?=
- =?us-ascii?Q?6YD8PnPhbEQXhc3wVmbCN0zf5WtBIFvGvGcwrWXQ/NjzsAP36LwAU238uLfv?=
- =?us-ascii?Q?Q2wMf0KZwDmBKExsa8UKAbbqRTHzpNcKqKID9pUf3pVosXKVj5WeX5HUNkqS?=
- =?us-ascii?Q?HzSCwwW5O0wwyiNEsJ3B4u8oxvON2bujeg+rPn8sp2r48+FgHtaUngZ/MUYP?=
- =?us-ascii?Q?Zej8TlmtAe/beZa/Z9W3ovchWd9p67jrScDXuCwNdHfWdSLVDW7IZDiLUPlU?=
- =?us-ascii?Q?9/qTfoH0SNJPJdMc5Kvbkr08FLCzpjr0OXU2ZkEXZ+AyK3z5Y9CZ8ZdBFGZM?=
- =?us-ascii?Q?L26W+67q9proMg3+kPiLrbhfFxJaWtyi6QmtLMwLG/0SHg9f59qCmzV71vNW?=
- =?us-ascii?Q?GutDU5/cR2ubDunhQ7DQABTaze9LBddeYnbu9hclFm0gp4lqwdijMcnR1HnC?=
- =?us-ascii?Q?C86gBA=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 258e5a45-046e-4ae9-3a7e-08db8dc3b73b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 10:33:13.6512
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s+T5YzxTZmJNLqSQdy54NW5g97QI96JrQKDSTic77hIfCifLmKtP18F1U6HBuPUB2Mep54hR1Oe3WEMdjMNSA97dbW1hIY8xeTrbZDHaJF0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR13MB4064
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RFC 0/4] mm/memblock: Skip prep and initialization of struct
+ pages freed later by HVO
+To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com
+References: <20230724134644.1299963-1-usama.arif@bytedance.com>
+Content-Language: en-US
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <20230724134644.1299963-1-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 07:12:04PM +0800, Howard Chung wrote:
-> For some controllers, it is known that when the HCI disconnect and HCI
-> Reset are too close to each other, the LMP disconnect command might not
-> been sent out yet and the command will be dropped by the controoler when
 
-nit: controoler -> controller
 
-...
+On 24/07/2023 14:46, Usama Arif wrote:
+> If the region is for gigantic hugepages and if HVO is enabled, then those
+> struct pages which will be freed later by HVO don't need to be prepared and
+> initialized. This can save significant time when a large number of hugepages
+> are allocated at boot time.
+> 
+> For a 1G hugepage, this series avoid initialization and preparation of
+> 262144 - 64 = 262080 struct pages per hugepage.
+> 
+> When tested on a 512G system (which can allocate max 500 1G hugepages), the
+> kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without this
+> patchseries to running init is 3.9 seconds. With this patch it is 1.2 seconds.
+> This represents an approximately 70% reduction in boot time and will
+> significantly reduce server downtime when using a large number of
+> gigantic pages.
+
+There were a few errors reported by kernel-bot if different config 
+options were changed (CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP disabled, 
+CONFIG_CMA enabled). I will fix these in the next revision if the 
+general approach in the patches looks good to the community to start review.
+
+Thanks,
+Usama
+
+> 
+> Thanks,
+> Usama
+> 
+> Usama Arif (4):
+>    mm/hugetlb: Skip prep of tail pages when HVO is enabled
+>    mm/memblock: Add hugepage_size member to struct memblock_region
+>    mm/hugetlb_vmemmap: Use nid of the head page to reallocate it
+>    mm/memblock: Skip initialization of struct pages freed later by HVO
+> 
+>   arch/arm64/mm/kasan_init.c                   |  2 +-
+>   arch/powerpc/platforms/pasemi/iommu.c        |  2 +-
+>   arch/powerpc/platforms/pseries/setup.c       |  4 +-
+>   arch/powerpc/sysdev/dart_iommu.c             |  2 +-
+>   include/linux/memblock.h                     |  8 +-
+>   mm/cma.c                                     |  4 +-
+>   mm/hugetlb.c                                 | 36 +++++---
+>   mm/hugetlb_vmemmap.c                         |  6 +-
+>   mm/hugetlb_vmemmap.h                         |  4 +
+>   mm/memblock.c                                | 87 +++++++++++++-------
+>   mm/mm_init.c                                 |  2 +-
+>   mm/sparse-vmemmap.c                          |  2 +-
+>   tools/testing/memblock/tests/alloc_nid_api.c |  2 +-
+>   13 files changed, 106 insertions(+), 55 deletions(-)
+> 
