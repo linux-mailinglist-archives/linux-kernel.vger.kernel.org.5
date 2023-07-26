@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A168B763276
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C391763275
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbjGZJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S231703AbjGZJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbjGZJhy (ORCPT
+        with ESMTP id S232086AbjGZJhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:37:54 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076A0271B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:37:25 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686baccf661so711797b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:37:25 -0700 (PDT)
+        Wed, 26 Jul 2023 05:37:55 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1308E2737
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:37:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9891c73e0fbso169767766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:37:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690364245; x=1690969045;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1690364247; x=1690969047;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pbMdrz248O7BLJa1aLDDOR2eghYsSzQm2AIXBS8r1OQ=;
-        b=q0euknq/4bvrmZKnU0EX15hLdlUIMLI+/co6+9dYcn9y5ctA68nCG144eqw0Dk8teF
-         KVjBdQDqhbVE9/cQ2rmB2cL42FBUqEVGtuTR32fW1PlEuy1BG+Scqb+JpAXMCTCjog2H
-         3aD+GvuMabNFHF+TEafQF+R12auLdYlQCAG83/HPlfHJUIHji94mbNnDvIkn5Pq1SsQY
-         OdCbl0W+R2Q7bhs8ZK/j0ijApy96BoCXsU/TM2/6xwJS3u9xvcVMSjlJ9q0UsQ3UcFqp
-         wx9H+qc1knnKFA2owk5+tsuQpn3c043HcKSr8wdecfwrxXLUugMk3TBRdapZRKU7+cRB
-         ZaFg==
+        bh=FUdFsL7Rj7TOV3TMa/RIiUuM3Ig3WitH5zKl3a6zj7U=;
+        b=Yqeibz8Pw2C5YNjJ0AuM22nL0Sp6k5H8d9dIRNXCzP7danQnPgEFyI6KLsunRzDqLy
+         UEtoYBuNV6w6FvpPiqzVHPz/h2PzwWFYA3gRW9/zkD36tKMxFYaFQDLkC89tmN3fH6HG
+         0RMPWE5M7Txi1uqg+CwDyvoaum51xECSn77EqV4jphCfci2WHFfSNpjCnYd/sSOsZh9J
+         H+OVM5W1Qil609a8WNDzDbXsjxzhvD9neldH7sUlsdWR37ZiWGf6KpyWnRXoBGzr/j+2
+         QTJjWzOprLsE5FitgynFWdOkuNPHXihPEfwQxU2yZjPFWNexwx4Z5WG5qWJMweaq5VVm
+         q/dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690364245; x=1690969045;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690364247; x=1690969047;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbMdrz248O7BLJa1aLDDOR2eghYsSzQm2AIXBS8r1OQ=;
-        b=Dd3KR4hoXcmf3gw6SwnezpVxhekCZUJBv+gMGwRuQS/zDjq5C5dEdHzSTlrQyQXI+X
-         XoBNvkBqKtnO59XByl0tQsmxscPeztfxhAAo4H+ploAvkoutKI8raCimjTCtWAvX6LaQ
-         /VowCn1CeuQ4r1QjCeYjgaIO4o5nhagfC6SUV1ibDmKwTt+cv+JME0Qsplbd0U2kSNHf
-         9yxaRlqPjKv9IE5eeKHluNPL1U7MHmFigJhQOOL3Hm9xmNzq3KItTwopZ2IatXydKZBe
-         i/xXBXtbXs9fmV0YjpnZZtUbDPEwae0edawYBKBUKN7mdKYI8x2YpU+fzeuygEZTnmO7
-         SdIw==
-X-Gm-Message-State: ABy/qLZgdrP3AwJYONqF/dYmTELujSIirY6u8j94X2wHo62wY+F3UAtM
-        tqkg+cOG/U4kcPK2/4Fri8Q=
-X-Google-Smtp-Source: APBJJlHdtwcTal98+4CgceUf/WoACIQ/0R2Z2XI7/kx1iXSXyDj50UGS1XhalZqhTBFwhBJzG5UGJg==
-X-Received: by 2002:a05:6a21:3383:b0:138:1c5b:2653 with SMTP id yy3-20020a056a21338300b001381c5b2653mr1359756pzb.41.1690364245264;
-        Wed, 26 Jul 2023 02:37:25 -0700 (PDT)
-Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00686c40ccaf2sm992250pfo.9.2023.07.26.02.37.23
+        bh=FUdFsL7Rj7TOV3TMa/RIiUuM3Ig3WitH5zKl3a6zj7U=;
+        b=R4ugfCToEIwPQ4K146JYsaR3zrNq+lHwvCVIqnwy4oZzuyOaXah4W5Mz1pmOWlVgPO
+         8cpzIZHH+Tw8E+18J8aO9Qv0/ETWOBqtwzkZKMj4DwhuNs49IuNPALMCY2ppcMEvdWKh
+         6Wjekj9R9V3GIAdAWXhz4XB2soyGW8jOnQ6sZI7fuAJoWnJBPqZcq9ymMA9dKbKypn0B
+         fCQW28KCcU3sz3Y6hEwpPleehFWjHwd94nD+AC3JJndTYZmz0TblCgtLK6Ou5UlKqR74
+         1XEXdYqPHmxZ8IeCa3QHKWnbKYj0THFsEEVsZDUJvK6vy+R0dKSV0oFdIhpqQvojNRI6
+         NT8A==
+X-Gm-Message-State: ABy/qLbcXPBfF1uML4n8KZ2B1zHK+nEB7qePXyTY9On4zMQrCByMn3XP
+        tjAmbnIQngJqvLTIpGlsDhhQpw==
+X-Google-Smtp-Source: APBJJlGyMOlgcRnfytdUMxZAaSNwN60cSkk/EeAYqYSWHODAAc3zU54oBjgkiPE02PuuQim25n4HvQ==
+X-Received: by 2002:a17:906:64c6:b0:99b:c2ce:501c with SMTP id p6-20020a17090664c600b0099bc2ce501cmr1394736ejn.19.1690364247517;
+        Wed, 26 Jul 2023 02:37:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id z15-20020a170906240f00b0098921e1b064sm9306439eja.181.2023.07.26.02.37.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:37:24 -0700 (PDT)
-Message-ID: <3464becc-b2d1-02f1-4214-2bc69edddca4@gmail.com>
-Date:   Wed, 26 Jul 2023 18:37:22 +0900
+        Wed, 26 Jul 2023 02:37:27 -0700 (PDT)
+Message-ID: <fc55d5eb-1bc6-84b5-b9f2-daf24817b8b6@linaro.org>
+Date:   Wed, 26 Jul 2023 11:37:25 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4 09/11] mtd: spi-nor: spansion: let SFDP determine the
- flash and sector size
+Subject: Re: [PATCH v3 2/3] pinctrl: qcom: sm8350-lpass-lpi: add SM8350 LPASS
+ TLMM
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230719192058.433517-1-krzysztof.kozlowski@linaro.org>
+ <20230719192058.433517-2-krzysztof.kozlowski@linaro.org>
+ <CACRpkdbK7gU36nVOm0J+HbLk5JRKki+30=UaJ6hZjF1DiB4bBw@mail.gmail.com>
+ <34be3638-ed14-bb0b-eb2e-c44f43c582f2@linaro.org>
+ <CACRpkdY=WYZEfHuYsJe3kxk4-E3r4wp-Ln=GyvSY2m=+-Ow47A@mail.gmail.com>
 Content-Language: en-US
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        takahiro.kuwano@infineon.com, michael@walle.cc
-Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
-        miquel.raynal@bootlin.com, richard@nod.at
-References: <20230726075257.12985-1-tudor.ambarus@linaro.org>
- <20230726075257.12985-10-tudor.ambarus@linaro.org>
-From:   Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20230726075257.12985-10-tudor.ambarus@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CACRpkdY=WYZEfHuYsJe3kxk4-E3r4wp-Ln=GyvSY2m=+-Ow47A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/2023 4:52 PM, Tudor Ambarus wrote:
-> sector_size is used to determine the flash size and the erase size in
-> case of uniform erase. n_sectors is used to determine the flash_size.
-> But the flash size and the erase sizes are determined when parsing SFDP,
-> let SFDP determine them.
+On 25/07/2023 20:18, Linus Walleij wrote:
+> On Mon, Jul 24, 2023 at 9:06 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>> On 24/07/2023 20:09, Linus Walleij wrote:
+>>> On Wed, Jul 19, 2023 at 9:21 PM Krzysztof Kozlowski
+>>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>
+>>>> Add driver for pin controller in Low Power Audio SubSystem (LPASS).  The
+>>>> driver is similar to SM8250 LPASS pin controller, with difference in one
+>>>> new pin (gpio14) belonging to swr_tx_data.
+>>>>
+>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>
+>>> This sure looks good to me.
+>>>
+>>> Krzystof, can you collect a branch with pin control changes for
+>>> Qualcomm chips that I can pull? If it's OK with Bjorn that is.
+>>
+>> Sure, I can go through the lore search results and grab recent submissions.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/mtd/spi-nor/spansion.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> Thanks, I think you know better than me what is the stuff that is reviewed
+> and ready for merge.
 > 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index 1c5671a3751a..30a3ffbfa381 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -873,11 +873,11 @@ static const struct flash_info spansion_nor_parts[] = {
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25fs256t_fixups },
-> -	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
-> +	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
-> +	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> @@ -886,11 +886,11 @@ static const struct flash_info spansion_nor_parts[] = {
->  		MFR_FLAGS(USE_CLPEF)
->  		FLAGS(NO_CHIP_ERASE)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
-> +	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
-> +	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> @@ -901,22 +901,22 @@ static const struct flash_info spansion_nor_parts[] = {
->  		.fixups = &s25hx_t_fixups },
->  	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
->  		FLAGS(SPI_NOR_NO_ERASE) },
-> -	{ "s28hl512t",   INFO(0x345a1a,      0, 256 * 1024, 256)
-> +	{ "s28hl512t",   INFO(0x345a1a,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hl01gt",   INFO(0x345a1b,      0, 256 * 1024, 512)
-> +	{ "s28hl01gt",   INFO(0x345a1b,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
-> +	{ "s28hs512t",   INFO(0x345b1a,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hs01gt",   INFO(0x345b1b,      0, 256 * 1024, 512)
-> +	{ "s28hs01gt",   INFO(0x345b1b,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
+> I have this on my devel branch so far:
+> 59d612a3215c dt-bindings: pinctrl: qcom: lpass-lpi: Remove qcom,adsp-bypass-mode
+> abf02e132cb6 pinctrl: qcom: lpass-lpi: Make the clocks optional, always
+> 1e46c7430af7 pinctrl: qcom-pmic-gpio: Add support for pmx75
+> 8fff6514ff0a pinctrl: qcom-pmic-gpio: Add support for pm7550ba
+> 75ec058db332 dt-bindings: pinctrl: qcom-pmic-gpio: Add pmx75 support
+> 4bbee99da13a dt-bindings: pinctrl: qcom-pmic-gpio: Add pm7550ba support
+> 
+> Anything else is in some inbetween state and I'm not sure of the status
+> so it would really offload me if you could get it in order!
 
-Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+It seems only my patchset, SM6115 LPASS pinctrl and one my binding
+change were missing, so I took these.
+
+Best regards,
+Krzysztof
+
