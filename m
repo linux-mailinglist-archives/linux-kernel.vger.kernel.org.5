@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC5A763F07
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAE5763EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbjGZSwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
+        id S232184AbjGZSve convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 14:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjGZSwC (ORCPT
+        with ESMTP id S231516AbjGZSvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:52:02 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ACA30E1;
-        Wed, 26 Jul 2023 11:51:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CymFOL+xyVi/V35jVe7QFDic8ETkT5/koHwxTVzbVW3GEYfqwdW0iMjHKOHd2970rEVffVpuJc/Tat9de1V3enSkAdtHRQC6okW65bi05e5IlEojZ2UQEr6/kWxlKgqmuFJiboMCoShauJzjMPLCc5ettvkTjesE63sR4ENjCjVABM+M3drdxImpeU1vlLACJziTHZ+vIAD//jbF1hCzGXIgIFuWf6rFUv6orcK+BHe8SMJ5wnBsKBlLvsI5za3/+A2+RQF6VJRhN3S4aD0fahYnW5ZeUQhdy6fPNi9LOIl4pBx2A71fSz3qGYF1bqfAYFnjiv821gko2LSaEkDyrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NesKOVXikCLA4XF5mUs58QdvbPAAsWL7QAypABjWcLU=;
- b=ggFjt6WZLSlydDC6+1I2CmhdTStg3pZn6w6myNWpJIkbfi1jWDhXAWPoFjZfR2FxFG1uGUbEl1loWkwS7x1tugrD9i8KNL2Mp7q76zNUUxk5ztZDCTw/c8AppgdVOvEbdXWMja+4AERLWP8UaeercUqjyGhBtv38gYpBf7ITCBNZEaVvG6kbR52kA7NumcYHPzkFOz+BIu9Manq4PyI1sWCwRHUG+B7piP6HdCkRO1R5l+xPD0D+APDyPkkxtRcjLukj1ueFhC+oMC+5bF0qpZqpVTfD7vbEMkZQE9FTyYM1GdoGJTnQKUapWUb0+DD8kUCJdtWw+APE1A6bLNFADw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NesKOVXikCLA4XF5mUs58QdvbPAAsWL7QAypABjWcLU=;
- b=QTY4s8UsOHxnzKZtSfE4/NFtzVU+IpyG2bugPR3KCFWvuAfPAh5EFDY8XXm6/aSpX+Np5T1dSH6U2pTy6g7bdQUuwN5YgTjq5QxAhJYpZWWMT0b7fYZ7fCCuPkstmd2kBUDjzD9599mM+wyu52N7kTIlHI82wU1njNigKhVp8ZMUhllVpSDK/8M/P5mDHtCTQgCbdNzDx922XeWS8MOa2gfpAn7dgNJhgzqHfXfFY6S9cO+o7u8Bv/cm0v1aCKIOCvnzRpNnY2/h/SOr3SQwTqrljT9wA6sHCPjz+VjsbGwDuWDvHjyRWfaqtoxXX+2cgAl6Dl3k5+FS0snXYMGbcQ==
-Received: from BN8PR04CA0033.namprd04.prod.outlook.com (2603:10b6:408:70::46)
- by IA1PR12MB7567.namprd12.prod.outlook.com (2603:10b6:208:42d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Wed, 26 Jul
- 2023 18:51:43 +0000
-Received: from BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:70:cafe::2a) by BN8PR04CA0033.outlook.office365.com
- (2603:10b6:408:70::46) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31 via Frontend
- Transport; Wed, 26 Jul 2023 18:51:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN8NAM11FT094.mail.protection.outlook.com (10.13.176.131) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29 via Frontend Transport; Wed, 26 Jul 2023 18:51:43 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 26 Jul 2023
- 11:51:28 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 26 Jul
- 2023 11:51:27 -0700
-Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
- mail.nvidia.com (10.129.68.8) with Microsoft SMTP Server id 15.2.986.37 via
- Frontend Transport; Wed, 26 Jul 2023 11:51:25 -0700
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     "Michael S . Tsirkin" <mst@redhat.com>, Lin Ma <linma@zju.edu.cn>,
-        "Jason Wang" <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Parav Pandit" <parav@nvidia.com>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Dragos Tatulea <dtatulea@nvidia.com>
-Subject: [PATCH 2/2] vdpa: Enable strict validation for netlinks ops
-Date:   Wed, 26 Jul 2023 21:49:44 +0300
-Message-ID: <20230726185104.12479-3-dtatulea@nvidia.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726185104.12479-1-dtatulea@nvidia.com>
-References: <20230726185104.12479-1-dtatulea@nvidia.com>
+        Wed, 26 Jul 2023 14:51:32 -0400
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F7C270B;
+        Wed, 26 Jul 2023 11:51:31 -0700 (PDT)
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1bb3df62b34so34894fac.0;
+        Wed, 26 Jul 2023 11:51:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690397491; x=1691002291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JRGsH1Jfr6RATHY+BbPInolEKd5y3/mX+qRWdn1CGUY=;
+        b=FWorQ3k0gTLDgZU5HCJ6IP+DjHbd4tu7o1TpbdXgQB52EYsvwKMnR2PhJlF/ewVljV
+         RkjWtALROnlwiSBDhj16utPY35dlacmY8lhcT90KvYRJMxPbg9IVthh8VhZnYyt/Quv4
+         yEHZqMUzglDH65jffZaVFvDI/VFHQ29QAm0ceX9Ipa+zrhQ5A4oM8Bu6Ar3ceMvFe9Pu
+         JhQr81+WS+GD7RuGIWLFu4U/9ZGb7tClMtiQMNxwHDprqaPZo0TbXtVyNl/LQoi72tGl
+         5ClLDRNaH+52R1IQKuirGw0Y+0v+eIfEwnoSWJ7uouF3dXcRkEEFdqKxvTWc0P6uUD+M
+         wkpQ==
+X-Gm-Message-State: ABy/qLaYOeumLQt72Gn5rEZxoXSbWX0KD7ek/8XidF8fMuS46JZ8PDEI
+        Go5GwbUrK43uL7vAE3UmuBgDkJMGOLr2mwV7Xn0=
+X-Google-Smtp-Source: APBJJlFVCfzLFBWJ9nKz6/tyw2MPzkkpGTF3nE0WwxgFcOp8SstqNkXH4ER+l035s5VdMt4zisZ9NDaLmuRaMGBsFqE=
+X-Received: by 2002:a05:6870:1693:b0:1bb:81a1:f44e with SMTP id
+ j19-20020a056870169300b001bb81a1f44emr3091322oae.3.1690397491100; Wed, 26 Jul
+ 2023 11:51:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT094:EE_|IA1PR12MB7567:EE_
-X-MS-Office365-Filtering-Correlation-Id: 90135bd9-2844-4ad3-5cf3-08db8e095af1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T7Hr9EnvY5vtRoXYMeaXnR9qJ429uzpiIGLoeSJJn85Y94Tlbd6jY3mHuuXUUlMIQq0RS1tDA9o9SNVHKTOl0StFP2pjkCTwDg0PtK16Zlu8y5SHr8r4Z4QqP65ogRKd3+K9qrs09OxC1vr68ZwzJk2qvIJnxwiAm7WLYTXshZ7H36HkBZN7DiA6ab5ho5qVI2X0oMZkGBvLJWvePf6d97Oz7vN68ZhAFkODRnoBUE06aCUpyYvHZTSeRR17SKnY3/WpysZ3A6GvGgJPPGXjjftYvxPBEVxgGG02hRG3hZ9aB2lWDBwBJwMV0xxwu/hKIx/rSc4BOwW5h8N8N6SPuLg2yhdnyaioGcUmaCvQGqmZt4wafrczFzaxcv19Zt6ea0veCF3CXyDFNm0P0+X6OM/5W6UU3bXe44KXUOooWT0LCPlilt6uhnUsXBrUUbyyjf8S2Juz1/LhFvLcQC3camlwxLTuvZjFSwWUXdcfQuVark5tu0/jor6hVjOwEA2Bl1aQEhkNi6idb0ZuM4LCt+0qF8t1UCjLILVQRy2K0mhZoz5vf5njay8MyBOsKHeyyK8udqdyDlkGtvMkO9GJNLnUN4azdHjR++8mMwTCREDzCJAxJC1P666txbZ6xUG/abCl7scQrvnkkY4XCdNOX3o9xs7nThymvVaQ4mG8nBbuKoTP1dBij39vOu5Zl3wN4tj/Zm1J+x0X1WdVCapkun6bZE/wpv9JPGbe1ls7eONaJEmsMcW/LZ8WkT1WMuKF
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(39860400002)(396003)(376002)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(336012)(2906002)(1076003)(26005)(186003)(356005)(7636003)(107886003)(36860700001)(47076005)(2616005)(426003)(6636002)(316002)(86362001)(40480700001)(5660300002)(41300700001)(83380400001)(40460700003)(70206006)(70586007)(4326008)(8936002)(36756003)(8676002)(54906003)(82740400003)(110136005)(6666004)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 18:51:43.2643
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90135bd9-2844-4ad3-5cf3-08db8e095af1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7567
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+References: <20230723-thermal-fix-of-memory-corruption-v1-1-ed4fa16d199d@kernel.org>
+ <f559a614-93d5-121a-8ff3-0da77bc85f44@linaro.org> <ZL054LHAZv8VmIk3@finisterre.sirena.org.uk>
+ <CAJZ5v0jJ+YM=7LUEKB_b5GUsGopLTT0eyPmomYV0OcGQp2gvig@mail.gmail.com> <a72ca5e0-556a-4d16-9c5e-2b342bb074c1@sirena.org.uk>
+In-Reply-To: <a72ca5e0-556a-4d16-9c5e-2b342bb074c1@sirena.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 26 Jul 2023 20:51:20 +0200
+Message-ID: <CAJZ5v0jybAspzV2sWduERaMhBWPSYN_USiUcO_=eRUBB6vB6GQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal/of: Fix double free of params during unregistration
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-sunxi@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,58 +68,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous patch added the missing nla policies that were required for
-validation to work.
+On Wed, Jul 26, 2023 at 8:47 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Jul 26, 2023 at 08:42:39PM +0200, Rafael J. Wysocki wrote:
+> > On Sun, Jul 23, 2023 at 4:32 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > There was a message on the thread saying the patches have been applied
+> > > for v6.5 but I can't see them in either mainline or -next.
+>
+> > They should be there in linux-next (as of today).
+>
+> Yes, they're there now.  They weren't at time of writing the above (on
+> Sunday).
+>
+> > Surely, they are present in my linux-next branch.
+>
+> Are they queued as fixes?
 
-Now strict validation on netlink ops can be enabled. This patch does it.
+They are.
 
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
----
- drivers/vdpa/vdpa.c | 6 ------
- 1 file changed, 6 deletions(-)
+>  It'd be really good to get these into v6.5,
+> they're rendering the Allwinner platforms I have unusable.
 
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index f2f654fd84e5..a7612e0783b3 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -1257,37 +1257,31 @@ static const struct nla_policy vdpa_nl_policy[VDPA_ATTR_MAX + 1] = {
- static const struct genl_ops vdpa_nl_ops[] = {
- 	{
- 		.cmd = VDPA_CMD_MGMTDEV_GET,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_mgmtdev_get_doit,
- 		.dumpit = vdpa_nl_cmd_mgmtdev_get_dumpit,
- 	},
- 	{
- 		.cmd = VDPA_CMD_DEV_NEW,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_dev_add_set_doit,
- 		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = VDPA_CMD_DEV_DEL,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_dev_del_set_doit,
- 		.flags = GENL_ADMIN_PERM,
- 	},
- 	{
- 		.cmd = VDPA_CMD_DEV_GET,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_dev_get_doit,
- 		.dumpit = vdpa_nl_cmd_dev_get_dumpit,
- 	},
- 	{
- 		.cmd = VDPA_CMD_DEV_CONFIG_GET,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_dev_config_get_doit,
- 		.dumpit = vdpa_nl_cmd_dev_config_get_dumpit,
- 	},
- 	{
- 		.cmd = VDPA_CMD_DEV_VSTATS_GET,
--		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
- 		.doit = vdpa_nl_cmd_dev_stats_get_doit,
- 		.flags = GENL_ADMIN_PERM,
- 	},
--- 
-2.41.0
-
+I'm going to send a pull request with them tomorrow or on Friday.
