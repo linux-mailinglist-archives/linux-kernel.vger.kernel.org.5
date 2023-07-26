@@ -2,168 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8AE763037
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A447C76304E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbjGZIqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        id S232213AbjGZIq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGZIpt (ORCPT
+        with ESMTP id S233178AbjGZIq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:45:49 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4B82D5B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:38:19 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7656652da3cso495177385a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690360698; x=1690965498;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=74wyanum3tMY6hDx3TZatyjXXaq/omZ9n0t0OUBylr4=;
-        b=hvkW0yU+SBX4+XFY9QdEEWD6uWusk3QtD2FOsR9/3ALp8IJw7ZEB5o6Ds8zD9mX1H0
-         cEo/IxD9gxFFiU6nf75883gHJ4hXt8Bzr/1hFZnXTuqN7n0eXr/TijDA//AaugReIftU
-         jHS2W6eE1Qo5CIVIBDy8yCnK/iNo0/W9kVIJY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690360698; x=1690965498;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=74wyanum3tMY6hDx3TZatyjXXaq/omZ9n0t0OUBylr4=;
-        b=czTGV3VzXhqiPBW+kKq8Ze2bfPWK8CGUZqCtFjXz/3mfSWBzGQvIkPH/l7GxIdPA8A
-         DwbAJtpGFkDUt1bSJqC0cUE/wKTnnFDPcajxqnl1oWo2PRoN9eHR15HNQ1vah/cjyFqL
-         A1LFP9GZqnOslAg2x/pPp26KFZFq+FMmP+TvUhnnNxY/i6pclni3v9m5x1ZAwWSSy6p2
-         I3c9gPQyiZ9o+ZYHYhwBgPL39I7yvDlnY/j5e7kUnk6ps/krmlleo1p8JQibMpu/2ON6
-         mNJ1KLhqvlJlHUTsv2w5+9p7ZwSfB2Y7WlpYI+oxK2odbLa9Hrz5IDcVeyFfT9Y/x3k1
-         Bkkw==
-X-Gm-Message-State: ABy/qLbs9BP5IWim9A5SZOK/V2ha7WFClBeh+7pcAfrJkMYOF4eLQrpO
-        /ioluoVJcfkkyuKlc0F6XV/2IegTe/WWIXX3C1TLUw==
-X-Google-Smtp-Source: APBJJlGkClktBk/gKZHDzRI4tAFpfyM3Kh2TjQXeHIrxw0DzPFmNJnyDOVhV798035Aqmlu1OdnFKQ==
-X-Received: by 2002:a05:620a:2586:b0:765:83e8:d990 with SMTP id x6-20020a05620a258600b0076583e8d990mr1534196qko.75.1690360698311;
-        Wed, 26 Jul 2023 01:38:18 -0700 (PDT)
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com. [209.85.219.45])
-        by smtp.gmail.com with ESMTPSA id v9-20020a05620a122900b00765aa3ffa07sm4214283qkj.98.2023.07.26.01.37.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 01:37:45 -0700 (PDT)
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-63ce8bea776so24592976d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:37:30 -0700 (PDT)
-X-Received: by 2002:a0c:c684:0:b0:63c:da03:1c12 with SMTP id
- d4-20020a0cc684000000b0063cda031c12mr975386qvj.60.1690360649449; Wed, 26 Jul
- 2023 01:37:29 -0700 (PDT)
+        Wed, 26 Jul 2023 04:46:28 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280084EC7;
+        Wed, 26 Jul 2023 01:38:57 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q7mqi5023360;
+        Wed, 26 Jul 2023 10:38:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=3y1gAN+mwjFX0mmcob0coJ1SCFHX1T8V+14qzBSgYoA=;
+ b=N5B8z6sk0DqG0iOyKAz2AgU4noJ9XPHD2+5T5iX27bPzgHrFXh4Wd6QQV5NHYARnLYuy
+ FfsXC/y/WcOC67Y+a3/L07jxhG/OR21dxTEiruRaurn/OkFZuo3FYWVp2FE0NNwct8nV
+ y1Si+mWfmOcNhUDx8HXHu5gX1+AsG3abuw8f2Ygnt4AQwHzzATrwf0dI1BF5aIKnX4hL
+ d45Ca8DCN6Uo3UKf+YOzquRvgPuriEc/KaJFA7PJuuyyNpQohLqe4Wi3eo1hPKLxAvfQ
+ WZD1ACjnWZG4T46QzsFGCdtskRLGSf5ZzHw0NTxy8ApAgOe+Bspe33wVnVJWzUwANJUi qg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2ye8gd3h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 10:38:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3861F100048;
+        Wed, 26 Jul 2023 10:38:16 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C6EB020FA39;
+        Wed, 26 Jul 2023 10:38:16 +0200 (CEST)
+Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
+ 2023 10:38:16 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>,
+        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v3 00/11] Introduce STM32 Firewall framework
+Date:   Wed, 26 Jul 2023 10:37:59 +0200
+Message-ID: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230717-uvc-oob-v2-1-c7745a8d5847@chromium.org>
- <20230725213451.GU31069@pendragon.ideasonboard.com> <CANiDSCttkqows7PZS823Jpk-CqK9Gz2rujF_R4SPDi=wcPJ2LA@mail.gmail.com>
- <20230726080753.GX31069@pendragon.ideasonboard.com>
-In-Reply-To: <20230726080753.GX31069@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 26 Jul 2023 10:37:17 +0200
-X-Gmail-Original-Message-ID: <CANiDSCsfmpi3N8hqC7XxYMg_6Zrf=QROjj-JwgzavPBzhW0NPw@mail.gmail.com>
-Message-ID: <CANiDSCsfmpi3N8hqC7XxYMg_6Zrf=QROjj-JwgzavPBzhW0NPw@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Fix OOB read
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@kernel.org, Zubin Mithra <zsm@chromium.org>,
-        =?UTF-8?Q?Kai_Wasserb=C3=A4ch?= <kai@dev.carbon-project.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.121]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_01,2023-07-25_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
+platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
+register to the framework to offer firewall services such as access
+granting.
 
-On Wed, 26 Jul 2023 at 10:07, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> (CC'ing Kai and Thorsten who have added the check to checkpatch)
->
-> On Wed, Jul 26, 2023 at 08:24:50AM +0200, Ricardo Ribalda wrote:
-> > On Tue, 25 Jul 2023 at 23:34, Laurent Pinchart wrote:
-> > > On Thu, Jul 20, 2023 at 05:46:54PM +0000, Ricardo Ribalda wrote:
-> > > > If the index provided by the user is bigger than the mask size, we might do an
-> > > > out of bound read.
-> > > >
-> > > > CC: stable@kernel.org
-> > > > Fixes: 40140eda661e ("media: uvcvideo: Implement mask for V4L2_CTRL_TYPE_MENU")
-> > > > Reported-by: Zubin Mithra <zsm@chromium.org>
-> > >
-> > > checkpatch now requests a Reported-by tag to be immediately followed by
-> > > a Closes tag that contains the URL to the report. Could you please
-> > > provide that ?
-> >
-> > I saw that, but the URL is kind of private:
-> >
-> > Closes: http://issuetracker.google.com/issues/289975230
->
-> Ah :-S I wonder if we should drop the Reported-by tag then ?
->
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > ---
-> > > > Avoid reading index >= 31
-> > > > ---
-> > > > Changes in v2:
-> > > > - Use BITS_PER_TYPE instead of 32 (thanks Sergey).
-> > > > - Add Reported-by tag.
-> > > > - Link to v1: https://lore.kernel.org/r/20230717-uvc-oob-v1-1-f5b9b4aba3b4@chromium.org
-> > > > ---
-> > > >  drivers/media/usb/uvc/uvc_ctrl.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> > > > index 5e9d3da862dd..e59a463c2761 100644
-> > > > --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> > > > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> > > > @@ -1402,6 +1402,9 @@ int uvc_query_v4l2_menu(struct uvc_video_chain *chain,
-> > > >       query_menu->id = id;
-> > > >       query_menu->index = index;
-> > > >
-> > > > +     if (index >= BITS_PER_TYPE(mapping->menu_mask))
-> > > > +             return -EINVAL;
-> > > > +
-> > >
-> > > I'd move this a few lines up, before setting query_menu.
-> >
-> > SGTM, I just wanted to clear all the fields to mimic the other error
-> > paths of the function.
->
-> I'm fine with that too if you prefer.
+This series of patches is a new approach on the previous STM32 system
+bus, history is available here:
+https://lore.kernel.org/lkml/20230127164040.1047583/
 
-Your call. I prefer my version, but I am of course biased :P
+The need for such framework arises from the fact that there are now
+multiple hardware firewalls implemented across multiple products.
+Drivers are shared between different products, using the same code.
+When it comes to firewalls, the purpose mostly stays the same: Protect
+hardware resources. But the implementation differs, and there are
+multiple types of firewalls: peripheral, memory, ... 
 
->
-> > > With those minor changes,
-> > >
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > >
-> > > There's no need for a v3, I can handle the changes locally, but I need
-> > > the URL for the Closes tag.
-> > >
-> > > >       ret = mutex_lock_interruptible(&chain->ctrl_mutex);
-> > > >       if (ret < 0)
-> > > >               return -ERESTARTSYS;
-> > > >
-> > > > ---
-> > > > base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-> > > > change-id: 20230717-uvc-oob-4b0148a00417
->
-> --
-> Regards,
->
-> Laurent Pinchart
+Some hardware firewall controllers such as the RIFSC implemented on
+STM32MP2x platforms may require to take ownership of a resource before
+being able to use it, hence the requirement for firewall services to
+take/release the ownership of such resources.
 
+On the other hand, hardware firewall configurations are becoming
+more and more complex. These mecanisms prevent platform crashes
+or other firewall-related incoveniences by denying access to some
+resources.
 
+The stm32 firewall framework offers an API that is defined in
+firewall controllers drivers to best fit the specificity of each
+firewall.
+
+For every peripherals protected by either the ETZPC or the RIFSC, the
+firewall framework checks the firewall controlelr registers to see if
+the peripheral's access is granted to the Linux kernel. If not, the
+peripheral is configured as secure, the node is marked populated,
+so that the driver is not probed for that device.
+
+The firewall framework relies on the feature-domain-controller device
+tree bindings: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b.
+It is used by peripherals to reference a domain controller, in this
+case a firewall feature domain. The bus uses the ID referenced by
+the feature-domains property to know where to look in the firewall
+to get the security configuration for the peripheral. This allows
+a device tree description rather than a hardcoded peripheral table
+in the bus driver.
+
+The STM32 ETZPC device is responsible for filtering accesses based on
+security level, or co-processor isolation for any resource connected
+to it.
+
+The RIFSC is responsible for filtering accesses based on Compartment
+ID / security level / privilege level for any resource connected to
+it.
+
+STM32MP13/15/25 SoC device tree files are updated in this series to
+implement this mecanism.
+
+Changes in V2:
+
+	generic:
+		- Add fw_devlink dependency for "feature-domains"
+		  property.
+
+	bindings:
+		- Corrected YAMLS errors highlighted by Rob's robot
+		- Firewall controllers YAMLs no longer define the
+		  maxItems for the "feature-domains" property
+		- Renamed st,stm32-rifsc.yaml to
+		  st,stm32mp25-rifsc.yaml
+		- Fix examples in YAML files
+		- Change feature-domains maxItems to 2 in firewall
+		  consumer files as there should not be more than
+		  2 entries for now
+		- Declare "feature-domain-names" as an optional
+		  property for firewall controllers child nodes.
+		- Add missing "feature-domains" property declaration
+		  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+
+	firewall framework:
+		- Support multiple entries for "feature-domains"
+		  property
+		- Better handle the device-tree parsing using
+		  phandle+args APIs
+		- Remove "resource firewall" type
+		- Add a field for the name of the firewall entry
+		- Fix licenses
+	
+	RIFSC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	ETZPC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	Device trees:
+		- Fix rifsc node name
+		- Move the "ranges" property under the
+		  "feature-domains" one
+
+Changes in V3:
+
+	Change incorrect ordering for bindings commits leading
+	to an error while running
+	"make DT_CHECKER_FLAGS=-m dt_binding_check"
+
+Oleksii Moisieiev (1):
+  dt-bindings: Document common device controller bindings
+
+Gatien Chevallier (10):
+  dt-bindings: treewide: add feature-domains description
+  dt-bindings: bus: document RIFSC
+  dt-bindings: bus: document ETZPC
+  firewall: introduce stm32_firewall framework
+  of: property: fw_devlink: Add support for "feature-domains"
+  bus: rifsc: introduce RIFSC firewall controller driver
+  arm64: dts: st: add RIFSC as a domain controller for STM32MP25x boards
+  bus: etzpc: introduce ETZPC firewall controller driver
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
+
+ .../bindings/bus/st,stm32-etzpc.yaml          |   96 +
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      |  105 +
+ .../bindings/crypto/st,stm32-cryp.yaml        |    4 +
+ .../bindings/crypto/st,stm32-hash.yaml        |    4 +
+ .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
+ .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
+ .../feature-domain-controller.yaml            |   84 +
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
+ .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
+ .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
+ .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
+ .../bindings/media/st,stm32-dcmi.yaml         |    4 +
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
+ .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
+ .../bindings/mfd/st,stm32-timers.yaml         |    5 +
+ .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
+ .../bindings/net/can/bosch,m_can.yaml         |    4 +
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
+ .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
+ .../bindings/serial/st,stm32-uart.yaml        |    4 +
+ .../bindings/sound/st,stm32-i2s.yaml          |    4 +
+ .../bindings/sound/st,stm32-sai.yaml          |    4 +
+ .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
+ .../bindings/spi/st,stm32-qspi.yaml           |    4 +
+ .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
+ .../devicetree/bindings/usb/dwc2.yaml         |    4 +
+ MAINTAINERS                                   |    7 +
+ arch/arm/boot/dts/st/stm32mp131.dtsi          | 1027 +++---
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          | 2757 +++++++++--------
+ arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
+ arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
+ arch/arm64/Kconfig.platforms                  |    1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |    7 +-
+ drivers/bus/Kconfig                           |    9 +
+ drivers/bus/Makefile                          |    1 +
+ drivers/bus/stm32_etzpc.c                     |  141 +
+ drivers/bus/stm32_firewall.c                  |  288 ++
+ drivers/bus/stm32_firewall.h                  |   83 +
+ drivers/bus/stm32_rifsc.c                     |  252 ++
+ drivers/of/property.c                         |    2 +
+ include/linux/bus/stm32_firewall_device.h     |  140 +
+ 47 files changed, 3346 insertions(+), 1919 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+ create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+ create mode 100644 drivers/bus/stm32_etzpc.c
+ create mode 100644 drivers/bus/stm32_firewall.c
+ create mode 100644 drivers/bus/stm32_firewall.h
+ create mode 100644 drivers/bus/stm32_rifsc.c
+ create mode 100644 include/linux/bus/stm32_firewall_device.h
 
 -- 
-Ricardo Ribalda
+2.25.1
+
