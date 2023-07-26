@@ -2,250 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1314763855
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9134F76388C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjGZOGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        id S233640AbjGZOLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbjGZOGs (ORCPT
+        with ESMTP id S233904AbjGZOLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:06:48 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B599211F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1690380403;
-        bh=wRb0WEVgqXpXeU+WbFQ1+WXns6gURJtIo6sThDwsDsE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PhpC3EDS/ZghKNgrgkVWCx9xeXTrrUAL5Yu+YHCQdmua22KQ0S2X4syHVgHVUat+Y
-         T/LiTf5h/2vuXndQRWEaNIxFBMZQs9mRlrSk5llMoKNHjc4Xjv99JsGc1hOt9bx03u
-         BSchp0Xt1TzScbwGq/VsDgbjs+Kqb7toznVSzbL9xL+1RasFonFm4VVD6aEWcNheKP
-         Aj7FOS16fxKh3QhutDxFzWBT10NNNsS20/yG0SCMmyPmiHHxWsHBSimWGZxAkN79FN
-         D8KWw6noCJwlmXZlFVqZ/4+U5rhlXM3gMgzKpZAEiOQwQSEBzqClleF2l7RXuTyTNG
-         1tMtPGVTN3QvA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4R9wgQ65KVz1Jjq;
-        Wed, 26 Jul 2023 10:06:42 -0400 (EDT)
-Message-ID: <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
-Date:   Wed, 26 Jul 2023 10:07:30 -0400
+        Wed, 26 Jul 2023 10:11:31 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F3635BC
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:10:30 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QE8xSU097527;
+        Wed, 26 Jul 2023 09:08:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690380539;
+        bh=+f3waBhCs1Fbv/oJomGks9SD8myxCQnRXrm4zYMldHs=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=wqxceb5MbLaHBaltr1mz7dM+6BNf8hmZXNE/EL0Si11Ao2Hu/6h5wGVedMVmUZjCQ
+         McCEAn5Kfy4Y+dv3SYkYH9UeunA+ZAlS7bXSF2BjqxwB7R590h4v04BH0s7wY3e8UO
+         sVQhwZUkSGxus6mlF8Vb1st7LrDuFa2Mq5u/gkOo=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QE8xYd025615
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 09:08:59 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 09:08:59 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 09:08:59 -0500
+Received: from [10.249.141.75] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QE8qJJ020333;
+        Wed, 26 Jul 2023 09:08:52 -0500
+Message-ID: <ace112fe-978c-a518-2be5-3f3d1f7fd29c@ti.com>
+Date:   Wed, 26 Jul 2023 19:38:51 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
+Subject: Re: [PATCH v2] arm64: defconfig: Enable various configs for TI
+ platforms
+To:     Nishanth Menon <nm@ti.com>
+CC:     <vigneshr@ti.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <krzysztof.kozlowski@linaro.org>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Aradhya Bhatia <a-bhatia1@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Judith Mendez <jm@ti.com>, <u-kumar1@ti.com>
+References: <20230726133049.2074105-1-u-kumar1@ti.com>
+ <20230726134322.gepflrrdcpx6uxvu@colony>
 Content-Language: en-US
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
- <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20230726134322.gepflrrdcpx6uxvu@colony>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 04:04, Shrikanth Hegde wrote:
-> 
-> 
-> On 7/26/23 1:00 AM, Mathieu Desnoyers wrote:
->> Allow select_task_rq to consider a cpu as idle for 1ms after that cpu
->> has exited the idle loop.
->>
->> This speeds up the following hackbench workload on a 192 cores AMD EPYC
->> 9654 96-Core Processor (over 2 sockets):
->>
->> hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
->>
->> from 49s to 34s. (30% speedup)
->>
->> My working hypothesis for why this helps is: queuing more than a single
->> task on the runqueue of a cpu which just exited idle rather than
->> spreading work over other idle cpus helps power efficiency on systems
->> with large number of cores.
->>
->> This was developed as part of the investigation into a weird regression
->> reported by AMD where adding a raw spinlock in the scheduler context
->> switch accelerated hackbench.
->>
->> It turned out that changing this raw spinlock for a loop of 10000x
->> cpu_relax within do_idle() had similar benefits.
->>
->> This patch achieve a similar effect without the busy-waiting by
->> introducing a runqueue state sampling the sched_clock() when exiting
->> idle, which allows select_task_rq to consider "as idle" a cpu which has
->> recently exited idle.
->>
->> This patch should be considered "food for thoughts", and I would be glad
->> to hear feedback on whether it causes regressions on _other_ workloads,
->> and whether it helps with the hackbench workload on large Intel system
->> as well.
->>
->> Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Valentin Schneider <vschneid@redhat.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ben Segall <bsegall@google.com>
->> Cc: Mel Gorman <mgorman@suse.de>
->> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
->> Cc: Aaron Lu <aaron.lu@intel.com>
->> Cc: x86@kernel.org
->> ---
->>   kernel/sched/core.c  | 4 ++++
->>   kernel/sched/sched.h | 3 +++
->>   2 files changed, 7 insertions(+)
->>
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index a68d1276bab0..d40e3a0a5ced 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -6769,6 +6769,7 @@ void __sched schedule_idle(void)
->>   	 * TASK_RUNNING state.
->>   	 */
->>   	WARN_ON_ONCE(current->__state);
->> +	WRITE_ONCE(this_rq()->idle_end_time, sched_clock());
->>   	do {
->>   		__schedule(SM_NONE);
->>   	} while (need_resched());
->> @@ -7300,6 +7301,9 @@ int idle_cpu(int cpu)
->>   {
->>   	struct rq *rq = cpu_rq(cpu);
->>   
->> +	if (sched_clock() < READ_ONCE(rq->idle_end_time) + IDLE_CPU_DELAY_NS)
-> 
-> 
-> Wouldn't this hurt the latency badly? Specially on a loaded system with
-> a workload that does a lot of wakeup.
+Thanks Nishanth
 
-Good point !
+On 7/26/2023 7:13 PM, Nishanth Menon wrote:
+> on $subject: I think mentioning K3 will help narrow things down a bit.
+>
+> On 19:00-20230726, Udit Kumar wrote:
+>> Enable TI ECAP, DP83869 driver, TI OMAP2, K3 remote proc
+> I think you mean to state TI mailbox and not omap2 :)
 
-Can you try your benchmark replacing the if () statement above by:
+Not really :)
 
-+       if (sched_clock() < READ_ONCE(rq->idle_end_time) + IDLE_CPU_DELAY_NS &&
-+           READ_ONCE(rq->nr_running) <= 4)
-+               return 1;
+This driver TI OMAP2, (CONFIG_OMAP2PLUS_MBOX) is used in
 
-It speeds up the hackbench test-case even more here. It's now 30s, and it should
-improve tail latency.
+TI K3 platforms as well for communications with remote processors.
 
-Thanks,
-
-Mathieu
+Rest comments will address in v3.
 
 
-> 
-> ran schbench on a 50% loaded system with stress-ng. (there could be a better benchmark to measure latency)
-> I see that latency takes a hit. specially tail latencies.full log below with different schbench groups.
-> 
-> 		     6.5-rc3		6.5-rc3+this patch
-> 
-> Groups: 1
-> 50.0th:                 14.0              13.0
-> 75.0th:                 16.0              16.0
-> 90.0th:                 19.5              20.0
-> 95.0th:                 53.0              226.0
-> 99.0th:                 1969.0            2165.0
-> 99.5th:                 2912.0            2648.0
-> 99.9th:                 4680.0            4142.0
-> 
-> Groups: 2
-> 50.0th:                 15.5              15.5
-> 75.0th:                 18.0              19.5
-> 90.0th:                 25.5              497.0
-> 95.0th:                 323.0             1384.0
-> 99.0th:                 2055.0            3144.0
-> 99.5th:                 2972.0            4014.0
-> 99.9th:                 6026.0            6560.0
-> 
-> Groups: 4
-> 50.0th:                 18.0              18.5
-> 75.0th:                 21.5              26.0
-> 90.0th:                 56.0              940.5
-> 95.0th:                 678.0             1896.0
-> 99.0th:                 2484.0            3756.0
-> 99.5th:                 3224.0            4616.0
-> 99.9th:                 4960.0            6824.0
-> 
-> Groups: 8
-> 50.0th:                 23.5              25.5
-> 75.0th:                 30.5              421.5
-> 90.0th:                 443.5             1722.0
-> 95.0th:                 1410.0            2736.0
-> 99.0th:                 3942.0            5496.0
-> 99.5th:                 5232.0            7016.0
-> 99.9th:                 7996.0            8896.0
-> 
-> Groups: 16
-> 50.0th:                 33.5              41.5
-> 75.0th:                 49.0              752.0
-> 90.0th:                 1067.5            2332.0
-> 95.0th:                 2093.0            3468.0
-> 99.0th:                 5048.0            6728.0
-> 99.5th:                 6760.0            7624.0
-> 99.9th:                 8592.0            9504.0
-> 
-> Groups: 32
-> 50.0th:                 60.0              79.0
-> 75.0th:                 456.5             1712.0
-> 90.0th:                 2788.0            3996.0
-> 95.0th:                 4544.0            5768.0
-> 99.0th:                 8444.0            9104.0
-> 99.5th:                 9168.0            9808.0
-> 99.9th:                 11984.0           12448.0
-> 
-> 
->> +		return 1;
->> +
->>   	if (rq->curr != rq->idle)
->>   		return 0;
->>   
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index 81ac605b9cd5..8932e198a33a 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -97,6 +97,8 @@
->>   # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
->>   #endif
->>   
->> +#define IDLE_CPU_DELAY_NS	1000000		/* 1ms */
->> +
->>   struct rq;
->>   struct cpuidle_state;
->>   
->> @@ -1010,6 +1012,7 @@ struct rq {
->>   
->>   	struct task_struct __rcu	*curr;
->>   	struct task_struct	*idle;
->> +	u64			idle_end_time;
->>   	struct task_struct	*stop;
->>   	unsigned long		next_balance;
->>   	struct mm_struct	*prev_mm;
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+>
+>> SND_SOC_J721E_EVM, MCAN, UFS and RTI driver to be built
+>> as module.
+>> These are needed on different TI platforms.
+> Please elaborate the list of boards this benefits TI platforms are a
+> big variant list. TI Platforms is too generic a term that scales
+> architectures.. that is not the point you are trying to make.
+>> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+>> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: Judith Mendez <jm@ti.com>
+>> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+> If the various contributers are ok, just my 2 cents:
+> Could you drop all other sign-offs other than yours? I understand the
+> contributions from various members on the TI SDK tree, but I'vent seen
+> them attempt to upstream and you took the effort in ensuring the new
+> squashed patch contains all the relevant components.
+>
+> [..]
