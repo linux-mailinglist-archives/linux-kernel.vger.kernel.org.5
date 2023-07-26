@@ -2,297 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334FC762823
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719E6762828
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 03:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjGZBYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 21:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
+        id S229913AbjGZB3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 21:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjGZBYv (ORCPT
+        with ESMTP id S229472AbjGZB3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 21:24:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A3C26B9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:24:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 517F261481
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:24:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4C4C433C7;
-        Wed, 26 Jul 2023 01:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690334688;
-        bh=TDYGviEhpX5ACllUm9tuh8DUX/RaBzuoFvskgQSUFhU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=d8c9L0jY2U1zx/UGyKhEyoXy6ZuapD4Iave4GXF6Ns2pkTFKZay9TMDmyCsV3h7lb
-         m/o+UzgJZrYOtuV+rBFQ7nL93u8A/CVDba8tUSvnDgKpIZ0H66EswCHeTwG8wnZZDO
-         nr/ioyOe+eP9880EzkNeMhc/3JyvNQ6cVZVIW85Wn3CNeo4ibV/i+fqmyHjXic5jb7
-         wDXLy4k9DIoM8fEqpyIWhVU7n8NJYzMmZnWsYB8trThu4+9vmqm4x+zYGsFCiBfv2z
-         YEbKLdf7lom2095UsB6xIFORDQrHyHshvRiFljmI9EtaRMEZDsqH3NizeSQmLfhrh6
-         1+qUz6tjKRcBw==
-Message-ID: <16625fbb-3dc0-34d5-ee75-fe010aa0d9ec@kernel.org>
-Date:   Wed, 26 Jul 2023 09:24:44 +0800
+        Tue, 25 Jul 2023 21:29:21 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14882699
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 18:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690334960; x=1721870960;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=rLrwN231gbRNZwlVTiskoIa513bQnsdAEsRYgBtr61k=;
+  b=cDDVTmc7z660qbyCcLnRHkecQXVvv1NRKyRROG6u3aUTIe/BE/yYcauh
+   Qrvo7444CSQgqc4knJ6wDUBND4sgcHvAVlSHq3bFr5/mTvBSGAgIQE2dx
+   2GsAAAHNdc6us5blwiJZ0lO2m1Z36cTuVXFSBSOEzk97IetJDgXtdu0Be
+   hPpkbpH1cYdHof9VYZcuXDXB0lgXG6dGwryY7yvCIkL5sDX47Wrb2K6Zd
+   eKUBc9N1yc2RyRpPEKXWftta5w3C4YXb6jsFx38l4CwFETdZg1ukkIBQm
+   cuuiP23bisQAR0raMVfyZEeXBi4GFOcOm7OHiZnTbn3LHtikAgrgQ1zLM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="352788251"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="352788251"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 18:29:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755980612"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="755980612"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jul 2023 18:29:19 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOTL4-0000WJ-14;
+        Wed, 26 Jul 2023 01:29:18 +0000
+Date:   Wed, 26 Jul 2023 09:29:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: '_groups'
+ defined but not used
+Message-ID: <202307260914.AMUMoZ8S-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] f2fs: introduce two helper functions for the largest
- cached extent
-Content-Language: en-US
-To:     Chao Liu <chaoliu719@gmail.com>, Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Liu <liuchao@coolpad.com>
-References: <20230725013607.4134123-1-chaoliu719@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230725013607.4134123-1-chaoliu719@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/25 9:36, Chao Liu wrote:
-> From: Chao Liu <liuchao@coolpad.com>
-> 
-> This patch is a cleanup:
-> 1. Merge __drop_largest_extent() since it has only one caller.
-> 2. Introduce __unlock_tree_with_checking_largest() and
->     __drop_largest_extent() to help manage largest and largest_update
->     in extent_tree.
-> 
-> Signed-off-by: Chao Liu <liuchao@coolpad.com>
-> ---
-> v2: Make sure et->largest_updated gets updated within &et->lock.
->      Thanks to Chao Yu for pointing out.
-> ---
->   fs/f2fs/extent_cache.c | 66 ++++++++++++++++++++----------------------
->   fs/f2fs/f2fs.h         |  4 +--
->   2 files changed, 33 insertions(+), 37 deletions(-)
-> 
-> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
-> index 0e2d49140c07f..cfc69621a8a26 100644
-> --- a/fs/f2fs/extent_cache.c
-> +++ b/fs/f2fs/extent_cache.c
-> @@ -19,6 +19,12 @@
->   #include "node.h"
->   #include <trace/events/f2fs.h>
->   
-> +static void __drop_largest_extent(struct extent_tree *et)
-> +{
-> +	et->largest.len = 0;
-> +	et->largest_updated = true;
-> +}
-> +
->   bool sanity_check_extent_cache(struct inode *inode)
->   {
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> @@ -35,8 +41,7 @@ bool sanity_check_extent_cache(struct inode *inode)
->   
->   	/* Let's drop, if checkpoint got corrupted. */
->   	if (is_set_ckpt_flags(sbi, CP_ERROR_FLAG)) {
-> -		ei->len = 0;
-> -		et->largest_updated = true;
-> +		__drop_largest_extent(et);
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
+commit: 405ac045ec730d10e5901d653088b9d67bfaaa80 pinctrl: qcom: allow true compile testing
+date:   7 weeks ago
+config: i386-buildonly-randconfig-r004-20230726 (https://download.01.org/0day-ci/archive/20230726/202307260914.AMUMoZ8S-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260914.AMUMoZ8S-lkp@intel.com/reproduce)
 
-__drop_largest_extent_force(et);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260914.AMUMoZ8S-lkp@intel.com/
 
->   		return true;
->   	}
->   
-> @@ -310,6 +315,8 @@ static void __detach_extent_node(struct f2fs_sb_info *sbi,
->   
->   	if (et->cached_en == en)
->   		et->cached_en = NULL;
-> +
-> +	/* keep the largest as we can still use it */
+All warnings (new ones prefixed by >>):
 
-The comments doesn't match below code?
+>> drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: '_groups' defined but not used [-Wunused-const-variable=]
+     244 | static const char * const _groups[] = {
+         |                           ^~~~~~~
 
->   	kmem_cache_free(extent_node_slab, en);
->   }
->   
-> @@ -385,15 +392,6 @@ static unsigned int __free_extent_tree(struct f2fs_sb_info *sbi,
->   	return count - atomic_read(&et->node_cnt);
->   }
->   
-> -static void __drop_largest_extent(struct extent_tree *et,
-> -					pgoff_t fofs, unsigned int len)
-> -{
-> -	if (fofs < et->largest.fofs + et->largest.len &&
-> -			fofs + len > et->largest.fofs) {
-> -		et->largest.len = 0;
-> -		et->largest_updated = true;
-> -	}
-> -}
 
-What about:
+vim +/_groups +244 drivers/pinctrl/qcom/pinctrl-ipq5018.c
 
-static void __drop_largest_extent_cond(struct extent_tree *et,
-					pgoff_t fofs, unsigned int len,
-					bool force)
-{
-	if (force || (fofs < et->largest.fofs + et->largest.len &&
-			fofs + len > et->largest.fofs)) {
-		et->largest.len = 0;
-		et->largest_updated = true;
-	}
-}
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  243  
+725d1c8916583f Sricharan Ramabadhran 2023-06-08 @244  static const char * const _groups[] = {
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  245  	"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  246  	"gpio8", "gpio9", "gpio10", "gpio11", "gpio12", "gpio13", "gpio14",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  247  	"gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  248  	"gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", "gpio28",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  249  	"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  250  	"gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", "gpio42",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  251  	"gpio43", "gpio44", "gpio45", "gpio46",
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  252  };
+725d1c8916583f Sricharan Ramabadhran 2023-06-08  253  
 
-static void __drop_largest_extent_force(struct extent_tree *et)
-{
-	__drop_largest_extent_cond(et, 0, 0, true);
-}
+:::::: The code at line 244 was first introduced by commit
+:::::: 725d1c8916583f9c09e5f05e5a55dd47fdca61c1 pinctrl: qcom: Add IPQ5018 pinctrl driver
 
->   
->   void f2fs_init_read_extent_tree(struct inode *inode, struct page *ipage)
->   {
-> @@ -601,6 +599,19 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
->   	return en;
->   }
->   
-> +static void __unlock_tree_with_checking_largest(struct extent_tree *et,
-> +						struct inode *inode)
-> +{
-> +	if (et->type == EX_READ && et->largest_updated) {
-> +		et->largest_updated = false;
-> +		write_unlock(&et->lock);
-> +		f2fs_mark_inode_dirty_sync(inode, true);
-> +		return;
-> +	}
-> +
-> +	write_unlock(&et->lock);
-> +}
-> +
->   static void __update_extent_tree_range(struct inode *inode,
->   			struct extent_info *tei, enum extent_type type)
->   {
-> @@ -612,7 +623,6 @@ static void __update_extent_tree_range(struct inode *inode,
->   	struct rb_node **insert_p = NULL, *insert_parent = NULL;
->   	unsigned int fofs = tei->fofs, len = tei->len;
->   	unsigned int end = fofs + len;
-> -	bool updated = false;
->   	bool leftmost = false;
->   
->   	if (!et)
-> @@ -636,11 +646,10 @@ static void __update_extent_tree_range(struct inode *inode,
->   		prev = et->largest;
->   		dei.len = 0;
->   
-> -		/*
-> -		 * drop largest extent before lookup, in case it's already
-> -		 * been shrunk from extent tree
-> -		 */
-> -		__drop_largest_extent(et, fofs, len);
+:::::: TO: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+:::::: CC: Linus Walleij <linus.walleij@linaro.org>
 
-__drop_largest_extent_cond(et, fofs, len, false);
-
-> +		/* updates may cause largest extent cache to become invalid */
-> +		if (fofs < et->largest.fofs + et->largest.len &&
-> +		    fofs + len > et->largest.fofs)
-> +			__drop_largest_extent(et);
->   	}
->   
->   	/* 1. lookup first extent node in range [fofs, fofs + len - 1] */
-> @@ -733,8 +742,7 @@ static void __update_extent_tree_range(struct inode *inode,
->   		if (dei.len >= 1 &&
->   				prev.len < F2FS_MIN_EXTENT_LEN &&
->   				et->largest.len < F2FS_MIN_EXTENT_LEN) {
-> -			et->largest.len = 0;
-> -			et->largest_updated = true;
-> +			__drop_largest_extent(et);
-
-__drop_largest_extent_force(et);
-
->   			set_inode_flag(inode, FI_NO_EXTENT);
->   		}
->   	}
-> @@ -742,10 +750,6 @@ static void __update_extent_tree_range(struct inode *inode,
->   	if (is_inode_flag_set(inode, FI_NO_EXTENT))
->   		__free_extent_tree(sbi, et);
->   
-> -	if (et->largest_updated) {
-> -		et->largest_updated = false;
-> -		updated = true;
-> -	}
-
-I guess we'd better keep previous logic.
-
->   	goto out_read_extent_cache;
->   update_age_extent_cache:
->   	if (!tei->last_blocks)
-> @@ -757,10 +761,7 @@ static void __update_extent_tree_range(struct inode *inode,
->   		__insert_extent_tree(sbi, et, &ei,
->   					insert_p, insert_parent, leftmost);
->   out_read_extent_cache:
-> -	write_unlock(&et->lock);
-> -
-> -	if (updated)
-> -		f2fs_mark_inode_dirty_sync(inode, true);
-
-Ditto,
-
-> +	__unlock_tree_with_checking_largest(et, inode);
->   }
->   
->   #ifdef CONFIG_F2FS_FS_COMPRESSION
-> @@ -1092,7 +1093,6 @@ static void __drop_extent_tree(struct inode *inode, enum extent_type type)
->   {
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->   	struct extent_tree *et = F2FS_I(inode)->extent_tree[type];
-> -	bool updated = false;
->   
->   	if (!__may_extent_tree(inode, type))
->   		return;
-> @@ -1101,14 +1101,10 @@ static void __drop_extent_tree(struct inode *inode, enum extent_type type)
->   	__free_extent_tree(sbi, et);
->   	if (type == EX_READ) {
->   		set_inode_flag(inode, FI_NO_EXTENT);
-> -		if (et->largest.len) {
-> -			et->largest.len = 0;
-> -			updated = true;
-> -		}
-> +		if (et->largest.len)
-> +			__drop_largest_extent(et);
->   	}
-> -	write_unlock(&et->lock);
-> -	if (updated)
-> -		f2fs_mark_inode_dirty_sync(inode, true);
-
-Ditto,
-
-Thanks,
-
-> +	__unlock_tree_with_checking_largest(et, inode);
->   }
->   
->   void f2fs_drop_extent_tree(struct inode *inode)
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index d372bedb0fe4e..da02e120e5ea6 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -665,7 +665,7 @@ struct extent_tree {
->   
->   struct extent_tree_info {
->   	struct radix_tree_root extent_tree_root;/* cache extent cache entries */
-> -	struct mutex extent_tree_lock;	/* locking extent radix tree */
-> +	struct mutex extent_tree_lock;		/* locking extent radix tree */
->   	struct list_head extent_list;		/* lru list for shrinker */
->   	spinlock_t extent_lock;			/* locking extent lru list */
->   	atomic_t total_ext_tree;		/* extent tree count */
-> @@ -766,7 +766,7 @@ enum {
->   	FI_ACL_MODE,		/* indicate acl mode */
->   	FI_NO_ALLOC,		/* should not allocate any blocks */
->   	FI_FREE_NID,		/* free allocated nide */
-> -	FI_NO_EXTENT,		/* not to use the extent cache */
-> +	FI_NO_EXTENT,		/* not to use the read extent cache */
->   	FI_INLINE_XATTR,	/* used for inline xattr */
->   	FI_INLINE_DATA,		/* used for inline data*/
->   	FI_INLINE_DENTRY,	/* used for inline dentry */
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
