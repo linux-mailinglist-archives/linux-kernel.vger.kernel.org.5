@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2667631E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B447631EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjGZJ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
+        id S232919AbjGZJ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbjGZJZ4 (ORCPT
+        with ESMTP id S232132AbjGZJ1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:25:56 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B739E
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:24:02 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bb31245130so2217285a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:24:02 -0700 (PDT)
+        Wed, 26 Jul 2023 05:27:06 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA924EF3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:25:12 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so1488060b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690363442; x=1690968242;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=evpSZ3RXNicfZVh7nuw0DF2HHt7Ic+bUTRklUjl3NsU=;
-        b=DUINzwJ9R7vTlXWpUggI687d3y2CHb6418khydW1hw8ktgnGCEE8qGwopvMfvb35ZF
-         9belBMHBoH3Ce3wwRPvIQAWeZWQIPZvb8hAunDgsrprh9moIjsyq+bo8NS739q3F0EiD
-         E/BEkIVRP+mALMZH9mg3Dxt+M8ws6KJ/pHiTBW8XOz2qhoWNZdLSkdwUuShumC0n3VLm
-         FQXz1f6sJr+NTLfyz41+BKMXENQyMcCjYH1bOipAExkoZB8h6GcKyWUlefwc6oFkj0y4
-         taBAN7o664EmD37KHCoMWP012D7oHsFz8z20h75wUSX9VP+YI2+sPG+y5WrWkWLUrcVv
-         O13Q==
+        d=bytedance.com; s=google; t=1690363511; x=1690968311;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ajWZi1kTG9ZsFll3P13XRfH/M90QTcK5ZSE2yNZ8xrc=;
+        b=FbQ/cU5KkBidPkx8Y2uGYCzGutSB6xNfkWiQEKQsSST8W9zvQhHhApft87PlLY8dLU
+         DGKfOcVpxkQTOOl80Aro56BnjlNO41fZWD7CmV5GDlB1LjEDjOf3Kop2mVKp+naFiQzY
+         As6MgqOMDkFvMljdz6Un/7KTBl/NUqtiNwtAlVNm8YXgeUKehHDEJVTDK07iwDWpbMUs
+         Auk85ACWfB5lfW+mTAMWhogzlI0RHaQpyoe7zLfXc22574NosN/xSHT+kEdNg0VX/lgH
+         cTQssA2/OElC5yJBDMwL3y7p8+2qs+uUi9JaKT2yW1TXFErKU2nPA1SSCU5AFvvQq6bi
+         em9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363442; x=1690968242;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=evpSZ3RXNicfZVh7nuw0DF2HHt7Ic+bUTRklUjl3NsU=;
-        b=PxZozUfZhfWXEcCNxyUw0xLU8OFx8ME0QAZ4mhi3ZQbT8T4fnBcjFWmYny49sNy11G
-         K5FVfybqsJJa7UTE1QTJ+SHe0zvfgSiK/b63S5n3sEx2fFbc6aPVD1waFDUcj5MHwdpD
-         G62TWBc6+70Qh2JI3pEr/r+0flDm02ifakVb7V1JKr64cOkiqRfobeltLMgfpaBTGgRl
-         CRYCKZl4J4FOw1J5T5CeYWSuDWyXqJkLe3D6VttT572XlSlPlSpeueC1ePoyiMSkaRFq
-         HsCZAmHJXOULgbiqKGWP0g5FhdKG4tWjTdi2pDGe2g1EojGvUxcyvtHAf8MVo862v23W
-         Wmcw==
-X-Gm-Message-State: ABy/qLbFtea/XHwYevMUIVpeCLVOXTK2DCOpFGcgJTa5jbkXlb5hKp2k
-        wMiiL7zMSHz4CSSLqaknug5xGj0zdgKvMHyjrPTOQw==
-X-Google-Smtp-Source: APBJJlHgwH1hMJ17p1VokeuM0YeDVBjTRG76ExpI/O2a1enOG31yWAqvHw/F+GQf9mR5Yhg9yNR/TO7CIGUwxlEX1uY=
-X-Received: by 2002:a05:6830:138a:b0:6b9:465c:d22c with SMTP id
- d10-20020a056830138a00b006b9465cd22cmr1676020otq.8.1690363442186; Wed, 26 Jul
- 2023 02:24:02 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690363511; x=1690968311;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ajWZi1kTG9ZsFll3P13XRfH/M90QTcK5ZSE2yNZ8xrc=;
+        b=cSVsGb0RwFeCMAaHiiYEzSpA85U8sNkBMkIBpR3b4phnGqYvWyFl0kTWrHYZiPGeEw
+         mDC61xgwwS25WKK5dwJ9RoPLCFAbVwUOyFXQrp/aJwgVVluIWI1NVrcXeYHn63/ZeXSa
+         9V4jqPw32RmigPm3aRNN+7N4t7BafyNy4p9x0LNdGXJZVE07kfEojqUvpPDHKeOxvilm
+         EtZi+MIS5TpL8n7u/ogU98xKnv4BrPh8kOg6ddP69feHGBjZRT1wvmpXLOiOK1MU3HVo
+         GPZmLaCWGYfXe2oG95e8HaVx6gJkis1dk0VaknnlOSo/ENNiyhmbKX1F0fI8fYguMl1P
+         OfKQ==
+X-Gm-Message-State: ABy/qLYNCLVa6CT6xjLo61vJsLEOaMTcke8+OIQZTUjgw0mErTuQlzQX
+        m689TVTXfUxp/bSN8QPPBDMlXA==
+X-Google-Smtp-Source: APBJJlH7Lt4w+KKgSvUzSkJhF0oF8+b3ljHzveqc3Noqsk7KflIEw6xDKQ/sXRTNdo5n0Hc+oIf56w==
+X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr1785615pzk.2.1690363511718;
+        Wed, 26 Jul 2023 02:25:11 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id h2-20020aa786c2000000b00682a99b01basm2004283pfo.0.2023.07.26.02.25.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:25:11 -0700 (PDT)
+Message-ID: <491f5c8f-ccc6-dab8-71b3-caeedc8c4b39@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:24:58 +0800
 MIME-Version: 1.0
-References: <20230725140604.1350406-1-james.clark@arm.com>
-In-Reply-To: <20230725140604.1350406-1-james.clark@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Wed, 26 Jul 2023 10:23:51 +0100
-Message-ID: <CAJ9a7VgfFXsnD5mz23aeHBuPj81XErgu1ghNAykWgoYF+aFtMg@mail.gmail.com>
-Subject: Re: [PATCH] coresight: Fix all W=1 build warnings
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 17/47] rcu: dynamically allocate the rcu-lazy shrinker
+Content-Language: en-US
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-18-zhengqi.arch@bytedance.com>
+ <3A164818-56E1-4EB4-A927-1B2D23B81659@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <3A164818-56E1-4EB4-A927-1B2D23B81659@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 at 15:06, James Clark <james.clark@arm.com> wrote:
->
-> The kernel test robot looks for new warnings in a W=1 build, so fix all
-> the existing warnings to make it easier to spot new ones when building
-> locally.
->
-> The fixes are for undocumented function arguments and an incorrect doc
-> style.
->
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-cti-core.c  | 2 +-
->  drivers/hwtracing/coresight/coresight-etm4x-cfg.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index 7023ff70cc28..3999d0a2cb60 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -22,7 +22,7 @@
->  #include "coresight-priv.h"
->  #include "coresight-cti.h"
->
-> -/**
-> +/*
->   * CTI devices can be associated with a PE, or be connected to CoreSight
->   * hardware. We have a list of all CTIs irrespective of CPU bound or
->   * otherwise.
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-cfg.c b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> index d2ea903231b2..c302072b293a 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> @@ -40,7 +40,7 @@
->   * Invalid offsets will result in fail code return and feature load failure.
->   *
->   * @drvdata:   driver data to map into.
-> - * @reg:       register to map.
-> + * @reg_csdev: register to map.
->   * @offset:    device offset for the register
->   */
->  static int etm4_cfg_map_reg_offset(struct etmv4_drvdata *drvdata,
-> @@ -132,7 +132,7 @@ static int etm4_cfg_map_reg_offset(struct etmv4_drvdata *drvdata,
->   * etm4_cfg_load_feature - load a feature into a device instance.
->   *
->   * @csdev:     An ETMv4 CoreSight device.
-> - * @feat:      The feature to be loaded.
-> + * @feat_csdev:        The feature to be loaded.
->   *
->   * The function will load a feature instance into the device, checking that
->   * the register definitions are valid for the device.
-> --
-> 2.34.1
->
 
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+
+On 2023/7/26 15:04, Muchun Song wrote:
+> 
+> 
+>> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+>>
+>> Use new APIs to dynamically allocate the rcu-lazy shrinker.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>> kernel/rcu/tree_nocb.h | 19 +++++++++++--------
+>> 1 file changed, 11 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+>> index 43229d2b0c44..919f17561733 100644
+>> --- a/kernel/rcu/tree_nocb.h
+>> +++ b/kernel/rcu/tree_nocb.h
+>> @@ -1397,12 +1397,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>> return count ? count : SHRINK_STOP;
+>> }
+>>
+>> -static struct shrinker lazy_rcu_shrinker = {
+>> -	.count_objects = lazy_rcu_shrink_count,
+>> -	.scan_objects = lazy_rcu_shrink_scan,
+>> -	.batch = 0,
+>> -	.seeks = DEFAULT_SEEKS,
+>> -};
+>> +static struct shrinker *lazy_rcu_shrinker;
+> 
+> Seems there is no users of this variable, maybe we could drop
+> this.
+
+Yeah, will change it to a local variable. And the patch #15 is
+the same.
+
+> 
