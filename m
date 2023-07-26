@@ -2,123 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B516D763781
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ADA763787
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbjGZN0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S233303AbjGZN1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbjGZN03 (ORCPT
+        with ESMTP id S231357AbjGZN1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:26:29 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6078B1FEC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:26:28 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso10770348e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:26:28 -0700 (PDT)
+        Wed, 26 Jul 2023 09:27:32 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1969FE2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:27:28 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so442755b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690377986; x=1690982786;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FlYno703h9Rc07Q4o0xGriJ575A5cS8B+AAXSkAUxQ0=;
-        b=u0gVsT2JW2shLoA3VJTEMT68XNaOEiMPGz0lsmF3Xn1zRArnR5Iellu+Yu3PdmWRTm
-         IxwO+ywuyR5QWy8G2v2Li0dUNsH1z6Fp7kwBP301kLjlSMfbsS610P1c5shjPX/stse1
-         H1jf1MtER0NCWBFDg/fvxEq7Zzog5hpcTiwmuumR9pQEasSOJiGycTr0EuoU+ItXEkGJ
-         +u+UY1uvuiAfzT41lNBJOW9IOCppqP6jLNGi/8shD+3JEvCA5WVVka8eparOOgSdAsws
-         LsQPDchnI9IoJeYnjSX5wcu59UdrT1VfbWj9Ogpqo4AmDcdGumetwFywhaIw7cOXvcvo
-         Bsqg==
+        d=linaro.org; s=google; t=1690378047; x=1690982847;
+        h=content-transfer-encoding:author:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8lxc77XWTDPTeWKbOVls7trvqC1maeRESKQ7JlGBAVk=;
+        b=tzlf/K6lA2nbzCK73P1REKEDFjco9nWhyDMS8OpMrVB0n5mWFKtD++dNg2lByeu7m0
+         d/zJYAKzFrMg3vWf5aU7sOnjhvN5QHBX0y7FQ9UYQgnKfr9xuvMsFHiYG2QDmHD7k+8q
+         wvw/MD+Gf1t21AqrcccEsCI6otUTJ+XKxBvHL62rhWbUpKt55bqx0UCVcaZlogJ81HYp
+         Tlhm31L8wPRXG3h53U/ofo4BB5wXwgYOqIGcj+szBaXFhZSG9s6mA/xAfsKweCycf+hG
+         V4WdnEeL5ZPUsyVYERCtTl0/y3YymEbtIwL0xCguLZsY5qIrXdFrHUa1iF3dlgHOdJRZ
+         vCwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690377986; x=1690982786;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FlYno703h9Rc07Q4o0xGriJ575A5cS8B+AAXSkAUxQ0=;
-        b=RKqhR3xJzY4YJJRA80NWUaL5Wo/YnjDW6qnMvVs0xN9gILfBVB3b+4MI8zNG8iVd8P
-         NPbzYuCZ885pyDdzAjU07hXLWLdpfJlRGgzRED8Sb0fbaSHsSkHcC+V/gLJaHO7mJ1Z+
-         Luzf36cN87/hSHj9pkS3PrDnjfhBJ48WvHRlbrdARqj5iDNptU/MJv92QkyIRCt5yRKg
-         3tKfSU0h7zMm4mEraanVpJz8TQ+mbgrO3S1NeE7vc+CPHm/8+zd0MxMmh2QzEejru+2a
-         xgUB5EmewKsJCgoZmzpztMeEndqIbFxEnkMPSjOWTz+YhD+jaHiq1hxb7rrU+TnMPRpk
-         Usog==
-X-Gm-Message-State: ABy/qLYTRLuWKOQcbsA8n69sWlgpZUxD3YBNNrtOmSpxd0FVgGMJgjAw
-        MwJQazXDKn3i1fS1QLWed//feEuh23pidZfmyD6/wQ==
-X-Google-Smtp-Source: APBJJlEa3UFWx5zArcinnI3/s7D0J7bfh/Ec4Ah/Tj9utH2dc5qQZS4SXEcZAZDog8vIU+UeWBAtZQ==
-X-Received: by 2002:ac2:5f81:0:b0:4f8:49a8:a0e2 with SMTP id r1-20020ac25f81000000b004f849a8a0e2mr1380217lfe.16.1690377986567;
-        Wed, 26 Jul 2023 06:26:26 -0700 (PDT)
-Received: from [192.168.1.101] (abyl59.neoplus.adsl.tpnet.pl. [83.9.31.59])
-        by smtp.gmail.com with ESMTPSA id q20-20020ac24a74000000b004fe08e7dfbdsm742265lfp.44.2023.07.26.06.26.24
+        d=1e100.net; s=20221208; t=1690378047; x=1690982847;
+        h=content-transfer-encoding:author:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8lxc77XWTDPTeWKbOVls7trvqC1maeRESKQ7JlGBAVk=;
+        b=iIujL7abBGdVAsUAekAgCDnaB/iqdLjjWVA6rC7H8t3DHoP7KIs4w8WkSKKf5saAqS
+         ZxMmLoC6gwM1/9Badc28JG8mnjy/M/esJ9Q6EHjcIezuqzrss7XeW5a84MOhufqBxfEU
+         HeNns3U7h6jtuzqEniXZR57uyqKjC/eekvNsMbC2QMe98+0qPHFzBX9d0Q1i8hdYLQyA
+         x1mjbq3vgehHQWqmzzhD0Qr2qftgBWA3b4u0KyQAnNUOkoDL7F3XeLkNtiwSZcVHh3Ag
+         lgDyNGnpSQU+D9NlPaQwBrQOYLgwBsZqG5s0QWubdCI0P00In+ezQT1fB5s0O3deXV9N
+         TuGA==
+X-Gm-Message-State: ABy/qLZyJ6iQlI4zI08Ek8MqJHdBeJLeuKrwQ6XJ/Tjun8nvLz5Gykg5
+        GRUIW/X1pIdhwXUBUOYng/jB5Q==
+X-Google-Smtp-Source: APBJJlEkGaXvYl0Z4D2WNxjIzaFmZ0xG0IQslvweGeXL3npbZc6MEWn92JA3fL7KJSzJy2bGF2OmTQ==
+X-Received: by 2002:a05:6a00:2d09:b0:667:e17e:85c1 with SMTP id fa9-20020a056a002d0900b00667e17e85c1mr2058353pfb.1.1690378047425;
+        Wed, 26 Jul 2023 06:27:27 -0700 (PDT)
+Received: from x-wing.lan ([49.207.50.231])
+        by smtp.gmail.com with ESMTPSA id x52-20020a056a000bf400b00682ba300cd1sm11485918pfu.29.2023.07.26.06.27.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 06:26:25 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 26 Jul 2023 15:26:20 +0200
-Subject: [PATCH 2/2] clk: qcom: reset: Use the correct type of sleep/delay
- based on length
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230726-topic-qcom_reset-v1-2-92de6d3e4c7c@linaro.org>
-References: <20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org>
-In-Reply-To: <20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org>
+        Wed, 26 Jul 2023 06:27:26 -0700 (PDT)
+From:   Amit Pundir <amit.pundir@linaro.org>
 To:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690377980; l=1045;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=3sxskWG1FiMzGN6odih/2AzgyX1UlY1CqV7tLRwSv/4=;
- b=saOq9jwbZrvjAwZ97NcbMwHI/ViisOkxLpymdQaHubISBRKSsBjABT2TlxD70zhxtbW37nY7H
- 7yxUvSV7wOhAYT6i2QpsmQex8EMcwjNG+8KGbr+FDpAO4oYeqoTm2os
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Bryan Donoghue <bryan.odonoghue@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 1/2] dt-bindings: display/msm: mdss-common: add memory-region property
+Date:   Wed, 26 Jul 2023 18:57:18 +0530
+Message-Id: <20230726132719.2117369-1-amit.pundir@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Author: Amit Pundir <amit.pundir@linaro.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on the length of the delay (see: [1]), use the correct sleep/delay
-functions.
+Add and document the reserved memory region property in the
+mdss-common schema.
 
-[1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
-Fixes: b36ba30c8ac6 ("clk: qcom: Add reset controller support")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+For now (sdm845-db845c), it points to a framebuffer memory
+region reserved by the bootloader for splash screen.
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 ---
- drivers/clk/qcom/reset.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+v6: Re-sending with review and ack tags. Ideally this
+    dt-binding patch should be marked for stable as well,
+    like the follow-up sdm845-db845c.dts patch in the series
+    but it can't be cherry picked cleanly on older LTS
+    versions. I can do it separately if it is required.
 
-diff --git a/drivers/clk/qcom/reset.c b/drivers/clk/qcom/reset.c
-index 0e914ec7aeae..928995c3f369 100644
---- a/drivers/clk/qcom/reset.c
-+++ b/drivers/clk/qcom/reset.c
-@@ -14,9 +14,15 @@
- static int qcom_reset(struct reset_controller_dev *rcdev, unsigned long id)
- {
- 	struct qcom_reset_controller *rst = to_qcom_reset_controller(rcdev);
-+	u16 delay_us = rst->reset_map[id].udelay ?: 1;
+v5: Moving the dt-binding to mdss-common schema with
+    updated commit message and property description.
+
+v4: Adding this new dt-binding patch, in qcom,sdm845-mdss
+    schema, in the v4 of the follow-up patch for
+    sdm845-db845c.
+    https://lore.kernel.org/lkml/20230712130215.666924-2-amit.pundir@linaro.org/
+
+ .../devicetree/bindings/display/msm/mdss-common.yaml         | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+index ccd7d6417523..84ed2757ded5 100644
+--- a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
++++ b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+@@ -77,6 +77,12 @@ properties:
+     items:
+       - description: MDSS_CORE reset
  
- 	rcdev->ops->assert(rcdev, id);
--	udelay(rst->reset_map[id].udelay ?: 1); /* use 1 us as default */
++  memory-region:
++    maxItems: 1
++    description:
++      Phandle to a node describing a reserved framebuffer memory region.
++      For example, the splash memory region set up by the bootloader.
 +
-+	if (delay_us < 10)
-+		udelay(delay_us);
-+	else
-+		usleep_range(delay_us, delay_us + 5);
-+
- 	rcdev->ops->deassert(rcdev, id);
- 	return 0;
- }
-
+ required:
+   - reg
+   - reg-names
 -- 
-2.41.0
+2.25.1
 
