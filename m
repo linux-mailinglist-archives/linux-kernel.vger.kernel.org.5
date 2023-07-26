@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945B37640D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F009D7640D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 22:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjGZU6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 16:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S231135AbjGZU7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 16:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjGZU6A (ORCPT
+        with ESMTP id S230097AbjGZU7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:58:00 -0400
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9D31727
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:57:59 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id Ola0qS53LHI6nOla0q3IeG; Wed, 26 Jul 2023 22:57:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690405078;
-        bh=Z2kLlpLkEgZtP7izpTTUI1ROGL8wQ9hwKLInZOYxV6g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=G9LhEvggbzF6efKkV3h/E9ejYFTDdoBVLn75M1NELKiJ6FbpHxdn9vnV6TsqljgiD
-         JV09lLrS2rh7O5w+nctS/aqZCTBHInbro3x14E+kj73YlB3RC01RUtNWsVgSlV4Mp5
-         XyzhlmQ2zUzVwQYmoVR3FkH3U5N+VavCtrj0H306SZAMmyvxHQUf211af7fqnrZw0f
-         qnmKz6yKUkb+CwCb8rGkObbV6z5XbVYT7o12o08KgP7pfzSQiNBN0CU5gD1TzbaNDv
-         2n1RVf/xBs4Lp+VpyfAxie5NH65toq9ljYVIFjjDkCR6LI6mbOj4zFBaMFFmTuvIaI
-         YD10S6csiRsKA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 26 Jul 2023 22:57:58 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <5125e39b-0faf-63fc-0c51-982b2a567e21@wanadoo.fr>
-Date:   Wed, 26 Jul 2023 22:57:56 +0200
+        Wed, 26 Jul 2023 16:59:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2021D1727;
+        Wed, 26 Jul 2023 13:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rd57pq0Dg+xjZNuOIKlvVzndHeeNvzT3YeN/hCDmQAw=; b=mwxBsW1OlES3CWdoOHff9DXNgW
+        FYIj4R8Uhlu1jhTh79DQLqThcydr2XQmaLzgfuR3Kbl1SphhhFBSF8tOALkyqsdOoxnGi/pAiwG0i
+        l3bQsWZEBFZ3OWrO8rGfoZRDv6edHhEKLXslQGe2OfQo2972nbo0u4agKUpkK9msuF9Q2GnZNMLWc
+        DYO8IOczxQVS5yQjajYoMh9vca/3Fq0B0D0ew0DkOQuHVRhbMCHNLBxjf9DT4uAcLkBvV32TAluME
+        p3Agn72JLPqaYESS0LHxHHtu7xvkMUB8xfVruBiYjS4S6zbwKWOX9ylVPgjrnweIBnmP3tdHTxSkt
+        Ex7nSO2A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOlb8-00BWOO-1r;
+        Wed, 26 Jul 2023 20:59:06 +0000
+Date:   Wed, 26 Jul 2023 13:59:06 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jean Delvare <jdelvare@suse.de>, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] module: print module name on refcount error
+Message-ID: <ZMGJGlJ7XSG+2vjY@bombadil.infradead.org>
+References: <20230626123252.73dbc139@endymion.delvare>
+ <ZJ9fvQZ4k+zFfXbN@bombadil.infradead.org>
+ <ZKLRaq3pzzE2gfws@dhcp22.suse.cz>
+ <ZKhf8bi/eBDhaihD@bombadil.infradead.org>
+ <ZKuaZepw51Nriqr8@dhcp22.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dmaengine: xgene: Fix potential deadlock on &chan->lock
-Content-Language: fr
-To:     Chengfeng Ye <dg573847474@gmail.com>, vkoul@kernel.org,
-        rsahu@apm.com, lho@apm.com, allen.lkml@gmail.com,
-        romain.perier@gmail.com, dan.j.williams@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230726111630.25670-1-dg573847474@gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230726111630.25670-1-dg573847474@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZKuaZepw51Nriqr8@dhcp22.suse.cz>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 26/07/2023 à 13:16, Chengfeng Ye a écrit :
-> As xgene_dma_cleanup_descriptors() is invoked by both tasklet
-> xgene_dma_tasklet_cb() under softirq context and
-> xgene_dma_free_chan_resources() callback that executed under process
-> context, the lock aquicision of &chan->lock inside
-> xgene_dma_cleanup_descriptors() should disable irq otherwise deadlock
-> could happen if the tasklet softirq preempts the execution of process
-> context code while the lock is held in process context on the same CPU.
+On Mon, Jul 10, 2023 at 07:43:01AM +0200, Michal Hocko wrote:
+> On Fri 07-07-23 11:56:49, Luis Chamberlain wrote:
+> > On Mon, Jul 03, 2023 at 03:47:22PM +0200, Michal Hocko wrote:
+> > > On Fri 30-06-23 16:05:33, Luis Chamberlain wrote:
+> > > [...]
+> > > > What prevents code from racing the free with a random module_put()
+> > > > called by some other piece of code?
+> > > 
+> > > Wouldn't be ref count a garbage already? How can you race when freeing
+> > > if module_put fail?
+> > 
+> > It could yes, ie, so this risks at all being junk.
 > 
-> Possible deadlock scenario:
-> xgene_dma_free_chan_resources()
->      -> xgene_dma_cleanup_descriptors()
->      -> spin_lock(&chan->lock)
->          <tasklet softirq>
->          -> xgene_dma_tasklet_cb()
->          -> xgene_dma_cleanup_descriptors()
->          -> spin_lock(&chan->lock) (deadlock here)
+> Could you be more specific please? I still do not see a scenario where
+> module string name would be junk while refcount itself would be a valid
+> memory.
+
+That is true, but if refcount is invalid so will the memory for the
+string.
+
+> > So best IMHO is
+> > to tidy up all the get / puts and add respective tests to fix all
+> > this mess with proper messages as needed. My cursory review of the
+> > refcnt stuf is I see some races possible.
 > 
-> This flaw was found by an experimental static analysis tool I am developing
-> for irq-related deadlock.
+> It would likely be better to use refcount_t instead of atomic_t.
 
-Hi,
+Patches welcomed.
 
-first of all, for what I've seen from your numerous recent patches, all 
-this look real great ! :)
-And your experimental tool looks really promising.
-
-
-Even if I'm not always confident with my understanding of locking and 
-related subtilities, I wonder if in the cases of <tasklet softirq>, like 
-above, using spin_lock_bh() would be enough?
-It should be less agressive than spin_lock_irqsave() but still handle 
-the use case you have spotted.
-
-
-Just my 2c.
-
-CJ
-
-
+> > While I'd be happy to help debugging aids, adding accesses to random
+> > memory for a string seems more risk prone.
 > 
-> The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
-> plx_dma_process_desc() to disable irq while lock is held.
-> 
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-> ---
->   drivers/dma/xgene-dma.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/xgene-dma.c b/drivers/dma/xgene-dma.c
-> index 3589b4ef50b8..e766511badcf 100644
-> --- a/drivers/dma/xgene-dma.c
-> +++ b/drivers/dma/xgene-dma.c
-> @@ -689,11 +689,12 @@ static void xgene_dma_cleanup_descriptors(struct xgene_dma_chan *chan)
->   	struct xgene_dma_desc_sw *desc_sw, *_desc_sw;
->   	struct xgene_dma_desc_hw *desc_hw;
->   	struct list_head ld_completed;
-> +	unsigned long flags;
->   	u8 status;
->   
->   	INIT_LIST_HEAD(&ld_completed);
->   
-> -	spin_lock(&chan->lock);
-> +	spin_lock_irqsave(&chan->lock, flags);
->   
->   	/* Clean already completed and acked descriptors */
->   	xgene_dma_clean_completed_descriptor(chan);
-> @@ -762,7 +763,7 @@ static void xgene_dma_cleanup_descriptors(struct xgene_dma_chan *chan)
->   	 */
->   	xgene_chan_xfer_ld_pending(chan);
->   
-> -	spin_unlock(&chan->lock);
-> +	spin_unlock_irqrestore(&chan->lock, flags);
->   
->   	/* Run the callback for each descriptor, in order */
->   	list_for_each_entry_safe(desc_sw, _desc_sw, &ld_completed, node) {
+> If there is really a scenario when module could be unloaded leaving
+> dangling struct module behind then we have a real problem as this is
+> exported to userspace IIRC. Not to mention module_get/put calls
+> modifying memory (UAF).
 
+That doesn't mean issues could not exist, given its all protected under
+privileged execution. All I'm suggesting is I look at this code and
+don't trust it, and think it could use some love. The selftests for kmod
+could be used to stress test but also stress-ng now also has module load
+and unloading so if there are races we can likely exploit them with
+either the kmod selftest or stress-ng module loading.
+
+  Luis
