@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3911F762EE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BBA762EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbjGZH51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 03:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        id S232983AbjGZH5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjGZH4w (ORCPT
+        with ESMTP id S231329AbjGZH45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:56:52 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5415C6EB8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690357755; x=1721893755;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/R38XYog4+QpG82OrQJ3Z95EuFCn1/IVFT2UrPu1ZJ4=;
-  b=H82Fvu42PZJvGZlzTCh4sCNHHS0vxyFlg2lCEM9PYfPqXQ7EIP9ItD9s
-   HrbLZaOp5zMPQtOB8ss7xXO2LzEBVy9QwQ+Mno93UY8Cknrr6U5mLo2C/
-   TDu2M6cYgV0O9hrAKqIce0uSikyMpaQOzKukNu/01mfCUZxrDUeJmicDf
-   D1zExGOvMzqLggrqOKadN916xDMykWMerlLRaRNBSnpgysRZXhGmXcRx2
-   B4walXIN+H+WYAM/wTr1QJYEboM+PafAYMeYvpA4Oup5ZoFFY4a6WmeZf
-   BS8+iWXDbwn0GzoMiVA7WaYnutzlrgXZKsCho8If0KgNrQNVoyoCuNWdO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="434205663"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="434205663"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 00:49:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="850366942"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="850366942"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144]) ([10.99.16.144])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 00:49:10 -0700
-Message-ID: <cce17be6-acdf-9737-f2cb-3559712e4c56@linux.intel.com>
-Date:   Wed, 26 Jul 2023 09:49:07 +0200
+        Wed, 26 Jul 2023 03:56:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E96F7299
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:49:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A53921D5C;
+        Wed, 26 Jul 2023 07:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690357753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GONJa8tzUwqKA0Fz+wB3U1k6lRkAIjy3GSK0vW8uCcE=;
+        b=joabLHJaqcBy5EOkcJ/+cXWbBd5JWYFFbiCuer3a/tc7fWHsOeV8TEvKSuciFuNDUBiJ6W
+        K1lWHyWK28xzic4hIpByu5BwKQhKgITs56ZfTAF5OlP9c1v3b+qUR3Qqt++Fwd87LBqgjv
+        DkBqFo4aQVUb02Kv1ckXdQQJHrgUOlM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C0341341F;
+        Wed, 26 Jul 2023 07:49:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EPN5APnPwGTrMAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 26 Jul 2023 07:49:13 +0000
+Date:   Wed, 26 Jul 2023 09:49:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <ZMDP+D54MoI9boYJ@dhcp22.suse.cz>
+References: <20230718220106.GA3117638@google.com>
+ <20230719054434.GG1901145@kernel.org>
+ <20230719222604.GB3528218@google.com>
+ <20230721112009.GP1901145@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
-Content-Language: en-US
-To:     justinstitt@google.com,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-References: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721112009.GP1901145@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/2023 12:08 AM, justinstitt@google.com wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1].
+On Fri 21-07-23 14:20:09, Mike Rapoport wrote:
+> On Wed, Jul 19, 2023 at 04:26:04PM -0600, Ross Zwisler wrote:
+> > On Wed, Jul 19, 2023 at 08:44:34AM +0300, Mike Rapoport wrote:
+> > > 3. Switch memblock to use bottom up allocations. Historically memblock
+> > > allocated memory from the top to avoid corrupting the kernel image and to
+> > > avoid exhausting precious ZONE_DMA. I believe we can use bottom-up
+> > > allocations with lower limit of memblock allocations set to 16M.
+> > > 
+> > > With the hack below no memblock allocations will end up in ZONE_MOVABLE:
+> > 
+> > Yep, I've confirmed that for my use cases at least this does the trick, thank
+> > you!  I had thought about moving the memblock allocations, but had no idea it
+> > was (basically) already supported and thought it'd be much riskier than just
+> > adjusting where ZONE_MOVABLE lived.
+> > 
+> > Is there a reason for this to not be a real option for users, maybe per a
+> > kernel config knob or something?  I'm happy to explore other options in this
+> > thread, but this is doing the trick so far.
 > 
-> A suitable replacement is `strscpy` [2].
+> I think we can make x86 always use bottom up.
 > 
-> There are some hopes that someday the `strncpy` api could be ripped out
-> due to the vast number of suitable replacements (strscpy, strscpy_pad,
-> strtomem, strtomem_pad, strlcpy) [1].
+> To do this properly we'd need to set lower limit for memblock allocations
+> to MAX_DMA32_PFN and allow fallback below it so that early allocations
+> won't eat memory from ZONE_DMA32.
 > 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> 
-> ---
-> 
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->   sound/soc/intel/avs/topology.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-> index cdb4ec500261..45d0eb2a8e71 100644
-> --- a/sound/soc/intel/avs/topology.c
-> +++ b/sound/soc/intel/avs/topology.c
-> @@ -1388,12 +1388,12 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
->   		port = __ffs(mach->mach_params.i2s_link_mask);
->   
->   		snprintf(buf, len, route->source, port);
-> -		strncpy((char *)route->source, buf, len);
-> +		strscpy((char *)route->source, buf, len);
->   		snprintf(buf, len, route->sink, port);
-> -		strncpy((char *)route->sink, buf, len);
-> +		strscpy((char *)route->sink, buf, len);
->   		if (route->control) {
->   			snprintf(buf, len, route->control, port);
-> -			strncpy((char *)route->control, buf, len);
-> +			strscpy((char *)route->control, buf, len);
->   		}
->   	}
->   
-> 
+> Aside from x86 boot being fragile in general I don't see why this wouldn't
+> work.
 
-In this case snprintf adds NUL at the end and we strncpy using same 
-size, so there should always be NUL at the end, so replacing it with 
-strscpy shouldn't really change anything, so
-
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+This would add a very subtle depency of a functionality on the specific
+boot allocator behavior and that is bad for long term maintenance.
+-- 
+Michal Hocko
+SUSE Labs
