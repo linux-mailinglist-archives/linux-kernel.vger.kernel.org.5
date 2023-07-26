@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBD27632AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1317632B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbjGZJp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        id S232942AbjGZJq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGZJpz (ORCPT
+        with ESMTP id S229814AbjGZJq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:45:55 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E5D397;
-        Wed, 26 Jul 2023 02:45:52 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8AxCPJP68BkdSgKAA--.25252S3;
-        Wed, 26 Jul 2023 17:45:51 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yNP68BkWJg7AA--.54678S3;
-        Wed, 26 Jul 2023 17:45:51 +0800 (CST)
-Message-ID: <f19c393b-8c2e-e3aa-988a-88a423b59b99@loongson.cn>
-Date:   Wed, 26 Jul 2023 17:45:51 +0800
+        Wed, 26 Jul 2023 05:46:57 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F020B6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:46:55 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so66555e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690364814; x=1690969614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sVk3D2Ovs0OQVitdb5xswV9gYU6xHuGerRDbOGRGHI8=;
+        b=YtbGpl+bbWM3rTcDg4aZUCnuzhi5Xj+jW4e9Tx1UvYMbD5ctmqWK4dlB0+FcLsuEw+
+         iSYIB/XmLE/wG9/TtL2NQlGEdSMI83+1h0DcpUcFBdQYpoOiI/aQCuU+kkS20yGjMnxv
+         eoTOdLdUH7W0ZwLHvdeE/+I24/wJzt9nzZacXoOk1BD6Bn+dPMdCzWXrk2GqceioFr+w
+         CARCA7YRVNjzvqqXrpqi9Wg+nqiVi7LxV2OA+sIJvhe9Jr0IEjl2WCTpc7/Z4I4NU3td
+         186/8uB0yXTnbWkcmn6rqLmJcINHjDtkQezb4zswDpljftvJnOuf6fFt8Ut92IXDCYWU
+         7/eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690364814; x=1690969614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sVk3D2Ovs0OQVitdb5xswV9gYU6xHuGerRDbOGRGHI8=;
+        b=mEe+zmrsAFiLTA4iu5eLXDqE3cO8rFjeVIFTlfIgx3T2qxcwRS29+jnpd3ERnBufXy
+         uTGTH3wB9eGVxmhf/tw7oU9HpMdflgnYuDQW1gg4fYK1Cm3Ec6dMSZKqgOERlmWszo9y
+         8YTe3lkrC95t48lMjshWi3su1ObxITxPDwHEo2jNmd4Vx3ifjqU8CgLUAq9AnSPfJsxt
+         ZdspUje89iHukS+6C9cL1KYWyfCTzUXYg7+5Afa+rPKgJbHr5GGUZnR2DO8UtvywQiwD
+         JQSL/d/6Yg86foD9yepVSz+O1xA1mj9X0mgRaj7U0p9ZSJzk+kmj2UGfVBKK2QDbnlvo
+         Ko4A==
+X-Gm-Message-State: ABy/qLYjmAqXPoOXSi3qXc1gMtukDkr14K+Yi48rqir26iTbJ7U7rknp
+        terBhrXbhzJ6RPdtwcQbse8kqeKE8eVSejb9ZUYcdQ==
+X-Google-Smtp-Source: APBJJlHzycgPSHCO7xhc73QYvhqdiMVjY11q/GUx1ttiW2v8T+9YQxSks0t8zGKVP7VjXEpaJRkGP+VJ9bfKjR9IYqU=
+X-Received: by 2002:a05:600c:1c82:b0:3f7:e4d8:2569 with SMTP id
+ k2-20020a05600c1c8200b003f7e4d82569mr176062wms.5.1690364813965; Wed, 26 Jul
+ 2023 02:46:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 0/2] irqchip/loongson-eiointc: Add simple irq routing
- method
-From:   bibo mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-References: <20230719063558.3131045-1-maobibo@loongson.cn>
-Content-Language: en-US
-In-Reply-To: <20230719063558.3131045-1-maobibo@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Bx3yNP68BkWJg7AA--.54678S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrKrWfGr45AFyfAry7Ar1UArc_yoWfXwb_WF
-        y29395KrZ5XFWFvas7AFnrJF9rK398Wwn8ZFWv9r45J34UAr15JrZ2yr93JFnxKFWSvFnx
-        CrW8CryfAw12yosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
-        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
-        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-        0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7_Ma
-        UUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <0000000000000ced8905fecceeba@google.com> <00000000000002c74d0601582595@google.com>
+In-Reply-To: <00000000000002c74d0601582595@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 26 Jul 2023 11:46:42 +0200
+Message-ID: <CANp29Y5cQX3eOo+rB5bWcqn38bcPY7o12wcJ_WmAY6D+UxGTcw@mail.gmail.com>
+Subject: Re: [syzbot] [crypto?] general protection fault in shash_async_update
+To:     syzbot <syzbot+0bc501b7bf9e1bc09958@syzkaller.appspotmail.com>
+Cc:     alexander.deucher@amd.com, davem@davemloft.net,
+        dhowells@redhat.com, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mario.limonciello@amd.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-slight ping :)
+On Wed, Jul 26, 2023 at 1:32=E2=80=AFAM syzbot
+<syzbot+0bc501b7bf9e1bc09958@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 30c3d3b70aba2464ee8c91025e91428f92464077
+> Author: Mario Limonciello <mario.limonciello@amd.com>
+> Date:   Tue May 30 16:57:59 2023 +0000
+>
+>     drm/amd: Disallow s0ix without BIOS support again
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D122e2c31a8=
+0000
+> start commit:   [unknown]
+> git tree:       net-next
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D526f919910d4a=
+671
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D0bc501b7bf9e1bc=
+09958
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13f71275280=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1108105528000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
 
-在 2023/7/19 14:35, Bibo Mao 写道:
-> Fix return value checking of eiointc_index where int type
-> is converted uint32_t and check smaller than 0.
-> 
-> Add simple irq route support on system with only one eiointc node,
-> rather than use anysend method.
-> 
-> ---
-> Changes in v5:
->   Modify typo issue.
-> 
-> Changes in v4:
->   Modify some spell checking problems.
->   Add Fixes tag.
-> 
-> Changes in v3:
->   Modify some spell checking problems.
-> 
-> Changes in v2:
->   Use the simple irq routing on embeded board like 2K0500 and 2K2000
-> board, since there is only one eio node.
-> 
-> ---
-> Bibo Mao (2):
->   irqchip/loongson-eiointc: Fix return value checking of eiointc_index
->   irqchip/loongson-eiointc: Simplify irq routing on some platforms
-> 
->  drivers/irqchip/irq-loongson-eiointc.c | 93 +++++++++++++++++++++++---
->  1 file changed, 82 insertions(+), 11 deletions(-)
-> 
+No, that's unlikely.
 
+>
+> #syz fix: drm/amd: Disallow s0ix without BIOS support again
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
