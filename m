@@ -2,80 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CAB7628FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A5876290A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjGZDAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S231156AbjGZDGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjGZDAS (ORCPT
+        with ESMTP id S230147AbjGZDGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:00:18 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604B5DD;
-        Tue, 25 Jul 2023 20:00:17 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q1wG3X004351;
-        Wed, 26 Jul 2023 03:00:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=TRhcpHmfH84VaKerw/NYkGhK9OkFCMUK2vCocw+fTt4=;
- b=dGqf1rD/mNg6+OJ018/3DphGELfN13IjwaKJRUi2pk6KC7PwBH4DO1HUJeNw9jVxbhay
- zusCKy6adMt11iXI+RlaJuS8bNWqpRc0vysBIRm4Os6mafPHaEv5XVBFI0Hk4TmgAKvR
- eapOFoQpF+ekJKoDLtk/h69jePS0Ac5On1+TstpbKD4i8CWjare6zO9egIS2Pr2xx8YS
- Kjbs8dAO/zSnk4OJ0Y1uz2NA1bcbTsUqxzx5WB5dhXlWirfxmkvXpZ+uz3ZGkXSCvTNr
- XKtGadC/rcfDwOiYrNwnQ43Okad832pCIgiC6Ndx/pT3W9e8lV/L4USfeGROJfxQzUQl ig== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2gp1s9rw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 03:00:12 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36Q30BZB016985
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 03:00:11 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
- 2023 20:00:10 -0700
-Message-ID: <e457b416-3e63-0bae-0cd7-7788b43f30c1@quicinc.com>
-Date:   Tue, 25 Jul 2023 21:00:09 -0600
+        Tue, 25 Jul 2023 23:06:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8AD1BDA
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:06:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6017E61176
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:06:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 096C8C433C8;
+        Wed, 26 Jul 2023 03:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690340767;
+        bh=NEOYLP0iznHbMTzUU1WZ7txltHSA0/SCINhS/IbFbPU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KKKZzkFQ3GhIJTIU/R3X+a3LwSNBQmigXdNNLlKxV3HynLFUp12f+shUAsV7nxE2T
+         apogwZkAs2KQ7wfnRbRWr95TdgVmepWi1R23/+XyUiIQApr01h3GCVXlM1x0mle4wU
+         WC7tz3XK5lZzP6O+MgSwphNVisONDwNgpT8o4E3c/zvDlFie7x7rBfjQAr/dzM8QC3
+         7Kz85d6c0k9fSbOT7eGKSYnfpBtkIJGLGQSbMEi/gF+W5URn93dyKZWXACYKSl88jZ
+         gpYYGeENSvyhTtEjLdl7Qmd7I7dpB44Wh3pYaT1tvdFCwWmIcDeS2MsWL1o/OkGC7J
+         XOTvSM0taNrOw==
+Date:   Tue, 25 Jul 2023 20:06:06 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Johannes Zink <j.zink@pengutronix.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
+Message-ID: <20230725200606.5264b59c@kernel.org>
+In-Reply-To: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH][next] accel/qaic: remove redundant assignment to pointer
- pexec
-Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Carl Vanderlip <quic_carlv@quicinc.com>,
-        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230725114037.36806-1-colin.i.king@gmail.com>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20230725114037.36806-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3MC3o76mhSwtPg4ThrG2kUqC93NvcWlF
-X-Proofpoint-ORIG-GUID: 3MC3o76mhSwtPg4ThrG2kUqC93NvcWlF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 clxscore=1011 lowpriorityscore=0 bulkscore=0 phishscore=0
- malwarescore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307260024
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,28 +66,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/2023 5:40 AM, Colin Ian King wrote:
-> Pointer pexec is being assigned a value however it is never read. The
-> assignment is redundant and can be removed.
+On Mon, 24 Jul 2023 12:01:31 +0200 Johannes Zink wrote:
+> The IEEE1588 Standard specifies that the timestamps of Packets must be
+> captured when the PTP message timestamp point (leading edge of first
+> octet after the start of frame delimiter) crosses the boundary between
+> the node and the network. As the MAC latches the timestamp at an
+> internal point, the captured timestamp must be corrected for the
+> additional path latency, as described in the publicly available
+> datasheet [1].
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->   drivers/accel/qaic/qaic_data.c | 1 -
->   1 file changed, 1 deletion(-)
+> This patch only corrects for the MAC-Internal delay, which can be read
+> out from the MAC_Ingress_Timestamp_Latency register, since the Phy
+> framework currently does not support querying the Phy ingress and egress
+> latency. The Closs Domain Crossing Circuits errors as indicated in [1]
+> are already being accounted in the stmmac_get_tx_hwtstamp() function and
+> are not corrected here.
 > 
-> diff --git a/drivers/accel/qaic/qaic_data.c b/drivers/accel/qaic/qaic_data.c
-> index e9a1cb779b30..8a6cb14f490e 100644
-> --- a/drivers/accel/qaic/qaic_data.c
-> +++ b/drivers/accel/qaic/qaic_data.c
-> @@ -1320,7 +1320,6 @@ static int __qaic_execute_bo_ioctl(struct drm_device *dev, void *data, struct dr
->   	user_data = u64_to_user_ptr(args->data);
->   
->   	exec = kcalloc(args->hdr.count, size, GFP_KERNEL);
-> -	pexec = (struct qaic_partial_execute_entry *)exec;
->   	if (!exec)
->   		return -ENOMEM;
->   
+> As the Latency varies for different link speeds and MII
+> modes of operation, the correction value needs to be updated on each
+> link state change.
+> 
+> As the delay also causes a phase shift in the timestamp counter compared
+> to the rest of the network, this correction will also reduce phase error
+> when generating PPS outputs from the timestamp counter.
+> 
+> [1] i.MX8MP Reference Manual, rev.1 Section 11.7.2.5.3 "Timestamp
+> correction"
 
-It does look like pexec is not used in this function after it was 
-refactored.  Shouldn't the declaration at the beginning of the function 
-also be removed?
+Hi Richard,
+
+any opinion on this one?
+
+The subject read to me like it's about *MII clocking delays, I figured
+you may have missed it, too.
+
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+> index 6ee7cf07cfd7..95a4d6099577 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+> @@ -536,6 +536,7 @@ struct stmmac_hwtimestamp {
+>  	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
+>  	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
+>  	void (*timestamp_interrupt)(struct stmmac_priv *priv);
+> +	void (*correct_latency)(struct stmmac_priv *priv);
+>  };
+>  
+>  #define stmmac_config_hw_tstamping(__priv, __args...) \
+> @@ -554,6 +555,8 @@ struct stmmac_hwtimestamp {
+>  	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
+>  #define stmmac_timestamp_interrupt(__priv, __args...) \
+>  	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
+> +#define stmmac_correct_latency(__priv, __args...) \
+> +	stmmac_do_void_callback(__priv, ptp, correct_latency, __args)
+>  
+>  struct stmmac_tx_queue;
+>  struct stmmac_rx_queue;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+> index fa2c3ba7e9fe..7e0fa024e0ad 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+> @@ -60,6 +60,48 @@ static void config_sub_second_increment(void __iomem *ioaddr,
+>  		*ssinc = data;
+>  }
+>  
+> +static void correct_latency(struct stmmac_priv *priv)
+> +{
+> +	void __iomem *ioaddr = priv->ptpaddr;
+> +	u32 reg_tsic, reg_tsicsns;
+> +	u32 reg_tsec, reg_tsecsns;
+> +	u64 scaled_ns;
+> +	u32 val;
+> +
+> +	/* MAC-internal ingress latency */
+> +	scaled_ns = readl(ioaddr + PTP_TS_INGR_LAT);
+> +
+> +	/* See section 11.7.2.5.3.1 "Ingress Correction" on page 4001 of
+> +	 * i.MX8MP Applications Processor Reference Manual Rev. 1, 06/2021
+> +	 */
+> +	val = readl(ioaddr + PTP_TCR);
+> +	if (val & PTP_TCR_TSCTRLSSR)
+> +		/* nanoseconds field is in decimal format with granularity of 1ns/bit */
+> +		scaled_ns = ((u64)NSEC_PER_SEC << 16) - scaled_ns;
+> +	else
+> +		/* nanoseconds field is in binary format with granularity of ~0.466ns/bit */
+> +		scaled_ns = ((1ULL << 31) << 16) -
+> +			DIV_U64_ROUND_CLOSEST(scaled_ns * PSEC_PER_NSEC, 466U);
+> +
+> +	reg_tsic = scaled_ns >> 16;
+> +	reg_tsicsns = scaled_ns & 0xff00;
+> +
+> +	/* set bit 31 for 2's compliment */
+> +	reg_tsic |= BIT(31);
+> +
+> +	writel(reg_tsic, ioaddr + PTP_TS_INGR_CORR_NS);
+> +	writel(reg_tsicsns, ioaddr + PTP_TS_INGR_CORR_SNS);
+> +
+> +	/* MAC-internal egress latency */
+> +	scaled_ns = readl(ioaddr + PTP_TS_EGR_LAT);
+> +
+> +	reg_tsec = scaled_ns >> 16;
+> +	reg_tsecsns = scaled_ns & 0xff00;
+> +
+> +	writel(reg_tsec, ioaddr + PTP_TS_EGR_CORR_NS);
+> +	writel(reg_tsecsns, ioaddr + PTP_TS_EGR_CORR_SNS);
+> +}
+> +
+>  static int init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
+>  {
+>  	u32 value;
+> @@ -221,4 +263,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
+>  	.get_systime = get_systime,
+>  	.get_ptptime = get_ptptime,
+>  	.timestamp_interrupt = timestamp_interrupt,
+> +	.correct_latency = correct_latency,
+>  };
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index efe85b086abe..ee78e69e9ae3 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -909,6 +909,8 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
+>  	priv->hwts_tx_en = 0;
+>  	priv->hwts_rx_en = 0;
+>  
+> +	stmmac_correct_latency(priv, priv);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1094,6 +1096,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
+>  
+>  	if (priv->dma_cap.fpesel)
+>  		stmmac_fpe_link_state_handle(priv, true);
+> +
+> +	stmmac_correct_latency(priv, priv);
+>  }
+>  
+>  static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+> index bf619295d079..d1fe4b46f162 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+> @@ -26,6 +26,12 @@
+>  #define	PTP_ACR		0x40	/* Auxiliary Control Reg */
+>  #define	PTP_ATNR	0x48	/* Auxiliary Timestamp - Nanoseconds Reg */
+>  #define	PTP_ATSR	0x4c	/* Auxiliary Timestamp - Seconds Reg */
+> +#define	PTP_TS_INGR_CORR_NS	0x58	/* Ingress timestamp correction nanoseconds */
+> +#define	PTP_TS_EGR_CORR_NS	0x5C	/* Egress timestamp correction nanoseconds*/
+> +#define	PTP_TS_INGR_CORR_SNS	0x60	/* Ingress timestamp correction subnanoseconds */
+> +#define	PTP_TS_EGR_CORR_SNS	0x64	/* Egress timestamp correction subnanoseconds */
+> +#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
+> +#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
+>  
+>  #define	PTP_STNSUR_ADDSUB_SHIFT	31
+>  #define	PTP_DIGITAL_ROLLOVER_MODE	0x3B9ACA00	/* 10e9-1 ns */
+> 
+> ---
+> base-commit: ba80e20d7f3f87dab3f9f0c0ca66e4b1fcc7be9f
+> change-id: 20230719-stmmac_correct_mac_delay-4278cb9d9bc1
+> 
+> Best regards,
+
