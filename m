@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5F0763CB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B504D763CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjGZQnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
+        id S231337AbjGZQoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjGZQnN (ORCPT
+        with ESMTP id S230124AbjGZQoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:43:13 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A4626B8;
-        Wed, 26 Jul 2023 09:43:12 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b89cfb4571so55417545ad.3;
-        Wed, 26 Jul 2023 09:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690389792; x=1690994592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KCv8whutDfLJorKpUOqJ8+KkOpc2kOBhY8hTu1PhHvI=;
-        b=QMUznHOLJYfI3Cg1OGbvbUK2zwN4Xs54ZJ3JbZrw4JhdF1uxPQBZ3HVCSn31MYAgdc
-         Q3UdwouTq+Mcv+ne7ujpatnJtig71lQqScyMfCpcd4njFTx2RrYTuWYS75n+F8Ub+lJb
-         sgYnZK0m3NpEEtpkxeXqvlCQL5FyNn9joXe4bALGP92MnaPs+jHcAWAHXearGlrCz8vp
-         NiOWaE+mGvO2zNT5aJxPyQVlYzpIxZgun8DIiMsIyNzjTELMbe8K/8SOPkhf+s3/lXjk
-         II5NtI1EzZjw6UkqZdZsvukqb8KGZBLOTuS3MfVf02FYRvI+M5kRxGwBzEWcbh/IBuyC
-         WI3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690389792; x=1690994592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KCv8whutDfLJorKpUOqJ8+KkOpc2kOBhY8hTu1PhHvI=;
-        b=GBt3NA5pNQ1akjvGOAZItclKXqBzKoEc9R+/iZ4uWNPpeAs1ZMC2STAudf54WM8YPr
-         oEznqknjN1S5jLmJpBkyplAi9+3A34DJZ4L7EfCZdLhHn522n0OEYpJA4O8JkR5dngjv
-         pWtP0MogwAQTEU+8g6lqEnj48k47bM1ALXY5k9Jms3ORK2Q0P0f8uuC0v//1kdRbripe
-         ydXFDYsa5+uRYdmHO7/DCGhoUX+AsD3QT/sXR6zHL0PugOlYffmgAzUfkMgVct3m5vEh
-         XzYRFfqG/duH9w3UKYKdh3z1f/7gnZxt1eOmnzYu5p2liSyvrpM1AtEx5qHzfXmlrDnY
-         x07g==
-X-Gm-Message-State: ABy/qLYhU4dukQt5W0+ubN3zpnyzYGDdYO06KOw22brnUGgkGAKpBNlM
-        Nak27gn0Z8BuShSCHRpH1D87JTjtvobx6LhC1nU=
-X-Google-Smtp-Source: APBJJlExta4H2GjqFCFJjAPMwlKu75pRye0RG2yh6z7/8hWP5WKagkLUkY7X/mJhBRsTApJB/W2FhSG2fN3oUXYQ7wA=
-X-Received: by 2002:a17:90a:c714:b0:263:f643:4bd3 with SMTP id
- o20-20020a17090ac71400b00263f6434bd3mr2209207pjt.27.1690389791855; Wed, 26
- Jul 2023 09:43:11 -0700 (PDT)
+        Wed, 26 Jul 2023 12:44:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741492733;
+        Wed, 26 Jul 2023 09:44:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB01461BDD;
+        Wed, 26 Jul 2023 16:44:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 788FBC433C7;
+        Wed, 26 Jul 2023 16:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690389843;
+        bh=IuVG4bfY9sEvmBWG7GoPfcYL9qrYIvM5Sgjrgb9Q7oQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a3qCJuBPEj4/jMl8xP6lf6bFAM6d4S4uaSBRpZvb9W9rXWkeG3BwJGx1WmSl89w+X
+         XbwNDIzaJa1VdFyAaGfYhh44Z/tDMbmek2X1AVk1wEKP6PAhpfFpTwxMU3u/PeSWBW
+         Snna3zLh40U1dqxdo6kpPzsLSAWjjNu7f1262Kfxc3DMKX4VS8I/50+88pabw//09I
+         Uf8C2YZrdpLYybyq5hQ1gfre3ecVOYbRwQ/pgGXuPlBwEYxnPOj7vd1rz5hLU9ip0M
+         tTctjguE4I3xzLRLMMJrOvBdzHdMXTQnidLvIXNpkGW9SRHBv8hYi20P9Q13msxcUu
+         RBNlkmLsD4idw==
+Received: (nullmailer pid 1566191 invoked by uid 1000);
+        Wed, 26 Jul 2023 16:44:01 -0000
+Date:   Wed, 26 Jul 2023 10:44:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Cc:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver bindings
+Message-ID: <20230726164401.GA1563534-robh@kernel.org>
+References: <20230424101352.28117-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20230724100514.1028061-1-Delphine_CC_Chiu@Wiwynn.com>
 MIME-Version: 1.0
-References: <20230725131258.31306-1-linyunsheng@huawei.com>
- <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
- <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com> <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
- <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
- <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com> <20230726085049.36b527a4@kernel.org>
-In-Reply-To: <20230726085049.36b527a4@kernel.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 26 Jul 2023 09:42:34 -0700
-Message-ID: <CAKgT0UddT2CY_HrQ-d+5vPbpguuscsfF=oUVW02AFy0JAYet3w@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from page_pool.h
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724100514.1028061-1-Delphine_CC_Chiu@Wiwynn.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,39 +62,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 8:50=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 26 Jul 2023 08:39:43 -0700 Alexander Duyck wrote:
-> > > > I suppose the above suggestion is about splitting or naming by
-> > > > the user as the discussed in the below thread?
-> > > > https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/
-> > >
-> > > Actually my suggestion is more about defining boundaries for what is
-> > > meant to be used by drivers and what isn't. The stuff you could keep
-> > > in net/core/page_pool.h would only be usable by the files in net/core=
-/
-> > > whereas the stuff you are keeping in the include/net/ folder is usabl=
-e
-> > > by drivers. It is meant to prevent things like what you were
-> > > complaining about with the Mellanox drivers making use of interfaces
-> > > you didn't intend them to use.
->
-> FWIW moving stuff which is only supposed to be used by core (xdp, skb,
-> etc.) to net/core/page_pool.h is a good idea, too.
-> Seems a bit independent from splitting the main header, tho.
+On Mon, Jul 24, 2023 at 06:05:11PM +0800, Delphine CC Chiu wrote:
+> Add a device tree bindings for ltc4286 driver.
+> 
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> ---
+>  .../bindings/hwmon/lltc,ltc4286.yaml          | 49 +++++++++++++++++++
+>  MAINTAINERS                                   |  9 ++++
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> new file mode 100644
+> index 000000000000..ad7f6ad888e4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/lltc,ltc4286.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LTC4286 power monitors
+> +
+> +maintainers:
+> +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - lltc,ltc4286
+> +      - lltc,ltc4287
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vrange_select_25p6:
 
-It seems a bit independent, but I was reacting only because I feel
-like this ijust adding to the technical debt on this. Basically before
-we can really just go ahead and split it the header file itself should
-probably be cleaned up a bit.
+Needs a vendor prefix and don't use '_'.
 
-The reason why it occurred to me is that I noticed things like
-page_pool_use_xdp_mem and the forward declaration for xdp_mem_info was
-being picked up and moved into the types.h file in the move. The whole
-block was in a #if/#else statement w/ definitions for the PAGE_POOL
-and non-PAGE_POOL cases.
+> +    description:
+> +      This property is a bool parameter to represent the
 
-We also have functions that don't really need to be included such as
-page_pool_unlink_napi which is exported but not used outside of
-page_pool.c from what I can tell.
+We have types, don't define the type in free form text.
+
+> +      voltage range is 25.6 or not for this chip.
+> +
+> +  shunt-resistor-micro-ohms:
+> +    description:
+> +      Resistor value in micro-Ohm
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - shunt-resistor-micro-ohms
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        power-sensor@40 {
+> +            compatible = "lltc,ltc4286";
+> +            reg = <0x40>;
+> +            vrange_select_25p6;
+> +            shunt-resistor-micro-ohms = <300>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d516295978a4..7c1cb9bd4f45 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12344,6 +12344,15 @@ S:	Maintained
+>  F:	Documentation/hwmon/ltc4261.rst
+>  F:	drivers/hwmon/ltc4261.c
+>  
+> +LTC4286 HARDWARE MONITOR DRIVER
+> +M:	Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> +L:	linux-i2c@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> +F:	drivers/hwmon/pmbus/Kconfig
+> +F:	drivers/hwmon/pmbus/Makefile
+> +F:	drivers/hwmon/pmbus/ltc4286.c
+> +
+>  LTC4306 I2C MULTIPLEXER DRIVER
+>  M:	Michael Hennerich <michael.hennerich@analog.com>
+>  L:	linux-i2c@vger.kernel.org
+> -- 
+> 2.25.1
+> 
