@@ -2,227 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A5876290A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354FA762915
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 05:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbjGZDGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Jul 2023 23:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S231218AbjGZDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Jul 2023 23:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjGZDGK (ORCPT
+        with ESMTP id S231195AbjGZDJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Jul 2023 23:06:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8AD1BDA
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 20:06:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6017E61176
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:06:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 096C8C433C8;
-        Wed, 26 Jul 2023 03:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690340767;
-        bh=NEOYLP0iznHbMTzUU1WZ7txltHSA0/SCINhS/IbFbPU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KKKZzkFQ3GhIJTIU/R3X+a3LwSNBQmigXdNNLlKxV3HynLFUp12f+shUAsV7nxE2T
-         apogwZkAs2KQ7wfnRbRWr95TdgVmepWi1R23/+XyUiIQApr01h3GCVXlM1x0mle4wU
-         WC7tz3XK5lZzP6O+MgSwphNVisONDwNgpT8o4E3c/zvDlFie7x7rBfjQAr/dzM8QC3
-         7Kz85d6c0k9fSbOT7eGKSYnfpBtkIJGLGQSbMEi/gF+W5URn93dyKZWXACYKSl88jZ
-         gpYYGeENSvyhTtEjLdl7Qmd7I7dpB44Wh3pYaT1tvdFCwWmIcDeS2MsWL1o/OkGC7J
-         XOTvSM0taNrOw==
-Date:   Tue, 25 Jul 2023 20:06:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Johannes Zink <j.zink@pengutronix.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
-Message-ID: <20230725200606.5264b59c@kernel.org>
-In-Reply-To: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
-References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+        Tue, 25 Jul 2023 23:09:39 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1A130F2;
+        Tue, 25 Jul 2023 20:09:14 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1b9e9765f2cso33175195ad.3;
+        Tue, 25 Jul 2023 20:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690340953; x=1690945753;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c3eGZxYybVzDbWEh1vUjpcnpeshd8LoWv2KA9phPmZQ=;
+        b=WgtXbylYxJN2jMMB6H1GpJkjn4UQAfrUgH6M3/TG9fDqRWy36dTZ5DFFLjjuxBu2kI
+         JTFqWxJl2eFmRcoyxseN9F4YAa/hLqof14uWfpAJfOttyHYu5aoPGnEGnNkWN5L7SLix
+         Wd7COF2vm9i++lAFMSL1FwfsHk8rC6mu40FzlMAjagxVaf3m0N0lG6LqPffPmoX/D/Ro
+         WJ3jqBSZoVgCg4VhuYANCBM6IXlRuHmfq44gs6wjV+Nvx+zNckcs9QAKXRPUeeDY+t0D
+         6bD15ET0A2VkrgD1Ix+G5Mua/ppRrr5TDArAfpBRn0Ziz0R36zK5pzRXSa7oQl15xHFB
+         42RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690340953; x=1690945753;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c3eGZxYybVzDbWEh1vUjpcnpeshd8LoWv2KA9phPmZQ=;
+        b=QMJd568nlL9zYf8ppQo0bL4+kn+9LepRNIdmaCEnmnbIzcZSgYxGTbJUUWsKk39YKt
+         qfHQlzyolkrFlk0bwzpRptdAcBPozCNxJCPyoDkNviR9eQq0bX1IHhIOUkscunKb7oFa
+         EC6fL5sV8JVakQSaMeqkqezkdGUGjWFdovdMDy7ezIgyXOS3HgTmlhLX/Xq+skG6bPsS
+         hUNK5haf0sZt14Xzjk//c1+Agu9NpJ4J+Rg8C0J8laqV7bg6RMx65qZrPr3+2z50S530
+         6+SM/5m1ks+wDeDNbQE/jISOxZlj7EF27ovDYjmOuKEueioqt1FTJL4WngcF7jBMIpCO
+         CmmA==
+X-Gm-Message-State: ABy/qLa7bJpa1rkpKVk+2tpw02stQmuhIxajcZxYO6jVyYe5N1KCFbrA
+        nMc2GB2aKBlLCfOE0O3VTUg=
+X-Google-Smtp-Source: APBJJlGRF4bJBQL/QQY2P5NRNIn5MwFZZAtNfGnOITBN/oC+SI1Zn4oW1HbSST1/9yrL2va7cPWlog==
+X-Received: by 2002:a17:902:b593:b0:1b8:9002:c9ee with SMTP id a19-20020a170902b59300b001b89002c9eemr686987pls.1.1690340953369;
+        Tue, 25 Jul 2023 20:09:13 -0700 (PDT)
+Received: from localhost.localdomain ([218.66.91.195])
+        by smtp.gmail.com with ESMTPSA id c2-20020a170902d90200b001b9ff5aa2e7sm11864874plz.239.2023.07.25.20.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 20:09:13 -0700 (PDT)
+From:   xiaoshoukui <xiaoshoukui@gmail.com>
+To:     dsterba@suse.cz
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui@ruijie.com.cn
+Subject: Re: [PATCH] btrfs: fix balance_ctl not free properly in btrfs_balance
+Date:   Tue, 25 Jul 2023 23:06:17 -0400
+Message-Id: <20230726030617.109018-1-xiaoshoukui@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230714100143.GE20457@suse.cz>
+References: <20230714100143.GE20457@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 12:01:31 +0200 Johannes Zink wrote:
-> The IEEE1588 Standard specifies that the timestamps of Packets must be
-> captured when the PTP message timestamp point (leading edge of first
-> octet after the start of frame delimiter) crosses the boundary between
-> the node and the network. As the MAC latches the timestamp at an
-> internal point, the captured timestamp must be corrected for the
-> additional path latency, as described in the publicly available
-> datasheet [1].
-> 
-> This patch only corrects for the MAC-Internal delay, which can be read
-> out from the MAC_Ingress_Timestamp_Latency register, since the Phy
-> framework currently does not support querying the Phy ingress and egress
-> latency. The Closs Domain Crossing Circuits errors as indicated in [1]
-> are already being accounted in the stmmac_get_tx_hwtstamp() function and
-> are not corrected here.
-> 
-> As the Latency varies for different link speeds and MII
-> modes of operation, the correction value needs to be updated on each
-> link state change.
-> 
-> As the delay also causes a phase shift in the timestamp counter compared
-> to the rest of the network, this correction will also reduce phase error
-> when generating PPS outputs from the timestamp counter.
-> 
-> [1] i.MX8MP Reference Manual, rev.1 Section 11.7.2.5.3 "Timestamp
-> correction"
+> This is a similar patch to what Josef sent but not exactly the same,
+> https://lore.kernel.org/linux-btrfs/9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com/
+> Both remove balance_need_close but your version does not track the
+> paused state. I haven't analyzed it closer, but it looks like you're
+> missing some case. Josef's fix simplifies the error handling so we don't
+> have te enumerate the errors.
 
-Hi Richard,
+yeah. I think the fix logic is similar.
 
-any opinion on this one?
+> As you have a reproducer, can you please try it with this patch instead?
+> It's possible that there are still some unhandled states so it would be
+> good to check. Thanks.
 
-The subject read to me like it's about *MII clocking delays, I figured
-you may have missed it, too.
+With Josef patch my fuzz reproducer ran for three hours without tripping panic. 
+However, based on the test results, it was found that the fix was not complete.
 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-> index 6ee7cf07cfd7..95a4d6099577 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-> @@ -536,6 +536,7 @@ struct stmmac_hwtimestamp {
->  	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
->  	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
->  	void (*timestamp_interrupt)(struct stmmac_priv *priv);
-> +	void (*correct_latency)(struct stmmac_priv *priv);
->  };
->  
->  #define stmmac_config_hw_tstamping(__priv, __args...) \
-> @@ -554,6 +555,8 @@ struct stmmac_hwtimestamp {
->  	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
->  #define stmmac_timestamp_interrupt(__priv, __args...) \
->  	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
-> +#define stmmac_correct_latency(__priv, __args...) \
-> +	stmmac_do_void_callback(__priv, ptp, correct_latency, __args)
->  
->  struct stmmac_tx_queue;
->  struct stmmac_rx_queue;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-> index fa2c3ba7e9fe..7e0fa024e0ad 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-> @@ -60,6 +60,48 @@ static void config_sub_second_increment(void __iomem *ioaddr,
->  		*ssinc = data;
->  }
->  
-> +static void correct_latency(struct stmmac_priv *priv)
-> +{
-> +	void __iomem *ioaddr = priv->ptpaddr;
-> +	u32 reg_tsic, reg_tsicsns;
-> +	u32 reg_tsec, reg_tsecsns;
-> +	u64 scaled_ns;
-> +	u32 val;
-> +
-> +	/* MAC-internal ingress latency */
-> +	scaled_ns = readl(ioaddr + PTP_TS_INGR_LAT);
-> +
-> +	/* See section 11.7.2.5.3.1 "Ingress Correction" on page 4001 of
-> +	 * i.MX8MP Applications Processor Reference Manual Rev. 1, 06/2021
-> +	 */
-> +	val = readl(ioaddr + PTP_TCR);
-> +	if (val & PTP_TCR_TSCTRLSSR)
-> +		/* nanoseconds field is in decimal format with granularity of 1ns/bit */
-> +		scaled_ns = ((u64)NSEC_PER_SEC << 16) - scaled_ns;
-> +	else
-> +		/* nanoseconds field is in binary format with granularity of ~0.466ns/bit */
-> +		scaled_ns = ((1ULL << 31) << 16) -
-> +			DIV_U64_ROUND_CLOSEST(scaled_ns * PSEC_PER_NSEC, 466U);
-> +
-> +	reg_tsic = scaled_ns >> 16;
-> +	reg_tsicsns = scaled_ns & 0xff00;
-> +
-> +	/* set bit 31 for 2's compliment */
-> +	reg_tsic |= BIT(31);
-> +
-> +	writel(reg_tsic, ioaddr + PTP_TS_INGR_CORR_NS);
-> +	writel(reg_tsicsns, ioaddr + PTP_TS_INGR_CORR_SNS);
-> +
-> +	/* MAC-internal egress latency */
-> +	scaled_ns = readl(ioaddr + PTP_TS_EGR_LAT);
-> +
-> +	reg_tsec = scaled_ns >> 16;
-> +	reg_tsecsns = scaled_ns & 0xff00;
-> +
-> +	writel(reg_tsec, ioaddr + PTP_TS_EGR_CORR_NS);
-> +	writel(reg_tsecsns, ioaddr + PTP_TS_EGR_CORR_SNS);
-> +}
-> +
->  static int init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
->  {
->  	u32 value;
-> @@ -221,4 +263,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
->  	.get_systime = get_systime,
->  	.get_ptptime = get_ptptime,
->  	.timestamp_interrupt = timestamp_interrupt,
-> +	.correct_latency = correct_latency,
->  };
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index efe85b086abe..ee78e69e9ae3 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -909,6 +909,8 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
->  	priv->hwts_tx_en = 0;
->  	priv->hwts_rx_en = 0;
->  
-> +	stmmac_correct_latency(priv, priv);
-> +
->  	return 0;
->  }
->  
-> @@ -1094,6 +1096,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
->  
->  	if (priv->dma_cap.fpesel)
->  		stmmac_fpe_link_state_handle(priv, true);
-> +
-> +	stmmac_correct_latency(priv, priv);
->  }
->  
->  static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-> index bf619295d079..d1fe4b46f162 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-> @@ -26,6 +26,12 @@
->  #define	PTP_ACR		0x40	/* Auxiliary Control Reg */
->  #define	PTP_ATNR	0x48	/* Auxiliary Timestamp - Nanoseconds Reg */
->  #define	PTP_ATSR	0x4c	/* Auxiliary Timestamp - Seconds Reg */
-> +#define	PTP_TS_INGR_CORR_NS	0x58	/* Ingress timestamp correction nanoseconds */
-> +#define	PTP_TS_EGR_CORR_NS	0x5C	/* Egress timestamp correction nanoseconds*/
-> +#define	PTP_TS_INGR_CORR_SNS	0x60	/* Ingress timestamp correction subnanoseconds */
-> +#define	PTP_TS_EGR_CORR_SNS	0x64	/* Egress timestamp correction subnanoseconds */
-> +#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
-> +#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
->  
->  #define	PTP_STNSUR_ADDSUB_SHIFT	31
->  #define	PTP_DIGITAL_ROLLOVER_MODE	0x3B9ACA00	/* 10e9-1 ns */
-> 
-> ---
-> base-commit: ba80e20d7f3f87dab3f9f0c0ca66e4b1fcc7be9f
-> change-id: 20230719-stmmac_correct_mac_delay-4278cb9d9bc1
-> 
-> Best regards,
+The above patch only fixes the problem that the balance_ctl is not freed properly, 
+but does not solve the problem that the pause ioctl request returns an incorrect
+value 0 to the user.
+
+Issue a pause or cancel IOCTL request after judging that there is no pause or 
+cancel request on the path of __btrfs_balance to return 0, which will mislead
+the user that the pause and cancel requests are successful.In fact, the balance
+request has not been paused or canceled.
+
+>	while (1) {
+>		if ((!counting && atomic_read(&fs_info->balance_pause_req)) ||
+>		    atomic_read(&fs_info->balance_cancel_req)) {
+>			ret = -ECANCELED;
+>			goto error;
+>		}
+>	--------------------	
+>	.......  issue a pause or cancel req in anthoer thead
+>	--------------------	
+>	return ret;    --//return ret with 0
+
+> [   60.753212][ T4484] BTRFS info (device loop0): balance: start -f
+> [   60.754589][ T4484] BTRFS info (device loop0): balance: ended with status: 0
+> /dev/vda balance successfully
+> /dev/vda pause balance successfully  --//should fail with invalid.
+
+This should indicate that the pause ioctl fail with invalid request.
+With my new patch，the testing result show that both the problems are fixed.
+
+The log of my test:
+> [  109.371116][ T4449] BTRFS info (device loop0): balance: start -f
+> [  109.382745][ T4449] BTRFS info (device loop0): balance: ended with status: 0
+> /dev/vda balance successfully
+> Failed to pause balance /dev/vda, errno 22   --//fail with invalid.
+> Failed to resume balance /dev/vda, errno 107 --//didn't trip assert panic
+> close btrfs
+
+Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+---
+ fs/btrfs/fs.h      |  6 ++++++
+ fs/btrfs/volumes.c | 14 +++++++++-----
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 203d2a267828..6c85279d0e76 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -92,6 +92,12 @@ enum {
+         * main phase. The fs_info::balance_ctl is initialized.
+         */
+        BTRFS_FS_BALANCE_RUNNING,
++
++       /* Indicate that balance has been paused. */
++       BTRFS_FS_BALANCE_PAUSED,
++
++       /* Indicate that balance has been canceled. */
++       BTRFS_FS_BALANCE_CANCELED,
+
+        /*
+         * Indicate that relocation of a chunk has started, it's set per chunk
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 70d69d4b44d2..8e759e7ebdd6 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4267,7 +4267,6 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+        u64 num_devices;
+        unsigned seq;
+        bool reducing_redundancy;
+-       bool paused = false;
+        int i;
+
+        if (btrfs_fs_closing(fs_info) ||
+@@ -4390,6 +4389,8 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+        ASSERT(!test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags));
+        set_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags);
+        describe_balance_start_or_resume(fs_info);
++       clear_bit(BTRFS_FS_BALANCE_PAUSED, &fs_info->flags);
++       clear_bit(BTRFS_FS_BALANCE_CANCELED, &fs_info->flags);
+        mutex_unlock(&fs_info->balance_mutex);
+
+        ret = __btrfs_balance(fs_info);
+@@ -4398,7 +4399,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+        if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req)) {
+                btrfs_info(fs_info, "balance: paused");
+                btrfs_exclop_balance(fs_info, BTRFS_EXCLOP_BALANCE_PAUSED);
+-               paused = true;
++               set_bit(BTRFS_FS_BALANCE_PAUSED, &fs_info->flags);
+        }
+        /*
+         * Balance can be canceled by:
+@@ -4415,8 +4416,10 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+         *
+         * So here we only check the return value to catch canceled balance.
+         */
+-       else if (ret == -ECANCELED || ret == -EINTR)
++       else if (ret == -ECANCELED || ret == -EINTR) {
+                btrfs_info(fs_info, "balance: canceled");
++               set_bit(BTRFS_FS_BALANCE_CANCELED, &fs_info->flags);
++       }
+        else
+                btrfs_info(fs_info, "balance: ended with status: %d", ret);
+
+@@ -4428,7 +4431,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+        }
+
+        /* We didn't pause, we can clean everything up. */
+-       if (!paused) {
++       if (!test_bit(BTRFS_FS_BALANCE_PAUSED, &fs_info->flags)) {
+                reset_balance_state(fs_info);
+                btrfs_exclop_finish(fs_info);
+        }
+@@ -4587,6 +4590,7 @@ int btrfs_pause_balance(struct btrfs_fs_info *fs_info)
+                /* we are good with balance_ctl ripped off from under us */
+                BUG_ON(test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags));
+                atomic_dec(&fs_info->balance_pause_req);
++               ret = test_bit(BTRFS_FS_BALANCE_PAUSED, &fs_info->flags) ? 0 : -EINVAL;
+        } else {
+                ret = -ENOTCONN;
+        }
+@@ -4642,7 +4646,7 @@ int btrfs_cancel_balance(struct btrfs_fs_info *fs_info)
+                test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags));
+        atomic_dec(&fs_info->balance_cancel_req);
+        mutex_unlock(&fs_info->balance_mutex);
+-       return 0;
++       return test_bit(BTRFS_FS_BALANCE_CANCELED, &fs_info->flags) ? 0 : -EINVAL;
+ }
+
+ int btrfs_uuid_scan_kthread(void *data)
+--
+2.34.1
 
