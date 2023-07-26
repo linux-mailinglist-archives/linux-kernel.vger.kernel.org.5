@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7102E763BDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7727D763B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233740AbjGZQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
+        id S234945AbjGZPsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235040AbjGZP72 (ORCPT
+        with ESMTP id S234666AbjGZPsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:59:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E7CDD;
-        Wed, 26 Jul 2023 08:59:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BED061B9A;
-        Wed, 26 Jul 2023 15:59:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63276C433C7;
-        Wed, 26 Jul 2023 15:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387163;
-        bh=ZVYSAijYjAzVdSVVoPt4UJzIEJFPCTCkTsJbuNdi1QE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lojai7na1ElHe5GdMww572j/Z9Ep34SG463mNTa1IkFqPtSz5ExoO6xEoER5RjMAa
-         3Zqb6dekCRzIXOs6XQfoKaxQ3jKIDASssTP6msy122pbDrXSc2nvSMd3abg4FWxDsD
-         WCO6MEqrFlCw5rmYOelxKWALqmZWMahQDAXrJ9MbeM4Mt8ohY6aorxSYwhzvag6z1s
-         SiGJYjkm3jVgcFpyEDIFrBDFY2funfYuXJ9xDtWQAJ5xG2oBLsnl6taXxObIi0oV90
-         pkx/TjCZPKZeY1QXADLRLpUEsZxbUi8LWdX5jrL0loCKuG/n90RXTDdKJ7ZSFzrwee
-         qoVKc1pIP5zqw==
-Date:   Wed, 26 Jul 2023 23:47:44 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next 09/10] dt-bindings: net: snps,dwmac: add per
- channel irq support
-Message-ID: <ZMFAIF+nFL0vhX7Q@xhacker>
-References: <20230723161029.1345-1-jszhang@kernel.org>
- <20230723161029.1345-10-jszhang@kernel.org>
- <20230726152439.GA1471409-robh@kernel.org>
+        Wed, 26 Jul 2023 11:48:39 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5711FDA
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:48:37 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40550136e54so408291cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 08:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690386517; x=1690991317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ut/OLnGvSUcwp0SDm9TE1oM6DEmiwkjd+qReZtNtjNs=;
+        b=VsS+2GiOBjBU/fbu4y4kSJp6AV2eQoMCG8HLnqx5YVCQ6dz4wXNHlG/wrkMUWoU+1N
+         5NsTHjtRSOeEI7EjrarEoKoSfeUje2rhD6MqK6XOlvSBKxsbBiUo2oMCPDVRRP+wgqam
+         OCCg45w5yTGvagFVGfYZ+wyFAOOoX0mH6mt0gis4jrHBVRSanpz1UNksHFElZw2RMJfH
+         99uCJc0gi0RmDxn7Euktt6eVzsygxYcASLsE5xndnEPx8WFd/yvibJ7RqtgmUp9TSaoN
+         jAbJlkDX6Dwg/rYYKHOcYh8NVLFdrnJ8XFVBpi74jwU7G69V1HHZP6ZkZeUL0UW5cApK
+         hm6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690386517; x=1690991317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ut/OLnGvSUcwp0SDm9TE1oM6DEmiwkjd+qReZtNtjNs=;
+        b=gBrWik+U8qkn64GpknxfCcuRjWnLCWE3Nlb9CxbOs5YyiqFsQsANtTt9FLi9TzcTIg
+         nAks0YXTdCFRTb483hIPdR7e12ZdoRIM4FemWoII1iGF052Jp1LldyPdnyV+DOYIoenn
+         IDA2EhzymzOpvKX260L9jyu1SXmDM73Cduj5yjAcCPxBxmZa451J4zB90tcCGiVQccC5
+         lF7liUznqiIhm5teU7g8uK4IzLClP8bFT+s6PB5dYnowlnNzBaiUhqD8/TqNrLcu5GBO
+         H4jQVToLZKwG+tvem50Ms5DV9DCCZQwA1Vj1K3bcotf17+EQJf6tLrOsG4tZLqkNKob4
+         LK4g==
+X-Gm-Message-State: ABy/qLYlff2PCSVLy635Uudh2/CqECOtS8hZcZaxb7r3Ujmwr2PDNRv+
+        47OtIchcBKwvq1hm5gnsIzU97oyMYV90acXHwXlpAw==
+X-Google-Smtp-Source: APBJJlFAmkaXOtb8THGu7IQnr+RHR95akaw9tZl1QWkzbkFdkoRezoi/bskARgwANoV0jMaM1qFSCot+pg+R8e2pRCo=
+X-Received: by 2002:ac8:7f56:0:b0:405:3a65:b3d6 with SMTP id
+ g22-20020ac87f56000000b004053a65b3d6mr509723qtk.13.1690386516582; Wed, 26 Jul
+ 2023 08:48:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230726152439.GA1471409-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230726133642.750342-1-namhyung@kernel.org>
+In-Reply-To: <20230726133642.750342-1-namhyung@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 26 Jul 2023 08:48:24 -0700
+Message-ID: <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 09:24:39AM -0600, Rob Herring wrote:
-> On Mon, Jul 24, 2023 at 12:10:28AM +0800, Jisheng Zhang wrote:
-> > The IP supports per channel interrupt, add support for this usage case.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  .../devicetree/bindings/net/snps,dwmac.yaml   | 23 +++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > index bb80ca205d26..525210c2c06c 100644
-> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > @@ -101,6 +101,11 @@ properties:
-> >      minItems: 1
-> >      maxItems: 2
-> >  
-> > +  snps,per-channel-interrupt:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description:
-> > +      Indicates that Rx and Tx complete will generate a unique interrupt for each channel
-> 
-> Can't you determine this based on the number of interrupts or interrupt 
-> names?
+On Wed, Jul 26, 2023 at 6:36=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> The bison and flex generate C files from the source (.y and .l)
+> files.  When O=3D option is used, they are saved in a separate directory
+> but the default build rule assumes the .C files are in the source
+> directory.  So it might read invalid file if there are generated files
+> from an old version.  The same is true for the pmu-events files.
+>
+> For example, the following command would cause a build failure:
+>
+>   $ git checkout v6.3
+>   $ make -C tools/perf  # build in the same directory
+>
+>   $ git checkout v6.5-rc2
+>   $ mkdir build  # create a build directory
+>   $ make -C tools/perf O=3Dbuild  # build in a different directory but it
+>                                 # refers files in the source directory
+>
+> Let's update the build rule to specify those cases explicitly to depend
+> on the files in the output directory.
+>
+> Note that it's not a complete fix and it needs the next patch for the
+> include path too.
+>
+> Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/build/Makefile.build  | 8 ++++++++
+>  tools/perf/pmu-events/Build | 4 ++++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
+> index 89430338a3d9..f9396696fcbf 100644
+> --- a/tools/build/Makefile.build
+> +++ b/tools/build/Makefile.build
+> @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
+>         $(call rule_mkdir)
+>         $(call if_changed_dep,cc_s_c)
+>
+> +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
+> +       $(call rule_mkdir)
+> +       $(call if_changed_dep,$(host)cc_o_c)
+> +
+> +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
+> +       $(call rule_mkdir)
+> +       $(call if_changed_dep,$(host)cc_o_c)
+> +
 
-Good idea! this flag can be dynamically detected based on the interrupt names.
-The driver code will be patched a bit ugly, I will try and send out for review.
+Hi Namhyung,
 
-> 
-> > +
-> >    interrupts:
-> >      minItems: 1
-> >      items:
-> > @@ -109,6 +114,8 @@ properties:
-> >        - description: The interrupt that occurs when Rx exits the LPI state
-> >        - description: The interrupt that occurs when Safety Feature Correctible Errors happen
-> >        - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
-> > +      - description: All of the rx per-channel interrupts
-> > +      - description: All of the tx per-channel interrupts
-> 
-> You added 2 interrupts here and...
+as we have:
+```
+$(OUTPUT)%.o: %.c FORCE
+       $(call rule_mkdir)
+       $(call if_changed_dep,$(host)cc_o_c)
+```
+I'm not sure what the 2 additional rules achieve.
 
-I'm not sure how to write the description here, could it be one line
- "- description: All of the tx/rx per-channel interrupts"?
+>  # Gather build data:
+>  #   obj-y        - list of build objects
+>  #   subdir-y     - list of directories to nest
+> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+> index 150765f2baee..f38a27765604 100644
+> --- a/tools/perf/pmu-events/Build
+> +++ b/tools/perf/pmu-events/Build
+> @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY) $(M=
+ETRIC_PY) $(METRIC_TEST_L
+>         $(call rule_mkdir)
+>         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARCH) $=
+(JEVENTS_MODEL) pmu-events/arch $@
+>  endif
+> +
+> +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
+> +       $(call rule_mkdir)
+> +       $(call if_changed_dep,$(host)cc_o_c)
 
-> 
-> >  
-> >    interrupt-names:
-> >      minItems: 1
-> > @@ -118,6 +125,22 @@ properties:
-> >        - const: eth_lpi
-> >        - const: sfty_ce_irq
-> >        - const: sfty_ue_irq
-> > +      - const: rx0
-> > +      - const: rx1
-> > +      - const: rx2
-> > +      - const: rx3
-> > +      - const: rx4
-> > +      - const: rx5
-> > +      - const: rx6
-> > +      - const: rx7
-> > +      - const: tx0
-> > +      - const: tx1
-> > +      - const: tx2
-> > +      - const: tx3
-> > +      - const: tx4
-> > +      - const: tx5
-> > +      - const: tx6
-> > +      - const: tx7
-> 
-> And 16 here?
-> 
+If we add this, do the Makefile.build changes still need to happen?
 
-oops, indeed HW supports up to 16 channels for tx and rx, thus
-up to 16 interrupts.
+Thanks,
+Ian
 
-> >  
-> >    clocks:
-> >      minItems: 1
-> > -- 
-> > 2.40.1
-> > 
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
