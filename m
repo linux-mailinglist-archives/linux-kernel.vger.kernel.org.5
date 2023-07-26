@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717B1763F8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0C0763F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbjGZT2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
+        id S231825AbjGZT2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjGZT2k (ORCPT
+        with ESMTP id S231857AbjGZT2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:28:40 -0400
+        Wed, 26 Jul 2023 15:28:51 -0400
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C154E4F;
-        Wed, 26 Jul 2023 12:28:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D703AE4F;
+        Wed, 26 Jul 2023 12:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690399719; x=1721935719;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7j2XcZg/bBdbxvcEmCEgqF7Ul3dVL8/lhTRpW/4DVhg=;
-  b=L90axt/+IJgW7i6UrpA8tYYNjN77OcEhPrBdn21gRKYQ2H7nLjDZBCV2
-   vm9OUvA+g+QSFkQH05jpQA1JOLGsE+nGv6JXHwtrvnWa7x3IpD5+ONozA
-   Lp0YzKFzzI3qLyCFFec+xsSga5mG2lONeZ88Lgji6JhSkNcOTyfY38SwL
-   2OsN/QGW07hzBtZqkNPY3T83n6qR8AnsIJf8xrxtQJzjBz3G155Rc6nCT
-   XvwcHV+oBrE7xTHOFYei8grWSO8WvvCKDcGlC52nLTOfwu3Y4lRX2X40o
-   tB6Dm1XonKpYaH7oyGhoyWWsEje4rEMhMWydyjk4pSi6RVfvgCAus8w55
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358110122"
+  t=1690399729; x=1721935729;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1fcZpoD7pysu21pr96a3/oNgTjK6roya1B0HquHldxI=;
+  b=TZ/QLu/5Ys7QEuPm0MRgJpKNjQKXTpFPcDfG8aUv+wjc7lvWtHifqPML
+   37NkCQyKzdTTgrTMbXZaLRp96Uvz/WxJLvt9lA2QogfaG6F1AH8GZL/73
+   lsfy7d3PLcs0V1++tfmg+1VuNX60hzDpQEFYRVQl+i5g4MoR+mJlPYyBK
+   F6FqCR61qYPh8RTqDGkAK8FSqc7zUzfSY4bjEmCrf5ZV93zrAWJC0SFFm
+   RWjpewj0g8MsjqWb0/TAzs1icLbvCRluCqTNg3BfLEWJxRLmAIS7wMa1s
+   trOPIAoMcmvehnppugLGrGFzHPm5niV/Msh/Pr2ycEqpg6yFdn51ism76
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358110169"
 X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="358110122"
+   d="scan'208";a="358110169"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:38 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726661839"
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726661966"
 X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
-   d="scan'208";a="726661839"
+   d="scan'208";a="726661966"
 Received: from wfryca-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.133.1])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:35 -0700
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:45 -0700
 From:   Iwona Winiarska <iwona.winiarska@intel.com>
 To:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -51,11 +51,14 @@ Cc:     Avi Fishman <avifishman70@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
+        Tyrone Ting <warp5tw@gmail.com>,
         Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH 0/4] Add support for PECI Nuvoton
-Date:   Wed, 26 Jul 2023 21:27:36 +0200
-Message-Id: <20230726192740.1383740-1-iwona.winiarska@intel.com>
+Subject: [PATCH v2 1/4] dt-bindings: Add bindings for peci-npcm
+Date:   Wed, 26 Jul 2023 21:27:37 +0200
+Message-Id: <20230726192740.1383740-2-iwona.winiarska@intel.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230726192740.1383740-1-iwona.winiarska@intel.com>
+References: <20230726192740.1383740-1-iwona.winiarska@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -69,54 +72,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Tomer Maimon <tmaimon77@gmail.com>
 
-The series adds support for PECI on Nuvoton-based BMC boards.
-It is based on patches that were sent by Tomer Maimon from
-Nuvoton [1].
-Similar to Aspeed driver, unused (as in, default values were used in
-all of the available DTS files) vendor-specific properties were
-removed.
-If there is a use-case for such properties, they can be added in
-a separate series.
+Add device tree bindings for the peci-npcm controller driver.
 
-Thank you Tomer for testing this series on Nuvoton hardware [2].
-
-Please note that PECI Nuvoton was previously submitted as part of PECI
-subsystem series [3] that was never merged upstream.
-It was never included in the current in-tree PECI subsystem [4].
-
-[1] https://lore.kernel.org/openbmc/CAP6Zq1jnbQ8k9VEyf9WgVq5DRrEzf5V6kaYP30S7g9BV9jKtaQ@mail.gmail.com/
-[2] https://lore.kernel.org/openbmc/CAP6Zq1h1if4hyubyh6N8EOdGOu+zp0qVUimF-9L2eXZ-QFAYjw@mail.gmail.com/
-[3] https://lore.kernel.org/all/20191211194624.2872-1-jae.hyun.yoo@linux.intel.com/
-[4] https://lore.kernel.org/all/20220208153639.255278-1-iwona.winiarska@intel.com/
-
+Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Signed-off-by: Tyrone Ting <warp5tw@gmail.com>
+Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
+Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+---
 Changes v1 -> v2:
 
 * Renamed binding filename to match compatible (Krzysztof)
-* Removed period from the end of copyright (Paul)
-
-Thanks
--Iwona
-
-Iwona Winiarska (2):
-  ARM: dts: nuvoton: Add PECI controller node
-  arm64: dts: nuvoton: Add PECI controller node
-
-Tomer Maimon (2):
-  dt-bindings: Add bindings for peci-npcm
-  peci: Add peci-npcm controller driver
-
- .../bindings/peci/nuvoton,npcm-peci.yaml      |  56 ++++
- .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |   9 +
- .../dts/nuvoton/nuvoton-common-npcm8xx.dtsi   |   9 +
- drivers/peci/controller/Kconfig               |  16 +
- drivers/peci/controller/Makefile              |   1 +
- drivers/peci/controller/peci-npcm.c           | 298 ++++++++++++++++++
- 6 files changed, 389 insertions(+)
+---
+ .../bindings/peci/nuvoton,npcm-peci.yaml      | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/peci/nuvoton,npcm-peci.yaml
- create mode 100644 drivers/peci/controller/peci-npcm.c
 
+diff --git a/Documentation/devicetree/bindings/peci/nuvoton,npcm-peci.yaml b/Documentation/devicetree/bindings/peci/nuvoton,npcm-peci.yaml
+new file mode 100644
+index 000000000000..6eafa9ccaa54
+--- /dev/null
++++ b/Documentation/devicetree/bindings/peci/nuvoton,npcm-peci.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/peci/peci-npcm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nuvoton PECI Bus
++
++maintainers:
++  - Tomer Maimon <tmaimon77@gmail.com>
++
++allOf:
++  - $ref: peci-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - nuvoton,npcm750-peci
++      - nuvoton,npcm845-peci
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    description:
++      Clock source for PECI controller. Should reference the APB clock.
++    maxItems: 1
++
++  cmd-timeout-ms:
++    minimum: 1
++    maximum: 1000
++    default: 1000
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    peci-controller@f0100000 {
++      compatible = "nuvoton,npcm750-peci";
++      reg = <0xf0100000 0x200>;
++      interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&clk NPCM7XX_CLK_APB3>;
++      cmd-timeout-ms = <1000>;
++    };
++...
 -- 
 2.40.1
 
