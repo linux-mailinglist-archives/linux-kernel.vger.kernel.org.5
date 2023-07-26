@@ -2,204 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 454ED76338E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523957633A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233861AbjGZK0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
+        id S233909AbjGZK1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjGZK0d (ORCPT
+        with ESMTP id S233906AbjGZK1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:26:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD08D211C;
-        Wed, 26 Jul 2023 03:26:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 57FFE61A2D;
-        Wed, 26 Jul 2023 10:26:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DDF4C433C7;
-        Wed, 26 Jul 2023 10:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690367190;
-        bh=5KYTw7QzTyvtxBFV3dygoBH0PeFk0S7OnkeeUk9b43Y=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ndKso9yUYsbZwpDHng42ep2CAfco3wLs2OV40nFjqGLYD9AEcWQWsW6ETt5eznwfc
-         cv1pssJER1sswKXyNjOiTQENkKxQk0VK7z2g3ch3Yi2JD1b11x0Zkl0EFgKozkvsxy
-         f1dZ8Uzp9NvZuR0ShQq2ncjDBcvWQLsdpHvv+hCoNZE8CswlcoELNBb87INDiV++T7
-         H3FxOmXTcDxptDoUUj0sqZ+IrTepfzb2qKKeU0koRPwfU0de4m8txUllhzV58rHcVD
-         p+AU8vMVOdefcjxtH+iRA3W4CG6/XXiQ3a2jG5SNH585qxa35MBMZ5O8U7Wt7Y0BFJ
-         4GDCTXheHD02g==
-Message-ID: <9b3292b65d3c63c50e671c47ed90304c4a8d1af9.camel@kernel.org>
-Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
- becomes writeable
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Date:   Wed, 26 Jul 2023 06:26:23 -0400
-In-Reply-To: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-         <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
-         <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 26 Jul 2023 06:27:02 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2099.outbound.protection.outlook.com [40.107.237.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24EC2D55;
+        Wed, 26 Jul 2023 03:26:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EGXpoJNozKc3wHroN4Yt4imEEpnBAr2ZdRN7y5T0mOn4bkqFXMnTt31hHa75DwNcqI3uaYAJcGfJHY4CSNqhPCDL62TSAeqPqKzg8ybelfqGRCrqrupOlXZM1GK/pU3RDTJaSJAciQNp07seuS+jkb1erFMSfM/ujsZ/K+gcKsR5q9n2ROTh5cU5BxiQfveQFK15W6ivF1W2PC3/+DsBUfAmXbuGCFIGnfqN3qKboGH7KOEv9Wef4L8UAF7GNCNZbjd9FlQjKiiDXaefkw9IFCRJVYNzqOYzIDwQ+pwRKWs4WPdnkoJdotjImV6Xi95li0NDKs2VH+GYfRjWhbPxKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MklsHz+uxtFZ29xJulffUBccpDGQf+pEVq9CnDtpf1E=;
+ b=QZZC2iB7z5PVll+XBDNzRRRXv37b2g6yQndg6PT0FZUSZjRkV211x/G9rPJEekJEpqM1kdkoDLea8c49xIPmA+/4dsAfHsP7Lkt+ET45g5u5DYViqoJq6+713AVjNWrT26yNgoZh8+Rpc3ropM+rRKVH8nYsn713f3aIyPsVmEqu3O+LA95wknSPTmTh5oS0HBoL/z9qaXeo7vpjfzcAvMGFyGvDy9GB4R7IP5lZoC/GD+PQSTUiKI+f2ckTQ8u5aWmzei+/t+SXMC/V04UeloUrY56I/jzjOpaQamsrjKQpwc81Ayz1yM/8ti8ZhO2vPDMn6O2azphFOqqGJxuJGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MklsHz+uxtFZ29xJulffUBccpDGQf+pEVq9CnDtpf1E=;
+ b=Bg3dNAYph6XNRWefI3Jhkv8ah2Cm4aJApoRR9ix1jDDNDG+i2R2ku7LPCY8fOMd6y6L6ad3DLqiJZ6qaO8nfnGxzoEClh/PusRs6HeUhb0DvuNa5gYmgwSIXmc3GFKeG2PSfsXsqDhv95keLBjOjrZhSeLjz4J7P74kEkCWyVZA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH0PR13MB5715.namprd13.prod.outlook.com (2603:10b6:510:116::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Wed, 26 Jul
+ 2023 10:26:47 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
+ 10:26:47 +0000
+Date:   Wed, 26 Jul 2023 12:26:35 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, alexandre.torgue@foss.st.com,
+        vkoul@kernel.org, jic23@kernel.org, olivier.moysan@foss.st.com,
+        arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+        fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
+        ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
+        richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 07/11] bus: rifsc: introduce RIFSC firewall controller
+ driver
+Message-ID: <ZMD027pTNT/HCLe6@corigine.com>
+References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
+ <20230725164104.273965-8-gatien.chevallier@foss.st.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725164104.273965-8-gatien.chevallier@foss.st.com>
+X-ClientProxiedBy: AS4P195CA0026.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d6::12) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB5715:EE_
+X-MS-Office365-Filtering-Correlation-Id: bff1a428-97ec-4c14-3399-08db8dc2d0b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ldslQXRsadsNF9mXMtWXa0XoLzDa/T8OeTN/NKK4htjuQE3FNbUusg/coG8XXhq+NiquDGjzOfMtpaClOO5Q2MyFxxVMpT2WTr/Tl/PH3Of8E5rg6szJvPa0n/irg4mXeG23jRe++3asCiKdG1jA++MBOAU122gmdPLctjzEkw4QSAen6KZ7Fzo5ghqDwD3X97AexSHdFf81qsNNpDGFW2K1XS/HEWVD0Z37mN7mjuxTywRbZYjapsaS3h9sJ5CZqVzLcUQnaVZofo/cxIZx9oP+J7cYbh5KSZ36R29oTJr6Iehhw8mrh5si/X1/GaF+ExfbyrAcY5CAQUV1SP9DH26TI3Qfr0J0zP2t/WlHBvojnDPdi1DbNLOjc8mpSVX/5zv92WAuVDrkR9xavvIkPXbUU57zo04/hr7Pp6+G/av5OJNqsI+7YzkdaC1VOhYw3khr7+mVmV+zN31NpqKNOJbiF50lNuZ2916TEQn4UfqF1k4bovitPp3Tt5rh36JI8eBRbOoHSiCv7sP0JwE8x8t56uj5VMwddHPB4eHW/lQtJfxzlgfJlz3RbDOvrWaAxJXq/dgIwQhqSjYLjEneXvhpi/2u88wB9oCty8eLvHY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(396003)(136003)(39840400004)(366004)(451199021)(6486002)(38100700002)(86362001)(478600001)(6666004)(186003)(66946007)(66476007)(4326008)(66556008)(6916009)(316002)(6512007)(7416002)(41300700001)(83380400001)(2616005)(2906002)(36756003)(8936002)(8676002)(7406005)(44832011)(6506007)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RAsdspnlCm/JbJqmW/9jN0IoIsOvJq30ndlhtQxfJSJYooaA/YHpgmmjzpxj?=
+ =?us-ascii?Q?SmMzHlZEgv794jdoBb4nUK665yGLcizEZLfb5Ry4TlnAV3JJZddh4e200KzI?=
+ =?us-ascii?Q?WJtScutYtIZH7TOaVM+yOIYfnl81Z2mpQ3zwPg4E9jrSXx/O2jp9G6NFLGzW?=
+ =?us-ascii?Q?JomBeQfd6uM/7CgCAPj1g83TDpShT7nEx6BmyPHdGovmqy7R5mq2aR3oMeuA?=
+ =?us-ascii?Q?/Ey8A7WG7ZwYf+k7WZW752VW26GKIXydCykRQnP3eGYXk971lpFjU8+8Fyik?=
+ =?us-ascii?Q?svuy98uW8AV4sJrBn+3IYyDRDwD4jyl6GkfeoP9FSS9IYfsPrF8oipHfyHLY?=
+ =?us-ascii?Q?3bk63K1gSVfg0o2DHXzob3nEvj/Xnr6v/Cv+HPsJHmgZSLcZqbRhxUQYt47+?=
+ =?us-ascii?Q?l3Lby6U1Dc4kvS+NAP+RfmLmU+Kc1l/tSf6Tj2ABbgboED0s5da0HGg/3o6W?=
+ =?us-ascii?Q?l91SQWv8cWBR3IcPrIhGBkX4dXMc5LToBZRFrf8CXMSOhQ+BaqYDS4f+MrcD?=
+ =?us-ascii?Q?May0lhNGutuhtpzc42gRuc7MT/T5AeXwUdAUAP87H1hcl8V84M9CGYOA0QLs?=
+ =?us-ascii?Q?+dziZf6q7RbreaqnV9uFcCxaQPysFqZg2G/tl/S8kyCX1mWBUssyvtVY8p8I?=
+ =?us-ascii?Q?GJNEyvR1rmc10YdkXkHxpbcwPSEmdbXg4E44Nfd6mcbqEOgnq6qO21ZkxAH5?=
+ =?us-ascii?Q?O8cvrOKf0yjAh8BBMxdJA5CNuu3vvpyCtSUQv6Z9XA9LIey0DazhkL1K7OZG?=
+ =?us-ascii?Q?xOPWyLoKe4wSd+4mK4v+PhvgJ3aA+qfPEjq53XTmsNe1O0wpQmrQ9Tn7xncj?=
+ =?us-ascii?Q?HqHdy8DTKQoZQ4kzJ+WR2hv8cYRMj7zDpMgTDjgdozdzyV3Meb/kfgogw/kx?=
+ =?us-ascii?Q?SsYQieZAKIPFGRW1m5zGT+Wj7yCyk7outfHIyaF12spjBqHYfzozuVCkIvAd?=
+ =?us-ascii?Q?pu5hItzHjrNFf1oeCh09zNt8TnaSX24pHh8XyhaS+MygWKSN84Ao/R4hvweu?=
+ =?us-ascii?Q?fNs7lDkMXRXd56+ChzqHtbQRVExwOrtkIfvnMKMeQ/hVhrs6dliVHlI1TQ7X?=
+ =?us-ascii?Q?B22mDTmLysGbrYQIHBY5uLsaGNlQSb845ZlyInXbP1xFf+O0RERFWIxUc6Hl?=
+ =?us-ascii?Q?a4P2PUPLsqFfj+gusyzMgdFjpHuWqHr3JaS0ipcPZnBT5vSKgrQKaAKc1QMb?=
+ =?us-ascii?Q?8fdLbf9XANVNDFjw5pR/uFDhoNeGwlbVqqgevG0Vns9fuaXeLJ4Y5CsNn1Xn?=
+ =?us-ascii?Q?NrYBLGlRH4KuYVF7N0Rpikwp8Fw5cJFWv68oTTIUwn7uhQBuEtMX//LAObrl?=
+ =?us-ascii?Q?InCpYmG3L2af8Bg/IhXyKYMkB/wnPrO1hP1NIoA0o2kKMKEPMcKGiQQAl+S/?=
+ =?us-ascii?Q?0/zvhZol9vIuG6Eu6YQulQN8m00AWhouW6wh2ZN0v7pT6fIvuqwHeGoJkimU?=
+ =?us-ascii?Q?YLJFfs2kio2k9RW5DniVR59dr1gnJNKx14UtorH4lBi2pIzPLhjoMBlX6R3N?=
+ =?us-ascii?Q?md0ELR1Iz5wYkEvLsniClgWmUUOTPKSD+HhrKZnszFZ5yBbREL81ajtM5usL?=
+ =?us-ascii?Q?K5ltWFrruZO1/CQAav3a9xGpW+ns8D5LNpUm2qWqgQxYTYGN6Km/lv2Oxn7b?=
+ =?us-ascii?Q?GusR9GuW9zjv+zm5p9qG/AbfaNWrg+UZM+gAA7owTKw/m4IK44wNveqZJcfx?=
+ =?us-ascii?Q?i/I8gw=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bff1a428-97ec-4c14-3399-08db8dc2d0b9
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 10:26:46.9973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: USXdBIeNWBYBXnNSOtb+MSOw98vbOPlPLxJ462/24lstZv01xXVMm44GYxy3KvqRGltWHGOKW95LLkvl9SUBT09dosan4dPftxDjRfTXwM4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5715
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-07-25 at 18:39 -0700, Hugh Dickins wrote:
-> On Tue, 25 Jul 2023, Jeff Layton wrote:
->=20
-> > Most filesystems that use the pagecache will update the mtime, ctime,
-> > and change attribute when a page becomes writeable. Add a page_mkwrite
-> > operation for tmpfs and just use it to bump the mtime, ctime and change
-> > attribute.
-> >=20
-> > This fixes xfstest generic/080 on tmpfs.
->=20
-> Huh.  I didn't notice when this one crept into the multigrain series.
->=20
-> I'm inclined to NAK this patch: at the very least, it does not belong
-> in the series, but should be discussed separately.
->=20
-> Yes, tmpfs does not and never has used page_mkwrite, and gains some
-> performance advantage from that.  Nobody has ever asked for this
-> change before, or not that I recall.
->=20
-> Please drop it from the series: and if you feel strongly, or know
-> strong reasons why tmpfs suddenly needs to use page_mkwrite now,
-> please argue them separately.  To pass generic/080 is not enough.
->=20
-> Thanks,
-> Hugh
->=20
+On Tue, Jul 25, 2023 at 06:41:00PM +0200, Gatien Chevallier wrote:
 
-Dropped.
+...
 
-This was just something I noticed while testing this series. It stood
-out since I was particularly watching for timestamp-related test
-failures. I don't feel terribly strongly about it.
+> diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
 
-Thanks!
+...
 
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  mm/shmem.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >=20
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index b154af49d2df..654d9a585820 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *v=
-mf)
-> >  	return ret;
-> >  }
-> > =20
-> > +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
-> > +{
-> > +	struct vm_area_struct *vma =3D vmf->vma;
-> > +	struct inode *inode =3D file_inode(vma->vm_file);
-> > +
-> > +	file_update_time(vma->vm_file);
-> > +	inode_inc_iversion(inode);
-> > +	return 0;
-> > +}
-> > +
-> >  unsigned long shmem_get_unmapped_area(struct file *file,
-> >  				      unsigned long uaddr, unsigned long len,
-> >  				      unsigned long pgoff, unsigned long flags)
-> > @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops =
-=3D {
-> > =20
-> >  static const struct vm_operations_struct shmem_vm_ops =3D {
-> >  	.fault		=3D shmem_fault,
-> > +	.page_mkwrite	=3D shmem_page_mkwrite,
-> >  	.map_pages	=3D filemap_map_pages,
-> >  #ifdef CONFIG_NUMA
-> >  	.set_policy     =3D shmem_set_policy,
-> > @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm=
-_ops =3D {
-> > =20
-> >  static const struct vm_operations_struct shmem_anon_vm_ops =3D {
-> >  	.fault		=3D shmem_fault,
-> > +	.page_mkwrite	=3D shmem_page_mkwrite,
-> >  	.map_pages	=3D filemap_map_pages,
-> >  #ifdef CONFIG_NUMA
-> >  	.set_policy     =3D shmem_set_policy,
-> >=20
-> > --=20
-> > 2.41.0
+> +static int stm32_rif_acquire_semaphore(struct stm32_firewall_controller *stm32_firewall_controller,
+> +				       int id)
+> +{
+> +	void __iomem *addr = stm32_firewall_controller->mmio + RIFSC_RISC_PER0_SEMCR + 0x8 * id;
+> +
+> +	__set_bit(SEMCR_MUTEX, addr);
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Hi Gatien,
+
+Sparse seem a bit unhappy about this.
+
+ .../stm32_rifsc.c:83:9: warning: cast removes address space '__iomem' of expression
+ .../stm32_rifsc.c:83:9: warning: incorrect type in argument 2 (different address spaces)
+ .../stm32_rifsc.c:83:9:    expected unsigned long volatile *addr
+ .../stm32_rifsc.c:83:9:    got void [noderef] __iomem *addr
+ .../stm32_rifsc.c:83:9: warning: incorrect type in argument 2 (different address spaces)
+ .../stm32_rifsc.c:83:9:    expected unsigned long volatile *addr
+ .../stm32_rifsc.c:83:9:    got void [noderef] __iomem *addr
+
+But it's not immediately apparent to me what a good solution is.
+
+> +
+> +	/* Check that CID1 has the semaphore */
+> +	if (stm32_rifsc_is_semaphore_available(addr) ||
+> +	    FIELD_GET(RIFSC_RISC_SCID_MASK, readl(addr)) != RIF_CID1)
+> +		return -EACCES;
+> +
+> +	return 0;
+> +}
+
+...
