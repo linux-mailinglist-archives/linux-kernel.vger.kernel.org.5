@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21CD763997
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F276399B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbjGZOwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S233962AbjGZOxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233787AbjGZOwE (ORCPT
+        with ESMTP id S233896AbjGZOxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:52:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B9A19A0;
-        Wed, 26 Jul 2023 07:52:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04D4761B0C;
-        Wed, 26 Jul 2023 14:52:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C71C433C8;
-        Wed, 26 Jul 2023 14:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690383122;
-        bh=N9g1QYtpyOgI+H7opfB2/tLnw3a9OupGoURiO5eO3Y0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gdxMUltmt2ZLor+KpZOvC2SGPPePfuELcTwJHTfuehuWYxOGR5ao7UX3GzhjLRM+B
-         yuWDbyaMy7WPI5qT5kQl+QV+cZFMOPwWmb9Tq23/0Fg7OgUbM5u0cQ0FYx0VPk6Dha
-         ciBI0RNWA5z5xp6Y5D1j8MLRKmIcW3I0m+7OONKjet/NH25L0qdbC7QC41EPXjYkmS
-         PaLt9/NKC8HFZAO21zAlATHeKqx/J+J3asubiPMTey+VlAU5VO7KMoWC5rVR0lmnvM
-         lEs2H3CfGiQH4fU1P1BPL9dgNt4VRt9gxaSoQBnSlbyGSlNyAQAMyf+t5mbIskFllW
-         ptGqpKOQpxPxg==
-Date:   Wed, 26 Jul 2023 16:51:58 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     carlos.song@nxp.com
-Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, xiaoning.wang@nxp.com,
-        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: imx-lpi2c: directly return ISR when detect a NACK
-Message-ID: <20230726145158.xhn2c7uzs6xsrguf@intel.intel>
-References: <20230726092350.3432837-1-carlos.song@nxp.com>
+        Wed, 26 Jul 2023 10:53:30 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C181FDD;
+        Wed, 26 Jul 2023 07:53:27 -0700 (PDT)
+X-QQ-mid: bizesmtp81t1690383196tg3gh1y1
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 26 Jul 2023 22:53:15 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: CR3LFp2JE4lR8uPfZDf/0uFir0EsUHKoIwJEyr/UBQkcQtyYyGJy+e/6T2bhl
+        ZIJRDpqjWmsEvMhs7TxXstjU/eRcQx+Luc8vn+wo2GlERyOOmhZlkyrA7rCWWu3ysV3Hh5I
+        UU8ha4Ud4zqLREeTs0H1/xM7MXjt6HsVs81LVJLtY2KyZHbiem9ohokvXd/i211/VBPrP9F
+        +OdRuATSNtWxecawtfJb6H179BBcc4xS9yMDAQDYKlW6aCjNfYy7J7++YZUSNun3rXu7aI5
+        2gfuXzzAhcprbvxAynbM0fN2eK83hWvon+GU4BHxvbIQ6kWPxNEphh0+vHGVPyK7sIz4tGR
+        /Z3y5Wyeb+QS2e8Ly474VQH5TNpPj+voCBKRn8SmHq7xm11eXgdQb+pSzN3dXzON9v0UGrj
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13127243865508606372
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v2 3/7] selftests/nolibc: add extra configs customize support
+Date:   Wed, 26 Jul 2023 22:52:56 +0800
+Message-Id: <06d7db26484ca13e583ddad43af1bc0e4a99674f.1690373704.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690373704.git.falcon@tinylab.org>
+References: <cover.1690373704.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726092350.3432837-1-carlos.song@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,31 +53,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Carlos,
+The default DEFCONFIG_<ARCH> may not always work for all architectures,
+some architectures require to add extra kernel config options, this
+allows to add extra options in the defconfig target.
 
-On Wed, Jul 26, 2023 at 05:23:50PM +0800, carlos.song@nxp.com wrote:
-> From: Carlos Song <carlos.song@nxp.com>
-> 
-> A NACK flag in ISR means i2c bus error. In such condition,
-> there is no need to do read/write operation.
-> 
-> In this patch, i2c will check MSR_NDF, MSR_RDF and MSR_TDF
-> flag in turn, it's making mutually exclusive NACK/read/write.
-> So when a NACK is received(MSR_NDF), i2c will return ISR
-> directly and then stop i2c transfer.
+It allows to customize extra kernel config options via the common
+common.config and the architecture specific <ARCH>.config, at last
+trigger 'allnoconfig' to let them take effect with missing config
+options as disabled.
 
-Very good, thank you!
+The scripts/kconfig/merge_config.sh tool is used to merge the extra
+config files.
 
-> Fixes: a55fa9d0e42e ("i2c: imx-lpi2c: add low power i2c bus driver")
+Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
+Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-One last little question here. I want to know if this is actually
-fixing something or cleaning the exit path. What I mean is:
-can the device ever send an NDF along with an RDF or TDF?
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index f42adef87e12..9576f1a0a98d 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+ DEFCONFIG            = $(DEFCONFIG_$(ARCH))
+ 
++# extra kernel config files under configs/, include common + architecture specific
++EXTCONFIG            = common.config $(ARCH).config
++
+ # optional tests to run (default = all)
+ TEST =
+ 
+@@ -161,6 +164,8 @@ initramfs: nolibc-test
+ 
+ defconfig:
+ 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
++	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
++	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
+ 
+ kernel: initramfs
+ 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
+-- 
+2.25.1
 
-If not, this "Fixes:" tag should be removed and this patch can be
-considered a cleanup. Otherwise would be nice to know what
-failure are you fixing.
-
-I'm just trying to understand here :)
-
-Andi
