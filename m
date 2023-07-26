@@ -2,116 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E60763451
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28251763456
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbjGZKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
+        id S233726AbjGZKzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGZKyG (ORCPT
+        with ESMTP id S229500AbjGZKzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:54:06 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E829B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690368845; x=1721904845;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=tV4kWXpWkDACr62OMZFOfCAZMY0F61TPzIcnQPWNHhM=;
-  b=TpMqAWOATy8laiOYYhHEEh+6pybfv+ixBPdPqWQvpRG2eZY/vqh4yJGp
-   ZQVgPh0HrtShAFL9BJB13CQ3O2wmiSfsq/N4yumH7fnTnKwKXD7muUEOJ
-   fIwhkiEeFQ6cPatbWvo+prE4NPVVaWeNyVW15qPNzpbtlipP13eMLB4jC
-   Vu+5BK8S8rboU82zH0waLnkcD9ElnPCinNTtCHaUOv+KE/8ojWoTlMgsP
-   3Ip1ibM4+iffEk6f7cmmrVtkvhBapGkW3h7B4F93eDrjOtl2rUkma4Bgv
-   Y6EuO8Emki+AvZM6kmdaGfr6L43n4gvPEC1otBytyFAjMzixtH5Sj9ilR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="370657274"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="370657274"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 03:54:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="726495829"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="726495829"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2023 03:54:03 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOc96-0000ud-14;
-        Wed, 26 Jul 2023 10:53:43 +0000
-Date:   Wed, 26 Jul 2023 18:52:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yogesh Lal <quic_ylal@quicinc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Subject: drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect
- type in argument 2 (different address spaces)
-Message-ID: <202307261856.Pu27vw5Y-lkp@intel.com>
+        Wed, 26 Jul 2023 06:55:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4819B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690368902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tfHzE8mqv6PAsMGXTnVJTu2nJA1vsdj//P7y8dVLEok=;
+        b=OeFD0NDTPWwG2TiQoJlJYiqdT1bTRUM077b8k2so+7hyjwJNPZWOU0NOMvEYW7T8dnpHEW
+        9XSEtr/oX0NB3c1EBlwOQ3olrXCyMiRXMKIFQ7I1MEh5WGl1RL1L043qQMiqkL5q4b5+KW
+        MoGScOY/3G7O19IuKNK90ekdsq5RS0s=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-zqRPB0TCPcGqtfWD9YGOLw-1; Wed, 26 Jul 2023 06:55:01 -0400
+X-MC-Unique: zqRPB0TCPcGqtfWD9YGOLw-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fdf1798575so3337156e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:55:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690368899; x=1690973699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tfHzE8mqv6PAsMGXTnVJTu2nJA1vsdj//P7y8dVLEok=;
+        b=NFmMC/0/dKMS1WhPrBg7OeaWLPp1RmhV5hguWd5dE2RkZadVdF2Ub3GLQQ7g03XLKz
+         UgPFSdkUq+Rp3Q5/RUSOhIPIeNKWLiEv7fleYdYA/Yn6Iha9q5krlRwpzE0h12liQZgx
+         qbRTT8rHTkpq0dJ0k7kzAjnLIoeC7MPGoEnaU00tAgzHpNtZIcSNexCB45x/nbe4j2PK
+         j1xTqWTvL+NB5R2BxyBH5Xd5DzJSUAreyTC87tyVQZMZ5rcuMJF87mqBY3QdyqiHjfzR
+         0UNeH9FcQ1fFpI81Gtd9HEIfiMLmNNFGM2GG3ydX/BVp4DWa77qknuXDJFMoEEclIH54
+         Puag==
+X-Gm-Message-State: ABy/qLbH3byO6zdt8epP/yV4Jwaa6rsC1mxlzbK2HLTeJGvnzSVylFMY
+        dfoeEoUNIgNIx8ckpOl7+fI72BIwLliY5hS2mbQbVIgxV+EFqk1C4PDr7rgpfh9k/mcRKEF2k4B
+        ymtp2pF5qMLgpaSUDomrTpzAdHxhrr2XDd09gbGnOs43npa5A5pGEn/xFMJbOzBNAZZbX5A4gJY
+        JSADx94PQ=
+X-Received: by 2002:a05:6512:34cd:b0:4fb:9d61:db44 with SMTP id w13-20020a05651234cd00b004fb9d61db44mr1036699lfr.12.1690368899232;
+        Wed, 26 Jul 2023 03:54:59 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG4M6oiarh0Xm/7HopC7xRqk6r+6luRSOyTY/5/GDWP27gAFA5v2BnpBh3YFnDiAKxMpFWZ9A==
+X-Received: by 2002:a05:6512:34cd:b0:4fb:9d61:db44 with SMTP id w13-20020a05651234cd00b004fb9d61db44mr1036676lfr.12.1690368898825;
+        Wed, 26 Jul 2023 03:54:58 -0700 (PDT)
+Received: from minerva.home (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n7-20020adffe07000000b003176c6e87b1sm4894703wrr.81.2023.07.26.03.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 03:54:58 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v5 1/2] drm/ssd130x: Inline the ssd130x_buf_{alloc,free}() function helpers
+Date:   Wed, 26 Jul 2023 12:54:27 +0200
+Message-ID: <20230726105433.389740-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
-commit: a376c10d45a8e6ee5ea55791193f90625b35e156 remoteproc: qcom: pas: Adjust the phys addr wrt the mem region
-date:   5 months ago
-config: arm64-randconfig-r093-20230726 (https://download.01.org/0day-ci/archive/20230726/202307261856.Pu27vw5Y-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230726/202307261856.Pu27vw5Y-lkp@intel.com/reproduce)
+There is only a single caller for both helper functions and these don't do
+much other than allocate and free two buffers, so let's just inline them.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307261856.Pu27vw5Y-lkp@intel.com/
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem * @@     got void * @@
-   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     expected void const volatile [noderef] __iomem *
-   drivers/remoteproc/qcom_q6v5_pas.c:123:9: sparse:     got void *
-   drivers/remoteproc/qcom_q6v5_pas.c:108:6: sparse: sparse: symbol 'adsp_segment_dump' was not declared. Should it be static?
-   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *mem_region @@     got void [noderef] __iomem * @@
-   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     expected void *mem_region
-   drivers/remoteproc/qcom_q6v5_pas.c:553:26: sparse:     got void [noderef] __iomem *
-   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *dtb_mem_region @@     got void [noderef] __iomem * @@
-   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     expected void *dtb_mem_region
-   drivers/remoteproc/qcom_q6v5_pas.c:575:30: sparse:     got void [noderef] __iomem *
+(no changes since v1)
 
-vim +123 drivers/remoteproc/qcom_q6v5_pas.c
+ drivers/gpu/drm/solomon/ssd130x.c | 55 +++++++++++--------------------
+ 1 file changed, 20 insertions(+), 35 deletions(-)
 
-   107	
-   108	void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
-   109			       void *dest, size_t offset, size_t size)
-   110	{
-   111		struct qcom_adsp *adsp = rproc->priv;
-   112		int total_offset;
-   113	
-   114		total_offset = segment->da + segment->offset + offset - adsp->mem_phys;
-   115		if (total_offset < 0 || total_offset + size > adsp->mem_size) {
-   116			dev_err(adsp->dev,
-   117				"invalid copy request for segment %pad with offset %zu and size %zu)\n",
-   118				&segment->da, offset, size);
-   119			memset(dest, 0xff, size);
-   120			return;
-   121		}
-   122	
- > 123		memcpy_fromio(dest, adsp->mem_region + total_offset, size);
-   124	}
-   125	
-
+diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
+index b4c376962629..51472a184ef9 100644
+--- a/drivers/gpu/drm/solomon/ssd130x.c
++++ b/drivers/gpu/drm/solomon/ssd130x.c
+@@ -146,38 +146,6 @@ static inline struct ssd130x_device *drm_to_ssd130x(struct drm_device *drm)
+ 	return container_of(drm, struct ssd130x_device, drm);
+ }
+ 
+-static int ssd130x_buf_alloc(struct ssd130x_device *ssd130x)
+-{
+-	unsigned int page_height = ssd130x->device_info->page_height;
+-	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
+-	const struct drm_format_info *fi;
+-	unsigned int pitch;
+-
+-	fi = drm_format_info(DRM_FORMAT_R1);
+-	if (!fi)
+-		return -EINVAL;
+-
+-	pitch = drm_format_info_min_pitch(fi, 0, ssd130x->width);
+-
+-	ssd130x->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
+-	if (!ssd130x->buffer)
+-		return -ENOMEM;
+-
+-	ssd130x->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
+-	if (!ssd130x->data_array) {
+-		kfree(ssd130x->buffer);
+-		return -ENOMEM;
+-	}
+-
+-	return 0;
+-}
+-
+-static void ssd130x_buf_free(struct ssd130x_device *ssd130x)
+-{
+-	kfree(ssd130x->data_array);
+-	kfree(ssd130x->buffer);
+-}
+-
+ /*
+  * Helper to write data (SSD130X_DATA) to the device.
+  */
+@@ -709,6 +677,10 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+ {
+ 	struct drm_device *drm = encoder->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
++	unsigned int page_height = ssd130x->device_info->page_height;
++	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
++	const struct drm_format_info *fi;
++	unsigned int pitch;
+ 	int ret;
+ 
+ 	ret = ssd130x_power_on(ssd130x);
+@@ -719,9 +691,21 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+ 	if (ret)
+ 		goto power_off;
+ 
+-	ret = ssd130x_buf_alloc(ssd130x);
+-	if (ret)
++	fi = drm_format_info(DRM_FORMAT_R1);
++	if (!fi)
++		goto power_off;
++
++	pitch = drm_format_info_min_pitch(fi, 0, ssd130x->width);
++
++	ssd130x->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
++	if (!ssd130x->buffer)
++		goto power_off;
++
++	ssd130x->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
++	if (!ssd130x->data_array) {
++		kfree(ssd130x->buffer);
+ 		goto power_off;
++	}
+ 
+ 	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_ON);
+ 
+@@ -744,7 +728,8 @@ static void ssd130x_encoder_helper_atomic_disable(struct drm_encoder *encoder,
+ 
+ 	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_OFF);
+ 
+-	ssd130x_buf_free(ssd130x);
++	kfree(ssd130x->data_array);
++	kfree(ssd130x->buffer);
+ 
+ 	ssd130x_power_off(ssd130x);
+ }
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
