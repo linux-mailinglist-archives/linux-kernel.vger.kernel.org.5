@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B768762B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A6B762B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjGZGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        id S231912AbjGZGLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGZGLF (ORCPT
+        with ESMTP id S231856AbjGZGLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:11:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F165AC0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:11:03 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qOXjP-00073w-Ss; Wed, 26 Jul 2023 08:10:43 +0200
-Message-ID: <09a2d767-d781-eba2-028f-a949f1128fbd@pengutronix.de>
-Date:   Wed, 26 Jul 2023 08:10:35 +0200
+        Wed, 26 Jul 2023 02:11:17 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94F910B;
+        Tue, 25 Jul 2023 23:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690351846; x=1690956646; i=efault@gmx.de;
+ bh=pmVD+3FXDOIySM8L/dNVyDU03+BJJU6WxydMHdkVqZ0=;
+ h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+ b=L9/WgD5qRZoyhQciRjHMRO9sSnxjcz5swVMd1/QFzRpD1eT/PDbsylHUr5lHL9FLA73259S
+ JsKWhan/cZNzMQxqrgg7n6uuU2BJdBFGbcPjfs8MTd90a5jz1WHezGnvQSmwdb02Sghwbsxh7
+ +IWcBnM3u9KG8hjk5agzYPeKU9CDCLcCJ9+XKfmMSSneEJsDQ1DlgULbpI1ZXsztJp/wRkdzR
+ Nz1tDf2TqCTOAuUsuKLpuSVYn+6tqbP+cpy56SiXaGEXpGlBl5mPZzhasP32vZ4hJ8ZTcipZ0
+ Oq1NZWOi6XqWYhSL2VbadnrwSub9ewwMZzZgu9kNUuiCsde1lsZA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from homer.fritz.box ([185.146.50.218]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhD6W-1pu8rn3JQI-00eJDn; Wed, 26
+ Jul 2023 08:10:45 +0200
+Message-ID: <e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de>
+Subject: Re: 'perf test sigtrap' failing on PREEMPT_RT_FULL
+From:   Mike Galbraith <efault@gmx.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-rt-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        ThomasGleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Wed, 26 Jul 2023 08:10:45 +0200
+In-Reply-To: <ZMAtZ2t43GXoF6tM@kernel.org>
+References: <ZMAtZ2t43GXoF6tM@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
-References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
- <20230725200606.5264b59c@kernel.org> <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
-Content-Language: en-US, de-DE
-From:   Johannes Zink <j.zink@pengutronix.de>
-In-Reply-To: <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tFomh51HarlLrgYqs7Ahj091uxhl/LdMRpz1QiGrQjsN/9ZogOx
+ erWuxuhIFuYrlbmka9NLGZg+1UsO5YoXPO/5Pos04fTfn3s3RghWEIZnISxYVPwql5CNb/c
+ MexrGU3SAkDAI7Qirt9Y7g6NySDaXFBAlLm1NNrs+y642B1d9km7Fej1gmZoZ4mh44shNdI
+ 86mk0PrwAYFbRTLAB17LA==
+UI-OutboundReport: notjunk:1;M01:P0:BqEQPilMj9A=;r6kvVaW4pGDCM5z55y/bkn7s5k7
+ SkCvS3t2AUokSHUomifXqYXRFdzvpbj0zBTTvC5mmQluq7Y7YiroJ0JgafkDMfg/BTqF4vLVs
+ 7wX7Lp5vBTlsstq+zpebgqKoez8sPo8fYaTNSr7T3NHApKijEilUqmBVqBIuuvLFo6hdjheMB
+ ldVfOgybGMswB3M1tVVIxot9I7jzskGZdb1NDzMSq8WtEa3BjVV0OqCHmjGV0UTi7AnLcMWwG
+ HfqdWjs+fbDgSMWQSpLqXgsK2OUjIQYQIb9aTwjlnZSwo3oxe3Fx01mKdkB/0b53YTEHxzGEb
+ mqqzXBVdugEKutBrYmjEa1pIIGQIXb7jqgPkVu3BLGXIcmRIaAN3V+yTrhjBkPjWojINd5xU4
+ nnnYzrhIYtT9EewTJPAnY/x75aaXZYypeOXu7zQ5JKAm1SvriN4BQTE5hf6s3pAFOjG8R/WPq
+ 7c+ZqKT0BjtoJkI92fgMaQObP6zz3wdOAO6UGv68ZaM58kLSk5mXsRqhqvnKvBKLcJ3K+C7Fx
+ p95WZjGWuhjvf6SN5sBsJ3aJAkIYQVyHYE+QPf2Dwxf9wwrscTETAFTXNP6C6zw3eKlpKni8/
+ k7dG2J9kT5slwEJf3iHt5JNjWLgVFgf2d0+O+zA4LyW1VD4ouXTZ8XTf3B3jkQxGJeX2F7S6/
+ JMvy/QKSN1aVRsvbvB3xWKT0ry4qITPnJAfJ3dEawGufrn7jXmeNsuDy9Qts9BnxJaoIZFmo5
+ DDZAXioZOprqS/Xmm9J8/vF8IYHdc1yZQMrczXBiMCPDoGhYYZWYjHgHb/7OIjkDzxBMnb8vR
+ n1MB9U9XDZaH0NntfSEoo0DsUy1VJ4xyvKtZ3KF11IOIS6Bq1lfDW5kxPhufC787pqtguhg/5
+ LN1pa2dvHAc28gdoQroTIAcrvonjPxitCW0PIVfaE8O6LfEg1ruWQSy//6hLnzYcN6GM7iRSv
+ AD91QQcNF5Glx7qfvltHaFiMB8s=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+On Tue, 2023-07-25 at 17:15 -0300, Arnaldo Carvalho de Melo wrote:
+> Hi Marco, Peter,
+>
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0I got a report that 'per=
+f test sigtrap' test failed on a
+> PREEMPT_RT_FULL kernel, one that had up to:
+>
+> commit 97ba62b278674293762c3d91f724f1bb922f04e0
+> Author: Marco Elver <elver@google.com>
+> Date:=C2=A0=C2=A0 Thu Apr 8 12:36:01 2021 +0200
+>
+> =C2=A0=C2=A0=C2=A0 perf: Add support for SIGTRAP on perf events
+> ...
 
-On 7/26/23 05:22, Richard Cochran wrote:
-> On Tue, Jul 25, 2023 at 08:06:06PM -0700, Jakub Kicinski wrote:
-> 
->> any opinion on this one?
-> 
-> Yeah, I saw it, but I can't get excited about drivers trying to
-> correct delays.  I don't think this can be done automatically in a
-> reliable way, and so I expect that the few end users who are really
-> getting into the microseconds and nanoseconds will calibrate their
-> systems end to end, maybe even patching out this driver nonsense in
-> their kernels.
-> 
+> [=C2=A0=C2=A0 52.848925] BUG: scheduling while atomic: perf/6549/0x00000=
+002
 
-Thanks for your reading and commenting on my patch. As the commit message 
-elaborates, the Patch corrects for the MAC-internal delays (this is neither PHY 
-delays nor cable delays), that arise from the timestamps not being taken at the 
-packet egress, but at an internal point in the MAC. The compensation values are 
-read from internal registers of the hardware since these values depend on the 
-actual operational mode of the MAC and on the MII link. I have done extensive 
-testing, and as far as my results are concerned, this is reliable at least on 
-the i.MX8MP Hardware I can access for testing. I would actually like correct 
-this on other MACs too, but they are often poorly documented. I have to admit 
-that the DWMAC is one of the first hardwares I encountered with proper 
-documentation. The driver admittedly still has room for improvements - so here 
-we go...
+Had bf9ad37dc8a not been reverted due to insufficient beauty, you could
+trivially make the sigtrap test a happy camper (wart tested in tip-rt).
 
-Nevertheless, there is still PHY delays to be corrected for, but I need to 
-extend the PHY framework for querying the clause 45 registers to account for 
-the PHY delays (which are even a larger factor of). I plan to send another 
-series fixing this, but this still needs some cleanup being done.
+	-Mike
 
-Also on a side-note, "driver nonsense" sounds a bit harsh from someone always 
-insisting that one should not compensate for bad drivers in the userspace stack 
-and instead fixing driver and hardware issues in the kernel, don't you think?
+@@ -1829,6 +1869,9 @@ int send_sig_perf(void __user *addr, u32
+ 				     TRAP_PERF_FLAG_ASYNC :
+ 				     0;
 
-> Having said that, I won't stand in the way of such driver stuff.
-> After all, who cares about a few microseconds time error one way or
-> the other?
++	if (force_sig_delayed(&info, current))
++		return 0;
++
+ 	return send_sig_info(info.si_signo, &info, current);
+ }
 
-I do, and so does my customer. If you want to reach sub-microsecond accuracy 
-with a linuxptp setup (which is absolutely feasible on COTS hardware), you have 
-to take these things into account. I did quite extensive tests, and measuring 
-the peer delay as precisely as possible is one of the key steps in getting 
-offsets down between physical nodes. As I use the PHCs to recover clocks with 
-as low phase offset as possible, the peer delays matter, as they add phase 
-error. At the moment, this patch reduces the offset of approx 150ns to <50ns in 
-a real world application, which is not so bad for a few lines of code, i guess...
 
-I don't want to kick off a lengthy discussion here (especially since Jakub 
-already picked the patch to next), but maybe this mail can help for 
-clarification in the future, when the next poor soul does work on the hwtstamps 
-in the dwmac.
-
-Thanks, also for keeping linuxptp going,
-Johannes
-
-> 
-> Thanks,
-> Richard
-> 
-> 
-
--- 
-Pengutronix e.K.                | Johannes Zink                  |
-Steuerwalder Str. 21            | https://www.pengutronix.de/    |
-31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
-Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
