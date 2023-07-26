@@ -2,153 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD753762A8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033EF762A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbjGZFEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 01:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S231405AbjGZFEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 01:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjGZFD5 (ORCPT
+        with ESMTP id S231484AbjGZFED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 01:03:57 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF591BD1;
-        Tue, 25 Jul 2023 22:03:56 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q3oTXd028986;
-        Wed, 26 Jul 2023 05:03:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=twyDZLScuqcGg4FhKhnDQK0Vk+FnacqmKE1iB5S0/2c=;
- b=F5tn/tF5kmwgTpsO6G2QxjEFHjbw/uGl+wLfutJLhDG7jveGtV/VKMHaWfSRNV7935m9
- gZr5vX7xm9raZiUBNfY64g4ENUDaFQcCUWr+fiMcoEiPvWEHL3/k8okZPhQHSlz4WUJm
- uMHggE/4xRr1AyGfMBfZ2WgB1YLccawq8hYLlagJrFXpUUcchTWKFUE3NlyqZtwMZbvE
- Piqmxb8UsUCItNYHMK6IIlcB6LfDNh53d4EK02MVjTMDDlNkVq0FDomrqpOXxEtFNpiw
- XTUbKw9HH/sJ/CaDR/aAMy4f9z0auapw/J5Mht2NUvJt6JHFi7gEs0rGOnOxQADFcavW NA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2gp1sfa7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 05:03:52 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36Q53oBN005206
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 05:03:50 GMT
-Received: from [10.201.206.212] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
- 2023 22:03:45 -0700
-Message-ID: <c1903d09-f307-8e80-0482-2040c7af7a2c@quicinc.com>
-Date:   Wed, 26 Jul 2023 10:33:41 +0530
+        Wed, 26 Jul 2023 01:04:03 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9308E1FC2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:04:02 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbd03cb7c1so338335ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 22:04:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690347842; x=1690952642;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EmNxf7H0BywXLtYlbyzZ0cohOxG3KN5qwoqWHBea/DE=;
+        b=i8e5D386JPazAaCSpTbvVvQTdkpO/Ce+xooq5vf1A56euX8LkYV7aNAeJur95KwXHH
+         ycurDepI7RCrgNILIlWlKTX7cyLGIWzf4CfyzwHQWGa8r30kjLHPbjR9KGdkvoeh1xvl
+         sFpkufDwIYceHjLLxu80f6mvHGi7o4Hh+AyhE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690347842; x=1690952642;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EmNxf7H0BywXLtYlbyzZ0cohOxG3KN5qwoqWHBea/DE=;
+        b=kby2PyvctWroQC9YCgSSjYW4s1ykayVOJMGTxSHZ/c1mkk4I2RWNsiuHvKwAgufpWk
+         QgC3fj8ehQKhykYIdmAaP8YW4TPlk1dcSncjLyAxPv5gLXNJmaLxmVPCOG5kpOBrCJOZ
+         +LwMpH1QJuq8TYA9GX8HfPe+cWH+8qcbAPIKA0BOlWFi0xAfkI61HQZoGDm+ckKLe6yR
+         pbVCPkx5a3q0geP/2grkog8OUjX7RSFpG284uSLh91MDdOyNLhe2GG/ooxESll5u8KV+
+         mPNF2WXVWZtaIA4Az7ORLAgB//kCU47MVQT28JDHR8fiP9sYsSq2HMs6ymDqAd3HwVrT
+         DZIw==
+X-Gm-Message-State: ABy/qLY8ya/xIoqFNHlRCiOp4BP9TXZqjM/cnn9Vnn3z3vyMiX0MWu3r
+        L3egfa0GowriPsByVUN4R9Zixw==
+X-Google-Smtp-Source: APBJJlHCsyMGDfR/HSI4jTFBKt05j4ib5fipfp9CPEPiAJolZuOa93xPQomZb9+LBBoHaiuhXeFkKA==
+X-Received: by 2002:a17:903:120d:b0:1b7:c0b3:b17d with SMTP id l13-20020a170903120d00b001b7c0b3b17dmr1003936plh.5.1690347841574;
+        Tue, 25 Jul 2023 22:04:01 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p1-20020a1709028a8100b001b3ce619e2esm11893529plo.179.2023.07.25.22.04.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 22:04:01 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 22:04:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     justinstitt@google.com
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
+Message-ID: <202307252157.90B1933@keescook>
+References: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: document AL02-Cx and AL03-C2
- boards based on IPQ9574 family
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230720084534.6461-1-quic_sridsn@quicinc.com>
- <20230720084534.6461-2-quic_sridsn@quicinc.com>
- <87c3a3db-d172-bc98-cf83-89b874c9fee7@linaro.org>
- <9e401641-1334-c0bc-c49a-481a8a9af2de@linaro.org>
-Content-Language: en-US
-From:   Sridharan S N <quic_sridsn@quicinc.com>
-In-Reply-To: <9e401641-1334-c0bc-c49a-481a8a9af2de@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3fxnL8_Nr9u4J7ucZ9i_RXs-KoAjGJNn
-X-Proofpoint-ORIG-GUID: 3fxnL8_Nr9u4J7ucZ9i_RXs-KoAjGJNn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0
- malwarescore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307260043
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 25, 2023 at 10:08:38PM +0000, justinstitt@google.com wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1].
+> 
+> A suitable replacement is `strscpy` [2].
 
-On 7/20/2023 3:18 PM, Konrad Dybcio wrote:
-> On 20.07.2023 10:49, Krzysztof Kozlowski wrote:
->> On 20/07/2023 10:45, Sridharan S N wrote:
->>> Document the below listed (Reference Design Platform) RDP boards based on IPQ9574
->>> family of SoCs.
->>>
->>> AL02-C3  - rdp437
->>> AL02-C7  - rdp433-mht-phy
->>> AL02-C10 - rdp433-mht-switch
->>> AL02-C11 - rdp467
->>> AL02-C12 - rdp455
->>> AL02-C13 - rdp459
->>> AL02-C15 - rdp457
->>> AL02-C16 - rdp456
->>> AL02-C17 - rdp469
->>> AL02-C19 - rdp461
->>> AL03-C2  - rdp458
->>>
->>> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
->>> ---
->>>   .../devicetree/bindings/arm/qcom.yaml         | 20 +++++++++++++++++++
->>>   1 file changed, 20 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
->>> index dd66fd872c31..d992261da691 100644
->>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
->>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
->>> @@ -89,10 +89,20 @@ description: |
->>>           adp
->>>           ap-al01-c1
->>>           ap-al02-c2
->>> +        ap-al02-c3
->>>           ap-al02-c6
->>>           ap-al02-c7
->>>           ap-al02-c8
->>>           ap-al02-c9
->>> +        ap-al02-c10
->>> +        ap-al02-c11
->>> +        ap-al02-c12
->>> +        ap-al02-c13
->>> +        ap-al02-c15
->>> +        ap-al02-c16
->>> +        ap-al02-c17
->>> +        ap-al02-c19
->> Why? I asked once, but there was no feedback from Qualcomm.
->>
->> Why do we need to do this? What's the point?
-> Another question would be, whether these boards are just one-off test
-> prototypes of which there exist like 5-10 units, or are they actually
-> going to be supported and useful.
->
-> If it's the former, I don't think it makes sense to keep the device
-> trees upstream.
->
-> Konrad
+For future patches like this, can you include the rationale for _why_
+strscpy() is suitable? (i.e. how did you check that it doesn't need
+zero-padding, the dest is expected to always be NUL-terminated, etc.)
 
-These are all not test rdps and each rdps has its own configurations. 
-IPQ9574 has four pcie instances and one QDSP processor. Not all rdps use 
-all of the interfaces and it will vary for each rdp. In next version , 
-will post with each rdp's configuration explicitly
+I had fun looking through this code -- it's a bit of a maze! I can see
+in the initializer for "route" (soc_tplg_dapm_graph_elems_load()), that
+all the strings pointed at from "elem" are being checked for NUL-termination.
 
-Thanks,
+That this code is doing an in-place rewrite of the string is pretty
+unusual (i.e. specifically casting around the "const"), but it looks
+quite intentional. :)
 
-Sridharan
+> There are some hopes that someday the `strncpy` api could be ripped out
 
+This can be rephrased, perhaps, as:
+
+There is a goal to eliminate the `strncpy` API in the kernel, as its
+use is too ambiguous, instead moving to the unambiguous replacements
+(strscpy, strscpy_pad, strtomem, strtomem_pad, strlcpy) [1].
+
+> due to the vast number of suitable replacements (strscpy, strscpy_pad,
+> strtomem, strtomem_pad, strlcpy) [1].
+> 
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> ---
+^^^^ this triple-dash is going to cause some tooling to lose your S-o-b,
+as it indicates the end of the commit log.
+
+> 
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+
+But otherwise, looks good:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+> ---
+>  sound/soc/intel/avs/topology.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+> index cdb4ec500261..45d0eb2a8e71 100644
+> --- a/sound/soc/intel/avs/topology.c
+> +++ b/sound/soc/intel/avs/topology.c
+> @@ -1388,12 +1388,12 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
+>  		port = __ffs(mach->mach_params.i2s_link_mask);
+>  
+>  		snprintf(buf, len, route->source, port);
+> -		strncpy((char *)route->source, buf, len);
+> +		strscpy((char *)route->source, buf, len);
+>  		snprintf(buf, len, route->sink, port);
+> -		strncpy((char *)route->sink, buf, len);
+> +		strscpy((char *)route->sink, buf, len);
+>  		if (route->control) {
+>  			snprintf(buf, len, route->control, port);
+> -			strncpy((char *)route->control, buf, len);
+> +			strscpy((char *)route->control, buf, len);
+>  		}
+>  	}
+>  
+> 
+> ---
+> base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+> change-id: 20230725-sound-soc-intel-avs-remove-deprecated-strncpy-2bc41a5a5f81
+> 
+> Best regards,
+> -- 
+> Justin Stitt <justinstitt@google.com>
+> 
+
+-- 
+Kees Cook
