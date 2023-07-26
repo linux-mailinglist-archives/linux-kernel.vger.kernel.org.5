@@ -2,137 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D527762BF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEA9762BF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbjGZGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 02:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
+        id S231421AbjGZGyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGZGyI (ORCPT
+        with ESMTP id S229573AbjGZGya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 02:54:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5193C1FEC
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Jul 2023 23:54:07 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYPJ-0003UX-LV; Wed, 26 Jul 2023 08:54:01 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYPI-002AvY-M8; Wed, 26 Jul 2023 08:54:00 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qOYPI-007rbX-2s; Wed, 26 Jul 2023 08:54:00 +0200
-Date:   Wed, 26 Jul 2023 08:53:57 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 25/61] mmc: f-sdh30: Convert to platform remove
- callback returning void
-Message-ID: <20230726065357.afriboprvkup5kiw@pengutronix.de>
-References: <20230726040041.26267-1-frank.li@vivo.com>
- <20230726040041.26267-25-frank.li@vivo.com>
+        Wed, 26 Jul 2023 02:54:30 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BEB2132;
+        Tue, 25 Jul 2023 23:54:28 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6sDwY007939;
+        Wed, 26 Jul 2023 01:54:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690354453;
+        bh=FrEx/bOy1/gQCYi00Le6XUiLNro3I286bRzQgqiu9Ow=;
+        h=From:To:CC:Subject:Date;
+        b=KICg53Ni88yq3/DUil+WOL5Y/I+Oi9XZ8ylCdTk2/Uy5MixyqV2eljfiMqdgLA1mW
+         ReeMRKJt3enY5SLFelny3ylQvajqJCPQALgSsy3oSLuRwILOQzW8yVyzp3CZhAOew3
+         Wxe9eKZ8aP7peyMSkB8JGxgIC5d27oXclIZfFhNA=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36Q6sCvB048105
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 01:54:13 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 01:54:12 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 01:54:12 -0500
+Received: from uda0492258.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36Q6s8Td013490;
+        Wed, 26 Jul 2023 01:54:09 -0500
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <afd@ti.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v3 0/2] Add MAIN CPSW2G DT support for J721S2
+Date:   Wed, 26 Jul 2023 12:24:05 +0530
+Message-ID: <20230726065407.378455-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lybcthqmrubegsjn"
-Content-Disposition: inline
-In-Reply-To: <20230726040041.26267-25-frank.li@vivo.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---lybcthqmrubegsjn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series adds devicetree node for MAIN CPSW2G instance of CPSW
+Ethernet Switch on TI's J721S2 SoC. Also, a devicetree overlay is added
+in order to enable MAIN CPSW2G in RGMII-RXID mode using the GESI
+Expansion Board connected to the J7 Common-Processor-Board.
 
-On Wed, Jul 26, 2023 at 12:00:05PM +0800, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
->=20
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->=20
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/mmc/host/sdhci_f_sdh30.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/mmc/host/sdhci_f_sdh30.c b/drivers/mmc/host/sdhci_f_=
-sdh30.c
-> index b01ffb4d0973..840084ee72e6 100644
-> --- a/drivers/mmc/host/sdhci_f_sdh30.c
-> +++ b/drivers/mmc/host/sdhci_f_sdh30.c
-> @@ -206,7 +206,7 @@ static int sdhci_f_sdh30_probe(struct platform_device=
- *pdev)
->  	return ret;
->  }
-> =20
-> -static int sdhci_f_sdh30_remove(struct platform_device *pdev)
-> +static void sdhci_f_sdh30_remove(struct platform_device *pdev)
->  {
->  	struct sdhci_host *host =3D platform_get_drvdata(pdev);
->  	struct f_sdhost_priv *priv =3D sdhci_f_sdhost_priv(host);
-> @@ -216,8 +216,6 @@ static int sdhci_f_sdh30_remove(struct platform_devic=
-e *pdev)
->  	clk_disable_unprepare(priv->clk_iface);
-> =20
->  	sdhci_pltfm_unregister(pdev);
-> -
-> -	return 0;
->  }
+Regards,
+Siddharth.
 
-While looking in more detail into this series I noticed a problem in
-this driver. (The patch is fine, and so is my Ack.)
+---
+NOTE: This series is based on linux-next tagged next-20230725.
 
-The order of function calls in sdhci_f_sdh30_remove is wrong. It first
-reasserts the reset and disables clocks and only then unregisters the
-sdhci-host which should stay functional until sdhci_remove_host() (called
-by sdhci_pltfm_unregister()) completes.
+v2:
+https://lore.kernel.org/r/20230710094328.1359377-1-s-vadapalli@ti.com/
+Changes since v2:
+- Collect Reviewed-by tag from Ravi Gunasekaran <r-gunasekaran@ti.com>.
+- Rename main_cpsw_mdio_pins_default and rgmii1_pins_default to:
+  main_cpsw_mdio_default_pins and rgmii1_default_pins respectively.
+- Rename main-cpsw-mdio-pins-default and rgmii1-pins-default to:
+  main-cpsw-mdio-default-pins and rgmii1-default-pins respectively.
+- The above changes are performed to follow the updated json-schema
+  patch at:
+  https://lore.kernel.org/all/169021456020.3622493.10284534202541859578.robh@kernel.org/
+- Rebase series on next-20230725.
 
-Best regards
-Uwe
+v1:
+https://lore.kernel.org/r/20230529104913.560045-1-s-vadapalli@ti.com/
+Changes since v1:
+- Rebase series on next-20230710.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+RFC:
+https://lore.kernel.org/r/20230426105718.118806-1-s-vadapalli@ti.com/
+Changes since RFC:
+- Add GESI board product link in the device-tree overlay file.
 
---lybcthqmrubegsjn
-Content-Type: application/pgp-signature; name="signature.asc"
+Kishon Vijay Abraham I (2):
+  arm64: dts: ti: k3-j721s2-main: Add main CPSW2G devicetree node
+  arm64: dts: ti: k3-j721s2: Add overlay to enable main CPSW2G with GESI
 
------BEGIN PGP SIGNATURE-----
+ arch/arm64/boot/dts/ti/Makefile               |  2 +
+ .../dts/ti/k3-j721s2-evm-gesi-exp-board.dtso  | 85 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 69 +++++++++++++++
+ 3 files changed, 156 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTAwwQACgkQj4D7WH0S
-/k5/9Qf/ZCJznZ4ncxfHfX/h7tqjAeMzmN3IOzOka0ZL0Lgkvt2LSEufX5AEQ4d5
-yYJRYQUjkco7xvctkyGr2UavRU73z5RlLBVtfN2GU2QjSamh1/0E0F5goOAc7sdK
-Ge/34MlYEQwfdjJVmg/3VAA8bRQ2YfrcTOzZv5fcnTKHoROJzKOtWczNpFh4izy7
-88YEhX//WtIBU8iqlBngvQR+i5dOfPWCh2pLAdOJPFDWPA5ZlxXz6yGEY+b/Cfmv
-CyQe9dmzK9rtn701YYwA44AXWm/Hw9cYsAaiGQtBr2+4FVymfIavuOHlblSo6waX
-e+g/Mb9X5rMVyC6eaRp5lmWy8m820w==
-=DoOc
------END PGP SIGNATURE-----
+-- 
+2.34.1
 
---lybcthqmrubegsjn--
