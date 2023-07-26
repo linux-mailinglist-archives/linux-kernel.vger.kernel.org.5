@@ -2,57 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F907638FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803CD763900
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbjGZOYx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 10:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S234522AbjGZOZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbjGZOYv (ORCPT
+        with ESMTP id S233114AbjGZOZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:24:51 -0400
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B079E47;
-        Wed, 26 Jul 2023 07:24:49 -0700 (PDT)
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1bb701d39ddso515836fac.0;
-        Wed, 26 Jul 2023 07:24:49 -0700 (PDT)
+        Wed, 26 Jul 2023 10:25:04 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C59171E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:25:01 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583fe0f84a5so35465317b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690381501; x=1690986301;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mt8/YY3u8LjsBjr8d6/ke2ZW25YHueLUKLJjDJYMc8s=;
+        b=KwMaCkiB4xAqGBUh9OF2kV0ZTXZJ9t/BQNvELYTboh2nFXRCb/O6mzI5Rf4+JkOSUf
+         GbfKDvzjuzeoTYk+8UzFDnEFGCf4Xp/4j132VlBFiOap0dqwF0d+IWavL7GkLuWIPxaf
+         FtFh1NcigPTHGOQymzspNYZcGJWMeYjGrAKFBYQg3vkICZKAIWBqnifvNeqq77Udkh7Z
+         xGehHXpHV6lJVR2/PB6tUzMEDhiwA5lq38Ga3ndr8/43j3+UY7kRIeUxbAwefFFreB6b
+         OU07H0FnfDMXq+of8q/ygEkV9SZmVl7edMM6TzYoGxGd/1xqW6Xr5wUrtaTzZVCwe9dk
+         Dlpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690381488; x=1690986288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pEgmDiAe0tWX9GxWyAoDrChI5qTftMQ2f732dcdFKW0=;
-        b=eKFkvDp9HXTvzkykCCwC5tVwDmQEQDpsYDeLrzonnuhJfpf0yTRTaaSbRjU03H8ZEK
-         VcTHXRZ4YOP3Q2TsyeKlso/piZXNeM+8EXBazZ1vOXjC+oc3bvGyE8F7K2j8UGN2db49
-         NtxjNtFOiHnXW37vD9kbtDeeES4rS/fbdZxzd8zVvgAwm/WKHAFC/t1SaWaZEKcuqp0k
-         pAbdphrhqSl53WzQc24bVhbbnhS25NRKML3vh3X36fy9G8tf+YDEeguZNMcMc/yJB9YL
-         yWi52dx7txRpyIbAOINrfxgfdZmDJVQxvA0eaCukpXxeMerO8/ZAChfHjNUTCXOtlihc
-         1LNA==
-X-Gm-Message-State: ABy/qLYHVg+xG///0NSMuCRFjgeR/wDyV/UkD7aVEl/6yWR6fNmu2hza
-        jYxAAEQ95imD4xlMJAURqTb8AZbLp0LYzCH2vB4=
-X-Google-Smtp-Source: APBJJlHkrIccG4pncj994mgxhB/i/B+Kb8dr6cxjFPYMBiEgv54qUWOwC26ILRls/bH0WPEsKCuZGQjq6CWipXzNPIQ=
-X-Received: by 2002:a4a:d6d1:0:b0:569:a08a:d9c5 with SMTP id
- j17-20020a4ad6d1000000b00569a08ad9c5mr1761805oot.0.1690381488408; Wed, 26 Jul
- 2023 07:24:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230726123518.2361181-1-imammedo@redhat.com> <20230726123518.2361181-2-imammedo@redhat.com>
-In-Reply-To: <20230726123518.2361181-2-imammedo@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 Jul 2023 16:24:36 +0200
-Message-ID: <CAJZ5v0jM25BBLgapgUz=VWr6wzv9DME=OQN51ja11THSgW-+YA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] PCI: acpiphp:: use pci_assign_unassigned_bridge_resources()
- only if bus->self not NULL
-To:     Igor Mammedov <imammedo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
-        rafael@kernel.org, linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        d=1e100.net; s=20221208; t=1690381501; x=1690986301;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mt8/YY3u8LjsBjr8d6/ke2ZW25YHueLUKLJjDJYMc8s=;
+        b=WRAtpfnB7Ood0fpb80J3HwU/66kHJ7Y2aibAz0yQM9nQB+RuWOZYVQ9ZlzFN5qYVEK
+         BcOow5lplU+p5+5y4WEZNsfrp7RI2r5GWIjQQLsoW30q4Vg4AlD8IWhLKBwpSqc/6ox7
+         txHyzTBIQ/pOXWqugMBhUTD4QyFTFIaA7GsJuTU6s045vwDpfYkqpw79askYRa+K1gLs
+         fBDqNmITO4GnsY3JMs6XJyGOzaPFjvIVsk1n4nUyd4l7y1t0BJ9/efjk/TnfnXN0jD+t
+         qfb+W7wU1ezwKaw3mO9HBcTJLdcYmaiueQsStBAyZV2A/+ligfY+/J/wZkPdN0nwbwXi
+         s60w==
+X-Gm-Message-State: ABy/qLZe4fvs40gMv0Ub1i3zUYpCZk6XlJogYA5Cnv5xHUaDEDNeUk/N
+        pTmxyAqd5HdkgDbr+i/cLi30qUyy9q0=
+X-Google-Smtp-Source: APBJJlHpunM1lrfEfJpa6UtG2AaqQE17ubaKuYzputooU8ueGDVFO/y80053uMgFIUrJA+dTGv8yhoGEgv0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ac60:0:b0:576:de5f:95e1 with SMTP id
+ z32-20020a81ac60000000b00576de5f95e1mr20181ywj.1.1690381501073; Wed, 26 Jul
+ 2023 07:25:01 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 07:24:59 -0700
+In-Reply-To: <2f98a32c-bd3d-4890-b757-4d2f67a3b1a7@amd.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <110f1aa0-7fcd-1287-701a-89c2203f0ac2@amd.com>
+ <ZL6uMk/8UeuGj8CP@google.com> <2f98a32c-bd3d-4890-b757-4d2f67a3b1a7@amd.com>
+Message-ID: <ZMEsuyqHhp1DAVdR@google.com>
+Subject: Re: [RFC PATCH v11 00/29] KVM: guest_memfd() and per-page attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,108 +101,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 2:35 PM Igor Mammedov <imammedo@redhat.com> wrote:
->
-> Commit [1] switched acpiphp hotplug to use
->    pci_assign_unassigned_bridge_resources()
-> which depends on bridge being available, however in some cases
-> when acpiphp is in use, enable_slot() can get a slot without
-> bridge associated.
->   1. legitimate case of hotplug on root bus
->       (likely not exiting on real hw, but widely used in virt world)
->   2. broken firmware, that sends 'Bus check' events to non
->      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
->      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
->      without bridge assigned to it.
->
-> Issue is easy to reproduce with QEMU's 'pc' machine provides
-> PCI hotplug on hostbridge slots. to reproduce boot kernel at
-> commit [1] in VM started with followin CLI and hotplug a device:
->
-> once guest OS is fully booted at qemu prompt:
->
-> (qemu) device_add e1000
->
-> it will cause NULL pointer dereference at
->
->     void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
->     {
->         struct pci_bus *parent = bridge->subordinate;
->
-> [  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
-> [...]
-> [  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
-> [  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
-> [  612.277809]  enable_slot+0x21f/0x3e0
-> [  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
-> [  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
-> [  612.277827]  acpi_device_hotplug+0xbc/0x540
-> [  612.277834]  acpi_hotplug_work_fn+0x15/0x20
-> [  612.277839]  process_one_work+0x1f7/0x370
-> [  612.277845]  worker_thread+0x45/0x3b0
-> [  612.277850]  ? __pfx_worker_thread+0x10/0x10
-> [  612.277854]  kthread+0xdc/0x110
-> [  612.277860]  ? __pfx_kthread+0x10/0x10
-> [  612.277866]  ret_from_fork+0x28/0x40
-> [  612.277871]  ? __pfx_kthread+0x10/0x10
-> [  612.277876]  ret_from_fork_asm+0x1b/0x30
->
-> The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
-> following sequence:
->    1. suspend to RAM
->    2. wake up with the same backtrace being observed:
->    3. 2nd suspend to RAM attempt makes laptop freeze
->
-> Fix it by using __pci_bus_assign_resources() instead of
-> pci_assign_unassigned_bridge_resources()as we used to do
-> but only in case when bus doesn't have a bridge associated
-> with it.
->
-> That let us keep hotplug on root bus working like it used to be
-> but at the same time keeps resource reassignment usable on
-> root ports (and other 1st level bridges) that was fixed by [1].
->
-> 1)
-> Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
-> Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
-> Reported-by: Woody Suwalski <terraluna977@gmail.com>
-> Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+On Wed, Jul 26, 2023, Nikunj A. Dadhania wrote:
+> Hi Sean,
+> 
+> On 7/24/2023 10:30 PM, Sean Christopherson wrote:
+> >>   Starting an SNP guest with 40G memory with memory interleave between
+> >>   Node2 and Node3
+> >>
+> >>   $ numactl -i 2,3 ./bootg_snp.sh
+> >>
+> >>     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+> >>  242179 root      20   0   40.4g  99580  51676 S  78.0   0.0   0:56.58 qemu-system-x86
+> >>
+> >>   -> Incorrect process resident memory and shared memory is reported
+> > 
+> > I don't know that I would call these "incorrect".  Shared memory definitely is
+> > correct, because by definition guest_memfd isn't shared.  RSS is less clear cut;
+> > gmem memory is resident in RAM, but if we show gmem in RSS then we'll end up with
+> > scenarios where RSS > VIRT, which will be quite confusing for unaware users (I'm
+> > assuming the 40g of VIRT here comes from QEMU mapping the shared half of gmem
+> > memslots).
+> 
+> I am not sure why will RSS exceed the VIRT, it should be at max 40G (assuming all the
+> memory is private)
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+And also assuming that (a) userspace mmap()'d the shared side of things 1:1 with
+private memory and (b) that the shared mappings have not been populated.   Those
+assumptions will mostly probably hold true for QEMU, but kernel correctness
+shouldn't depend on assumptions about one specific userspace application.
 
-> ---
->  drivers/pci/hotplug/acpiphp_glue.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> index 328d1e416014..3bc4e1f3efee 100644
-> --- a/drivers/pci/hotplug/acpiphp_glue.c
-> +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> @@ -498,6 +498,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
->                                 acpiphp_native_scan_bridge(dev);
->                 }
->         } else {
-> +               LIST_HEAD(add_list);
->                 int max, pass;
->
->                 acpiphp_rescan_slot(slot);
-> @@ -511,10 +512,15 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
->                                 if (pass && dev->subordinate) {
->                                         check_hotplug_bridge(slot, dev);
->                                         pcibios_resource_survey_bus(dev->subordinate);
-> +                                       if (!bus->self)
-> +                                               __pci_bus_size_bridges(dev->subordinate, &add_list);
->                                 }
->                         }
->                 }
-> -               pci_assign_unassigned_bridge_resources(bus->self);
-> +               if (bus->self)
-> +                       pci_assign_unassigned_bridge_resources(bus->self);
-> +               else
-> +                       __pci_bus_assign_resources(bus, &add_list, NULL);
->         }
->
->         acpiphp_sanitize_bus(bus);
-> --
-> 2.39.3
->
+> >>   /proc/<qemu pid>/smaps
+> >>   7f528be00000-7f5c8be00000 rw-p 00000000 00:01 26629                      /memfd:memory-backend-memfd-shared (deleted)
+> >>   7f5c90200000-7f5c90220000 rw-s 00000000 00:01 44033                      /memfd:rom-backend-memfd-shared (deleted)
+> >>   7f5c90400000-7f5c90420000 rw-s 00000000 00:01 44032                      /memfd:rom-backend-memfd-shared (deleted)
+> >>   7f5c90800000-7f5c90b7c000 rw-s 00000000 00:01 1025                       /memfd:rom-backend-memfd-shared (deleted)
+> > 
+> > This is all expected, and IMO correct.  There are no userspace mappings, and so
+> > not accounting anything is working as intended.
+> Doesn't sound that correct, if 10 SNP guests are running each using 10GB, how
+> would we know who is using 100GB of memory?
+
+It's correct with respect to what the interfaces show, which is how much memory
+is *mapped* into userspace.
+
+As I said (or at least tried to say) in my first reply, I am not against exposing
+memory usage to userspace via stats, only that it's not obvious to me that the
+existing VMA-based stats are the most appropriate way to surface this information.
