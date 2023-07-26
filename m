@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC1E763BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20D1763BED
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbjGZQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S232249AbjGZQFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGZQEb (ORCPT
+        with ESMTP id S232402AbjGZQFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:04:31 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDB219B6;
-        Wed, 26 Jul 2023 09:04:30 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-563de62f861so746691a12.1;
-        Wed, 26 Jul 2023 09:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690387470; x=1690992270;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WemSbbi4nmxYWdvYoU1QjodfrKLGaKVRJYiHpPTC3RM=;
-        b=J0uZTtexUewfxyw8NOt1QJaabWMwcKVAmRiNXdw7EIVcafRcbFpmWYJpX070uwkLeK
-         Apemi6nazciA4BoUOE5uFffUn0Fe7lTaMygTPnBYt9xtiqF1RtRUPFXHQez2i3proKBG
-         eQ1aGXhownS9FM/d67rYQXP89cZx7X9o4Q+/B1B2jvXZwFu6M6NdNvb0VVgOhlcsdB6I
-         LRN6wYwinE67cmw7ZY0L7Cx8by++iVSlczDTexCz5jFu9Auc5S5jOTd9Y3xJfng/L/iP
-         IBbmKWmGmkUxQTOX/2qecqjkHl4kFnxlyQAAUB3MWXI/Qp08AGcQhvCoe53NZy9cMbGm
-         6SFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690387470; x=1690992270;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WemSbbi4nmxYWdvYoU1QjodfrKLGaKVRJYiHpPTC3RM=;
-        b=KPUs5lQXfEL5HEbGuKcrDNrd0R6xYs2/OS7H+1zwVkhlNRVwB2oZhh2ahXH4WmBm5t
-         VbqvbOQFQk1NnALikUfWgHnTVp8dufPGO3o8frMPYQFH2sKO//c+oqBNs1pG3mINgV1V
-         vjQfXbMG871GLQWSxLifYmNPYtGJBC7B6cWTnUwcKsOUedmqkbV0Vc3PH+XvCzv+/geR
-         eIi8P+JK4XhD+M0iireoXcQIUc2YlSpWRDLcPg+SFBDvqWQGJt4lonTra8wkW/vM6uQs
-         /AeRp9kGQZ1eXSdFr4W/fkwrTDHu+IRgKcxwHjpQvZx2stj2UZmDvZYHnIbt4+VEldQa
-         JtpA==
-X-Gm-Message-State: ABy/qLYXcJnftDvMNzCUkRTBtGTQpUP1Qj3aS9FUTGr2+ysvOawC2MrK
-        vnKhnpPHyUcpctsmEgGoqL4yTs6/CeZtQsApOjo=
-X-Google-Smtp-Source: APBJJlF3raRu7/V95hjDIqFG7tdPTZZsjE+OlqvOdwQaOS4lGXOjZbMI2nXIx5RVa9d1ARY03sOAeDCNzU7ZCYQjNyM=
-X-Received: by 2002:a17:90b:4018:b0:262:f449:4492 with SMTP id
- ie24-20020a17090b401800b00262f4494492mr1928327pjb.30.1690387469576; Wed, 26
- Jul 2023 09:04:29 -0700 (PDT)
+        Wed, 26 Jul 2023 12:05:00 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149C82723
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:04:57 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36QG4hRq093677;
+        Wed, 26 Jul 2023 11:04:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690387483;
+        bh=RqPTPPm9p67tOnufA72AQDttXZi1O2KWrNR/xTOOx9U=;
+        h=From:To:CC:Subject:Date;
+        b=iD3i1fUODkLrm0cwtpbJaa9ULNOUuRR4S47hiEjqXYNTB+7rraACPdV3Mk+I0i/fM
+         A1DW232syTMnR9z/dtH7XrgqoSiqtOTmwzCGrwYB9FXGL/sJ6MfbSO9ucpYMXIeWDV
+         y7KLRMPPzDLkU3sf0u1egyVAzHptRVKBSJoNkii4=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36QG4h1T126459
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Jul 2023 11:04:43 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 26
+ Jul 2023 11:04:43 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 26 Jul 2023 11:04:43 -0500
+Received: from fllv0039.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36QG4g64104809;
+        Wed, 26 Jul 2023 11:04:42 -0500
+From:   Andrew Davis <afd@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Andrew Davis <afd@ti.com>
+Subject: [PATCH v2 1/2] ARM: keystone: Merge memory.h into the only file that uses it
+Date:   Wed, 26 Jul 2023 11:04:40 -0500
+Message-ID: <20230726160441.101566-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <ZK9mXE00xEHZV4fi@makrotopia.org>
-In-Reply-To: <ZK9mXE00xEHZV4fi@makrotopia.org>
-From:   Jonas Gorski <jonas.gorski@gmail.com>
-Date:   Wed, 26 Jul 2023 18:04:18 +0200
-Message-ID: <CAOiHx=m5jRYd70ymvX=-9Xh4ZDApJ04G39j9+U0YB18W1QPv7A@mail.gmail.com>
-Subject: Re: [PATCH] wifi: mt76: support per-band MAC addresses from OF child nodes
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,75 +65,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The defines in memory.h can go into the file that makes use of them.
+No reason to have a header here, remove.
 
-On Thu, 13 Jul 2023 at 04:53, Daniel Golle <daniel@makrotopia.org> wrote:
->
-> With dual-band-dual-congruent front-ends which appear as two independent
-> radios it is desirable to assign a per-band MAC address from device-tree,
-> eg. using nvmem-cells.
-> Support specifying MAC-address related properties in band-specific child
-> nodes, e.g.
->         mt7915@0,0 {
->                 reg = <0x0000 0 0 0 0>;
->                 #addr-cells = <1>;
->                 #size-cells = <0>;
->
->                 band@0 {
->                         /* 2.4 GHz */
->                         reg = <0>;
->                         nvmem-cells = <&macaddr 2>;
->                         nvmem-cell-names = "mac-address";
->                 };
->
->                 band@1 {
->                         /* 5 GHz */
->                         reg = <1>;
->                         nvmem-cells = <&macaddr 3>;
->                         nvmem-cell-names = "mac-address";
->                 };
->         };
->
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  drivers/net/wireless/mediatek/mt76/eeprom.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/mediatek/mt76/eeprom.c b/drivers/net/wireless/mediatek/mt76/eeprom.c
-> index dce851d42e083..90ee138843a55 100644
-> --- a/drivers/net/wireless/mediatek/mt76/eeprom.c
-> +++ b/drivers/net/wireless/mediatek/mt76/eeprom.c
-> @@ -106,7 +106,20 @@ void
->  mt76_eeprom_override(struct mt76_phy *phy)
->  {
->         struct mt76_dev *dev = phy->dev;
-> -       struct device_node *np = dev->dev->of_node;
-> +       struct device_node *child_np, *np = dev->dev->of_node;
-> +       u32 reg;
-> +       int ret;
-> +
-> +       for_each_child_of_node(np, child_np) {
-> +               ret = of_property_read_u32(child_np, "reg", &reg);
-> +               if (ret)
-> +                       continue;
-> +
-> +               if (reg == phy->band_idx) {
-> +                       np = child_np;
-> +                       break;
+Signed-off-by: Andrew Davis <afd@ti.com>
+---
+ arch/arm/mach-keystone/keystone.c | 12 ++++++++++--
+ arch/arm/mach-keystone/memory.h   | 18 ------------------
+ 2 files changed, 10 insertions(+), 20 deletions(-)
+ delete mode 100644 arch/arm/mach-keystone/memory.h
 
-When breaking out of the loop here you still hold an additional
-reference to child_np, so you need to call of_node_put() for it,
-probably after calling of_get_mac_address().
+diff --git a/arch/arm/mach-keystone/keystone.c b/arch/arm/mach-keystone/keystone.c
+index e0ca26182e0bd..e8a06bd69bf22 100644
+--- a/arch/arm/mach-keystone/keystone.c
++++ b/arch/arm/mach-keystone/keystone.c
+@@ -18,10 +18,18 @@
+ #include <asm/mach/time.h>
+ #include <asm/page.h>
+ 
+-#include "memory.h"
+-
+ #include "keystone.h"
+ 
++#define KEYSTONE_LOW_PHYS_START		0x80000000ULL
++#define KEYSTONE_LOW_PHYS_SIZE		0x80000000ULL /* 2G */
++#define KEYSTONE_LOW_PHYS_END		(KEYSTONE_LOW_PHYS_START + \
++					 KEYSTONE_LOW_PHYS_SIZE - 1)
++
++#define KEYSTONE_HIGH_PHYS_START	0x800000000ULL
++#define KEYSTONE_HIGH_PHYS_SIZE		0x400000000ULL	/* 16G */
++#define KEYSTONE_HIGH_PHYS_END		(KEYSTONE_HIGH_PHYS_START + \
++					 KEYSTONE_HIGH_PHYS_SIZE - 1)
++
+ #ifdef CONFIG_ARM_LPAE
+ static int keystone_platform_notifier(struct notifier_block *nb,
+ 				      unsigned long event, void *data)
+diff --git a/arch/arm/mach-keystone/memory.h b/arch/arm/mach-keystone/memory.h
+deleted file mode 100644
+index 1b9ed1271e059..0000000000000
+--- a/arch/arm/mach-keystone/memory.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2014 Texas Instruments, Inc.
+- *	Santosh Shilimkar <santosh.shilimkar@ti.com>
+- */
+-#ifndef __MEMORY_H
+-#define __MEMORY_H
+-
+-#define KEYSTONE_LOW_PHYS_START		0x80000000ULL
+-#define KEYSTONE_LOW_PHYS_SIZE		0x80000000ULL /* 2G */
+-#define KEYSTONE_LOW_PHYS_END		(KEYSTONE_LOW_PHYS_START + \
+-					 KEYSTONE_LOW_PHYS_SIZE - 1)
+-
+-#define KEYSTONE_HIGH_PHYS_START	0x800000000ULL
+-#define KEYSTONE_HIGH_PHYS_SIZE		0x400000000ULL	/* 16G */
+-#define KEYSTONE_HIGH_PHYS_END		(KEYSTONE_HIGH_PHYS_START + \
+-					 KEYSTONE_HIGH_PHYS_SIZE - 1)
+-#endif /* __MEMORY_H */
+-- 
+2.39.2
 
-> +               }
-> +       }
->
->         of_get_mac_address(np, phy->macaddr);
->
-
-probably just add a of_node_put(child_np); here, of_node_put() seems
-to be NULL safe.
-
-
-Regards,
-Jonas
