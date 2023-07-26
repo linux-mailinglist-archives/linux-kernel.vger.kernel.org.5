@@ -2,121 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB73763AFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E607763B05
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 17:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbjGZP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 11:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
+        id S233145AbjGZP2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 11:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbjGZP0Y (ORCPT
+        with ESMTP id S232343AbjGZP2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:26:24 -0400
-Received: from bagheera.iewc.co.za (bagheera.iewc.co.za [IPv6:2c0f:f720:0:3::9a49:2249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8C094;
-        Wed, 26 Jul 2023 08:26:22 -0700 (PDT)
-Received: from [154.73.32.4] (helo=tauri.local.uls.co.za)
-        by bagheera.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jaco@uls.co.za>)
-        id 1qOgP0-0000q2-1c; Wed, 26 Jul 2023 17:26:14 +0200
-Received: from [192.168.1.145]
-        by tauri.local.uls.co.za with esmtp (Exim 4.94.2)
-        (envelope-from <jaco@uls.co.za>)
-        id 1qOgOz-0005NM-ER; Wed, 26 Jul 2023 17:26:13 +0200
-Message-ID: <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za>
-Date:   Wed, 26 Jul 2023 17:26:12 +0200
+        Wed, 26 Jul 2023 11:28:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC71FFC;
+        Wed, 26 Jul 2023 08:28:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 636D961B7D;
+        Wed, 26 Jul 2023 15:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3B03C433C7;
+        Wed, 26 Jul 2023 15:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690385309;
+        bh=0x7P+VDJDVD5QuhGvIi2giCzmIJXH7saxma9w0XMV9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DZ7w19RluYfbv+Dw7NYsEede8Nmhw13K4AASGUcjlWRAkbvfefbX4Y0RMh8mdZc0K
+         5RbKhxflx4zgwxdYcRSdS99f9KK04n0ctPOPyb1qfKwZTY8QAiMeIm5PmZJJyDdl+t
+         UedGwx6AqSmdu67xBWIfFzdnjdUU1wEzpuexErsDEbVxSnAHUG22Mjry+yUQfxBvW0
+         c+4wjeX6Noe9FE7OzvCq1u8qG9cpdcED8GUDIye9vypAjtBkeXxmiH8S9tj3MelVsT
+         XaTASh5QVa4TwfgMg8Tjv0AQAGFKH9Ov+ZXwX62PF7etXKFJnpVWJ1oDf4xLCbb2o6
+         ENRSd7HDusU+Q==
+Received: (nullmailer pid 1478019 invoked by uid 1000);
+        Wed, 26 Jul 2023 15:28:27 -0000
+Date:   Wed, 26 Jul 2023 09:28:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ivan Mikhaylov <fr0st61te@gmail.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: net: ftgmac100: convert to yaml version
+ from txt
+Message-ID: <20230726152827.GA1474469-robh@kernel.org>
+References: <20230723192030.33642-1-fr0st61te@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
-Content-Language: en-GB
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230726105953.843-1-jaco@uls.co.za>
- <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
-From:   Jaco Kroon <jaco@uls.co.za>
-Organization: Ultimate Linux Solutions (Pty) Ltd
-In-Reply-To: <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230723192030.33642-1-fr0st61te@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Jul 23, 2023 at 10:20:30PM +0300, Ivan Mikhaylov wrote:
+> Conversion from ftgmac100.txt to yaml format version.
+> 
+> Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
+> ---
+>  .../bindings/net/faraday,ftgmac100.yaml       | 103 ++++++++++++++++++
+>  .../devicetree/bindings/net/ftgmac100.txt     |  67 ------------
+>  2 files changed, 103 insertions(+), 67 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/ftgmac100.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml b/Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml
+> new file mode 100644
+> index 000000000000..92686caf251f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml
+> @@ -0,0 +1,103 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Faraday Technology FTGMAC100 gigabit ethernet controller
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml#
+> +
+> +maintainers:
+> +  - Po-Yu Chuang <ratbert@faraday-tech.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: faraday,ftgmac100
+> +      - items:
+> +          - enum:
+> +              - aspeed,ast2400-mac
+> +              - aspeed,ast2500-mac
+> +              - aspeed,ast2600-mac
+> +          - const: faraday,ftgmac100
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    items:
+> +      - description: MAC IP clock
+> +      - description: RMII RCLK gate for AST2500/2600
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    contains:
+> +      enum:
+> +        - MACCLK
+> +        - RCLK
+> +
+> +  phy-mode:
+> +    enum:
+> +      - rgmii
+> +      - rmii
+> +
+> +  phy-handle: true
+> +
+> +  use-ncsi:
+> +    description:
+> +      Use the NC-SI stack instead of an MDIO PHY. Currently assumes
+> +      rmii (100bT) but kept as a separate property in case NC-SI grows support
+> +      for a gigabit link.
+> +    type: boolean
+> +
+> +  no-hw-checksum:
+> +    description:
+> +      Used to disable HW checksum support. Here for backward
+> +      compatibility as the driver now should have correct defaults based on
+> +      the SoC.
+> +    type: boolean
 
-On 2023/07/26 15:53, Bernd Schubert wrote:
->
->
-> On 7/26/23 12:59, Jaco Kroon wrote:
->> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
->> ---
->>   fs/fuse/Kconfig   | 16 ++++++++++++++++
->>   fs/fuse/readdir.c | 42 ++++++++++++++++++++++++------------------
->>   2 files changed, 40 insertions(+), 18 deletions(-)
->>
->> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
->> index 038ed0b9aaa5..0783f9ee5cd3 100644
->> --- a/fs/fuse/Kconfig
->> +++ b/fs/fuse/Kconfig
->> @@ -18,6 +18,22 @@ config FUSE_FS
->>         If you want to develop a userspace FS, or if you want to use
->>         a filesystem based on FUSE, answer Y or M.
->>   +config FUSE_READDIR_ORDER
->> +    int
->> +    range 0 5
->> +    default 5
->> +    help
->> +        readdir performance varies greatly depending on the size of 
->> the read.
->> +        Larger buffers results in larger reads, thus fewer reads and 
->> higher
->> +        performance in return.
->> +
->> +        You may want to reduce this value on seriously constrained 
->> memory
->> +        systems where 128KiB (assuming 4KiB pages) cache pages is 
->> not ideal.
->> +
->> +        This value reprents the order of the number of pages to 
->> allocate (ie,
->> +        the shift value).  A value of 0 is thus 1 page (4KiB) where 
->> 5 is 32
->> +        pages (128KiB).
->> +
->
-> I like the idea of a larger readdir size, but shouldn't that be a 
-> server/daemon/library decision which size to use, instead of kernel 
-> compile time? So should be part of FUSE_INIT negotiation?
+deprecated: true
 
-Yes sure, but there still needs to be a default.  And one page at a time 
-doesn't cut it.
+> +
+> +  mdio:
+> +    $ref: /schemas/net/mdio.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    mac0: ethernet@1e660000 {
 
--- snip --
+Drop unused labels.
 
->>   -    page = alloc_page(GFP_KERNEL);
->> +    page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
->
-> I guess that should become folio alloc(), one way or the other. Now I 
-> think order 0 was chosen before to avoid risk of allocation failure. I 
-> guess it might work to try a large size and to fall back to 0 when 
-> that failed. Or fail back to the slower vmalloc.
-
-If this varies then a bunch of other code will become somewhat more 
-complex, especially if one alloc succeeds, and then a follow-up succeeds.
-
-I'm not familiar with the differences between the different mechanisms 
-available for allocation.
-
--- snip --
-
-> Thanks,
-My pleasure,
-Jaco
+> +        compatible = "aspeed,ast2500-mac", "faraday,ftgmac100";
+> +        reg = <0x1e660000 0x180>;
+> +        interrupts = <2>;
+> +        use-ncsi;
+> +    };
+> +
+> +    mac1: ethernet@1e680000 {
+> +        compatible = "aspeed,ast2500-mac", "faraday,ftgmac100";
+> +        reg = <0x1e680000 0x180>;
+> +        interrupts = <2>;
+> +
+> +        phy-handle = <&phy>;
+> +        phy-mode = "rgmii";
+> +
+> +        mdio {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            phy: ethernet-phy@1 {
+> +                compatible = "ethernet-phy-ieee802.3-c22";
+> +                reg = <1>;
+> +            };
+> +        };
+> +    };
