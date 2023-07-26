@@ -2,46 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F8F76318B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E2C7631C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbjGZJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S231372AbjGZJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjGZJSC (ORCPT
+        with ESMTP id S233734AbjGZJXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:18:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1169546A0;
-        Wed, 26 Jul 2023 02:14:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 26 Jul 2023 05:23:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829BB273B;
+        Wed, 26 Jul 2023 02:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uXayj/Yf18aHDbjs538f8eIlrd2MMuKCabCQVkdwuVI=; b=Pf3slB1A2iw0llHI+l4WRhjcwj
+        RjfQPHDhaoIW+a+rfgnJgProxKUju3/N/ektzOfCymWx/4zPuYoSSdbMFbN30C3EAnW6rxr2mifrY
+        AwW60rIoCVrk/1wSdjm/pOFYYDqKlcW49SkTHrICI/dIPCGfwmwWg1JY0E5uGLXONcxsRl1T9aJhs
+        0xyOYQ1RZtHdguaABpsNt2nIPFnizYOolsJAu2pu0hDWmODDiAEmRgfyMt2v/FaqYlEsJSbRohknB
+        TRBTS3mqsUNvGRkL99aN1+ZGYndOfT4r2Lz2zitUqVC5JbEC30bjnfkBoFOjXG8HaIjb1/9nWkRca
+        axlwhthQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOaea-005mhb-2H;
+        Wed, 26 Jul 2023 09:19:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F20D619EE;
-        Wed, 26 Jul 2023 09:14:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF72C433C7;
-        Wed, 26 Jul 2023 09:14:24 +0000 (UTC)
-Message-ID: <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
-Date:   Wed, 26 Jul 2023 11:14:22 +0200
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6732430056F;
+        Wed, 26 Jul 2023 11:17:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 196B12022E4DE; Wed, 26 Jul 2023 11:17:53 +0200 (CEST)
+Date:   Wed, 26 Jul 2023 11:17:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Message-ID: <20230726091752.GA3802077@hirez.programming.kicks-ass.net>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v8 1/2] Added Digiteq Automotive MGB4 driver
-Content-Language: en-US
-To:     tumic@gpxsee.org, Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
-References: <20230704131339.2177-1-tumic@gpxsee.org>
- <20230704131339.2177-2-tumic@gpxsee.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230704131339.2177-2-tumic@gpxsee.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,82 +69,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Fri, Jul 21, 2023 at 08:37:41AM -1000, Tejun Heo wrote:
 
-On 04/07/2023 15:13, tumic@gpxsee.org wrote:
-> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
-> 
-> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
-> video interfaces. As for now, two modules - FPD-Link and GMSL - are
-> available and supported by the driver. The card has two inputs and two
-> outputs (FPD-Link only).
-> 
-> In addition to the video interfaces it also provides a trigger signal
-> interface and a MTD interface for FPGA firmware upload.
-> 
-> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
-> ---
->  MAINTAINERS                             |   7 +
->  drivers/media/pci/Kconfig               |   1 +
->  drivers/media/pci/Makefile              |   1 +
->  drivers/media/pci/mgb4/Kconfig          |  17 +
->  drivers/media/pci/mgb4/Makefile         |   6 +
->  drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
->  drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
->  drivers/media/pci/mgb4/mgb4_core.c      | 711 ++++++++++++++++++
->  drivers/media/pci/mgb4/mgb4_core.h      |  72 ++
->  drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
->  drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
->  drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
->  drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
->  drivers/media/pci/mgb4/mgb4_io.h        |  33 +
->  drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
->  drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
->  drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
->  drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 757 +++++++++++++++++++
->  drivers/media/pci/mgb4/mgb4_sysfs_out.c | 700 ++++++++++++++++++
->  drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
->  drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
->  drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
->  drivers/media/pci/mgb4/mgb4_vin.c       | 930 ++++++++++++++++++++++++
->  drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
->  drivers/media/pci/mgb4/mgb4_vout.c      | 594 +++++++++++++++
->  drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
->  26 files changed, 4910 insertions(+)
->  create mode 100644 drivers/media/pci/mgb4/Kconfig
->  create mode 100644 drivers/media/pci/mgb4/Makefile
->  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
-> 
+> We are comfortable with the current API. Everything we tried fit pretty
+> well. It will continue to evolve but sched_ext now seems mature enough for
+> initial inclusion. I suppose lack of response doesn't indicate tacit
+> agreement from everyone, so what are you guys all thinking?
 
-When I build with: make W=1 KCFLAGS=-Wmaybe-uninitialized
+I'm still hating the whole thing with a passion.
 
-I get this warning:
+As can be seen from the wide-spread SCHED_DEBUG abuse; people are, in
+general, not interested in doing the right thing. They prod random
+numbers (as in really, some are just completely insane) until their
+workload improves and call it a day.
 
-drivers/media/pci/mgb4/mgb4_vout.c: In function 'mgb4_vout_create':
-drivers/media/pci/mgb4/mgb4_vout.c:473:27: warning: variable 'video' set but not used [-Wunused-but-set-variable]
-  473 |         struct mgb4_regs *video;
-      |                           ^~~~~
+There is not a single doubt in my mind that if I were to merge this,
+there will be Enterprise software out there that will mandate its own
+BPF sched thing, or else it won't work.
 
-Regards,
+They will not care, they will not contribute, they might even pull a
+RedHat and only share the code to customers.
 
-	Hans
+We all loose in that scenario. Not least me, because I get the
+additional maintenance burden.
+
+I also don't see upsides to merging this. You all can play with
+schedulers out-of-tree just fine and then submit what actually works.
+
+So, since you wanted it in writing, here goes:
+
+NAK
