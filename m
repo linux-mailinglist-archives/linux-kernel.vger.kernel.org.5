@@ -2,175 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8E4762B01
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 07:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCC6762B0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 08:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbjGZF5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 01:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        id S231691AbjGZGBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 02:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbjGZF5B (ORCPT
+        with ESMTP id S231363AbjGZGBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 01:57:01 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F0A26BD;
-        Tue, 25 Jul 2023 22:56:59 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q5aTEO019229;
-        Wed, 26 Jul 2023 05:56:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=GQTVWco32osMbk2/cDgsRNNHJ/PAdXnt/uP/dxBWZmo=;
- b=dINCYmzI1PSck87dnwSmRIA1EBFeKhmFi0EZ80bxFVj/bfxQFqPK/ECsKrGLlmdFMba5
- 8f7FRRuoUXx6a5LmIirgth3Nn1P0mbVoSTogvlVTL+Kgq3n9dCJdsRTbg7i04LoUa5az
- bFlmosbrsvaKQEU4SQNIndmOOL5iJwuWzl7TtkHs+wB+HLC5gS1WQee8x40Lr4TWvQt5
- /EZKRy+bRYPqYqZNH0roNuiSEZ5nDIAbbgRWGhVn7DMW8Q5kj4tgTNjRLDQM7sePgWh4
- 9/aX+pZ01vUUsvC50GNljxdu92wf1b0y4zPlF+19ekLYMQCkZIwMtvC+cuNvkqcayZnQ gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2vps1etd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 05:56:52 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36Q5avMk021098;
-        Wed, 26 Jul 2023 05:56:51 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s2vps1et5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 05:56:51 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q4bioJ026206;
-        Wed, 26 Jul 2023 05:56:50 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0ses2sus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jul 2023 05:56:50 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36Q5unpc19595972
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jul 2023 05:56:49 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 140072004B;
-        Wed, 26 Jul 2023 05:56:49 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8789820040;
-        Wed, 26 Jul 2023 05:56:48 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Jul 2023 05:56:48 +0000 (GMT)
-Received: from civic.. (unknown [9.177.6.123])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 95C02603C2;
-        Wed, 26 Jul 2023 15:56:39 +1000 (AEST)
-From:   Rohan McLure <rmclure@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Rohan McLure <rmclure@linux.ibm.com>, linux-arch@vger.kernel.org,
-        will.deacon@arm.com, mpe@ellerman.id.au, npiggin@gmail.com,
-        arnd@arndb.de, gautam@linux.ibm.com
-Subject: [PATCH] asm-generic/mmiowb: Mark accesses to fix KCSAN warnings
-Date:   Wed, 26 Jul 2023 15:56:32 +1000
-Message-Id: <20230726055632.132151-1-rmclure@linux.ibm.com>
-X-Mailer: git-send-email 2.37.2
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XllLALy0oUtSgrkRkmMFhLCvdF2GpxRh
-X-Proofpoint-ORIG-GUID: 9KNc4MrWoraArjRz5nnl3gnv0DoRzjTg
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 26 Jul 2023 02:01:19 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B241995;
+        Tue, 25 Jul 2023 23:01:16 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fb7dc16ff0so9771443e87.2;
+        Tue, 25 Jul 2023 23:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690351275; x=1690956075;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BB2KiD16F4B9f2EcUD7svg5Q/8nSF6hZT15LE5/I12M=;
+        b=eP2MDhwj1xO9wnSUWZvFz4SSQ4sZj7qWu5e9dhwCA8wboeqkBTEcc5ROqo42Xf2bff
+         jRhzG5xRaY80pDcDiITNZEC0rUbXBMeqUxZlnTcu8Xb3wmTGgzY4L+SVM3qAaBH4gMr6
+         IjF8PF/W5W7Jg0Ey0IxJeIomAD8OIHunN9ARXlzcEhqRW5lVNJ5DvnFDOqCwbNCx46Yx
+         cUzpuqImbrSbweajWYcXvjLeXwb/hqUv3DX+WCs5yRkrBijC6irTrBoPhBUiUpTVHU/t
+         62tVO6ZZTfQcR3jOh5TIAuyD46eqKNGmnlQxpGDYcwsAODPTL5S1f9jGTk4yu1OXG5GF
+         f7Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690351275; x=1690956075;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BB2KiD16F4B9f2EcUD7svg5Q/8nSF6hZT15LE5/I12M=;
+        b=CmRv6YDa2ydxSz6zqfqwsF7Og1xTCHhmL312cxy8ZRFHmGvMnr+FTzVxW5buP26yRX
+         zzia+mWynHYF2+JTK6iRL2bEfRLR1HsLAPCjCnkzi15kTYtPvRDHvq8JooUnntF/Psr0
+         0PjIf+E2X91cFgTAeOF3fqIMufQ7/uA0Kx4W2PVTMFN4CXk3lvmtSOQsb5OnusqAcogE
+         bOO8HkIC/59qaTd6CZjSi0xZaBBHaJaTeudzO7AWt2aOmWufDg6hmpKXLG3mojJTtitd
+         6U3g49LGcbTXiJ6biWZZ4whs2WxeqlfxbCNfp++ue98i9fzJ/k0w0kr2EPhznc5Yt6SH
+         9rjg==
+X-Gm-Message-State: ABy/qLZfGidCrFtn5FUVsfgSe4kc5Sy4rM4kNjzZaoqoI2Tz6OQjQDbo
+        8eMqJUXMVG3Qk9oEzWc/O5xStrjeVVMz5pqP5BA=
+X-Google-Smtp-Source: APBJJlFeaRr5a0PGXS9xda9uQsoRiE04z6h2okopysyqd43SdJRtTiGsMnKOuOWoSmsdm2qtQDsiGIgJYzBJjzyZ20I=
+X-Received: by 2002:a05:6512:32aa:b0:4f9:5580:1894 with SMTP id
+ q10-20020a05651232aa00b004f955801894mr622530lfe.15.1690351274403; Tue, 25 Jul
+ 2023 23:01:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0 clxscore=1011
- mlxlogscore=687 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307260048
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230726040041.26267-1-frank.li@vivo.com> <20230726040041.26267-36-frank.li@vivo.com>
+In-Reply-To: <20230726040041.26267-36-frank.li@vivo.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Wed, 26 Jul 2023 14:00:37 +0800
+Message-ID: <CAAfSe-tGktZs_yeprSw7o=Vi00sbjvwf1od2wEeX3-E0gog9_g@mail.gmail.com>
+Subject: Re: [PATCH v2 36/61] mmc: sdhci-sprd: Convert to platform remove
+ callback returning void
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to this patch, data races are detectable by KCSAN of the following
-forms:
+On Wed, 26 Jul 2023 at 12:02, Yangtao Li <frank.li@vivo.com> wrote:
+>
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
+>
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+>
+> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
-[1] Asynchronous calls to mmiowb_set_pending() from an interrupt context
-    or otherwise outside of a critical section
-[2] Interrupted critical sections, where the interrupt will itself
-    acquire a lock
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
-In case [1], calling context does not need an mmiowb() call to be
-issued, otherwise it would do so itself. Such calls to
-mmiowb_set_pending() are either idempotent or no-ops.
+Thanks,
+Chunyan
 
-In case [2], irrespective of when the interrupt occurs, the interrupt
-will acquire and release its locks prior to its return, nesting_count
-will continue balanced. In the worst case, the interrupted critical
-section during a mmiowb_spin_unlock() call observes an mmiowb to be
-pending and afterward is interrupted, leading to an extraneous call to
-mmiowb(). This data race is clearly innocuous.
-
-Resolve KCSAN warnings of type [1] by means of READ_ONCE, WRITE_ONCE.
-As increments and decrements to nesting_count are balanced by interrupt
-contexts, resolve type [2] warnings by simply revoking instrumentation,
-with data_race() rather than READ_ONCE() and WRITE_ONCE(), the memory
-consistency semantics of plain-accesses will still lead to correct
-behaviour.
-
-Signed-off-by: Rohan McLure <rmclure@linux.ibm.com>
-Tested-by: Gautam Menghani <gautam@linux.ibm.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
-Moving from linuxppc-dev to broader LKML as it affects all
-architectures.
-https://lore.kernel.org/all/20230510033117.1395895-4-rmclure@linux.ibm.com/
----
- include/asm-generic/mmiowb.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/include/asm-generic/mmiowb.h b/include/asm-generic/mmiowb.h
-index 5698fca3bf56..f8c7c8a84e9e 100644
---- a/include/asm-generic/mmiowb.h
-+++ b/include/asm-generic/mmiowb.h
-@@ -37,25 +37,28 @@ static inline void mmiowb_set_pending(void)
- 	struct mmiowb_state *ms = __mmiowb_state();
- 
- 	if (likely(ms->nesting_count))
--		ms->mmiowb_pending = ms->nesting_count;
-+		WRITE_ONCE(ms->mmiowb_pending, ms->nesting_count);
- }
- 
- static inline void mmiowb_spin_lock(void)
- {
- 	struct mmiowb_state *ms = __mmiowb_state();
--	ms->nesting_count++;
-+
-+	/* Increment need not be atomic. Nestedness is balanced over interrupts. */
-+	data_race(ms->nesting_count++);
- }
- 
- static inline void mmiowb_spin_unlock(void)
- {
- 	struct mmiowb_state *ms = __mmiowb_state();
-+	u16 pending = READ_ONCE(ms->mmiowb_pending);
- 
--	if (unlikely(ms->mmiowb_pending)) {
--		ms->mmiowb_pending = 0;
-+	WRITE_ONCE(ms->mmiowb_pending, 0);
-+	if (unlikely(pending))
- 		mmiowb();
--	}
- 
--	ms->nesting_count--;
-+	/* Decrement need not be atomic. Nestedness is balanced over interrupts. */
-+	data_race(ms->nesting_count--);
- }
- #else
- #define mmiowb_set_pending()		do { } while (0)
--- 
-2.37.2
-
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.=
+c
+> index 7f4ee2e12735..379cb3892757 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -720,7 +720,7 @@ static int sdhci_sprd_probe(struct platform_device *p=
+dev)
+>         return ret;
+>  }
+>
+> -static int sdhci_sprd_remove(struct platform_device *pdev)
+> +static void sdhci_sprd_remove(struct platform_device *pdev)
+>  {
+>         struct sdhci_host *host =3D platform_get_drvdata(pdev);
+>         struct sdhci_sprd_host *sprd_host =3D TO_SPRD_HOST(host);
+> @@ -732,8 +732,6 @@ static int sdhci_sprd_remove(struct platform_device *=
+pdev)
+>         clk_disable_unprepare(sprd_host->clk_2x_enable);
+>
+>         sdhci_pltfm_free(pdev);
+> -
+> -       return 0;
+>  }
+>
+>  static const struct of_device_id sdhci_sprd_of_match[] =3D {
+> @@ -800,7 +798,7 @@ static const struct dev_pm_ops sdhci_sprd_pm_ops =3D =
+{
+>
+>  static struct platform_driver sdhci_sprd_driver =3D {
+>         .probe =3D sdhci_sprd_probe,
+> -       .remove =3D sdhci_sprd_remove,
+> +       .remove_new =3D sdhci_sprd_remove,
+>         .driver =3D {
+>                 .name =3D "sdhci_sprd_r11",
+>                 .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> --
+> 2.39.0
+>
