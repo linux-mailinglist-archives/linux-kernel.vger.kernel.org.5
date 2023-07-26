@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 370E7763E3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D55763E42
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbjGZSQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        id S230245AbjGZSRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjGZSQe (ORCPT
+        with ESMTP id S229950AbjGZSRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:16:34 -0400
-X-Greylist: delayed 156028 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Jul 2023 11:16:31 PDT
-Received: from out-13.mta1.migadu.com (out-13.mta1.migadu.com [IPv6:2001:41d0:203:375::d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C3F2703
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:16:31 -0700 (PDT)
-Message-ID: <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690395390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPEwfOCRbnMBgzOD350ywUVV+S/+4plDOcrL1fOck6o=;
-        b=u7TTINrL0DskF3YYfvOoWKUHJ1f9hxgLrTn2Et6ECWUav5//+y8i/cc/p8qujOxUB3M6ea
-        ssvyTfpD8sZKwfX54BJfnEpFlXRXYgaPsRA6/Inbte9mUZRk6z5Jf91Wh0PLKPDKrMO7sZ
-        zaVgGzJbO7UUZXMrxAixFjL9w+UU7XM=
-Date:   Wed, 26 Jul 2023 11:16:22 -0700
-MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
-To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        Gal Pressman <gal@nvidia.com>
-References: <000000000000ee69e80600ec7cc7@google.com>
- <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
- <20230726071254.GA1380402@unreal> <20230726082312.1600053e@kernel.org>
- <20230726170133.GX11388@unreal>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230726170133.GX11388@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 26 Jul 2023 14:17:47 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A724BFE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:17:46 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1ef7a6abacso44601276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690395466; x=1691000266;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6hpPFf3+4VDGkjUYreTZKwGSOm+oraygLQyLjZ9weYQ=;
+        b=hjn8mdrtNt9Ay3MT8vju6yt1vWWaegDo8jLTy5DfycKo2rzUVA/XHPkvSjJFTg6z/9
+         ZO/2sJVzjGD4YwuFUuL3uUYLNuY9h3lzSYcAcemBYK9pmFUsMo3feU1lhphgzA6buHTf
+         /s/30xXM6avFdrT4XdzovhgQUc7UahQHgtETcqIIdTBNvAeHHjh2pXsPBmfO68uSqoDq
+         HYyh9ejstmtWTcxPccAyM2NyC/kNm8WrPf5pel+MpbgYQjv71M0+YuzlmwT/hJv1bvpS
+         YdsAbPhUysp7Bs1c2M29rTcvR22VVWQtSiw/rvDRU53Zj980a1n0qBGDtvc8z3UBr+kV
+         Xokg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690395466; x=1691000266;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6hpPFf3+4VDGkjUYreTZKwGSOm+oraygLQyLjZ9weYQ=;
+        b=bQgrHFetbWAaUcW00x25Acd+KSSgSAZpvtAggqFu+DBmSUW+dC7ipcYcp0tbH5SedQ
+         zivcnP2mInV9Zpfu5EfnLNiykKVnrXKYk9Zb+xzqxuxCfvWS5aqnxBzqcGyQObC/96kn
+         vViv0jmK5J9OUklJB1qzP9ml4o81yaa/9HsUDcTtVChkdg0B35JUE//CEc5e3JfyZQve
+         qRRRMyGuydvEEFja8UCghUqef0vVa6+0y8Ilvv0cQ1fJXeeYSRD6+/A0z6+7zmxyYm8Q
+         ngW3kLJkeE64xRHvcpXL7L9INSBEbmhWbiD3eMslF+YLyxyuO+U8koBjNErbEyOl+uGU
+         vjEg==
+X-Gm-Message-State: ABy/qLahuj6by//3IabRSn7C7jc+3OUpZ22aRUlc7mxB3tyI9NtXBEIN
+        +GOdqOJpVwoQepWJAP1+/L23QHR5fuMsfY8=
+X-Google-Smtp-Source: APBJJlHbz0sUA7ksJ0wtqMgCDZ3UsGIdiM6y/iN9eyg5I8CgKaXTzEA5PrDCe21WfEENMYVlo27ltf1yGRlemxo=
+X-Received: from robbarnes3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6451])
+ (user=robbarnes job=sendgmr) by 2002:a25:3212:0:b0:cef:5453:b6da with SMTP id
+ y18-20020a253212000000b00cef5453b6damr16367yby.7.1690395465748; Wed, 26 Jul
+ 2023 11:17:45 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 18:17:39 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230726181738.1.Ic6b8e25120b2aec95e3d0f4ac92c2a35fc7a40e8@changeid>
+Subject: [PATCH] platform/chrome: cros_ec_lpc: Sync filesystem on EC panic
+From:   Rob Barnes <robbarnes@google.com>
+To:     bleung@chromium.org, groeck@chromium.org, tzungbi@kernel.org,
+        dtor@chromium.org
+Cc:     Rob Barnes <robbarnes@google.com>, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 10:01 AM, Leon Romanovsky wrote:
-> On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
->> On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
->>>> Thanks, I'll take a look this evening.
->>>
->>> Did anybody post a fix for that?
->>>
->>> We are experiencing the following kernel panic in netdev commit
->>> b57e0d48b300 (net-next/main) Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
->>
->> Not that I know, looks like this is with Daniel's previous fix already
->> present, and syzbot is hitting it, too :(
-> 
-> My naive workaround which restored our regression runs is:
-> 
-> diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
-> index 69a272712b29..10c9ab830702 100644
-> --- a/kernel/bpf/tcx.c
-> +++ b/kernel/bpf/tcx.c
-> @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
->                          bpf_prog_put(tuple.prog);
->                  tcx_skeys_dec(ingress);
->          }
-> -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
-> +       tcx_miniq_set_active(entry, false);
+Perform a filesystem sync when an EC panic is reported. The
+sync is performed twice in case some inodes or pages are
+temporarily locked. Testing showed syncing twice significantly
+improved reliability.
 
-Thanks for the report. I will look into it.
+hw_protection_shutdown is replaced for a couple reasons. It is
+unnecessary because the EC will force reset either way.
+hw_protection_shutdown does not reliably sync filesystem
+before shutting down.
 
->          tcx_entry_free(entry);
->   }
-> 
+Signed-off-by: Rob Barnes <robbarnes@google.com>
+---
+
+ drivers/platform/chrome/cros_ec_lpc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
+index 500a61b093e47..44b7637e745c2 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -327,8 +327,10 @@ static void cros_ec_lpc_acpi_notify(acpi_handle device, u32 value, void *data)
+ 		dev_emerg(ec_dev->dev, "CrOS EC Panic Reported. Shutdown is imminent!");
+ 		blocking_notifier_call_chain(&ec_dev->panic_notifier, 0, ec_dev);
+ 		kobject_uevent_env(&ec_dev->dev->kobj, KOBJ_CHANGE, (char **)env);
+-		/* Begin orderly shutdown. Force shutdown after 1 second. */
+-		hw_protection_shutdown("CrOS EC Panic", 1000);
++		/* Sync filesystem before EC resets */
++		ksys_sync_helper();
++		/* Sync again just in case some inodes were temporarily locked */
++		ksys_sync_helper();
+ 		/* Do not query for other events after a panic is reported */
+ 		return;
+ 	}
+-- 
+2.41.0.487.g6d72f3e995-goog
 
