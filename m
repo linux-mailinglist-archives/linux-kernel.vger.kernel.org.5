@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7053A762DBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC9762DC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 09:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjGZHdV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 03:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        id S231951AbjGZHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 03:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjGZHc3 (ORCPT
+        with ESMTP id S232483AbjGZHdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 03:32:29 -0400
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2049C49DE;
-        Wed, 26 Jul 2023 00:30:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9lcd45scz9v7Vl;
-        Wed, 26 Jul 2023 15:18:41 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBn7glpy8BkKDwSBQ--.33041S2;
-        Wed, 26 Jul 2023 08:29:52 +0100 (CET)
-Message-ID: <3dc4fd2a452d1c0e33d27731de626d2791577274.camel@huaweicloud.com>
-Subject: Re: [PATCH] security: Fix ret values doc for
- security_inode_init_security()
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 26 Jul 2023 09:29:42 +0200
-In-Reply-To: <CAHC9VhSbya3Q-VM8v43qkQDWCuYWFqQ801j9_HfdwWJ9RLzkjw@mail.gmail.com>
-References: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
-         <CAHC9VhQcVSX+kZ3PMJGJ3i-qxv9g3iP_Y4At5VCV8qSoJYj8Cg@mail.gmail.com>
-         <a582bac4f709fe28dc17d9023ac78b53a2a1ac64.camel@huaweicloud.com>
-         <CAHC9VhSbya3Q-VM8v43qkQDWCuYWFqQ801j9_HfdwWJ9RLzkjw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Wed, 26 Jul 2023 03:33:53 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A094486
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:31:06 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99342a599e9so1089113266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 00:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690356665; x=1690961465;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AFATkPw4WNwwQSjNQCAVqXgiuGGZcvwhGAlK6VGHVcg=;
+        b=BcpDFiy3iJpXA4UlVBeMFnZEGjq//3VTj4/yGEPMX3Y7LmZkyXa+9gqg1HeE30Mwet
+         8k5owC2FBZNe8MOVDRU1jiGlvEz0jQeqIdarjxLPjKgBTEmgu3zmweRLwVd7XzE5LLoB
+         H4mzZV8tKprzg/66DP8hcBuKrRcqB/k8KvkuWTvWd407zfQbod8kCG0IbEA01g8D8OF3
+         HuAbSbX6Bp2K6LWzue5dHJEp9EEi35Fa/3qWqfi/KThCpM4O0Xo2bTj1i5E0yPvVTTZb
+         73Wq2oclq+X1FTLxn0Jm7ZOb4kdJAChCRMgt7nhCHUClUQgstiAXlMMR1TBMpIhxICEo
+         GjJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690356665; x=1690961465;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AFATkPw4WNwwQSjNQCAVqXgiuGGZcvwhGAlK6VGHVcg=;
+        b=TDPCLfikaejkh9IDiCtWC3SOk+c2USYXJ++zkCCZamvssfW1gWCk77yKzcRJbWFc1W
+         bVAizjvakzvaiWuFwYPlo7mqHctRgje5IdZrJeXCcHUNBNoHU3KTBDr0fxcELovUJ10k
+         7C0iStWEZzlcjIR9YnPj8T7R93R5F4hijiVreKOp6T2oQztqCIDat+CNdh8cztrsnCLB
+         0rRNLulyVBs9k2Sou3ih/Y095IIBWa4r+du0b3oWaHkaPGVaIfGr6s9II6O4Jisvy1tw
+         ugRnpdSai22QJahhtk7qbz3CDWjiGghT7jNMlRONvmu+a6m0SJB1kqCsu5Zk+X5pRPcC
+         /7XQ==
+X-Gm-Message-State: ABy/qLbKG5yLmwUCPvIIWtLMOrHkWl2Tfsp6/u/xXDrZQPd6qaK75W0C
+        sZWmq+jrA1nBnL0p3Fvax6vFJw==
+X-Google-Smtp-Source: APBJJlGnbLBLUXMT391nVEmLfEYAhyvX0fuvkWBotA8krCIkuARYA7sWsS8AUvS5wFzMVVhMJDp79w==
+X-Received: by 2002:a17:906:10cd:b0:99b:cc09:711e with SMTP id v13-20020a17090610cd00b0099bcc09711emr309696ejv.23.1690356665190;
+        Wed, 26 Jul 2023 00:31:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id x18-20020a170906135200b009893650453fsm9363351ejb.173.2023.07.26.00.31.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 00:31:04 -0700 (PDT)
+Message-ID: <5576059f-ba53-1096-396e-ccfb5f9d86f1@linaro.org>
+Date:   Wed, 26 Jul 2023 09:31:03 +0200
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwBn7glpy8BkKDwSBQ--.33041S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF18KryxJryrtw13uryxGrg_yoW5Ww13pF
-        WUK3Wj9rn8tFW7G3sayF17W3WSk3yfGr4DWrs0vr17Za1q9wn3Kr1FkF45ury7Gr48Aw10
-        vw429F43Cr1DArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAKBF1jj4z07gABsq
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: display: msm: sm6125-mdss: drop unneeded
+ status from examples
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230725101610.75122-1-krzysztof.kozlowski@linaro.org>
+ <5w2hvzmwzqm4ffopzewveaviebq2ig7awimeo6ipcehx5a43ae@mlwffkf2ctn5>
+ <11eca956-9e91-f645-9cc7-4c9f534d9821@linaro.org>
+In-Reply-To: <11eca956-9e91-f645-9cc7-4c9f534d9821@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-07-25 at 14:38 -0400, Paul Moore wrote:
-> On Tue, Jul 25, 2023 at 3:02 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Mon, 2023-07-24 at 17:54 -0400, Paul Moore wrote:
-> > > On Mon, Jul 24, 2023 at 10:52 AM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > 
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > 
-> > > > Commit 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for
-> > > > inode_init_security hook") unified the !initxattrs and initxattrs cases. By
-> > > > doing that, security_inode_init_security() cannot return -EOPNOTSUPP
-> > > > anymore, as it is always replaced with zero at the end of the function.
-> > > > 
-> > > > Also, mentioning -ENOMEM as the only possible error is not correct. For
-> > > > example, evm_inode_init_security() could return -ENOKEY.
-> > > > 
-> > > > Fix these issues in the documentation of security_inode_init_security().
-> > > > 
-> > > > Fixes: 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for inode_init_security hook")
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > ---
-> > > >  security/security.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/security/security.c b/security/security.c
-> > > > index cfdd0cbbcb9..5aa9cb91f0f 100644
-> > > > --- a/security/security.c
-> > > > +++ b/security/security.c
-> > > > @@ -1604,8 +1604,8 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
-> > > >   * a security attribute on this particular inode, then it should return
-> > > >   * -EOPNOTSUPP to skip this processing.
-> > > >   *
-> > > > - * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
-> > > > - * needed, or -ENOMEM on memory allocation failure.
-> > > > + * Return: Returns 0 on success or on -EOPNOTSUPP error, a negative value other
-> > > > + *         than -EOPNOTSUPP otherwise.
-> > > 
-> > > How about "Returns 0 if the LSM successfully initialized all of the
-> > > inode security attributes that are required, negative values
-> > > otherwise."?  The caller doesn't need to worry about the individual
-> > > LSMs returning -EOPNOTSUPP in the case of no security attributes, and
-> > > if they really care, they are likely reading the description above (or
-> > > the code) which explains it in much better detail.
-> > 
-> > Maybe this could be better:
-> > 
-> > Return 0 if security attributes initialization is successful or not
-> > necessary, a negative value otherwise.
+On 26/07/2023 09:27, Krzysztof Kozlowski wrote:
+> On 25/07/2023 13:46, Marijn Suijten wrote:
+>> On 2023-07-25 12:16:10, Krzysztof Kozlowski wrote:
+>>> Example DTS should not have 'status' property.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>> ---
+>>>  .../devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml   | 6 ------
+>>
+>> This is not needed: it has already been corrected in v3 and v4 of the
+>> respective series (among other changes) and the patches were only picked
+>> to a preliminary (draft) pull to get an overview of the outstanding work
+>> for this subsystem.  That branch happens to be included in regular -next
+>> releases though.
+>>
+>> 6.6 drm/msm display pull: https://gitlab.freedesktop.org/drm/msm/-/merge_requests/69
+>> v3: https://lore.kernel.org/linux-arm-msm/20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org/
+>> v4: https://lore.kernel.org/linux-arm-msm/20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org/
 > 
-> Well, I'm trying to avoid differentiating between the non-zero, but
-> successful attribute initialization and the zero attribute case; from
-> a caller's perspective it doesn't matter (and why we don't
-> differentiate between the two with different error codes).  If the
-> distinction between the two states is important from a caller's
-> perspective, there should be different return codes.
+> What do you mean? The old code (one I am fixing) is in current next...
+> 
+> If this was fixed, why next gets some outdated branches of drm next?
+> Each maintainers next tree is supposed to be fed into the next, without
+> delays.
+> 
 
-Ok, fine for me. I take your suggestion.
+Ah, I think I understood - some work in progress was applied to
+work-in-progress branch of drm/msm and this somehow got pushed to
+linux-next? How anyone is supposed to work on next branches if they are
+outdated or have stuff known to be incomplete?
 
-Thanks
-
-Roberto
+Best regards,
+Krzysztof
 
