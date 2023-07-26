@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDAF76309E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8848A76308B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 10:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbjGZI43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 04:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
+        id S233191AbjGZIzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 04:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbjGZIzh (ORCPT
+        with ESMTP id S232365AbjGZIzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 04:55:37 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56054693;
-        Wed, 26 Jul 2023 01:49:01 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qOaBR-0003Ck-29; Wed, 26 Jul 2023 10:47:49 +0200
-Message-ID: <ab557ae6-7550-189a-81dd-6e3346d84620@leemhuis.info>
-Date:   Wed, 26 Jul 2023 10:47:46 +0200
+        Wed, 26 Jul 2023 04:55:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B4F2695
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:48:19 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso9196785a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 01:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690361296; x=1690966096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pBt6LabizIPlGKQw7TnJxCRLQnfQUO6NlY0tbyWu7+M=;
+        b=WCBv0DeY0PiKsTPetO22VSX3HdQmMlsw/msR2qHb9PdpkvZ5LJ2duWV9dNTPu45izc
+         lqtwn3XVOu4SHNEQxE7ee13sC+RoIGaPV6DoLXZE+uobutKPYyw7qYNTGiaFdAIUTZeg
+         L7ir9j2etXNQ/FfJrN5QkImu904ZO9XQlRy1c6RmxN8kq+u5Hx9PQfJ1ZwCzSxg+fYAD
+         ygecbWaJaLfA6b0Xcc5Q2sIOEkUyZ90wpzI1Pqb40+rFbP3udiOkTe08Hui9AUgCTQA6
+         gRMuLm6ui0E6AFAZ5nm3Ve//FOCTgAQd7RYL+Rs1aMY0nQMiJVHbH0mXfO8oEDt8xWjG
+         Re0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690361296; x=1690966096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pBt6LabizIPlGKQw7TnJxCRLQnfQUO6NlY0tbyWu7+M=;
+        b=gMcfLGF8KUgZCKJOlz4tJUm8VRVli2iq3Z70EsvMa6vQfpgFBq4+hNFLbZIxkeP+dm
+         3z6Qf1vReK8OaEkxacQZ2IRWkRNpziB+ij6v2D+dqG40eUMtQyrZ5qvatkj4w52S1aDq
+         pgLVoKpXlCKB4nWfYD46s42j8WlKk6moSgMZ637tA8dGjdhXBYH/2GbpVoTLXcDZDh41
+         Tpl4McoTekV6qAYQ6oC5GxLavz3/DL+gB5hFKTKkQXSyYGkXrBWt7pBT60oDCniw9x7Z
+         1AZaBJH9J21UUhtwDKScdUf09XkF1pH/9HbHNnjejTuVl+3CfXrxi0fqUPsKtgw3YmpU
+         AR0A==
+X-Gm-Message-State: ABy/qLay2b3hekkW8fD07qhgyXuW/pOBO2RYL+jgiZUtzL097+ANvHIW
+        7kdt2LzgIjKVp6anhtiMZ2GFhA==
+X-Google-Smtp-Source: APBJJlEtwc0nAd/v1e2LQoPdUChw3xWAxiQ1w6NNikuEi4EKj3d0tYxESZEY6zC9Qdyb6DWkEZwbPA==
+X-Received: by 2002:aa7:cd5a:0:b0:522:5778:ee2d with SMTP id v26-20020aa7cd5a000000b005225778ee2dmr1127763edw.19.1690361295341;
+        Wed, 26 Jul 2023 01:48:15 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n23-20020a056402515700b00521da86cbcdsm8494107edd.7.2023.07.26.01.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 01:48:14 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [GIT PULL] memory: fixes: Tegra drivers for v6.5
+Date:   Wed, 26 Jul 2023 10:48:11 +0200
+Message-Id: <20230726084811.124038-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US, de-DE
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@kernel.org, Zubin Mithra <zsm@chromium.org>,
-        =?UTF-8?Q?Kai_Wasserb=c3=a4ch?= <kai@dev.carbon-project.org>
-References: <20230717-uvc-oob-v2-1-c7745a8d5847@chromium.org>
- <20230725213451.GU31069@pendragon.ideasonboard.com>
- <CANiDSCttkqows7PZS823Jpk-CqK9Gz2rujF_R4SPDi=wcPJ2LA@mail.gmail.com>
- <20230726080753.GX31069@pendragon.ideasonboard.com>
- <952fb983-d1e0-2c4b-a7e8-81c33473c727@leemhuis.info>
- <CANiDSCvVag+sW5JDTKAPuML_-+6xHWgF+NeKoBKSd5MMr1Yiag@mail.gmail.com>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v2] media: uvcvideo: Fix OOB read
-In-Reply-To: <CANiDSCvVag+sW5JDTKAPuML_-+6xHWgF+NeKoBKSd5MMr1Yiag@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1690361341;9e6180f4;
-X-HE-SMSGID: 1qOaBR-0003Ck-29
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,36 +73,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.23 10:38, Ricardo Ribalda wrote:
-> On Wed, 26 Jul 2023 at 10:33, Thorsten Leemhuis <linux@leemhuis.info> wrote:
->> On 26.07.23 10:07, Laurent Pinchart wrote:
->>> (CC'ing Kai and Thorsten who have added the check to checkpatch)
->>>
->>> On Wed, Jul 26, 2023 at 08:24:50AM +0200, Ricardo Ribalda wrote:
->>>> On Tue, 25 Jul 2023 at 23:34, Laurent Pinchart wrote:
->>>>> On Thu, Jul 20, 2023 at 05:46:54PM +0000, Ricardo Ribalda wrote:
->>>>>> If the index provided by the user is bigger than the mask size, we might do an
->>>>>> out of bound read.
->>>>>>
->>>>>> CC: stable@kernel.org
->>>>>> Fixes: 40140eda661e ("media: uvcvideo: Implement mask for V4L2_CTRL_TYPE_MENU")
->>>>>> Reported-by: Zubin Mithra <zsm@chromium.org>
->>>>>
->>>>> checkpatch now requests a Reported-by tag to be immediately followed by
->>>>> a Closes
->>
->> Not that it matters, the changes I performed only required a Link: tag,
->> which is how things should have been done for many years already. It
->> later became Closes: due to patches from Matthieu. But whatever. :-D
-> 
-> I prefer to leave the Reported-by and remove the Closes, that way we
-> credit the reporter (assuming they approved to be referred).
-> 
-> But if that is not possible, just remove the reported-by. A private
-> link is pretty much noise on the tree.
+Hi Arnd and Olof,
 
-Yeah, of course that's the right strategy (Linus made it pretty clear
-that he doesn't want any private links) in case the reporter okay with
-the Reported-by. Sorry, forgot to cover that case in my reply.
+Two fixes for current cycle.
 
-Ciao, Thorsten
+Best regards,
+Krzysztof
+
+
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-fixes-6.5
+
+for you to fetch changes up to faafd6ca7e6e7100d21d3f43ec17674f36c9f843:
+
+  memory: tegra: make icc_set_bw return zero if BWMGR not supported (2023-07-25 22:09:20 +0200)
+
+----------------------------------------------------------------
+Memory controller drivers - fixes for v6.5
+
+Two fixes are needed for Tegra194 memory controllers caused by the same
+Tegra PCI commit merged in v6.5-rc1.  The Tegra PCI requires now
+interconnect from the memory controller, which was set only for
+Tegra234, but not for Tegra194, causing probe deferrals.  Expose some
+dummy interconnect provider for Tegra194, to satisfy PCI driver needs.
+
+----------------------------------------------------------------
+Sumit Gupta (1):
+      memory: tegra: make icc_set_bw return zero if BWMGR not supported
+
+Thierry Reding (1):
+      memory: tegra: Add dummy implementation on Tegra194
+
+ drivers/memory/tegra/mc.c       | 37 +++++++++++++++++++++++++++++++++++++
+ drivers/memory/tegra/tegra194.c |  1 +
+ drivers/memory/tegra/tegra234.c | 27 +++------------------------
+ include/soc/tegra/mc.h          |  3 +++
+ 4 files changed, 44 insertions(+), 24 deletions(-)
