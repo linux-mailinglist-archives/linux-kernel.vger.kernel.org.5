@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA925763828
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6487B76382A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 15:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233935AbjGZN4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 09:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
+        id S234077AbjGZN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 09:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbjGZN4d (ORCPT
+        with ESMTP id S233883AbjGZN4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:56:33 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ECD2D49;
-        Wed, 26 Jul 2023 06:54:45 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 875505C010E;
-        Wed, 26 Jul 2023 09:54:34 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 26 Jul 2023 09:54:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690379674; x=1690466074; bh=jn
-        8YT4QXzhf79icX43frcS+scUrPudwRPlXjFdtPVoI=; b=PUg04CxA/GT3yiMx7o
-        +zIyPgBVG9Ha9lC6KiYsFp7hTGccg7sPMlQxrIT3fJ1Uj4CGN8iOBbHwFQrd3Y8V
-        XVvpMjNyG4qWBNmaMj8UroPCNp8y5ZB6Ae54Usou9WSlw/DpSyEooS+UT2UXH2OG
-        kKeFBvrLVNxolgoiKtg3GTocr+Bc+pxniSPtxBvNcuTlOyrJvopJ/UhEMal6Pk+c
-        u3sUZhUDP+45MQSgQFpMovBNfSeKm/IkwqPNcldRxotDyyfHYDOTKUMFxOMWeP7f
-        F2LafBh3qWAvSkb3uH/5d/S4S6eD3xahygnqTHhHrl9Hr4pkrC3e8Z8sSVoXvyaF
-        ViTA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690379674; x=1690466074; bh=jn8YT4QXzhf79
-        icX43frcS+scUrPudwRPlXjFdtPVoI=; b=M4LQ1IB+miqlHpb8x5MagAMmHo/rt
-        0L9pBrho9r/Ab3XYikuaTsVwfUiT7XuW2r6yjfetRLUat5i3mD1Ef3+r8H/8BcGb
-        Xe+KuXtpBk7yeBuITLr5vOSDMt1Th7Jmc7IDU4QkC9iBqi92Nq7CbxYeLu3R8oB4
-        P7u48XV2boNDvFSAwb3vEsyjN4UAFqE0vxW4LAuUj88dxGrAXoBVNUFUXtaO0Swd
-        XjlwTUx1HSi3tXFMSsX0sPKom29FAftr22io7VPqomp5NPLvdam652ixMVTBSyvL
-        cu2rATVoIUnUd/1DslyWNDzvuMMxUPClar5ey1m9qrsDFcGZdVvytbDjg==
-X-ME-Sender: <xms:mSXBZERIT9IhfR8qKLs-GyoHM8USb_3bkSqgAEMlUfTbc_iT9AT9rg>
-    <xme:mSXBZBz5VKWTjEUlIUje7mz6J1fa6AZJe9MHntB3J9ClvtYvXXKN_f5XPHdyO9Rc7
-    gLu-kWAvVEhYllxMPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdeikecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:mSXBZB2RLaL8nNWxM-sUzH8cBH_ZjnNgJVTtxfQUkPczKxIfLI_qXA>
-    <xmx:mSXBZIBDZi92TRCIQ9-NC9cAE7WupWrAAjEVFsq26aYpER9Dnki9bw>
-    <xmx:mSXBZNiBc4V_O0cwkSaaCf2m-G4KTRHZvmg0s1StgIqFHGiERcnKbQ>
-    <xmx:miXBZAgKmsaiE44dWucPmy4JWb0JrxfACp37v97FvzF4jDHJMTCRNw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2AD45B60089; Wed, 26 Jul 2023 09:54:33 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <4df0dc2a-50d2-4a8f-8a8c-2b2a943f80ae@app.fastmail.com>
-In-Reply-To: <ZMDS+lM/V5t1qD0D@krava>
-References: <20230724135327.1173309-1-arnd@kernel.org>
- <20230724135327.1173309-2-arnd@kernel.org> <ZMDS+lM/V5t1qD0D@krava>
-Date:   Wed, 26 Jul 2023 15:54:11 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Jiri Olsa" <olsajiri@gmail.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        "Song Liu" <song@kernel.org>, "Yonghong Song" <yhs@fb.com>,
-        "KP Singh" <kpsingh@kernel.org>,
-        "Stanislav Fomichev" <sdf@google.com>,
-        "Hao Luo" <haoluo@google.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Miguel Ojeda" <ojeda@kernel.org>,
-        "Palmer Dabbelt" <palmer@rivosinc.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/2] [v2] kallsyms: rework symbol lookup return codes
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 26 Jul 2023 09:56:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02E919B5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 06:54:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C02961AE3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 13:54:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E204C433C8;
+        Wed, 26 Jul 2023 13:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690379676;
+        bh=sGxSXz0cFWUM6mikGWU97zEscdT5IkbZGSscNfphwp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ia3LVzruSjPX6o2KAMdWmgQmQ2Pl4MAzDbD6mjkIhGw1N4uU6zfcDQJw/4C7R8n6m
+         7NvETzHIqnlrhmCK+wjnNUIN6JnJ+AZV1g2D9yZ3GyFcp2kqbA6HLe7GkMUTMtm8z3
+         WRYRWYrJZXtezvXpsOD3GulSSEwsN01iyd7MCbFB7MTxqHvU6DBoydfKxe0Cy8B4rY
+         NEsX7oj9A5keo9GjJkf4lCrk1zo5nxJfby91VmBqh6hTfgyKFHFN6iRQEIb78zuZ+H
+         nMs/5jBBz0ybQGhwElBguz6RtLPfG/XZXlj2b3+rHyWVElH7/giSlHNKizfW9r5vZ9
+         DsvB9HRewAaDw==
+Date:   Wed, 26 Jul 2023 15:54:34 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
+ .atomic_check callback
+Message-ID: <g6bu3b26evk464x4cn77xnzjiuotsq7pfvyakfvwnir5e3ihnk@2jh4dd56fsza>
+References: <20230721070955.1170974-1-javierm@redhat.com>
+ <CAMuHMdVxF80mdTaiXA6Y8Gd59Z7pxkoEphB4ohpVcK1q-+Yy=g@mail.gmail.com>
+ <n4fmda4zw4vuezvwva35tgma3yqhdvb253q2tfdyauoxbfqshx@s6fsa7de6g5s>
+ <CAMuHMdXtOozswqujA1h2spL8J86n65Q6=+z=5Jbb0nSXaBwqzA@mail.gmail.com>
+ <874jlqlv5v.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cczvehknair5dagk"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX+J848ckG2JqsuDkRcWzRypw_Kv=0G+Hc329xstu_nqQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023, at 10:02, Jiri Olsa wrote:
-> On Mon, Jul 24, 2023 at 03:53:02PM +0200, Arnd Bergmann wrote:
 
->> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
->> index 05c0024815bf9..bc0eed24a5873 100644
->> --- a/kernel/trace/ftrace.c
->> +++ b/kernel/trace/ftrace.c
->> @@ -6965,7 +6965,7 @@ allocate_ftrace_mod_map(struct module *mod,
->>  	return mod_map;
->>  }
->>  
->> -static const char *
->> +static int
->>  ftrace_func_address_lookup(struct ftrace_mod_map *mod_map,
->>  			   unsigned long addr, unsigned long *size,
->>  			   unsigned long *off, char *sym)
->> @@ -6986,21 +6986,18 @@ ftrace_func_address_lookup(struct ftrace_mod_map *mod_map,
->>  			*size = found_func->size;
->>  		if (off)
->>  			*off = addr - found_func->ip;
->> -		if (sym)
->> -			strscpy(sym, found_func->name, KSYM_NAME_LEN);
->> -
->> -		return found_func->name;
->> +		return strlcpy(sym, found_func->name, KSYM_NAME_LEN);
->
-> hi,
-> any reason not to call the original strscpy in here?
+--cczvehknair5dagk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, that was a mistake. I replaced the other strcpy and strncpy
-with strlcpy in order to get the desired behavior, but in fact
-they should all be strscpy, and changing this one was an accident.
+On Wed, Jul 26, 2023 at 02:33:06PM +0200, Geert Uytterhoeven wrote:
+> > >> Also, Javier pointed me to a discussion you had on IRC about using d=
+evm
+> > >> allocation here. We can't really do that. KMS devices are only freed
+> > >> once the last userspace application closes its fd to the device file=
+, so
+> > >> you have an unbounded window during which the driver is still callab=
+le
+> > >> by userspace (and thus can still trigger an atomic commit) but the
+> > >> buffer would have been freed for a while.
+> > >
+> > > It should still be safe for (at least) the data_array buffer. That
+> > > buffer is only used to store pixels in hardware format, and immediate=
+ly
+> > > send them to the hardware.  If this can be called that late, it will
+> > > fail horribly, as you can no longer talk to the hardware at that point
+> > > (as ssd130x is an i2c driver, it might actually work; but a DRM driver
+> > >  that calls devm_platform_ioremap_resource() will crash when writing
+> > >  to its MMIO registers)?!?
+> >
+> > At the very least the SPI driver will fail since the GPIO that is used =
+to
+> > toggle the D/C pin is allocated with devm_gpiod_get_optional(), but also
+> > the regulator, backlight device, etc.
+> >
+> > But in any case, as mentioned it is only relevant if the data_array buf=
+fer
+> > is allocated at probe time, and from Maxime's explanation is more corre=
+ct
+> > to do it in the .atomic_check handler.
+>=20
+> You need (at least) data_array for clear_screen, too, which is called
+> from .atomic_disable().
 
-I'll send a v3.
+I'm not sure I get what your concern is?
 
-     Arnd
+Even if we entirely disable the plane, the state will not have been
+destroyed yet so you still have at least access to the data_array from
+the old state.
+
+Maxime
+
+--cczvehknair5dagk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMElmgAKCRDj7w1vZxhR
+xV3/AQDnwMW+Ru8NZqVM/6Uv+aypaEiFS7yM6LQxS3jkrDgCJwEA9l1H6lonPdO4
+pWvLJ9iOIlUU+aoy6YCiZ8LSuDgdYA4=
+=pQQv
+-----END PGP SIGNATURE-----
+
+--cczvehknair5dagk--
