@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D622F763314
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB2A763316
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 12:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbjGZKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 06:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S232649AbjGZKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 06:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbjGZKDV (ORCPT
+        with ESMTP id S231421AbjGZKDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 06:03:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BE9DB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:02:42 -0700 (PDT)
+        Wed, 26 Jul 2023 06:03:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D06C1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690365761;
+        s=mimecast20190719; t=1690365756;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uDfW0dmn1wBVyEER/+9+5+Wl00jeHHLFDEF6erd932c=;
-        b=G+gp26ZLTw8PFZJNH+MLmO5BSxPucbuWe0Pb5l+YI8AfnhyclHJ+U5AiKRBFS4PmuDBYgA
-        6FHS9RXCr23UpoFW87rHjXfoId+Df6IOKMpHrE83YfavqevUC5Xnqsk5DbbwlNG7F5guCT
-        aDFwoTHalLP8uRMsTERe/lnMrhBD+nI=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-1rUVqYpbMc2hCszCV5PfWA-1; Wed, 26 Jul 2023 06:02:40 -0400
-X-MC-Unique: 1rUVqYpbMc2hCszCV5PfWA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-997d069a914so435247466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 03:02:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690365759; x=1690970559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uDfW0dmn1wBVyEER/+9+5+Wl00jeHHLFDEF6erd932c=;
-        b=gCiWaqdwv6/iJzMwfrtkSggLysz75rF//JyFfYcr/7oUbsITIM1GBn6H9YbOATt1Dz
-         ARTNA+o3CJwPU55Iqt3iIFBeOeCD/IWkbFaeXNLe3Rr+Y2vtO8FFD3eYkyOQfO1rP1JS
-         MqksuNi8r3td7IOcQ+9hK4Ir0YNxBzR8yuHlLxu9K0B+Ry+ULtHdH/5wyR6Pd4aK0AUv
-         AArxo2TjRJvNQG24xACruadRQ68XE8Ys5qOGHDZWN0xdpy7huSa9wrUEuDQ11SE3bcCV
-         /Ri4sH69w5LtPve5PqJFcEGF1W9ypBsBnBO/980X+X55rPI9X9a/jCDMZjHYv4g8UsJH
-         JmbQ==
-X-Gm-Message-State: ABy/qLbL8zuBd7EC05jKqatcarwpILA/wYb6ouPiLjprnncEJx5q0MBd
-        fWoITWWKN4pRt1eQwJ1t9szifq4WwNZG3skgQ8/Ak9X/R8zVIy3xHKuQEsY+Ab3uHxugyCd/rqL
-        2TOiMBMaepO7wQ4Wxwfc/sPeF
-X-Received: by 2002:a17:907:a056:b0:994:19:133b with SMTP id gz22-20020a170907a05600b009940019133bmr1122946ejc.14.1690365759246;
-        Wed, 26 Jul 2023 03:02:39 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHBSi7S84npQ6k3cQ5CS4OeynkocAoq83S5js72Husbbhk2ptQBqCWgr4yvb/+hN+aI97TDLw==
-X-Received: by 2002:a17:907:a056:b0:994:19:133b with SMTP id gz22-20020a170907a05600b009940019133bmr1122930ejc.14.1690365758856;
-        Wed, 26 Jul 2023 03:02:38 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f2:be95:2796:17af:f46c:dea1])
-        by smtp.gmail.com with ESMTPSA id c11-20020a170906924b00b0098e34446464sm9349068ejx.25.2023.07.26.03.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 03:02:37 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 06:02:09 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v3 0/4] virtio/vsock: some updates for MSG_PEEK
- flag
-Message-ID: <20230726060150-mutt-send-email-mst@kernel.org>
-References: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=QxaSGBKWwKusAWuFQg+kqDTec3ra+7FZ31YmMAcoho4=;
+        b=SnVNgnU0XOhOW88YPLXfjUYvJiiDS4Qy5MFmRIovzuoWnhCW3tawfNs4O53W5EjgqryA/f
+        YOfhB/u9sGEw0nm4ziUaT5kgxysjVjU74Wizp8J+BF9AeC5M56bQxknjegXOXPBNlT+Cau
+        VoIg5DW3HAENFYn1Ni3a630BeavZR00=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-650-60OqMXRANEOtWuWkknBIdA-1; Wed, 26 Jul 2023 06:02:31 -0400
+X-MC-Unique: 60OqMXRANEOtWuWkknBIdA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8BCEF185A792;
+        Wed, 26 Jul 2023 10:02:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AEA43492B01;
+        Wed, 26 Jul 2023 10:02:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>
+cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-raid@vger.kernel.org,
+        dm-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: Processes hung in "D" state in ext4, mm, md and dmcrypt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725172912.1659970-1-AVKrasnov@sberdevices.ru>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4918.1690365747.1@warthog.procyon.org.uk>
+Date:   Wed, 26 Jul 2023 11:02:27 +0100
+Message-ID: <4919.1690365747@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -88,78 +66,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:29:08PM +0300, Arseniy Krasnov wrote:
-> Hello,
-> 
-> This patchset does several things around MSG_PEEK flag support. In
-> general words it reworks MSG_PEEK test and adds support for this flag
-> in SOCK_SEQPACKET logic. Here is per-patch description:
-> 
-> 1) This is cosmetic change for SOCK_STREAM implementation of MSG_PEEK:
->    1) I think there is no need of "safe" mode walk here as there is no
->       "unlink" of skbs inside loop (it is MSG_PEEK mode - we don't change
->       queue).
->    2) Nested while loop is removed: in case of MSG_PEEK we just walk
->       over skbs and copy data from each one. I guess this nested loop
->       even didn't behave as loop - it always executed just for single
->       iteration.
-> 
-> 2) This adds MSG_PEEK support for SOCK_SEQPACKET. It could be implemented
->    be reworking MSG_PEEK callback for SOCK_STREAM to support SOCK_SEQPACKET
->    also, but I think it will be more simple and clear from potential
->    bugs to implemented it as separate function thus not mixing logics
->    for both types of socket. So I've added it as dedicated function.
-> 
-> 3) This is reworked MSG_PEEK test for SOCK_STREAM. Previous version just
->    sent single byte, then tried to read it with MSG_PEEK flag, then read
->    it in normal way. New version is more complex: now sender uses buffer
->    instead of single byte and this buffer is initialized with random
->    values. Receiver tests several things:
->    1) Read empty socket with MSG_PEEK flag.
->    2) Read part of buffer with MSG_PEEK flag.
->    3) Read whole buffer with MSG_PEEK flag, then checks that it is same
->       as buffer from 2) (limited by size of buffer from 2) of course).
->    4) Read whole buffer without any flags, then checks that it is same
->       as buffer from 3).
-> 
-> 4) This is MSG_PEEK test for SOCK_SEQPACKET. It works in the same way
->    as for SOCK_STREAM, except it also checks combination of MSG_TRUNC
->    and MSG_PEEK.
+Hi,
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm seeing
+a bunch of processes getting stuck in the D state on my desktop after a few
+hours of reading email and compiling stuff.  It's happened every day this week
+so far and I managed to grab stack traces of the stuck processes this morning
+(see attached).
 
+There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a raid1
+array with two partitions with an ext4 partition on it.  md2 is similar but
+it's dm-crypted and ext4 is on top of that.
 
+David
+---
 
-> Head is:
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=a5a91f546444940f3d75e2edf3c53b4d235f0557
-> 
-> Link to v1:
-> https://lore.kernel.org/netdev/20230618062451.79980-1-AVKrasnov@sberdevices.ru/
-> Link to v2:
-> https://lore.kernel.org/netdev/20230719192708.1775162-1-AVKrasnov@sberdevices.ru/
-> 
-> Changelog:
->  v1 -> v2:
->  * Patchset is rebased on the new HEAD of net-next.
->  * 0001: R-b tag added.
->  * 0003: check return value of 'send()' call. 
->  v2 -> v3:
->  * Patchset is rebased (and tested) on the new HEAD of net-next.
->  * 'RFC' tag is replaced with 'net-next'.
->  * Small refactoring in 0004:
->    '__test_msg_peek_client()' -> 'test_msg_peek_client()'.
->    '__test_msg_peek_server()' -> 'test_msg_peek_server()'.
-> 
-> Arseniy Krasnov (4):
->   virtio/vsock: rework MSG_PEEK for SOCK_STREAM
->   virtio/vsock: support MSG_PEEK for SOCK_SEQPACKET
->   vsock/test: rework MSG_PEEK test for SOCK_STREAM
->   vsock/test: MSG_PEEK test for SOCK_SEQPACKET
-> 
->  net/vmw_vsock/virtio_transport_common.c | 104 +++++++++++++-----
->  tools/testing/vsock/vsock_test.c        | 136 ++++++++++++++++++++++--
->  2 files changed, 208 insertions(+), 32 deletions(-)
-> 
-> -- 
-> 2.25.1
+   1015 ?        D      0:04 [md2_raid1]
+   1074 ?        D      0:00 [jbd2/sda6-8]
+   1138 ?        D      0:00 [jbd2/md3-8]
+   1167 ?        D      0:10 [dmcrypt_write/253:0]
+   1202 ?        D      0:03 [jbd2/dm-0-8]
+ 117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
+ 121540 ?        D      0:46 [kworker/u16:10+flush-253:0]
+ 125431 pts/2    Dl+    0:00 emacs .stgit-edit.txt
+ 125469 ?        D      0:00 /usr/libexec/nmh/rcvstore +kernel
+
+===1015===
+    PID TTY      STAT   TIME COMMAND
+   1015 ?        D      0:04 [md2_raid1]
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_daemon_work+0x183/0x3b0
+[<0>] md_check_recovery+0x42/0x5a0
+[<0>] raid1d+0x87/0x16f0 [raid1]
+[<0>] md_thread+0xab/0x190
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===1074===
+    PID TTY      STAT   TIME COMMAND
+   1074 ?        D      0:00 [jbd2/sda6-8]
+[<0>] jbd2_journal_commit_transaction+0x11a6/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===1138===
+    PID TTY      STAT   TIME COMMAND
+   1138 ?        D      0:00 [jbd2/md3-8]
+[<0>] jbd2_journal_commit_transaction+0x162d/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===1167===
+    PID TTY      STAT   TIME COMMAND
+   1167 ?        D      0:10 [dmcrypt_write/253:0]
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_unplug+0xad/0x120
+[<0>] flush_bio_list+0xf3/0x100 [raid1]
+[<0>] raid1_unplug+0x3b/0xb0 [raid1]
+[<0>] __blk_flush_plug+0xd8/0x160
+[<0>] blk_finish_plug+0x29/0x40
+[<0>] dmcrypt_write+0x132/0x140 [dm_crypt]
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===1202===
+    PID TTY      STAT   TIME COMMAND
+   1202 ?        D      0:03 [jbd2/dm-0-8]
+[<0>] jbd2_journal_commit_transaction+0x162d/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===117547===
+    PID TTY      STAT   TIME COMMAND
+ 117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
+[<0>] blk_mq_get_tag+0x11e/0x2b0
+[<0>] __blk_mq_alloc_requests+0x1bc/0x350
+[<0>] blk_mq_submit_bio+0x2c7/0x680
+[<0>] __submit_bio+0x8b/0x170
+[<0>] submit_bio_noacct_nocheck+0x159/0x370
+[<0>] __block_write_full_folio+0x1e1/0x400
+[<0>] writepage_cb+0x1a/0x70
+[<0>] write_cache_pages+0x144/0x3b0
+[<0>] do_writepages+0x164/0x1e0
+[<0>] __writeback_single_inode+0x3d/0x360
+[<0>] writeback_sb_inodes+0x1ed/0x4b0
+[<0>] __writeback_inodes_wb+0x4c/0xf0
+[<0>] wb_writeback+0x298/0x310
+[<0>] wb_workfn+0x35b/0x510
+[<0>] process_one_work+0x1de/0x3f0
+[<0>] worker_thread+0x51/0x390
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===121540===
+    PID TTY      STAT   TIME COMMAND
+ 121540 ?        D      0:46 [kworker/u16:10+flush-253:0]
+[<0>] folio_wait_bit_common+0x13d/0x350
+[<0>] mpage_prepare_extent_to_map+0x309/0x4d0
+[<0>] ext4_do_writepages+0x25d/0xc90
+[<0>] ext4_writepages+0xad/0x180
+[<0>] do_writepages+0xcf/0x1e0
+[<0>] __writeback_single_inode+0x3d/0x360
+[<0>] writeback_sb_inodes+0x1ed/0x4b0
+[<0>] __writeback_inodes_wb+0x4c/0xf0
+[<0>] wb_writeback+0x298/0x310
+[<0>] wb_workfn+0x35b/0x510
+[<0>] process_one_work+0x1de/0x3f0
+[<0>] worker_thread+0x51/0x390
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+===125431===
+    PID TTY      STAT   TIME COMMAND
+ 125431 pts/2    Dl+    0:00 emacs .stgit-edit.txt
+[<0>] jbd2_log_wait_commit+0xd8/0x140
+[<0>] ext4_sync_file+0x1cc/0x380
+[<0>] __x64_sys_fsync+0x3b/0x70
+[<0>] do_syscall_64+0x5d/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+===125469===
+    PID TTY      STAT   TIME COMMAND
+ 125469 ?        D      0:00 /usr/libexec/nmh/rcvstore +kernel
+[<0>] folio_wait_bit_common+0x13d/0x350
+[<0>] folio_wait_writeback+0x2c/0x90
+[<0>] truncate_inode_partial_folio+0x5e/0x1a0
+[<0>] truncate_inode_pages_range+0x1da/0x400
+[<0>] truncate_pagecache+0x47/0x60
+[<0>] ext4_setattr+0x685/0xba0
+[<0>] notify_change+0x1e0/0x4a0
+[<0>] do_truncate+0x98/0xf0
+[<0>] do_sys_ftruncate+0x15c/0x1b0
+[<0>] do_syscall_64+0x5d/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
