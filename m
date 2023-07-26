@@ -2,73 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053DD76328E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31687632A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbjGZJlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        id S233730AbjGZJms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjGZJlc (ORCPT
+        with ESMTP id S233761AbjGZJmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:41:32 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C0DDD
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:41:30 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso53986495e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690364489; x=1690969289;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RSuNg53H/eRmqu9mEiw63xexfk54mFabzvALVb5yShE=;
-        b=S0iS+CY+pouZAcxIqo+d89jksUNc4fWf73fEJYRib6djRv72Oh51C/8jQ7RAut+VkF
-         iq5Bxz83bzX/KO48YYb8tz2dy4xADrw1+itvPwSEcobI9kef+Fupjnf8JCC2X7U2e/dX
-         t+sGxp/5CGuRmJ6hpUhGO3hPyfhOvEgfzcscoTRs6t6v8OsN0r9Hfl74E9Uu4cPIQyty
-         +dFHUtw6cBnQ6hYMosO9zgDb9UGJWdmaskz9bfaiJDyBx0uDYrh5iqVX2sbusDTiClh9
-         33GJUHQfBYprCfAdR7k8It5vVT0ZaVoHYFgsYngAQMMqdT3d1cz8zv1QSth8qbeaklSA
-         bIEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690364489; x=1690969289;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RSuNg53H/eRmqu9mEiw63xexfk54mFabzvALVb5yShE=;
-        b=QGlCPup+J6iiy8ZldwG8rxt9jR1APp0G59aM3rMuQy3CQwnKssHg/jMidUNF3W2HP7
-         5n7uE9mjIB0g3NzOtrvo7e4saKePEeNkdENn507Zh8UlrZ1P8bTajlafvv9RpqHT812m
-         FVB652rcs03CuRj01/96AoGWcqbWi7yMkCd+v7sMEk2jRPIujw3kLQ9d6WZP1ZARSgPS
-         dfOqSV/5yh1hZ6uk51evkoQ7COz1W6qsb3p6fD6pNwsvId1tkzVR+Y7+vnWUGX3/tPkj
-         RcyPj460rHSZ7bvNS/95lImoZfjp01vVuNWqkACnz6cgnIJOsJHiItWJwtZNjGDczFRp
-         j/XQ==
-X-Gm-Message-State: ABy/qLYUryET5CyOxtTUyiqWz15uBDQXn8LuSpozgUytuERZGh/RWwoY
-        0IYrt0kJIgJrK9kd9Bj7KywuE4NiRe1Axuk03W8=
-X-Google-Smtp-Source: APBJJlGRJt9iE6by5+r9JGU4yXGFwaxVzc3NGMwzAmPoj5/gcjzSnz3j5vCQ6TfkZHC03JCcSW5I3A==
-X-Received: by 2002:a05:600c:2248:b0:3fc:500:db7c with SMTP id a8-20020a05600c224800b003fc0500db7cmr1032792wmm.21.1690364488671;
-        Wed, 26 Jul 2023 02:41:28 -0700 (PDT)
-Received: from 1.. ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003fc04d13242sm1533964wmc.0.2023.07.26.02.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 02:41:28 -0700 (PDT)
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
-        michael@walle.cc, Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
-        miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v4 00/11] mtd: spi-nor: spansion: Add support for Infineon S28HS02GT
-Date:   Wed, 26 Jul 2023 12:41:25 +0300
-Message-Id: <169036447855.16855.4782783762090892713.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230726075257.12985-1-tudor.ambarus@linaro.org>
-References: <20230726075257.12985-1-tudor.ambarus@linaro.org>
+        Wed, 26 Jul 2023 05:42:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9262691
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:42:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F87461A1D
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:42:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B05F9C433C7;
+        Wed, 26 Jul 2023 09:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690364527;
+        bh=jT7Nd0DTD2cLsNYeo9Ha6N6zXG4jGj4savk3XbwfyNg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UceMv7yRBsMpU6EFD5fnSm68w07ZIVTaHp8SLds80phf4UAU6lD+9Xcipk4zWl2HN
+         ci48z8nN5jXIQvj5ViX8PREkREeevgumjyEhNyTZiV7BUxevKS+MGnGvRG+gOnaQTO
+         BGWHtuefeeCtlFrDlduzXx9qr1AvvCAuwDqE/nes=
+Date:   Wed, 26 Jul 2023 11:42:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ruan Jinjie <ruanjinjie@huawei.com>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] misc: hi6421-spmi-pmic: Remove redundant dev_err()
+Message-ID: <2023072646-valid-quote-d313@gregkh>
+References: <20230726170644.2474917-1-ruanjinjie@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1848; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=aVo6HXgzfBrWxmaR4b1LsmgS74bqiWlppyZxfX+Kpxs=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkwOpDf/lTojLk8cVCknrG9ctqt9OLeiBYkIh/9 zcMsXgK3HKJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZMDqQwAKCRBLVU9HpY0U 6fJMB/4+S1Jxsil9roPq0xcR28ApZzatZlmcxw6A5t4JR35sUGlrfpl7aA0F0X1N8X9cp/LCFqR xtRAo65Vlsk7+sakmjyS3A+BXDNsBneLqUND15J2D9zkm2c6IRf42c6gph8Ze2U1sivcSiv91Sd itNziotvW/2S2zaB9OPFn6j6t9rLGqBAkg36tJ81KYUhnan3nRi414PGn1mOsy7iyWFRljvlKzP /k8mrrtLOsjVLpyOUoQeR6LsNoikB0CbxDJOgTXGdctIZG5wrw/LARDOsoj41sYvnEZ2d06iZmx 9de1X5OCaLj6LOl++z/qdBIzm9WMk2fhzmVEvVtxvkJpgw3V
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726170644.2474917-1-ruanjinjie@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,40 +51,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 10:52:46 +0300, Tudor Ambarus wrote:
-> v4:
-> - define vreg_offset for S25FS256T in the post_sfdp hook. The goal
-> is to use the same code base for both single and multi chip package
-> flashes.
-> - get rid of SPINOR_REG_CYPRESS_CFR{1,3,5}V as they are no longer used
+On Wed, Jul 26, 2023 at 05:06:44PM +0000, Ruan Jinjie wrote:
+> There is no need to call the dev_err() function directly to print a custom
+> message when handling an error from the platform_get_irq() functions as it
+> going to display an appropriate error message in case of a failure.
 > 
+> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> ---
+>  drivers/misc/hi6421v600-irq.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/misc/hi6421v600-irq.c b/drivers/misc/hi6421v600-irq.c
+> index caa3de37698b..e5ed94e98a3c 100644
+> --- a/drivers/misc/hi6421v600-irq.c
+> +++ b/drivers/misc/hi6421v600-irq.c
+> @@ -245,7 +245,6 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
+>  
+>  	priv->irq = platform_get_irq(pmic_pdev, 0);
+>  	if (priv->irq < 0) {
+> -		dev_err(dev, "Error %d when getting IRQs\n", priv->irq);
+>  		return priv->irq;
+>  	}
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
-
-[01/11] mtd: spi-nor: spansion: use CLPEF as an alternative to CLSR
-        https://git.kernel.org/mtd/c/d534fd9787d5
-[02/11] mtd: spi-nor: spansion: preserve CFR2V[7] when writing MEMLAT
-        https://git.kernel.org/mtd/c/1e611e104b9a
-[03/11] mtd: spi-nor: spansion: prepare octal dtr methods for multi chip support
-        https://git.kernel.org/mtd/c/c0aa05123f11
-[04/11] mtd: spi-nor: spansion: switch set_octal_dtr method to use vreg_offset
-        https://git.kernel.org/mtd/c/362f786ea00a
-[05/11] mtd: spi-nor: spansion: switch h28hx's ready() to use vreg_offset
-        https://git.kernel.org/mtd/c/463d7cfd08d8
-[06/11] mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
-        https://git.kernel.org/mtd/c/7d896a94bf74
-[07/11] mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP
-        https://git.kernel.org/mtd/c/eff9604390d6
-[08/11] mtd: spi-nor: spansion: add support for S28HS02GT
-        https://git.kernel.org/mtd/c/68a86d183390
-[09/11] mtd: spi-nor: spansion: let SFDP determine the flash and sector size
-        https://git.kernel.org/mtd/c/39133e5f559e
-[10/11] mtd: spi-nor: spansion: switch s25hx_t to use vreg_offset for quad_enable()
-        https://git.kernel.org/mtd/c/fb63bfad1e8f
-[11/11] mtd: spi-nor: spansion: switch cypress_nor_get_page_size() to use vreg_offset
-        https://git.kernel.org/mtd/c/aa517a29d645
-
-Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+It's good not to add coding style errors when trying to fix up a
+different type of issue :(
