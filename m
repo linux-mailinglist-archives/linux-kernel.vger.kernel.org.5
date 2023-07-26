@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A2B762A35
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E0C762A5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 06:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjGZERo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 00:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S230204AbjGZEmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 00:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjGZERP (ORCPT
+        with ESMTP id S230009AbjGZEmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 00:17:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C17855AB;
-        Tue, 25 Jul 2023 21:11:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A6BB611BF;
-        Wed, 26 Jul 2023 04:09:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBD6BC433C8;
-        Wed, 26 Jul 2023 04:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690344581;
-        bh=ku1nE39/TTrl/Uk7uhUIacdlmfCDkaxNE1UEjYekZco=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cl+tt96BUc+4oGpCAUspkgwUXGcWQm+hGLkPXiAiOsfTtS0+PC7Ud9PZRw61XFN+D
-         GMijLReeVQfeloe6NBB/+zZwnr48Lbnw93ky0jOb8QZXMLnn6+DwV0KrmFe3FyQdLB
-         d2oo+rZlkkJ+VQbsKbyMPiol/qZUrZyVhn6LWph1ZeLzx1Kl5az4CsIY6aIfO93jt3
-         LatHN1gFnRd5I0hM3uuAe0okMGec7W8vwCzc2z/7UzLWXVUHPAxoZqM5xmlux00dyr
-         yEoeCJUdfW3CZlrgZTUJijb8VycOMcuaNC/AqqHxtFQkuLJ9FWCZZgWS7nc8J1Va9J
-         5kRmmN2VYjkmg==
-Date:   Tue, 25 Jul 2023 21:09:39 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v11 06/10] net: ti: icssg-prueth: Add ICSSG ethernet
- driver
-Message-ID: <20230725210939.56d77726@kernel.org>
-In-Reply-To: <20230724112934.2637802-7-danishanwar@ti.com>
-References: <20230724112934.2637802-1-danishanwar@ti.com>
-        <20230724112934.2637802-7-danishanwar@ti.com>
+        Wed, 26 Jul 2023 00:42:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB0319AD;
+        Tue, 25 Jul 2023 21:42:42 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36Q43ZY0019171;
+        Wed, 26 Jul 2023 04:10:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dWoJqM/8xxdZdeMwANhjFuSktS5IrBpiZwrKSScFmGU=;
+ b=lmT0Fxm8IDrzeo4s531G/eqYY8Uri0LblTHS/zPbvNwMscaI3eXfWgCRcn1B/uYG7sxO
+ km5JR3KgI36wY6jhjnrZhKhJaeTUbaJ7uhP7DMVAv6zPPOh00zFH357PD65tCMfhB5Hv
+ bQbFs1Fw4whN1a02Nvk5ajyv9ezpUzfJvr+25sy36ZWTbIUvpQwC/HjqKfBSIyZgw2Ev
+ V4EFv0X9lx5zKBvhjXgzm7SE9EQs7oWCvW1HYDaoG4b6U+/+tEmAYGZrTqZp9kBgamBf
+ uE23/TNPpH5kJc3flJXtyVeIUJBez5PzrpwbA91lIuyqO4/a1dt536NYizmR5QjXSAf1 +Q== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2gp1sd0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 04:10:02 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36Q4A0kf030076
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 04:10:00 GMT
+Received: from [10.216.49.141] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 25 Jul
+ 2023 21:09:55 -0700
+Message-ID: <0a9c83a3-b232-78c2-86c8-682effbb60d4@quicinc.com>
+Date:   Wed, 26 Jul 2023 09:39:46 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V4 1/7] dt-bindings: clock: Update GCC clocks for QDU1000
+ and QRU1000 SoCs
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Rob Herring <robh@kernel.org>
+References: <20230719041450.737929-1-quic_imrashai@quicinc.com>
+ <20230719041450.737929-2-quic_imrashai@quicinc.com>
+ <20230719153535.GC4176673@hu-bjorande-lv.qualcomm.com>
+Content-Language: en-US
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+In-Reply-To: <20230719153535.GC4176673@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XTHHjd9_Zj0-DhUz4AjkBP-mia8TdAU_
+X-Proofpoint-ORIG-GUID: XTHHjd9_Zj0-DhUz4AjkBP-mia8TdAU_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_14,2023-07-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307260035
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,262 +97,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 16:59:30 +0530 MD Danish Anwar wrote:
->  drivers/net/ethernet/ti/Kconfig        |   13 +
->  drivers/net/ethernet/ti/Makefile       |    3 +
->  drivers/net/ethernet/ti/icssg_prueth.c | 1831 ++++++++++++++++++++++++
->  drivers/net/ethernet/ti/icssg_prueth.h |   48 +
-
-Please create a sub-directory for the driver.
-
-> +static int prueth_ndev_add_tx_napi(struct prueth_emac *emac)
-> +{
-> +	struct prueth *prueth = emac->prueth;
-> +	int i, ret;
-> +
-> +	for (i = 0; i < emac->tx_ch_num; i++) {
-> +		struct prueth_tx_chn *tx_chn = &emac->tx_chns[i];
-> +
-> +		netif_napi_add_tx_weight(emac->ndev, &tx_chn->napi_tx,
-> +					 emac_napi_tx_poll, NAPI_POLL_WEIGHT);
-
-Skip specifying weight, please.
-
-> +/**
-> + * emac_ndo_start_xmit - EMAC Transmit function
-> + * @skb: SKB pointer
-> + * @ndev: EMAC network adapter
-> + *
-> + * Called by the system to transmit a packet  - we queue the packet in
-> + * EMAC hardware transmit queue
-> + * Doesn't wait for completion we'll check for TX completion in
-> + * emac_tx_complete_packets().
-> + *
-> + * Return: enum netdev_tx
-> + */
-> +static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-> +{
-> +	struct cppi5_host_desc_t *first_desc, *next_desc, *cur_desc;
-> +	struct prueth_emac *emac = netdev_priv(ndev);
-> +	struct netdev_queue *netif_txq;
-> +	struct prueth_tx_chn *tx_chn;
-> +	dma_addr_t desc_dma, buf_dma;
-> +	int i, ret = 0, q_idx;
-> +	void **swdata;
-> +	u32 pkt_len;
-> +	u32 *epib;
-> +
-> +	pkt_len = skb_headlen(skb);
-> +	q_idx = skb_get_queue_mapping(skb);
-> +
-> +	tx_chn = &emac->tx_chns[q_idx];
-> +	netif_txq = netdev_get_tx_queue(ndev, q_idx);
-> +
-> +	/* Map the linear buffer */
-> +	buf_dma = dma_map_single(tx_chn->dma_dev, skb->data, pkt_len, DMA_TO_DEVICE);
-> +	if (dma_mapping_error(tx_chn->dma_dev, buf_dma)) {
-> +		netdev_err(ndev, "tx: failed to map skb buffer\n");
-> +		ret = NETDEV_TX_BUSY;
-
-Drop it if it can't be mapped and return OK. What's going to re-enable
-the queue in this case?
-
-> +		goto drop_stop_q;
-> +	}
-> +
-> +	first_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
-> +	if (!first_desc) {
-> +		netdev_dbg(ndev, "tx: failed to allocate descriptor\n");
-> +		dma_unmap_single(tx_chn->dma_dev, buf_dma, pkt_len, DMA_TO_DEVICE);
-> +		ret = NETDEV_TX_BUSY;
-> +		goto drop_stop_q_busy;
-> +	}
-> +
-> +	cppi5_hdesc_init(first_desc, CPPI5_INFO0_HDESC_EPIB_PRESENT,
-> +			 PRUETH_NAV_PS_DATA_SIZE);
-> +	cppi5_hdesc_set_pkttype(first_desc, 0);
-> +	epib = first_desc->epib;
-> +	epib[0] = 0;
-> +	epib[1] = 0;
-> +
-> +	/* set dst tag to indicate internal qid at the firmware which is at
-> +	 * bit8..bit15. bit0..bit7 indicates port num for directed
-> +	 * packets in case of switch mode operation
-> +	 */
-> +	cppi5_desc_set_tags_ids(&first_desc->hdr, 0, (emac->port_id | (q_idx << 8)));
-> +	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
-> +	cppi5_hdesc_attach_buf(first_desc, buf_dma, pkt_len, buf_dma, pkt_len);
-> +	swdata = cppi5_hdesc_get_swdata(first_desc);
-> +	*swdata = skb;
-> +
-> +	if (!skb_is_nonlinear(skb))
-> +		goto tx_push;
-
-Why the goto? The loop won't be entered.
-
-> +	/* Handle the case where skb is fragmented in pages */
-> +	cur_desc = first_desc;
-> +	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-> +		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
-> +		u32 frag_size = skb_frag_size(frag);
-> +
-> +		next_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
-> +		if (!next_desc) {
-> +			netdev_err(ndev,
-> +				   "tx: failed to allocate frag. descriptor\n");
-> +			ret = NETDEV_TX_BUSY;
-> +			goto drop_free_descs;
-> +		}
-> +
-> +		buf_dma = skb_frag_dma_map(tx_chn->dma_dev, frag, 0, frag_size,
-> +					   DMA_TO_DEVICE);
-> +		if (dma_mapping_error(tx_chn->dma_dev, buf_dma)) {
-> +			netdev_err(ndev, "tx: Failed to map skb page\n");
-> +			k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
-> +			ret = NETDEV_TX_BUSY;
-> +			goto drop_free_descs;
-
-this label frees the skb, you can't return BUSY
-
-> +		}
-> +
-> +		cppi5_hdesc_reset_hbdesc(next_desc);
-> +		k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
-> +		cppi5_hdesc_attach_buf(next_desc,
-> +				       buf_dma, frag_size, buf_dma, frag_size);
-> +
-> +		desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool,
-> +						      next_desc);
-> +		k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &desc_dma);
-> +		cppi5_hdesc_link_hbdesc(cur_desc, desc_dma);
-> +
-> +		pkt_len += frag_size;
-> +		cur_desc = next_desc;
-> +	}
-> +	WARN_ON(pkt_len != skb->len);
-
-WARN_ON_ONCE() if at all
-
-> +
-> +tx_push:
-> +	/* report bql before sending packet */
-> +	netdev_tx_sent_queue(netif_txq, pkt_len);
-> +
-> +	cppi5_hdesc_set_pktlen(first_desc, pkt_len);
-> +	desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, first_desc);
-> +	/* cppi5_desc_dump(first_desc, 64); */
-> +
-> +	skb_tx_timestamp(skb);  /* SW timestamp if SKBTX_IN_PROGRESS not set */
-> +	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
-> +	if (ret) {
-> +		netdev_err(ndev, "tx: push failed: %d\n", ret);
-> +		goto drop_free_descs;
-> +	}
-> +
-> +	if (k3_cppi_desc_pool_avail(tx_chn->desc_pool) < MAX_SKB_FRAGS) {
-> +		netif_tx_stop_queue(netif_txq);
-> +		/* Barrier, so that stop_queue visible to other cpus */
-> +		smp_mb__after_atomic();
-> +
-> +		if (k3_cppi_desc_pool_avail(tx_chn->desc_pool) >=
-> +		    MAX_SKB_FRAGS)
-
-MAX_FRAGS + 1?
-
-> +			netif_tx_wake_queue(netif_txq);
-> +	}
-> +
-> +	return NETDEV_TX_OK;
 
 
-> +static int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
-> +{
-> +	struct prueth_emac *emac = prueth_napi_to_emac(napi_rx);
-> +	int rx_flow = PRUETH_RX_FLOW_DATA;
-> +	int flow = PRUETH_MAX_RX_FLOWS;
-> +	int num_rx = 0;
-> +	int cur_budget;
-> +	int ret;
-> +
-> +	while (flow--) {
-> +		cur_budget = budget - num_rx;
-> +
-> +		while (cur_budget--) {
-> +			ret = emac_rx_packet(emac, flow);
-> +			if (ret)
-> +				break;
-> +			num_rx++;
-> +		}
-> +
-> +		if (num_rx >= budget)
-> +			break;
-> +	}
-> +
-> +	if (num_rx < budget) {
-> +		napi_complete(napi_rx);
+On 7/19/2023 9:05 PM, Bjorn Andersson wrote:
+> On Wed, Jul 19, 2023 at 09:44:44AM +0530, Imran Shaik wrote:
+>> Update the qcom GCC clock bindings for QDU1000 and QRU1000 SoCs.
+>>
+> 
+> Please read [1], and as it says "Describe your problem.". This goes for
+> the most of the series.
+> 
+> There are changes in this series which could be applicable to existing
+> or future platforms. Your description of the problems you're solving
+> will help others solve the same problem, not make the same mistake, and
+> anyone fixing adjacent issues in the future can rely on your
+> documentation of why things looks the way they look.
+> 
+> [1] https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#describe-your-changes
+> 
 
-Prefer using napi_complete_done()
+Sure, will update the next series with the detailed commit text.
 
-> +		enable_irq(emac->rx_chns.irq[rx_flow]);
-> +	}
-> +
-> +	return num_rx;
-> +}
+>> Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
+> 
+> Please don't use co-developed-by excessively. This patch is beyond
+> trivial, did you really both author it?
+> 
+> Regards,
+> Bjorn
+> 
 
-> +static void emac_ndo_tx_timeout(struct net_device *ndev, unsigned int txqueue)
-> +{
-> +	struct prueth_emac *emac = netdev_priv(ndev);
-> +
-> +	if (netif_msg_tx_err(emac))
-> +		netdev_err(ndev, "xmit timeout");
+Sure, will take care of this from now and will remove the 
+co-developed-by  for trivial changes in next series.
 
-Core already prints something, you can drop this.
+Thanks,
+Imran
 
-> +	ndev->stats.tx_errors++;
-> +}
-
-> +static void emac_ndo_set_rx_mode_work(struct work_struct *work)
-> +{
-> +	struct prueth_emac *emac = container_of(work, struct prueth_emac, rx_mode_work);
-> +	struct net_device *ndev = emac->ndev;
-> +	bool promisc, allmulti;
-> +
-> +	if (!netif_running(ndev))
-> +		return;
-> +
-> +	promisc = ndev->flags & IFF_PROMISC;
-> +	allmulti = ndev->flags & IFF_ALLMULTI;
-> +	emac_set_port_state(emac, ICSSG_EMAC_PORT_UC_FLOODING_DISABLE);
-> +	emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_DISABLE);
-> +
-> +	if (promisc) {
-> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_UC_FLOODING_ENABLE);
-> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
-> +		return;
-> +	}
-> +
-> +	if (allmulti) {
-> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
-> +		return;
-> +	}
-> +
-> +	if (!netdev_mc_empty(ndev)) {
-> +		emac_set_port_state(emac, ICSSG_EMAC_PORT_MC_FLOODING_ENABLE);
-> +		return;
-> +	}
-> +}
-
-There's no need for locking in this work?
-
-> +	netif_napi_add(ndev, &emac->napi_rx,
-> +		       emac_napi_rx_poll);
-
-nit: fits on a line
-
-> +static struct platform_driver prueth_driver = {
-> +	.probe = prueth_probe,
-> +	.remove = prueth_remove,
-
-Please use .remove_new (which has a void return).
--- 
-pw-bot: cr
+>> Acked-by: Rob Herring <robh@kernel.org>
+>> ---
+>> Changes since v3:
+>>   - None
+>> Changes since v2:
+>>   - None
+>> Changes since v1:
+>>   - Removed the v2 variant compatible string changes
+>>   - Updated the maintainers list
+>>
+>>   Documentation/devicetree/bindings/clock/qcom,qdu1000-gcc.yaml | 3 ++-
+>>   include/dt-bindings/clock/qcom,qdu1000-gcc.h                  | 4 +++-
+>>   2 files changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,qdu1000-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,qdu1000-gcc.yaml
+>> index 767a9d03aa32..d712b1a87e25 100644
+>> --- a/Documentation/devicetree/bindings/clock/qcom,qdu1000-gcc.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,qdu1000-gcc.yaml
+>> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>>   title: Qualcomm Global Clock & Reset Controller for QDU1000 and QRU1000
+>>   
+>>   maintainers:
+>> -  - Melody Olvera <quic_molvera@quicinc.com>
+>> +  - Taniya Das <quic_tdas@quicinc.com>
+>> +  - Imran Shaik <quic_imrashai@quicinc.com>
+>>   
+>>   description: |
+>>     Qualcomm global clock control module which supports the clocks, resets and
+>> diff --git a/include/dt-bindings/clock/qcom,qdu1000-gcc.h b/include/dt-bindings/clock/qcom,qdu1000-gcc.h
+>> index ddbc6b825e80..2fd36cbfddbb 100644
+>> --- a/include/dt-bindings/clock/qcom,qdu1000-gcc.h
+>> +++ b/include/dt-bindings/clock/qcom,qdu1000-gcc.h
+>> @@ -1,6 +1,6 @@
+>>   /* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+>>   /*
+>> - * Copyright (c) 2021-2022, Qualcomm Innovation Center, Inc. All rights reserved.
+>> + * Copyright (c) 2021-2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>    */
+>>   
+>>   #ifndef _DT_BINDINGS_CLK_QCOM_GCC_QDU1000_H
+>> @@ -138,6 +138,8 @@
+>>   #define GCC_AGGRE_NOC_ECPRI_GSI_CLK			128
+>>   #define GCC_PCIE_0_PIPE_CLK_SRC				129
+>>   #define GCC_PCIE_0_PHY_AUX_CLK_SRC			130
+>> +#define GCC_GPLL1_OUT_EVEN				131
+>> +#define GCC_DDRSS_ECPRI_GSI_CLK				132
+>>   
+>>   /* GCC resets */
+>>   #define GCC_ECPRI_CC_BCR				0
+>> -- 
+>> 2.25.1
+>>
