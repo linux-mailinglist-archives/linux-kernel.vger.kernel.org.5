@@ -2,100 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F276399B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34204763999
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 16:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjGZOxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 10:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S233873AbjGZOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 10:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbjGZOxa (ORCPT
+        with ESMTP id S234088AbjGZOxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 10:53:30 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C181FDD;
-        Wed, 26 Jul 2023 07:53:27 -0700 (PDT)
-X-QQ-mid: bizesmtp81t1690383196tg3gh1y1
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 26 Jul 2023 22:53:15 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: CR3LFp2JE4lR8uPfZDf/0uFir0EsUHKoIwJEyr/UBQkcQtyYyGJy+e/6T2bhl
-        ZIJRDpqjWmsEvMhs7TxXstjU/eRcQx+Luc8vn+wo2GlERyOOmhZlkyrA7rCWWu3ysV3Hh5I
-        UU8ha4Ud4zqLREeTs0H1/xM7MXjt6HsVs81LVJLtY2KyZHbiem9ohokvXd/i211/VBPrP9F
-        +OdRuATSNtWxecawtfJb6H179BBcc4xS9yMDAQDYKlW6aCjNfYy7J7++YZUSNun3rXu7aI5
-        2gfuXzzAhcprbvxAynbM0fN2eK83hWvon+GU4BHxvbIQ6kWPxNEphh0+vHGVPyK7sIz4tGR
-        /Z3y5Wyeb+QS2e8Ly474VQH5TNpPj+voCBKRn8SmHq7xm11eXgdQb+pSzN3dXzON9v0UGrj
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13127243865508606372
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v2 3/7] selftests/nolibc: add extra configs customize support
-Date:   Wed, 26 Jul 2023 22:52:56 +0800
-Message-Id: <06d7db26484ca13e583ddad43af1bc0e4a99674f.1690373704.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690373704.git.falcon@tinylab.org>
-References: <cover.1690373704.git.falcon@tinylab.org>
+        Wed, 26 Jul 2023 10:53:08 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F7719A0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:53:06 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63d23473ed5so8458406d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 07:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690383185; x=1690987985;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DAfH5v/FF69jwtMUJAQFsWnnw4nApRzsZ9+9hy9LFb4=;
+        b=Uab2ivjjTFcQGMdWe0ih6Wtrb5WZDGqLYfeNDc8TALXaTT8kf5avzsYAy3xo7Lfscz
+         k6hoFbaH1zeMk8VnStPdktueZ8kaqoiDz1IJQ5hMml+zSXVDoM7hBuzaaCw6Ma1nBbK4
+         PU9QoWEwQUcQS3MUI9x97gxQ1+9YX26SJFS/M2aUx+tvKw6LHDjrw9QP/AksSce4/A7Y
+         ZXXoTFpU+MJA2NKStor0L9cfppts9fY9ld3J/QygAiDusv2u5IUh+Y3NjvHN3zN8LCMS
+         kIMPlYRQ+GaHPfkblKp3Q7gaqa4sGmrwBbiN+nHhZzkDJJpNrncHKNY1gdaoQVfyFPjM
+         YZVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690383185; x=1690987985;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DAfH5v/FF69jwtMUJAQFsWnnw4nApRzsZ9+9hy9LFb4=;
+        b=M3SV11KNK7r3e45tavXGqoIWooNvN/VSeWyDY1zvglTeiFWAtX2yUhX9iOewYG/vQh
+         N1zLpOGvmPcuGI/1gX9CH15oS5tcjrUS6ywOQ5U6VwH3qnIRv7hIgoV8quwgDQfvNSIY
+         11Y/0BEPaU2gnM0gKY3q+GwTRYFZW17kGuM9Rl+1cP0rDoAsH92S76wnpIn923U91/Hx
+         2nSt0Sqiys2J8qyIno4URRmzCROaWlZuRqMIOERIhTIl5ZdDlDfVK2S9eCNecvY4pQBK
+         YNPb9kGfyHG4t2EXM3F/eEIy3CQUDmNTN5MElV2OJlv3e6AS6+TdXq+rvsRuvUp2VrkU
+         3n7A==
+X-Gm-Message-State: ABy/qLY5df30+cikdDs43DjTx6yKhRgfYvX48WLh6DNH82Xux5CXbUuk
+        hS8glS8qfSJfgpxEKLz6ud4KXg==
+X-Google-Smtp-Source: APBJJlH3e5+/gb68gHLAVSLWp2h+LL6UzWbR163vXAK6FTeP67Yc4TVejm/1C2viPpaARYf2Aq5gPg==
+X-Received: by 2002:ac8:5f4a:0:b0:403:e853:17c3 with SMTP id y10-20020ac85f4a000000b00403e85317c3mr2591827qta.38.1690383185689;
+        Wed, 26 Jul 2023 07:53:05 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ad06])
+        by smtp.gmail.com with ESMTPSA id w10-20020ac86b0a000000b003f9c6a311e1sm4821641qts.47.2023.07.26.07.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 07:53:05 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Rik van Riel <riel@surriel.com>,
+        Joonsoo Kim <js1304@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: page_alloc: consume available CMA space first
+Date:   Wed, 26 Jul 2023 10:53:04 -0400
+Message-ID: <20230726145304.1319046-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default DEFCONFIG_<ARCH> may not always work for all architectures,
-some architectures require to add extra kernel config options, this
-allows to add extra options in the defconfig target.
+On a memcache setup with heavy anon usage and no swap, we routinely
+see premature OOM kills with multiple gigabytes of free space left:
 
-It allows to customize extra kernel config options via the common
-common.config and the architecture specific <ARCH>.config, at last
-trigger 'allnoconfig' to let them take effect with missing config
-options as disabled.
+    Node 0 Normal free:4978632kB [...] free_cma:4893276kB
 
-The scripts/kconfig/merge_config.sh tool is used to merge the extra
-config files.
+This free space turns out to be CMA. We set CMA regions aside for
+potential hugetlb users on all of our machines, figuring that even if
+there aren't any, the memory is available to userspace allocations.
 
-Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
-Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+When the OOMs trigger, it's from unmovable and reclaimable allocations
+that aren't allowed to dip into CMA. The non-CMA regions meanwhile are
+dominated by the anon pages.
+
+Movable pages can be migrated out of CMA when necessary, but we don't
+have a mechanism to migrate them *into* CMA to make room for unmovable
+allocations. The only recourse we have for these pages is reclaim,
+which due to a lack of swap is unavailable in our case.
+
+Because we have more options for CMA pages, change the policy to
+always fill up CMA first. This reduces the risk of premature OOMs.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- tools/testing/selftests/nolibc/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+ mm/page_alloc.c | 44 ++++++++++++++++++++------------------------
+ 1 file changed, 20 insertions(+), 24 deletions(-)
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index f42adef87e12..9576f1a0a98d 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
- DEFCONFIG            = $(DEFCONFIG_$(ARCH))
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7d3460c7a480..24b9102cd4f6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1635,13 +1635,13 @@ static int fallbacks[MIGRATE_TYPES][MIGRATE_PCPTYPES - 1] = {
+ };
  
-+# extra kernel config files under configs/, include common + architecture specific
-+EXTCONFIG            = common.config $(ARCH).config
+ #ifdef CONFIG_CMA
+-static __always_inline struct page *__rmqueue_cma_fallback(struct zone *zone,
++static __always_inline struct page *__rmqueue_cma(struct zone *zone,
+ 					unsigned int order)
+ {
+ 	return __rmqueue_smallest(zone, order, MIGRATE_CMA);
+ }
+ #else
+-static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
++static inline struct page *__rmqueue_cma(struct zone *zone,
+ 					unsigned int order) { return NULL; }
+ #endif
+ 
+@@ -2124,29 +2124,25 @@ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
+ {
+ 	struct page *page;
+ 
+-	if (IS_ENABLED(CONFIG_CMA)) {
+-		/*
+-		 * Balance movable allocations between regular and CMA areas by
+-		 * allocating from CMA when over half of the zone's free memory
+-		 * is in the CMA area.
+-		 */
+-		if (alloc_flags & ALLOC_CMA &&
+-		    zone_page_state(zone, NR_FREE_CMA_PAGES) >
+-		    zone_page_state(zone, NR_FREE_PAGES) / 2) {
+-			page = __rmqueue_cma_fallback(zone, order);
+-			if (page)
+-				return page;
+-		}
++	/*
++	 * Use up CMA first. Movable pages can be migrated out of CMA
++	 * if necessary, but they cannot migrate into it to make room
++	 * for unmovables elsewhere. The only recourse for them is
++	 * then reclaim, which might be unavailable without swap. We
++	 * want to reduce the risk of OOM with free CMA space left.
++	 */
++	if (IS_ENABLED(CONFIG_CMA) && (alloc_flags & ALLOC_CMA)) {
++		page = __rmqueue_cma(zone, order);
++		if (page)
++			return page;
+ 	}
+-retry:
+-	page = __rmqueue_smallest(zone, order, migratetype);
+-	if (unlikely(!page)) {
+-		if (alloc_flags & ALLOC_CMA)
+-			page = __rmqueue_cma_fallback(zone, order);
+-
+-		if (!page && __rmqueue_fallback(zone, order, migratetype,
+-								alloc_flags))
+-			goto retry;
 +
- # optional tests to run (default = all)
- TEST =
- 
-@@ -161,6 +164,8 @@ initramfs: nolibc-test
- 
- defconfig:
- 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-+	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
-+	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
- 
- kernel: initramfs
- 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
++	for (;;) {
++		page = __rmqueue_smallest(zone, order, migratetype);
++		if (page)
++			break;
++		if (!__rmqueue_fallback(zone, order, migratetype, alloc_flags))
++			break;
+ 	}
+ 	return page;
+ }
 -- 
-2.25.1
+2.41.0
 
