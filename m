@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507E5763C2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD02D763C37
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 18:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbjGZQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 12:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S233076AbjGZQTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 12:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbjGZQR0 (ORCPT
+        with ESMTP id S232514AbjGZQTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 12:17:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A72F268C
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:17:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE47961BB3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 16:17:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4A53C433C8;
-        Wed, 26 Jul 2023 16:17:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690388243;
-        bh=EzXddJxdLCYjjaFLuW2hCq3oDwt9vioK1ChWO2Mwx8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q06Z4ihIpUy+7SKUtFzFVavPTBeQavAX3BgEqflbadf8w+4hCjOuVpbKAYKUaB7Lf
-         nqzj8nF+wZ250iGYlYL5rhE7bqDiSswYvwgKkt1LyBKXSeQil04tT7FzKMiegLL0E7
-         xPBSCs31s9usjL9nVoqgmcsvx77Hwd9p25c4ld5ErkeWHTjjAKTeSXhS9sYDxYphnF
-         OZi+jNvnGBGXY118qbP/jkJJ4raskWDJTPiyxcnBPHerXvK5EjbUPsOd1imz4gvF8L
-         tjPz9mtKR26a8HOAego60n7FvpCH2FZ4dxPdUbnXljxRl2So+rX/84Y7TP8oAJ52eb
-         Q7xM3XoMMwCXw==
-Date:   Wed, 26 Jul 2023 10:17:20 -0600
-From:   Keith Busch <kbusch@kernel.org>
-To:     Pratyush Yadav <ptyadav@amazon.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Jens Axboe <axboe@kernel.dk>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
- none
-Message-ID: <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com>
-References: <20230725110622.129361-1-ptyadav@amazon.de>
- <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
- <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
- <20230726131408.GA15909@lst.de>
- <mafs0cz0e8zc6.fsf_-_@amazon.de>
+        Wed, 26 Jul 2023 12:19:11 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9A22695
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:19:10 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso104006151fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690388348; x=1690993148;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PGbt6PYMLskM53TKZ26axcDYb2hySneGd/kuw1Q4t1A=;
+        b=UtB3H6SEk6GoB09wbuHbHtkORwM/QWz6Ekw7lHFHgn3BcqUwHuINBbQqjPZnHNmoal
+         f9OlabJofeA1zUvqogtGqsP1gIrU1R8uMhyk73Ac8Rrpbu3rA7y/2AeVXiZ/HySh7gwv
+         uIHa2iX/us1vpuKABwhdHwEJl6x8gMfTKZEn6uMiRQHifJwIKbQZ9kYW4PZ/+acD2fuc
+         Y2bZ6mqNTF87KZz15t546jqKGUCMQ3hleLHnjq9KvO1lga1+av87a90kqxDmqHTInENX
+         M9ahCMKGt9rRtdfcSDAyuZKmqfr41ADKwKwPFg54e7QFLjPbW36/KdDI/Q0UQ95dVqX+
+         8c2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690388348; x=1690993148;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PGbt6PYMLskM53TKZ26axcDYb2hySneGd/kuw1Q4t1A=;
+        b=DhdPfXpkb4B8w4yTk1ooIMH4zjvacpHbnALxXfljICjTqjozsztcpFNSjcgi2n+MG5
+         8gQdWDf+FhshTu8+OR3QyNJD2OFR4CUNY/NGfnlU7WezGmwgUbHH5ka+JLEX2JXzhORf
+         +kWjQnGRgeZLv5IJ8dDaKn8F3PWYspVkFasuKH7Wc7CyLKmEFCB6hUXrstl9IS5Vmx27
+         4ZpXC5gi7M60kMfMe8NT7PTv4QA8c7qN1jVatSIuNBUQVR1ySN6AXu2jeLF8Qe/pOYR6
+         met9u1iGo49JuWyds8xvtxdzrKweRKsy1nyfhE4V0id/pLYBnCzunwoTgG7ZD6t0XGVd
+         Vdqg==
+X-Gm-Message-State: ABy/qLbKCeENE2NjHRFkfBw2DLuhE2nnSjHsoqK2Ab707URAsDO4CXKy
+        D6NRQFmCr/Oj7xfMyfyxKjDZzQ==
+X-Google-Smtp-Source: APBJJlE8hezboS//YmJrQJ4MM5zR/CYSBtT9FDJp1n9lOL3RLkHUeMdgVh8XVldJU45npuBdDbjWSQ==
+X-Received: by 2002:a2e:91c2:0:b0:2b7:67f:24bb with SMTP id u2-20020a2e91c2000000b002b7067f24bbmr1884459ljg.50.1690388348338;
+        Wed, 26 Jul 2023 09:19:08 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id j15-20020a170906254f00b00992d122af63sm9809417ejb.89.2023.07.26.09.19.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 09:19:07 -0700 (PDT)
+Message-ID: <76bddaa4-bff2-ffd9-ea33-92e622b290a5@linaro.org>
+Date:   Wed, 26 Jul 2023 18:19:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mafs0cz0e8zc6.fsf_-_@amazon.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] dt-bindings: hwmon: add renesas,isl28022
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+References: <20230726152235.249569-1-mail@carsten-spiess.de>
+ <20230726152235.249569-3-mail@carsten-spiess.de>
+ <82628237-e087-269e-9673-cf3873fe4b35@linaro.org>
+In-Reply-To: <82628237-e087-269e-9673-cf3873fe4b35@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 05:30:33PM +0200, Pratyush Yadav wrote:
-> On Wed, Jul 26 2023, Christoph Hellwig wrote:
-> > On Wed, Jul 26, 2023 at 10:58:36AM +0300, Sagi Grimberg wrote:
-> >>>> For example, AWS EC2's i3.16xlarge instance does not expose NUMA
-> >>>> information for the NVMe devices. This means all NVMe devices have
-> >>>> NUMA_NO_NODE by default. Without this patch, random 4k read performance
-> >>>> measured via fio on CPUs from node 1 (around 165k IOPS) is almost 50%
-> >>>> less than CPUs from node 0 (around 315k IOPS). With this patch, CPUs on
-> >>>> both nodes get similar performance (around 315k IOPS).
-> >>>
-> >>> irqbalance doesn't work with this driver though: the interrupts are
-> >>> managed by the kernel. Is there some other reason to explain the perf
-> >>> difference?
+On 26/07/2023 18:14, Krzysztof Kozlowski wrote:
 > 
-> Hmm, I did not know that. I have not gone and looked at the code but I
-> think the same reasoning should hold, just with s/irqbalance/kernel. If
-> the kernel IRQ balancer sees the device is on node 0, it would deliver
-> its interrupts to CPUs on node 0.
+>> +  shunt-resistor-micro-ohms:
+>> +    description:
+>> +      Shunt resistor value in micro-Ohm
+>> +      defaults to <0> when not set
+>> +      monitoring of current and power not supported when <0>
+>> +
+>> +  shunt-gain:
 > 
-> In my tests I can see that the interrupts for NVME queues are sent only
-> to CPUs from node 0 without this patch. With this patch CPUs from both
-> nodes get the interrupts.
+> 1. Missing vendor prefix (does not look like generic property)
+> 2. -microvolt
+> 
+>> +    description:
+>> +      Shunt gain to scale maximal shunt voltage to
+>> +      40mV, 80mV, 160mV, 320mV
+>> +      defaults to <8> (320mV) when not set
+> 
+> And then enum is for 40, 80, 160 and 320.
 
-Could you send the output of:
+Also use "default: X" to choose default, instead of free-form text.
 
-  numactl --hardware
+Best regards,
+Krzysztof
 
-and then with and without your patch:
-
-  for i in $(cat /proc/interrupts | grep nvme0 | sed "s/^ *//g" | cut -d":" -f 1); do \
-    cat /proc/irq/$i/{smp,effective}_affinity_list; \
-  done
-
-?
