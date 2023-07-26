@@ -2,132 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B447631EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58FD7631F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 11:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjGZJ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 05:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        id S232803AbjGZJ1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 05:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbjGZJ1G (ORCPT
+        with ESMTP id S232721AbjGZJ1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:27:06 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA924EF3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:25:12 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so1488060b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690363511; x=1690968311;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ajWZi1kTG9ZsFll3P13XRfH/M90QTcK5ZSE2yNZ8xrc=;
-        b=FbQ/cU5KkBidPkx8Y2uGYCzGutSB6xNfkWiQEKQsSST8W9zvQhHhApft87PlLY8dLU
-         DGKfOcVpxkQTOOl80Aro56BnjlNO41fZWD7CmV5GDlB1LjEDjOf3Kop2mVKp+naFiQzY
-         As6MgqOMDkFvMljdz6Un/7KTBl/NUqtiNwtAlVNm8YXgeUKehHDEJVTDK07iwDWpbMUs
-         Auk85ACWfB5lfW+mTAMWhogzlI0RHaQpyoe7zLfXc22574NosN/xSHT+kEdNg0VX/lgH
-         cTQssA2/OElC5yJBDMwL3y7p8+2qs+uUi9JaKT2yW1TXFErKU2nPA1SSCU5AFvvQq6bi
-         em9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363511; x=1690968311;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ajWZi1kTG9ZsFll3P13XRfH/M90QTcK5ZSE2yNZ8xrc=;
-        b=cSVsGb0RwFeCMAaHiiYEzSpA85U8sNkBMkIBpR3b4phnGqYvWyFl0kTWrHYZiPGeEw
-         mDC61xgwwS25WKK5dwJ9RoPLCFAbVwUOyFXQrp/aJwgVVluIWI1NVrcXeYHn63/ZeXSa
-         9V4jqPw32RmigPm3aRNN+7N4t7BafyNy4p9x0LNdGXJZVE07kfEojqUvpPDHKeOxvilm
-         EtZi+MIS5TpL8n7u/ogU98xKnv4BrPh8kOg6ddP69feHGBjZRT1wvmpXLOiOK1MU3HVo
-         GPZmLaCWGYfXe2oG95e8HaVx6gJkis1dk0VaknnlOSo/ENNiyhmbKX1F0fI8fYguMl1P
-         OfKQ==
-X-Gm-Message-State: ABy/qLYNCLVa6CT6xjLo61vJsLEOaMTcke8+OIQZTUjgw0mErTuQlzQX
-        m689TVTXfUxp/bSN8QPPBDMlXA==
-X-Google-Smtp-Source: APBJJlH7Lt4w+KKgSvUzSkJhF0oF8+b3ljHzveqc3Noqsk7KflIEw6xDKQ/sXRTNdo5n0Hc+oIf56w==
-X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr1785615pzk.2.1690363511718;
-        Wed, 26 Jul 2023 02:25:11 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id h2-20020aa786c2000000b00682a99b01basm2004283pfo.0.2023.07.26.02.25.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:25:11 -0700 (PDT)
-Message-ID: <491f5c8f-ccc6-dab8-71b3-caeedc8c4b39@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:24:58 +0800
+        Wed, 26 Jul 2023 05:27:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C58E1BCB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 02:25:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A4618619FE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 09:25:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E44C433C7;
+        Wed, 26 Jul 2023 09:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690363529;
+        bh=Otb0UO4N2L3Nr420yv7K4T9+NTLm69axQu3jhJaqCBs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nYZ57mN9KKjJtDDq0TzyvIMzYxxERyIv6IhGPmHaQGlXGiFeq9HjQW5+HZGX5jpAT
+         rnhz/GnJc8JkCWZW7u1vnuvPsvJ6BAz3rXMjsg9FdvM8s7lc1p+KALRkJgfnH5a//7
+         oQDqofmKYGGrHfx0MacthUdTRB01C1/Cd8AQpkHTsu7zVKoBz9RcQnSRvFhJjQCAN2
+         YPH7p5sCSQsSUlWmUzKHC65NhFmboHEcUhZnviV2qf7WHuIlyt7pZ9np4IHkZArBOH
+         mSklt/C09HvcEnCRZHW8BywsAVYRH1i2OVpuXCbIe1qje+OdjICFD4CTzEwvpGAOMZ
+         zKK4PBDtyI7pA==
+Date:   Wed, 26 Jul 2023 11:25:24 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, jack@suse.cz,
+        keescook@chromium.org, peterz@infradead.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        di.shen@unisoc.com
+Subject: Re: [PATCH] pid: Add the judgment of whether ns is NULL in the
+ find_pid_ns
+Message-ID: <20230726-tierisch-soweit-7bcefe6957dc@brauner>
+References: <20230713071713.5762-1-xuewen.yan@unisoc.com>
+ <20230725-hemmschwelle-braten-481527898001@brauner>
+ <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
+ <20230725-gespeichert-auffuhr-00ed9e57ec7f@brauner>
+ <CAB8ipk_AhvZxoa410F8s=SfLsqCNp+rRi6YgFzdLO7wh+N4KMA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 17/47] rcu: dynamically allocate the rcu-lazy shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-18-zhengqi.arch@bytedance.com>
- <3A164818-56E1-4EB4-A927-1B2D23B81659@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <3A164818-56E1-4EB4-A927-1B2D23B81659@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk_AhvZxoa410F8s=SfLsqCNp+rRi6YgFzdLO7wh+N4KMA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/7/26 15:04, Muchun Song wrote:
+On Wed, Jul 26, 2023 at 09:23:13AM +0800, Xuewen Yan wrote:
+> On Tue, Jul 25, 2023 at 8:47 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Tue, Jul 25, 2023 at 08:24:18PM +0800, Xuewen Yan wrote:
+> > > On Tue, Jul 25, 2023 at 4:49 PM Christian Brauner <brauner@kernel.org> wrote:
+> > > >
+> > > > On Thu, Jul 13, 2023 at 03:17:13PM +0800, Xuewen Yan wrote:
+> > > > > There is no the judgment of whether namspace is NULL in find_pid_ns.
+> > > > > But there is a corner case when ns is null, for example: if user
+> > > > > call find_get_pid when current is in exiting, the following stack would
+> > > > > set thread_id be null:
+> > > > > release_task
+> > > > >     __exit_signal(p);
+> > > > >         __unhash_process(tsk, group_dead);
+> > > > >               detach_pid(p, PIDTYPE_PID);
+> > > > >                   __change_pid(task, type, NULL);
+> > > > >
+> > > > > If user call find_get_pid at now, in find_vpid function, the
+> > > >
+> > > > I fail to see how this can happen. The code you're referencing is in
+> > > > release_task(). If current has gone through that then current obviously
+> > > > can't call find_vpid() on itself anymore or anything else for that
+> > > > matter.
+> > >
+> > > This happened when user calls  find_vpid() in irq.
+> > >
+> > > [72117.635162] Call trace:
+> > > [72117.635595]  idr_find+0xc/0x24
+> > > [72117.636103]  find_get_pid+0x40/0x68
+> > > [72117.636812]  send_event+0x88/0x180 [demux]
+> > > [72117.637593]  vbvop_copy_data+0x150/0x344 [demux]
+> > > [72117.638434]  dmisr_video_parsing_mpeg12+0x29c/0x42c [demux]
+> > > [72117.639393]  dmisr_video_parsing_switch+0x68/0xec [demux]
+> > > [72117.640332]  dmisr_handle_video_pes+0x10c/0x26c [demux]
+> > > [72117.641108]  tasklet_action_common+0x130/0x224
+> > > [72117.641784]  tasklet_action+0x28/0x34
+> > > [72117.642366]  __do_softirq+0x128/0x4dc
+> > > [72117.642944]  irq_exit+0xf8/0xfc
+> > > [72117.643459]  __handle_domain_irq+0xb0/0x108
+> > > [72117.644102]  gic_handle_irq+0x6c/0x124
+> > > [72117.644691]  el1_irq+0x108/0x200
+> > > [72117.645217]  _raw_write_unlock_irq+0x2c/0x5c
+> > > [72117.645870]  release_task+0x144/0x1ac   <<<<<<
+> > > [72117.646447]  do_exit+0x524/0x94c
+> > > [72117.646970]  __do_sys_exit_group+0x0/0x14
+> > > [72117.647591]  do_group_exit+0x0/0xa0
+> > > [72117.648146]  __se_sys_exit+0x0/0x20
+> > > [72117.648704]  el0_svc_common+0xcc/0x1bc
+> > > [72117.649292]  el0_svc_handler+0x2c/0x3c
+> > > [72117.649881]  el0_svc+0x8/0xc
+> > >
+> > > In release_task, write_unlock_irq(&tasklist_lock) will open irq, at
+> > > this time, if user calls find_get_pid() in irq, because
+> > > current->thread_id is NULL,
+> > > it will handle the NULL pointer.
+> >
+> > Uhm, where is that code from? This doesn't seem to be upstream.
 > 
-> 
->> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->>
->> Use new APIs to dynamically allocate the rcu-lazy shrinker.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->> kernel/rcu/tree_nocb.h | 19 +++++++++++--------
->> 1 file changed, 11 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
->> index 43229d2b0c44..919f17561733 100644
->> --- a/kernel/rcu/tree_nocb.h
->> +++ b/kernel/rcu/tree_nocb.h
->> @@ -1397,12 +1397,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
->> return count ? count : SHRINK_STOP;
->> }
->>
->> -static struct shrinker lazy_rcu_shrinker = {
->> -	.count_objects = lazy_rcu_shrink_count,
->> -	.scan_objects = lazy_rcu_shrink_scan,
->> -	.batch = 0,
->> -	.seeks = DEFAULT_SEEKS,
->> -};
->> +static struct shrinker *lazy_rcu_shrinker;
-> 
-> Seems there is no users of this variable, maybe we could drop
-> this.
+> It's from our own platform, we found someone called  find_get_pid() in
+> the module, and caused the crash.
 
-Yeah, will change it to a local variable. And the patch #15 is
-the same.
+So this is a bug report for an out of tree driver which I'm sure you're
+aware we consider mostly irrelevant unless this is an upstream issue.
 
-> 
+Please work around or better fix this in your out of tree driver or
+please show a reproducer how this can happen on upstream kernels.
+
+Otherwise I don't see why we'd care.
