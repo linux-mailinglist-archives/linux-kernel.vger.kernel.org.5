@@ -2,109 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46610763E64
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9296A763E6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 20:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjGZS1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 14:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S230520AbjGZS2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 14:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbjGZS1O (ORCPT
+        with ESMTP id S229767AbjGZS2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:27:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2A22109
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:27:11 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-314172bac25so93581f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690396030; x=1691000830;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hzqLjK8Xkeivl0wa82o9EWmkTswR7UuotwLLOVNsxDI=;
-        b=XIeExHC3gE95BlPr7LcDASW+2lbz9h6J603EJA7u/73d3JODLmmjMLlEbUbx4I/+q3
-         1f+y0Cxq2PWBooI0+1TmIA+UOOyU2im1uQl05kqLJRB3Dkh6pk5+hvEM3cx2F+5zkjWQ
-         jDyY1pZYFvxQ+AiqaxYDsi3+84ACj0qze363zDYWIZ6atuz0KmLiS/XTzsZmkeD3psAb
-         QohvsTdKueeG8UD2kN5XnsJ0cv1ucAVlANsSih5w7WXcnye5p+QQOq2fME2Nsx3OCzSi
-         ueSgn//FAL5MSXcICy/VI0JNHiebjYd4vd4UQ8GRzMyNjuWayfgv1NArR9oPi7mH2vv+
-         rVDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690396030; x=1691000830;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hzqLjK8Xkeivl0wa82o9EWmkTswR7UuotwLLOVNsxDI=;
-        b=TCrd9msfS5pup/KS/BEeBKCTxbcVziMVjI+Dcwu3D7dClYfxJhMffUmUU60F5LQpTz
-         2VZ8dr5W8Xz9YpbiUMpAZPMR0p78SdBPrjt8DKvgox2cbl1n3HvCQigVPkEyyUad3fQ4
-         Fqsh2slWtJqiyy8u1OTEn+0+cTJce1S6YdyHiMay9478j5kFzwRd1FkA9yHPaG85e/W5
-         1ebCByUEHlebwu0l84QlzJiFXOQAiRj3psj6z1rDOaYJhjXpSyG54gBGBQv0Aub0vFwx
-         /sgptGize1o2ymdYjkgPcVNMR4gLf0qPUjBzstrk+bwNkahsEfMqBIaMLqFOZQU7WSw1
-         Hp1A==
-X-Gm-Message-State: ABy/qLYFxhIA0hNYw6m8kWjoPc1v9Y0oLkyc8u5fU7qVNn5jFR7mqiQJ
-        W/NmwrWVUSE3qiuQmoCGFUCfiA==
-X-Google-Smtp-Source: APBJJlGl9LY0jYBeuOLBKY/QOl/1k5dmLtdC/W/SevHXT9DXZyuU6rQZUTHdpsXNOj0X1NBGoz+fNA==
-X-Received: by 2002:a5d:5142:0:b0:317:3f64:4901 with SMTP id u2-20020a5d5142000000b003173f644901mr1899720wrt.41.1690396030280;
-        Wed, 26 Jul 2023 11:27:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b009929ab17bdfsm9914020eja.168.2023.07.26.11.27.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 11:27:09 -0700 (PDT)
-Message-ID: <7a44e513-2b6b-aed3-3d71-e56bd0be2417@linaro.org>
-Date:   Wed, 26 Jul 2023 20:27:08 +0200
+        Wed, 26 Jul 2023 14:28:20 -0400
+Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8425E213A
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 11:28:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RB2D66k6wz9xGh6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:16:54 +0800 (CST)
+Received: from [10.81.211.226] (unknown [10.81.211.226])
+        by APP2 (Coremail) with SMTP id GxC2BwB3IjmaZcFkGUkMBQ--.1285S2;
+        Wed, 26 Jul 2023 19:27:50 +0100 (CET)
+Message-ID: <a6a112d4-8fe7-4f73-b7c9-8eaf5e9d7ba1@huaweicloud.com>
+Date:   Wed, 26 Jul 2023 20:27:34 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] dt-bindings: hwmon: add renesas,isl28022
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 3/3] riscv/kexec: load initrd high in available memory
 Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
- <20230726152235.249569-3-mail@carsten-spiess.de>
- <82628237-e087-269e-9673-cf3873fe4b35@linaro.org>
- <4105d77e-e011-8df7-35bf-bbfca0b640da@roeck-us.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <4105d77e-e011-8df7-35bf-bbfca0b640da@roeck-us.net>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Li Huafei <lihuafei1@huawei.com>,
+        Liao Chang <liaochang1@huawei.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Alyssa Ross <hi@alyssa.is>, Li Zhengyu <lizhengyu3@huawei.com>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Torsten Duwe <duwe@suse.de>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+References: <cover.1690365011.git.petr.tesarik.ext@huawei.com>
+ <67c8eb9eea25717c2c8208d9bfbfaa39e6e2a1c6.1690365011.git.petr.tesarik.ext@huawei.com>
+ <20230726-busily-marsupial-504e9ff2d873@spud>
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <20230726-busily-marsupial-504e9ff2d873@spud>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwB3IjmaZcFkGUkMBQ--.1285S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury8WrWUJFy3JF4UtF4kCrg_yoW8WF1fpr
+        4fGw17GFWDA3y5ZrWUta17u347Zws3Jw1jgF1UKFy8Zr1Y9FWjkryUGrWxWrykAryvg3W8
+        JFy5Zr12v3WUJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUQvtAUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 20:19, Guenter Roeck wrote:
+On 7/26/2023 6:38 PM, Conor Dooley wrote:
+> On Wed, Jul 26, 2023 at 11:54:01AM +0200, Petr Tesarik wrote:
+>> From: Torsten Duwe <duwe@suse.de>
 >>
->>> +    enum: [1, 2, 4, 8]
->>> +
->>> +  average:
->>> +    description: |
->>> +      Number of samples to be used to report voltage, current and power values.
->>> +      defaults to <0> when not set
->>> +    enum: [0, 1, 2, 4, 8, 16, 32, 64, 128]
+>> When initrd is loaded low, the secondary kernel fails like this:
 >>
->> I am sure hwmon has some property for this. Are you sure it is called
->> "average"?
+>>  INITRD: 0xdc581000+0x00eef000 overlaps in-use memory region
 >>
+>> This initrd load address corresponds to the _end symbol, but the
+>> reservation is aligned on PMD_SIZE, as explained by a comment in
+>> setup_bootmem().
+>>
+>> It is technically possible to align the initrd load address accordingly,
+>> leaving a hole between the end of kernel and the initrd, but it is much
+>> simpler to allocate the initrd top-down.
+>>
+>> Fixes: 838b3e28488f ("RISC-V: Load purgatory in kexec_file")
+>> Signed-off-by: Torsten Duwe <duwe@suse.de>
+>> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>> Cc: stable@vger.kernel.org
 > 
-> Something with samples. adi,power-sample-average is similar. Others
-> use average-samples, qcom,avg-samples, touchscreen-average-samples.
+> Trying to align it might be worthwhile, but the simple fix makes sense
+> for now & w.r.t backporting.
 
-So probably it's a time to come with something generic, e.g.:
-average-samples in some hwmon.yaml
+On a second thought, allocating the initrd at the top of the range is
+probably even better, because the kernel can unpack to low addresses,
+resulting in less fragmented memory. See diagrams.
 
-Best regards,
-Krzysztof
+Top-down initrd:
+
++----------+          +----------+
+|  initrd  |          |          |
++----------+          |   free   |
+|          |          |          |
+|          |  unpack  +----------+
+|   free   |  ----->  | unpacked |
+|          |          |  initrd  |
++----------+          +----------+
+|  kernel  |          |  kernel  |
++----------+          +----------+
+
+
+Aligned initrd:
+
++----------+          +----------+
+|          |          |   free   |
+|          |          +----------|
+|   free   |          | unpacked |
+|          |          |  initrd  |
++----------+  unpack  +----------+
+|  initrd  |  ----->  |   free   |
++----------+          +----------+
+|  kernel  |          |  kernel  |
++----------+          +----------+
+
+Petr T
 
