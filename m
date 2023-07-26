@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B84763F80
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717B1763F8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 Jul 2023 21:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjGZT0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 15:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S230441AbjGZT2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 15:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjGZT0X (ORCPT
+        with ESMTP id S231825AbjGZT2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 15:26:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533A82722;
-        Wed, 26 Jul 2023 12:26:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C41E461CAB;
-        Wed, 26 Jul 2023 19:26:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1C5AC433C8;
-        Wed, 26 Jul 2023 19:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690399581;
-        bh=dbIwUSErpljSFjSlNL6UV2E5yY64QH+jCpPm7PZ5xfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Iac3BijivUSkcHBBk+DCzxdixpbJR6KfDx93tiVepIrblkU83LY3Am01/NsV/8UEo
-         mgq3oatxKDla0pFMRcNc9Y4nvAhEKWSsMtYna1kU/h4qXUuZekzNTWEyN4iZg1vS5r
-         RG6LcWDc7gQnsl4dNiZScOeFxgbGMWjWyIxanuNXLqnELz+Kd7R6M+aNABlQJaFWOZ
-         ZMnzNxg1sTXfM40cgYGK8YiOpaKTwPoHIH9MUscJJcFC2Gn1ccqufGsRTHBIEJJxMt
-         8pB61f9rFck0CrGGhwkjqPbv2fJcYJxbKxG5V68PYup3j+ZlHAgVNN8IkOqh++sNkS
-         wDpksMumoGAZw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D608B40516; Wed, 26 Jul 2023 16:26:17 -0300 (-03)
-Date:   Wed, 26 Jul 2023 16:26:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] perf tools: Add kallsyms__get_symbol_start()
-Message-ID: <ZMFzWcKUn2M2j9lF@kernel.org>
-References: <20230725001929.368041-1-namhyung@kernel.org>
- <9e0147e3-2a6a-6b84-bdfa-365c0762058a@intel.com>
+        Wed, 26 Jul 2023 15:28:40 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C154E4F;
+        Wed, 26 Jul 2023 12:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690399719; x=1721935719;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7j2XcZg/bBdbxvcEmCEgqF7Ul3dVL8/lhTRpW/4DVhg=;
+  b=L90axt/+IJgW7i6UrpA8tYYNjN77OcEhPrBdn21gRKYQ2H7nLjDZBCV2
+   vm9OUvA+g+QSFkQH05jpQA1JOLGsE+nGv6JXHwtrvnWa7x3IpD5+ONozA
+   Lp0YzKFzzI3qLyCFFec+xsSga5mG2lONeZ88Lgji6JhSkNcOTyfY38SwL
+   2OsN/QGW07hzBtZqkNPY3T83n6qR8AnsIJf8xrxtQJzjBz3G155Rc6nCT
+   XvwcHV+oBrE7xTHOFYei8grWSO8WvvCKDcGlC52nLTOfwu3Y4lRX2X40o
+   tB6Dm1XonKpYaH7oyGhoyWWsEje4rEMhMWydyjk4pSi6RVfvgCAus8w55
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358110122"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="358110122"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726661839"
+X-IronPort-AV: E=Sophos;i="6.01,232,1684825200"; 
+   d="scan'208";a="726661839"
+Received: from wfryca-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.133.1])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 12:28:35 -0700
+From:   Iwona Winiarska <iwona.winiarska@intel.com>
+To:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Iwona Winiarska <iwona.winiarska@intel.com>
+Subject: [PATCH 0/4] Add support for PECI Nuvoton
+Date:   Wed, 26 Jul 2023 21:27:36 +0200
+Message-Id: <20230726192740.1383740-1-iwona.winiarska@intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e0147e3-2a6a-6b84-bdfa-365c0762058a@intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 25, 2023 at 05:07:40PM +0300, Adrian Hunter escreveu:
-> On 25/07/23 03:19, Namhyung Kim wrote:
-> > The kallsyms__get_symbol_start() to get any symbol address from
-> > kallsyms.  The existing kallsyms__get_function_start() only allows text
-> > symbols so create this to allow data symbols too.
-> > 
-> > Acked-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Hi!
 
-Thanks, applied both patches.
+The series adds support for PECI on Nuvoton-based BMC boards.
+It is based on patches that were sent by Tomer Maimon from
+Nuvoton [1].
+Similar to Aspeed driver, unused (as in, default values were used in
+all of the available DTS files) vendor-specific properties were
+removed.
+If there is a use-case for such properties, they can be added in
+a separate series.
 
-- Arnaldo
- 
-> > ---
-> >  tools/perf/util/event.c | 30 +++++++++++++++++++++++++++---
-> >  tools/perf/util/event.h |  2 ++
-> >  2 files changed, 29 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> > index 4cbb092e0684..923c0fb15122 100644
-> > --- a/tools/perf/util/event.c
-> > +++ b/tools/perf/util/event.c
-> > @@ -93,8 +93,8 @@ struct process_symbol_args {
-> >  	u64	   start;
-> >  };
-> >  
-> > -static int find_symbol_cb(void *arg, const char *name, char type,
-> > -			  u64 start)
-> > +static int find_func_symbol_cb(void *arg, const char *name, char type,
-> > +			       u64 start)
-> >  {
-> >  	struct process_symbol_args *args = arg;
-> >  
-> > @@ -110,12 +110,36 @@ static int find_symbol_cb(void *arg, const char *name, char type,
-> >  	return 1;
-> >  }
-> >  
-> > +static int find_any_symbol_cb(void *arg, const char *name,
-> > +			      char type __maybe_unused, u64 start)
-> > +{
-> > +	struct process_symbol_args *args = arg;
-> > +
-> > +	if (strcmp(name, args->name))
-> > +		return 0;
-> > +
-> > +	args->start = start;
-> > +	return 1;
-> > +}
-> > +
-> >  int kallsyms__get_function_start(const char *kallsyms_filename,
-> >  				 const char *symbol_name, u64 *addr)
-> >  {
-> >  	struct process_symbol_args args = { .name = symbol_name, };
-> >  
-> > -	if (kallsyms__parse(kallsyms_filename, &args, find_symbol_cb) <= 0)
-> > +	if (kallsyms__parse(kallsyms_filename, &args, find_func_symbol_cb) <= 0)
-> > +		return -1;
-> > +
-> > +	*addr = args.start;
-> > +	return 0;
-> > +}
-> > +
-> > +int kallsyms__get_symbol_start(const char *kallsyms_filename,
-> > +			       const char *symbol_name, u64 *addr)
-> > +{
-> > +	struct process_symbol_args args = { .name = symbol_name, };
-> > +
-> > +	if (kallsyms__parse(kallsyms_filename, &args, find_any_symbol_cb) <= 0)
-> >  		return -1;
-> >  
-> >  	*addr = args.start;
-> > diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-> > index de20e01c9d72..d8bcee2e9b93 100644
-> > --- a/tools/perf/util/event.h
-> > +++ b/tools/perf/util/event.h
-> > @@ -360,6 +360,8 @@ size_t perf_event__fprintf(union perf_event *event, struct machine *machine, FIL
-> >  
-> >  int kallsyms__get_function_start(const char *kallsyms_filename,
-> >  				 const char *symbol_name, u64 *addr);
-> > +int kallsyms__get_symbol_start(const char *kallsyms_filename,
-> > +			       const char *symbol_name, u64 *addr);
-> >  
-> >  void event_attr_init(struct perf_event_attr *attr);
-> >  
-> 
+Thank you Tomer for testing this series on Nuvoton hardware [2].
+
+Please note that PECI Nuvoton was previously submitted as part of PECI
+subsystem series [3] that was never merged upstream.
+It was never included in the current in-tree PECI subsystem [4].
+
+[1] https://lore.kernel.org/openbmc/CAP6Zq1jnbQ8k9VEyf9WgVq5DRrEzf5V6kaYP30S7g9BV9jKtaQ@mail.gmail.com/
+[2] https://lore.kernel.org/openbmc/CAP6Zq1h1if4hyubyh6N8EOdGOu+zp0qVUimF-9L2eXZ-QFAYjw@mail.gmail.com/
+[3] https://lore.kernel.org/all/20191211194624.2872-1-jae.hyun.yoo@linux.intel.com/
+[4] https://lore.kernel.org/all/20220208153639.255278-1-iwona.winiarska@intel.com/
+
+Changes v1 -> v2:
+
+* Renamed binding filename to match compatible (Krzysztof)
+* Removed period from the end of copyright (Paul)
+
+Thanks
+-Iwona
+
+Iwona Winiarska (2):
+  ARM: dts: nuvoton: Add PECI controller node
+  arm64: dts: nuvoton: Add PECI controller node
+
+Tomer Maimon (2):
+  dt-bindings: Add bindings for peci-npcm
+  peci: Add peci-npcm controller driver
+
+ .../bindings/peci/nuvoton,npcm-peci.yaml      |  56 ++++
+ .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |   9 +
+ .../dts/nuvoton/nuvoton-common-npcm8xx.dtsi   |   9 +
+ drivers/peci/controller/Kconfig               |  16 +
+ drivers/peci/controller/Makefile              |   1 +
+ drivers/peci/controller/peci-npcm.c           | 298 ++++++++++++++++++
+ 6 files changed, 389 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/peci/nuvoton,npcm-peci.yaml
+ create mode 100644 drivers/peci/controller/peci-npcm.c
 
 -- 
+2.40.1
 
-- Arnaldo
