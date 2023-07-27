@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D11D7645F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A539764615
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbjG0FoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        id S232586AbjG0Fr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbjG0Fnr (ORCPT
+        with ESMTP id S232460AbjG0Frc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:43:47 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D814489
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:42:33 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-55c85b4b06bso298751a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:42:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690436497; x=1691041297;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5hOt4JSGfUE5gU0yacloLGJlfRYBYpf+ipeOpBUjKNM=;
-        b=Kuq9l8I7Ju9+mfwW/4hNW7XR2Of8OzPo9y3Knw4BfrpCs99gGGoSzDMYJnVSc+QCPO
-         IBmUoXbgJFEMzxwfKyXTVvSgevk2H/JsIf0tMDC1KBlqFzMV/Kg5mn38xva5mum5pY1V
-         rkgSC9C3h1igGM0Ha8T8mvi9eLoQ84lWq8fAiAqq4rVr26S9AnVJm/tZgYK0+7BIcHmy
-         WYc8jC2FKhI8k7JnaHiGi7pn4nlPJduoNAMC1MS8ZEShlOcIg2UGfJUv86WRFUZCRvOK
-         heFJKWYxs81gekLI23ka3N5kbL7Z9E93tnQgfCXSborYvO5V2w5YxwjQk5g+zwf9bHR/
-         P4cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690436497; x=1691041297;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5hOt4JSGfUE5gU0yacloLGJlfRYBYpf+ipeOpBUjKNM=;
-        b=jV9+/dcjlmD08FZu3b74/ZXoZMQR8rG7Jiv7k4H7QOlt5unRrDe9hdl7R94KEFpkr3
-         pILt0fz+yyj2zlpxI8a5BaSWCdqF7qkpx3QcTpEMN2Ucc7GdSdyDdkzJ9ctfdJGsgmbA
-         VY0VXvYH+ToIAGue5+TomvHNldC6rHXpqrcOmI+aoUz/4K18DiElf/7kzpWCjU4btmmu
-         4JANfC/gPadr9B88uUGzXPTNOneBmc5jNjsGqTniAAjhWH3+wgrlgVpKXB+aqnLv+Ohs
-         hoVAbHgpBBUbp7oqh9J4gnscoIOoCQw7gZOtoxNgwIK5b4zTxlRTD10ZEwGj7NEm1Aow
-         /vCw==
-X-Gm-Message-State: ABy/qLa7Ni4urI4Yo/swAVsg+1A/LYEWpD+WRG71iynkBKUwiUOOGKir
-        +JSZ04EdSbvtbmFlGwgp8ciDxw==
-X-Google-Smtp-Source: APBJJlGLqhEYZFyockZ7kQ8xzFt6+vTwuXVKCHw0Pf4YFqnPNsgR9xQM23jn+ls85R/x9uD/DbKECg==
-X-Received: by 2002:a17:903:48d:b0:1b9:cb27:7f43 with SMTP id jj13-20020a170903048d00b001b9cb277f43mr3256746plb.43.1690436497422;
-        Wed, 26 Jul 2023 22:41:37 -0700 (PDT)
-Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id jw16-20020a170903279000b001b8a7e1b116sm561407plb.191.2023.07.26.22.41.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 22:41:37 -0700 (PDT)
-Message-ID: <7a8e07cf-2995-0018-b658-91a37457f05b@tuxon.dev>
-Date:   Thu, 27 Jul 2023 08:41:26 +0300
+        Thu, 27 Jul 2023 01:47:32 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF0E3A90;
+        Wed, 26 Jul 2023 22:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690436491;
+        bh=/Dgf+ZQcoCmW2zZg+QiLcmAWHhDU2MxqOceMEJwdS+U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XdtGIcK6NZRBq/4eM4Au4zcnGisTcxtR5lY25h9VUBj/0e23/i3IzQ/gfhn3m66f3
+         r4qIZglFJsyLqCbwFbkKZNuxUkwzXVHZCd8witH/kzMvVpXkg7vbofW7YciDQnfKMZ
+         l65DrHuNgoh/xkKuNBoB3b2YCby4jurGQ19LoiYYggQuc7pudZZI8sZCNy+jNHANYO
+         jH/y7ofaJiiG9W5oZiEl/2o9u6ufLLzDiOSA1nYb0iuPWi9uGd8XXwuRHyoiaUaxYa
+         lYmwi9YVOVTU2Tknz9TZjL07XL6Dh1Cf0giecoCwxmc2XRoq84c4BH1jvR8lwinJ75
+         Zq7AnS0TIsDug==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBKQ20bC5z4wbP;
+        Thu, 27 Jul 2023 15:41:29 +1000 (AEST)
+Date:   Thu, 27 Jul 2023 15:41:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andre Werner <andre.werner@systec-electronic.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the hwmon-staging tree
+Message-ID: <20230727154128.6fcdb6d9@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 46/61] mmc: atmel-mci: Convert to platform remove
- callback returning void
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230726040041.26267-1-frank.li@vivo.com>
- <20230726040041.26267-46-frank.li@vivo.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230726040041.26267-46-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/LiiUbrF.rVvy2LyhhCAMOna";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/LiiUbrF.rVvy2LyhhCAMOna
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 26.07.2023 07:00, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+After merging the hwmon-staging tree, today's linux-next build (htmldocs)
+failed like this:
 
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Sphinx parallel build error:
+docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/hwmon/hs300=
+1.rst:34: (SEVERE/4) Missing matching underline for section title overline.
 
-> ---
->   drivers/mmc/host/atmel-mci.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
-> index dd18440a90c5..b4ae9aa939a5 100644
-> --- a/drivers/mmc/host/atmel-mci.c
-> +++ b/drivers/mmc/host/atmel-mci.c
-> @@ -2600,7 +2600,7 @@ static int atmci_probe(struct platform_device *pdev)
->   	return ret;
->   }
->   
-> -static int atmci_remove(struct platform_device *pdev)
-> +static void atmci_remove(struct platform_device *pdev)
->   {
->   	struct atmel_mci	*host = platform_get_drvdata(pdev);
->   	unsigned int		i;
-> @@ -2630,8 +2630,6 @@ static int atmci_remove(struct platform_device *pdev)
->   
->   	pm_runtime_disable(&pdev->dev);
->   	pm_runtime_put_noidle(&pdev->dev);
-> -
-> -	return 0;
->   }
->   
->   #ifdef CONFIG_PM
-> @@ -2664,7 +2662,7 @@ static const struct dev_pm_ops atmci_dev_pm_ops = {
->   
->   static struct platform_driver atmci_driver = {
->   	.probe		= atmci_probe,
-> -	.remove		= atmci_remove,
-> +	.remove_new	= atmci_remove,
->   	.driver		= {
->   		.name		= "atmel_mci",
->   		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+temp1_input:        temperature input
+humidity1_input:    humidity input
+
+Caused by commit
+
+  33faa6fcc93f ("hwmon: Add driver for Renesas HS3001")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LiiUbrF.rVvy2LyhhCAMOna
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTCA4gACgkQAVBC80lX
+0Gy5lAf+M2d/2c4Q+aBvZXW+NcLAOkxBHc4c8JrAOcRdzY75UqaVfCWCTH0k8hzC
+TPH9YUw8cpCFQEXPrYWhfRiPmg2e/ASAk9Vp/LjTuiqAtMhH8TiMsKVysHCIBJCV
+p00r5axOrC+Fwo0hZW8uSMpBlmqmj//pJPlut58uHv45BYYODPhUELXkonmlJL+h
+tGTIgFVpE04grcsucDQzAbuyDPquGYLfb1Uho/M3PDAU6biC+FacWXXYGOgE2OaM
+dP1efeT8NXqe9szDTQavWTEjIwQsN0UjyyUmwPcZUQ7JiXTtAvoiEUpktnQ1fW7s
+ZHU1ycE30B14uHdnLnATY5kCPPtgUQ==
+=Pxxk
+-----END PGP SIGNATURE-----
+
+--Sig_/LiiUbrF.rVvy2LyhhCAMOna--
