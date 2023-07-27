@@ -2,64 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAA0765E3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A475B765E35
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjG0Van (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S231984AbjG0V3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjG0Vab (ORCPT
+        with ESMTP id S232107AbjG0V3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:30:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D1C1BC6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690493344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jGnguQzUAnXSgoEJGq4aUCEYI9GBqFjghH3nhnid2s4=;
-        b=CE1+m84ToiW7szkkYKChwaKkelUv97ANi7OafUT1aZ8TbNrqKlVepk77xMxrRNZgZwD409
-        O0Jr5x4f8/q1CbQu/jqiuYDiJlN6z0AX81eggi4Es9ZUSOW/TUBLz93aogqSrpi98+5L/w
-        zoSi9eQdzysFicemscszbjdPnHlSr/s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-49-u7XBChHRONmnMfoWeq8OoQ-1; Thu, 27 Jul 2023 17:29:00 -0400
-X-MC-Unique: u7XBChHRONmnMfoWeq8OoQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C80A3856F66;
-        Thu, 27 Jul 2023 21:28:59 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.192.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CDA6240C2063;
-        Thu, 27 Jul 2023 21:28:57 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v1 4/4] mm/gup: document FOLL_FORCE behavior
-Date:   Thu, 27 Jul 2023 23:28:45 +0200
-Message-ID: <20230727212845.135673-5-david@redhat.com>
-In-Reply-To: <20230727212845.135673-1-david@redhat.com>
-References: <20230727212845.135673-1-david@redhat.com>
+        Thu, 27 Jul 2023 17:29:48 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAD630FC
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:29:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686c06b806cso1132874b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690493360; x=1691098160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ypAMONzQ9lM309vcGdh+Fb16cWv7RYOttEkuLSf+C9Q=;
+        b=Bwo2x8zf58r3/17nU/dEA+lgi98417VBN10q9GpXZ2yX5bWgvClfFlRZrYgWh6vxOe
+         r0mqw4aODhaJ2EjfLMEWChHMJo67QiYL7UuI76V0B5V0sBJqx633/8IdKvZ62MQ2+DUl
+         J6GIo9C/bwVjsIs63nkDd9w15op+eE3bPam4/TK3NShywE+8Xx/75LaHkeodFIhEIwPp
+         is5HGGIxHwP3BUX1Gg8ys2pqCCyqagzNp8TAZ2n3ah5xe/s8AuEUZyERBtbzxBBvh8e7
+         XW1EoV/f/B6VtHMfKKSgdzL/ZzdtxWPLIZShgMFFsPR1z034QbJg23p3Jo+apDeFjXi3
+         3MAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690493360; x=1691098160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ypAMONzQ9lM309vcGdh+Fb16cWv7RYOttEkuLSf+C9Q=;
+        b=V93MA9mAlL+qdyaikbCecECEDSrJnkAPi/kls1WERX4+5TRWNohrtv61SdX/YPznsm
+         mx6dOwOuLRW1qY/DlzKH9SLR80LvNxdMdIfRt37G18JGn1uw22+BuUnAiO2V34xWAekD
+         H0mg6o+3DjWoN9TTSBTeCdPRMMhvufOuYX1hY4TR/ElG2NUwKt/1nUHgOytu5sQHkpGL
+         rVXDVUl5wrmEFvd0AEjmSK2OVaJUA0ZrMDtcALgcDunPs4djGgZoCxT6kxQf4wvHduES
+         xIFhpTmq98LcrfIKYxLUdlvLeKG5HntcyriQ0vVLAo9UK00njatImm8mRU1wice5W2+c
+         vBVg==
+X-Gm-Message-State: ABy/qLZQAJKoiNJgG3q+U0CXxmejdaHaas4vvrLKinM2o6Fvbwc7FEPi
+        7tYMbQqJPx2sQOywaizJ/S9lAA==
+X-Google-Smtp-Source: APBJJlGB3S/nfKRJRrxAvCsM8dZOvIKZplWkk6B2QF6oZQ+44PkE/bkn/usw/Q968tVlGDZwNJliog==
+X-Received: by 2002:a05:6a20:7351:b0:133:656e:fe1e with SMTP id v17-20020a056a20735100b00133656efe1emr268970pzc.47.1690493360245;
+        Thu, 27 Jul 2023 14:29:20 -0700 (PDT)
+Received: from ghost ([2601:c0:ca7f:e7c0:e300:c3dd:e089:386])
+        by smtp.gmail.com with ESMTPSA id b14-20020aa7870e000000b00686c77a2905sm1906083pfo.20.2023.07.27.14.29.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 14:29:20 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 17:29:16 -0400
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul.walmsley@sifive.com, palmer@rivosinc.com,
+        aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: Re: [PATCH v7 1/4] RISC-V: mm: Restrict address space for
+ sv39,sv48,sv57
+Message-ID: <ZMLhrFfoerPIxRL7@ghost>
+References: <20230726164620.717288-1-charlie@rivosinc.com>
+ <20230726164620.717288-2-charlie@rivosinc.com>
+ <20230727-unruffled-joyride-410fc348ce7b@spud>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727-unruffled-joyride-410fc348ce7b@spud>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,57 +78,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As suggested by Peter, let's document FOLL_FORCE handling and make it
-clear that without FOLL_FORCE, we will always trigger NUMA-hinting
-faults when stumbling over a PROT_NONE-mapped PTE.
-
-Also add a comment regarding follow_page() and its interaction with
-FOLL_FORCE.
-
-Let's place the doc next to the definition, where it certainly can't be
-missed.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/mm_types.h | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 2fa6fcc740a1..96cf78686c29 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -1243,7 +1243,30 @@ enum {
- 	FOLL_GET = 1 << 1,
- 	/* give error on hole if it would be zero */
- 	FOLL_DUMP = 1 << 2,
--	/* get_user_pages read/write w/o permission */
-+	/*
-+	 * Make get_user_pages() and friends ignore some VMA+PTE permissions.
-+	 *
-+	 * This flag should primarily only be used by ptrace and some
-+	 * GUP-internal functionality, such as for mlock handling.
-+	 *
-+	 * Without this flag, these functions always trigger page faults
-+	 * (such as NUMA hinting faults) when stumbling over a
-+	 * PROT_NONE-mapped PTE.
-+	 *
-+	 * !FOLL_WRITE: succeed even if the PTE is PROT_NONE
-+	 * * Rejected if the VMA is currently not readable and it cannot
-+	 *   become readable
-+	 *
-+	 * FOLL_WRITE: succeed even if the PTE is not writable.
-+	 *  * Rejected if the VMA is currently not writable and
-+	 *   * it is a hugetlb mapping
-+	 *   * it is not a COW mapping that could become writable
-+	 *
-+	 * Note: follow_page() does not accept FOLL_FORCE. Historically,
-+	 * follow_page() behaved similar to FOLL_FORCE without FOLL_WRITE:
-+	 * succeed even if the PTE is PROT_NONE and FOLL_WRITE is not set.
-+	 * However, VMA permissions are not checked.
-+	 */
- 	FOLL_FORCE = 1 << 3,
- 	/*
- 	 * if a disk transfer is needed, start the IO and return without waiting
--- 
-2.41.0
+On Thu, Jul 27, 2023 at 01:33:41PM +0100, Conor Dooley wrote:
+> Hey Charlie,
+> 
+> On Wed, Jul 26, 2023 at 09:45:55AM -0700, Charlie Jenkins wrote:
+> > Make sv48 the default address space for mmap as some applications
+> > currently depend on this assumption. A hint address passed to mmap will
+> > cause the largest address space that fits entirely into the hint to be
+> > used. If the hint is less than or equal to 1<<38, an sv39 address will
+> > be used. An exception is that if the hint address is 0, then a sv48
+> > address will be used. After an address space is completely full, the next
+> > smallest address space will be used.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/elf.h       |  2 +-
+> >  arch/riscv/include/asm/pgtable.h   | 13 ++++++++-
+> >  arch/riscv/include/asm/processor.h | 47 +++++++++++++++++++++++++-----
+> >  3 files changed, 53 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+> > index c24280774caf..5d3368d5585c 100644
+> > --- a/arch/riscv/include/asm/elf.h
+> > +++ b/arch/riscv/include/asm/elf.h
+> > @@ -49,7 +49,7 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
+> >   * the loader.  We need to make sure that it is out of the way of the program
+> >   * that it will "exec", and that there is sufficient room for the brk.
+> >   */
+> > -#define ELF_ET_DYN_BASE		((TASK_SIZE / 3) * 2)
+> > +#define ELF_ET_DYN_BASE		((DEFAULT_MAP_WINDOW / 3) * 2)
+> >  
+> >  #ifdef CONFIG_64BIT
+> >  #ifdef CONFIG_COMPAT
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index 75970ee2bda2..530f6a171a2b 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -63,12 +63,23 @@
+> >   * position vmemmap directly below the VMALLOC region.
+> >   */
+> >  #ifdef CONFIG_64BIT
+> > +#define VA_BITS_SV39 39
+> > +#define VA_BITS_SV48 48
+> > +#define VA_BITS_SV57 57
+> > +
+> > +#define VA_USER_SV39 (UL(1) << (VA_BITS_SV39 - 1))
+> > +#define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
+> > +#define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
+> > +
+> >  #define VA_BITS		(pgtable_l5_enabled ? \
+> > -				57 : (pgtable_l4_enabled ? 48 : 39))
+> > +				VA_BITS_SV57 : (pgtable_l4_enabled ? VA_BITS_SV48 : VA_BITS_SV39))
+> >  #else
+> >  #define VA_BITS		32
+> >  #endif
+> 
+> Please, at the very least, build test things for rv32 if you are going
+> to change things in mm:
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> io_uring/io_uring.c:3457:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/util.c:441:19: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> mm/mmap.c:1770:20: error: use of undeclared identifier 'VA_BITS_SV39'
+> 
+> Thanks,
+> Conor.
+Thanks for that catch, I sent out a new patch to fix that up. There were
+also some problems with 32-bit compat support that I resolved.
 
