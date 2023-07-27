@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A602676489E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9092776488C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjG0Haw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S232841AbjG0HZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjG0Ha0 (ORCPT
+        with ESMTP id S233290AbjG0HYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:30:26 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A6E271C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:19:01 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qOvGy-0008Dp-0g; Thu, 27 Jul 2023 09:18:56 +0200
-Message-ID: <65810968-d34f-8a89-f235-95391a959c2b@pengutronix.de>
-Date:   Thu, 27 Jul 2023 09:18:49 +0200
+        Thu, 27 Jul 2023 03:24:13 -0400
+Received: from mgamail.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E336591;
+        Thu, 27 Jul 2023 00:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690442122; x=1721978122;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BAACILCTxyqMs2Tae391dkKNJN/XDjDizeOYFsgg42A=;
+  b=Q8zGkq7PeQe9jti7KiHDsDYNAF+jBh6svKrMNGuu0AM2TlHU682TY/Qz
+   Buc61xQWaMJzC3fez9Wvk9wI7rLcMeRogtuoRyvoj8G539E7nsSIdMlKU
+   SMEBX6TW5XFVJdImSu6ln15HZ9wqi14NuKqPvk1J7KpL6QtuNmgoTZP/E
+   Sz5Vel6uXnFGu2u99ikIhqGWfmSPiO3bLOjmejo7/hw75YVdhXXf26fw9
+   nc9aXrAJAdG5VY7pfIm0k2srzdKumSSkGRFKJmfqavsHKoEJwS9x5qJTp
+   36lNyizwrVAjOUGypbAt1cdFqCIoxXpTHNFN4J/HmHWeft+Q3/iv1GdoR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="367102049"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="367102049"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 00:14:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="720785797"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="720785797"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 00:14:08 -0700
+From:   Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Subject: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
+Date:   Thu, 27 Jul 2023 15:20:04 +0800
+Message-Id: <cover.1690364259.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
-Content-Language: en-US, de-DE
-To:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Richard Cochran <richardcochran@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        kernel test robot <lkp@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org, patchwork-jzi@pengutronix.de
-References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
- <20230725200606.5264b59c@kernel.org> <ZMCRjcRF9XqEPg/Z@hoboy.vegasvil.org>
- <09a2d767-d781-eba2-028f-a949f1128fbd@pengutronix.de>
- <ZME/GjBWdodiUO+8@hoboy.vegasvil.org>
- <8742d597-e8b1-705f-6616-dca4ead529f4@pengutronix.de> <873519u8o3.fsf@kurt>
-From:   Johannes Zink <j.zink@pengutronix.de>
-In-Reply-To: <873519u8o3.fsf@kurt>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kurt,
+The sstc_timer selftest is used to validate Sstc timer functionality
+in a guest, which sets up periodic timer interrupts and check the
+basic interrupt status upon its receipt.
 
-On 7/27/23 09:15, Kurt Kanzenbach wrote:
-> Hi Johannes, Richard,
-> 
-> On Thu Jul 27 2023, Johannes Zink wrote:
->>> BTW this driver is actually for an IP core used in many, many SoCs.
->>>
->>> How many _other_ SoCs did you test your patch on?
->>>
->> I don't have many available, thus as stated in the description: on the i.MX8MP
->> only. That's why I am implementing my stuff in the imx glue code, you're
->> welcome to help testing on other hardware if you have any at hand.
-> 
-> I can assist with testing on Intel real time platforms, stm32mp1 and
-> Cyclone V (and imx8mp). Just Cc me on the next the version of this
-> patch.
+This KVM selftest was ported from aarch64 arch_timer and tested
+with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
 
-Thanks for your kind offer, I am going to CC you when I send my v3.
+Haibo Xu (4):
+  tools: riscv: Add header file csr.h
+  KVM: riscv: selftests: Add exception handling support
+  KVM: riscv: selftests: Add guest helper to get vcpu id
+  KVM: riscv: selftests: Add sstc_timer test
 
-Best regards
-Johannes
-
-> 
-> Thanks,
-> Kurt
+ tools/arch/riscv/include/asm/csr.h            | 127 ++++++
+ tools/testing/selftests/kvm/Makefile          |   2 +
+ .../selftests/kvm/include/riscv/processor.h   |  76 ++++
+ .../selftests/kvm/include/riscv/sstc_timer.h  |  70 ++++
+ .../selftests/kvm/lib/riscv/handlers.S        | 101 +++++
+ .../selftests/kvm/lib/riscv/processor.c       |  74 ++++
+ .../testing/selftests/kvm/riscv/sstc_timer.c  | 382 ++++++++++++++++++
+ 7 files changed, 832 insertions(+)
+ create mode 100644 tools/arch/riscv/include/asm/csr.h
+ create mode 100644 tools/testing/selftests/kvm/include/riscv/sstc_timer.h
+ create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
+ create mode 100644 tools/testing/selftests/kvm/riscv/sstc_timer.c
 
 -- 
-Pengutronix e.K.                | Johannes Zink                  |
-Steuerwalder Str. 21            | https://www.pengutronix.de/    |
-31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
-Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
+2.34.1
 
