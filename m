@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84371764E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E56764E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbjG0I7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S234424AbjG0I7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234087AbjG0I7K (ORCPT
+        with ESMTP id S230098AbjG0I7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:59:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B062C3A92;
-        Thu, 27 Jul 2023 01:39:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 66BE161DA3;
-        Thu, 27 Jul 2023 08:38:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21134C433C7;
-        Thu, 27 Jul 2023 08:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690447132;
-        bh=YVvOjlN4QplbkTfUU8STJw6R9WuXHmqKUY5GkeuIEdk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GmQUMygFjMhCHkEk7yNzMmMF6abTQoBE2kpsz8puTVGsKxh+A8yAAolQbhGOvnKFn
-         PX400gUHtC/md1+4FBlUB3OYXsMjOYgkKwM+ZIxh1gxpI6ayza3MPoQmdeTkzAItdC
-         M0CP3Qlru2Qin1PNkXBUmOJerKsiyGL//2j76TVcheZxpbXYzYKryaiwychlQTvuth
-         efNcp05P1eooNxVwWENa8dx/DKi9SqdqyHy4qIUGkbBTlUoulOi6WsP9svaovm6ZND
-         qfy7gEwkAu2t6z9ECQ6tWo5JHKeH+hOVMO5q4VYuQpy6wCWuScZ9KLJXDWVf9DVMWN
-         LPx+ZGdwdQ+IQ==
-Date:   Thu, 27 Jul 2023 10:38:49 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     carlos.song@nxp.com
-Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, xiaoning.wang@nxp.com,
-        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] i2c: imx-lpi2c: directly return ISR when detect a NACK
-Message-ID: <20230727083849.qcsmgqds3wyre72t@intel.intel>
-References: <20230727030347.3552992-1-carlos.song@nxp.com>
+        Thu, 27 Jul 2023 04:59:17 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B781230D6;
+        Thu, 27 Jul 2023 01:39:16 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RBPHM1ttYz6J6k7;
+        Thu, 27 Jul 2023 16:35:59 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
+ 2023 09:38:58 +0100
+Date:   Thu, 27 Jul 2023 09:38:57 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Lukas Wunner <lukas@wunner.de>
+CC:     Alistair Francis <alistair23@gmail.com>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Alistair Francis" <alistair.francis@wdc.com>
+Subject: Re: [PATCH] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <20230727093857.000017aa@Huawei.com>
+In-Reply-To: <20230725163046.GA23990@wunner.de>
+References: <20230725035755.2621507-1-alistair.francis@wdc.com>
+        <20230725163046.GA23990@wunner.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727030347.3552992-1-carlos.song@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Carlos,
+On Tue, 25 Jul 2023 18:30:46 +0200
+Lukas Wunner <lukas@wunner.de> wrote:
 
-On Thu, Jul 27, 2023 at 11:03:47AM +0800, carlos.song@nxp.com wrote:
-> From: Carlos Song <carlos.song@nxp.com>
+> On Tue, Jul 25, 2023 at 01:57:55PM +1000, Alistair Francis wrote:
+> > The PCIe 6 specification added support for the Data Object Exchange (DOE).
+> > When DOE is supported the Discovery Data Object Protocol must be
+> > implemented. The protocol allows a requester to obtain information about
+> > the other DOE protocols supported by the device.
+> > 
+> > The kernel is already querying the DOE protocols supported and cacheing
+> > the values. This patch exposes the values via sysfs. This will allow
+> > userspace to determine which DOE protocols are supported by the PCIe
+> > device.  
 > 
-> A NACK flag in ISR means i2c bus error. In such condition,
-> there is no need to do read/write operation.
+> Just dumping the list of supported protocols into dmesg might be simpler,
+> unless you intend to add mechanisms to actually use certain DOE mailboxes
+> from user space or expose the information in lspci.  Do have plans for
+> either of that or what's the motivation to use sysfs?
 > 
-> In this patch, i2c will check MSR_NDF, MSR_RDF and MSR_TDF
-> flag in turn, it's making mutually exclusive NACK/read/write.
-> So when a NACK is received(MSR_NDF), i2c will return ISR
-> directly and then stop i2c transfer.
+
+I can answer this one in rather than waiting for Alastair to see it
+(given I was involved in shooting down the earlier proposal :(
+
+At least partly motivated by providing the info for lspci which
+I agree with being a useful addition for debug etc.
+https://github.com/pciutils/pciutils/pull/152
+
+I can see it would also be useful for things that will poke from
+userspace because they aren't expected to run in production (and hence
+hopefully don't care about potential races etc). CXL compliance
+comes to mind - I don't think we ever want to carry kernel code for that.
+
+Jonathan
+
+
+
+> I think I'd rather want everything in doe.c (#ifdef'ed to CONFIG_SYSFS)
+> and only make dev_attr_doe_proto public.
 > 
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
+> Thanks,
+> 
+> Lukas
+> 
 
-thanks!
-
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
-
-Andi
