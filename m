@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96296765857
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460A476588E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbjG0QKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S234044AbjG0QXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjG0QKv (ORCPT
+        with ESMTP id S233820AbjG0QX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:10:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595C52D45
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:10:50 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so84835e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690474249; x=1691079049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X+xfXf+SFs/NOQ0ksDMyvLO9Rn9nyk/jrsGlS1L+bV0=;
-        b=HNw8nz0xuMd6I06v9gLe+J2yV8MPgI8J2E5/EZv/9K3qWytBcWtWVxd/j8l3ukt38o
-         oM7WDr546z3dwDSFzyEapFRJ9fefeWObkTYraPGNw+mLrVSFsFWyFJ0SxDIFQlC46Jts
-         BtvyD/9uo3LZXF1kkibNRVOk1ovES2+gn7X8ClzU2sNt854JwBI7jkypTw809782Gpbg
-         NZ2dDpFhYyaAlXpWOo92DRA4/ABK/KJhmP0aKtOulHfSiH8OfBmIR2ifp4mxbpzP0drz
-         LqQX8wBjQCuHL186Lmb5WfDmCq/npG9nCajsEEhBCVYJUK9iwjTc1E35hiq+nUKvNtW0
-         Z/tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690474249; x=1691079049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X+xfXf+SFs/NOQ0ksDMyvLO9Rn9nyk/jrsGlS1L+bV0=;
-        b=MJpZbRyvMbFLE7yt4Nc/a6kg/917jaPAeikVmMCbpQBm2ror5ylEIoB7y1Ni5grLZZ
-         XLv3HyhGyAPxicddd4FaKz4JnpkQ4uWrbzW73qDPtjRhp7e4RVpFtdzIYhFOckbfb+Po
-         ApFnXBpV7UiFA1kTxPC0jt1YDbTBhlsHBrkRq+4xFRrj7aI4m9NnCvoFdWavbvvNiljX
-         H0/3tSIdUa/qvKirTWL5FsL9rj98WyGtAIblGgfdKTaX0/Zv7NqtV+ebntqUKLF9qOr6
-         aK+0fVR30do4y8PKDl9xF4thN95C6eptz1FGihGKIuyoiAJMHuJcrL3ij1+puh/91tUU
-         yqbA==
-X-Gm-Message-State: ABy/qLZWl+J9Vnuh8FqG6qgZwxnuvbedPnN8OCSsHlg9dBdHsvZy8HQ5
-        fVIKAWsqfzyjIOx/qpph08ytFah417uFndstwUayMQ==
-X-Google-Smtp-Source: APBJJlG5VES8QxpxVaDTzmDFfw3ngkuISlX1JRoJU8AZ/7z1v8YbcFTVffCgNO7Uu39CC/q8qvlVgovVBaTNMEm38V8=
-X-Received: by 2002:a05:600c:4fcc:b0:3f7:e4d8:2569 with SMTP id
- o12-20020a05600c4fcc00b003f7e4d82569mr88727wmq.5.1690474248653; Thu, 27 Jul
- 2023 09:10:48 -0700 (PDT)
+        Thu, 27 Jul 2023 12:23:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21540272C;
+        Thu, 27 Jul 2023 09:23:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AB73061ED9;
+        Thu, 27 Jul 2023 16:23:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2339BC433C7;
+        Thu, 27 Jul 2023 16:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690475004;
+        bh=TD7vS16IIuUgR5cYQWuElvIIyOIASC8KrZH5mzivc8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NRAPajPHZHEkFEPS1peqox5tcJ7gM95Aa0aCNJgFLnZh76ZjtnFkuBVcnz2VozH3h
+         qZDfeOyYsA4/tOhwZThD1Yql5NWDQyNp3Pj1ax0nmxIR4WnyLuATCbodU9ujfYW53u
+         MCszD3oMGFT7emm3YOylZbPm+wk5j2slsAyhcAOJ65sBLz7/OOsnRbCh4xJ/DUq0Ky
+         1tUlP9y7qi5KYE8aTkRm3LfNM0NvGsiHz4fenNnLWpEz+bnaYoolNpKOn9yy/Jt44z
+         KwzX063DR7Y6SVY/+O7/Thx5Q5WG3hSSTpNkAXQLqX3mQEFEWksyReUFvFNGZxE/06
+         Kp2Bh1KU3ydlA==
+Date:   Fri, 28 Jul 2023 00:11:46 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Xi Ruoyao <xry111@linuxfromscratch.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
+Message-ID: <ZMKXQpreSr47MFj6@xhacker>
+References: <20230617161529.2092-1-jszhang@kernel.org>
+ <c9a44f534071a6d67f1e21bafdb713793c559124.camel@linuxfromscratch.org>
+ <20230725-unheard-dingy-42f0fafe7216@wendy>
+ <ZL/jMYL3akl78ZZN@xhacker>
+ <3e0994dab495920ac590dc28d6b9d9765abe0c7e.camel@linuxfromscratch.org>
+ <ZME1J4mpVf5yth32@xhacker>
+ <866eab3e30a18c50742a75d62aee223fdc7e3cee.camel@linuxfromscratch.org>
+ <4986b92f1a5aa303a529c6004aaedd2184c3ccf7.camel@linuxfromscratch.org>
 MIME-Version: 1.0
-References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
- <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
- <20230727145747.GB19940@willie-the-truck> <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
-In-Reply-To: <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 27 Jul 2023 18:10:12 +0200
-Message-ID: <CAG48ez3OXbiruoATeSp-PZ9ZdDcFuwJ4+XCS6EgY_jrtcqqGcw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Will Deacon <will@kernel.org>, paulmck@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4986b92f1a5aa303a529c6004aaedd2184c3ccf7.camel@linuxfromscratch.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 5:44=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
-du> wrote:
-> On Thu, Jul 27, 2023 at 03:57:47PM +0100, Will Deacon wrote:
-> > On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
->
-> > > Assume that we are holding some kind of lock that ensures that the
-> > > only possible concurrent update to "vma->anon_vma" is that it changes
-> > > from a NULL pointer to a non-NULL pointer (using smp_store_release())=
-.
-> > >
-> > >
-> > > if (READ_ONCE(vma->anon_vma) !=3D NULL) {
-> > >   // we now know that vma->anon_vma cannot change anymore
-> > >
-> > >   // access the same memory location again with a plain load
-> > >   struct anon_vma *a =3D vma->anon_vma;
-> > >
-> > >   // this needs to be address-dependency-ordered against one of
-> > >   // the loads from vma->anon_vma
-> > >   struct anon_vma *root =3D a->root;
-> > > }
->
-> This reads a little oddly, perhaps because it's a fragment from a larger
-> piece of code.
+On Thu, Jul 27, 2023 at 08:54:59AM +0800, Xi Ruoyao wrote:
+> On Thu, 2023-07-27 at 08:14 +0800, Xi Ruoyao wrote:
+> > On Wed, 2023-07-26 at 23:00 +0800, Jisheng Zhang wrote:
+> > > which dts r u using? see below.
+> > > 
+> > > > 
+> > > > Or maybe my toolchain (GCC 13.1.0, Binutils-2.40, with no patches) can
+> > > > miscompile the kernel?
+> > 
+> > /* snip */
+> > 
+> > > > Boot HART ID              : 0
+> > > > Boot HART Domain          : root
+> > > > Boot HART Priv Version    : v1.11
+> > > > Boot HART Base ISA        : rv64imafdcvx
+> > > 
+> > > what? I don't think the mainline dts provide v and x. 
+> > 
+> > I copied the compiled arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dtb
+> > into /boot and loaded it with u-boot "load" command onto 0x46000000, and
+> > passed this address to the booti command.
+> > 
+> > But maybe I've copied the wrong file or made some other mistake... I'll
+> > recheck.
+> 
+> Hmm, and if I read OpenSBI code correctly, this line reflects the
+> content of the misa CSR, not the DT riscv,isa value.
+> 
 
-Yes, exactly. The READ_ONCE() would be in anon_vma_prepare(), which is
-a helper used to ensure that a VMA is associated with an anon_vma, and
-then the vma->anon_vma is used further down inside the fault handling
-path. Something like:
+Aha indeed the "vx" isa extensions are not from the DT riscv,isa
+property. I will try your opensbi/linux/uboot combinations on my
+lpi4a board tomorrow.
 
-do_cow_fault
-  anon_vma_prepare
-    READ_ONCE(vma->anon_vma)
-    barrier()
-  finish_fault
-    do_set_pte
-      page_add_new_anon_rmap
-        folio_add_new_anon_rmap
-          __page_set_anon_rmap
-            [reads vma->anon_vma]
-
-Anyway, I guess I'll follow what Paul and Matthew said and go with
-smp_load_acquire().
+> The log of successful boot provided by Drew also contains
+> "rv64imafdcvx":
+> 
+> https://gist.github.com/pdp7/23259595a7570f1f11086d286e16dfb6
+> 
