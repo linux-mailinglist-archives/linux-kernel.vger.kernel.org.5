@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6858D764525
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C693F764530
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjG0ExU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S231287AbjG0E7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 00:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbjG0ExS (ORCPT
+        with ESMTP id S229820AbjG0E7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:53:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E32271F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:53:17 -0700 (PDT)
+        Thu, 27 Jul 2023 00:59:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2AAE47
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:59:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F6F861CDF
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:53:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 791B4C433C8;
-        Thu, 27 Jul 2023 04:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690433596;
-        bh=AXi4mOg39jWfNfyVeQSd++IpMT3575fEkDWv6LDHfzw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aCgitQCiJWtB2lVAewV0cH5mtYE7F4Tls3iI2PTyXesTf215+DSq8rUqfY/docRAy
-         F0v1p0j+Cyfj3GlQHnSuuDNjwEcdXElwOSzpG2zNuszF5adhdkOpvw2AfVR9I+qEVq
-         Q16w5RnCyjxtrFssh+YOWtJE5Jy9dC/8Ww+gaxWY=
-Date:   Thu, 27 Jul 2023 06:53:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tree Davies <tdavies@darkphysics.net>
-Cc:     philipp.g.hortmann@gmail.com, anjan@momi.ca, error27@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Staging: rtl8192e: Function name cleanup series 1
-Message-ID: <2023072726-copy-eatable-6fb9@gregkh>
-References: <ZL9tmaSHxKh2JCau@basil>
- <2023072548-unpledged-slacker-90b6@gregkh>
- <ZMH0g2hGaLlzFtL1@oatmeal.darkphysics>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F5EC61D32
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:59:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CFE3C433C7;
+        Thu, 27 Jul 2023 04:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690433946;
+        bh=nI3Z9E6LOhtjoLvillvTW615wdZhZT9TfqRBESPyb7g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=js8a6UH9dinR7AIi+YwNglSjbd6sFcwWYXFMgJXueedhSrAeN5vww8wXM6VIZzoZe
+         cw+hm2tvfhvHA3BYoLQs5r0N4QaMEHCQnYB4iT0UjeZiRKZ4RIiA/Oy5g0tjDjLgbW
+         55wyhbb6qXK2G45s7s18Ihczb1IXr+KMbIcg+ZFVd348P5HPtkAYpDKbHYITqS6z08
+         Wk6bGMfqyRKQUkVirBTYWM83C1VkNKtke21THQs1I3nUw5VX/VGbhuFrWDmhC1CHsx
+         YUJf0xPA0FCEJH8KXmUDTKyF66Nph6dejQgYe90jvwQfrc0HUof3cfVqiB4VnFoQN9
+         FwyOmxNnnUU5w==
+Date:   Thu, 27 Jul 2023 07:58:31 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] memblock fixes for v6.5-rc4
+Message-ID: <20230727045831.GB1901145@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMH0g2hGaLlzFtL1@oatmeal.darkphysics>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,77 +55,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 09:37:47PM -0700, Tree Davies wrote:
-> On Tue, Jul 25, 2023 at 08:48:28AM +0200, Greg KH wrote:
-> > On Mon, Jul 24, 2023 at 11:37:13PM -0700, Tree Davies wrote:
-> > > Rename functions to fix checkpatch warning: Avoid CamelCase
-> > > 
-> > > Tree Davies (5):
-> > >   Staging: rtl8192e: Rename function ActivateBAEntry
-> > >   Staging: rtl8192e: Rename function DeActivateBAEntry
-> > >   Staging: rtl8192e: Rename function TxTsDeleteBA
-> > >   Staging: rtl8192e: Rename function RxTsDeleteBA
-> > >   Staging: rtl8192e: Rename function ResetBaEntry
-> > > 
-> > >  drivers/staging/rtl8192e/rtl819x_BAProc.c | 44 +++++++++++------------
-> > >  drivers/staging/rtl8192e/rtl819x_TSProc.c |  6 ++--
-> > >  drivers/staging/rtl8192e/rtllib.h         |  2 +-
-> > >  3 files changed, 26 insertions(+), 26 deletions(-)
-> > 
-> > Odd, how did you send these patches?  They are not properly "threaded"
-> > or "connected" such that if you look them up on lore.kernel.org, or in
-> > your email client, they show that they should be connected.
-> > 
-> > Here's what they look like in my inbox right now:
-> > 
-> > 
-> >    1   T Jul 24 Tree Davies     (0.6K) [PATCH 0/5] Staging: rtl8192e: Function name cleanup series 1
-> >    2 N T Jul 24 Tree Davies     (1.9K) [PATCH 3/5] Staging: rtl8192e: Rename function TxTsDeleteBA
-> >    3   F Jul 25 To linux-kernel (  29) [PATCH v2] Documentation: embargoed-hardware-issues.rst: add AMD to the list
-> >    4 N T Jul 24 Tree Davies     (2.5K) [PATCH 5/5] Staging: rtl8192e: Rename function ResetBaEntry
-> >    5 N T Jul 24 Tree Davies     (1.8K) [PATCH 4/5] Staging: rtl8192e: Rename function RxTsDeleteBA
-> >    6 N T Jul 24 Tree Davies     (3.1K) [PATCH 2/5] Staging: rtl8192e: Rename function DeActivateBAEntry
-> >    7 N T Jul 24 Tree Davies     (1.7K) [PATCH 1/5] Staging: rtl8192e: Rename function ActivateBAEntry
-> > 
-> > While if I look at a different recent series sent for staging patches, send
-> > correctly, they look like:
-> > 
-> >  372   T Jul 22 Franziska Naepe (0.9K) [PATCH 0/9] staging: rtl8723bs: ioctl_linux: Fix checkpatch issues
-> >  373   C Jul 22 Franziska Naepe (0.8K) ├─>[PATCH 9/9] staging: rtl8723bs: ioctl_linux: Fix comparison to false
-> >  374   C Jul 22 Franziska Naepe (7.2K) ├─>[PATCH 8/9] staging: rtl8723bs: ioctl_linux: Add preferred spaces
-> >  375   C Jul 22 Franziska Naepe (2.2K) ├─>[PATCH 7/9] staging: rtl8723bs: ioctl_linux: Fix alignment on open parenthesis
-> >  376   C Jul 22 Franziska Naepe ( 10K) ├─>[PATCH 6/9] staging: rtl8723bs: ioctl_linux: Remove unnecessary parentheses
-> >  377   C Jul 22 Franziska Naepe (5.9K) ├─>[PATCH 5/9] staging: rtl8723bs: ioctl_linux: Remove unnecessary blank lines
-> >  378   C Jul 22 Franziska Naepe (4.1K) ├─>[PATCH 4/9] staging: rtl8723bs: ioctl_linux: Remove multiple blank lines
-> >  379   C Jul 22 Franziska Naepe (1.0K) ├─>[PATCH 3/9] staging: rtl8723bs: ioctl_linux: Fix block comment alignment
-> >  380   C Jul 22 Franziska Naepe (0.9K) ├─>[PATCH 2/9] staging: rtl8723bs: ioctl_linux: Fix code indent
-> >  381   C Jul 22 Franziska Naepe (0.9K) └─>[PATCH 1/9] staging: rtl8723bs: ioctl_linux: Fix else on next line
-> > 
-> > 
-> > See the difference with the -> and such?  No other messages in the middle of
-> > the thread, and they are all connected together so that our tools can handle
-> > them as a series, not as individual patches.
-> > 
-> > If you use 'git send-email' to send the whole back of patches at once, they
-> > will be properly connected together, so I do recommend using that if you are
-> > starting out.
-> > 
-> > Please fix up and try again, thanks.
-> > 
-> > greg k-h
-> 
-> Greg,
-> I got git send-email working. Do I send this series as a v2, even though the 
-> patches are the same, and how I send them is 'the change'?
+Hi Linus,
 
-Yes.
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-> The last commit I see in linux-next for rtl8192e is 4a22870cede374d80c5d2f9c5b79253a5a667832.
-> Can I send patches from that state?
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
-Sure, or just work off of my staging.git tree with the staging-next
-branch.
+are available in the Git repository at:
 
-thanks,
+  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2023-07-27
 
-greg k-h
+for you to fetch changes up to 9e46e4dcd9d6cd88342b028dbfa5f4fb7483d39c:
+
+  mm,memblock: reset memblock.reserved to system init state to prevent UAF (2023-07-24 08:52:56 +0300)
+
+----------------------------------------------------------------
+memblock: reset memblock.reserved to system init state to prevent UAF
+
+A call to memblock_free() or memblock_phys_free() issued after memblock
+data is discarded will result in use after free in
+memblock_isolate_range().
+
+When CONFIG_KASAN is enabled, this will cause a panic early in boot.
+Without CONFIG_KASAN, there is a chance that memblock_isolate_range() might
+scribble on memory that is now in use by somebody else.
+
+Avoid those issues by making sure that memblock_discard points
+memblock.reserved.regions back at the static buffer.
+
+If memblock_free() or memblock_phys_free() is called after memblock memory
+is discarded, that will print a warning in memblock_remove_region().
+
+----------------------------------------------------------------
+Rik van Riel (1):
+      mm,memblock: reset memblock.reserved to system init state to prevent UAF
+
+ mm/memblock.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+-- 
+Sincerely yours,
+Mike.
