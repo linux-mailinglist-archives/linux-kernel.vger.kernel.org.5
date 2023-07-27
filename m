@@ -2,158 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A26076435F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5137B76436A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjG0BWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 21:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        id S230120AbjG0BdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjG0BWC (ORCPT
+        with ESMTP id S229552AbjG0Bc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 21:22:02 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D539C
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:21:59 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-56c4c4e822eso77171eaf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690420919; x=1691025719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uGQku+vNde65N4HYDOaGInWh0D/YJzm9XbuNXSooZ/s=;
-        b=R2nt10LK7J1qOEO7oVIy96CP262oG7oUIhbQweLlb//g9fWic2glJvc0i8KKnZd0WM
-         OO0OKGBftLQ4H6hRRkX2t1cg+bdJFcEm62MrPKWI2JkvFRow/gsqWHyA7r/KhxxMm10s
-         xj0vAMvxR4JQsQ2EBX6slyUSQ2yTR0vgqynCtlEy4BBRXI8eMIRocU/GIjDth0ZoFqqB
-         ZF2bzJ5/0L1aS9u5FSUFWzhAEweMpV5DJoZmXu2pOBlZ2rgiDwtaAcYfgGaYiL0fBECI
-         4UeW9YZrqYmUxAnn/ap04ksmH03un93u/b1pwFC93yBvDLdWYyK00OmpafGzGMcznmWH
-         EZSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690420919; x=1691025719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uGQku+vNde65N4HYDOaGInWh0D/YJzm9XbuNXSooZ/s=;
-        b=OcIYQaG4WKYj5PJ0Sz55Bx9wOaPxKnqv4mKcozR1URkYWGpZsUG86hxyQyMMXq9lTH
-         j6zpQOZNPRD9iex+9ukdhNhBH9kENls5XQ2dFgoLkJlPPJkAaylFxo1cQ8qpy00VRRRv
-         KQeOUg7KMW17Ei7a6KgAqJCYFm4Pkt2qg227eTm1zzR5hF1Wja/f+i5rIZkqJHVNRraY
-         H8DiY/mJZE/1QkEr2tdn3hNzIlbkxO8mZQEaD8+D6FF9E9oEk+OB+wZyb/9zJDeEWZEG
-         HnZD8LPClsEHL7TkYmx1yi+mgeE4WfHbp6STxu95zd0dhqOdgZXWOgDzO1lO+/WxREKX
-         HE+A==
-X-Gm-Message-State: ABy/qLagVteJU6YShjQOx7/Ct4W5riHfRxRYyCWRPhmCqD7sBD+QLnwc
-        eSuPip0ei+vnL19sco55jhAnlEYSdOoedptQ8Vc=
-X-Google-Smtp-Source: APBJJlHeYqw4B6s1mIAgvPdZsLtFNoXzVUwxcGaPW3llHa/YUb3boGTRXngakwSZ4YhKeQ3g5Q6yGeYUp3Z3zdjyB4Q=
-X-Received: by 2002:a4a:2444:0:b0:566:f1f6:9de7 with SMTP id
- v4-20020a4a2444000000b00566f1f69de7mr2010826oov.9.1690420919005; Wed, 26 Jul
- 2023 18:21:59 -0700 (PDT)
+        Wed, 26 Jul 2023 21:32:59 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ADE1738
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690421578; x=1721957578;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=u7rvnskAyZQLr/jiUlhUpSV7nzdX/3cMR6rxrfLJ7fI=;
+  b=IJzDZgYeFWAmRxtZujchap37z7D0xawjwX/ojow9HH3UfigqNURQSX94
+   nxdQXXVCNQIBtIlxO/TXU7XwcMZhzMHGYhzClnG7rkswOO6ysvt7BMY/I
+   GYQO6bXv/NgrWDs7zKDrtVHxmd9GpQViObo/vjTq4ULOBm1F3FI8HN8Bo
+   jWPJInmjRyBszwH/4tIEbwRM7bKMia2ren9U7KzoEL1pegOUKn+JG7L7n
+   LTOfi1tU5Jd0Vdd3xI2Q7rRNmT+aCaCm+SZRw/u30KtIKuCvRePzcoh1+
+   HTp1yatGqyy10IrT4G3OOdZb6+KUUVWcZr3k0uCd9H6fjXVl6WFWTg5KR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="431974999"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="431974999"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 18:32:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="792115064"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="792115064"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Jul 2023 18:32:56 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 18:32:56 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 18:32:55 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 18:32:55 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 18:32:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DIyZxUfAQGR+R5UaDl9eLO2cwiT6pgXW3MRR5NbxbpmArPW8YB8m12o9Kej91APQ+WI60cNU7rStGxImCEA1RHMD0ogVCNzY/sWQBHitosuOlDUQkylG4rQx403jGZndW7167X7rsWR0yT3Cg7Gx9gX7YBLC1kxByh2FX+hDC0cOXZQzmbEenhTZKvD686Sabxoeniji4+nBj4uBR7tdO1G43sPtQ5OfmEvy3en36RiYsq5F0SiEWneihoz8KUjtv3D18Qw7XA47XGwVOsjR3rINhYXaeKkXk45fluvYfra5JAA6LrTxvyedFb3dXHhDSst9Grrg1PvbW5c1Gv5Txg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SFNmCNkQiVqC0fURyah4Hnp9XbReilYzsCF7BVijNYE=;
+ b=cCr2VCr0sTLfdZ6c1tFqJmyknJK7s+S6rUbGKVjTWa8l/RfipIpxZQh8oX7xpDDxjEgMYAKQfoKR6LbsKGtH5FEPB43O0wkJq88XiZgE981562WHBFAsiJ9dLywq1iAqMZDA2eaTiB2V5wA+3rCprH9qgzOQUiRgWDUICoG1eXj6ltm8rKfm8AlIqF7XVSXZNWwXRRKDYVvoLfFdKR4Aixglc53ZXcYOFnbdPLe/38cuvxYM3ANNeQKp8Z8VghlJLyNpkH7bNahBWk9fwxIkXqZYymi/q8JdU4gJgAE18SKHsy+JXCXVZLxhzXkBL14LNA9dz9qRAI+hTLsxgLsxww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by PH7PR11MB8570.namprd11.prod.outlook.com (2603:10b6:510:2ff::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 01:32:52 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::57e7:80ff:c440:c53a]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::57e7:80ff:c440:c53a%5]) with mapi id 15.20.6609.032; Thu, 27 Jul 2023
+ 01:32:52 +0000
+Date:   Thu, 27 Jul 2023 09:24:59 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Paul E . McKenney" <paulmck@kernel.org>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rui.zhang@intel.com>,
+        <tim.c.chen@intel.com>
+Subject: Re: [Patch v2 2/2] x86/tsc: use logical_packages as a better
+ estimation of socket numbers
+Message-ID: <ZMHHa0rkAQwm+Sw2@feng-clx>
+References: <20230615092021.GE1683497@hirez.programming.kicks-ass.net>
+ <ZIwMstkB7CG3pDYu@feng-clx>
+ <87h6qz7et0.ffs@tglx>
+ <87edm36qqb.ffs@tglx>
+ <ZJW0gi5oQQbxf8Df@feng-clx>
+ <ZJhUiO+bdBoLU5WF@feng-clx>
+ <87r0px40o5.ffs@tglx>
+ <ZJ2Grrn7sq9Jdxf6@feng-clx>
+ <ZLVEVoZTbYi3LbjK@feng-clx>
+ <87pm4esbv6.ffs@tglx>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87pm4esbv6.ffs@tglx>
+X-ClientProxiedBy: SI2PR01CA0048.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::17) To MN0PR11MB6304.namprd11.prod.outlook.com
+ (2603:10b6:208:3c0::7)
 MIME-Version: 1.0
-References: <20230713071713.5762-1-xuewen.yan@unisoc.com> <20230725-hemmschwelle-braten-481527898001@brauner>
- <CAB8ipk9CXWmUg13gEHDECXf3DDUvbYyA0y2yFXUuGsAjMSXv8w@mail.gmail.com>
- <20230725-gespeichert-auffuhr-00ed9e57ec7f@brauner> <CAB8ipk_AhvZxoa410F8s=SfLsqCNp+rRi6YgFzdLO7wh+N4KMA@mail.gmail.com>
- <20230726-tierisch-soweit-7bcefe6957dc@brauner>
-In-Reply-To: <20230726-tierisch-soweit-7bcefe6957dc@brauner>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Thu, 27 Jul 2023 09:21:48 +0800
-Message-ID: <CAB8ipk93n-0x7bs4nrQUrsswt81f4e6dHAFpEchc4G3mPKQSjQ@mail.gmail.com>
-Subject: Re: [PATCH] pid: Add the judgment of whether ns is NULL in the find_pid_ns
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, jack@suse.cz,
-        keescook@chromium.org, peterz@infradead.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        di.shen@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|PH7PR11MB8570:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c60e62b-f2ba-44a1-d9e0-08db8e416520
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OkMQ2KqHl4ZqyGWBPcVxHcMUfhThjEBDLXzPW9wyrzxJWFlsyFIpLqhckRv0pl7o1ljfgUaSZ65FyavSSlINmpLADH4jwulzIF0/JkbmrYRnUw9jpkV7mccuJ6BdEvLOJ9an22o0mQjcsxGLBoZEbTkoxOg1oCmTTs6jdhs2L8fatdOTI1zIP5C5VkVxe4nNOMs3wtQUuuDvYJdkTsy0LMceYp4aHuZH5dkBOGkZWXNJKaR+7z5CU73qzW16bI7ydcb6uqfb8GmPHrTkljcBKAx5n2tNRU6rhfgxyXfa+wufXIbixMB4qvZ30TLdwPpKH0RJ+ImEk6dajJ+PQvypEqmvAW57jKYFs9Va1YvmcxmbNSGrzLHv18LnbFsGR4CgK5QTACCvfKxn9oeygiZ5k9i0RJrxqgSqJLsdTB622L6UrlABFkQf/4OP2NSQAOGLkxw/sblL6yrkkCt7MvaLZcMBuNiXK4/mJed5SXb4ZQU8BQhN8pgwfrUE51xiju5H+62F1fnbSW2hTIvNs//0ZmYKWXIgnaabKUgVw41SqLqXh5l9M/k0zNvOY2ZFF/rBAwNWvb/CiwXWUKnJyY19zGbC83Wh9Byt3Zm0ahREe6A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(39860400002)(396003)(376002)(366004)(346002)(136003)(451199021)(82960400001)(6486002)(478600001)(6506007)(26005)(6512007)(9686003)(6916009)(4326008)(54906003)(66556008)(66476007)(66946007)(186003)(38100700002)(7416002)(44832011)(8676002)(8936002)(33716001)(5660300002)(2906002)(4744005)(316002)(41300700001)(86362001)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6J1Ifq928+psZcijVL0Zdg50sJaCXoglZFTRKWkBK7L+U+TgaxlaKJx/ncRS?=
+ =?us-ascii?Q?wlAjKdPqBQkitNT8sX0InXfZZxdsk9NRFnteYuY3r4KxAV6cR2DwtseYMU/E?=
+ =?us-ascii?Q?6YkjI6qhv3hLfOgFut2lgLBPNk+nNKyPNClKaUJ5VbtiizM1DpntPlnSF2XL?=
+ =?us-ascii?Q?j2OuIwLSft5WK+ISZY+iYsqNAL0Lc+SXtiTdyZqkYXINi3O0rrUNW86+xPfX?=
+ =?us-ascii?Q?SfwOTJ8ShqA+6IjbUEHSdRTbl6vOL2NDXDLI+OZ98MsmB51GOVAhTPZeJa/p?=
+ =?us-ascii?Q?jvORBRwfcT0+/zIFTtMGEiTGh1kZZudEYgtC2C/HhTSlSTUleqW3BCf3l2iS?=
+ =?us-ascii?Q?IVc/1Ct2mUTqDjzDp3xhXbrXeuV+JTybi+SQWAWCJ+ZmdWLz0L0pznDJP5IK?=
+ =?us-ascii?Q?ESvdhDksszMN16BkF8dT2tnBZQnFXEM4JBglonPWlch/KoBGgDdHjrJgsK5o?=
+ =?us-ascii?Q?1KFRaUPkceQUe5F7s+TeGUNgS8dZkWsQ+CXDfG8rz50zWu5Oys/gqDVb9Vi6?=
+ =?us-ascii?Q?FBPk83a2dcLOtfw1YpmCpNfy2wcuFHP7XBEwgK/BuT1NtBMCBYoY7uxuBOyl?=
+ =?us-ascii?Q?SpEZNRqWSN/1Wjl3s3Z9dJw3++usUuHXk0G7/P3Jqp/JjP5ub9AMjx59geM8?=
+ =?us-ascii?Q?/uMA8rJ/9fyrwVjWnWx2Xch74TTUS1gkGdfj945wCBV0/x1Sqj9T/Do1EaXe?=
+ =?us-ascii?Q?vrGY+vw6CgYe8XDLENB4YZoqhFf+fGJqfqwS+zMubuEmYBWfhNxtHng/Nzrk?=
+ =?us-ascii?Q?N/MqBgUoxx1nMv+suZVdi/+636tHKPpmQSs6YumVl6P7IymHP2e77dHCTqtb?=
+ =?us-ascii?Q?+V0vIJwY/cLszZ1YG4psoeHBt3ZngxKZgRi0ezVjwmxwTu/sd9q5ICe6BXwo?=
+ =?us-ascii?Q?kYsZQptUazwRZrqv699lXm4UaCA92rny6SI5kk5OftV1nrVFyFiwG8CXEHy2?=
+ =?us-ascii?Q?xPgA8dxM46qHjMDDr3AANm3TvCONSVciMOVg19kkMNYCiXFPGVo+8fpgEASg?=
+ =?us-ascii?Q?mvg/4DtXzstFfBibC1S73j+gmUdwSVIFt0X3SgRwT99+2MWSMevqIH1ZQIn+?=
+ =?us-ascii?Q?dyLJ/J61RDXc6gCC5JE4yOkyQo1Ndhg+LBEJey2kKtOYPcPsbf5dJOHsVhnX?=
+ =?us-ascii?Q?CXdkuv7823afooIusPcgHmDDtVIDMFJz/KDwbkrNNTg612xixLz5f9dQJKb+?=
+ =?us-ascii?Q?iqtP9xeG+IBDOj4fOBsc1mYiOMTGc3Dik7fXkOuyi4YQH8PNZpIf2WZQqdWB?=
+ =?us-ascii?Q?ymc3kEUJfxBmwTKJMLaI5I6t8YhLvds2AlqHBRECidyp6XwELpxKhgDmeKdl?=
+ =?us-ascii?Q?V5oiv3xGgg3SkumtLV9uHZwAGNqAcr5qGd6oBVnyekznNYU0UlGuY/iDI/zF?=
+ =?us-ascii?Q?98MmSe8RNZjR2CdYSy1XHQt2n784wmHZlFLbqkFKgJ59boQ8XK5vVV5lSIHE?=
+ =?us-ascii?Q?YjcVJDYNn+pNENnW++xGux9p8gOLac+Rmd9qmNEf4O5w1xAI3Y7e+1ASXodB?=
+ =?us-ascii?Q?D00geePQ3BYYaDhWb7unifj+tC/A04ppgQgheAS78Vbs51zX5aS1KDb4fsdW?=
+ =?us-ascii?Q?8kZHSYp7uf8tJXaCNozcZG0TGZJ14ieQKgy+zi4B?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c60e62b-f2ba-44a1-d9e0-08db8e416520
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 01:32:52.5767
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Mb4XhlgolWwX7wrgYLAJBZaZkSF+guf42g5vOM9cxFCZ7nRqBeVbe1gPNGPxzMzga2ihPhMUYjQfyXaAXW3BsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8570
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 5:25=E2=80=AFPM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Wed, Jul 26, 2023 at 09:23:13AM +0800, Xuewen Yan wrote:
-> > On Tue, Jul 25, 2023 at 8:47=E2=80=AFPM Christian Brauner <brauner@kern=
-el.org> wrote:
-> > >
-> > > On Tue, Jul 25, 2023 at 08:24:18PM +0800, Xuewen Yan wrote:
-> > > > On Tue, Jul 25, 2023 at 4:49=E2=80=AFPM Christian Brauner <brauner@=
-kernel.org> wrote:
-> > > > >
-> > > > > On Thu, Jul 13, 2023 at 03:17:13PM +0800, Xuewen Yan wrote:
-> > > > > > There is no the judgment of whether namspace is NULL in find_pi=
-d_ns.
-> > > > > > But there is a corner case when ns is null, for example: if use=
-r
-> > > > > > call find_get_pid when current is in exiting, the following sta=
-ck would
-> > > > > > set thread_id be null:
-> > > > > > release_task
-> > > > > >     __exit_signal(p);
-> > > > > >         __unhash_process(tsk, group_dead);
-> > > > > >               detach_pid(p, PIDTYPE_PID);
-> > > > > >                   __change_pid(task, type, NULL);
-> > > > > >
-> > > > > > If user call find_get_pid at now, in find_vpid function, the
-> > > > >
-> > > > > I fail to see how this can happen. The code you're referencing is=
- in
-> > > > > release_task(). If current has gone through that then current obv=
-iously
-> > > > > can't call find_vpid() on itself anymore or anything else for tha=
-t
-> > > > > matter.
-> > > >
-> > > > This happened when user calls  find_vpid() in irq.
-> > > >
-> > > > [72117.635162] Call trace:
-> > > > [72117.635595]  idr_find+0xc/0x24
-> > > > [72117.636103]  find_get_pid+0x40/0x68
-> > > > [72117.636812]  send_event+0x88/0x180 [demux]
-> > > > [72117.637593]  vbvop_copy_data+0x150/0x344 [demux]
-> > > > [72117.638434]  dmisr_video_parsing_mpeg12+0x29c/0x42c [demux]
-> > > > [72117.639393]  dmisr_video_parsing_switch+0x68/0xec [demux]
-> > > > [72117.640332]  dmisr_handle_video_pes+0x10c/0x26c [demux]
-> > > > [72117.641108]  tasklet_action_common+0x130/0x224
-> > > > [72117.641784]  tasklet_action+0x28/0x34
-> > > > [72117.642366]  __do_softirq+0x128/0x4dc
-> > > > [72117.642944]  irq_exit+0xf8/0xfc
-> > > > [72117.643459]  __handle_domain_irq+0xb0/0x108
-> > > > [72117.644102]  gic_handle_irq+0x6c/0x124
-> > > > [72117.644691]  el1_irq+0x108/0x200
-> > > > [72117.645217]  _raw_write_unlock_irq+0x2c/0x5c
-> > > > [72117.645870]  release_task+0x144/0x1ac   <<<<<<
-> > > > [72117.646447]  do_exit+0x524/0x94c
-> > > > [72117.646970]  __do_sys_exit_group+0x0/0x14
-> > > > [72117.647591]  do_group_exit+0x0/0xa0
-> > > > [72117.648146]  __se_sys_exit+0x0/0x20
-> > > > [72117.648704]  el0_svc_common+0xcc/0x1bc
-> > > > [72117.649292]  el0_svc_handler+0x2c/0x3c
-> > > > [72117.649881]  el0_svc+0x8/0xc
-> > > >
-> > > > In release_task, write_unlock_irq(&tasklist_lock) will open irq, at
-> > > > this time, if user calls find_get_pid() in irq, because
-> > > > current->thread_id is NULL,
-> > > > it will handle the NULL pointer.
-> > >
-> > > Uhm, where is that code from? This doesn't seem to be upstream.
+On Wed, Jul 26, 2023 at 09:37:17PM +0200, Thomas Gleixner wrote:
+> On Mon, Jul 17 2023 at 21:38, Feng Tang wrote:
+> > On Thu, Jun 29, 2023 at 09:27:10PM +0800, Feng Tang wrote:
 > >
-> > It's from our own platform, we found someone called  find_get_pid() in
-> > the module, and caused the crash.
->
-> So this is a bug report for an out of tree driver which I'm sure you're
-> aware we consider mostly irrelevant unless this is an upstream issue.
->
-> Please work around or better fix this in your out of tree driver or
-> please show a reproducer how this can happen on upstream kernels.
->
-> Otherwise I don't see why we'd care.
+> > I plan to put these together and resend. Can I use your Signed-off-by
+> > for your code?  
+> 
+> No. I'm reworking the topology code at large scale and this temporary
+> hack is just in the way. Give me a couple of days to polish it up for
+> posting. That will just provide the correct information out of the box.
+ 
+Glad to see this happening! and thanks for the heads up.
 
-Okay, Thanks a lot!
+- Feng
 
-BR
+> Thanks,
+> 
+>         tglx
