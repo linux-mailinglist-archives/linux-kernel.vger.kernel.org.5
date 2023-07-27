@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 272CA765B7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46214765B86
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbjG0SlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
+        id S230247AbjG0Sng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG0Sk6 (ORCPT
+        with ESMTP id S229481AbjG0Snf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:40:58 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E7FE78
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:40:57 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so9773211fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690483255; x=1691088055;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7jzwMX75OBZa1i7S4s2/HIM8ADUnhblxgK4MJrr7eA=;
-        b=IP+OPeSoLZsl9bUrnqCJgZpMU7J6inijbFd1f1FHsVZIfQ6T5UDg9ndLJ8BXaIFWc0
-         aklpGbj8uCl0Z9jINNHwoNwsb4SG5G6tuDzxGBZA3wLL39CNv9MJtkX/X9XASa9NLNIq
-         bJBqFSTth9b8ddrdGJtUYanjlOLuykk9L/Kcw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690483255; x=1691088055;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z7jzwMX75OBZa1i7S4s2/HIM8ADUnhblxgK4MJrr7eA=;
-        b=V68+nRHQ885voqvJCI679CobRVO/qKOF2QHR8hm9idYP7zEAo5bdt0I2ZkAVKLMVSt
-         mLOdL9REfQqvMoQWfIdXb7QVdaylr4YiPXqKXq2PLIBTIbmYnEtOEVd6QnR8pUJf6mLg
-         pRRViOkLQUcxO0ljgJn6q7zbhYSXuXd9JUABWovM8tJ3omiFJz4BmYk7TKmH/rTG3Z/5
-         4ndg32ilyQjK23fD3CAdDPQe4PVgATcKzudBpu8RoOplZ/b8gvoo7mSBcUNzP3fjFduS
-         Lb+Gf2pIaMG2G7+p8emthBsJB5xJF+SGeV0aEBMo0VZZGZEveIpK/m3Stx3PGZc1Cchq
-         cCDw==
-X-Gm-Message-State: ABy/qLZq5ywQ+RyBVQiXg7a9+p5z6iMPdFu59xAqDTLajab1Q39wAca2
-        niKalv8NEpPec1qiZ4naXTD3CAJpPAVpCwZViebZKDrK
-X-Google-Smtp-Source: APBJJlGjfRfP2emQD63gCHOiNp+Rew5XdIJ7J0B70PqAG2AIo/3rrl+NMi7vTt7+wcOx/1CFcgGhJw==
-X-Received: by 2002:a2e:a0d6:0:b0:2b9:35ae:c9ac with SMTP id f22-20020a2ea0d6000000b002b935aec9acmr2721617ljm.2.1690483255268;
-        Thu, 27 Jul 2023 11:40:55 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id d16-20020a2e96d0000000b002b724063010sm490476ljj.47.2023.07.27.11.40.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 11:40:54 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso2271453e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:40:54 -0700 (PDT)
-X-Received: by 2002:ac2:4f0c:0:b0:4fe:db6:cb41 with SMTP id
- k12-20020ac24f0c000000b004fe0db6cb41mr5663lfr.39.1690483254208; Thu, 27 Jul
- 2023 11:40:54 -0700 (PDT)
+        Thu, 27 Jul 2023 14:43:35 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5716F2D5D;
+        Thu, 27 Jul 2023 11:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690483413; x=1722019413;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=L5z8yin9ZxPjzkBPLKHCZpn/sE75lTZ1e/7BXlD4ZOQ=;
+  b=Mf+VQ3XAJc/iLO67f2K9XkOKaQD2SxFOG2HELrfz3LkOoHJjU6srbyDc
+   OPyWuGI1+l5MT3sNFImp5BOm8p3NCaUi/wPUCP+227JZSeRTO4baa/EN5
+   4YugVKMc00CocxL8KZXLVF3rGOmhkFOIe6PBcBvZLHt3djFxtHBIUf22K
+   o1ScHiw4m3OIwioylg7XoT/l5qvEqrcdE0MFowe/U69Eg6ITmWt3UkeCV
+   3+/8krn3+jbddtI9D+0nHu8TgpkJHtcXOclHDavdYFHGgTUvhQv6ekPOQ
+   xOoFMxn5PuECITeL2cJo2ektQBhuIPP23F/o6Q9oF0hUHaIYu0ShxHGmn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348011715"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="348011715"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 11:43:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817211608"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="817211608"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Jul 2023 11:43:31 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qP5xR-00Gb8Y-34;
+        Thu, 27 Jul 2023 21:43:29 +0300
+Date:   Thu, 27 Jul 2023 21:43:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH v1 00/12] HID: cp2112: Cleanups and refactorings
+Message-ID: <ZMK60UphgVuj4Z+L@smile.fi.intel.com>
+References: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230727045831.GB1901145@kernel.org>
-In-Reply-To: <20230727045831.GB1901145@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 27 Jul 2023 11:40:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wibj_bK801fb8i=sceNQSymOxqvM=nT2esjxG-fHOyimg@mail.gmail.com>
-Message-ID: <CAHk-=wibj_bK801fb8i=sceNQSymOxqvM=nT2esjxG-fHOyimg@mail.gmail.com>
-Subject: Re: [GIT PULL] memblock fixes for v6.5-rc4
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 21:59, Mike Rapoport <rppt@kernel.org> wrote:
->
-> memblock: reset memblock.reserved to system init state to prevent UAF
-> [..]
+On Mon, Jul 03, 2023 at 09:52:10PM +0300, Andy Shevchenko wrote:
+> After I updated GPIO library for the case Benjamin has with CP2112,
+> I have a brief look into the CP2112 driver itself.
+> 
+> From GPIO perspective it has two main (maitenance) issues:
+> - usage of ->to_irq() with IRQ chip present;
+> - having IRQ chip not immutable.
+> 
+> Besides that there are plenty small cleanups here and there.
+> Hence this series.
 
-The merge message shouldn't just be a repeat of the commit message.
+Any comments on this?
 
-I ended up cutting it down a bit, but would prefer to just get a
-concise summary rather than the repeat of the message for the fix.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-              Linus
+
