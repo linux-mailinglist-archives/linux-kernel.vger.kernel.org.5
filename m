@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C9C76472B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465F376472F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjG0GrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
+        id S231585AbjG0Gsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG0GrP (ORCPT
+        with ESMTP id S229714AbjG0Gsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:47:15 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA94CE
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:14 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-997c4107d62so73006966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:14 -0700 (PDT)
+        Thu, 27 Jul 2023 02:48:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE00ACE;
+        Wed, 26 Jul 2023 23:48:42 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbd33a57dcso6759825e9.0;
+        Wed, 26 Jul 2023 23:48:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690440432; x=1691045232;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=8AfkdTx8aDEG/J6ohJF19yNL93fMDwOc4t4zIdlBZ2E=;
-        b=Bzs4dNELholCLNzpl389GsKTcETPJzgOXzC6mps/0jrWoaqs7nkzk4SX2lF2esiL8h
-         mYUXjzHNOvJVXZEWG4NF+TvVjKGXK9O25Gu5Bg0Mz6HhABuf6RiyTJEyu5B3DFceI4iY
-         GN8a7sly9NkDEMj0P8l6U9nRpBZXyvWH+WxJ847rFr4S+FVx+TVxormi1OTPzuCj4m2t
-         N4wrMZTL4lIDah735Zz0ZfAGoOeuhsJt5RljXqpp0OIpICD0XuOuQyUz0yG3S6DhKax6
-         MDDpL/LeMEUDlAfpTi8qjY4t4SLBNUguCYd3q4hsikp/m70RGXtN3ctniZYm1MCGL2og
-         sx+w==
+        d=gmail.com; s=20221208; t=1690440521; x=1691045321;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VpfPqnSyEJn3uInpTbdcbPzujiKIYnv2c5CfOl1W9m8=;
+        b=bvzN2iELZoGqcpdFmv3xv1K8CB6XXmxsm++CEktsT6U+5/rvC0p+3j1hAagAgOXnr3
+         z+QbDFs8qu4O4mN/soO+nPfoTBdsL14whspTuhG3/a73iTN95FZqQkTVvzM4/C3Zo2WG
+         tWSu2I1QsqGIan398lA3vJeKErM4+ooCRzFzNStEcIrYGDxu488offXMPziZh/IjmZrR
+         Q9IA7jfrcknIABMIu2vTTJd+Nx/H3+cxaYEzR6tTM0ur/12TGxaT5d3e/n7Hfm62imn1
+         cbKR6hYro5TrvBbF89ZklVI/3regLYNfnR9GEGr5+uxMi/toAM6A83C70S3n8InpnWR6
+         JCsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690440432; x=1691045232;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690440521; x=1691045321;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8AfkdTx8aDEG/J6ohJF19yNL93fMDwOc4t4zIdlBZ2E=;
-        b=CDRT1jDBltpp2+DfadJYL1wkOGZlSO6XfdEu6NenEmvU/OBsyjOWwzCZz26teeUPcF
-         DTp76uV/XionD9JLJKn1i80aHeZzltg1DA7ktIrPlvKg47N5QBBhsQUIOlmFGK5kOfZO
-         c2JW6n5XCv84f50bcYou6omHoF/mLXN5cDtVPOaDoQ0YYNOsXp45d+osjuV+kX0AYja8
-         7xerN4KafLOMbouXhGMj0sZsDo05YB8ADaqTo877Xi/SK5WJwDBd9XMQSUUSgS4MWzsK
-         WUMX9eVfkUAiEXll0krby8h5H6gAA7gmGeB+uPeiZcuY1by1WsTn8NZ/ydJdK4O2gu3G
-         We7A==
-X-Gm-Message-State: ABy/qLbPTILjcIq2djnKvOqcTggm9QhRKU196JOLF1EdNky7G+MOmMQi
-        llAygUz5R8rt29shUNd5bhy8sA==
-X-Google-Smtp-Source: APBJJlHaOtaQXLEUMwD7ynqgJvlhwXcmtHFmtE3VQA+fsZRixVtmPQJwQX+Ask+KjivM6u5LV3s4Vg==
-X-Received: by 2002:a17:907:761b:b0:99b:4aa3:6480 with SMTP id jx27-20020a170907761b00b0099b4aa36480mr1310855ejc.40.1690440430456;
-        Wed, 26 Jul 2023 23:47:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170906408700b009786ae9ed50sm380391ejj.194.2023.07.26.23.47.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 23:47:09 -0700 (PDT)
-Message-ID: <5288c817-3cf8-2b8c-6187-30283353060f@linaro.org>
-Date:   Thu, 27 Jul 2023 08:47:07 +0200
+        bh=VpfPqnSyEJn3uInpTbdcbPzujiKIYnv2c5CfOl1W9m8=;
+        b=c4S3+cS6/05ukgaLUD+G7QD86Ju8mV2LxlMBIWLIZAxZ1keGfcWzb2VRRxY+u4jXNF
+         1S0Fs6GTroeluUy+AHavB4FhmlCAeVQM/yOqu2o/diQQJCCPKik5ybK5/jw25Tl+a/IG
+         6V7av0AKj5gjmgRP+NY6cenX2PgkdhVF2zFBCGdMf0IRjzVNDXQ3YaIlXXWSX/meCz13
+         X1VozJi7px3dTCcLe3l8jlJvU6+txI5NFiyWaKx1huKJbfjOJc025g4S7nx8qGvd7358
+         73JDthU9fQCrVyIha36nbq0tXlGFSxpzBuZ9F05HW6ekSE58FtGe3Y8SuyRfQ9M4XOLm
+         PHQQ==
+X-Gm-Message-State: ABy/qLZKXvIIO2iLLutoTnlDcd60xL7HIjFM4JMt9MpEDsuHJGqeVLfr
+        BcdVFjc2bnHHcZJn+5xvhyA=
+X-Google-Smtp-Source: APBJJlGD4ik5Orku7Q7ERVPnysIHnUBtbq19uMOJ8XclPyzSWQrJaxDlib/mBtMTb7Z1Lw7jL0ocoQ==
+X-Received: by 2002:a7b:c010:0:b0:3fb:b1fd:4183 with SMTP id c16-20020a7bc010000000b003fbb1fd4183mr889838wmb.12.1690440521048;
+        Wed, 26 Jul 2023 23:48:41 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:4a02:2aff:fe07:1efc])
+        by smtp.googlemail.com with ESMTPSA id r18-20020adfce92000000b0031272fced4dsm1057201wrn.52.2023.07.26.23.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 23:48:40 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 08:48:38 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc:     olivia@selenic.com, herbert@gondor.apana.org.au,
+        jiajie.ho@starfivetech.com, conor.dooley@microchip.com,
+        martin@kaiser.cx, mmyangfl@gmail.com, jenny.zhang@starfivetech.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        leoliu@zhaoxin.com, CobeChen@zhaoxin.com, YunShen@zhaoxin.com,
+        TonyWWang@zhaoxin.com
+Subject: Re: [PATCH] hwrng: add Zhaoxin HW RNG driver
+Message-ID: <ZMITRjPOQAZ8qaZL@Red>
+References: <20230726113553.1965627-1-LeoLiu-oc@zhaoxin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 1/5] dt-bindings: phy: qcom,m31: Document qcom,m31 USB
- phy
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
-        arnd@arndb.de, geert+renesas@glider.be, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, john.garry@huawei.com,
-        peng.fan@nxp.com, quic_srichara@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1690439352.git.quic_varada@quicinc.com>
- <f88d5add717e90e136a701f39fe80d00f1052692.1690439352.git.quic_varada@quicinc.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <f88d5add717e90e136a701f39fe80d00f1052692.1690439352.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230726113553.1965627-1-LeoLiu-oc@zhaoxin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 08:33, Varadarajan Narayanan wrote:
-> Document the M31 USB2 phy present in IPQ5332.
+Le Wed, Jul 26, 2023 at 07:35:53PM +0800, LeoLiu-oc a écrit :
+> From: leoliu-oc <leoliu-oc@zhaoxin.com>
 > 
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Add support for Zhaoxin HW RNG.
+> 
+> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
 > ---
+>  drivers/char/hw_random/Kconfig       |  13 +++
+>  drivers/char/hw_random/Makefile      |   1 +
+>  drivers/char/hw_random/via-rng.c     |  17 ++--
 
+Hello
 
-> +properties:
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  compatible:
-> +    items:
-> +      - const: qcom,ipq5332-usb-hsphy
+You are doing changes in via-rng without stating why.
+If changes are needed in via-rng, you should do this in a separate patch.
 
-Please keep compatible as first property.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: cfg_ahb
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description:
-> +      Phandle to 5V regulator supply to PHY digital circuit.
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
-> +    usb2-phy@7b000 {
-
-This was actually better before as usb-phy, I don't know why did you
-changed. Especially that you already changed once to usb-phy and this
-got review tag. It's fine. If there is going to be resubmit then fix
-these two issues.
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Regards
