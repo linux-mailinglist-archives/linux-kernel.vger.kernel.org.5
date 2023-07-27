@@ -2,288 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CA9764502
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03369764508
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjG0Ekl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        id S230285AbjG0EpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 00:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjG0Ekh (ORCPT
+        with ESMTP id S229582AbjG0EpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:40:37 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124E2271F;
-        Wed, 26 Jul 2023 21:40:36 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R3tAJN029397;
-        Thu, 27 Jul 2023 04:40:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=8gzJ1j1jkT/jSnj73OPSCOs0GWpVEY0UmNnyc2NUFXM=;
- b=SB09QPsETlTskqfV7+qmWoL6ycSIZlJs6nAC8PFVvC+s+NAIfNqlGob1wsMXYBFO7yPF
- +k4x5QMmQqqzm2DwzBmvAMNzxYfS6uDfJpAqrf3XieFGnJfXyWoSfkKx79m8aKHtn3pc
- BtJ/+bcPIf05dRck9B5inZp993Ja5fhkpM20YM1izdIHCKfEn39Q2EKTV309EY/UnjI8
- DeqIm5IWmmE+QMoO+FZa6/wJpvwawOADYFdqk7M1DwO6n+dZI2qyi4gdx1unTVFHWiBJ
- Cll8HCJdK3aMUVssfw12wgOWTLMPKH3O4OV37dEEYgy9LE/7+8UXsk07N/XbATumqelo Kw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s37g0h1e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 04:40:29 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R4eSpa030674
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 04:40:28 GMT
-Received: from tjiang-gv.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 21:40:26 -0700
-From:   Tim Jiang <quic_tjiang@quicinc.com>
-To:     <johan@kernel.org>
-CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
-        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <quic_tjiang@quicinc.com>, <quic_bgodavar@quicinc.com>,
-        <quic_hemantg@quicinc.com>
-Subject: [PATCH v13 2/2] Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
-Date:   Thu, 27 Jul 2023 12:40:11 +0800
-Message-ID: <20230727044011.965205-3-quic_tjiang@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230727044011.965205-1-quic_tjiang@quicinc.com>
-References: <20230727044011.965205-1-quic_tjiang@quicinc.com>
+        Thu, 27 Jul 2023 00:45:19 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2078.outbound.protection.outlook.com [40.107.237.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6A3270F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:45:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iz2+UVJk/jDg7QZp6R2XdfVPSXlQpb70eJjXTwsQjaNoo/FCVPoYm1NIXreND2AxW5uOR8tW+oPlKT+cFlNKfQ9FD78le/1EDHeBAMNodN/5VdpQmkAYfNvoibBRT/kXHL8HM/47BQ8nI5DDCKxdBd94yHqWJUiCiqbZlnFPWO3+/Z4LY2SCy3iPZl9JaxhMJLh0QZ9r+0e9sobFPFbZFnBAStdjHir8t3CaKoetuTQHflWB+tu2Tg8ip+/AqVddKZUroShk+4XZ4yjvLRVE0TuB3v4B7+IjfQEMx3CGO9cp6N9cinNHLK8WK5FQqifH5V9TIRJReb40fBud4wXzEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LjPY/704sApNKCbBkQPg9XyATjO+1Ufn3TYrAdzIZy8=;
+ b=ev8OM0ywY0x5HkooET42wi2+L0Oa/jDajtprQtsCo6rnFC+kYwuWB1CcfEb/67fBcCEn6mO/Wmri/4LSWIThvdGQs+p+tMlg0mtjjyFQspg0tpx8SsaSVCNpm+6NMzyx9nbTObRr/SbycBlSBRQKNJMlpIb6edqSiTzhq64LbN4Zd3WrIeFnr/hc2DfJxdyPS26fpdRl5YPAY02BZKIh3mDb1+ZgCYfGHD9f0zakX7LlnRaDY/WlGZ6W9v5rt5/Srzkc3sdrCwuFUEPzoCI/U+6THDdreiDhRXftpIA9DuplzeaIwgWupBb/qvIXjpY7//DlqwwyOY6cSDVbIBDYCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LjPY/704sApNKCbBkQPg9XyATjO+1Ufn3TYrAdzIZy8=;
+ b=nnP24J1GAkVmUkHK8AOSr1Uslm8+RrfvkFQUe8wAZRzzWAA5GyCVVybqJpaPZW0jg3ECIxTuLuCn5JY783Lzaat9WUif/PXLKo20kRecq4O7fi0qJozTRycVSHkPR0Ov25bCsYRJicmRnDqmag5sWLP+sED9wJk4Pu0PJs8sYCkJCGa7A9JGFLcV1D2/qciz+a0YgfcDP0mnrIdQ5E86E0VG6FzgTgQb+e2IUxqvFxb4XIFxIVjSL9jOkzkXnbnA8nBOHUg0dBHbrtfPds1wxSq/MXYYV7B4UrChhhRdsthT+WRETwUaXfPrrBR1WzJ8NEIF2M6uKAnMLAKENxQ0ug==
+Received: from BN1PR10CA0030.namprd10.prod.outlook.com (2603:10b6:408:e0::35)
+ by DM4PR12MB5214.namprd12.prod.outlook.com (2603:10b6:5:395::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
+ 2023 04:45:14 +0000
+Received: from BN8NAM11FT096.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e0:cafe::bc) by BN1PR10CA0030.outlook.office365.com
+ (2603:10b6:408:e0::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Thu, 27 Jul 2023 04:45:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BN8NAM11FT096.mail.protection.outlook.com (10.13.177.195) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 04:45:14 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 26 Jul 2023
+ 21:45:02 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 26 Jul
+ 2023 21:45:02 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Wed, 26 Jul 2023 21:45:01 -0700
+Date:   Wed, 26 Jul 2023 21:44:59 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 07/13] iommu/arm-smmu-v3: Keep track of attached ssids
+Message-ID: <ZMH2S93UCF5jGfvl@Asurada-Nvidia>
+References: <20230621063825.268890-1-mshavit@google.com>
+ <20230621063825.268890-8-mshavit@google.com>
+ <ZK9cyDaFkAKc1SvJ@Asurada-Nvidia>
+ <CAKHBV27FbpJHoPC5_8mCYHmhEbCaCE7st_-qzPv0uQYSH3RC9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LH4Rwj8UsSlwlBpb-OHJfNP2twhW_tpJ
-X-Proofpoint-ORIG-GUID: LH4Rwj8UsSlwlBpb-OHJfNP2twhW_tpJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 impostorscore=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 clxscore=1015
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270041
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAKHBV27FbpJHoPC5_8mCYHmhEbCaCE7st_-qzPv0uQYSH3RC9g@mail.gmail.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT096:EE_|DM4PR12MB5214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 709cb4e8-a1f5-4306-1830-08db8e5c44b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dghVnJ3EyzEdxr5QLC0XCRzx/jhf8Yd1Om/a+cE07hpKyztJVlsZ857DiMyNGl/gIrtJKbXG2hmd5btcYdfEIqB0YYtnoKkfAimNB6sRgugCHyYhrjUrDJL1nIr9Sl46TMd/H7QCQrhIR2r9Vwifh0+1Y7rgPuWmZfq8t+4DCkSqXQV/fnLYLrLoxyuKHWoK2F9NgOrZlYPT+96vcTM5scnX+T6QlKW0eBXJNy1rbXKZw+jMuJSQcXVj0LfHscCsLnPohEBRNicycUPDqyHTp6MPv93mpiYVq2kn375yDo7XAMb7oAmqkMq9N2OuKk8rNU9O4WcT14TtwbBI6jMl4LR+p9BmcsSTdmXf32PfopxvY1erCjHt79rwkN+GfJG84r6ce2s0kFL3sbJHOsW6U5u5DMKSy21R4uF1Pi5DVUhZdZPPr3hg9C4FzagFIPOW+HyxUKJBaCKD7bOUJNgq+kYx+cqMWZhVffnLdiqz3HfH0MQi4HR/vV58fYFwRvY8bTxvfdHsAX5WVjltyjWgIylgrMalVJjFCjR0ADmc3gpACvPTvQjLAOGKL89pxPcSLvB+PqaNQg7jOSdpurrYSss4fMrUFZPQfRoKjJNYh5kppUuNXxeqQRDebhW9oeI/yVQv1v74/9BHkT3xfQIki2UIIxFcQT+dUbWEyWb/U+RrgTSXdzpm4RSn6u7m7DTSDkapsiW5kTwK9nvZAFbXME1YUqT8r0FNOE+WuX89mwwHVDR3SOY8On0rI57lUwY2
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(346002)(396003)(136003)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(426003)(186003)(26005)(40480700001)(55016003)(36860700001)(336012)(40460700003)(47076005)(7636003)(82740400003)(356005)(86362001)(478600001)(54906003)(33716001)(316002)(4326008)(41300700001)(2906002)(4744005)(70206006)(8936002)(8676002)(70586007)(6916009)(5660300002)(9686003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 04:45:14.1774
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 709cb4e8-a1f5-4306-1830-08db8e5c44b1
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT096.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5214
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for QCA2066 firmware patch and NVM downloading.
-as the RF performance of QCA2066 SOC chip from different foundries may
-vary. Therefore we use different NVM to configure them based on board ID.
+On Fri, Jul 21, 2023 at 02:48:23PM +0800, Michael Shavit wrote:
+> 
+> > And since we have a group of subdomains that are simply indexed
+> > by ssids, perhaps we can add an xarray to store a subdomain ptr
+> > along with an ssid, replacing the list?
+> 
+> Hmmmm, I think the only place where we search through the list for a
+> specific SSID is during remove_dev_pasid. We mostly use the list to
+> iterate over  all the masters/ssids that this domain is attached to.
+> I'm not sure if moving to an xarray to optimize the remove_dev_pasid
+> call is worth it (at the cost of iterations which IIUC would become N
+> log(N))
 
-Signed-off-by: Tim Jiang <quic_tjiang@quicinc.com>
----
- drivers/bluetooth/btqca.c   | 76 ++++++++++++++++++++++++++++++++++++-
- drivers/bluetooth/btqca.h   |  4 +-
- drivers/bluetooth/hci_qca.c | 11 ++++++
- 3 files changed, 88 insertions(+), 3 deletions(-)
+OK. That's fine.
 
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index e7e58a956d15..fef9b83a915c 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -205,6 +205,46 @@ static int qca_send_reset(struct hci_dev *hdev)
- 	return 0;
- }
- 
-+static int qca_read_fw_board_id(struct hci_dev *hdev, u16 *bid)
-+{
-+	u8 cmd;
-+	struct sk_buff *skb;
-+	struct edl_event_hdr *edl;
-+	int err = 0;
-+	u8 bid_len;
-+
-+	cmd = EDL_GET_BID_REQ_CMD;
-+	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
-+				&cmd, 0, HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		err = PTR_ERR(skb);
-+		bt_dev_err(hdev, "Reading QCA board ID failed (%d)", err);
-+		return err;
-+	}
-+
-+	edl = skb_pull_data(skb, sizeof(*edl));
-+	if (!edl) {
-+		bt_dev_err(hdev, "QCA read board ID with no header");
-+		err = -EILSEQ;
-+		goto out;
-+	}
-+
-+	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
-+	    edl->rtype != EDL_GET_BID_REQ_CMD) {
-+		bt_dev_err(hdev, "QCA Wrong packet: %d %d", edl->cresp, edl->rtype);
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	bid_len = edl->data[0];
-+	*bid = (edl->data[1] << 8) + edl->data[2];
-+	bt_dev_dbg(hdev, "%s: bid len = %x, bid = %x", __func__, bid_len, *bid);
-+
-+out:
-+	kfree_skb(skb);
-+	return err;
-+}
-+
- int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
- {
- 	struct sk_buff *skb;
-@@ -574,6 +614,29 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
- }
- EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
- 
-+static void qca_generate_nvm_name(struct hci_dev *hdev, char *fwname,
-+		   size_t max_size, struct qca_btsoc_version ver, u16 bid)
-+{
-+	u8 rom_ver;
-+	u32 soc_ver;
-+	const char *variant;
-+
-+	soc_ver = get_soc_ver(ver.soc_id, ver.rom_ver);
-+	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) | (soc_ver & 0x0000000f);
-+
-+	if ((le32_to_cpu(ver.soc_id) & 0x0000ff00) == QCA_HSP_GF_SOC_ID)  /* hsp gf chip */
-+		variant = "g";
-+	else
-+		variant = "";
-+
-+	if (bid == 0x0)
-+		snprintf(fwname, max_size, "qca/hpnv%02x%s.bin", rom_ver, variant);
-+	else
-+		snprintf(fwname, max_size, "qca/hpnv%02x%s.%x", rom_ver, variant, bid);
-+
-+	bt_dev_dbg(hdev, "%s: %s", __func__, fwname);
-+}
-+
- int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
- 		   const char *firmware_name)
-@@ -582,6 +645,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 	int err;
- 	u8 rom_ver = 0;
- 	u32 soc_ver;
-+	u16 boardid = 0;
- 
- 	bt_dev_dbg(hdev, "QCA setup on UART");
- 
-@@ -604,6 +668,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 	if (qca_is_wcn399x(soc_type)) {
- 		snprintf(config.fwname, sizeof(config.fwname),
- 			 "qca/crbtfw%02x.tlv", rom_ver);
-+	} else if (soc_type == QCA_QCA2066) {
-+		snprintf(config.fwname, sizeof(config.fwname),
-+			 "qca/hpbtfw%02x.tlv", rom_ver);
- 	} else if (soc_type == QCA_QCA6390) {
- 		snprintf(config.fwname, sizeof(config.fwname),
- 			 "qca/htbtfw%02x.tlv", rom_ver);
-@@ -631,6 +698,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 	/* Give the controller some time to get ready to receive the NVM */
- 	msleep(10);
- 
-+	if (soc_type == QCA_QCA2066)
-+		qca_read_fw_board_id(hdev, &boardid);
-+
- 	/* Download NVM configuration */
- 	config.type = TLV_TYPE_NVM;
- 	if (firmware_name)
-@@ -644,8 +714,10 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 			snprintf(config.fwname, sizeof(config.fwname),
- 				 "qca/crnv%02x.bin", rom_ver);
- 		}
--	}
--	else if (soc_type == QCA_QCA6390)
-+	} else if (soc_type == QCA_QCA2066) {
-+		qca_generate_nvm_name(hdev, config.fwname, sizeof(config.fwname),
-+				ver, boardid);
-+	} else if (soc_type == QCA_QCA6390)
- 		snprintf(config.fwname, sizeof(config.fwname),
- 			 "qca/htnv%02x.bin", rom_ver);
- 	else if (soc_type == QCA_WCN6750)
-diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-index b884095bcd9d..4149e290efe6 100644
---- a/drivers/bluetooth/btqca.h
-+++ b/drivers/bluetooth/btqca.h
-@@ -12,6 +12,7 @@
- #define EDL_PATCH_VER_REQ_CMD		(0x19)
- #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
- #define EDL_GET_BUILD_INFO_CMD		(0x20)
-+#define EDL_GET_BID_REQ_CMD			(0x23)
- #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
- #define EDL_PATCH_CONFIG_CMD		(0x28)
- #define MAX_SIZE_PER_TLV_SEGMENT	(243)
-@@ -47,7 +48,7 @@
- 	((le32_to_cpu(soc_id) << 16) | (le16_to_cpu(rom_ver)))
- 
- #define QCA_FW_BUILD_VER_LEN		255
--
-+#define QCA_HSP_GF_SOC_ID			0x1200
- 
- enum qca_baudrate {
- 	QCA_BAUDRATE_115200 	= 0,
-@@ -148,6 +149,7 @@ enum qca_btsoc_type {
- 	QCA_QCA6390,
- 	QCA_WCN6750,
- 	QCA_WCN6855,
-+	QCA_QCA2066,
- };
- 
- #if IS_ENABLED(CONFIG_BT_QCA)
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index e11d47210e80..c747e4372ff0 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1770,6 +1770,9 @@ static int qca_setup(struct hci_uart *hu)
- 	case QCA_ROME:
- 		soc_name = "ROME";
- 		break;
-+	case QCA_QCA2066:
-+		soc_name = "QCA2066";
-+		break;
- 	case QCA_QCA6390:
- 		soc_name = "QCA6390";
- 		break;
-@@ -1931,6 +1934,12 @@ static const struct qca_device_data qca_soc_data_wcn3998 __maybe_unused = {
- 	.num_vregs = 4,
- };
- 
-+static const struct qca_device_data qca_soc_data_qca2066 __maybe_unused = {
-+	.soc_type = QCA_QCA2066,
-+	.num_vregs = 0,
-+};
-+
-+
- static const struct qca_device_data qca_soc_data_qca6390 __maybe_unused = {
- 	.soc_type = QCA_QCA6390,
- 	.num_vregs = 0,
-@@ -2418,6 +2427,7 @@ static SIMPLE_DEV_PM_OPS(qca_pm_ops, qca_suspend, qca_resume);
- 
- #ifdef CONFIG_OF
- static const struct of_device_id qca_bluetooth_of_match[] = {
-+	{ .compatible = "qcom,qca2066-bt", .data = &qca_soc_data_qca2066},
- 	{ .compatible = "qcom,qca6174-bt" },
- 	{ .compatible = "qcom,qca6390-bt", .data = &qca_soc_data_qca6390},
- 	{ .compatible = "qcom,qca9377-bt" },
-@@ -2433,6 +2443,7 @@ MODULE_DEVICE_TABLE(of, qca_bluetooth_of_match);
- 
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id qca_bluetooth_acpi_match[] = {
-+	{ "QCOM2066", (kernel_ulong_t)&qca_soc_data_qca2066 },
- 	{ "QCOM6390", (kernel_ulong_t)&qca_soc_data_qca6390 },
- 	{ "DLA16390", (kernel_ulong_t)&qca_soc_data_qca6390 },
- 	{ "DLB16390", (kernel_ulong_t)&qca_soc_data_qca6390 },
--- 
-2.41.0
+Can we have a smaller rework series first? Let's have all data
+structures defined. And then we can add features on top of it.
 
+Thanks
+Nicolin
