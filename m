@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAF3765229
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6333D76522D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbjG0LWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        id S232969AbjG0LWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjG0LWK (ORCPT
+        with ESMTP id S231664AbjG0LWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:22:10 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206D0E62
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:22:08 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-516500163b2so8081a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:22:08 -0700 (PDT)
+        Thu, 27 Jul 2023 07:22:43 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B32E4F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:22:43 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40550136e54so268001cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690456926; x=1691061726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pQEYdNvZMX6Etgo1t+7RDnKc5/X0V/U1VxFaQxCChgs=;
-        b=RuZ+CMuhY2GR/2JwXCGB9HPfr3Gfcaa0YbOYJp+zdkPA13cAwXi10wUP9fct76LtRp
-         088LwhB7lIRf3nsqlKP8wNe8EvCWQMn4k3d7pvOWHep9Hvm3Hff5YXTQLWaXdbcb/2Nj
-         J8cGgooQQt2Pl5P8UACstz0AiBDAtdwD7C7FqTT/IrIh/Ft+MLgFTq3Cqn6bUPa0uXXu
-         HgP/mhQAOCS/e1mFlm1L+qKumDvSbL2WSuruzdbdMlblir5AaPrxH8PmzVx0Q7OTmOhd
-         nJQTge6J+xvWdR+XQsWazjtgl81zzoOKdRvvP+qsbTgXI7voyqqrXSNSzM7bCtN4pPro
-         RRTw==
+        d=google.com; s=20221208; t=1690456962; x=1691061762;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5znSXkBTI7s/miWUhZa06rDZhJ/+eYLN2IwckbqVcpM=;
+        b=CDP/mJ6pIwwNwaMUbOAIFOQXZTexa2gF8bh/6x2AhR9HwVUFpBynA6umqzTsEQTGTI
+         NDXybLHyUBaZYGBIU0Hxxw+KJUtSWoLn60tOa+yeqtwlD6vF0j8pCNYzTgJzb41ronjf
+         DOOay1BU4I6aohcInADy2DOd0rZjv1VVhdisnyLZfCww/zv7EEeU7oxY0mnl6kXQsLNH
+         HW1jE63zHWd/8h2ZlyCNDGMelrHhqBRneaWrb28ENECnlFfAEMsFOGe7sdRUvSDEZ2Ns
+         8GKR+H+TtxdIcuhF18kB8OAEvDMA9leyjBLYO8XIgbqFR8m8IMQ5ICaxeTB5Zg5Emzcp
+         HS0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690456926; x=1691061726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pQEYdNvZMX6Etgo1t+7RDnKc5/X0V/U1VxFaQxCChgs=;
-        b=J+cn6LPYQyJMBqZ9ZjnqP5fkL+UsD7artvQaZpBKPVzlw/DQ4BaOW3SDah62yBVYDp
-         1kzcu3UwsLZ8cXPZbXWK2uui3qABEGrIcvvO1TWTWOzjpwskXEqGeZQZHFvRek1jfBWj
-         HOBY7YFKjh7zcSIuQalPFbOr5QcSNhhkRA/FobwXKDOgT5/WvcAYsH0gBSHsTnF5iuau
-         nthjRTymPpw/sGCmFutMS/PP9kxNVpyhTELM7PxBOECVAb5sgg9Ej4JbFg+y9R7Sx1rF
-         O3XtmiobRcB1VAodtrzvK7HTZ7CXCPbqwzmhc2fBS3CW+XPdRwIO/HZGss504/LMo5i0
-         Xo4g==
-X-Gm-Message-State: ABy/qLbXEsbxrBhgsYBtjQG4CoFfzsAodj48w3H2Bbb4DnTUDvHczKMP
-        bYeFjJg9/vRgGzCQDCMIFoitT4oWfWWgo/bFwdUDLw==
-X-Google-Smtp-Source: APBJJlEKCU8y+i7yNjlzwM0W832RMv2M+/GkpbNF5mrtr7hkF1oVjo2BBhHfuYu274luOCGaIK1Syj5qH3V1YiEVi1Q=
-X-Received: by 2002:a50:d4c2:0:b0:522:28a1:2095 with SMTP id
- e2-20020a50d4c2000000b0052228a12095mr79473edj.3.1690456926488; Thu, 27 Jul
- 2023 04:22:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690456962; x=1691061762;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5znSXkBTI7s/miWUhZa06rDZhJ/+eYLN2IwckbqVcpM=;
+        b=jHNryagV5pt7Jjr5OAwbqOBfpLOc3nsLRZkreJvR7XHwK3YPMI0/Tv6PIUqoR/rDEZ
+         /zHW9CLQkSS7ua2waJmRprzmhS78nKS1KW4vJPbfC/93MmF4RKF790GIfhrGZ2LQ7y9A
+         705gBkKWerNNc76OlDfBVgLSHABpRCpwoHDH0dP6CVicouEuPMC3FGcFsgOu53yIsZ5F
+         FLuQcWJV8VsblA5CROGZynhWPSX7HT23N3o8luYJztlQSkzFCZTLFq2gB5Dsnaov59T3
+         idmc6ftiNkms0Fkz7X7trVFQF1wxCvduDEvfz/59+r66y9IYiIiORvOv9ubgMiiQfcOH
+         e6Xw==
+X-Gm-Message-State: ABy/qLZyTpJT2CjuJNHHli3FQXVHxgi6LJPcylGbq+c6G+X7M5YTOUsk
+        7OIeqFlGcscXSpB5VKpIVXJd6c1R8HaMiJFAOjH30A==
+X-Google-Smtp-Source: APBJJlFKsrhjqr+pGO2xPAA7ZPtIkomN091N3COEvvJv97fo1FfhsvUjkQ1Uim0YUmvbb045Wes5qVyQXhvsWl+gViw=
+X-Received: by 2002:ac8:578d:0:b0:405:432b:9973 with SMTP id
+ v13-20020ac8578d000000b00405432b9973mr220819qta.0.1690456962027; Thu, 27 Jul
+ 2023 04:22:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com> <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com> <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com> <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com> <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com> <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
- <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com> <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
- <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com> <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
- <94c6b665-bbc2-5030-f9b1-d933791008b8@codeweavers.com> <CABb0KFEr_CDZyvZ27q2b7DbXwW3h+hNLjjzBw1GzzkZW=j-Dow@mail.gmail.com>
-In-Reply-To: <CABb0KFEr_CDZyvZ27q2b7DbXwW3h+hNLjjzBw1GzzkZW=j-Dow@mail.gmail.com>
-From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-Date:   Thu, 27 Jul 2023 13:21:54 +0200
-Message-ID: <CABb0KFHKiS6VSYj6P9NbiP9h_0P_i+O+c9yweBMmKJRgnAPiRQ@mail.gmail.com>
-Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-To:     Paul Gofman <pgofman@codeweavers.com>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
+References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-3-mshavit@google.com>
+ <ZK9RycgNAVrxe343@Asurada-Nvidia> <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
+ <ZLAKQw+DzcpSRSyi@nvidia.com> <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
+ <ZLApQjaqoOshT2TJ@nvidia.com> <CAKHBV25BRWTxXO0YTGq3q1OdMQHAzop8BqJJaa9CHxdQzxnNbg@mail.gmail.com>
+ <ZLFLyh1b+wiqb7Ql@nvidia.com> <CAKHBV24zQ+4waZgsYV08LzeMkjze1gTcwvEv5uL8RM1GcBgrzg@mail.gmail.com>
+ <ZLU0IZJr6WSjknHf@nvidia.com> <CAKHBV25QZn9xApRT+=oAtwQRAjCD--S46uXRDwW+E5=at0ESQQ@mail.gmail.com>
+In-Reply-To: <CAKHBV25QZn9xApRT+=oAtwQRAjCD--S46uXRDwW+E5=at0ESQQ@mail.gmail.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Thu, 27 Jul 2023 19:22:05 +0800
+Message-ID: <CAKHBV26sRpFJv8-_f4n2jsTKiOgnHF0_FZ07KBbVaueX+T2kWA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to smmu_master
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
+        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -104,45 +76,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 13:18, Micha=C5=82 Miros=C5=82aw <emmir@google.com> =
-wrote:
-> On Thu, 27 Jul 2023 at 01:06, Paul Gofman <pgofman@codeweavers.com> wrote=
-:
-> > Hello Micha=C5=82,
-> >
-> >      I was looking into that from the Wine point of view and did a bit
-> > of testing, so will try to answer the question cited below.
->
-> Thanks for the extensive explanation!
->
-> >      Without Windows large pages I guess the only way to make this work
-> > correctly is to disable THP with madvise(MADV_NOHUGEPAGE) on the memory
-> > ranges allocated with MEM_WRITE_WATCH, as the memory changes should not
-> > only be reported but also tracked with 4k page granularity as Windows
-> > applications expect.
-> >
-> >      Currently we don't implement MEM_LARGE_PAGES flag support in Wine
-> > (while of course might want to do that in the future). On Windows using
-> > this flag requires special permissions and implies more than just using
-> > huge pages under the hood but also, in particular, locking pages in
-> > memory. I'd expect that support to be extended in Windows though in the
-> > future in some way. WRT write watches, the range is watched with large
-> > page granularity. GetWriteWatch lpdwGranularity output parameter return=
-s
-> > the value of "large page minimum" (returned by GetLargePageMinimum) and
-> > the returned addresses correspond to those large pages. I suppose to
-> > implement that on top of Linux huge pages we'd need a way to control
-> > huge pages allocation at the first place, i. e., a way to enforce the
-> > specified size for the huge pages for the memory ranged being mapped.
-> > Without that I am afraid the only way to correctly implement that is to
-> > still disable THP on the range and only adjust our API output so that
-> > matches expected.
-[...]
+Sorry for the delay; I'm trying to refactor these patches now.
 
-The THP case we can leave it to userspace, as it can madvise() if the
-optimization lost due to dirty tracking of THP is more than THP adds.
-(BTW, the WP-watch is done via uffd - the default change would need to
-happen there).
+> I think the master should have a pointer to the iommu_domain that owns
+> the STE or if NULL the master should assign its internal CD table to
+> the STE.
+Just to clarify, does the nested domain patch series require writing
+CDs into the user-space's CD table using arm_smmu_write_ctx_desc()? Or
+is there any other requirement for writing a CD into a domain-owned CD
+table from arm_smmu_write_ctx_desc?
 
-Best Regards
-> Micha=C5=82 Miros=C5=82aw
+
+Writing a CD entry to the CD table involves some dependencies on the
+master(s) that the table is attached to:
+
+1. The CD entries STALL bit value in arm_smmu_write_ctx_desc depends
+on the master (e.g. if STALL_FORCE is set on the smmu device). This
+could potentially be encoded in arm_smmu_ctx_desc_cfg, at which point
+that CD table is only attachable to masters with the same
+stall_enabled value.
+2. arm_smmu_write_ctx_desc must sync the CD for the attached master(s)
+in the middle of writing CD entry.
+
+This is all easier to handle in arm_smmu_write_ctx_desc if the table
+is always owned by the master.
