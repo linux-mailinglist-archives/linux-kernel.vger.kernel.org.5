@@ -2,158 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8F376603F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786BA766042
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjG0X1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 19:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        id S229589AbjG0X3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 19:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbjG0X1n (ORCPT
+        with ESMTP id S229448AbjG0X3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 19:27:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2331737;
-        Thu, 27 Jul 2023 16:27:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 27 Jul 2023 19:29:20 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C67319B;
+        Thu, 27 Jul 2023 16:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690500557;
+        bh=Lzz7Vvn33Y6HZLNczNaF1kmpu6iCoQiPcrxkidWIRT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N3eB6xuu3xFRLuI3pgO5q3I6xwYv5DO2VhW5zloB/5WwY20a2MHd+S6xhjGR8g0TY
+         cjaug3aJyreGoi0m6KJAf2HZGxQ6grILoWjXNsi6mqMRIgxfwnVdtn+8NP8e5wTGkV
+         nBz89OAac00CdjRyemM/Mdlx1vKuBOvAlPUMklv75nM/7cGwRCN75coJiHsmOXrXoM
+         cCcmk0LkpFnzNHQE6xWvHtQ05aDCvnKCh8Gr1b4Jr8ctXO8hPBHiZHwBabCoqqKBB/
+         i2Ta6TFRvqGhNmTr+MH2SXUVqV6SuTwcS60konsmwMz6PLSjpBwnmi+n9pZ5/bwjUW
+         RTkrgIt8Kq0Vw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B97661F3E;
-        Thu, 27 Jul 2023 23:27:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D778C433C8;
-        Thu, 27 Jul 2023 23:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690500460;
-        bh=goKHBWa/vS/pA7DJKDLo60FUtbLnq7dNm7Fkf6aAGcw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WoROMJHlKcwYp9PX/dIOqyE2pPKmgq4MboO5cUDWkA0ekr2d8SuAWdV8wNyBD/ZWr
-         7unfgNXm/z9u2DVlEyJ+pAzBxI8S14s0hgmFST1f1x5LLb36Hp6jTAJvzwKr20Yc86
-         kT0ql+EifMTdDPZquB2MHa2ldCs+qkklJRx0wlSCQXdA7QgJ/DEt4+lS0jl/rIhhGc
-         xkj6RnvR/nSnZYoV8vcWWjkQsEPb94LJ76L/l0gmIRxKPrrJ5oBPMFjbJZbD0dSrJU
-         JAJmYDCsIe6riScLmKHtBIl4j3WG5zwSzrsjElylLgtksijhlfztig1mITrign5ame
-         S9Ft7IVlXPJOQ==
-Date:   Thu, 27 Jul 2023 18:27:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
-Cc:     "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH V5 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
-Message-ID: <20230727232738.GA786642@bhelgaas>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBn64556Jz4wqW;
+        Fri, 28 Jul 2023 09:29:16 +1000 (AEST)
+Date:   Fri, 28 Jul 2023 09:29:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
+Message-ID: <20230728092915.732d4115@canb.auug.org.au>
+In-Reply-To: <20230728091849.7f32259d@canb.auug.org.au>
+References: <20230728091849.7f32259d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN7PR12MB72010CF07797580B0B8732EC8B02A@SN7PR12MB7201.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/NFQ9DE+V61/f+Ow9PDrTCgX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:40:58AM +0000, Havalige, Thippeswamy wrote:
-> > From: Bjorn Helgaas <helgaas@kernel.org>
-> > On Thu, Jul 20, 2023 at 06:37:03AM +0000, Havalige, Thippeswamy wrote:
-> > > > From: Bjorn Helgaas <helgaas@kernel.org> ...
-> > > > On Wed, Jun 28, 2023 at 02:58:12PM +0530, Thippeswamy Havalige wrote:
-> > > > > Add support for Xilinx XDMA Soft IP core as Root Port.
-> > > > > ...
+--Sig_/NFQ9DE+V61/f+Ow9PDrTCgX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > If you have more detail about the "error interrupt," that would be
-> > useful as well.  Does this refer to an AER interrupt, a "System
-> > Error", something else?  I'm looking at the diagram in PCIe r6.0,
-> > Figure 6-3, wondering if this is related to anything there.  I
-> > suppose likely it's some Xilinx-specific thing?
-> 
-> - Agreed, ll modify Legacy to INTx, and regarding error interrupts
-> these are Xilinx controller specific interrupts which are used to
-> notify the user about errors such as cfg timeout, slave unsupported
-> requests,Fatal and non fatal error.
+Hi all,
 
-This would be great material for comments and/or a revised commit log.
+On Fri, 28 Jul 2023 09:18:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the mm tree got a conflict in:
+>=20
+>   mm/memory.c
+>=20
+> between commit:
+>=20
+>   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma under =
+vma lock")
+>=20
+> from Linus' tree and commits:
+>=20
+>   69f6bbd1317f ("mm: handle userfaults under VMA lock")
+>   a3bdf38e85aa ("mm: allow per-VMA locks on file-backed VMAs")
+>=20
+> from the mm tree.
+>=20
+> I fixed it up (I think, please check - see below) and can carry the fix
+> as necessary. This is now fixed as far as linux-next is concerned, but
+> any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc mm/memory.c
+> index ca632b58f792,271982fab2b8..000000000000
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@@ -5392,32 -5597,18 +5597,21 @@@ retry
+>   	if (!vma)
+>   		goto inval;
+>  =20
+> - 	/* Only anonymous and tcp vmas are supported for now */
+> - 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
+>  -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
+>  -	if (vma_is_anonymous(vma) && !vma->anon_vma)
+> --		goto inval;
+> --
+>   	if (!vma_start_read(vma))
+>   		goto inval;
+>  =20
+>  +	/*
+>  +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+>  +	 * This check must happen after vma_start_read(); otherwise, a
+>  +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+>  +	 * from its anon_vma.
+>  +	 */
+> - 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
+> - 		goto inval_end_read;
+> -=20
+> - 	/*
+> - 	 * Due to the possibility of userfault handler dropping mmap_lock, avo=
+id
+> - 	 * it for now and fall back to page fault handling under mmap_lock.
+> - 	 */
+> - 	if (userfaultfd_armed(vma))
+> ++	if (unlikely(vma_is_anonymous(vma) && !vma_is_tcp(vma)))
+>  +		goto inval_end_read;
+>  +
+>   	/* Check since vm_start/vm_end might change before we lock the VMA */
+>  -	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)) {
+>  -		vma_end_read(vma);
+>  -		goto inval;
+>  -	}
+>  +	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end))
+>  +		goto inval_end_read;
+>  =20
+>   	/* Check if the VMA got isolated after we found it */
+>   	if (vma->detached) {
 
-> > > > > +	/* Plug the INTx chained handler */
-> > > > > +	irq_set_chained_handler_and_data(port->intx_irq,
-> > > > > +					 xilinx_pl_dma_pcie_intx_flow, port);
-> > > > > +
-> > > > > +	/* Plug the main event chained handler */
-> > > > > +	irq_set_chained_handler_and_data(port->irq,
-> > > > > +					 xilinx_pl_dma_pcie_event_flow,
-> > > > port);
-> > > >
-> > > > What's the reason for using chained IRQs?  Can this be done without
-> > > > them?  I don't claim to understand all the issues here, but it seems
-> > > > better to avoid chained IRQ handlers when possible:
-> > > > https://lore.kernel.org/all/877csohcll.ffs@tglx/
-> > 
-> > > - As per the comments in this
-> > > https://lkml.kernel.org/lkml/alpine.DEB.2.20.1705232307330.2409@nanos/
-> > > T/ "It is fine to have chained interrupts when bootloader, device tree
-> > > and kernel under control. Only if BIOS/UEFI comes into play the user
-> > > is helpless against interrupt storm which will cause system to hangs."
-> > >
-> > > We are using ARM embedded platform with Bootloader, Devicetree flow.
-> > 
-> > I read Thomas' comments as "in general it's better to use regular
-> > interrupts, but we can live with chained interrupts if we have
-> > control of bootloader, device tree, and kernel."
-> > 
-> > I guess my questions are more like:
-> > 
-> >   - Could this be done with either chained interrupts or regular
-> >     interrupts?
-> >  - If so, what is the advantage to using chained interrupts?
+Sorry, doesn't even build ... let me try that again.
 
-> With regular interrupts, these interrupts are self-consumed
-> interrupts (interrupt is handled within driver) but where as chained
-> interrupts are not self consumed (interrupts are not handled within
-> the driver, but forwarded to different driver for which the actual
-> interrupt is raised) but these interrupts are demultiplexed and
-> forwards interrupt to another subsystem by calling
-> generic_handle_irq(). 
-> 
-> As, MSI generic handlers are consumed by Endpoints and end point
-> drivers, chained handlers forward the interrupt to the specific EP
-> driver (For example NVME subsystem or any other subsystem).
+--=20
+Cheers,
+Stephen Rothwell
 
-This doesn't really explain it for me, probably because of my IRQ
-ignorance.
+--Sig_/NFQ9DE+V61/f+Ow9PDrTCgX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I compared xilinx_pl_dma (which uses chained interrupts) with
-pci-aardvark.c (which does not).
+-----BEGIN PGP SIGNATURE-----
 
-  - xilinx_pl_dma_pcie_setup_irq() calls platform_get_irq(0) once and
-    sets up xilinx_pl_dma_pcie_event_flow() as the handler.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTC/cwACgkQAVBC80lX
+0Gz71wf9EpAnKBLioVFm0n9YwpN5Iz0unRTVxNP2txaJJDKbGh+sFEN26F3GtD7b
+b2fI/Od7qVFJmPWms8Ji8YGyMAXqOi513BXTvTmzM0ShM+3p8oz5PlWVYgqmIOyA
+NmuzUjUaTOWL9gwttNuxfj7vKV04vGxPArTJMG04lN7bjZHLu2MVapj6qatNTuGv
+PZy8wA50WBxf/KnloGx4RbmIErJSqMInJ/r0nBiNQFWKpIhkRhv6rFSQt1wPqvEh
+dRs4/ukzR2NSZisRSnzeKMiBaNDi6dVoVbhamrbE4SyHggzbXy9VXFHiDt396qz/
+Wcg9YjZ0RSq3i8oVy6GeSzJOWUvIkA==
+=7Qo8
+-----END PGP SIGNATURE-----
 
-  - advk_pcie_probe() calls platform_get_irq(0) once and sets up
-    advk_pcie_irq_handler() as the handler.
-
-  - xilinx_pl_dma_pcie_event_flow() reads XILINX_PCIE_DMA_REG_IDR to
-    learn which interrupts are pending and calls
-    generic_handle_domain_irq() for each.
-
-  - advk_pcie_irq_handler() calls advk_pcie_handle_int(), which reads
-    PCIE_ISR0_REG and PCIE_ISR1_REG to learn which interrupts are
-    pending and calls generic_handle_domain_irq() for each.
-
-It seems like both drivers do essentially the same thing, but
-xilinx_pl_dma_pcie_event_flow() is a chained handler and
-advk_pcie_irq_handler() is not.
-
-Is there some underlying difference in the way the hardware works that
-means xilinx_pl_dma needs a chained handler while aardvark does not?
-
-Bjorn
+--Sig_/NFQ9DE+V61/f+Ow9PDrTCgX--
