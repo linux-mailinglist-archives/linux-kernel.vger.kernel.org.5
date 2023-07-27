@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4AB76564B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74ED76564D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjG0Oq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
+        id S234205AbjG0Oqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjG0OqF (ORCPT
+        with ESMTP id S234071AbjG0Oq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:46:05 -0400
+        Thu, 27 Jul 2023 10:46:26 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F513592;
-        Thu, 27 Jul 2023 07:45:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396BE35B6;
+        Thu, 27 Jul 2023 07:45:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690469151; x=1722005151;
+  t=1690469155; x=1722005155;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=rXg0fjSPcukCgI8rvn6/BURKoRJDLNE56JJQvNgZt28=;
-  b=niqM5UzIfKyOlPuLyVIxnK7ECzCCpVK5ALYUdrapFK5VtqNQ9guLZRbZ
-   tYAQblKHYRT6kO9diepxWbiFHRKnZBJ10Qa43LiipUK1MchVb44Ht6ATW
-   5nLRZZQQfkFYmBe2BckijfUi8GWP43AgV3cGu+zBpDBFMDuvOQ3WUXhMV
-   lDxlkxnq9frAa/hdhO+xrSm8uhb7s7dwHoyA5YBZiBUNVHaYYWDDdQoGP
-   8mu48CstiyIxu2plBP9CL+KBASYY46/R9q5t+GTzzmQFRronDvCUNQfyc
-   d1IiOyG1nXkL2bJin6Nso/m56c+qTlBs0dSfCSi9IH5wMqATWjduP4+72
+  bh=5UQmg0hLv8TkdVz/X6+MyXQQIYyvi5xDXayA3nnMuec=;
+  b=c74bP8y341PVLLh37xGgpNzZG+c1qCCKvaZ+BaipaxeL4e8wohqMWPQR
+   o0GrclNJvoQGQSiaBEmVjXFyKRTwpAeY+pBUnRXpGfPAz2kItOBiX5Ns+
+   ayR9dxyAahTw9iYHUm5kYm3v/oGiHp5XcqhuMI0dRSLlY8VtRrQPTFKiS
+   BzetrKHdI+YRCW8aNTsbR1GZMJmW9Yt/iLnl1Ok4KQdGumgYzauXz45fL
+   ojTl7S44EGxnzAVWJsg8S6emAaPW9LpBvldZpsPPytJ7ZAjk/dEiD7gFD
+   P7hCFE7/oe/Km54nTqJHsE5UAVcAJAEA4ZQUDLxysT94uWXzNd4mwPEwM
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432139796"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432139821"
 X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="432139796"
+   d="scan'208";a="432139821"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 07:45:51 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 07:45:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817119940"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817119944"
 X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="817119940"
+   d="scan'208";a="817119944"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Jul 2023 07:45:48 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Jul 2023 07:45:51 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -53,9 +53,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Simon Horman <simon.horman@corigine.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/9] page_pool: avoid calling no-op externals when possible
-Date:   Thu, 27 Jul 2023 16:43:33 +0200
-Message-ID: <20230727144336.1646454-7-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 7/9] net: skbuff: avoid accessing page_pool if !napi_safe when returning page
+Date:   Thu, 27 Jul 2023 16:43:34 +0200
+Message-ID: <20230727144336.1646454-8-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
 References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
@@ -71,88 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turned out page_pool_put{,_full}_page() can burn quite a bunch of cycles
-even when on DMA-coherent platforms (like x86) with no active IOMMU or
-swiotlb, just for the call ladder.
-Indeed, it's
-
-page_pool_put_page()
-  page_pool_put_defragged_page()                  <- external
-    __page_pool_put_page()
-      page_pool_dma_sync_for_device()             <- non-inline
-        dma_sync_single_range_for_device()
-          dma_sync_single_for_device()            <- external
-            dma_direct_sync_single_for_device()
-              dev_is_dma_coherent()               <- exit
-
-For the inline functions, no guarantees the compiler won't uninline them
-(they're clearly not one-liners and sometimes compilers uninline even
-2 + 2). The first external call is necessary, but the rest 2+ are done
-for nothing each time, plus a bunch of checks here and there.
-Since Page Pool mappings are long-term and for one "device + addr" pair
-dma_need_sync() will always return the same value (basically, whether it
-belongs to an swiotlb pool), addresses can be tested once right after
-they're obtained and the result can be reused until the page is unmapped.
-Define the new PP DMA sync operation type, which will mean "do DMA syncs
-for the device, but only when needed" and turn it on by default when the
-driver asks to sync pages. When a page is mapped, check whether it needs
-syncs and if so, replace that "sync when needed" back to "always do
-syncs" globally for the whole pool (better safe than sorry). As long as
-the pool has no pages requiring DMA syncs, this cuts off a good piece
-of calls and checks. When at least one page required it, the pool
-conservatively falls back to "always call sync functions", no per-page
-verdicts. It's a fairly rare case anyway that only a few pages would
-require syncing.
-On my x86_64, this gives from 2% to 5% performance benefit with no
-negative impact for cases when IOMMU is on and the shortcut can't be
-used.
+Currently, pp->p.napi is always read, but the actual variable it gets
+assigned to is read-only when @napi_safe is true. For the !napi_safe
+cases, which yet is still a pack, it's an unneeded operation.
+Moreover, it can lead to premature or even redundant page_pool
+cacheline access. For example, when page_pool_is_last_frag() returns
+false (with the recent frag improvements).
+Thus, read it only when @napi_safe is true. This also allows moving
+@napi inside the condition block itself. Constify it while we are
+here, because why not.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/page_pool/types.h | 3 ++-
- net/core/page_pool.c          | 7 ++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ net/core/skbuff.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index dd26f4b2b66c..9134fb458cb2 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -97,8 +97,9 @@ struct page_pool {
- 	bool dma_map:1;				/* Perform DMA mapping */
- 	enum {
- 		PP_DMA_SYNC_ACT_DISABLED = 0,	/* Driver didn't ask to sync */
-+		PP_DMA_SYNC_ACT_SKIP,		/* Syncs can be skipped */
- 		PP_DMA_SYNC_ACT_DO,		/* Perform DMA sync ops */
--	} dma_sync_act:1;
-+	} dma_sync_act:2;
- 	bool page_frag:1;			/* Allow page fragments */
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 3084ef59400b..e701401092d7 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -881,9 +881,8 @@ static void skb_clone_fraglist(struct sk_buff *skb)
  
- 	long frag_users;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 6a8f105e2df5..529e4b41e9eb 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -197,7 +197,8 @@ static int page_pool_init(struct page_pool *pool,
- 		if (!pool->p.max_len)
- 			return -EINVAL;
+ bool page_pool_return_skb_page(struct page *page, bool napi_safe)
+ {
+-	struct napi_struct *napi;
++	bool allow_direct = false;
+ 	struct page_pool *pp;
+-	bool allow_direct;
  
--		pool->dma_sync_act = PP_DMA_SYNC_ACT_DO;
-+		/* Try to avoid calling no-op syncs */
-+		pool->dma_sync_act = PP_DMA_SYNC_ACT_SKIP;
+ 	page = compound_head(page);
  
- 		/* pool->p.offset has to be set according to the address
- 		 * offset used by the DMA engine to start copying rx data
-@@ -350,6 +351,10 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
- 
- 	page_pool_set_dma_addr(page, dma);
- 
-+	if (pool->dma_sync_act == PP_DMA_SYNC_ACT_SKIP &&
-+	    dma_need_sync(pool->p.dev, dma))
-+		pool->dma_sync_act = PP_DMA_SYNC_ACT_DO;
+@@ -903,9 +902,12 @@ bool page_pool_return_skb_page(struct page *page, bool napi_safe)
+ 	 * in the same context as the consumer would run, so there's
+ 	 * no possible race.
+ 	 */
+-	napi = READ_ONCE(pp->p.napi);
+-	allow_direct = napi_safe && napi &&
+-		READ_ONCE(napi->list_owner) == smp_processor_id();
++	if (napi_safe) {
++		const struct napi_struct *napi = READ_ONCE(pp->p.napi);
 +
- 	if (pool->dma_sync_act == PP_DMA_SYNC_ACT_DO)
- 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
++		allow_direct = napi &&
++			READ_ONCE(napi->list_owner) == smp_processor_id();
++	}
  
+ 	/* Driver set this to memory recycling info. Reset it on recycle.
+ 	 * This will *not* work for NIC using a split-page memory model.
 -- 
 2.41.0
 
