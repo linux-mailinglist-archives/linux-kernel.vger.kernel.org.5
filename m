@@ -2,282 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D907645E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89042764582
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjG0FlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        id S231741AbjG0FdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbjG0Fkj (ORCPT
+        with ESMTP id S231743AbjG0FdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:40:39 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4758468A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:39:04 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-55bac17b442so375914a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690436256; x=1691041056;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MGj8fnk95YF2UgdI2+UIkZtkwoXa64ISRzxRMHwyox0=;
-        b=Ywm0o4powSfA2UBaRTJ5e3QOp6qBwwzYfKaQmkfZK/cBIgZdByQLZqDG7g9hldVmrK
-         LKfjfKHmR2IiQ/fRAOkdCtHvT7hGVEOHfPjw4z9qJcpoQaDxBaO/lVEoftBYH1QZoagv
-         3M+aB/7QeDbpipvYgJez7zdvLG8usjeXwsWeIKaeRK6hdfC3KFeCrk/iU4R1VLMw+22r
-         cKNyIA0EtTZrh6B9awVPGuC7Gn+GnvldlKxwprAE6+FGOuZIOVr0TikSguzyb0A9/F3f
-         qdnIOg2GLQRDiVojDSeSbSUN1kOm8vQ9QO6+wrqu0NBtZhomZyHr/pKAKCvp22T3a00q
-         1smQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690436256; x=1691041056;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MGj8fnk95YF2UgdI2+UIkZtkwoXa64ISRzxRMHwyox0=;
-        b=gvnEzo7EQvuD8a2P1rj8Jb5j2Y8+6guBfOREk0G8WRJbIV+oeqkE/3J5IllZ8QoIto
-         jxieTVqNHPBOK2Y9wQWBOJkNBYCkzSSJ7vcH/UaTjkD1DCpH8GgC+88V6Nxmm8Vkk1fN
-         tjqplINMjD4Ev3yf8RVFuq8htApQCiidY9LTb2Kabh6EgklRnyKnA5SV1j0mJgAgb0Tl
-         QAhyg6sFIUA6m/efMT96Dx7OXRnV5yJmhnt1vyuE4/1k/FYuOpML1bv8jfws1yrj8CnB
-         ugkZFWRqu6MkmIAXnOMR18CEXZuiFWT2sfrzJrTJQqziw0k19+T86IHuSqNjv0lhikRz
-         0lRg==
-X-Gm-Message-State: ABy/qLZ2+irvwqw16sz+uBt+O9jVS/NsEbcahBR+siqJs/FKCoGO2esA
-        TchdSkG8NdSfkU7zYBQbwXQttA==
-X-Google-Smtp-Source: APBJJlFvFb4k1Z2ecpW1EVwDrhqZYgAuvp4+vjV9Qd1lMw5gzgmBXW6LFcQ6J7aI7tCDRnM60zb36Q==
-X-Received: by 2002:a17:90a:df86:b0:267:f99f:492f with SMTP id p6-20020a17090adf8600b00267f99f492fmr3348479pjv.48.1690436256696;
-        Wed, 26 Jul 2023 22:37:36 -0700 (PDT)
-Received: from localhost.localdomain ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170902c11500b001bb889530adsm319059pli.217.2023.07.26.22.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 22:37:36 -0700 (PDT)
-From:   Claudiu Beznea <claudiu.beznea@tuxon.dev>
-To:     mturquette@baylibre.com, sboyd@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        mripard@kernel.org
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, varshini.rajendran@microchip.com,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Subject: [PATCH 42/42] clk: at91: clk-utmi: remove parent_names support
-Date:   Thu, 27 Jul 2023 08:31:56 +0300
-Message-Id: <20230727053156.13587-43-claudiu.beznea@tuxon.dev>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230727053156.13587-1-claudiu.beznea@tuxon.dev>
-References: <20230727053156.13587-1-claudiu.beznea@tuxon.dev>
+        Thu, 27 Jul 2023 01:33:12 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2053.outbound.protection.outlook.com [40.107.105.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745AC2D68;
+        Wed, 26 Jul 2023 22:32:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GnqGqPUPvTgmQrKV47ZgeKnp250ZBt5grCZf57UTG8lWZX27OFifZ068wFqL0wMaXEiW6dVNO6LubBXp9AebFnLcs0cBmK4+Nqs/iIgs1CXBj11SrldOmKePhoTG9YOGh0MF8DOgQBxoOXSSM5RZjVC7gnZPWcmQUcLnHM2A1ZpCieklFeN7bffkY3x7271Ux0HWAQm7tYWSzV72S67Rq/jBBJCOtosjSyWsIW3NzJuPqlvpOZuZEtyoD6aT/5RwneMwg5RVucPGgb/BjnfNthrxzbL20M0ruur7CP2yKNcbTGnzhapTDBrdYQyXP9JsPY5hjlWHYD/2YalCRgI2sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jYwyd2JlW9YUGACCKH3OOGy+8vBeEUAEJD4RL+rZ0AA=;
+ b=lk44+ZWBvT7ylpf4QQzPeM+0Yq8Tvb540Aibmz92OFuoSl0M3F9SDCaJwyhzYdFQPfNKaM9LFy59rQeo7kPgAufYiz0yOMtNNZ+6hHRYEI9uiZ3Szg/hllZpQsPDuEvtcIMUesg1v2Km61UhLzF5byXzwj7vkEhSYwPho0e4cG2aMAELQWN/HnXun4CrUCc7C8IqE6m0uxrop+/ZGLa+RMsGvqjpq0Oq+iazBzST4vNusXu0yEKL3iPbw3Ln/P8Yr4En2IxiJxu2MeUhLqZCq11UT52K6O5K92RX8lZDfRHKSal0k5WPzPO/L9/ccuVqAVGWFPdmcjweVkoMUpCI3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jYwyd2JlW9YUGACCKH3OOGy+8vBeEUAEJD4RL+rZ0AA=;
+ b=lPFL6deq7c9mgwPXBDNXcHxgrY4WH4PXSUXQMCaxA3B+CCvNnaJFnhcn4XZJ3Sb/tk1ktSpTAlbk9LjKd1D4BYT6U6FR5Ro/f5mYuOwkgP/40AnVYPN2lBij6jOppAXSEPsCnceM3uS1XlTFH+nLeVv4Ghf5aa/uEE38qQZLgfo=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by PA4PR04MB7823.eurprd04.prod.outlook.com (2603:10a6:102:c1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 05:32:51 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 05:32:51 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Duyck <alexander.duyck@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH net] net: fec: tx processing does not call XDP APIs if
+ budget is 0
+Thread-Topic: [PATCH net] net: fec: tx processing does not call XDP APIs if
+ budget is 0
+Thread-Index: AQHZvsxwawoZvXvGy0ONq5DghKmkjq/KsvwAgACtTTCAANTXgIAAoH7ggAAujgCAABV/0A==
+Date:   Thu, 27 Jul 2023 05:32:51 +0000
+Message-ID: <AM5PR04MB313925B5EF7F4A1ABFBFFB5A8801A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230725074148.2936402-1-wei.fang@nxp.com>
+        <70b71e7bb8a7dff2dacab99b0746e7bf2bee9344.camel@gmail.com>
+        <AM5PR04MB31390FCD7DB9F905FCB599108800A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+        <CAKgT0Ufo8exTv1783Ud7EUg_1ei90Eb4ZoiHFd49zAbfhLgAsQ@mail.gmail.com>
+        <AM5PR04MB3139FC9C3FED1759E1160EAE8801A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <20230726211450.209efe35@kernel.org>
+In-Reply-To: <20230726211450.209efe35@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|PA4PR04MB7823:EE_
+x-ms-office365-filtering-correlation-id: 8f2b3a39-638e-4623-a9a2-08db8e62ebab
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Hsz7ivuqDPrwsUq17QFY70vki0owINn++4z8jcqHc51vseWfEB6qmyLiGT/1p+BR04d9Depj4sM6ZtnkABABoSnXqEk6raac1CrfhgkE9VdmV9qoUO/IuVg3EQ9+q0sAop3YUGT8JUFLhTE+JuWko42rHA8gN0KzKZHbHoaNejOJ+r1iv0M/4v82PtykZrQpMcesn9bXeQOoR8Cg5qGDSYT7yD36RHJFOeIa/X57ItKLPjXmlzE435Jc+InD2rskrdL7y+1r9/q/mj10He2xmk2P6CZ1RKvxEvuYvCF6eCxaHKHlTrdX7i3+KGqCjV4SQCJnsMvhI3nyIMgbWhj1zXUEkufmLE7G56HhabC3/TUTvEG3laQMuiZSmaaVSM9eEzaZ9FCfDHYl+uoiMiILIX7y3WJpD+7NYJxufFybW83JcOncVSzbpdfE/j286e0+hQrDXBy8HpwAXbd3Vl5Fhl6Qks5xGkkZlSzWxq2JCPbxmvXqTGKAxisAA83Hy2puCXCCRXzhFTpDzbAZFsD7nVEZlsCAQNZwZ/o4iuavu+cJaXYjiuXnuoK3Pezju9rmB4ye7ZXIyWls1wx2n96ytArfqQSX4DYAkUT/F0UrZ4L6X99yKeW80XwdLmVf1CQZ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(346002)(366004)(39860400002)(451199021)(86362001)(186003)(6506007)(26005)(76116006)(38070700005)(6916009)(4326008)(66946007)(44832011)(66476007)(64756008)(66446008)(66556008)(33656002)(9686003)(83380400001)(2906002)(7696005)(122000001)(66899021)(478600001)(54906003)(71200400001)(41300700001)(38100700002)(55016003)(316002)(52536014)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+lpNEiftRXqbWID0Kale0kkOYpeTKjUA0UeGi+qjEvJPCkcsIHBsqjK7XyII?=
+ =?us-ascii?Q?O+AEQtjOHS4iHWYpCtUbhhL4XPdK/YjnRZcRaniWZk4UwWr3YxyhkaIu/YUC?=
+ =?us-ascii?Q?K8GQCzBRlBPfoG79ylbcww0X9EDeugPQK7E1V55FXlldrlxHPCa1CVx6FzqD?=
+ =?us-ascii?Q?15nxaoy/ka48YA+h5M1fJ55zURtS4O5xbZ3Mx/xv01rUkSS9IHfWS/co7rpY?=
+ =?us-ascii?Q?iGYN3k3eOhketAJAlozXQQXTMlFg3/GZTbfw+v9CLaeYg4peXGP5YpUXXwvg?=
+ =?us-ascii?Q?gvhE6QboS0h2TgXZDwFTds6QInOCJKMF7OK9OcvqYUmhHqK8hcID4TJMRhqJ?=
+ =?us-ascii?Q?fxUBy/M23iVJ0ejMZq6S0zx2Tk+Pmi5YOLoJmRwNzAyZjN+Cuz+CUv4YbBJf?=
+ =?us-ascii?Q?bmvdOAXomlWhQnRRFqTwnxySH/naLrClQ/KU6cdk1bQoGLquwLdQuXxLEUqB?=
+ =?us-ascii?Q?vX/e78x5qmG/tKbaqSz0ywT/4ZfS7C3HTYsFmQc7Zz2p03p/Ph0bQtwRItZJ?=
+ =?us-ascii?Q?V4xbh4V7kSC59cElFxGiIv/Av5JvEZ/wS86X9Xa2alcG370yZnyLL5jcz5P7?=
+ =?us-ascii?Q?06KCotcONLZNIrAYi4q7V8gypL383A5DNAkiQSJq+jM3M5UUy9sCkNLOby2o?=
+ =?us-ascii?Q?iPq1GeWpt233MhE/PSAFLKykFTvtPdIiDJfWoc9qbaYYFn8lrghUjt0lUyzQ?=
+ =?us-ascii?Q?SVY0jSkr+4JFT8JFAhJ0ozFYSoe+JZV6eX39u5k6DgzEDSaA/9K9kewmP0Kr?=
+ =?us-ascii?Q?1QllB3j9dYPap+sBlzlP6N8LaeiJJbNXdvkL2Cejtdfp+3WdwlVZlLRdQwDE?=
+ =?us-ascii?Q?YDVPrdffEmS9EFobZvb2+JYESPqLAiO0bSbHoviGW3rwNG0EDc/eKgJ+4EmP?=
+ =?us-ascii?Q?4elO7niLWmwpFVGxHclJeORpXe6r8P25BmahIg/4/5ys3Q/67QniuZtiYZTY?=
+ =?us-ascii?Q?TE/3S7+1td+889pCkxsEiEVjZZ4N6j1mwbC4IjCZkdrUnZSIXBW25En22tZ8?=
+ =?us-ascii?Q?0ZrdFcxxBAC5/Aa+iyzeJA/0nv3bEbcBcychiaONsBmbKjROyn+W4wKETdZA?=
+ =?us-ascii?Q?+5ehVRiKhV1OWQkcnxqoPgy5z/xhaOusd9dvP+lQ4Ebif8aWpRjnx2qXDUhq?=
+ =?us-ascii?Q?3p+ejcg3ICfzcqvJtpeDn8esqfeMiZDHu1ox1OmkZn+AJLi042OsjE4gXpd/?=
+ =?us-ascii?Q?/P8CLxPmRRPk87+Lpyl4IfKuHDnMnx+0y+NRNWAMn4qJ4rZjsiaBeP+uwf1h?=
+ =?us-ascii?Q?HqDd/YEddMrPtozzh+ZegSrXBU6Jla67pfkBggz8YsVxRxZcmndEmAx/q2aa?=
+ =?us-ascii?Q?4P/I9MjFjcEaZ5bD4luBVyZ4o1mnHXpXc3k5xp/5PC0AE3TGq2LNQJnJaoW8?=
+ =?us-ascii?Q?cDYX4yljhlsYp/jGYq8HIQef4KyBaKbildnjqPOLujkcjqwMGyUOIUJALWfT?=
+ =?us-ascii?Q?hySWSHbBrSZypgwcrYoc/zdKAsynoty0XVEtDtUiMKWy8W4FlkZ1pehhhfb/?=
+ =?us-ascii?Q?hRPX07Z1nu/UoUYg3LlhktQTprKfLWLKV2ucrnTIuwrattg/byhavt27ra6S?=
+ =?us-ascii?Q?7KET99dDEpeMyQAWvvQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f2b3a39-638e-4623-a9a2-08db8e62ebab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2023 05:32:51.4378
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jKS6dPm4xMbT+eBWLRoYwdpQmjsGLtDUW8V7FEw83v1RbvWMNxwFUuzMAPWgjVkxAULl/qUG2HjRjJTQGOn5VA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7823
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove parent_names support as parent_hw support is now available on all
-platforms using clk-utmi driver.
-
-Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
----
- drivers/clk/at91/at91sam9g45.c |  2 +-
- drivers/clk/at91/at91sam9rl.c  |  2 +-
- drivers/clk/at91/at91sam9x5.c  |  2 +-
- drivers/clk/at91/clk-utmi.c    | 23 ++++++++---------------
- drivers/clk/at91/dt-compat.c   |  2 +-
- drivers/clk/at91/pmc.h         |  5 ++---
- drivers/clk/at91/sama5d2.c     |  2 +-
- drivers/clk/at91/sama5d3.c     |  2 +-
- drivers/clk/at91/sama5d4.c     |  2 +-
- drivers/clk/at91/sama7g5.c     |  2 +-
- 10 files changed, 18 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/clk/at91/at91sam9g45.c b/drivers/clk/at91/at91sam9g45.c
-index 1e5262b678f5..1a20ce75201b 100644
---- a/drivers/clk/at91/at91sam9g45.c
-+++ b/drivers/clk/at91/at91sam9g45.c
-@@ -152,7 +152,7 @@ static void __init at91sam9g45_pmc_setup(struct device_node *np)
- 
- 	at91sam9g45_pmc->chws[PMC_PLLACK] = hw;
- 
--	hw = at91_clk_register_utmi(regmap, NULL, "utmick", NULL, at91sam9g45_pmc->chws[PMC_MAIN]);
-+	hw = at91_clk_register_utmi(regmap, NULL, "utmick", at91sam9g45_pmc->chws[PMC_MAIN]);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
-diff --git a/drivers/clk/at91/at91sam9rl.c b/drivers/clk/at91/at91sam9rl.c
-index eaa757f6670a..05ea2bf3c73b 100644
---- a/drivers/clk/at91/at91sam9rl.c
-+++ b/drivers/clk/at91/at91sam9rl.c
-@@ -112,7 +112,7 @@ static void __init at91sam9rl_pmc_setup(struct device_node *np)
- 
- 	at91sam9rl_pmc->chws[PMC_PLLACK] = hw;
- 
--	hw = at91_clk_register_utmi(regmap, NULL, "utmick", NULL, at91sam9rl_pmc->chws[PMC_MAIN]);
-+	hw = at91_clk_register_utmi(regmap, NULL, "utmick", at91sam9rl_pmc->chws[PMC_MAIN]);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
-diff --git a/drivers/clk/at91/at91sam9x5.c b/drivers/clk/at91/at91sam9x5.c
-index 1968dd69fbf7..b3a7d5803168 100644
---- a/drivers/clk/at91/at91sam9x5.c
-+++ b/drivers/clk/at91/at91sam9x5.c
-@@ -200,7 +200,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
- 
- 	at91sam9x5_pmc->chws[PMC_PLLACK] = hw;
- 
--	hw = at91_clk_register_utmi(regmap, NULL, "utmick", NULL, at91sam9x5_pmc->chws[PMC_MAIN]);
-+	hw = at91_clk_register_utmi(regmap, NULL, "utmick", at91sam9x5_pmc->chws[PMC_MAIN]);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
-diff --git a/drivers/clk/at91/clk-utmi.c b/drivers/clk/at91/clk-utmi.c
-index 40c84f5af5e8..8e2cf4893609 100644
---- a/drivers/clk/at91/clk-utmi.c
-+++ b/drivers/clk/at91/clk-utmi.c
-@@ -143,8 +143,7 @@ static const struct clk_ops utmi_ops = {
- static struct clk_hw * __init
- at91_clk_register_utmi_internal(struct regmap *regmap_pmc,
- 				struct regmap *regmap_sfr,
--				const char *name, const char *parent_name,
--				struct clk_hw *parent_hw,
-+				const char *name, struct clk_hw *parent_hw,
- 				const struct clk_ops *ops, unsigned long flags)
- {
- 	struct clk_utmi *utmi;
-@@ -152,7 +151,7 @@ at91_clk_register_utmi_internal(struct regmap *regmap_pmc,
- 	struct clk_init_data init = {};
- 	int ret;
- 
--	if (!(parent_name || parent_hw))
-+	if (!parent_hw)
- 		return ERR_PTR(-EINVAL);
- 
- 	utmi = kzalloc(sizeof(*utmi), GFP_KERNEL);
-@@ -161,13 +160,8 @@ at91_clk_register_utmi_internal(struct regmap *regmap_pmc,
- 
- 	init.name = name;
- 	init.ops = ops;
--	if (parent_hw) {
--		init.parent_hws = parent_hw ? (const struct clk_hw **)&parent_hw : NULL;
--		init.num_parents = parent_hw ? 1 : 0;
--	} else {
--		init.parent_names = parent_name ? &parent_name : NULL;
--		init.num_parents = parent_name ? 1 : 0;
--	}
-+	init.parent_hws = parent_hw ? (const struct clk_hw **)&parent_hw : NULL;
-+	init.num_parents = parent_hw ? 1 : 0;
- 	init.flags = flags;
- 
- 	utmi->hw.init = &init;
-@@ -186,11 +180,10 @@ at91_clk_register_utmi_internal(struct regmap *regmap_pmc,
- 
- struct clk_hw * __init
- at91_clk_register_utmi(struct regmap *regmap_pmc, struct regmap *regmap_sfr,
--		       const char *name, const char *parent_name,
--		       struct clk_hw *parent_hw)
-+		       const char *name, struct clk_hw *parent_hw)
- {
- 	return at91_clk_register_utmi_internal(regmap_pmc, regmap_sfr, name,
--			parent_name, parent_hw, &utmi_ops, CLK_SET_RATE_GATE);
-+			parent_hw, &utmi_ops, CLK_SET_RATE_GATE);
- }
- 
- static int clk_utmi_sama7g5_prepare(struct clk_hw *hw)
-@@ -289,8 +282,8 @@ static const struct clk_ops sama7g5_utmi_ops = {
- 
- struct clk_hw * __init
- at91_clk_sama7g5_register_utmi(struct regmap *regmap_pmc, const char *name,
--			       const char *parent_name, struct clk_hw *parent_hw)
-+			       struct clk_hw *parent_hw)
- {
- 	return at91_clk_register_utmi_internal(regmap_pmc, NULL, name,
--			parent_name, parent_hw, &sama7g5_utmi_ops, 0);
-+			parent_hw, &sama7g5_utmi_ops, 0);
- }
-diff --git a/drivers/clk/at91/dt-compat.c b/drivers/clk/at91/dt-compat.c
-index 285ede5d6702..68211b36c8f6 100644
---- a/drivers/clk/at91/dt-compat.c
-+++ b/drivers/clk/at91/dt-compat.c
-@@ -1189,7 +1189,7 @@ static void __init of_at91sam9x5_clk_utmi_setup(struct device_node *np)
- 			regmap_sfr = NULL;
- 	}
- 
--	hw = at91_clk_register_utmi(regmap_pmc, regmap_sfr, name, NULL, parent_hw);
-+	hw = at91_clk_register_utmi(regmap_pmc, regmap_sfr, name, parent_hw);
- 	if (IS_ERR(hw))
- 		return;
- 
-diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 5e65f5b59536..889230d29bf2 100644
---- a/drivers/clk/at91/pmc.h
-+++ b/drivers/clk/at91/pmc.h
-@@ -263,11 +263,10 @@ at91rm9200_clk_register_usb(struct regmap *regmap, const char *name,
- 
- struct clk_hw * __init
- at91_clk_register_utmi(struct regmap *regmap_pmc, struct regmap *regmap_sfr,
--		       const char *name, const char *parent_name,
--		       struct clk_hw *parent_hw);
-+		       const char *name, struct clk_hw *parent_hw);
- 
- struct clk_hw * __init
- at91_clk_sama7g5_register_utmi(struct regmap *regmap, const char *name,
--			       const char *parent_name, struct clk_hw *parent_hw);
-+			       struct clk_hw *parent_hw);
- 
- #endif /* __PMC_H_ */
-diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
-index fa14c6f7d37a..cf1f34a69862 100644
---- a/drivers/clk/at91/sama5d2.c
-+++ b/drivers/clk/at91/sama5d2.c
-@@ -253,7 +253,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
- 	if (IS_ERR(regmap_sfr))
- 		regmap_sfr = NULL;
- 
--	hw = at91_clk_register_utmi(regmap, regmap_sfr, "utmick", NULL,
-+	hw = at91_clk_register_utmi(regmap, regmap_sfr, "utmick",
- 				    sama5d2_pmc->chws[PMC_MAIN]);
- 	if (IS_ERR(hw))
- 		goto err_free;
-diff --git a/drivers/clk/at91/sama5d3.c b/drivers/clk/at91/sama5d3.c
-index 0713a6b21c8a..707e501b1a73 100644
---- a/drivers/clk/at91/sama5d3.c
-+++ b/drivers/clk/at91/sama5d3.c
-@@ -179,7 +179,7 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
- 
- 	sama5d3_pmc->chws[PMC_PLLACK] = hw;
- 
--	hw = at91_clk_register_utmi(regmap, NULL, "utmick", NULL, mainck_hw);
-+	hw = at91_clk_register_utmi(regmap, NULL, "utmick", mainck_hw);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
-diff --git a/drivers/clk/at91/sama5d4.c b/drivers/clk/at91/sama5d4.c
-index d0bd025876ac..542c7cccda46 100644
---- a/drivers/clk/at91/sama5d4.c
-+++ b/drivers/clk/at91/sama5d4.c
-@@ -194,7 +194,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
- 
- 	sama5d4_pmc->chws[PMC_PLLACK] = hw;
- 
--	hw = at91_clk_register_utmi(regmap, NULL, "utmick", NULL, mainck_hw);
-+	hw = at91_clk_register_utmi(regmap, NULL, "utmick", mainck_hw);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
-diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index 61f7027f1033..012e992ce14b 100644
---- a/drivers/clk/at91/sama7g5.c
-+++ b/drivers/clk/at91/sama7g5.c
-@@ -1151,7 +1151,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 			sama7g5_pmc->chws[sama7g5_mckx[i].eid] = hw;
- 	}
- 
--	hw = at91_clk_sama7g5_register_utmi(regmap, "utmick", NULL, main_xtal_hw);
-+	hw = at91_clk_sama7g5_register_utmi(regmap, "utmick", main_xtal_hw);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
--- 
-2.39.2
-
+> On Thu, 27 Jul 2023 02:08:32 +0000 Wei Fang wrote:
+> > > Actually after talking with Jakub a bit more there is an issue here,
+> > > but not freeing the frames isn't the solution. We likely need to
+> > > just fix the page pool code so that it doesn't attempt to recycle
+> > > the frames if operating in IRQ context.
+> > >
+> > > The way this is dealt with for skbs is that we queue skbs if we are
+> > > in IRQ context so that it can be deferred to be freed by the
+> > > net_tx_action. We likely need to look at doing something similar for
+> > > page_pool pages or XDP frames.
+> > >
+> > After reading your discussion with Jakub, I understand this issue a bit=
+ more.
+> > But we are not sure when this issue will be fixed in page pool,
+> > currently we can only tolerate a delay in sending of a netpoll
+> > message. So I think this patch is necessary, and I will refine it in
+> > the future when the page pool has fixed the issue. In addition, as you
+> > mentioned before, napi_consume_skb should be used to instead of
+> dev_kfree_skb_any, so I will improve this patch in version 2.
+>=20
+> I think so too, since the patch can only help, you already wrote it and i=
+t won't
+> be extra backporting work since the code is only present in
+> 6.5 - I think it's worth applying. And we can refine things as page pool
+> limitations get listed (the napi_consume_skb() is net-next material, anyw=
+ay).
+Okay, thank you. :)
