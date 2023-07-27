@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5206765541
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C873765549
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjG0Njg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S232486AbjG0NnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjG0Nje (ORCPT
+        with ESMTP id S233609AbjG0NnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:39:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C087E2D64;
-        Thu, 27 Jul 2023 06:39:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 577E461E8A;
-        Thu, 27 Jul 2023 13:39:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2226BC433C7;
-        Thu, 27 Jul 2023 13:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690465172;
-        bh=6hdy3JwNg2XitS/vh4UEJyJy/HRwoPzoH5X3uacaKT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mjLFfCqAynxjdNRkS7rjdkXwFZ8VUT65eQGhRxn0YXQPjLqnayngL6pmxJ2l0x2h2
-         WXUKexGRQXRVqO/yZMZbm1YAFgKc5vFCYFonNcQJHORMt1+aLqDa7k/lq9vH0dIZtQ
-         CZ2ylUXrn2Y+BJQgzIQkHU1RqFjzFDlf21CcmcydTj5lbYidbngPtZe6b2siDxHfpV
-         xqrK+FwJ8KBHOZvsX2/g3w9xB+ksW/5av82FNRv1+QlgHyWWsEEfJu3N/AcawG1MYx
-         6vbFGotXsBzvn0H3GKVjFGM5naXRy2GMpfffiRPHyA08rAhKAxBnhdH00smO7oAdkm
-         ilIqAb1zMuPsg==
-Date:   Thu, 27 Jul 2023 15:39:27 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, baolin.wang@linux.alibaba.com,
-        alikernel-developer@linux.alibaba.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
- iort_node_get_rmr_info()
-Message-ID: <ZMJzj2oe0B2Qp8vp@lpieralisi>
-References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
+        Thu, 27 Jul 2023 09:43:04 -0400
+Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EC2D64;
+        Thu, 27 Jul 2023 06:43:03 -0700 (PDT)
+Message-ID: <05178cf3-df1c-80a7-12ad-816fafbc2df7@linux.intel.com>
+Date:   Thu, 27 Jul 2023 15:42:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
+ <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
+ <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
+ <ZMF3rLioJK9QJ0yj@slm.duckdns.org>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <ZMF3rLioJK9QJ0yj@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,49 +55,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Catalin, Will]
+Hey,
 
-On Mon, Jul 17, 2023 at 07:33:45PM +0800, Guanghui Feng wrote:
-> According to the ARM IORT specifications DEN 0049 issue E,
-> the "Number of IDs" field in the ID mapping format reports
-> the number of IDs in the mapping range minus one.
+On 2023-07-26 21:44, Tejun Heo wrote:
+> Hello,
 > 
-> In iort_node_get_rmr_info(), we erroneously skip ID mappings
-> whose "Number of IDs" equal to 0, resulting in valid mapping
-> nodes with a single ID to map being skipped, which is wrong.
+> On Wed, Jul 26, 2023 at 12:14:24PM +0200, Maarten Lankhorst wrote:
+>>> So, yeah, if you want to add memory controls, we better think through how
+>>> the fd ownership migration should work.
+>>
+>> I've taken a look at the series, since I have been working on cgroup memory
+>> eviction.
+>>
+>> The scheduling stuff will work for i915, since it has a purely software
+>> execlist scheduler, but I don't think it will work for GuC (firmware)
+>> scheduling or other drivers that use the generic drm scheduler.
+>>
+>> For something like this,  you would probably want it to work inside the drm
+>> scheduler first. Presumably, this can be done by setting a weight on each
+>> runqueue, and perhaps adding a callback to update one for a running queue.
+>> Calculating the weights hierarchically might be fun..
 > 
-> Fix iort_node_get_rmr_info() by removing the bogus id_count
-> check.
+> I don't have any idea on this front. The basic idea of making high level
+> distribution decisions in core code and letting individual drivers enforce
+> that in a way which fits them the best makes sense to me but I don't know
+> enough to have an opinion here.
 > 
-> Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR reserved regions")
-> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-> ---
->  drivers/acpi/arm64/iort.c | 3 ---
->  1 file changed, 3 deletions(-)
-
-Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-
-Catalin/Will,
-
-can you pick this up please ?
-
-Thanks,
-Lorenzo
-
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index 3631230..56d8873 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -1007,9 +1007,6 @@ static void iort_node_get_rmr_info(struct acpi_iort_node *node,
->  	for (i = 0; i < node->mapping_count; i++, map++) {
->  		struct acpi_iort_node *parent;
->  
-> -		if (!map->id_count)
-> -			continue;
-> -
->  		parent = ACPI_ADD_PTR(struct acpi_iort_node, iort_table,
->  				      map->output_reference);
->  		if (parent != iommu)
-> -- 
-> 1.8.3.1
+>> I have taken a look at how the rest of cgroup controllers change ownership
+>> when moved to a different cgroup, and the answer was: not at all. If we
 > 
+> For persistent resources, that's the general rule. Whoever instantiates a
+> resource gets to own it until the resource gets freed. There is an exception
+> with the pid controller and there are discussions around whether we want
+> some sort of migration behavior with memcg but yes by and large instantiator
+> being the owner is the general model cgroup follows.
+> 
+>> attempt to create the scheduler controls only on the first time the fd is
+>> used, you could probably get rid of all the tracking.
+>> This can be done very easily with the drm scheduler.
+>>
+>> WRT memory, I think the consensus is to track system memory like normal
+>> memory. Stolen memory doesn't need to be tracked. It's kernel only memory,
+>> used for internal bookkeeping  only.
+>>
+>> The only time userspace can directly manipulate stolen memory, is by mapping
+>> the pinned initial framebuffer to its own address space. The only allocation
+>> it can do is when a framebuffer is displayed, and framebuffer compression
+>> creates some stolen memory. Userspace is not
+>> aware of this though, and has no way to manipulate those contents.
+> 
+> So, my dumb understanding:
+> 
+> * Ownership of an fd can be established on the first ioctl call and doesn't
+>    need to be migrated afterwards. There are no persistent resources to
+>    migration on the first call.
+> 
+> * Memory then can be tracked in a similar way to memcg. Memory gets charged
+>    to the initial instantiator and doesn't need to be moved around
+>    afterwards. There may be some discrepancies around stolen memory but the
+>    magnitude of inaccuracy introduced that way is limited and bound and can
+>    be safely ignored.
+> 
+> Is that correct?
+
+Hey,
+
+Yeah mostly, I think we can stop tracking stolen memory. I stopped doing 
+that for Xe, there is literally nothing to control for userspace in there.
+
+Cheers,
+Maarten
