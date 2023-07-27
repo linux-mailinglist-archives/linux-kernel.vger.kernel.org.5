@@ -2,161 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDAF7654D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34577654E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjG0NVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        id S232951AbjG0NYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbjG0NVo (ORCPT
+        with ESMTP id S232292AbjG0NYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:21:44 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B6F2D78;
-        Thu, 27 Jul 2023 06:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1690464095; x=1722000095;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=e6UxSGo2WWTUKXmqcuQ+Qecdxy1fvmCwag0/Umi5kss=;
-  b=XJWbGYjwep2FOF2x8uCZnVyZ7FG5LlVV4TqPGDiQDeUXonrt/YKivIE8
-   lIJlXIozo2suzHhQJ/waSY+joUq3bkoWOovA9hIYZtxDEDuW33+DWDzfa
-   P67Pi1slEeuTEkNH7U4mi9FVYGrQQYkgKhex/3BUwGeK9Mr7rBD6qO6VH
-   UOS7HNeyELK/kb1ysiJ4vuB/g2ngzz/w3oMBBXMacLnnDJBthEsMnAhyh
-   HgHj06F5LOroN4bzXiJa9l9TktfNzuTg7iLD4TXiwtuT33JRCBLduq0Eq
-   +fNBRoRTzEbBzVE7dV20jw7ASsNmlnFOQs8OVZFGJqknciyFbiTK+Brwg
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,234,1684792800"; 
-   d="scan'208";a="32156711"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 27 Jul 2023 15:21:28 +0200
-Received: from localhost.localdomain (SCHIFFERM-M2.tq-net.de [10.121.49.20])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 905F9280085;
-        Thu, 27 Jul 2023 15:21:28 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v3 3/3] arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add SD-card and WLAN overlays
-Date:   Thu, 27 Jul 2023 15:21:20 +0200
-Message-Id: <8ff8a6f1fdbe6ebb478f88bb0737628054c43c5b.1690463382.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <e4283d6af59c77d2f690e070eb948dd9142a2276.1690463382.git.matthias.schiffer@ew.tq-group.com>
-References: <e4283d6af59c77d2f690e070eb948dd9142a2276.1690463382.git.matthias.schiffer@ew.tq-group.com>
+        Thu, 27 Jul 2023 09:24:39 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B84F271D;
+        Thu, 27 Jul 2023 06:24:37 -0700 (PDT)
+X-QQ-mid: bizesmtp91t1690464264t6ba04bc
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 27 Jul 2023 21:24:23 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000B00A0000000
+X-QQ-FEAT: +ynUkgUhZJlPcLo2L82mSALBkA/DiMtCgLjD0C7cQYqRPdo832+NVjxmjea1d
+        xsxaF9IRTavQ+hveYD01x/hM87H7JDeodA/iw2ImSsPbQ7v3KV9mJVZR80wCLgFZw6MavDP
+        7IKQprNbhH7PXchzJ8Yek1rjYYwriiKL9U3uiixpUdEwJKaknZLkiAizIjoiy69iZW7bFh1
+        UIQKfOEQUXVdzwUPXBN61kcBXjuAy79/VMax523twViH1VocY45j34aa2s5H2M+gEoz17xT
+        TFIRh8qX4J07T9xkCEpZ2/yFcZS+J30KuFOgC+7f64IXYaL9Jho/UrIW1s+0uINgu12EtuY
+        u19EysC//h+kaQAXprCkSKSA327yWIxEkqTUix/
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4414270907926096569
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v2 05/14] selftests/nolibc: add menuconfig for development
+Date:   Thu, 27 Jul 2023 21:24:18 +0800
+Message-Id: <20230727132418.117924-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230725135106.36543-1-falcon@tinylab.org>
+References: <20230725135106.36543-1-falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the SD-card and WLAN are connected to the same SDHC interface (with a
-GPIO-controlled mux), they are mutually exclusive. Provide Device Tree
-overlays for both configurations.
+Hi, Willy
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+> > On Wed, Jul 19, 2023 at 09:22:37PM +0800, Zhangjin Wu wrote:
+> > > The default DEFCONFIG_<ARCH> may not always work for all architectures,
+> > > let's allow users to tune some kernel config options with 'menuconfig'.
+> > > 
+> > > This is important when porting nolibc to a new architecture, it also
+> > > allows to speed up nolibc 'run' target testing via manually disabling
+> > > tons of unnecessary kernel config options.
+> > > 
+> > > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> > > ---
+> > >  tools/testing/selftests/nolibc/Makefile | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> > > index 058e7be070ea..06954b4b3885 100644
+> > > --- a/tools/testing/selftests/nolibc/Makefile
+> > > +++ b/tools/testing/selftests/nolibc/Makefile
+> > > @@ -202,6 +202,9 @@ KERNEL_IMAGE  = $(objtree)/$(IMAGE)
+> > >  defconfig:
+> > >  	$(Q)$(MAKE_KERNEL) mrproper $(DEFCONFIG) prepare
+> > >  
+> > > +menuconfig:
+> > > +	$(Q)$(MAKE_KERNEL) menuconfig
+> > 
+> > What is the real benefit of this compared to just running the
+> > standard "make menuconfig" ? We should avoid adding makefile targets
+> > that do not bring value on top of that the top-level makefile does,
+> > because it will make the useful ones much harder to spot, and will
+> > tend to encourage users to use only that makefile during the tests,
+> > which is a bad practice since many targets will always be missing
+> > or work differently. It's important in my opinion that we strictly
+> > stick to what is useful to operate the tests themselves and this
+> > one doesn't make me feel like it qualifies as such.
+> 
+> Ok, get it.
+> 
+> I did like develop nolibc in tools/testing/selftests/nolibc/ without
+> changing directories frequently or specifying the "-C" option
+> unnecessary ;-) 
+>
+> Since "make menuconfig" is only required during the first porting of a new
+> architecture, so, it is ok to drop this patch.
+>
 
-v3: no changes
-v2: no changes
+Oh, Willy, I did find this is very important again.
 
- arch/arm64/boot/dts/ti/Makefile               |  8 +++++++
- .../ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso | 22 +++++++++++++++++++
- .../ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso   | 22 +++++++++++++++++++
- 3 files changed, 52 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
+I just want to check and test if we need to disable vsx for 32-bit
+powerpc too, so, I plan to re-configure kernel via menuconfig to disable
+VSX in kernel side, and forcely enable vsx in application side, but it
+was very 'painful' when I was running something like this:
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 77f553f014cc8..be9a9299eef42 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -30,6 +30,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
- 
-+k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-+k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-+
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
-new file mode 100644
-index 0000000000000..79ed19c6c0e90
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-sdcard.dtso
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 TQ-Systems GmbH <linux@ew.tq-group.com>, D-82229 Seefeld, Germany.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&sdhci1 {
-+	vmmc-supply = <&reg_sd>;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	line43-hog {
-+		gpio-hog;
-+		gpios = <43 0>;
-+		line-name = "MMC1_CTRL";
-+		output-low;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
-new file mode 100644
-index 0000000000000..32596a84b7ba1
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am64-tqma64xxl-mbax4xxl-wlan.dtso
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022-2023 TQ-Systems GmbH <linux@ew.tq-group.com>, D-82229 Seefeld, Germany.
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+&sdhci1 {
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	no-sd;
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	line43-hog {
-+		gpio-hog;
-+		gpios = <43 0>;
-+		line-name = "MMC1_CTRL";
-+		output-high;
-+	};
-+};
--- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
+    $ make defconfig ARCH=ppc CROSS_COMPILE=powerpc-linux-gnu-
 
+To do a further menuconfig, I must switch to something else:
+
+    $ make menuconfig ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- -C ../../../../
+
+Especially, our test is able to accept ARCH=ppc, but the top-level
+kernel still only accept powerpc, it makes the development very
+comfortable, of course, the typing of the relative or absolute path
+every time is either not a good idea.
+
+so, this doesn't simply duplicate with the one from top-level, it can
+get the right ARCH, srctree for us, and this is heavily used by our
+tinyconfig development to tune the config options very frequently, so,
+let's still add this one in the new revision?
+
+But I plan to merge the mrproper targets here to save another patch,
+what about your idea?
+
+    menuconfig mrproper:
+	$(Q)$(MAKE_KERNEL) $@
+
+Thanks,
+Zhangjin
+
+> Thanks,
+> Zhangjin
+> 
+> > 
+> > Willy
