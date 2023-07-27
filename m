@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1783E76549A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCEF765499
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbjG0NJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S233313AbjG0NJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbjG0NJQ (ORCPT
+        with ESMTP id S232734AbjG0NJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 09:09:16 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E741FC4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:09:14 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9b50be31aso13764671fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:09:14 -0700 (PDT)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619CC211C
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:09:15 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc1218262so10099315e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:09:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690463353; x=1691068153;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690463354; x=1691068154;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/4itNTpZUUmvVIcXRi6M7cnkeb2c9XA1CMXl5ycX4uQ=;
-        b=ezWNoejXx5uyLq/82Mq/6H1qfR6j5SaUNWZG0SMUtrbOqeZuhfflM7AStTePhVKo31
-         guEq8nN+dWvU0Yy4+UhugB3A3hp2JmITYpaQMIPFnxXQHHEIJvKccE1Fkb7/1t4WNOzt
-         gIiIPby2qzChgnQgRG70locTMPq1jh+cRq5VxROaPA2gXAfsF6/xUUoRlDHzI5WeQCfb
-         +QFlzmecfj+lW/Ia51rFuaQD6C/VYDnjEQdCsrK5RQW62sGF+WsS9YuhR0FMCYPOb2iw
-         4K3mG4tK+lXPjT5pKZFUUreRdG55e7ayOaUqy7F6uU3IUAtNadxRFYP5fcAIxALFto8t
-         3fSw==
+        bh=7LfI3hFLaFslE2ut4ABq9gA6oxvBYW17t8wTdiYXypo=;
+        b=rHb6hCs2a+N8Sj2s66KoEMK75Td4Tjd/zoNJ0+GhAUP/msL1zspKkVI9Lbm/0hZQRU
+         tzi2CQBS78awmgftcTpUkZdZ41HmEXCo3gl2v1dYQETdv666MgkvTp7Rc6voOzfqLWLL
+         A0yOeaThHWVHbq/y2wdqDeOcdqOYFQESSX5sQaZSEvQnYZRPpC0Wqc6q9LpXVQs9mNnJ
+         WAsgiw5FwpwyksL9E7B3pJ/EjpnLW/zsK7W7RWk3apso3SF9HEYGM66ZxsKwFsV9QTao
+         /nVvq87m5EZqa8hch7+1u9Z3FeTbF1lhEUHeFyWfmV8S9NDhpgN/ZBNlgOtGxY1xDhrq
+         L0gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690463353; x=1691068153;
+        d=1e100.net; s=20221208; t=1690463354; x=1691068154;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/4itNTpZUUmvVIcXRi6M7cnkeb2c9XA1CMXl5ycX4uQ=;
-        b=kRwztBpaT3VJzbvS+pacROrmkbHoC2Wpv4NXHKTKem5rKG2OM37v3TX94uhEw0TePA
-         j3/5qVBnap0CsZYFZzpa+nuKrJnSQIzhvZnnEbXRuxXnKg4a2a4WqRJq09wkty7W7SOm
-         ePk9VvFlk9wDCjNNmDZDqysM44Zp11jaMMTjkrAfY8BApWp0CMiDONtm5fE6XtiPxDtA
-         CIdHhzsg7eizeZc5m/oYav9l00yd6SrbiSpXPRaXSx+wfkZHxbOqMMfECItHozNMqw1m
-         QiI/bHRBNo+ZRFVGbUx+ksFJl1ZaHDDnL8QLDdmNFU2CAsm3ku/Pa6CHYh8Z1cOe548n
-         tJzQ==
-X-Gm-Message-State: ABy/qLYNRG4B9uRi8KnrrM2Q2pxLIE3FGe+b5E9Cxcb6QoyWnCc7cQWP
-        LNoOgOyQ8vI3Zo5bmsqIFG0D+g==
-X-Google-Smtp-Source: APBJJlHJP4Z7hgn1S972hkZHqwD2CHWt+17a8Jxt40v+a+Yi3QyTnqEv4VE/TMGFXJ/iU0j0rcy8TQ==
-X-Received: by 2002:a2e:9190:0:b0:2b6:d7d1:95c0 with SMTP id f16-20020a2e9190000000b002b6d7d195c0mr1708675ljg.11.1690463352693;
-        Thu, 27 Jul 2023 06:09:12 -0700 (PDT)
+        bh=7LfI3hFLaFslE2ut4ABq9gA6oxvBYW17t8wTdiYXypo=;
+        b=SSfLh+JuERq4c3qI25KSjtGtJ8vy1g5t48MEMfVs46yfLoS4cS0a2psD2P8zgPDXxz
+         NAMdm6WdhOxm4qAzfggzudo6ACbmeQP99d49vXcUBAmNUV3bNGFnTc5+Zj1CejVIR4lw
+         J6kK1M5chc4nsDl0h6R5R0NwUyHvF3N+nn/WFqs1tcf8p/9GFNGLF5J2toPzZcW9SvMA
+         tu7OHQYtrk64TBcxSK7yhh/QZkpm7G/TKRI3OPn77KDdqr6uRX3ag8hDUDbtfGfoOhEX
+         QC1owW78/2AgEfTXEfT07lsn4qlx7yfTv7irf9aHgSyG+r4bSQKsoQohrGeDwEBBHp8p
+         Bu1w==
+X-Gm-Message-State: ABy/qLbht6N0ZJIbF0x1xmxJ5Unf38CZkFQlYWs/J+QWBfmrz9NfU/4u
+        lbCixU9pfDwZGOAOe7jJB/o4Dw==
+X-Google-Smtp-Source: APBJJlECI/vThNChE3IgWj+RGZTt9uIS0Y8uIqSJUTjxO7pvIiK6rJnvQs5yLpYYlSV4YBI6lnDrYg==
+X-Received: by 2002:a05:600c:255:b0:3fa:9939:47c with SMTP id 21-20020a05600c025500b003fa9939047cmr1652741wmj.37.1690463353690;
+        Thu, 27 Jul 2023 06:09:13 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:28d:66d0:4512:80d4:6b13:bb70])
-        by smtp.gmail.com with ESMTPSA id h14-20020a05600c260e00b003fbca942499sm4698042wma.14.2023.07.27.06.09.11
+        by smtp.gmail.com with ESMTPSA id h14-20020a05600c260e00b003fbca942499sm4698042wma.14.2023.07.27.06.09.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 06:09:12 -0700 (PDT)
+        Thu, 27 Jul 2023 06:09:13 -0700 (PDT)
 From:   Esteban Blanc <eblanc@baylibre.com>
 To:     nm@ti.com, vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, u-kumar1@ti.com, eblanc@baylibre.com,
         jneanne@baylibre.com, aseketeli@baylibre.com, jpanis@baylibre.com
-Subject: [PATCH v4 3/6] arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family PMICs
-Date:   Thu, 27 Jul 2023 15:09:05 +0200
-Message-ID: <20230727130908.10656-4-eblanc@baylibre.com>
+Subject: [PATCH v4 4/6] arm64: dts: ti: k3-j784s4-evm: Fix interrupt ranges for TPS6594 PMIC
+Date:   Thu, 27 Jul 2023 15:09:06 +0200
+Message-ID: <20230727130908.10656-5-eblanc@baylibre.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230727130908.10656-1-eblanc@baylibre.com>
 References: <20230727130908.10656-1-eblanc@baylibre.com>
@@ -66,210 +66,37 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Neanne <jneanne@baylibre.com>
+From: Apelete Seketeli <aseketeli@baylibre.com>
 
-This patch adds support for TPS6594 PMIC family on wakup I2C0 bus.
-Theses devices provides regulators (bucks and LDOs), but also
-GPIOs, a RTC, a watchdog, an ESM (Error Signal Monitor)
-which monitors the SoC error output signal, and a PFSM
-(Pre-configurable Finite State Machine) which manages the
-operational modes of the PMIC.
+This patch fixes the interrupt range for TPS6594 PMIC on MCU/WAKEUP
+domain for RTC peripheral.
 
-Signed-off-by: Jerome Neanne <jneanne@baylibre.com>
+Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
 Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
 ---
- arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi | 163 ++++++++++++++++++++
- 1 file changed, 163 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
-index 38ae13cc3aa3..c16dc59e1b0e 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
-@@ -152,6 +152,12 @@ J721E_WKUP_IOPAD(0xfc, PIN_INPUT_PULLUP, 0) /* (H24) WKUP_I2C0_SDA */
- 		>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+index 657fb1d72512..62a0f172fb2d 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+@@ -107,7 +107,7 @@ wkup_gpio_intr: interrupt-controller@42200000 {
+ 		#interrupt-cells = <1>;
+ 		ti,sci = <&sms>;
+ 		ti,sci-dev-id = <177>;
+-		ti,interrupt-ranges = <16 928 16>;
++		ti,interrupt-ranges = <16 960 16>;
  	};
  
-+	pmic_irq_pins_default: pmic-irq-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0xd4, PIN_INPUT, 7) /* (G26) WKUP_GPIO0_9 */
-+		>;
-+	};
-+
- 	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
- 		pinctrl-single,pins = <
- 			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
-@@ -212,6 +218,163 @@ eeprom@50 {
- 		compatible = "atmel,24c256";
- 		reg = <0x50>;
- 	};
-+
-+	tps659413: pmic@48 {
-+		compatible = "ti,tps6594-q1";
-+		reg = <0x48>;
-+		system-power-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_irq_pins_default>;
-+		interrupt-parent = <&wkup_gpio0>;
-+		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-+		ti,primary-pmic;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		buck12-supply = <&vsys_3v3>;
-+		buck3-supply = <&vsys_3v3>;
-+		buck4-supply = <&vsys_3v3>;
-+		buck5-supply = <&vsys_3v3>;
-+		ldo1-supply = <&vsys_3v3>;
-+		ldo2-supply = <&vsys_3v3>;
-+		ldo3-supply = <&vsys_3v3>;
-+		ldo4-supply = <&vsys_3v3>;
-+
-+		regulators {
-+			bucka12: buck12 {
-+				regulator-name = "vdd_cpu_avs";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <900000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			bucka3: buck3 {
-+				regulator-name = "vdd_mcu_0v85";
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			bucka4: buck4 {
-+				regulator-name = "vdd_ddr_1v1";
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			bucka5: buck5 {
-+				regulator-name = "vdd_phyio_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldoa1: ldo1 {
-+				regulator-name = "vdd1_lpddr4_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldoa2: ldo2 {
-+				regulator-name = "vdd_mcuio_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldoa3: ldo3 {
-+				regulator-name = "vdda_dll_0v8";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldoa4: ldo4 {
-+				regulator-name = "vda_mcu_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+
-+	tps659411: pmic@4c {
-+		compatible = "ti,tps6594-q1";
-+		reg = <0x4c>;
-+		system-power-controller;
-+		interrupt-parent = <&wkup_gpio0>;
-+		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		buck1234-supply = <&vsys_3v3>;
-+		buck5-supply = <&vsys_3v3>;
-+		ldo1-supply = <&vsys_3v3>;
-+		ldo2-supply = <&vsys_3v3>;
-+		ldo3-supply = <&vsys_3v3>;
-+		ldo4-supply = <&vsys_3v3>;
-+
-+		regulators {
-+			buckb1234: buck1234 {
-+				regulator-name = "vdd_core_0v8";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buckb5: buck5 {
-+				regulator-name = "vdd_ram_0v85";
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldob1: ldo1 {
-+				regulator-name = "vdd_sd_dv";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldob2: ldo2 {
-+				regulator-name = "vdd_usb_3v3";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldob3: ldo3 {
-+				regulator-name = "vdd_io_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldob4: ldo4 {
-+				regulator-name = "vda_pll_1v8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
- };
- 
- &ospi0 {
+ 	/* MCU_TIMERIO pad input CTRLMMR_MCU_TIMER*_CTRL registers */
 -- 
 2.38.5
 
