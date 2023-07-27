@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0279765AB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE9E765AB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjG0RrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        id S232003AbjG0Rrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjG0RrV (ORCPT
+        with ESMTP id S229481AbjG0Rrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:47:21 -0400
+        Thu, 27 Jul 2023 13:47:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC0230E8;
-        Thu, 27 Jul 2023 10:47:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C23582;
+        Thu, 27 Jul 2023 10:47:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 93D4C61F12;
-        Thu, 27 Jul 2023 17:47:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 237CCC433C7;
-        Thu, 27 Jul 2023 17:47:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B49A61EEE;
+        Thu, 27 Jul 2023 17:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96556C433C8;
+        Thu, 27 Jul 2023 17:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690480040;
-        bh=QfaodoqmhOaqVb7r9DJuHMcMwJQYPs4wOqOC0JVyr0k=;
+        s=k20201202; t=1690480052;
+        bh=8hhmn8+Ux+A5/8bfiHx76Y+Keb0yncfBW6JKFFqonaI=;
         h=From:To:Cc:Subject:Date:From;
-        b=MvW3RuPCZ/4dSoKiUmYb11DUaNNa07/NIWH1PeKw/LetAbx1oysjUrNBE64fFDL3d
-         a1z0Z4umsyOz95ktHIveSWhNRHjMR3PyKDHl+Bkp/EX9i5KlutIy9FwVXneiaWZ+LN
-         633DK6235IIchcG3EFpjCbSYX10Q5sL0eILuUyUD9miJQiFkZW6lDGM1G5k52YY3sk
-         91Z5PJW0DS56CM+xbZgJXkjfTFnBbyymltrD45RZaOGyjixyrNRRYebrXDwnzFVddN
-         xDFNN1Rnk0BdzRjhIxMiLw5LYIPmEzFnUE2pglwC3vNzEDUixpKzSiGAHzyGUJLRix
-         WBv/HjZydJn/A==
+        b=PSmn3vIHdcE4YAvK30kxOfH+NwljypVDfa1Y/IjWI/dbuMd3C6YC/siSK6lnFtTpE
+         gHws0kigPY53o+U/hFangapFoH2jflVmFyuN7YAMaoSlHYLROupPXxYWn3Gw6xc4W2
+         eVKg3NYE7/jIkvU6lSugbZxMBFAfo5CA2Z6DyO8w8ja8rlq06BQXPp1i9N85fiJ+9x
+         MayhU1yyZq0bKNmu4i2XQ4n6QJvT3bGbxZLW2kgCRSfz4MkhngfHUfu7rQsxP1fzqE
+         HN3K4s6DkL9be5qiy8Wfw5UNRCcT9zVxD/nWarpKXEfBJv+RR4mKoDilXoYGwcIbb+
+         FzzIKDIUrrDhg==
 From:   SeongJae Park <sj@kernel.org>
 To:     stable@vger.kernel.org
 Cc:     M A Ramdhan <ramdhan@starlabs.sg>, gregkh@linuxfoundation.org,
@@ -41,9 +41,9 @@ Cc:     M A Ramdhan <ramdhan@starlabs.sg>, gregkh@linuxfoundation.org,
         Jamal Hadi Salim <jhs@mojatatu.com>,
         Pedro Tammela <pctammela@mojatatu.com>,
         Jakub Kicinski <kuba@kernel.org>, SeongJae Park <sj@kernel.org>
-Subject: [PATCH 4.19] net/sched: cls_fw: Fix improper refcount update leads to use-after-free
-Date:   Thu, 27 Jul 2023 17:46:28 +0000
-Message-Id: <20230727174629.55740-1-sj@kernel.org>
+Subject: [PATCH 4.14] net/sched: cls_fw: Fix improper refcount update leads to use-after-free
+Date:   Thu, 27 Jul 2023 17:47:27 +0000
+Message-Id: <20230727174727.55795-1-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -83,10 +83,10 @@ Signed-off-by: SeongJae Park <sj@kernel.org>
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
-index cb2c62605fc76..5284a473c697f 100644
+index 7f45e5ab8afcd..e63f9c2e37e50 100644
 --- a/net/sched/cls_fw.c
 +++ b/net/sched/cls_fw.c
-@@ -221,11 +221,6 @@ static int fw_set_parms(struct net *net, struct tcf_proto *tp,
+@@ -225,11 +225,6 @@ static int fw_set_parms(struct net *net, struct tcf_proto *tp,
  	if (err < 0)
  		return err;
  
@@ -98,7 +98,7 @@ index cb2c62605fc76..5284a473c697f 100644
  #ifdef CONFIG_NET_CLS_IND
  	if (tb[TCA_FW_INDEV]) {
  		int ret;
-@@ -244,6 +239,11 @@ static int fw_set_parms(struct net *net, struct tcf_proto *tp,
+@@ -248,6 +243,11 @@ static int fw_set_parms(struct net *net, struct tcf_proto *tp,
  	} else if (head->mask != 0xFFFFFFFF)
  		return err;
  
