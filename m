@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C89C2765890
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EC7765891
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjG0QX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
+        id S234300AbjG0QYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233922AbjG0QXv (ORCPT
+        with ESMTP id S234003AbjG0QXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 12:23:51 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B5C2D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63cf96c37beso5142926d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E7D2D64
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:49 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-768054797f7so101768685a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690475027; x=1691079827;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690475028; x=1691079828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V4WqUpKSmXvGR1M+fIFBD/JXbqB10oByq1yE4svjvKk=;
-        b=qNto7iFRrzOxESe9fv4KXfCHzvEpqtjq8zKP6G+FHbxknRdRQyruOVS/C6JV+mmMvY
-         +/rWcuLtgsi9NpP8YgxSITdR8dLpz4uKoeqElIiF8b0B/yCc6cd24rpY8lAY+hhsYZCj
-         nuB6QswJUQX/5foZILCFhUOhAhxdSuiL48uJ9//IKXR5DiNmxdHTFCXSUib5GYajdUMC
-         BZX4uCMOPsz4wm4GIKg0pa4I8kmWdNTYMyl1/gbCDWOOuOnTP6xcrq/91YCR699FRai3
-         uD/9XMZLJawLy/Dvhly73UgklITjc1pFzK3nbx3xqKttOiuUSz1YJoFeSUFYn+hyS7zH
-         wtww==
+        bh=g6xeXNZ7MmGxs9MCe+qdgeE1O4rbj13SYexzHrnrzbc=;
+        b=t1KwP89hpnwg0NYhi1k1hMQB/3gQRSOWAy1zvJ7pueqsOL6lMhlnGs29bj9q3R7ed2
+         5TGX5AbXfBOKFrqHxQDMSSGFph1MqS/IIURzJrYtuyq5DJDNQSlPgyx6HKbsJCFrgyMs
+         etJArP1Qo7jM62rDTvet0BjBWc9wIdYpICMtw4B6tf9ouYzlHD0s6flS1M2mtpzmsp3P
+         Tg1utgnTtVxz7Ck+6yn7HuwnCpOeXrrLAxZP/B7IVeVZfU45bb/Ad1ZLt/8jOMuY4acP
+         s9Ljx+sG57pZI23evKzyyIa5rmfHvAJu7nn7DIh1eF/R8VZWmTH5gwWvPzEBnh8xunF7
+         LIIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690475027; x=1691079827;
+        d=1e100.net; s=20221208; t=1690475028; x=1691079828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V4WqUpKSmXvGR1M+fIFBD/JXbqB10oByq1yE4svjvKk=;
-        b=IzwlHxanvXS0f8sD+SMJGQh8RMXbBArVrUW9Xda/VY/w4nh7+1Br7ZmOd0Yr9w1aPh
-         KZ+suPIpp68DQ+TN46QVNQSMATUF4QpiqLzpik8LSjp0lacfwUc95YO93fMwadsWSzcx
-         R8AQdtr8Ly/hKhjmMDCh7LB7/5CFmlag15KnePE87nxaUT/ey92gAQ5N86jTr9bIbjPl
-         CKQO9VlHVWLDQhPwb+4AReg5+Nox9dSF5qkvDLg86rVHTSk0NCiwI2/bEWDq2vfmikod
-         8XqVb5NyZkmYVEohrnifWnjnsSmAnisq9gThLYy8CSVZYxjnQmTYWJmUjOheSxhkaXxe
-         OMpw==
-X-Gm-Message-State: ABy/qLZ9RnKyp1z3JSslzjpoG6Q9zUcGDtb6R3YSqq0HiK2QDzVawk/q
-        LXx0xVLAOd0u8eNFTt6tjNVKJaD+3/6foktG00IaIg==
-X-Google-Smtp-Source: APBJJlEf3a+4nlFwkjw+loMNGiZ+A28qMm0A+SS4AICZPLdvjR5GWT3rErmZtaoO4i263nli3LNnqA==
-X-Received: by 2002:a05:6214:d6a:b0:635:dbab:a588 with SMTP id 10-20020a0562140d6a00b00635dbaba588mr850652qvs.16.1690475027432;
-        Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
+        bh=g6xeXNZ7MmGxs9MCe+qdgeE1O4rbj13SYexzHrnrzbc=;
+        b=NtSpgW7h4tLR1CtowqtNzfZVgxDUc2ptcNdn8nHCiDANe/vlmePDpaOjDWXMbhI9UH
+         QGXWoY9uWcARYLoNLDoU5Imbr28ERcpEGHx5sMritglpLc5/JBtyaLUf0FXC/J5a32K4
+         PzpqxqWO6ldiEaOVuInPqW+YV5jCofGuC5Evof7zg91CH/TImOm3XxFEwpHekVW8xrT7
+         MLxIDbFMyQTo8K2Dh50hjbfVpXdSJPgv0/Trytc2sJmyD46JvdLAJIjRG3KMbj13PVg0
+         IylhqNKhBI/okHK1zRC8PLB012ZEebOzfKsxnbgqsQJldDk+E+IXork5d9NIT3gOERHH
+         OQ4A==
+X-Gm-Message-State: ABy/qLZUwhfqzB54oYBno9DXP6qALgN2s/14eVj6mVWr+OtVK2+ksWaQ
+        2vB/HSA5LZ9EXI5indJgl4LMFA==
+X-Google-Smtp-Source: APBJJlHsm+mf07gWGmI92coTtdUdEWEsIic/VUEsa+GtEeTjX9B1tCutvPQZueF/jzY9ZsnEbTyiCA==
+X-Received: by 2002:a05:620a:ccf:b0:768:b0c:e4c1 with SMTP id b15-20020a05620a0ccf00b007680b0ce4c1mr434494qkj.27.1690475028555;
+        Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:400::5:ad06])
-        by smtp.gmail.com with ESMTPSA id s18-20020a0cb312000000b0063762ab2f90sm527074qve.83.2023.07.27.09.23.46
+        by smtp.gmail.com with ESMTPSA id p13-20020ae9f30d000000b0076816153dcdsm505827qkg.106.2023.07.27.09.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
+        Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
         Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] mm: zswap: use zswap_invalidate_entry() for duplicates
-Date:   Thu, 27 Jul 2023 12:22:23 -0400
-Message-ID: <20230727162343.1415598-2-hannes@cmpxchg.org>
+Subject: [PATCH 2/3] mm: zswap: tighten up entry invalidation
+Date:   Thu, 27 Jul 2023 12:22:24 -0400
+Message-ID: <20230727162343.1415598-3-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230727162343.1415598-1-hannes@cmpxchg.org>
 References: <20230727162343.1415598-1-hannes@cmpxchg.org>
@@ -72,30 +72,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor cleanup. Instead of open-coding the tree deletion and the put,
-use the zswap_invalidate_entry() convenience helper.
+Removing a zswap entry from the tree is tied to an explicit operation
+that's supposed to drop the base reference: swap invalidation,
+exclusive load, duplicate store. Don't silently remove the entry on
+final put, but instead warn if an entry is in tree without reference.
 
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+While in that diff context, convert a BUG_ON to a WARN_ON_ONCE. No
+need to crash on a refcount underflow.
+
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/zswap.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ mm/zswap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 583ef7b84dc3..e123b1c7981c 100644
+index e123b1c7981c..e34ac89e6098 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -1344,9 +1344,7 @@ bool zswap_store(struct page *page)
- 	spin_lock(&tree->lock);
- 	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
- 		zswap_duplicate_entry++;
--		/* remove from rbtree */
--		zswap_rb_erase(&tree->rbroot, dupentry);
--		zswap_entry_put(tree, dupentry);
-+		zswap_invalidate_entry(tree, dupentry);
+@@ -402,9 +402,9 @@ static void zswap_entry_put(struct zswap_tree *tree,
+ {
+ 	int refcount = --entry->refcount;
+ 
+-	BUG_ON(refcount < 0);
++	WARN_ON_ONCE(refcount < 0);
+ 	if (refcount == 0) {
+-		zswap_rb_erase(&tree->rbroot, entry);
++		WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
+ 		zswap_free_entry(entry);
  	}
- 	if (entry->length) {
- 		spin_lock(&entry->pool->lru_lock);
+ }
 -- 
 2.41.0
 
