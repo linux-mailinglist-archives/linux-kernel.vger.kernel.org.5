@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 472D87652AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1DE7652BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjG0Lkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S233354AbjG0Lms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbjG0Lkh (ORCPT
+        with ESMTP id S233262AbjG0Lmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:40:37 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404102127;
-        Thu, 27 Jul 2023 04:40:35 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdd262bb0so58804766b.3;
-        Thu, 27 Jul 2023 04:40:35 -0700 (PDT)
+        Thu, 27 Jul 2023 07:42:45 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A90819A0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:42:44 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-583f837054eso8902047b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690458033; x=1691062833;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/fChEvxMU1VyjUw70eOU9DlODWk8dCup0qBe13Xv7Vg=;
-        b=X+a8afCTrh5zv54f6eSfcGhKmIHwLnoQM1KB7vJz0H2LKiGsjwuisH9A6mN+/LTQd/
-         MWUH5ZjjD59fZ1M5oqxRB/nVIPz0U360yaEmU/Lat1ss4Rao3cdwycvW2+Dlj56H+gdL
-         QkI4q7Yr85uB7wGt39DIaKs/VNBYgxHA/yZKJ70RcWDrqs2fmYRZsfwDkIOYXf7ZpLjx
-         eZGb+eOf0tRmA3UqHovpsdswQ1eCmneJx7msCfBp/3ruv4S9nDQYj1xH+XTBOy4fPfc3
-         nJrk5ozS8MvsdjlNWxkAKVsTNtQJpzkxLqgztn3KU4rBLnZp9a/zFjTNokNBhIK4p2V8
-         3BcA==
+        d=linaro.org; s=google; t=1690458163; x=1691062963;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IqCebh/KFlS0UIqXs9quxfYZXHFv+69FJab+9MuZfBk=;
+        b=qDHeyVwOM5HVTO8lzAAXKb7PLcX3XLyW/igC+kpEvHC/0aQd01LagzchWrGZY2btE6
+         Wu/9Q59BTiZOm6IX/mWuVS0g9KKddLH7Er7Q/LCzUxyjdn/usuofuwjoXmPEnfSgWE+A
+         pz0oezzgmgr3EeVMQaVCMTbFM+ZLrA0FYO/GInPDIZyAf7+0vgNg9mRkOn9lGCyeBt3a
+         0dHlbTlpq50jUNmuvWYBk/9hwxkN12GB5ryBwiAa3+ePSbuq527JPoBI8Gp1JrgR5ao2
+         BbTuhRGa4fc/DyJhYcchavk+9tEXWgfXU3Qkh7aIaHtUwSqVGskQpv2ZUesMt1EL5E25
+         GQ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690458033; x=1691062833;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/fChEvxMU1VyjUw70eOU9DlODWk8dCup0qBe13Xv7Vg=;
-        b=MyN70bEWjxZ/V5gLWlYfFb/07dYPdb8wFkdN2zgopzjDeKI98vckH7T9UJYx8prljV
-         1OzxQuF9GYVJ5+1ODt/8dnf4tryLZqEX47zl1u66rSql8bBdHPJ9NMzlcj9ef2vGLdAX
-         HtclmJ60nu4ztv5KhAoy5tnhRy0M154MsSC5FDTaddxI/KQ2WRB2zPcvQJQhtkRH03Sr
-         iG+AXHNstcMgwPl0MdZWWKt7/fDyBnmp+jKOnANrjlNPcjjFIgN/8knNcfb+sFiVlxhw
-         nn7mxxpiItbFlHb7+UhYKIP5mdGs6yGzIDAys68Dl5g+WNDMA5L04ssj/OHbIVTEUCYf
-         gw5Q==
-X-Gm-Message-State: ABy/qLaDulFk4SLaFqbISCd93vkwVDbhd3af7ebz95GvAa7NIDsO7dSE
-        zm5bJKVHkaOZm8iJWHHunTM=
-X-Google-Smtp-Source: APBJJlFjF0UJt+iVWHdzXdcsAl556k8YonWZFChjgP85pP83lIPjvswb/wRIrjzRFp3QAno/9HnmQg==
-X-Received: by 2002:a17:907:762a:b0:993:d6a7:13b with SMTP id jy10-20020a170907762a00b00993d6a7013bmr1679868ejc.22.1690458033416;
-        Thu, 27 Jul 2023 04:40:33 -0700 (PDT)
-Received: from ?IPv6:2001:a61:35be:1401:2331:c532:1717:d48c? ([2001:a61:35be:1401:2331:c532:1717:d48c])
-        by smtp.gmail.com with ESMTPSA id qc8-20020a170906d8a800b00989828a42e8sm666431ejb.154.2023.07.27.04.40.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 04:40:32 -0700 (PDT)
-Message-ID: <b2379aadad95d68ca9605bb9566ce6a70121a409.camel@gmail.com>
-Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml: Add new
- TDD engine driver
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     "Balas, Eliza" <Eliza.Balas@analog.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Date:   Thu, 27 Jul 2023 13:40:31 +0200
-In-Reply-To: <BN7PR03MB454595EC3EABAEA5607BF1619701A@BN7PR03MB4545.namprd03.prod.outlook.com>
-References: <20230726071103.12172-1-eliza.balas@analog.com>
-         <61fce1da-c8dd-f911-e4bb-b2198612e7c6@linaro.org>
-         <BN7PR03MB4545E574AB9886290115E5C89701A@BN7PR03MB4545.namprd03.prod.outlook.com>
-         <ec964562-6ebb-e145-e850-0417a88077c2@linaro.org>
-         <BN7PR03MB454595EC3EABAEA5607BF1619701A@BN7PR03MB4545.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        d=1e100.net; s=20221208; t=1690458163; x=1691062963;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IqCebh/KFlS0UIqXs9quxfYZXHFv+69FJab+9MuZfBk=;
+        b=bT+ElKqtrVAHQlAJGawIXTSTOf65PknuA//jgV+8lhJE+tJhTCBCi21MqGtbtdv2o3
+         97CAmoQG8gNKLK4kLbFj0GJs/AYrWp3mDxKApCBRUve5AW6G9+DURTE4zVzmi1GUt3H8
+         3jmqld4lKjAXhNJ4mP5yr22HgD3rRJCN+pqdTZYZ1/+gCECgXS9HhDVB4COHLyWlYcPL
+         oElESAmjIco0ijOwbQ4TFXCn8V5Lo0gN41RtUhiEcy7sBGth4QZ8/iyVPo84B/vV2Iuk
+         R98/p9OxwDv2h8FC7tGHhzCnQmdbJ6zA46p9tU1o0I36axu6SNhm4rHfAxMOkNL0lJ/S
+         JlHw==
+X-Gm-Message-State: ABy/qLYj5IAgEkDyREdPNBhDOBHGdYF+verXMpENCw2WEdkXy0AiFzzv
+        AHB531NvitGVEiXi0YD/p9TScayWWD3BQtQItUyTzA==
+X-Google-Smtp-Source: APBJJlGx+GAxitWd80E9DMwXB823E1WceDKNLYAIk/BrVGXwdEQAPtxnRnnfZSWLnJIAwzumG3krOjZlgCawHMAfvuo=
+X-Received: by 2002:a25:c583:0:b0:d22:4547:39cf with SMTP id
+ v125-20020a25c583000000b00d22454739cfmr1835900ybe.59.1690458163261; Thu, 27
+ Jul 2023 04:42:43 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230720091701.517197-1-peng.fan@oss.nxp.com> <20230720091701.517197-5-peng.fan@oss.nxp.com>
+In-Reply-To: <20230720091701.517197-5-peng.fan@oss.nxp.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 27 Jul 2023 13:42:06 +0200
+Message-ID: <CAPDyKFqz2irmBdV0CsqgzqnYLXWVAS9_pKpkUZ3RG4z7kSVQFQ@mail.gmail.com>
+Subject: Re: [PATCH V2 4/8] genpd: imx: scu-pd: do not power off console if no_console_suspend
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-27 at 09:46 +0000, Balas, Eliza wrote:
->=20
->=20
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Sent: Thursday, July 27, 2023 12:27
-> > To: Balas, Eliza <Eliza.Balas@analog.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> > <conor+dt@kernel.org>; Derek Kiernan <derek.kiernan@amd.com>; Dragan Cv=
-etic
-> > <dragan.cvetic@amd.com>; Arnd Bergmann
-> > <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
-> > linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
-> > Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml: Add=
- new TDD
-> > engine driver
-> >=20
-> > [External]
-> >=20
-> > On 27/07/2023 11:05, Balas, Eliza wrote:
-> > >=20
-> > > > -----Original Message-----
-> > > > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > > > Sent: Wednesday, July 26, 2023 21:35
-> > > > To: Balas, Eliza <Eliza.Balas@analog.com>
-> > > > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > > > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> > > > <conor+dt@kernel.org>; Derek Kiernan <derek.kiernan@amd.com>; Draga=
-n Cvetic
-> > > > <dragan.cvetic@amd.com>; Arnd Bergmann
-> > > > <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
-> > > > linux-kernel@vger.kernel.org;
-> > devicetree@vger.kernel.org
-> > > > Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml:=
- Add new
-> > > > TDD engine driver
-> > > >=20
-> > > > [External]
-> > > >=20
-> > > > On 26/07/2023 09:11, Eliza Balas wrote:
-> > > > > Add device tree documentation for the AXI TDD Core.
-> > > > > The generic TDD controller is in essence a waveform generator cap=
-able
-> > > > > of addressing RF applications which require Time Division Duplexi=
-ng,
-> > > > > as well as controlling other modules of general applications thro=
-ugh
-> > > > > its dedicated 32 channel outputs.
-> > > > >=20
-> > > > > The reason of creating the generic TDD controller was to reduce t=
-he
-> > > > > naming confusion around the existing repurposed TDD core built fo=
-r
-> > > > > AD9361, as well as expanding its number of output channels for sy=
-stems
-> > > > > which require more than six controlling signals.
-> > > >=20
-> > > > Please use subject prefixes matching the subsystem. You can get the=
-m for
-> > > > example with `git log --oneline -- DIRECTORY_OR_FILE`
-> > on
-> > > > the directory your patch is touching.
-> > > >=20
-> > > > Subject: drop driver. Bindings are for hardware, not drivers... unl=
-ess driver
-> > > > is here a hardware term?
-> > >=20
-> > > It is not a hardware term in this case, I will make the changes.
-> > >=20
-> > > > >=20
-> > > > > Signed-off-by: Eliza Balas <eliza.balas@analog.com>
-> > > > > ---
-> > > > > =C2=A0.../devicetree/bindings/misc/adi,axi-tdd.yaml | 51 ++++++++=
-+++++++++++
-> > > > > =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 7 +++
-> > > > > =C2=A02 files changed, 58 insertions(+)
-> > > > > =C2=A0create mode 100644
-> > > > > Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/misc/adi,axi-tdd.y=
-aml
-> > > > > b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..1894c1c34d4f
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
-> > > >=20
-> > > > Why is this in misc? No suitable directory?
-> > >=20
-> > > I chose misc because I don't know where it should fit, I did not find=
- a
-> > > suitable
-> > > subsystem to include this driver because this is a driver for an FPGA=
- IP core.
-> > > Do you have an idea where I should put it?
-> >=20
-> > Directory based on what this device does. Whether some device is
-> > implemented as FPGA core or dedicated circuitry, it does not matter. Fe=
-w
-> > Time Division Multiplexing devices are related to audio, so they are in
-> > sound. I don't know if TDD is something else than TDM. If nothing fits,
-> > can be misc, but again - just because device does no fit, not the drive=
-rs.
->=20
-> This device resembles a bit with an IIO device (we are dealing with chann=
-els and
-> the
-> sysfs interface follows the IIO specification), but is not registered int=
-o the IIO
-> device tree,=20
-> and does not rely on IIO kernel APIs.=20
-> Do you think this device is a better fit into the IIO subsystem?
->=20
+On Thu, 20 Jul 2023 at 11:12, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>
+> From: Dong Aisheng <aisheng.dong@nxp.com>
+>
+> Do not power off console if no_console_suspend
+>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/genpd/imx/scu-pd.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
+> index 08583a10ac62..6770be51d234 100644
+> --- a/drivers/genpd/imx/scu-pd.c
+> +++ b/drivers/genpd/imx/scu-pd.c
+> @@ -52,6 +52,7 @@
+>   */
+>
+>  #include <dt-bindings/firmware/imx/rsrc.h>
+> +#include <linux/console.h>
+>  #include <linux/firmware/imx/sci.h>
+>  #include <linux/firmware/imx/svc/rm.h>
+>  #include <linux/io.h>
+> @@ -324,6 +325,10 @@ static int imx_sc_pd_power(struct generic_pm_domain *domain, bool power_on)
+>         msg.resource = pd->rsrc;
+>         msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : IMX_SC_PM_PW_MODE_LP;
+>
+> +       /* keep uart console power on for no_console_suspend */
+> +       if (imx_con_rsrc == pd->rsrc && !console_suspend_enabled && !power_on)
+> +               return 0;
 
-We do have tons of specific attributes (non IIO ones) for this device. The =
-ones
-resembling IIO is likely because it feels familiar to us in ADI. Anyways, I=
- have my
-doubts this fits (at least as IIO stands right now) but maybe Jonathan thin=
-ks
-otherwise.
+By returning 0, genpd belives that the power off has successfully succeeded.
 
-+cc Jonathan...
+Should we return -EBUSY here instead?
 
-- Nuno S=C3=A1
+> +
+>         ret = imx_scu_call_rpc(pm_ipc_handle, &msg, true);
+>         if (ret)
+>                 dev_err(&domain->dev, "failed to power %s resource %d ret %d\n",
+> --
+> 2.37.1
+>
 
+Kind regards
+Uffe
