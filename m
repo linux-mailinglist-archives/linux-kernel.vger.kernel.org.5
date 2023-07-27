@@ -2,171 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B04765720
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F77765726
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjG0PNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
+        id S234461AbjG0PPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbjG0PNu (ORCPT
+        with ESMTP id S234460AbjG0PPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:13:50 -0400
-Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826D41BC1;
-        Thu, 27 Jul 2023 08:13:47 -0700 (PDT)
-Received: from [2001:a61:6209:7f40:c80a:ff:fe00:4098] (helo=cs-office3.lan.local); authenticated
-        by wp534.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qP2gQ-0004bK-Mm; Thu, 27 Jul 2023 17:13:42 +0200
-Date:   Thu, 27 Jul 2023 17:13:35 +0200
-From:   Carsten =?UTF-8?B?U3BpZcOf?= <mail@carsten-spiess.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
-Message-ID: <20230727171142.1bc6d405.mail@carsten-spiess.de>
-In-Reply-To: <71c9d96f-d815-7cf4-927b-76af44fdd3e0@roeck-us.net>
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
-        <20230726152235.249569-2-mail@carsten-spiess.de>
-        <206ad774-bf6f-aed3-81a7-3d9c8f80a69e@roeck-us.net>
-        <20230727093536.4cd2f84f.mail@carsten-spiess.de>
-        <71c9d96f-d815-7cf4-927b-76af44fdd3e0@roeck-us.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I=Dv+p=GE8C9tqfWtQjORl_";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690470827;0a1c032e;
-X-HE-SMSGID: 1qP2gQ-0004bK-Mm
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 27 Jul 2023 11:15:00 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC2219BA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:14:58 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bbd4f526caso7097215ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690470898; x=1691075698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uh22aMhq83izPRCbdrRzzwtaMf1me9g6NjbX+Co5bp0=;
+        b=V5PJl9OPtbH6rKjCHnQT6vG07X8vn1wK9wE/VoB4pVOU/wXuTZXHBq4qngrQhFqdYx
+         7Nc/8XHsnrfsfvv63G5rKFMVKoj2MBlEBdyp1WGHDAFWz3vrGvQ3AdmEIExOtJ1aO6i+
+         cnpQEo0+AaWgfFRrDpzagp8FGIL+tu0h/ir+/VZ2zzregWOLzHJM0I9Ivoic0+BxzKz4
+         WYd1p4sm9ojfR9ElLG7BmLpUbcffOLNvMQyPdc38Ip378ziKHbWr9liHJkrm859/SeMX
+         ozbx6WwLe/AJVj5hZNh0cUCayyHYysk1ulw9KDKJg9gQ0Hv8Z3iv6s5gECSyYS8u0C8i
+         fslw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690470898; x=1691075698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uh22aMhq83izPRCbdrRzzwtaMf1me9g6NjbX+Co5bp0=;
+        b=GNCY0yCDjsbUgV0xZUfk8Z4h8ZLVU8h9oFT/ijd/sOALnvlWDOfi6ww8XThDwTDzGs
+         ULkE+8ESHnGBK++SFJx6vYsGh3Z8c1gdNApEK3nqtyaffDOwUy4UaqT90PxYLsTQEd0t
+         hF3/bEdA1GT6MWuxNFbjJL+kpWxQhCLyYj+A6gB6rTDH69aYhA3LCvO9Gn56NDFwaZlx
+         oIMy+Cuq/yRIqJTi+ZsbJ0EAfJ98RkW9cCU92Ph5r+8ZEmK6PwpGYrLHjtz5k994oEXk
+         KtGvp5FLGgU8yj26kR00A8uEq2WJKB4Qmjc2Sl+5s3D6XZU5WmM/SmIOXv0Ikm6r5B8G
+         tqFQ==
+X-Gm-Message-State: ABy/qLbmUn7AAW66M6OXUiqn4/mIiGg2aE9r29u3ECQfQdeboJoH36nJ
+        0wzb2oGXGLfqgHcIR4M9cF9UeZW8vVk=
+X-Google-Smtp-Source: APBJJlGAozwFR6Zya7MZdDqmVCOsox47jjr1N+m/uDgqX2krJoIRdH7cC9hMOsvAPWaaJ/Ie78DL6VKYewM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d2cd:b0:1b9:ce2c:3bb0 with SMTP id
+ n13-20020a170902d2cd00b001b9ce2c3bb0mr23241plc.3.1690470897724; Thu, 27 Jul
+ 2023 08:14:57 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 08:14:56 -0700
+In-Reply-To: <cover.1690364259.git.haibo1.xu@intel.com>
+Mime-Version: 1.0
+References: <cover.1690364259.git.haibo1.xu@intel.com>
+Message-ID: <ZMKI8RknjjZBOaxf@google.com>
+Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
+From:   Sean Christopherson <seanjc@google.com>
+To:     Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I=Dv+p=GE8C9tqfWtQjORl_
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jul 27, 2023, Haibo Xu wrote:
+> The sstc_timer selftest is used to validate Sstc timer functionality
+> in a guest, which sets up periodic timer interrupts and check the
+> basic interrupt status upon its receipt.
+> 
+> This KVM selftest was ported from aarch64 arch_timer and tested
+> with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
 
-
-On 7/27/23 16:30, Gueter Roeck wrote: =20
-> >> On 7/26/23 08:22, Carsten Spie=C3=9F wrote: =20
-> >> At _compile-time_ ? =20
-> > How to explain better that it isn't set at runtime?
-> I would suggest "can be set with device properties".
-Yeah, i like that.
-
-> >> I'd argue that shunt voltage is all but useless, but if you want to ha=
-ve it supported
-> >> it _has_ to be in mV. =20
-> > That's a problem.
-> >=20
-> > In my case the ER-6P has a 8 milli Ohm (or 8000 micro Ohm) shunt and a =
-powersupply with
-> > max. 2.5 A. This gives a max shunt voltage of 20 mV at 2.5 A.
-> > The device normaly consumes between 200 and 500 mA. (typ ~250 mA).
-> > This results in shunt voltage of 1.6 to 4.0 mV (typ ~2mV).
-> > Having no fractions will make it useless.
-> >=20
-> > Unfortunately there is no possibility to give a scaling factor.
-> > Or returning float values (i know, this can't and shouldn't be changed)
-> >  =20
->=20
-> Just like the ABI must not be changed. The sensors command would display =
-your
-> 4mV shunt voltage as 4V, which is just as useless.
->=20
-> In practice, the shunt voltage _is_ useless for hardware monitoring purpo=
-se
-> because it can be calculated from current and shunt resistor value.
-> I'd say if you really want it, provide it as debugfs attribute. As hwmon
-> attribute it has to be in mV.
-O.k. will move to debugfs.
-
-> >> I don't think the sign extensions are correct based on the datasheet.
-> >> This will have to use sign_extend. =20
-> >  From my understading (see table 11 on page 16 of the ISL28022 datashee=
-t)
-> > shunt value is already sign extended, (D15-D12 is sign)
-> > bus value (table 12 on page 16) is unsigned.
-> >  =20
->=20
-> Not really. For the shunt voltage, 0xf000 has different meanings dependin=
-g on scale
-> and range settings.=20
-Sorry, i don't agree, 0xf000 is -40.96 mV on all scale settings.
-
-> LSB for bus voltage is 4 mV and starts at bit 2 or 3 depending
-> on BRNG. The above just happens to be correct if BRNG =3D 10 OR 11 per da=
-tasheet.
-> If that is intentional, it needs to get a comment.
-Yes, will add comment.
-
-> >> Getting an error message each time the "sensors" command is executed ?
-> >> Unacceptable. =20
-> > o.k., will change to set *val =3D 0;
-> >  =20
-> Still unacceptable.
-O.k. i will limit shunt-resistor-milli-ohms to a minimal value > 0 and drop=
- check here.
-
-> >>> +	if (!dev || !data)
-> >>> +		return -EINVAL; =20
-> >>
-> >> How would this ever happen ? =20
-> > Shouldn't, but i'm carefully (i had it once during development due to a=
-n error
-> > (using dev instead of hwmon_dev) on calling this function
-> >    =20
->=20
-> Parameter checks are only acceptable on API functions. This is not an API=
- function.
-> Local functions are expected to be consistent. If this function is called=
- with
-> a bad argument, that needs to be fixed during development.
-O.k., removed.
-
-> >>> +static struct i2c_driver isl28022_driver =3D {
-> >>> +	.class		=3D I2C_CLASS_HWMON,
-> >>> +	.driver =3D {
-> >>> +		.name	=3D "isl28022",
-> >>> +		.of_match_table =3D of_match_ptr(isl28022_of_match), =20
-> >>
-> >> Drop of_match_ptr() =20
-> > Most drivers have this, why drop?
-> >  =20
->=20
-> It is needed for device_property_read_u32() to work.=20
-O.k. dropped, i wasn't familiar with device_property_read functions.
-
-Regards Carsten
-
-
---Sig_/I=Dv+p=GE8C9tqfWtQjORl_
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEWM+MlUpz/bWsZllTM1JQzV9LKSwFAmTCiZ8ACgkQM1JQzV9L
-KSyuqA//R41dVcZLcRdU8mRrw4Eu5pCtHfFMQg699xnkDMDXCnce6lRQdmNl1PiA
-aauLeSiocC290CoTFKuHbFscAnmgKNI0lFqWp10gMp4bodpgwvLvpQ7g0JNXvUzb
-1voZ1vdHz+9+vqo90BbFyWEGMOA+VKli9zajvbP7/1BtdaKu+rujMXUEXVIAQ798
-Qx29bEhfUc8bS+D6XA7XY5gocm0Z0rgzTH6TWqBEmv+ioKWjAc7AXsnuymTGr7ka
-yV8//MGBuZut8STTLfkekGMDO2RKaSkIa/H8ifzjqnnuO2ZPIVP9SPzze6TwotEK
-vO7jN3Krl8yQetLoGHivZ4SHOFk91lLgqDHZuSsIic1c2o+CeXT0SpEc9fQweTdc
-iVNb8ukuYLhPEE4JcQ3bUwphHseymMllmPuofwWFk2ZQZcs0Xz1rcNFmlNMeY2Xg
-jTA+0lrE4f7FcjdSJJYG6AwtrYcG+WJcEONrqQrFizLj3r5Amrba6rMphqVmY4bX
-7WmcWk436EZfzN3NyGwePYvPcU2W/hwI662Ries+jAvXu1qXNtsn3KonyohnDjFW
-f3qzuLdexqXhLOD9E8HHJ2SVF9I48B+bkT5dNRAxFrgcGuRtU+VEUTwt2u3lk9Aq
-0kpZXxXxXhPRy+cKpt3BR1cwf7Oa2FOND1oC/pl7usVeIdqIBQc=
-=7d8W
------END PGP SIGNATURE-----
-
---Sig_/I=Dv+p=GE8C9tqfWtQjORl_--
+Would it be possible to extract the ARM bits from arch_timer and make the bulk of
+the test common to ARM and RISC-V?  At a glance, there is quite a bit of copy+paste.
