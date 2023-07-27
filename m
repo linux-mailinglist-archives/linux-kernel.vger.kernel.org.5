@@ -2,186 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E33764429
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9857576442F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjG0DLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        id S231422AbjG0DMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjG0DLB (ORCPT
+        with ESMTP id S230453AbjG0DMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:11:01 -0400
-Received: from out-39.mta0.migadu.com (out-39.mta0.migadu.com [91.218.175.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FEB1FC0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:11:00 -0700 (PDT)
-Message-ID: <519602aa-0a6a-70a5-23c7-ce190045e4af@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690427454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6AAFz5LXq+gKWR7MYd9L3gmF4UqvD9x32qWV+TlC8E=;
-        b=GNSyC2eocgWDA6uOLCb+43xxY0HaJs/PcYEyA62P/8mi6H8Zz2r84qPqkosCDfGHcVYu6z
-        6XhkWS/g1oPw9O+8zeQ2jWyoWJq1aV7vjps54cg4a/WQZrGLMF/wNQ2o9VvwL8+51+xYIU
-        pxO8y7gxs9HzphNAfL8KFNHxZo5JFy0=
-Date:   Thu, 27 Jul 2023 11:10:37 +0800
+        Wed, 26 Jul 2023 23:12:07 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F8E2719
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690427524; x=1721963524;
+  h=message-id:subject:from:to:cc:in-reply-to:references:
+   content-transfer-encoding:mime-version:date;
+  bh=gUXQh0L7to9XJTvlI2sRmh/KmnYhINJXjMcWDfXjFfY=;
+  b=iQXsW0dao+PQ1hmnIUz5lBUD40Wh9B4mlJEMb64TRZU5D3cqAuXrRNbE
+   UvBAi6mPgH+PR4NaX3QAb/JG/1BYQlJy5EHc/oFHYDn+WzWhosZAiWe9V
+   c0VSNcZ0kJqiZ1gJIG+0Ef+Wy28kPzqcXY2Q1YjFqWC8S+pdnrTWo4G2c
+   psgGOoB34/At2fCDY8ngf8Xt95GfYSDyo2Ret2ix0gz6kPpGcfH3K7uQr
+   w8yJIkKdvBfckcxhFgOE1/VaK8r+n+Pd1zDAGLLPQJgP+v0lsG+1rmog/
+   Ct/ImtCl2y1bLaj1+o22HIbAhdcSfzMCCIp6RKjplzwR+vbZwpSWSlnMZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="370865574"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="370865574"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 20:12:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="676944342"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="676944342"
+Received: from misbashe-mobl.gar.corp.intel.com (HELO [10.214.146.193]) ([10.214.146.193])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 20:11:52 -0700
+Message-ID: <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
+Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, peterz@infradead.org
+Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
+        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
+        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
+        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
+        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
+        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
+        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
+        yangyicong@hisilicon.com, yu.c.chen@intel.com
+In-Reply-To: <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
+References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
+         <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Subject: Re: [PATCH V6 net] net: mana: Fix MANA VF unload when hardware is
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com, stable@vger.kernel.org
-References: <1690377336-1353-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <1690377336-1353-1-git-send-email-schakrabarti@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Date:   Wed, 26 Jul 2023 20:11:18 -0700
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/7/26 21:15, Souradeep Chakrabarti 写道:
-> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
-> hardware to complete any inflight packets and set the pending send count
-> to zero. But if the hardware has failed, mana_dealloc_queues()
-> could wait forever.
-> 
-> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
-> which is a somewhat arbitrary value that is more than long enough for
-> functional hardware to complete any sends.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> 
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+On Mon, 2023-07-17 at 20:28 +0530, Shrikanth Hegde wrote:
+> From: Tim Chen <tim.c.chen@linux.intel.com>
+>=20
+> For SMT4, any group with more than 2 tasks will be marked as
+> group_smt_balance. Retain the behaviour of group_has_spare by marking
+> the busiest group as the group which has the least number of idle_cpus.
+>=20
+> Also, handle rounding effect of adding (ncores_local + ncores_busy)
+> when the local is fully idle and busy group has more than 2 tasks.
+> Local group should try to pull at least 1 task in this case.
+>=20
+> Originally-by: Tim Chen <tim.c.chen@linux.intel.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
 > ---
-> V5 -> V6:
-> * Added pcie_flr to reset the pci after timeout.
-> * Fixed the position of changelog.
-> * Removed unused variable like cq.
-> 
-> V4 -> V5:
-> * Added fixes tag
-> * Changed the usleep_range from static to incremental value.
-> * Initialized timeout in the begining.
-> 
-> V3 -> V4:
-> * Removed the unnecessary braces from mana_dealloc_queues().
-> 
-> V2 -> V3:
-> * Removed the unnecessary braces from mana_dealloc_queues().
-> 
-> V1 -> V2:
-> * Added net branch
-> * Removed the typecasting to (struct mana_context*) of void pointer
-> * Repositioned timeout variable in mana_dealloc_queues()
-> * Repositioned vf_unload_timeout in mana_context struct, to utilise the
->   6 bytes hole
-> ---
->   drivers/net/ethernet/microsoft/mana/mana_en.c | 38 +++++++++++++++++--
->   1 file changed, 34 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index a499e460594b..ea039e2d4c4b 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -8,6 +8,7 @@
->   #include <linux/ethtool.h>
->   #include <linux/filter.h>
->   #include <linux/mm.h>
-> +#include <linux/pci.h>
->   
->   #include <net/checksum.h>
->   #include <net/ip6_checksum.h>
-> @@ -2345,9 +2346,12 @@ int mana_attach(struct net_device *ndev)
->   static int mana_dealloc_queues(struct net_device *ndev)
->   {
->   	struct mana_port_context *apc = netdev_priv(ndev);
-> +	unsigned long timeout = jiffies + 120 * HZ;
->   	struct gdma_dev *gd = apc->ac->gdma_dev;
->   	struct mana_txq *txq;
-> +	struct sk_buff *skb;
->   	int i, err;
-> +	u32 tsleep;
->   
->   	if (apc->port_is_up)
->   		return -EINVAL;
-> @@ -2363,15 +2367,41 @@ static int mana_dealloc_queues(struct net_device *ndev)
->   	 * to false, but it doesn't matter since mana_start_xmit() drops any
->   	 * new packets due to apc->port_is_up being false.
->   	 *
-> -	 * Drain all the in-flight TX packets
-> +	 * Drain all the in-flight TX packets.
-> +	 * A timeout of 120 seconds for all the queues is used.
-> +	 * This will break the while loop when h/w is not responding.
-> +	 * This value of 120 has been decided here considering max
-> +	 * number of queues.
->   	 */
+>  kernel/sched/fair.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 932e7b78894a..9502013abe33 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9532,7 +9532,7 @@ static inline long sibling_imbalance(struct lb_env =
+*env,
+>  	imbalance /=3D ncores_local + ncores_busiest;
+>=20
+>  	/* Take advantage of resource in an empty sched group */
+> -	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
+> +	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
+>  	    busiest->sum_nr_running > 1)
+>  		imbalance =3D 2;
+>=20
+> @@ -9720,6 +9720,17 @@ static bool update_sd_pick_busiest(struct lb_env *=
+env,
+>  		break;
+>=20
+>  	case group_smt_balance:
+> +		/* no idle cpus on both groups handled by group_fully_busy below */
+> +		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
+> +			if (sgs->idle_cpus > busiest->idle_cpus)
+> +				return false;
+> +			if (sgs->idle_cpus < busiest->idle_cpus)
+> +				return true;
+> +			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
+> +				return false;
+> +		}
+> +		break;
 > +
->   	for (i = 0; i < apc->num_queues; i++) {
->   		txq = &apc->tx_qp[i].txq;
-> -
-> -		while (atomic_read(&txq->pending_sends) > 0)
-> -			usleep_range(1000, 2000);
-> +		tsleep = 1000;
-> +		while (atomic_read(&txq->pending_sends) > 0 &&
-> +		       time_before(jiffies, timeout)) {
-> +			usleep_range(tsleep, tsleep + 1000);
-> +			tsleep <<= 1;
-> +		}
-> +		if (atomic_read(&txq->pending_sends)) {
-> +			err  = pcie_flr(to_pci_dev(gd->gdma_context->dev));
-> +			if (err) {
-> +				netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
-> +					   err, atomic_read(&txq->pending_sends),
-> +					   txq->gdma_txq_id);
-> +			}
-> +			break;
-> +		}
->   	}
->   
-> +	for (i = 0; i < apc->num_queues; i++) {
-> +		txq = &apc->tx_qp[i].txq;
-> +		while (atomic_read(&txq->pending_sends)) {
-> +			skb = skb_dequeue(&txq->pending_skbs);
-> +			mana_unmap_skb(skb, apc);
-> +			dev_consume_skb_any(skb);
-> +			atomic_sub(1, &txq->pending_sends);
-> +		}
-If I get this commit correctly, txq->pending_sends should be equal to 
-the length of txq->pending_skbs?
+>  	case group_fully_busy:
+>  		/*
+>  		 * Select the fully busy group with highest avg_load. In
 
-If yes, can we only handle the pending_skbs?
+Thanks for the fix up patch.
 
-the above snippet can be changed to as below? So the performance is better?
-"
-		while ((skb = skb_dequeue(&txq->pending_skbs))) {
-			mana_unmap_skb(skb, apc);
-			dev_consume_skb_any(skb);
-		}
-		atomic_set(&txq->pending_sends, 0);
-"
-
-Zhu Yanjun
-
-> +	}
->   	/* We're 100% sure the queues can no longer be woken up, because
->   	 * we're sure now mana_poll_tx_cq() can't be running.
->   	 */
-
+Acked-by: Tim Chen <tim.c.chen@linux.intel.com>
