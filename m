@@ -2,176 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C01766046
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4558676604A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjG0Xkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 19:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
+        id S230079AbjG0Xor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 19:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG0Xkf (ORCPT
+        with ESMTP id S229448AbjG0Xop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 19:40:35 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACFC2D71
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 16:40:34 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-57a6df91b1eso16784857b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 16:40:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690501233; x=1691106033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v+3mghGdDw3pgWEcgcYoEfWjzZksiK+Y0jeaZ0QzAOU=;
-        b=QlXDG7dOBbLTmKZXaDqqSHenhyN0unre9JC8EHuL2yEH17R7suvTwuIiXmH3KhoA3F
-         gUo0c/MCiieFd/uG/4EyLTRQ9WWcTwP/Tybc9KzazFt8eUIivVVTo9sXKwMajz4IrvbH
-         +jY9dHOXEx/wj9EsGakkGmOMSqxsC9ALJ0S4N7TXgUQI0J/0m7MIEaP7F2lY6vvGzCZr
-         4DA7k4GNtlqpK+8p3ADoXpMP6Dzqy3FVCYiHvOcsLy1mKty28PtFy8SneHRLScNS1fwc
-         LjGkuTBhiiMImZjg8OXPVxEWY7jq3QYoxEec/UIBAblxtwcjs7/IaVkd9CBtN5qsbzKj
-         hG6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690501233; x=1691106033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v+3mghGdDw3pgWEcgcYoEfWjzZksiK+Y0jeaZ0QzAOU=;
-        b=RCK8lRv/LbOAWUfqJJ5T8+eJxnISTYyTEt4UC/BhJYuXC05r6tnEM+65aEQER1MRPP
-         6q66PALozsM7C3hwCMHpDuc1h/LNdgFUO4f16fVbDgYDyvL48qXdgh1DBVQKMgd9IjfL
-         YgW2dmyD5bEwlyIpRqIjxstiyQBAScHcl/WqUHh+IS/UhR7XRFaRrZSXcijYeMdC+Gqo
-         LJL+I1TeLji5/HHNNz7e83L9JX54oYZ0isTBTH4qF6xfKpnlRIzrWPEc1BgXH5giXkOW
-         ioJH+sAG2bxoK7nRBWx5xVWSW10+YrGxlYIFFKFRRuuPppifUtcWw6Xn1MmTzvOic4J6
-         41xw==
-X-Gm-Message-State: ABy/qLYtlRAt1boDQEQPUiuiI43ERZqLoSgxrvhg2Ag7BGl2ve4MXlyr
-        //wkya4Huq8qxd8oLs0tGLvNqgvFnJCNK0cJ7iB6BIeXTMNctQV6zFVukw==
-X-Google-Smtp-Source: APBJJlHLVEX28u/xcbPdrz3nP9qEzXufc0SstV5fe+EEzaCP+mP2LXnP5UNDxPyrWXNSUazXD/9t4Osrmn08UqtuTNI=
-X-Received: by 2002:a81:460b:0:b0:577:3666:bb4e with SMTP id
- t11-20020a81460b000000b005773666bb4emr99433ywa.36.1690501233367; Thu, 27 Jul
- 2023 16:40:33 -0700 (PDT)
+        Thu, 27 Jul 2023 19:44:45 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6142D70;
+        Thu, 27 Jul 2023 16:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=JNLi5VZ5u15SeU34PKfgp04ZTBcnUk6/4EC6ZxqAHzc=; b=eEw+qP2598e8KSb8q42vSBNegh
+        xmYll+6xQEIYKdgIkUmH5rfWzJBFpjJzGNIrwfooz6Fh2eC+YJTP8brTId7RqhylddO8+GQOrmI4t
+        I5rXGW9jRx5DALL19CIyBKH6nnuwc5rJfWKHwgczAkOvqZA77mgBtuY9MtHF6qBrr627jVaJTfhmn
+        fIXorj6wXmS6+bPTaUl1n64o4P4vw7kwpcSsatgzW+0N/MkCwRDqhvwZqIOHkpHDl6sxyapa0Mt8q
+        5bNbK3+3CRNHvzjCYMhp29iZ2s1iVTofx4fOwgTTcOr9OliR66Olar1vQj+87+a7kKXQGPFBDy9y7
+        c0QZtysg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qPAer-000BRI-3A; Fri, 28 Jul 2023 01:44:37 +0200
+Received: from [14.202.107.205] (helo=192-168-1-115.tpgi.com.au)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qPAeq-000JSA-32; Fri, 28 Jul 2023 01:44:36 +0200
+Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+To:     Leon Romanovsky <leon@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Gal Pressman <gal@nvidia.com>
+References: <000000000000ee69e80600ec7cc7@google.com>
+ <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
+ <20230726071254.GA1380402@unreal> <20230726082312.1600053e@kernel.org>
+ <20230726170133.GX11388@unreal>
+ <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
+ <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
+ <20230727054145.GY11388@unreal>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d2a76d59-3282-d4ac-fbe5-40b0a07dbc51@iogearbox.net>
+Date:   Fri, 28 Jul 2023 01:44:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20230728091849.7f32259d@canb.auug.org.au> <20230728092915.732d4115@canb.auug.org.au>
-In-Reply-To: <20230728092915.732d4115@canb.auug.org.au>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 27 Jul 2023 16:40:20 -0700
-Message-ID: <CAJuCfpHe72rCZgkGQpRnVQHOQFdH4Vd=uj9nWi5aA2_2nNDFLA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230727054145.GY11388@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26982/Thu Jul 27 09:29:43 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 4:29=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> On Fri, 28 Jul 2023 09:18:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the mm tree got a conflict in:
-> >
-> >   mm/memory.c
-> >
-> > between commit:
-> >
-> >   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma unde=
-r vma lock")
-> >
-> > from Linus' tree and commits:
-> >
-> >   69f6bbd1317f ("mm: handle userfaults under VMA lock")
-> >   a3bdf38e85aa ("mm: allow per-VMA locks on file-backed VMAs")
-> >
-> > from the mm tree.
-> >
-> > I fixed it up (I think, please check - see below) and can carry the fix
-> > as necessary. This is now fixed as far as linux-next is concerned, but
-> > any non trivial conflicts should be mentioned to your upstream
-> > maintainer when your tree is submitted for merging.  You may also want
-> > to consider cooperating with the maintainer of the conflicting tree to
-> > minimise any particularly complex conflicts.
-> >
-> > --
-> > Cheers,
-> > Stephen Rothwell
-> >
-> > diff --cc mm/memory.c
-> > index ca632b58f792,271982fab2b8..000000000000
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@@ -5392,32 -5597,18 +5597,21 @@@ retry
-> >       if (!vma)
-> >               goto inval;
-> >
-> > -     /* Only anonymous and tcp vmas are supported for now */
-> > -     if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
-> >  -    /* find_mergeable_anon_vma uses adjacent vmas which are not locke=
-d */
-> >  -    if (vma_is_anonymous(vma) && !vma->anon_vma)
-> > --            goto inval;
-> > --
-> >       if (!vma_start_read(vma))
-> >               goto inval;
-> >
-> >  +    /*
-> >  +     * find_mergeable_anon_vma uses adjacent vmas which are not locke=
-d.
-> >  +     * This check must happen after vma_start_read(); otherwise, a
-> >  +     * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the=
- VMA
-> >  +     * from its anon_vma.
-> >  +     */
-> > -     if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
-> > -             goto inval_end_read;
-> > -
-> > -     /*
-> > -      * Due to the possibility of userfault handler dropping mmap_lock=
-, avoid
-> > -      * it for now and fall back to page fault handling under mmap_loc=
-k.
-> > -      */
-> > -     if (userfaultfd_armed(vma))
-> > ++    if (unlikely(vma_is_anonymous(vma) && !vma_is_tcp(vma)))
+On 7/27/23 7:41 AM, Leon Romanovsky wrote:
+> On Wed, Jul 26, 2023 at 04:33:40PM -0700, Martin KaFai Lau wrote:
+>> On 7/26/23 11:16 AM, Martin KaFai Lau wrote:
+>>> On 7/26/23 10:01 AM, Leon Romanovsky wrote:
+>>>> On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
+>>>>> On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
+>>>>>>> Thanks, I'll take a look this evening.
+>>>>>>
+>>>>>> Did anybody post a fix for that?
+>>>>>>
+>>>>>> We are experiencing the following kernel panic in netdev commit
+>>>>>> b57e0d48b300 (net-next/main) Merge branch '100GbE' of
+>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
+>>>>>
+>>>>> Not that I know, looks like this is with Daniel's previous fix already
+>>>>> present, and syzbot is hitting it, too :(
+>>>>
+>>>> My naive workaround which restored our regression runs is:
+>>>>
+>>>> diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+>>>> index 69a272712b29..10c9ab830702 100644
+>>>> --- a/kernel/bpf/tcx.c
+>>>> +++ b/kernel/bpf/tcx.c
+>>>> @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
+>>>>                           bpf_prog_put(tuple.prog);
+>>>>                   tcx_skeys_dec(ingress);
+>>>>           }
+>>>> -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
+>>>> +       tcx_miniq_set_active(entry, false);
+>>>
+>>> Thanks for the report. I will look into it.
+>>
+>> I don't see how that may be triggered for now after Daniel's recent fix in
+>> commit dc644b540a2d ("tcx: Fix splat in ingress_destroy upon
+>> tcx_entry_free").
+> 
+> Both our regression and syzbot have this fix in the trees.
+> 
+>> Do you have a small reproducible case? Thanks.
+> 
+> Unfortunately no.
 
-Is the above extra '+' what compiler complains about?
-Patches from Linus' tree remove some code from that function, so
-applying them first should simplify the merge.
+Thanks for the report, we found the root cause and will send a fix in the next
+day or two.
 
-> >   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma unde=
-r vma lock")
-
-> >  +            goto inval_end_read;
-> >  +
-> >       /* Check since vm_start/vm_end might change before we lock the VM=
-A */
-> >  -    if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)=
-) {
-> >  -            vma_end_read(vma);
-> >  -            goto inval;
-> >  -    }
-> >  +    if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)=
-)
-> >  +            goto inval_end_read;
-> >
-> >       /* Check if the VMA got isolated after we found it */
-> >       if (vma->detached) {
->
-> Sorry, doesn't even build ... let me try that again.
->
-> --
-> Cheers,
-> Stephen Rothwell
+Best,
+Daniel
