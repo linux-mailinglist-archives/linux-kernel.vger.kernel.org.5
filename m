@@ -2,207 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB289764ED8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D8D764EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbjG0JLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
+        id S232507AbjG0JLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233273AbjG0JKr (ORCPT
+        with ESMTP id S232438AbjG0JL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:10:47 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5855649EB
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:55:42 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6748a616e17so192452b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:55:42 -0700 (PDT)
+        Thu, 27 Jul 2023 05:11:27 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CB56A5B;
+        Thu, 27 Jul 2023 01:56:35 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-56334abe325so382310a12.3;
+        Thu, 27 Jul 2023 01:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690448142; x=1691052942;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WiPjRg1/kjwO6K5zl232SDHPqYtmZOtFvHbsJXMq+7g=;
-        b=Umb+YV+a9lWFhAL8II9iFkMStUOOBYcco6VfVBA99lXKZrqzVwUjfYjnKm4Dm0LFjT
-         qdoJauj14z5/Q/ALZNZe4hty9eUQzFUzAPUNYhh89WT1GQpVMRyZmNBBpLKeWi1ZbclH
-         LZhMvQeV3S/E/ICy+9O5ITOO1Phn4D+1/k/6DGPG+fLuYZVwP+5BQnq4IpnQhN9xTXZe
-         rfTcvD1n0zxeVBrWB1YcR+3kK3++SSPnDRJs7hwNhsakSHiwU6PBsTieOJN2pDWuMDWg
-         xnIMDcCLv5tsUy7qwBc5TOF+eIq3rIHBy6gcXooMjKSZ0a9wuV4u6V1UPp0vjKeCWB6q
-         aakQ==
+        d=gmail.com; s=20221208; t=1690448194; x=1691052994;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gCyF5MJPNKz1i/3b0k6mf+/OQb0Y/PT2v0GJZTYQPmM=;
+        b=TxF6jH7ajiW9fjO04OD6DDD2NOP9c0aWDnjWg7b7J+xEIxwsL0zzdM6afMUyCVn9W8
+         g47gpOYLYIRVkcnDwtMf3Saa0GjU3hh6nttE022pylKZaPGrgfkuUDAtKm0pjWJaHRWE
+         8elKLRxDMzP2Ozh5IlBwll8o/Hc/xD2FqU90TrjuqTGYQ2AGS8ONR1FbwCp7LIxzO7Cx
+         OLOSX9sQSO4HB7Dq0OWS9RSPmiq7LXxzwE3mUxEu1zF0oQontJAqMxuqAgsiYPJBT2rN
+         FBPLpUwQCdwYcHZq0ewFRej1V1IKu+1XWok0lUqvR4GICqeHfkxWV2RpNW1uP31U5cHI
+         4lPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690448142; x=1691052942;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WiPjRg1/kjwO6K5zl232SDHPqYtmZOtFvHbsJXMq+7g=;
-        b=AERfZLraO302298UABnZ0fmWtL102PFr8aU1+QHKUiqpC/CoucRH5pMLtB8ChTC2J+
-         Mk6nH2QQh2f0jyY2NTb26WPQhgq/szGmLeUskESfkzDRXDcrmzD9mHMhgp3OZXForH+0
-         /R1ORHBjPZrrYSJy8ivPRQi49kc9OshifudjjiwYx+22EcrcmyJ3WUAyt6y6AYUujfAX
-         41RqpzTQ0Lm1G5TCQ613E7GgvP4FdN5496DfJrGdpbTNPc1uwA4QVnJlN/FPaEiLiq4H
-         2dl0/6funaCE0Gl9Ycb+dB18687bISKw5jAWqC1KImewLuRtTOtQIDW2kBBVmCi82b4X
-         S0qw==
-X-Gm-Message-State: ABy/qLati1SqXmlc5mXQyEBuWR5i/Khko7puaKxo9MknPzMqlfbo4+Nc
-        +I/LbRnKegJA6ehMc5vnTKAjyA==
-X-Google-Smtp-Source: APBJJlGwmdjot/rbtwF9nTotnOmqaOAtVmCVUqRrFxhkDx7eGx5gFUYRsJSjv9frk6zdjI0egP1lkA==
-X-Received: by 2002:a17:902:e891:b0:1b3:d4bb:3515 with SMTP id w17-20020a170902e89100b001b3d4bb3515mr5854967plg.0.1690448141745;
-        Thu, 27 Jul 2023 01:55:41 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001bbb1eec92esm1023927plb.281.2023.07.27.01.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 01:55:41 -0700 (PDT)
-Message-ID: <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
-Date:   Thu, 27 Jul 2023 16:55:27 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-Content-Language: en-US
-To:     Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690448194; x=1691052994;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gCyF5MJPNKz1i/3b0k6mf+/OQb0Y/PT2v0GJZTYQPmM=;
+        b=PbvDlJew3yDjCuZrs1pPkyvGliweK+aLO9GRI5P3O1TVqk/bOwoWNvOb/dmHOEpj2E
+         CDnxp4H3R3dsaliU1v0jSeeFt3uT10XIPjsAAWhdnJnuy/yX3Q+PpO7e6H1E6PuxlQdt
+         133yedcm5emKmP3+HuPNd4njXhsuZJnVEQhoS6cJWvwN5pHGfsCWz7GOL/HcnvMgEjy7
+         geblgfj2VXFWlqV1O7dtgxx6HYMSUX0PAd1nzskYEoYPrbfM37UhUBOaGH9HT8RZHviF
+         1lEPcyIZiyqW4rBtBvy//hY6wbUkKJ0vEWP5qlEysBQTAW+suUnhA48eq0Rfmdvu5L3T
+         IisA==
+X-Gm-Message-State: ABy/qLY7STjIzusbDUX5P/b/n4LmOTTVjHanzSuz1VoQtEEO2Nm9wG4J
+        L6p3Sltm/kt7XmlfMSey2gGONB6u4VtHnw==
+X-Google-Smtp-Source: APBJJlE8JkK/V03dRWFZ4CRI8tCdHpATyyK6phYvyqQtBpE2DoBdBi5KPBnFY4gwiRudcI4XygVPhA==
+X-Received: by 2002:a05:6a20:841f:b0:12f:fcbb:3e53 with SMTP id c31-20020a056a20841f00b0012ffcbb3e53mr4704146pzd.28.1690448194279;
+        Thu, 27 Jul 2023 01:56:34 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id a23-20020a637057000000b0054ff36967f7sm921961pgn.54.2023.07.27.01.56.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:56:33 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     isdn@linux-pingi.de, alexanderduyck@fb.com, duoming@zju.edu.cn,
+        yangyingliang@huawei.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH v2] mISDN: hfcpci: Fix potential deadlock on &hc->lock
+Date:   Thu, 27 Jul 2023 08:56:19 +0000
+Message-Id: <20230727085619.7419-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+As &hc->lock is acquired by both timer _hfcpci_softirq() and hardirq
+hfcpci_int(), the timer should disable irq before lock acquisition
+otherwise deadlock could happen if the timmer is preemtped by the hadr irq.
 
-On 2023/7/27 16:30, Damien Le Moal wrote:
-> On 7/27/23 17:04, Qi Zheng wrote:
->> In preparation for implementing lockless slab shrink, use new APIs to
->> dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
->> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
->> read-side critical section when releasing the struct dmz_metadata.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
->> ---
->>   drivers/md/dm-zoned-metadata.c | 28 ++++++++++++++++------------
->>   1 file changed, 16 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
->> index 9d3cca8e3dc9..0bcb26a43578 100644
->> --- a/drivers/md/dm-zoned-metadata.c
->> +++ b/drivers/md/dm-zoned-metadata.c
->> @@ -187,7 +187,7 @@ struct dmz_metadata {
->>   	struct rb_root		mblk_rbtree;
->>   	struct list_head	mblk_lru_list;
->>   	struct list_head	mblk_dirty_list;
->> -	struct shrinker		mblk_shrinker;
->> +	struct shrinker		*mblk_shrinker;
->>   
->>   	/* Zone allocation management */
->>   	struct mutex		map_lock;
->> @@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
->>   static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
->>   					       struct shrink_control *sc)
->>   {
->> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
->> +	struct dmz_metadata *zmd = shrink->private_data;
->>   
->>   	return atomic_read(&zmd->nr_mblks);
->>   }
->> @@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
->>   static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
->>   					      struct shrink_control *sc)
->>   {
->> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
->> +	struct dmz_metadata *zmd = shrink->private_data;
->>   	unsigned long count;
->>   
->>   	spin_lock(&zmd->mblk_lock);
->> @@ -2936,19 +2936,23 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
->>   	 */
->>   	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
->>   	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
->> -	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
->> -	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
->> -	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
->>   
->>   	/* Metadata cache shrinker */
->> -	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
->> -				MAJOR(dev->bdev->bd_dev),
->> -				MINOR(dev->bdev->bd_dev));
->> -	if (ret) {
->> -		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
->> +	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
->> +					    MAJOR(dev->bdev->bd_dev),
->> +					    MINOR(dev->bdev->bd_dev));
->> +	if (!zmd->mblk_shrinker) {
->> +		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
-> 
-> ret is not set here, so dmz_ctr_metadata() will return success. You need to add:
-> 		ret = -ENOMEM;
-> or something.
+Possible deadlock scenario:
+hfcpci_softirq() (timer)
+    -> _hfcpci_softirq()
+    -> spin_lock(&hc->lock);
+        <irq interruption>
+        -> hfcpci_int()
+        -> spin_lock(&hc->lock); (deadlock here)
 
-Indeed, will fix.
+This flaw was found by an experimental static analysis tool I am developing
+for irq-related deadlock.
 
->>   		goto err;
->>   	}
->>   
->> +	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
->> +	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
->> +	zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
->> +	zmd->mblk_shrinker->private_data = zmd;
->> +
->> +	shrinker_register(zmd->mblk_shrinker);
-> 
-> I fail to see how this new shrinker API is better... Why isn't there a
-> shrinker_alloc_and_register() function ? That would avoid adding all this code
-> all over the place as the new API call would be very similar to the current
-> shrinker_register() call with static allocation.
+The tentative patch fixes the potential deadlock by spin_lock_irq()
+in timer.
 
-In some registration scenarios, memory needs to be allocated in advance.
-So we continue to use the previous prealloc/register_prepared()
-algorithm. The shrinker_alloc_and_register() is just a helper function
-that combines the two, and this increases the number of APIs that
-shrinker exposes to the outside, so I choose not to add this helper.
+Fixes: b36b654a7e82 ("mISDN: Create /sys/class/mISDN")
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
-Thanks,
-Qi
+Changes in v2
+- change dev_kfree_skb() to dev_kfree_skb_any() inside spin_lock_irq()
+  critical region
+---
+ drivers/isdn/hardware/mISDN/hfcpci.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> 
->> +
->>   	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
->>   	for (i = 0; i < zmd->nr_devs; i++)
->>   		dmz_print_dev(zmd, i);
->> @@ -2995,7 +2999,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
->>    */
->>   void dmz_dtr_metadata(struct dmz_metadata *zmd)
->>   {
->> -	unregister_shrinker(&zmd->mblk_shrinker);
->> +	shrinker_free(zmd->mblk_shrinker);
->>   	dmz_cleanup_metadata(zmd);
->>   	kfree(zmd);
->>   }
-> 
+diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
+index c0331b268010..fe391de1aba3 100644
+--- a/drivers/isdn/hardware/mISDN/hfcpci.c
++++ b/drivers/isdn/hardware/mISDN/hfcpci.c
+@@ -839,7 +839,7 @@ hfcpci_fill_fifo(struct bchannel *bch)
+ 		*z1t = cpu_to_le16(new_z1);	/* now send data */
+ 		if (bch->tx_idx < bch->tx_skb->len)
+ 			return;
+-		dev_kfree_skb(bch->tx_skb);
++		dev_kfree_skb_any(bch->tx_skb);
+ 		if (get_next_bframe(bch))
+ 			goto next_t_frame;
+ 		return;
+@@ -895,7 +895,7 @@ hfcpci_fill_fifo(struct bchannel *bch)
+ 	}
+ 	bz->za[new_f1].z1 = cpu_to_le16(new_z1);	/* for next buffer */
+ 	bz->f1 = new_f1;	/* next frame */
+-	dev_kfree_skb(bch->tx_skb);
++	dev_kfree_skb_any(bch->tx_skb);
+ 	get_next_bframe(bch);
+ }
+ 
+@@ -1119,7 +1119,7 @@ tx_birq(struct bchannel *bch)
+ 	if (bch->tx_skb && bch->tx_idx < bch->tx_skb->len)
+ 		hfcpci_fill_fifo(bch);
+ 	else {
+-		dev_kfree_skb(bch->tx_skb);
++		dev_kfree_skb_any(bch->tx_skb);
+ 		if (get_next_bframe(bch))
+ 			hfcpci_fill_fifo(bch);
+ 	}
+@@ -2277,7 +2277,7 @@ _hfcpci_softirq(struct device *dev, void *unused)
+ 		return 0;
+ 
+ 	if (hc->hw.int_m2 & HFCPCI_IRQ_ENABLE) {
+-		spin_lock(&hc->lock);
++		spin_lock_irq(&hc->lock);
+ 		bch = Sel_BCS(hc, hc->hw.bswapped ? 2 : 1);
+ 		if (bch && bch->state == ISDN_P_B_RAW) { /* B1 rx&tx */
+ 			main_rec_hfcpci(bch);
+@@ -2288,7 +2288,7 @@ _hfcpci_softirq(struct device *dev, void *unused)
+ 			main_rec_hfcpci(bch);
+ 			tx_birq(bch);
+ 		}
+-		spin_unlock(&hc->lock);
++		spin_unlock_irq(&hc->lock);
+ 	}
+ 	return 0;
+ }
+-- 
+2.17.1
+
