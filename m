@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CBF765427
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A352B76542F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbjG0MhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+        id S233975AbjG0Mkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233994AbjG0MhG (ORCPT
+        with ESMTP id S231622AbjG0Mkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:37:06 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694CAB6;
-        Thu, 27 Jul 2023 05:37:05 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RBa6Kf031550;
-        Thu, 27 Jul 2023 12:36:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=/OBMCCZYUe8Iprz1xJ2SgsVJioEcIiN0YQpth44Qq0U=;
- b=hcrzSIjEwe0xcwNKbd7Xxm01QeTKmxGbc0Qp9NuMSMx2wNDmCypPajscT65qUaFvPoE1
- Clo1VOnptMTeh2Zk4Au5kMgIvgGqsqCkFhE6w8jnXAJCq4vqnLpFeMExudeAcswV754f
- f/APzazSOzigaL1PzzMpEKbD22gKYn1FtqbDKFO3+gvBYrjZQPHeZnB7rEehZtlZ7iVB
- Q9rrRuWe091ALAnmWGNWBo97im/TZf40tNpDmj4tAM/ewmwOrA/DXwf+L8ocy/tBmsxO
- TKKdfjX4qEnIck1K6yA8LbUNImI4BmM4e9vX86ofRSL4NiQ/AL1BcZn73ZD0nWReZZGA WQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s336t2q75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 12:36:46 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36RCaiwx030116
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 12:36:44 GMT
-Received: from [10.216.40.41] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 05:36:33 -0700
-Message-ID: <50417a2f-9ed9-54a0-fea2-c6bce8abb050@quicinc.com>
-Date:   Thu, 27 Jul 2023 18:06:29 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v2] dt-bindings: qcom: Update RPMHPD entries for some SoCs
-Content-Language: en-US
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>
-CC:     <mathieu.poirier@linaro.org>, <mchehab@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <quic_vgarodia@quicinc.com>,
-        <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <freedreno@lists.freedesktop.org>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <jonathan@marek.ca>,
-        <conor+dt@kernel.org>, <robh+dt@kernel.org>, <airlied@gmail.com>,
-        <linux-mmc@vger.kernel.org>, <quic_tdas@quicinc.com>,
-        <stanimir.k.varbanov@gmail.com>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <andersson@kernel.org>,
-        <mturquette@baylibre.com>, <dmitry.baryshkov@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <sean@poorly.run>,
-        <ulf.hansson@linaro.org>, <devicetree@vger.kernel.org>,
-        <vladimir.zapolskiy@linaro.org>, <rfoss@kernel.org>,
-        <mani@kernel.org>, <linux-media@vger.kernel.org>,
-        <sboyd@kernel.org>, <quic_abhinavk@quicinc.com>,
-        <bhupesh.sharma@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <marijn.suijten@somainline.org>, <neil.armstrong@linaro.org>,
-        <robdclark@gmail.com>
-References: <1690448953-23425-1-git-send-email-quic_rohiagar@quicinc.com>
- <169045659774.1058731.6391693092002547810.robh@kernel.org>
- <fa84ec4f-bdb9-dace-c56a-46174a9b47ee@quicinc.com>
- <2edb92b8-a6a8-c115-757c-daccef6be5f0@linaro.org>
- <432ab1d3-0f9e-4072-ff4d-6362886584b8@quicinc.com>
- <e9a4e015-7e25-92be-9a7a-8e5dcf3848fa@linaro.org>
- <2790272a-7290-f780-d5ca-108e2df57363@quicinc.com>
-In-Reply-To: <2790272a-7290-f780-d5ca-108e2df57363@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EqyGf4TByUBzdooJY3LHm6utiiXw7uKr
-X-Proofpoint-GUID: EqyGf4TByUBzdooJY3LHm6utiiXw7uKr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- clxscore=1015 mlxlogscore=768 adultscore=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270112
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        Thu, 27 Jul 2023 08:40:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B57E44;
+        Thu, 27 Jul 2023 05:40:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7489D61E61;
+        Thu, 27 Jul 2023 12:40:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD9AC433C8;
+        Thu, 27 Jul 2023 12:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690461648;
+        bh=GuUn7Qiz7VlihN9V+lWXsCHtNZx1opVL1pqDW0CmmGE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m4Zirj1gKc9tNlyrRCZuIT8igAPw85Xg5ys5NjJ5Q35IBkHX8oEM1YoQIwFxapEYq
+         eoVftHKHAOUVaZTf+JgeLUgfFiW7xKfVfPhRIGfm7HNMaZ08aCuevB6QsbsMjzm54l
+         MULu3nsUpoqL6X9AsxSiuCEv0YdMV3f4M5DMi9xxYBrK6h5plOp+5r3qivn/1hyQfO
+         WX2+ob/tNCXZ61LT2uRgOk8hJit3HLb6mlQSieLjs2eJSjsSbbNYSW1sQ5bly1IEmz
+         uysVQXcpzOt1k/PDwfmdiFCcXtItNdFqVCtEf4HM/6EcJYi1cNW1row0ghxskQRBAm
+         nlr6M/nP8z2Pw==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qP0IQ-00HMEO-FH;
+        Thu, 27 Jul 2023 13:40:46 +0100
+Date:   Thu, 27 Jul 2023 13:40:46 +0100
+Message-ID: <87pm4dr0hd.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v7 07/12] KVM: arm64: Implement  __kvm_tlb_flush_vmid_range()
+In-Reply-To: <20230722022251.3446223-8-rananta@google.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-8-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, gshan@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -102,31 +83,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 22 Jul 2023 03:22:46 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> Define  __kvm_tlb_flush_vmid_range() (for VHE and nVHE)
+> to flush a range of stage-2 page-tables using IPA in one go.
+> If the system supports FEAT_TLBIRANGE, the following patches
+> would conviniently replace global TLBI such as vmalls12e1is
+> in the map, unmap, and dirty-logging paths with ripas2e1is
+> instead.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h   |  3 +++
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 +++++++++++
+>  arch/arm64/kvm/hyp/nvhe/tlb.c      | 30 ++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/vhe/tlb.c       | 27 +++++++++++++++++++++++++++
+>  4 files changed, 71 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index 7d170aaa2db4..2c27cb8cf442 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -70,6 +70,7 @@ enum __kvm_host_smccc_func {
+>  	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa,
+>  	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa_nsh,
+>  	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid,
+> +	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_range,
+>  	__KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context,
+>  	__KVM_HOST_SMCCC_FUNC___kvm_timer_set_cntvoff,
+>  	__KVM_HOST_SMCCC_FUNC___vgic_v3_read_vmcr,
+> @@ -229,6 +230,8 @@ extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
+>  extern void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>  					 phys_addr_t ipa,
+>  					 int level);
+> +extern void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +					phys_addr_t start, unsigned long pages);
+>  extern void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu);
+>  
+>  extern void __kvm_timer_set_cntvoff(u64 cntvoff);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index a169c619db60..857d9bc04fd4 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -135,6 +135,16 @@ static void handle___kvm_tlb_flush_vmid_ipa_nsh(struct kvm_cpu_context *host_ctx
+>  	__kvm_tlb_flush_vmid_ipa_nsh(kern_hyp_va(mmu), ipa, level);
+>  }
+>  
+> +static void
+> +handle___kvm_tlb_flush_vmid_range(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> +	DECLARE_REG(phys_addr_t, start, host_ctxt, 2);
+> +	DECLARE_REG(unsigned long, pages, host_ctxt, 3);
+> +
+> +	__kvm_tlb_flush_vmid_range(kern_hyp_va(mmu), start, pages);
+> +}
+> +
+>  static void handle___kvm_tlb_flush_vmid(struct kvm_cpu_context *host_ctxt)
+>  {
+>  	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> @@ -327,6 +337,7 @@ static const hcall_t host_hcall[] = {
+>  	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
+>  	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa_nsh),
+>  	HANDLE_FUNC(__kvm_tlb_flush_vmid),
+> +	HANDLE_FUNC(__kvm_tlb_flush_vmid_range),
+>  	HANDLE_FUNC(__kvm_flush_cpu_context),
+>  	HANDLE_FUNC(__kvm_timer_set_cntvoff),
+>  	HANDLE_FUNC(__vgic_v3_read_vmcr),
+> diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> index b9991bbd8e3f..09347111c2cd 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> @@ -182,6 +182,36 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>  	__tlb_switch_to_host(&cxt);
+>  }
+>  
+> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t start, unsigned long pages)
+> +{
+> +	struct tlb_inv_context cxt;
+> +	unsigned long stride;
+> +
+> +	/*
+> +	 * Since the range of addresses may not be mapped at
+> +	 * the same level, assume the worst case as PAGE_SIZE
+> +	 */
+> +	stride = PAGE_SIZE;
+> +	start = round_down(start, stride);
+> +
+> +	/* Switch to requested VMID */
+> +	__tlb_switch_to_guest(mmu, &cxt, false);
+> +
+> +	__flush_tlb_range_op(ipas2e1is, start, pages, stride, 0, 0, false);
 
-On 7/27/2023 6:00 PM, Rohit Agarwal wrote:
->
-> On 7/27/2023 5:57 PM, Krzysztof Kozlowski wrote:
->> On 27/07/2023 14:21, Rohit Agarwal wrote:
->>>>> https://lore.kernel.org/all/1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com/ 
->>>>>
->>>> Please mention the dependency in patch changelog ---, so it is obvious
->>>> for people applying it and also for the bot.
->>> Sure. Will send a cover letter for this patch mentioning the changelogs
->>> and will
->>> keep the version as v2 since there no change at all in the patch.
->> There is no need for cover letter for one patch.
-> Yes, I thought the same and thus didnt include the cover letter and 
-> changelogs initially.
-> Can you please help where I can add the changelogs and the dependency 
-> link?
-Sorry! Got it.
+I really think we need an abstraction here. All this ASID and user
+nonsense shouldn't appear here. Something such as
+__flush_s2_tlb_range_op(), which would pass the correct parameters
+that this code shouldn't have to worry about.
 
-Thanks,
-Rohit.
->
-> Thanks,
-> Rohit.
->>
->> Best regards,
->> Krzysztof
->>
+I'm also a bit concerned by the fact we completely lose the level
+here. This is a massive fast-path for the CPU, and we don't make use
+of it. It'd be worth thinking of how we can make use of it if at all
+possible...
+
+> +
+> +	dsb(ish);
+> +	__tlbi(vmalle1is);
+> +	dsb(ish);
+> +	isb();
+> +
+> +	/* See the comment in __kvm_tlb_flush_vmid_ipa() */
+> +	if (icache_is_vpipt())
+> +		icache_inval_all_pou();
+> +
+> +	__tlb_switch_to_host(&cxt);
+
+Another thing is that it is high time that some of this call gets
+refactored. All these helpers are basically the same sequence, only
+differing by a couple of lines. Not something we need to do
+immediately, but eventually we'll have to bite the bullet.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
