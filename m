@@ -2,232 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF53765E50
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE82765E56
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjG0ViM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
+        id S232279AbjG0VkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjG0ViK (ORCPT
+        with ESMTP id S229819AbjG0VkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:38:10 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2056.outbound.protection.outlook.com [40.107.94.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2705A211C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:38:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kYNczqEBqy3fqUzczq0h3lDuqKskiizBV1bwQMCZMSUFSjcXfxeclKKFV7HlThCyS7zs+NTk9IXDrxs2+auDTOYh/w9SYHd+fO8vgqp9wbdqDplknuxo9+SoYQTey/n+jx7VHZ+6G7N9f295V3dDFpf3HA1a9tvqBQHwhS30xsYLd7RAhXC90eRXEA3Wj0/a17dEXSP7Ln+/ga+1M+8A4upjfM3xKWg0lZMuPFmLLfb7fTGqdhocFMUdVxNcLEKuYFmm/F8aiNn2EX+qoRf1xvg+q7glLRyS1QlfBUyBnM7pPYy+YDlrEssCvIjOrEmUM9hkl7Gi9N6YDqfY/nLwTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yZRJYRfSVCc4YMTDpDe4bt1zlIHu/66UzjINZokc3zU=;
- b=S24P/XIuKyWZ8XnalxLx4GgPA9RSqZTduQxFaUMEOWK0oFDjBl6WFPxLoM0nqpiAD45q5uPFHc6x/kzMDCQbdvVssGbQTCtEnrlLcXD0j2xJ22V2M/1rrfirpCXLvQJt+sPq59RTq3swHOTqi/YUEAJw6/ouU1hBSjbq7pr9BsaY2CUpEuMRkwo6XP0u8w7Zg/ew+P8daaR5TkVNreqKOmvu7Ldv7yggiis8L7UxLDxzlQWFxUSj0QJed9mMvb1d5njZ+mY2d0a9HrwzTd/7GhUtNsh28Ur3Ypl4zY8zML0Tuslarzx+XxuV6LVpwhw/ipuq4zZRp+xAXbmcxS+1JA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yZRJYRfSVCc4YMTDpDe4bt1zlIHu/66UzjINZokc3zU=;
- b=Hxn0N5LCWaZgGdfJRl7Z8hwgt0q2BOrhevS5npE/oAP0uVfJSEvwL3hcBFWhhCQYj09j/RN0qxhZisa4OK4hExxpDJ31rieA9dIUlMd/paNDR+ByxnDlPdZkf8v3TJpGERS4y7uzXY+nWwzlZ9JXpgDK+lIO0gXwBHyZqH4lAb526LtvlTLyei4MmH0fgm1H3QbxJ18FKI88RyG0lXLLvFA8iMy6UgN1/dEr86AGajGZi4Qj+RqnMkFJaceiGCM6jdsZir0A0IgmAh5Ov2baNOqCWxxK6QtPDE3UoZYKiRFr8w3Wl5rNWBt0YfaNdbTl8qU9CtD64P88KPy2EoxGrg==
-Received: from BN0PR04CA0088.namprd04.prod.outlook.com (2603:10b6:408:ea::33)
- by SJ2PR12MB8719.namprd12.prod.outlook.com (2603:10b6:a03:543::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.29; Thu, 27 Jul
- 2023 21:38:04 +0000
-Received: from BN8NAM11FT071.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ea:cafe::7c) by BN0PR04CA0088.outlook.office365.com
- (2603:10b6:408:ea::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Thu, 27 Jul 2023 21:38:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN8NAM11FT071.mail.protection.outlook.com (10.13.177.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 21:38:04 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
- 14:37:47 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 27 Jul
- 2023 14:37:47 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Thu, 27 Jul 2023 14:37:46 -0700
-Date:   Thu, 27 Jul 2023 14:37:45 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 6/7] iommu/arm-smmu-v3: Refactor write_ctx_desc
-Message-ID: <ZMLjqfp6M6n7HAxl@Asurada-Nvidia>
-References: <20230727182647.4106140-1-mshavit@google.com>
- <20230727182647.4106140-7-mshavit@google.com>
+        Thu, 27 Jul 2023 17:40:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354B0211C;
+        Thu, 27 Jul 2023 14:40:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD58F61F58;
+        Thu, 27 Jul 2023 21:40:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9558C433C7;
+        Thu, 27 Jul 2023 21:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690494010;
+        bh=mjTnkk3b0rI1iOPv/Erll2f7p8nHIqeLrpilD6C+YDQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=os6lgqeRlhps0lkDpycX0VCi+KYZNetLU7PqLKFkIOaKx75In/LdmyInZ+Cik2SRz
+         s4BVM2SjHyK7IUERS4hwnVBBFsmu7iN7w95b3n4hVqqls79hSbB/BCyShUhRiCqVBN
+         Rx96krUKwgicAcTwrbGQJZMgbt54TSSIDRudtnoghTiZksUJljgQjFvT1BOQUgp6OX
+         SAiSBelfmexQEfqYN//OtdJ6nyYU0vc0J+qGFgkbKn5vgJcEVaO2a+OfcEjx651AdA
+         1a7OKyB3BtkfaUSeEHcv+RouKXEWVwyuta8AAa2nEaFmjvGVk0blN+GDAR1UZVef42
+         acC1VYKjsqxYg==
+Date:   Thu, 27 Jul 2023 16:40:08 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kevin Xie <kevin.xie@starfivetech.com>
+Cc:     Minda Chen <minda.chen@starfivetech.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
+Message-ID: <20230727214008.GA797783@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230727182647.4106140-7-mshavit@google.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT071:EE_|SJ2PR12MB8719:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0033c83-0030-4e15-a47f-08db8ee9c287
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9oXs4AQGqeIg5CbxqaHSbmVZcKt8ugbk/Zeh6gqyT1yGY4oiBdsmLH9G0ce4LxKYT6sKCa4c4mrGbmzbgWiaMUg9Gb4+hC9dwEjnuR4CPwHp+J/wxuI6ID5dewbeZcLocTFuct2xEAOpjsTRG7kBCFoOe0xWEOuoSS6YNq18MCFqw7543f3n81yF9bd9jf3pcMvavZDl6mpgmn+o2BDHVleY6OVibVSlWq5QuO3aR/pa/kzrAHyc1PzAWaC2rPqAwF8NR3kIRMVz7XFiKI3CC021+4zm2M0+C7rgAbtLMDNcKl8C3w3+8vJ1Np3rbm+tNVFkG/xBb9vqDx+RB4cR/hF20Eg6/foZF5MbZ2HKVWC5uklGXHIb8PGY7Wr793zwM73rko9QP6e7+J67E6VE58vQrHB9BlYlsVaSjQYsfXbkcR5O4ZQnKeT2ZIrRkdSDtjFTnjAqCoZ5v1/ucioMOmPqEIESeNqdOexzFkalNHD3SkRS+mcLuxDvGiRTzviYOMqyo7TmuweSazPmw55gO/mWGhRd87+1UPRdThlY2xwaONNhYS57LyFoQhGhbo8JWOxPw4mGETV6XTo8RTEupdC1BaiHIcseipCFWsuZRgf/76QIQBg/cc2uNhEC+xbvxPzreW42p/dxZaD9SuNPqk0Eq5Je5Mh3QcU2arTpW9lgWRCCTjVYPIbg4Xd0U7hSIK8E+2QeTY3Vo2O2EjOhvQ3ZmOQrqmdk/NxJHIx8bBq7g8rKtc4eSKWyPO5ryJl7wphWCt1OR6hnp40/SiGlDg==
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39860400002)(396003)(346002)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(5660300002)(33716001)(8676002)(316002)(8936002)(41300700001)(47076005)(2906002)(70206006)(70586007)(40460700003)(55016003)(36860700001)(40480700001)(4326008)(426003)(83380400001)(54906003)(9686003)(86362001)(6916009)(26005)(478600001)(356005)(186003)(82740400003)(336012)(7636003)(473944003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 21:38:04.3219
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0033c83-0030-4e15-a47f-08db8ee9c287
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT071.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8719
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230725204633.GA664368@bhelgaas>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 02:26:22AM +0800, Michael Shavit wrote:
+[+cc Mika, Maciej since they've worked on similar delays recently]
 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> index 968559d625c40..57073d278cd7e 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> @@ -45,10 +45,12 @@ static struct arm_smmu_ctx_desc *
->  arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
->  {
->         int ret;
-> +       unsigned long flags;
->         u32 new_asid;
->         struct arm_smmu_ctx_desc *cd;
->         struct arm_smmu_device *smmu;
->         struct arm_smmu_domain *smmu_domain;
-> +       struct arm_smmu_master *master;
-
-It seems that the coding style at these struct lines is listing
-from shorter to longer, like a Christmas tree? If so, we should
-place "master" before "smmu_domain".
-
-> @@ -80,7 +82,11 @@ arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
->          * be some overlap between use of both ASIDs, until we invalidate the
->          * TLB.
->          */
-> -       arm_smmu_write_ctx_desc(smmu_domain, 0, cd);
-> +       spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-> +       list_for_each_entry(master, &smmu_domain->devices, domain_head) {
-> +               arm_smmu_write_ctx_desc(master, 0, cd);
-> +       }
-
-+	list_for_each_entry(master, &smmu_domain->devices, domain_head)
-+		arm_smmu_write_ctx_desc(master, 0, cd);
-
-> @@ -248,8 +260,10 @@ arm_smmu_mmu_notifier_get(struct arm_smmu_domain *smmu_domain,
->                           struct mm_struct *mm)
->  {
->         int ret;
-> +       unsigned long flags;
->         struct arm_smmu_ctx_desc *cd;
->         struct arm_smmu_mmu_notifier *smmu_mn;
-> +       struct arm_smmu_master *master;
-
-For the coding style topic, similarly, "master" before "smmu_mn".
-
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index af7949b62327b..b211424a85fb2 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -971,14 +971,12 @@ void arm_smmu_tlb_inv_asid(struct arm_smmu_device *smmu, u16 asid)
->         arm_smmu_cmdq_issue_cmd_with_sync(smmu, &cmd);
->  }
+On Tue, Jul 25, 2023 at 03:46:35PM -0500, Bjorn Helgaas wrote:
+> On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
+> > On 2023/7/21 0:15, Bjorn Helgaas wrote:
+> > > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
+> > >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
+> > >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
+> > >> >> Add StarFive JH7110 SoC PCIe controller platform
+> > >> >> driver codes.
 > 
-> -static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
-> +static void arm_smmu_sync_cd(struct arm_smmu_master *master,
->                              int ssid, bool leaf)
->  {
->         size_t i;
-> -       unsigned long flags;
-> -       struct arm_smmu_master *master;
->         struct arm_smmu_cmdq_batch cmds;
-> -       struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +       struct arm_smmu_device *smmu;
-
-	struct arm_smmu_device *smmu = master->smmu;
-
-Then ...
-
-> @@ -987,19 +985,15 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
->                 },
->         };
+> > >> However, in the compatibility testing with several NVMe SSD, we
+> > >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
+> > >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
+> > >> value to 300ms for the better device compatibility.
+> > > ...
+> > > 
+> > > Thanks for this valuable information!  This NVMe issue potentially
+> > > affects many similar drivers, and we may need a more generic fix so
+> > > this device works well with all of them.
+> > > 
+> > > T_PVPERL is defined to start when power is stable.  Do you have a way
+> > > to accurately determine that point?  I'm guessing this:
+> > > 
+> > >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
+> > > 
+> > > turns the power on?  But of course that doesn't mean it is instantly
+> > > stable.  Maybe your testing is telling you that your driver should
+> > > have a hardware-specific 200ms delay to wait for power to become
+> > > stable, followed by the standard 100ms for T_PVPERL?
+> > 
+> > You are right, we did not take the power stable cost into account.
+> > T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
+> > and the extra cost is from the power circuit of a PCIe to M.2 connector,
+> > which is used to verify M.2 SSD with our EVB at early stage.
 > 
-> -       if (!smmu_domain->cd_table.installed)
-> +       if (!master->domain->cd_table.installed)
->                 return;
+> Hmm.  That sounds potentially interesting.  I assume you're talking
+> about something like this: https://www.amazon.com/dp/B07JKH5VTL
 > 
-> +       smmu = master->smmu;
+> I'm not familiar with the timing requirements for something like this.
+> There is a PCIe M.2 spec with some timing requirements, but I don't
+> know whether or how software is supposed to manage this.  There is a
+> T_PVPGL (power valid to PERST# inactive) parameter, but it's
+> implementation specific, so I don't know what the point of that is.
+> And I don't see a way for software to even detect the presence of such
+> an adapter.
 
-... no need of this line.
+I intended to ask about this on the PCI-SIG forum, but after reading
+this thread [1], I don't think we would learn anything.  The question
+was:
 
-> @@ -1029,14 +1023,12 @@ static void arm_smmu_write_cd_l1_desc(__le64 *dst,
->         WRITE_ONCE(*dst, cpu_to_le64(val));
->  }
-> 
-> -static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_domain *smmu_domain,
-> -                                  u32 ssid)
-> +static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_master *master, u32 ssid)
->  {
->         __le64 *l1ptr;
->         unsigned int idx;
->         struct arm_smmu_l1_ctx_desc *l1_desc;
-> -       struct arm_smmu_device *smmu = smmu_domain->smmu;
+  The M.2 device has 5 voltage rails generated from the 3.3V input
+  supply voltage
+  -------------------------------------------
+  This is re. Table 17 in PCI Express M.2 Specification Revision 1.1
+  Power Valid* to PERST# input inactive : Implementation specific;
+  recommended 50 ms
 
-	struct arm_smmu_device *smmu = master->smmu;
+  What exactly does this mean ?
 
-Then ...
+  The Note says
 
-> @@ -1044,19 +1036,19 @@ static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_domain *smmu_domain,
->         idx = ssid >> CTXDESC_SPLIT;
->         l1_desc = &cdcfg->l1_desc[idx];
->         if (!l1_desc->l2ptr) {
-> -               if (arm_smmu_alloc_cd_leaf_table(smmu, l1_desc))
-> +               if (arm_smmu_alloc_cd_leaf_table(master->smmu, l1_desc))
+    *Power Valid when all the voltage supply rails have reached their
+    respective Vmin.
 
-... no need to change this.
+  Does this mean that the 50ms to PERSTn is counted from the instant
+  when all *5 voltage rails* on the M.2 device have become "good" ?
 
-> @@ -1101,11 +1094,11 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
->                 cdptr[3] = cpu_to_le64(cd->mair);
-> 
->                 /*
-> -                * STE is live, and the SMMU might read dwords of this CD in any
-> -                * order. Ensure that it observes valid values before reading
-> -                * V=1.
-> +                * STE may be live, and the SMMU might read dwords of this CD
-> +                * in any order. Ensure that it observes valid values before
-> +                * reading V=1.
+and the answer was:
 
-This seems to be true only after the following patch? If so, we
-should move this part over there too.
+  You wrote;
+  Does this mean that the 50ms to PERSTn is counted from the instant
+  when all 5 voltage rails on the M.2 device have become "good" ?
 
-Thanks
-Nicolin
+  Reply:
+  This means that counting the recommended 50 ms begins from the time
+  when the power rails coming to the device/module, from the host, are
+  stable *at the device connector*.
+
+  As for the time it takes voltages derived inside the device from any
+  of the host power rails (e.g., 3.3V rail) to become stable, that is
+  part of the 50ms the host should wait before de-asserting PERST#, in
+  order ensure that most devices will be ready by then.
+
+  Strictly speaking, nothing disastrous happens if a host violates the
+  50ms. If it de-asserts too soon, the device may not be ready, but
+  most hosts will try again. If the host de-asserts too late, the
+  device has even more time to stabilize. This is why the WG felt that
+  an exact minimum number for >>Tpvpgl, was not valid in practice, and
+  we made it a recommendation.
+
+Since T_PVPGL is implementation-specific, we can't really base
+anything in software on the 50ms recommendation.  It sounds to me like
+they are counting on software to retry config reads when enumerating.
+
+I guess the delays we *can* observe are:
+
+  100ms T_PVPERL "Power stable to PERST# inactive" (CEM 2.9.2)
+  100ms software delay between reset and config request (Base 6.6.1)
+
+The PCI core doesn't know how to assert PERST#, so the T_PVPERL delay
+definitely has to be in the host controller driver.
+
+The PCI core observes the second 100ms delay after a reset in
+pci_bridge_wait_for_secondary_bus().  But this 100ms delay does not
+happen during initial enumeration.  I think the assumption of the PCI
+core is that when the host controller driver calls pci_host_probe(),
+we can issue config requests immediately.
+
+So I think that to be safe, we probably need to do both of those 100ms
+delays in the host controller driver.  Maybe there's some hope of
+supporting the latter one in the PCI core someday, but that's not
+today.
+
+Bjorn
+
+[1] https://forum.pcisig.com/viewtopic.php?f=74&t=1037
