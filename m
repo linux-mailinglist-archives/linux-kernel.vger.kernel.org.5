@@ -2,88 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A69764F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6293F764F40
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbjG0JTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        id S231908AbjG0JTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjG0JRj (ORCPT
+        with ESMTP id S234598AbjG0JSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:17:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446EF86AD
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690448883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HerRwxLkSMzYwKdGiBkPfrNJD4PElAmEIiMvsjTuYlk=;
-        b=Cf4CYIkLsn/O3PHVh/iBjLBTiGJ0f8tU9DRNJLnEWFLJLYEtKpqUwABgPYeGpcB1SUgYw2
-        xQk9kXAW49/Tq+I1lzzXqTRBCel9PTTgyHDUWt3sowTHEzArs39yRPs2ZI93Qo6wwZjgH1
-        6olqYzpimx9I/3Gy9XyVPJUwLULKHXc=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-652--b9woubmPsS2O4joqyqgAQ-1; Thu, 27 Jul 2023 05:07:59 -0400
-X-MC-Unique: -b9woubmPsS2O4joqyqgAQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6BDBF3C11CC9;
-        Thu, 27 Jul 2023 09:07:58 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 00FDC2166B25;
-        Thu, 27 Jul 2023 09:07:57 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     kvmarm@lists.linux.dev
-Cc:     Shaoqin Huang <shahuang@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] KVM: arm64: Use the known cpu id instead of smp_processor_id()
-Date:   Thu, 27 Jul 2023 05:07:54 -0400
-Message-Id: <20230727090754.1900310-1-shahuang@redhat.com>
+        Thu, 27 Jul 2023 05:18:36 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403239AA1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:09:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so176814b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690448946; x=1691053746;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4HPzHhawuqBHwf73jZH4M+rJ1h4rzhX4x1A5fzulUtE=;
+        b=XVbZZB1bCuIddvCOd7ZdoZjiMRRT7dPd70cLEHChe028013CtZN4CJhyjaofMQGOCp
+         aGQjkAdZJwrw0kO7FWCF+3wJu4Bs3hfpCHjXHte7v9cy4EJx3v2HSegV5fKDUggsvKcE
+         rfw3ctmBIqNX3YVyLliz70Ow03c79YTqviRSUBhyV37ISoYoH05fZe12pteMem3zIYaK
+         h5yTEuui+F8UDLetCnDn4Wd0BNAlUwOjTRf0Uzpr8uRBgvycDrHuoECz5/KoSjtrxNcd
+         VFQA9eIykS0N+Aj/4rgCWZN2Q01gf7n56+E22JNqNX6qv8VxHS7PwBWWAHU3NZ4I85Kn
+         Kvtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690448946; x=1691053746;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4HPzHhawuqBHwf73jZH4M+rJ1h4rzhX4x1A5fzulUtE=;
+        b=Mv4DyOCRIpoFzRhiyb/wFKe/DnlkKnPQKzrZ4z7lNIIScakJkHNZMVdLt37u3LBPC9
+         +EKQrAGjGZHyAl18t5efj/deePlNPHMTlQDgm+zWLic5vDss9whkZ2U7zynyfFviKgrM
+         NNOhhb+fz1eKE+olnTQzTfDdimlT6mwEqQVRT2BFqXg8KEDWnrLWiL+aDDV/VQ0JK/wa
+         /AQpFyVxuF9w47XkVSXZ3hKO+1os0MaprkZPCcBhyzulyfFQkH5Ga6crATUjd2KgKWHj
+         6oJScYYIIFaKmW0gOylP5MnFRPs17qvqJr6xtPExPfsfM3IDy+1ySuowOVnPstm8Skk0
+         1kbQ==
+X-Gm-Message-State: ABy/qLYNyalNM+J4XT6/3jq3vMHLz13NoEaHdyFH9xvaIjWC6SbN8VrT
+        MoQE5kGfm1BEXq3x3j0bTssxaA==
+X-Google-Smtp-Source: APBJJlGcM2GBnp4i4GpCfKYembVJdmGwthtzp39QltAoTiMbksVAbVCn2LuGL8UI/2xPGfcHp3vTrQ==
+X-Received: by 2002:a05:6a20:1595:b0:137:30db:bc1e with SMTP id h21-20020a056a20159500b0013730dbbc1emr5836590pzj.3.1690448945731;
+        Thu, 27 Jul 2023 02:09:05 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id f17-20020a635551000000b00563ea47c948sm930669pgm.53.2023.07.27.02.08.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 02:09:05 -0700 (PDT)
+Message-ID: <8951e9da-15ae-f05e-a9a4-a9354249cee2@bytedance.com>
+Date:   Thu, 27 Jul 2023 17:08:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 16/49] nfsd: dynamically allocate the nfsd-filecache
+ shrinker
+Content-Language: en-US
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-17-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230727080502.77895-17-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In kvm_arch_vcpu_load(), it has the parameter cpu which is the value of
-smp_processor_id(), so no need to get it again. Simply replace it.
 
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
----
- arch/arm64/kvm/arm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c2c14059f6a8..2e5d8f4b902b 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -457,7 +457,7 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 		vcpu_ptrauth_disable(vcpu);
- 	kvm_arch_vcpu_load_debug_state_flags(vcpu);
- 
--	if (!cpumask_test_cpu(smp_processor_id(), vcpu->kvm->arch.supported_cpus))
-+	if (!cpumask_test_cpu(cpu, vcpu->kvm->arch.supported_cpus))
- 		vcpu_set_on_unsupported_cpu(vcpu);
- }
- 
--- 
-2.39.1
+On 2023/7/27 16:04, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the nfsd-filecache shrinker.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   fs/nfsd/filecache.c | 22 ++++++++++++----------
+>   1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
+> index ee9c923192e0..872eb9501965 100644
+> --- a/fs/nfsd/filecache.c
+> +++ b/fs/nfsd/filecache.c
+> @@ -521,11 +521,7 @@ nfsd_file_lru_scan(struct shrinker *s, struct shrink_control *sc)
+>   	return ret;
+>   }
+>   
+> -static struct shrinker	nfsd_file_shrinker = {
+> -	.scan_objects = nfsd_file_lru_scan,
+> -	.count_objects = nfsd_file_lru_count,
+> -	.seeks = 1,
+> -};
+> +static struct shrinker *nfsd_file_shrinker;
+>   
+>   /**
+>    * nfsd_file_cond_queue - conditionally unhash and queue a nfsd_file
+> @@ -746,12 +742,18 @@ nfsd_file_cache_init(void)
+>   		goto out_err;
+>   	}
+>   
+> -	ret = register_shrinker(&nfsd_file_shrinker, "nfsd-filecache");
+> -	if (ret) {
+> -		pr_err("nfsd: failed to register nfsd_file_shrinker: %d\n", ret);
+> +	nfsd_file_shrinker = shrinker_alloc(0, "nfsd-filecache");
+> +	if (!nfsd_file_shrinker) {
 
+Here should set ret to -ENOMEM, will fix.
+
+> +		pr_err("nfsd: failed to allocate nfsd_file_shrinker\n");
+>   		goto out_lru;
+>   	}
+>   
+> +	nfsd_file_shrinker->count_objects = nfsd_file_lru_count;
+> +	nfsd_file_shrinker->scan_objects = nfsd_file_lru_scan;
+> +	nfsd_file_shrinker->seeks = 1;
+> +
+> +	shrinker_register(nfsd_file_shrinker);
+> +
+>   	ret = lease_register_notifier(&nfsd_file_lease_notifier);
+>   	if (ret) {
+>   		pr_err("nfsd: unable to register lease notifier: %d\n", ret);
+> @@ -774,7 +776,7 @@ nfsd_file_cache_init(void)
+>   out_notifier:
+>   	lease_unregister_notifier(&nfsd_file_lease_notifier);
+>   out_shrinker:
+> -	unregister_shrinker(&nfsd_file_shrinker);
+> +	shrinker_free(nfsd_file_shrinker);
+>   out_lru:
+>   	list_lru_destroy(&nfsd_file_lru);
+>   out_err:
+> @@ -891,7 +893,7 @@ nfsd_file_cache_shutdown(void)
+>   		return;
+>   
+>   	lease_unregister_notifier(&nfsd_file_lease_notifier);
+> -	unregister_shrinker(&nfsd_file_shrinker);
+> +	shrinker_free(nfsd_file_shrinker);
+>   	/*
+>   	 * make sure all callers of nfsd_file_lru_cb are done before
+>   	 * calling nfsd_file_cache_purge
