@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1375E76588F
+	by mail.lfdr.de (Postfix) with ESMTP id C89C2765890
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbjG0QXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S234194AbjG0QX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbjG0QXu (ORCPT
+        with ESMTP id S233922AbjG0QXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:23:50 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F40D30F5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4039f7e1d3aso7639231cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
+        Thu, 27 Jul 2023 12:23:51 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B5C2D4B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63cf96c37beso5142926d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690475026; x=1691079826;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hp9pmCwWGzwAzkTeiXGH85qKapC6XsGAmKK73+MFpHw=;
-        b=J1haLNYl2JEJhQBtxWMQgCiCiuBTD3wDKAdUBcXakw9b1NN3fRU3qVBkifQGofFSMg
-         HzSh2iI1NouDxyER6OmIj7kVCy6LyuVwvm9YrpsGcKOkmoY7hCA7y+SgwaosS2lnr7/N
-         pIPDMB0ZDeU0FlRqhiTL9xu+T4B2DohyBRMHEHc/wD3sRYGjCKliHUgf+SZl3I/EXTwS
-         GdB4L8pB26PwE4YJhx3MhKit81o3fQHFYt/KLmwYPpbNDxekVQYl0aaTM5toEV9F6obI
-         8a+xNA1wjCUgO7lgwKdc7SyaU5wvlcG/RvZgw39UVwl61xKRJPiPt94T9ZFs6THFFXiq
-         HweQ==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690475027; x=1691079827;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V4WqUpKSmXvGR1M+fIFBD/JXbqB10oByq1yE4svjvKk=;
+        b=qNto7iFRrzOxESe9fv4KXfCHzvEpqtjq8zKP6G+FHbxknRdRQyruOVS/C6JV+mmMvY
+         +/rWcuLtgsi9NpP8YgxSITdR8dLpz4uKoeqElIiF8b0B/yCc6cd24rpY8lAY+hhsYZCj
+         nuB6QswJUQX/5foZILCFhUOhAhxdSuiL48uJ9//IKXR5DiNmxdHTFCXSUib5GYajdUMC
+         BZX4uCMOPsz4wm4GIKg0pa4I8kmWdNTYMyl1/gbCDWOOuOnTP6xcrq/91YCR699FRai3
+         uD/9XMZLJawLy/Dvhly73UgklITjc1pFzK3nbx3xqKttOiuUSz1YJoFeSUFYn+hyS7zH
+         wtww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690475026; x=1691079826;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hp9pmCwWGzwAzkTeiXGH85qKapC6XsGAmKK73+MFpHw=;
-        b=kV3pxz+PJEl5VRubbtDdh63uMyVHZJ9isfrazOcibJUGqn2m9uzC9jgxsy8Yu2Q+q3
-         J7DgCCSWR1rndfoI9e5L6k4zNvnGn1XfOXdbBYQPPgopY2raObyPYkSaoYyXjfVyo3WN
-         aBYT6x07l+Feq+GEx0LA+PdGZhG8ZK6BO+66IZGrW0fg44aK8tyZx20YfOGvpdkCvTSF
-         2h9ME2Wx2WH84JlJlf1mTTI8TSTQL0biviikQoHC4G6Ir+C+p+yrexzHqkuDfPw0D8jr
-         Q7KlgE8fb+Laye/4WmgfVTv0u5wyTTIFmdBOr8PhTEkFZZusX2RSNOTY+KoN6p738CNX
-         USRQ==
-X-Gm-Message-State: ABy/qLZKgtLlGQjxJuwkjCE9n1HNqaJ5v3sKw08djRBBHX8F6PvtvGWy
-        2mD8dwIl+hmMH1m8zlF72YL+XQ==
-X-Google-Smtp-Source: APBJJlEkxgeKPk9T3JM2J1ezStnG45MZWod/6OaHqToRC162m9EQ2vFK1VOwk4XX3VGzAzMQPmYwDQ==
-X-Received: by 2002:a05:622a:1054:b0:403:be2b:590b with SMTP id f20-20020a05622a105400b00403be2b590bmr659374qte.44.1690475026270;
-        Thu, 27 Jul 2023 09:23:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690475027; x=1691079827;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V4WqUpKSmXvGR1M+fIFBD/JXbqB10oByq1yE4svjvKk=;
+        b=IzwlHxanvXS0f8sD+SMJGQh8RMXbBArVrUW9Xda/VY/w4nh7+1Br7ZmOd0Yr9w1aPh
+         KZ+suPIpp68DQ+TN46QVNQSMATUF4QpiqLzpik8LSjp0lacfwUc95YO93fMwadsWSzcx
+         R8AQdtr8Ly/hKhjmMDCh7LB7/5CFmlag15KnePE87nxaUT/ey92gAQ5N86jTr9bIbjPl
+         CKQO9VlHVWLDQhPwb+4AReg5+Nox9dSF5qkvDLg86rVHTSk0NCiwI2/bEWDq2vfmikod
+         8XqVb5NyZkmYVEohrnifWnjnsSmAnisq9gThLYy8CSVZYxjnQmTYWJmUjOheSxhkaXxe
+         OMpw==
+X-Gm-Message-State: ABy/qLZ9RnKyp1z3JSslzjpoG6Q9zUcGDtb6R3YSqq0HiK2QDzVawk/q
+        LXx0xVLAOd0u8eNFTt6tjNVKJaD+3/6foktG00IaIg==
+X-Google-Smtp-Source: APBJJlEf3a+4nlFwkjw+loMNGiZ+A28qMm0A+SS4AICZPLdvjR5GWT3rErmZtaoO4i263nli3LNnqA==
+X-Received: by 2002:a05:6214:d6a:b0:635:dbab:a588 with SMTP id 10-20020a0562140d6a00b00635dbaba588mr850652qvs.16.1690475027432;
+        Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:400::5:ad06])
-        by smtp.gmail.com with ESMTPSA id e3-20020ac845c3000000b004055a1005e3sm518847qto.48.2023.07.27.09.23.45
+        by smtp.gmail.com with ESMTPSA id s18-20020a0cb312000000b0063762ab2f90sm527074qve.83.2023.07.27.09.23.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 09:23:45 -0700 (PDT)
+        Thu, 27 Jul 2023 09:23:47 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
         Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] mm: zswap: three cleanups
-Date:   Thu, 27 Jul 2023 12:22:22 -0400
-Message-ID: <20230727162343.1415598-1-hannes@cmpxchg.org>
+Subject: [PATCH 1/3] mm: zswap: use zswap_invalidate_entry() for duplicates
+Date:   Thu, 27 Jul 2023 12:22:23 -0400
+Message-ID: <20230727162343.1415598-2-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230727162343.1415598-1-hannes@cmpxchg.org>
+References: <20230727162343.1415598-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,10 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three small cleanups to zswap, the first one suggested by Yosry during
-the frontswap removal.
+Minor cleanup. Instead of open-coding the tree deletion and the put,
+use the zswap_invalidate_entry() convenience helper.
 
- mm/zswap.c | 150 ++++++++++++++++++++++-------------------------------------
- 1 file changed, 56 insertions(+), 94 deletions(-)
+Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/zswap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 583ef7b84dc3..e123b1c7981c 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1344,9 +1344,7 @@ bool zswap_store(struct page *page)
+ 	spin_lock(&tree->lock);
+ 	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+ 		zswap_duplicate_entry++;
+-		/* remove from rbtree */
+-		zswap_rb_erase(&tree->rbroot, dupentry);
+-		zswap_entry_put(tree, dupentry);
++		zswap_invalidate_entry(tree, dupentry);
+ 	}
+ 	if (entry->length) {
+ 		spin_lock(&entry->pool->lru_lock);
+-- 
+2.41.0
 
