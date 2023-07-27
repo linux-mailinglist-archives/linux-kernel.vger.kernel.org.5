@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48595764335
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC8D764340
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjG0BGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 21:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
+        id S230464AbjG0BKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjG0BG2 (ORCPT
+        with ESMTP id S230335AbjG0BKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 21:06:28 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628571BC1;
-        Wed, 26 Jul 2023 18:06:27 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RBCJY75CDz4f3kFJ;
-        Thu, 27 Jul 2023 09:06:21 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP3 (Coremail) with SMTP id _Ch0CgAH_xwNw8FkloRjNw--.11314S2;
-        Thu, 27 Jul 2023 09:06:24 +0800 (CST)
-Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
-To:     Adam Sindelar <adam@wowsignal.io>, bpf@vger.kernel.org
-Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>
-References: <20230725162654.912897-1-adam@wowsignal.io>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
-Date:   Thu, 27 Jul 2023 09:06:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 26 Jul 2023 21:10:16 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE74E1BC1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:10:14 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-115-64.bstnma.fios.verizon.net [173.48.115.64])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36R19kRN030218
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 21:09:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690420190; bh=L/bR0Z4HEoIH+TzQDYVYGBt7h8oQojsp2gmutOuIbRc=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=mdn/Mfx72w5RkoRVKOoUmpRXPTBa6Skf94xQ6uoIEMMAO6fWgW1mlIuDIqLH6cSVy
+         kxdp3O8uwOK6nJx83AlJ4NKU5PjHv2/kFdSV8mMyXodIdMCLtdEY0bqL5/sfmW+9RE
+         GZUyji4xJ6qo3b+c7a1L4JQXqcZy1Ayn2i8m9Y9qjE+5EGzqPBLSsz/FAR7w9fgjyR
+         5+YIYmcNwIK4p9+fBxeYe8gfsRmRBGYovIZYqnKeLWCDy/gagBqBpIR/w6v752PFbS
+         PSnZfW0EeguC3Y/XOS6Q5dgtmk+86dcIXK5thE4ItC5tJQcwQSizExpXKkgYTj0p+x
+         oPUGNYeRGviEQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 92CFF15C04DF; Wed, 26 Jul 2023 21:09:46 -0400 (EDT)
+Date:   Wed, 26 Jul 2023 21:09:46 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Aleksandr Nogikh <nogikh@google.com>,
+        syzbot <syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com>,
+        agruenba@redhat.com, andersson@kernel.org,
+        cluster-devel@redhat.com, eadavis@sina.com,
+        konrad.dybcio@linaro.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [gfs2?] KASAN: use-after-free Read in qd_unlock (2)
+Message-ID: <20230727010946.GD30264@mit.edu>
+References: <0000000000002b5e2405f14e860f@google.com>
+ <0000000000009655cc060165265f@google.com>
+ <CANp29Y7UVO8QGJUC-WB=CT_MKJVUzpJ2pH+e6WAcwqX_4FPgpA@mail.gmail.com>
+ <CAA8EJpq2Az=8gLyFY7j3D8-P=PUAo6ydmzvvpkcfNQnA0OCEoA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20230725162654.912897-1-adam@wowsignal.io>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: _Ch0CgAH_xwNw8FkloRjNw--.11314S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw4rJF1rtrWfXr45tr4fKrg_yoW8tF4rpr
-        s0kry3Grs5uryfZFZxWF1Sq3yYvan7Xr4xKrWxJw1UA39rJF4DXr1jkr13Ar43XrWkK34a
-        yr1Yga4UCry8WwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpq2Az=8gLyFY7j3D8-P=PUAo6ydmzvvpkcfNQnA0OCEoA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jul 26, 2023 at 06:45:55PM +0300, Dmitry Baryshkov wrote:
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b48111a80000
+  ...
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3f6a670108ce43356017
 
-On 7/26/2023 12:26 AM, Adam Sindelar wrote:
-> We already provide ring_buffer__epoll_fd to enable use of external
-> polling systems. However, the only API available to consume the ring
-> buffer is ring_buffer__consume, which always checks all rings. When
-> polling for many events, this can be wasteful.
->
-> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
-> ---
->  tools/lib/bpf/libbpf.h  |  1 +
->  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
->  2 files changed, 16 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 55b97b2087540..20ccc65eb3f9d 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->  				ring_buffer_sample_fn sample_cb, void *ctx);
->  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
->  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
->  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
->  
->  struct user_ring_buffer_opts {
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 02199364db136..8d087bfc7d005 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
->  	return res;
->  }
->  
-> +/* Consume available data from a single RINGBUF map identified by its ID.
-> + * The ring ID is returned in epoll_data by epoll_wait when called with
-> + * ring_buffer__epoll_fd.
-> + */
-> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
-> +{
-> +	struct ring *ring;
-> +
-> +	if (ring_id >= rb->ring_cnt)
-> +		return libbpf_err(-EINVAL);
-> +
-> +	ring = &rb->rings[ring_id];
-> +	return ringbuf_process_ring(ring);
+> I highly suspect that the bisect was wrong here. The only thing that
+> was changed by the mentioned commit is the device tree for the pretty
+> obscure platform, which is not 'Google Compute Engine'.
 
-When ringbuf_process_ring() returns an error, we need to use
-libbpf_err() to set the errno accordingly.
-> +}
-> +
->  /* Poll for available data and consume records, if any are available.
->   * Returns number of records consumed (or INT_MAX, whichever is less), or
->   * negative number, if any of the registered callbacks returned error.
+Yeah, it's not even close.  If you take a look at the bisection log
+(which is *always* a good idea before you put any faith in the syzbot
+bisection), you'd see the following:
 
+testing commit e1c04510f521e853019afeca2a5991a5ef8d6a5b gcc
+compiler: gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+kernel signature: f262f513a4ba5708b69a5fdd8c218746223996a8b2134a22f2916d16f23d01e8
+run #0: crashed: unregister_netdevice: waiting for DEV to become free
+run #1: crashed: unregister_netdevice: waiting for DEV to become free
+run #2: crashed: unregister_netdevice: waiting for DEV to become free
+run #3: crashed: unregister_netdevice: waiting for DEV to become free
+run #4: crashed: unregister_netdevice: waiting for DEV to become free
+run #5: crashed: unregister_netdevice: waiting for DEV to become free
+run #6: crashed: unregister_netdevice: waiting for DEV to become free
+run #7: crashed: unregister_netdevice: waiting for DEV to become free
+run #8: crashed: unregister_netdevice: waiting for DEV to become free
+
+This is *nothing* like the problem reported on the dashboard, which is:
+
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:72 [inline]
+BUG: KASAN: use-after-free in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+BUG: KASAN: use-after-free in qd_unlock+0x30/0x2d0 fs/gfs2/quota.c:490
+Read of size 8 at addr ffff888073997090 by task syz-executor221/5069
+
+where the dereference had a stack trace which looked like this:
+
+ _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+ qd_unlock+0x30/0x2d0 fs/gfs2/quota.c:490
+ gfs2_quota_sync+0x768/0x8b0 fs/gfs2/quota.c:1325
+ gfs2_sync_fs+0x49/0xb0 fs/gfs2/super.c:650
+ sync_filesystem+0xe8/0x220 fs/sync.c:56
+ generic_shutdown_super+0x6b/0x310 fs/super.c:474
+ kill_block_super+0x79/0xd0 fs/super.c:1386
+ deactivate_locked_super+0xa7/0xf0 fs/super.c:332
+ cleanup_mnt+0x494/0x520 fs/namespace.c:1291
+ task_work_run+0x243/0x300 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x644/0x2150 kernel/exit.c:867
+
+and the memory was allocated via this stack trace:
+
+ kmem_cache_alloc+0x1b3/0x350 mm/slub.c:3476
+ kmem_cache_zalloc include/linux/slab.h:710 [inline]
+ qd_alloc+0x51/0x250 fs/gfs2/quota.c:216
+ gfs2_quota_init+0x7c4/0x10e0 fs/gfs2/quota.c:1415
+ gfs2_make_fs_rw+0x48e/0x590 fs/gfs2/super.c:153
+ gfs2_fill_super+0x2357/0x2700 fs/gfs2/ops_fstype.c:1274
+ get_tree_bdev+0x400/0x620 fs/super.c:1282
+ gfs2_get_tree+0x50/0x210 fs/gfs2/ops_fstype.c:1330
+ vfs_get_tree+0x88/0x270 fs/super.c:1489
+ do_new_mount+0x289/0xad0 fs/namespace.c:3145
+ do_mount fs/namespace.c:3488 [inline]
+ __do_sys_mount fs/namespace.c:3697 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+
+(And the memory was freed from an RCU path)
+
+					- Ted
