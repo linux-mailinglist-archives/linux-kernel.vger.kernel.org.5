@@ -2,47 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F4147764928
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF7A76490E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbjG0Hom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
+        id S233117AbjG0Hmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbjG0HnS (ORCPT
+        with ESMTP id S232708AbjG0HmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:43:18 -0400
-Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2576F6A40;
-        Thu, 27 Jul 2023 00:37:22 -0700 (PDT)
-Received: from [2001:a61:6209:7f40:c80a:ff:fe00:4098] (helo=cs-office3.lan.local); authenticated
-        by wp534.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qOvXT-0001KS-Ho; Thu, 27 Jul 2023 09:35:59 +0200
-Date:   Thu, 27 Jul 2023 09:35:48 +0200
-From:   Carsten =?UTF-8?B?U3BpZcOf?= <mail@carsten-spiess.de>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-hwmon@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
-Message-ID: <20230727093548.0cb0d6e8.mail@carsten-spiess.de>
-In-Reply-To: <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
- <20230726152235.249569-2-mail@carsten-spiess.de>
- <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 27 Jul 2023 03:42:19 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BDC7EC4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:36:12 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-486519e5da0so186317e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690443368; x=1691048168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+FFoh9fAwBO6Qv5kET29/SxFxnrcdEE+m5hTMz9s4Bg=;
+        b=q0HF9MS26IkAFLWMqUaYkeU/ml7JU6fOjvs9mkcMkUYBMQDmB+wteYy1+4vCYvoIT3
+         WoCZe0p+GWcSPt34UWC/5idwii1oNdmWCh8ykdoQDamfinn33x/lMWO38wwpjFeqilFJ
+         vBR/MiQdXjb1xuGuf8cTiu6h0MmGHmnIHgEDxAGaePq9egp/fkBLzn0k3hRezpr+6W+U
+         I+SNjPxtFPpg1egQnlTMq1tVjtDXCct+qevbqsazPTEbHMpcp+iRHhTaF9QchpJJLbsh
+         GZy+x5GsF6/NBAbwKdg/jhRA1IeVgbh2+NfehAvQUSKGSyZee5mPx2Xr3oq/J7oB7aiD
+         X8jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690443368; x=1691048168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+FFoh9fAwBO6Qv5kET29/SxFxnrcdEE+m5hTMz9s4Bg=;
+        b=J4GNsBuJGs2PqVqA4/bv1qj8h21ma/ZlxoJQ1HhdoSsyo7PvLs2D+irM9mQNB5HsfI
+         B8OvGKw2omVoNtB2Hf7z4kpK15NTDsKc7Bm7n+7IMVyQLQyKwzSSsCUw2G2HGIiZ1kdD
+         Q7O0Va3+r6yCj1bc6XDvoBqimrtVhLby0E06tGVcJpEoglyJr1JnS92hjb3CHv74RmkP
+         ujubL+aqbIVqyMA1K/QtSSMf3BBImkWp2JWK7Mv4i5Slst8I8fgubn36LVeM61ewaFX5
+         WfIqE/Vb6tX9mOKA7Y2IUKDw128KCewODM8BILBu44Brc/DQ10ceLtnnaT00pnegd7B3
+         I2SA==
+X-Gm-Message-State: ABy/qLYSeGakRKrFi6Hd9MPa1lXLK0HaxMOTtgJcClJUXw2mUobY0bS1
+        H92FliCQ80Zfn+DVKPKSBaUc+bjF+8UwBYNqBWC9qQ==
+X-Google-Smtp-Source: APBJJlFvB+57WYpfabIcu2VZAkq5/iTwfaa2jKLHI63ja8RnH7KtCPvmmmTypGsMiDpMYWxiPVIcWf2bRst+1MyVCz0=
+X-Received: by 2002:a1f:600a:0:b0:486:3a95:f90 with SMTP id
+ u10-20020a1f600a000000b004863a950f90mr420717vkb.5.1690443368460; Thu, 27 Jul
+ 2023 00:36:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Lp+eURiMW8MUrBzpr8v_GGg";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690443444;f83c0e10;
-X-HE-SMSGID: 1qOvXT-0001KS-Ho
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20230725102330.160810-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230725102330.160810-1-peng.fan@oss.nxp.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 27 Jul 2023 09:35:57 +0200
+Message-ID: <CAMRc=McLqe9QOd3DFVO=4ByaOtRg+y1u3R4CiStp4P_QTHs+vw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: fsl-imx-gpio: support i.MX8QM/DXL
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, stefan@agner.ch, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,52 +73,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Lp+eURiMW8MUrBzpr8v_GGg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 25, 2023 at 12:18=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.c=
+om> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> Add i.MX8QM/DXL gpio compatible which is compatible with i.MX35.
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/D=
+ocumentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> index ae18603697d7..d0ca2af89f1e 100644
+> --- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+> @@ -32,10 +32,12 @@ properties:
+>                - fsl,imx6sx-gpio
+>                - fsl,imx6ul-gpio
+>                - fsl,imx7d-gpio
+> +              - fsl,imx8dxl-gpio
+>                - fsl,imx8mm-gpio
+>                - fsl,imx8mn-gpio
+>                - fsl,imx8mp-gpio
+>                - fsl,imx8mq-gpio
+> +              - fsl,imx8qm-gpio
+>                - fsl,imx8qxp-gpio
+>                - fsl,imxrt1050-gpio
+>                - fsl,imxrt1170-gpio
+> --
+> 2.37.1
+>
 
- On 7/26/23 18:19, Guenter Roeck wrote:
-> Please provide a register dump (using i2cdump) for this chip.=20
+Applied, thanks!
 
-# i2cdump -y -r 0-9 1 0x40 w
-     0,8  1,9  2,a  3,b  4,c  5,d  6,e  7,f
-00: ff67 ca00 a25d c803 5006 0080 817f 00ff=20
-08: 0000 0000 =20
-
-Please note that due to big vs.- little endian bytes are swapped,
-should be read as:
-00: 67ff 00ca 5da2 03c8 0650 8000 7f81 ff00
-08: 0000 0000 =20
-
-corresponding sensor values are about (not read at same time):
-in0:           1.99 V =20
-in1:          23.97 V =20
-power1:        6.10 W =20
-curr1:       248.00 mA=20
-
-in0 should be read as mV
-
-Regards, Carsten
-
---Sig_/Lp+eURiMW8MUrBzpr8v_GGg
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEWM+MlUpz/bWsZllTM1JQzV9LKSwFAmTCHlQACgkQM1JQzV9L
-KSzWMg/+Mp/CNQhmKivVvjjhWPjXYqNHF0t2T6dOh8hVJA6JaMfiGML0OmIFeLtj
-SmXBWHTi8ZE8OotBAx4yMIJPxnGa9pxCkvZ33WJsq9w4aUmVqymu1TbMcXkWuKPJ
-U+jGl7ZhSycI8r+wOjgm59hybz9KU+aDi8uibvFxXUo0PflIufO2ZbqTEPkmaYjc
-mUUOtkgcN/WbZ0CkG0Fdzj6lsCNzLRITHqOE7aTfa0ju8JJQgqSdxVSSFgN8/8gF
-Lsf3WgU7EOtBRarz0H/AW1Cp0nNYRQT+mnbqU544aUC+FC7BNh706ROIKiji6vE2
-Vsrn32o3cyYOK6xG2z/kJy3T3UAWHdMBgmpmB48spAdMjM3J2dRxP/cUNVAOUd24
-dEw40bPZ5qrvDTyGzdqCTqacZtBlnhLEjB8rq7zaLNMvJ0Ytb49B4npsLHQDi7c0
-e70FKnY6t5jMyEtPCQqCKM+WtJu2ac4E6S+T3LQSt9CVs4nY/qpz2g6hrXiqD55+
-tuYltPTVyimPlSOzw9Uxd3JGwPUdFSlFDJmb2D6pskCwHzSx1KRf8LmhrzA/AhNr
-trRFVGz9CIQjDfDu1+TMmnt/kTXuOqRZ8pLPlLlMH/S2G/V+6kF58LrmjovVguwy
-LcxnkEd+a9Eg5OLLc/csEBDNTLF5n8QXSkjEpJbBIyZUTLEYsrg=
-=RTpb
------END PGP SIGNATURE-----
-
---Sig_/Lp+eURiMW8MUrBzpr8v_GGg--
+Bart
