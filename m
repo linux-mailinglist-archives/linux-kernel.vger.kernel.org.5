@@ -2,230 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4626765A97
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229B5765A98
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjG0RkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S232191AbjG0RkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbjG0RkG (ORCPT
+        with ESMTP id S232172AbjG0RkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:40:06 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61E22D68;
-        Thu, 27 Jul 2023 10:40:04 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RBdM30HVhz9t9v;
-        Thu, 27 Jul 2023 19:39:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-        t=1690479599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQKpQzTtuTgmV4ZqIE3KcLbmLNqhQUqywqcDE85QggY=;
-        b=LebiUGvnmtqBMdP9UCAXiJ1Pl3CSQBkvviLbrj5UXcmxN5/WOT3jGv4M6e/OMZFj1IjTTh
-        q92VoAmt1GCyjvN9SWRIRmkkq0G+4f6DJyWrJJ7Ci5EL+qPRpEuF8iCJgNq2ZkvB4YIsg9
-        5z5DAqtXdnKbOtKaN6f4KCLgSwczrTdk/5G6CdujS8OwaweZAlRUCP2subTKn8iMslIiKN
-        NFtlIHVzPl+Wvr4O77YPZUlEefc00Y27y+Il6NsHRe4p4cev83K/+LGgsj27HdU32FLMuM
-        RtguNMSI0mT10u6+If44Y+VD0IboQGWEKQZ9Ivg9QxsTS7dtAOJEy7ZntsHvWw==
-Date:   Fri, 28 Jul 2023 03:39:30 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, James.Bottomley@hansenpartnership.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        axboe@kernel.dk, benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        bp@alien8.de, catalin.marinas@arm.com, christian@brauner.io,
-        dalias@libc.org, davem@davemloft.net, deepa.kernel@gmail.com,
-        deller@gmx.de, dhowells@redhat.com, fenghua.yu@intel.com,
-        fweimer@redhat.com, geert@linux-m68k.org, glebfm@altlinux.org,
-        gor@linux.ibm.com, hare@suse.com, hpa@zytor.com,
-        ink@jurassic.park.msu.ru, jhogan@kernel.org, kim.phillips@arm.com,
-        ldv@altlinux.org, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
-        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
-        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
-        namhyung@kernel.org, paulus@samba.org, peterz@infradead.org,
-        ralf@linux-mips.org, sparclinux@vger.kernel.org, stefan@agner.ch,
-        tglx@linutronix.de, tony.luck@intel.com, tycho@tycho.ws,
-        will@kernel.org, x86@kernel.org, ysato@users.sourceforge.jp,
-        Palmer Dabbelt <palmer@sifive.com>
-Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
-Message-ID: <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
-References: <cover.1689074739.git.legion@kernel.org>
- <cover.1689092120.git.legion@kernel.org>
- <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
- <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
- <ZMEjlDNJkFpYERr1@example.org>
- <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
+        Thu, 27 Jul 2023 13:40:12 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE9BD9;
+        Thu, 27 Jul 2023 10:40:11 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso13801255e9.1;
+        Thu, 27 Jul 2023 10:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690479610; x=1691084410;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vm0hSF63AJjNABtvNsjawRxsPZnGdoadnD63dXFyEDM=;
+        b=Ff2d1S0oErgHRpjDgvPd5pgl+pv8TT24oUFTO0FDFso5x+0BX2ZijGrgNwNXnCvzsI
+         QlPCFCav09nxJB7Ds9PGNv2IdfTTza8CVrqc7xb42bOputCRiSc6J1D2S0zgPRhvuruc
+         jSgKb6nM9koO5S2oZjCjKykH+qS4cdEqRWvZ4gRwNnOpuJF6roTm7VK+mxVBIJnvzTlH
+         3sLmtvCWB0+Muy1IL3jvx8lgfF21PIlLHeen/JO9RqNAeToeg1ypykVMvcft48sRrP1B
+         MJLFX6/kEI/MN+grpINzG/+1T2BNe9rySrR2MwbF7ltgAs9zfGKBIz5RR+313tSZQQQk
+         Jzjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690479610; x=1691084410;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vm0hSF63AJjNABtvNsjawRxsPZnGdoadnD63dXFyEDM=;
+        b=lPxlSQeDjoQ/awmG2o4pPwY2hxL2C41pW4jTYBKbpWoIawUp9AU3oI/D96rffGdArN
+         3rGRgR2WcfV4HMOHEWGhocPmwu9Y+d1gowHw1RL+DJN79YDuW5pI8cNUPvf6wULv/M5q
+         5IdF7wyVtWVc7V76pzQZIZ+ypl3ObauCEqoP0sxeTDvDPTAdjjcH8XjAiuDAnSClGoMD
+         ZzXB2za4WVbu6ZyOiaw5PZq9pTqu319mAVvamM0wBhe+KVbnYby2mRqWHTzyefWguR5u
+         tUxWZwINJryHivtZU0DYUSBTHqxsVdT8PBL25vTTl9E+UQjeGWjaNeWYn7JeSgaj0FV2
+         olaw==
+X-Gm-Message-State: ABy/qLZ6z4OjstzKO0OJOh+1nJwezLdbQJk8HuITcZ+7jTIATEHDTjEN
+        fuf066YX1iG/jNiOZLWWn0EwpQh7qP79BQ==
+X-Google-Smtp-Source: APBJJlHc2w6sCUiG+DIW9ehHlUyBy4YgfHUYrF3BYticU2IXTL8gQsGe1A0YAEzh5iTKl8d1WM4Rwg==
+X-Received: by 2002:a05:600c:3789:b0:3fb:fa61:a4ea with SMTP id o9-20020a05600c378900b003fbfa61a4eamr2276514wmr.11.1690479609421;
+        Thu, 27 Jul 2023 10:40:09 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id o12-20020a05600c378c00b003fc0062f0f8sm2400003wmr.9.2023.07.27.10.40.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 10:40:08 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] [media] go7007: Remove redundant if statement
+Date:   Thu, 27 Jul 2023 18:40:07 +0100
+Message-Id: <20230727174007.635572-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e7zcgctqub3jhgoj"
-Content-Disposition: inline
-In-Reply-To: <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
-X-Rspamd-Queue-Id: 4RBdM30HVhz9t9v
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The if statement that compares msgs[i].len != 3 is always false because
+it is in a code block where msg[i].len is equal to 3. The check is
+redundant and can be removed.
 
---e7zcgctqub3jhgoj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As detected by cppcheck static analysis:
+drivers/media/usb/go7007/go7007-i2c.c:168:20: warning: Opposite inner
+'if' condition leads to a dead code block. [oppositeInnerCondition]
 
-On 2023-07-28, Aleksa Sarai <cyphar@cyphar.com> wrote:
-> On 2023-07-26, Alexey Gladkov <legion@kernel.org> wrote:
-> > On Wed, Jul 26, 2023 at 02:36:25AM +1000, Aleksa Sarai wrote:
-> > > On 2023-07-11, Alexey Gladkov <legion@kernel.org> wrote:
-> > > > On the userspace side fchmodat(3) is implemented as a wrapper
-> > > > function which implements the POSIX-specified interface. This
-> > > > interface differs from the underlying kernel system call, which doe=
-s not
-> > > > have a flags argument. Most implementations require procfs [1][2].
-> > > >=20
-> > > > There doesn't appear to be a good userspace workaround for this iss=
-ue
-> > > > but the implementation in the kernel is pretty straight-forward.
-> > > >=20
-> > > > The new fchmodat2() syscall allows to pass the AT_SYMLINK_NOFOLLOW =
-flag,
-> > > > unlike existing fchmodat.
-> > > >=20
-> > > > [1] https://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/=
-unix/sysv/linux/fchmodat.c;h=3D17eca54051ee28ba1ec3f9aed170a62630959143;hb=
-=3Da492b1e5ef7ab50c6fdd4e4e9879ea5569ab0a6c#l35
-> > > > [2] https://git.musl-libc.org/cgit/musl/tree/src/stat/fchmodat.c?id=
-=3D718f363bc2067b6487900eddc9180c84e7739f80#n28
-> > > >=20
-> > > > Co-developed-by: Palmer Dabbelt <palmer@sifive.com>
-> > > > Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
-> > > > Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > ---
-> > > >  fs/open.c                | 18 ++++++++++++++----
-> > > >  include/linux/syscalls.h |  2 ++
-> > > >  2 files changed, 16 insertions(+), 4 deletions(-)
-> > > >=20
-> > > > diff --git a/fs/open.c b/fs/open.c
-> > > > index 0c55c8e7f837..39a7939f0d00 100644
-> > > > --- a/fs/open.c
-> > > > +++ b/fs/open.c
-> > > > @@ -671,11 +671,11 @@ SYSCALL_DEFINE2(fchmod, unsigned int, fd, umo=
-de_t, mode)
-> > > >  	return err;
-> > > >  }
-> > > > =20
-> > > > -static int do_fchmodat(int dfd, const char __user *filename, umode=
-_t mode)
-> > > > +static int do_fchmodat(int dfd, const char __user *filename, umode=
-_t mode, int lookup_flags)
-> > >=20
-> > > I think it'd be much neater to do the conversion of AT_ flags here and
-> > > pass 0 as a flags argument for all of the wrappers (this is how most =
-of
-> > > the other xyz(), fxyz(), fxyzat() syscall wrappers are done IIRC).
-> >=20
-> > I just addressed the Al Viro's suggestion.
-> >=20
-> > https://lore.kernel.org/lkml/20190717014802.GS17978@ZenIV.linux.org.uk/
->=20
-> I think Al misspoke, because he also said "pass it 0 as an extra
-> argument", but you actually have to pass LOOKUP_FOLLOW from the
-> wrappers. If you look at how faccessat2 and faccessat are implemented,
-> it follows the behaviour I described.
->=20
-> > > >  {
-> > > >  	struct path path;
-> > > >  	int error;
-> > > > -	unsigned int lookup_flags =3D LOOKUP_FOLLOW;
-> > > > +
-> > > >  retry:
-> > > >  	error =3D user_path_at(dfd, filename, lookup_flags, &path);
-> > > >  	if (!error) {
-> > > > @@ -689,15 +689,25 @@ static int do_fchmodat(int dfd, const char __=
-user *filename, umode_t mode)
-> > > >  	return error;
-> > > >  }
-> > > > =20
-> > > > +SYSCALL_DEFINE4(fchmodat2, int, dfd, const char __user *, filename,
-> > > > +		umode_t, mode, int, flags)
-> > > > +{
-> > > > +	if (unlikely(flags & ~AT_SYMLINK_NOFOLLOW))
-> > > > +		return -EINVAL;
-> > >=20
-> > > We almost certainly want to support AT_EMPTY_PATH at the same time.
-> > > Otherwise userspace will still need to go through /proc when trying to
-> > > chmod a file handle they have.
-> >=20
-> > I'm not sure I understand. Can you explain what you mean?
->=20
-> You should add support for AT_EMPTY_PATH (LOOKUP_EMPTY) as well as
-> AT_SYMLINK_NOFOLLOW. It would only require something like:
->=20
-> 	unsigned int lookup_flags =3D LOOKUP_FOLLOW;
->=20
-> 	if (flags & ~(AT_EMPTY_PATH | AT_SYMLINK_NOFOLLOW))
-> 		return -EINVAL;
->=20
-> 	if (flags & AT_EMPTY_PATH)
-> 		lookup_flags |=3D LOOKUP_EMPTY;
-> 	if (flags & AT_SYMLINK_NOFOLLOW)
-> 		lookup_flags &=3D ~LOOKUP_FOLLOW;
->=20
-> 	/* ... */
->=20
-> This would be effectively equivalent to fchmod(fd, mode). (I was wrong
-> when I said this wasn't already possible -- I forgot about fchmod(2).)
+Fixes: 866b8695d67e ("Staging: add the go7007 video driver")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/media/usb/go7007/go7007-i2c.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-=2E.. with the exception (as Christian mentioned) of O_PATH descriptors.
-However, there are two counter-points to this:
+diff --git a/drivers/media/usb/go7007/go7007-i2c.c b/drivers/media/usb/go7007/go7007-i2c.c
+index 38339dd2f83f..2880370e45c8 100644
+--- a/drivers/media/usb/go7007/go7007-i2c.c
++++ b/drivers/media/usb/go7007/go7007-i2c.c
+@@ -165,8 +165,6 @@ static int go7007_i2c_master_xfer(struct i2c_adapter *adapter,
+ 		} else if (msgs[i].len == 3) {
+ 			if (msgs[i].flags & I2C_M_RD)
+ 				return -EIO;
+-			if (msgs[i].len != 3)
+-				return -EIO;
+ 			if (go7007_i2c_xfer(go, msgs[i].addr, 0,
+ 					(msgs[i].buf[0] << 8) | msgs[i].buf[1],
+ 					0x01, &msgs[i].buf[2]) < 0)
+-- 
+2.39.2
 
- * fchownat(AT_EMPTY_PATH) exists but fchown() doesn't work on O_PATH
-   descriptors *by design* (according to open(2)).
- * chmod(/proc/self/fd/$n) works on O_PATH descriptors, meaning this
-   behaviour is already allowed and all that AT_EMPTY_PATH would do is
-   allow programs to avoid depending on procfs for this.
-
-FWIW, I agree with Christian that these behaviours are not ideal (and
-I'm working on a series that might allow for these things to be properly
-blocked in the future) but there's also the consistency argument -- I
-don't think fchownat() is much safer to allow in this way than
-fchmodat() and (again) this behaviour is already possible through
-procfs.
-
-Ultimately, we can always add AT_EMPTY_PATH later. It just seemed like
-an obvious omission to me that would be easy to resolve.
-
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---e7zcgctqub3jhgoj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHQEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZMKr0QAKCRAol/rSt+lE
-bxOTAPjqvyH1UP+6mwe27KnhSozfZ2ESIjoNHwsnKv4yQR4pAP9MxrQ+haWjNEfZ
-ZZDcWZoKyujVbOOH33jx88GCIDrFDQ==
-=2N8j
------END PGP SIGNATURE-----
-
---e7zcgctqub3jhgoj--
