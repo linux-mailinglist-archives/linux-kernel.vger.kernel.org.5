@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 014BF764731
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F79E764737
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjG0GtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
+        id S231829AbjG0Gvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjG0GtC (ORCPT
+        with ESMTP id S231354AbjG0Gv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:49:02 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6CA2698
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:49:00 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so760550a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:49:00 -0700 (PDT)
+        Thu, 27 Jul 2023 02:51:29 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD71CE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:51:27 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-992ca792065so73633166b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690440539; x=1691045339;
+        d=linaro.org; s=google; t=1690440686; x=1691045486;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=c3X8Zj4OP70OiqAhYnmxGDR9inGCFFjwz8hO6iVPB9c=;
-        b=YxC4YDI+Y31qmYG5osPjgudcxDzKIfFIlK0DZRrp54Peo8y6rVsb+LWS6tpf+eS7fl
-         +oHJ/p/utFkIJoczkcJGZamK4aPLUBbro0OL9Zuy7jzrwDP7H6aKS++4R/QthKJ1qdfe
-         u9y5TYVvaUhSSQemkMPlI/hOFEgd5m+4IVpSRi3hT62sTkk+Vqsg1PDUTZIhmDl03xvB
-         3dS65AdFrL1d1XQCw2xHSrr1t1Pb7vAF4rfyqFmADmCgDp5Sg07OkIOkqDm32HWcef4l
-         Xtxwk1LRDZSwFzm2z5UCYL2Ft7+cr5drXXjBR7XasFYirwjLzor+Jke8ABRsSUjwcFfm
-         LkDg==
+        bh=rjfM6EP0os742Rb1PYJNoNXLoSv8TXRejMtrnF8tiZA=;
+        b=aRbbwga8G2x+RK9wfsmD1mGnDvaStbwGBuVXwD8coLmHf0Wwfz8yV5WP8jZfGQrYNO
+         57+Wcg+e1aIGNkoUppS8Yec+tq/KrTOKIvvVc+V7x1HYYWkzq9ZqTAZdnvhacbUJ8eS+
+         zTI9PPD0m1oYAf/G8deee7n5r82k2nDurg4YIGdYhyNEXTYHKGcyGX7JVbvbNvWXBHNr
+         8adZba+AkMpdwDqxmCY4Xf/I+QsEXcpLylX0bl6OrgArQzCTcXdUErCRVrrrSJrQcobV
+         Em0THdI9E81q58xUxPo7XD2eiktOIJLOq2Zf7kYL9z3S+sMpeQukTkMRWjZWHiRkH4Eu
+         B6xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690440539; x=1691045339;
+        d=1e100.net; s=20221208; t=1690440686; x=1691045486;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c3X8Zj4OP70OiqAhYnmxGDR9inGCFFjwz8hO6iVPB9c=;
-        b=lQIAkwC/TBzW/JxJi8fjCi49oecparaUA12Gi2LUKNvIsSTce6+2RKgk7U7h282qPj
-         UN5DpdgKw89iq9b6zIdfUOcx9mYlEugvByVi3FqKXayS4+iAArcwRkDU+nVnsvMG5oN8
-         8nyO3LA4OacUiTIbtFh+Nz0ops3uU/MyQIne8LPcdatMCzOn3ZxjEJuIKft3ELvPznz5
-         62BdM4yJ6TNNDJ4/okDW+Vn9/HUVGa6NMlYwdEs6hNKWkv/L7MT/WRw0m9iqCk+N34YD
-         H3rxj+iQXLKADJJGS1uUDb52R9s1+Tkeag9qY8GIKD5AZdrQ1XwAhZIEnlgmDrt2KiVK
-         uzfA==
-X-Gm-Message-State: ABy/qLZL1xBaqoasrgHkoL0Z1V7TFkvZkLYldP9NseozY/Qc6c8MmVP7
-        fsLjuwzNy1sGMz4fcTLzlX49sQ==
-X-Google-Smtp-Source: APBJJlF7LoqmSv1+Kkydpo8uSWljyUepJpwxz2Cw713ZEV3Gf/tzcJlwLjDc1tJeLlS6Qd/HmUEQpA==
-X-Received: by 2002:a17:906:5385:b0:992:a0c7:8d2a with SMTP id g5-20020a170906538500b00992a0c78d2amr976108ejo.54.1690440539233;
-        Wed, 26 Jul 2023 23:48:59 -0700 (PDT)
+        bh=rjfM6EP0os742Rb1PYJNoNXLoSv8TXRejMtrnF8tiZA=;
+        b=NqrkmWpNMoOSHXzko1daf6iO0P5WFKkGaXZfI/qJQJ7scV+E2/o04HHmC0hqI+tPoR
+         gC5k4atfNNzOjtmFYDKu6B2RMKaIR4dq0HTP/k2y/eu76YUuFKQkBhWdEBfWVjzbXD5e
+         +AW3JS9RPt80Fy9WDMGeSjBQgeuyORRJB9VaZJrRC6cY2L/YEd1rpkOWiqJE1RX9Hz3i
+         RBYeZfQL7JOry85AdOdBEw96KyQNz0v/schEl843Vjh5sEHD9U8cN6XtcquixMV+0xiO
+         M647jygOB1BW41DxXDuU1hPJHnFoSQWj/G0Wmq/++IDci9S69eM2SrVVw5kukeVEE0x9
+         g8CA==
+X-Gm-Message-State: ABy/qLbHTKOA8Ynw/R3xvZ3/bdOxXryQI9lKl3iIozbY8v0NA1P6YYdT
+        IkB0asOm+nweBFSgOyBdcPBqYA==
+X-Google-Smtp-Source: APBJJlH86ABw4i2K5sHhKxUc2RfBj+H1c7AhFe2m1GGcjggfjDXXEZjifEr+XdEcm9DrMicsAyvfAA==
+X-Received: by 2002:a17:906:9bd6:b0:994:1844:549c with SMTP id de22-20020a1709069bd600b009941844549cmr1168839ejc.0.1690440686114;
+        Wed, 26 Jul 2023 23:51:26 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id e6-20020a1709067e0600b0099315454e76sm375402ejr.211.2023.07.26.23.48.57
+        by smtp.gmail.com with ESMTPSA id i18-20020a170906115200b00992665694f7sm388408eja.107.2023.07.26.23.51.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 23:48:58 -0700 (PDT)
-Message-ID: <c9062d5c-b536-f89c-b380-8a0c9b858526@linaro.org>
-Date:   Thu, 27 Jul 2023 08:48:57 +0200
+        Wed, 26 Jul 2023 23:51:25 -0700 (PDT)
+Message-ID: <1439b07a-780b-7ff7-587f-0f271d15eec5@linaro.org>
+Date:   Thu, 27 Jul 2023 08:51:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm: aspeed: add Facebook Yosemite V4
- board
+Subject: Re: [PATCH V3] arm64: dts: qcom: sm8150: Fix the I2C7 interrupt
 Content-Language: en-US
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230727033926.1904529-1-Delphine_CC_Chiu@wiwynn.com>
+To:     Zeyan Li <qaz6750@outlook.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <SY7P282MB378712225CBCEA95FE71554DB201A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727033926.1904529-1-Delphine_CC_Chiu@wiwynn.com>
+In-Reply-To: <SY7P282MB378712225CBCEA95FE71554DB201A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 05:39, Delphine CC Chiu wrote:
-> Document the new compatibles used on Facebook Yosemite V4.
+On 27/07/2023 04:53, Zeyan Li wrote:
+> I2C6 and I2C7 use the same interrupts, which is incorrect.
+> In the downstream kernel, I2C7 has interrupts of 608 instead of 607.
 > 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> Fixes: 81bee6953b58 ("arm64: dts: qcom: sm8150: add i2c nodes")
+> Signed-off-by: Zeyan Li <qaz6750@outlook.com>
 > ---
->  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  [v3] Change to use my real name
+>  [v2] Fixed issue of not using full name
 
-I got the same patch four times...
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
 Krzysztof
