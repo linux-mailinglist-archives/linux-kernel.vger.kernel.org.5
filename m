@@ -2,179 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741B97652B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472D87652AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbjG0Lkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S232387AbjG0Lkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233185AbjG0Lkq (ORCPT
+        with ESMTP id S233151AbjG0Lkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:40:46 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F0B271D
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:40:43 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so77825e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:40:43 -0700 (PDT)
+        Thu, 27 Jul 2023 07:40:37 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404102127;
+        Thu, 27 Jul 2023 04:40:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdd262bb0so58804766b.3;
+        Thu, 27 Jul 2023 04:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690458042; x=1691062842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ph+T+bMJj5qPDZ5PD7H/7htn5wjLlAl0f0VpKLrvh6M=;
-        b=Hkxkwm02Od+vXqQN98JCAu61H1aNjPJs2zWZs6eEprDoT7GUpW3cvPh9/GCBEoiWJv
-         ADkiPRNFo1/2PKKMmAndwoKPh+rjvAOwLlEtuyZbaJG90u2GOk0cLoyPhX0xwxiJCbKX
-         pHV3eJRPsqxXCpiBCKqJN+8YmH8osH4l2sh+1Fd9XsFf0M+vAI4G+nrK0VgrDEn+ECtu
-         rxL+CHHQ8HWUye2yzC54EOszbNX/VdBOEmWTBMDNwDoZo2E6RlJWqbZtyn0bcxfmTgV0
-         542RVvI83Yr0K/WopxZlNaETzSn8ELkPQaUHdiTt5xg0oF22UaCJy11CwE66aV9yhu/5
-         3o5A==
+        d=gmail.com; s=20221208; t=1690458033; x=1691062833;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/fChEvxMU1VyjUw70eOU9DlODWk8dCup0qBe13Xv7Vg=;
+        b=X+a8afCTrh5zv54f6eSfcGhKmIHwLnoQM1KB7vJz0H2LKiGsjwuisH9A6mN+/LTQd/
+         MWUH5ZjjD59fZ1M5oqxRB/nVIPz0U360yaEmU/Lat1ss4Rao3cdwycvW2+Dlj56H+gdL
+         QkI4q7Yr85uB7wGt39DIaKs/VNBYgxHA/yZKJ70RcWDrqs2fmYRZsfwDkIOYXf7ZpLjx
+         eZGb+eOf0tRmA3UqHovpsdswQ1eCmneJx7msCfBp/3ruv4S9nDQYj1xH+XTBOy4fPfc3
+         nJrk5ozS8MvsdjlNWxkAKVsTNtQJpzkxLqgztn3KU4rBLnZp9a/zFjTNokNBhIK4p2V8
+         3BcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690458042; x=1691062842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ph+T+bMJj5qPDZ5PD7H/7htn5wjLlAl0f0VpKLrvh6M=;
-        b=TJtg2qby0vLiS5r8jLtkSqym6UXdl+4VjC529ZXCk6g5lIrAlKwJ1UQD5OsCLEmD7A
-         AlqNWiM4LqIWzxITM3QWjzLOQ6SW/IIWTcMkAh5ACEd8k8opL5DXn4OsEv+fYy/t4fD4
-         EiP7qZchzXGn7cIpkK2iOCABvstH6drFvLXe5A/6YFnia17o9KGZXi3eOc8hbfhJo1CD
-         bimUoI4tEGR6scn6Ev2Jt1a8lMxRZtIPszEfixQNwDpPDZBKZA6YnZ24FdEaBzg+5ykm
-         YL55JiV+WuQrnu8TGxRgqyAa3yYdbaR0bgc8YMSO60b1DeSDI8U7qe5iAnQr/q6l7Anx
-         MTCw==
-X-Gm-Message-State: ABy/qLZo/xCDvEOX6mm4gfvqcck4rNIrJXVnln06hBEO1eUiNlH2R/No
-        OTSBKfjWjioZWFfnGBwrA1JJItkBjQAXLweYNNdWNQ==
-X-Google-Smtp-Source: APBJJlGwCp+6u1RpzRTossFaboM1iyX+LT63lVnVimEXhyrxu43sILR/KnygiHidSJUVZBmyzkf2aC+fg1HsHe2Aw94=
-X-Received: by 2002:a05:600c:6023:b0:3fd:e15:6d5 with SMTP id
- az35-20020a05600c602300b003fd0e1506d5mr94340wmb.2.1690458042138; Thu, 27 Jul
- 2023 04:40:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230727093637.1262110-1-usama.anjum@collabora.com> <20230727093637.1262110-3-usama.anjum@collabora.com>
-In-Reply-To: <20230727093637.1262110-3-usama.anjum@collabora.com>
-From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-Date:   Thu, 27 Jul 2023 13:40:30 +0200
-Message-ID: <CABb0KFFtjTve+uM=CTPChzUbJvJ=Tr3Q8espo_Rr_hutZPPAiw@mail.gmail.com>
-Subject: Re: [PATCH v26 2/5] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+        d=1e100.net; s=20221208; t=1690458033; x=1691062833;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/fChEvxMU1VyjUw70eOU9DlODWk8dCup0qBe13Xv7Vg=;
+        b=MyN70bEWjxZ/V5gLWlYfFb/07dYPdb8wFkdN2zgopzjDeKI98vckH7T9UJYx8prljV
+         1OzxQuF9GYVJ5+1ODt/8dnf4tryLZqEX47zl1u66rSql8bBdHPJ9NMzlcj9ef2vGLdAX
+         HtclmJ60nu4ztv5KhAoy5tnhRy0M154MsSC5FDTaddxI/KQ2WRB2zPcvQJQhtkRH03Sr
+         iG+AXHNstcMgwPl0MdZWWKt7/fDyBnmp+jKOnANrjlNPcjjFIgN/8knNcfb+sFiVlxhw
+         nn7mxxpiItbFlHb7+UhYKIP5mdGs6yGzIDAys68Dl5g+WNDMA5L04ssj/OHbIVTEUCYf
+         gw5Q==
+X-Gm-Message-State: ABy/qLaDulFk4SLaFqbISCd93vkwVDbhd3af7ebz95GvAa7NIDsO7dSE
+        zm5bJKVHkaOZm8iJWHHunTM=
+X-Google-Smtp-Source: APBJJlFjF0UJt+iVWHdzXdcsAl556k8YonWZFChjgP85pP83lIPjvswb/wRIrjzRFp3QAno/9HnmQg==
+X-Received: by 2002:a17:907:762a:b0:993:d6a7:13b with SMTP id jy10-20020a170907762a00b00993d6a7013bmr1679868ejc.22.1690458033416;
+        Thu, 27 Jul 2023 04:40:33 -0700 (PDT)
+Received: from ?IPv6:2001:a61:35be:1401:2331:c532:1717:d48c? ([2001:a61:35be:1401:2331:c532:1717:d48c])
+        by smtp.gmail.com with ESMTPSA id qc8-20020a170906d8a800b00989828a42e8sm666431ejb.154.2023.07.27.04.40.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 04:40:32 -0700 (PDT)
+Message-ID: <b2379aadad95d68ca9605bb9566ce6a70121a409.camel@gmail.com>
+Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml: Add new
+ TDD engine driver
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     "Balas, Eliza" <Eliza.Balas@analog.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Date:   Thu, 27 Jul 2023 13:40:31 +0200
+In-Reply-To: <BN7PR03MB454595EC3EABAEA5607BF1619701A@BN7PR03MB4545.namprd03.prod.outlook.com>
+References: <20230726071103.12172-1-eliza.balas@analog.com>
+         <61fce1da-c8dd-f911-e4bb-b2198612e7c6@linaro.org>
+         <BN7PR03MB4545E574AB9886290115E5C89701A@BN7PR03MB4545.namprd03.prod.outlook.com>
+         <ec964562-6ebb-e145-e850-0417a88077c2@linaro.org>
+         <BN7PR03MB454595EC3EABAEA5607BF1619701A@BN7PR03MB4545.namprd03.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 11:37, Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
-> This IOCTL, PAGEMAP_SCAN on pagemap file can be used to get and/or clear
-> the info about page table entries. The following operations are supported
-> in this ioctl:
-> - Get the information if the pages have Async Write-Protection enabled
->   (``PAGE_IS_WPALLOWED``), have been written to (``PAGE_IS_WRITTEN``), fi=
-le
->   mapped (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped
->   (``PAGE_IS_SWAPPED``) or page has pfn zero (``PAGE_IS_PFNZERO``).
-> - Find pages which have been written to and/or write protect
->   (atomic ``PM_SCAN_WP_MATCHING + PM_SCAN_CHECK_WPASYNC``) the pages
->   atomically. The (``PM_SCAN_WP_MATCHING``) is used to WP the matched
->   pages. The (``PM_SCAN_CHECK_WPASYNC``) aborts the operation if
->   non-Async-Write-Protected pages are found. Get is automatically perform=
-ed
->   if output buffer is specified.
->
-> This IOCTL can be extended to get information about more PTE bits. The
-> entire address range passed by user [start, end) is scanned until either
-> the user provided buffer is full or max_pages have been found.
->
-> Reviewed-by: Andrei Vagin <avagin@gmail.com>
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+On Thu, 2023-07-27 at 09:46 +0000, Balas, Eliza wrote:
+>=20
+>=20
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Sent: Thursday, July 27, 2023 12:27
+> > To: Balas, Eliza <Eliza.Balas@analog.com>
+> > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > <conor+dt@kernel.org>; Derek Kiernan <derek.kiernan@amd.com>; Dragan Cv=
+etic
+> > <dragan.cvetic@amd.com>; Arnd Bergmann
+> > <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
+> > linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
+> > Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml: Add=
+ new TDD
+> > engine driver
+> >=20
+> > [External]
+> >=20
+> > On 27/07/2023 11:05, Balas, Eliza wrote:
+> > >=20
+> > > > -----Original Message-----
+> > > > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > > Sent: Wednesday, July 26, 2023 21:35
+> > > > To: Balas, Eliza <Eliza.Balas@analog.com>
+> > > > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > > > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > > > <conor+dt@kernel.org>; Derek Kiernan <derek.kiernan@amd.com>; Draga=
+n Cvetic
+> > > > <dragan.cvetic@amd.com>; Arnd Bergmann
+> > > > <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
+> > > > linux-kernel@vger.kernel.org;
+> > devicetree@vger.kernel.org
+> > > > Subject: Re: [PATCH 1/2] Documentation: bindings: adi,axi-tdd.yaml:=
+ Add new
+> > > > TDD engine driver
+> > > >=20
+> > > > [External]
+> > > >=20
+> > > > On 26/07/2023 09:11, Eliza Balas wrote:
+> > > > > Add device tree documentation for the AXI TDD Core.
+> > > > > The generic TDD controller is in essence a waveform generator cap=
+able
+> > > > > of addressing RF applications which require Time Division Duplexi=
+ng,
+> > > > > as well as controlling other modules of general applications thro=
+ugh
+> > > > > its dedicated 32 channel outputs.
+> > > > >=20
+> > > > > The reason of creating the generic TDD controller was to reduce t=
+he
+> > > > > naming confusion around the existing repurposed TDD core built fo=
+r
+> > > > > AD9361, as well as expanding its number of output channels for sy=
+stems
+> > > > > which require more than six controlling signals.
+> > > >=20
+> > > > Please use subject prefixes matching the subsystem. You can get the=
+m for
+> > > > example with `git log --oneline -- DIRECTORY_OR_FILE`
+> > on
+> > > > the directory your patch is touching.
+> > > >=20
+> > > > Subject: drop driver. Bindings are for hardware, not drivers... unl=
+ess driver
+> > > > is here a hardware term?
+> > >=20
+> > > It is not a hardware term in this case, I will make the changes.
+> > >=20
+> > > > >=20
+> > > > > Signed-off-by: Eliza Balas <eliza.balas@analog.com>
+> > > > > ---
+> > > > > =C2=A0.../devicetree/bindings/misc/adi,axi-tdd.yaml | 51 ++++++++=
++++++++++++
+> > > > > =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 7 +++
+> > > > > =C2=A02 files changed, 58 insertions(+)
+> > > > > =C2=A0create mode 100644
+> > > > > Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> > > > >=20
+> > > > > diff --git a/Documentation/devicetree/bindings/misc/adi,axi-tdd.y=
+aml
+> > > > > b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..1894c1c34d4f
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> > > >=20
+> > > > Why is this in misc? No suitable directory?
+> > >=20
+> > > I chose misc because I don't know where it should fit, I did not find=
+ a
+> > > suitable
+> > > subsystem to include this driver because this is a driver for an FPGA=
+ IP core.
+> > > Do you have an idea where I should put it?
+> >=20
+> > Directory based on what this device does. Whether some device is
+> > implemented as FPGA core or dedicated circuitry, it does not matter. Fe=
+w
+> > Time Division Multiplexing devices are related to audio, so they are in
+> > sound. I don't know if TDD is something else than TDM. If nothing fits,
+> > can be misc, but again - just because device does no fit, not the drive=
+rs.
+>=20
+> This device resembles a bit with an IIO device (we are dealing with chann=
+els and
+> the
+> sysfs interface follows the IIO specification), but is not registered int=
+o the IIO
+> device tree,=20
+> and does not rely on IIO kernel APIs.=20
+> Do you think this device is a better fit into the IIO subsystem?
+>=20
 
-Thanks for all the work!
+We do have tons of specific attributes (non IIO ones) for this device. The =
+ones
+resembling IIO is likely because it feels familiar to us in ADI. Anyways, I=
+ have my
+doubts this fits (at least as IIO stands right now) but maybe Jonathan thin=
+ks
+otherwise.
 
-Small request below.
++cc Jonathan...
 
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-[...]
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +static unsigned long pagemap_thp_category(pmd_t pmd)
-> +{
-> +       unsigned long categories =3D 0;
-> +
-> +       if (pmd_present(pmd)) {
-> +               categories |=3D PAGE_IS_PRESENT;
-> +               if (!pmd_uffd_wp(pmd))
-> +                       categories |=3D PAGE_IS_WRITTEN;
-> +               if (is_zero_pfn(pmd_pfn(pmd)))
-> +                       categories |=3D PAGE_IS_PFNZERO;
-> +       } else if (is_swap_pmd(pmd)) {
-> +               categories |=3D PAGE_IS_SWAPPED;
-> +               if (!pmd_swp_uffd_wp(pmd))
-> +                       categories |=3D PAGE_IS_WRITTEN;
-> +       }
-> +
-> +       return categories;
-> +}
-[...]
-> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> +
-> +#ifdef CONFIG_HUGETLB_PAGE
-> +static unsigned long pagemap_hugetlb_category(pte_t pte)
-> +{
-> +       unsigned long categories =3D 0;
-> +
-> +       if (pte_present(pte)) {
-> +               categories |=3D PAGE_IS_PRESENT;
-> +               if (!huge_pte_uffd_wp(pte))
-> +                       categories |=3D PAGE_IS_WRITTEN;
-> +               if (!PageAnon(pte_page(pte)))
-> +                       categories |=3D PAGE_IS_FILE;
-> +               if (is_zero_pfn(pte_pfn(pte)))
-> +                       categories |=3D PAGE_IS_PFNZERO;
-> +       } else if (is_swap_pte(pte)) {
-> +               categories |=3D PAGE_IS_SWAPPED;
-> +               if (!pte_swp_uffd_wp_any(pte))
-> +                       categories |=3D PAGE_IS_WRITTEN;
-> +       }
-> +
-> +       return categories;
-> +}
+- Nuno S=C3=A1
 
-Could you add PAGE_IS_HUGE for THP and HugeTLB pages? This would help
-maintaining checkpointed process'es page sizes by CRIU when THP is
-used.
-
-Best Regards
-Micha=C5=82 Miros=C5=82aw
