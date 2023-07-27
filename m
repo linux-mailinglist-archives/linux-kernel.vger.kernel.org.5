@@ -2,255 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF56765046
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1793765049
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbjG0JuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        id S233477AbjG0JuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjG0Jtv (ORCPT
+        with ESMTP id S231645AbjG0Jt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:49:51 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D241A30FF
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:49:25 -0700 (PDT)
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com [209.85.128.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5F2603F078
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:48:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1690451297;
-        bh=WTLnGBvjCSqP+5BtDwi+mG3Apzjq6Uh/eJ7UyBfPVTU=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=n2AEJzcHbFqQQftkA8ZUuuXkz/5RuOMQqzHig86bmr2/OHpQYSSvDEfVb5KH91Rcq
-         ONB/L8V2bz99j8xBSEbyLRegFoq2ptf/UZgc1fuWSjecbxmQjR2HNad4cPo0ytURtV
-         Xt168Ozm8uPOCitD/8J++ST3C8P1prvGrG4lJ585P3XadEyaQ5rrjSzTuAwCFCedal
-         C/+xiOZcDC5QOUEmPrDfkyWMW56EP6jUsUge/3TsOQDyep9hLFYVt4VgdGEckQ+0it
-         jTHCceYYQSjrsCAnHuZSQftV0MGPkgwP8Jep8zVvmAju7UTT1J6wfr/Foo8FmDqwGP
-         np/XXHgNZQy9Q==
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-58378ae25bfso7976527b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:48:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690451296; x=1691056096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WTLnGBvjCSqP+5BtDwi+mG3Apzjq6Uh/eJ7UyBfPVTU=;
-        b=hYW6EOYoU74dRLF1Gh8EgTSfSRaY6JU506BPAZQ7XW0/g1ZA5DksGnWqfbxdaqoXlq
-         KLL1ZYzAAePuVwzgTZQQm/C1A8AB8dHQX51okCq93mbimKBdmWOQ1dErtObMJxgei3je
-         gj76D8RGB0sR42K2RW/OwWYL5HqcNspvfk52RedJuecP0tLWY2eyyd7oGh1x1Y2aTvTh
-         HXKWTZ7TUGVHTYEkgFs12sodI5vF+V9OkXGbUnk23grcns+oPkWWWog82/4gIIoClXAg
-         qKBNOpy2chZMc9oW6GnWCsUQmmS3cAFalRNCvzwMiyIDgWOpzhzjNHYEd5bKIecesJZX
-         p2Hw==
-X-Gm-Message-State: ABy/qLb+xmuQUXLIRY+pN8tjzvL6Ddp+g0gsnZWd9p+OGuo2BW9828kl
-        BgXe4trogVNsye/vaxvu1MbivdTzY4J7qobv5GRutxfSmpg5+ovxlvv8FEU6kFv+00TkFgzEp12
-        0dRfRfky3ymLxE11QVZOACohlJR9GcLD0Lpr4I4mdiGYIYB1L+cNgrjLXBQ==
-X-Received: by 2002:a25:aa44:0:b0:d08:5a25:e6b4 with SMTP id s62-20020a25aa44000000b00d085a25e6b4mr4275034ybi.28.1690451296224;
-        Thu, 27 Jul 2023 02:48:16 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF5+2BQCM2TmchCezsz6wmmafSVYHnLcCDnM9U7L5fvA1biqUyUssGgCHz0KOjLvo/zIZX6Plh7IdUY3k7yM1c=
-X-Received: by 2002:a25:aa44:0:b0:d08:5a25:e6b4 with SMTP id
- s62-20020a25aa44000000b00d085a25e6b4mr4275022ybi.28.1690451295998; Thu, 27
- Jul 2023 02:48:15 -0700 (PDT)
+        Thu, 27 Jul 2023 05:49:56 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA7E35A1;
+        Thu, 27 Jul 2023 02:49:29 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36R9aF7A012017;
+        Thu, 27 Jul 2023 04:48:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=jMvL9VlxQ9UJpNngccwFBjpOPFbato9a8JtaOXUwEik=; b=
+        d2K2kZvNEQro5YxOswWZ55QDBQjOMqzqdDK74unjANHqaNNfaTlZGZuEC91S2MC4
+        wkFrgFF5Hz+y9giIpedlyELjDU46ROa5GVRNS4akzkp80M++X741jJa4MI1YOgFq
+        5I/FjHU8V3EbTMe7XvB9G+18WJCEVb8TAQuLM9m7FGDL7hpjBEPQKDJNJkgrahpy
+        wX25wEXV0Kg7SLsLU4e//o/Qout4iUaa8fDfOsZ4fwOTpv+57ZEHIGEDXFWuFOyR
+        FHWpy79YhE9mlf0bKmpjHgoWCBT9BDdz6gq7UqbbhJIpY19lS+z3V5PQafv4ymfH
+        +LUi7pOHpiCPOPDJyGWf9A==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s1nm9bshy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 04:48:06 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
+ 2023 10:48:05 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 27 Jul 2023 10:48:05 +0100
+Received: from [198.61.65.196] (EDIN4L06LR3.ad.cirrus.com [198.61.65.196])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D3E3111AB;
+        Thu, 27 Jul 2023 09:48:04 +0000 (UTC)
+Message-ID: <42399566-2d25-e888-7226-05a86767b644@opensource.cirrus.com>
+Date:   Thu, 27 Jul 2023 10:48:05 +0100
 MIME-Version: 1.0
-References: <20230726141026.307690-1-aleksandr.mikhalitsyn@canonical.com>
- <20230726141026.307690-4-aleksandr.mikhalitsyn@canonical.com>
- <6ea8bf93-b456-bda4-b39d-a43328987ac9@redhat.com> <CAEivzxeQubvas2yPFYRRXr3BP7pp1HNM3b7C-PQQWy-0FpFKuQ@mail.gmail.com>
- <20230727-bedeuten-endkampf-22c87edd132b@brauner>
-In-Reply-To: <20230727-bedeuten-endkampf-22c87edd132b@brauner>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Thu, 27 Jul 2023 11:48:04 +0200
-Message-ID: <CAEivzxcx31k3M1jWhhDrx6jxYtw=VOd84N-cMNWc+BZjq6QuFQ@mail.gmail.com>
-Subject: Re: [PATCH v7 03/11] ceph: handle idmapped mounts in create_request_message()
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Xiubo Li <xiubli@redhat.com>, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ACPI: scan: Create platform device for CS35L56
+To:     Hans de Goede <hdegoede@redhat.com>, <rafael@kernel.org>,
+        <lenb@kernel.org>, <markgross@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>
+References: <20230726112759.18814-1-rf@opensource.cirrus.com>
+ <33cdbf63-8fe4-da7e-5d36-6e63fe303b24@redhat.com>
+Content-Language: en-US
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <33cdbf63-8fe4-da7e-5d36-6e63fe303b24@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: _hjSqRdhx5niJqtXdtAQck9CO9J3Ke7j
+X-Proofpoint-GUID: _hjSqRdhx5niJqtXdtAQck9CO9J3Ke7j
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 11:01=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
->
-> On Thu, Jul 27, 2023 at 08:36:40AM +0200, Aleksandr Mikhalitsyn wrote:
-> > On Thu, Jul 27, 2023 at 7:30=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wr=
-ote:
-> > >
-> > >
-> > > On 7/26/23 22:10, Alexander Mikhalitsyn wrote:
-> > > > Inode operations that create a new filesystem object such as ->mkno=
-d,
-> > > > ->create, ->mkdir() and others don't take a {g,u}id argument explic=
-itly.
-> > > > Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> > > > filesystem object.
-> > > >
-> > > > In order to ensure that the correct {g,u}id is used map the caller'=
-s
-> > > > fs{g,u}id for creation requests. This doesn't require complex chang=
-es.
-> > > > It suffices to pass in the relevant idmapping recorded in the reque=
-st
-> > > > message. If this request message was triggered from an inode operat=
-ion
-> > > > that creates filesystem objects it will have passed down the releva=
-nt
-> > > > idmaping. If this is a request message that was triggered from an i=
-node
-> > > > operation that doens't need to take idmappings into account the ini=
-tial
-> > > > idmapping is passed down which is an identity mapping.
-> > > >
-> > > > This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS=
-_OWNER_UIDGID
-> > > > which adds two new fields (owner_{u,g}id) to the request head struc=
-ture.
-> > > > So, we need to ensure that MDS supports it otherwise we need to fai=
-l
-> > > > any IO that comes through an idmapped mount because we can't proces=
-s it
-> > > > in a proper way. MDS server without such an extension will use call=
-er_{u,g}id
-> > > > fields to set a new inode owner UID/GID which is incorrect because =
-caller_{u,g}id
-> > > > values are unmapped. At the same time we can't map these fields wit=
-h an
-> > > > idmapping as it can break UID/GID-based permission checks logic on =
-the
-> > > > MDS side. This problem was described with a lot of details at [1], =
-[2].
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThf=
-zuibrhA3RKM=3DZOYLg@mail.gmail.com/
-> > > > [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@ker=
-nel.org/
-> > > >
-> > > > Cc: Xiubo Li <xiubli@redhat.com>
-> > > > Cc: Jeff Layton <jlayton@kernel.org>
-> > > > Cc: Ilya Dryomov <idryomov@gmail.com>
-> > > > Cc: ceph-devel@vger.kernel.org
-> > > > Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canon=
-ical.com>
-> > > > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > > > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonic=
-al.com>
-> > > > ---
-> > > > v7:
-> > > >       - reworked to use two new fields for owner UID/GID (https://g=
-ithub.com/ceph/ceph/pull/52575)
-> > > > ---
-> > > >   fs/ceph/mds_client.c         | 20 ++++++++++++++++++++
-> > > >   fs/ceph/mds_client.h         |  5 ++++-
-> > > >   include/linux/ceph/ceph_fs.h |  4 +++-
-> > > >   3 files changed, 27 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> > > > index c641ab046e98..ac095a95f3d0 100644
-> > > > --- a/fs/ceph/mds_client.c
-> > > > +++ b/fs/ceph/mds_client.c
-> > > > @@ -2923,6 +2923,7 @@ static struct ceph_msg *create_request_messag=
-e(struct ceph_mds_session *session,
-> > > >   {
-> > > >       int mds =3D session->s_mds;
-> > > >       struct ceph_mds_client *mdsc =3D session->s_mdsc;
-> > > > +     struct ceph_client *cl =3D mdsc->fsc->client;
-> > > >       struct ceph_msg *msg;
-> > > >       struct ceph_mds_request_head_legacy *lhead;
-> > > >       const char *path1 =3D NULL;
-> > > > @@ -3028,6 +3029,16 @@ static struct ceph_msg *create_request_messa=
-ge(struct ceph_mds_session *session,
-> > > >       lhead =3D find_legacy_request_head(msg->front.iov_base,
-> > > >                                        session->s_con.peer_features=
-);
-> > > >
-> > > > +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
-> > > > +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_fe=
-atures)) {
-> > > > +             pr_err_ratelimited_client(cl,
-> > > > +                     "idmapped mount is used and CEPHFS_FEATURE_HA=
-S_OWNER_UIDGID"
-> > > > +                     " is not supported by MDS. Fail request with =
--EIO.\n");
-> > > > +
-> > > > +             ret =3D -EIO;
-> > > > +             goto out_err;
-> > > > +     }
-> > > > +
-> > >
-> > > I think this couldn't fail the mounting operation, right ?
-> >
-> > This won't fail mounting. First of all an idmapped mount is always an
-> > additional mount, you always
-> > start from doing "normal" mount and only after that you can use this
-> > mount to create an idmapped one.
-> > ( example: https://github.com/brauner/mount-idmapped/tree/master )
-> >
-> > >
-> > > IMO we should fail the mounting from the beginning.
-> >
-> > Unfortunately, we can't fail mount from the beginning. Procedure of
-> > the idmapped mounts
-> > creation is handled not on the filesystem level, but on the VFS level
->
-> Correct. It's a generic vfsmount feature.
->
-> > (source: https://github.com/torvalds/linux/blob/0a8db05b571ad5b8d5c8774=
-a004c0424260a90bd/fs/namespace.c#L4277
-> > )
-> >
-> > Kernel perform all required checks as:
-> > - filesystem type has declared to support idmappings
-> > (fs_type->fs_flags & FS_ALLOW_IDMAP)
-> > - user who creates idmapped mount should be CAP_SYS_ADMIN in a user
-> > namespace that owns superblock of the filesystem
-> > (for cephfs it's always init_user_ns =3D> user should be root on the ho=
-st)
-> >
-> > So I would like to go this way because of the reasons mentioned above:
-> > - root user is someone who understands what he does.
-> > - idmapped mounts are never "first" mounts. They are always created
-> > after "normal" mount.
-> > - effectively this check makes "normal" mount to work normally and
-> > fail only requests that comes through an idmapped mounts
-> > with reasonable error message. Obviously, all read operations will
-> > work perfectly well only the operations that create new inodes will
-> > fail.
-> > Btw, we already have an analogical semantic on the VFS level for users
-> > who have no UID/GID mapping to the host. Filesystem requests for
-> > such users will fail with -EOVERFLOW. Here we have something close.
->
-> Refusing requests coming from an idmapped mount if the server misses
-> appropriate features is good enough as a first step imho. And yes, we do
-> have similar logic on the vfs level for unmapped uid/gid.
+On 26/7/23 15:13, Hans de Goede wrote:
+> Hi Richard,
+> 
+> On 7/26/23 13:27, Richard Fitzgerald wrote:
+>> From: Simon Trimmer <simont@opensource.cirrus.com>
+>>
+>> The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
+>> is used in multiples, and can be connected either to I2C or SPI.
+>>
+>> There will be multiple instances under the same Device() node. Add it
+>> to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
+>> driver.
+>>
+>> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> 
+> Thanks, patch looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> I have 1 other serial-multi-instantiate.c patches in my fixes branch (see below) and since this just adds new hw-ids I think this can go upstream through my fixes branch too.
+> 
+> Rafael, do you agree with me taking this upstream as a 6.5 fix? And if yes may I have your ack for that ?
+> 
+> About that 1 patch, that adds a new IRQ type: IRQ_RESOURCE_AUTO and I wonder if this patch should not use that same new type right from the start:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/agit/pdx86/platform-drivers-x86.git/commit/?h=fixes&id=676b7c5ecab36274442887ceadd6dee8248a244f
+> 
 
-Thanks, Christian!
+Link doesn't work, but I think you mean:
+https://lore.kernel.org/platform-driver-x86/b9f81a5b-0511-9950-5a20-9e6cbd92d085@redhat.com/T/#t
 
-I wanted to add that alternative here is to modify caller_{u,g}id
-fields as it was done in the first approach,
-it will break the UID/GID-based permissions model for old MDS versions
-(we can put printk_once to inform user about this),
-but at the same time it will allow us to support idmapped mounts in
-all cases. This support will be not fully ideal for old MDS
- and perfectly well for new MDS versions.
-
-Alternatively, we can introduce cephfs mount option like
-"idmap_with_old_mds" and if it's enabled then we set caller_{u,g}id
-for MDS without CEPHFS_FEATURE_HAS_OWNER_UIDGID, if it's disabled
-(default) we fail requests with -EIO. For
-new MDS everything goes in the right way.
-
-Kind regards,
-Alex
+I'll send a V2 of this CS35L56 patch to use the new IRQ_RESOURCE_AUTO.
