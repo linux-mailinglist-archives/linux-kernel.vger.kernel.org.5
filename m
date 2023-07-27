@@ -2,125 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 739A976440B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8470764407
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjG0Czv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 22:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S230229AbjG0CzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 22:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjG0Czq (ORCPT
+        with ESMTP id S229737AbjG0CzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:55:46 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95401269E;
-        Wed, 26 Jul 2023 19:55:44 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 514CF5C014E;
-        Wed, 26 Jul 2023 22:55:41 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 26 Jul 2023 22:55:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=davidreaver.com;
-         h=cc:cc:content-transfer-encoding:content-type:date:date:from
-        :from:in-reply-to:message-id:mime-version:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1690426541; x=1690512941; bh=zx
-        o1R13hZud6WyDtBUOyEV6yDE5nCsrCzF/BEThNRQ0=; b=uj91V9VmExkytqGQYV
-        AZQnfS9fFzM8T3gLhrZm7k1UQt53qlJ+CcZiddess5B7DJj6IiDchezM1HxcUspl
-        ahOuniTVqqvlanamXpUlnlQIKHp6Nne+Y2VwOY50+VDP3DXZFNvOs/IT+ydtRkRV
-        rG2R8Wx+j1VacSj0Gqg3M0SUXsiNWeizwfuzvg3eNNIp6VacLgFsfkplixenkcCc
-        6xTA3+VR/5gBEvtg32hsuCTqZBh7oIq8+A7PQ/qYoCC6DX+pBKLq/F0p+U4UO0vA
-        zeaUELCZL7dutlerJ0sgAXhPYItW3VU0e863IPXvP3m9VbLH9E37P8R6cOgdLhGG
-        zL1w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690426541; x=1690512941; bh=zxo1R13hZud6W
-        yDtBUOyEV6yDE5nCsrCzF/BEThNRQ0=; b=MWPSUQY1KN+1N+NQOy+G/FznZNHit
-        Q7CpFBRwh+HwXdIKQPLWgf2TygnLC6R6WxUD1nr9Hvtez15Th/wloaED8ImiBeyI
-        +jWb6uP1ZtuTwEWW1kx8m3nIy7f3kN2gka4eHAF4QnlS20yCtcjMUr7pX6kaHauu
-        NeOF1FnEJrka5zzqnzmR/XwGskl59D/+eFCooZRxcMmzaZ+L2knR6qNw6QkwwoCN
-        6qKB5Foeur24f4pv7ylS1qtQv+O8i8hkjdldJoMlxh67fSMwEXDljkX2rSgKwENJ
-        dmNvAU0FXR6dqR+ZHIV6W+fzneJIQP9Zx7ot3CRDdeZEToEzITnpMZhTg==
-X-ME-Sender: <xms:rdzBZHs_EhrGpV9W7echt94Fkx7jCiMhDCjYuYTFqiN6JrXYA1HSEw>
-    <xme:rdzBZIelJ_ZoC4XiO0CD67WyCaW1_Zy09XoB9B-Pk-x4Xz3bdRhKGZBoib8-79Dy2
-    aedxmctAr3nGl30LTE>
-X-ME-Received: <xmr:rdzBZKwcbQ9FqsT8k9Q3rPon87r7RIX1cJKZ8JIY0WDqXWnE2M4-h3oynF2LJ2QV36FRCBo7ZNz6cSUdv1w2k2sVzRM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieefgdeifecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghvihguucft
-    vggrvhgvrhcuoehmvgesuggrvhhiughrvggrvhgvrhdrtghomheqnecuggftrfgrthhtvg
-    hrnhepheetveetgfdvffehfeffieeugeejhfevieejveeivdeuiefgvdduueffhfefveeh
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesuggrvhhiughrvggrvhgvrhdrtghomh
-X-ME-Proxy: <xmx:rdzBZGMpq3R22NUo5a_aA4H_L6biOGbLsIjT25btfeMbYGYXbbCd0g>
-    <xmx:rdzBZH9Vl7FyzqsXycNKjdRWcLvpDb9TW3TGzVNBXoZJVgQszhIEog>
-    <xmx:rdzBZGUdOggLbApT_ChbgbdAg_Y7uvpSDJWvGwEbBCdC1Ma7CQe6hg>
-    <xmx:rdzBZOZoufMZBSE7r-indcukFOgI17rNUHMskBUn8kNqYEfC0U1-Gg>
-Feedback-ID: i67e946c9:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 26 Jul 2023 22:55:39 -0400 (EDT)
-From:   David Reaver <me@davidreaver.com>
-To:     Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        David Reaver <me@davidreaver.com>,
-        John Harrison <John.C.Harrison@Intel.com>,
-        Alan Previn <alan.previn.teres.alexis@intel.com>,
-        linux-doc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/huc: fix intel_huc.c doc bulleted list format error
-Date:   Wed, 26 Jul 2023 19:54:00 -0700
-Message-ID: <20230727025400.372965-1-me@davidreaver.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 26 Jul 2023 22:55:22 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A1E1BCB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:55:20 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-403f65a3f8cso2749221cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690426519; x=1691031319;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=531ExcdQJrOXcgPUVOBto/W+I+a7TtCPVuUjr2N2/aQ=;
+        b=vRL1ggbH5B1zpDwkOroc/uItz455YfapqCRxequLrO6uleNZvr5iCG8fBMB2Qu1L/a
+         ik0JRZ90e602CIptGGY0srrNWtLQKC3UfEoh9GRK3rCp/PGEDdKGABWHNBd/h3TlN/VE
+         ELK9p9lK7QP+ZIoFd19xRo2fSlo9Pdz3TlIXY3okSHiCwlOeso8OHJEJd2T41MRgpzW7
+         hCMSextIqg78hUgYrLKAw4SAxRq6mPF+VPvrsNkDDAHDX9telw00yL+gSCcIpYpOinvZ
+         pIsiSwqSc3RTcdhLc5Ya4R4AbswPf/OFCpuO9dKVbZY57DZDBs2GgJw9iKMLTJxqxrK2
+         Cj4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690426519; x=1691031319;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=531ExcdQJrOXcgPUVOBto/W+I+a7TtCPVuUjr2N2/aQ=;
+        b=dcYC93fDj0Zqsj9+6jp3bvnciQi2UtM9bLmwvGq0LQuaXkHXo2PwlHHngT7dCULcy2
+         YzFKKsysnYv6TW9Np9HxByTOkK3Jhn1E9hcm4QOzGe+nDIrgq+OKHLfUpNqpf2AKC1Of
+         wxyT6p7d216/YZS8D6gdH2gXvvKVDvb+9+12YkU4Ny+XuWrHz9etenXFK7U69bO6gBGP
+         IQLd+/BUQzJTlgng3Yox/WA3fSdAvepL09TMLWPf3db2LC/FgRlQrazYO+j9T6evrm/o
+         qKlxDcY0e3v6Fsj/M2WYGWXexihnVBm8W7ReiBx3F0edwvK0UTuVA/d0OXDMzbc7K3CJ
+         3mHw==
+X-Gm-Message-State: ABy/qLYTjklM+5x098Ym430jr2+aNQnLhV/DgLP+2hAQJkM/1vubABM1
+        XfF0kNVyNrFubQruUlOsaCIc+Hu7c1Eu/FlMbeFONQ==
+X-Google-Smtp-Source: APBJJlHZROck17kapwWRhXcNpBH3CZmmLUah1FtlMUqKT3pHFFOEeYj+ltngtIU6g3Deh/7rrh7eV6NxvryjYt8cTKY=
+X-Received: by 2002:ac8:7e8b:0:b0:3ff:42df:7bfd with SMTP id
+ w11-20020ac87e8b000000b003ff42df7bfdmr4292832qtj.63.1690426519062; Wed, 26
+ Jul 2023 19:55:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230622085112.1521-1-masahisa.kojima@linaro.org>
+ <20230622085112.1521-5-masahisa.kojima@linaro.org> <5fe03be6-8c95-0bfa-687d-68e7ddffd97c@siemens.com>
+ <ZJSZbmUz583pszny@hera> <CADQ0-X8TMQoViFW_zFCrOK6yjOqp-X8zQc6c2qsUcWZ5=Suugg@mail.gmail.com>
+ <CAC_iWj+-h+TbuesypQ-PpwFYOUOZ-vjd2C6dWb1oSBt7jEviPQ@mail.gmail.com> <CADQ0-X8f7PrhMbepp_SCA3cvrUuz0+t1+xUdhx5O1yijsvMsYQ@mail.gmail.com>
+In-Reply-To: <CADQ0-X8f7PrhMbepp_SCA3cvrUuz0+t1+xUdhx5O1yijsvMsYQ@mail.gmail.com>
+From:   Masahisa Kojima <masahisa.kojima@linaro.org>
+Date:   Thu, 27 Jul 2023 11:55:08 +0900
+Message-ID: <CADQ0-X9Rvo2FZ_1y6t_KxOrLCEf0WN13YXyH9z4Ya15U4xPm_A@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] efivarfs: automatically update super block flag
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make htmldocs errors/warnings:
+On Wed, 26 Jul 2023 at 13:49, Masahisa Kojima
+<masahisa.kojima@linaro.org> wrote:
+>
+> Hi Ilias,
+>
+> On Mon, 24 Jul 2023 at 19:22, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > Hi Kojima-san,
+> >
+> > On Mon, 24 Jul 2023 at 05:53, Masahisa Kojima
+> > <masahisa.kojima@linaro.org> wrote:
+> > >
+> > > Hi Ilias, Jan,
+> > >
+> > > On Fri, 23 Jun 2023 at 03:56, Ilias Apalodimas
+> > > <ilias.apalodimas@linaro.org> wrote:
+> > > >
+> > > > Hi Kojima-san, Jan
+> > > >
+> > > > On Thu, Jun 22, 2023 at 04:58:50PM +0200, Jan Kiszka wrote:
+> > > > > On 22.06.23 10:51, Masahisa Kojima wrote:
+> > > > > > efivar operation is updated when the tee_stmm_efi module is probed.
+> > > > > > tee_stmm_efi module supports SetVariable runtime service,
+> > > > > > but user needs to manually remount the efivarfs as RW to enable
+> > > > > > the write access if the previous efivar operation does not support
+> > > > > > SerVariable and efivarfs is mounted as read-only.
+> > > > > >
+> > > > > > This commit notifies the update of efivar operation to
+> > > > > > efivarfs subsystem, then drops SB_RDONLY flag if the efivar
+> > > > > > operation supports SetVariable.
+> > > > >
+> > > > > But it does not re-add it and prevents further requests to the TA (that
+> > > > > will only cause panics there) when the daemon terminates, does it?
+> > > >
+> > > > It doesn't, but I think I got a better way out.  Even what you suggest won't
+> > > > solve the problem entirely.  For the sake of context
+> > > > - The kernel decides between the RO/RW depending on the SetVariable ptr
+> > > > - The stmm *module* registers and swaps the RT calls -- and the ptr is now
+> > > > valid.  Note here that the module probe function will run only if the
+> > > > supplicant is running
+> > > > - Once the module is inserted the filesystem will be remounted even without
+> > > > the supplicant running, which would not trigger an oops, but an hard to
+> > > > decipher error message from OP-TEE.
+> > > >
+> > > > So even if we switch the permissions back to RO when the supplicant dies,
+> > > > someone can still remount it as RW and trigger the same error.
+> > > >
+> > > > Which got me thinking and staring the TEE subsystem a bit more.  The
+> > > > supplicant is backed by a /dev file, which naturally has .open() and
+> > > > .release() callbacks.  Why don't we leave the module perform the initial
+> > > > setup -- e.g talk to StMM and make sure it's there, setup the necessary
+> > > > buffers etc and defer the actual swapping of the efivar ops and the
+> > > > filesystem permissions there?  I might 'feel' a bit weird, but as I
+> > > > mentioned the module probe function only runs if the supplicant is running
+> > > > anyway
+> > >
+> > > I think we are discussing two issues.
+> > >
+> >
+> > Yes
+> >
+> > > 1) efivar ops is not restored when the tee-supplicant daemon terminates.
+> > >
+> > > The patch[1] sent by Sumit addresses this issue.
+> > > Thanks to this patch, 'remove' callback of tee_stmm_efi_driver is called
+> > > when the tee-supplicant daemon terminates, then restore the previous efivar ops
+> > > and SB_RDONLY flag if necessary.
+> >
+> > Ok but that didn't fix the original error Jan reported and I am not
+> > sure about the patch status
+>
+> I think the patch is pending because the fTPM still causes panic when the system
+> shuts down.
+> https://lore.kernel.org/all/452472c5-ef30-ac30-6e4e-954f53b48315@siemens.com/
+>
+> This is fTPM specific issue and is unrelated to the tee-based
+> SetVariable runtime series itself.
+>
+> >
+> > >
+> > > 2) cause panic when someone remounts the efivarfs as RW even if
+> > > SetVariable is not supported.
+> >
+> > Yes, this [0] is fixing that issue
+>
+> Thank you, I will include this patch in the next submission.
+>
+> Anyway, the GetVariable() runtime service backed by the U-Boot variable service
+> does not work from kernel v6.4.0, so I will investigate this issue.
 
-./drivers/gpu/drm/i915/gt/uc/intel_huc.c:29: ERROR: Unexpected indentation.
-./drivers/gpu/drm/i915/gt/uc/intel_huc.c:30: WARNING: Block quote ends without a blank line; unexpected unindent.
-./drivers/gpu/drm/i915/gt/uc/intel_huc.c:35: WARNING: Bullet list ends without a blank line; unexpected unindent.
+I found that the QueryVariableInfo EFI API is required since this patch[2].
+Current U-Boot does not support QueryVariableInfo runtime service.
+Anyway this is not directly related to this series.
+After efivar ops is replaced by the tee-based one, variable access works fine.
 
-This output is a bit misleading. The real issue here is we need a blank
-line before and after the bulleted list.
+[2] https://lore.kernel.org/all/20230517153812.2010174-1-anisse@astier.eu/
 
-Link: https://www.kernel.org/doc/html/latest/gpu/i915.html#huc
-Link: https://lore.kernel.org/dri-devel/20230530152958.1384061-1-daniele.ceraolospurio@intel.com/
+Thanks,
+Masahisa Kojima
 
-Signed-off-by: David Reaver <me@davidreaver.com>
----
- drivers/gpu/drm/i915/gt/uc/intel_huc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/gt/uc/intel_huc.c b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-index ddd146265beb..fa70defcb5b2 100644
---- a/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-@@ -26,6 +26,7 @@
-  * The kernel driver is only responsible for loading the HuC firmware and
-  * triggering its security authentication. This is done differently depending
-  * on the platform:
-+ *
-  * - older platforms (from Gen9 to most Gen12s): the load is performed via DMA
-  *   and the authentication via GuC
-  * - DG2: load and authentication are both performed via GSC.
-@@ -33,6 +34,7 @@
-  *   not-DG2 older platforms), while the authentication is done in 2-steps,
-  *   a first auth for clear-media workloads via GuC and a second one for all
-  *   workloads via GSC.
-+ *
-  * On platforms where the GuC does the authentication, to correctly do so the
-  * HuC binary must be loaded before the GuC one.
-  * Loading the HuC is optional; however, not using the HuC might negatively
+>
+> Thanks,
+> Masahisa Kojima
+>
+> >
+> > [0] https://lore.kernel.org/linux-efi/20230609094532.562934-1-ilias.apalodimas@linaro.org/
+> > Thanks
+> > /Ilias
+> > >
+> > > [1] https://lore.kernel.org/all/20230607151435.92654-1-sumit.garg@linaro.org/
+> > >
+> > > Thanks,
+> > > Masahisa Kojima
+> > >
+> > > >
+> > > > Cheers
+> > > > /Ilias
+> > > >
+> > > > >
+> > > > > Jan
+> > > > >
+> > > > > --
+> > > > > Siemens AG, Technology
+> > > > > Competence Center Embedded Linux
+> > > > >
