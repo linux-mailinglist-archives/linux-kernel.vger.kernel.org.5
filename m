@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E05F7657CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909837657D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbjG0Pgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        id S232707AbjG0PiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjG0Pgv (ORCPT
+        with ESMTP id S233368AbjG0PiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:36:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D2A211C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wvajyvPbGU4XnifnsA0utYtQNjjMry+vO/nxQQfxGKI=; b=qXBYn3RT9nW1HBAALBfe0c8nNW
-        0Sr5D/TbcmCaS4FzGkuO82k4kdOBXmDoDLPKTWUjPdBx1n2MQrF9vrQ0qUJZDm3UXl2DpUaNxwQsr
-        2gHLk6uXIcpUDBebDYhm2aar+NIJvYftIrLedscDTDyTXXjveQjN10cRoD8MnaLe0vrUz1ZMpNfd3
-        JeC7JB/F+J1dE18VLS52wpJNxCDx7TW9ggygy5adngr8+bGMtnSBDJUVcxuAfdpl4aG77iwU9FFud
-        ulGQwbqvhK3A9XpsdFJxZoO6x4LmhjGOmy3ltPd6joWkja821v46R2OaFW4P2edPNutDFWJ0Kxqgg
-        bhxTewMg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qP32g-00Fz38-1g;
-        Thu, 27 Jul 2023 15:36:42 +0000
-Date:   Thu, 27 Jul 2023 08:36:42 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     Scott Branden <sbranden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tianfei zhang <tianfei.zhang@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Subject: Re: [PATCH RESEND v4 1/1] test_firmware: fix some memory leaks and
- racing conditions
-Message-ID: <ZMKPCtftDQnfakId@bombadil.infradead.org>
-References: <20230421185205.28743-1-mirsad.todorovac@alu.unizg.hr>
- <ZEgbkoSjHcVLcCcp@bombadil.infradead.org>
- <e9af482f-5b8a-70c0-d767-e98703cd1b03@alu.unizg.hr>
+        Thu, 27 Jul 2023 11:38:04 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BC61FFC;
+        Thu, 27 Jul 2023 08:38:03 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 19C5B5C0167;
+        Thu, 27 Jul 2023 11:38:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 27 Jul 2023 11:38:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=davidreaver.com;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1690472283; x=
+        1690558683; bh=gSa2UE+tG+6ppJSX7+/fH6rMPkCm1rn2JSAsjLzC194=; b=e
+        wEh34iZWiAQ2T7UejitYODzQ5DWGyK+gPKwM6HTiqIJrTLWUtxT0jc0GqJ++6fTE
+        117LEiBg5HA+GUebwrfjkhEiSEf49KWLF2y1a/PvUApW8y8fFV5vesb2jpqTXXGA
+        y6e84vNkq5E7pojrfdI+1igrbc0yZa1NcTRU888wK3Bc8qArxeXAEBkWXtU8BvoD
+        gfg0iHXCcWBzVFg03w9TVmuSxaS5JBTLiMTkVbPLqw+5KF7oDIYb/HkhXcIBBisO
+        2nWX8lfIGuORPyUh9lY7PDozRScNjZZOLWVMN3YA7bcfZVzYZt+u73/Kq73oVoxU
+        rF9wyy0MkRHoEVrTECmlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690472283; x=1690558683; bh=gSa2UE+tG+6pp
+        JSX7+/fH6rMPkCm1rn2JSAsjLzC194=; b=YcPsXyNfVHw4nWK00SBx/jXr5Syt9
+        5TrA+JDktsPKJSCuCHzHpr0uMNUQIdXfLyWnNjF/v/1t4GRXtlfLidmSa+SiuSBU
+        12TE4NH3+lxiDrLnsDJFfbMn5sDJbFC22GzXgoKNk8NU3b7UemokiUFZRDcLaBhO
+        jdMNwom+RrkQXmC1XpuVasC8h7jriKhMprjj+BcrmQrr3c6w+bVAS/A5p7N0JJg/
+        iD63K0a2TAkATR2nYjl0qRGf+LNk8cF1kBh+TSsxwoOzws6QOIllE3VnGPs/3EJA
+        2tRVYJXQNXtHrGaSjvtYWY1I8+xzLAKEVi049InIbmXKksDTtTs6kLQmA==
+X-ME-Sender: <xms:Wo_CZBdIYgyEQ2KzyGQhtkh0VG4aBUagzW2NowXOGY7y73Mu_N6reA>
+    <xme:Wo_CZPN3x0EZ1Dc2jtb4MX0Q1JQSeMtclQDq_fZ96C9CIzx9hwupai0-PAsEWy3uf
+    7J5ynCqjT09RDyS1ow>
+X-ME-Received: <xmr:Wo_CZKi8Fn1iCD476yRFLdjIyT2I1vp2eh9fsjPF7EQCyQVycWo1uXRzw7Ydh8faDa6fzQV_SrsUvwkJNo-msQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeggdeihecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpeffrghvihgu
+    ucftvggrvhgvrhcuoehmvgesuggrvhhiughrvggrvhgvrhdrtghomheqnecuggftrfgrth
+    htvghrnhepvefhleffvedtfeduuddviefhheetvedugeeludfhgfevveetgeffkeetvedu
+    uedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesuggrvhhiughrvggrvhgvrhdrtgho
+    mh
+X-ME-Proxy: <xmx:Wo_CZK-v8I8UBdL20bSVclL8S8AXVIb8J2Mxm3xSLNb-stFIRWyMog>
+    <xmx:Wo_CZNvL6XpQL9Xawl-BpZI5oC0tGskBIuxMMeQWERL64ROj3TqW8Q>
+    <xmx:Wo_CZJEqfbveEI_mo1SB6R1MIys5ffykPuuetq9l3DBRamedAwrgEw>
+    <xmx:W4_CZHILZUeDs9Nk4GlpGc8HPZrwJM0Sm5cy953T8SA3XASlAS_Jgg>
+Feedback-ID: i67e946c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 27 Jul 2023 11:38:01 -0400 (EDT)
+References: <20230727152234.86923-1-me@davidreaver.com>
+ <87o7jx5q4d.fsf@meer.lwn.net>
+User-agent: mu4e 1.10.4; emacs 28.2
+From:   David Reaver <me@davidreaver.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: ABI: sysfs-bus-nvdimm: fix unexpected indentation
+ error
+Date:   Thu, 27 Jul 2023 08:36:46 -0700
+In-reply-to: <87o7jx5q4d.fsf@meer.lwn.net>
+Message-ID: <86mszhjrfr.fsf@davidreaver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9af482f-5b8a-70c0-d767-e98703cd1b03@alu.unizg.hr>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:16:17AM +0200, Mirsad Todorovac wrote:
-> On 25.4.2023. 20:27, Luis Chamberlain wrote:
-> > On Fri, Apr 21, 2023 at 08:52:06PM +0200, Mirsad Goran Todorovac wrote:
-> > > Some functions were called both from locked and unlocked context, so
-> > > the lock was dropped prematurely, introducing a race condition when
-> > > deadlock was avoided.
-> > > 
-> > > Having two locks wouldn't assure a race-proof mutual exclusion.
-> > > 
-> > > __test_dev_config_update_bool(), __test_dev_config_update_u8() and
-> > > __test_dev_config_update_size_t() unlocked versions of the functions
-> > > were introduced to be called from the locked contexts as a workaround
-> > > without releasing the main driver's lock and causing a race condition.
-> > > 
-> > > This should guarantee mutual exclusion and prevent any race conditions.
-> > > 
-> > > Locked versions simply allow for mutual exclusion and call the unlocked
-> > > counterparts, to avoid duplication of code.
-> > > 
-> > > trigger_batched_requests_store() and trigger_batched_requests_async_store()
-> > > now return -EBUSY if called with test_fw_config->reqs already allocated,
-> > > so the memory leak is prevented.
-> > > 
-> > > The same functions now keep track of the allocated buf for firmware in
-> > > req->fw_buf as release_firmware() will not deallocate this storage for us.
-> > > 
-> > > Additionally, in __test_release_all_firmware(), req->fw_buf is released
-> > > before calling release_firmware(req->fw),
-> > > foreach test_fw_config->reqs[i], i = 0 .. test_fw_config->num_requests-1
-> > > 
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Luis Chamberlain <mcgrof@kernel.org>
-> > > Cc: Russ Weight <russell.h.weight@intel.com>
-> > > Cc: Tianfei zhang <tianfei.zhang@intel.com>
-> > > Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > Cc: Zhengchao Shao <shaozhengchao@huawei.com>
-> > > Cc: Colin Ian King <colin.i.king@gmail.com>
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Cc: Takashi Iwai <tiwai@suse.de>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Scott Branden <sbranden@broadcom.com>
-> > > Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-> > > Suggested-by: Dan Carpenter <error27@gmail.com>
-> > > Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> > 
-> > Mirad, thanks for this work, good stuff! So the patch just needs to be
-> > adjust with:
-> > 
-> > Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf"
-> > Cc: stable@vger.kernel.org # v5.4
-> > 
-> > Then, can you split the patch in two, one which fixes the memory leaks
-> > and another that deals with the mutexes. The second patch might be a fix
-> > for the original code but I can't tell until I see the changes split out.
-> > 
-> > The commit log should account for the memory leak and be clear how it
-> > happens. The other commit log for the second patch should clarify what
-> > it fixes and why as well.
-> 
-> It seems to me that there is something wrong with the patchwork, as this commit
-> had not yet appeared in 5.4 LTS stable tree?
 
-Did you resend a new v5 with the requested changes?
+Jonathan Corbet <corbet@lwn.net> writes:
 
-  Luis
+>
+> Thanks for the patch.  This problem is already fixed in docs-next,
+> though, and thus in linux-next as well.
+>
+> jon
+
+Ah, sorry Jonathan. I was using Linus' tree, and I must have messed up
+the search query I used against https://lore.kernel.org. I'll try to
+remember to use docs-next for future docs patches.
+
+Thanks,
+David
