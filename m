@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD1A76505D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21948765061
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbjG0JyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
+        id S232468AbjG0JzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232688AbjG0Jxu (ORCPT
+        with ESMTP id S231235AbjG0JzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:53:50 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEDD116;
-        Thu, 27 Jul 2023 02:53:46 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4830629A;
-        Thu, 27 Jul 2023 11:52:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690451565;
-        bh=S3liQ/d6FwSzzCoPdbALdZsw0tGVl7kVb2/34t88+6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FPXnz5r4lNoIDIaDgVw37PZl1ZwGaMIa+1333/CfKF/S2hDHUmjJ0AVHjDsLO6x+s
-         nqGV31/st8a1/ZOlpLL4knmsq4GVqwAVupg2BS69lAoRq/ZamGvb3lVJknRNdWjfMq
-         LvNf8nrTww/mMtgmLaAIlcQ8gPBPsSBm7jqopUPA=
-Date:   Thu, 27 Jul 2023 12:53:50 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ruan Jinjie <ruanjinjie@huawei.com>
-Cc:     mirela.rabulea@nxp.com, linux-imx@nxp.com, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] media: nxp: Remove redundant dev_err()
-Message-ID: <20230727095350.GF25174@pendragon.ideasonboard.com>
-References: <20230727102154.2757410-1-ruanjinjie@huawei.com>
+        Thu, 27 Jul 2023 05:55:09 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6EE9C;
+        Thu, 27 Jul 2023 02:55:08 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R738MP027025;
+        Thu, 27 Jul 2023 05:55:04 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s36ahwhff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:55:04 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 36R9t3PB029468
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Jul 2023 05:55:03 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 27 Jul
+ 2023 05:55:02 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 27 Jul 2023 05:55:02 -0400
+Received: from okan.localdomain ([10.158.19.61])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36R9snRR029827;
+        Thu, 27 Jul 2023 05:54:52 -0400
+From:   Okan Sahin <okan.sahin@analog.com>
+To:     <okan.sahin@analog.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/2] Add DS4520 GPIO Expander Support
+Date:   Thu, 27 Jul 2023 12:54:28 +0300
+Message-ID: <20230727095432.82591-1-okan.sahin@analog.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230727102154.2757410-1-ruanjinjie@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: dPG_XhavAyZtxxUwEiszrbw0x_KGlZB-
+X-Proofpoint-GUID: dPG_XhavAyZtxxUwEiszrbw0x_KGlZB-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 mlxscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=670 phishscore=0 malwarescore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270088
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ruan,
+GPIO expander driver and bindings for DS4520.
+The patches are required to be applied in sequence.
 
-Thank you for the patch.
+Changes in v5:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * No change
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Remove unnecessary new lines.
+  * Use probe(..) instead of probe_new(..)
 
-On Thu, Jul 27, 2023 at 10:21:54AM +0000, Ruan Jinjie wrote:
-> There is no need to call the dev_err() function directly to print a custom
-> message when handling an error from platform_get_irq() function as
-> it is going to display an appropriate error message in case of a failure.
-> 
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+Changes in v4:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * No change
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Add, remove unnecessary new lines.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Changes in v3:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * Add ngpios property.
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Add namespace for MACROS
+  * Read ngpios from dt
+  * Add missing header file
 
-> ---
->  drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c      | 1 -
->  drivers/media/platform/nxp/imx8-isi/imx8-isi-pipe.c | 1 -
->  2 files changed, 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> index 9512c0a61966..b7a720198ce5 100644
-> --- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> +++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> @@ -2742,7 +2742,6 @@ static int mxc_jpeg_probe(struct platform_device *pdev)
->  	dev_info(&pdev->dev, "choose slot %d\n", jpeg->slot_data.slot);
->  	dec_irq = platform_get_irq(pdev, 0);
->  	if (dec_irq < 0) {
-> -		dev_err(&pdev->dev, "Failed to get irq %d\n", dec_irq);
->  		ret = dec_irq;
->  		goto err_irq;
->  	}
-> diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-pipe.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-pipe.c
-> index c4454aa1cb34..65d20e9bae69 100644
-> --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-pipe.c
-> +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-pipe.c
-> @@ -791,7 +791,6 @@ int mxc_isi_pipe_init(struct mxc_isi_dev *isi, unsigned int id)
->  
->  	irq = platform_get_irq(to_platform_device(isi->dev), id);
->  	if (irq < 0) {
-> -		dev_err(pipe->isi->dev, "Failed to get IRQ (%d)\n", irq);
->  		ret = irq;
->  		goto error;
->  	}
+Changes in v2:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * Drop label for gpio node
+  * Use consistent quotes
+  * Fix filename matching compatible.
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Use regmap_gpio framework
+  * Fix typo in Kconfig
+  * Fix commit message
+
+Okan Sahin (2):
+  dt-bindings: gpio: ds4520: Add ADI DS4520
+  gpio: ds4520: Add ADI DS4520 GPIO Expander Support
+
+ .../bindings/gpio/adi,ds4520-gpio.yaml        | 51 ++++++++++++
+ drivers/gpio/Kconfig                          | 11 +++
+ drivers/gpio/Makefile                         |  1 +
+ drivers/gpio/gpio-ds4520.c                    | 80 +++++++++++++++++++
+ 4 files changed, 143 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/adi,ds4520-gpio.yaml
+ create mode 100644 drivers/gpio/gpio-ds4520.c
 
 -- 
-Regards,
+2.30.2
 
-Laurent Pinchart
