@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B449764445
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD0764453
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjG0DWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        id S231429AbjG0D1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjG0DWs (ORCPT
+        with ESMTP id S231334AbjG0D1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:22:48 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E531FFC;
-        Wed, 26 Jul 2023 20:22:47 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bba54f7eefso11094625ad.1;
-        Wed, 26 Jul 2023 20:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690428167; x=1691032967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dOCw3tpOEkG5/EtUROA6ZEpUAqPahbTI4RHTbQoB/Hg=;
-        b=HzcG3g3UHsjEAs3chpzxRsJX2TKUE6woS5MmSGktqiGRnoAikjc5OlNSR8NXmoKNdv
-         yDh0j+qIdpkv5hJEWcpG6SAaRVUYRVOrpvmzrHQeF7dsqhlvYCcWrbdD3Pb0mCK21KkU
-         rrL9dKtee3BCYh5IxauF966Yh7n41glBpUA9A++2KXZGtl3+4OQXkAnENKkq/YLhK74P
-         +roXcaOkz3ZuAR7DjvtQ+o+11zOZUEUZ4BOfmqWm7dVxZkotE1JD4aWYmVNtxC+alvFS
-         dTAkNEX8UazU3WmZYFbmiqPGmEuNbQbhwNPpsYPFwU5hyYiotL22sIxN0Y4jwelJ9AYe
-         Z4Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690428167; x=1691032967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dOCw3tpOEkG5/EtUROA6ZEpUAqPahbTI4RHTbQoB/Hg=;
-        b=kz2l72+El+UZTvcV7QHhe1tOdh1HCdi483ohMO4JiNib44a/usPyuRRqVLnQLnZzHr
-         Apa4NKRDjqz2ft/2Nvlr2kogXr0vMyU5RBU7CSHhlcpu0nALIsGO1fBP/oivc6B9sgj1
-         3BqgAIaE43NeRXd/O2dwuiVyNgv6mffegeBd9bmNiF09x1wpb/Yrn+EkYfoN26dw/aO8
-         utBOJg+E4DTQTYJuF4Dv/CFtRaf0lLBCkFRog3/1henf/zrKFwjH8wFHK5y5TFrfQoch
-         BHWt4DwBo6VmYpVd9utgjM++x7bJJpTn3IRk0TOvLOMQM7/ztdnWdANQ4s4MfkcH8FD4
-         +ywQ==
-X-Gm-Message-State: ABy/qLZ6DRngWsI9inwM17SZPk+V+SRWpFLTGP1ZkMsOmDkn7eYCuynI
-        Q8r6ICJmWJsqUbe3qEpbljq9Msh9wkANP4pQ
-X-Google-Smtp-Source: APBJJlGZe/I1Ujw/CjltJQl1utB7MetkJz1HzRVtMnRswtp5PbgsxjNlYnFHni0NfgXc/eaakokBBg==
-X-Received: by 2002:a17:902:d2cb:b0:1bb:b2f7:e075 with SMTP id n11-20020a170902d2cb00b001bbb2f7e075mr1758828plc.7.1690428167028;
-        Wed, 26 Jul 2023 20:22:47 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id p5-20020a1709028a8500b001b8ab115ce4sm292544plo.278.2023.07.26.20.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 20:22:46 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 11:22:41 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jon.toppins+linux@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net-next] bonding: 3ad: Remove unused declaration
- bond_3ad_update_lacp_active()
-Message-ID: <ZMHjAWT60adJfhqY@Laptop-X1>
-References: <20230726143816.15280-1-yuehaibing@huawei.com>
+        Wed, 26 Jul 2023 23:27:32 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F5270D;
+        Wed, 26 Jul 2023 20:27:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690428447; x=1721964447;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zZw7shzyeqWcwUz/3pXk4wTr0ManqzTTZSighI1zgHU=;
+  b=aTYPRcRqpH42utWO6lEysW9MF2mhE0PVstZMMcn0HUI2O9AC7eTyZ8rK
+   Ky59kZRXpvy+eOy5JtvaZgAgmhJ9R0dGcj+0HxoKa8mrP+SXFTBLu/j9q
+   uGdbEUb/jQuSTobf0x6nXGl+sPotAWatAWqSqf3nZhs+MKgT/I00/vmbu
+   WbVgxD3rGhr0AkrMf0qYdwPJbJKqtucPAMGxBKXvJP6uczAD951hSf7YC
+   xVOsSUfcn8YD0jH3BUL+j2niY8c3AVoxlhR8bjL/vDPNpRy2whaq5vlv4
+   XA0GpLdRuJQaRluDS0vDpc0FB1YKFabqtcPSlCwlr+1zmfMY3086Eaa1B
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="347799001"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="347799001"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 20:26:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="870179046"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Jul 2023 20:26:15 -0700
+Date:   Thu, 27 Jul 2023 11:24:22 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
+Message-ID: <ZMHjZvcmzxMhTyM3@yilunxu-OptiPlex-7050>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-9-seanjc@google.com>
+ <ZL4BiQWihfrD0TOJ@yilunxu-OptiPlex-7050>
+ <ZMFC+V6Llv1JWLEt@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726143816.15280-1-yuehaibing@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZMFC+V6Llv1JWLEt@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 10:38:16PM +0800, YueHaibing wrote:
-> This is not used since commit 3a755cd8b7c6 ("bonding: add new option lacp_active")
+On 2023-07-26 at 08:59:53 -0700, Sean Christopherson wrote:
+> On Mon, Jul 24, 2023, Xu Yilun wrote:
+> > On 2023-07-18 at 16:44:51 -0700, Sean Christopherson wrote:
+> > > +	if (WARN_ON_ONCE(start == end))
+> > > +		return -EINVAL;
+> > 
+> > Also, is this check possible to be hit? Maybe remove it?
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> It should be impossible to, hence the WARN.  I added the check for two reasons:
+> (1) to help document that end is exclusive, and (2) to guard against future bugs.
 
-It looks like a function I added in the draft patch and forgot to remove it
-when post... Thanks for the fix.
-
-Acked-by: Hangbin Liu <liuhangbin@gmail.com>
-
-> ---
-> v2: fix patch prefix
-> ---
->  include/net/bond_3ad.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/include/net/bond_3ad.h b/include/net/bond_3ad.h
-> index a016f275cb01..c5e57c6bd873 100644
-> --- a/include/net/bond_3ad.h
-> +++ b/include/net/bond_3ad.h
-> @@ -301,7 +301,6 @@ int  __bond_3ad_get_active_agg_info(struct bonding *bond,
->  int bond_3ad_lacpdu_recv(const struct sk_buff *skb, struct bonding *bond,
->  			 struct slave *slave);
->  int bond_3ad_set_carrier(struct bonding *bond);
-> -void bond_3ad_update_lacp_active(struct bonding *bond);
->  void bond_3ad_update_lacp_rate(struct bonding *bond);
->  void bond_3ad_update_ad_actor_settings(struct bonding *bond);
->  int bond_3ad_stats_fill(struct sk_buff *skb, struct bond_3ad_stats *stats);
-> -- 
-> 2.34.1
-> 
+Understood. I'm good to it.
