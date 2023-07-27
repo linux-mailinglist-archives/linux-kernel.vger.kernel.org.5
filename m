@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62AB765161
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D71376516A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbjG0KiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S230331AbjG0KiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjG0KiM (ORCPT
+        with ESMTP id S233332AbjG0KiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:38:12 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18995269E;
-        Thu, 27 Jul 2023 03:38:10 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36R70rMr014780;
-        Thu, 27 Jul 2023 05:38:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=n
-        NTgqr4yvsi49EeWilsO6dT55ZXkVS4hNXcw1nvD10M=; b=fpShysrRjoTa2BgUQ
-        pPTLRPXxq5d7EBo5BuOKqaLShUJoSXjfj0924Y8bCecNcujPR6TJtFWneVI1DBVZ
-        rOVHV1/QN8CFOYG6o+4SA9E5xtILDkhJQgigp48890xnMzWlDNRY8VAYBIKCt+hO
-        JcG2gLowzdobO0dpw8sqnnWmWVXJGLJ/RuZ/yUN0p+LRpv556HoPif9fN0RvFyac
-        t+PjGLMH7/7syOHDeIJEV0Uq/9TV7VvpFe89XwhToXGnLbeHWDxkleVHn1LY2/ap
-        DHlHiz3sqbMQsm/PxyPb1UcySW0CBghzM0hllaCWlR6R/3uwH+u9EWBISklU5kUH
-        okK5Q==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s2q7121h4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 05:38:05 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 11:38:03 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Thu, 27 Jul 2023 11:38:03 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.196])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2364E45D;
-        Thu, 27 Jul 2023 10:38:03 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <rafael@kernel.org>, <hdegoede@redhat.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v2] ACPI: scan: Create platform device for CS35L56
-Date:   Thu, 27 Jul 2023 11:37:54 +0100
-Message-ID: <20230727103754.9914-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 27 Jul 2023 06:38:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2AB26A6;
+        Thu, 27 Jul 2023 03:38:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5B8761DD3;
+        Thu, 27 Jul 2023 10:38:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2484BC433C7;
+        Thu, 27 Jul 2023 10:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690454292;
+        bh=wh4ycVHyDy/meMpcFy2ujkA7FnfZIbKiF964oBpVy5w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=la4Lmi/DhdfArnUIJ/DbZ78SFqaneHcZNAsl7vyC6Bp1sh+e4HQI8e4jBnieO39j6
+         Rmq90io/GLqGoqqH4KkgjJEuKDDwP558rmmvSt0FVF7KhEbTHcezlFb9UppkdHYSda
+         jhi/dMRwdDkMKonZJKiGKFXJNLOHTIEijgJrGqqlhNsPV0MkiTVFgniC59vxFaHMe+
+         /PgQ2nYibh/PpeGMNXJPhBkYhxE3bGCCuiviuqMrlry/Jp24MyFm3S6udZz5sJhaZ+
+         s1t/etXhC/mU8K1VZK7pw57PG4j5iKPd/L4jWewp3rgGuvPk9cYY28p/tSjAv5ikoK
+         B2c9Xn3Ycs/Lg==
+Date:   Thu, 27 Jul 2023 12:37:58 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        Palmer Dabbelt <palmer@sifive.com>,
+        James.Bottomley@hansenpartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        dhowells@redhat.com, fenghua.yu@intel.com, fweimer@redhat.com,
+        geert@linux-m68k.org, glebfm@altlinux.org, gor@linux.ibm.com,
+        hare@suse.com, hpa@zytor.com, ink@jurassic.park.msu.ru,
+        jhogan@kernel.org, kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp
+Subject: Re: [PATCH v4 3/5] arch: Register fchmodat2, usually as syscall 452
+Message-ID: <20230727-fangen-olympiade-85fcbdaf03d7@brauner>
+References: <cover.1689074739.git.legion@kernel.org>
+ <cover.1689092120.git.legion@kernel.org>
+ <a677d521f048e4ca439e7080a5328f21eb8e960e.1689092120.git.legion@kernel.org>
+ <nbtxxotfsotuiepm7r4tegc4hy5qxe4dfjuqq7rm6qkkevooxh@4hacgjwit4or>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: iHJnrucHbbJIPKeNcK56SnkQmrp3LCI0
-X-Proofpoint-ORIG-GUID: iHJnrucHbbJIPKeNcK56SnkQmrp3LCI0
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <nbtxxotfsotuiepm7r4tegc4hy5qxe4dfjuqq7rm6qkkevooxh@4hacgjwit4or>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Wed, Jul 26, 2023 at 02:43:41AM +1000, Aleksa Sarai wrote:
+> On 2023-07-11, Alexey Gladkov <legion@kernel.org> wrote:
+> > From: Palmer Dabbelt <palmer@sifive.com>
+> > 
+> > This registers the new fchmodat2 syscall in most places as nuber 452,
+> > with alpha being the exception where it's 562.  I found all these sites
+> > by grepping for fspick, which I assume has found me everything.
+> 
+> Shouldn't this patch be squashed with the patch that adds the syscall?
+> At least, that's how I've usually seen it done...
 
-The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
-is used in multiples, and can be connected either to I2C or SPI.
-
-There will be multiple instances under the same Device() node. Add it
-to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
-driver.
-
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/acpi/scan.c                             |  1 +
- drivers/platform/x86/serial-multi-instantiate.c | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
-
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 5b145f1aaa1b..87e385542576 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1714,6 +1714,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 		{"BSG1160", },
- 		{"BSG2150", },
- 		{"CSC3551", },
-+		{"CSC3556", },
- 		{"INT33FE", },
- 		{"INT3515", },
- 		/* Non-conforming _HID for Cirrus Logic already released */
-diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-index 2c2abf69f049..8afbeb008d3e 100644
---- a/drivers/platform/x86/serial-multi-instantiate.c
-+++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -329,6 +329,17 @@ static const struct smi_node cs35l41_hda = {
- 	.bus_type = SMI_AUTO_DETECT,
- };
- 
-+static const struct smi_node cs35l56_hda = {
-+	.instances = {
-+		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{}
-+	},
-+	.bus_type = SMI_AUTO_DETECT,
-+};
-+
- /*
-  * Note new device-ids must also be added to ignore_serial_bus_ids in
-  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-@@ -337,6 +348,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)&bsg1160_data },
- 	{ "BSG2150", (unsigned long)&bsg2150_data },
- 	{ "CSC3551", (unsigned long)&cs35l41_hda },
-+	{ "CSC3556", (unsigned long)&cs35l56_hda },
- 	{ "INT3515", (unsigned long)&int3515_data },
- 	/* Non-conforming _HID for Cirrus Logic already released */
- 	{ "CLSA0100", (unsigned long)&cs35l41_hda },
--- 
-2.30.2
-
+Depends. Iirc, someone said they'd prefer for doing it in one patch
+in some circumstances on some system call we added years ago. But otoh,
+having the syscall wiring done separately makes it easy for arch
+maintainers to ack only the wiring up part. Both ways are valid imho.
+(cachestat() did it for x86 and then all the others separately. So
+really it seems a bit all over the place depending on the scenario.)
