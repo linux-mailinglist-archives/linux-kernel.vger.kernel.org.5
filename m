@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD8A765DDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4DC765DE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbjG0VRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S229939AbjG0VWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbjG0VRD (ORCPT
+        with ESMTP id S229448AbjG0VWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:17:03 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BB430E2;
-        Thu, 27 Jul 2023 14:17:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so15443385e9.0;
-        Thu, 27 Jul 2023 14:17:02 -0700 (PDT)
+        Thu, 27 Jul 2023 17:22:38 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FAD30E8;
+        Thu, 27 Jul 2023 14:22:37 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686f8614ce5so943559b3a.3;
+        Thu, 27 Jul 2023 14:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690492621; x=1691097421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x8EiKycpWrQW8TPUC/04LyVjN+dd4bOmadKUuuhDzS8=;
-        b=GxB0Dy7BLrtouVb/j8aNJMF6RWEjP5wuLCNfe5Dtygl0ZPHI0+S2MWZQzyaGTyM3FE
-         hhBS0uT4abfN7g/3YxnZPh7hi23ThhPgh10HNajPYwhzGgcfO5qs7xRtR+c+2fkWkOK+
-         8NBGIhCYFJeKPTvHyzEUL4V11M86KEWpDdmGRTbtBzYIs7FrmEKIiT//phICCAauCGJG
-         ZEz9S/SSUkiCGMBKIW76swlb45geU3XnDAHUUCn4VhU4SDa7Sb+6z6MtpT04q3sinBAT
-         byIvyYTXdW5mPyBRytKkBCjRZzI09XtRFhHqeWeFdpNpJJDKguwKaUO7MVl3/1JJoqGs
-         LrAA==
+        d=gmail.com; s=20221208; t=1690492957; x=1691097757;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AW9Y79n7Axnf4OMyAvU6E9fxTGTVMF/uH4OXVJGy0wc=;
+        b=LoQO9MruCx3aDX53QSt31jjbpqI7Vjb69Z3uSMTxVty0V9yJrQgPTvrfQu4/IsKKCa
+         c7H0MlcS6fR41OmXGSkhIRHRmrnTH5HkihdTYHpm/rVKDQ7GsQmhynlaGpD0RtNl4mWx
+         w0JK8qHntfJP2Nmx8nSju3jlJlGsk3chkC/pbIWURgdr9jsd5D4cmXUmAUPYCqtsVvhs
+         Zddz6UBSLk4ZYehSsWx5V3GYHPM13r8WtBa/hMfjSiw+QlB9oC801VZk1FUfZTWDLUKg
+         o2SeGIsAGwkehzUHHvvDdu3W90RJAfkf+B2bTF0Olfws1V0vYW1wkCURwJjCGeAPTZYW
+         g58A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690492621; x=1691097421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x8EiKycpWrQW8TPUC/04LyVjN+dd4bOmadKUuuhDzS8=;
-        b=eq5p/I7sSgdcXhqzuT3KHehiZl+beiqexEPuym/KNYRmy3MsGcdEc1B6NonwWp4OuL
-         C7XAyULA9qHitAB/0ORKQxORMdXojUKc21R4j7NSD10n7imFa2XzGOScplfhpa5GtdIB
-         xtrlJad/tjDjdj3kgmiOfceLR4YgAO1/R5zowg8PbwJWamZYkq8rAi+7lPFkeSEwMspT
-         42bMi8CWcfjDBy/xd4ZMKJIUOg1qDiyM+z699uJewNdw1CpRkiV5lD/q621eQD20yyA6
-         yz8hrkUbMtK0W9C0Kms1rRkeAWGp2IIYnu8p7+2UBayvfb6Cv1D5O7NwwR3sCSz41bmy
-         5GMg==
-X-Gm-Message-State: ABy/qLZvm1QGlBAdiSSCbbQZPsraTkqz8O6MJtqrQy/L3c4SUmJOkOsH
-        b4eYb1apCSp5salsXPiBgOo=
-X-Google-Smtp-Source: APBJJlFvtkn/m5BFowdTBQQo1i9q7DMSDUxWMoSa7ByIXErw7qY4O6yChdzPBK5w4rNLFf22KtGfvQ==
-X-Received: by 2002:a5d:438f:0:b0:317:54d9:eb48 with SMTP id i15-20020a5d438f000000b0031754d9eb48mr246125wrq.11.1690492621102;
-        Thu, 27 Jul 2023 14:17:01 -0700 (PDT)
-Received: from skbuf ([188.25.175.105])
-        by smtp.gmail.com with ESMTPSA id z8-20020adfec88000000b0031773a8e5c4sm3049793wrn.37.2023.07.27.14.17.00
+        d=1e100.net; s=20221208; t=1690492957; x=1691097757;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AW9Y79n7Axnf4OMyAvU6E9fxTGTVMF/uH4OXVJGy0wc=;
+        b=L3F+nksS9Kk+Kf9yZDZEK0DN6rKEcdbqyBpuvx9jC6zDaLHZMKKgUCvQzGrVnWR1d9
+         Z6j6wV96wQDrEi4feQRoje+WZKWtJpXWch2tMfEUXkSHxSG4/JIAvREcd8RjGG5a3XGM
+         9wCIBy1tL+gL6msbHEVKQ3ssVxEsKi4aKUFbq+lx3yGgQUPtM0gMVT3YWmbZ5vWaKDWz
+         HlbmOUJYzpP5af3hGOFUGCjKDZaw1aUfLDnrHJ7pCOFIOEhcEpDz5DFqUCqDF6yal+lw
+         yghRz01jyamnF1AdBFRoq+76Fw4h3Jr4VcE9YfL1ZuZv5Ha03o3gMQnEqILwMIZbi2Ih
+         5RqA==
+X-Gm-Message-State: ABy/qLZA7pVnORiAkKUpnHQSdQ8/6gdPPsyQzELEv14sK98jYdH7cJbR
+        rqO9OJIbtI2AVDGBAMBKhmik9xWkPfZLRg==
+X-Google-Smtp-Source: APBJJlFHi1voxlxXheXlidoFFam4W3IYbNYZSFTSlKjdlMcn4KoCpsM8VrL8jH/ByC1+CMZirkg6PQ==
+X-Received: by 2002:a05:6a21:329c:b0:12f:6aee:7e43 with SMTP id yt28-20020a056a21329c00b0012f6aee7e43mr316185pzb.57.1690492956735;
+        Thu, 27 Jul 2023 14:22:36 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:69d1:d8aa:25be:a2b6])
+        by smtp.gmail.com with ESMTPSA id u8-20020a62ed08000000b00666912d8a52sm1869099pfh.197.2023.07.27.14.22.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 14:17:00 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 00:16:58 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Atin Bainada <hi@atinb.me>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 3/3] net: dsa: qca8k: limit user ports access to
- the first CPU port on setup
-Message-ID: <20230727211658.3gkjql5jww44hr4c@skbuf>
-References: <20230724033058.16795-1-ansuelsmth@gmail.com>
- <20230724033058.16795-3-ansuelsmth@gmail.com>
+        Thu, 27 Jul 2023 14:22:36 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Adam Skladowski <a39.skl@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Douglas Anderson <dianders@chromium.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Rob Clark <robdclark@gmail.com>, Rob Herring <robh@kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v2 00/13] drm/msm/adreno: Move away from legacy revision matching
+Date:   Thu, 27 Jul 2023 14:20:05 -0700
+Message-ID: <20230727212208.102501-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724033058.16795-3-ansuelsmth@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -78,59 +87,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:30:58AM +0200, Christian Marangi wrote:
-> In preparation for multi-CPU support, set CPU port LOOKUP MEMBER outside
-> the port loop and setup the LOOKUP MEMBER mask for user ports only to
-> the first CPU port.
-> 
-> This is to handle flooding condition where every CPU port is set as
-> target and prevent packet duplication for unknown frames from user ports.
-> 
-> Secondary CPU port LOOKUP MEMBER mask will be setup later when
-> port_change_master will be implemented.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
+From: Rob Clark <robdclark@chromium.org>
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Downstream seems to be moving to using the chip_id as simply an opaque
+identifier, and if we want to avoid headaches with userspace mesa
+supporting both kgsl and upstream, we should move away from the
+assumption that certain bits in the chip_id have a specific meaning.
 
->  drivers/net/dsa/qca/qca8k-8xxx.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-> index 31552853fdd4..6286a64a2fe3 100644
-> --- a/drivers/net/dsa/qca/qca8k-8xxx.c
-> +++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-> @@ -1850,18 +1850,16 @@ qca8k_setup(struct dsa_switch *ds)
->  	if (ret)
->  		return ret;
->  
-> +	/* CPU port gets connected to all user ports of the switch */
-> +	ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(cpu_port),
-> +			QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Setup connection between CPU port & user ports
->  	 * Configure specific switch configuration for ports
->  	 */
->  	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
-> -		/* CPU port gets connected to all user ports of the switch */
-> -		if (dsa_is_cpu_port(ds, i)) {
-> -			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
-> -					QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
-> -			if (ret)
-> -				return ret;
-> -		}
-> -
->  		/* Individual user ports get connected to CPU port only */
->  		if (dsa_is_user_port(ds, i)) {
->  			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
+v2 adds a patch to move adreno_info to adreno_platform_config rather
+than needing to look it up in multiple places.
 
-FWIW, the remaining loop can be rewritten (in a separate patch) using
-dsa_switch_for_each_user_port(), which is actually an operation of lower
-complexity compared to "for" + "dsa_is_user_port".
+Rob Clark (13):
+  drm/msm/adreno: Remove GPU name
+  drm/msm/adreno: Remove redundant gmem size param
+  drm/msm/adreno: Remove redundant revn param
+  drm/msm/adreno: Use quirk identify hw_apriv
+  drm/msm/adreno: Use quirk to identify cached-coherent support
+  drm/msm/adreno: Allow SoC specific gpu device table entries
+  drm/msm/adreno: Move speedbin mapping to device table
+  drm/msm/adreno: Bring the a630 family together
+  drm/msm/adreno: Add adreno family
+  drm/msm/adreno: Add helper for formating chip-id
+  drm/msm/adreno: Move adreno info to config
+  dt-bindings: drm/msm/gpu: Extend bindings for chip-id
+  drm/msm/adreno: Switch to chip-id for identifying GPU
 
-> -- 
-> 2.40.1
-> 
+ .../devicetree/bindings/display/msm/gpu.yaml  |   6 +
+ drivers/gpu/drm/msm/adreno/a2xx_gpu.c         |   2 +-
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c         |   2 +-
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c         |   4 +-
+ drivers/gpu/drm/msm/adreno/a5xx_power.c       |   2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |  16 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c         | 189 ++---------
+ drivers/gpu/drm/msm/adreno/adreno_device.c    | 294 ++++++++++++------
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c       |  53 ++--
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h       | 154 ++++++---
+ 10 files changed, 365 insertions(+), 357 deletions(-)
+
+-- 
+2.41.0
+
