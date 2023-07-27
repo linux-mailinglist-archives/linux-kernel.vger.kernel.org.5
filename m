@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2EF765650
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F1A76562B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbjG0Oqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
+        id S233888AbjG0Oo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjG0Oq3 (ORCPT
+        with ESMTP id S233714AbjG0Oo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:46:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92473AAA;
-        Thu, 27 Jul 2023 07:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690469161; x=1722005161;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eYl99+L8eoZb9TdbyaCeQo6lRhwlNSjOXE6qobDW3K0=;
-  b=IkgpUQGNIbKtfpljDJGk10+TiBLptw0DunKPCOtyK55fN2OgBAW8gYxh
-   eAejiz0Qn+pA/f/3udRKxN9koAJPdaQbkAhqmPLdbMJt3s/TmXZSbgtIu
-   GOHKwafQ11X6w1VQcvfY/7h2Iza0yEkwY/OyqxzAYtUjAHtjGE3kR1itl
-   nBs0rbe+RYJIKim6+gGQg8LP5VHFJddzobUnjCF58eoRQR0MjE1TctsnU
-   AlrcR8gyKvFuD7zLnuxzjq2pZVDI2WY0aa5wy9ocflw5Hr52fnSUMGdLF
-   wxASAuNvr3TR5FqIM4P2wuiY3gfWRAGbSvb0902opVK/rHCVxVyP5mfsJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432139872"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="432139872"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 07:46:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817119964"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="817119964"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Jul 2023 07:45:57 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 9/9] net: skbuff: always try to recycle PP pages directly when in softirq
-Date:   Thu, 27 Jul 2023 16:43:36 +0200
-Message-ID: <20230727144336.1646454-10-aleksander.lobakin@intel.com>
+        Thu, 27 Jul 2023 10:44:26 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E22130E1;
+        Thu, 27 Jul 2023 07:44:23 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fdd14c1fbfso1871821e87.1;
+        Thu, 27 Jul 2023 07:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690469061; x=1691073861;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4mk9QO1bKZiIQkt31EU6v0cWU3DnzKcyZ55zrIVFVXQ=;
+        b=IpK1iC7NS9CiKwi/w4XI87n1ZJtnTpYFgLP4DvzS2jI6I+/4q4WLVOQbUdat2O/JSJ
+         rSvY4KagbrRNh45MAb3OiMvA6TEobPpT93XcPOuwNxkZwkHRk2RkePF70naYd4zkx09I
+         w67L2Cort7+WjNnw+1Eiz+T5YDPa9uVnPzEbIYbg+5Ve2ggsopJhpdRGPNd/TJ0qKcrY
+         2nGgNPzvUSlWWU5cffyypJbGm4SVfdSQT+hJE3Lp5t61JHgOaSegV98A6aQIy2GYfAvi
+         7LOfIgCo/NEM+NOycT9CMd4O0HYDd6/3ZTAMasTtcqpn8lU+vU/mDqInP8ODtj57q+DZ
+         khaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690469061; x=1691073861;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4mk9QO1bKZiIQkt31EU6v0cWU3DnzKcyZ55zrIVFVXQ=;
+        b=gyxkXnzjXVhA3fv5em6+oSg46WpfNENxxv+MTnxX9eR/FFkgNBY+3aBSO82a9oezLJ
+         EHMIWeY5Kx8G68OWa3LPTSqWJSeiYl8VXB1Anq4RhrDaV99BogPZr7wBSoE3YEUft2o2
+         p+XPJG4lbtCsJFAV0XRLuQjqSofn8VO8/U2e6WLLBJCAPIE6IbXn8yl2Agg1pRlaXlDe
+         mKep92rF7+rj1LQHWBXeGmsdsZd0VkoFMTkyk2B2xa4YzY66sQyD8FfVqlJBFo8xkM9L
+         SQ+5YQOnjzjP0+N19I3NuPU1rnMVeplsBFoU7E0GYdVv/shGGvAgZqVrp4TwoY3u30ox
+         7F9A==
+X-Gm-Message-State: ABy/qLbY93S5Ec9h6oyHbJuuNPRM051bNGjx2/xugrgRW31lkL1pH6OU
+        ID28N7rJABx+7qOwatuS/Oo=
+X-Google-Smtp-Source: APBJJlFzT6s3SyADMOTPk6sW46OAgAY1F3TERUhdvCNgcDBfNJL+HaDuFPlWuv9By+p26FUAur2QMQ==
+X-Received: by 2002:a05:6512:15a4:b0:4fb:be3c:d8b7 with SMTP id bp36-20020a05651215a400b004fbbe3cd8b7mr2268062lfb.51.1690469061262;
+        Thu, 27 Jul 2023 07:44:21 -0700 (PDT)
+Received: from localhost (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id y20-20020a17090629d400b00992e14af9b9sm846080eje.134.2023.07.27.07.44.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 07:44:20 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] arm64: dts: tegra: drop incorrect maxim,disable-etr in Smaug
+Date:   Thu, 27 Jul 2023 16:44:16 +0200
+Message-ID: <169046903884.2751933.4445869430176134815.b4-ty@nvidia.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
+In-Reply-To: <20230725142638.157449-1-krzysztof.kozlowski@linaro.org>
+References: <20230725142638.157449-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8c48eea3adf3 ("page_pool: allow caching from safely localized
-NAPI") allowed direct recycling of skb pages to their PP for some cases,
-but unfortunately missed a couple of other majors.
-For example, %XDP_DROP in skb mode. The netstack just calls kfree_skb(),
-which unconditionally passes `false` as @napi_safe. Thus, all pages go
-through ptr_ring and locks, although most of time we're actually inside
-the NAPI polling this PP is linked with, so that it would be perfectly
-safe to recycle pages directly.
-Let's address such. If @napi_safe is true, we're fine, don't change
-anything for this path. But if it's false, check whether we are in the
-softirq context. It will most likely be so and then if ->list_owner
-is our current CPU, we're good to use direct recycling, even though
-@napi_safe is false -- concurrent access is excluded. in_softirq()
-protection is needed mostly due to we can hit this place in the
-process context (not the hardirq though).
-For the mentioned xdp-drop-skb-mode case, the improvement I got is
-3-4% in Mpps. As for page_pool stats, recycle_ring is now 0 and
-alloc_slow counter doesn't change most of time, which means the
-MM layer is not even called to allocate any new pages.
+From: Thierry Reding <treding@nvidia.com>
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org> # in_softirq()
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- net/core/skbuff.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index e701401092d7..5ba3948cceed 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -901,8 +901,10 @@ bool page_pool_return_skb_page(struct page *page, bool napi_safe)
- 	/* Allow direct recycle if we have reasons to believe that we are
- 	 * in the same context as the consumer would run, so there's
- 	 * no possible race.
-+	 * __page_pool_put_page() makes sure we're not in hardirq context
-+	 * and interrupts are enabled prior to accessing the cache.
- 	 */
--	if (napi_safe) {
-+	if (napi_safe || in_softirq()) {
- 		const struct napi_struct *napi = READ_ONCE(pp->p.napi);
- 
- 		allow_direct = napi &&
+On Tue, 25 Jul 2023 16:26:38 +0200, Krzysztof Kozlowski wrote:
+> There is no "maxim,disable-etr" property (but there is
+> maxim,enable-etr), neither in the bindings nor in the Linux driver:
+> 
+>   tegra210-smaug.dtb: regulator@1c: Unevaluated properties are not allowed ('maxim,disable-etr' was unexpected)
+> 
+> 
+
+Applied, thanks!
+
+[1/1] arm64: dts: tegra: drop incorrect maxim,disable-etr in Smaug
+      (no commit info)
+
+Best regards,
 -- 
-2.41.0
-
+Thierry Reding <treding@nvidia.com>
