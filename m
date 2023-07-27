@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222D37656AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA7F7656AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjG0PC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        id S234098AbjG0PCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjG0PCU (ORCPT
+        with ESMTP id S231825AbjG0PCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:02:20 -0400
-Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007641BD1;
-        Thu, 27 Jul 2023 08:02:16 -0700 (PDT)
-Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:1::3])
-        by unicorn.mansr.com (Postfix) with ESMTPS id 70D7D15360;
-        Thu, 27 Jul 2023 16:02:13 +0100 (BST)
-Received: by raven.mansr.com (Postfix, from userid 51770)
-        id 62DC6221D92; Thu, 27 Jul 2023 16:02:13 +0100 (BST)
-From:   Mans Rullgard <mans@mansr.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [RFC][PATCH] rtc: sunxi: use external 32k oscillator if provided
-Date:   Thu, 27 Jul 2023 16:01:23 +0100
-Message-ID: <20230727150156.29691-1-mans@mansr.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 27 Jul 2023 11:02:23 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E1230DD;
+        Thu, 27 Jul 2023 08:02:21 -0700 (PDT)
+X-QQ-mid: bizesmtp83t1690470132tx5a4qcf
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 27 Jul 2023 23:02:11 +0800 (CST)
+X-QQ-SSF: 01200000002000D0X000B00A0000000
+X-QQ-FEAT: 0b1/4t+gNkKytBjCTqeXnq1dFQWJAzuDxRmoAl6R9LQsxrXNcL71OJByKVTCI
+        OFdLjLXL1o+c7vcbOerWQMZZosERU2yYpAZQGKmyHfwhFQXp3ksXlOXeGrA/hYoGsGZeLd+
+        EYdJXpJm7Ym/nQZlWxOUOkCyI4hN88LC5uMwCYGd8VEKSc1Zsa5rpEerxrnBY2/U3JW828A
+        bWi0k0tb7ZG1Ao68fLJ1H1folKBub3b2By8QBwFT7HZbx6kWVLi6exJprTYBbZ+aUm7Q40W
+        hWFvLT5vYQXYg62jpuLqSfltc27lyaenFJ2nzrkercv63NSzdf2CJ+7CNt4M9hW7RbPkof0
+        eVpiON3gzl8JwNr7UbaE7I9fU3plbmRKrIFp/Du6XpUvmi4UE55yZu9TLnZIcAKWk3+WxN8
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1921293056862354421
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v3 3/7] selftests/nolibc: add extra configs customize support
+Date:   Thu, 27 Jul 2023 23:02:02 +0800
+Message-Id: <8e9e5ac6283c6ec2ecf10a70ce55b219028497c1.1690468707.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690468707.git.falcon@tinylab.org>
+References: <cover.1690468707.git.falcon@tinylab.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the OSC32K_SRC_SEL bit in the LOSC control register if a clock is
-specified in the devicetree.
+The default DEFCONFIG_<ARCH> may not always work for all architectures,
+some architectures require to add extra kernel config options, this
+allows to add extra options in the defconfig target.
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
----
-The newer sun6i rtc driver is a proper clk provider with parent
-selection.  Doing the same thing in this driver would be difficult
-while staying compatible with existing devicetrees.  For that reason,
-this simpler approach seems reasonable.
----
- drivers/rtc/rtc-sunxi.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Based on the .config generated from DEFCONFIG_<ARCH>, It allows to
+customize extra kernel config options via both the common common.config
+and the architecture specific <ARCH>.config, at last trigger
+'allnoconfig' to let them take effect with missing config options as
+disabled.
 
-diff --git a/drivers/rtc/rtc-sunxi.c b/drivers/rtc/rtc-sunxi.c
-index 5d019e3a835a..4f1053eab778 100644
---- a/drivers/rtc/rtc-sunxi.c
-+++ b/drivers/rtc/rtc-sunxi.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2013, Carlo Caione <carlo.caione@gmail.com>
-  */
+The scripts/kconfig/merge_config.sh tool is used to merge the extra
+config files.
+
+Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
+Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index f42adef87e12..9576f1a0a98d 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+ DEFCONFIG            = $(DEFCONFIG_$(ARCH))
  
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/fs.h>
-@@ -21,8 +22,10 @@
- #include <linux/types.h>
- 
- #define SUNXI_LOSC_CTRL				0x0000
-+#define SUNXI_LOSC_CTRL_KEY			(0x16aa << 16)
- #define SUNXI_LOSC_CTRL_RTC_HMS_ACC		BIT(8)
- #define SUNXI_LOSC_CTRL_RTC_YMD_ACC		BIT(7)
-+#define SUNXI_LOSC_CTRL_OSC32K_SRC_SEL		BIT(0)
- 
- #define SUNXI_RTC_YMD				0x0004
- 
-@@ -422,6 +425,7 @@ MODULE_DEVICE_TABLE(of, sunxi_rtc_dt_ids);
- static int sunxi_rtc_probe(struct platform_device *pdev)
- {
- 	struct sunxi_rtc_dev *chip;
-+	struct clk *extclk;
- 	int ret;
- 
- 	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
-@@ -455,6 +459,14 @@ static int sunxi_rtc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	/* use external oscillator if present */
-+	extclk = devm_clk_get_optional_enabled(&pdev->dev, NULL);
-+	if (IS_ERR(extclk))
-+		return PTR_ERR(extclk);
-+	if (extclk)
-+		writel(SUNXI_LOSC_CTRL_KEY | SUNXI_LOSC_CTRL_OSC32K_SRC_SEL,
-+		       chip->base + SUNXI_LOSC_CTRL);
++# extra kernel config files under configs/, include common + architecture specific
++EXTCONFIG            = common.config $(ARCH).config
 +
- 	/* clear the alarm count value */
- 	writel(0, chip->base + SUNXI_ALRM_DHMS);
+ # optional tests to run (default = all)
+ TEST =
  
+@@ -161,6 +164,8 @@ initramfs: nolibc-test
+ 
+ defconfig:
+ 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
++	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
++	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
+ 
+ kernel: initramfs
+ 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
 -- 
-2.41.0
+2.25.1
 
