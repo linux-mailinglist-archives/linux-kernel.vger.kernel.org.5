@@ -2,185 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B2E76441D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C449764418
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjG0DB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
+        id S229975AbjG0DAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjG0DBz (ORCPT
+        with ESMTP id S231294AbjG0DAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:01:55 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B5B1BD5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:01:54 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so6358451fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690426912; x=1691031712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
-        b=i261GX+ISLVBQWkZJlC8JRSTm8YljJalFdC0xw+oAOtekwYguIX3lJETIZEfqN6p6e
-         hbc+y0nlxiMJ1OIUQAUmvgz3nM1Um64qCuh0JGjRzewYJM/VmOn5dwj7nq2BJJYjb8Be
-         DP11WIROHODl84N7ysvCYEPdQSeb8it8IOSPE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690426912; x=1691031712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
-        b=KnZr4igwEdtNsVSLkeAv2AWIzymakvs+uviHr+LHvIUn/IXyaZTMCTMAN3iU5enX9a
-         LfLE8khgvUB8os5PRVH8cDW3mMVLjUN3NtWSXnwBBEG20jLDsOe/VHz2Q/bbjKlDS8BJ
-         GRok7T6aRFdIIHv8M735dSNx/M4rwK6OVgK//woaTDG6LYxwyXtbJ/3BtsP7BuafVc9w
-         Y7h6xJB7g3ScrDR5HwxpeIyTkqmrxKqJxsWfKh2Iiuv1E+jXXpXyejkRsZC2qrHeN5sW
-         CuvuoUbX+/2GYHahx3+6qWbMN9ZxR+RWjIRj49yJXQODAIcJ1FmdxCP2ve6U/Kq0qDHV
-         9B/g==
-X-Gm-Message-State: ABy/qLZLcAIUONe7XMBux0RPP7sTV/uxL260XBsyE7ChVXvxZ0qtU4sS
-        hZmwo7Ujm1PgK6FCKjNTj11nIWViX9SxZL6+PK2HE0dhq3Ko7UqAHqs=
-X-Google-Smtp-Source: APBJJlEx6ky2cjrQJP4D+4530EmV6PxTY62HotbnTfmh+ipGNijarsBTGEmVIjyEv5iR/HbLmjdJG6rq5EMrz4S83rw=
-X-Received: by 2002:a2e:a0ca:0:b0:2b6:cf0f:1fbf with SMTP id
- f10-20020a2ea0ca000000b002b6cf0f1fbfmr538037ljm.42.1690426912206; Wed, 26 Jul
- 2023 20:01:52 -0700 (PDT)
+        Wed, 26 Jul 2023 23:00:04 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2088.outbound.protection.outlook.com [40.107.104.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792121BCB;
+        Wed, 26 Jul 2023 20:00:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WOWMH1+DT9b+cZq15aSoFGjXAMrjKkM+T7N2zB2/Q6cpQZ3QD8bIf29UAbeyX24kNbnNpidKOAOscGzdXeARu7adwz21YM7bqC33HRa8lHmGFi0flmPhGmlsNUmWvRryLEHbhvIbemSiv4gH+UxlIncqfgQPnP8b8WvqlsB8uRlsEyRB9jupimcLHgE6I7VYtfeSJfy8FlU7dCzNeELRnmKd3l4sqyZIlDYLbadlgKeovNNPeGHWJjqDLEv9POkNem6CyyYS4Qpx1EeXyeL8UKdIokHm8WbWWJCWezw9Xm3gLmoyuut7SNnroWYwO+5tDim+VfmmtRIgovsnrpZ/+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K/gx94XGuv9bsYJzsFWSDpd4ivJxor3uYmCS54gD/Do=;
+ b=KIzF5boDUTaRdaROxZoq3pVeRMfcNnL851K2habOLtWrv1H9mEySiXcYuLupiPoSOh1zTd7X2U4lk1Rh6ulC4EskkxvgQpSBqTVscUkfAAaNTmIz/73oMWcuHgj4+Pro3N1P0I1HGTJb3NT1mU1E9jwEliZExZHwRlS8L5ta57RwrcPNlmgeQiQcSHQ+9feD/XdOoHpyg6i2P7IXQ+Wc6UzwxCYXh/DZOdeTL88q2dldWwU0FFKKPXWwJi06uAVN0oyvGYvlbRaFgHm5roEUtPll1yV5dPsb/3uFrdZ/iPrtfydrBFcFM681U8s+zrgAjyPcmQUPUaK/LJrVoj5OFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K/gx94XGuv9bsYJzsFWSDpd4ivJxor3uYmCS54gD/Do=;
+ b=mttTRB79HmqH9kSJ0bRxYJszgf71w8lKtJMtxQSU7R9JdGAk9YPCq67Dv6fl4Zof3JToBK53R+bzORa2eUTP0uW0h3W7Fgb2KUoUJvvZz0/3Q/+ojcvCNwa7U6wmprhbjt/qeBevK+IOQqloZUnBFFNURDn985FjGgRvAgkOp10=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
+ by AM9PR04MB8259.eurprd04.prod.outlook.com (2603:10a6:20b:3e4::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 03:00:01 +0000
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::ea2b:9b70:e669:f0e4]) by VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::ea2b:9b70:e669:f0e4%3]) with mapi id 15.20.6609.032; Thu, 27 Jul 2023
+ 03:00:01 +0000
+From:   carlos.song@nxp.com
+To:     andi.shyti@kernel.org, aisheng.dong@nxp.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com
+Cc:     carlos.song@nxp.com, xiaoning.wang@nxp.com, haibo.chen@nxp.com,
+        linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] i2c: imx-lpi2c: directly return ISR when detect a NACK
+Date:   Thu, 27 Jul 2023 11:03:47 +0800
+Message-Id: <20230727030347.3552992-1-carlos.song@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0233.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::17) To VI1PR04MB5005.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::30)
 MIME-Version: 1.0
-References: <20230725232913.2981357-1-joel@joelfernandes.org>
- <20230725232913.2981357-2-joel@joelfernandes.org> <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
-In-Reply-To: <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 26 Jul 2023 23:01:40 -0400
-Message-ID: <CAEXW_YTfo8MDcAQk23cw=vxzReZntSXgkUefD+=4yZ+Gb+ZAww@mail.gmail.com>
-Subject: Re: [PATCH 1/5] rcutorture: Fix stuttering races and other issues
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5005:EE_|AM9PR04MB8259:EE_
+X-MS-Office365-Filtering-Correlation-Id: 860ba24d-944d-40e2-d9c1-08db8e4d9175
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9uQd/EINC0aBZ0PN1REWIy4Rx33muOecJocIXZ5MLnWroVvvGm8E2eyZMISotEL+FyD7kaKB1Kt0p70ZDmy4qUow51MMEK1FNsOIF+5U5L9xGOU7AmKeDjgA8PwoiE2bE3R7cpLMQdgQOCc3U3SAzDZ3Ah44QGBNcYfvXynZwgoTpKrSfoEj5y7IJBJu3JxY7cRAJLfI5FjQ6yXHbSGb3paW/ysrvg66oXpWqdWODMEHsdfUnApZDok4YcUqzsTt2g/zDx8rptwpR12G43xMhj8CuVYgXuo9Iup5YIxNorsQFkNQ2K3msZ+0WybS6eK1mmqBj38ETVhhaOJmY1VC1eJ3bJVVv56lEtQ0rW7jdPWtL1ftq+zPSfIIF4o5gV57WmV81fVKdzXBMx6y8L7I98vmcGcWx9FTiVO9Jn2EiZiKMp3+r+AZB9Qmyrz6BZNERFvj73JepjfrF5d5hqmK7Tua+o4qaDx9iA35ditetTm7deszj00nbhbfMRwytX+JHvOuNtUWrFEB+gqeOthkTIzfWgFITcm3gS2p8ivCqxKgtwjs4IplFJUvgR87/f9p3RgdY23nZ6Pbe82+zcJQXagfH97MtUOL6qgfNOKqC5xb1i72er8ux61oikpQjA5a
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(451199021)(52116002)(478600001)(9686003)(6486002)(6512007)(6666004)(26005)(186003)(1076003)(6506007)(2616005)(2906002)(66556008)(66476007)(316002)(4326008)(5660300002)(8936002)(66946007)(41300700001)(8676002)(38350700002)(38100700002)(86362001)(36756003)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sUM8BozRvX0NzQPgZ7oSGaVw5ZTB3ywlkTMJmuO57nNFqZOWNpdoPJFgk9l2?=
+ =?us-ascii?Q?LXugFwNc8vDLedDJcDuapjV82cQplrR4xTDj14MmcOybWU0Oz5hxDQZQjODa?=
+ =?us-ascii?Q?OhrRD4kB6ysoy5D0Ds0QsWeHHRaiBzh/uKTMn1+TVL0OkbyJx4CwxK9ljlNP?=
+ =?us-ascii?Q?/m13Krd2TZAiku3J/ab9ZjHfZlAyEAAmKedq05UPQIPtrB26Yw0ZFgQY2CCT?=
+ =?us-ascii?Q?c3EGN2MWbAvOq2IRro2i+9W7ebBXneyfthVQVwS/h6lDNgtY3p7LgGGMRj1m?=
+ =?us-ascii?Q?jaIsY5U5tPK3eemfGE0Uj48XlnuwPdCPzOwjFo8dvtEQWX3tFRIFEWicO+eA?=
+ =?us-ascii?Q?qDsG9nl7oy+FvgZTCrelViPY9+KhXFNv96fHWlh/GCHOaisVoUKXWD7yxHIx?=
+ =?us-ascii?Q?nSH+vXd8Or8NwKDEmNhHuBrdWIPyKgflFeiwd7BtPN2r0VXLSLHejhzv+m85?=
+ =?us-ascii?Q?scRC4lM6bEGipsaMWrZjvKt2Pp0z5U6vxisAgAVe777LFrHDH5Dn89ATnImj?=
+ =?us-ascii?Q?ce5nnLkO9tv7Vw/BbtH6aXAblbNc9lhNxdRLq2gvXvJOMFMCUnEflLEokEFi?=
+ =?us-ascii?Q?ctVBnZVTT+zcTbsDIHdCTEZbjp6iRunIimk55YKyq2PzaSO/D4EswoWiZt7N?=
+ =?us-ascii?Q?9IG/IqLaLy0VtbX6RpoMxRIAUpKZdO+Wf7BVcbdlsrkaX1fKrvs1BnYmqlKO?=
+ =?us-ascii?Q?WGUvdp6nHhFFakmaGwGN8zQn7OAc78WQzX/g4Nw1IWwL2qgQl04ihCrM/KDf?=
+ =?us-ascii?Q?t6YoMzQ5ZW2Fasn038zKngglagBf+9FwI6mtltUpXW3rgivV61fybIW5wkcl?=
+ =?us-ascii?Q?gsbfaUym7iRt5tzQz8omsyBHjSCLd+zAt/K2W+56AJfg9XLVd5UgwpfzB1wt?=
+ =?us-ascii?Q?Lv5Oma3GbJAv4RyPoKJRQXIwRpigpItBA1ixyUjn4GyzURt2d9CJ3J2Gy55j?=
+ =?us-ascii?Q?XdG9a358/tpt8sxXmcBRNxgBjx6mCs+I7e0f/d7ptEBsxNgrYs03pLUaiB0g?=
+ =?us-ascii?Q?51vW1jugfy3C+hoBEVB5/XErDPra4x2uwz8YfyOeYHXesydcuGzAEB/ErVZ7?=
+ =?us-ascii?Q?NaybhXGyJSeU8dKrm0X2Y7uSbdF48YEtLjAZdFdKlrpoaCm1iPp1yH8kbwlp?=
+ =?us-ascii?Q?3Q3+hP3O+n+IooYVabBpBC/7ftN+U/pfzsKwUIff5bicE4BvwIyhVk8H3sNI?=
+ =?us-ascii?Q?V+wYTnE9a1vWkc1hTJkO1sDd+tB2NRIBCypE55/4gmf/t6clq3twLAUwW30V?=
+ =?us-ascii?Q?Dv/E1k3O6M6v4J+2XLdP8/0VUVroBBTcGfGCMlI8koAW9yKc/EZm3e1tmG1b?=
+ =?us-ascii?Q?Mf1Sy8h0gSXREqq52u1/o6ZwMnEs4FTFBSVowOKc9lWawzbmLdDN8/wG56NA?=
+ =?us-ascii?Q?XJP2bkvqRDyg0LvhwkS+2rUtrwzm3TGdEpW3DdM/cqrNmVJa4Qhs9a9Ankth?=
+ =?us-ascii?Q?lcRIFNJ+iTBQwYDr7baC8/+jlwX6y6JYC8IJ1vznNZ5hN+AZX++JC9gR3RA0?=
+ =?us-ascii?Q?LIJPATyR0OQTgQ0ZSUfW0fC4xENi5sXTku5f3mAjT4Jm0S/Dv4zwFV/LFEuY?=
+ =?us-ascii?Q?TtNZweTZcqTnNEavBRENRXMmCfip50ResQUjsHES?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 860ba24d-944d-40e2-d9c1-08db8e4d9175
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 03:00:01.0731
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L9PlSXb4hIM92WDx6IiXdMxjJGwZfa3N8VX/rRQGCHQacTJxHY5qghr9uHz3NAyJoJNs3i87LlcKctBY5V8NEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8259
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 4:59=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Tue, Jul 25, 2023 at 11:29:06PM +0000, Joel Fernandes (Google) wrote:
-> > The stuttering code isn't functioning as expected. Ideally, it should
-> > pause the torture threads for a designated period before resuming. Yet,
-> > it fails to halt the test for the correct duration. Additionally, a rac=
-e
-> > condition exists, potentially causing the stuttering code to pause for
-> > an extended period if the 'spt' variable is non-zero due to the stutter
-> > orchestration thread's inadequate CPU time.
-> >
-> > Moreover, over-stuttering can hinder RCU's progress on TREE07 kernels.
-> > This happens as the stuttering code may run within a softirq due to RCU
-> > callbacks. Consequently, ksoftirqd keeps a CPU busy for several seconds=
-,
-> > thus obstructing RCU's progress. This situation triggers a warning
-> > message in the logs:
-> >
-> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> >
-> > This warning suggests that an RCU torture object, although invisible to
-> > RCU readers, couldn't make it past the pipe array and be freed -- a
-> > strong indication that there weren't enough grace periods during the
-> > stutter interval.
-> >
-> > To address these issues, this patch sets the "stutter end" time to an
-> > absolute point in the future set by the main stutter thread. This is
-> > then used for waiting in stutter_wait(). While the stutter thread still
-> > defines this absolute time, the waiters' waiting logic doesn't rely on
-> > the stutter thread receiving sufficient CPU time to halt the stuttering
-> > as the halting is now self-controlled.
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/torture.c | 46 +++++++++++++---------------------------------
-> >  1 file changed, 13 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/kernel/torture.c b/kernel/torture.c
-> > index 68dba4ecab5c..63f8f2a7d960 100644
-> > --- a/kernel/torture.c
-> > +++ b/kernel/torture.c
-> > @@ -719,7 +719,7 @@ static void torture_shutdown_cleanup(void)
-> >   * suddenly applied to or removed from the system.
-> >   */
-> >  static struct task_struct *stutter_task;
-> > -static int stutter_pause_test;
-> > +static ktime_t stutter_till_abs_time;
-> >  static int stutter;
-> >  static int stutter_gap;
-> >
-> > @@ -729,30 +729,17 @@ static int stutter_gap;
-> >   */
-> >  bool stutter_wait(const char *title)
-> >  {
-> > -     unsigned int i =3D 0;
-> >       bool ret =3D false;
-> > -     int spt;
-> > +     ktime_t now_ns, till_ns;
-> >
-> >       cond_resched_tasks_rcu_qs();
-> > -     spt =3D READ_ONCE(stutter_pause_test);
-> > -     for (; spt; spt =3D READ_ONCE(stutter_pause_test)) {
-> > -             if (!ret && !rt_task(current)) {
-> > -                     sched_set_normal(current, MAX_NICE);
-> > -                     ret =3D true;
-> > -             }
-> > -             if (spt =3D=3D 1) {
-> > -                     torture_hrtimeout_jiffies(1, NULL);
-> > -             } else if (spt =3D=3D 2) {
-> > -                     while (READ_ONCE(stutter_pause_test)) {
-> > -                             if (!(i++ & 0xffff))
-> > -                                     torture_hrtimeout_us(10, 0, NULL)=
-;
-> > -                             cond_resched();
-> > -                     }
-> > -             } else {
-> > -                     torture_hrtimeout_jiffies(round_jiffies_relative(=
-HZ), NULL);
-> > -             }
-> > -             torture_shutdown_absorb(title);
-> > +     now_ns =3D ktime_get();
-> > +     till_ns =3D READ_ONCE(stutter_till_abs_time);
-> > +     if (till_ns && ktime_before(now_ns, till_ns)) {
-> > +             torture_hrtimeout_ns(ktime_sub(till_ns, now_ns), 0, NULL)=
-;
->
-> This ktime_sub() is roughly cancelled out by a ktime_add_safe() in
-> __hrtimer_start_range_ns().
+From: Carlos Song <carlos.song@nxp.com>
 
-Yes, functionally it is the same but your suggestion is more robust I think=
-.
+A NACK flag in ISR means i2c bus error. In such condition,
+there is no need to do read/write operation.
 
-> Perhaps torture_hrtimeout_ns() needs to
-> take a mode argument as in the patch at the end of this email, allowing
-> you to ditch that ktime_sub() in favor of HRTIMER_MODE_ABS.
+In this patch, i2c will check MSR_NDF, MSR_RDF and MSR_TDF
+flag in turn, it's making mutually exclusive NACK/read/write.
+So when a NACK is received(MSR_NDF), i2c will return ISR
+directly and then stop i2c transfer.
 
-Sure, or we can add a new API and keep the default as relative?
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+---
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Or have 2 APIs:
-torture_hrtimeout_relative_ns();
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 150d923ca7f1..9a3e3a1bc4ee 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -517,14 +517,12 @@ static irqreturn_t lpi2c_imx_isr(int irq, void *dev_id)
+ 	temp = readl(lpi2c_imx->base + LPI2C_MSR);
+ 	temp &= enabled;
+ 
+-	if (temp & MSR_RDF)
+-		lpi2c_imx_read_rxfifo(lpi2c_imx);
+-
+-	if (temp & MSR_TDF)
+-		lpi2c_imx_write_txfifo(lpi2c_imx);
+-
+ 	if (temp & MSR_NDF)
+ 		complete(&lpi2c_imx->complete);
++	else if (temp & MSR_RDF)
++		lpi2c_imx_read_rxfifo(lpi2c_imx);
++	else if (temp & MSR_TDF)
++		lpi2c_imx_write_txfifo(lpi2c_imx);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.34.1
 
-and:
-torture_hrtimeout_absolute_ns();
-
-That makes it more readable IMHO.
-
-Also, do you want me to make both changes (API and usage) in the same
-patch? Or were you planning to have a separate patch yourself in -dev
-which I can use? Let me know either way, and then I'll refresh the
-patch.
-
-thanks,
-
- - Joel
-
-[..]
