@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBCB765803
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCE6765807
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbjG0Pt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51274 "EHLO
+        id S233635AbjG0PvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbjG0Ptz (ORCPT
+        with ESMTP id S229965AbjG0PvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:49:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104172D5E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:49:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D32261EC4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:49:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66301C433C9;
-        Thu, 27 Jul 2023 15:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690472992;
-        bh=iai8Dl1aZsshs+BYkCfB+zSQzXKojFXc8NGFY9536+o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UR2a0/eGLPKam4rWnuFcFWycmApBEJQ5EKOIks8Xj7MFTa0PmR3B/YsU/iEC68vlY
-         yO/eWxOqPLucS5jbhdrF8O9ED9ZZfrytlvhOj4E+aiU9thnNehCfI60l0AfzuUenfG
-         aImFx7+d9Eegd/JrsyKSANBu/6JLGOCyLfYNGRo1O0wFQn+a8niZ9PPfdG6/QbjFZh
-         44BgpK7YVEYYIHBqtdehGGiaYAbAlBkwJUhe1Ptvi0ATRj15JUAojSorMbfVGDxrpG
-         rGbkEIEIk2LLu6ntEcNz2CyRX/TRkriE/NDpoJ/ManaiTF7zen7eaDQMW5e7uYyeEA
-         Viiz66wEaFTQA==
-Date:   Thu, 27 Jul 2023 08:49:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
-        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
-        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
-        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
+        Thu, 27 Jul 2023 11:51:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ACB26BC;
+        Thu, 27 Jul 2023 08:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=whKeVZWLhmUYByq+U/YnOMvphcGTOrmTTlmTUFROnf0=; b=boxukzui/wv967gWjsN1nu1vL8
+        BbCpncLGebuycMF8caT1clC2fsrYVjiVM2mc73Opka5/x758sffC01xiM2lgIPMU7frfQ4an8355L
+        6+cYY589IjVE6RaneL/6XS4S7mPu9V8ToD7AIcDHPMKgNE1TRdiz99eJrk6NwcR29dszNgH5KzV95
+        Zng3e1ahmT86WH2d71zAVZAaZi6NxUvKJv9JemqyJAnAUuB+C4nVfSTBVhORdn9XVkr+ti2OUmFRK
+        P+afcJV6rmETsrWIsClJ92ibmNFp+TtQ6wTN+o+L23yUuHRnpRejf2FVeu34FxgLQMai+yYiG4uJN
+        FDfIH3ZQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qP3GL-00G8P5-09;
+        Thu, 27 Jul 2023 15:50:49 +0000
+Date:   Thu, 27 Jul 2023 08:50:49 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Joerg Reuter <jreuter@yaina.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, willy@infradead.org,
+        keescook@chromium.org, josh@joshtriplett.org,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [net 0/2] rxfh with custom RSS fixes
-Message-ID: <20230727084951.1e4d3279@kernel.org>
-In-Reply-To: <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
-References: <20230723150658.241597-1-jdamato@fastly.com>
-        <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
-        <20230724150815.494ae294@kernel.org>
-        <f565a8d6-e3b8-96d1-a7ac-212c64c60b1c@gmail.com>
+Subject: Re: [PATCH 09/14] ax.25: Update to register_net_sysctl_sz
+Message-ID: <ZMKSWewULuEH6Naa@bombadil.infradead.org>
+References: <20230726140635.2059334-1-j.granados@samsung.com>
+ <CGME20230726140703eucas1p2786577bcc67d5ae434671dac11870c60@eucas1p2.samsung.com>
+ <20230726140635.2059334-10-j.granados@samsung.com>
+ <ZMFfRR3PftnLHPlT@bombadil.infradead.org>
+ <20230727153804.vjsofabjbkkfat25@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727153804.vjsofabjbkkfat25@localhost>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 09:40:24 +0100 Edward Cree wrote:
-> More generally the status of my RSS work is that I've been umming
->  and ahhing about that mutex you didn't like (I still think it's
->  the Right Thing) so I've not made much progress with it.
+On Thu, Jul 27, 2023 at 05:38:04PM +0200, Joel Granados wrote:
+> On Wed, Jul 26, 2023 at 11:00:37AM -0700, Luis Chamberlain wrote:
+> > On Wed, Jul 26, 2023 at 04:06:29PM +0200, Joel Granados wrote:
+> > > This is part of the effort to remove the sentinel (last empty) element
+> > > from the ctl_table arrays. We update to the new function and pass it the
+> > > array size.
+> > 
+> > The commit log does not explain why. It also does not explain if there
+> > is any delta on size at compile or runtime.
+> Just to be on the same page:
+> You mean the specific why for this commit. like for example:
+> "
+> We update  to register_net_sysctl_sz
 
-I had a look at the code again, and I don't think the mutex is a deal
-breaker. More of an aesthetic thing, so to speak. If you strongly
-prefer to keep the mutex that's fine.
+I think it is clearer to just say:
+
+Move from register_net_sysctl() to register_net_sysctl_sz()
+
+> to prepare for when the ctl_table
+> array sentinels are removed.
+
+That is not as clear. I think you should just spell it out.
+
+We want to use the syctl ARRAY_SIZE() when possible, and subsequent
+patches ... now the register_net_sysctl() <does something> while
+register_net_sysctl_sz() <does something else> and <in this case>
+this user <does something> and so we must use register_net_sysctl_sz().
+
+> "
+> 
+> right?
+
+  Luis
