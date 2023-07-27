@@ -2,36 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65D07643AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7F77643B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjG0CIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 22:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S230064AbjG0CLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 22:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjG0CIq (ORCPT
+        with ESMTP id S229539AbjG0CLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:08:46 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3EA1BDA
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:08:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VoIhlPv_1690423721;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VoIhlPv_1690423721)
-          by smtp.aliyun-inc.com;
-          Thu, 27 Jul 2023 10:08:41 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     mporter@kernel.crashing.org, alex.bou9@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] rapidio/tsi721: Fix some kernel-doc comments
-Date:   Thu, 27 Jul 2023 10:08:40 +0800
-Message-Id: <20230727020840.87684-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Wed, 26 Jul 2023 22:11:07 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA431FC2;
+        Wed, 26 Jul 2023 19:11:05 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686efdeabaeso317821b3a.3;
+        Wed, 26 Jul 2023 19:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690423865; x=1691028665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cvO/SSTX/RJfVRWoJjupWhRCvEyYV01fI2j/IhxZ090=;
+        b=eppjM8BTFRCYyNs0+hqqPoUamkRvgKF9wqRnAQS+P5B/oVn4bAOGdq2Un8JIas+D8s
+         SIgDSfW7eTsPkqdA2c5L3Im3ovEeOgO296ZTPYd3WKkFjr+cFRmulU/R9+PZIU0hs/wm
+         r63fCh+Gn/efTdFusPj9Ie46ffkFisSRd7P+hb6YHCRraf7+8LpFzK3Z/k+xdJ0Pvu7U
+         qPNwKlmGJbyIE9V4ziRbPAgGsW4+XABZPuEVtUO8gBzIJyerHkGPhM5QVeYn2cPFfvos
+         EAwcRpDlnvcOOt3rjBbCJd99K31tkwPSeTukgGZ6Aa+aPp776dJeHc3SOHmqxDIvgdoo
+         6Qqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690423865; x=1691028665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cvO/SSTX/RJfVRWoJjupWhRCvEyYV01fI2j/IhxZ090=;
+        b=iMvYeFRmaCmXIizRVqGtuaSkXlLLu+zEsmM4XbNG5gBG4qja1Gn/eIh/DUkekVWgGh
+         t1TdcxrehXqK//7EJRdEik6DBiPPwm4/A/5VGA/xcnz5rf0nKEPfTc1xwkX/z+OaYhC+
+         IzXqoO7HAUridi8zYlPhUh2w8jTQuQHhyg5SR8SsGc7KwozzO1UCVOnuInXId9Ql3kA+
+         cCOlBMLq5S706mROOOJLVvhpYGAJLBp36s6MD6meYOot4llxkmMRmdOTsZkZ/wWPHB0j
+         LME+aQ5E3gVOo9DQPy0Qp96s0MpJAa2igJcPI7rv+2enAvk7cwvlHniSkGIaIPrR4O3m
+         UvjQ==
+X-Gm-Message-State: ABy/qLbEgkFbIm2Ln/duWlmInhlwc8jLxD5CBBek9v/mkOyJ+VUAnXPM
+        e317+gCebBqc4wHr4/fUikE=
+X-Google-Smtp-Source: APBJJlFaT25G5eZNuUB4df060xaex9EsMM+qAK+cT71OqCPtUmg5AAf2OcdDlzE2SUH5W0MHYG7TEg==
+X-Received: by 2002:a05:6a20:2591:b0:135:8a04:9045 with SMTP id k17-20020a056a20259100b001358a049045mr3878961pzd.1.1690423864850;
+        Wed, 26 Jul 2023 19:11:04 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id j6-20020a170902c3c600b001b857352285sm221874plj.247.2023.07.26.19.11.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 19:11:04 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 19:11:01 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Barry Song <baohua@kernel.org>
+Subject: Re: [PATCH v3 8/8] lib: test for_each_numa_cpus()
+Message-ID: <ZMHSNQfv39HN068m@yury-ThinkPad>
+References: <20230430171809.124686-1-yury.norov@gmail.com>
+ <20230430171809.124686-9-yury.norov@gmail.com>
+ <68e850c3-bde7-45f2-9d9e-24aea1f2386b@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68e850c3-bde7-45f2-9d9e-24aea1f2386b@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -39,53 +95,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some kernel-doc comments to silence the warnings:
+On Sat, Jul 22, 2023 at 08:47:16AM -0700, Guenter Roeck wrote:
+> Hi,
+> 
+> On Sun, Apr 30, 2023 at 10:18:09AM -0700, Yury Norov wrote:
+> > Test for_each_numa_cpus() output to ensure that:
+> >  - all CPUs are picked from NUMA nodes with non-decreasing distances to the
+> >    original node; 
+> >  - only online CPUs are enumerated;
+> >  - the macro enumerates each online CPUs only once;
+> >  - enumeration order is consistent with cpumask_local_spread().
+> > 
+> > The latter is an implementation-defined behavior. If cpumask_local_spread()
+> > or for_each_numa_cpu() will get changed in future, the subtest may need
+> > to be adjusted or even removed, as appropriate.
+> > 
+> > It's useful now because some architectures don't implement numa_distance(),
+> > and generic implementation only distinguishes local and remote nodes, which
+> > doesn't allow to test the for_each_numa_cpu() properly.
+> > 
+> 
+> This patch results in a crash when testing sparc64 images with qemu.
 
-drivers/rapidio/devices/tsi721.c:215: warning: Function parameter or member 'data' not described in 'tsi721_cread_dma'
-drivers/rapidio/devices/tsi721.c:215: warning: Excess function parameter 'val' description in 'tsi721_cread_dma'
-drivers/rapidio/devices/tsi721.c:238: warning: Function parameter or member 'data' not described in 'tsi721_cwrite_dma'
-drivers/rapidio/devices/tsi721.c:238: warning: Excess function parameter 'val' description in 'tsi721_cwrite_dma'
-drivers/rapidio/devices/tsi721.c:2548: warning: Function parameter or member 'attr' not described in 'tsi721_query_mport'
-drivers/rapidio/devices/tsi721.c:2548: warning: Excess function parameter 'mbox' description in 'tsi721_query_mport'
+Thanks Guenter for reporting. I'll remove the series until fixing the
+issue.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5997
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/rapidio/devices/tsi721.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/rapidio/devices/tsi721.c b/drivers/rapidio/devices/tsi721.c
-index 83323c3d10af..3e67001702bc 100644
---- a/drivers/rapidio/devices/tsi721.c
-+++ b/drivers/rapidio/devices/tsi721.c
-@@ -205,7 +205,7 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
-  * @hopcount: Number of hops to target device
-  * @offset: Offset into configuration space
-  * @len: Length (in bytes) of the maintenance transaction
-- * @val: Location to be read into
-+ * @data: Location to be read into
-  *
-  * Generates a RapidIO maintenance read transaction.
-  * Returns %0 on success and %-EINVAL or %-EFAULT on failure.
-@@ -228,7 +228,7 @@ static int tsi721_cread_dma(struct rio_mport *mport, int index, u16 destid,
-  * @hopcount: Number of hops to target device
-  * @offset: Offset into configuration space
-  * @len: Length (in bytes) of the maintenance transaction
-- * @val: Value to be written
-+ * @data: Value to be written
-  *
-  * Generates a RapidIO maintenance write transaction.
-  * Returns %0 on success and %-EINVAL or %-EFAULT on failure.
-@@ -2539,7 +2539,7 @@ static int tsi721_messages_init(struct tsi721_device *priv)
- /**
-  * tsi721_query_mport - Fetch inbound message from the Tsi721 MSG Queue
-  * @mport: Master port implementing the Inbound Messaging Engine
-- * @mbox: Inbound mailbox number
-+ * @attr: RIO mport device attributes
-  *
-  * Returns pointer to the message on success or NULL on failure.
-  */
--- 
-2.20.1.7.g153144c
-
+Thanks,
+Yury
